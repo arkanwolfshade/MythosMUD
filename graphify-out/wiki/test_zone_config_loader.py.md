@@ -1,6 +1,6 @@
 # test_zone_config_loader.py
 
-> 78 nodes
+> 82 nodes
 
 ## Key Concepts
 
@@ -14,6 +14,7 @@
 - **_store_subzone_row()** (10 connections) — `server/npc/zone_config_loader.py`
 - **ZoneLoadResult** (9 connections) — `server/npc/zone_config_loader.py`
 - **extract_zone_name()** (9 connections) — `server/npc/zone_config_loader.py`
+- **load_zone_configurations()** (9 connections) — `server/npc/zone_config_loader.py`
 - **process_subzone_rows()** (9 connections) — `server/npc/zone_config_loader.py`
 - **ZoneConfigurationData** (7 connections) — `server/npc/zone_configuration.py`
 - **parse_zone_special_rules()** (6 connections) — `server/npc/zone_config_loader.py`
@@ -28,17 +29,16 @@
 - **test_async_load_zone_configurations_no_database_url()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
 - **test_async_load_zone_configurations_success()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
 - **test_process_subzone_rows_empty()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_process_zone_rows_empty()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- *... and 53 more nodes in this community*
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [NPCDefinition](NPCDefinition.md) (19 shared connections)
-- [test_rate_overrides.py](test_rate_overrides.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [time.py](time.py.md) (1 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [ZoneConfiguration](ZoneConfiguration.md) (14 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [get_asyncpg_server_settings_for_database_url](get_asyncpg_server_settings_for_database_url.md) (2 shared connections)
+- [threading.py](threading.py.md) (1 shared connections)
+- [asyncio.md](asyncio.md.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -49,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 165 (95%)
-- INFERRED: 8 (5%)
+- EXTRACTED: 170 (95%)
+- INFERRED: 9 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

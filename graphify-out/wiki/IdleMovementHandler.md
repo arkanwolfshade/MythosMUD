@@ -1,11 +1,12 @@
 # IdleMovementHandler
 
-> 97 nodes
+> 104 nodes
 
 ## Key Concepts
 
 - **IdleMovementHandler** (56 connections) — `server/npc/idle_movement.py`
 - **test_idle_movement.py** (36 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **idle_movement.py** (18 connections) — `server/npc/idle_movement.py`
 - **.execute_idle_movement()** (8 connections) — `server/npc/idle_movement.py`
 - **._should_idle_move_inner()** (8 connections) — `server/npc/idle_movement.py`
 - **patch** (8 connections)
@@ -28,18 +29,21 @@
 - **test_should_idle_move_true_when_not_in_combat_and_probability_succeeds()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
 - **_cfg_bool()** (3 connections) — `server/npc/idle_movement.py`
 - **._calculate_distance_to_room()** (3 connections) — `server/npc/idle_movement.py`
-- **._calculate_exit_weight()** (3 connections) — `server/npc/idle_movement.py`
-- *... and 72 more nodes in this community*
+- *... and 79 more nodes in this community*
 
 ## Relationships
 
-- [Room](Room.md) (9 shared connections)
-- [mock_event_bus](mock_event_bus.md) (3 shared connections)
+- [NPCMovementIntegration](NPCMovementIntegration.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [PassiveMobNPC](PassiveMobNPC.md) (2 shared connections)
-- [time.py](time.py.md) (2 shared connections)
-- [._execute_wander_movement](_execute_wander_movement.md) (1 shared connections)
-- [NPCThreadManager](NPCThreadManager.md) (1 shared connections)
-- [.__init__](__init__.md) (1 shared connections)
+- [NPCThreadManager](NPCThreadManager.md) (2 shared connections)
+- [.__init__](__init__.md) (2 shared connections)
+- [event_types.py](event_types.py.md) (2 shared connections)
+- [NPCBase](NPCBase.md) (1 shared connections)
+- [threading.py](threading.py.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -49,8 +53,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 143 (83%)
-- INFERRED: 30 (17%)
+- EXTRACTED: 158 (84%)
+- INFERRED: 30 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

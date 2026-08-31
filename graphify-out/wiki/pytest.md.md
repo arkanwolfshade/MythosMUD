@@ -1,72 +1,73 @@
 # pytest.md
 
-> 140 nodes
+> 296 nodes
 
 ## Key Concepts
 
 - **pytest.md** (533 connections) — `.claude/rules/pytest.md`
-- **test_quest_instance_repository.py** (23 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **QuestInstance** (21 connections) — `server/models/quest.py`
-- **test_quest_definition_repository.py** (21 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **QuestInstanceRepository** (20 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **quest_instance_repository.py** (20 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **QuestDefinitionRepository** (17 connections) — `server/persistence/repositories/quest_definition_repository.py`
-- **quest_definition_repository.py** (17 connections) — `server/persistence/repositories/quest_definition_repository.py`
-- **test_quest_flow.py** (17 connections) — `server/tests/integration/test_quest_flow.py`
-- **test_room_write_procedures.py** (15 connections) — `server/tests/integration/test_room_write_procedures.py`
-- **models/quest.py** (14 connections) — `server/models/quest.py`
-- **QuestDefinition** (13 connections) — `server/models/quest.py`
-- **_make_session_context()** (13 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **test_procedures_return_shape.py** (13 connections) — `server/tests/integration/test_procedures_return_shape.py`
-- **_make_session_context()** (11 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **asyncio** (11 connections)
-- **.create()** (10 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **test_quest_start_by_trigger_then_abandon()** (10 connections) — `server/tests/integration/test_quest_flow.py`
-- **test_quest_start_log_abandon_flow()** (10 connections) — `server/tests/integration/test_quest_flow.py`
-- **test_database_config_helpers_asyncpg_settings.py** (10 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
-- **asyncio** (9 connections)
-- **.get_by_player_and_quest()** (8 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **.list_active_by_player()** (8 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **.list_completed_by_player()** (8 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **_row_to_quest_instance()** (8 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- *... and 115 more nodes in this community*
+- **Stats** (77 connections) — `server/models/game.py`
+- **StatsGenerator** (43 connections) — `server/game/stats_generator.py`
+- **server/models/game.py** (33 connections) — `server/models/game.py`
+- **StatusEffect** (31 connections) — `server/models/game.py`
+- **test_game_stats_methods.py** (31 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **Player** (26 connections) — `server/models/game.py`
+- **test_game_player.py** (23 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_schemas.py** (23 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **players/player.py** (21 connections) — `server/schemas/players/player.py`
+- **test_stats_generator.py** (20 connections) — `server/tests/unit/game/test_stats_generator.py`
+- **test_dependency_injection.py** (20 connections) — `server/tests/unit/test_dependency_injection.py`
+- **StatusEffectType** (18 connections) — `server/models/game.py`
+- **InventoryItem** (17 connections) — `server/models/game.py`
+- **PositionState** (17 connections) — `server/models/game.py`
+- **stats_generator.py** (16 connections) — `server/game/stats_generator.py`
+- **test_game_status_effect.py** (15 connections) — `server/tests/unit/models/test_game_status_effect.py`
+- **generate_random_stats()** (12 connections) — `server/game/stats_generator.py`
+- **get_stats_generator()** (11 connections) — `server/dependencies.py`
+- **Stats** (11 connections)
+- **test_game_enums.py** (11 connections) — `server/tests/unit/models/test_game_enums.py`
+- **memory_profiler.py** (11 connections) — `server/utils/memory_profiler.py`
+- **PlayerBase** (10 connections) — `server/schemas/players/player.py`
+- **CharacterInfo** (9 connections) — `server/schemas/players/player.py`
+- **PlayerCreate** (9 connections) — `server/schemas/players/player.py`
+- *... and 271 more nodes in this community*
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (62 shared connections)
-- [models/player.py](models-player.py.md) (16 shared connections)
-- [async_sessionmaker](async_sessionmaker.md) (12 shared connections)
-- [get_logger](get_logger.md) (10 shared connections)
-- [QuestService](QuestService.md) (9 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (9 shared connections)
-- [test_rate_overrides.py](test_rate_overrides.py.md) (8 shared connections)
-- [BaseCommand](BaseCommand.md) (8 shared connections)
-- [Player](Player.md) (7 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (6 shared connections)
-- [AliasStorage](AliasStorage.md) (6 shared connections)
-- [PlayerLeftRoom](PlayerLeftRoom.md) (6 shared connections)
+- [BaseCommand](BaseCommand.md) (18 shared connections)
+- [get_logger](get_logger.md) (17 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (17 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (16 shared connections)
+- [Player](Player.md) (16 shared connections)
+- [PlayerService](PlayerService.md) (13 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (13 shared connections)
+- [player_schema_converter.py](player_schema_converter.py.md) (12 shared connections)
+- [run_flee_effect](run_flee_effect.md) (11 shared connections)
+- [LucidityService](LucidityService.md) (8 shared connections)
+- [players/__init__.py](players-__init__.py.md) (8 shared connections)
+- [test_character_creation_service.py](test_character_creation_service.py.md) (6 shared connections)
 
 ## Source Files
 
 - `.claude/rules/pytest.md`
-- `server/models/quest.py`
-- `server/persistence/repositories/quest_definition_repository.py`
-- `server/persistence/repositories/quest_instance_repository.py`
-- `server/tests/integration/test_calendar_procedures.py`
-- `server/tests/integration/test_lucidity_procedures.py`
-- `server/tests/integration/test_procedures_return_shape.py`
-- `server/tests/integration/test_quest_flow.py`
-- `server/tests/integration/test_room_write_procedures.py`
-- `server/tests/unit/persistence/test_quest_definition_repository.py`
-- `server/tests/unit/persistence/test_quest_instance_repository.py`
-- `server/tests/unit/realtime/test_connection_manager_lazy.py`
+- `server/dependencies.py`
+- `server/game/stats_generator.py`
+- `server/models/game.py`
+- `server/schemas/players/player.py`
+- `server/tests/unit/game/test_stats_generator.py`
+- `server/tests/unit/models/test_game_enums.py`
+- `server/tests/unit/models/test_game_inventory_item.py`
+- `server/tests/unit/models/test_game_player.py`
+- `server/tests/unit/models/test_game_stats_methods.py`
+- `server/tests/unit/models/test_game_status_effect.py`
+- `server/tests/unit/schemas/test_player_schemas.py`
 - `server/tests/unit/test_asyncio_run_guardrails.py`
-- `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- `server/tests/unit/test_dependency_injection.py`
+- `server/utils/memory_profiler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 878 (97%)
-- INFERRED: 26 (3%)
+- EXTRACTED: 1152 (100%)
+- INFERRED: 4 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

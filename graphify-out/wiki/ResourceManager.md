@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (3 shared connections)
+- [useWebSocketConnection.ts](useWebSocketConnection.ts.md) (3 shared connections)
 
 ## Source Files
 

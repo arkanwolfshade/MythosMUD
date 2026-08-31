@@ -33,16 +33,16 @@
 
 ## Relationships
 
-- [PlayerLeftRoom](PlayerLeftRoom.md) (4 shared connections)
+- [player_event_handlers.py](player_event_handlers.py.md) (4 shared connections)
+- [CombatService](CombatService.md) (3 shared connections)
 - [test_combat_persistence_handler_events.py](test_combat_persistence_handler_events.py.md) (3 shared connections)
-- [AttributeError](AttributeError.md) (3 shared connections)
-- [NATSError](NATSError.md) (3 shared connections)
-- [combat_service.py](combat_service.py.md) (2 shared connections)
+- [test_combat_persistence_handler_persistence.py](test_combat_persistence_handler_persistence.py.md) (3 shared connections)
+- [NATSError](NATSError.md) (2 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [CombatDeathHandler](CombatDeathHandler.md) (1 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
+- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (1 shared connections)
+- [asyncio.md](asyncio.md.md) (1 shared connections)
+- [NATSService](NATSService.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

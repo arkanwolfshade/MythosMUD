@@ -4,11 +4,11 @@
 
 ## Key Concepts
 
-- **WebSocket** (5 connections) — `docs/examples/logging/fastapi_integration.py`
-- **.accept()** (1 connections) — `docs/examples/logging/fastapi_integration.py`
-- **.client()** (1 connections) — `docs/examples/logging/fastapi_integration.py`
-- **.receive_text()** (1 connections) — `docs/examples/logging/fastapi_integration.py`
-- **.send_text()** (1 connections) — `docs/examples/logging/fastapi_integration.py`
+- **WebSocket** (5 connections) — `docs/examples/logging/websocket_integration.py`
+- **.accept()** (1 connections) — `docs/examples/logging/websocket_integration.py`
+- **.client()** (1 connections) — `docs/examples/logging/websocket_integration.py`
+- **.receive_text()** (1 connections) — `docs/examples/logging/websocket_integration.py`
+- **.send_text()** (1 connections) — `docs/examples/logging/websocket_integration.py`
 
 ## Relationships
 
@@ -16,7 +16,7 @@
 
 ## Source Files
 
-- `docs/examples/logging/fastapi_integration.py`
+- `docs/examples/logging/websocket_integration.py`
 
 ## Audit Trail
 

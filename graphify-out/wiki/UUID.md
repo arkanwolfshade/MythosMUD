@@ -1,39 +1,53 @@
 # UUID
 
-> 15 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **UUID** (10 connections)
-- **.prune_stale_players()** (7 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **.cleanup_dead_connections()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._cleanup_dead_connections_for_player()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._remove_stale_player_data()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._get_players_to_check()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._identify_stale_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._is_websocket_dead()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Identify players whose last_seen timestamp exceeds the max age. Args:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Remove all data for a stale player. Args: pid: Player ID to remove…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Remove players whose presence is stale beyond the threshold. Args: last_seen:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Return True if websocket appears dead (should be cleaned up).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Return list of player IDs to check (single player or all).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Clean up dead connections for a single player.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Clean up dead connections for a specific player or all players. Args:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **UUID** (15 connections)
+- **._award_xp_via_persistence_fallback()** (7 connections) — `server/services/player_combat_service.py`
+- **.award_xp_on_npc_death()** (6 connections) — `server/services/player_combat_service.py`
+- **.clear_player_combat_state()** (5 connections) — `server/services/player_combat_service.py`
+- **._get_xp_from_lifecycle_manager()** (5 connections) — `server/services/player_combat_service.py`
+- **.track_player_combat_state()** (5 connections) — `server/services/player_combat_service.py`
+- **._award_xp_via_npc_rewards()** (4 connections) — `server/services/player_combat_service.py`
+- **.calculate_xp_reward()** (4 connections) — `server/services/player_combat_service.py`
+- **.handle_combat_end()** (4 connections) — `server/services/player_combat_service.py`
+- **.handle_combat_start()** (4 connections) — `server/services/player_combat_service.py`
+- **.handle_npc_death()** (4 connections) — `server/services/player_combat_service.py`
+- **.cleanup_stale_combat_states()** (3 connections) — `server/services/player_combat_service.py`
+- **.get_players_in_combat()** (3 connections) — `server/services/player_combat_service.py`
+- **.is_player_in_combat()** (3 connections) — `server/services/player_combat_service.py`
+- **.is_player_in_combat_sync()** (3 connections) — `server/services/player_combat_service.py`
+- **Track a player's combat state. Args: player_id: ID of the player player_name:…** (1 connections) — `server/services/player_combat_service.py`
+- **Clear a player's combat state. Args: player_id: ID of the player** (1 connections) — `server/services/player_combat_service.py`
+- **Synchronously check if a player is currently in combat. This is the preferred…** (1 connections) — `server/services/player_combat_service.py`
+- **Check if a player is currently in combat. Args: player_id: ID of the player…** (1 connections) — `server/services/player_combat_service.py`
+- **Get all players currently in combat. Returns: List of player IDs currently in…** (1 connections) — `server/services/player_combat_service.py`
+- **Handle combat start for a player. Args: player_id: ID of the player…** (1 connections) — `server/services/player_combat_service.py`
+- **Handle combat end by clearing all players in the combat. Args: combat_id: ID of…** (1 connections) — `server/services/player_combat_service.py`
+- **Handle NPC death and award XP to the player. Args: player_id: ID of the player…** (1 connections) — `server/services/player_combat_service.py`
+- **Return True if the NPC rewards path handled the award (success or logged…** (1 connections) — `server/services/player_combat_service.py`
+- **Fallback: load player, add XP, save, publish (used without integration in…** (1 connections) — `server/services/player_combat_service.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [ConnectionCleaner](ConnectionCleaner.md) (14 shared connections)
-- [.check_and_cleanup](check_and_cleanup.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (15 shared connections)
+- [test_player_combat_service.py](test_player_combat_service.py.md) (2 shared connections)
+- [PlayerXPAwardEvent](PlayerXPAwardEvent.md) (1 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (1 shared connections)
+- [PositionPlayer](PositionPlayer.md) (1 shared connections)
+- [_JSONDict](_JSONDict.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/maintenance/connection_cleaner.py`
+- `server/services/player_combat_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 52 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

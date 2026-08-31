@@ -4,10 +4,10 @@
 
 ## Key Concepts
 
-- **id** (4 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **pattern** (1 connections) — `schemas/intersection_schema.json`
-- **type** (1 connections) — `schemas/intersection_schema.json`
+- **id** (4 connections) — `schemas/room_schema.json`
+- **description** (1 connections) — `schemas/room_schema.json`
+- **pattern** (1 connections) — `schemas/room_schema.json`
+- **type** (1 connections) — `schemas/room_schema.json`
 
 ## Relationships
 
@@ -15,7 +15,7 @@
 
 ## Source Files
 
-- `schemas/intersection_schema.json`
+- `schemas/room_schema.json`
 
 ## Audit Trail
 

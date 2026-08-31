@@ -1,6 +1,6 @@
 # GameMechanicsService
 
-> 33 nodes
+> 35 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **test_mechanics.py** (17 connections) — `server/tests/unit/game/test_mechanics.py`
 - **_player()** (8 connections) — `server/tests/unit/game/test_mechanics.py`
 - **asyncio** (8 connections)
+- **.__init__()** (5 connections) — `server/npc/combat_integration_base.py`
 - **test_apply_corruption_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
 - **test_apply_fear_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
 - **test_apply_lucidity_loss_player_not_found()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
@@ -28,28 +29,27 @@
 - **persistence()** (2 connections) — `server/tests/unit/game/test_mechanics.py`
 - **fixture** (2 connections)
 - **Heal a player's health.** (1 connections) — `server/game/mechanics.py`
-- **Damage a player's health.** (1 connections) — `server/game/mechanics.py`
-- *... and 8 more nodes in this community*
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (8 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [ValidationError](ValidationError.md) (2 shared connections)
-- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (1 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (1 shared connections)
+- [get_logger](get_logger.md) (12 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (4 shared connections)
+- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (2 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
 - `server/game/mechanics.py`
+- `server/npc/combat_integration_base.py`
 - `server/tests/unit/game/test_mechanics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 67 (88%)
-- INFERRED: 9 (12%)
+- EXTRACTED: 71 (89%)
+- INFERRED: 9 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

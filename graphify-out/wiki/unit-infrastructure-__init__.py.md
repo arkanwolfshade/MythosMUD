@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **unit/infrastructure/__init__.py** (1 connections) — `server/tests/unit/infrastructure/__init__.py`
+- **infrastructure/__init__.py** (1 connections) — `server/tests/unit/infrastructure/__init__.py`
 - **Infrastructure unit tests.** (1 connections) — `server/tests/unit/infrastructure/__init__.py`
 
 ## Relationships

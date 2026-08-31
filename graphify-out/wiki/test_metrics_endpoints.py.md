@@ -33,12 +33,10 @@
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (25 shared connections)
-- [User](User.md) (14 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (2 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (34 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (6 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 - [BaseCommand](BaseCommand.md) (2 shared connections)
-- [test_users.py](test_users.py.md) (1 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
 - [MetricsCollector](MetricsCollector.md) (1 shared connections)
 - [factory.py](factory.py.md) (1 shared connections)

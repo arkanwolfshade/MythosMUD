@@ -35,8 +35,9 @@
 
 - [test_quality_fragmentation_guard.py](test_quality_fragmentation_guard.py.md) (16 shared connections)
 - [_collect_python_public_defs_and_tiny](_collect_python_public_defs_and_tiny.md) (8 shared connections)
-- [safe_run_static](safe_run_static.md) (4 shared connections)
 - [quality_fragmentation_graph.py](quality_fragmentation_graph.py.md) (3 shared connections)
+- [safe_run](safe_run.md) (3 shared connections)
+- [safe_run_static](safe_run_static.md) (1 shared connections)
 
 ## Source Files
 

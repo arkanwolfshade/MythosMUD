@@ -1,48 +1,47 @@
 # Any
 
-> 41 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **._canonical_room_id()** (13 connections) — `server/realtime/room_subscription_manager.py`
-- **Any** (13 connections)
-- **.get_room_occupants()** (8 connections) — `server/realtime/room_subscription_manager.py`
-- **._get_fallback_npcs_from_room()** (7 connections) — `server/realtime/room_subscription_manager.py`
-- **._query_npcs_from_lifecycle_manager()** (6 connections) — `server/realtime/room_subscription_manager.py`
-- **._add_npc_to_occupants()** (5 connections) — `server/realtime/room_subscription_manager.py`
-- **.add_room_drop()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **._filter_fallback_npcs()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **._get_npc_name_from_lifecycle_manager()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **._get_online_player_occupants()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **.list_room_drops()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **.reconcile_room_presence()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **.take_room_drop()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **.add_room_occupant()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.adjust_room_drop()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.get_room_subscribers()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.get_stats()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.remove_room_occupant()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.set_async_persistence()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.subscribe_to_room()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.unsubscribe_from_room()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **Retrieve current room drops as a defensive copy for callers. Args: room_id: The…** (1 connections) — `server/realtime/room_subscription_manager.py`
-- **Append an item stack to the room drop ledger. Args: room_id: The room receiving…** (1 connections) — `server/realtime/room_subscription_manager.py`
-- **Remove quantity of a drop entry, returning the removed stack. Args: room_id:…** (1 connections) — `server/realtime/room_subscription_manager.py`
-- **Adjust quantity for an existing drop entry; removing entry when zero. Args:…** (1 connections) — `server/realtime/room_subscription_manager.py`
-- *... and 16 more nodes in this community*
+- **Any** (10 connections)
+- **._setup_task_tracking()** (9 connections) — `server/app/task_registry.py`
+- **Task** (8 connections)
+- **TaskMetadata** (7 connections) — `server/app/task_registry.py`
+- **.register_task()** (7 connections) — `server/app/task_registry.py`
+- **._create_task_completion_callback()** (5 connections) — `server/app/task_registry.py`
+- **.__init__()** (4 connections) — `server/app/task_registry.py`
+- **.cancel_task()** (4 connections) — `server/app/task_registry.py`
+- **.unregister_task()** (4 connections) — `server/app/task_registry.py`
+- **._ensure_unique_task_name()** (3 connections) — `server/app/task_registry.py`
+- **._extract_service_name()** (3 connections) — `server/app/task_registry.py`
+- **.get_registry_info()** (3 connections) — `server/app/task_registry.py`
+- **.list_active_tasks()** (3 connections) — `server/app/task_registry.py`
+- **._track_task_creation_metrics()** (3 connections) — `server/app/task_registry.py`
+- **.__repr__()** (2 connections) — `server/app/task_registry.py`
+- **Create callback function for task completion cleanup.** (1 connections) — `server/app/task_registry.py`
+- **Set up tracking for a newly created task.** (1 connections) — `server/app/task_registry.py`
+- **Register and create a tracked asyncio.Task. Args: coro: The coroutine to wrap…** (1 connections) — `server/app/task_registry.py`
+- **Unregister task from tracking, optionally force-cancelling. Args: task: Task…** (1 connections) — `server/app/task_registry.py`
+- **Cancel specific task with logical timeout boundaries. Args: task: Task…** (1 connections) — `server/app/task_registry.py`
+- **Metadata for tracked asyncio.Tasks.** (1 connections) — `server/app/task_registry.py`
+- **Initialize task metadata. Args: task: The asyncio.Task instance to track…** (1 connections) — `server/app/task_registry.py`
+- **Return list of currently registered TaskMetadata.** (1 connections) — `server/app/task_registry.py`
+- **Return comprehensive registry state information.** (1 connections) — `server/app/task_registry.py`
+- **String representation of task metadata for logging.** (1 connections) — `server/app/task_registry.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [connection_manager.py](connection_manager.py.md) (20 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (2 shared connections)
+- [TaskRegistry](TaskRegistry.md) (16 shared connections)
 
 ## Source Files
 
-- `server/realtime/room_subscription_manager.py`
+- `server/app/task_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 73 (100%)
+- EXTRACTED: 52 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

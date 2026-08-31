@@ -1,6 +1,6 @@
 # RoomDataValidator
 
-> 27 nodes
+> 49 nodes
 
 ## Key Concepts
 
@@ -8,37 +8,35 @@
 - **test_room_data_validator.py** (16 connections) — `server/tests/unit/services/test_room_data_validator.py`
 - **.validate_room_data()** (10 connections) — `server/services/room_data_validator.py`
 - **Any** (8 connections)
+- **.validate_room_consistency()** (7 connections) — `server/services/room_data_validator.py`
+- **.check_duplicate_occupants()** (6 connections) — `server/services/room_data_validator.py`
 - **.validate_field_types()** (6 connections) — `server/services/room_data_validator.py`
 - **.validate_required_fields()** (6 connections) — `server/services/room_data_validator.py`
+- **.check_empty_room_with_occupants()** (5 connections) — `server/services/room_data_validator.py`
+- **.check_occupant_count_consistency()** (5 connections) — `server/services/room_data_validator.py`
+- **.is_valid_room_id()** (5 connections) — `server/services/room_data_validator.py`
 - **.validate_occupant_consistency()** (4 connections) — `server/services/room_data_validator.py`
+- **test_check_duplicate_occupants()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_check_duplicate_occupants_no_duplicates()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_check_empty_room_with_occupants()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_check_occupant_count_consistency()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_is_valid_room_id()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
 - **test_validate_field_types()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
 - **test_validate_field_types_valid()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
 - **test_validate_required_fields()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
 - **test_validate_required_fields_all_present()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_validate_room_consistency()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
 - **test_validate_room_data_invalid()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
 - **test_validate_room_data_room_id()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
 - **test_validate_room_data_valid()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **Validate occupant count consistency. Args: room_data: Room data to validate…** (1 connections) — `server/services/room_data_validator.py`
-- **Validates room data structure and content.** (1 connections) — `server/services/room_data_validator.py`
-- **Validate room data structure and content. Args: room_data: Room data to…** (1 connections) — `server/services/room_data_validator.py`
-- **Validate that all required fields are present. Args: room_data: Room data to…** (1 connections) — `server/services/room_data_validator.py`
-- **Validate field types. Args: room_data: Room data to validate Returns:…** (1 connections) — `server/services/room_data_validator.py`
-- **Unit tests for room_data_validator. Tests the RoomDataValidator class methods.** (1 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **Test validate_required_fields() detects missing fields.** (1 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **Test validate_required_fields() passes when all fields present.** (1 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **Test validate_field_types() detects type mismatches.** (1 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **Test validate_field_types() passes with correct types.** (1 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **Test validate_room_data() returns is_valid=True for valid data.** (1 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- *... and 2 more nodes in this community*
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [.validate_room_consistency](validate_room_consistency.md) (8 shared connections)
-- [.check_duplicate_occupants](check_duplicate_occupants.md) (6 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [.get_data_provider](get_data_provider.md) (4 shared connections)
-- [.check_empty_room_with_occupants](check_empty_room_with_occupants.md) (4 shared connections)
-- [PlayerLeftRoom](PlayerLeftRoom.md) (3 shared connections)
+- [event_types.py](event_types.py.md) (3 shared connections)
+- [npc_combat_integration_validation_mixin.py](npc_combat_integration_validation_mixin.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 60 (80%)
-- INFERRED: 15 (20%)
+- EXTRACTED: 81 (84%)
+- INFERRED: 15 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

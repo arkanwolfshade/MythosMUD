@@ -22,7 +22,9 @@ import type { ChatMessage, Player, QuestLogEntry, Room } from '../types';
  * | combat_started / combat_ended | in_combat | no | optional reason | |
  * | player_died | current_dp if mortally wounded | no | no | |
  * | player_respawned, player_delirium_respawned | player, room | room | optional | |
- * | player_dp_updated | current_dp, max_dp, posture | no | no | |
+ * | player_dp_updated | current_dp, max_dp, posture | no | optional posture_message | |
+ * | player_dp_decay | — | no | optional posture_message | bleed tick; full decay line deferred |
+ * | player_posture_change | — | no | third-person message | room observers |
  * | lucidity_change | stats.current_dp from data.current_dp | no | no | legacy payload shape |
  * | command_response | player_update, room_state | nested room | result / game_log | |
  * | chat_message, room_message, system | no | no | yes | |

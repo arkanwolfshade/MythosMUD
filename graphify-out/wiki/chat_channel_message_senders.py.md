@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [chat_service.py](chat_service.py.md) (31 shared connections)
-- [ChatMessage](ChatMessage.md) (20 shared connections)
+- [chat_service.py](chat_service.py.md) (37 shared connections)
+- [ChatMessage](ChatMessage.md) (15 shared connections)
+- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (4 shared connections)
 - [ChatService](ChatService.md) (3 shared connections)
-- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [chat_nats_publisher.py](chat_nats_publisher.py.md) (2 shared connections)
 
 ## Source Files
 

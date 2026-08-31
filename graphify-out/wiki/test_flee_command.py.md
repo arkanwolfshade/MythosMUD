@@ -1,6 +1,6 @@
 # test_flee_command.py
 
-> 39 nodes
+> 37 nodes
 
 ## Key Concepts
 
@@ -10,7 +10,6 @@
 - **test_flee_no_exits_returns_no_escape()** (9 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **test_flee_roll_fails_returns_failure_and_uses_action()** (9 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **test_flee_roll_succeeds_returns_success()** (9 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **handler()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **_make_participant()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **_standing_player_id()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **test_flee_not_in_combat_returns_message()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
@@ -29,17 +28,17 @@
 - **_GetCombatHandlerLoaderAppState** (2 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **TypedDict** (1 connections)
 - **Unit tests for /flee command (handle_flee_command).** (1 connections) — `server/tests/unit/commands/test_flee_command.py`
-- *... and 14 more nodes in this community*
+- **Build request.app so _get_player_and_room gets player and room from persistence.** (1 connections) — `server/tests/unit/commands/test_flee_command.py`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [CombatCommandHandler](CombatCommandHandler.md) (6 shared connections)
+- [CombatCommandHandler](CombatCommandHandler.md) (10 shared connections)
 - [CombatInstance](CombatInstance.md) (4 shared connections)
-- [combat_loader.py](combat_loader.py.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (3 shared connections)
 - [CombatParticipant](CombatParticipant.md) (2 shared connections)
-- [models/combat.py](models-combat.py.md) (2 shared connections)
-- [models/player.py](models-player.py.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [CombatParticipantType](CombatParticipantType.md) (1 shared connections)
+- [models/combat.py](models-combat.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 88 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 86 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

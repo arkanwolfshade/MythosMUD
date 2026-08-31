@@ -1,6 +1,6 @@
 # PlayerRespawnService
 
-> 53 nodes
+> 55 nodes
 
 ## Key Concepts
 
@@ -29,21 +29,21 @@
 - **._apply_sanitarium_player_state()** (4 connections) — `server/services/player_respawn_service.py`
 - **.__init__()** (4 connections) — `server/services/player_respawn_service.py`
 - **.clear_player_combat_state()** (3 connections) — `server/services/player_respawn_service.py`
-- *... and 28 more nodes in this community*
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [models/player.py](models-player.py.md) (21 shared connections)
+- [LucidityService](LucidityService.md) (15 shared connections)
+- [test_player_respawn_service.py](test_player_respawn_service.py.md) (7 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (2 shared connections)
 - [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [ValidationError](ValidationError.md) (2 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [PlayerLeftRoom](PlayerLeftRoom.md) (2 shared connections)
-- [test_lifespan_startup.py](test_lifespan_startup.py.md) (1 shared connections)
-- [PlayerDeathService](PlayerDeathService.md) (1 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [coerce_int](coerce_int.md) (2 shared connections)
+- [CatatoniaRegistry](CatatoniaRegistry.md) (1 shared connections)
 - [api/player_respawn.py](api-player_respawn.py.md) (1 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (1 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [combat_service.py](combat_service.py.md) (1 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
+- [test_player_death_service.py](test_player_death_service.py.md) (1 shared connections)
 - [EventBus](EventBus.md) (1 shared connections)
 
 ## Source Files
@@ -53,7 +53,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 125 (95%)
+- EXTRACTED: 127 (95%)
 - INFERRED: 7 (5%)
 - AMBIGUOUS: 0 (0%)
 

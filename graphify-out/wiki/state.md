@@ -1,58 +1,61 @@
 # .state
 
-> 19 nodes
+> 67 nodes
 
 ## Key Concepts
 
 - **.state()** (37 connections) — `server/realtime/connection_state_machine.py`
-- **.app()** (33 connections) — `server/commands/look_helpers.py`
-- **_websocket_unified_command_result()** (11 connections) — `server/realtime/websocket_handler_commands.py`
-- **handle_explore_command()** (9 connections) — `server/commands/exploration_commands.py`
-- **_get_ground_services()** (6 connections) — `server/commands/rescue_commands.py`
-- **test_exploration_commands.py** (6 connections) — `server/tests/unit/commands/test_exploration_commands.py`
-- **_app_state_container_service()** (5 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **test_handle_explore_command()** (4 connections) — `server/tests/unit/commands/test_exploration_commands.py`
-- **test_handle_explore_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_exploration_commands.py`
-- **asyncio** (2 connections)
-- **Any** (1 connections)
-- **Handle exploration requests by returning a simple message. This lightweight…** (1 connections) — `server/commands/exploration_commands.py`
-- **FastAPI/Starlette application (or duck-typed equivalent).** (1 connections) — `server/commands/look_helpers.py`
-- **Get persistence and registry from request. Returns (persistence, registry).** (1 connections) — `server/commands/rescue_commands.py`
-- **Current FSM state as a single State. Uses python-statemachine 3.x configuration…** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Build request context, run process_command_unified, attach room_state when…** (1 connections) — `server/realtime/websocket_handler_commands.py`
-- **Unit tests for exploration command handlers. Tests the exploration command…** (1 connections) — `server/tests/unit/commands/test_exploration_commands.py`
-- **Test handle_explore_command() explores area.** (1 connections) — `server/tests/unit/commands/test_exploration_commands.py`
-- **Test handle_explore_command() handles missing persistence.** (1 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **rescue_commands.py** (33 connections) — `server/commands/rescue_commands.py`
+- **handle_ground_command()** (27 connections) — `server/commands/rescue_commands.py`
+- **test_rescue_commands.py** (24 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **asyncio** (17 connections)
+- **handle_rescue_command()** (14 connections) — `server/commands/rescue_commands.py`
+- **Any** (9 connections)
+- **_run_ground_session()** (8 connections) — `server/commands/rescue_commands.py`
+- **_apply_grounding_adjustment()** (7 connections) — `server/commands/rescue_commands.py`
+- **patch** (7 connections)
+- **test_handle_ground_command_apply_lucidity_error()** (6 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_not_catatonic()** (6 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_success()** (6 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_target_player_key()** (6 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **UUID** (6 connections)
+- **_complete_ground_command()** (5 connections) — `server/commands/rescue_commands.py`
+- **_get_ground_services()** (5 connections) — `server/commands/rescue_commands.py`
+- **_normalize_player_ids()** (5 connections) — `server/commands/rescue_commands.py`
+- **_send_grounding_failure_events()** (5 connections) — `server/commands/rescue_commands.py`
+- **_send_grounding_success_events()** (5 connections) — `server/commands/rescue_commands.py`
+- **_validate_ground_context()** (5 connections) — `server/commands/rescue_commands.py`
+- **test_handle_ground_command_lucidity_record_not_found()** (5 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_rescue_command()** (5 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_rescue_command_target_player_key()** (5 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **_send_grounding_channeling_events()** (4 connections) — `server/commands/rescue_commands.py`
+- *... and 42 more nodes in this community*
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (6 shared connections)
-- [real_time.py](real_time.py.md) (4 shared connections)
-- [command_handler_unified.py](command_handler_unified.py.md) (4 shared connections)
-- [rescue_commands.py](rescue_commands.py.md) (4 shared connections)
-- [websocket_handler_commands.py](websocket_handler_commands.py.md) (4 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (3 shared connections)
-- [communication_commands_flows.py](communication_commands_flows.py.md) (3 shared connections)
-- [test_websocket_helpers.py](test_websocket_helpers.py.md) (3 shared connections)
-- [NPCCombatIntegration](NPCCombatIntegration.md) (3 shared connections)
+- [LucidityService](LucidityService.md) (20 shared connections)
+- [AliasStorage](AliasStorage.md) (12 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (3 shared connections)
 - [GameStateProvider](GameStateProvider.md) (3 shared connections)
-- [test_admin_summon_command.py](test_admin_summon_command.py.md) (2 shared connections)
-- [combat_loader.py](combat_loader.py.md) (2 shared connections)
+- [get_username_from_user](get_username_from_user.md) (2 shared connections)
+- [real_time.py](real_time.py.md) (2 shared connections)
+- [.on_enter_state](on_enter_state.md) (1 shared connections)
+- [NATSConnectionStateMachine](NATSConnectionStateMachine.md) (1 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (1 shared connections)
+- [test_command_processing.py](test_command_processing.py.md) (1 shared connections)
+- [admin_summon_command.py](admin_summon_command.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/container_helpers_inventory_ops.py`
-- `server/commands/exploration_commands.py`
-- `server/commands/look_helpers.py`
 - `server/commands/rescue_commands.py`
 - `server/realtime/connection_state_machine.py`
-- `server/realtime/websocket_handler_commands.py`
-- `server/tests/unit/commands/test_exploration_commands.py`
+- `server/tests/unit/commands/test_rescue_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (36%)
-- INFERRED: 65 (64%)
+- EXTRACTED: 164 (80%)
+- INFERRED: 42 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

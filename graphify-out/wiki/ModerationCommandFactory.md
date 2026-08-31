@@ -33,13 +33,10 @@
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (22 shared connections)
-- [test_command_moderation.py](test_command_moderation.py.md) (6 shared connections)
-- [PlayerStateCommandFactory](PlayerStateCommandFactory.md) (1 shared connections)
-- [CommandFactory](CommandFactory.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [get_logger](get_logger.md) (23 shared connections)
+- [BaseCommand](BaseCommand.md) (8 shared connections)
+- [CombatCommandFactory](CombatCommandFactory.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 

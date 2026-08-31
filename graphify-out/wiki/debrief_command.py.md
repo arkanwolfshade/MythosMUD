@@ -6,7 +6,7 @@
 
 - **debrief_command.py** (26 connections) — `server/commands/debrief_command.py`
 - **test_debrief_command.py** (26 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **handle_debrief_command()** (20 connections) — `server/commands/debrief_command.py`
+- **handle_debrief_command()** (19 connections) — `server/commands/debrief_command.py`
 - **_generate_narrative_recap()** (9 connections) — `server/commands/debrief_command.py`
 - **_perform_therapy_if_requested()** (9 connections) — `server/commands/debrief_command.py`
 - **asyncio** (9 connections)
@@ -33,15 +33,13 @@
 
 ## Relationships
 
-- [models/player.py](models-player.py.md) (9 shared connections)
+- [LucidityService](LucidityService.md) (8 shared connections)
 - [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (7 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
 - [AliasStorage](AliasStorage.md) (5 shared connections)
-- [get_async_session](get_async_session.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [.state](state.md) (1 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -51,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 118 (96%)
-- INFERRED: 5 (4%)
+- EXTRACTED: 118 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

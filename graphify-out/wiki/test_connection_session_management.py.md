@@ -1,6 +1,6 @@
 # test_connection_session_management.py
 
-> 88 nodes
+> 103 nodes
 
 ## Key Concepts
 
@@ -27,30 +27,30 @@
 - **_meta()** (8 connections) — `server/tests/unit/realtime/test_connection_session_management.py`
 - **test_disconnect_connection_for_session_not_connected()** (8 connections) — `server/tests/unit/realtime/test_connection_session_management.py`
 - **test_disconnect_connection_for_session_success()** (8 connections) — `server/tests/unit/realtime/test_connection_session_management.py`
+- **NewGameSessionResult** (7 connections) — `server/realtime/connection_session_management.py`
 - **_FakeSessionManager** (6 connections) — `server/tests/unit/realtime/test_connection_session_management.py`
-- **test_disconnect_all_connections_for_session_empty_list()** (6 connections) — `server/tests/unit/realtime/test_connection_session_management.py`
-- *... and 63 more nodes in this community*
+- *... and 78 more nodes in this community*
 
 ## Relationships
 
-- [connection_manager.py](connection_manager.py.md) (11 shared connections)
-- [test_connection_establishment.py](test_connection_establishment.py.md) (10 shared connections)
-- [_FakeMessageQueue](_FakeMessageQueue.md) (4 shared connections)
-- [DatabaseError](DatabaseError.md) (4 shared connections)
+- [connection_manager.py](connection_manager.py.md) (14 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (5 shared connections)
 - [ConnectionManager](ConnectionManager.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [test_connection_establishment.py](test_connection_establishment.py.md) (3 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
+- `server/realtime/connection_manager.py`
 - `server/realtime/connection_session_management.py`
 - `server/tests/unit/realtime/test_connection_session_management.py`
 
 ## Audit Trail
 
-- EXTRACTED: 245 (98%)
-- INFERRED: 6 (2%)
+- EXTRACTED: 261 (97%)
+- INFERRED: 7 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

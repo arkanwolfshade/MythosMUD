@@ -27,7 +27,7 @@
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (14 shared connections)
+- [get_logger](get_logger.md) (14 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

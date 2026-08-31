@@ -20,10 +20,9 @@
 ## Relationships
 
 - [test_auth_rate_limit.py](test_auth_rate_limit.py.md) (8 shared connections)
-- [factory.py](factory.py.md) (2 shared connections)
-- [create_app](create_app.md) (1 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [factory.py](factory.py.md) (3 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [test_rate_limiter_utils.py](test_rate_limiter_utils.py.md) (1 shared connections)
 - [AuthRateLimitMiddleware](AuthRateLimitMiddleware.md) (1 shared connections)
 - [.format](format.md) (1 shared connections)

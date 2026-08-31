@@ -37,7 +37,7 @@
 - [factory.py](factory.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [build_event](build_event.md) (1 shared connections)
-- [time.py](time.py.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
 

@@ -104,19 +104,26 @@ async def test_handle_lie_command():
     mock_container = MagicMock()
     mock_persistence = AsyncMock()
     mock_player = MagicMock()
-    mock_player.position_state = "standing"
+    mock_player.player_id = uuid.uuid4()
+    mock_player.name = "TestPlayer"
+    mock_player.current_room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
+    mock_player.get_stats = MagicMock(return_value={"position": "standing"})
+    mock_player.set_stats = MagicMock()
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    mock_persistence.save_player = AsyncMock()
     mock_container.async_persistence = mock_persistence
     mock_state.container = mock_container
     mock_state.persistence = mock_persistence
+    mock_state.connection_manager = MagicMock()
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    result = await handle_lie_command({}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
+    with patch("server.commands.position_commands.emit_posture_change", new_callable=AsyncMock):
+        result = await handle_lie_command({}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
 
     assert "result" in result
-    # Position may not change if service returns error, so check result message
-    assert mock_player.position_state == "lying" or "lie" in result["result"].lower() or result.get("changed", False)
+    assert result.get("changed") is True or "lie" in result["result"].lower()
+    mock_player.set_stats.assert_called()
 
 
 @pytest.mark.asyncio

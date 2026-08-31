@@ -33,15 +33,14 @@
 
 ## Relationships
 
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (11 shared connections)
+- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (12 shared connections)
 - [CombatParticipant](CombatParticipant.md) (5 shared connections)
-- [models/combat.py](models-combat.py.md) (3 shared connections)
+- [CombatService](CombatService.md) (2 shared connections)
 - [CombatInstance](CombatInstance.md) (2 shared connections)
-- [CombatDeathHandler](CombatDeathHandler.md) (1 shared connections)
-- [combat_service.py](combat_service.py.md) (1 shared connections)
+- [CombatParticipantType](CombatParticipantType.md) (2 shared connections)
 - [NATSError](NATSError.md) (1 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [models/combat.py](models-combat.py.md) (1 shared connections)
 
 ## Source Files
 

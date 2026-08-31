@@ -129,7 +129,8 @@ async def test_apply_target_rest_grace_raises_on_grace_period() -> None:
     connection_manager: MagicMock = MagicMock()
     with (
         patch("server.services.combat_service_start.is_player_in_login_grace_period", return_value=True),
-        patch("server.services.combat_service_start.is_player_resting", return_value=False),
+        # Inline import inside apply_target_rest_and_grace_checks; patch the source module.
+        patch("server.commands.rest_command.is_player_resting", return_value=False),
     ):
         with pytest.raises(ValueError, match="login grace period"):
             await combat_service_start.apply_target_rest_and_grace_checks(
@@ -144,8 +145,9 @@ async def test_apply_target_rest_cancels_rest() -> None:
     connection_manager: MagicMock = MagicMock()
     with (
         patch("server.services.combat_service_start.is_player_in_login_grace_period", return_value=False),
-        patch("server.services.combat_service_start.is_player_resting", return_value=True),
-        patch("server.services.combat_service_start.cancel_rest_countdown", AsyncMock()) as mock_cancel,
+        # Inline import inside apply_target_rest_and_grace_checks; patch the source module.
+        patch("server.commands.rest_command.is_player_resting", return_value=True),
+        patch("server.commands.rest_command.cancel_rest_countdown", AsyncMock()) as mock_cancel,
     ):
         await combat_service_start.apply_target_rest_and_grace_checks(
             MagicMock(), connection_manager, target, _participant("Attacker")

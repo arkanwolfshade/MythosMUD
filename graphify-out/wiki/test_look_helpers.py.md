@@ -1,6 +1,6 @@
 # test_look_helpers.py
 
-> 107 nodes
+> 105 nodes
 
 ## Key Concepts
 
@@ -9,7 +9,6 @@
 - **test_look_helpers_functions.py** (23 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
 - **_get_health_label()** (17 connections) — `server/commands/look_helpers.py`
 - **_get_lucidity_label()** (17 connections) — `server/commands/look_helpers.py`
-- **LookRequest** (15 connections) — `server/commands/look_helpers.py`
 - **_get_visible_equipment()** (11 connections) — `server/commands/look_helpers.py`
 - **_is_direction()** (11 connections) — `server/commands/look_helpers.py`
 - **_parse_instance_number()** (11 connections) — `server/commands/look_helpers.py`
@@ -29,17 +28,16 @@
 - **test_get_visible_equipment()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
 - **test_get_visible_equipment_no_equipment()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
 - **test_is_direction()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
-- *... and 82 more nodes in this community*
+- **test_is_direction_false()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
+- *... and 80 more nodes in this community*
 
 ## Relationships
 
-- [look_command.py](look_command.py.md) (9 shared connections)
 - [test_look_player.py](test_look_player.py.md) (7 shared connections)
-- [test_look_container_helpers.py](test_look_container_helpers.py.md) (6 shared connections)
+- [look_command.py](look_command.py.md) (6 shared connections)
+- [test_look_container_helpers.py](test_look_container_helpers.py.md) (3 shared connections)
 - [test_wearable_container_service.py](test_wearable_container_service.py.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [.state](state.md) (1 shared connections)
-- [test_look_container.py](test_look_container.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -50,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 186 (96%)
-- INFERRED: 8 (4%)
+- EXTRACTED: 182 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

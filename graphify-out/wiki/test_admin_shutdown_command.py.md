@@ -1,47 +1,49 @@
 # test_admin_shutdown_command.py
 
-> 126 nodes
+> 41 nodes
 
 ## Key Concepts
 
 - **test_admin_shutdown_command.py** (58 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **admin_shutdown_command.py** (36 connections) — `server/commands/admin_shutdown_command.py`
-- **Any** (20 connections)
-- **_asyncio_mark** (19 connections)
-- **_await_shutdown_result()** (14 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **handle_shutdown_command()** (13 connections) — `server/commands/admin_shutdown_command.py`
-- **initiate_shutdown_countdown()** (13 connections) — `server/commands/admin_shutdown_command.py`
-- **cancel_shutdown_countdown()** (11 connections) — `server/commands/admin_shutdown_command.py`
+- **is_shutdown_pending()** (14 connections) — `server/commands/admin_shutdown_command.py`
 - **parse_shutdown_parameters()** (11 connections) — `server/commands/admin_shutdown_command.py`
-- **validate_shutdown_admin_permission()** (9 connections) — `server/commands/admin_shutdown_command.py`
-- **broadcast_shutdown_notification()** (7 connections) — `server/commands/admin_shutdown_command.py`
-- **calculate_notification_times()** (7 connections) — `server/commands/admin_shutdown_command.py`
-- **countdown_loop()** (7 connections) — `server/commands/admin_shutdown_command.py`
 - **test_cancel_shutdown_countdown_no_active()** (7 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 - **test_cancel_shutdown_countdown_success()** (7 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_initiate_shutdown_countdown_success()** (6 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_initiate_shutdown_countdown_supersedes()** (6 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 - **test_is_shutdown_pending_false()** (6 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 - **test_is_shutdown_pending_true()** (6 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 - **_ShutdownContainerStub** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **_clear_shutdown_state()** (5 connections) — `server/commands/admin_shutdown_command.py`
-- **_create_countdown_task()** (5 connections) — `server/commands/admin_shutdown_command.py`
-- **_handle_shutdown_cancel()** (5 connections) — `server/commands/admin_shutdown_command.py`
-- **_handle_shutdown_initiate()** (5 connections) — `server/commands/admin_shutdown_command.py`
-- **_store_shutdown_data()** (5 connections) — `server/commands/admin_shutdown_command.py`
-- *... and 101 more nodes in this community*
+- **test_is_shutdown_pending_no_state()** (4 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **_AppWithoutState** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **_PendingCheckAppStub** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **_PendingCheckStateStub** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **_ShutdownCancelAppStub** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **_ShutdownCancelStateStub** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_get_shutdown_blocking_message_character_creation()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_get_shutdown_blocking_message_default()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_get_shutdown_blocking_message_login()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_cancel()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_invalid_negative()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_invalid_string()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_invalid_zero()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_no_args()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_seconds()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Check if server shutdown is currently pending. Args: app: FastAPI application…** (1 connections) — `server/commands/admin_shutdown_command.py`
+- **Parse shutdown command parameters. Args: command_data: Command data dictionary…** (1 connections) — `server/commands/admin_shutdown_command.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (11 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (11 shared connections)
-- [test_shutdown_sequence.py](test_shutdown_sequence.py.md) (3 shared connections)
-- [time.py](time.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
-- [AdminActionsLogger](AdminActionsLogger.md) (1 shared connections)
-- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (1 shared connections)
+- [_asyncio_mark](_asyncio_mark.md) (18 shared connections)
+- [admin_shutdown_command.py](admin_shutdown_command.py.md) (13 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (7 shared connections)
+- [calculate_notification_times](calculate_notification_times.md) (4 shared connections)
+- [test_initiate_shutdown_countdown_success](test_initiate_shutdown_countdown_success.md) (4 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (1 shared connections)
+- [websocket_helpers.py](websocket_helpers.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,8 +52,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 266 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 116 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

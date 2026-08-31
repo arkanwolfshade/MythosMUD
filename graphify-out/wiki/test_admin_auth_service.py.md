@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **test_admin_auth_service.py** (57 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **AdminAction** (34 connections) — `server/services/admin_auth_service.py`
+- **AdminAction** (36 connections) — `server/services/admin_auth_service.py`
 - **AdminRole** (25 connections) — `server/services/admin_auth_service.py`
 - **AdminAuthService** (19 connections) — `server/services/admin_auth_service.py`
 - **.validate_permission()** (11 connections) — `server/services/admin_auth_service.py`
@@ -33,11 +33,15 @@
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (17 shared connections)
-- [User](User.md) (4 shared connections)
+- [get_admin_auth_service](get_admin_auth_service.md) (14 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (5 shared connections)
 - [RoomService](RoomService.md) (2 shared connections)
 - [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (1 shared connections)
-- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) (1 shared connections)
+- [npc_admin_mgmt_api.py](npc_admin_mgmt_api.py.md) (1 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
+- [maps.py](maps.py.md) (1 shared connections)
+- [players/__init__.py](players-__init__.py.md) (1 shared connections)
+- [PlayerService](PlayerService.md) (1 shared connections)
 - [server/services/__init__.py](server-services-__init__.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
@@ -48,8 +52,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 175 (81%)
-- INFERRED: 40 (19%)
+- EXTRACTED: 177 (82%)
+- INFERRED: 40 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

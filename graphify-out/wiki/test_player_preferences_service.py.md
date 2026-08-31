@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [models/player.py](models-player.py.md) (4 shared connections)
-- [PlayerPreferencesService](PlayerPreferencesService.md) (2 shared connections)
-- [endpoints.py](endpoints.py.md) (1 shared connections)
+- [Player](Player.md) (4 shared connections)
+- [test_channel_commands.py](test_channel_commands.py.md) (2 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

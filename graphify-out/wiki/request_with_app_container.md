@@ -1,55 +1,56 @@
 # request_with_app_container
 
-> 56 nodes
+> 93 nodes
 
 ## Key Concepts
 
 - **request_with_app_container()** (28 connections) — `server/tests/unit/commands/communication_commands_mocks.py`
+- **test_communication_commands_say_me_pose.py** (23 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
 - **handle_whisper_command()** (20 connections) — `server/commands/communication_commands.py`
 - **test_communication_commands_whisper_reply.py** (18 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **handle_say_command()** (16 connections) — `server/commands/communication_commands.py`
+- **asyncio** (15 connections)
+- **handle_pose_command()** (14 connections) — `server/commands/communication_commands.py`
 - **test_whisper_command.py** (14 connections) — `server/tests/unit/commands/test_whisper_command.py`
 - **asyncio** (11 connections)
 - **handle_reply_command()** (10 connections) — `server/commands/communication_commands.py`
 - **asyncio** (7 connections)
+- **test_handle_pose_command_clear_pose()** (5 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_pose_command_player_not_found()** (5 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_pose_command_set_pose()** (5 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_chat_service_failure()** (5 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_delegates_broadcast_to_chat_service_with_ids()** (5 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_exception()** (5 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_no_player_id()** (5 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_no_room()** (5 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_player_not_found()** (5 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_success()** (5 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
 - **test_handle_reply_command_no_last_whisper_sender()** (5 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
 - **test_handle_reply_command_success()** (5 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
 - **test_handle_whisper_command_chat_service_failure()** (5 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
 - **test_handle_whisper_command_success()** (5 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_target_not_found()** (5 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_whisper_to_self()** (5 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **communication_commands_mocks.py** (5 connections) — `server/tests/unit/commands/communication_commands_mocks.py`
-- **test_handle_reply_command_no_message()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_reply_command_no_services()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_no_message()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_no_services()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_no_target()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_whisper_command_missing_message()** (4 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_missing_target()** (4 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_no_player_service()** (4 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_sender_not_found()** (4 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_success()** (4 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_target_not_found()** (4 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- *... and 31 more nodes in this community*
+- *... and 68 more nodes in this community*
 
 ## Relationships
 
-- [test_communication_commands_say_me_pose.py](test_communication_commands_say_me_pose.py.md) (12 shared connections)
-- [test_communication_commands_channels.py](test_communication_commands_channels.py.md) (9 shared connections)
-- [communication_commands_flows.py](communication_commands_flows.py.md) (6 shared connections)
-- [AliasStorage](AliasStorage.md) (4 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (29 shared connections)
+- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (5 shared connections)
+- [pytest.md](pytest.md.md) (3 shared connections)
+- [get_pose_persistence](get_pose_persistence.md) (1 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/communication_commands.py`
 - `server/tests/unit/commands/communication_commands_mocks.py`
+- `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
 - `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
 - `server/tests/unit/commands/test_whisper_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 129 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 206 (97%)
+- INFERRED: 6 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -167,6 +167,7 @@ class Player(Base):
         """
         # With JSONB + MutableDict, SQLAlchemy returns MutableDict (dict subclass).
         # Legacy rows may still have stats as a JSON string until load hook normalizes.
+        stats: dict[str, object]
         try:
             stats_val: object = cast(object, self.stats)
             if isinstance(stats_val, str):  # Reason: legacy DB rows may store JSON string
@@ -443,6 +444,8 @@ class Player(Base):
         stats["current_dp"] = new_dp
         if new_dp <= 0:
             stats["position"] = PositionState.LYING
+        elif old_dp <= 0 < new_dp:
+            stats["position"] = PositionState.STANDING
         self.set_stats(stats)
         # R1716: two distinct variables (old_dp, new_dp) cannot be one chained comparison
         became_mortally_wounded = old_dp > 0 and (0 >= new_dp > -10)  # pylint: disable=chained-comparison

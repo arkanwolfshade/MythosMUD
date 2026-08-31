@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [NPCBase](NPCBase.md) (3 shared connections)
-- [time.py](time.py.md) (3 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [NPCBase](NPCBase.md) (6 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (1 shared connections)
 
 ## Source Files
 

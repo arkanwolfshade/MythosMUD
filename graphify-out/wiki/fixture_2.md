@@ -1,31 +1,35 @@
 # fixture
 
-> 9 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **fixture** (4 connections)
-- **mock_prototype_registry()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **sample_equipped_item()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **sample_inventory_item()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **sample_room_drop()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a mock prototype registry.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a sample room drop item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a sample inventory item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a sample equipped item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **room_service()** (5 connections) — `server/tests/unit/game/test_room_service.py`
+- **fixture** (5 connections)
+- **room_service_with_cache()** (4 connections) — `server/tests/unit/game/test_room_service.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **mock_room_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **sample_room_dict()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Create a mock room cache service.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Create a RoomService instance.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Create a RoomService instance with cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Create a sample room dictionary.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [test_look_item.py](test_look_item.py.md) (4 shared connections)
+- [test_room_service.py](test_room_service.py.md) (5 shared connections)
+- [RoomService](RoomService.md) (2 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 15 (83%)
+- INFERRED: 3 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

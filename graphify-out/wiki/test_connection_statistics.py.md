@@ -1,11 +1,12 @@
 # test_connection_statistics.py
 
-> 51 nodes
+> 53 nodes
 
 ## Key Concepts
 
 - **test_connection_statistics.py** (25 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
 - **validate_player_presence_impl()** (11 connections) — `server/realtime/connection_statistics.py`
+- **connection_statistics.py** (11 connections) — `server/realtime/connection_statistics.py`
 - **get_online_player_by_display_name_impl()** (10 connections) — `server/realtime/connection_statistics.py`
 - **get_player_presence_info_impl()** (9 connections) — `server/realtime/connection_statistics.py`
 - **get_session_stats_impl()** (9 connections) — `server/realtime/connection_statistics.py`
@@ -28,15 +29,14 @@
 - **test_validate_player_presence_impl_connection_count_mismatch()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
 - **test_validate_player_presence_impl_connections_but_not_online()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
 - **test_validate_player_presence_impl_consistent()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_validate_player_presence_impl_error()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- *... and 26 more nodes in this community*
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [connection_manager_methods.py](connection_manager_methods.py.md) (6 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (7 shared connections)
+- [connection_manager.py](connection_manager.py.md) (3 shared connections)
 - [ConnectionManager](ConnectionManager.md) (2 shared connections)
-- [connection_manager.py](connection_manager.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -47,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 88 (100%)
+- EXTRACTED: 93 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

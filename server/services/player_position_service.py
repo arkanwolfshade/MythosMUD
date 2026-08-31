@@ -6,33 +6,22 @@ in-memory sessions, persistence, and default alias bindings so scholars do not
 fall out of alignment with the eldritch record.
 """
 
+# pylint: disable=missing-function-docstring  # Reason: Protocol method stubs; contracts live in class docstrings
+
 from __future__ import annotations
 
 from typing import Protocol, TypedDict
 
 from ..alias_storage import AliasStorage
 from ..exceptions import DatabaseError
-from ..models.player import Player
 from ..structured_logging.enhanced_logging_config import get_logger
+from .position_messages import POSITION_MESSAGES
 
 logger = get_logger(__name__)
 
 VALID_POSITIONS = {"standing", "sitting", "lying"}
 
-_POSITION_MESSAGES: dict[str, dict[str, str]] = {
-    "sitting": {
-        "success": "You settle into a seated position.",
-        "already": "You are already seated.",
-    },
-    "standing": {
-        "success": "You rise to your feet.",
-        "already": "You are already standing.",
-    },
-    "lying": {
-        "success": "You stretch out and lie down.",
-        "already": "You are already lying down.",
-    },
-}
+_POSITION_MESSAGES = POSITION_MESSAGES
 
 _DEFAULT_ALIAS_MAP = {"sit": "/sit", "stand": "/stand", "lie": "/lie"}
 
@@ -49,14 +38,24 @@ class PositionChangeResponse(TypedDict):
     player_display_name: str
 
 
+class PositionPlayer(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    """Player surface required for posture updates (avoids importing models.player)."""
+
+    player_id: object
+    name: str | None
+    current_room_id: str | None
+
+    def get_stats(self) -> dict[str, object]: ...
+
+    def set_stats(self, stats: dict[str, object]) -> None: ...
+
+
 class SupportsPlayerPersistence(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """Persistence surface required for posture updates."""
 
-    async def get_player_by_name(self, name: str) -> Player | None:
-        """Look up a player by name."""
+    async def get_player_by_name(self, name: str) -> PositionPlayer | None: ...
 
-    async def save_player(self, player: Player) -> None:
-        """Persist player posture and related state."""
+    async def save_player(self, player: PositionPlayer) -> None: ...
 
 
 class SupportsConnectionManager(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
@@ -64,8 +63,7 @@ class SupportsConnectionManager(Protocol):  # pylint: disable=too-few-public-met
 
     online_players: dict[str, dict[str, object]]
 
-    def get_online_player_by_display_name(self, display_name: str) -> dict[str, object] | None:
-        """Return the online player record for a display name, if present."""
+    def get_online_player_by_display_name(self, display_name: str) -> dict[str, object] | None: ...
 
 
 class PlayerPositionService:
@@ -106,7 +104,9 @@ class PlayerPositionService:
             raise ValueError(f"Unsupported position: {target_position}")
         return normalized_position
 
-    async def _get_player_for_position_change(self, player_name: str) -> tuple[Player | None, dict[str, str]] | None:
+    async def _get_player_for_position_change(
+        self, player_name: str
+    ) -> tuple[PositionPlayer | None, dict[str, str]] | None:
         """
         Get player for position change.
 
@@ -132,13 +132,14 @@ class PlayerPositionService:
 
         return player, {}
 
-    def _apply_player_info(self, response: PositionChangeResponse, player: Player, player_name: str) -> None:
+    def _apply_player_info(self, response: PositionChangeResponse, player: PositionPlayer, player_name: str) -> None:
         """Copy player identity fields into the position-change response."""
         response["player_display_name"] = player.name or player_name
-        response["player_id"] = player.player_id
-        response["room_id"] = player.current_room_id
+        response["player_id"] = str(player.player_id)
+        room_id = player.current_room_id
+        response["room_id"] = str(room_id) if room_id is not None else None
 
-    def _load_player_stats(self, player: Player, player_name: str) -> dict[str, object]:
+    def _load_player_stats(self, player: PositionPlayer, player_name: str) -> dict[str, object]:
         """Load player stats, returning {} when loading fails."""
         try:
             return player.get_stats()
@@ -150,14 +151,14 @@ class PlayerPositionService:
             )
             return {}
 
-    def _get_current_position(self, player: Player, player_name: str) -> str:
+    def _get_current_position(self, player: PositionPlayer, player_name: str) -> str:
         """Get current position from player stats."""
         stats = self._load_player_stats(player, player_name)
         position_value = stats.get("position", "standing")
         return position_value if isinstance(position_value, str) else "standing"
 
     async def _update_player_position(
-        self, player: Player, stats: dict[str, object], normalized_position: str, player_name: str
+        self, player: PositionPlayer, stats: dict[str, object], normalized_position: str, player_name: str
     ) -> bool:
         """Update player position in persistence."""
         if self._persistence is None:
@@ -232,7 +233,7 @@ class PlayerPositionService:
         response["message"] = _POSITION_MESSAGES[normalized_position]["success"]
         return response
 
-    def _update_connection_manager(self, player: Player, player_name: str, position: str) -> None:
+    def _update_connection_manager(self, player: PositionPlayer, player_name: str, position: str) -> None:
         """Mirror posture changes into the live connection manager."""
         connection_manager = self._connection_manager
         if connection_manager is None:

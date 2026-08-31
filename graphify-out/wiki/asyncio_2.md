@@ -1,34 +1,46 @@
 # asyncio
 
-> 11 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **asyncio** (6 connections)
-- **test_ensure_room_cache_loaded_database_error()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **test_ensure_room_cache_loaded_already_loaded()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **test_ensure_room_cache_loaded_concurrent_load()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **test_ensure_room_cache_loaded_os_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **test_ensure_room_cache_loaded_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _ensure_room_cache_loaded returns early when cache is already loaded.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _ensure_room_cache_loaded handles concurrent load scenario (double-check…** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _ensure_room_cache_loaded handles DatabaseError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _ensure_room_cache_loaded handles OSError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _ensure_room_cache_loaded handles RuntimeError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **asyncio** (22 connections)
+- **test_get_current_lucidity_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_delirium_respawn_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_delirium_respawn_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_respawn_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_respawn_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_respawn_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **Test get_player_data_for_respawn() returns None when connection manager not…** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **Test get_player_data_for_respawn() returns None when player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **Test get_player_data_for_respawn() handles errors.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **Test get_current_lucidity() returns default when record not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **Test get_player_data_for_delirium_respawn() returns None when connection…** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **Test get_player_data_for_delirium_respawn() returns None when player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
 
 ## Relationships
 
-- [test_async_persistence_room_loading.py](test_async_persistence_room_loading.py.md) (6 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [test_player_event_handlers_respawn.py](test_player_event_handlers_respawn.py.md) (8 shared connections)
+- [test_get_current_lucidity_found](test_get_current_lucidity_found.md) (1 shared connections)
+- [test_get_player_data_for_delirium_respawn_error_handling](test_get_player_data_for_delirium_respawn_error_handling.md) (1 shared connections)
+- [test_get_player_data_for_delirium_respawn_success](test_get_player_data_for_delirium_respawn_success.md) (1 shared connections)
+- [test_get_player_data_for_respawn_no_get_stats](test_get_player_data_for_respawn_no_get_stats.md) (1 shared connections)
+- [test_get_player_data_for_respawn_no_persistence](test_get_player_data_for_respawn_no_persistence.md) (1 shared connections)
+- [test_get_player_data_for_respawn_success](test_get_player_data_for_respawn_success.md) (1 shared connections)
+- [test_handle_player_delirium_respawned_error_handling](test_handle_player_delirium_respawned_error_handling.md) (1 shared connections)
+- [test_handle_player_delirium_respawned_success](test_handle_player_delirium_respawned_success.md) (1 shared connections)
+- [test_handle_player_respawned_error_handling](test_handle_player_respawned_error_handling.md) (1 shared connections)
+- [test_handle_player_respawned_success](test_handle_player_respawned_success.md) (1 shared connections)
+- [test_prepare_room_data_for_respawn_no_connection_manager](test_prepare_room_data_for_respawn_no_connection_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (94%)
-- INFERRED: 1 (6%)
+- EXTRACTED: 34 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

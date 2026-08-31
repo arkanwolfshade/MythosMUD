@@ -20,7 +20,7 @@
 
 ## Relationships
 
-- [models/player.py](models-player.py.md) (3 shared connections)
+- [LucidityService](LucidityService.md) (3 shared connections)
 
 ## Source Files
 

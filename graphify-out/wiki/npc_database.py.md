@@ -33,23 +33,23 @@
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (12 shared connections)
-- [ValidationError](ValidationError.md) (8 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (5 shared connections)
-- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (21 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (4 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (4 shared connections)
+- [get_admin_auth_service](get_admin_auth_service.md) (3 shared connections)
 - [lifespan_startup.py](lifespan_startup.py.md) (3 shared connections)
 - [get_npc_instance_service](get_npc_instance_service.md) (3 shared connections)
 - [migrate_combat_data.py](migrate_combat_data.py.md) (3 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (3 shared connections)
 - [NPCStartupService](NPCStartupService.md) (3 shared connections)
 - [get_config](get_config.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [DatabaseManager](DatabaseManager.md) (1 shared connections)
+- [asyncio.md](asyncio.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/core.py`
 - `server/npc_database.py`
+- `server/services/npc_instance_service.py`
 - `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Audit Trail

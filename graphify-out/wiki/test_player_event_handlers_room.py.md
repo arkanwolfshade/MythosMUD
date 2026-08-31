@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [time.py](time.py.md) (8 shared connections)
+- [event_types.py](event_types.py.md) (9 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
 
 ## Source Files
 

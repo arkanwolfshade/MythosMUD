@@ -1,52 +1,48 @@
 # asyncio
 
-> 27 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **asyncio** (26 connections)
-- **test_determine_spawn_room_fallback_not_found()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_determine_spawn_room_no_container()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_determine_spawn_room_with_room_id()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_determine_spawn_room_with_sub_zone()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_arena_npcs_no_prior_spawns_returns_empty()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_arena_npcs_skips_unknown_definition_id()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_npcs_on_startup()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_npcs_on_startup_with_required_npcs()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_optional_npcs_no_probability_attribute()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_optional_npcs_no_spawn_room()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_optional_npcs_with_probability()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_required_npcs_spawn_failure()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_required_npcs_success()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_required_npcs() successfully spawns required NPCs.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_required_npcs() handles spawn failures.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_optional_npcs() spawns based on probability.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _determine_spawn_room() uses NPC's room_id when available.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _determine_spawn_room() uses sub_zone default when room_id not available.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_optional_npcs() handles missing spawn room.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_optional_npcs() handles NPCs without spawn_probability attribute.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _determine_spawn_room() returns None when fallback room not found.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _determine_spawn_room() handles no async_persistence available.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Arena pass is skipped when required/optional passes spawned nothing.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test spawn_npcs_on_startup() processes startup spawning.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- *... and 2 more nodes in this community*
+- **asyncio** (12 connections)
+- **test_handle_item_look_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_in_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_look_in_skips_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_with_instance_number()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_player_no_get_equipped_items()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item is in inventory.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look with look_in flag skips equipped items.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test trying implicit lookup when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test trying implicit lookup when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test trying implicit lookup when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _handle_item_look() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _try_lookup_item_implicit() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _try_lookup_item_implicit() when player has no get_equipped_items method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [test_npc_startup_service.py](test_npc_startup_service.py.md) (19 shared connections)
-- [NPCStartupService](NPCStartupService.md) (13 shared connections)
-- [_errors_len](_errors_len.md) (5 shared connections)
-- [test_determine_spawn_room_room_id_not_found](test_determine_spawn_room_room_id_not_found.md) (1 shared connections)
-- [test_spawn_npcs_on_startup_with_optional_npcs](test_spawn_npcs_on_startup_with_optional_npcs.md) (1 shared connections)
+- [_find_item_in_equipped](_find_item_in_equipped.md) (12 shared connections)
+- [test_look_item.py](test_look_item.py.md) (12 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_startup_service.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (80%)
-- INFERRED: 13 (20%)
+- EXTRACTED: 48 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

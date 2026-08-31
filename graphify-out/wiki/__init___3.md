@@ -1,21 +1,21 @@
 # .__init__
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.__init__()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **SendPersonalMessage** (1 connections)
-- **Initialize the message broadcaster. Args: room_manager: RoomSubscriptionManager…** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **.__init__()** (4 connections) — `server/game/level_service.py`
+- **LevelUpHook** (1 connections)
+- **Any** (1 connections)
+- **Initialize the level service. Args: async_persistence: Async persistence for…** (1 connections) — `server/game/level_service.py`
 
 ## Relationships
 
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
-- [MessageBroadcaster](MessageBroadcaster.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/messaging/message_broadcaster.py`
+- `server/game/level_service.py`
 
 ## Audit Trail
 

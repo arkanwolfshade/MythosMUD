@@ -1,6 +1,6 @@
 # Player
 
-> God node · 232 connections · `server/models/player.py`
+> God node · 231 connections · `server/models/player.py`
 
 **Community:** [Player](Player.md)
 
@@ -29,14 +29,14 @@
 - test_player_get_health_percentage_full() `EXTRACTED`
 
 ### contains
-- [models/player.py](models-player.py.md) `EXTRACTED`
+- models/player.py `EXTRACTED`
 
 ### imports
 - server/models/__init__.py `EXTRACTED`
 - async_persistence.py `EXTRACTED`
 - models/user.py `EXTRACTED`
 - [look_command.py](look_command.py.md) `EXTRACTED`
-- test_player_respawn_service.py `EXTRACTED`
+- [test_player_respawn_service.py](test_player_respawn_service.py.md) `EXTRACTED`
 - [test_player_death_service.py](test_player_death_service.py.md) `EXTRACTED`
 - lucidity_service.py `EXTRACTED`
 - [inventory_command_helpers.py](inventory_command_helpers.py.md) `EXTRACTED`
@@ -44,14 +44,14 @@
 - [test_websocket_initial_state.py](test_websocket_initial_state.py.md) `EXTRACTED`
 - [inventory_equip_command.py](inventory_equip_command.py.md) `EXTRACTED`
 - websocket_initial_state.py `EXTRACTED`
-- websocket_helpers.py `EXTRACTED`
+- [websocket_helpers.py](websocket_helpers.py.md) `EXTRACTED`
 - test_async_persistence_core.py `EXTRACTED`
 - [test_player_repository.py](test_player_repository.py.md) `EXTRACTED`
 - player_respawn_service.py `EXTRACTED`
 - test_inventory_equip_command.py `EXTRACTED`
-- service.py `EXTRACTED`
-- game_tick_death.py `EXTRACTED`
-- [inventory_pickup_command.py](inventory_pickup_command.py.md) `EXTRACTED`
+- [movement_service.py](movement_service.py.md) `EXTRACTED`
+- [service.py](service.py.md) `EXTRACTED`
+- [game_tick_death.py](game_tick_death.py.md) `EXTRACTED`
 
 ### inherits
 - Base `EXTRACTED`
@@ -90,9 +90,9 @@
 - Base `INFERRED`
 - HealthRepository `INFERRED`
 - PlayerRepository `INFERRED`
-- SpellTargetingService `INFERRED`
+- [SpellTargetingService](SpellTargetingService.md) `INFERRED`
 - [ExperienceRepository](ExperienceRepository.md) `INFERRED`
-- [PlayerDeathService](PlayerDeathService.md) `INFERRED`
+- PlayerDeathService `INFERRED`
 - LucidityExposureState `INFERRED`
 - [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) `INFERRED`
 - LucidityCooldown `INFERRED`

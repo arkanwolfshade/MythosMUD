@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [models/combat.py](models-combat.py.md) (46 shared connections)
-- [CombatInstance](CombatInstance.md) (35 shared connections)
-- [CombatService](CombatService.md) (19 shared connections)
-- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (19 shared connections)
-- [combat_service.py](combat_service.py.md) (15 shared connections)
-- [CombatDeathHandler](CombatDeathHandler.md) (12 shared connections)
-- [test_aggro_threat.py](test_aggro_threat.py.md) (10 shared connections)
+- [models/combat.py](models-combat.py.md) (44 shared connections)
+- [CombatInstance](CombatInstance.md) (30 shared connections)
+- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (30 shared connections)
+- [CombatService](CombatService.md) (22 shared connections)
+- [test_combat_attack_handler.py](test_combat_attack_handler.py.md) (11 shared connections)
+- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (10 shared connections)
 - [combat_taunt.py](combat_taunt.py.md) (8 shared connections)
+- [combat_service_npc.py](combat_service_npc.py.md) (8 shared connections)
 - [CombatEventHandler](CombatEventHandler.md) (5 shared connections)
-- [TargetMatch](TargetMatch.md) (4 shared connections)
+- [CombatParticipantType](CombatParticipantType.md) (4 shared connections)
 - [test_combat_death_handler.py](test_combat_death_handler.py.md) (3 shared connections)
-- [CombatParticipantData](CombatParticipantData.md) (2 shared connections)
+- [test_combat_service_modules.py](test_combat_service_modules.py.md) (3 shared connections)
 
 ## Source Files
 

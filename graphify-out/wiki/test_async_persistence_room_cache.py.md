@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [Player](Player.md) (2 shared connections)
+- [Player](Player.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [models/player.py](models-player.py.md) (1 shared connections)
 
 ## Source Files
 

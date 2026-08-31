@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [Profession](Profession.md) (10 shared connections)
-- [deleteCharacterFlow.ts](deleteCharacterFlow.ts.md) (5 shared connections)
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (4 shared connections)
+- [Profession](Profession.md) (6 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (5 shared connections)
+- [CharacterSelectionScreen.tsx](CharacterSelectionScreen.tsx.md) (4 shared connections)
+- [logger.ts](logger.ts.md) (4 shared connections)
 - [App.tsx](App.tsx.md) (2 shared connections)
 
 ## Source Files

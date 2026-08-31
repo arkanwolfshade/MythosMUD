@@ -14,8 +14,8 @@
 - **AsyncFunctionDef** (2 connections)
 - **FunctionDef** (2 connections)
 - **Module** (1 connections)
-- **TypeGuard** (1 connections)
 - **stmt** (1 connections)
+- **TypeGuard** (1 connections)
 
 ## Relationships
 

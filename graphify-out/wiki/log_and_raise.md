@@ -2,7 +2,7 @@
 
 > God node · 189 connections · `server/utils/error_logging.py`
 
-**Community:** [DatabaseError](DatabaseError.md)
+**Community:** [get_logger](get_logger.md)
 
 ## Connections by Relation
 
@@ -34,22 +34,22 @@
 ### imports
 - database.py `EXTRACTED`
 - container_persistence.py `EXTRACTED`
+- [movement_service.py](movement_service.py.md) `EXTRACTED`
 - container_persistence_async.py `EXTRACTED`
-- movement_service.py `EXTRACTED`
 - container_service_transfer_to.py `EXTRACTED`
 - [npc_database.py](npc_database.py.md) `EXTRACTED`
 - player_repository.py `EXTRACTED`
 - container_service_session.py `EXTRACTED`
 - container_service_lock.py `EXTRACTED`
 - container_service_transfer_from.py `EXTRACTED`
-- [container_query_helpers_async.py](container_query_helpers_async.py.md) `EXTRACTED`
+- container_query_helpers_async.py `EXTRACTED`
 - test_error_logging.py `EXTRACTED`
 - database_config_helpers.py `EXTRACTED`
-- [persistence/container_helpers.py](persistence-container_helpers.py.md) `EXTRACTED`
-- [player_effect_repository.py](player_effect_repository.py.md) `EXTRACTED`
+- persistence/container_helpers.py `EXTRACTED`
+- player_effect_repository.py `EXTRACTED`
 - player_spell_repository.py `EXTRACTED`
 - container_query_helpers.py `EXTRACTED`
-- [item_instance_persistence.py](item_instance_persistence.py.md) `EXTRACTED`
+- item_instance_persistence.py `EXTRACTED`
 - dialogue_definition_repository.py `EXTRACTED`
 - [item_instance_persistence_async.py](item_instance_persistence_async.py.md) `EXTRACTED`
 
@@ -57,7 +57,7 @@
 - Log and raise; uses legacy behavior (no skip_log for ValidationError).… `EXTRACTED`
 
 ### references
-- [MythosMUDError](MythosMUDError.md) `EXTRACTED`
+- MythosMUDError `EXTRACTED`
 - [Any](Any.md) `EXTRACTED`
 - NoReturn `EXTRACTED`
 

@@ -1,6 +1,6 @@
 # test_look_container_helpers.py
 
-> 125 nodes
+> 127 nodes
 
 ## Key Concepts
 
@@ -12,6 +12,7 @@
 - **_find_container_in_room_or_equipped()** (17 connections) — `server/commands/look_container.py`
 - **_try_lookup_container_implicit()** (16 connections) — `server/commands/look_container.py`
 - **_find_container_via_inner_container()** (14 connections) — `server/commands/look_container.py`
+- **_handle_container_look()** (13 connections) — `server/commands/look_container.py`
 - **JsonMap** (13 connections)
 - **_format_container_contents()** (12 connections) — `server/commands/look_container.py`
 - **_as_map()** (9 connections) — `server/commands/look_container.py`
@@ -28,18 +29,17 @@
 - **_container_name()** (5 connections) — `server/commands/look_container.py`
 - **_room_container_maps()** (5 connections) — `server/commands/look_container.py`
 - **_select_match()** (5 connections) — `server/commands/look_container.py`
-- **asyncio** (5 connections)
-- *... and 100 more nodes in this community*
+- *... and 102 more nodes in this community*
 
 ## Relationships
 
 - [test_look_container.py](test_look_container.py.md) (50 shared connections)
-- [test_look_helpers.py](test_look_helpers.py.md) (6 shared connections)
-- [Player](Player.md) (5 shared connections)
-- [look_command.py](look_command.py.md) (3 shared connections)
+- [look_command.py](look_command.py.md) (8 shared connections)
+- [coerce_int](coerce_int.md) (5 shared connections)
+- [test_look_helpers.py](test_look_helpers.py.md) (3 shared connections)
 - [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [inventory_pickup_command.py](inventory_pickup_command.py.md) (1 shared connections)
+- [command_result_text](command_result_text.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -49,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 296 (99%)
-- INFERRED: 4 (1%)
+- EXTRACTED: 305 (99%)
+- INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

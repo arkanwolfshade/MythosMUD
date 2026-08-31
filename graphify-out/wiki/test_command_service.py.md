@@ -1,57 +1,47 @@
 # test_command_service.py
 
-> 88 nodes
+> 14 nodes
 
 ## Key Concepts
 
 - **test_command_service.py** (37 connections) — `server/tests/unit/commands/test_command_service.py`
-- **CommandService** (20 connections) — `server/commands/command_service.py`
-- **asyncio** (12 connections)
-- **._extract_parsed_fields()** (7 connections) — `server/commands/command_service.py`
-- **.process_command()** (6 connections) — `server/commands/command_service.py`
-- **._execute_command_handler()** (5 connections) — `server/commands/command_service.py`
-- **._parse_command_string()** (5 connections) — `server/commands/command_service.py`
-- **._prepare_command_data()** (5 connections) — `server/commands/command_service.py`
-- **Command** (5 connections)
-- **._fallback_parsed_fields()** (4 connections) — `server/commands/command_service.py`
-- **._log_parsed_command_inspection()** (4 connections) — `server/commands/command_service.py`
-- **command_service()** (4 connections) — `server/tests/unit/commands/test_command_service.py`
-- **._log_model_dump_result()** (3 connections) — `server/commands/command_service.py`
-- **.register_command_handler()** (3 connections) — `server/commands/command_service.py`
-- **mock_request()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
-- **mock_user()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_execute_command_handler_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_execute_command_handler_returns_non_dict()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_execute_command_handler_success()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_process_command_no_handler()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_process_command_parse_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_process_command_success()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_process_validated_command_handler_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_process_validated_command_logging_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_process_validated_command_no_command_type()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
-- *... and 63 more nodes in this community*
+- **test_extract_parsed_fields_handles_missing_attributes()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_extract_parsed_fields_basic()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_log_model_dump_result()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_prepare_command_data_basic()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_register_command_handler()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_register_command_handler_overwrites_existing()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Unit tests for command service. Tests the CommandService class which handles…** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test _prepare_command_data creates basic command_data dict.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test _extract_parsed_fields extracts basic fields.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test _extract_parsed_fields handles missing attributes gracefully.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test register_command_handler adds new handler.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test register_command_handler overwrites existing handler.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test _log_model_dump_result logs model dump.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (5 shared connections)
-- [ValidationError](ValidationError.md) (4 shared connections)
-- [processing.py](processing.py.md) (1 shared connections)
-- [command_handler_unified.py](command_handler_unified.py.md) (1 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [asyncio](asyncio.md) (7 shared connections)
+- [command_service](command_service.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [test_command_parser.py](test_command_parser.py.md) (2 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [CommandService](CommandService.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (1 shared connections)
+- [test_parse_command_string_success](test_parse_command_string_success.md) (1 shared connections)
+- [test_parse_command_string_with_subcommand](test_parse_command_string_with_subcommand.md) (1 shared connections)
+- [test_parse_command_string_unexpected_error](test_parse_command_string_unexpected_error.md) (1 shared connections)
+- [test_prepare_command_data_with_pipe_target](test_prepare_command_data_with_pipe_target.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/command_service.py`
 - `server/tests/unit/commands/test_command_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 127 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 43 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

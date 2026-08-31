@@ -26,7 +26,7 @@
 ## Relationships
 
 - [Claims by cluster](Claims_by_cluster.md) (2 shared connections)
-- [Decisions required](Decisions_required.md) (2 shared connections)
+- [P3 · Findings Verified Directly](P3_·_Findings_Verified_Directly.md) (2 shared connections)
 - [Design ↔ Implementation Drift Audit — Final Summary](Design_↔_Implementation_Drift_Audit_—_Final_Summary.md) (1 shared connections)
 - [Design ↔ Implementation Drift Audit](Design_↔_Implementation_Drift_Audit.md) (1 shared connections)
 - [P3 · config-api](P3_·_config-api.md) (1 shared connections)

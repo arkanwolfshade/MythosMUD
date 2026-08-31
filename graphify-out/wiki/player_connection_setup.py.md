@@ -7,9 +7,9 @@
 - **player_connection_setup.py** (26 connections) — `server/realtime/player_connection_setup.py`
 - **handle_new_connection_setup()** (19 connections) — `server/realtime/player_connection_setup.py`
 - **test_player_connection_setup.py** (18 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **_trigger_quests_for_room_on_spawn()** (11 connections) — `server/realtime/player_connection_setup.py`
 - **_manager()** (11 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
 - **asyncio** (11 connections)
+- **_trigger_quests_for_room_on_spawn()** (10 connections) — `server/realtime/player_connection_setup.py`
 - **_broadcast_player_entered_game()** (9 connections) — `server/realtime/player_connection_setup.py`
 - **_update_player_last_active()** (8 connections) — `server/realtime/player_connection_setup.py`
 - **_send_room_occupants_update_after_connection()** (7 connections) — `server/realtime/player_connection_setup.py`
@@ -33,17 +33,16 @@
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (7 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
 - [extract_player_name](extract_player_name.md) (3 shared connections)
 - [build_event](build_event.md) (3 shared connections)
 - [disconnect_grace_period.py](disconnect_grace_period.py.md) (3 shared connections)
 - [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
 - [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (3 shared connections)
-- [.state](state.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [models/player.py](models-player.py.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
-- [PlayerLeftRoom](PlayerLeftRoom.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
+- [.state](state.md) (1 shared connections)
 - [quest_service](quest_service.md) (1 shared connections)
 
 ## Source Files
@@ -54,8 +53,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 118 (94%)
-- INFERRED: 7 (6%)
+- EXTRACTED: 118 (95%)
+- INFERRED: 6 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

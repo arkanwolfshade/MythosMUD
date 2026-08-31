@@ -9,6 +9,7 @@
 - **4. Considered Options** (4 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
 - **7. Consequences** (4 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
 - **6. Implementation Details** (3 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **ADR-013: Pydantic BaseSettings for Configuration Management** (2 connections) — `docs/architecture/decisions/ADR-013-pydantic-configuration.md`
 - **10. Related ADRs** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
 - **11. Changelog** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
 - **1. Overview** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
@@ -27,12 +28,11 @@
 - **Positive** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
 - **State Machine Definition** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
 - **ADR-011: XState for Frontend Connection State Machine** (1 connections) — `docs/architecture/decisions/ADR-011-xstate-frontend-fsm.md`
-- **ADR-013: Pydantic BaseSettings for Configuration Management** (1 connections) — `docs/architecture/decisions/ADR-013-pydantic-configuration.md`
 - **ADR-014: Circuit Breaker + Dead Letter Queue for NATS Error Boundaries** (1 connections) — `docs/architecture/decisions/ADR-014-nats-error-boundaries.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [packages/README.md](packages-README.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 25 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

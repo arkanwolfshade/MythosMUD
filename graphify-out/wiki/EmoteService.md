@@ -33,11 +33,9 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [ValidationError](ValidationError.md) (2 shared connections)
-- [._init_player_quest_layer](_init_player_quest_layer.md) (1 shared connections)
+- [get_logger](get_logger.md) (10 shared connections)
+- [.initialize](initialize.md) (1 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
