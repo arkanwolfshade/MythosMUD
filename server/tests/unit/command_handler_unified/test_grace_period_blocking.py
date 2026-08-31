@@ -4,99 +4,123 @@ Unit tests for grace period command blocking in unified command handler.
 Tests that commands are blocked for players in grace period.
 """
 
+from __future__ import annotations
+
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from server.command_handler_unified import _check_grace_period_block
+from server.command_handler.command_execution_request import CommandExecutionRequest
+from server.command_handler.command_guards import check_grace_period_block
 
 
 @pytest.fixture
-def mock_request():
-    """Create a mock request."""
-    request = MagicMock()
-    request.app = MagicMock()
-    request.app.state = MagicMock()
+def mock_request() -> MagicMock:
+    """Create a mock request with app.state for command guards."""
+    request: MagicMock = MagicMock()
+    app: MagicMock = MagicMock()
+    state: MagicMock = MagicMock()
+    request.app = app
+    app.state = state
     return request
 
 
+def _request_state(mock_request: MagicMock) -> MagicMock:
+    """Typed access to mock_request.app.state for guard tests."""
+    app: MagicMock = cast(MagicMock, mock_request.app)
+    return cast(MagicMock, app.state)
+
+
+def _as_command_request(mock_request: MagicMock) -> CommandExecutionRequest:
+    """Narrow MagicMock request fixtures for check_grace_period_block."""
+    return cast(CommandExecutionRequest, mock_request)
+
+
 @pytest.mark.asyncio
-async def test_check_grace_period_block_blocks_commands(mock_request):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
-    """Test _check_grace_period_block() blocks commands for grace period players."""
+async def test_check_grace_period_block_blocks_commands(
+    mock_request: MagicMock,
+) -> None:  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+    """Test check_grace_period_block() blocks commands for grace period players."""
     player_id = uuid.uuid4()
     player_name = "TestPlayer"
+    state = _request_state(mock_request)
 
-    # Mock connection manager with player in grace period
-    mock_connection_manager = MagicMock()
+    mock_connection_manager: MagicMock = MagicMock()
     mock_connection_manager.grace_period_players = {player_id: MagicMock()}
-    mock_request.app.state.connection_manager = mock_connection_manager
+    state.connection_manager = mock_connection_manager
 
-    # Mock player service
-    mock_player_service = MagicMock()
-    mock_player = MagicMock()
+    mock_player: MagicMock = MagicMock()
     mock_player.player_id = str(player_id)
+    mock_player_service: MagicMock = MagicMock()
     mock_player_service.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.player_service = mock_player_service
+    state.player_service = mock_player_service
 
-    with patch("server.command_handler_unified.is_player_in_grace_period", return_value=True):
-        result = await _check_grace_period_block(player_name, mock_request)
+    with patch("server.command_handler.command_guards.is_player_in_grace_period", return_value=True):
+        result = await check_grace_period_block(player_name, _as_command_request(mock_request))
 
         assert result is not None
         assert "result" in result
-        assert "disconnected" in result["result"].lower() or "cannot perform" in result["result"].lower()
+        message = result["result"]
+        assert isinstance(message, str)
+        assert "disconnected" in message.lower() or "cannot perform" in message.lower()
 
 
 @pytest.mark.asyncio
-async def test_check_grace_period_block_allows_commands_when_not_in_grace_period(mock_request):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
-    """Test _check_grace_period_block() allows commands when player not in grace period."""
+async def test_check_grace_period_block_allows_commands_when_not_in_grace_period(
+    mock_request: MagicMock,
+) -> None:  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+    """Test check_grace_period_block() allows commands when player not in grace period."""
     player_id = uuid.uuid4()
     player_name = "TestPlayer"
+    state = _request_state(mock_request)
 
-    # Mock connection manager with player NOT in grace period
-    mock_connection_manager = MagicMock()
+    mock_connection_manager: MagicMock = MagicMock()
     mock_connection_manager.grace_period_players = {}
-    mock_request.app.state.connection_manager = mock_connection_manager
+    state.connection_manager = mock_connection_manager
 
-    # Mock player service
-    mock_player_service = MagicMock()
-    mock_player = MagicMock()
+    mock_player: MagicMock = MagicMock()
     mock_player.player_id = str(player_id)
+    mock_player_service: MagicMock = MagicMock()
     mock_player_service.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.player_service = mock_player_service
+    state.player_service = mock_player_service
 
-    with patch("server.command_handler_unified.is_player_in_grace_period", return_value=False):
-        result = await _check_grace_period_block(player_name, mock_request)
+    with patch("server.command_handler.command_guards.is_player_in_grace_period", return_value=False):
+        result = await check_grace_period_block(player_name, _as_command_request(mock_request))
 
-        assert result is None  # No blocking
-
-
-@pytest.mark.asyncio
-async def test_check_grace_period_block_handles_missing_services(mock_request):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
-    """Test _check_grace_period_block() handles missing services gracefully."""
-    player_name = "TestPlayer"
-    mock_request.app.state.connection_manager = None
-
-    result = await _check_grace_period_block(player_name, mock_request)
-
-    assert result is None  # No blocking when services unavailable
+        assert result is None
 
 
 @pytest.mark.asyncio
-async def test_check_grace_period_block_handles_player_not_found(mock_request):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
-    """Test _check_grace_period_block() handles player not found gracefully."""
+async def test_check_grace_period_block_handles_missing_services(
+    mock_request: MagicMock,
+) -> None:  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+    """Test check_grace_period_block() handles missing services gracefully."""
     player_name = "TestPlayer"
+    _request_state(mock_request).connection_manager = None
 
-    # Mock connection manager
-    mock_connection_manager = MagicMock()
+    result = await check_grace_period_block(player_name, _as_command_request(mock_request))
+
+    assert result is None
+
+
+@pytest.mark.asyncio
+async def test_check_grace_period_block_handles_player_not_found(
+    mock_request: MagicMock,
+) -> None:  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+    """Test check_grace_period_block() handles player not found gracefully."""
+    player_name = "TestPlayer"
+    state = _request_state(mock_request)
+
+    mock_connection_manager: MagicMock = MagicMock()
     mock_connection_manager.grace_period_players = {}
-    mock_request.app.state.connection_manager = mock_connection_manager
+    state.connection_manager = mock_connection_manager
 
-    # Mock player service returns None
-    mock_player_service = MagicMock()
+    mock_player_service: MagicMock = MagicMock()
     mock_player_service.get_player_by_name = AsyncMock(return_value=None)
-    mock_request.app.state.player_service = mock_player_service
+    state.player_service = mock_player_service
 
-    result = await _check_grace_period_block(player_name, mock_request)
+    result = await check_grace_period_block(player_name, _as_command_request(mock_request))
 
-    assert result is None  # No blocking when player not found
+    assert result is None
