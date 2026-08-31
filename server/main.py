@@ -20,7 +20,7 @@ from dotenv import load_dotenv
 project_root = Path(__file__).parent.parent  # server/main.py -> server/ -> project root
 env_local_path = project_root / ".env.local"
 if env_local_path.exists():
-    load_dotenv(env_local_path, override=False)  # override=False to respect already-set env vars
+    _ = load_dotenv(env_local_path, override=False)  # override=False to respect already-set env vars
 
 # These imports must come after load_dotenv() to ensure environment variables are loaded first
 # This is necessary because some imported modules depend on environment variables being set
@@ -29,7 +29,7 @@ if env_local_path.exists():
 # pylint: disable=wrong-import-position,wrong-import-order  # Reason: Imports must come after load_dotenv() to ensure environment variables are loaded first
 import warnings
 from collections.abc import Callable
-from typing import Any
+from typing import Annotated
 
 from fastapi import Depends, FastAPI
 from fastapi.security import HTTPBearer
@@ -38,6 +38,7 @@ from .app.factory import create_app
 from .auth.users import get_current_user
 from .config import get_config
 from .middleware.correlation_middleware import CorrelationMiddleware
+from .models.user import User
 from .structured_logging.enhanced_logging_config import get_logger, setup_enhanced_logging
 
 # Suppress passlib deprecation warning about pkg_resources
@@ -123,7 +124,7 @@ async def read_root() -> dict[str, str]:
 
 # Test endpoint for JWT validation
 @app.get("/test-auth")
-async def test_auth(current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, str]:
+async def test_auth(current_user: Annotated[User | None, Depends(get_current_user)]) -> dict[str, str]:
     """Test endpoint to verify JWT authentication is working."""
     if current_user:
         return {"message": "Authentication successful", "user": str(current_user)}
