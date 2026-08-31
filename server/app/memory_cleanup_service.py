@@ -14,7 +14,7 @@ import asyncio
 import time
 from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
-from typing import TypedDict, cast
+from typing import TypedDict
 
 import psutil
 
@@ -22,6 +22,14 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from .tracked_task_manager import get_global_tracked_manager
 
 logger = get_logger("server.memory_cleanup_service")
+
+
+def _rss_bytes_from_memory_info(info: object) -> int:
+    """Narrow psutil memory_info().rss for basedpyright (stubs disagree with mypy's types-psutil)."""
+    rss = getattr(info, "rss", None)
+    if not isinstance(rss, int):
+        raise TypeError("psutil Process.memory_info().rss must be int")
+    return rss
 
 
 class MemoryStatusReport(TypedDict):
@@ -82,9 +90,8 @@ class MemoryThresholdMonitor:
         """Get current memory usage in bytes for this process."""
         try:
             process = psutil.Process()
-            memory_bytes: int = cast(int, process.memory_info().rss)
-            return float(memory_bytes)
-        except (OSError, AttributeError, ImportError) as memory_query_failure:
+            return float(_rss_bytes_from_memory_info(process.memory_info()))
+        except (OSError, AttributeError, ImportError, TypeError) as memory_query_failure:
             logger.warning("Unable to retrieve memory usage statistics", error=str(memory_query_failure))
             return 0.0
 

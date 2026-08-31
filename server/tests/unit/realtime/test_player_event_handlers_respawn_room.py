@@ -116,9 +116,7 @@ async def test_prepare_room_data_for_respawn_no_connection_manager() -> None:
         "server.async_persistence.get_container_async_persistence",
         return_value=persistence,
     ):
-        room_data, _npc, players, occupants = await respawn_room.prepare_room_data_for_respawn(
-            host, "room-1", "Alice"
-        )
+        room_data, _npc, players, occupants = await respawn_room.prepare_room_data_for_respawn(host, "room-1", "Alice")
     assert room_data is not None
     assert room_data["id"] == "room-1"
     assert "Alice" in players
@@ -141,9 +139,7 @@ async def test_prepare_room_data_for_respawn_with_connection_manager() -> None:
             return_value=({"id": "room-1", "npcs": [], "players": []}, None),
         ),
     ):
-        room_data, _npc, players, occupants = await respawn_room.prepare_room_data_for_respawn(
-            host, "room-1", "Alice"
-        )
+        room_data, _npc, players, occupants = await respawn_room.prepare_room_data_for_respawn(host, "room-1", "Alice")
     assert room_data is not None
     assert "Alice" in players
     assert "Bob" in players or "Alice" in occupants
