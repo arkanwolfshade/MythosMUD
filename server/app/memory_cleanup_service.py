@@ -14,7 +14,7 @@ import asyncio
 import time
 from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
-from typing import Any
+from typing import TypedDict, cast
 
 import psutil
 
@@ -22,6 +22,21 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from .tracked_task_manager import get_global_tracked_manager
 
 logger = get_logger("server.memory_cleanup_service")
+
+
+class MemoryStatusReport(TypedDict):
+    """Diagnostic payload from MemoryThresholdMonitor.get_memory_status_report."""
+
+    timestamp: str
+    current_memory_bytes: float
+    current_memory_mb: float
+    memory_threshold_bytes: float
+    memory_threshold_mb: float
+    active_task_count: int
+    task_threshold: int
+    is_threshold_exceeded: bool
+    last_cleanup_time: float
+    total_cleanups_executed: int
 
 
 class MemoryThresholdMonitor:
@@ -46,15 +61,13 @@ class MemoryThresholdMonitor:
             task_count_threshold: Maximum task count permitted before cleanup needed
             cleanup_cooldown_seconds: Minimum interval between cleanups to prevent thrashing
         """
-        self.memory_threshold_bytes = memory_threshold_mb * 1024 * 1024
-        self.task_count_threshold = task_count_threshold
-        self.cleanup_cooldown = cleanup_cooldown_seconds
+        self.memory_threshold_bytes: float = memory_threshold_mb * 1024 * 1024
+        self.task_count_threshold: int = task_count_threshold
+        self.cleanup_cooldown: float = cleanup_cooldown_seconds
 
         self.last_cleanup_time: float = 0.0
         self.cleanup_total_count: int = 0
         self.monitoring_enabled: bool = True
-
-        self._flush_memory_indexes_cache()  # Process memory cache leak prevention
 
         logger.info(
             "MemoryThresholdMonitor initialized",
@@ -69,7 +82,7 @@ class MemoryThresholdMonitor:
         """Get current memory usage in bytes for this process."""
         try:
             process = psutil.Process()
-            memory_bytes = process.memory_info().rss
+            memory_bytes: int = cast(int, process.memory_info().rss)
             return float(memory_bytes)
         except (OSError, AttributeError, ImportError) as memory_query_failure:
             logger.warning("Unable to retrieve memory usage statistics", error=str(memory_query_failure))
@@ -91,12 +104,12 @@ class MemoryThresholdMonitor:
             import gc
 
             pre_collection_count = len(gc.get_objects())
-            gc.collect()
+            _ = gc.collect()
             logger.debug("Garbage collector flush completed", pre_collection_count=pre_collection_count)
         except Exception as gc_operation_failure:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: GC operation errors unpredictable, must handle gracefully
             logger.error("Garbage collection optimization failed", error=str(gc_operation_failure))
 
-    async def get_memory_status_report(self) -> dict[str, Any]:
+    async def get_memory_status_report(self) -> MemoryStatusReport:
         """
         Generate status report for diagnostic monitoring.
 
