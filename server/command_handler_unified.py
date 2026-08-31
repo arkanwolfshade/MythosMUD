@@ -10,8 +10,7 @@ As the Necronomicon states: "In unity there is strength, and in
 consistency there is power."
 """
 
-import uuid
-from typing import Any
+from typing import Annotated, cast
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel
@@ -29,12 +28,19 @@ from .command_handler import (
     should_treat_as_emote,
     validate_expanded_command,
 )
-from .command_handler.command_execution_request import CommandExecutionRequest, command_request_app_state
+from .command_handler.command_execution_request import CommandExecutionRequest
+from .command_handler.command_guards import (
+    check_casting_state as _check_casting_state,
+)
+from .command_handler.command_guards import (
+    check_grace_period_block as _check_grace_period_block,
+)
 from .commands.command_service import CommandService
 from .config import get_config
 from .help.help_content import get_help_content as get_help_content_new
 from .middleware.command_rate_limiter import command_rate_limiter
-from .realtime.disconnect_grace_period import is_player_in_grace_period
+from .models.alias import Alias
+from .models.user import User
 from .structured_logging.enhanced_logging_config import get_logger
 from .utils.audit_logger import audit_logger
 from .utils.command_parser import get_username_from_user
@@ -54,9 +60,14 @@ class CommandRequest(BaseModel):
     command: str
 
 
+def _as_user_dict(current_user: object) -> dict[str, object]:
+    """Narrow command-path user payloads to dict[str, object] for typed handlers."""
+    return cast(dict[str, object], current_user)
+
+
 def _prepare_command_for_processing(
     command_line: str, player_name: str, alias_storage: AliasStorage | None
-) -> tuple[str, str, list[str], AliasStorage | None, dict[str, Any] | None]:
+) -> tuple[str, str, list[str], AliasStorage | None, dict[str, object] | None]:
     """Prepare command for processing. Returns (command_line, cmd, args, alias_storage, error_result)."""
     rate_limit_result = _check_rate_limit(player_name)
     if rate_limit_result:
@@ -95,7 +106,7 @@ def _prepare_command_for_processing(
 
 async def _check_all_command_blocks(
     cmd: str, player_name: str, request: CommandExecutionRequest
-) -> dict[str, Any] | None:
+) -> dict[str, object] | None:
     """Check all command blocking conditions. Returns result if blocked, None otherwise."""
     logger.debug("Checking catatonia before command processing", player=player_name, command=cmd)
     block_catatonia, catatonia_message = await check_catatonia_block(player_name, cmd, request)
@@ -132,15 +143,16 @@ async def _handle_special_command_routing(  # pylint: disable=too-many-arguments
     command_line: str,
     alias_storage: AliasStorage | None,
     player_name: str,
-    current_user: dict[str, Any],
+    current_user: object,
     request: CommandExecutionRequest,
-) -> dict[str, Any] | None:
+) -> dict[str, object] | None:
     """Handle special command routing (alias management, alias expansion, emote). Returns result if handled, None otherwise."""
+    user = _as_user_dict(current_user)
     if cmd in ["alias", "aliases", "unalias"]:
         logger.debug("Processing alias management command", player=player_name, command=cmd)
         if alias_storage is None:
             return {"result": "Alias system not available"}
-        return await command_service.process_command(command_line, current_user, request, alias_storage, player_name)
+        return await command_service.process_command(command_line, user, request, alias_storage, player_name)
 
     alias_result = await _process_alias_expansion(cmd, args, alias_storage, player_name, current_user, request)
     if alias_result:
@@ -153,18 +165,18 @@ async def _handle_special_command_routing(  # pylint: disable=too-many-arguments
             emote=cmd,
         )
         emote_command = f"emote {cmd}"
-        return await command_service.process_command(emote_command, current_user, request, alias_storage, player_name)
+        return await command_service.process_command(emote_command, user, request, alias_storage, player_name)
 
     return None
 
 
 async def process_command_unified(
     command_line: str,
-    current_user: Any,
+    current_user: object,
     request: CommandExecutionRequest,
     alias_storage: AliasStorage | None = None,
     player_name: str | None = None,
-) -> dict[str, Any]:
+) -> dict[str, object]:
     """
     Unified command processing function for both HTTP and WebSocket.
 
@@ -207,10 +219,12 @@ async def process_command_unified(
         return special_result
 
     logger.debug("Processing command with validation system", player=player_name, command=cmd)
-    return await process_command_with_validation(command_line, current_user, request, alias_storage, player_name)
+    return await process_command_with_validation(
+        command_line, _as_user_dict(current_user), request, alias_storage, player_name
+    )
 
 
-def _check_rate_limit(player_name: str) -> dict[str, Any] | None:
+def _check_rate_limit(player_name: str) -> dict[str, object] | None:
     """Check if player is rate limited. Returns result dict if blocked, None if allowed."""
     if not command_rate_limiter.is_allowed(player_name):
         wait_time = command_rate_limiter.get_wait_time(player_name)
@@ -227,7 +241,7 @@ def _check_rate_limit(player_name: str) -> dict[str, Any] | None:
     return None
 
 
-def _validate_command_basics(command_line: str, player_name: str) -> dict[str, Any] | None:
+def _validate_command_basics(command_line: str, player_name: str) -> dict[str, object] | None:
     """Validate basic command requirements. Returns result dict if invalid, None if valid."""
     if not command_line:
         logger.debug("Empty command received")
@@ -285,95 +299,51 @@ def _ensure_alias_storage(alias_storage: AliasStorage | None) -> AliasStorage | 
         return None
 
 
-async def _get_grace_check_context(player_name: str, request: CommandExecutionRequest) -> tuple[uuid.UUID, Any] | None:
-    """Resolve player_id and connection_manager for grace period check. Returns None if unavailable."""
-    state = command_request_app_state(request)
-    if state is None:
-        return None
-    connection_manager = getattr(state, "connection_manager", None)
-    player_service = getattr(state, "player_service", None)
-    if not connection_manager or not player_service:
-        return None
+async def _run_expanded_alias(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Expansion needs alias, args, user, and request context
+    alias: Alias,
+    args: list[str],
+    cmd: str,
+    alias_storage: AliasStorage,
+    player_name: str,
+    current_user: object,
+    request: CommandExecutionRequest,
+    expansion_depth: int,
+) -> dict[str, object]:
+    """Validate, audit, and execute an expanded alias command."""
+    expanded_command = alias.get_expanded_command(args)
+    is_valid, validation_error = validate_expanded_command(expanded_command, player_name, alias.name, expansion_depth)
+    if not is_valid:
+        return {"result": validation_error}
 
-    player = await player_service.get_player_by_name(player_name)
-    if not player:
-        return None
+    audit_logger.log_alias_expansion(
+        player_name=player_name,
+        alias_name=alias.name,
+        expanded_command=expanded_command,
+        cycle_detected=False,
+        expansion_depth=expansion_depth,
+    )
+    logger.debug(
+        "Alias safe to expand",
+        player=player_name,
+        alias_name=alias.name,
+        depth=expansion_depth,
+    )
 
-    player_id_raw = getattr(player, "id", None) or getattr(player, "player_id", None)
-    if player_id_raw is None:
-        return None
-
-    player_id = uuid.UUID(player_id_raw) if isinstance(player_id_raw, str) else player_id_raw
-    return (player_id, connection_manager)
-
-
-async def _check_grace_period_block(player_name: str, request: CommandExecutionRequest) -> dict[str, Any] | None:
-    """
-    Check if player is in grace period and block commands.
-
-    Players in grace period (disconnected but still in-game) cannot execute commands,
-    but can still auto-attack when attacked in combat.
-
-    Returns:
-        Block result if player is in grace period, None otherwise
-    """
-    try:
-        context = await _get_grace_check_context(player_name, request)
-        if context is None:
-            return None
-
-        player_id, connection_manager = context
-        if not is_player_in_grace_period(player_id, connection_manager):
-            return None
-
-        logger.info("Command blocked - player is in grace period (disconnected)", player=player_name)
-        return {"result": "You are disconnected and cannot perform actions. You will be removed from the game shortly."}
-
-    except (AttributeError, ValueError, TypeError, ImportError) as e:
-        logger.debug("Error checking grace period", player=player_name, error=str(e))
-        # Don't block on error - allow command to proceed
-
-    return None
-
-
-ALLOWED_DURING_CASTING = ("stop", "interrupt", "status")
-
-
-async def _get_casting_block_result(
-    request: CommandExecutionRequest, player_name: str, magic_service: Any
-) -> dict[str, Any] | None:
-    """Return block result if player is currently casting, else None. Caller must pass magic_service with casting_state_manager."""
-    state = command_request_app_state(request)
-    if state is None:
-        return None
-    player_service = getattr(state, "player_service", None)
-    if not player_service:
-        return None
-    player = await player_service.get_player_by_name(player_name)
-    if not player:
-        return None
-    player_id = getattr(player, "id", None) or getattr(player, "player_id", None)
-    if not player_id or not magic_service.casting_state_manager.is_casting(player_id):
-        return None
-    casting_state = magic_service.casting_state_manager.get_casting_state(player_id)
-    if not casting_state:
-        return None
-    return {"result": f"You are casting {casting_state.spell_name}. Use 'stop' to interrupt."}
-
-
-async def _check_casting_state(cmd: str, player_name: str, request: CommandExecutionRequest) -> dict[str, Any] | None:
-    """Check if player is casting and should be blocked. Returns result if blocked."""
-    if cmd in ALLOWED_DURING_CASTING:
-        return None
-    try:
-        state = command_request_app_state(request)
-        magic_service = getattr(state, "magic_service", None) if state is not None else None
-        if not (magic_service and magic_service.casting_state_manager):
-            return None
-        return await _get_casting_block_result(request, player_name, magic_service)
-    except (AttributeError, OSError, TypeError, RuntimeError) as e:
-        logger.debug("Could not check casting state", player=player_name, error=str(e))
-        return None
+    result = cast(
+        dict[str, object],
+        await handle_expanded_command(
+            expanded_command,
+            _as_user_dict(current_user),
+            request,
+            alias_storage,
+            player_name,
+            depth=0,
+            alias_chain=[],
+        ),
+    )
+    if "alias_chain" not in result:
+        result["alias_chain"] = [{"original": cmd, "expanded": expanded_command, "alias_name": alias.name}]
+    return result
 
 
 async def _process_alias_expansion(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command processing requires many parameters for context and routing
@@ -381,9 +351,9 @@ async def _process_alias_expansion(  # pylint: disable=too-many-arguments,too-ma
     args: list[str],
     alias_storage: AliasStorage | None,
     player_name: str,
-    current_user: dict[str, Any],
+    current_user: object,
     request: CommandExecutionRequest,
-) -> dict[str, Any] | None:
+) -> dict[str, object] | None:
     """Process alias expansion if applicable. Returns result if alias processed."""
     if not alias_storage:
         return None
@@ -399,49 +369,13 @@ async def _process_alias_expansion(  # pylint: disable=too-many-arguments,too-ma
         original_command=cmd,
     )
 
-    # Check alias safety (cycles, depth)
     is_safe, error_msg, expansion_depth = await check_alias_safety(alias_storage, player_name, alias.name)
     if not is_safe:
         return {"result": error_msg}
 
-    # Expand the alias
-    expanded_command = alias.get_expanded_command(args)
-
-    # Validate expanded command
-    is_valid, validation_error = validate_expanded_command(expanded_command, player_name, alias.name, expansion_depth)
-    if not is_valid:
-        return {"result": validation_error}
-
-    # Log successful alias expansion
-    audit_logger.log_alias_expansion(
-        player_name=player_name,
-        alias_name=alias.name,
-        expanded_command=expanded_command,
-        cycle_detected=False,
-        expansion_depth=expansion_depth,
+    return await _run_expanded_alias(
+        alias, args, cmd, alias_storage, player_name, current_user, request, expansion_depth
     )
-
-    logger.debug(
-        "Alias safe to expand",
-        player=player_name,
-        alias_name=alias.name,
-        depth=expansion_depth,
-    )
-
-    # Recursively process the expanded command
-    result = await handle_expanded_command(
-        expanded_command,
-        current_user,
-        request,
-        alias_storage,
-        player_name,
-        depth=0,
-        alias_chain=[],
-    )
-    # Add alias chain information to the result
-    if "alias_chain" not in result:
-        result["alias_chain"] = [{"original": cmd, "expanded": expanded_command, "alias_name": alias.name}]
-    return result
 
 
 # HTTP API endpoint
@@ -449,8 +383,8 @@ async def _process_alias_expansion(  # pylint: disable=too-many-arguments,too-ma
 async def handle_command(
     req: CommandRequest,
     request: Request,
-    current_user: dict[str, Any] = Depends(get_current_user),
-) -> dict[str, Any]:
+    current_user: Annotated[User | None, Depends(get_current_user)],
+) -> dict[str, object]:
     """Handle incoming HTTP command requests."""
     command_line = req.command
 
@@ -477,11 +411,11 @@ async def handle_command(
 async def process_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command processing requires many parameters for context and routing
     cmd: str,
     args: list[str],
-    current_user: dict[str, Any],
+    current_user: object,
     request: CommandExecutionRequest,
     alias_storage: AliasStorage,
     player_name: str,
-) -> dict[str, Any]:
+) -> dict[str, object]:
     """
     Legacy command processing function for backward compatibility.
 
