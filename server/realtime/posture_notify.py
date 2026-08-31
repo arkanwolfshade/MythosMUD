@@ -70,25 +70,29 @@ async def _broadcast_room_posture_change(
     new_position: str,
     room_message: str,
 ) -> None:
-    if connection_manager is None or not hasattr(connection_manager, "broadcast_to_room"):
+    if connection_manager is None:
+        return
+    if not hasattr(connection_manager, "broadcast_to_room"):
         return
     if not room_id or not player_id:
         return
+    player_id_str = str(player_id)
+    room_id_str = str(room_id)
     try:
         event = build_event(
             "player_posture_change",
             {
-                "player_id": str(player_id) if player_id else None,
+                "player_id": player_id_str,
                 "player_name": player_display_name,
                 "previous_position": previous_position,
                 "position": new_position,
                 "message": room_message,
             },
-            room_id=str(room_id) if room_id else None,
-            player_id=str(player_id) if player_id else None,
+            room_id=room_id_str,
+            player_id=player_id_str,
             connection_manager=connection_manager,
         )
-        await connection_manager.broadcast_to_room(str(room_id), event, exclude_player=player_id)
+        await connection_manager.broadcast_to_room(room_id_str, event, exclude_player=player_id)
     except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as exc:
         logger.warning(
             "Failed to broadcast posture change",

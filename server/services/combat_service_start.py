@@ -22,13 +22,13 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
-class _AppStateWithConnectionManager(Protocol):
+class _AppStateWithConnectionManager(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """FastAPI app.state surface used to resolve ConnectionManager."""
 
     connection_manager: object | None
 
 
-class _AppWithState(Protocol):
+class _AppWithState(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """Minimal FastAPI app surface attached to AppConfig._app_instance."""
 
     state: _AppStateWithConnectionManager
