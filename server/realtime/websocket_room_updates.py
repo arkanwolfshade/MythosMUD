@@ -22,6 +22,23 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
+def _looks_like_player_uuid(value: object) -> bool:
+    """
+    True if value is a str that parses as a UUID (i.e. a real player_id, not a room_id).
+
+    Callers may pass a room_id in the player_id slot for room-only refreshes (e.g. after an NPC
+    death via EventBus); this predicate is how those call sites are told apart from a real
+    player_id, without swallowing exceptions raised by whatever real work follows the check.
+    """
+    if not isinstance(value, str):
+        return False
+    try:
+        _ = uuid.UUID(value)
+    except (ValueError, TypeError):
+        return False
+    return True
+
+
 async def get_player_occupants(connection_manager: "ConnectionManager | Any", room_id: str) -> list[str]:
     """
     Get player occupant names from room.
@@ -50,71 +67,38 @@ async def get_player_occupants(connection_manager: "ConnectionManager | Any", ro
     return occupant_names
 
 
-async def get_npc_occupants_from_lifecycle_manager(room_id: str) -> list[str]:
-    """Get NPC occupant names from lifecycle manager."""
+async def get_npc_occupants(room: "Room | Any", room_id: str) -> list[str]:
+    """
+    Get NPC occupant names for a room.
+
+    Room membership comes from `room.get_npcs()` — the Room model's own authoritative list —
+    filtered to NPCs the lifecycle manager still considers alive. On any lookup failure (missing
+    service, missing lifecycle manager, missing active_npcs) this fails closed: logs a warning
+    and returns no NPCs, rather than showing an unfiltered (possibly dead) occupant list.
+    """
     occupant_names = []
-    npc_ids: list[str] = []
+    room_npc_ids = room.get_npcs()
+    logger.debug("Room has NPCs", room_id=room_id, npc_ids=room_npc_ids)
+
+    filtered_npc_ids: list[str] = []
     try:
         npc_instance_service = get_npc_instance_service()
-        if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
-            lifecycle_manager = npc_instance_service.lifecycle_manager
-            if lifecycle_manager and hasattr(lifecycle_manager, "active_npcs"):
-                active_npcs_dict = lifecycle_manager.active_npcs
-                for npc_id, npc_instance in active_npcs_dict.items():
-                    if not npc_instance.is_alive:
-                        logger.debug(
-                            "Skipping dead NPC from occupants",
-                            npc_id=npc_id,
-                            npc_name=getattr(npc_instance, "name", "unknown"),
-                            room_id=room_id,
-                        )
-                        continue
-
-                    current_room = getattr(npc_instance, "current_room", None)
-                    current_room_id = getattr(npc_instance, "current_room_id", None)
-                    npc_room_id = current_room or current_room_id
-                    if npc_room_id == room_id:
-                        npc_ids.append(npc_id)
-
-        logger.debug("Room has NPCs from lifecycle manager", room_id=room_id, npc_ids=npc_ids)
-        for npc_id in npc_ids:
-            npc_name = get_npc_name_from_instance(npc_id)
-            if npc_name:
-                occupant_names.append(npc_name)
+        active_npcs = npc_instance_service.lifecycle_manager.active_npcs
+        for npc_id in room_npc_ids:
+            npc_instance = active_npcs.get(npc_id)
+            if npc_instance is None:
+                continue
+            if npc_instance.is_alive:
+                filtered_npc_ids.append(npc_id)
             else:
-                logger.warning("NPC instance not found for ID - skipping from room display", npc_id=npc_id)
+                logger.debug("Filtered dead NPC from room occupants", npc_id=npc_id, room_id=room_id)
     except (AttributeError, KeyError, TypeError, ValueError) as npc_query_error:
         logger.warning(
-            "Error querying NPCs from lifecycle manager, falling back to room.get_npcs()",
+            "Error querying NPC lifecycle state for room occupants — returning no NPCs",
             room_id=room_id,
             error=str(npc_query_error),
         )
-        raise
-    return occupant_names
-
-
-async def get_npc_occupants_fallback(room: "Room | Any", room_id: str) -> list[str]:
-    """Get NPC occupant names using fallback method (room.get_npcs())."""
-    occupant_names = []
-    room_npc_ids = room.get_npcs()
-    logger.debug("Room has NPCs from fallback", room_id=room_id, npc_ids=room_npc_ids)
-
-    filtered_npc_ids = []
-    try:  # pylint: disable=too-many-nested-blocks  # Reason: NPC filtering requires complex nested logic for service lookup, lifecycle validation, and NPC ID filtering
-        npc_instance_service = get_npc_instance_service()
-        if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
-            lifecycle_manager = npc_instance_service.lifecycle_manager
-            if lifecycle_manager and hasattr(lifecycle_manager, "active_npcs"):
-                for npc_id in room_npc_ids:
-                    if npc_id in lifecycle_manager.active_npcs:
-                        npc_instance = lifecycle_manager.active_npcs[npc_id]
-                        if npc_instance.is_alive:
-                            filtered_npc_ids.append(npc_id)
-                        else:
-                            logger.debug("Filtered dead NPC from fallback occupants", npc_id=npc_id, room_id=room_id)
-    except (AttributeError, KeyError, TypeError, ValueError) as filter_error:
-        logger.warning("Error filtering fallback NPCs, using all room NPCs", room_id=room_id, error=str(filter_error))
-        filtered_npc_ids = room_npc_ids
+        return []
 
     for npc_id in filtered_npc_ids:
         npc_name = get_npc_name_from_instance(npc_id)
@@ -187,11 +171,15 @@ async def _resolve_room_with_fallback(
     room = async_persistence.get_room_by_id(room_id)
     effective_room_id = room_id
     resolved_room_id = room_id
-    if room or not player_id:
+    # Only a real player_id can have a current_room_id to fall back to (a room-only refresh may
+    # pass room_id in this slot). Checking the shape explicitly — rather than treating
+    # uuid.UUID()'s ValueError as the test — keeps this gate separate from the try/except below,
+    # which stays broad by design (a fallback lookup that fails should degrade gracefully, not
+    # crash room resolution) without also silently absorbing a genuine bug in that lookup.
+    if room or not _looks_like_player_uuid(player_id):
         return room, effective_room_id, resolved_room_id
     try:
-        player_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
-        player = await connection_manager.get_player(player_uuid)
+        player = await connection_manager.get_player(uuid.UUID(player_id))
         fallback_room_id = getattr(player, "current_room_id", None) if player else None
         if not fallback_room_id or fallback_room_id == room_id:
             return room, effective_room_id, resolved_room_id
@@ -206,8 +194,13 @@ async def _resolve_room_with_fallback(
             )
         else:
             effective_room_id = fallback_room_id
-    except (ValueError, TypeError, AttributeError):
-        pass
+    except (ValueError, TypeError, AttributeError) as fallback_error:
+        logger.debug(
+            "Killer current_room_id fallback lookup failed",
+            room_id=room_id,
+            player_id=player_id,
+            error=str(fallback_error),
+        )
     return room, effective_room_id, resolved_room_id
 
 
@@ -255,17 +248,19 @@ async def broadcast_room_update(  # pylint: disable=too-many-locals,too-many-sta
             logger.warning("Async persistence layer not available for room update")
             return
 
-        room, effective_room_id, room_id = await _resolve_room_with_fallback(
-            async_persistence, connection_manager, player_id, room_id
+        # async_persistence is Any (pre-existing, untyped persistence-facade boundary), so
+        # _resolve_room_with_fallback's return is too; cast it here, once, rather than letting
+        # Any leak into every downstream use — matching the connection_manager cast above.
+        room, effective_room_id, room_id = cast(
+            "tuple[Room | None, str, str]",
+            await _resolve_room_with_fallback(async_persistence, connection_manager, player_id, room_id),
         )
 
         player_occupant_names = await get_player_occupants(connection_manager, effective_room_id)
-        npc_occupants = []
-        try:
-            npc_occupants = await get_npc_occupants_from_lifecycle_manager(effective_room_id)
-        except (AttributeError, KeyError, TypeError, ValueError):
-            if room:
-                npc_occupants = await get_npc_occupants_fallback(room, effective_room_id)
+        # NPC occupants need the resolved Room object (room.get_npcs() is the membership source);
+        # if room resolution itself failed, there is no NPC list to derive — matches the
+        # fail-closed handling inside get_npc_occupants for any other lookup failure.
+        npc_occupants = await get_npc_occupants(room, effective_room_id) if room else []
         occupant_names = list(player_occupant_names) + list(npc_occupants)
 
         occ_payload = {
@@ -297,12 +292,11 @@ async def broadcast_room_update(  # pylint: disable=too-many-locals,too-many-sta
 
         # Only update a player's subscription when player_id is a valid UUID (e.g. killer).
         # When triggering a room-only refresh (e.g. after NPC death via EventBus), caller may pass
-        # room_id as player_id; skip subscription update to avoid "badly formed hexadecimal UUID string".
-        try:
-            _ = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+        # room_id as player_id; skip subscription update in that case. A genuine failure inside
+        # update_player_room_subscription itself now propagates to this function's own outer
+        # except below, instead of being misread as "player_id just wasn't a UUID".
+        if _looks_like_player_uuid(player_id):
             await update_player_room_subscription(connection_manager, player_id, room_id)
-        except (ValueError, TypeError, AttributeError):
-            pass
 
         logger.debug("Broadcasting room update to room", room_id=room_id)
         await connection_manager.broadcast_to_room(room_id, update_event)
