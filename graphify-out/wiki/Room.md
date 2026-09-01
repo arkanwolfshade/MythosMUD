@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Room** (74 connections) — `server/models/room.py`
+- **Room** (75 connections) — `server/models/room.py`
 - **test_room_class.py** (30 connections) — `server/tests/unit/models/test_room_class.py`
 - **.to_dict()** (8 connections) — `server/models/room.py`
 - **UUID** (6 connections)
@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (11 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (4 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (3 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (2 shared connections)
-- [NPCBase](NPCBase.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
+- [EventBus](EventBus.md) (12 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (3 shared connections)
+- [CombatCommandHandler](CombatCommandHandler.md) (2 shared connections)
 - [InstanceManager](InstanceManager.md) (2 shared connections)
 - [websocket_helpers.py](websocket_helpers.py.md) (2 shared connections)
-- [RoomCacheLoader](RoomCacheLoader.md) (1 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
-- [sqlalchemy.md](sqlalchemy.md.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (2 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (2 shared connections)
+- [test_movement_service.py](test_movement_service.py.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
+- [RoomRepository](RoomRepository.md) (1 shared connections)
 
 ## Source Files
 
@@ -53,7 +53,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 169 (95%)
+- EXTRACTED: 170 (95%)
 - INFERRED: 9 (5%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,12 +1,11 @@
 # RoomEventHandler
 
-> 32 nodes
+> 30 nodes
 
 ## Key Concepts
 
 - **RoomEventHandler** (21 connections) — `server/realtime/integration/room_event_handler.py`
 - **test_room_event_handler.py** (14 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
-- **room_event_handler.py** (13 connections) — `server/realtime/integration/room_event_handler.py`
 - **asyncio** (9 connections)
 - **server/realtime/integration/__init__.py** (5 connections) — `server/realtime/integration/__init__.py`
 - **.handle_player_entered_room()** (4 connections) — `server/realtime/integration/room_event_handler.py`
@@ -28,16 +27,15 @@
 - **UUID** (2 connections)
 - **fixture** (1 connections)
 - **Integration components for connection management. This package provides…** (1 connections) — `server/realtime/integration/__init__.py`
-- **Room event handling for connection management. This module provides integration…** (1 connections) — `server/realtime/integration/room_event_handler.py`
-- *... and 7 more nodes in this community*
+- **Handle PlayerEnteredRoom events by broadcasting updated occupant count.** (1 connections) — `server/realtime/integration/room_event_handler.py`
+- **Handle PlayerLeftRoom events by broadcasting updated occupant count.** (1 connections) — `server/realtime/integration/room_event_handler.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [connection_manager_methods.py](connection_manager_methods.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [build_event](build_event.md) (3 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (2 shared connections)
-- [GameStateProvider](GameStateProvider.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (6 shared connections)
+- [build_event](build_event.md) (2 shared connections)
+- [GameStateProvider](GameStateProvider.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -48,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 62 (90%)
-- INFERRED: 7 (10%)
+- EXTRACTED: 53 (88%)
+- INFERRED: 7 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,11 +1,10 @@
 # resolve_lazy_attr
 
-> 43 nodes
+> 41 nodes
 
 ## Key Concepts
 
 - **resolve_lazy_attr()** (14 connections) — `server/realtime/connection_manager_lazy.py`
-- **broadcast_game_event()** (11 connections) — `server/realtime/connection_manager_api.py`
 - **test_connection_manager_api.py** (11 connections) — `server/tests/unit/realtime/test_connection_manager_api.py`
 - **connection_manager_lazy.py** (9 connections) — `server/realtime/connection_manager_lazy.py`
 - **_require_manager()** (8 connections) — `server/realtime/connection_manager_api.py`
@@ -29,17 +28,19 @@
 - **.send_personal_message()** (2 connections) — `server/realtime/connection_manager_api.py`
 - **__getattr__()** (2 connections) — `server/realtime/connection_manager.py`
 - **mock_manager()** (2 connections) — `server/tests/unit/realtime/test_connection_manager_api.py`
-- *... and 18 more nodes in this community*
+- **.broadcast_global()** (1 connections) — `server/realtime/connection_manager_api.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (22 shared connections)
-- [build_event](build_event.md) (2 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
+- [magic_service.py](magic_service.py.md) (8 shared connections)
+- [time_event_consumer.py](time_event_consumer.py.md) (4 shared connections)
+- [connection_manager.py](connection_manager.py.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
-- [test_game_tick_death.py](test_game_tick_death.py.md) (1 shared connections)
-- [MythosTimeEventConsumer](MythosTimeEventConsumer.md) (1 shared connections)
-- [game_tick_processing.py](game_tick_processing.py.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [resolve_connection_manager](resolve_connection_manager.md) (1 shared connections)
+- [build_event](build_event.md) (1 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,8 +52,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 88 (93%)
-- INFERRED: 7 (7%)
+- EXTRACTED: 81 (92%)
+- INFERRED: 7 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

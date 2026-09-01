@@ -1,51 +1,49 @@
 # asyncio
 
-> 19 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **asyncio** (23 connections)
-- **test_convert_room_uuids_to_names_empty_room_data()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_convert_room_uuids_to_names_player_not_found()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_player()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_player_data_for_client_with_service()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_players_batch_empty()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_players_batch_no_persistence()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_players_batch_player_not_found()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_process_occupants_with_grace_periods()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_send_initial_game_state()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test get_players_batch() handles player not found.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test send_initial_game_state() sends initial state.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test convert_room_uuids_to_names() with empty room_data.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test convert_room_uuids_to_names() when player not found.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test _process_occupants_with_grace_periods() splits players and NPCs.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test _get_player_data_for_client() uses PlayerService when available.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test get_player() retrieves player from persistence.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test get_players_batch() returns empty dict for empty input.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test get_players_batch() returns empty dict when persistence is None.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **asyncio** (20 connections)
+- **test_process_tick_regeneration_at_max()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_process_tick_regeneration_restores_mp()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_process_tick_regeneration_sitting_position()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_restore_mp_from_item_respects_max()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_restore_mp_from_item_uses_magic_service()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_restore_mp_from_meditation_at_max()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_restore_mp_from_meditation_player_not_found()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_restore_mp_from_meditation_restores_mp()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test restore_mp_from_meditation() returns error when player not found.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test restore_mp_from_meditation() returns message when MP already at max.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test restore_mp_from_meditation() restores MP.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test restore_mp_from_item() respects max_mp limit.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test restore_mp_from_item() uses magic_service if available.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test process_tick_regeneration() uses REST multiplier for sitting position.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test process_tick_regeneration() returns zero when MP already at max.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test process_tick_regeneration() restores MP.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [test_game_state_provider.py](test_game_state_provider.py.md) (9 shared connections)
-- [test_convert_room_uuids_to_names](test_convert_room_uuids_to_names.md) (1 shared connections)
-- [test_convert_room_uuids_to_names_invalid_uuid](test_convert_room_uuids_to_names_invalid_uuid.md) (1 shared connections)
-- [test_convert_room_uuids_to_names_no_player_ids](test_convert_room_uuids_to_names_no_player_ids.md) (1 shared connections)
-- [test_convert_room_uuids_with_npcs](test_convert_room_uuids_with_npcs.md) (1 shared connections)
-- [test_get_following_for_client](test_get_following_for_client.md) (1 shared connections)
-- [test_get_player_not_found](test_get_player_not_found.md) (1 shared connections)
-- [test_get_players_batch](test_get_players_batch.md) (1 shared connections)
-- [test_get_quest_log_for_client](test_get_quest_log_for_client.md) (1 shared connections)
-- [test_get_room_data_with_conversion](test_get_room_data_with_conversion.md) (1 shared connections)
-- [test_get_room_occupants](test_get_room_occupants.md) (1 shared connections)
-- [test_get_room_occupants_empty_online_players](test_get_room_occupants_empty_online_players.md) (1 shared connections)
+- [test_mp_regeneration_service.py](test_mp_regeneration_service.py.md) (8 shared connections)
+- [test_process_tick_regeneration_calculates_max_from_power](test_process_tick_regeneration_calculates_max_from_power.md) (1 shared connections)
+- [test_process_tick_regeneration_fractional_accumulation](test_process_tick_regeneration_fractional_accumulation.md) (1 shared connections)
+- [test_process_tick_regeneration_lying_position](test_process_tick_regeneration_lying_position.md) (1 shared connections)
+- [test_process_tick_regeneration_player_not_found](test_process_tick_regeneration_player_not_found.md) (1 shared connections)
+- [test_restore_mp_from_item_calculates_max_from_power](test_restore_mp_from_item_calculates_max_from_power.md) (1 shared connections)
+- [test_restore_mp_from_item_player_not_found](test_restore_mp_from_item_player_not_found.md) (1 shared connections)
+- [test_restore_mp_from_item_restores_mp](test_restore_mp_from_item_restores_mp.md) (1 shared connections)
+- [test_restore_mp_from_meditation_higher_than_rest](test_restore_mp_from_meditation_higher_than_rest.md) (1 shared connections)
+- [test_restore_mp_from_rest_at_max](test_restore_mp_from_rest_at_max.md) (1 shared connections)
+- [test_restore_mp_from_rest_calculates_max_from_power](test_restore_mp_from_rest_calculates_max_from_power.md) (1 shared connections)
+- [test_restore_mp_from_rest_player_not_found](test_restore_mp_from_rest_player_not_found.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (100%)
+- EXTRACTED: 36 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

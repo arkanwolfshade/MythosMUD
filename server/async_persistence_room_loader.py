@@ -191,7 +191,12 @@ class RoomCacheLoader:
             rows = result.fetchall()
             combined_rows: list[dict[str, object]] = []
             for row in rows:
-                combined_rows.append(dict(row._mapping))  # pyright: ignore[reportPrivateUsage]  # SQLAlchemy Row._mapping
+                # Reason: Result rows are SQLAlchemy Row objects; we need column-name keys for the
+                # cache builder. Row exposes that only via _mapping (no public dict() helper in our
+                # SQLAlchemy typings), so pyright/pylint flag the access despite it being the ORM idiom.
+                combined_rows.append(
+                    dict(row._mapping)  # pyright: ignore[reportPrivateUsage]  # pylint: disable=protected-access
+                )
             return combined_rows
         except Exception as e:
             error_msg = str(e).lower()

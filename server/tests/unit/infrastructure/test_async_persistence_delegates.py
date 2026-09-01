@@ -18,8 +18,8 @@ import pytest
 from server.async_persistence import (
     PROFESSION_COLUMNS,
     AsyncPersistenceLayer,
-    get_container_async_persistence,
 )
+from server.container.async_persistence_access import get_container_async_persistence
 from server.models.player import Player
 
 
@@ -236,7 +236,7 @@ async def test_get_containers_by_entity_id_delegates(async_persistence_layer: As
 async def test_update_container_delegates(async_persistence_layer: AsyncPersistenceLayer):
     """Test update_container delegates to ContainerRepository."""
     container_id = uuid.uuid4()
-    items_json = [{"item_id": "test_item"}]
+    items_json: list[dict[str, object]] = [{"item_id": "test_item"}]
     mock_container = {"container_id": str(container_id), "items": items_json}
     async_persistence_layer._container_repo.update_container = AsyncMock(return_value=mock_container)
 
@@ -327,13 +327,14 @@ async def test_item_instance_exists_delegates(async_persistence_layer: AsyncPers
 def test_get_container_async_persistence_returns_container_instance():
     """Test get_container_async_persistence returns the container's live instance."""
     with patch("server.container.ApplicationContainer.get_instance") as mock_get_instance:
-        mock_container = MagicMock()
-        mock_container.async_persistence = MagicMock()
+        mock_persistence: MagicMock = MagicMock()
+        mock_container: MagicMock = MagicMock()
+        mock_container.async_persistence = mock_persistence
         mock_get_instance.return_value = mock_container
 
         result = get_container_async_persistence()
 
-        assert result is mock_container.async_persistence
+        assert result is mock_persistence
 
 
 def test_get_container_async_persistence_raises_when_not_initialized():
@@ -345,7 +346,7 @@ def test_get_container_async_persistence_raises_when_not_initialized():
         mock_get_instance.return_value = mock_container
 
         with pytest.raises(RuntimeError, match="AsyncPersistenceLayer not initialized"):
-            get_container_async_persistence()
+            _ = get_container_async_persistence()
 
 
 def test_profession_columns_constant():

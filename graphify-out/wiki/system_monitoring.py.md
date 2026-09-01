@@ -1,11 +1,13 @@
 # system_monitoring.py
 
-> 73 nodes
+> 106 nodes
 
 ## Key Concepts
 
 - **system_monitoring.py** (25 connections) — `server/api/system_monitoring.py`
+- **monitoring_models.py** (23 connections) — `server/api/monitoring_models.py`
 - **get_monitoring_dashboard()** (19 connections) — `server/monitoring/monitoring_dashboard.py`
+- **BaseModel** (19 connections)
 - **TestMonitoringEndpoints** (16 connections) — `server/tests/unit/test_main.py`
 - **get_system_metrics()** (15 connections) — `server/api/system_monitoring.py`
 - **test_main.py** (15 connections) — `server/tests/unit/test_main.py`
@@ -18,33 +20,31 @@
 - **_resolve_memory_leak_collector_from_request()** (9 connections) — `server/api/system_monitoring.py`
 - **Request** (6 connections)
 - **AlertResolveResponse** (5 connections) — `server/api/monitoring_models.py`
-- **SystemAlertsResponse** (5 connections) — `server/api/monitoring_models.py`
-- **SystemHealthResponse** (5 connections) — `server/api/monitoring_models.py`
-- **SystemMetricsResponse** (5 connections) — `server/api/monitoring_models.py`
-- **SystemMonitoringSummaryResponse** (5 connections) — `server/api/monitoring_models.py`
-- **_request_with_container()** (5 connections) — `server/tests/unit/api/test_system_monitoring_endpoints.py`
-- **test_get_system_metrics_handles_missing_collector_gracefully()** (5 connections) — `server/tests/unit/api/test_system_monitoring_endpoints.py`
-- **test_get_system_metrics_includes_memory_leak_metrics()** (5 connections) — `server/tests/unit/api/test_system_monitoring_endpoints.py`
-- **.test_get_alerts_failure()** (4 connections) — `server/tests/unit/test_main.py`
-- **.test_get_alerts_success()** (4 connections) — `server/tests/unit/test_main.py`
-- **.test_get_metrics_failure()** (4 connections) — `server/tests/unit/test_main.py`
-- **.test_get_metrics_success()** (4 connections) — `server/tests/unit/test_main.py`
-- *... and 48 more nodes in this community*
+- **AlertsResponse** (5 connections) — `server/api/monitoring_models.py`
+- **CacheMetricsResponse** (5 connections) — `server/api/monitoring_models.py`
+- **ConnectionHealthStatsResponse** (5 connections) — `server/api/monitoring_models.py`
+- **IntegrityResponse** (5 connections) — `server/api/monitoring_models.py`
+- **MemoryAlertsResponse** (5 connections) — `server/api/monitoring_models.py`
+- **MemoryLeakMetricsResponse** (5 connections) — `server/api/monitoring_models.py`
+- **MemoryStatsResponse** (5 connections) — `server/api/monitoring_models.py`
+- **MetricsResponse** (5 connections) — `server/api/monitoring_models.py`
+- **PerformanceStatsResponse** (5 connections) — `server/api/monitoring_models.py`
+- *... and 81 more nodes in this community*
 
 ## Relationships
 
-- [api/monitoring.py](api-monitoring.py.md) (13 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (31 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (8 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (8 shared connections)
-- [pytest.md](pytest.md.md) (5 shared connections)
-- [PerformanceMonitor](PerformanceMonitor.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [lifespan.py](lifespan.py.md) (7 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [User](User.md) (3 shared connections)
 - [test_cache_service.py](test_cache_service.py.md) (2 shared connections)
 - [admin_summon_command.py](admin_summon_command.py.md) (2 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
+- [InventoryMutationGuard](InventoryMutationGuard.md) (2 shared connections)
+- [factory.py](factory.py.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
 - [PrototypeRegistry](PrototypeRegistry.md) (1 shared connections)
-- [MonitoringDashboard](MonitoringDashboard.md) (1 shared connections)
-- [InventoryMutationGuard](InventoryMutationGuard.md) (1 shared connections)
 
 ## Source Files
 
@@ -56,8 +56,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 181 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 254 (99%)
+- INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

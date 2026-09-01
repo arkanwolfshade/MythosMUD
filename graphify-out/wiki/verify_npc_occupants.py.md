@@ -21,7 +21,7 @@
 ## Relationships
 
 - [get_npc_instance_service](get_npc_instance_service.md) (2 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
 
 ## Source Files
 

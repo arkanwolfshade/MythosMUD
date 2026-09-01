@@ -34,14 +34,17 @@
 ## Relationships
 
 - [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (14 shared connections)
-- [AliasStorage](AliasStorage.md) (7 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
+- [is_shutdown_pending](is_shutdown_pending.md) (4 shared connections)
+- [command_service.py](command_service.py.md) (4 shared connections)
 - [test_shutdown_sequence.py](test_shutdown_sequence.py.md) (3 shared connections)
 - [parse_shutdown_parameters](parse_shutdown_parameters.md) (3 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (3 shared connections)
-- [test_cancel_shutdown_countdown_no_active](test_cancel_shutdown_countdown_no_active.md) (2 shared connections)
 - [calculate_notification_times](calculate_notification_times.md) (2 shared connections)
-- [AdminActionsLogger](AdminActionsLogger.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [AdminActionsLogger](AdminActionsLogger.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
+- [time.py](time.py.md) (1 shared connections)
+- [alias_storage.py](alias_storage.py.md) (1 shared connections)
 
 ## Source Files
 

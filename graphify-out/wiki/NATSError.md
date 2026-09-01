@@ -1,70 +1,64 @@
 # NATSError
 
-> 234 nodes
+> 119 nodes
 
 ## Key Concepts
 
 - **NATSError** (70 connections) — `server/services/nats_exceptions.py`
-- **test_combat_service_modules.py** (64 connections) — `server/tests/unit/services/test_combat_service_modules.py`
-- **NATSPublishError** (41 connections) — `server/services/nats_exceptions.py`
-- **CombatParticipantData** (39 connections) — `server/services/combat_types.py`
-- **nats_exceptions.py** (38 connections) — `server/services/nats_exceptions.py`
-- **asyncio** (36 connections)
-- **combat_service_start.py** (29 connections) — `server/services/combat_service_start.py`
-- **combat_service_attack.py** (28 connections) — `server/services/combat_service_attack.py`
-- **NATSSubscribeError** (23 connections) — `server/services/nats_exceptions.py`
-- **CombatResult** (22 connections) — `server/models/combat.py`
-- **combat_persistence_handler.py** (16 connections) — `server/services/combat_persistence_handler.py`
-- **test_message_formatters.py** (16 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **NATSConnectionError** (14 connections) — `server/services/nats_exceptions.py`
-- **_combat_instance()** (14 connections) — `server/tests/unit/services/test_combat_service_modules.py`
-- **_dp_sync()** (14 connections) — `server/tests/unit/services/test_combat_service_modules.py`
-- **test_nats_exceptions.py** (14 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **NATSHealthCheckError** (13 connections) — `server/services/nats_exceptions.py`
-- **CombatDPSync** (12 connections) — `server/services/combat_hp_sync.py`
-- **TestCombatParticipantData** (12 connections) — `server/tests/unit/services/test_combat_types.py`
-- **TestExceptionHierarchy** (11 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **finalize_attack_result()** (11 connections) — `server/services/combat_service_attack.py`
-- **handle_combat_completion()** (10 connections) — `server/services/combat_service_attack.py`
-- **apply_target_rest_and_grace_checks()** (10 connections) — `server/services/combat_service_start.py`
-- **_attack_participant()** (10 connections) — `server/tests/unit/services/test_combat_service_modules.py`
-- **_participant()** (10 connections) — `server/tests/unit/services/test_combat_service_modules.py`
-- *... and 209 more nodes in this community*
+- **test_message_filtering.py** (37 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **MessageFilteringHelper** (25 connections) — `server/realtime/message_filtering.py`
+- **asyncio** (13 connections)
+- **message_filtering.py** (12 connections) — `server/realtime/message_filtering.py`
+- **test_message_filtering_helpers.py** (11 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- **.check_player_mute_status()** (6 connections) — `server/realtime/message_filtering.py`
+- **.filter_target_players()** (6 connections) — `server/realtime/message_filtering.py`
+- **.is_player_in_room()** (6 connections) — `server/realtime/message_filtering.py`
+- **TestNATSError** (5 connections) — `server/tests/unit/services/test_nats_exceptions.py`
+- **message_filtering_helper()** (4 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- **message_filtering_helper()** (4 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Any** (4 connections)
+- **.compare_canonical_rooms()** (3 connections) — `server/realtime/message_filtering.py`
+- **.extract_chat_event_info()** (3 connections) — `server/realtime/message_filtering.py`
+- **.get_player_room_from_online_players()** (3 connections) — `server/realtime/message_filtering.py`
+- **.get_player_room_from_persistence()** (3 connections) — `server/realtime/message_filtering.py`
+- **._get_user_manager()** (3 connections) — `server/realtime/message_filtering.py`
+- **.__init__()** (3 connections) — `server/realtime/message_filtering.py`
+- **.is_player_muted_by_receiver()** (3 connections) — `server/realtime/message_filtering.py`
+- **.is_player_muted_by_receiver_with_user_manager()** (3 connections) — `server/realtime/message_filtering.py`
+- **.should_apply_mute_check()** (3 connections) — `server/realtime/message_filtering.py`
+- **._is_player_muted_by_receiver()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- *... and 94 more nodes in this community*
 
 ## Relationships
 
-- [CombatService](CombatService.md) (67 shared connections)
-- [CombatInstance](CombatInstance.md) (44 shared connections)
-- [get_logger](get_logger.md) (30 shared connections)
-- [NPCCombatDataProvider](NPCCombatDataProvider.md) (15 shared connections)
-- [test_nats_message_handler.py](test_nats_message_handler.py.md) (13 shared connections)
-- [CombatParticipant](CombatParticipant.md) (13 shared connections)
-- [format_message_content](format_message_content.md) (12 shared connections)
-- [test_nats_service.py](test_nats_service.py.md) (10 shared connections)
-- [test_nats_message_handler_subzone_events.py](test_nats_message_handler_subzone_events.py.md) (8 shared connections)
-- [test_nats_service_pool.py](test_nats_service_pool.py.md) (8 shared connections)
-- [UUID](UUID.md) (7 shared connections)
-- [.create_combat_instance](create_combat_instance.md) (7 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (16 shared connections)
+- [NATSPublishError](NATSPublishError.md) (10 shared connections)
+- [test_nats_message_handler.py](test_nats_message_handler.py.md) (9 shared connections)
+- [test_nats_message_handler_subzone_events.py](test_nats_message_handler_subzone_events.py.md) (7 shared connections)
+- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (6 shared connections)
+- [NATSService](NATSService.md) (5 shared connections)
+- [CombatParticipant](CombatParticipant.md) (4 shared connections)
+- [CombatService](CombatService.md) (4 shared connections)
+- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (3 shared connections)
+- [test_combat_service_modules.py](test_combat_service_modules.py.md) (3 shared connections)
+- [CombatPersistenceHandler](CombatPersistenceHandler.md) (2 shared connections)
+- [test_combat_persistence_handler_events.py](test_combat_persistence_handler_events.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/combat.py`
-- `server/services/combat_hp_sync.py`
-- `server/services/combat_persistence_handler.py`
-- `server/services/combat_service.py`
-- `server/services/combat_service_attack.py`
-- `server/services/combat_service_start.py`
-- `server/services/combat_types.py`
+- `server/realtime/message_filtering.py`
+- `server/realtime/nats_message_handler_broadcast.py`
 - `server/services/nats_exceptions.py`
-- `server/tests/unit/realtime/test_message_formatters.py`
-- `server/tests/unit/services/test_combat_service_modules.py`
-- `server/tests/unit/services/test_combat_types.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
+- `server/tests/unit/realtime/test_message_filtering_helpers.py`
 - `server/tests/unit/services/test_nats_exceptions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 632 (87%)
-- INFERRED: 92 (13%)
+- EXTRACTED: 190 (83%)
+- INFERRED: 40 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

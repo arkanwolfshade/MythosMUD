@@ -1,6 +1,6 @@
 # NPCMovementIntegration
 
-> 60 nodes
+> 62 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **test_movement_integration.py** (30 connections) — `server/tests/unit/npc/test_movement_integration.py`
 - **.move_npc_to_room()** (7 connections) — `server/npc/movement_integration.py`
 - **.__init__()** (5 connections) — `server/npc/idle_movement.py`
+- **.__init__()** (5 connections) — `server/npc/movement_integration.py`
 - **._get_destination_subzone()** (4 connections) — `server/npc/movement_integration.py`
 - **._get_room_objects()** (4 connections) — `server/npc/movement_integration.py`
 - **._update_npc_instance_room_tracking()** (4 connections) — `server/npc/movement_integration.py`
@@ -28,18 +29,18 @@
 - **test_get_npc_room_returns_none()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
 - **test_get_room_npcs_and_exits()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
 - **test_get_room_npcs_empty_when_missing()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
-- **test_get_room_objects_missing_destination()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
-- *... and 35 more nodes in this community*
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (5 shared connections)
-- [IdleMovementHandler](IdleMovementHandler.md) (3 shared connections)
-- [NPCBase](NPCBase.md) (2 shared connections)
-- [MovementService](MovementService.md) (1 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [EventBus](EventBus.md) (7 shared connections)
+- [IdleMovementHandler](IdleMovementHandler.md) (2 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
+- [test_lifespan_event_subscriptions.py](test_lifespan_event_subscriptions.py.md) (1 shared connections)
+- [idle_movement.py](idle_movement.py.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
 - [test_room_utils.py](test_room_utils.py.md) (1 shared connections)
+- [MovementService](MovementService.md) (1 shared connections)
 - [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
@@ -51,7 +52,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 105 (98%)
+- EXTRACTED: 109 (98%)
 - INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 

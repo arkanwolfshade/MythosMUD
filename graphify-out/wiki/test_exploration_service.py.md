@@ -34,10 +34,8 @@
 ## Relationships
 
 - [ExplorationService](ExplorationService.md) (35 shared connections)
-- [DatabaseError](DatabaseError.md) (7 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
-- [room_service.py](room_service.py.md) (1 shared connections)
 
 ## Source Files
 

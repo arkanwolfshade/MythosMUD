@@ -25,13 +25,14 @@
 
 ## Relationships
 
-- [map/types.ts](map-types.ts.md) (9 shared connections)
 - [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (8 shared connections)
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (4 shared connections)
+- [RoomNodeData](RoomNodeData.md) (7 shared connections)
+- [utils/config.ts](utils-config.ts.md) (4 shared connections)
 - [DialogueEditorPage.tsx](DialogueEditorPage.tsx.md) (2 shared connections)
-- [apiTypeGuards.ts](apiTypeGuards.ts.md) (2 shared connections)
+- [maps.ts](maps.ts.md) (2 shared connections)
 - [RoomMapViewer.tsx](RoomMapViewer.tsx.md) (2 shared connections)
 - [AsciiMapViewer.tsx](AsciiMapViewer.tsx.md) (2 shared connections)
+- [map/types.ts](map-types.ts.md) (2 shared connections)
 
 ## Source Files
 

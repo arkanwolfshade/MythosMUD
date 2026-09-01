@@ -1,25 +1,24 @@
 # .__init__
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **._setup_aggressive_mob_behavior_rules()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **Initialize aggressive mob NPC.** (1 connections) — `server/npc/aggressive_mob_npc.py`
-- **Setup aggressive mob-specific behavior rules.** (1 connections) — `server/npc/aggressive_mob_npc.py`
+- **.__init__()** (3 connections) — `server/realtime/occupant_formatter.py`
+- **Initialize occupant formatter.** (1 connections) — `server/realtime/occupant_formatter.py`
 
 ## Relationships
 
-- [AggressiveMobNPC](AggressiveMobNPC.md) (2 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [OccupantFormatter](OccupantFormatter.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/aggressive_mob_npc.py`
+- `server/realtime/occupant_formatter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

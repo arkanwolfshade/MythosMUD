@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (3 shared connections)
+- [RealTimeEventHandler](RealTimeEventHandler.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
 
 ## Source Files
 

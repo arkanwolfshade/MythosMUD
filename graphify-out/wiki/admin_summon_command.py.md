@@ -33,16 +33,16 @@
 
 ## Relationships
 
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (7 shared connections)
-- [AliasStorage](AliasStorage.md) (7 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
 - [PrototypeRegistryError](PrototypeRegistryError.md) (6 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (5 shared connections)
+- [command_service.py](command_service.py.md) (4 shared connections)
 - [build_event](build_event.md) (3 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
-- [validate_admin_permission](validate_admin_permission.md) (2 shared connections)
-- [AdminActionsLogger](AdminActionsLogger.md) (2 shared connections)
+- [validate_admin_permission](validate_admin_permission.md) (3 shared connections)
+- [AdminActionsLogger](AdminActionsLogger.md) (3 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [resolve_state](resolve_state.md) (2 shared connections)
 - [system_monitoring.py](system_monitoring.py.md) (2 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
 - [.state](state.md) (1 shared connections)
 - [ValidationError](ValidationError.md) (1 shared connections)
 

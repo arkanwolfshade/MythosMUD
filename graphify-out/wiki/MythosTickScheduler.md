@@ -1,57 +1,64 @@
 # MythosTickScheduler
 
-> 35 nodes
+> 128 nodes
 
 ## Key Concepts
 
 - **MythosTickScheduler** (32 connections) — `server/time/tick_scheduler.py`
+- **MythosChronicle** (30 connections) — `server/time/time_service.py`
+- **time_service.py** (27 connections) — `server/time/time_service.py`
+- **get_mythos_chronicle()** (26 connections) — `server/time/time_service.py`
+- **test_time_bundle.py** (22 connections) — `server/tests/unit/container/test_time_bundle.py`
 - **test_tick_scheduler.py** (19 connections) — `server/tests/unit/time/test_tick_scheduler.py`
+- **tick_scheduler.py** (17 connections) — `server/time/tick_scheduler.py`
+- **datetime** (15 connections)
+- **_ensure_utc()** (13 connections) — `server/time/time_service.py`
+- **.get_calendar_components()** (10 connections) — `server/time/time_service.py`
+- **ChronicleState** (9 connections) — `server/time/time_service.py`
+- **.error()** (9 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **.get_current_mythos_datetime()** (9 connections) — `server/time/time_service.py`
 - **asyncio** (9 connections)
-- **._emit_pending_ticks()** (5 connections) — `server/time/tick_scheduler.py`
-- **._publish_tick()** (5 connections) — `server/time/tick_scheduler.py`
-- **._run()** (5 connections) — `server/time/tick_scheduler.py`
-- **._truncate_to_hour()** (5 connections) — `server/time/tick_scheduler.py`
-- **fixture** (4 connections)
-- **scheduler()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **test_emit_pending_ticks_initializes_last_hour()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **test_emit_pending_ticks_publishes_hours()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **test_sleep_until_next_hour_clamps_max()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **test_sleep_until_next_hour_clamps_min()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **test_sleep_until_next_hour_no_last_emitted()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **test_start_idempotent()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **test_start_registers_task()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **test_stop_cancels_task()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **test_truncate_to_hour()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **._sleep_until_next_hour()** (3 connections) — `server/time/tick_scheduler.py`
-- **.start()** (3 connections) — `server/time/tick_scheduler.py`
-- **datetime** (3 connections)
-- **mock_chronicle()** (2 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **mock_event_bus()** (2 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **mock_task_registry()** (2 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **test_publish_tick_with_holidays()** (2 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- *... and 10 more nodes in this community*
+- **.get_daypart()** (8 connections) — `server/time/time_service.py`
+- **._load_state()** (8 connections) — `server/time/time_service.py`
+- **._persist_state()** (8 connections) — `server/time/time_service.py`
+- **time/__init__.py** (8 connections) — `server/time/__init__.py`
+- **.__init__()** (7 connections) — `server/time/tick_scheduler.py`
+- **.is_daytime()** (7 connections) — `server/time/time_service.py`
+- **.is_witching_hour()** (7 connections) — `server/time/time_service.py`
+- **.to_mythos_datetime()** (7 connections) — `server/time/time_service.py`
+- **._migrate_old_state_file()** (6 connections) — `server/time/time_service.py`
+- **isolated_chronicle()** (5 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **test_get_mythos_chronicle_singleton()** (5 connections) — `server/tests/unit/container/test_time_bundle.py`
+- *... and 103 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [MythosTimeEventConsumer](MythosTimeEventConsumer.md) (3 shared connections)
-- [lifespan_protocols.py](lifespan_protocols.py.md) (2 shared connections)
-- [InventoryMutationGuard](InventoryMutationGuard.md) (1 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
-- [MythosChronicle](MythosChronicle.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
-- [TaskRegistry](TaskRegistry.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [lifespan_protocols.py](lifespan_protocols.py.md) (6 shared connections)
+- [time.py](time.py.md) (5 shared connections)
+- [HolidayService](HolidayService.md) (5 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (4 shared connections)
+- [time_event_consumer.py](time_event_consumer.py.md) (4 shared connections)
+- [EventBus](EventBus.md) (4 shared connections)
+- [TaskRegistry](TaskRegistry.md) (4 shared connections)
+- [lifespan.py](lifespan.py.md) (4 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
+- [test_game_tick_death.py](test_game_tick_death.py.md) (3 shared connections)
+- [game_tick_processing.py](game_tick_processing.py.md) (3 shared connections)
 
 ## Source Files
 
+- `server/tests/unit/container/test_time_bundle.py`
+- `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
 - `server/tests/unit/time/test_tick_scheduler.py`
+- `server/time/__init__.py`
 - `server/time/tick_scheduler.py`
+- `server/time/time_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 64 (81%)
-- INFERRED: 15 (19%)
+- EXTRACTED: 279 (91%)
+- INFERRED: 28 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

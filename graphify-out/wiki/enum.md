@@ -15,7 +15,7 @@
 
 ## Relationships
 
-- [applies_to](applies_to.md) (1 shared connections)
+- [days](days.md) (1 shared connections)
 
 ## Source Files
 

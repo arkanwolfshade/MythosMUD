@@ -33,12 +33,9 @@
 
 ## Relationships
 
-- [Player](Player.md) (5 shared connections)
-- [get_session_maker](get_session_maker.md) (5 shared connections)
-- [DatabaseError](DatabaseError.md) (4 shared connections)
-- [sqlalchemy.md](sqlalchemy.md.md) (2 shared connections)
+- [get_logger](get_logger.md) (11 shared connections)
+- [Player](Player.md) (6 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 
 ## Source Files
 

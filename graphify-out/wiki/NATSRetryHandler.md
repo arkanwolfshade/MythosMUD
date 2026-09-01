@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
-- [GameStateProvider](GameStateProvider.md) (2 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (9 shared connections)
 - [test_nats_message_handler.py](test_nats_message_handler.py.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [time.py](time.py.md) (1 shared connections)
 
 ## Source Files
 

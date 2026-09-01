@@ -17,8 +17,8 @@
 ## Relationships
 
 - [test_mp_regeneration_service.py](test_mp_regeneration_service.py.md) (4 shared connections)
-- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
-- [MPRegenerationService](MPRegenerationService.md) (1 shared connections)
+- [command_service.py](command_service.py.md) (1 shared connections)
+- [SpellEffects](SpellEffects.md) (1 shared connections)
 
 ## Source Files
 

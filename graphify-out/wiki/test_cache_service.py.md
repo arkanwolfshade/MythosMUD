@@ -33,14 +33,14 @@
 - [RoomCacheService](RoomCacheService.md) (8 shared connections)
 - [NPCCacheService](NPCCacheService.md) (8 shared connections)
 - [ProfessionCacheService](ProfessionCacheService.md) (7 shared connections)
-- [get_logger](get_logger.md) (7 shared connections)
 - [CacheService](CacheService.md) (5 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 - [Any](Any.md) (3 shared connections)
 - [CacheManager](CacheManager.md) (3 shared connections)
 - [LRUCache](LRUCache.md) (3 shared connections)
 - [api/monitoring.py](api-monitoring.py.md) (2 shared connections)
 - [system_monitoring.py](system_monitoring.py.md) (2 shared connections)
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (2 shared connections)
+- [lifespan.py](lifespan.py.md) (2 shared connections)
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
 
 ## Source Files

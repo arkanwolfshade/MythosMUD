@@ -1,11 +1,12 @@
 # Spatial Design
 
-> 14 nodes
+> 15 nodes
 
 ## Key Concepts
 
 - **Spatial Design** (7 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
 - **Visual Hierarchy** (4 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **spatial-design.md** (3 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
 - **Spacing Systems** (3 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
 - **Grid Systems** (2 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
 - **Optical Adjustments** (2 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
@@ -21,7 +22,7 @@
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- [Frontend Design Skill](Frontend_Design_Skill.md) (2 shared connections)
 
 ## Source Files
 
@@ -29,7 +30,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

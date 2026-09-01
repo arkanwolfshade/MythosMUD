@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (12 shared connections)
-- [test_combat_flee_handler.py](test_combat_flee_handler.py.md) (3 shared connections)
-- [server/models/game.py](server-models-game.py.md) (3 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
+- [TargetMatch](TargetMatch.md) (15 shared connections)
+- [CombatInstance](CombatInstance.md) (3 shared connections)
+- [CombatCommandHandler](CombatCommandHandler.md) (2 shared connections)
 - [SpellEffects](SpellEffects.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 

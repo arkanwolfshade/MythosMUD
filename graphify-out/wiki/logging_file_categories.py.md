@@ -30,8 +30,7 @@
 - [test_logging_utilities.py](test_logging_utilities.py.md) (4 shared connections)
 - [test_logging_handlers.py](test_logging_handlers.py.md) (3 shared connections)
 - [PlayerGuidFormatter](PlayerGuidFormatter.md) (2 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 

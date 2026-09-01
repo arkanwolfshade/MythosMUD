@@ -1,10 +1,13 @@
 # enum
 
-> 4 nodes
+> 7 nodes
 
 ## Key Concepts
 
 - **enum** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **environment** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 - **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 - **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 - **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
@@ -19,7 +22,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

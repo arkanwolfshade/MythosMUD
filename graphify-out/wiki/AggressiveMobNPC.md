@@ -21,7 +21,7 @@
 
 - [test_aggressive_mob_npc.py](test_aggressive_mob_npc.py.md) (6 shared connections)
 - [._attack_target_impl](_attack_target_impl.md) (5 shared connections)
-- [NPCBase](NPCBase.md) (3 shared connections)
+- [EventBus](EventBus.md) (4 shared connections)
 - [._compute_player_context](_compute_player_context.md) (3 shared connections)
 - [._handle_hunt_target](_handle_hunt_target.md) (2 shared connections)
 - [.flee](flee.md) (2 shared connections)
@@ -30,7 +30,6 @@
 - [test_enrich_behavior_context_handles_no_current_room](test_enrich_behavior_context_handles_no_current_room.md) (1 shared connections)
 - [test_enrich_behavior_context_sets_false_when_no_players_in_room](test_enrich_behavior_context_sets_false_when_no_players_in_room.md) (1 shared connections)
 - [test_enrich_behavior_context_sets_player_in_range_when_players_in_room](test_enrich_behavior_context_sets_player_in_range_when_players_in_room.md) (1 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
 
 ## Source Files
 

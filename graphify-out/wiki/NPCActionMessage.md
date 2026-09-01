@@ -27,10 +27,12 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
 - [test_npc_threading_messages.py](test_npc_threading_messages.py.md) (4 shared connections)
+- [EventBus](EventBus.md) (3 shared connections)
 - [PassiveMobNPC](PassiveMobNPC.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [NPCThreadManager](NPCThreadManager.md) (1 shared connections)
+- [time.py](time.py.md) (1 shared connections)
 
 ## Source Files
 

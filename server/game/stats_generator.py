@@ -8,11 +8,12 @@ ranges while ensuring they meet class prerequisites.
 
 import random
 import time
-from typing import Any
+from typing import Literal, Protocol, cast
 
 import numpy as np
 
-from ..models import AttributeType, Stats
+from ..models.game import AttributeType, Stats
+from ..models.stats_random import CoreStatValues, roll_random_core_stat_values
 from ..structured_logging.enhanced_logging_config import get_logger
 
 
@@ -29,39 +30,40 @@ def generate_random_stats(seed: int | None = None) -> Stats:
     Returns:
         Stats: A new Stats object with randomly generated attribute values
     """
-    local_rng = random.Random(seed) if seed is not None else random.Random()  # nosec B311: Game mechanics stat generation, not cryptographic
-
-    # Roll Size using formula: (2D6+6)*5 (range 40-90)
-    size_roll = local_rng.randint(2, 12) + 6  # 2D6+6 (range 8-18)
-    size = size_roll * 5  # Multiply by 5 (range 40-90)
-
-    return Stats(
-        strength=local_rng.randint(15, 90),
-        dexterity=local_rng.randint(15, 90),
-        constitution=local_rng.randint(15, 90),
-        size=size,
-        intelligence=local_rng.randint(15, 90),
-        power=local_rng.randint(15, 90),
-        education=local_rng.randint(15, 90),
-        charisma=local_rng.randint(15, 90),
-        luck=local_rng.randint(15, 90),
-    )
+    return Stats(**roll_random_core_stat_values(seed=seed))
 
 
 logger = get_logger(__name__)
+
+PointBuyAdjustableStat = Literal[
+    "strength",
+    "dexterity",
+    "constitution",
+    "intelligence",
+    "power",
+    "education",
+    "charisma",
+    "luck",
+]
+
+
+class _ProfessionStatRequirementsSource(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    """Minimal profession surface for stat rolling (avoids importing models.profession)."""
+
+    def get_stat_requirements(self) -> dict[str, int]: ...  # pylint: disable=missing-function-docstring  # Reason: Protocol stub
 
 
 class StatsGenerator:
     """Service for generating random character statistics."""
 
     # Standard D&D-style stat ranges (15-90, scaled from 3-18)
-    MIN_STAT = 15
-    MAX_STAT = 90
+    MIN_STAT: int = 15
+    MAX_STAT: int = 90
 
     # Class prerequisites (minimum stats required for each class)
     # Based on Lovecraftian investigator archetypes
     # Values scaled by 5x from original 1-20 range to 1-100 range
-    CLASS_PREREQUISITES = {
+    CLASS_PREREQUISITES: dict[str, dict[AttributeType, int]] = {
         "investigator": {
             AttributeType.INT: 60,  # High intelligence for research (scaled from 12)
             AttributeType.EDU: 50,  # Good education (scaled from 10)
@@ -171,7 +173,7 @@ class StatsGenerator:
         # Each point increases a stat by 1, up to 75 (scaled from 15)
         # Stats 76-90 cost 2 points each (scaled from 16-18)
         # Size uses CoC formula, so roll it separately
-        base_stats = {
+        base_stats: CoreStatValues = {
             "strength": 40,
             "dexterity": 40,
             "constitution": 40,
@@ -185,10 +187,19 @@ class StatsGenerator:
 
         # Adjust points for 9 stats instead of 6 (more points needed)
         points_remaining = 200  # Increased from 135 to account for more stats
-        stat_names = [k for k in base_stats if k != "size"]  # Don't modify size
+        stat_names: list[PointBuyAdjustableStat] = [
+            "strength",
+            "dexterity",
+            "constitution",
+            "intelligence",
+            "power",
+            "education",
+            "charisma",
+            "luck",
+        ]
 
         while points_remaining > 0:
-            stat = random.choice(stat_names)  # nosec B311: Game mechanics stat selection, not cryptographic
+            stat: PointBuyAdjustableStat = random.choice(stat_names)  # nosec B311: Game mechanics stat selection, not cryptographic
             current_value = base_stats[stat]
 
             if current_value >= 90:
@@ -224,11 +235,11 @@ class StatsGenerator:
             return True, []  # Unknown classes have no prerequisites
 
         prerequisites = self.CLASS_PREREQUISITES[class_name]
-        failed_requirements = []
+        failed_requirements: list[str] = []
 
         for attribute, minimum_value in prerequisites.items():
-            current_value = getattr(stats, attribute.value)
-            if current_value < minimum_value:
+            current_value = cast(int | None, getattr(stats, attribute.value, None))
+            if current_value is None or current_value < minimum_value:
                 failed_requirements.append(f"{attribute.value.title()} {current_value} < {minimum_value}")
 
         meets_prerequisites = not failed_requirements
@@ -252,9 +263,9 @@ class StatsGenerator:
         Returns:
             List[str]: List of available class names
         """
-        available_classes = []
+        available_classes: list[str] = []
 
-        for class_name in self.CLASS_PREREQUISITES:
+        for class_name in StatsGenerator.CLASS_PREREQUISITES:
             meets_prerequisites, _ = self.validate_class_prerequisites(stats, class_name)
             if meets_prerequisites:
                 available_classes.append(class_name)
@@ -303,13 +314,82 @@ class StatsGenerator:
         available_classes = self.get_available_classes(stats)
         return stats, available_classes
 
-    def roll_stats_with_profession(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Stats rolling requires many parameters and intermediate variables for complex stat generation logic
+    def _resolve_profession_stat_requirements(
+        self,
+        profession: _ProfessionStatRequirementsSource | None,
+        profession_id: int,
+    ) -> dict[str, int]:
+        """Load stat requirements from the caller-supplied profession object."""
+        logger.debug("DEBUG: Starting profession-based stats rolling", profession_id=profession_id)
+        try:
+            if profession is None:
+                raise ValueError(
+                    f"Profession must be provided for profession_id={profession_id}. "
+                    + "Fetch via async persistence at the call site and pass profession=."
+                )
+            stat_requirements = profession.get_stat_requirements()
+            logger.debug(
+                "DEBUG: Retrieved profession with requirements",
+                profession_id=profession_id,
+                stat_requirements=stat_requirements,
+            )
+            return stat_requirements
+        except Exception as e:
+            logger.error("Error retrieving profession", profession_id=profession_id, error=str(e))
+            raise ValueError(f"Invalid profession ID: {profession_id}") from e
+
+    def _roll_until_profession_requirements_met(
+        self,
+        method: str,
+        stat_requirements: dict[str, int],
+        profession_id: int,
+        timeout_seconds: float,
+        max_attempts: int,
+    ) -> tuple[Stats, bool]:
+        """Retry rolling until profession stat requirements are met or limits are hit."""
+        start_time = time.time()
+        attempt = 0
+        logger.debug("DEBUG: Starting validation loop", timeout_seconds=timeout_seconds, max_attempts=max_attempts)
+        while (time.time() - start_time) < timeout_seconds and attempt < max_attempts:
+            attempt += 1
+            stats = self.roll_stats(method)
+            logger.debug("DEBUG: Attempt rolled stats", attempt=attempt, stats=stats.model_dump())
+            meets_requirements = self._check_profession_requirements(stats, stat_requirements)
+            logger.debug("DEBUG: Attempt meets requirements", attempt=attempt, meets_requirements=meets_requirements)
+            if meets_requirements:
+                elapsed_time = time.time() - start_time
+                logger.info(
+                    "Valid stats rolled for profession",
+                    attempt=attempt,
+                    profession_id=profession_id,
+                    elapsed_time=elapsed_time,
+                )
+                return stats, True
+            logger.debug(
+                "Stats don't meet profession requirements, retrying",
+                attempt=attempt,
+                profession_id=profession_id,
+                requirements=stat_requirements,
+            )
+        elapsed_time = time.time() - start_time
+        logger.warning(
+            "Limits reached while rolling stats for profession requirements",
+            profession_id=profession_id,
+            timeout_seconds=timeout_seconds,
+            elapsed_time=elapsed_time,
+            attempts_made=attempt,
+        )
+        stats = self.roll_stats(method)
+        meets_requirements = self._check_profession_requirements(stats, stat_requirements)
+        return stats, meets_requirements
+
+    def roll_stats_with_profession(
         self,
         method: str = "3d6",
         profession_id: int = 0,
         timeout_seconds: float = 5.0,  # Increased from 1.0 to allow more time for automatic rerolls
         max_attempts: int = 50,  # Increased from 10 to improve success rate for profession requirements
-        profession: Any | None = None,
+        profession: _ProfessionStatRequirementsSource | None = None,
     ) -> tuple[Stats, bool]:
         """
         Roll stats and validate against profession requirements.
@@ -331,98 +411,15 @@ class StatsGenerator:
             timeout_seconds=timeout_seconds,
             max_attempts=max_attempts,
         )
-
-        logger.debug("DEBUG: Starting profession-based stats rolling", profession_id=profession_id)
-
-        # Get profession requirements from persistence (async) or use provided profession.
-        # Callers must pass profession when in async context; we do not use asyncio.run() in library code.
-        try:
-            if profession is None:
-                import asyncio
-
-                from ..container import ApplicationContainer
-
-                container = ApplicationContainer.get_instance()
-                if container and container.async_persistence:
-                    try:
-                        asyncio.get_running_loop()
-                        # In async context caller must fetch and pass profession
-                        raise ValueError(
-                            f"Profession must be provided when called from async context. "
-                            f"Invalid profession ID: {profession_id}"
-                        )
-                    except RuntimeError:
-                        # Sync context: do not use asyncio.run(); caller must pass profession
-                        raise ValueError(
-                            f"Profession must be provided when calling from sync context (no event loop). "
-                            f"Use async entry point or pass profession= for profession_id={profession_id}"
-                        ) from None
-                profession = None
-
-            if not profession:
-                raise ValueError(f"Invalid profession ID: {profession_id}")
-
-            stat_requirements = profession.get_stat_requirements()
-            logger.debug(
-                "DEBUG: Retrieved profession with requirements",
-                profession_id=profession_id,
-                stat_requirements=stat_requirements,
-            )
-
-        except Exception as e:
-            logger.error("Error retrieving profession", profession_id=profession_id, error=str(e))
-            raise ValueError(f"Invalid profession ID: {profession_id}") from e
-
-        # If no requirements, just roll normally
+        stat_requirements = self._resolve_profession_stat_requirements(profession, profession_id)
         if not stat_requirements:
             stats = self.roll_stats(method)
             logger.info("Profession has no stat requirements, returning normal roll")
             logger.debug("DEBUG: No requirements found for profession, rolling normally", profession_id=profession_id)
             return stats, True
-
-        # Try to roll stats that meet profession requirements within timeout and attempt limits
-        start_time = time.time()
-        attempt = 0
-
-        logger.debug("DEBUG: Starting validation loop", timeout_seconds=timeout_seconds, max_attempts=max_attempts)
-        while (time.time() - start_time) < timeout_seconds and attempt < max_attempts:
-            attempt += 1
-            stats = self.roll_stats(method)
-            logger.debug("DEBUG: Attempt rolled stats", attempt=attempt, stats=stats.model_dump())
-
-            # Check if stats meet profession requirements
-            meets_requirements = self._check_profession_requirements(stats, stat_requirements)
-            logger.debug("DEBUG: Attempt meets requirements", attempt=attempt, meets_requirements=meets_requirements)
-
-            if meets_requirements:
-                elapsed_time = time.time() - start_time
-                logger.info(
-                    "Valid stats rolled for profession",
-                    attempt=attempt,
-                    profession_id=profession_id,
-                    elapsed_time=elapsed_time,
-                )
-                return stats, True
-
-            logger.debug(
-                "Stats don't meet profession requirements, retrying",
-                attempt=attempt,
-                profession_id=profession_id,
-                requirements=stat_requirements,
-            )
-
-        # Limits reached - return the last roll with failure status
-        elapsed_time = time.time() - start_time
-        logger.warning(
-            "Limits reached while rolling stats for profession requirements",
-            profession_id=profession_id,
-            timeout_seconds=timeout_seconds,
-            elapsed_time=elapsed_time,
-            attempts_made=attempt,
+        return self._roll_until_profession_requirements_met(
+            method, stat_requirements, profession_id, timeout_seconds, max_attempts
         )
-        stats = self.roll_stats(method)
-        meets_requirements = self._check_profession_requirements(stats, stat_requirements)
-        return stats, meets_requirements
 
     def _check_profession_requirements(self, stats: Stats, requirements: dict[str, int]) -> bool:
         """
@@ -472,7 +469,7 @@ class StatsGenerator:
         logger.debug("DEBUG: All requirements met")
         return True
 
-    def get_stat_summary(self, stats: Stats) -> dict[str, Any]:
+    def get_stat_summary(self, stats: Stats) -> dict[str, object]:
         """
         Get a summary of the character's stats including modifiers and totals.
 
@@ -482,7 +479,7 @@ class StatsGenerator:
         Returns:
             Dict: Summary of stats with modifiers and totals
         """
-        summary = {
+        summary: dict[str, object] = {
             "attributes": {
                 "strength": {"value": stats.strength, "modifier": stats.get_attribute_modifier(AttributeType.STR)},
                 "dexterity": {"value": stats.dexterity, "modifier": stats.get_attribute_modifier(AttributeType.DEX)},

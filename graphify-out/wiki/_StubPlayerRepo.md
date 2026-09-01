@@ -23,7 +23,7 @@
 ## Relationships
 
 - [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) (3 shared connections)
-- [retry_with_backoff](retry_with_backoff.md) (2 shared connections)
+- [test_retry_retries_wrapped_connection_closed_then_succeeds](test_retry_retries_wrapped_connection_closed_then_succeeds.md) (2 shared connections)
 
 ## Source Files
 

@@ -34,7 +34,8 @@
 ## Relationships
 
 - [RoomMapViewer.tsx](RoomMapViewer.tsx.md) (13 shared connections)
-- [map/types.ts](map-types.ts.md) (10 shared connections)
+- [RoomNodeData](RoomNodeData.md) (6 shared connections)
+- [map/types.ts](map-types.ts.md) (4 shared connections)
 
 ## Source Files
 

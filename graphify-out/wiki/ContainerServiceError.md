@@ -1,53 +1,56 @@
 # ContainerServiceError
 
-> 116 nodes
+> 224 nodes
 
 ## Key Concepts
 
 - **ContainerServiceError** (49 connections) — `server/services/container_service_helpers.py`
+- **InventoryService** (37 connections) — `server/services/inventory_service.py`
 - **InventoryStack** (37 connections) — `server/services/inventory_service.py`
+- **models/container.py** (34 connections) — `server/models/container.py`
+- **inventory_unequip_command.py** (33 connections) — `server/commands/inventory_unequip_command.py`
 - **container_service.py** (33 connections) — `server/services/container_service.py`
 - **container_service_transfer_to.py** (33 connections) — `server/services/container_service_transfer_to.py`
+- **inventory_service.py** (33 connections) — `server/services/inventory_service.py`
 - **container_service_session.py** (28 connections) — `server/services/container_service_session.py`
 - **container_service_lock.py** (26 connections) — `server/services/container_service_lock.py`
 - **container_service_transfer_from.py** (26 connections) — `server/services/container_service_transfer_from.py`
 - **container_service_helpers.py** (23 connections) — `server/services/container_service_helpers.py`
+- **equipment_service.py** (23 connections) — `server/services/equipment_service.py`
+- **test_equipment_service.py** (23 connections) — `server/tests/unit/services/test_equipment_service.py`
+- **SlotValidationError** (21 connections) — `server/services/equipment_service.py`
+- **get_shared_services()** (21 connections) — `server/commands/inventory_service_helpers.py`
+- **test_inventory_service.py** (21 connections) — `server/tests/unit/services/test_inventory_service.py`
 - **ContainerNotFoundError** (20 connections) — `server/services/container_service_helpers.py`
-- **ContainerTransferToMixin** (20 connections) — `server/services/container_service_transfer_to.py`
+- **InventoryCapacityError** (20 connections) — `server/services/inventory_service.py`
 - **ContainerAccessMixin** (19 connections) — `server/services/container_service_access.py`
 - **ContainerSessionMixin** (18 connections) — `server/services/container_service_session.py`
-- **ContainerTransferFromMixin** (18 connections) — `server/services/container_service_transfer_from.py`
+- **EquipmentService** (18 connections) — `server/services/equipment_service.py`
 - **container_service_access.py** (17 connections) — `server/services/container_service_access.py`
 - **ContainerCapacityError** (16 connections) — `server/services/container_service_helpers.py`
-- **ContainerAccessDeniedError** (14 connections) — `server/services/container_service_helpers.py`
-- **filter_container_data()** (14 connections) — `server/services/container_service_helpers.py`
-- **ContainerLockedError** (12 connections) — `server/services/container_service_helpers.py`
-- **as_object_dict()** (12 connections) — `server/services/container_service_helpers.py`
-- **._execute_transfer_from_container()** (12 connections) — `server/services/container_service_transfer_from.py`
-- **._execute_transfer_to_container()** (12 connections) — `server/services/container_service_transfer_to.py`
-- **get_enum_value()** (11 connections) — `server/services/container_service_helpers.py`
-- **._finalize_loot_all()** (10 connections) — `server/services/container_service_transfer_from.py`
-- **._require_container_component()** (10 connections) — `server/services/container_service_transfer_to.py`
-- **UUID** (10 connections)
-- *... and 91 more nodes in this community*
+- **inventory_service_helpers.py** (16 connections) — `server/commands/inventory_service_helpers.py`
+- *... and 199 more nodes in this community*
 
 ## Relationships
 
-- [pytest.md](pytest.md.md) (63 shared connections)
-- [ContainerComponent](ContainerComponent.md) (35 shared connections)
-- [InventoryService](InventoryService.md) (20 shared connections)
-- [get_logger](get_logger.md) (18 shared connections)
-- [log_and_raise](log_and_raise.md) (16 shared connections)
-- [ContainerLockMixin](ContainerLockMixin.md) (10 shared connections)
-- [ContainerService](ContainerService.md) (10 shared connections)
-- [TransferContainerRequest](TransferContainerRequest.md) (8 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (6 shared connections)
-- [error_logging.py](error_logging.py.md) (5 shared connections)
-- [LootAllRequest](LootAllRequest.md) (4 shared connections)
-- [inventory_equip_command.py](inventory_equip_command.py.md) (4 shared connections)
+- [test_containers.py](test_containers.py.md) (42 shared connections)
+- [get_logger](get_logger.md) (40 shared connections)
+- [ContainerComponent](ContainerComponent.md) (38 shared connections)
+- [ContainerService](ContainerService.md) (19 shared connections)
+- [inventory_equip_command.py](inventory_equip_command.py.md) (19 shared connections)
+- [ContainerTransferFromMixin](ContainerTransferFromMixin.md) (16 shared connections)
+- [ContainerTransferToMixin](ContainerTransferToMixin.md) (15 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (15 shared connections)
+- [LootAllRequest](LootAllRequest.md) (13 shared connections)
+- [handle_unequip_command](handle_unequip_command.md) (13 shared connections)
+- [HolidayService](HolidayService.md) (12 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (11 shared connections)
 
 ## Source Files
 
+- `server/commands/inventory_service_helpers.py`
+- `server/commands/inventory_unequip_command.py`
+- `server/models/container.py`
 - `server/services/container_service.py`
 - `server/services/container_service_access.py`
 - `server/services/container_service_helpers.py`
@@ -55,13 +58,16 @@
 - `server/services/container_service_session.py`
 - `server/services/container_service_transfer_from.py`
 - `server/services/container_service_transfer_to.py`
+- `server/services/equipment_service.py`
 - `server/services/inventory_service.py`
-- `server/tests/unit/api/test_containers.py`
+- `server/tests/unit/commands/test_inventory_service_helpers.py`
+- `server/tests/unit/services/test_equipment_service.py`
+- `server/tests/unit/services/test_inventory_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 413 (81%)
-- INFERRED: 96 (19%)
+- EXTRACTED: 672 (85%)
+- INFERRED: 123 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

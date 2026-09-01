@@ -1,64 +1,65 @@
 # ErrorType
 
-> 144 nodes
+> 123 nodes
 
 ## Key Concepts
 
 - **ErrorType** (52 connections) — `server/error_types.py`
+- **StandardizedErrorResponse** (46 connections) — `server/error_handlers/standardized_responses.py`
 - **error_types.py** (35 connections) — `server/error_types.py`
-- **test_websocket_handler_helpers_extended.py** (34 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **ErrorMessages** (32 connections) — `server/error_types.py`
 - **create_websocket_error_response()** (30 connections) — `server/error_types.py`
+- **test_standardized_responses.py** (30 connections) — `server/tests/unit/error_handlers/test_standardized_responses.py`
 - **create_standard_error_response()** (22 connections) — `server/error_types.py`
-- **websocket_handler_validation.py** (22 connections) — `server/realtime/websocket_handler_validation.py`
-- **asyncio** (20 connections)
 - **test_error_types.py** (18 connections) — `server/tests/unit/test_error_types.py`
-- **handle_chat_message()** (17 connections) — `server/realtime/websocket_handler.py`
+- **JSONResponse** (15 connections) — `docs/examples/logging/fastapi_integration.py`
 - **ErrorSeverity** (10 connections) — `server/error_types.py`
-- **test_websocket_handler_error_handling.py** (10 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **validate_websocket_message()** (7 connections) — `server/realtime/websocket_handler_validation.py`
-- **ErrorResponseDetails** (6 connections) — `server/error_types.py`
+- **.handle_exception()** (10 connections) — `server/error_handlers/standardized_responses.py`
+- **._handle_generic_exception()** (10 connections) — `server/error_handlers/standardized_responses.py`
+- **._handle_logged_http_exception()** (10 connections) — `server/error_handlers/standardized_responses.py`
+- **._handle_mythos_error()** (10 connections) — `server/error_handlers/standardized_responses.py`
+- **handle_api_error()** (9 connections) — `server/error_handlers/standardized_responses.py`
+- **error_handlers/__init__.py** (9 connections) — `server/error_handlers/__init__.py`
+- **._extract_context_from_request()** (8 connections) — `server/error_handlers/standardized_responses.py`
+- **._handle_http_exception()** (8 connections) — `server/error_handlers/standardized_responses.py`
+- **create_standardized_error_response()** (7 connections) — `server/error_handlers/standardized_responses.py`
+- **._create_fallback_response()** (7 connections) — `server/error_handlers/standardized_responses.py`
+- **._handle_pydantic_validation_error()** (7 connections) — `server/error_handlers/standardized_responses.py`
 - **_normalize_error_response_details()** (6 connections) — `server/error_types.py`
-- **resolve_expected_csrf_token()** (6 connections) — `server/realtime/websocket_handler_validation.py`
 - **TypedDict** (6 connections)
-- **check_websocket_message_rate_limit()** (5 connections) — `server/realtime/websocket_handler_validation.py`
-- **validate_message_csrf_and_restore_metadata()** (5 connections) — `server/realtime/websocket_handler_validation.py`
-- **test_send_error_response_disconnected()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **test_send_error_response_success()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **test_process_message_validation_failed()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_send_error_response_other_error()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_send_error_response_runtime_error_close_message()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_send_error_response_runtime_error_disconnected()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- *... and 119 more nodes in this community*
+- **webhook()** (5 connections) — `monitoring/webhook-receiver.py`
+- **._create_error_details()** (5 connections) — `server/error_handlers/standardized_responses.py`
+- **._determine_error_type_from_exception()** (5 connections) — `server/error_handlers/standardized_responses.py`
+- *... and 98 more nodes in this community*
 
 ## Relationships
 
-- [StandardizedErrorResponse](StandardizedErrorResponse.md) (21 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (16 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (16 shared connections)
-- [pytest.md](pytest.md.md) (10 shared connections)
-- [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (10 shared connections)
-- [websocket_handler_commands.py](websocket_handler_commands.py.md) (7 shared connections)
-- [PydanticErrorHandler](PydanticErrorHandler.md) (7 shared connections)
-- [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (7 shared connections)
-- [WebSocketMessageValidator](WebSocketMessageValidator.md) (7 shared connections)
-- [api/player_effects.py](api-player_effects.py.md) (5 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (4 shared connections)
+- [pydantic_error_handler.py](pydantic_error_handler.py.md) (28 shared connections)
+- [MythosMUDError](MythosMUDError.md) (21 shared connections)
+- [websocket_handler.py](websocket_handler.py.md) (14 shared connections)
+- [test_websocket_handler_helpers_extended.py](test_websocket_handler_helpers_extended.py.md) (11 shared connections)
+- [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (7 shared connections)
+- [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (6 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (6 shared connections)
+- [websocket_handler_commands.py](websocket_handler_commands.py.md) (5 shared connections)
+- [WebSocketMessageValidator](WebSocketMessageValidator.md) (5 shared connections)
+- [test_error_handling_middleware.py](test_error_handling_middleware.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [fastapi_integration.py](fastapi_integration.py.md) (3 shared connections)
 
 ## Source Files
 
+- `docs/examples/logging/fastapi_integration.py`
+- `monitoring/webhook-receiver.py`
+- `server/error_handlers/__init__.py`
+- `server/error_handlers/standardized_responses.py`
 - `server/error_types.py`
-- `server/realtime/websocket_handler.py`
-- `server/realtime/websocket_handler_validation.py`
-- `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
+- `server/tests/unit/error_handlers/test_standardized_responses.py`
 - `server/tests/unit/test_error_types.py`
 
 ## Audit Trail
 
-- EXTRACTED: 321 (87%)
-- INFERRED: 47 (13%)
+- EXTRACTED: 324 (89%)
+- INFERRED: 39 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

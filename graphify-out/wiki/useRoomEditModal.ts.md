@@ -1,13 +1,12 @@
 # useRoomEditModal.ts
 
-> 38 nodes
+> 37 nodes
 
 ## Key Concepts
 
 - **useRoomEditModal.ts** (18 connections) — `client/src/components/map/useRoomEditModal.ts`
 - **RoomEditModal.tsx** (16 connections) — `client/src/components/map/RoomEditModal.tsx`
 - **RoomEditModalForm.tsx** (16 connections) — `client/src/components/map/RoomEditModalForm.tsx`
-- **RoomEditModalProps** (4 connections) — `client/src/components/map/useRoomEditModal.ts`
 - **RoomEditModal()** (4 connections) — `client/src/components/map/RoomEditModal.tsx`
 - **useRoomEditModal()** (4 connections) — `client/src/components/map/useRoomEditModal.ts`
 - **RoomEditModal.test.tsx** (4 connections) — `client/src/components/map/__tests__/RoomEditModal.test.tsx`
@@ -29,13 +28,15 @@
 - **RoomEditModalHeader()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
 - **RoomEditModalShell()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
 - **FieldError()** (1 connections) — `client/src/components/map/RoomEditModalForm.tsx`
-- *... and 13 more nodes in this community*
+- **RoomEditDescriptionHint()** (1 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [RoomMapViewer.tsx](RoomMapViewer.tsx.md) (5 shared connections)
-- [map/types.ts](map-types.ts.md) (3 shared connections)
+- [RoomMapViewer.tsx](RoomMapViewer.tsx.md) (6 shared connections)
 - [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (2 shared connections)
+- [RoomNodeData](RoomNodeData.md) (1 shared connections)
+- [map/types.ts](map-types.ts.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 54 (92%)
-- INFERRED: 5 (8%)
+- EXTRACTED: 52 (91%)
+- INFERRED: 5 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

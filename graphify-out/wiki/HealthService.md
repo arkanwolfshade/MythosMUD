@@ -33,10 +33,11 @@
 
 ## Relationships
 
-- [HealthStatus](HealthStatus.md) (13 shared connections)
+- [HealthStatus](HealthStatus.md) (12 shared connections)
 - [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [PerformanceMonitor](PerformanceMonitor.md) (1 shared connections)
+- [health_service](health_service.md) (1 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (1 shared connections)
 
 ## Source Files
 

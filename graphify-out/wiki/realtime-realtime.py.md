@@ -1,24 +1,22 @@
 # realtime/realtime.py
 
-> 26 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **realtime/realtime.py** (14 connections) — `server/schemas/realtime/realtime.py`
-- **schemas/realtime/__init__.py** (11 connections) — `server/schemas/realtime/__init__.py`
+- **realtime/realtime.py** (15 connections) — `server/schemas/realtime/realtime.py`
 - **ConnectionStatisticsResponse** (10 connections) — `server/schemas/realtime/realtime.py`
-- **ErrorStatistics** (7 connections) — `server/schemas/realtime/presence_data.py`
-- **PresenceStatistics** (7 connections) — `server/schemas/realtime/presence_data.py`
-- **SessionStatistics** (7 connections) — `server/schemas/realtime/presence_data.py`
+- **ErrorStatistics** (8 connections) — `server/schemas/realtime/presence_data.py`
+- **PresenceStatistics** (8 connections) — `server/schemas/realtime/presence_data.py`
+- **SessionStatistics** (8 connections) — `server/schemas/realtime/presence_data.py`
 - **NewGameSessionResponse** (7 connections) — `server/schemas/realtime/realtime.py`
 - **PlayerConnectionsResponse** (7 connections) — `server/schemas/realtime/realtime.py`
+- **presence_data.py** (7 connections) — `server/schemas/realtime/presence_data.py`
 - **SessionInfo** (6 connections) — `server/schemas/realtime/realtime.py`
-- **presence_data.py** (6 connections) — `server/schemas/realtime/presence_data.py`
 - **BaseModel** (6 connections)
-- **HealthInfo** (3 connections) — `server/schemas/realtime/realtime.py`
-- **PresenceInfo** (3 connections) — `server/schemas/realtime/realtime.py`
+- **HealthInfo** (4 connections) — `server/schemas/realtime/realtime.py`
+- **PresenceInfo** (4 connections) — `server/schemas/realtime/realtime.py`
 - **BaseModel** (3 connections)
-- **Realtime domain schemas: realtime API, NATS messages, WebSocket messages.** (1 connections) — `server/schemas/realtime/__init__.py`
 - **Presence and health statistics schema for MythosMUD. This module defines…** (1 connections) — `server/schemas/realtime/presence_data.py`
 - **Presence statistics for connection monitoring. This model represents aggregate…** (1 connections) — `server/schemas/realtime/presence_data.py`
 - **Session statistics for connection monitoring. This model represents aggregate…** (1 connections) — `server/schemas/realtime/presence_data.py`
@@ -29,27 +27,26 @@
 - **Session information for a player connection.** (1 connections) — `server/schemas/realtime/realtime.py`
 - **Health information for a player connection.** (1 connections) — `server/schemas/realtime/realtime.py`
 - **Response model for player connection information endpoint.** (1 connections) — `server/schemas/realtime/realtime.py`
-- *... and 1 more nodes in this community*
+- **Response model for new game session endpoint.** (1 connections) — `server/schemas/realtime/realtime.py`
 
 ## Relationships
 
-- [_ensure_connection_manager](_ensure_connection_manager.md) (6 shared connections)
-- [real_time.py](real_time.py.md) (5 shared connections)
-- [test_real_time_helpers.py](test_real_time_helpers.py.md) (4 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (4 shared connections)
-- [test_nats_messages.py](test_nats_messages.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [BaseCommand](BaseCommand.md) (2 shared connections)
+- [real_time.py](real_time.py.md) (11 shared connections)
+- [test_real_time_helpers.py](test_real_time_helpers.py.md) (6 shared connections)
+- [test_nats_messages.py](test_nats_messages.py.md) (5 shared connections)
+- [handle_new_game_session](handle_new_game_session.md) (4 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (3 shared connections)
+- [pydantic.md](pydantic.md.md) (2 shared connections)
+- [time.py](time.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/realtime/__init__.py`
 - `server/schemas/realtime/presence_data.py`
 - `server/schemas/realtime/realtime.py`
 
 ## Audit Trail
 
-- EXTRACTED: 61 (91%)
+- EXTRACTED: 62 (91%)
 - INFERRED: 6 (9%)
 - AMBIGUOUS: 0 (0%)
 

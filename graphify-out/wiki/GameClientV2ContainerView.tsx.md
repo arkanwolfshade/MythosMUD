@@ -35,9 +35,9 @@
 
 - [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (7 shared connections)
 - [AsciiMapViewer.tsx](AsciiMapViewer.tsx.md) (4 shared connections)
-- [roomHandlers.ts](roomHandlers.ts.md) (2 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (2 shared connections)
+- [logger.ts](logger.ts.md) (2 shared connections)
 - [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
+- [PanelState](PanelState.md) (2 shared connections)
 
 ## Source Files
 

@@ -14,8 +14,11 @@ Refactored to delegate to specialized modules for better maintainability.
 # pylint: disable=too-many-instance-attributes  # Reason: Event handler requires many service and state tracking attributes
 
 import uuid
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
+from structlog.stdlib import BoundLogger
+
+from ..app.task_registry import TaskRegistry
 from ..events import EventBus
 from ..events.event_types import (
     NPCEnteredRoom,
@@ -27,10 +30,10 @@ from ..events.event_types import (
     PlayerEnteredRoom,
     PlayerLeftRoom,
     PlayerRespawnedEvent,
+    PlayerXPAwardEvent,
 )
-from ..services.chat_logger import chat_logger
-from ..services.player_combat_service import PlayerXPAwardEvent
-from ..services.room_sync_service import get_room_sync_service
+from ..services.chat_logger import ChatLogger, chat_logger
+from ..services.room_sync_service import RoomSyncService, get_room_sync_service
 from ..structured_logging.enhanced_logging_config import get_logger
 from .message_builders import MessageBuilder
 from .npc_event_handlers import NPCEventHandler
@@ -55,10 +58,23 @@ class RealTimeEventHandler:
     maintainability and reduced complexity.
     """
 
+    event_bus: EventBus
+    connection_manager: "ConnectionManager | None"
+    _logger: BoundLogger
+    _sequence_counter: int
+    task_registry: TaskRegistry | None
+    chat_logger: ChatLogger
+    room_sync_service: RoomSyncService
+    name_extractor: PlayerNameExtractor
+    occupant_manager: RoomOccupantManager
+    message_builder: MessageBuilder
+    player_handler: PlayerEventHandler
+    npc_handler: NPCEventHandler
+
     def __init__(
         self,
         event_bus: EventBus | None = None,
-        task_registry: Any | None = None,
+        task_registry: TaskRegistry | None = None,
         connection_manager: "ConnectionManager | None" = None,
     ) -> None:
         """
@@ -216,7 +232,7 @@ class RealTimeEventHandler:
         """
         try:
             # Get room occupants with structured data
-            occupants_info: list[dict[str, Any] | str] = await self.occupant_manager.get_room_occupants(room_id)
+            occupants_info = await self.occupant_manager.get_room_occupants(room_id)
 
             # Separate players and NPCs while maintaining backward compatibility
             players, npcs, all_occupants = self.occupant_manager.separate_occupants_by_type(occupants_info, room_id)
@@ -238,7 +254,7 @@ class RealTimeEventHandler:
             # Build and send the message
             message = self.message_builder.build_occupants_update_message(room_id_str, players, npcs, all_occupants)
             if self.connection_manager is not None:
-                await self.connection_manager.broadcast_to_room(room_id, message, exclude_player=exclude_player)
+                _ = await self.connection_manager.broadcast_to_room(room_id, message, exclude_player=exclude_player)
 
         except (ValueError, TypeError, KeyError, AttributeError, RuntimeError) as e:
             self._logger.error("Error sending room occupants update", error=str(e), exc_info=True)
@@ -257,7 +273,7 @@ class RealTimeEventHandler:
         """
         await self._send_room_occupants_update_internal(room_id, exclude_player)
 
-    async def _get_room_occupants(self, room_id: str) -> list[dict[str, Any] | str]:
+    async def _get_room_occupants(self, room_id: str) -> list[dict[str, object] | str]:
         """
         Get room occupants (public API for backward compatibility).
 
@@ -269,7 +285,7 @@ class RealTimeEventHandler:
         """
         return await self.occupant_manager.get_room_occupants(room_id)
 
-    def _create_player_entered_message(self, event: PlayerEnteredRoom, player_name: str) -> dict[str, Any]:
+    def _create_player_entered_message(self, event: PlayerEnteredRoom, player_name: str) -> dict[str, object]:
         """
         Create player entered message (public API for tests).
 
@@ -282,7 +298,7 @@ class RealTimeEventHandler:
         """
         return self.message_builder.create_player_entered_message(event, player_name)
 
-    def _create_player_left_message(self, event: PlayerLeftRoom, player_name: str) -> dict[str, Any]:
+    def _create_player_left_message(self, event: PlayerLeftRoom, player_name: str) -> dict[str, object]:
         """
         Create player left message (public API for tests).
 

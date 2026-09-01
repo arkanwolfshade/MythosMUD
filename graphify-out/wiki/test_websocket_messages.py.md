@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (2 shared connections)
+- [pydantic.md](pydantic.md.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

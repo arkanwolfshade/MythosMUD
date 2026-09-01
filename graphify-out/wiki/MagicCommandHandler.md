@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (18 shared connections)
+- [command_service.py](command_service.py.md) (12 shared connections)
+- [AliasStorage](AliasStorage.md) (6 shared connections)
 - [SpellEffects](SpellEffects.md) (4 shared connections)
 - [test_magic_commands.py](test_magic_commands.py.md) (2 shared connections)
 - [test_rest_command.py](test_rest_command.py.md) (2 shared connections)

@@ -33,14 +33,16 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
 - [Any](Any.md) (6 shared connections)
 - [message_handler_factory.py](message_handler_factory.py.md) (6 shared connections)
 - [build_event](build_event.md) (3 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [ErrorType](ErrorType.md) (1 shared connections)
+- [test_websocket_handler_coverage_gaps.py](test_websocket_handler_coverage_gaps.py.md) (1 shared connections)
 - [websocket_handler_commands.py](websocket_handler_commands.py.md) (1 shared connections)
+- [magic_service.py](magic_service.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [User](User.md) (1 shared connections)
 
 ## Source Files
 

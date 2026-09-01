@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (6 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [EventBus](EventBus.md) (7 shared connections)
 - [ChatService](ChatService.md) (1 shared connections)
 
 ## Source Files

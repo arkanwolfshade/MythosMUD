@@ -1,50 +1,49 @@
 # service.py
 
-> 107 nodes
+> 38 nodes
 
 ## Key Concepts
 
 - **service.py** (36 connections) — `server/services/passive_lucidity_flux/service.py`
-- **test_passive_lucidity_flux_service.py** (33 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **LucidityFluxService** (32 connections) — `server/services/passive_lucidity_flux/service.py`
-- **_make_service()** (22 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **.process_tick()** (15 connections) — `server/services/passive_lucidity_flux/service.py`
 - **PassiveFluxContext** (13 connections) — `server/services/passive_lucidity_flux/models.py`
 - **._resolve_context_async()** (12 connections) — `server/services/passive_lucidity_flux/service.py`
 - **config.py** (12 connections) — `server/services/passive_lucidity_flux/config.py`
-- **._process_single_player()** (10 connections) — `server/services/passive_lucidity_flux/service.py`
 - **._resolve_context()** (10 connections) — `server/services/passive_lucidity_flux/service.py`
 - **Player** (10 connections)
 - **FluxServiceConfig** (9 connections) — `server/services/passive_lucidity_flux/config.py`
 - **FluxRoom** (9 connections) — `server/services/passive_lucidity_flux/service.py`
 - **._lookup_base_flux_for_room()** (9 connections) — `server/services/passive_lucidity_flux/service.py`
-- **._filter_active_players()** (8 connections) — `server/services/passive_lucidity_flux/service.py`
-- **PassiveLucidityFluxService** (8 connections)
-- **datetime** (8 connections)
-- **PlayerFluxCtx** (7 connections) — `server/services/passive_lucidity_flux/service.py`
-- **._evaluate_players_tick()** (7 connections) — `server/services/passive_lucidity_flux/service.py`
 - **.__init__()** (7 connections) — `server/services/passive_lucidity_flux/service.py`
 - **passive_lucidity_flux/models.py** (7 connections) — `server/services/passive_lucidity_flux/models.py`
-- **CachedRoom** (6 connections) — `server/services/passive_lucidity_flux/models.py`
 - **period_label()** (6 connections) — `server/services/passive_lucidity_flux/config.py`
-- **._build_room_cache()** (6 connections) — `server/services/passive_lucidity_flux/service.py`
-- **._is_player_active()** (6 connections) — `server/services/passive_lucidity_flux/service.py`
-- *... and 82 more nodes in this community*
+- **._lookup_world_override_flux()** (6 connections) — `server/services/passive_lucidity_flux/service.py`
+- **passive_lucidity_flux/__init__.py** (6 connections) — `server/services/passive_lucidity_flux/__init__.py`
+- **normalize_environment_config()** (5 connections) — `server/services/passive_lucidity_flux/config.py`
+- **_as_float()** (5 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._get_room_for_context()** (5 connections) — `server/services/passive_lucidity_flux/service.py`
+- **lookup_profile()** (4 connections) — `server/services/passive_lucidity_flux/config.py`
+- **_as_str_attr()** (4 connections) — `server/services/passive_lucidity_flux/service.py`
+- **test_resolve_context_with_custom_resolver()** (4 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **_profile_map()** (3 connections) — `server/services/passive_lucidity_flux/service.py`
+- **datetime** (2 connections)
+- **Any** (1 connections)
+- **Protocol** (1 connections)
+- **Configuration and normalization for passive lucidity flux.** (1 connections) — `server/services/passive_lucidity_flux/config.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [LucidityService](LucidityService.md) (13 shared connections)
+- [LucidityFluxService](LucidityFluxService.md) (26 shared connections)
+- [test_passive_lucidity_flux_service.py](test_passive_lucidity_flux_service.py.md) (9 shared connections)
 - [test_rate_overrides.py](test_rate_overrides.py.md) (5 shared connections)
-- [PerformanceMonitor](PerformanceMonitor.md) (4 shared connections)
-- [test_hallucination_services.py](test_hallucination_services.py.md) (3 shared connections)
-- [sqlalchemy.md](sqlalchemy.md.md) (3 shared connections)
+- [Player](Player.md) (5 shared connections)
+- [LucidityService](LucidityService.md) (4 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (3 shared connections)
+- [PerformanceMonitor](PerformanceMonitor.md) (3 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (2 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [PlayerDeathService](PlayerDeathService.md) (1 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (1 shared connections)
-- [game_tick_protocols.py](game_tick_protocols.py.md) (1 shared connections)
+- [hallucinations.py](hallucinations.py.md) (2 shared connections)
+- [HolidayService](HolidayService.md) (1 shared connections)
+- [time.py](time.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -52,13 +51,12 @@
 - `server/services/passive_lucidity_flux/config.py`
 - `server/services/passive_lucidity_flux/models.py`
 - `server/services/passive_lucidity_flux/service.py`
-- `server/services/passive_lucidity_flux_service.py`
 - `server/tests/unit/services/test_passive_lucidity_flux_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 266 (97%)
-- INFERRED: 9 (3%)
+- EXTRACTED: 128 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

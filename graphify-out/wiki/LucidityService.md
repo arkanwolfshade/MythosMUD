@@ -1,6 +1,6 @@
 # LucidityService
 
-> 165 nodes
+> 166 nodes
 
 ## Key Concepts
 
@@ -18,38 +18,39 @@
 - **encode_liabilities()** (12 connections) — `server/services/lucidity_helpers.py`
 - **UUID** (12 connections)
 - **decode_liabilities()** (11 connections) — `server/services/lucidity_helpers.py`
-- **test_lucidity_round_trip.py** (11 connections) — `server/tests/integration/test_lucidity_round_trip.py`
 - **._finalize_lucidity_adjustment()** (10 connections) — `server/services/lucidity_service.py`
 - **._send_lucidity_change_event_if_needed()** (10 connections) — `server/services/lucidity_service.py`
 - **handle_delirium_and_sanitarium_triggers()** (10 connections) — `server/services/lucidity_trigger_handlers.py`
+- **hallucination_frequency_service.py** (10 connections) — `server/services/hallucination_frequency_service.py`
 - **UUID** (10 connections)
 - **.apply_lucidity_adjustment()** (9 connections) — `server/services/lucidity_service.py`
 - **handle_delirium_trigger()** (9 connections) — `server/services/lucidity_trigger_handlers.py`
 - **handle_sanitarium_trigger()** (9 connections) — `server/services/lucidity_trigger_handlers.py`
 - **test_lucidity_adjustment_round_trip()** (9 connections) — `server/tests/integration/test_lucidity_round_trip.py`
+- **resolve_tier()** (8 connections) — `server/services/lucidity_helpers.py`
 - **._apply_delta_to_record()** (8 connections) — `server/services/lucidity_service.py`
-- **._calculate_max_lcd()** (8 connections) — `server/services/lucidity_service.py`
-- *... and 140 more nodes in this community*
+- *... and 141 more nodes in this community*
 
 ## Relationships
 
-- [lucidity.py](lucidity.py.md) (30 shared connections)
+- [Player](Player.md) (33 shared connections)
+- [test_player_respawn_service.py](test_player_respawn_service.py.md) (20 shared connections)
 - [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (15 shared connections)
-- [service.py](service.py.md) (13 shared connections)
-- [test_player_respawn_service.py](test_player_respawn_service.py.md) (12 shared connections)
 - [.state](state.md) (10 shared connections)
-- [PlayerRespawnService](PlayerRespawnService.md) (10 shared connections)
+- [debrief_command.py](debrief_command.py.md) (10 shared connections)
 - [test_rescue_service.py](test_rescue_service.py.md) (9 shared connections)
-- [test_hallucination_services.py](test_hallucination_services.py.md) (8 shared connections)
+- [test_lucidity_models.py](test_lucidity_models.py.md) (7 shared connections)
+- [LucidityFluxService](LucidityFluxService.md) (7 shared connections)
 - [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (7 shared connections)
-- [get_logger](get_logger.md) (7 shared connections)
-- [pytest.md](pytest.md.md) (7 shared connections)
-- [debrief_command.py](debrief_command.py.md) (6 shared connections)
+- [test_hallucination_services.py](test_hallucination_services.py.md) (7 shared connections)
+- [coerce_int](coerce_int.md) (6 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
 
 ## Source Files
 
 - `server/models/lucidity.py`
 - `server/services/active_lucidity_service.py`
+- `server/services/hallucination_frequency_service.py`
 - `server/services/lucidity_helpers.py`
 - `server/services/lucidity_service.py`
 - `server/services/lucidity_trigger_handlers.py`
@@ -57,12 +58,11 @@
 - `server/tests/unit/services/test_lucidity_service.py`
 - `server/tests/unit/services/test_lucidity_trigger_handlers.py`
 - `server/tests/unit/test_lucidity_service_smoke.py`
-- `server/utils/liability_types.py`
 
 ## Audit Trail
 
-- EXTRACTED: 441 (87%)
-- INFERRED: 67 (13%)
+- EXTRACTED: 438 (86%)
+- INFERRED: 70 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

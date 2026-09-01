@@ -1,11 +1,12 @@
 # PeriodicOrphanAuditor
 
-> 47 nodes
+> 50 nodes
 
 ## Key Concepts
 
 - **PeriodicOrphanAuditor** (23 connections) — `server/app/memory_lifespan_coordinator.py`
 - **test_memory_lifespan_coordinator.py** (19 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
+- **memory_lifespan_coordinator.py** (12 connections) — `server/app/memory_lifespan_coordinator.py`
 - **asyncio** (11 connections)
 - **create_lifespan_memory_service()** (5 connections) — `server/app/memory_lifespan_coordinator.py`
 - **._background_audit_cycle()** (4 connections) — `server/app/memory_lifespan_coordinator.py`
@@ -28,14 +29,14 @@
 - **test_stop_audit_scheduler_not_running()** (3 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
 - **.stop_audit_scheduler()** (2 connections) — `server/app/memory_lifespan_coordinator.py`
 - **Any** (1 connections)
-- **fixture** (1 connections)
-- *... and 22 more nodes in this community*
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
-- [TrackedTaskManager](TrackedTaskManager.md) (3 shared connections)
-- [MemoryThresholdMonitor](MemoryThresholdMonitor.md) (1 shared connections)
+- [TrackedTaskManager](TrackedTaskManager.md) (5 shared connections)
+- [MemoryThresholdMonitor](MemoryThresholdMonitor.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -45,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 69 (85%)
-- INFERRED: 12 (15%)
+- EXTRACTED: 78 (87%)
+- INFERRED: 12 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

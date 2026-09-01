@@ -1,61 +1,65 @@
 # AsyncPersistenceLayer
 
-> 178 nodes
+> 199 nodes
 
 ## Key Concepts
 
-- **AsyncPersistenceLayer** (172 connections) — `server/async_persistence.py`
-- **test_async_persistence_delegates.py** (34 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **asyncio** (22 connections)
+- **AsyncPersistenceLayer** (168 connections) — `server/async_persistence.py`
+- **async_persistence.py** (93 connections) — `server/async_persistence.py`
+- **RoomCacheLoader** (26 connections) — `server/async_persistence_room_loader.py`
 - **Player** (20 connections)
-- **Any** (17 connections)
+- **AsyncPersistenceRoomFacade** (16 connections) — `server/async_persistence_room_facade.py`
 - **UUID** (15 connections)
-- **._ensure_room_cache_loaded()** (12 connections) — `server/async_persistence.py`
-- **.get_player_by_id()** (5 connections) — `server/async_persistence.py`
-- **.get_players_batch()** (5 connections) — `server/async_persistence.py`
-- **test_apply_corruption_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_apply_fear_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_apply_lucidity_loss_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_async_damage_player_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_async_heal_player_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_create_container_with_kwargs()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_create_container_with_params()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_damage_player_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_gain_occult_knowledge_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_player_by_user_id_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_heal_player_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **.add_player_effect()** (4 connections) — `server/async_persistence.py`
-- **.create_container()** (4 connections) — `server/async_persistence.py`
-- **.get_active_player_effects()** (4 connections) — `server/async_persistence.py`
-- **.get_active_players_by_user_id()** (4 connections) — `server/async_persistence.py`
-- **.get_container()** (4 connections) — `server/async_persistence.py`
-- *... and 153 more nodes in this community*
+- **async_persistence_room_facade.py** (14 connections) — `server/async_persistence_room_facade.py`
+- **ProcessedRoomData** (12 connections) — `server/async_persistence_room_loader.py`
+- **ExitJsonEntry** (10 connections) — `server/async_persistence_room_loader.py`
+- **.load()** (9 connections) — `server/async_persistence_room_loader.py`
+- **._process_combined_rows()** (8 connections) — `server/async_persistence_room_loader.py`
+- **_AsyncPersistenceRoomFacadeBase** (7 connections) — `server/async_persistence_room_facade.py`
+- **RoomLoadResult** (7 connections) — `server/async_persistence_room_loader.py`
+- **InstanceRoomLookup** (7 connections) — `server/async_persistence_types.py`
+- **._build_room_data_from_row()** (7 connections) — `server/async_persistence_room_loader.py`
+- **._generate_room_id_from_zone_data()** (7 connections) — `server/async_persistence_room_loader.py`
+- **async_persistence_types.py** (7 connections) — `server/async_persistence_types.py`
+- **async_persistence_access.py** (7 connections) — `server/container/async_persistence_access.py`
+- **ContainerCreateKwargs** (6 connections) — `server/async_persistence_types.py`
+- **PlayerEffectOptions** (6 connections) — `server/async_persistence_types.py`
+- **infrastructure/conftest.py** (6 connections) — `server/tests/unit/infrastructure/conftest.py`
+- **_ContainerWithPersistence** (5 connections) — `server/container/async_persistence_access.py`
+- **.create_container()** (5 connections) — `server/async_persistence.py`
+- **._build_room_objects()** (5 connections) — `server/async_persistence_room_loader.py`
+- **_ApplicationContainerType** (4 connections) — `server/container/async_persistence_access.py`
+- *... and 174 more nodes in this community*
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (12 shared connections)
-- [Player](Player.md) (11 shared connections)
-- [pytest.md](pytest.md.md) (9 shared connections)
-- [CombatCommandHandler](CombatCommandHandler.md) (5 shared connections)
-- [CombatInstance](CombatInstance.md) (5 shared connections)
-- [TransferContainerRequest](TransferContainerRequest.md) (4 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (4 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (4 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (4 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (4 shared connections)
-- [ContainerData](ContainerData.md) (4 shared connections)
-- [ValidationError](ValidationError.md) (3 shared connections)
+- [get_logger](get_logger.md) (33 shared connections)
+- [test_async_persistence_delegates.py](test_async_persistence_delegates.py.md) (26 shared connections)
+- [EventBus](EventBus.md) (17 shared connections)
+- [event_types.py](event_types.py.md) (9 shared connections)
+- [ContainerServiceError](ContainerServiceError.md) (8 shared connections)
+- [item_instance_persistence.py](item_instance_persistence.py.md) (8 shared connections)
+- [Player](Player.md) (7 shared connections)
+- [TransferContainerRequest](TransferContainerRequest.md) (6 shared connections)
+- [User](User.md) (6 shared connections)
+- [CombatParticipant](CombatParticipant.md) (6 shared connections)
+- [test_async_persistence_core.py](test_async_persistence_core.py.md) (5 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (4 shared connections)
 
 ## Source Files
 
 - `server/async_persistence.py`
+- `server/async_persistence_room_facade.py`
+- `server/async_persistence_room_loader.py`
+- `server/async_persistence_types.py`
+- `server/container/async_persistence_access.py`
+- `server/tests/unit/infrastructure/conftest.py`
 - `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 
 ## Audit Trail
 
-- EXTRACTED: 346 (87%)
-- INFERRED: 50 (13%)
+- EXTRACTED: 476 (91%)
+- INFERRED: 49 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

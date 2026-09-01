@@ -1,49 +1,45 @@
 # _make_session_context
 
-> 27 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **_make_session_context()** (13 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **asyncio** (11 connections)
-- **_row_for_quest_instance()** (6 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **test_create_database_error()** (5 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **test_create_success()** (5 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **test_get_by_player_and_quest_success()** (5 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **test_list_active_by_player_success()** (5 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **test_list_completed_by_player_database_error()** (5 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **test_list_completed_by_player_success()** (5 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **test_get_by_player_and_quest_accepts_uuid()** (4 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **test_get_by_player_and_quest_not_found()** (4 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **test_list_active_by_player_empty()** (4 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **test_update_state_and_progress_no_op()** (4 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **test_update_state_and_progress_success()** (4 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **Test get_by_player_and_quest returns mapped instance when found.** (1 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **Test get_by_player_and_quest returns None when not found.** (1 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **Test get_by_player_and_quest accepts UUID for player_id.** (1 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **Test update_state_and_progress updates and commits.** (1 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **Test update_state_and_progress still calls procedure and commit when only…** (1 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **Test list_active_by_player returns list of mapped active instances.** (1 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **Test list_active_by_player returns empty list when none.** (1 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **Test list_completed_by_player returns list of mapped completed instances.** (1 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **Test list_completed_by_player raises DatabaseError on DB failure.** (1 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **Return context manager that yields mock_session for async with.** (1 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **Build a procedure result row (mappings().first() return value) for…** (1 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- *... and 2 more nodes in this community*
+- **_make_session_context()** (11 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **asyncio** (9 connections)
+- **test_get_by_id_database_error()** (5 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_get_by_id_success()** (5 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_get_by_name_database_error()** (5 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_get_by_name_success()** (5 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_list_quest_ids_offered_by_database_error()** (5 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **_row_for_quest_definition()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_get_by_id_not_found()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_get_by_name_not_found()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_list_quest_ids_offered_by_empty()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_list_quest_ids_offered_by_success()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test get_by_id raises DatabaseError on DB failure.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test get_by_name returns definition when found by common name.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test get_by_name returns None when not found.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test get_by_name raises DatabaseError on DB failure.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test list_quest_ids_offered_by returns quest IDs for entity (procedure returns…** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test list_quest_ids_offered_by returns empty list when no offers.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test list_quest_ids_offered_by raises DatabaseError on DB failure.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Return context manager that yields mock_session for async with.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Build a procedure result row (mappings().first() return value) for…** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test get_by_id returns definition when found (procedure returns row, repo maps…** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test get_by_id returns None when not found.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
 
 ## Relationships
 
-- [sqlalchemy.md](sqlalchemy.md.md) (13 shared connections)
-- [DatabaseError](DatabaseError.md) (2 shared connections)
+- [get_logger](get_logger.md) (14 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_quest_instance_repository.py`
+- `server/tests/unit/persistence/test_quest_definition_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 42 (93%)
+- INFERRED: 3 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -22,8 +22,7 @@
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (3 shared connections)
-- [NPCBase](NPCBase.md) (2 shared connections)
+- [EventBus](EventBus.md) (5 shared connections)
 
 ## Source Files
 

@@ -35,12 +35,12 @@
 
 - [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (13 shared connections)
 - [PrototypeRegistry](PrototypeRegistry.md) (7 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [PrototypeRegistryError](PrototypeRegistryError.md) (1 shared connections)
+- [PrototypeRegistryError](PrototypeRegistryError.md) (2 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (1 shared connections)
-- [registry_with_switchblade](registry_with_switchblade.md) (1 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [pydantic.md](pydantic.md.md) (1 shared connections)
 
 ## Source Files
 

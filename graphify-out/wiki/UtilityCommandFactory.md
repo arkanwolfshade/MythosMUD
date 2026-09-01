@@ -1,6 +1,6 @@
 # UtilityCommandFactory
 
-> 120 nodes
+> 122 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **test_command_factories_utility.py** (52 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
 - **.create_summon_command()** (14 connections) — `server/utils/command_factories_utility.py`
 - **.create_cast_command()** (12 connections) — `server/utils/command_factories_utility.py`
+- **.create_teleport_command()** (11 connections) — `server/utils/command_factories_utility.py`
 - **.create_alias_command()** (7 connections) — `server/utils/command_factories_utility.py`
 - **.create_learn_command()** (7 connections) — `server/utils/command_factories_utility.py`
 - **.create_spell_command()** (7 connections) — `server/utils/command_factories_utility.py`
@@ -28,20 +29,21 @@
 - **test_create_summon_command_negative_quantity()** (5 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
 - **test_create_summon_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
 - **test_create_teleport_command_invalid_direction()** (5 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **test_create_teleport_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- *... and 95 more nodes in this community*
+- *... and 97 more nodes in this community*
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (20 shared connections)
-- [ValidationError](ValidationError.md) (18 shared connections)
-- [log_and_raise_enhanced](log_and_raise_enhanced.md) (9 shared connections)
+- [ValidationError](ValidationError.md) (28 shared connections)
+- [test_command_magic.py](test_command_magic.py.md) (5 shared connections)
+- [test_command_admin.py](test_command_admin.py.md) (5 shared connections)
+- [CommandFactory](CommandFactory.md) (3 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
-- [CombatCommandFactory](CombatCommandFactory.md) (1 shared connections)
-- [CommandFactory](CommandFactory.md) (1 shared connections)
-- [MythosChronicle](MythosChronicle.md) (1 shared connections)
+- [test_command_alias.py](test_command_alias.py.md) (2 shared connections)
+- [BaseCommand](BaseCommand.md) (2 shared connections)
+- [MythosTickScheduler](MythosTickScheduler.md) (2 shared connections)
+- [test_command_utility.py](test_command_utility.py.md) (1 shared connections)
+- [pydantic.md](pydantic.md.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,8 +52,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 196 (75%)
-- INFERRED: 64 (25%)
+- EXTRACTED: 199 (75%)
+- INFERRED: 66 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

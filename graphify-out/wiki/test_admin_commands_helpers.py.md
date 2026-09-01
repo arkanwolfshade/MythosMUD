@@ -34,7 +34,7 @@
 ## Relationships
 
 - [admin_teleport_commands.py](admin_teleport_commands.py.md) (14 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
+- [test_admin_commands.py](test_admin_commands.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

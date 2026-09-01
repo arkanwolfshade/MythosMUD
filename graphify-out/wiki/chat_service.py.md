@@ -36,15 +36,15 @@
 - [ChatMessage](ChatMessage.md) (31 shared connections)
 - [test_chat_message_senders.py](test_chat_message_senders.py.md) (22 shared connections)
 - [ChatService](ChatService.md) (18 shared connections)
-- [get_logger](get_logger.md) (15 shared connections)
 - [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (11 shared connections)
+- [get_logger](get_logger.md) (11 shared connections)
 - [test_chat_pose_helpers.py](test_chat_pose_helpers.py.md) (5 shared connections)
 - [test_chat_npc_system.py](test_chat_npc_system.py.md) (3 shared connections)
 - [UserManager](UserManager.md) (1 shared connections)
 - [ChatModeration](ChatModeration.md) (1 shared connections)
 - [ChatPoseManager](ChatPoseManager.md) (1 shared connections)
 - [ChatWhisperTracker](ChatWhisperTracker.md) (1 shared connections)
-- [PlayerService](PlayerService.md) (1 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,12 +1,11 @@
 # test_nats_service_health.py
 
-> 38 nodes
+> 36 nodes
 
 ## Key Concepts
 
 - **test_nats_service_health.py** (23 connections) — `server/tests/unit/services/test_nats_service_health.py`
 - **asyncio** (15 connections)
-- **nats_service()** (5 connections) — `server/tests/unit/services/test_nats_service_health.py`
 - **nats_config()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
 - **test_cancel_background_tasks()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
 - **test_cancel_background_tasks_empty()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
@@ -29,14 +28,13 @@
 - **Test publish_batch() adds message to batch.** (1 connections) — `server/tests/unit/services/test_nats_service_health.py`
 - **Test publish_batch() flushes when batch is full.** (1 connections) — `server/tests/unit/services/test_nats_service_health.py`
 - **Test _flush_batch() successfully flushes batch.** (1 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- *... and 13 more nodes in this community*
+- **Test _flush_batch() handles empty batch.** (1 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [NATSService](NATSService.md) (17 shared connections)
-- [NATSConfig](NATSConfig.md) (3 shared connections)
+- [NATSService](NATSService.md) (21 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +42,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 59 (80%)
-- INFERRED: 15 (20%)
+- EXTRACTED: 56 (79%)
+- INFERRED: 15 (21%)
 - AMBIGUOUS: 0 (0%)
 
 ---

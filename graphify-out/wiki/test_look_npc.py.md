@@ -1,6 +1,6 @@
 # test_look_npc.py
 
-> 168 nodes
+> 172 nodes
 
 ## Key Concepts
 
@@ -29,7 +29,7 @@
 - **test_format_single_npc_result_success()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
 - **test_format_single_npc_result_with_admin_stats()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
 - **test_try_lookup_npc_implicit_multiple_matches()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
-- *... and 143 more nodes in this community*
+- *... and 147 more nodes in this community*
 
 ## Relationships
 
@@ -38,8 +38,7 @@
 - [test_look_room.py](test_look_room.py.md) (3 shared connections)
 - [look_command.py](look_command.py.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [mock_lifecycle_manager](mock_lifecycle_manager.md) (2 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -50,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 311 (100%)
+- EXTRACTED: 314 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

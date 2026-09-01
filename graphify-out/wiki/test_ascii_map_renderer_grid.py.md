@@ -21,7 +21,7 @@
 
 - [AsciiMapRenderer](AsciiMapRenderer.md) (6 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [map_minimap.py](map_minimap.py.md) (1 shared connections)
 
 ## Source Files
 

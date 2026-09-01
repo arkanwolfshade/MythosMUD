@@ -1,6 +1,6 @@
 # test_look_container.py
 
-> 216 nodes
+> 227 nodes
 
 ## Key Concepts
 
@@ -18,6 +18,7 @@
 - **JsonMap** (13 connections)
 - **asyncio** (13 connections)
 - **_format_container_contents()** (12 connections) — `server/commands/look_container.py`
+- **ContainerLookArgs** (10 connections) — `server/commands/look_container.py`
 - **_get_container_description()** (10 connections) — `server/commands/look_container.py`
 - **_as_map()** (9 connections) — `server/commands/look_container.py`
 - **_get_container_data_from_component()** (9 connections) — `server/commands/look_container.py`
@@ -28,19 +29,17 @@
 - **_matches_item_instance_id()** (7 connections) — `server/commands/look_container.py`
 - **_matches_name_or_slot()** (7 connections) — `server/commands/look_container.py`
 - **test_handle_container_look_success()** (7 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Protocol** (7 connections)
-- *... and 191 more nodes in this community*
+- *... and 202 more nodes in this community*
 
 ## Relationships
 
-- [look_command.py](look_command.py.md) (13 shared connections)
+- [look_command.py](look_command.py.md) (11 shared connections)
 - [coerce_int](coerce_int.md) (5 shared connections)
-- [sample_container](sample_container.md) (5 shared connections)
-- [look_helpers.py](look_helpers.py.md) (3 shared connections)
+- [test_look_player.py](test_look_player.py.md) (3 shared connections)
 - [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
-- [command_result_text](command_result_text.md) (1 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 439 (99%)
-- INFERRED: 5 (1%)
+- EXTRACTED: 449 (98%)
+- INFERRED: 7 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

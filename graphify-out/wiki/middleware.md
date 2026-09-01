@@ -1,6 +1,6 @@
 # middleware
 
-> 37 nodes
+> 40 nodes
 
 ## Key Concepts
 
@@ -24,19 +24,19 @@
 - **.__init__()** (3 connections) — `server/middleware/correlation_middleware.py`
 - **test_create_correlation_middleware_factory()** (3 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
 - **test_create_websocket_correlation_middleware()** (3 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **mock_app()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **.__init__()** (2 connections) — `server/middleware/correlation_middleware.py`
 - **test_get_header_case_insensitive()** (2 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
 - **Scope** (2 connections)
-- **ASGIApp** (1 connections)
-- **Receive** (1 connections)
-- *... and 12 more nodes in this community*
+- **fixture** (2 connections)
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
 - [test_security_headers.py](test_security_headers.py.md) (6 shared connections)
 - [log_with_context](log_with_context.md) (5 shared connections)
 - [ComprehensiveLoggingMiddleware](ComprehensiveLoggingMiddleware.md) (3 shared connections)
-- [server/main.py](server-main.py.md) (2 shared connections)
+- [factory.py](factory.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [fastapi_integration.py](fastapi_integration.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
@@ -49,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 67 (75%)
-- INFERRED: 22 (25%)
+- EXTRACTED: 70 (76%)
+- INFERRED: 22 (24%)
 - AMBIGUOUS: 0 (0%)
 
 ---

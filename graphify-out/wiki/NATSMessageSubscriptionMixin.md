@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
-- [GameStateProvider](GameStateProvider.md) (1 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (4 shared connections)
 - [test_room_utils.py](test_room_utils.py.md) (1 shared connections)
 
 ## Source Files

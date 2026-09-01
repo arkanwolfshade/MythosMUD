@@ -1,6 +1,6 @@
 # MonitoringDashboard
 
-> 62 nodes
+> 60 nodes
 
 ## Key Concepts
 
@@ -15,7 +15,6 @@
 - **._generate_recommendations()** (7 connections) — `server/monitoring/monitoring_dashboard.py`
 - **SystemHealth** (6 connections) — `server/monitoring/monitoring_dashboard.py`
 - **.get_monitoring_summary()** (6 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.__init__()** (6 connections) — `server/monitoring/monitoring_dashboard.py`
 - **Any** (6 connections)
 - **.export_monitoring_data()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
 - **.record_durability_anomaly()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
@@ -29,17 +28,18 @@
 - **._get_disk_usage()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
 - **._get_memory_usage()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
 - **._get_system_load()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
-- *... and 37 more nodes in this community*
+- **._make_performance_alert()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [PerformanceMonitor](PerformanceMonitor.md) (13 shared connections)
-- [LogAggregator](LogAggregator.md) (5 shared connections)
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (3 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (12 shared connections)
+- [LogAggregator](LogAggregator.md) (4 shared connections)
 - [log_with_context](log_with_context.md) (3 shared connections)
 - [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [lifespan.py](lifespan.py.md) (2 shared connections)
+- [PerformanceMonitor](PerformanceMonitor.md) (1 shared connections)
 - [system_monitoring.py](system_monitoring.py.md) (1 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (1 shared connections)
 - [InventoryMutationGuard](InventoryMutationGuard.md) (1 shared connections)
 
 ## Source Files
@@ -50,7 +50,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 126 (92%)
+- EXTRACTED: 121 (92%)
 - INFERRED: 11 (8%)
 - AMBIGUOUS: 0 (0%)
 

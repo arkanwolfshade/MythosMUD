@@ -13,9 +13,8 @@ from typing import Protocol, runtime_checkable
 from sqlalchemy.exc import SQLAlchemyError
 from structlog.stdlib import BoundLogger
 
-from ..events.event_types import PlayerDiedEvent, PlayerDPDecayEvent, PlayerDPUpdated
+from ..events.event_types import PlayerDiedEvent, PlayerDPDecayEvent, PlayerDPUpdated, PlayerXPAwardEvent
 from ..models.player import Player
-from ..services.player_combat_service import PlayerXPAwardEvent
 from .connection_manager import ConnectionManager
 from .envelope import build_event
 from .player_event_handlers_utils import PlayerEventHandlerUtils

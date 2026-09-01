@@ -1,6 +1,6 @@
 # EventBus
 
-> God node · 210 connections · `server/events/event_bus.py`
+> God node · 212 connections · `server/events/event_bus.py`
 
 **Community:** [EventBus](EventBus.md)
 
@@ -32,13 +32,13 @@
 - event_bus.py `EXTRACTED`
 
 ### imports
-- connection_manager.py `EXTRACTED`
+- [connection_manager.py](connection_manager.py.md) `EXTRACTED`
 - combat_service.py `EXTRACTED`
 - async_persistence.py `EXTRACTED`
-- test_population_control.py `EXTRACTED`
+- [test_population_control.py](test_population_control.py.md) `EXTRACTED`
 - test_event_bus.py `EXTRACTED`
 - test_npc_instance_service.py `EXTRACTED`
-- npc_combat_integration_service.py `EXTRACTED`
+- [npc_combat_integration_service.py](npc_combat_integration_service.py.md) `EXTRACTED`
 - lifecycle_manager.py `EXTRACTED`
 - combat_handler.py `EXTRACTED`
 - test_npc_combat_integration_class.py `EXTRACTED`
@@ -48,9 +48,9 @@
 - spawning_service.py `EXTRACTED`
 - memory_monitor.py `EXTRACTED`
 - movement_service.py `EXTRACTED`
+- models/room.py `EXTRACTED`
 - event_handler.py `EXTRACTED`
 - chat_npc_system.py `EXTRACTED`
-- models/room.py `EXTRACTED`
 - follow_service.py `EXTRACTED`
 
 ### inherits
@@ -108,7 +108,7 @@
 - [CombatCommandHandler](CombatCommandHandler.md) `INFERRED`
 - [PartyService](PartyService.md) `INFERRED`
 - [MythosTickScheduler](MythosTickScheduler.md) `INFERRED`
-- [MythosTimeEventConsumer](MythosTimeEventConsumer.md) `INFERRED`
+- MythosTimeEventConsumer `INFERRED`
 - NPCInstanceService `INFERRED`
 - create_npc_instance() `INFERRED`
 - initialize_npc_instance_service() `INFERRED`

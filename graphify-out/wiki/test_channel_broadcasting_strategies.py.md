@@ -21,10 +21,10 @@
 
 ## Relationships
 
-- [asyncio](asyncio.md) (8 shared connections)
+- [asyncio](asyncio.md) (9 shared connections)
 - [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (6 shared connections)
-- [UnknownChannelStrategy](UnknownChannelStrategy.md) (4 shared connections)
 - [RoomBasedChannelStrategy](RoomBasedChannelStrategy.md) (4 shared connections)
+- [UnknownChannelStrategy](UnknownChannelStrategy.md) (3 shared connections)
 - [SystemAdminChannelStrategy](SystemAdminChannelStrategy.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 

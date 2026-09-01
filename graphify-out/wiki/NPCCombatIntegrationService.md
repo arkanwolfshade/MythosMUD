@@ -1,72 +1,62 @@
 # NPCCombatIntegrationService
 
-> 273 nodes
+> 170 nodes
 
 ## Key Concepts
 
 - **NPCCombatIntegrationService** (86 connections) — `server/services/npc_combat_integration_service.py`
-- **npc_combat_integration_service.py** (53 connections) — `server/services/npc_combat_integration_service.py`
 - **test_npc_combat_integration_service.py** (47 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **NPCCombatMemory** (28 connections) — `server/services/npc_combat_memory.py`
+- **NPCCombatUUIDMapping** (38 connections) — `server/services/npc_combat_uuid_mapping.py`
 - **asyncio** (25 connections)
-- **test_npc_combat_integration_service_player_attacks.py** (23 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **test_npc_combat_integration_service_npc_aggro.py** (20 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **NPCCombatHandlers** (18 connections) — `server/services/npc_combat_handlers.py`
-- **NPCCombatRewards** (18 connections) — `server/services/npc_combat_rewards.py`
-- **TestNPCCombatMemory** (16 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **npc_combat_handlers.py** (16 connections) — `server/services/npc_combat_handlers.py`
-- **NPCCombatLifecycle** (15 connections) — `server/services/npc_combat_lifecycle.py`
-- **asyncio** (14 connections)
-- **CombatResultCtx** (12 connections) — `server/services/npc_combat_handlers.py`
+- **TestNPCCombatUUIDMapping** (22 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
 - **.__init__()** (12 connections) — `server/services/npc_combat_integration_service.py`
-- **NPCCombatIntegrationValidationMixin** (11 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **npc_combat_rewards.py** (10 connections) — `server/services/npc_combat_rewards.py`
-- **NPCCombatIntegrationCombatMixin** (9 connections) — `server/services/npc_combat_integration_combat_mixin.py`
 - **._init_npc_submodules()** (9 connections) — `server/services/npc_combat_integration_service.py`
-- **asyncio** (9 connections)
-- **._handle_npc_death_on_combat_end()** (7 connections) — `server/services/npc_combat_handlers.py`
-- **.__init__()** (7 connections) — `server/services/npc_combat_handlers.py`
+- **npc_combat_uuid_mapping.py** (8 connections) — `server/services/npc_combat_uuid_mapping.py`
 - **integration_service()** (7 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **npc_combat_memory.py** (7 connections) — `server/services/npc_combat_memory.py`
+- **UUID** (7 connections)
 - **._init_messaging_handlers_and_publisher()** (6 connections) — `server/services/npc_combat_integration_service.py`
-- *... and 248 more nodes in this community*
+- **_StubConfigRoot** (5 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **._init_persistence_and_event_bus()** (5 connections) — `server/services/npc_combat_integration_service.py`
+- **test_validate_combat_location_limbo_cross_room_uses_debug()** (5 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **._complete_player_attack_on_npc_after_grace()** (4 connections) — `server/services/npc_combat_integration_service.py`
+- **.handle_player_attack_on_npc()** (4 connections) — `server/services/npc_combat_integration_service.py`
+- **._init_combat_service()** (4 connections) — `server/services/npc_combat_integration_service.py`
+- **.convert_to_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **test_end_combat_if_participant_in_combat_ends_combat()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_end_combat_if_participant_in_combat_no_combat()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_end_combat_if_participant_skips_when_player_id_unparseable()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_get_integration_config()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_handle_npc_attack_delegates_to_handle_npc_attack_on_player()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_handle_npc_attack_on_player_false_when_npc_dead()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_handle_npc_attack_on_player_false_without_combat_service()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- *... and 145 more nodes in this community*
 
 ## Relationships
 
-- [NPCCombatDataProvider](NPCCombatDataProvider.md) (20 shared connections)
-- [get_logger](get_logger.md) (15 shared connections)
-- [CombatService](CombatService.md) (13 shared connections)
-- [NPCCombatLucidity](NPCCombatLucidity.md) (11 shared connections)
-- [NPCBase](NPCBase.md) (9 shared connections)
-- [test_npc_combat_handlers.py](test_npc_combat_handlers.py.md) (8 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (6 shared connections)
-- [GameMechanicsService](GameMechanicsService.md) (6 shared connections)
-- [CombatInstance](CombatInstance.md) (5 shared connections)
-- [NPCCombatUUIDMapping](NPCCombatUUIDMapping.md) (5 shared connections)
-- [npc_combat_grace.py](npc_combat_grace.py.md) (5 shared connections)
+- [npc_combat_integration_service.py](npc_combat_integration_service.py.md) (16 shared connections)
+- [test_npc_combat_integration_service_player_attacks.py](test_npc_combat_integration_service_player_attacks.py.md) (11 shared connections)
+- [NPCCombatDataProvider](NPCCombatDataProvider.md) (10 shared connections)
+- [EventBus](EventBus.md) (9 shared connections)
+- [CombatService](CombatService.md) (5 shared connections)
 - [CombatCommandHandler](CombatCommandHandler.md) (4 shared connections)
+- [npc_combat_grace.py](npc_combat_grace.py.md) (4 shared connections)
+- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (3 shared connections)
+- [PlayerCombatService](PlayerCombatService.md) (3 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (3 shared connections)
+- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (2 shared connections)
+- [CombatMessagingService](CombatMessagingService.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/combat.py`
-- `server/services/npc_combat_handlers.py`
-- `server/services/npc_combat_integration_combat_mixin.py`
 - `server/services/npc_combat_integration_service.py`
-- `server/services/npc_combat_integration_validation_mixin.py`
-- `server/services/npc_combat_lifecycle.py`
-- `server/services/npc_combat_memory.py`
-- `server/services/npc_combat_rewards.py`
-- `server/services/player_combat_service_support.py`
+- `server/services/npc_combat_uuid_mapping.py`
 - `server/tests/unit/services/test_npc_combat_integration_service.py`
-- `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- `server/tests/unit/services/test_npc_combat_memory.py`
-- `server/tests/unit/services/test_npc_combat_rewards.py`
+- `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
 
 ## Audit Trail
 
-- EXTRACTED: 500 (87%)
-- INFERRED: 75 (13%)
+- EXTRACTED: 293 (85%)
+- INFERRED: 52 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

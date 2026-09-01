@@ -35,16 +35,15 @@
 
 - [TargetMatch](TargetMatch.md) (16 shared connections)
 - [SpellEffectType](SpellEffectType.md) (11 shared connections)
-- [CastingStateManager](CastingStateManager.md) (5 shared connections)
+- [magic_service.py](magic_service.py.md) (10 shared connections)
 - [SpellEffects](SpellEffects.md) (5 shared connections)
-- [AliasStorage](AliasStorage.md) (5 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
+- [command_service.py](command_service.py.md) (5 shared connections)
 - [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
 - [CombatService](CombatService.md) (1 shared connections)
-- [_MagicServiceCore](_MagicServiceCore.md) (1 shared connections)
 - [MagicCommandHandler](MagicCommandHandler.md) (1 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (1 shared connections)
+- [CombatCommandHandler](CombatCommandHandler.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 

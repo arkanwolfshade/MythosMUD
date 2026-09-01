@@ -31,9 +31,8 @@
 
 ## Relationships
 
-- [connection_manager_methods.py](connection_manager_methods.py.md) (2 shared connections)
+- [connection_manager.py](connection_manager.py.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,52 +1,49 @@
 # ConnectionCleaner
 
-> 46 nodes
+> 21 nodes
 
 ## Key Concepts
 
 - **ConnectionCleaner** (27 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Any** (14 connections)
 - **UUID** (10 connections)
-- **.cleanup_ghost_players()** (8 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **.prune_stale_players()** (7 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **.check_and_cleanup()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **.cleanup_dead_connections()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **._cleanup_dead_connections_for_player()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **.cleanup_orphaned_data()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._close_and_remove_stale_websocket()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._get_online_player_ids()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **._remove_stale_player_data()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **_stale_prune_max_age_seconds()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._filter_actual_ghost_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **.force_cleanup()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._get_player_id_from_metadata()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **._get_players_to_check()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._get_potential_ghost_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **._identify_stale_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **.__init__()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._remove_ghost_players_from_room()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._identify_stale_connections()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **._is_websocket_dead()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **test_stale_prune_max_age_local()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **server/realtime/maintenance/__init__.py** (3 connections) — `server/realtime/maintenance/__init__.py`
 - **Identify players whose last_seen timestamp exceeds the max age. Args:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- *... and 21 more nodes in this community*
+- **Remove all data for a stale player. Args: pid: Player ID to remove…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Remove players whose presence is stale beyond the threshold. Args: last_seen:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Return True if websocket appears dead (should be cleaned up).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Return list of player IDs to check (single player or all).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Clean up dead connections for a single player.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Clean up dead connections for a specific player or all players. Args:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Manages connection cleanup and maintenance operations. This class provides: -…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Initialize the connection cleaner. Args: memory_monitor: MemoryMonitor instance…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Maintenance components for connection management. This package provides modular…** (1 connections) — `server/realtime/maintenance/__init__.py`
 
 ## Relationships
 
-- [connection_manager_methods.py](connection_manager_methods.py.md) (6 shared connections)
-- [test_connection_cleaner.py](test_connection_cleaner.py.md) (3 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
-- [connection_cleanup_methods.py](connection_cleanup_methods.py.md) (1 shared connections)
+- [Any](Any.md) (16 shared connections)
+- [connection_manager.py](connection_manager.py.md) (5 shared connections)
+- [.check_and_cleanup](check_and_cleanup.md) (3 shared connections)
+- [test_connection_cleaner.py](test_connection_cleaner.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [fixture](fixture.md) (1 shared connections)
 
 ## Source Files
 
+- `server/realtime/maintenance/__init__.py`
 - `server/realtime/maintenance/connection_cleaner.py`
-- `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 56 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---
