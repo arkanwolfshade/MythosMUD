@@ -2,10 +2,6 @@
 
 from typing import Protocol
 
-# Protocol method bodies use Ellipsis per PEP 544; Pylint W2301 flags it as redundant vs pass,
-# but pass breaks pyright (no return) and triggers unnecessary-pass. Keep ... and silence W2301.
-# pylint: disable=unnecessary-ellipsis
-
 
 class CombatIntegrationProtocol(Protocol):
     """Protocol for combat integration handle_npc_death."""
@@ -14,27 +10,19 @@ class CombatIntegrationProtocol(Protocol):
         """Handle NPC death in the combat integration layer."""
 
 
-class CombatServiceLookupProtocol(Protocol):
-    """Protocol for the one CombatService method NPCBase needs (avoids a services/ import)."""
-
-    def is_npc_in_combat_sync(self, npc_id: str) -> bool:
-        """Return True if the given NPC is currently in combat."""
-        ...
-
-
 class CommunicationIntegrationProtocol(Protocol):
     """Protocol for communication integration (whisper, room message, handle player message)."""
 
     def send_whisper_to_player(self, npc_id: str, target_id: str, message: str, room_id: str | None) -> bool:
         """Send a private whisper from this NPC to a single player."""
-        ...
+        return False
 
     def send_message_to_room(self, npc_id: str, room_id: str | None, message: str, channel: str) -> bool:
         """Send a message from this NPC to all players in a room."""
-        ...
+        return False
 
     def handle_player_message(
         self, npc_id: str, speaker_id: str, message: str, room_id: str | None, channel: str
     ) -> bool:
         """Handle an incoming player message directed at this NPC."""
-        ...
+        return False

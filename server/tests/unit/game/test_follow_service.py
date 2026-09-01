@@ -6,50 +6,60 @@ unfollow, get_followers/get_following, movement propagation, auto-unfollow on mo
 disconnect cleanup.
 """
 
+# pyright: reportPrivateUsage=false
+# Reason: Unit tests intentionally call FollowService private/protected helpers.
+# pyright: reportAny=false, reportUnknownMemberType=false, reportUnknownArgumentType=false
+# Reason: MagicMock fixture attribute chains are Any; typing each access adds no safety.
+# pyright: reportUnknownVariableType=false
+# Reason: Follows from MagicMock fixture usage in assertions.
+
+from __future__ import annotations
+
 import uuid
 from datetime import UTC, datetime, timedelta
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from server.events.event_types import NPCEnteredRoom, PlayerEnteredRoom
-from server.game.follow_service import FOLLOW_REQUEST_TTL_SECONDS, FollowService
+from server.game.follow_service import FollowService
+from server.game.follow_types import FOLLOW_REQUEST_TTL_SECONDS, FollowStatePayload, PendingFollowRequest, str_id
 from server.tests.unit.realtime.envelope_assertions import assert_event_envelope
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
-# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names
 
 
 @pytest.fixture
-def event_bus():
+def event_bus() -> None:
     """No event bus so we don't need to run the loop; we call handlers directly."""
     return None
 
 
 @pytest.fixture
-def movement_service():
+def movement_service() -> MagicMock:
     """Mock movement service; move_player returns True by default."""
-    m = MagicMock()
+    m: MagicMock = MagicMock()
     m.move_player = AsyncMock(return_value=True)
     return m
 
 
 @pytest.fixture
-def user_manager():
+def user_manager() -> MagicMock:
     """Mock user manager; not muted by default."""
-    m = MagicMock()
+    m: MagicMock = MagicMock()
     m.is_player_muted_async = AsyncMock(return_value=False)
     return m
 
 
 @pytest.fixture
-def connection_manager():
+def connection_manager() -> MagicMock:
     """Mock connection manager (optional for most tests)."""
     return MagicMock()
 
 
 @pytest.fixture
-def follow_service(event_bus, movement_service, user_manager):
+def follow_service(event_bus: None, movement_service: MagicMock, user_manager: MagicMock) -> FollowService:
     """FollowService with mocks. connection_manager=None avoids scheduling real send_game_event in sync tests."""
     return FollowService(
         event_bus=event_bus,
@@ -61,7 +71,7 @@ def follow_service(event_bus, movement_service, user_manager):
 
 # ---- request_follow ----
 @pytest.mark.asyncio
-async def test_request_follow_self_rejected(follow_service):
+async def test_request_follow_self_rejected(follow_service: FollowService) -> None:
     """Cannot follow yourself."""
     pid = str(uuid.uuid4())
     result = await follow_service.request_follow(pid, pid, "player", "Me")
@@ -70,7 +80,7 @@ async def test_request_follow_self_rejected(follow_service):
 
 
 @pytest.mark.asyncio
-async def test_request_follow_npc_immediate(follow_service):
+async def test_request_follow_npc_immediate(follow_service: FollowService) -> None:
     """Following an NPC is immediate (no pending request)."""
     requestor_id = str(uuid.uuid4())
     npc_id = "npc_guard_1"
@@ -82,7 +92,7 @@ async def test_request_follow_npc_immediate(follow_service):
 
 
 @pytest.mark.asyncio
-async def test_request_follow_player_muted_auto_decline(follow_service, user_manager):
+async def test_request_follow_player_muted_auto_decline(follow_service: FollowService, user_manager: MagicMock) -> None:
     """If target has muted requestor, return error and do not create pending request."""
     user_manager.is_player_muted_async = AsyncMock(return_value=True)
     requestor_id = str(uuid.uuid4())
@@ -95,7 +105,7 @@ async def test_request_follow_player_muted_auto_decline(follow_service, user_man
 
 
 @pytest.mark.asyncio
-async def test_request_follow_player_creates_pending(follow_service, user_manager):
+async def test_request_follow_player_creates_pending(follow_service: FollowService, user_manager: MagicMock) -> None:
     """Requesting to follow a player creates a pending request (target gets event via connection_manager)."""
     user_manager.is_player_muted_async = AsyncMock(return_value=False)
     requestor_id = str(uuid.uuid4())
@@ -113,10 +123,13 @@ async def test_request_follow_player_creates_pending(follow_service, user_manage
 
 
 @pytest.mark.asyncio
-async def test_follow_request_event_envelope_shape(event_bus, movement_service, user_manager):
+async def test_follow_request_event_envelope_shape(
+    event_bus: None, movement_service: MagicMock, user_manager: MagicMock
+) -> None:
     """follow_request producer emits a build_event-shaped envelope."""
-    conn_mgr = MagicMock()
-    conn_mgr.send_personal_message = AsyncMock()
+    conn_mgr: MagicMock = MagicMock()
+    send_personal_message: AsyncMock = AsyncMock()
+    conn_mgr.send_personal_message = send_personal_message
     service = FollowService(
         event_bus=event_bus,
         movement_service=movement_service,
@@ -126,13 +139,14 @@ async def test_follow_request_event_envelope_shape(event_bus, movement_service, 
     target_id = str(uuid.uuid4())
     requestor_id = str(uuid.uuid4())
     await service._send_follow_request_to_target(target_id, "req-1", "Alice", requestor_id)
-    conn_mgr.send_personal_message.assert_awaited_once()
-    event = conn_mgr.send_personal_message.await_args.args[1]
+    send_personal_message.assert_awaited_once()
+    assert send_personal_message.await_args is not None
+    event = send_personal_message.await_args.args[1]
     assert_event_envelope(event, event_type="follow_request")
 
 
 @pytest.mark.asyncio
-async def test_request_follow_already_following_rejected(follow_service):
+async def test_request_follow_already_following_rejected(follow_service: FollowService) -> None:
     """If already following someone, request_follow is rejected."""
     requestor_id = str(uuid.uuid4())
     follow_service._follow_target[requestor_id] = ("other_id", "player")
@@ -143,12 +157,12 @@ async def test_request_follow_already_following_rejected(follow_service):
 
 # ---- accept_follow / decline_follow ----
 @pytest.mark.asyncio
-async def test_accept_follow_success(follow_service, user_manager):
+async def test_accept_follow_success(follow_service: FollowService, user_manager: MagicMock) -> None:
     """Accepting a follow request establishes follow and notifies both."""
     user_manager.is_player_muted_async = AsyncMock(return_value=False)
     requestor_id = str(uuid.uuid4())
     target_id = str(uuid.uuid4())
-    await follow_service.request_follow(requestor_id, target_id, "player", "Alice")
+    _ = await follow_service.request_follow(requestor_id, target_id, "player", "Alice")
     req_id = list(follow_service._pending_requests)[0]
     result = await follow_service.accept_follow(target_id, req_id)
     assert result["success"] is True
@@ -158,12 +172,12 @@ async def test_accept_follow_success(follow_service, user_manager):
 
 
 @pytest.mark.asyncio
-async def test_decline_follow_success(follow_service, user_manager):
+async def test_decline_follow_success(follow_service: FollowService, user_manager: MagicMock) -> None:
     """Declining removes pending request and does not add follow."""
     user_manager.is_player_muted_async = AsyncMock(return_value=False)
     requestor_id = str(uuid.uuid4())
     target_id = str(uuid.uuid4())
-    await follow_service.request_follow(requestor_id, target_id, "player", "Alice")
+    _ = await follow_service.request_follow(requestor_id, target_id, "player", "Alice")
     req_id = list(follow_service._pending_requests)[0]
     result = await follow_service.decline_follow(target_id, req_id)
     assert result["success"] is True
@@ -172,7 +186,7 @@ async def test_decline_follow_success(follow_service, user_manager):
 
 
 @pytest.mark.asyncio
-async def test_accept_follow_invalid_request_id(follow_service):
+async def test_accept_follow_invalid_request_id(follow_service: FollowService) -> None:
     """Accept with wrong or expired request_id returns error."""
     result = await follow_service.accept_follow(str(uuid.uuid4()), "no-such-id")
     assert result["success"] is False
@@ -180,7 +194,7 @@ async def test_accept_follow_invalid_request_id(follow_service):
 
 
 # ---- unfollow ----
-def test_unfollow_was_following(follow_service):
+def test_unfollow_was_following(follow_service: FollowService) -> None:
     """Unfollow when following returns success and clears state."""
     fid = str(uuid.uuid4())
     follow_service._follow_target[fid] = ("target_id", "player")
@@ -190,7 +204,7 @@ def test_unfollow_was_following(follow_service):
     assert follow_service.get_following(fid) is None
 
 
-def test_unfollow_was_not_following(follow_service):
+def test_unfollow_was_not_following(follow_service: FollowService) -> None:
     """Unfollow when not following returns friendly message."""
     result = follow_service.unfollow(str(uuid.uuid4()))
     assert result["success"] is True
@@ -198,12 +212,12 @@ def test_unfollow_was_not_following(follow_service):
 
 
 # ---- get_followers / get_following ----
-def test_get_followers_empty(follow_service):
+def test_get_followers_empty(follow_service: FollowService) -> None:
     """get_followers returns empty list when no followers."""
     assert follow_service.get_followers("any_id") == []
 
 
-def test_get_followers_multiple(follow_service):
+def test_get_followers_multiple(follow_service: FollowService) -> None:
     """get_followers returns all follower ids for a target."""
     target_id = "target_1"
     follow_service._follow_target["f1"] = (target_id, "player")
@@ -212,12 +226,12 @@ def test_get_followers_multiple(follow_service):
     assert set(follow_service.get_followers(target_id)) == {"f1", "f2"}
 
 
-def test_get_following_none(follow_service):
+def test_get_following_none(follow_service: FollowService) -> None:
     """get_following returns None when not following anyone."""
     assert follow_service.get_following(str(uuid.uuid4())) is None
 
 
-def test_get_following_returns_tuple(follow_service):
+def test_get_following_returns_tuple(follow_service: FollowService) -> None:
     """get_following returns (target_id, target_type)."""
     fid = str(uuid.uuid4())
     follow_service._follow_target[fid] = ("npc_1", "npc")
@@ -226,7 +240,9 @@ def test_get_following_returns_tuple(follow_service):
 
 # ---- movement propagation and auto-unfollow ----
 @pytest.mark.asyncio
-async def test_on_player_entered_room_moves_followers(follow_service, movement_service):
+async def test_on_player_entered_room_moves_followers(
+    follow_service: FollowService, movement_service: MagicMock
+) -> None:
     """When followed player moves, followers are moved same from_room -> to_room."""
     leader_id = "leader_1"
     follower_id = "follower_1"
@@ -242,7 +258,9 @@ async def test_on_player_entered_room_moves_followers(follow_service, movement_s
 
 
 @pytest.mark.asyncio
-async def test_on_player_entered_room_move_failure_auto_unfollow(follow_service, movement_service):
+async def test_on_player_entered_room_move_failure_auto_unfollow(
+    follow_service: FollowService, movement_service: MagicMock
+) -> None:
     """When follower move fails, follower is auto-unfollowed and notified."""
     movement_service.move_player = AsyncMock(return_value=False)
     leader_id = "leader_1"
@@ -259,7 +277,7 @@ async def test_on_player_entered_room_move_failure_auto_unfollow(follow_service,
 
 
 @pytest.mark.asyncio
-async def test_on_npc_entered_room_moves_followers(follow_service, movement_service):
+async def test_on_npc_entered_room_moves_followers(follow_service: FollowService, movement_service: MagicMock) -> None:
     """When followed NPC moves, followers are moved."""
     npc_id = "npc_1"
     follower_id = "follower_1"
@@ -274,7 +292,9 @@ async def test_on_npc_entered_room_moves_followers(follow_service, movement_serv
 
 
 @pytest.mark.asyncio
-async def test_on_player_entered_room_no_from_room_id_skips_propagation(follow_service, movement_service):
+async def test_on_player_entered_room_no_from_room_id_skips_propagation(
+    follow_service: FollowService, movement_service: MagicMock
+) -> None:
     """If from_room_id is None, no follower movement."""
     follow_service._follow_target["f1"] = ("leader_1", "player")
     event = PlayerEnteredRoom(
@@ -288,7 +308,7 @@ async def test_on_player_entered_room_no_from_room_id_skips_propagation(follow_s
 
 # ---- get_following_display ----
 @pytest.mark.asyncio
-async def test_get_following_display_not_following(follow_service):
+async def test_get_following_display_not_following(follow_service: FollowService) -> None:
     """Display when not following anyone."""
     text = await follow_service.get_following_display(str(uuid.uuid4()))
     assert "not following anyone" in text
@@ -296,7 +316,7 @@ async def test_get_following_display_not_following(follow_service):
 
 
 @pytest.mark.asyncio
-async def test_get_following_display_following_npc(follow_service):
+async def test_get_following_display_following_npc(follow_service: FollowService) -> None:
     """Display shows who you follow (NPC)."""
     fid = str(uuid.uuid4())
     follow_service._follow_target[fid] = ("npc_1", "npc")
@@ -306,7 +326,7 @@ async def test_get_following_display_following_npc(follow_service):
 
 
 @pytest.mark.asyncio
-async def test_get_following_display_following_player_resolves_name(follow_service):
+async def test_get_following_display_following_player_resolves_name(follow_service: FollowService) -> None:
     """When following a player, display uses resolved name from persistence, not UUID."""
     fid = str(uuid.uuid4())
     target_id = str(uuid.uuid4())
@@ -321,7 +341,7 @@ async def test_get_following_display_following_player_resolves_name(follow_servi
 
 
 # ---- disconnect cleanup ----
-def test_on_player_disconnect_clears_follow_state(follow_service):
+def test_on_player_disconnect_clears_follow_state(follow_service: FollowService) -> None:
     """Disconnect removes player from follow target and follower lists."""
     pid = str(uuid.uuid4())
     other = str(uuid.uuid4())
@@ -334,12 +354,14 @@ def test_on_player_disconnect_clears_follow_state(follow_service):
 
 
 @pytest.mark.asyncio
-async def test_on_player_disconnect_cancels_pending_requests(follow_service, user_manager):
+async def test_on_player_disconnect_cancels_pending_requests(
+    follow_service: FollowService, user_manager: MagicMock
+) -> None:
     """Disconnect cancels pending requests where player is requestor or target."""
     user_manager.is_player_muted_async = AsyncMock(return_value=False)
     requestor_id = str(uuid.uuid4())
     target_id = str(uuid.uuid4())
-    await follow_service.request_follow(requestor_id, target_id, "player", "Alice")
+    _ = await follow_service.request_follow(requestor_id, target_id, "player", "Alice")
     assert len(follow_service._pending_requests) >= 1
     follow_service.on_player_disconnect(target_id)
     assert len(follow_service._pending_requests) == 0
@@ -347,7 +369,7 @@ async def test_on_player_disconnect_cancels_pending_requests(follow_service, use
 
 # ---- _ensure_follower_standing (auto-stand when following) ----
 @pytest.mark.asyncio
-async def test_ensure_follower_standing_already_standing(follow_service):
+async def test_ensure_follower_standing_already_standing(follow_service: FollowService) -> None:
     """If follower is already standing, _ensure_follower_standing returns True."""
     fid = str(uuid.uuid4())
     result = await follow_service._ensure_follower_standing(fid)
@@ -355,7 +377,7 @@ async def test_ensure_follower_standing_already_standing(follow_service):
 
 
 @pytest.mark.asyncio
-async def test_ensure_follower_standing_sitting_stands(follow_service):
+async def test_ensure_follower_standing_sitting_stands(follow_service: FollowService) -> None:
     """If follower is sitting and position service stands them, returns True."""
     fid = str(uuid.uuid4())
     mock_player = MagicMock()
@@ -363,17 +385,27 @@ async def test_ensure_follower_standing_sitting_stands(follow_service):
     mock_player.name = "Alice"
     follow_service._async_persistence = MagicMock()
     follow_service._async_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    follow_service._player_position_service = MagicMock()
-    follow_service._player_position_service.change_position = AsyncMock(
-        return_value={"success": True, "position": "standing"}
+    position_service: MagicMock = MagicMock()
+    change_position: AsyncMock = AsyncMock(
+        return_value={
+            "success": True,
+            "position": "standing",
+            "previous_position": "sitting",
+            "player_display_name": "Alice",
+            "room_id": "room-1",
+        }
     )
-    result = await follow_service._ensure_follower_standing(fid)
-    assert result is True
-    follow_service._player_position_service.change_position.assert_called_once_with("Alice", "standing")
+    position_service.change_position = change_position
+    follow_service._player_position_service = position_service
+    with patch("server.game.follow_movement.emit_posture_change", new_callable=AsyncMock) as mock_emit:
+        result = await follow_service._ensure_follower_standing(fid)
+        assert result is True
+        change_position.assert_called_once_with("Alice", "standing")
+        mock_emit.assert_awaited_once()
 
 
 @pytest.mark.asyncio
-async def test_ensure_follower_standing_fails_to_stand(follow_service):
+async def test_ensure_follower_standing_fails_to_stand(follow_service: FollowService) -> None:
     """If follower is prone and stand fails, returns False."""
     fid = str(uuid.uuid4())
     mock_player = MagicMock()
@@ -390,12 +422,12 @@ async def test_ensure_follower_standing_fails_to_stand(follow_service):
 
 
 # ---- TTL constant ----
-def test_follow_request_ttl_constant():
+def test_follow_request_ttl_constant() -> None:
     """Pending requests use 60s TTL as per plan."""
     assert FOLLOW_REQUEST_TTL_SECONDS == 60
 
 
-def test_get_following_display_name_npc(follow_service):
+def test_get_following_display_name_npc(follow_service: FollowService) -> None:
     """Display name is stored for NPC follows."""
     fid = str(uuid.uuid4())
     follow_service._follow_target[fid] = ("npc_1", "npc", "Guard Captain")
@@ -403,7 +435,7 @@ def test_get_following_display_name_npc(follow_service):
     assert follow_service.get_following_display_name(str(uuid.uuid4())) is None
 
 
-def test_expire_pending_requests_removes_stale(follow_service):
+def test_expire_pending_requests_removes_stale(follow_service: FollowService) -> None:
     """Expired pending requests are removed from state."""
     service = FollowService(
         event_bus=None,
@@ -412,29 +444,30 @@ def test_expire_pending_requests_removes_stale(follow_service):
         connection_manager=MagicMock(),
     )
     req_id = "req-expired"
-    service._pending_requests[req_id] = {
+    pending: PendingFollowRequest = {
         "requestor_id": "player_1",
+        "requestor_name": "Player One",
         "target_id": "player_2",
         "created_at": datetime.now(UTC) - timedelta(seconds=FOLLOW_REQUEST_TTL_SECONDS + 5),
     }
+    service._pending_requests[req_id] = pending
     service._expire_pending_requests()
     assert req_id not in service._pending_requests
 
 
-def test_send_result_to_player_no_connection_manager(follow_service):
+def test_send_result_to_player_no_connection_manager(follow_service: FollowService) -> None:
     """Without connection manager, send is a no-op."""
     follow_service._send_result_to_player("player_1", "hello")
 
 
-def test_send_follow_state_skips_without_manager(follow_service):
+def test_send_follow_state_skips_without_manager(follow_service: FollowService) -> None:
     """Follow state send is a no-op without connection manager."""
-    follow_service._send_follow_state_to_player("player_1", {"target_id": "npc_1"})
+    following: FollowStatePayload = {"target_name": "Guard", "target_type": "npc"}
+    follow_service._send_follow_state_to_player("player_1", following)
 
 
-def test_str_id_accepts_uuid():
-    """_str_id normalizes UUID objects to strings."""
-    from server.game.follow_service import _str_id
-
+def test_str_id_accepts_uuid() -> None:
+    """str_id normalizes UUID objects to strings."""
     uid = uuid.uuid4()
-    assert _str_id(uid) == str(uid)
-    assert _str_id(str(uid)) == str(uid)
+    assert str_id(uid) == str(uid)
+    assert str_id(str(uid)) == str(uid)

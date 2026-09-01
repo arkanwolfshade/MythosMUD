@@ -34,17 +34,17 @@
 ## Relationships
 
 - [TargetMatch](TargetMatch.md) (11 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (8 shared connections)
-- [PlayerService](PlayerService.md) (7 shared connections)
-- [test_magic_commands.py](test_magic_commands.py.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [SpellEffects](SpellEffects.md) (10 shared connections)
+- [magic_service.py](magic_service.py.md) (6 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [command_service.py](command_service.py.md) (2 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (2 shared connections)
-- [SpellEffects](SpellEffects.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [_MagicServiceCore](_MagicServiceCore.md) (1 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
-- [SpellEffectType](SpellEffectType.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
+- [SpellEffectType](SpellEffectType.md) (2 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
+- [MagicCommandHandler](MagicCommandHandler.md) (1 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 

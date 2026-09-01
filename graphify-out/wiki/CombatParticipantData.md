@@ -1,6 +1,6 @@
 # CombatParticipantData
 
-> 64 nodes
+> 68 nodes
 
 ## Key Concepts
 
@@ -9,8 +9,10 @@
 - **TestCombatInitializer** (15 connections) — `server/tests/unit/services/test_combat_initialization.py`
 - **combat_initialization.py** (15 connections) — `server/services/combat_initialization.py`
 - **TestCombatParticipantData** (12 connections) — `server/tests/unit/services/test_combat_types.py`
+- **combat_types.py** (11 connections) — `server/services/combat_types.py`
 - **test_combat_initialization.py** (9 connections) — `server/tests/unit/services/test_combat_initialization.py`
 - **CombatInitializer** (8 connections) — `server/services/combat_initialization.py`
+- **test_combat_types.py** (6 connections) — `server/tests/unit/services/test_combat_types.py`
 - **_build_participant()** (5 connections) — `server/services/combat_initialization.py`
 - **_compute_turn_order()** (5 connections) — `server/services/combat_initialization.py`
 - **.start_combat()** (5 connections) — `server/services/combat_service.py`
@@ -27,19 +29,16 @@
 - **.test_create_combat_instance_turn_order_lower_dexterity_first()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
 - **.test_create_combat_instance_zero_tick()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
 - **.test_combat_participant_data_creation()** (3 connections) — `server/tests/unit/services/test_combat_types.py`
-- **.test_combat_participant_data_current_exceeds_max()** (3 connections) — `server/tests/unit/services/test_combat_types.py`
-- **.test_combat_participant_data_default_participant_type()** (3 connections) — `server/tests/unit/services/test_combat_types.py`
-- *... and 39 more nodes in this community*
+- *... and 43 more nodes in this community*
 
 ## Relationships
 
-- [combat_service.py](combat_service.py.md) (11 shared connections)
-- [models/combat.py](models-combat.py.md) (8 shared connections)
-- [NPCCombatDataProvider](NPCCombatDataProvider.md) (4 shared connections)
+- [CombatService](CombatService.md) (14 shared connections)
+- [CombatParticipant](CombatParticipant.md) (9 shared connections)
+- [NPCCombatDataProvider](NPCCombatDataProvider.md) (5 shared connections)
 - [CombatInstance](CombatInstance.md) (4 shared connections)
-- [CombatService](CombatService.md) (3 shared connections)
-- [get_username_from_user](get_username_from_user.md) (2 shared connections)
-- [CombatParticipant](CombatParticipant.md) (2 shared connections)
+- [test_combat_service_modules.py](test_combat_service_modules.py.md) (3 shared connections)
+- [CombatCommandHandler](CombatCommandHandler.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
@@ -53,7 +52,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 120 (90%)
+- EXTRACTED: 131 (90%)
 - INFERRED: 14 (10%)
 - AMBIGUOUS: 0 (0%)
 

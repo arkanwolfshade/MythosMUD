@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [NATSError](NATSError.md) (13 shared connections)
-- [CircuitBreaker](CircuitBreaker.md) (4 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (3 shared connections)
-- [AttributeError](AttributeError.md) (2 shared connections)
-- [NATSService](NATSService.md) (2 shared connections)
+- [NATSError](NATSError.md) (9 shared connections)
+- [NATSService](NATSService.md) (6 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (5 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (2 shared connections)
+- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

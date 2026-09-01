@@ -1,12 +1,13 @@
 # Claims by cluster
 
-> 13 nodes
+> 15 nodes
 
 ## Key Concepts
 
 - **Claims by cluster** (8 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
 - **P2 · Structural & Architecture Doc Claim Register** (5 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
 - **P2-Structural-Claims.md** (3 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **ADR-015: PostgreSQL Procedures and Functions for Data Access** (3 connections) — `docs/architecture/decisions/ADR-015-postgresql-procedures-migration.md`
 - **config-api — API_OPENAPI_SPECIFICATION** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
 - **container-di — BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
 - **container-di — CONTAINER_SYSTEM_ARCHITECTURE** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
@@ -17,19 +18,22 @@
 - **persistence-db — PERSISTENCE_REPOSITORY_ARCHITECTURE, DATABASE_ACCESS_PATTERNS** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
 - **realtime-connection — REAL_TIME_ARCHITECTURE, CONNECTION_MANAGER_ARCHITECTURE** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
 - **Verified during extraction** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **PostgreSQL Procedures and Functions README** (1 connections) — `db/procedures/README.md`
 
 ## Relationships
 
 - [INDEX.md](INDEX.md.md) (1 shared connections)
-- [ADR-020: WebSocket Authentication and CSRF](ADR-020-_WebSocket_Authentication_and_CSRF.md) (1 shared connections)
+- [FRD & Plan-Document Verification Register — 2026-08](FRD_&_Plan-Document_Verification_Register_—_2026-08.md) (1 shared connections)
 
 ## Source Files
 
 - `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- `db/procedures/README.md`
+- `docs/architecture/decisions/ADR-015-postgresql-procedures-migration.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

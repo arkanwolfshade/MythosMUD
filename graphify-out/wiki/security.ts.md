@@ -1,6 +1,6 @@
 # security.ts
 
-> 47 nodes
+> 48 nodes
 
 ## Key Concepts
 
@@ -26,30 +26,31 @@
 - **.cleanupExpiredSessions()** (3 connections) — `client/src/utils/security.ts`
 - **.startCleanupInterval()** (3 connections) — `client/src/utils/security.ts`
 - **setupSecurityMocks()** (3 connections) — `client/src/utils/__tests__/security.test-utils.ts`
+- **useCommandHandlers.test.ts** (3 connections) — `client/src/components/ui-v2/hooks/__tests__/useCommandHandlers.test.ts`
 - **INCOMING_HTML_DOMPURIFY_CONFIG** (3 connections) — `client/src/utils/security.ts`
 - **sessionManager.test.ts** (3 connections) — `client/src/utils/__tests__/sessionManager.test.ts`
-- **.addTokenToHeaders()** (2 connections) — `client/src/utils/security.ts`
-- *... and 22 more nodes in this community*
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (8 shared connections)
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (6 shared connections)
-- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (5 shared connections)
-- [utils/config.ts](utils-config.ts.md) (3 shared connections)
+- [logoutHandler.ts](logoutHandler.ts.md) (7 shared connections)
+- [logger.ts](logger.ts.md) (5 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (5 shared connections)
+- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (4 shared connections)
 - [eventHandlers/types.ts](eventHandlers-types.ts.md) (3 shared connections)
-- [1774539086359-useMythosAppState.ts](1774539086359-useMythosAppState.ts.md) (3 shared connections)
+- [utils/config.ts](utils-config.ts.md) (3 shared connections)
 - [AsciiMapViewer.tsx](AsciiMapViewer.tsx.md) (2 shared connections)
 - [maps.ts](maps.ts.md) (2 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
 - [setup.ts](setup.ts.md) (2 shared connections)
 - [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (2 shared connections)
-- [Profession](Profession.md) (2 shared connections)
-- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (2 shared connections)
+- [lucidity.ts](lucidity.ts.md) (2 shared connections)
 
 ## Source Files
 
 - `client/src/components/common/SafeHtml.tsx`
 - `client/src/components/common/__tests__/SafeHtml.test.tsx`
+- `client/src/components/ui-v2/hooks/__tests__/useCommandHandlers.test.ts`
 - `client/src/utils/__tests__/csrfProtection.test.ts`
 - `client/src/utils/__tests__/domPurifyClient.test.ts`
 - `client/src/utils/__tests__/inputSanitizer.test.ts`
@@ -61,7 +62,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 120 (100%)
+- EXTRACTED: 122 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,7 +4,7 @@ Unit tests for position command helper functions.
 Tests helper functions in position_commands.py module.
 """
 
-from server.commands.position_commands import _format_room_posture_message
+from server.realtime.posture_notify import format_room_posture_message as _format_room_posture_message
 
 
 def test_format_room_posture_message_sitting():

@@ -4,14 +4,20 @@ Direct async SQL queries used by AsyncPersistenceLayer.
 Extracted to keep async_persistence.py under file-nloc limit.
 """
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from sqlalchemy import func, select
 from sqlalchemy.exc import SQLAlchemyError
 
 from .database import get_async_session
 from .exceptions import DatabaseError, ValidationError
-from .models.profession import Profession
-from .models.user import User
 from .utils.error_logging import log_and_raise
+
+if TYPE_CHECKING:
+    from .models.profession import Profession
+    from .models.user import User
 
 
 async def fetch_user_by_username_case_insensitive(username: str) -> User | None:
@@ -20,6 +26,8 @@ async def fetch_user_by_username_case_insensitive(username: str) -> User | None:
 
     MULTI-CHARACTER: Usernames are stored case-sensitively but checked case-insensitively.
     """
+    from .models.user import User
+
     try:
         async for session in get_async_session():
             stmt = select(User).where(func.lower(User.username) == func.lower(username))
@@ -39,6 +47,8 @@ async def fetch_user_by_username_case_insensitive(username: str) -> User | None:
 
 async def fetch_professions() -> list[Profession]:
     """Get all available professions using SQLAlchemy ORM."""
+    from .models.profession import Profession
+
     try:
         async for session in get_async_session():
             stmt = select(Profession).where(Profession.is_available.is_(True)).order_by(Profession.id)

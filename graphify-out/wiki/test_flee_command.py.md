@@ -34,11 +34,10 @@
 ## Relationships
 
 - [CombatCommandHandler](CombatCommandHandler.md) (6 shared connections)
+- [CombatParticipant](CombatParticipant.md) (4 shared connections)
 - [CombatInstance](CombatInstance.md) (4 shared connections)
 - [combat_loader.py](combat_loader.py.md) (3 shared connections)
-- [CombatParticipant](CombatParticipant.md) (2 shared connections)
-- [models/combat.py](models-combat.py.md) (2 shared connections)
-- [models/player.py](models-player.py.md) (2 shared connections)
+- [Stats](Stats.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

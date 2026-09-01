@@ -4,13 +4,11 @@ Player respawn event handlers.
 This module handles player respawn and delirium respawn events.
 """
 
-# pylint: disable=too-many-lines  # Reason: Respawn handler requires comprehensive room data preparation, occupant extraction, and event building logic
-
+# pylint: disable=too-many-lines  # Reason: Handler class; helpers already in respawn_types/room; further split adds hops.
 from __future__ import annotations
 
 import uuid
-from collections.abc import Callable
-from typing import NotRequired, TypedDict, cast
+from typing import cast
 
 from anyio import sleep
 from sqlalchemy.exc import SQLAlchemyError
@@ -21,91 +19,18 @@ from ..events.event_types import PlayerDeliriumRespawnedEvent, PlayerRespawnedEv
 from ..models.player import Player
 from ..models.room import Room
 from ..utils.int_coercion import coerce_int
+from . import player_event_handlers_respawn_room as respawn_room
 from .connection_manager import ConnectionManager
+from .player_event_handlers_respawn_types import RespawnPlayerEventPayload, RespawnPlayerStatsPayload
 from .player_event_handlers_utils import PlayerEventHandlerUtils
-
-
-class RespawnPlayerStatsPayload(TypedDict):
-    """Nested stats object in WebSocket respawn player payloads."""
-
-    current_dp: int
-    max_dp: int
-    lucidity: int
-    max_lucidity: int
-    position: str
-    occult_knowledge: int
-    fear: int
-    corruption: int
-    cult_affiliation: int
-    strength: NotRequired[object | None]
-    dexterity: NotRequired[object | None]
-    constitution: NotRequired[object | None]
-    intelligence: NotRequired[object | None]
-    wisdom: NotRequired[object | None]
-    charisma: NotRequired[object | None]
-
-
-class RespawnPlayerEventPayload(TypedDict):
-    """Client-facing player snapshot sent in respawn WebSocket events."""
-
-    id: str
-    name: str
-    level: int
-    xp: int
-    stats: RespawnPlayerStatsPayload
-    position: str
-    in_combat: bool
-
-
-def _occupant_str_field(occ: dict[str, object], field_keys: tuple[str, ...]) -> str | None:
-    """Return the first string value found for any of the given occupant dict keys."""
-    for key in field_keys:
-        value = occ.get(key)
-        if isinstance(value, str):
-            return value
-    return None
-
-
-def _is_npc_occupant_row(occ: dict[str, object]) -> bool:
-    """True when the occupant row should be classified as an NPC."""
-    return bool(occ.get("is_npc")) or "npc_name" in occ
-
-
-def _append_unique_valid_occupant(
-    name: str | None,
-    *,
-    primary: list[str],
-    occupant_names: list[str],
-    validate_name: Callable[[object], bool],
-) -> None:
-    """Append a validated name to primary and occupant lists when not already present."""
-    if not name or not validate_name(name) or name in primary:
-        return
-    primary.append(name)
-    if name not in occupant_names:
-        occupant_names.append(name)
-
-
-def _ensure_respawned_player_in_lists(
-    respawned_player_name: str,
-    *,
-    player_names: list[str],
-    occupant_names: list[str],
-    validate_name: Callable[[object], bool],
-) -> None:
-    """Ensure the respawned player appears in player and occupant name lists."""
-    if not respawned_player_name or not validate_name(respawned_player_name):
-        return
-    if respawned_player_name not in occupant_names:
-        occupant_names.append(respawned_player_name)
-    if respawned_player_name not in player_names:
-        player_names.append(respawned_player_name)
+from .posture_notify import emit_posture_change
 
 
 class PlayerRespawnEventHandler:
     """Handles player respawn events (respawn, delirium respawn)."""
 
     connection_manager: ConnectionManager | None
+    utils: PlayerEventHandlerUtils
     _logger: BoundLogger
 
     def __init__(
@@ -430,6 +355,26 @@ class PlayerRespawnEventHandler:
                 error=str(occupants_err),
             )
 
+    async def _emit_respawn_room_posture(
+        self,
+        *,
+        player_id: uuid.UUID,
+        player_name: str,
+        room_id: str | None,
+    ) -> None:
+        """Notify room observers of lying -> standing on respawn (M8); self uses narrative message."""
+        if self.connection_manager is None:
+            return
+        _ = await emit_posture_change(
+            self.connection_manager,
+            player_id=player_id,
+            display_name=player_name,
+            room_id=room_id,
+            previous_position="lying",
+            new_position="standing",
+            include_self_message=False,
+        )
+
     async def handle_player_respawned(self, event: PlayerRespawnedEvent) -> None:
         """
         Handle player respawn events by sending respawn notification to the client.
@@ -461,6 +406,12 @@ class PlayerRespawnEventHandler:
                 player_id_str, player_id_uuid, event.respawn_room_id, room_data, occupant_names
             )
 
+            await self._emit_respawn_room_posture(
+                player_id=event.player_id,
+                player_name=event.player_name,
+                room_id=event.respawn_room_id,
+            )
+
             self._logger.info(
                 "Sent respawn notification to player",
                 player_id=player_id_str,
@@ -477,194 +428,13 @@ class PlayerRespawnEventHandler:
         self, room_id: str, respawned_player_name: str
     ) -> tuple[dict[str, object] | None, list[str], list[str], list[str]]:
         """Prepare room data with NPC and player names for a respawn event."""
-        room_data = None
-        occupant_names: list[str] = []
-        npc_names: list[str] = []
-        player_names: list[str] = []
-
-        try:
-            from ..async_persistence import get_container_async_persistence
-            from .websocket_initial_state import prepare_room_data_with_occupants
-
-            async_persistence = get_container_async_persistence()
-            room = async_persistence.get_room_by_id(room_id)
-            if not room:
-                return None, npc_names, player_names, occupant_names
-
-            connection_manager = self.connection_manager
-            if connection_manager is None:
-                return self._room_data_from_persistence_room(room, respawned_player_name)
-
-            room_data, _ = await prepare_room_data_with_occupants(room, room_id, connection_manager)
-            room_occupants = await connection_manager.get_room_occupants(room_id)
-            if room_data:
-                npc_names, player_names, occupant_names = await self._enrich_room_data_with_occupant_names(
-                    room_data, room_occupants, respawned_player_name
-                )
-
-        except (AttributeError, KeyError, ValueError, TypeError, ImportError) as room_err:
-            self._logger.warning(
-                "Could not get room data for respawn event",
-                room_id=room_id,
-                error=str(room_err),
-            )
-
-        return room_data, npc_names, player_names, occupant_names
+        return await respawn_room.prepare_room_data_for_respawn(self, room_id, respawned_player_name, self._logger)
 
     def _room_data_from_persistence_room(
         self, room: Room, respawned_player_name: str
     ) -> tuple[dict[str, object], list[str], list[str], list[str]]:
         """Build room payload from persistence when no live connection manager is available."""
-        room_data = cast(dict[str, object], room.to_dict())
-        npc_names, player_names, occupant_names = self._extract_occupant_names(None, respawned_player_name)
-        return room_data, npc_names, player_names, occupant_names
-
-    async def _enrich_room_data_with_occupant_names(
-        self,
-        room_data: dict[str, object],
-        room_occupants: list[dict[str, object]] | None,
-        respawned_player_name: str,
-    ) -> tuple[list[str], list[str], list[str]]:
-        """Merge live occupants into room_data and return name lists for the respawn payload."""
-        npc_names, player_names, occupant_names = self._extract_occupant_names(room_occupants, respawned_player_name)
-        npc_names = await self._convert_npc_ids_to_names(
-            cast(list[str], room_data.get("npcs", [])), npc_names, occupant_names
-        )
-        player_names = self._merge_player_lists(
-            cast(list[str], room_data.get("players", [])), player_names, occupant_names
-        )
-        room_data["npcs"] = npc_names
-        room_data["players"] = player_names
-        room_data["occupants"] = occupant_names
-        room_data["occupant_count"] = len(occupant_names)
-        return npc_names, player_names, occupant_names
-
-    def _extract_occupant_names(
-        self, room_occupants: list[dict[str, object]] | None, respawned_player_name: str
-    ) -> tuple[list[str], list[str], list[str]]:
-        """
-        Extract NPC and player names from room occupants.
-
-        Args:
-            room_occupants: List of occupant dictionaries
-            respawned_player_name: Name of the respawned player
-
-        Returns:
-            Tuple of (npc_names, player_names, occupant_names)
-        """
-        from .websocket_helpers import validate_occupant_name
-
-        npc_names: list[str] = []
-        player_names: list[str] = []
-        occupant_names: list[str] = []
-
-        for occ in room_occupants or []:
-            if _is_npc_occupant_row(occ):
-                npc_name = _occupant_str_field(occ, ("npc_name", "name", "player_name"))
-                _append_unique_valid_occupant(
-                    npc_name,
-                    primary=npc_names,
-                    occupant_names=occupant_names,
-                    validate_name=validate_occupant_name,
-                )
-            else:
-                player_name = _occupant_str_field(occ, ("player_name", "name"))
-                _append_unique_valid_occupant(
-                    player_name,
-                    primary=player_names,
-                    occupant_names=occupant_names,
-                    validate_name=validate_occupant_name,
-                )
-
-        _ensure_respawned_player_in_lists(
-            respawned_player_name,
-            player_names=player_names,
-            occupant_names=occupant_names,
-            validate_name=validate_occupant_name,
-        )
-
-        return npc_names, player_names, occupant_names
-
-    async def _convert_npc_ids_to_names(
-        self, existing_npcs: list[str], npc_names: list[str], occupant_names: list[str]
-    ) -> list[str]:
-        """
-        Convert NPC IDs to names if they're still UUIDs.
-
-        Args:
-            existing_npcs: List of NPC IDs/names from room_data
-            npc_names: Current list of NPC names
-            occupant_names: Current list of all occupant names
-
-        Returns:
-            Updated list of NPC names
-        """
-        result = list(npc_names)
-
-        for npc_id in existing_npcs:
-            if npc_id not in result:
-                # If it looks like an ID, try to get name from lifecycle manager
-                if "_" in npc_id or len(npc_id) > 20:
-                    npc_name = self._get_npc_name_from_lifecycle_manager(npc_id)
-                    if npc_name:
-                        result.append(npc_name)
-                        if npc_name not in occupant_names:
-                            occupant_names.append(npc_name)
-                else:
-                    # Already a name
-                    result.append(npc_id)
-                    if npc_id not in occupant_names:
-                        occupant_names.append(npc_id)
-
-        return result
-
-    def _get_npc_name_from_lifecycle_manager(self, npc_id: str) -> str | None:
-        """
-        Get NPC name from lifecycle manager.
-
-        Args:
-            npc_id: NPC ID to look up
-
-        Returns:
-            NPC name or None if not found
-        """
-        if not self.connection_manager:
-            return None
-
-        from .websocket_initial_state import get_npc_lifecycle_manager_from_connection_manager
-
-        npc_lifecycle_manager = get_npc_lifecycle_manager_from_connection_manager(self.connection_manager)
-        if not npc_lifecycle_manager:
-            return None
-
-        npc = npc_lifecycle_manager.active_npcs.get(npc_id)
-        if npc is None:
-            return None
-        return npc.name
-
-    def _merge_player_lists(
-        self, existing_players: list[str], player_names: list[str], occupant_names: list[str]
-    ) -> list[str]:
-        """
-        Merge existing player list with extracted player names.
-
-        Args:
-            existing_players: Existing player list from room_data
-            player_names: Current list of player names
-            occupant_names: Current list of all occupant names
-
-        Returns:
-            Merged list of player names
-        """
-        result = list(player_names)
-
-        for existing_player in existing_players:
-            if existing_player not in result:
-                result.append(existing_player)
-                if existing_player not in occupant_names:
-                    occupant_names.append(existing_player)
-
-        return result
+        return respawn_room.room_data_from_persistence_room(self, room, respawned_player_name)
 
     async def get_current_lucidity(self, player_uuid: uuid.UUID, default_lucidity: int) -> int:
         """
@@ -783,6 +553,12 @@ class PlayerRespawnEventHandler:
             # Retry sending respawn event to handle temporary connection unavailability
             player_id_uuid = uuid.UUID(player_id_str)
             await self.send_respawn_event_with_retry(player_id_uuid, respawn_event)
+
+            await self._emit_respawn_room_posture(
+                player_id=event.player_id,
+                player_name=event.player_name,
+                room_id=event.respawn_room_id,
+            )
 
             self._logger.info(
                 "Sent delirium respawn notification to player",

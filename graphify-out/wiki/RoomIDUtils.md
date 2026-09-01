@@ -34,7 +34,7 @@
 ## Relationships
 
 - [NPCOccupantProcessor](NPCOccupantProcessor.md) (7 shared connections)
-- [PlayerLeftRoom](PlayerLeftRoom.md) (2 shared connections)
+- [event_types.py](event_types.py.md) (2 shared connections)
 - [Any](Any.md) (1 shared connections)
 
 ## Source Files

@@ -1,61 +1,62 @@
 # npc_database.py
 
-> 91 nodes
+> 41 nodes
 
 ## Key Concepts
 
 - **npc_database.py** (29 connections) — `server/npc_database.py`
 - **get_npc_session()** (24 connections) — `server/npc_database.py`
 - **test_npc_database.py** (23 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **patch** (20 connections)
 - **get_npc_engine()** (14 connections) — `server/npc_database.py`
 - **init_npc_db()** (11 connections) — `server/npc_database.py`
 - **_initialize_npc_database()** (11 connections) — `server/npc_database.py`
 - **get_npc_database_path()** (10 connections) — `server/npc_database.py`
+- **get_postgres_connect_args()** (9 connections) — `server/database_config_helpers.py`
 - **close_npc_db()** (9 connections) — `server/npc_database.py`
-- **asyncio** (9 connections)
-- **TestNPCDatabaseInitialization** (8 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 - **get_npc_session_maker()** (8 connections) — `server/npc_database.py`
 - **ensure_npc_database_directory()** (6 connections) — `server/npc_database.py`
-- **.test_close_npc_db_disposes_engine()** (6 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **TestCloseNpcDb** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **TestGetNPCDatabasePath** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **TestInitNpcDb** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **TestNPCSession** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 - **reset_npc_database()** (5 connections) — `server/npc_database.py`
-- **.test_close_npc_db_handles_closed_loop()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **.test_close_npc_db_handles_no_engine()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **.test_get_npc_engine_recreates_on_loop_change()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **.test_init_npc_db_raises_on_none_engine()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **.test_init_npc_db_success()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **.test_get_npc_session_inits_db_for_unit_test()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- *... and 66 more nodes in this community*
+- **_resolve_definition_id_from_name()** (4 connections) — `server/commands/npc_admin/instance.py`
+- **reset_state()** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_session_maker()** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_reset_npc_database_resets_state()** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **TestNPCSessionMaker** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **TestResetNPCDatabase** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **async_sessionmaker** (2 connections)
+- **AsyncSession** (2 connections)
+- **AsyncEngine** (1 connections)
+- **Path** (1 connections)
+- **fixture** (1 connections)
+- **Resolve NPC definition ID by name. Returns None if not found.** (1 connections) — `server/commands/npc_admin/instance.py`
+- **Build connect_args for asyncpg: always a hung-transaction timeout, plus…** (1 connections) — `server/database_config_helpers.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (12 shared connections)
-- [ValidationError](ValidationError.md) (8 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (5 shared connections)
+- [patch](patch.md) (25 shared connections)
+- [get_logger](get_logger.md) (14 shared connections)
+- [ValidationError](ValidationError.md) (5 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (4 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (4 shared connections)
+- [EventBus](EventBus.md) (4 shared connections)
+- [TestEnsureNPCDatabaseDirectory](TestEnsureNPCDatabaseDirectory.md) (3 shared connections)
 - [test_npc_definitions_api.py](test_npc_definitions_api.py.md) (3 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (3 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
 - [migrate_combat_data.py](migrate_combat_data.py.md) (3 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (3 shared connections)
 - [NPCStartupService](NPCStartupService.md) (3 shared connections)
-- [get_config](get_config.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [get_config](get_config.md) (3 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/core.py`
+- `server/commands/npc_admin/instance.py`
+- `server/database_config_helpers.py`
 - `server/npc_database.py`
 - `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Audit Trail
 
-- EXTRACTED: 203 (97%)
-- INFERRED: 6 (3%)
+- EXTRACTED: 140 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

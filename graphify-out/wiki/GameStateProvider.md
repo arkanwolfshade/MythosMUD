@@ -1,10 +1,11 @@
 # GameStateProvider
 
-> 43 nodes
+> 47 nodes
 
 ## Key Concepts
 
 - **GameStateProvider** (26 connections) — `server/realtime/integration/game_state_provider.py`
+- **game_state_provider.py** (22 connections) — `server/realtime/integration/game_state_provider.py`
 - **UUID** (14 connections)
 - **Any** (13 connections)
 - **.send_initial_game_state()** (12 connections) — `server/realtime/integration/game_state_provider.py`
@@ -12,6 +13,7 @@
 - **._get_player_data_for_client()** (8 connections) — `server/realtime/integration/game_state_provider.py`
 - **._get_player_name_with_grace_periods()** (8 connections) — `server/realtime/integration/game_state_provider.py`
 - **._add_grace_period_indicators()** (7 connections) — `server/realtime/integration/game_state_provider.py`
+- **._get_login_grace_period_status()** (7 connections) — `server/realtime/integration/game_state_provider.py`
 - **._get_quest_log_for_client()** (7 connections) — `server/realtime/integration/game_state_provider.py`
 - **._process_occupants_with_grace_periods()** (7 connections) — `server/realtime/integration/game_state_provider.py`
 - **._convert_player_uuids_to_names()** (6 connections) — `server/realtime/integration/game_state_provider.py`
@@ -27,24 +29,22 @@
 - **.__init__()** (4 connections) — `server/realtime/integration/game_state_provider.py`
 - **_not_configured_async()** (3 connections) — `server/realtime/nats_message_handler.py`
 - **Any** (2 connections)
-- **setter** (1 connections)
-- **Get NPC names for multiple NPCs in a batch operation. Args: npc_ids: List of…** (1 connections) — `server/realtime/integration/game_state_provider.py`
-- *... and 18 more nodes in this community*
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
 - [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (10 shared connections)
+- [connection_manager.py](connection_manager.py.md) (5 shared connections)
+- [disconnect_grace_period.py](disconnect_grace_period.py.md) (4 shared connections)
+- [test_game_state_provider.py](test_game_state_provider.py.md) (3 shared connections)
 - [.state](state.md) (3 shared connections)
-- [connection_manager.py](connection_manager.py.md) (2 shared connections)
-- [test_game_state_provider.py](test_game_state_provider.py.md) (2 shared connections)
-- [is_player_in_grace_period](is_player_in_grace_period.md) (2 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
-- [RoomEventHandler](RoomEventHandler.md) (1 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
-- [quest_service](quest_service.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
-- [resolve_connection_manager](resolve_connection_manager.md) (1 shared connections)
-- [websocket_handler_commands.py](websocket_handler_commands.py.md) (1 shared connections)
+- [build_event](build_event.md) (3 shared connections)
+- [RoomEventHandler](RoomEventHandler.md) (2 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (2 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [test_quest_service.py](test_quest_service.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -53,8 +53,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 98 (90%)
-- INFERRED: 11 (10%)
+- EXTRACTED: 121 (92%)
+- INFERRED: 11 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -16,7 +16,7 @@
 ## Relationships
 
 - [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [ScheduleService](ScheduleService.md) (1 shared connections)
+- [time.py](time.py.md) (1 shared connections)
 - [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 

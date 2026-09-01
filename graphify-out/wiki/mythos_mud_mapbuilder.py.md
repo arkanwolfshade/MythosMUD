@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [connection_manager.py](connection_manager.py.md) (5 shared connections)
+- [test_message_queue.py](test_message_queue.py.md) (5 shared connections)
 
 ## Source Files
 

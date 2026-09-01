@@ -1,70 +1,78 @@
 # User
 
-> 250 nodes
+> 355 nodes
 
 ## Key Concepts
 
-- **User** (298 connections) — `server/models/user.py`
-- **ExplorationService** (76 connections) — `server/services/exploration_service.py`
-- **maps.py** (67 connections) — `server/api/maps.py`
-- **test_maps.py** (55 connections) — `server/tests/unit/api/test_maps.py`
-- **test_exploration_service.py** (45 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **asyncio** (27 connections)
-- **MapZoneContext** (18 connections) — `server/api/map_helpers.py`
-- **_prepare_ascii_map_context()** (18 connections) — `server/api/maps.py`
-- **asyncio** (18 connections)
-- **get_ascii_map()** (16 connections) — `server/api/maps.py`
-- **get_ascii_minimap()** (16 connections) — `server/api/maps.py`
-- **_apply_exploration_filter_if_needed()** (13 connections) — `server/api/maps.py`
-- **_run_set_map_origin()** (13 connections) — `server/api/maps.py`
-- **set_map_origin()** (13 connections) — `server/api/maps.py`
-- **recalculate_coordinates()** (12 connections) — `server/api/maps.py`
-- **_ensure_coordinates_generated()** (11 connections) — `server/api/maps.py`
-- **_filter_explored_rooms()** (11 connections) — `server/api/maps.py`
-- **_run_coordinate_recalculation()** (11 connections) — `server/api/maps.py`
-- **maps/__init__.py** (11 connections) — `server/schemas/maps/__init__.py`
-- **test_user.py** (11 connections) — `server/tests/unit/models/test_user.py`
-- **_get_minimap_player_and_room_id()** (10 connections) — `server/api/maps.py`
-- **AsyncSession** (10 connections)
-- **map.py** (10 connections) — `server/schemas/maps/map.py`
-- **SetOriginRequest** (9 connections) — `server/api/maps.py`
-- **_build_ascii_map_response()** (9 connections) — `server/api/maps.py`
-- *... and 225 more nodes in this community*
+- **User** (305 connections) — `server/models/user.py`
+- **fastapi.md** (118 connections) — `.claude/rules/fastapi.md`
+- **endpoints.py** (66 connections) — `server/auth/endpoints.py`
+- **models/user.py** (66 connections) — `server/models/user.py`
+- **Invite** (49 connections) — `server/models/invite.py`
+- **users.py** (48 connections) — `server/auth/users.py`
+- **login_user()** (35 connections) — `server/auth/endpoints.py`
+- **InviteManager** (33 connections) — `server/auth/invites.py`
+- **api/game.py** (29 connections) — `server/api/game.py`
+- **test_auth_dependencies.py** (26 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **test_invite_manager.py** (24 connections) — `server/tests/unit/auth/test_invite_manager.py`
+- **invites.py** (23 connections) — `server/auth/invites.py`
+- **LoginRequest** (21 connections) — `server/auth/endpoints.py`
+- **professions.py** (21 connections) — `server/api/professions.py`
+- **test_endpoints_login.py** (20 connections) — `server/tests/unit/auth/test_endpoints_login.py`
+- **auth/dependencies.py** (19 connections) — `server/auth/dependencies.py`
+- **test_invite.py** (17 connections) — `server/tests/unit/models/test_invite.py`
+- **test_endpoints_invites.py** (15 connections) — `server/tests/unit/auth/test_endpoints_invites.py`
+- **list_invites()** (14 connections) — `server/auth/endpoints.py`
+- **asyncio** (14 connections)
+- **asyncio** (14 connections)
+- **RestartInvalidatingJWTStrategy** (13 connections) — `server/auth/jwt_strategy.py`
+- **get_user_manager()** (13 connections) — `server/auth/users.py`
+- **test_users_current_user_logging.py** (13 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
+- **InviteRead** (12 connections) — `server/schemas/auth/invite.py`
+- *... and 330 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (70 shared connections)
-- [RoomService](RoomService.md) (37 shared connections)
-- [endpoints.py](endpoints.py.md) (26 shared connections)
-- [DatabaseError](DatabaseError.md) (23 shared connections)
-- [test_users.py](test_users.py.md) (21 shared connections)
-- [players.py](players.py.md) (20 shared connections)
-- [map_minimap.py](map_minimap.py.md) (17 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (17 shared connections)
-- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (14 shared connections)
-- [test_invite_schemas.py](test_invite_schemas.py.md) (11 shared connections)
-- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) (9 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (9 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (71 shared connections)
+- [get_logger](get_logger.md) (43 shared connections)
+- [test_users.py](test_users.py.md) (42 shared connections)
+- [register_user](register_user.md) (34 shared connections)
+- [get_admin_auth_service](get_admin_auth_service.md) (31 shared connections)
+- [ExplorationService](ExplorationService.md) (29 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (24 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (24 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (20 shared connections)
+- [Player](Player.md) (18 shared connections)
+- [test_containers.py](test_containers.py.md) (17 shared connections)
+- [players/__init__.py](players-__init__.py.md) (15 shared connections)
 
 ## Source Files
 
-- `server/api/map_helpers.py`
-- `server/api/maps.py`
-- `server/api/players.py`
-- `server/async_persistence.py`
+- `.claude/rules/fastapi.md`
+- `server/api/game.py`
+- `server/api/player_helpers.py`
+- `server/api/professions.py`
+- `server/auth/__init__.py`
+- `server/auth/dependencies.py`
+- `server/auth/endpoints.py`
+- `server/auth/invites.py`
+- `server/auth/jwt_strategy.py`
+- `server/auth/token_epoch.py`
+- `server/auth/users.py`
+- `server/models/invite.py`
 - `server/models/user.py`
-- `server/schemas/maps/__init__.py`
-- `server/schemas/maps/map.py`
-- `server/services/exploration_service.py`
+- `server/schemas/auth/invite.py`
 - `server/tests/integration/test_db_connectivity.py`
-- `server/tests/unit/api/test_maps.py`
-- `server/tests/unit/models/test_user.py`
-- `server/tests/unit/services/test_exploration_service.py`
+- `server/tests/unit/api/test_player_helpers.py`
+- `server/tests/unit/auth/conftest.py`
+- `server/tests/unit/auth/test_auth_dependencies.py`
+- `server/tests/unit/auth/test_endpoints_invites.py`
+- `server/tests/unit/auth/test_endpoints_login.py`
 
 ## Audit Trail
 
-- EXTRACTED: 777 (83%)
-- INFERRED: 160 (17%)
+- EXTRACTED: 1162 (88%)
+- INFERRED: 158 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

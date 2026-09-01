@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [time.py](time.py.md) (6 shared connections)
-- [NPCBase](NPCBase.md) (3 shared connections)
+- [EventBus](EventBus.md) (9 shared connections)
 - [IdleMovementHandler](IdleMovementHandler.md) (2 shared connections)
 - [NPCActionMessage](NPCActionMessage.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)

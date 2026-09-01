@@ -1,12 +1,13 @@
 # CORSConfig
 
-> 42 nodes
+> 44 nodes
 
 ## Key Concepts
 
 - **CORSConfig** (30 connections) — `server/config/models/cors.py`
 - **test_cors_config.py** (14 connections) — `server/tests/unit/config/test_cors_config.py`
 - **._parse_csv()** (10 connections) — `server/config/models/cors.py`
+- **cors.py** (9 connections) — `server/config/models/cors.py`
 - **field_validator** (6 connections)
 - **._clean_list_items()** (5 connections) — `server/config/models/cors.py`
 - **._parse_json_array()** (5 connections) — `server/config/models/cors.py`
@@ -28,13 +29,15 @@
 - **test_cors_parse_max_age_invalid_string_uses_default()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
 - **test_cors_rejects_empty_allow_origins()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
 - **test_cors_rejects_negative_max_age()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_wildcard_origin_accepted()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- *... and 17 more nodes in this community*
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [factory.py](factory.py.md) (1 shared connections)
+- [config/models/__init__.py](config-models-__init__.py.md) (4 shared connections)
+- [factory.py](factory.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [AppConfig](AppConfig.md) (1 shared connections)
+- [pydantic.md](pydantic.md.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -44,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 73 (99%)
+- EXTRACTED: 80 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

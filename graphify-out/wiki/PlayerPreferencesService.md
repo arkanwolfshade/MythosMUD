@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [models/player.py](models-player.py.md) (4 shared connections)
-- [get_async_session](get_async_session.md) (2 shared connections)
-- [test_player_preferences_service.py](test_player_preferences_service.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [PlayerChannelPreferences](PlayerChannelPreferences.md) (3 shared connections)
+- [test_channel_commands.py](test_channel_commands.py.md) (1 shared connections)
+- [test_player_preferences_service.py](test_player_preferences_service.py.md) (1 shared connections)
 
 ## Source Files
 

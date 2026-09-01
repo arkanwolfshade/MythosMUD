@@ -33,11 +33,12 @@
 
 ## Relationships
 
-- [models/player.py](models-player.py.md) (7 shared connections)
+- [LucidityService](LucidityService.md) (7 shared connections)
 - [PhantomHostileService](PhantomHostileService.md) (7 shared connections)
-- [FakeHallucinationService](FakeHallucinationService.md) (6 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [FakeHallucinationService](FakeHallucinationService.md) (5 shared connections)
+- [hallucinations.py](hallucinations.py.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

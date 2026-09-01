@@ -36,10 +36,10 @@
 - [ExceptionTracker](ExceptionTracker.md) (12 shared connections)
 - [LogAggregator](LogAggregator.md) (4 shared connections)
 - [log_with_context](log_with_context.md) (3 shared connections)
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (2 shared connections)
 - [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [system_monitoring.py](system_monitoring.py.md) (1 shared connections)
+- [lifespan.py](lifespan.py.md) (2 shared connections)
 - [PerformanceMonitor](PerformanceMonitor.md) (1 shared connections)
+- [system_monitoring.py](system_monitoring.py.md) (1 shared connections)
 - [InventoryMutationGuard](InventoryMutationGuard.md) (1 shared connections)
 
 ## Source Files

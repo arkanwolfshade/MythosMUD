@@ -1,6 +1,6 @@
 # LoggedHTTPException
 
-> God node · 360 connections · `server/exceptions.py`
+> God node · 369 connections · `server/exceptions.py`
 
 **Community:** [LoggedHTTPException](LoggedHTTPException.md)
 
@@ -24,37 +24,37 @@
 - create_npc_spawn_rule() `EXTRACTED`
 - get_npc_spawn_rules() `EXTRACTED`
 - validate_character_stats() `EXTRACTED`
+- delete_player() `EXTRACTED`
+- get_player() `EXTRACTED`
 - select_character() `EXTRACTED`
-- get_system_metrics() `EXTRACTED`
-- create_dialogue_definition() `EXTRACTED`
 
 ### contains
 - server/exceptions.py `EXTRACTED`
 
 ### imports
-- [players.py](players.py.md) `EXTRACTED`
+- players.py `EXTRACTED`
 - [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
 - maps.py `EXTRACTED`
-- [endpoints.py](endpoints.py.md) `EXTRACTED`
+- endpoints.py `EXTRACTED`
 - [api/monitoring.py](api-monitoring.py.md) `EXTRACTED`
 - rooms.py `EXTRACTED`
-- test_monitoring_endpoints.py `EXTRACTED`
 - test_players_api_coverage.py `EXTRACTED`
+- test_monitoring_endpoints.py `EXTRACTED`
 - test_maps.py `EXTRACTED`
+- [real_time.py](real_time.py.md) `EXTRACTED`
 - test_container_helpers.py `EXTRACTED`
 - test_rooms_write_api.py `EXTRACTED`
-- [test_exceptions.py](test_exceptions.py.md) `EXTRACTED`
+- test_exceptions.py `EXTRACTED`
 - api/container_helpers.py `EXTRACTED`
-- [real_time.py](real_time.py.md) `EXTRACTED`
-- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) `EXTRACTED`
-- test_real_time_helpers.py `EXTRACTED`
-- [test_exceptions_comprehensive.py](test_exceptions_comprehensive.py.md) `EXTRACTED`
-- standardized_responses.py `EXTRACTED`
+- test_metrics_endpoints.py `EXTRACTED`
+- [test_real_time_helpers.py](test_real_time_helpers.py.md) `EXTRACTED`
 - api/player_effects.py `EXTRACTED`
+- test_exceptions_comprehensive.py `EXTRACTED`
+- standardized_responses.py `EXTRACTED`
 - [test_npc_definitions_api.py](test_npc_definitions_api.py.md) `EXTRACTED`
 
 ### inherits
-- [LoggedException](LoggedException.md) `EXTRACTED`
+- LoggedException `EXTRACTED`
 - HTTPException `EXTRACTED`
 
 ### method
@@ -80,6 +80,7 @@
 - test_create_room_exit_duplicate_direction_409() `INFERRED`
 - TestHandleLootAllExceptions `INFERRED`
 - TestHandleOpenContainerExceptions `INFERRED`
+- test_apply_lucidity_loss_validation_maps_to_404() `INFERRED`
 - test_create_room_exit_source_room_missing_404() `INFERRED`
 - test_create_room_exit_target_room_missing_404() `INFERRED`
 - test_update_room_exit_not_found_404() `INFERRED`
@@ -87,7 +88,6 @@
 - TestHandleContainerServiceErrorEdgeCases `INFERRED`
 - TestHandleContainerServiceError `INFERRED`
 - TestCloseContainer `INFERRED`
-- test_apply_lucidity_loss_validation_maps_to_404() `INFERRED`
 
 ---
 

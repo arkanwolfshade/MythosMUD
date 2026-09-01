@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (11 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (5 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (13 shared connections)
+- [MythosTickScheduler](MythosTickScheduler.md) (6 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (3 shared connections)
 - [TaskRegistry](TaskRegistry.md) (3 shared connections)
-- [MythosTickScheduler](MythosTickScheduler.md) (3 shared connections)
-- [AliasStorage](AliasStorage.md) (3 shared connections)
+- [lifespan.py](lifespan.py.md) (3 shared connections)
 - [EventBus](EventBus.md) (2 shared connections)
 - [MemoryMonitor](MemoryMonitor.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [ConnectionManager](ConnectionManager.md) (1 shared connections)
 - [event_types.py](event_types.py.md) (1 shared connections)
 - [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 

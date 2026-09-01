@@ -1,14 +1,15 @@
 # test_look_room.py
 
-> 114 nodes
+> 121 nodes
 
 ## Key Concepts
 
 - **test_look_room.py** (43 connections) — `server/tests/unit/commands/test_look_room.py`
 - **look_room.py** (28 connections) — `server/commands/look_room.py`
+- **format_room_drop_lines()** (24 connections) — `server/utils/room_renderer.py`
 - **test_look_room_helpers.py** (22 connections) — `server/tests/unit/commands/test_look_room_helpers.py`
-- **_handle_room_look()** (18 connections) — `server/commands/look_room.py`
 - **_filter_other_players()** (17 connections) — `server/commands/look_room.py`
+- **_handle_room_look()** (17 connections) — `server/commands/look_room.py`
 - **asyncio** (16 connections)
 - **_format_items_section()** (11 connections) — `server/commands/look_room.py`
 - **_format_npcs_section()** (11 connections) — `server/commands/look_room.py`
@@ -28,33 +29,31 @@
 - **test_filter_other_players_no_name_attribute()** (4 connections) — `server/tests/unit/commands/test_look_room.py`
 - **test_format_containers_section_empty()** (4 connections) — `server/tests/unit/commands/test_look_room.py`
 - **test_format_containers_section_no_persistence()** (4 connections) — `server/tests/unit/commands/test_look_room.py`
-- **test_format_containers_section_no_room_id()** (4 connections) — `server/tests/unit/commands/test_look_room.py`
-- *... and 89 more nodes in this community*
+- *... and 96 more nodes in this community*
 
 ## Relationships
 
+- [test_room_renderer.py](test_room_renderer.py.md) (18 shared connections)
+- [look_command.py](look_command.py.md) (10 shared connections)
 - [test_look_player.py](test_look_player.py.md) (7 shared connections)
-- [look_command.py](look_command.py.md) (7 shared connections)
-- [is_player_in_grace_period](is_player_in_grace_period.md) (3 shared connections)
+- [test_websocket_room_updates.py](test_websocket_room_updates.py.md) (3 shared connections)
 - [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
-- [test_room_renderer.py](test_room_renderer.py.md) (3 shared connections)
-- [_get_lifecycle_manager](_get_lifecycle_manager.md) (2 shared connections)
+- [test_look_npc.py](test_look_npc.py.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
-- [.state](state.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
-- [look_npc.py](look_npc.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/look_room.py`
 - `server/tests/unit/commands/test_look_room.py`
 - `server/tests/unit/commands/test_look_room_helpers.py`
+- `server/tests/unit/realtime/test_visual_indicator.py`
+- `server/utils/room_renderer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 240 (100%)
-- INFERRED: 1 (0%)
+- EXTRACTED: 267 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

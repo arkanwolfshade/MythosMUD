@@ -1,15 +1,17 @@
 # RoomMapEditorRuntime.tsx
 
-> 46 nodes
+> 49 nodes
 
 ## Key Concepts
 
-- **RoomMapEditorRuntime.tsx** (41 connections) — `client/src/components/map/RoomMapEditorRuntime.tsx`
+- **RoomMapEditorRuntime.tsx** (43 connections) — `client/src/components/map/RoomMapEditorRuntime.tsx`
 - **RoomMapEditorRuntime.hooks.ts** (39 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **RoomMapEditor()** (13 connections) — `client/src/components/map/RoomMapEditorRuntime.tsx`
+- **RoomMapEditor()** (14 connections) — `client/src/components/map/RoomMapEditorRuntime.tsx`
 - **useRoomMapEditorModalHandlers()** (7 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **RoomMapEditor.test.tsx** (7 connections) — `client/src/components/map/__tests__/RoomMapEditor.test.tsx`
 - **RoomMapEditorAliases.test.ts** (7 connections) — `client/src/components/map/__tests__/RoomMapEditorAliases.test.ts`
-- **RoomMapEditor.test.tsx** (6 connections) — `client/src/components/map/__tests__/RoomMapEditor.test.tsx`
+- **useMapEditing()** (6 connections) — `client/src/components/map/hooks/useMapEditing.ts`
+- **useRoomMapEditorEditing()** (6 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
 - **useRoomMapEditorModals()** (5 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
 - **RoomMapEditor.tsx** (5 connections) — `client/src/components/map/RoomMapEditor.tsx`
 - **directionConstants.test.ts** (5 connections) — `client/src/components/map/__tests__/directionConstants.test.ts`
@@ -23,21 +25,19 @@
 - **useRoomMapEditorModalState()** (3 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
 - **useRoomMapEditorSelection()** (3 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
 - **MAP_EDITOR_DIRECTIONS** (3 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **roomMapEditorTestSetup.tsx** (3 connections) — `client/src/components/map/__tests__/roomMapEditorTestSetup.tsx`
 - **UseRoomMapDataOptions** (2 connections) — `client/src/components/map/hooks/useRoomMapData.ts`
 - **RoomMapEditorEditingApi** (2 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
 - **RoomMapEditorProps** (2 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **buildModalCreateEdgeHandler()** (2 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **buildModalUpdateEdgeHandler()** (2 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **buildModalUpdateRoomHandler()** (2 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- *... and 21 more nodes in this community*
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
 - [RoomMapViewer.tsx](RoomMapViewer.tsx.md) (19 shared connections)
-- [map/types.ts](map-types.ts.md) (17 shared connections)
-- [edgeModalLogic.ts](edgeModalLogic.ts.md) (6 shared connections)
-- [map/config.ts](map-config.ts.md) (3 shared connections)
-- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (2 shared connections)
+- [RoomNodeData](RoomNodeData.md) (14 shared connections)
+- [saveMapChanges.ts](saveMapChanges.ts.md) (8 shared connections)
+- [map/types.ts](map-types.ts.md) (5 shared connections)
+- [lucidity.ts](lucidity.ts.md) (2 shared connections)
 - [EdgeDetailsPanel.tsx](EdgeDetailsPanel.tsx.md) (2 shared connections)
 - [useRoomEditModal.ts](useRoomEditModal.ts.md) (2 shared connections)
 - [utils/config.ts](utils-config.ts.md) (1 shared connections)
@@ -57,11 +57,12 @@
 - `client/src/components/map/__tests__/RoomMapEditorAliases.test.ts`
 - `client/src/components/map/__tests__/directionConstants.test.ts`
 - `client/src/components/map/__tests__/roomMapEditorTestSetup.tsx`
+- `client/src/components/map/hooks/useMapEditing.ts`
 - `client/src/components/map/hooks/useRoomMapData.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 128 (100%)
+- EXTRACTED: 138 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

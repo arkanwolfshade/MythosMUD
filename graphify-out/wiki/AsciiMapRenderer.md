@@ -32,7 +32,7 @@
 - [TestResolveExitTarget](TestResolveExitTarget.md) (5 shared connections)
 - [map_minimap.py](map_minimap.py.md) (3 shared connections)
 - [._get_vertical_exit_char](_get_vertical_exit_char.md) (3 shared connections)
-- [User](User.md) (2 shared connections)
+- [ExplorationService](ExplorationService.md) (2 shared connections)
 - [._exit_is_bidirectional](_exit_is_bidirectional.md) (2 shared connections)
 - [._render_empty_map](_render_empty_map.md) (1 shared connections)
 

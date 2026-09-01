@@ -12,12 +12,12 @@
 - **logging_context.py** (8 connections) — `server/structured_logging/logging_context.py`
 - **structlog.md** (8 connections) — `.claude/rules/structlog.md`
 - **WebSocketManager** (7 connections) — `docs/examples/logging/websocket_integration.py`
+- **update_player_background_task()** (7 connections) — `docs/examples/logging/fastapi_integration.py`
 - **add_request_context()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
 - **websocket_endpoint()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
 - **.disconnect()** (5 connections) — `docs/examples/logging/websocket_integration.py`
 - **.__call__()** (5 connections) — `server/middleware/correlation_middleware.py`
 - **correct_request_context()** (4 connections) — `docs/examples/logging/correct_patterns.py`
-- **process_websocket_message()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
 - **.broadcast_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
 - **.connect()** (3 connections) — `docs/examples/logging/websocket_integration.py`
 - **.send_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [ExceptionTracker](ExceptionTracker.md) (7 shared connections)
+- [fastapi_integration.py](fastapi_integration.py.md) (6 shared connections)
 - [get_logger](get_logger.md) (6 shared connections)
-- [ValidationError](ValidationError.md) (6 shared connections)
 - [middleware](middleware.md) (5 shared connections)
+- [test_error_logging.py](test_error_logging.py.md) (5 shared connections)
 - [correct_patterns.py](correct_patterns.py.md) (3 shared connections)
+- [PerformanceMonitor](PerformanceMonitor.md) (3 shared connections)
 - [MonitoringDashboard](MonitoringDashboard.md) (3 shared connections)
 - [testing_examples.py](testing_examples.py.md) (3 shared connections)
-- [PerformanceMonitor](PerformanceMonitor.md) (2 shared connections)
-- [http_exception_handler](http_exception_handler.md) (1 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (2 shared connections)
+- [websocket_integration.py](websocket_integration.py.md) (1 shared connections)
 - [migration_examples.py](migration_examples.py.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
-- [TestRunner](TestRunner.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (1 shared connections)
 
 ## Source Files
 
@@ -59,8 +59,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 76 (70%)
-- INFERRED: 32 (30%)
+- EXTRACTED: 78 (70%)
+- INFERRED: 33 (30%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,6 +1,6 @@
 # ChatService
 
-> 145 nodes
+> 143 nodes
 
 ## Key Concepts
 
@@ -18,7 +18,6 @@
 - **.send_whisper_message()** (4 connections) — `server/game/chat_service.py`
 - **test_get_last_whisper_sender()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
 - **test_get_last_whisper_sender_none()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_get_room_messages()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
 - **test_send_emote_message_empty()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
 - **test_send_emote_message_success()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
 - **test_send_global_message_empty()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
@@ -29,22 +28,23 @@
 - **test_send_party_message_player_not_found()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
 - **test_send_party_message_rate_limited()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
 - **test_send_party_message_success()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- *... and 120 more nodes in this community*
+- **test_send_say_message_cannot_send()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- *... and 118 more nodes in this community*
 
 ## Relationships
 
-- [chat_service.py](chat_service.py.md) (19 shared connections)
-- [ChatMessage](ChatMessage.md) (10 shared connections)
+- [chat_service.py](chat_service.py.md) (18 shared connections)
+- [ChatMessage](ChatMessage.md) (16 shared connections)
 - [test_chat_npc_system.py](test_chat_npc_system.py.md) (3 shared connections)
-- [ChatPoseManager](ChatPoseManager.md) (3 shared connections)
-- [chat_channel_message_senders.py](chat_channel_message_senders.py.md) (3 shared connections)
-- [test_magic_commands.py](test_magic_commands.py.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
 - [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [test_lifespan_startup.py](test_lifespan_startup.py.md) (1 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (1 shared connections)
+- [command_service.py](command_service.py.md) (1 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [time.py](time.py.md) (1 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
+- [SpellEffects](SpellEffects.md) (1 shared connections)
+- [NPCCommunicationIntegration](NPCCommunicationIntegration.md) (1 shared connections)
+- [test_chat_logger.py](test_chat_logger.py.md) (1 shared connections)
+- [MagicCommandHandler](MagicCommandHandler.md) (1 shared connections)
 
 ## Source Files
 
@@ -53,8 +53,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 245 (87%)
-- INFERRED: 38 (13%)
+- EXTRACTED: 243 (86%)
+- INFERRED: 38 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

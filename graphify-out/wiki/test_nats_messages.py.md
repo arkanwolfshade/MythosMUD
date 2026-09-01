@@ -1,14 +1,15 @@
 # test_nats_messages.py
 
-> 48 nodes
+> 50 nodes
 
 ## Key Concepts
 
 - **test_nats_messages.py** (25 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **validate_message()** (14 connections) — `server/schemas/realtime/nats_messages.py`
 - **ChatMessageSchema** (13 connections) — `server/schemas/realtime/nats_messages.py`
+- **validate_message()** (12 connections) — `server/schemas/realtime/nats_messages.py`
 - **BaseMessageSchema** (11 connections) — `server/schemas/realtime/nats_messages.py`
 - **EventMessageSchema** (11 connections) — `server/schemas/realtime/nats_messages.py`
+- **schemas/realtime/__init__.py** (11 connections) — `server/schemas/realtime/__init__.py`
 - **nats_messages.py** (10 connections) — `server/schemas/realtime/nats_messages.py`
 - **validate_chat_message()** (7 connections) — `server/schemas/realtime/nats_messages.py`
 - **validate_event_message()** (7 connections) — `server/schemas/realtime/nats_messages.py`
@@ -28,27 +29,27 @@
 - **test_event_message_schema_empty_event_type()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **test_event_message_schema_validate_event_type()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **Any** (3 connections)
-- **BaseModel** (1 connections)
-- *... and 23 more nodes in this community*
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
+- [realtime/realtime.py](realtime-realtime.py.md) (5 shared connections)
 - [.validate_timestamp](validate_timestamp.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [realtime/realtime.py](realtime-realtime.py.md) (2 shared connections)
-- [BaseCommand](BaseCommand.md) (2 shared connections)
-- [NATSMessageBroker](NATSMessageBroker.md) (1 shared connections)
-- [nats_broker.py](nats_broker.py.md) (1 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (3 shared connections)
+- [pydantic.md](pydantic.md.md) (2 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
+- [real_time.py](real_time.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
+- `server/schemas/realtime/__init__.py`
 - `server/schemas/realtime/nats_messages.py`
 - `server/tests/unit/schemas/test_nats_messages.py`
 
 ## Audit Trail
 
-- EXTRACTED: 89 (96%)
+- EXTRACTED: 96 (96%)
 - INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 

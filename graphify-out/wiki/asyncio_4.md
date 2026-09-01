@@ -1,42 +1,34 @@
 # asyncio
 
-> 19 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **asyncio** (9 connections)
-- **test_filter_online_players_all_online()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_filter_online_players_invalid_last_active()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_filter_online_players_no_last_active()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_filter_online_players_some_offline()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_handle_who_command_error_handling()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_handle_who_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_handle_who_command_no_players()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_handle_who_command_success()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_handle_who_command_with_filter()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test filter_online_players with all players online.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test filter_online_players with some players offline.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test filter_online_players with players without last_active.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test handle_who_command when persistence is not available.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test handle_who_command when no players are found.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test handle_who_command successful execution.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test handle_who_command with filter term.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test handle_who_command handles exceptions gracefully.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test filter_online_players() handles invalid last_active.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **asyncio** (6 connections)
+- **test_ensure_room_cache_loaded_database_error()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_already_loaded()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_concurrent_load()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_os_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded returns early when cache is already loaded.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles concurrent load scenario (double-check…** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles DatabaseError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles OSError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles RuntimeError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- [who_commands.py](who_commands.py.md) (9 shared connections)
-- [test_who_commands.py](test_who_commands.py.md) (9 shared connections)
+- [test_async_persistence_room_loading.py](test_async_persistence_room_loading.py.md) (6 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_who_commands.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 16 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

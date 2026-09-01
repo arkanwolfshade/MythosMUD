@@ -1,67 +1,67 @@
 # factory.py
 
-> 65 nodes
+> 73 nodes
 
 ## Key Concepts
 
 - **factory.py** (54 connections) — `server/app/factory.py`
-- **professions.py** (21 connections) — `server/api/professions.py`
-- **test_professions_endpoints.py** (15 connections) — `server/tests/unit/api/test_professions_endpoints.py`
-- **get_all_professions()** (11 connections) — `server/api/professions.py`
-- **get_profession_by_id()** (11 connections) — `server/api/professions.py`
+- **server/main.py** (19 connections) — `server/main.py`
+- **create_app()** (17 connections) — `server/app/factory.py`
 - **server/api/__init__.py** (11 connections) — `server/api/__init__.py`
-- **player_router.py** (8 connections) — `server/api/player_router.py`
-- **players/profession.py** (8 connections) — `server/schemas/players/profession.py`
 - **CORSConfigDict** (7 connections) — `server/app/factory.py`
-- **ProfessionListResponse** (7 connections) — `server/schemas/players/profession.py`
-- **ProfessionResponse** (7 connections) — `server/schemas/players/profession.py`
+- **generate_openapi_spec.py** (7 connections) — `scripts/generate_openapi_spec.py`
 - **containers.py** (7 connections) — `server/api/containers.py`
 - **_configure_cors()** (6 connections) — `server/app/factory.py`
 - **_get_cors_config_from_app_config()** (6 connections) — `server/app/factory.py`
 - **_parse_cors_env_vars()** (6 connections) — `server/app/factory.py`
+- **test_auth()** (6 connections) — `server/main.py`
 - **api/admin/__init__.py** (6 connections) — `server/api/admin/__init__.py`
+- **test_openapi_tags.py** (6 connections) — `server/tests/unit/app/test_openapi_tags.py`
+- **main()** (5 connections) — `scripts/generate_openapi_spec.py`
+- **_render_tag_table()** (5 connections) — `scripts/generate_openapi_spec.py`
 - **_apply_cors_env_overrides()** (5 connections) — `server/app/factory.py`
-- **test_get_all_professions_requires_auth()** (5 connections) — `server/tests/unit/api/test_professions_endpoints.py`
-- **test_get_profession_by_id_not_found()** (5 connections) — `server/tests/unit/api/test_professions_endpoints.py`
-- **BaseModel** (5 connections)
 - **CORSConfigOverrides** (4 connections) — `server/app/factory.py`
-- **MechanicalEffect** (4 connections) — `server/schemas/players/profession.py`
-- **ProfessionData** (4 connections) — `server/schemas/players/profession.py`
-- **StatRequirement** (4 connections) — `server/schemas/players/profession.py`
+- **_update_tag_table_doc()** (4 connections) — `scripts/generate_openapi_spec.py`
 - **_get_default_cors_config()** (4 connections) — `server/app/factory.py`
-- *... and 40 more nodes in this community*
+- **_parse_cors_origin_list()** (4 connections) — `server/app/factory.py`
+- **_register_v1_routers()** (4 connections) — `server/app/factory.py`
+- **_create_get_app()** (4 connections) — `server/main.py`
+- **main()** (4 connections) — `server/main.py`
+- **_openapi_spec()** (4 connections) — `server/tests/unit/app/test_openapi_tags.py`
+- **_route_declared_tags()** (4 connections) — `server/tests/unit/app/test_openapi_tags.py`
+- *... and 48 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (18 shared connections)
-- [get_logger](get_logger.md) (9 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (8 shared connections)
-- [User](User.md) (6 shared connections)
-- [create_app](create_app.md) (6 shared connections)
-- [endpoints.py](endpoints.py.md) (4 shared connections)
-- [ProfessionService](ProfessionService.md) (3 shared connections)
-- [players.py](players.py.md) (3 shared connections)
-- [get_config](get_config.md) (2 shared connections)
+- [User](User.md) (12 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [get_config](get_config.md) (5 shared connections)
+- [test_error_handling_middleware.py](test_error_handling_middleware.py.md) (3 shared connections)
+- [auth_rate_limit.py](auth_rate_limit.py.md) (3 shared connections)
+- [test_auth_rate_limit.py](test_auth_rate_limit.py.md) (3 shared connections)
+- [lifespan.py](lifespan.py.md) (3 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (3 shared connections)
 - [api/monitoring.py](api-monitoring.py.md) (2 shared connections)
+- [api/player_respawn.py](api-player_respawn.py.md) (2 shared connections)
 - [real_time.py](real_time.py.md) (2 shared connections)
-- [RoomService](RoomService.md) (2 shared connections)
+- [pydantic.md](pydantic.md.md) (2 shared connections)
 
 ## Source Files
 
+- `scripts/generate_openapi_spec.py`
 - `server/api/__init__.py`
 - `server/api/admin/__init__.py`
 - `server/api/containers.py`
-- `server/api/player_router.py`
-- `server/api/professions.py`
 - `server/app/factory.py`
 - `server/auth/endpoints.py`
-- `server/schemas/players/profession.py`
-- `server/tests/unit/api/test_professions_endpoints.py`
+- `server/main.py`
+- `server/tests/unit/app/test_openapi_tags.py`
+- `server/tests/unit/middleware/test_auth_rate_limit.py`
 
 ## Audit Trail
 
-- EXTRACTED: 193 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 173 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

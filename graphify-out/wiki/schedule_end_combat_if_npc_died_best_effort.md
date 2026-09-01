@@ -16,10 +16,9 @@
 
 ## Relationships
 
+- [EventBus](EventBus.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [NPCBase](NPCBase.md) (1 shared connections)
 - [CombatService](CombatService.md) (1 shared connections)
-- [time.py](time.py.md) (1 shared connections)
 
 ## Source Files
 

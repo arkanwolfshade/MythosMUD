@@ -1,12 +1,11 @@
 # ItemPrototypeModel
 
-> 33 nodes
+> 31 nodes
 
 ## Key Concepts
 
 - **ItemPrototypeModel** (39 connections) — `server/game/items/models.py`
 - **test_item_prototype_models.py** (15 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
-- **items/models.py** (11 connections) — `server/game/items/models.py`
 - **_valid_payload()** (9 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
 - **field_validator** (5 connections)
 - **.validate_effect_components()** (3 connections) — `server/game/items/models.py`
@@ -27,19 +26,21 @@
 - **constants.py** (3 connections) — `server/game/items/constants.py`
 - **BaseModel** (1 connections)
 - **Constants supporting item prototype validation. These enumerations anchor the…** (1 connections) — `server/game/items/constants.py`
-- **Pydantic models for item prototype validation. This module defines the…** (1 connections) — `server/game/items/models.py`
 - **Validate and normalize effect components. Args: value: The list of effect…** (1 connections) — `server/game/items/models.py`
-- *... and 8 more nodes in this community*
+- **Validate and normalize tags. Args: value: The list of tags to validate Returns:…** (1 connections) — `server/game/items/models.py`
+- **Validated representation of an item prototype definition. This model keeps the…** (1 connections) — `server/game/items/models.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
 - [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (13 shared connections)
-- [PrototypeRegistry](PrototypeRegistry.md) (8 shared connections)
-- [PrototypeRegistryError](PrototypeRegistryError.md) (4 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [BaseCommand](BaseCommand.md) (2 shared connections)
+- [PrototypeRegistry](PrototypeRegistry.md) (7 shared connections)
+- [PrototypeRegistryError](PrototypeRegistryError.md) (2 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (1 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [pydantic.md](pydantic.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,8 +51,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 67 (79%)
-- INFERRED: 18 (21%)
+- EXTRACTED: 59 (77%)
+- INFERRED: 18 (23%)
 - AMBIGUOUS: 0 (0%)
 
 ---

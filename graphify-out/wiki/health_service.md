@@ -13,7 +13,7 @@
 ## Relationships
 
 - [HealthStatus](HealthStatus.md) (3 shared connections)
-- [api/monitoring.py](api-monitoring.py.md) (1 shared connections)
+- [HealthService](HealthService.md) (1 shared connections)
 
 ## Source Files
 

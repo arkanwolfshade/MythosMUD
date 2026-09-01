@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (13 shared connections)
+- [TargetMatch](TargetMatch.md) (15 shared connections)
 - [CombatInstance](CombatInstance.md) (3 shared connections)
-- [SpellEffects](SpellEffects.md) (3 shared connections)
-- [get_username_from_user](get_username_from_user.md) (2 shared connections)
+- [CombatCommandHandler](CombatCommandHandler.md) (2 shared connections)
+- [SpellEffects](SpellEffects.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

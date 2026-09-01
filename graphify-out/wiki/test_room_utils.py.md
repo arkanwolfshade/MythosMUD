@@ -33,12 +33,13 @@
 
 ## Relationships
 
-- [Room](Room.md) (3 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
+- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (2 shared connections)
+- [EventBus](EventBus.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (1 shared connections)
+- [NPCMovementIntegration](NPCMovementIntegration.md) (1 shared connections)
+- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (1 shared connections)
 - [ChatChannelLoggerMixin](ChatChannelLoggerMixin.md) (1 shared connections)
-- [chat_nats_publisher.py](chat_nats_publisher.py.md) (1 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (1 shared connections)
 
 ## Source Files
 

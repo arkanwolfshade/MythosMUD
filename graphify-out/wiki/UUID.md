@@ -4,35 +4,37 @@
 
 ## Key Concepts
 
-- **UUID** (10 connections)
-- **.prune_stale_players()** (7 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **.cleanup_dead_connections()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._cleanup_dead_connections_for_player()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._remove_stale_player_data()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._get_players_to_check()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._identify_stale_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._is_websocket_dead()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Identify players whose last_seen timestamp exceeds the max age. Args:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Remove all data for a stale player. Args: pid: Player ID to remove…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Remove players whose presence is stale beyond the threshold. Args: last_seen:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Return True if websocket appears dead (should be cleaned up).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Return list of player IDs to check (single player or all).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Clean up dead connections for a single player.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Clean up dead connections for a specific player or all players. Args:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **UUID** (9 connections)
+- **_TickDeathService** (6 connections) — `server/app/game_tick_protocols.py`
+- **_TickCombatService** (5 connections) — `server/app/game_tick_protocols.py`
+- **AsyncSession** (5 connections)
+- **.get_combat_by_participant()** (3 connections) — `server/app/game_tick_protocols.py`
+- **.get_dead_players()** (3 connections) — `server/app/game_tick_protocols.py`
+- **.get_mortally_wounded_players()** (3 connections) — `server/app/game_tick_protocols.py`
+- **.handle_player_death()** (3 connections) — `server/app/game_tick_protocols.py`
+- **.process_mortally_wounded_tick()** (3 connections) — `server/app/game_tick_protocols.py`
+- **.move_player_to_limbo()** (3 connections) — `server/app/game_tick_protocols.py`
+- **.publish_player_dp_decay_event_to_nats()** (2 connections) — `server/app/game_tick_protocols.py`
+- **.send_personal_message()** (2 connections) — `server/app/game_tick_protocols.py`
+- **.process_tick_regeneration()** (2 connections) — `server/app/game_tick_protocols.py`
+- **Player** (2 connections)
+- **.process_game_tick()** (1 connections) — `server/app/game_tick_protocols.py`
 
 ## Relationships
 
-- [ConnectionCleaner](ConnectionCleaner.md) (14 shared connections)
-- [.check_and_cleanup](check_and_cleanup.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [game_tick_death.py](game_tick_death.py.md) (8 shared connections)
+- [CombatInstance](CombatInstance.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
+- [game_tick_status_effects.py](game_tick_status_effects.py.md) (1 shared connections)
+- [test_game_tick_death.py](test_game_tick_death.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/maintenance/connection_cleaner.py`
+- `server/app/game_tick_protocols.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
+- EXTRACTED: 32 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

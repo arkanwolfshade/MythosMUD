@@ -1,12 +1,13 @@
 # QuestService
 
-> 76 nodes
+> 82 nodes
 
 ## Key Concepts
 
 - **QuestService** (79 connections) — `server/game/quest/quest_service.py`
 - **Any** (27 connections)
 - **UUID** (26 connections)
+- **QuestInstance** (21 connections) — `server/models/quest.py`
 - **QuestDefinitionSchema** (18 connections) — `server/schemas/quest/quest.py`
 - **_parse_definition()** (13 connections) — `server/game/quest/quest_service.py`
 - **._apply_activity_progress()** (13 connections) — `server/game/quest/quest_service.py`
@@ -20,7 +21,6 @@
 - **.sync_collect_progress()** (9 connections) — `server/game/quest/quest_service.py`
 - **._apply_item_reward()** (8 connections) — `server/game/quest/quest_service.py`
 - **._apply_rewards()** (8 connections) — `server/game/quest/quest_service.py`
-- **_build_collect_n_progress()** (7 connections) — `server/game/quest/quest_service.py`
 - **_goals_met()** (7 connections) — `server/game/quest/quest_service.py`
 - **.abandon()** (7 connections) — `server/game/quest/quest_service.py`
 - **._check_prerequisites()** (7 connections) — `server/game/quest/quest_service.py`
@@ -29,33 +29,36 @@
 - **._load_player_for_collect()** (6 connections) — `server/game/quest/quest_service.py`
 - **.start_quest_by_trigger()** (6 connections) — `server/game/quest/quest_service.py`
 - **.turn_in_at_entity()** (6 connections) — `server/game/quest/quest_service.py`
-- *... and 51 more nodes in this community*
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [test_quest_service.py](test_quest_service.py.md) (29 shared connections)
-- [quest_service.py](quest_service.py.md) (24 shared connections)
-- [pytest.md](pytest.md.md) (9 shared connections)
+- [test_quest_service.py](test_quest_service.py.md) (30 shared connections)
+- [quest_service.py](quest_service.py.md) (25 shared connections)
+- [test_quest_instance_repository.py](test_quest_instance_repository.py.md) (10 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (5 shared connections)
 - [test_quest_service_collect.py](test_quest_service_collect.py.md) (4 shared connections)
-- [get_player_quests](get_player_quests.md) (4 shared connections)
 - [quest_commands.py](quest_commands.py.md) (3 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (2 shared connections)
-- [.__post_init__](__post_init__.md) (2 shared connections)
-- [collect_inventory.py](collect_inventory.py.md) (2 shared connections)
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
-- [quest_service](quest_service.md) (1 shared connections)
-- [players.py](players.py.md) (1 shared connections)
+- [test_lifespan_event_subscriptions.py](test_lifespan_event_subscriptions.py.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [TargetMatch](TargetMatch.md) (1 shared connections)
+- [collect_inventory.py](collect_inventory.py.md) (1 shared connections)
 
 ## Source Files
 
+- `server/game/magic/spell_effect_types.py`
 - `server/game/quest/quest_service.py`
+- `server/models/quest.py`
+- `server/npc/npc_base.py`
 - `server/schemas/quest/quest.py`
 - `server/tests/unit/game/test_quest_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 226 (87%)
-- INFERRED: 33 (13%)
+- EXTRACTED: 240 (87%)
+- INFERRED: 36 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

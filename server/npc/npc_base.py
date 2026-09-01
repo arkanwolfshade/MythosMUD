@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING, cast
 
 from structlog.stdlib import BoundLogger
 
-from ..container.running_app import combat_service_from_running_app
 from ..events.event_types import NPCSpoke
 from ..models.npc import NPCDefinition
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -24,7 +23,7 @@ from .npc_config_parsing import (
 )
 from .npc_default_reactions import register_default_reactions_for_npc
 from .npc_display_names import register_npc_display_name
-from .npc_protocols import CombatIntegrationProtocol, CombatServiceLookupProtocol, CommunicationIntegrationProtocol
+from .npc_protocols import CombatIntegrationProtocol, CommunicationIntegrationProtocol
 
 if TYPE_CHECKING:
     from ..events import EventBus
@@ -350,9 +349,11 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
     def _is_npc_in_combat(self) -> bool:
         """Return True if NPC is in combat (blocks movement); False on lookup failure."""
         try:
-            combat_service = combat_service_from_running_app()
-            if combat_service is not None:
-                return cast(CombatServiceLookupProtocol, combat_service).is_npc_in_combat_sync(self.npc_id)
+            from ..services.combat_service import get_combat_service
+
+            combat_service = get_combat_service()
+            if combat_service:
+                return combat_service.is_npc_in_combat_sync(self.npc_id)
         except (ImportError, AttributeError, RuntimeError) as exc:
             logger.debug(
                 "Combat presence check unavailable",

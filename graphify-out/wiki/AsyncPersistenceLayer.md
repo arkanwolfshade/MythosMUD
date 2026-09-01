@@ -1,69 +1,65 @@
 # AsyncPersistenceLayer
 
-> 407 nodes
+> 199 nodes
 
 ## Key Concepts
 
-- **AsyncPersistenceLayer** (172 connections) — `server/async_persistence.py`
-- **async_persistence.py** (85 connections) — `server/async_persistence.py`
-- **test_movement_service.py** (52 connections) — `server/tests/unit/game/test_movement_service.py`
-- **MovementService** (45 connections) — `server/game/movement_service.py`
-- **test_async_persistence_core.py** (41 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **movement_service.py** (35 connections) — `server/game/movement_service.py`
-- **test_async_persistence_delegates.py** (34 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **combat_integration_base.py** (23 connections) — `server/npc/combat_integration_base.py`
-- **asyncio** (23 connections)
-- **asyncio** (22 connections)
+- **AsyncPersistenceLayer** (168 connections) — `server/async_persistence.py`
+- **async_persistence.py** (93 connections) — `server/async_persistence.py`
+- **RoomCacheLoader** (26 connections) — `server/async_persistence_room_loader.py`
 - **Player** (20 connections)
-- **asyncio** (20 connections)
-- **UUID** (18 connections)
-- **Any** (17 connections)
-- **movement_helpers.py** (17 connections) — `server/game/movement_helpers.py`
+- **AsyncPersistenceRoomFacade** (16 connections) — `server/async_persistence_room_facade.py`
 - **UUID** (15 connections)
-- **._execute_move_locked()** (14 connections) — `server/game/movement_service.py`
-- **mechanics.py** (14 connections) — `server/game/mechanics.py`
-- **profession_service.py** (13 connections) — `server/game/profession_service.py`
-- **._ensure_room_cache_loaded()** (12 connections) — `server/async_persistence.py`
-- **validate_exit()** (11 connections) — `server/game/movement_helpers.py`
-- **validate_player_room_membership()** (11 connections) — `server/game/movement_helpers.py`
-- **models/profession.py** (11 connections) — `server/models/profession.py`
-- **check_combat_state()** (10 connections) — `server/game/movement_helpers.py`
-- **check_player_posture()** (8 connections) — `server/game/movement_helpers.py`
-- *... and 382 more nodes in this community*
+- **async_persistence_room_facade.py** (14 connections) — `server/async_persistence_room_facade.py`
+- **ProcessedRoomData** (12 connections) — `server/async_persistence_room_loader.py`
+- **ExitJsonEntry** (10 connections) — `server/async_persistence_room_loader.py`
+- **.load()** (9 connections) — `server/async_persistence_room_loader.py`
+- **._process_combined_rows()** (8 connections) — `server/async_persistence_room_loader.py`
+- **_AsyncPersistenceRoomFacadeBase** (7 connections) — `server/async_persistence_room_facade.py`
+- **RoomLoadResult** (7 connections) — `server/async_persistence_room_loader.py`
+- **InstanceRoomLookup** (7 connections) — `server/async_persistence_types.py`
+- **._build_room_data_from_row()** (7 connections) — `server/async_persistence_room_loader.py`
+- **._generate_room_id_from_zone_data()** (7 connections) — `server/async_persistence_room_loader.py`
+- **async_persistence_types.py** (7 connections) — `server/async_persistence_types.py`
+- **async_persistence_access.py** (7 connections) — `server/container/async_persistence_access.py`
+- **ContainerCreateKwargs** (6 connections) — `server/async_persistence_types.py`
+- **PlayerEffectOptions** (6 connections) — `server/async_persistence_types.py`
+- **infrastructure/conftest.py** (6 connections) — `server/tests/unit/infrastructure/conftest.py`
+- **_ContainerWithPersistence** (5 connections) — `server/container/async_persistence_access.py`
+- **.create_container()** (5 connections) — `server/async_persistence.py`
+- **._build_room_objects()** (5 connections) — `server/async_persistence_room_loader.py`
+- **_ApplicationContainerType** (4 connections) — `server/container/async_persistence_access.py`
+- *... and 174 more nodes in this community*
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (41 shared connections)
-- [Player](Player.md) (23 shared connections)
-- [get_logger](get_logger.md) (19 shared connections)
-- [Room](Room.md) (18 shared connections)
-- [ValidationError](ValidationError.md) (11 shared connections)
-- [event_types.py](event_types.py.md) (8 shared connections)
+- [get_logger](get_logger.md) (33 shared connections)
+- [test_async_persistence_delegates.py](test_async_persistence_delegates.py.md) (26 shared connections)
+- [EventBus](EventBus.md) (17 shared connections)
+- [event_types.py](event_types.py.md) (9 shared connections)
 - [ContainerServiceError](ContainerServiceError.md) (8 shared connections)
-- [models/player.py](models-player.py.md) (8 shared connections)
-- [api/monitoring.py](api-monitoring.py.md) (7 shared connections)
-- [Profession](Profession.md) (7 shared connections)
-- [container_events.py](container_events.py.md) (6 shared connections)
+- [item_instance_persistence.py](item_instance_persistence.py.md) (8 shared connections)
+- [Player](Player.md) (7 shared connections)
+- [TransferContainerRequest](TransferContainerRequest.md) (6 shared connections)
 - [User](User.md) (6 shared connections)
+- [CombatParticipant](CombatParticipant.md) (6 shared connections)
+- [test_async_persistence_core.py](test_async_persistence_core.py.md) (5 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (4 shared connections)
 
 ## Source Files
 
 - `server/async_persistence.py`
-- `server/game/mechanics.py`
-- `server/game/movement_helpers.py`
-- `server/game/movement_service.py`
-- `server/game/profession_service.py`
-- `server/models/profession.py`
-- `server/npc/combat_integration_base.py`
-- `server/tests/unit/game/test_movement_service.py`
+- `server/async_persistence_room_facade.py`
+- `server/async_persistence_room_loader.py`
+- `server/async_persistence_types.py`
+- `server/container/async_persistence_access.py`
 - `server/tests/unit/infrastructure/conftest.py`
 - `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 
 ## Audit Trail
 
-- EXTRACTED: 881 (92%)
-- INFERRED: 73 (8%)
+- EXTRACTED: 476 (91%)
+- INFERRED: 49 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

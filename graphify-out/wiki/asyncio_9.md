@@ -19,7 +19,7 @@
 ## Relationships
 
 - [test_party_service.py](test_party_service.py.md) (5 shared connections)
-- [test_follow_service.py](test_follow_service.py.md) (1 shared connections)
+- [test_lifespan_event_subscriptions.py](test_lifespan_event_subscriptions.py.md) (1 shared connections)
 - [PartyService](PartyService.md) (1 shared connections)
 
 ## Source Files

@@ -20,9 +20,8 @@
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (7 shared connections)
-- [models/player.py](models-player.py.md) (2 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [Player](Player.md) (3 shared connections)
 
 ## Source Files
 

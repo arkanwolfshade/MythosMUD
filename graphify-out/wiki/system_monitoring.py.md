@@ -1,6 +1,6 @@
 # system_monitoring.py
 
-> 104 nodes
+> 106 nodes
 
 ## Key Concepts
 
@@ -22,29 +22,29 @@
 - **AlertResolveResponse** (5 connections) — `server/api/monitoring_models.py`
 - **AlertsResponse** (5 connections) — `server/api/monitoring_models.py`
 - **CacheMetricsResponse** (5 connections) — `server/api/monitoring_models.py`
-- **DualConnectionStatsResponse** (5 connections) — `server/api/monitoring_models.py`
-- **EventBusMetricsResponse** (5 connections) — `server/api/monitoring_models.py`
+- **ConnectionHealthStatsResponse** (5 connections) — `server/api/monitoring_models.py`
+- **IntegrityResponse** (5 connections) — `server/api/monitoring_models.py`
 - **MemoryAlertsResponse** (5 connections) — `server/api/monitoring_models.py`
 - **MemoryLeakMetricsResponse** (5 connections) — `server/api/monitoring_models.py`
 - **MemoryStatsResponse** (5 connections) — `server/api/monitoring_models.py`
 - **MetricsResponse** (5 connections) — `server/api/monitoring_models.py`
 - **PerformanceStatsResponse** (5 connections) — `server/api/monitoring_models.py`
-- *... and 79 more nodes in this community*
+- *... and 81 more nodes in this community*
 
 ## Relationships
 
 - [api/monitoring.py](api-monitoring.py.md) (31 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (11 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (7 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (8 shared connections)
+- [lifespan.py](lifespan.py.md) (7 shared connections)
 - [ExceptionTracker](ExceptionTracker.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [User](User.md) (3 shared connections)
 - [test_cache_service.py](test_cache_service.py.md) (2 shared connections)
+- [admin_summon_command.py](admin_summon_command.py.md) (2 shared connections)
+- [InventoryMutationGuard](InventoryMutationGuard.md) (2 shared connections)
 - [factory.py](factory.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
-- [test_admin_summon_command.py](test_admin_summon_command.py.md) (1 shared connections)
 - [PrototypeRegistry](PrototypeRegistry.md) (1 shared connections)
-- [MonitoringDashboard](MonitoringDashboard.md) (1 shared connections)
 
 ## Source Files
 
@@ -56,7 +56,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 251 (99%)
+- EXTRACTED: 254 (99%)
 - INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 

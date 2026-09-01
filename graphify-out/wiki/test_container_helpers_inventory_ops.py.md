@@ -1,11 +1,12 @@
 # test_container_helpers_inventory_ops.py
 
-> 92 nodes
+> 95 nodes
 
 ## Key Concepts
 
 - **test_container_helpers_inventory_ops.py** (53 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
 - **object** (46 connections)
+- **container_helpers_inventory.py** (31 connections) — `server/commands/container_helpers_inventory.py`
 - **container_helpers_inventory_ops.py** (29 connections) — `server/commands/container_helpers_inventory_ops.py`
 - **transfer_item_to_container()** (20 connections) — `server/commands/container_helpers_inventory_ops.py`
 - **asyncio** (19 connections)
@@ -28,34 +29,34 @@
 - **_ensure_mutation_token()** (6 connections) — `server/commands/container_helpers_inventory_ops.py`
 - **.__init__()** (6 connections) — `server/models/lucidity.py`
 - **test_transfer_item_from_container_no_transfer_from()** (6 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_from_container_persist_failure_returns_error()** (6 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- *... and 67 more nodes in this community*
+- *... and 70 more nodes in this community*
 
 ## Relationships
 
-- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (15 shared connections)
-- [inventory_pickup_command.py](inventory_pickup_command.py.md) (4 shared connections)
-- [models/player.py](models-player.py.md) (4 shared connections)
+- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (16 shared connections)
+- [test_inventory_get_command.py](test_inventory_get_command.py.md) (5 shared connections)
+- [Player](Player.md) (5 shared connections)
+- [command_result_text](command_result_text.md) (4 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (4 shared connections)
 - [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (4 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (3 shared connections)
-- [command_result_text](command_result_text.md) (3 shared connections)
-- [.state](state.md) (3 shared connections)
-- [Player](Player.md) (3 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (2 shared connections)
+- [test_container_helpers_inventory_display.py](test_container_helpers_inventory_display.py.md) (4 shared connections)
 - [test_combat_death_handler.py](test_combat_death_handler.py.md) (2 shared connections)
 - [test_shutdown_sequence.py](test_shutdown_sequence.py.md) (2 shared connections)
 - [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) (2 shared connections)
+- [.state](state.md) (1 shared connections)
+- [ContainerServiceError](ContainerServiceError.md) (1 shared connections)
 
 ## Source Files
 
+- `server/commands/container_helpers_inventory.py`
 - `server/commands/container_helpers_inventory_ops.py`
 - `server/models/lucidity.py`
 - `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
 
 ## Audit Trail
 
-- EXTRACTED: 237 (81%)
-- INFERRED: 55 (19%)
+- EXTRACTED: 257 (82%)
+- INFERRED: 56 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

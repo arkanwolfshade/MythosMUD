@@ -33,18 +33,16 @@
 
 ## Relationships
 
-- [test_npc_startup_service.py](test_npc_startup_service.py.md) (13 shared connections)
-- [asyncio](asyncio.md) (13 shared connections)
-- [_errors_len](_errors_len.md) (5 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (3 shared connections)
+- [test_npc_startup_service.py](test_npc_startup_service.py.md) (34 shared connections)
+- [EventBus](EventBus.md) (4 shared connections)
 - [npc_database.py](npc_database.py.md) (3 shared connections)
-- [NPCDefinition](NPCDefinition.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
 - [get_npc_instance_service](get_npc_instance_service.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [npc_startup_service](npc_startup_service.md) (1 shared connections)
-- [test_determine_spawn_room_room_id_not_found](test_determine_spawn_room_room_id_not_found.md) (1 shared connections)
-- [test_spawn_npcs_on_startup_with_optional_npcs](test_spawn_npcs_on_startup_with_optional_npcs.md) (1 shared connections)
+- [NPCSpawnRule](NPCSpawnRule.md) (2 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
 
 ## Source Files
 

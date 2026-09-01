@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
+- [npc_combat_integration_service.py](npc_combat_integration_service.py.md) (4 shared connections)
 
 ## Source Files
 

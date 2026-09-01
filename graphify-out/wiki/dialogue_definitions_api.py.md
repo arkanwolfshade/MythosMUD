@@ -33,17 +33,15 @@
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (25 shared connections)
+- [get_admin_auth_service](get_admin_auth_service.md) (13 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (10 shared connections)
+- [User](User.md) (9 shared connections)
 - [DialogueDefinitionRepository](DialogueDefinitionRepository.md) (6 shared connections)
-- [User](User.md) (6 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
-- [DialogueService](DialogueService.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [BaseCommand](BaseCommand.md) (2 shared connections)
-- [quest_commands.py](quest_commands.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [talk_command.py](talk_command.py.md) (4 shared connections)
+- [pydantic.md](pydantic.md.md) (2 shared connections)
 - [factory.py](factory.py.md) (1 shared connections)
 - [test_admin_auth_service.py](test_admin_auth_service.py.md) (1 shared connections)
-- [test_users.py](test_users.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

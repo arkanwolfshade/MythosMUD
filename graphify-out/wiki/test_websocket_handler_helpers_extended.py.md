@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [ErrorType](ErrorType.md) (17 shared connections)
+- [ErrorType](ErrorType.md) (11 shared connections)
+- [websocket_handler.py](websocket_handler.py.md) (7 shared connections)
 - [WebSocketMessageValidator](WebSocketMessageValidator.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,30 +1,36 @@
 # field_validator
 
-> 9 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **field_validator** (4 connections)
-- **.validate_spell_name()** (3 connections) — `server/models/command_magic.py`
-- **.validate_target()** (3 connections) — `server/models/command_magic.py`
-- **.validate_spell_name()** (3 connections) — `server/models/command_magic.py`
-- **.validate_spell_name()** (3 connections) — `server/models/command_magic.py`
-- **Validate spell name format.** (1 connections) — `server/models/command_magic.py`
-- **Validate target format.** (1 connections) — `server/models/command_magic.py`
-- **Validate spell name format.** (1 connections) — `server/models/command_magic.py`
-- **Validate spell name format.** (1 connections) — `server/models/command_magic.py`
+- **field_validator** (6 connections)
+- **.validate_duration()** (4 connections) — `server/schemas/calendar/calendar.py`
+- **.validate_bonus_tags()** (3 connections) — `server/schemas/calendar/calendar.py`
+- **.validate_season()** (3 connections) — `server/schemas/calendar/calendar.py`
+- **.validate_tradition()** (3 connections) — `server/schemas/calendar/calendar.py`
+- **.validate_days()** (3 connections) — `server/schemas/calendar/calendar.py`
+- **.validate_slug_list()** (3 connections) — `server/schemas/calendar/calendar.py`
+- **Any** (1 connections)
+- **Validate schedule entry days are standard English weekday names (Sunday,…** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Validate slug-formatted list entries. Args: value: Sequence of strings to…** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Ensure the schedule window moves time forward like the Chronology Tablets…** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Validate tradition value. Args: value: The tradition string to validate…** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Validate season value. Args: value: The season string to validate Returns: str:…** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Validate bonus tags format.** (1 connections) — `server/schemas/calendar/calendar.py`
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (4 shared connections)
+- [HolidayService](HolidayService.md) (3 shared connections)
+- [time.py](time.py.md) (3 shared connections)
 
 ## Source Files
 
-- `server/models/command_magic.py`
+- `server/schemas/calendar/calendar.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

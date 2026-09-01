@@ -33,12 +33,10 @@
 
 ## Relationships
 
+- [test_npc_threading_messages.py](test_npc_threading_messages.py.md) (12 shared connections)
 - [._execute_wander_movement](_execute_wander_movement.md) (12 shared connections)
-- [test_npc_threading_messages.py](test_npc_threading_messages.py.md) (11 shared connections)
-- [time.py](time.py.md) (3 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
-- [Lock](Lock.md) (1 shared connections)
+- [EventBus](EventBus.md) (4 shared connections)
+- [event_types.py](event_types.py.md) (2 shared connections)
 - [NPCActionMessage](NPCActionMessage.md) (1 shared connections)
 - [IdleMovementHandler](IdleMovementHandler.md) (1 shared connections)
 - [NPCDefinition](NPCDefinition.md) (1 shared connections)

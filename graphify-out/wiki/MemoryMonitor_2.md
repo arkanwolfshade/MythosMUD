@@ -16,6 +16,7 @@
 - **idle_sampler_interval_seconds()** (6 connections) — `server/realtime/memory_monitor.py`
 - **ConnectionStatsSnapshot** (5 connections) — `server/realtime/memory_monitor.py`
 - **IdleMemorySample** (5 connections) — `server/realtime/memory_monitor.py`
+- **peek_performance_monitor()** (5 connections) — `server/monitoring/performance_monitor.py`
 - **_append_sample_jsonl()** (5 connections) — `server/realtime/memory_monitor.py`
 - **idle_sampler_enabled()** (5 connections) — `server/realtime/memory_monitor.py`
 - **.get_memory_alerts()** (5 connections) — `server/realtime/memory_monitor.py`
@@ -28,34 +29,33 @@
 - **_event_bus_queue_depth()** (4 connections) — `server/realtime/memory_monitor.py`
 - **_log_hour_key_count()** (4 connections) — `server/realtime/memory_monitor.py`
 - **.get_memory_usage()** (4 connections) — `server/realtime/memory_monitor.py`
-- **_npc_pending_key_count()** (4 connections) — `server/realtime/memory_monitor.py`
 - *... and 68 more nodes in this community*
 
 ## Relationships
 
 - [connection_manager.py](connection_manager.py.md) (10 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 - [connection_manager_methods.py](connection_manager_methods.py.md) (3 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
 - [lifespan_protocols.py](lifespan_protocols.py.md) (2 shared connections)
 - [PerformanceMonitor](PerformanceMonitor.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (2 shared connections)
 - [LogAggregator](LogAggregator.md) (2 shared connections)
+- [event_types.py](event_types.py.md) (2 shared connections)
 - [time.py](time.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
 - [ConnectionManager](ConnectionManager.md) (1 shared connections)
 - [MythosTickScheduler](MythosTickScheduler.md) (1 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/main.py`
+- `server/monitoring/performance_monitor.py`
 - `server/realtime/memory_monitor.py`
 - `server/structured_logging/log_aggregator.py`
 - `server/tests/unit/realtime/test_memory_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 189 (97%)
+- EXTRACTED: 190 (97%)
 - INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 

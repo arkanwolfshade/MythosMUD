@@ -1,6 +1,6 @@
 # BehaviorEngine
 
-> 139 nodes
+> 137 nodes
 
 ## Key Concepts
 
@@ -8,7 +8,6 @@
 - **test_behavior_engine.py** (55 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 - **Any** (12 connections)
 - **._try_evaluators()** (7 connections) — `server/npc/behavior_engine.py`
-- **behavior_engine.py** (7 connections) — `server/npc/behavior_engine.py`
 - **.evaluate_condition()** (6 connections) — `server/npc/behavior_engine.py`
 - **.execute_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
 - **.get_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
@@ -29,13 +28,13 @@
 - **test_evaluate_boolean_condition_false()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 - **test_evaluate_boolean_condition_true()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 - **test_evaluate_boolean_condition_variable()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- *... and 114 more nodes in this community*
+- **test_evaluate_boolean_condition_variable_false()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- *... and 112 more nodes in this community*
 
 ## Relationships
 
-- [NPCBase](NPCBase.md) (4 shared connections)
-- [time.py](time.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [EventBus](EventBus.md) (6 shared connections)
+- [npc_config_parsing.py](npc_config_parsing.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -46,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 218 (100%)
+- EXTRACTED: 213 (100%)
 - INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 

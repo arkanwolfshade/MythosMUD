@@ -25,7 +25,7 @@
 
 ## Relationships
 
-- [ADR-020: WebSocket Authentication and CSRF](ADR-020-_WebSocket_Authentication_and_CSRF.md) (1 shared connections)
+- [FRD & Plan-Document Verification Register — 2026-08](FRD_&_Plan-Document_Verification_Register_—_2026-08.md) (1 shared connections)
 
 ## Source Files
 

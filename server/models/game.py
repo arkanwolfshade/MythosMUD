@@ -5,12 +5,43 @@ This module contains models specific to the game mechanics including
 character statistics and attribute types.
 """
 
-import random
+import uuid
 from datetime import UTC, datetime
 from enum import StrEnum
-from typing import Any
+from typing import ClassVar, cast
 
 from pydantic import BaseModel, ConfigDict, Field, computed_field, model_validator
+
+from .stats_random import CORE_STAT_KEYS, CoreStatValues, roll_random_core_stat_values
+
+
+def _coerce_stat_int(value: object, default: int) -> int:
+    """Convert persisted stat values to int with a safe fallback."""
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float):
+        return int(value)
+    return default
+
+
+def _needs_random_core_stats(raw: dict[str, object]) -> bool:
+    """True when any core stat key is missing or explicitly None."""
+    return not any(key in raw for key in CORE_STAT_KEYS) or any(raw.get(key) is None for key in CORE_STAT_KEYS)
+
+
+def _merge_random_core_stats(raw: dict[str, object], random_values: CoreStatValues) -> None:
+    """Fill missing or None core stat keys from rolled values."""
+    for key in CORE_STAT_KEYS:
+        if key not in raw or raw.get(key) is None:
+            raw[key] = random_values[key]
+
+
+def _new_player_id() -> str:
+    return str(uuid.uuid4())
+
+
+def _utc_now_naive() -> datetime:
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 class WeaponStats(BaseModel):
@@ -21,7 +52,7 @@ class WeaponStats(BaseModel):
     damage range, modifiers, damage types, and magical properties.
     """
 
-    model_config = ConfigDict(
+    model_config: ClassVar[ConfigDict] = ConfigDict(
         extra="forbid",
         validate_assignment=True,
         str_strip_whitespace=True,
@@ -88,9 +119,7 @@ class PositionState(StrEnum):
 class StatusEffect(BaseModel):
     """Represents a status effect applied to a character."""
 
-    __slots__ = ()  # Performance optimization for frequently instantiated status effects
-
-    model_config = ConfigDict(
+    model_config: ClassVar[ConfigDict] = ConfigDict(
         # Security: reject unknown fields to prevent injection
         extra="forbid",
         # Performance: validate assignment for computed fields
@@ -117,9 +146,7 @@ class StatusEffect(BaseModel):
 class Stats(BaseModel):
     """Core character statistics with Lovecraftian horror elements."""
 
-    __slots__ = ()  # Performance optimization for frequently instantiated stats
-
-    model_config = ConfigDict(
+    model_config: ClassVar[ConfigDict] = ConfigDict(
         # Performance: validate assignment for computed fields
         validate_assignment=True,
         # Ignore extra fields for backward compatibility with serialized stats (safer than "allow")
@@ -152,56 +179,35 @@ class Stats(BaseModel):
 
     position: PositionState = Field(default=PositionState.STANDING, description="Current body posture")
 
-    def __init__(self, **data: Any) -> None:
+    @model_validator(mode="before")
+    @classmethod
+    def _ensure_core_stats(cls, data: object) -> object:
         """
-        Initialize Stats with provided data.
+        Generate random core stats when missing or None.
 
-        For random stat generation, use generate_random_stats() from server.game.stats_generator
-        instead of calling Stats() without arguments.
-
-        AI: This method handles backward compatibility by generating random stats when core attributes
-        are missing or None. The logic ensures that any explicitly provided values take precedence
-        over generated random values.
+        Callers may pass ``_test_seed`` (int) for reproducible rolls in tests.
         """
-        # Core stats that must be present for a valid Stats instance
-        core_stats = [
-            "strength",
-            "dexterity",
-            "constitution",
-            "size",
-            "intelligence",
-            "power",
-            "education",
-            "charisma",
-            "luck",
-        ]
-
-        # Check if we need to generate random stats (either missing or None values)
-        needs_random_stats = not any(key in data for key in core_stats) or any(
-            data.get(key) is None for key in core_stats
-        )
-
-        if needs_random_stats:
-            # Generate random stats and merge with provided data
-            seed = data.pop("_test_seed", None)
-            random_stats = generate_random_stats(seed=seed)
-
-            # Merge random stats with any provided data (provided data takes precedence)
-            for key in core_stats:
-                if key not in data or data.get(key) is None:
-                    data[key] = getattr(random_stats, key, None)
-
-        super().__init__(**data)
+        if not isinstance(data, dict):
+            return data
+        raw: dict[str, object] = cast(dict[str, object], data).copy()
+        if _needs_random_core_stats(raw):
+            seed_obj = raw.pop("_test_seed", None)
+            seed = seed_obj if isinstance(seed_obj, int) else None
+            _merge_random_core_stats(raw, roll_random_core_stat_values(seed=seed))
+        return raw
 
     @model_validator(mode="before")
     @classmethod
-    def _compute_max_dp_if_missing(cls, data: Any) -> Any:
+    def _compute_max_dp_if_missing(cls, data: object) -> object:
         """Populate max_dp from (CON+SIZ)/5 when not provided (stored value takes precedence)."""
-        if isinstance(data, dict) and data.get("max_dp") is None:
-            con = data.get("constitution", 50)
-            siz = data.get("size", 50)
-            data = {**data, "max_dp": (con + siz) // 5}
-        return data
+        if not isinstance(data, dict):
+            return data
+        raw: dict[str, object] = cast(dict[str, object], data).copy()
+        if raw.get("max_dp") is None:
+            con = _coerce_stat_int(raw.get("constitution"), 50)
+            siz = _coerce_stat_int(raw.get("size"), 50)
+            raw["max_dp"] = (con + siz) // 5
+        return raw
 
     # Derived stats - use stored max_dp from persistence when present, else compute from (CON+SIZ)/5
     max_dp: int | None = Field(
@@ -321,49 +327,10 @@ class Stats(BaseModel):
         return self.lucidity <= 0
 
 
-def generate_random_stats(seed: int | None = None) -> Stats:
-    """
-    Generate Stats with random attribute values.
-
-    Factory function for creating Stats objects with randomly generated attributes.
-    This separates business logic from the model's __init__ method.
-
-    Canonical implementation lives here (models/), not in server/game/stats_generator.py,
-    which re-exports this name for API stability. Stats.__init__ calls this directly to avoid
-    a models/ -> game/ layer-direction violation (ADR-001; #757); this function has no
-    dependency beyond `random` and Stats itself, so it belongs beside the model it constructs.
-
-    Args:
-        seed: Optional random seed for reproducible generation (useful for testing)
-
-    Returns:
-        Stats: A new Stats object with randomly generated attribute values
-    """
-    local_rng = random.Random(seed) if seed is not None else random.Random()  # nosec B311: Game mechanics stat generation, not cryptographic
-
-    # Roll Size using formula: (2D6+6)*5 (range 40-90)
-    size_roll = local_rng.randint(2, 12) + 6  # 2D6+6 (range 8-18)
-    size = size_roll * 5  # Multiply by 5 (range 40-90)
-
-    return Stats(
-        strength=local_rng.randint(15, 90),
-        dexterity=local_rng.randint(15, 90),
-        constitution=local_rng.randint(15, 90),
-        size=size,
-        intelligence=local_rng.randint(15, 90),
-        power=local_rng.randint(15, 90),
-        education=local_rng.randint(15, 90),
-        charisma=local_rng.randint(15, 90),
-        luck=local_rng.randint(15, 90),
-    )
-
-
 class InventoryItem(BaseModel):
     """Represents an item in a player's inventory."""
 
-    __slots__ = ()
-
-    model_config = ConfigDict(
+    model_config: ClassVar[ConfigDict] = ConfigDict(
         extra="forbid",
         validate_assignment=True,
     )
@@ -384,14 +351,12 @@ class Player(BaseModel):
     and is used for game logic, validation, and testing.
     """
 
-    __slots__ = ()
-
-    model_config = ConfigDict(
+    model_config: ClassVar[ConfigDict] = ConfigDict(
         extra="forbid",
         validate_assignment=True,
     )
 
-    id: str = Field(default_factory=lambda: str(__import__("uuid").uuid4()), description="Player unique identifier")
+    id: str = Field(default_factory=_new_player_id, description="Player unique identifier")
     name: str = Field(..., min_length=1, max_length=50, description="Player name")
     current_room_id: str = Field(
         default="earth_arkhamcity_sanitarium_room_foyer_001", description="Current room location"
@@ -402,9 +367,18 @@ class Player(BaseModel):
     inventory: list[InventoryItem] = Field(default_factory=list, description="Player inventory")
     status_effects: list[StatusEffect] = Field(default_factory=list, description="Active status effects")
     last_active: datetime = Field(
-        default_factory=lambda: __import__("datetime").datetime.now(__import__("datetime").UTC).replace(tzinfo=None),
+        default_factory=_utc_now_naive,
         description="Last activity timestamp",
     )
+
+    def _inventory_list(self) -> list[InventoryItem]:
+        return cast(list[InventoryItem], object.__getattribute__(self, "inventory"))
+
+    def _status_effects_list(self) -> list[StatusEffect]:
+        return cast(list[StatusEffect], object.__getattribute__(self, "status_effects"))
+
+    def _player_stats(self) -> Stats:
+        return cast(Stats, object.__getattribute__(self, "stats"))
 
     def add_item(self, item_id: str, quantity: int = 1) -> bool:
         """
@@ -418,7 +392,7 @@ class Player(BaseModel):
             bool: True if successful
         """
         # Get actual inventory list using __getattribute__ to bypass field descriptor
-        inventory: list[InventoryItem] = object.__getattribute__(self, "inventory")
+        inventory = self._inventory_list()
         for inv_item in inventory:
             if inv_item.item_id == item_id:
                 # Increase quantity
@@ -441,14 +415,14 @@ class Player(BaseModel):
             bool: True if successful, False if item not found or insufficient quantity
         """
         # Get actual inventory list using __getattribute__ to bypass field descriptor
-        inventory: list[InventoryItem] = object.__getattribute__(self, "inventory")
+        inventory = self._inventory_list()
         for i, inv_item in enumerate(inventory):
             if inv_item.item_id == item_id:
                 if inv_item.quantity >= quantity:
                     new_quantity = inv_item.quantity - quantity
                     if not new_quantity:
                         # Remove item completely
-                        inventory.pop(i)
+                        _ = inventory.pop(i)
                     else:
                         # Decrease quantity
                         object.__setattr__(inv_item, "quantity", new_quantity)
@@ -465,7 +439,7 @@ class Player(BaseModel):
             effect: StatusEffect to add
         """
         # Get actual status_effects list using __getattribute__ to bypass field descriptor
-        status_effects: list[StatusEffect] = object.__getattribute__(self, "status_effects")
+        status_effects = self._status_effects_list()
         status_effects.append(effect)
 
     def remove_status_effect(self, effect_type: StatusEffectType) -> bool:
@@ -479,10 +453,10 @@ class Player(BaseModel):
             bool: True if effect was found and removed, False otherwise
         """
         # Get actual status_effects list using __getattribute__ to bypass field descriptor
-        status_effects: list[StatusEffect] = object.__getattribute__(self, "status_effects")
+        status_effects = self._status_effects_list()
         for i, effect in enumerate(status_effects):
             if effect.effect_type == effect_type:
-                status_effects.pop(i)
+                _ = status_effects.pop(i)
                 return True
         return False
 
@@ -497,7 +471,7 @@ class Player(BaseModel):
             list[StatusEffect]: List of active effects
         """
         # Get actual status_effects list using __getattribute__ to bypass field descriptor
-        status_effects: list[StatusEffect] = object.__getattribute__(self, "status_effects")
+        status_effects = self._status_effects_list()
         return [effect for effect in status_effects if effect.is_active(current_tick)]
 
     def update_last_active(self) -> None:
@@ -516,6 +490,6 @@ class Player(BaseModel):
         """
         # Get actual stats using __getattribute__ to bypass field descriptor
         # Carrying capacity is based on strength (10 lbs per point)
-        stats: Stats = object.__getattribute__(self, "stats")
+        stats = self._player_stats()
         max_capacity = (stats.strength or 10) * 10
         return weight <= max_capacity

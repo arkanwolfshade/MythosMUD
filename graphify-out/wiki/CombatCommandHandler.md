@@ -1,60 +1,71 @@
 # CombatCommandHandler
 
-> 43 nodes
+> 386 nodes
 
 ## Key Concepts
 
 - **CombatCommandHandler** (51 connections) — `server/commands/combat_handler.py`
-- **.__init__()** (11 connections) — `server/commands/combat_handler.py`
-- **.get_player_and_room()** (6 connections) — `server/commands/combat_handler.py`
-- **._get_persistence_from_app()** (5 connections) — `server/commands/combat_handler.py`
-- **.resolve_combat_target()** (5 connections) — `server/commands/combat_handler.py`
-- **._validate_combat_target_match()** (5 connections) — `server/commands/combat_handler.py`
-- **.combat_service()** (4 connections) — `server/commands/combat_handler.py`
-- **.extract_combat_command_data()** (4 connections) — `server/commands/combat_handler.py`
-- **.get_npc_instance()** (4 connections) — `server/commands/combat_handler.py`
-- **test_combat_command_handler_extras_optional()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **.get_room_data()** (3 connections) — `server/commands/combat_handler.py`
-- **.movement_service()** (3 connections) — `server/commands/combat_handler.py`
-- **.player_position_service()** (3 connections) — `server/commands/combat_handler.py`
-- **.room_forbids_combat()** (3 connections) — `server/commands/combat_handler.py`
-- **.validate_combat_action()** (3 connections) — `server/commands/combat_handler.py`
-- **.validate_target_name()** (3 connections) — `server/commands/combat_handler.py`
-- **test_combat_command_handler_requires_async_persistence()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **AppWithState** (3 connections)
-- **ConnectionManager** (1 connections)
-- **Combat service for command modules.** (1 connections) — `server/commands/combat_handler.py`
-- **Movement service for command modules.** (1 connections) — `server/commands/combat_handler.py`
-- **Player position service for command modules.** (1 connections) — `server/commands/combat_handler.py`
-- **Extract command type and target name from command_data. Public API.** (1 connections) — `server/commands/combat_handler.py`
-- **Validate that target name is provided. Public API.** (1 connections) — `server/commands/combat_handler.py`
-- **Get player data and room, returning error dict if any step fails. Public API.** (1 connections) — `server/commands/combat_handler.py`
-- *... and 18 more nodes in this community*
+- **TargetResolutionService** (51 connections) — `server/services/target_resolution_service.py`
+- **combat_handler.py** (47 connections) — `server/commands/combat_handler.py`
+- **TargetType** (45 connections) — `server/schemas/shared/target_resolution.py`
+- **test_target_resolution_service.py** (43 connections) — `server/tests/unit/services/test_target_resolution_service.py`
+- **test_combat_handler.py** (40 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **TargetResolutionResult** (36 connections) — `server/schemas/shared/target_resolution.py`
+- **combat_taunt.py** (34 connections) — `server/commands/combat_taunt.py`
+- **target_resolution_service.py** (29 connections) — `server/services/target_resolution_service.py`
+- **TauntCommandHandler** (27 connections) — `server/commands/combat_taunt.py`
+- **combat_attack.py** (25 connections) — `server/commands/combat_attack.py`
+- **_handler_with_persistence()** (22 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_combat_taunt.py** (22 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **asyncio** (21 connections)
+- **test_combat_attack.py** (20 connections) — `server/tests/unit/commands/test_combat_attack.py`
+- **schemas/shared/__init__.py** (16 connections) — `server/schemas/shared/__init__.py`
+- **test_target_resolution.py** (16 connections) — `server/tests/unit/schemas/test_target_resolution.py`
+- **AppWithState** (15 connections) — `server/commands/combat_app_protocols.py`
+- **TargetMetadata** (15 connections) — `server/schemas/shared/target_metadata.py`
+- **asyncio** (14 connections)
+- **run_handle_taunt_command()** (13 connections) — `server/commands/combat_taunt.py`
+- **target_resolution.py** (13 connections) — `server/schemas/shared/target_resolution.py`
+- **_validate_taunt_context()** (12 connections) — `server/commands/combat_taunt.py`
+- **run_handle_attack_command()** (11 connections) — `server/commands/combat_attack.py`
+- **_apply_taunt_and_maybe_broadcast()** (11 connections) — `server/commands/combat_taunt.py`
+- *... and 361 more nodes in this community*
 
 ## Relationships
 
-- [combat_loader.py](combat_loader.py.md) (8 shared connections)
-- [test_flee_command.py](test_flee_command.py.md) (6 shared connections)
-- [AliasStorage](AliasStorage.md) (5 shared connections)
-- [test_combat_handler.py](test_combat_handler.py.md) (4 shared connections)
-- [get_username_from_user](get_username_from_user.md) (4 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (4 shared connections)
-- [TargetMatch](TargetMatch.md) (3 shared connections)
-- [CombatService](CombatService.md) (3 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (3 shared connections)
-- [PlayerPositionService](PlayerPositionService.md) (2 shared connections)
-- [PlayerService](PlayerService.md) (2 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
+- [TargetMatch](TargetMatch.md) (53 shared connections)
+- [CombatParticipant](CombatParticipant.md) (15 shared connections)
+- [CombatService](CombatService.md) (13 shared connections)
+- [combat_loader.py](combat_loader.py.md) (11 shared connections)
+- [test_follow_commands.py](test_follow_commands.py.md) (11 shared connections)
+- [SpellEffectType](SpellEffectType.md) (9 shared connections)
+- [CombatInstance](CombatInstance.md) (8 shared connections)
+- [AliasStorage](AliasStorage.md) (7 shared connections)
+- [EventBus](EventBus.md) (7 shared connections)
+- [test_party_commands.py](test_party_commands.py.md) (7 shared connections)
+- [SpellEffects](SpellEffects.md) (7 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
 
 ## Source Files
 
+- `server/commands/combat_app_protocols.py`
+- `server/commands/combat_attack.py`
 - `server/commands/combat_handler.py`
+- `server/commands/combat_taunt.py`
+- `server/schemas/shared/__init__.py`
+- `server/schemas/shared/target_metadata.py`
+- `server/schemas/shared/target_resolution.py`
+- `server/services/target_resolution_service.py`
+- `server/tests/unit/commands/test_combat_attack.py`
 - `server/tests/unit/commands/test_combat_handler.py`
+- `server/tests/unit/commands/test_combat_taunt.py`
+- `server/tests/unit/schemas/test_target_resolution.py`
+- `server/tests/unit/services/test_target_resolution_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 82 (80%)
-- INFERRED: 21 (20%)
+- EXTRACTED: 853 (92%)
+- INFERRED: 79 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

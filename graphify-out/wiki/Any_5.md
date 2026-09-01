@@ -1,47 +1,41 @@
 # Any
 
-> 23 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **Any** (13 connections)
-- **.render_map()** (11 connections) — `server/services/ascii_map_renderer.py`
-- **._build_grid()** (6 connections) — `server/services/ascii_map_renderer.py`
-- **._build_exit_lookup()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._determine_map_style()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._get_exit_entries_for_room()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._get_horizontal_exit_char()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._render_room_row()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._resolve_exit_target()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._get_room_symbol()** (4 connections) — `server/services/ascii_map_renderer.py`
-- **._horizontal_exit_char_between()** (4 connections) — `server/services/ascii_map_renderer.py`
-- **._auto_center_viewport()** (3 connections) — `server/services/ascii_map_renderer.py`
-- **Resolve one exit to (target_x, target_y) and is_bidirectional. Returns None if…** (1 connections) — `server/services/ascii_map_renderer.py`
-- **Return list of (direction, (target_x, target_y), is_bidirectional) for exits…** (1 connections) — `server/services/ascii_map_renderer.py`
-- **Build exit lookup map from room data.** (1 connections) — `server/services/ascii_map_renderer.py`
-- **Center viewport on the character's current room so the player is in the middle…** (1 connections) — `server/services/ascii_map_renderer.py`
-- **Render a single row of rooms with horizontal exits.** (1 connections) — `server/services/ascii_map_renderer.py`
-- **Render an ASCII map as HTML. Args: rooms: List of room dictionaries with…** (1 connections) — `server/services/ascii_map_renderer.py`
-- **Return the horizontal exit character (—, >, or <) given east/west exit state,…** (1 connections) — `server/services/ascii_map_renderer.py`
-- **Get exit character to display after a room for horizontal (east/west) exits.…** (1 connections) — `server/services/ascii_map_renderer.py`
-- **Determine map style from room data. Args: rooms: List of room dictionaries…** (1 connections) — `server/services/ascii_map_renderer.py`
-- **Build a coordinate grid from room data. Args: rooms: List of room dictionaries…** (1 connections) — `server/services/ascii_map_renderer.py`
-- **Get ASCII symbol for a room. Args: room: Room dictionary map_style: Current map…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Any** (14 connections)
+- **.cleanup_ghost_players()** (8 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.cleanup_orphaned_data()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._close_and_remove_stale_websocket()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_online_player_ids()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._filter_actual_ghost_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_player_id_from_metadata()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_potential_ghost_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._remove_ghost_players_from_room()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._identify_stale_connections()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Return connection IDs that exceed max_connection_age.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Extract player_id from connection metadata if present.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Close stale WebSocket and remove from tracking. Handles None websocket…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Clean up orphaned data that might accumulate over time. Args:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Return set of online player IDs as strings (room._players uses string UUIDs).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Return players in room but not online. Empty if room has no get_players.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Filter to players with zero WebSocket connections (or invalid UUIDs).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Remove ghost players from room and log.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Clean up ghost players from all rooms. This method removes players from room's…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
 
 ## Relationships
 
-- [AsciiMapRenderer](AsciiMapRenderer.md) (11 shared connections)
-- [._get_vertical_exit_char](_get_vertical_exit_char.md) (4 shared connections)
-- [._exit_is_bidirectional](_exit_is_bidirectional.md) (2 shared connections)
-- [._render_empty_map](_render_empty_map.md) (1 shared connections)
+- [ConnectionCleaner](ConnectionCleaner.md) (16 shared connections)
+- [.check_and_cleanup](check_and_cleanup.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/ascii_map_renderer.py`
+- `server/realtime/maintenance/connection_cleaner.py`
 
 ## Audit Trail
 
-- EXTRACTED: 50 (100%)
+- EXTRACTED: 42 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

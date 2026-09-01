@@ -33,12 +33,14 @@
 
 ## Relationships
 
-- [NATSRetryHandler](NATSRetryHandler.md) (7 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (7 shared connections)
 - [ConnectionManager](ConnectionManager.md) (6 shared connections)
-- [build_event](build_event.md) (5 shared connections)
 - [event_types.py](event_types.py.md) (3 shared connections)
-- [NATSError](NATSError.md) (2 shared connections)
+- [build_event](build_event.md) (3 shared connections)
+- [test_websocket_room_updates.py](test_websocket_room_updates.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [NATSError](NATSError.md) (1 shared connections)
+- [NATSService](NATSService.md) (1 shared connections)
 - [connection_manager.py](connection_manager.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 

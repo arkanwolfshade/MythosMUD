@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (7 shared connections)
-- [test_follow_service.py](test_follow_service.py.md) (6 shared connections)
-- [PlayerLeftRoom](PlayerLeftRoom.md) (4 shared connections)
+- [event_types.py](event_types.py.md) (8 shared connections)
+- [EventBus](EventBus.md) (6 shared connections)
+- [RealTimeEventHandler](RealTimeEventHandler.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

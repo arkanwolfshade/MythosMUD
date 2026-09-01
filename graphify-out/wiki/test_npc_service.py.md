@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [NPCDefinition](NPCDefinition.md) (6 shared connections)
-- [DatabaseError](DatabaseError.md) (5 shared connections)
+- [NPCSpawnRule](NPCSpawnRule.md) (5 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
 

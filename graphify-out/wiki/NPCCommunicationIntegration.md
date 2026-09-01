@@ -33,9 +33,7 @@
 
 ## Relationships
 
-- [time.py](time.py.md) (4 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (2 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [EventBus](EventBus.md) (7 shared connections)
 - [ChatService](ChatService.md) (1 shared connections)
 
 ## Source Files

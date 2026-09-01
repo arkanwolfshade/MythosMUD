@@ -35,7 +35,7 @@
 
 - [HealthStatus](HealthStatus.md) (4 shared connections)
 - [AliasStorage](AliasStorage.md) (2 shared connections)
-- [BaseCommand](BaseCommand.md) (2 shared connections)
+- [pydantic.md](pydantic.md.md) (2 shared connections)
 - [Stats](Stats.md) (1 shared connections)
 - [StatusEffect](StatusEffect.md) (1 shared connections)
 - [TargetMatch](TargetMatch.md) (1 shared connections)

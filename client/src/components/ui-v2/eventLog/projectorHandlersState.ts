@@ -14,6 +14,22 @@ import {
 
 export type ProjectorHandler = (prevState: GameState, event: GameEvent) => GameState;
 
+function appendPostureGameInfoMessage(prevState: GameState, event: GameEvent, messageText: string): GameState {
+  const trimmed = messageText.trim();
+  if (!trimmed) return prevState;
+  const msg = buildChatMessage(trimmed, event.timestamp, {
+    messageType: 'system',
+    channel: GAME_LOG_CHANNEL,
+  });
+  return { ...prevState, messages: appendMessage(prevState.messages, msg) };
+}
+
+function mergePostureMessageIntoState(prevState: GameState, event: GameEvent): GameState {
+  const postureMessage = typeof event.data.posture_message === 'string' ? event.data.posture_message.trim() : '';
+  if (!postureMessage) return prevState;
+  return appendPostureGameInfoMessage(prevState, event, postureMessage);
+}
+
 export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
   game_state(prevState, event) {
     const playerData = event.data.player as unknown;
@@ -95,7 +111,11 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
   },
 
   player_update(prevState, event) {
-    const data = event.data as { in_combat?: boolean; stats?: Record<string, unknown> };
+    const data = event.data as {
+      in_combat?: boolean;
+      stats?: Record<string, unknown>;
+      posture_message?: string;
+    };
     if (!prevState.player) return prevState;
     const mergedStats =
       data.stats && prevState.player.stats
@@ -106,7 +126,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
       ...(data.in_combat !== undefined && { in_combat: data.in_combat }),
       ...(mergedStats !== undefined && { stats: mergedStats }),
     };
-    return { ...prevState, player: updated };
+    return mergePostureMessageIntoState({ ...prevState, player: updated }, event);
   },
 
   combat_started(prevState) {
@@ -222,6 +242,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
       new_dp?: number;
       max_dp?: number;
       posture?: string;
+      posture_message?: string;
       player?: { stats?: { current_dp?: number; max_dp?: number; position?: string } };
     };
     const newDp = data.new_dp ?? data.player?.stats?.current_dp;
@@ -230,21 +251,34 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
     const oldDp = prevState.player?.stats?.current_dp ?? 0;
     if (!prevState.player?.stats || newDp === undefined) return prevState;
     if (oldDp <= -10 && newDp > oldDp) return prevState;
-    return {
-      ...prevState,
-      player: {
-        ...prevState.player,
-        stats: {
-          ...prevState.player.stats,
-          current_dp: newDp,
-          ...(maxDp !== undefined && { max_dp: maxDp }),
-          ...(position !== undefined && { position }),
+    return mergePostureMessageIntoState(
+      {
+        ...prevState,
+        player: {
+          ...prevState.player,
+          stats: {
+            ...prevState.player.stats,
+            current_dp: newDp,
+            ...(maxDp !== undefined && { max_dp: maxDp }),
+            ...(position !== undefined && { position }),
+          },
         },
       },
-    };
+      event
+    );
   },
   playerdpupdated(prevState, event) {
     return stateHandlers.player_dp_updated!(prevState, event);
+  },
+
+  player_dp_decay(prevState, event) {
+    return mergePostureMessageIntoState(prevState, event);
+  },
+
+  player_posture_change(prevState, event) {
+    const messageText = typeof event.data.message === 'string' ? event.data.message.trim() : '';
+    if (!messageText) return prevState;
+    return appendPostureGameInfoMessage(prevState, event, messageText);
   },
 
   lucidity_change(prevState, event) {

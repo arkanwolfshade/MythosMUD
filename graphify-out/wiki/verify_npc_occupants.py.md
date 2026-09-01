@@ -21,7 +21,7 @@
 ## Relationships
 
 - [get_npc_instance_service](get_npc_instance_service.md) (2 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
 
 ## Source Files
 

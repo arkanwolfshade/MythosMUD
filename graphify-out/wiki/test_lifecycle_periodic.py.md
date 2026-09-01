@@ -1,6 +1,6 @@
 # test_lifecycle_periodic.py
 
-> 62 nodes
+> 60 nodes
 
 ## Key Concepts
 
@@ -21,7 +21,6 @@
 - **test_cleanup_old_records_removes_stale_despawned()** (4 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
 - **test_cleanup_old_records_removes_stale_error()** (4 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
 - **.get_config_summary()** (3 connections) — `server/config/npc_config.py`
-- **.should_run_maintenance()** (3 connections) — `server/config/npc_config.py`
 - **.cleanup_old_records()** (3 connections) — `server/npc/lifecycle_manager.py`
 - **.periodic_maintenance()** (3 connections) — `server/npc/lifecycle_manager.py`
 - **test_should_not_skip_when_interval_elapsed()** (3 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
@@ -29,17 +28,17 @@
 - **test_attempt_optional_npc_spawn_no_controller()** (2 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
 - **test_attempt_optional_npc_spawn_no_zone_config()** (2 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
 - **test_attempt_optional_npc_spawn_probability_miss()** (2 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
-- *... and 37 more nodes in this community*
+- **test_check_optional_npc_spawns_no_population_controller()** (2 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (11 shared connections)
-- [NPCDefinition](NPCDefinition.md) (4 shared connections)
-- [game_tick_processing.py](game_tick_processing.py.md) (2 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
+- [event_types.py](event_types.py.md) (13 shared connections)
+- [game_tick_processing.py](game_tick_processing.py.md) (3 shared connections)
+- [NPCDefinition](NPCDefinition.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [time.py](time.py.md) (2 shared connections)
-- [test_game_tick_processing.py](test_game_tick_processing.py.md) (1 shared connections)
+- [NPCSpawnRule](NPCSpawnRule.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 133 (96%)
+- EXTRACTED: 131 (96%)
 - INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 

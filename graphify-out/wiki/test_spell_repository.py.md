@@ -1,6 +1,6 @@
 # test_spell_repository.py
 
-> 15 nodes
+> 17 nodes
 
 ## Key Concepts
 
@@ -11,19 +11,21 @@
 - **test_get_all_spells()** (4 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
 - **test_get_spell_by_id_found()** (4 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
 - **asyncio** (4 connections)
+- **repo()** (3 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
 - **_spell_row()** (3 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
 - **test_get_all_spells_db_error()** (3 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
 - **test_get_spell_by_id_not_found()** (3 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
 - **Any** (3 connections)
 - **test_row_to_spell_dict_maps_fields()** (2 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
+- **fixture** (1 connections)
 - **Map procedure result row to spell dict.** (1 connections) — `server/persistence/repositories/spell_repository.py`
 - **Get all spells from the database. Returns: list[dict]: List of all spell…** (1 connections) — `server/persistence/repositories/spell_repository.py`
 - **Unit tests for SpellRepository.** (1 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (9 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
+- [SpellEffects](SpellEffects.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -33,8 +35,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 36 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 37 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

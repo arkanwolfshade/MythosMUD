@@ -34,7 +34,7 @@
 - [get_npc_instance_service](get_npc_instance_service.md) (2 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 - [IdleMovementHandler](IdleMovementHandler.md) (1 shared connections)
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
+- [test_lifespan_event_subscriptions.py](test_lifespan_event_subscriptions.py.md) (1 shared connections)
 
 ## Source Files
 

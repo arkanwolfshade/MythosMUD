@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (6 shared connections)
-- [PlayerPositionService](PlayerPositionService.md) (5 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (3 shared connections)
-- [quest_commands.py](quest_commands.py.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [test_rest_command.py](test_rest_command.py.md) (5 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [talk_command.py](talk_command.py.md) (3 shared connections)
+- [look_command.py](look_command.py.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [MovementService](MovementService.md) (2 shared connections)
+- [command_service.py](command_service.py.md) (1 shared connections)
 - [PlayerCombatService](PlayerCombatService.md) (1 shared connections)
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [test_lifespan_event_subscriptions.py](test_lifespan_event_subscriptions.py.md) (1 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (1 shared connections)
 - [ValidationError](ValidationError.md) (1 shared connections)
-- [DialogueService](DialogueService.md) (1 shared connections)
 
 ## Source Files
 

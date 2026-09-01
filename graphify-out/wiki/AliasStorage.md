@@ -1,78 +1,62 @@
 # AliasStorage
 
-> 450 nodes
+> 246 nodes
 
 ## Key Concepts
 
-- **AliasStorage** (264 connections) — `server/alias_storage.py`
-- **command_service.py** (108 connections) — `server/commands/command_service.py`
-- **alias_storage.py** (75 connections) — `server/alias_storage.py`
-- **Alias** (70 connections) — `server/models/alias.py`
+- **AliasStorage** (265 connections) — `server/alias_storage.py`
+- **Alias** (72 connections) — `server/models/alias.py`
 - **test_alias_storage.py** (68 connections) — `server/tests/unit/test_alias_storage.py`
-- **admin_summon_command.py** (35 connections) — `server/commands/admin_summon_command.py`
-- **admin_commands.py** (33 connections) — `server/commands/admin_commands.py`
-- **test_alias_commands.py** (31 connections) — `server/tests/unit/commands/test_alias_commands.py`
 - **test_alias.py** (30 connections) — `server/tests/unit/models/test_alias.py`
-- **server/commands/__init__.py** (29 connections) — `server/commands/__init__.py`
-- **inventory_commands.py** (28 connections) — `server/commands/inventory_commands.py`
-- **time_service.py** (27 connections) — `server/time/time_service.py`
-- **get_mythos_chronicle()** (26 connections) — `server/time/time_service.py`
-- **handle_alias_command()** (24 connections) — `server/commands/alias_commands.py`
-- **asyncio** (23 connections)
-- **game_tick_corpses.py** (21 connections) — `server/app/game_tick_corpses.py`
-- **test_inventory_commands.py** (21 connections) — `server/tests/unit/commands/test_inventory_commands.py`
-- **handle_get_command()** (16 connections) — `server/commands/inventory_get_command.py`
-- **skills_commands.py** (16 connections) — `server/commands/skills_commands.py`
-- **alias_commands.py** (15 connections) — `server/commands/alias_commands.py`
-- **handle_drop_command()** (14 connections) — `server/commands/inventory_drop_command.py`
-- **asyncio** (14 connections)
-- **handle_admin_command()** (13 connections) — `server/commands/admin_commands.py`
-- **handle_summon_command()** (13 connections) — `server/commands/admin_summon_command.py`
-- **handle_inventory_command()** (13 connections) — `server/commands/inventory_commands.py`
-- *... and 425 more nodes in this community*
+- **Path** (11 connections)
+- **.get_player_aliases()** (10 connections) — `server/alias_storage.py`
+- **.get_alias_file_path()** (9 connections) — `server/alias_storage.py`
+- **._load_alias_data()** (9 connections) — `server/alias_storage.py`
+- **alias.py** (8 connections) — `server/models/alias.py`
+- **.create_alias()** (7 connections) — `server/alias_storage.py`
+- **._save_alias_data()** (7 connections) — `server/alias_storage.py`
+- **.save_player_aliases()** (7 connections) — `server/alias_storage.py`
+- **._validate_alias_payload()** (7 connections) — `server/alias_storage.py`
+- **alias_storage()** (7 connections) — `server/tests/unit/test_alias_storage.py`
+- **.add_alias()** (6 connections) — `server/alias_storage.py`
+- **Path** (6 connections)
+- **test_alias_storage_init_with_env_var()** (5 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_backup_aliases_custom_dir()** (5 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_backup_aliases_io_error()** (5 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_delete_player_aliases_io_error()** (5 connections) — `server/tests/unit/test_alias_storage.py`
+- **AliasPayload** (5 connections)
+- **MonkeyPatch** (5 connections)
+- **.backup_aliases()** (4 connections) — `server/alias_storage.py`
+- **.get_alias()** (4 connections) — `server/alias_storage.py`
+- **.get_alias_count()** (4 connections) — `server/alias_storage.py`
+- *... and 221 more nodes in this community*
 
 ## Relationships
 
-- [get_npc_instance_service](get_npc_instance_service.md) (32 shared connections)
-- [get_logger](get_logger.md) (29 shared connections)
-- [get_username_from_user](get_username_from_user.md) (28 shared connections)
-- [rescue_commands.py](rescue_commands.py.md) (26 shared connections)
-- [inventory_pickup_command.py](inventory_pickup_command.py.md) (25 shared connections)
-- [command_result_text](command_result_text.md) (19 shared connections)
-- [test_magic_commands.py](test_magic_commands.py.md) (19 shared connections)
-- [test_admin_summon_command.py](test_admin_summon_command.py.md) (18 shared connections)
-- [command_handler_unified.py](command_handler_unified.py.md) (16 shared connections)
-- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (16 shared connections)
-- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (14 shared connections)
-- [admin_mute_commands.py](admin_mute_commands.py.md) (13 shared connections)
+- [command_service.py](command_service.py.md) (22 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (22 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (13 shared connections)
+- [test_admin_commands.py](test_admin_commands.py.md) (11 shared connections)
+- [alias_storage.py](alias_storage.py.md) (11 shared connections)
+- [communication_commands.py](communication_commands.py.md) (9 shared connections)
+- [CombatCommandHandler](CombatCommandHandler.md) (7 shared connections)
+- [combat_loader.py](combat_loader.py.md) (7 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (6 shared connections)
+- [position_commands.py](position_commands.py.md) (6 shared connections)
+- [MagicCommandHandler](MagicCommandHandler.md) (6 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 
 ## Source Files
 
 - `server/alias_storage.py`
-- `server/app/game_tick_corpses.py`
-- `server/commands/__init__.py`
-- `server/commands/admin_commands.py`
-- `server/commands/admin_summon_command.py`
-- `server/commands/alias_commands.py`
-- `server/commands/combat_handler.py`
-- `server/commands/command_service.py`
-- `server/commands/communication_commands_support.py`
-- `server/commands/exploration_commands.py`
-- `server/commands/help_commands.py`
-- `server/commands/inventory_commands.py`
-- `server/commands/inventory_drop_command.py`
-- `server/commands/inventory_get_command.py`
-- `server/commands/position_commands.py`
-- `server/commands/skills_commands.py`
-- `server/commands/system_commands.py`
-- `server/commands/time_commands.py`
 - `server/models/alias.py`
-- `server/realtime/request_context.py`
+- `server/tests/unit/models/test_alias.py`
+- `server/tests/unit/test_alias_storage.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1161 (86%)
-- INFERRED: 182 (14%)
+- EXTRACTED: 517 (84%)
+- INFERRED: 95 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

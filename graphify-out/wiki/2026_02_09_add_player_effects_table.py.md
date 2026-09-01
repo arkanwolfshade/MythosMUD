@@ -7,12 +7,12 @@
 - **2026_02_09_add_player_effects_table.py** (3 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
 - **downgrade()** (2 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
 - **upgrade()** (2 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
-- **Create player_effects table and indexes (ADR-009 effects system).** (1 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
+- **Create player_effects table and indexes (ADR-019 effects system).** (1 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
 - **Drop player_effects table and indexes.** (1 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

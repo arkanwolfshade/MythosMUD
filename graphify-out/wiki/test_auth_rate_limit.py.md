@@ -1,6 +1,6 @@
 # test_auth_rate_limit.py
 
-> 23 nodes
+> 22 nodes
 
 ## Key Concepts
 
@@ -18,7 +18,6 @@
 - **test_auth_rate_limit_response_skips_other_paths()** (3 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
 - **_auth_bucket()** (2 connections) — `server/middleware/auth_rate_limit.py`
 - **_ok_post()** (2 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **test_create_app_auth_rate_limit_paths_match()** (2 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
 - **test_is_auth_rate_limited_path()** (2 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
 - **Request** (2 connections)
 - **MonkeyPatch** (2 connections)
@@ -32,16 +31,15 @@
 
 - [auth_rate_limit.py](auth_rate_limit.py.md) (8 shared connections)
 - [RateLimiter](RateLimiter.md) (4 shared connections)
+- [factory.py](factory.py.md) (3 shared connections)
 - [container_endpoints_basic.py](container_endpoints_basic.py.md) (2 shared connections)
-- [create_app](create_app.md) (2 shared connections)
 - [.format](format.md) (1 shared connections)
 - [ErrorType](ErrorType.md) (1 shared connections)
 - [AuthRateLimitMiddleware](AuthRateLimitMiddleware.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [test_rate_limiter_utils.py](test_rate_limiter_utils.py.md) (1 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [factory.py](factory.py.md) (1 shared connections)
+- [User](User.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 63 (98%)
+- EXTRACTED: 62 (98%)
 - INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 

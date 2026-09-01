@@ -33,13 +33,15 @@
 
 ## Relationships
 
-- [PlayerLeftRoom](PlayerLeftRoom.md) (16 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (6 shared connections)
-- [is_player_in_grace_period](is_player_in_grace_period.md) (2 shared connections)
+- [event_types.py](event_types.py.md) (8 shared connections)
+- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (6 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (5 shared connections)
+- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (3 shared connections)
+- [RealTimeEventHandler](RealTimeEventHandler.md) (2 shared connections)
 - [NPCOccupantProcessor](NPCOccupantProcessor.md) (1 shared connections)
 - [PlayerRoomEventHandler](PlayerRoomEventHandler.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (1 shared connections)
 
 ## Source Files
 

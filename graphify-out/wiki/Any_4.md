@@ -1,43 +1,46 @@
 # Any
 
-> 19 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **Any** (11 connections)
-- **.query_npcs_for_room()** (6 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_fallback_npcs()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_npc_lifecycle_manager()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **.__init__()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._scan_active_npcs_for_room()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._should_include_npc_in_room()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._validate_npc_room_tracking()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_npc_room_id()** (4 connections) — `server/realtime/npc_occupant_processor.py`
-- **.process_npcs_for_occupants()** (3 connections) — `server/realtime/npc_occupant_processor.py`
-- **Determine if NPC should be included in room query results. Args: npc_id: The…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Scan active NPCs to find those in the target room. Args: active_npcs_dict:…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Initialize NPC occupant processor. Args: connection_manager: ConnectionManager…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Query NPCs for a room from lifecycle manager. Args: room_id: The room ID room:…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Get and validate NPC lifecycle manager. Args: room_id: The room ID for logging…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Get fallback NPCs from room.get_npcs() if lifecycle manager query fails. Args:…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Process NPC IDs and convert to occupant information. Args: npc_ids: List of NPC…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Get NPC's current room ID from instance. Args: npc_instance: The NPC instance…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Validate NPC has room tracking and get room ID. Args: npc_id: The NPC ID…** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Any** (13 connections)
+- **.__init__()** (4 connections) — `server/caching/cache_service.py`
+- **.__init__()** (4 connections) — `server/caching/cache_service.py`
+- **.get_cache_stats()** (3 connections) — `server/caching/cache_service.py`
+- **.get_npc_definition()** (3 connections) — `server/caching/cache_service.py`
+- **.get_npc_definitions()** (3 connections) — `server/caching/cache_service.py`
+- **.get_spawn_rules()** (3 connections) — `server/caching/cache_service.py`
+- **.get_all_professions()** (3 connections) — `server/caching/cache_service.py`
+- **.get_profession_by_id()** (3 connections) — `server/caching/cache_service.py`
+- **.get_room()** (3 connections) — `server/caching/cache_service.py`
+- **.get_room_sync()** (3 connections) — `server/caching/cache_service.py`
+- **Initialize the room cache service. Args: persistence: Persistence layer instance** (1 connections) — `server/caching/cache_service.py`
+- **Get room data with caching. Args: room_id: The room ID Returns: Room data…** (1 connections) — `server/caching/cache_service.py`
+- **Get room data with caching (synchronous version). Args: room_id: The room ID…** (1 connections) — `server/caching/cache_service.py`
+- **Initialize the NPC cache service. Args: npc_service: NPC service instance** (1 connections) — `server/caching/cache_service.py`
+- **Get NPC definitions with caching. Args: session: Database session Returns: List…** (1 connections) — `server/caching/cache_service.py`
+- **Get a specific NPC definition with caching. Args: session: Database session…** (1 connections) — `server/caching/cache_service.py`
+- **Get NPC spawn rules with caching. Args: session: Database session Returns: List…** (1 connections) — `server/caching/cache_service.py`
+- **Get all professions with caching. Returns: List of profession objects** (1 connections) — `server/caching/cache_service.py`
+- **Get a specific profession by ID with caching. Args: profession_id: The…** (1 connections) — `server/caching/cache_service.py`
+- **Get statistics for all caches. Returns: Dictionary containing cache statistics** (1 connections) — `server/caching/cache_service.py`
 
 ## Relationships
 
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (12 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [RoomIDUtils](RoomIDUtils.md) (1 shared connections)
+- [NPCCacheService](NPCCacheService.md) (4 shared connections)
+- [test_cache_service.py](test_cache_service.py.md) (3 shared connections)
+- [ProfessionCacheService](ProfessionCacheService.md) (3 shared connections)
+- [RoomCacheService](RoomCacheService.md) (3 shared connections)
+- [CacheService](CacheService.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/npc_occupant_processor.py`
+- `server/caching/cache_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
+- EXTRACTED: 35 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

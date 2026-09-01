@@ -30,8 +30,8 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 

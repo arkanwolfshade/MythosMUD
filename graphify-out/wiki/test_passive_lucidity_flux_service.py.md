@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [PassiveFluxContext](PassiveFluxContext.md) (9 shared connections)
+- [service.py](service.py.md) (9 shared connections)
 - [LucidityFluxService](LucidityFluxService.md) (2 shared connections)
-- [models/player.py](models-player.py.md) (2 shared connections)
-- [test_lifespan_startup.py](test_lifespan_startup.py.md) (1 shared connections)
-- [PlayerDeathService](PlayerDeathService.md) (1 shared connections)
+- [LucidityService](LucidityService.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [CatatoniaRegistry](CatatoniaRegistry.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

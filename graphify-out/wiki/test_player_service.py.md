@@ -33,10 +33,11 @@
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (5 shared connections)
+- [ValidationError](ValidationError.md) (4 shared connections)
 - [Stats](Stats.md) (4 shared connections)
-- [PlayerService](PlayerService.md) (3 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (1 shared connections)
 
 ## Source Files
 

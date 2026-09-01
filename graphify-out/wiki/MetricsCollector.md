@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [NATSRetryHandler](NATSRetryHandler.md) (3 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (3 shared connections)
+- [InventoryMutationGuard](InventoryMutationGuard.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [Lock](Lock.md) (1 shared connections)
-- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (1 shared connections)
-- [time.py](time.py.md) (1 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (1 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
 
 ## Source Files
 

@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [NATSSubjectManager](NATSSubjectManager.md) (10 shared connections)
+- [SubjectValidator](SubjectValidator.md) (10 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

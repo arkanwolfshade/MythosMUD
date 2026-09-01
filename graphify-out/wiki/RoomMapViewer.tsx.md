@@ -1,6 +1,6 @@
 # RoomMapViewer.tsx
 
-> 63 nodes
+> 65 nodes
 
 ## Key Concepts
 
@@ -29,22 +29,22 @@
 - **MapControls()** (6 connections) — `client/src/components/map/MapControls.tsx`
 - **RoomDetailsPanel()** (6 connections) — `client/src/components/map/RoomDetailsPanel.tsx`
 - **theme.test.tsx** (6 connections) — `client/src/components/map/__tests__/theme.test.tsx`
-- *... and 38 more nodes in this community*
+- *... and 40 more nodes in this community*
 
 ## Relationships
 
 - [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (19 shared connections)
-- [map/types.ts](map-types.ts.md) (15 shared connections)
 - [utils/layout.ts](utils-layout.ts.md) (13 shared connections)
 - [AsciiMapViewer.tsx](AsciiMapViewer.tsx.md) (10 shared connections)
-- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (9 shared connections)
+- [lucidity.ts](lucidity.ts.md) (9 shared connections)
+- [RoomNodeData](RoomNodeData.md) (9 shared connections)
+- [map/types.ts](map-types.ts.md) (7 shared connections)
 - [useRoomEditModal.ts](useRoomEditModal.ts.md) (6 shared connections)
 - [stateNormalization.ts](stateNormalization.ts.md) (4 shared connections)
 - [MapPerformanceMonitor](MapPerformanceMonitor.md) (3 shared connections)
-- [map/config.ts](map-config.ts.md) (3 shared connections)
+- [apiTypeGuards.ts](apiTypeGuards.ts.md) (3 shared connections)
+- [saveMapChanges.ts](saveMapChanges.ts.md) (2 shared connections)
 - [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (2 shared connections)
-- [apiTypeGuards.ts](apiTypeGuards.ts.md) (2 shared connections)
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (2 shared connections)
 
 ## Source Files
 
@@ -71,8 +71,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 260 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 264 (99%)
+- INFERRED: 4 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

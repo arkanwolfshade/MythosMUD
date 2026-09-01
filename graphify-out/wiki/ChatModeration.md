@@ -1,22 +1,13 @@
 # ChatModeration
 
-> 83 nodes
+> 34 nodes
 
 ## Key Concepts
 
 - **ChatModeration** (27 connections) — `server/game/chat_moderation.py`
-- **UserManagerProtocol** (20 connections) — `server/game/chat_moderation.py`
 - **normalize_player_id()** (18 connections) — `server/game/chat_moderation.py`
 - **UUID** (17 connections)
-- **chat_moderation.py** (11 connections) — `server/game/chat_moderation.py`
-- **Any** (8 connections)
-- **PlayerServiceProtocol** (6 connections) — `server/game/chat_moderation.py`
-- **._format_mute_entry()** (5 connections) — `server/game/chat_moderation.py`
-- **._format_mute_section()** (5 connections) — `server/game/chat_moderation.py`
-- **.get_player_mutes()** (5 connections) — `server/game/chat_moderation.py`
 - **.add_admin()** (4 connections) — `server/game/chat_moderation.py`
-- **._format_mute_duration()** (4 connections) — `server/game/chat_moderation.py`
-- **.get_mute_status()** (4 connections) — `server/game/chat_moderation.py`
 - **.is_admin()** (4 connections) — `server/game/chat_moderation.py`
 - **.is_channel_muted()** (4 connections) — `server/game/chat_moderation.py`
 - **.is_globally_muted()** (4 connections) — `server/game/chat_moderation.py`
@@ -28,15 +19,26 @@
 - **.unmute_channel()** (4 connections) — `server/game/chat_moderation.py`
 - **.unmute_global()** (4 connections) — `server/game/chat_moderation.py`
 - **.unmute_player()** (4 connections) — `server/game/chat_moderation.py`
-- **.get_user_management_stats()** (3 connections) — `server/game/chat_moderation.py`
-- *... and 58 more nodes in this community*
+- **.can_send_message()** (2 connections) — `server/game/chat_moderation.py`
+- **.__init__()** (2 connections) — `server/game/chat_moderation.py`
+- **test_normalize_player_id_accepts_uuid()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **Mute a specific channel for a player.** (1 connections) — `server/game/chat_moderation.py`
+- **Unmute a specific channel for a player.** (1 connections) — `server/game/chat_moderation.py`
+- **Check if a channel is muted for a player.** (1 connections) — `server/game/chat_moderation.py`
+- **Mute a specific player for another player.** (1 connections) — `server/game/chat_moderation.py`
+- **Unmute a specific player for another player.** (1 connections) — `server/game/chat_moderation.py`
+- **Check if a player is muted by another player.** (1 connections) — `server/game/chat_moderation.py`
+- **Apply a global mute to a player (cannot use any chat channels).** (1 connections) — `server/game/chat_moderation.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [test_chat_moderation.py](test_chat_moderation.py.md) (5 shared connections)
-- [chat_service.py](chat_service.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [ChatPoseManager](ChatPoseManager.md) (1 shared connections)
+- [Any](Any.md) (5 shared connections)
+- [._format_mute_entry](_format_mute_entry.md) (5 shared connections)
+- [test_chat_moderation.py](test_chat_moderation.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [test_chat_logger.py](test_chat_logger.py.md) (1 shared connections)
+- [chat_service.py](chat_service.py.md) (1 shared connections)
 - [ChatService](ChatService.md) (1 shared connections)
 
 ## Source Files
@@ -46,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 134 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 74 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

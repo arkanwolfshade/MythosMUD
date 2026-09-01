@@ -39,7 +39,7 @@
 - [build_event](build_event.md) (1 shared connections)
 - [time.py](time.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
+- [User](User.md) (1 shared connections)
 
 ## Source Files
 

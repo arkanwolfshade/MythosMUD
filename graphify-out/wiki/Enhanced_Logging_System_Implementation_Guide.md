@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **Enhanced Logging System Implementation Guide** (4 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
+- **Enhanced Logging System Implementation Guide** (5 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
 - **MythosMUD Development Environment Setup** (2 connections) — `docs/DEVELOPMENT.md`
 - **MythosMUD AI Agent Development Guide** (2 connections) — `docs/DEVELOPMENT_AI.md`
 - **Error Handling Guide** (2 connections) — `docs/ERROR_HANDLING_GUIDE.md`
+- **Error Logging Implementation Guide** (2 connections) — `docs/ERROR_LOGGING_IMPLEMENTATION_GUIDE.md`
 - **E2E Testing Guide** (1 connections) — `docs/E2E_TESTING_GUIDE.md`
-- **Error Logging Implementation Guide** (1 connections) — `docs/ERROR_LOGGING_IMPLEMENTATION_GUIDE.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [packages/README.md](packages-README.md.md) (2 shared connections)
 
 ## Source Files
 
@@ -26,8 +26,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 3 (50%)
-- INFERRED: 3 (50%)
+- EXTRACTED: 5 (62%)
+- INFERRED: 3 (38%)
 - AMBIGUOUS: 0 (0%)
 
 ---

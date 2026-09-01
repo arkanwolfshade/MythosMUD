@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (2 shared connections)
+- [event_types.py](event_types.py.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [time.py](time.py.md) (2 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
 
 ## Source Files
 

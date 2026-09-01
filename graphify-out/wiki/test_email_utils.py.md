@@ -26,11 +26,9 @@
 
 ## Relationships
 
-- [test_users.py](test_users.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [User](User.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
+- [User](User.md) (4 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [test_users.py](test_users.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

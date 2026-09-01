@@ -1,24 +1,26 @@
 # .__init__
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/realtime/occupant_formatter.py`
-- **Initialize occupant formatter.** (1 connections) — `server/realtime/occupant_formatter.py`
+- **.__init__()** (6 connections) — `server/game/party_service.py`
+- **ConnectionManager** (1 connections)
+- **Initialize empty party store. Optionally provide event_bus, connection_manager,…** (1 connections) — `server/game/party_service.py`
 
 ## Relationships
 
+- [PartyService](PartyService.md) (2 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
-- [OccupantFormatter](OccupantFormatter.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/occupant_formatter.py`
+- `server/game/party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

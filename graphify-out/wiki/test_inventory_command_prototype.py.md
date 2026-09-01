@@ -7,8 +7,8 @@
 - **test_inventory_command_prototype.py** (21 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
 - **infer_equip_slot_from_prototype()** (18 connections) — `server/commands/inventory_command_prototype.py`
 - **inventory_command_prototype.py** (13 connections) — `server/commands/inventory_command_prototype.py`
-- **prototype_registry_from_request()** (9 connections) — `server/commands/inventory_command_prototype.py`
 - **prototype_from_registry()** (8 connections) — `server/commands/inventory_command_prototype.py`
+- **prototype_registry_from_request()** (8 connections) — `server/commands/inventory_command_prototype.py`
 - **.get()** (5 connections) — `server/game/items/prototype_registry.py`
 - **_first_normalized_wear_slot()** (3 connections) — `server/commands/inventory_command_prototype.py`
 - **test_prototype_from_registry_missing_get()** (3 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
@@ -35,11 +35,11 @@
 
 - [PrototypeRegistryError](PrototypeRegistryError.md) (6 shared connections)
 - [inventory_equip_command.py](inventory_equip_command.py.md) (5 shared connections)
-- [.state](state.md) (2 shared connections)
+- [.state](state.md) (1 shared connections)
 - [ItemPrototypeModel](ItemPrototypeModel.md) (1 shared connections)
 - [PrototypeRegistry](PrototypeRegistry.md) (1 shared connections)
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (1 shared connections)
+- [test_inventory_helpers.py](test_inventory_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 63 (94%)
-- INFERRED: 4 (6%)
+- EXTRACTED: 63 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

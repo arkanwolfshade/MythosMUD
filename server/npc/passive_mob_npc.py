@@ -11,7 +11,6 @@ from typing import TYPE_CHECKING, override
 
 from structlog.stdlib import BoundLogger
 
-from ..container.running_app import npc_instance_service_from_running_app
 from ..structured_logging.enhanced_logging_config import get_logger
 from .npc_base import NPCBase
 
@@ -174,24 +173,22 @@ class PassiveMobNPC(NPCBase):
             bool: True if action was queued successfully, False otherwise
         """
         try:
-            npc_instance_service = npc_instance_service_from_running_app()
-            if npc_instance_service is None:
+            from ..services.npc_instance_service import get_npc_instance_service
+
+            npc_instance_service = get_npc_instance_service()
+            if not npc_instance_service or not hasattr(npc_instance_service, "lifecycle_manager"):
                 return False
 
-            lifecycle_manager = getattr(npc_instance_service, "lifecycle_manager", None)
-            if lifecycle_manager is None:
+            lifecycle_manager = npc_instance_service.lifecycle_manager
+            if not lifecycle_manager or not hasattr(lifecycle_manager, "thread_manager"):
                 return False
 
-            thread_manager = getattr(lifecycle_manager, "thread_manager", None)
-            if thread_manager is None:
-                return False
-
-            message_queue = getattr(thread_manager, "message_queue", None)
-            if message_queue is None:
+            thread_manager = lifecycle_manager.thread_manager
+            if not thread_manager:
                 return False
 
             payload = wander_action.to_dict()
-            _ = message_queue.add_message(self.npc_id, payload)
+            _ = thread_manager.message_queue.add_message(self.npc_id, payload)
             self._last_idle_movement_time = current_time
             logger.debug("Scheduled WANDER action for NPC", npc_id=self.npc_id)
             return True

@@ -22,10 +22,9 @@
 ## Relationships
 
 - [ValidationError](ValidationError.md) (3 shared connections)
-- [ProfessionService](ProfessionService.md) (2 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
 
 ## Source Files
 

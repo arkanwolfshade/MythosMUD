@@ -13,17 +13,19 @@ Event types and their `data` shapes as received over the WebSocket. Used by the 
 
 ## Player events
 
-| event_type                                              | Description         | data shape                |
-| ------------------------------------------------------- | ------------------- | ------------------------- |
-| `player_entered_game`                                   | Player entered game | player identity / room id |
-| `player_entered`                                        | Player entered room | player name, room         |
-| `player_left_game`                                      | Player left game    | —                         |
-| `player_left`                                           | Player left room    | —                         |
-| `player_died` / `playerdied`                            | Player died         | death details             |
-| `player_respawned` / `playerrespawned`                  | Respawn             | —                         |
-| `player_delirium_respawned` / `playerdeliriumrespawned` | Delirium respawn    | —                         |
-| `player_dp_updated` / `playerdpupdated`                 | DP update           | stats                     |
-| `player_update`                                         | Full player update  | player object             |
+| event_type                                              | Description                 | data shape                                                |
+| ------------------------------------------------------- | --------------------------- | --------------------------------------------------------- |
+| `player_entered_game`                                   | Player entered game         | player identity / room id                                 |
+| `player_entered`                                        | Player entered room         | player name, room                                         |
+| `player_left_game`                                      | Player left game            | —                                                         |
+| `player_left`                                           | Player left room            | —                                                         |
+| `player_died` / `playerdied`                            | Player died                 | death details                                             |
+| `player_respawned` / `playerrespawned`                  | Respawn                     | —                                                         |
+| `player_delirium_respawned` / `playerdeliriumrespawned` | Delirium respawn            | —                                                         |
+| `player_dp_updated` / `playerdpupdated`                 | DP update                   | `{ new_dp, max_dp, posture?, posture_message?, player? }` |
+| `player_dp_decay`                                       | Mortally wounded bleed tick | `{ posture_message? }` (full bleed line deferred)         |
+| `player_posture_change`                                 | Room posture observer       | `{ message, player_name, position, previous_position? }`  |
+| `player_update`                                         | Full player update          | `{ stats?, posture_message?, in_combat? }`                |
 
 ## Combat events
 

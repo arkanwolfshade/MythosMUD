@@ -1,25 +1,24 @@
 # .__init__
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.__init__()** (4 connections) — `server/game/level_service.py`
-- **LevelUpHook** (1 connections)
-- **Any** (1 connections)
-- **Initialize the level service. Args: async_persistence: Async persistence for…** (1 connections) — `server/game/level_service.py`
+- **.__init__()** (3 connections) — `server/realtime/occupant_formatter.py`
+- **Initialize occupant formatter.** (1 connections) — `server/realtime/occupant_formatter.py`
 
 ## Relationships
 
-- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [OccupantFormatter](OccupantFormatter.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/level_service.py`
+- `server/realtime/occupant_formatter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -15,7 +15,7 @@
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [pydantic.md](pydantic.md.md) (1 shared connections)
 
 ## Source Files
 

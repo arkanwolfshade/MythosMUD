@@ -6,19 +6,26 @@ using PostgreSQL stored procedures.
 """
 
 import uuid
-from typing import Any
+from typing import Protocol
 
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
+from structlog.stdlib import BoundLogger
 
 from server.database import get_session_maker
-from server.events.event_types import PlayerXPAwardEvent
+from server.events.event_types import BaseEvent, PlayerXPAwardEvent
 from server.exceptions import DatabaseError
 from server.models.player import Player
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.error_logging import log_and_raise
 
-logger = get_logger(__name__)
+logger: BoundLogger = get_logger(__name__)
+
+
+class _ExperienceEventBus(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    """Minimal event bus surface for XP award publishing."""
+
+    def publish(self, event: BaseEvent) -> None: ...  # pylint: disable=missing-function-docstring  # Reason: Protocol stub
 
 
 class ExperienceRepository:
@@ -45,15 +52,15 @@ class ExperienceRepository:
         "charisma": ["charisma"],
     }
 
-    def __init__(self, event_bus: Any = None) -> None:
+    def __init__(self, event_bus: _ExperienceEventBus | None = None) -> None:
         """
         Initialize the experience repository.
 
         Args:
             event_bus: Optional EventBus for publishing XP/level events
         """
-        self._event_bus = event_bus
-        self._logger = get_logger(__name__)
+        self._event_bus: _ExperienceEventBus | None = event_bus
+        self._logger: BoundLogger = get_logger(__name__)
 
     async def gain_experience(self, player: Player, amount: int, source: str = "unknown") -> None:
         """
@@ -156,32 +163,16 @@ class ExperienceRepository:
                 user_friendly="Failed to update player experience",
             )
 
-    async def update_player_stat_field(
-        self, player_id: uuid.UUID | str, field_name: str, delta: int | float, reason: str = ""
+    async def _persist_stat_field_delta(
+        self,
+        player_id: uuid.UUID | str,
+        path: list[str],
+        delta: int | float,
+        field_name: str,
+        reason: str,
     ) -> None:
-        """
-        Update a specific numeric field in player stats atomically.
-
-        Args:
-            player_id: Player UUID or string
-            field_name: Stat field name (must be in FIELD_NAME_TO_PATH)
-            delta: Amount to change field by
-            reason: Reason for update
-
-        Raises:
-            ValueError: If field_name invalid or delta type wrong
-            DatabaseError: If database operation fails
-        """
-        if not isinstance(delta, int | float):
-            raise TypeError(f"delta must be int or float, got {type(delta).__name__}")
-
-        if field_name not in self.FIELD_NAME_TO_PATH:
-            allowed_fields = set(self.FIELD_NAME_TO_PATH.keys())
-            raise ValueError(f"Invalid stat field name: {field_name}. Must be one of {allowed_fields}")
-
+        """Run update_player_stat_field stored procedure and log success."""
         try:
-            path = self.FIELD_NAME_TO_PATH[field_name]
-
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
@@ -217,3 +208,29 @@ class ExperienceRepository:
                 },
                 user_friendly="Failed to update player stats",
             )
+
+    async def update_player_stat_field(
+        self, player_id: uuid.UUID | str, field_name: str, delta: object, reason: str = ""
+    ) -> None:
+        """
+        Update a specific numeric field in player stats atomically.
+
+        Args:
+            player_id: Player UUID or string
+            field_name: Stat field name (must be in FIELD_NAME_TO_PATH)
+            delta: Amount to change field by (int or float)
+            reason: Reason for update
+
+        Raises:
+            TypeError: If delta is not int or float
+            ValueError: If field_name invalid
+            DatabaseError: If database operation fails
+        """
+        if not isinstance(delta, int | float):
+            raise TypeError(f"delta must be int or float, got {type(delta).__name__}")
+
+        if field_name not in self.FIELD_NAME_TO_PATH:
+            allowed_fields = set(self.FIELD_NAME_TO_PATH.keys())
+            raise ValueError(f"Invalid stat field name: {field_name}. Must be one of {allowed_fields}")
+
+        await self._persist_stat_field_delta(player_id, self.FIELD_NAME_TO_PATH[field_name], delta, field_name, reason)

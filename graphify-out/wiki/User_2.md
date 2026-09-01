@@ -1,6 +1,6 @@
 # User
 
-> God node · 298 connections · `server/models/user.py`
+> God node · 305 connections · `server/models/user.py`
 
 **Community:** [User](User.md)
 
@@ -26,26 +26,26 @@
 - models/user.py `EXTRACTED`
 
 ### imports
-- [models/player.py](models-player.py.md) `EXTRACTED`
-- server/models/__init__.py `EXTRACTED`
+- models/player.py `EXTRACTED`
 - async_persistence.py `EXTRACTED`
-- [players.py](players.py.md) `EXTRACTED`
+- server/models/__init__.py `EXTRACTED`
+- players.py `EXTRACTED`
 - [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
 - maps.py `EXTRACTED`
-- [endpoints.py](endpoints.py.md) `EXTRACTED`
+- endpoints.py `EXTRACTED`
 - [container_endpoints_basic.py](container_endpoints_basic.py.md) `EXTRACTED`
 - rooms.py `EXTRACTED`
 - [test_admin_auth_service.py](test_admin_auth_service.py.md) `EXTRACTED`
+- [command_handler_unified.py](command_handler_unified.py.md) `EXTRACTED`
 - test_maps.py `EXTRACTED`
 - [test_users.py](test_users.py.md) `EXTRACTED`
 - users.py `EXTRACTED`
 - test_container_helpers.py `EXTRACTED`
 - api/container_helpers.py `EXTRACTED`
-- test_async_persistence_core.py `EXTRACTED`
-- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) `EXTRACTED`
+- [test_async_persistence_core.py](test_async_persistence_core.py.md) `EXTRACTED`
+- test_metrics_endpoints.py `EXTRACTED`
 - api/player_effects.py `EXTRACTED`
 - [test_npc_definitions_api.py](test_npc_definitions_api.py.md) `EXTRACTED`
-- npc_definitions_api.py `EXTRACTED`
 
 ### inherits
 - Base `EXTRACTED`
@@ -88,6 +88,7 @@
 - _admin_user() `INFERRED`
 - test_lucidity_adjustment_round_trip() `INFERRED`
 - test_add_player_effect_generates_id() `INFERRED`
+- test_register_user_duplicate_username() `INFERRED`
 - test_apply_exploration_filter_if_needed_calls_for_normal_user() `INFERRED`
 - test_apply_exploration_filter_if_needed_skips_for_superuser() `INFERRED`
 - test_login_user_authenticate_raises_exception() `INFERRED`
@@ -96,7 +97,6 @@
 - test_login_user_id_mismatch() `INFERRED`
 - test_login_user_invalid_credentials() `INFERRED`
 - test_login_user_no_email() `INFERRED`
-- test_register_user_duplicate_username() `INFERRED`
 - test_db_connectivity_create_and_read_user() `INFERRED`
 - test_get_ascii_minimap_success() `INFERRED`
 - test_get_current_superuser_failure() `INFERRED`

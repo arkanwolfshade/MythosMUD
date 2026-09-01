@@ -11,11 +11,11 @@
 - **LogQueryFilter** (11 connections) — `server/structured_logging/log_aggregator.py`
 - **.get_logs()** (10 connections) — `server/structured_logging/log_aggregator.py`
 - **_entry()** (10 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
-- **get_log_aggregator()** (8 connections) — `server/structured_logging/log_aggregator.py`
 - **aggregate_log_entry()** (7 connections) — `server/structured_logging/log_aggregator.py`
 - **.export_logs()** (7 connections) — `server/structured_logging/log_aggregator.py`
 - **_query_filter_from_mapping()** (6 connections) — `server/structured_logging/log_aggregator.py`
 - **_flush_queue()** (6 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
+- **log_time_formats.py** (6 connections) — `server/structured_logging/log_time_formats.py`
 - **._export_csv()** (5 connections) — `server/structured_logging/log_aggregator.py`
 - **._export_json()** (5 connections) — `server/structured_logging/log_aggregator.py`
 - **.get_correlation_logs()** (5 connections) — `server/structured_logging/log_aggregator.py`
@@ -33,20 +33,23 @@
 
 ## Relationships
 
+- [lifespan.py](lifespan.py.md) (4 shared connections)
 - [MonitoringDashboard](MonitoringDashboard.md) (4 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (3 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
 - [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
 - [MemoryMonitor](MemoryMonitor.md) (2 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (2 shared connections)
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
 - [PerformanceMonitor](PerformanceMonitor.md) (1 shared connections)
 - [logging_file_setup.py](logging_file_setup.py.md) (1 shared connections)
-- [time.py](time.py.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
+- [AdminActionsLogger](AdminActionsLogger.md) (1 shared connections)
+- [test_logging_utilities.py](test_logging_utilities.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/structured_logging/log_aggregator.py`
+- `server/structured_logging/log_time_formats.py`
 - `server/tests/unit/structured_logging/test_log_aggregator.py`
 
 ## Audit Trail

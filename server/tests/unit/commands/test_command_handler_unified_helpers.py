@@ -4,6 +4,9 @@ Unit tests for command handler unified helper functions.
 Tests helper functions, validation, rate limiting, and special command routing.
 """
 
+# pyright: reportPrivateUsage=false, reportAny=false, reportPrivateLocalImportUsage=false
+# Tests target module-private helpers and MagicMock surfaces that pyright would otherwise flag.
+
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -34,7 +37,9 @@ class TestHelperFunctions:
         ):
             result = _check_rate_limit("testplayer")
             assert result is not None
-            assert "Too many commands" in result["result"]
+            message = result["result"]
+            assert isinstance(message, str)
+            assert "Too many commands" in message
             mock_audit.assert_called_once()
 
     def test_validate_command_basics_empty(self):
@@ -52,7 +57,9 @@ class TestHelperFunctions:
         long_command = "a" * (MAX_COMMAND_LENGTH + 1)
         result = _validate_command_basics(long_command, "testplayer")
         assert result is not None
-        assert "too long" in result["result"].lower()
+        message = result["result"]
+        assert isinstance(message, str)
+        assert "too long" in message.lower()
 
     def test_validate_command_basics_invalid_content(self):
         """Test _validate_command_basics returns result for invalid content."""
@@ -144,7 +151,7 @@ class TestHelperFunctions:
         mock_request.app.state.player_service = mock_player_service
         mock_player_service.get_player_by_name = AsyncMock(return_value=mock_player)
 
-        with patch("server.command_handler_unified.is_player_in_grace_period", return_value=False):
+        with patch("server.command_handler.command_guards.is_player_in_grace_period", return_value=False):
             result = await _check_grace_period_block("testplayer", mock_request)
             assert result is None
 
@@ -245,8 +252,10 @@ class TestHelperFunctions:
 
         result = await _check_casting_state("look", "testplayer", mock_request)
         assert result is not None
-        assert "casting" in result["result"].lower()
-        assert "fireball" in result["result"]
+        message = result["result"]
+        assert isinstance(message, str)
+        assert "casting" in message.lower()
+        assert "fireball" in message
 
     @pytest.mark.asyncio
     async def test_check_casting_state_no_magic_service(self):
@@ -401,10 +410,12 @@ class TestHelperFunctions:
         mock_request.app.state.player_service = mock_player_service
         mock_player_service.get_player_by_name = AsyncMock(return_value=mock_player)
 
-        with patch("server.command_handler_unified.is_player_in_grace_period", return_value=True):
+        with patch("server.command_handler.command_guards.is_player_in_grace_period", return_value=True):
             result = await _check_grace_period_block("testplayer", mock_request)
             assert result is not None
-            assert "disconnected" in result["result"].lower()
+            message = result["result"]
+            assert isinstance(message, str)
+            assert "disconnected" in message.lower()
 
     @pytest.mark.asyncio
     async def test_check_grace_period_block_no_player(self):
@@ -439,7 +450,7 @@ class TestHelperFunctions:
         mock_request.app.state.player_service = mock_player_service
         mock_player_service.get_player_by_name = AsyncMock(return_value=mock_player)
 
-        with patch("server.command_handler_unified.is_player_in_grace_period", return_value=False):
+        with patch("server.command_handler.command_guards.is_player_in_grace_period", return_value=False):
             result = await _check_grace_period_block("testplayer", mock_request)
             assert result is None
 

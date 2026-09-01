@@ -1,12 +1,11 @@
 # EnvironmentalContainerLoader
 
-> 28 nodes
+> 26 nodes
 
 ## Key Concepts
 
 - **EnvironmentalContainerLoader** (18 connections) — `server/services/environmental_container_loader.py`
 - **test_environmental_container_loader.py** (17 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
-- **environmental_container_loader.py** (14 connections) — `server/services/environmental_container_loader.py`
 - **.load_container_from_room_json()** (7 connections) — `server/services/environmental_container_loader.py`
 - **.migrate_room_container_to_postgresql()** (6 connections) — `server/services/environmental_container_loader.py`
 - **._parse_lock_state()** (4 connections) — `server/services/environmental_container_loader.py`
@@ -25,20 +24,20 @@
 - **test_load_container_from_room_json_disabled()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
 - **test_load_container_from_room_json_none_when_missing()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
 - **UUID** (2 connections)
-- **Environmental container loader for unified container system. As documented in…** (1 connections) — `server/services/environmental_container_loader.py`
 - **migrate_room_container_to_postgresql.** (1 connections) — `server/services/environmental_container_loader.py`
 - **Load all environmental containers for a room from PostgreSQL. Args: room_id:…** (1 connections) — `server/services/environmental_container_loader.py`
 - **Service for loading environmental containers from JSON and PostgreSQL. Handles…** (1 connections) — `server/services/environmental_container_loader.py`
-- *... and 3 more nodes in this community*
+- **Initialize the environmental container loader. Args: persistence: Persistence…** (1 connections) — `server/services/environmental_container_loader.py`
+- **Load environmental container definition from room JSON.** (1 connections) — `server/services/environmental_container_loader.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (8 shared connections)
-- [DatabaseError](DatabaseError.md) (7 shared connections)
-- [ValidationError](ValidationError.md) (4 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (2 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [ContainerComponent](ContainerComponent.md) (5 shared connections)
+- [ValidationError](ValidationError.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [ContainerServiceError](ContainerServiceError.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 63 (91%)
-- INFERRED: 6 (9%)
+- EXTRACTED: 52 (90%)
+- INFERRED: 6 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

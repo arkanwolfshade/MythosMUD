@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [PlayerLeftRoom](PlayerLeftRoom.md) (2 shared connections)
+- [event_types.py](event_types.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [NPCOccupantProcessor](NPCOccupantProcessor.md) (1 shared connections)
 - [.__init__](__init__.md) (1 shared connections)

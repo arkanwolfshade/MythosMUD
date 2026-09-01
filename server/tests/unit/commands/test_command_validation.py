@@ -24,10 +24,12 @@ from server.command_handler.catatonia_check import (
     _registry_player_id_value,
     check_catatonia_block,
 )
+from server.command_handler.command_guards import (
+    check_casting_state,
+    check_grace_period_block,
+)
 from server.command_handler_unified import (
     _check_all_command_blocks,
-    _check_casting_state,
-    _check_grace_period_block,
     _check_rate_limit,
     _validate_command_basics,
 )
@@ -240,7 +242,7 @@ class TestCatatoniaChecks:
         mock_state.catatonia_registry = mock_registry
 
         class _Player:
-            player_id = 12345
+            player_id: int = 12345
 
         with patch("server.command_handler.catatonia_check.command_request_app_state", return_value=mock_state):
             with patch(
@@ -271,7 +273,9 @@ class TestCheckRateLimit:
         ):
             result = _check_rate_limit("testplayer")
             assert result is not None
-            assert "Too many commands" in result["result"]
+            message = result["result"]
+            assert isinstance(message, str)
+            assert "Too many commands" in message
             mock_audit.assert_called_once()
 
 
@@ -292,7 +296,9 @@ class TestValidateCommandBasics:
         ):
             result = _validate_command_basics(long_command, "testplayer")
             assert result is not None
-            assert "too long" in result["result"].lower()
+            message = result["result"]
+            assert isinstance(message, str)
+            assert "too long" in message.lower()
             # Should not log security event for length violations
             mock_audit.assert_not_called()
 
@@ -320,42 +326,42 @@ class TestValidateCommandBasics:
 
 
 class TestCheckGracePeriodBlock:
-    """Test _check_grace_period_block function."""
+    """Test check_grace_period_block function."""
 
     @pytest.mark.asyncio
-    async def test_check_grace_period_block_no_connection_manager(self):
-        """Test _check_grace_period_block returns None when no connection manager."""
+    async def testcheck_grace_period_block_no_connection_manager(self):
+        """Test check_grace_period_block returns None when no connection manager."""
         mock_request = MagicMock()
         mock_request.app.state.connection_manager = None
 
-        result = await _check_grace_period_block("testplayer", mock_request)
+        result = await check_grace_period_block("testplayer", mock_request)
         assert result is None
 
     @pytest.mark.asyncio
-    async def test_check_grace_period_block_no_player_service(self):
-        """Test _check_grace_period_block returns None when no player service."""
+    async def testcheck_grace_period_block_no_player_service(self):
+        """Test check_grace_period_block returns None when no player service."""
         mock_request = MagicMock()
         mock_request.app.state.connection_manager = MagicMock()
         mock_request.app.state.player_service = None
 
-        result = await _check_grace_period_block("testplayer", mock_request)
+        result = await check_grace_period_block("testplayer", mock_request)
         assert result is None
 
     @pytest.mark.asyncio
-    async def test_check_grace_period_block_player_not_found(self):
-        """Test _check_grace_period_block returns None when player not found."""
+    async def testcheck_grace_period_block_player_not_found(self):
+        """Test check_grace_period_block returns None when player not found."""
         mock_request = MagicMock()
         mock_request.app.state.connection_manager = MagicMock()
         mock_player_service = AsyncMock()
         mock_player_service.get_player_by_name = AsyncMock(return_value=None)
         mock_request.app.state.player_service = mock_player_service
 
-        result = await _check_grace_period_block("testplayer", mock_request)
+        result = await check_grace_period_block("testplayer", mock_request)
         assert result is None
 
     @pytest.mark.asyncio
-    async def test_check_grace_period_block_player_in_grace_period(self):
-        """Test _check_grace_period_block returns block result when player in grace period."""
+    async def testcheck_grace_period_block_player_in_grace_period(self):
+        """Test check_grace_period_block returns block result when player in grace period."""
         mock_request = MagicMock()
         mock_connection_manager = MagicMock()
         mock_request.app.state.connection_manager = mock_connection_manager
@@ -365,42 +371,44 @@ class TestCheckGracePeriodBlock:
         mock_player_service.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_request.app.state.player_service = mock_player_service
 
-        with patch("server.command_handler_unified.is_player_in_grace_period", return_value=True):
-            result = await _check_grace_period_block("testplayer", mock_request)
+        with patch("server.command_handler.command_guards.is_player_in_grace_period", return_value=True):
+            result = await check_grace_period_block("testplayer", mock_request)
             assert result is not None
-            assert "disconnected" in result["result"].lower()
+            message = result["result"]
+            assert isinstance(message, str)
+            assert "disconnected" in message.lower()
 
     @pytest.mark.asyncio
-    async def test_check_grace_period_block_handles_error(self):
-        """Test _check_grace_period_block returns None on error."""
+    async def testcheck_grace_period_block_handles_error(self):
+        """Test check_grace_period_block returns None on error."""
         mock_request = MagicMock()
         del mock_request.app
 
-        result = await _check_grace_period_block("testplayer", mock_request)
+        result = await check_grace_period_block("testplayer", mock_request)
         assert result is None
 
 
 class TestCheckCastingState:
-    """Test _check_casting_state function."""
+    """Test check_casting_state function."""
 
     @pytest.mark.asyncio
-    async def test_check_casting_state_allowed_command(self):
-        """Test _check_casting_state allows stop/interrupt/status during casting."""
-        result = await _check_casting_state("stop", "testplayer", MagicMock())
+    async def testcheck_casting_state_allowed_command(self):
+        """Test check_casting_state allows stop/interrupt/status during casting."""
+        result = await check_casting_state("stop", "testplayer", MagicMock())
         assert result is None
 
     @pytest.mark.asyncio
-    async def test_check_casting_state_no_magic_service(self):
-        """Test _check_casting_state returns None when no magic service."""
+    async def testcheck_casting_state_no_magic_service(self):
+        """Test check_casting_state returns None when no magic service."""
         mock_request = MagicMock()
         mock_request.app.state.magic_service = None
 
-        result = await _check_casting_state("look", "testplayer", mock_request)
+        result = await check_casting_state("look", "testplayer", mock_request)
         assert result is None
 
     @pytest.mark.asyncio
-    async def test_check_casting_state_player_casting(self):
-        """Test _check_casting_state returns block result when player is casting."""
+    async def testcheck_casting_state_player_casting(self):
+        """Test check_casting_state returns block result when player is casting."""
         mock_request = MagicMock()
         mock_magic_service = MagicMock()
         mock_casting_state = MagicMock()
@@ -417,17 +425,19 @@ class TestCheckCastingState:
         mock_player_service.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_request.app.state.player_service = mock_player_service
 
-        result = await _check_casting_state("look", "testplayer", mock_request)
+        result = await check_casting_state("look", "testplayer", mock_request)
         assert result is not None
-        assert "casting" in result["result"].lower()
+        message = result["result"]
+        assert isinstance(message, str)
+        assert "casting" in message.lower()
 
     @pytest.mark.asyncio
-    async def test_check_casting_state_handles_error(self):
-        """Test _check_casting_state returns None on error."""
+    async def testcheck_casting_state_handles_error(self):
+        """Test check_casting_state returns None on error."""
         mock_request = MagicMock()
         del mock_request.app
 
-        result = await _check_casting_state("look", "testplayer", mock_request)
+        result = await check_casting_state("look", "testplayer", mock_request)
         assert result is None
 
 

@@ -1,5 +1,8 @@
 """Unit tests for real_time API helper functions."""
 
+# pyright: reportPrivateUsage=false
+# Reason: Unit tests intentionally exercise real_time private helpers.
+
 import json
 import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -8,6 +11,31 @@ import pytest
 
 from server.api import real_time
 from server.exceptions import LoggedHTTPException
+from server.schemas.realtime.presence_data import ErrorStatistics, PresenceStatistics, SessionStatistics
+
+
+def _request_with_connection_manager(connection_manager: MagicMock | None) -> MagicMock:
+    container: MagicMock = MagicMock()
+    container.connection_manager = connection_manager
+    app_state: MagicMock = MagicMock()
+    app_state.container = container
+    app: MagicMock = MagicMock()
+    app.state = app_state
+    request: MagicMock = MagicMock()
+    request.app = app
+    return request
+
+
+def _websocket_with_app(connection_manager: MagicMock) -> MagicMock:
+    container: MagicMock = MagicMock()
+    container.connection_manager = connection_manager
+    app_state: MagicMock = MagicMock()
+    app_state.container = container
+    app: MagicMock = MagicMock()
+    app.state = app_state
+    websocket: MagicMock = MagicMock()
+    websocket.app = app
+    return websocket
 
 
 def test_websocket_player_id_fallback_allowed_default_off(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -42,37 +70,40 @@ def test_resolve_connection_manager_returns_candidate() -> None:
 
 def test_resolve_connection_manager_delegates_when_none() -> None:
     sentinel = MagicMock()
+    resolve_connection_manager: MagicMock = MagicMock(return_value=sentinel)
     fake = MagicMock()
-    fake.resolve_connection_manager.return_value = sentinel
+    fake.resolve_connection_manager = resolve_connection_manager
     with patch("server.api.real_time.importlib.import_module", return_value=fake) as mocked:
         assert real_time.resolve_connection_manager(None) is sentinel
         mocked.assert_called_once_with("server.realtime.connection_manager_utils")
 
 
 def test_ensure_connection_manager_missing() -> None:
-    request = MagicMock()
-    request.app.state = MagicMock(container=MagicMock(connection_manager=None))
+    request = _request_with_connection_manager(None)
     with patch("server.api.real_time.resolve_connection_manager", return_value=None):
         with pytest.raises(LoggedHTTPException):
-            real_time._ensure_connection_manager(request)
+            _ = real_time._ensure_connection_manager(request)
 
 
 @pytest.mark.asyncio
 async def test_validate_and_accept_websocket_valid() -> None:
-    websocket = MagicMock()
+    accept: MagicMock = MagicMock()
+    websocket: MagicMock = MagicMock()
+    websocket.accept = accept
     cm = MagicMock(async_persistence=MagicMock())
     assert await real_time._validate_and_accept_websocket(websocket, cm) is True
-    websocket.accept.assert_not_called()
+    accept.assert_not_called()
 
 
 @pytest.mark.asyncio
 async def test_validate_and_accept_websocket_unavailable() -> None:
-    websocket = MagicMock()
-    websocket.accept = AsyncMock()
+    accept: AsyncMock = AsyncMock()
+    websocket: MagicMock = MagicMock()
+    websocket.accept = accept
     websocket.send_json = AsyncMock()
     websocket.close = AsyncMock()
     assert await real_time._validate_and_accept_websocket(websocket, None) is False
-    websocket.accept.assert_awaited_once()
+    accept.assert_awaited_once()
 
 
 @pytest.mark.asyncio
@@ -81,7 +112,7 @@ async def test_resolve_player_id_from_test() -> None:
     player = MagicMock(player_id=player_id)
     persistence = MagicMock()
     persistence.get_player_by_id = AsyncMock(return_value=player)
-    with patch("server.async_persistence.get_container_async_persistence", return_value=persistence):
+    with patch("server.container.async_persistence_access.get_container_async_persistence", return_value=persistence):
         resolved = await real_time._resolve_player_id_from_test(MagicMock(), str(player_id), MagicMock())
     assert resolved == player_id
 
@@ -90,9 +121,9 @@ async def test_resolve_player_id_from_test() -> None:
 async def test_resolve_player_id_from_token_no_player() -> None:
     persistence = MagicMock()
     persistence.get_player_by_user_id = AsyncMock(return_value=None)
-    with patch("server.async_persistence.get_container_async_persistence", return_value=persistence):
+    with patch("server.container.async_persistence_access.get_container_async_persistence", return_value=persistence):
         with pytest.raises(LoggedHTTPException):
-            await real_time._resolve_player_id_from_token(MagicMock(), {"sub": "user-1"})
+            _ = await real_time._resolve_player_id_from_token(MagicMock(), {"sub": "user-1"})
 
 
 @pytest.mark.asyncio
@@ -100,11 +131,15 @@ async def test_get_player_connections() -> None:
     player_id = uuid.uuid4()
     request = MagicMock()
     cm = MagicMock()
-    cm.get_player_presence_info.return_value = {"is_online": True, "connection_count": 1}
-    cm.get_player_session.return_value = "session-1"
-    cm.get_session_connections.return_value = ["conn-1"]
+    get_player_presence_info: MagicMock = MagicMock(return_value={"is_online": True, "connection_count": 1})
+    get_player_session: MagicMock = MagicMock(return_value="session-1")
+    get_session_connections: MagicMock = MagicMock(return_value=["conn-1"])
+    validate_session: MagicMock = MagicMock(return_value=True)
+    cm.get_player_presence_info = get_player_presence_info
+    cm.get_player_session = get_player_session
+    cm.get_session_connections = get_session_connections
     cm.check_connection_health = AsyncMock(return_value={"is_healthy": True})
-    cm.validate_session.return_value = True
+    cm.validate_session = validate_session
     with patch("server.api.real_time._ensure_connection_manager", return_value=cm):
         response = await real_time.get_player_connections(player_id, request)
     assert response.player_id == str(player_id)
@@ -129,7 +164,7 @@ async def test_resolve_player_id_missing_token_and_player_id() -> None:
     websocket = MagicMock()
     websocket.query_params = {}
     with pytest.raises(LoggedHTTPException):
-        await real_time._resolve_player_id(websocket, None, MagicMock())
+        _ = await real_time._resolve_player_id(websocket, None, MagicMock())
 
 
 @pytest.mark.asyncio
@@ -139,7 +174,7 @@ async def test_resolve_player_id_query_rejected_when_fallback_off(monkeypatch: p
     websocket = MagicMock()
     websocket.query_params = {"player_id": str(player_id)}
     with pytest.raises(LoggedHTTPException) as exc:
-        await real_time._resolve_player_id(websocket, None, MagicMock())
+        _ = await real_time._resolve_player_id(websocket, None, MagicMock())
     assert exc.value.status_code == 401
 
 
@@ -154,7 +189,7 @@ async def test_resolve_player_id_query_allowed_when_fallback_on(monkeypatch: pyt
     websocket.query_params = {"player_id": str(player_id)}
     with (
         patch("server.api.real_time.decode_access_token", return_value=None),
-        patch("server.async_persistence.get_container_async_persistence", return_value=persistence),
+        patch("server.container.async_persistence_access.get_container_async_persistence", return_value=persistence),
     ):
         resolved = await real_time._resolve_player_id(websocket, None, MagicMock())
     assert resolved == player_id
@@ -162,13 +197,14 @@ async def test_resolve_player_id_query_allowed_when_fallback_on(monkeypatch: pyt
 
 @pytest.mark.asyncio
 async def test_get_connection_statistics() -> None:
-    from server.schemas.realtime.presence_data import ErrorStatistics, PresenceStatistics, SessionStatistics
-
     request = MagicMock()
     cm = MagicMock()
-    cm.get_presence_statistics.return_value = PresenceStatistics(total_online=1)
-    cm.get_session_stats.return_value = SessionStatistics(active_sessions=1)
-    cm.get_error_statistics.return_value = ErrorStatistics(total_errors=0)
+    get_presence_statistics: MagicMock = MagicMock(return_value=PresenceStatistics(total_online=1))
+    get_session_stats: MagicMock = MagicMock(return_value=SessionStatistics(active_sessions=1))
+    get_error_statistics: MagicMock = MagicMock(return_value=ErrorStatistics(total_errors=0))
+    cm.get_presence_statistics = get_presence_statistics
+    cm.get_session_stats = get_session_stats
+    cm.get_error_statistics = get_error_statistics
     with patch("server.api.real_time._ensure_connection_manager", return_value=cm):
         stats = await real_time.get_connection_statistics(request)
     assert stats.presence.total_online == 1
@@ -188,9 +224,8 @@ async def test_handle_new_game_session() -> None:
 
 @pytest.mark.asyncio
 async def test_validate_websocket_connection_manager() -> None:
-    websocket = MagicMock()
     cm = MagicMock(async_persistence=MagicMock())
-    websocket.app.state = MagicMock(container=MagicMock(connection_manager=cm))
+    websocket = _websocket_with_app(cm)
     with patch("server.api.real_time.resolve_connection_manager", return_value=cm):
         assert await real_time._validate_websocket_connection_manager(websocket) is cm
 
@@ -203,7 +238,7 @@ async def test_handle_new_game_session_missing_session_id() -> None:
     cm = MagicMock()
     with patch("server.api.real_time._ensure_connection_manager", return_value=cm):
         with pytest.raises(LoggedHTTPException):
-            await real_time.handle_new_game_session(player_id, request)
+            _ = await real_time.handle_new_game_session(player_id, request)
 
 
 @pytest.mark.asyncio
@@ -215,7 +250,7 @@ async def test_resolve_player_id_from_token_with_character_id() -> None:
     persistence.get_player_by_id = AsyncMock(return_value=player)
     websocket = MagicMock()
     websocket.query_params = {"character_id": str(player_id)}
-    with patch("server.async_persistence.get_container_async_persistence", return_value=persistence):
+    with patch("server.container.async_persistence_access.get_container_async_persistence", return_value=persistence):
         resolved = await real_time._resolve_player_id_from_token(websocket, {"sub": user_id})
     assert resolved == player_id
 
@@ -228,7 +263,7 @@ async def test_handle_new_game_session_invalid_json() -> None:
     cm = MagicMock()
     with patch("server.api.real_time._ensure_connection_manager", return_value=cm):
         with pytest.raises(LoggedHTTPException):
-            await real_time.handle_new_game_session(player_id, request)
+            _ = await real_time.handle_new_game_session(player_id, request)
 
 
 @pytest.mark.asyncio
@@ -290,6 +325,8 @@ async def test_websocket_endpoint_route_unresolved_player() -> None:
 async def test_parse_websocket_token_header_parse_error() -> None:
     websocket = MagicMock()
     websocket.query_params = {}
-    websocket.headers = MagicMock()
-    websocket.headers.get.side_effect = AttributeError("no header")
+    get_header: MagicMock = MagicMock(side_effect=AttributeError("no header"))
+    headers: MagicMock = MagicMock()
+    headers.get = get_header
+    websocket.headers = headers
     assert real_time._parse_websocket_token(websocket, MagicMock()) is None

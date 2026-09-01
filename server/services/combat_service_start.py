@@ -6,9 +6,8 @@ Extracted from combat_service.py to keep module line count under limit.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Protocol, cast
 
-from server.commands.rest_command import cancel_rest_countdown, is_player_resting
 from server.config import get_config
 from server.events.combat_events import CombatStartedEvent
 from server.models.combat import CombatInstance
@@ -17,25 +16,43 @@ from server.services.combat_types import CombatParticipantData
 from server.services.nats_exceptions import NATSError
 from server.structured_logging.enhanced_logging_config import get_logger
 
+if TYPE_CHECKING:
+    from server.services.combat_service import CombatService
+
 logger = get_logger(__name__)
 
 
-def get_connection_manager_for_combat_check(_service: CombatService) -> Any | None:
+class _AppStateWithConnectionManager(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    """FastAPI app.state surface used to resolve ConnectionManager."""
+
+    connection_manager: object | None
+
+
+class _AppWithState(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    """Minimal FastAPI app surface attached to AppConfig._app_instance."""
+
+    state: _AppStateWithConnectionManager
+
+
+def get_connection_manager_for_combat_check(_service: CombatService) -> object | None:
     """Resolve connection_manager from config app instance for rest/grace checks."""
     config = get_config()
-    app = getattr(config, "_app_instance", None)
-    if not app:
+    app = cast(_AppWithState | None, getattr(config, "_app_instance", None))
+    if app is None:
         return None
-    return getattr(app.state, "connection_manager", None)
+    return app.state.connection_manager
 
 
 async def apply_target_rest_and_grace_checks(
     _service: CombatService,
-    connection_manager: Any,
+    connection_manager: object,
     target: CombatParticipantData,
     attacker: CombatParticipantData,
 ) -> None:
     """Check target login grace period (raises) and resting (cancel + log)."""
+    # Inline import: combat_service_start <- ... <- player_position_service <- rest_command.
+    from server.commands.rest_command import cancel_rest_countdown, is_player_resting
+
     target_id = target.participant_id
     if is_player_in_login_grace_period(target_id, connection_manager):
         logger.info(
@@ -76,7 +93,7 @@ async def check_target_rest_and_grace_period(
 
 
 async def check_attacker_grace_period(
-    _service: CombatService, attacker: CombatParticipantData, target: CombatParticipantData
+    service: CombatService, attacker: CombatParticipantData, target: CombatParticipantData
 ) -> None:
     """Check if attacker is in login grace period."""
     from server.models.combat import CombatParticipantType  # noqa: PLC0415  # Avoid circular import
@@ -84,11 +101,7 @@ async def check_attacker_grace_period(
     if attacker.participant_type != CombatParticipantType.PLAYER:
         return
     try:
-        config = get_config()
-        app = getattr(config, "_app_instance", None)
-        if not app:
-            return
-        connection_manager = getattr(app.state, "connection_manager", None)
+        connection_manager = get_connection_manager_for_combat_check(service)
         if not connection_manager:
             return
         attacker_id = attacker.participant_id
@@ -154,7 +167,3 @@ async def publish_combat_started_event(service: CombatService, combat: CombatIns
         logger.debug("publish_combat_started completed", combat_id=combat.combat_id)
     except (NATSError, ValueError, RuntimeError, AttributeError, ConnectionError) as e:
         logger.error("Error publishing combat started event", error=str(e), exc_info=True)
-
-
-if TYPE_CHECKING:
-    from server.services.combat_service import CombatService

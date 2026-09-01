@@ -1,6 +1,6 @@
 # test_aggro_threat.py
 
-> 88 nodes
+> 92 nodes
 
 ## Key Concepts
 
@@ -14,8 +14,10 @@
 - **test_aggro_flow.py** (14 connections) — `server/tests/integration/test_aggro_flow.py`
 - **_make_participant()** (13 connections) — `server/tests/unit/services/test_aggro_threat.py`
 - **apply_taunt()** (12 connections) — `server/services/aggro_threat.py`
+- **_resolve_npc_target()** (11 connections) — `server/services/combat_turn_participant_actions.py`
 - **UUID** (11 connections)
 - **_make_participant()** (9 connections) — `server/tests/integration/test_aggro_flow.py`
+- **get_npc_current_target()** (8 connections) — `server/services/aggro_threat.py`
 - **_make_combat()** (8 connections) — `server/tests/integration/test_aggro_flow.py`
 - **apply_stealth_wipe()** (7 connections) — `server/services/aggro_threat.py`
 - **_get_aggro_config()** (7 connections) — `server/services/aggro_threat.py`
@@ -27,33 +29,30 @@
 - **test_aggro_taunt_from_next_room_no_effect()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
 - **test_aggro_tank_swap_taunt_sequence()** (6 connections) — `server/tests/integration/test_aggro_flow.py`
 - **test_on_player_entered_stealth_wipes_from_all_npcs()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **test_update_aggro_excludes_dead_from_candidate()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **test_update_aggro_one_entity_sets_target()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- *... and 63 more nodes in this community*
+- *... and 67 more nodes in this community*
 
 ## Relationships
 
-- [CombatInstance](CombatInstance.md) (12 shared connections)
-- [CombatParticipant](CombatParticipant.md) (10 shared connections)
-- [models/combat.py](models-combat.py.md) (8 shared connections)
-- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (7 shared connections)
-- [combat_service.py](combat_service.py.md) (6 shared connections)
-- [combat_taunt.py](combat_taunt.py.md) (5 shared connections)
-- [SpellEffects](SpellEffects.md) (3 shared connections)
+- [CombatParticipant](CombatParticipant.md) (27 shared connections)
+- [CombatInstance](CombatInstance.md) (14 shared connections)
+- [CombatCommandHandler](CombatCommandHandler.md) (5 shared connections)
+- [TargetMatch](TargetMatch.md) (4 shared connections)
+- [CombatService](CombatService.md) (4 shared connections)
+- [test_combat_service_modules.py](test_combat_service_modules.py.md) (3 shared connections)
 - [get_config](get_config.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [TargetMatch](TargetMatch.md) (1 shared connections)
 
 ## Source Files
 
 - `server/services/aggro_threat.py`
+- `server/services/combat_turn_participant_actions.py`
 - `server/tests/integration/test_aggro_flow.py`
 - `server/tests/unit/services/test_aggro_threat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 250 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 262 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

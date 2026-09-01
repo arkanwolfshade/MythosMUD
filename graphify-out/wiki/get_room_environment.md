@@ -30,9 +30,8 @@
 
 ## Relationships
 
-- [test_world_loader.py](test_world_loader.py.md) (2 shared connections)
+- [validate_room_data](validate_room_data.md) (3 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
-- [validate_room_data](validate_room_data.md) (1 shared connections)
 
 ## Source Files
 

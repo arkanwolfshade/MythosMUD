@@ -5,8 +5,16 @@ Tests the rest command functionality including combat blocking,
 rest location instant disconnect, countdown, and interruption logic.
 """
 
+# pyright: reportPrivateUsage=false
+# Reason: Unit tests intentionally call rest_command private helpers.
+# pyright: reportAny=false, reportUnknownMemberType=false, reportUnknownArgumentType=false
+# Reason: MagicMock fixture attribute chains are Any; typing each access adds no safety.
+
+from __future__ import annotations
+
 import asyncio
 import uuid
+from typing import override
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -23,20 +31,21 @@ from server.commands.rest_command import (
 
 
 @pytest.fixture
-def mock_app():
+def mock_app() -> MagicMock:
     """Create a mock FastAPI app."""
-    app = MagicMock()
-    app.state = MagicMock()
+    app: MagicMock = MagicMock()
+    state: MagicMock = MagicMock()
     # Ensure container is None so _get_services_from_app uses app.state.persistence
     # instead of trying to get it from app.state.container.async_persistence
-    app.state.container = None
+    state.container = None
+    app.state = state
     return app
 
 
 @pytest.fixture
-def mock_request(mock_app):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+def mock_request(mock_app: MagicMock) -> MagicMock:
     """Create a mock request."""
-    request = MagicMock()
+    request: MagicMock = MagicMock()
     request.app = mock_app
     return request
 
@@ -44,19 +53,20 @@ def mock_request(mock_app):  # pylint: disable=redefined-outer-name  # Reason: F
 class MockPersistence:
     """Mock persistence layer with async methods."""
 
-    def __init__(self):
-        self._get_player_by_name_mock = AsyncMock(return_value=None)
-        self._get_room_by_id_mock = MagicMock(return_value=None)
+    def __init__(self) -> None:
+        self._get_player_by_name_mock: AsyncMock = AsyncMock(return_value=None)
+        self._get_room_by_id_mock: MagicMock = MagicMock(return_value=None)
 
-    async def get_player_by_name(self, name):
+    async def get_player_by_name(self, name: str) -> object:
         """Mock async method that uses configured mock."""
         return await self._get_player_by_name_mock(name)
 
-    def get_room_by_id(self, room_id):
+    def get_room_by_id(self, room_id: str) -> object:
         """Mock method that uses configured mock."""
         return self._get_room_by_id_mock(room_id)
 
-    def __setattr__(self, name, value):
+    @override
+    def __setattr__(self, name: str, value: object) -> None:
         """Allow setting get_player_by_name and get_room_by_id to mocks."""
         if name == "get_player_by_name":
             object.__setattr__(self, "_get_player_by_name_mock", value)
@@ -67,15 +77,15 @@ class MockPersistence:
 
 
 @pytest.fixture
-def mock_persistence():
+def mock_persistence() -> MockPersistence:
     """Create a mock persistence layer."""
     return MockPersistence()
 
 
 @pytest.fixture
-def mock_connection_manager():
+def mock_connection_manager() -> MagicMock:
     """Create a mock connection manager."""
-    manager = MagicMock()
+    manager: MagicMock = MagicMock()
     manager.resting_players = {}
     manager.intentional_disconnects = set()
     manager.force_disconnect_player = AsyncMock()
@@ -83,9 +93,9 @@ def mock_connection_manager():
 
 
 @pytest.fixture
-def mock_player():
+def mock_player() -> MagicMock:
     """Create a mock player."""
-    player = MagicMock()
+    player: MagicMock = MagicMock()
     player.player_id = str(uuid.uuid4())
     player.name = "TestPlayer"
     player.current_room_id = "room_123"
@@ -93,7 +103,7 @@ def mock_player():
 
 
 @pytest.mark.asyncio
-async def test_handle_rest_command_no_app(mock_request):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+async def test_handle_rest_command_no_app(mock_request: MagicMock) -> None:
     """Test handle_rest_command() handles missing app."""
     mock_request.app = None
 
@@ -104,7 +114,7 @@ async def test_handle_rest_command_no_app(mock_request):  # pylint: disable=rede
 
 
 @pytest.mark.asyncio
-async def test_handle_rest_command_no_persistence(mock_request):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+async def test_handle_rest_command_no_persistence(mock_request: MagicMock) -> None:
     """Test handle_rest_command() handles missing persistence."""
     mock_request.app.state.persistence = None
 
@@ -115,7 +125,9 @@ async def test_handle_rest_command_no_persistence(mock_request):  # pylint: disa
 
 
 @pytest.mark.asyncio
-async def test_handle_rest_command_no_connection_manager(mock_request, mock_persistence):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
+async def test_handle_rest_command_no_connection_manager(
+    mock_request: MagicMock, mock_persistence: MockPersistence
+) -> None:
     """Test handle_rest_command() handles missing connection manager."""
     mock_request.app.state.persistence = mock_persistence
     mock_request.app.state.connection_manager = None
@@ -128,7 +140,9 @@ async def test_handle_rest_command_no_connection_manager(mock_request, mock_pers
 
 
 @pytest.mark.asyncio
-async def test_handle_rest_command_player_not_found(mock_request, mock_persistence, mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
+async def test_handle_rest_command_player_not_found(
+    mock_request: MagicMock, mock_persistence: MockPersistence, mock_connection_manager: MagicMock
+) -> None:
     """Test handle_rest_command() handles player not found."""
     mock_request.app.state.persistence = mock_persistence
     mock_request.app.state.connection_manager = mock_connection_manager
@@ -141,9 +155,12 @@ async def test_handle_rest_command_player_not_found(mock_request, mock_persisten
 
 
 @pytest.mark.asyncio
-async def test_handle_rest_command_already_resting(  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
-    mock_request, mock_persistence, mock_connection_manager, mock_player
-):
+async def test_handle_rest_command_already_resting(
+    mock_request: MagicMock,
+    mock_persistence: MockPersistence,
+    mock_connection_manager: MagicMock,
+    mock_player: MagicMock,
+) -> None:
     """Test handle_rest_command() handles player already resting."""
     mock_request.app.state.persistence = mock_persistence
     mock_request.app.state.connection_manager = mock_connection_manager
@@ -158,7 +175,12 @@ async def test_handle_rest_command_already_resting(  # pylint: disable=redefined
 
 
 @pytest.mark.asyncio
-async def test_handle_rest_command_in_combat(mock_request, mock_persistence, mock_connection_manager, mock_player):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
+async def test_handle_rest_command_in_combat(
+    mock_request: MagicMock,
+    mock_persistence: MockPersistence,
+    mock_connection_manager: MagicMock,
+    mock_player: MagicMock,
+) -> None:
     """Test handle_rest_command() blocks when player is in combat."""
     mock_request.app.state.persistence = mock_persistence
     mock_request.app.state.connection_manager = mock_connection_manager
@@ -176,9 +198,12 @@ async def test_handle_rest_command_in_combat(mock_request, mock_persistence, moc
 
 
 @pytest.mark.asyncio
-async def test_handle_rest_command_rest_location_instant(  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
-    mock_request, mock_persistence, mock_connection_manager, mock_player
-):
+async def test_handle_rest_command_rest_location_instant(
+    mock_request: MagicMock,
+    mock_persistence: MockPersistence,
+    mock_connection_manager: MagicMock,
+    mock_player: MagicMock,
+) -> None:
     """Test handle_rest_command() instant disconnect in rest location."""
     mock_request.app.state.persistence = mock_persistence
     mock_request.app.state.connection_manager = mock_connection_manager
@@ -201,9 +226,12 @@ async def test_handle_rest_command_rest_location_instant(  # pylint: disable=red
 
 
 @pytest.mark.asyncio
-async def test_handle_rest_command_starts_countdown(  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
-    mock_request, mock_persistence, mock_connection_manager, mock_player
-):
+async def test_handle_rest_command_starts_countdown(
+    mock_request: MagicMock,
+    mock_persistence: MockPersistence,
+    mock_connection_manager: MagicMock,
+    mock_player: MagicMock,
+) -> None:
     """Test handle_rest_command() starts countdown when not in rest location."""
     mock_request.app.state.persistence = mock_persistence
     mock_request.app.state.connection_manager = mock_connection_manager
@@ -232,7 +260,7 @@ async def test_handle_rest_command_starts_countdown(  # pylint: disable=redefine
 
 
 @pytest.mark.asyncio
-async def test_check_player_in_combat_true(mock_app):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+async def test_check_player_in_combat_true(mock_app: MagicMock) -> None:
     """Test _check_player_in_combat() returns True when player is in combat."""
     player_id = uuid.uuid4()
     mock_app.state.combat_service = MagicMock()
@@ -245,7 +273,7 @@ async def test_check_player_in_combat_true(mock_app):  # pylint: disable=redefin
 
 
 @pytest.mark.asyncio
-async def test_check_player_in_combat_false(mock_app):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+async def test_check_player_in_combat_false(mock_app: MagicMock) -> None:
     """Test _check_player_in_combat() returns False when player is not in combat."""
     player_id = uuid.uuid4()
     mock_app.state.combat_service = MagicMock()
@@ -258,7 +286,7 @@ async def test_check_player_in_combat_false(mock_app):  # pylint: disable=redefi
 
 
 @pytest.mark.asyncio
-async def test_check_player_in_combat_no_service(mock_app):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+async def test_check_player_in_combat_no_service(mock_app: MagicMock) -> None:
     """Test _check_player_in_combat() returns False when no combat service."""
     player_id = uuid.uuid4()
     mock_app.state.combat_service = None
@@ -269,7 +297,7 @@ async def test_check_player_in_combat_no_service(mock_app):  # pylint: disable=r
 
 
 @pytest.mark.asyncio
-async def test_check_rest_location_true(mock_persistence):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+async def test_check_rest_location_true(mock_persistence: MockPersistence) -> None:
     """Test _check_rest_location() returns True when room is rest location."""
     room_id = "room_123"
     mock_room = MagicMock()
@@ -282,7 +310,7 @@ async def test_check_rest_location_true(mock_persistence):  # pylint: disable=re
 
 
 @pytest.mark.asyncio
-async def test_check_rest_location_false(mock_persistence):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+async def test_check_rest_location_false(mock_persistence: MockPersistence) -> None:
     """Test _check_rest_location() returns False when room is not rest location."""
     room_id = "room_123"
     mock_room = MagicMock()
@@ -295,7 +323,7 @@ async def test_check_rest_location_false(mock_persistence):  # pylint: disable=r
 
 
 @pytest.mark.asyncio
-async def test_check_rest_location_no_room(mock_persistence):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+async def test_check_rest_location_no_room(mock_persistence: MockPersistence) -> None:
     """Test _check_rest_location() returns False when room not found."""
     room_id = "room_123"
     mock_persistence.get_room_by_id = MagicMock(return_value=None)
@@ -306,7 +334,7 @@ async def test_check_rest_location_no_room(mock_persistence):  # pylint: disable
 
 
 @pytest.mark.asyncio
-async def test_check_rest_location_no_persistence():
+async def test_check_rest_location_no_persistence() -> None:
     """Test _check_rest_location() returns False when no persistence."""
     room_id = "room_123"
 
@@ -316,7 +344,9 @@ async def test_check_rest_location_no_persistence():
 
 
 @pytest.mark.asyncio
-async def test_disconnect_player_intentionally(mock_connection_manager, mock_persistence):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
+async def test_disconnect_player_intentionally(
+    mock_connection_manager: MagicMock, mock_persistence: MockPersistence
+) -> None:
     """Test _disconnect_player_intentionally() marks disconnect as intentional."""
     player_id = uuid.uuid4()
     # The function calls force_disconnect_player
@@ -331,7 +361,9 @@ async def test_disconnect_player_intentionally(mock_connection_manager, mock_per
 
 
 @pytest.mark.asyncio
-async def test_start_rest_countdown_creates_task(mock_connection_manager, mock_persistence):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
+async def test_start_rest_countdown_creates_task(
+    mock_connection_manager: MagicMock, mock_persistence: MockPersistence
+) -> None:
     """Test _start_rest_countdown() creates and stores a rest countdown task."""
     player_id = uuid.uuid4()
     player_name = "TestPlayer"
@@ -343,7 +375,9 @@ async def test_start_rest_countdown_creates_task(mock_connection_manager, mock_p
 
 
 @pytest.mark.asyncio
-async def test_start_rest_countdown_timer_expires(mock_connection_manager, mock_persistence):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
+async def test_start_rest_countdown_timer_expires(
+    mock_connection_manager: MagicMock, mock_persistence: MockPersistence
+) -> None:
     """Test rest countdown task disconnects player after timer expires."""
     player_id = uuid.uuid4()
     player_name = "TestPlayer"
@@ -363,7 +397,7 @@ async def test_start_rest_countdown_timer_expires(mock_connection_manager, mock_
 
 
 @pytest.mark.asyncio
-async def test_cancel_rest_countdown_cancels_task(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+async def test_cancel_rest_countdown_cancels_task(mock_connection_manager: MagicMock) -> None:
     """Test cancel_rest_countdown() cancels the rest countdown task."""
     player_id = uuid.uuid4()
     task = asyncio.create_task(asyncio.sleep(100))  # Long-running task
@@ -378,7 +412,7 @@ async def test_cancel_rest_countdown_cancels_task(mock_connection_manager):  # p
 
 
 @pytest.mark.asyncio
-async def test_cancel_rest_countdown_restores_standing(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+async def test_cancel_rest_countdown_restores_standing(mock_connection_manager: MagicMock) -> None:
     """Interrupted /rest must stand the player so Sitting does not poison the next session."""
     player_id = uuid.uuid4()
     task = asyncio.create_task(asyncio.sleep(100))
@@ -388,19 +422,32 @@ async def test_cancel_rest_countdown_restores_standing(mock_connection_manager):
     mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
     mock_connection_manager.async_persistence = MagicMock()
 
-    with patch("server.commands.rest_command.PlayerPositionService") as mock_svc_cls:
-        mock_svc = MagicMock()
-        mock_svc.change_position = AsyncMock(return_value={"success": True, "position": "standing"})
+    with (
+        patch("server.commands.rest_command.PlayerPositionService") as mock_svc_cls,
+        patch("server.commands.rest_command.emit_posture_change", new_callable=AsyncMock) as mock_emit,
+    ):
+        mock_svc: MagicMock = MagicMock()
+        change_position: AsyncMock = AsyncMock(
+            return_value={
+                "success": True,
+                "position": "standing",
+                "previous_position": "sitting",
+                "player_display_name": "ArkanWolfshade",
+                "room_id": "room-1",
+            }
+        )
+        mock_svc.change_position = change_position
         mock_svc_cls.return_value = mock_svc
 
         await cancel_rest_countdown(player_id, mock_connection_manager)
 
-        mock_svc.change_position.assert_awaited_once_with("ArkanWolfshade", "standing")
+        change_position.assert_awaited_once_with("ArkanWolfshade", "standing")
+        mock_emit.assert_awaited_once()
     assert player_id not in mock_connection_manager.resting_players
 
 
 @pytest.mark.asyncio
-async def test_cancel_rest_countdown_not_resting(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+async def test_cancel_rest_countdown_not_resting(mock_connection_manager: MagicMock) -> None:
     """Test cancel_rest_countdown() does nothing if player not resting."""
     player_id = uuid.uuid4()
 
@@ -410,7 +457,7 @@ async def test_cancel_rest_countdown_not_resting(mock_connection_manager):  # py
     assert player_id not in mock_connection_manager.resting_players
 
 
-def test_is_player_resting_true(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+def test_is_player_resting_true(mock_connection_manager: MagicMock) -> None:
     """Test is_player_resting() returns True when player is resting."""
     player_id = uuid.uuid4()
     # Use MagicMock instead of real task to avoid event loop requirement
@@ -422,7 +469,7 @@ def test_is_player_resting_true(mock_connection_manager):  # pylint: disable=red
     assert result is True
 
 
-def test_is_player_resting_false(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+def test_is_player_resting_false(mock_connection_manager: MagicMock) -> None:
     """Test is_player_resting() returns False when player is not resting."""
     player_id = uuid.uuid4()
 
@@ -431,7 +478,7 @@ def test_is_player_resting_false(mock_connection_manager):  # pylint: disable=re
     assert result is False
 
 
-def test_is_player_resting_no_manager_attribute():
+def test_is_player_resting_no_manager_attribute() -> None:
     """Test is_player_resting() returns False when manager has no resting_players."""
     player_id = uuid.uuid4()
     manager = MagicMock()

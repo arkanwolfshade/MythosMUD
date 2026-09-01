@@ -23,10 +23,9 @@
 
 ## Relationships
 
+- [User](User.md) (4 shared connections)
 - [ContainerComponent](ContainerComponent.md) (2 shared connections)
 - [ContainerService](ContainerService.md) (2 shared connections)
-- [User](User.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
 - [ContainerServiceError](ContainerServiceError.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 

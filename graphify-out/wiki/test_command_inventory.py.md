@@ -1,6 +1,6 @@
 # test_command_inventory.py
 
-> 134 nodes
+> 140 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,9 @@
 - **EquipCommand** (23 connections) — `server/models/command_inventory.py`
 - **PickupCommand** (22 connections) — `server/models/command_inventory.py`
 - **UnequipCommand** (22 connections) — `server/models/command_inventory.py`
+- **DropCommand** (12 connections) — `server/models/command_inventory.py`
+- **GetCommand** (12 connections) — `server/models/command_inventory.py`
+- **PutCommand** (12 connections) — `server/models/command_inventory.py`
 - **field_validator** (5 connections)
 - **.validate_equip_requirements()** (3 connections) — `server/models/command_inventory.py`
 - **.validate_search_term()** (3 connections) — `server/models/command_inventory.py`
@@ -26,16 +29,14 @@
 - **test_equip_command_search_term_max_length()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
 - **test_equip_command_target_slot_max_length()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
 - **test_equip_command_validate_requirements_neither_provided()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_validate_search_term_empty_string()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_validate_search_term_strips()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_validate_search_term_whitespace_only()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- *... and 109 more nodes in this community*
+- *... and 115 more nodes in this community*
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (34 shared connections)
-- [ValidationError](ValidationError.md) (3 shared connections)
+- [BaseCommand](BaseCommand.md) (27 shared connections)
+- [ValidationError](ValidationError.md) (6 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [pydantic.md](pydantic.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 212 (99%)
-- INFERRED: 3 (1%)
+- EXTRACTED: 227 (97%)
+- INFERRED: 6 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

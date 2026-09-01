@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [InventoryMutationGuard](InventoryMutationGuard.md) (3 shared connections)
+- [InventoryMutationGuard](InventoryMutationGuard.md) (4 shared connections)
 - [ContainerService](ContainerService.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (1 shared connections)
 
 ## Source Files
 

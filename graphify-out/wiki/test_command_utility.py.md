@@ -33,11 +33,12 @@
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (16 shared connections)
+- [BaseCommand](BaseCommand.md) (15 shared connections)
 - [test_security_validator.py](test_security_validator.py.md) (2 shared connections)
-- [.create_help_command](create_help_command.md) (1 shared connections)
-- [PlayerStateCommandFactory](PlayerStateCommandFactory.md) (1 shared connections)
+- [UtilityCommandFactory](UtilityCommandFactory.md) (1 shared connections)
+- [CommandFactory](CommandFactory.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [pydantic.md](pydantic.md.md) (1 shared connections)
 
 ## Source Files
 

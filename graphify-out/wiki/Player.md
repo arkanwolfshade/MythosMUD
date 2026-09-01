@@ -1,68 +1,78 @@
 # Player
 
-> 226 nodes
+> 352 nodes
 
 ## Key Concepts
 
 - **Player** (232 connections) — `server/models/player.py`
-- **coerce_int()** (51 connections) — `server/utils/int_coercion.py`
-- **test_player_model.py** (48 connections) — `server/tests/unit/models/test_player_model.py`
+- **models/player.py** (98 connections) — `server/models/player.py`
+- **server/models/__init__.py** (85 connections) — `server/models/__init__.py`
+- **Base** (60 connections) — `server/models/base.py`
+- **lucidity.py** (35 connections) — `server/models/lucidity.py`
 - **HealthRepository** (31 connections) — `server/persistence/repositories/health_repository.py`
+- **LucidityRepository** (27 connections) — `server/services/lucidity_repository.py`
+- **test_world.py** (27 connections) — `server/tests/unit/models/test_world.py`
+- **test_lucidity_repository.py** (25 connections) — `server/tests/unit/services/test_lucidity_repository.py`
+- **LucidityExposureState** (24 connections) — `server/models/lucidity.py`
+- **LucidityCooldown** (22 connections) — `server/models/lucidity.py`
+- **models/base.py** (22 connections) — `server/models/base.py`
+- **LucidityAdjustmentLog** (20 connections) — `server/models/lucidity.py`
 - **test_health_repository.py** (20 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
-- **int_coercion.py** (17 connections) — `server/utils/int_coercion.py`
-- **test_player_repository_room.py** (15 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **_stats_int()** (14 connections) — `server/models/player.py`
-- **.get_stats()** (13 connections) — `server/models/player.py`
-- **validate_and_fix_player_room()** (13 connections) — `server/persistence/repositories/player_repository_room.py`
-- **test_inventory_command_coercion.py** (13 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_inventory_commands_persistence_helpers.py** (13 connections) — `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
-- **should_skip_room_validation()** (10 connections) — `server/persistence/repositories/player_repository_room.py`
-- **validate_and_fix_player_room_with_persistence()** (10 connections) — `server/persistence/repositories/player_repository_room.py`
-- **_player()** (9 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **player_repository_room.py** (9 connections) — `server/persistence/repositories/player_repository_room.py`
-- **asyncio** (9 connections)
-- **test_health_repository_cold_resistance.py** (8 connections) — `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
-- **._damage_player_inner()** (7 connections) — `server/persistence/repositories/health_repository.py`
-- **.update_player_health()** (7 connections) — `server/persistence/repositories/health_repository.py`
-- **.set_stats()** (6 connections) — `server/models/player.py`
-- **._heal_player_inner()** (6 connections) — `server/persistence/repositories/health_repository.py`
-- **_stats_int()** (6 connections) — `server/persistence/repositories/health_repository.py`
-- **.apply_dp_change()** (5 connections) — `server/models/player.py`
-- **.apply_dp_decay()** (5 connections) — `server/models/player.py`
-- *... and 201 more nodes in this community*
+- **PlayerSpell** (19 connections) — `server/models/player_spells.py`
+- **test_item.py** (19 connections) — `server/tests/unit/models/test_item.py`
+- **test_player_related_models.py** (19 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **test_player_effect_repository.py** (18 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **PlayerInventory** (16 connections) — `server/models/player.py`
+- **_MockAsyncSession** (16 connections) — `server/tests/unit/services/test_lucidity_repository.py`
+- **PlayerEffect** (15 connections) — `server/models/player_effect.py`
+- **PlayerSkill** (14 connections) — `server/models/player_skill.py`
+- **ItemComponentState** (13 connections) — `server/models/item.py`
+- **ItemPrototype** (13 connections) — `server/models/item.py`
+- **world.py** (13 connections) — `server/models/world.py`
+- *... and 327 more nodes in this community*
 
 ## Relationships
 
-- [models/player.py](models-player.py.md) (51 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (23 shared connections)
-- [DatabaseError](DatabaseError.md) (22 shared connections)
-- [inventory_pickup_command.py](inventory_pickup_command.py.md) (20 shared connections)
-- [game_tick_processing.py](game_tick_processing.py.md) (13 shared connections)
-- [command_result_text](command_result_text.md) (13 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (9 shared connections)
-- [pytest.md](pytest.md.md) (7 shared connections)
-- [inventory_equip_command.py](inventory_equip_command.py.md) (7 shared connections)
-- [test_player_repository.py](test_player_repository.py.md) (5 shared connections)
-- [test_look_container_helpers.py](test_look_container_helpers.py.md) (5 shared connections)
-- [ValidationError](ValidationError.md) (4 shared connections)
+- [get_logger](get_logger.md) (80 shared connections)
+- [test_player_model.py](test_player_model.py.md) (45 shared connections)
+- [LucidityService](LucidityService.md) (33 shared connections)
+- [test_lucidity_models.py](test_lucidity_models.py.md) (20 shared connections)
+- [User](User.md) (18 shared connections)
+- [command_result_text](command_result_text.md) (15 shared connections)
+- [test_player_respawn_service.py](test_player_respawn_service.py.md) (14 shared connections)
+- [coerce_int](coerce_int.md) (14 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (12 shared connections)
+- [pytest.md](pytest.md.md) (12 shared connections)
+- [test_async_persistence_delegates.py](test_async_persistence_delegates.py.md) (12 shared connections)
+- [test_emote.py](test_emote.py.md) (11 shared connections)
 
 ## Source Files
 
+- `server/metadata.py`
+- `server/models/__init__.py`
+- `server/models/base.py`
+- `server/models/dialogue.py`
+- `server/models/emote.py`
+- `server/models/item.py`
+- `server/models/lucidity.py`
 - `server/models/player.py`
+- `server/models/player_effect.py`
+- `server/models/player_skill.py`
+- `server/models/player_spells.py`
+- `server/models/skill_use_log.py`
+- `server/models/spell_db.py`
+- `server/models/world.py`
+- `server/persistence/protocols.py`
 - `server/persistence/repositories/health_repository.py`
-- `server/persistence/repositories/player_repository_room.py`
-- `server/tests/unit/commands/test_inventory_command_coercion.py`
+- `server/services/lucidity_repository.py`
+- `server/tests/integration/test_lucidity_round_trip.py`
+- `server/tests/integration/test_procedures_return_shape.py`
 - `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
-- `server/tests/unit/models/test_player_model.py`
-- `server/tests/unit/persistence/repositories/test_health_repository.py`
-- `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
-- `server/tests/unit/persistence/test_player_repository_room.py`
-- `server/utils/int_coercion.py`
 
 ## Audit Trail
 
-- EXTRACTED: 506 (81%)
-- INFERRED: 115 (19%)
+- EXTRACTED: 1004 (84%)
+- INFERRED: 187 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

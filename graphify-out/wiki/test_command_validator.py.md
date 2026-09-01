@@ -1,11 +1,12 @@
 # test_command_validator.py
 
-> 118 nodes
+> 120 nodes
 
 ## Key Concepts
 
 - **test_command_validator.py** (52 connections) — `server/tests/unit/validators/test_command_validator.py`
 - **CommandValidator** (40 connections) — `server/validators/command_validator.py`
+- **command_validator.py** (17 connections) — `server/validators/command_validator.py`
 - **.validate_command_content()** (11 connections) — `server/validators/command_validator.py`
 - **clean_command_input()** (9 connections) — `server/validators/command_validator.py`
 - **.is_security_sensitive()** (9 connections) — `server/validators/command_validator.py`
@@ -28,15 +29,16 @@
 - **test_command_validator_is_valid_command_name()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
 - **test_command_validator_is_valid_command_name_invalid()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
 - **test_command_validator_sanitize_for_logging()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_command_validator_sanitize_for_logging_removes_sensitive()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
-- *... and 93 more nodes in this community*
+- *... and 95 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
-- [processing.py](processing.py.md) (7 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (5 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (7 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 - [command_handler_unified.py](command_handler_unified.py.md) (4 shared connections)
+- [test_command_processing.py](test_command_processing.py.md) (4 shared connections)
+- [alias_expansion.py](alias_expansion.py.md) (3 shared connections)
+- [command_input.py](command_input.py.md) (2 shared connections)
 
 ## Source Files
 
@@ -46,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 191 (88%)
+- EXTRACTED: 200 (88%)
 - INFERRED: 26 (12%)
 - AMBIGUOUS: 0 (0%)
 

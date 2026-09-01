@@ -1,41 +1,28 @@
 # enum
 
-> 19 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **enum** (21 connections) — `schemas/items/item_prototype.schema.json`
-- **ACCESSORY** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **AMULET** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **BELT** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **CURSED** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **FEET** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **GLOW** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **HANDS** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **HEAD** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **LEGS** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **MAGICAL** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **MAIN_HAND** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **NO_DROP** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **NO_SALE** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **OFF_HAND** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **QUEST_ITEM** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **RING** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **SOULBOUND** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **TORSO** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **enum** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **environment** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Relationships
 
-- [type](type.md) (2 shared connections)
-- [enum](enum.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/items/item_prototype.schema.json`
+- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

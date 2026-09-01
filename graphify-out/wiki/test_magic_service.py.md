@@ -35,14 +35,14 @@
 
 - [TargetMatch](TargetMatch.md) (16 shared connections)
 - [SpellEffectType](SpellEffectType.md) (11 shared connections)
-- [PlayerService](PlayerService.md) (9 shared connections)
-- [test_magic_commands.py](test_magic_commands.py.md) (6 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (4 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [magic_service.py](magic_service.py.md) (10 shared connections)
+- [SpellEffects](SpellEffects.md) (5 shared connections)
+- [command_service.py](command_service.py.md) (5 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [combat_service.py](combat_service.py.md) (1 shared connections)
-- [_MagicServiceCore](_MagicServiceCore.md) (1 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
+- [MagicCommandHandler](MagicCommandHandler.md) (1 shared connections)
+- [CombatCommandHandler](CombatCommandHandler.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
