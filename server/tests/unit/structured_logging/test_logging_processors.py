@@ -237,6 +237,31 @@ def test_enhance_player_ids_persistence_error(mock_player_service):
     assert result["player_id"] == str(test_uuid)
 
 
+def test_enhance_player_ids_swallows_database_error_without_importing_it(mock_player_service):
+    """
+    Log enrichment must survive a persistence exception it cannot name.
+
+    #757 removed structured_logging's lazy import of server.exceptions.DatabaseError (a
+    logging -> exceptions layer violation), broadening the catch instead. This asserts the
+    behavior that import used to buy: an exception type outside the old narrow
+    (AttributeError, KeyError, TypeError, ValueError, DatabaseError, RecursionError) tuple
+    is still swallowed rather than crashing the logging pipeline.
+    """
+
+    class _StandInDatabaseError(Exception):
+        """Stands in for server.exceptions.DatabaseError, which this module must not import."""
+
+    set_global_player_service(mock_player_service)
+    test_uuid = uuid.uuid4()
+    mock_player_service.persistence.get_player = MagicMock(side_effect=_StandInDatabaseError("db down"))
+
+    event_dict = {"player_id": str(test_uuid)}
+    result = enhance_player_ids(None, "test", event_dict)
+
+    # Enrichment is skipped, the record survives, and nothing propagates.
+    assert result["player_id"] == str(test_uuid)
+
+
 def test_enhance_player_ids_player_no_name_attribute(mock_player_service):
     """Test enhance_player_ids() handles player without name attribute."""
     set_global_player_service(mock_player_service)
