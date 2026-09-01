@@ -29,7 +29,7 @@
 - select_character() `EXTRACTED`
 
 ### contains
-- [server/exceptions.py](server-exceptions.py.md) `EXTRACTED`
+- server/exceptions.py `EXTRACTED`
 
 ### imports
 - players.py `EXTRACTED`
@@ -41,17 +41,17 @@
 - test_players_api_coverage.py `EXTRACTED`
 - test_monitoring_endpoints.py `EXTRACTED`
 - test_maps.py `EXTRACTED`
+- [real_time.py](real_time.py.md) `EXTRACTED`
 - test_container_helpers.py `EXTRACTED`
 - test_rooms_write_api.py `EXTRACTED`
 - test_exceptions.py `EXTRACTED`
 - api/container_helpers.py `EXTRACTED`
-- [real_time.py](real_time.py.md) `EXTRACTED`
-- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) `EXTRACTED`
+- test_metrics_endpoints.py `EXTRACTED`
 - [test_real_time_helpers.py](test_real_time_helpers.py.md) `EXTRACTED`
-- [api/player_effects.py](api-player_effects.py.md) `EXTRACTED`
+- api/player_effects.py `EXTRACTED`
 - test_exceptions_comprehensive.py `EXTRACTED`
 - standardized_responses.py `EXTRACTED`
-- test_npc_definitions_api.py `EXTRACTED`
+- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) `EXTRACTED`
 
 ### inherits
 - LoggedException `EXTRACTED`

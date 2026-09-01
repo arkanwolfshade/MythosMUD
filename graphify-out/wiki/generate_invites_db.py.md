@@ -25,10 +25,8 @@
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (6 shared connections)
-- [get_session_maker](get_session_maker.md) (3 shared connections)
-- [Invite](Invite.md) (2 shared connections)
-- [sqlalchemy.md](sqlalchemy.md.md) (1 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
+- [User](User.md) (3 shared connections)
 
 ## Source Files
 

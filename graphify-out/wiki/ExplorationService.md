@@ -1,12 +1,13 @@
 # ExplorationService
 
-> 110 nodes
+> 129 nodes
 
 ## Key Concepts
 
 - **ExplorationService** (76 connections) — `server/services/exploration_service.py`
 - **maps.py** (67 connections) — `server/api/maps.py`
 - **test_maps.py** (55 connections) — `server/tests/unit/api/test_maps.py`
+- **room_service.py** (24 connections) — `server/game/room_service.py`
 - **MapZoneContext** (18 connections) — `server/api/map_helpers.py`
 - **_prepare_ascii_map_context()** (18 connections) — `server/api/maps.py`
 - **asyncio** (18 connections)
@@ -28,28 +29,28 @@
 - **_build_ascii_minimap_response()** (9 connections) — `server/api/maps.py`
 - **_get_current_room_id()** (9 connections) — `server/api/maps.py`
 - **_get_player_and_exploration_service()** (9 connections) — `server/api/maps.py`
-- **test_prepare_ascii_map_context_applies_exploration_filter()** (9 connections) — `server/tests/unit/api/test_maps.py`
-- *... and 85 more nodes in this community*
+- *... and 104 more nodes in this community*
 
 ## Relationships
 
 - [test_exploration_service.py](test_exploration_service.py.md) (35 shared connections)
-- [pytest.md](pytest.md.md) (29 shared connections)
-- [BaseCommand](BaseCommand.md) (25 shared connections)
-- [room_service.py](room_service.py.md) (16 shared connections)
+- [User](User.md) (29 shared connections)
+- [pydantic.md](pydantic.md.md) (24 shared connections)
+- [get_logger](get_logger.md) (24 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (16 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (10 shared connections)
-- [._get_room_uuid_by_stable_id](_get_room_uuid_by_stable_id.md) (7 shared connections)
+- [map_minimap.py](map_minimap.py.md) (13 shared connections)
+- [_apply_exploration_filter_if_needed](_apply_exploration_filter_if_needed.md) (7 shared connections)
 - [test_map_helpers.py](test_map_helpers.py.md) (6 shared connections)
-- [CoordinateGenerator](CoordinateGenerator.md) (5 shared connections)
-- [CoordinateValidator](CoordinateValidator.md) (4 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (5 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (4 shared connections)
+- [CoordinateGenerator](CoordinateGenerator.md) (4 shared connections)
+- [get_admin_auth_service](get_admin_auth_service.md) (4 shared connections)
 
 ## Source Files
 
 - `server/api/map_helpers.py`
 - `server/api/maps.py`
+- `server/game/room_service.py`
 - `server/schemas/maps/__init__.py`
 - `server/schemas/maps/map.py`
 - `server/services/exploration_service.py`
@@ -57,8 +58,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 376 (82%)
-- INFERRED: 84 (18%)
+- EXTRACTED: 426 (84%)
+- INFERRED: 84 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

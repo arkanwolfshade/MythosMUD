@@ -1,12 +1,11 @@
 # MythosMUD Test Suite Modernization Plan
 
-> 53 nodes
+> 47 nodes
 
 ## Key Concepts
 
 - **MythosMUD Test Suite Modernization Plan** (18 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
 - **Appendices** (10 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Backward Compatibility Strategy** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
 - **Implementation Approach Decision** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
 - **Testing Requirements** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
 - **Decision Framework: Uplift vs Greenfield Rewrite** (4 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
@@ -29,7 +28,8 @@
 - **High Priority (Integration Tests)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
 - **Immediate (This Session)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
 - **Key Files** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- *... and 28 more nodes in this community*
+- **Known Risks** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
@@ -39,6 +39,7 @@
 - [Test Suite Analysis](Test_Suite_Analysis.md) (1 shared connections)
 - [Implementation Phases](Implementation_Phases.md) (1 shared connections)
 - [Modern Testing Patterns](Modern_Testing_Patterns.md) (1 shared connections)
+- [Backward Compatibility Strategy](Backward_Compatibility_Strategy.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 58 (100%)
+- EXTRACTED: 53 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

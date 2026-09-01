@@ -1,68 +1,74 @@
 # LoggedHTTPException
 
-> 184 nodes
+> 217 nodes
 
 ## Key Concepts
 
 - **LoggedHTTPException** (369 connections) — `server/exceptions.py`
-- **endpoints.py** (66 connections) — `server/auth/endpoints.py`
-- **login_user()** (35 connections) — `server/auth/endpoints.py`
-- **register_user()** (31 connections) — `server/auth/endpoints.py`
-- **UserCreate** (30 connections) — `server/auth/endpoints.py`
-- **api/player_respawn.py** (29 connections) — `server/api/player_respawn.py`
-- **test_endpoints_register.py** (28 connections) — `server/tests/unit/auth/test_endpoints_register.py`
-- **invites.py** (23 connections) — `server/auth/invites.py`
-- **LoginRequest** (21 connections) — `server/auth/endpoints.py`
-- **test_endpoints_login.py** (20 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **test_player_respawn_api.py** (18 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **asyncio** (18 connections)
-- **test_player_respawn_handlers.py** (16 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **respawn_player()** (15 connections) — `server/api/player_respawn.py`
-- **respawn_player_from_delirium()** (13 connections) — `server/api/player_respawn.py`
-- **_handle_delirium_respawn_validation_error()** (12 connections) — `server/api/player_respawn.py`
-- **_persist_new_user()** (12 connections) — `server/auth/endpoints.py`
-- **_handle_respawn_validation_error()** (11 connections) — `server/api/player_respawn.py`
-- **get_invite_manager()** (11 connections) — `server/auth/invites.py`
-- **test_endpoints_login_profession.py** (11 connections) — `server/tests/unit/auth/test_endpoints_login_profession.py`
-- **asyncio** (11 connections)
-- **_run_player_respawn()** (10 connections) — `server/api/player_respawn.py`
-- **_mock_invite_manager()** (10 connections) — `server/tests/unit/auth/test_endpoints_register.py`
-- **RespawnResponse** (9 connections) — `server/schemas/players/player_respawn.py`
-- **_user()** (9 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- *... and 159 more nodes in this community*
+- **PlayerService** (106 connections) — `server/game/player_service.py`
+- **players.py** (77 connections) — `server/api/players.py`
+- **test_players_api_coverage.py** (60 connections) — `server/tests/unit/api/test_players_api_coverage.py`
+- **_user()** (31 connections) — `server/tests/unit/api/test_players_api_coverage.py`
+- **asyncio** (29 connections)
+- **skills.py** (19 connections) — `server/api/skills.py`
+- **get_player_quests()** (18 connections) — `server/api/players.py`
+- **_start_login_grace_period_body()** (16 connections) — `server/api/players.py`
+- **FastAPIRequest** (16 connections)
+- **test_skills.py** (16 connections) — `server/tests/unit/api/test_skills.py`
+- **delete_player()** (15 connections) — `server/api/players.py`
+- **get_player()** (15 connections) — `server/api/players.py`
+- **select_character()** (15 connections) — `server/api/players.py`
+- **UUID** (14 connections)
+- **test_players_quests.py** (14 connections) — `server/tests/unit/api/test_players_quests.py`
+- **create_player()** (13 connections) — `server/api/players.py`
+- **get_player_skills()** (13 connections) — `server/api/players.py`
+- **_validate_character_access()** (13 connections) — `server/api/players.py`
+- **UUID** (13 connections)
+- **delete_character()** (12 connections) — `server/api/players.py`
+- **get_skills_catalog()** (12 connections) — `server/api/skills.py`
+- **_disconnect_other_characters()** (11 connections) — `server/api/players.py`
+- **get_player_by_name()** (11 connections) — `server/api/players.py`
+- **list_players()** (11 connections) — `server/api/players.py`
+- *... and 192 more nodes in this community*
 
 ## Relationships
 
-- [pytest.md](pytest.md.md) (121 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (52 shared connections)
-- [PlayerService](PlayerService.md) (38 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (32 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (30 shared connections)
-- [BaseCommand](BaseCommand.md) (26 shared connections)
-- [ValidationError](ValidationError.md) (19 shared connections)
+- [User](User.md) (71 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (43 shared connections)
+- [get_admin_auth_service](get_admin_auth_service.md) (34 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (29 shared connections)
+- [pydantic.md](pydantic.md.md) (25 shared connections)
+- [api/player_respawn.py](api-player_respawn.py.md) (24 shared connections)
+- [players/__init__.py](players-__init__.py.md) (23 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (18 shared connections)
 - [api/monitoring.py](api-monitoring.py.md) (18 shared connections)
+- [get_logger](get_logger.md) (18 shared connections)
+- [test_containers.py](test_containers.py.md) (17 shared connections)
 - [ExplorationService](ExplorationService.md) (16 shared connections)
-- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (15 shared connections)
-- [InviteManager](InviteManager.md) (14 shared connections)
-- [LootAllRequest](LootAllRequest.md) (13 shared connections)
 
 ## Source Files
 
-- `server/api/player_respawn.py`
-- `server/auth/endpoints.py`
-- `server/auth/invites.py`
+- `server/api/players.py`
+- `server/api/skills.py`
+- `server/app/game_tick_processing.py`
 - `server/exceptions.py`
-- `server/schemas/players/player_respawn.py`
-- `server/tests/unit/api/test_player_respawn_api.py`
-- `server/tests/unit/api/test_player_respawn_handlers.py`
-- `server/tests/unit/auth/test_endpoints_login.py`
-- `server/tests/unit/auth/test_endpoints_login_profession.py`
-- `server/tests/unit/auth/test_endpoints_register.py`
+- `server/game/magic/mp_regeneration_service.py`
+- `server/game/magic/spell_costs.py`
+- `server/game/magic/spell_materials.py`
+- `server/game/player_service.py`
+- `server/schemas/players/skill.py`
+- `server/schemas/quest/__init__.py`
+- `server/schemas/quest/quest.py`
+- `server/tests/unit/api/test_players_api_coverage.py`
+- `server/tests/unit/api/test_players_quests.py`
+- `server/tests/unit/api/test_skills.py`
+- `server/tests/unit/test_exceptions.py`
+- `server/tests/unit/test_exceptions_comprehensive.py`
 
 ## Audit Trail
 
-- EXTRACTED: 723 (78%)
-- INFERRED: 203 (22%)
+- EXTRACTED: 868 (84%)
+- INFERRED: 171 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

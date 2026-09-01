@@ -1,6 +1,6 @@
 # get_logger()
 
-> God node · 530 connections · `server/structured_logging/enhanced_logging_config.py`
+> God node · 531 connections · `server/structured_logging/enhanced_logging_config.py`
 
 **Community:** [get_logger](get_logger.md)
 
@@ -32,22 +32,22 @@
 - enhanced_logging_config.py `EXTRACTED`
 
 ### imports
-- [server/exceptions.py](server-exceptions.py.md) `EXTRACTED`
-- connection_manager.py `EXTRACTED`
-- command_service.py `EXTRACTED`
+- server/exceptions.py `EXTRACTED`
+- [connection_manager.py](connection_manager.py.md) `EXTRACTED`
+- [command_service.py](command_service.py.md) `EXTRACTED`
 - [server/dependencies.py](server-dependencies.py.md) `EXTRACTED`
-- time.py `EXTRACTED`
+- [time.py](time.py.md) `EXTRACTED`
 - combat_service.py `EXTRACTED`
 - [connection_manager_methods.py](connection_manager_methods.py.md) `EXTRACTED`
 - async_persistence.py `EXTRACTED`
 - database.py `EXTRACTED`
 - players.py `EXTRACTED`
-- alias_storage.py `EXTRACTED`
+- [alias_storage.py](alias_storage.py.md) `EXTRACTED`
 - [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
 - maps.py `EXTRACTED`
-- [lifespan_startup.py](lifespan_startup.py.md) `EXTRACTED`
+- lifespan_startup.py `EXTRACTED`
 - endpoints.py `EXTRACTED`
-- container_endpoints_basic.py `EXTRACTED`
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) `EXTRACTED`
 - [websocket_handler.py](websocket_handler.py.md) `EXTRACTED`
 - [api/monitoring.py](api-monitoring.py.md) `EXTRACTED`
 - rooms.py `EXTRACTED`

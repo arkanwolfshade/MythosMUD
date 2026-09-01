@@ -1,6 +1,6 @@
 # SubjectValidator
 
-> 49 nodes
+> 54 nodes
 
 ## Key Concepts
 
@@ -14,6 +14,8 @@
 - **get_event_subscription_patterns()** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
 - **subscription_patterns.py** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
 - **validation.py** (7 connections) — `server/services/nats_subject_manager/validation.py`
+- **.validate_parameter_value()** (5 connections) — `server/services/nats_subject_manager/validation.py`
+- **.validate_pattern_params()** (4 connections) — `server/services/nats_subject_manager/validation.py`
 - **test_get_chat_subscription_patterns()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
 - **test_get_chat_subscription_patterns_empty()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
 - **test_get_chat_subscription_patterns_missing_pattern()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
@@ -27,22 +29,19 @@
 - **Any** (3 connections)
 - **.__init__()** (2 connections) — `server/services/nats_subject_manager/validation.py`
 - **.validate_subject_basic()** (2 connections) — `server/services/nats_subject_manager/validation.py`
-- **.validate_subject_components()** (2 connections) — `server/services/nats_subject_manager/validation.py`
-- **.validate_subscription_pattern()** (2 connections) — `server/services/nats_subject_manager/validation.py`
-- *... and 24 more nodes in this community*
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [PatternNotFoundError](PatternNotFoundError.md) (13 shared connections)
-- [NATSSubjectManager](NATSSubjectManager.md) (8 shared connections)
-- [test_validation.py](test_validation.py.md) (7 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [.validate_parameter_value](validate_parameter_value.md) (3 shared connections)
+- [PatternNotFoundError](PatternNotFoundError.md) (12 shared connections)
+- [test_validation.py](test_validation.py.md) (10 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (9 shared connections)
 - [test_manager.py](test_manager.py.md) (3 shared connections)
-- [custom_length_validator](custom_length_validator.md) (3 shared connections)
-- [test_nats_service_pool.py](test_nats_service_pool.py.md) (2 shared connections)
+- [test_pattern_matcher.py](test_pattern_matcher.py.md) (3 shared connections)
+- [NATSPublishError](NATSPublishError.md) (2 shared connections)
+- [test_metrics.py](test_metrics.py.md) (2 shared connections)
 - [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (1 shared connections)
-- [test_pattern_matcher.py](test_pattern_matcher.py.md) (1 shared connections)
+- [NATSService](NATSService.md) (1 shared connections)
 
 ## Source Files
 
@@ -55,7 +54,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 117 (93%)
+- EXTRACTED: 122 (93%)
 - INFERRED: 9 (7%)
 - AMBIGUOUS: 0 (0%)
 

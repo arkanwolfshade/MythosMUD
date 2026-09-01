@@ -33,18 +33,18 @@
 
 ## Relationships
 
+- [get_logger](get_logger.md) (10 shared connections)
 - [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (9 shared connections)
-- [get_logger](get_logger.md) (7 shared connections)
-- [extract_player_name](extract_player_name.md) (6 shared connections)
-- [DatabaseError](DatabaseError.md) (5 shared connections)
+- [disconnect_grace_period.py](disconnect_grace_period.py.md) (6 shared connections)
+- [extract_player_name](extract_player_name.md) (5 shared connections)
+- [connection_manager.py](connection_manager.py.md) (4 shared connections)
 - [test_rest_command.py](test_rest_command.py.md) (4 shared connections)
 - [ConnectionManager](ConnectionManager.md) (3 shared connections)
 - [player_connection_setup.py](player_connection_setup.py.md) (3 shared connections)
-- [disconnect_grace_period.py](disconnect_grace_period.py.md) (3 shared connections)
-- [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (3 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
 - [.state](state.md) (1 shared connections)
+- [InstanceManager](InstanceManager.md) (1 shared connections)
+- [time.py](time.py.md) (1 shared connections)
 
 ## Source Files
 

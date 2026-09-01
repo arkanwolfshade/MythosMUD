@@ -27,15 +27,28 @@ from .websocket_helpers import (
 if TYPE_CHECKING:
     from ..models.player import Player
     from .connection_manager import ConnectionManager
-    from .event_handler import RealTimeEventHandler
 
 logger = get_logger(__name__)
+
+
+class _PlayerHandlerForOccupantsSnapshot(Protocol):
+    """Minimal player handler surface for sending occupants snapshots on connect."""
+
+    async def send_occupants_snapshot_to_player(self, player_id: uuid.UUID, room_id: str) -> None:
+        """Send a room occupants snapshot to one connected player."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stub body required by basedpyright
+
+
+class _RealTimeEventHandlerForInitialState(Protocol):
+    """Minimal real-time event handler surface for initial WebSocket state."""
+
+    player_handler: _PlayerHandlerForOccupantsSnapshot
 
 
 class _RealTimeHandlerContainer(Protocol):
     """Minimal app.state.container shape for resolving the real-time event handler."""
 
-    real_time_event_handler: "RealTimeEventHandler | None"
+    real_time_event_handler: _RealTimeEventHandlerForInitialState | None
 
 
 class _AppWithState(Protocol):
@@ -48,7 +61,7 @@ class _AppStateForEventHandler(Protocol):
     """Minimal app.state shape for resolving the real-time event handler."""
 
     container: _RealTimeHandlerContainer | None
-    event_handler: "RealTimeEventHandler | None"
+    event_handler: _RealTimeEventHandlerForInitialState | None
 
 
 class _NpcOccupantDisplay(Protocol):
@@ -186,7 +199,7 @@ async def _get_player_for_death_check(
     player_id: uuid.UUID, connection_manager: "ConnectionManager"
 ) -> tuple["Player", str | None] | None:
     """Get player and updated room ID for death check."""
-    from ..async_persistence import get_container_async_persistence
+    from ..container.async_persistence_access import get_container_async_persistence
 
     async_persistence = get_container_async_persistence()
     fresh_player = await async_persistence.get_player_by_id(player_id)
@@ -292,7 +305,7 @@ async def prepare_initial_room_data(
 
 def _get_event_handler_from_app_host(
     host: "ConnectionManager | WebSocket",
-) -> "RealTimeEventHandler | None":
+) -> _RealTimeEventHandlerForInitialState | None:
     """Resolve real-time event handler from a connection manager or websocket app."""
     app = cast(object | None, getattr(host, "app", None))
     if app is None:
@@ -306,7 +319,7 @@ def _get_event_handler_from_app_host(
 
 def get_event_handler_for_initial_state(
     connection_manager: "ConnectionManager", websocket: WebSocket
-) -> "RealTimeEventHandler | None":
+) -> _RealTimeEventHandlerForInitialState | None:
     """Get event handler from connection manager or websocket app state."""
     event_handler = _get_event_handler_from_app_host(connection_manager)
     if event_handler:
@@ -315,7 +328,7 @@ def get_event_handler_for_initial_state(
 
 
 async def send_occupants_snapshot_if_needed(
-    event_handler: "RealTimeEventHandler | None",
+    event_handler: _RealTimeEventHandlerForInitialState | None,
     room: "Room",
     player_id: uuid.UUID,
     player_id_str: str,
@@ -342,7 +355,7 @@ async def send_initial_room_state(
 ) -> None:
     """Send initial room state and occupants snapshot to connecting player."""
     try:
-        from ..async_persistence import get_container_async_persistence
+        from ..container.async_persistence_access import get_container_async_persistence
 
         async_persistence = get_container_async_persistence()
         room = async_persistence.get_room_by_id(canonical_room_id)

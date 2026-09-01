@@ -1,10 +1,11 @@
 # ADR-019: Player Effects System
 
-> 9 nodes
+> 10 nodes
 
 ## Key Concepts
 
 - **ADR-019: Player Effects System** (9 connections) — `docs/architecture/decisions/ADR-019-player-effects-system.md`
+- **ADR-019-player-effects-system.md** (2 connections) — `docs/architecture/decisions/ADR-019-player-effects-system.md`
 - **1. Overview** (1 connections) — `docs/architecture/decisions/ADR-019-player-effects-system.md`
 - **2. Context** (1 connections) — `docs/architecture/decisions/ADR-019-player-effects-system.md`
 - **3. Decision** (1 connections) — `docs/architecture/decisions/ADR-019-player-effects-system.md`
@@ -24,7 +25,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

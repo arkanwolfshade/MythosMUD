@@ -27,7 +27,7 @@
 - [bench_cache_professions.py](bench_cache_professions.py.md) (2 shared connections)
 - [CacheService](CacheService.md) (2 shared connections)
 - [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [.initialize](initialize.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [LRUCache](LRUCache.md) (1 shared connections)
 - [NPCCacheService](NPCCacheService.md) (1 shared connections)
 - [RoomCacheService](RoomCacheService.md) (1 shared connections)

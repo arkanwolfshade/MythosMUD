@@ -1,6 +1,6 @@
 # test_npc_threading_messages.py
 
-> 50 nodes
+> 48 nodes
 
 ## Key Concepts
 
@@ -9,7 +9,6 @@
 - **NPCCommunicationBridge** (15 connections) — `server/npc/threading.py`
 - **asyncio** (11 connections)
 - **.__init__()** (4 connections) — `server/npc/threading.py`
-- **.__init__()** (3 connections) — `server/npc/threading.py`
 - **test_bridge_broadcast_failure()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
 - **test_bridge_receive_message_failure()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
 - **test_npc_communication_bridge_messages()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
@@ -29,15 +28,15 @@
 - **.__init__()** (2 connections) — `server/npc/threading_messages.py`
 - **.broadcast_to_all_npcs()** (2 connections) — `server/npc/threading.py`
 - **.get_messages_for_npc()** (2 connections) — `server/npc/threading.py`
-- *... and 25 more nodes in this community*
+- **.get_pending_messages()** (2 connections) — `server/npc/threading.py`
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
 - [NPCThreadManager](NPCThreadManager.md) (12 shared connections)
+- [EventBus](EventBus.md) (4 shared connections)
 - [NPCActionMessage](NPCActionMessage.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
 - [InventoryMutationGuard](InventoryMutationGuard.md) (2 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -48,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 70 (79%)
-- INFERRED: 19 (21%)
+- EXTRACTED: 69 (79%)
+- INFERRED: 18 (21%)
 - AMBIGUOUS: 0 (0%)
 
 ---

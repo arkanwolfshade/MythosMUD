@@ -4,7 +4,7 @@ Combat attack processing logic.
 Handles attack validation, damage application, and attack event publishing.
 """
 
-from typing import Any
+from typing import Protocol, cast
 from uuid import UUID
 
 from server.config import get_config
@@ -15,26 +15,86 @@ from server.structured_logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
+class _AppStateWithConnectionManager(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    """FastAPI app.state surface used to resolve ConnectionManager."""
+
+    connection_manager: object | None
+
+
+class _AppWithState(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    """Minimal FastAPI app surface attached to AppConfig._app_instance."""
+
+    state: _AppStateWithConnectionManager
+
+
+class _CombatAttackService(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    """CombatService surface required by CombatAttackHandler."""
+
+    async def get_combat_by_participant(self, participant_id: UUID) -> CombatInstance | None: ...  # pylint: disable=missing-function-docstring  # Reason: Protocol stub
+
+
+def _connection_manager_for_grace_check() -> object | None:
+    """Resolve connection_manager from config app instance for login grace checks."""
+    config = get_config()
+    app = cast(_AppWithState | None, getattr(config, "_app_instance", None))
+    if app is None:
+        return None
+    return app.state.connection_manager
+
+
+def _player_damage_blocked_by_grace(target: CombatParticipant, damage: int) -> bool:
+    """Return True when login grace period blocks damage to a player target."""
+    if target.participant_type != CombatParticipantType.PLAYER:
+        return False
+    try:
+        connection_manager = _connection_manager_for_grace_check()
+        if connection_manager and is_player_in_login_grace_period(target.participant_id, connection_manager):
+            logger.info(
+                "Damage blocked - target in login grace period",
+                target_id=target.participant_id,
+                target_name=target.name,
+                damage=damage,
+            )
+            return True
+    except (AttributeError, ImportError, TypeError, ValueError, Exception) as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Fail-open behavior requires catching all exceptions
+        logger.debug("Could not check login grace period for damage", target_id=target.participant_id, error=str(e))
+    return False
+
+
 class CombatAttackHandler:
     """Handles combat attack processing and damage application."""
 
-    def __init__(self, combat_service: Any) -> None:
+    def __init__(self, combat_service: _CombatAttackService) -> None:
         """
         Initialize the attack handler.
 
         Args:
             combat_service: Reference to the parent CombatService
         """
-        self._combat_service = combat_service
+        self._combat_service: _CombatAttackService = combat_service
 
-    def _validate_attack(self, combat: CombatInstance, is_initial_attack: bool) -> None:  # pylint: disable=unused-argument  # Reason: is_initial_attack kept for backward compatibility
+    def _validate_attack(self, combat: CombatInstance, _is_initial_attack: bool) -> None:
         """Validate that attack is allowed."""
         if combat.status != CombatStatus.ACTIVE:
             raise ValueError("Combat is not active")
 
         # In round-based combat, all participants act each round, so turn validation
         # is not needed. Attacks can happen anytime during a round.
-        # Note: is_initial_attack flag is kept for backward compatibility but not used for validation
+        # Note: _is_initial_attack is kept for backward compatibility but not used for validation
+
+    def _cap_damage_for_no_death_room(
+        self, target: CombatParticipant, damage: int, combat: CombatInstance | None
+    ) -> tuple[int, bool]:
+        """Cap damage in no_death rooms; return (damage, skip_apply_when_zero_cap)."""
+        if not (
+            combat
+            and target.participant_type == CombatParticipantType.PLAYER
+            and self._room_has_no_death(combat.room_id)
+        ):
+            return damage, False
+        cap_damage = max(0, target.current_dp)
+        damage = min(damage, cap_damage)
+        return damage, damage <= 0
 
     def _apply_damage(
         self, target: CombatParticipant, damage: int, combat: CombatInstance | None = None
@@ -48,48 +108,19 @@ class CombatAttackHandler:
         Returns:
             Tuple of (old_dp, target_died, target_mortally_wounded)
         """
-        # no_death rooms: cap damage so player DP never goes below 0
-        if (
-            combat
-            and target.participant_type == CombatParticipantType.PLAYER
-            and self._room_has_no_death(combat.room_id)
-        ):
-            cap_damage = max(0, target.current_dp)  # Only allow damage that keeps DP >= 0
-            if damage > cap_damage:
-                damage = cap_damage
-                if damage <= 0:
-                    return target.current_dp, False, False
+        damage, skip_apply = self._cap_damage_for_no_death_room(target, damage, combat)
+        if skip_apply:
+            return target.current_dp, False, False
 
-        # Check if target is in login grace period - block damage if so (infrastructure concern)
-        if target.participant_type == CombatParticipantType.PLAYER:
-            try:
-                config = get_config()
-                app = getattr(config, "_app_instance", None)
-                if app:
-                    connection_manager = getattr(app.state, "connection_manager", None)
-                    if connection_manager:
-                        if is_player_in_login_grace_period(target.participant_id, connection_manager):
-                            logger.info(
-                                "Damage blocked - target in login grace period",
-                                target_id=target.participant_id,
-                                target_name=target.name,
-                                damage=damage,
-                            )
-                            # Return original DP, no death, no mortal wound
-                            return target.current_dp, False, False
-            except (AttributeError, ImportError, TypeError, ValueError, Exception) as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Fail-open behavior requires catching all exceptions
-                # If we can't check grace period, proceed with damage (fail open)
-                logger.debug(
-                    "Could not check login grace period for damage", target_id=target.participant_id, error=str(e)
-                )
+        if _player_damage_blocked_by_grace(target, damage):
+            return target.current_dp, False, False
 
-        # Delegate damage application and death-state logic to domain model
         return target.apply_damage(damage)
 
     def _room_has_no_death(self, room_id: str) -> bool:
         """Check if room has no_death attribute (tutorial/safe zones)."""
         try:
-            from ..async_persistence import get_container_async_persistence
+            from ..container.async_persistence_access import get_container_async_persistence
 
             persistence = get_container_async_persistence()
             room = persistence.get_room_by_id(room_id)

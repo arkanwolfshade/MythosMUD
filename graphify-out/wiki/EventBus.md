@@ -1,64 +1,78 @@
 # EventBus
 
-> 217 nodes
+> 477 nodes
 
 ## Key Concepts
 
-- **EventBus** (210 connections) — `server/events/event_bus.py`
-- **BaseEvent** (96 connections) — `server/events/event_types.py`
+- **EventBus** (212 connections) — `server/events/event_bus.py`
+- **BaseEvent** (99 connections) — `server/events/event_types.py`
+- **NPCBase** (79 connections) — `server/npc/npc_base.py`
+- **NPCSpawningService** (66 connections) — `server/npc/spawning_service.py`
+- **NPCPopulationController** (60 connections) — `server/npc/population_control.py`
 - **test_event_bus.py** (60 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_npc_instance_service.py** (54 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **NPCEnteredRoom** (49 connections) — `server/events/event_types.py`
+- **npc_base.py** (45 connections) — `server/npc/npc_base.py`
+- **threading.py** (45 connections) — `server/npc/threading.py`
+- **population_control.py** (42 connections) — `server/npc/population_control.py`
+- **test_spawning_modules.py** (41 connections) — `server/tests/unit/npc/test_spawning_modules.py`
+- **spawning_service.py** (38 connections) — `server/npc/spawning_service.py`
+- **movement_service.py** (36 connections) — `server/game/movement_service.py`
+- **models/room.py** (36 connections) — `server/models/room.py`
+- **npc_instance_service.py** (32 connections) — `server/services/npc_instance_service.py`
+- **event_reaction_system.py** (30 connections) — `server/npc/event_reaction_system.py`
 - **asyncio** (28 connections)
-- **test_event_bus_lifecycle.py** (25 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **MockEventClass** (19 connections) — `server/tests/unit/events/test_event_bus.py`
-- **EventBusProcessingMixin** (18 connections) — `server/events/event_bus_processing.py`
-- **asyncio** (11 connections)
-- **EventBusMixinBase** (10 connections) — `server/events/event_bus_base.py`
-- **._handle_event_async()** (8 connections) — `server/events/event_bus_processing.py`
-- **test_handle_event_async_async_subscriber_error()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_handle_event_async_sync_subscriber_error()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_handle_task_result_async_no_error()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_handle_task_result_async_with_error()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_inject_queue_full_and_invalid()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_queue_depth_grows_when_consumer_blocked()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
-- **._create_async_subscriber_tasks()** (5 connections) — `server/events/event_bus_processing.py`
-- **._publish_in_test_mode()** (5 connections) — `server/events/event_bus_processing.py`
-- **test_async_subscriber_error_isolation()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_inject_dispatches_to_subscribers()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_publish()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_publish_multiple_subscribers()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_publish_no_subscribers()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_handle_event_async_no_subscribers()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_multiple_services_subscribe_same_events_integration()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
-- *... and 192 more nodes in this community*
+- **server/events/__init__.py** (26 connections) — `server/events/__init__.py`
+- **spawning_instance_factory.py** (25 connections) — `server/npc/spawning_instance_factory.py`
+- **NPCEventReactionSystem** (24 connections) — `server/npc/event_reaction_system.py`
+- **NPCInstanceService** (23 connections) — `server/services/npc_instance_service.py`
+- **asyncio** (23 connections)
+- **spawning_request_execution.py** (21 connections) — `server/npc/spawning_request_execution.py`
+- **movement_integration.py** (20 connections) — `server/npc/movement_integration.py`
+- *... and 452 more nodes in this community*
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (56 shared connections)
-- [NPCBase](NPCBase.md) (28 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (19 shared connections)
-- [CombatService](CombatService.md) (12 shared connections)
-- [DistributedEventBus](DistributedEventBus.md) (11 shared connections)
-- [get_logger](get_logger.md) (8 shared connections)
-- [test_party_flow.py](test_party_flow.py.md) (5 shared connections)
-- [CombatCommandHandler](CombatCommandHandler.md) (4 shared connections)
-- [NPCEventReaction](NPCEventReaction.md) (4 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
-- [NPCCombatIntegration](NPCCombatIntegration.md) (3 shared connections)
-- [FollowService](FollowService.md) (3 shared connections)
+- [event_types.py](event_types.py.md) (123 shared connections)
+- [get_logger](get_logger.md) (50 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (45 shared connections)
+- [NPCDefinition](NPCDefinition.md) (30 shared connections)
+- [test_event_bus_lifecycle.py](test_event_bus_lifecycle.py.md) (21 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (18 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (17 shared connections)
+- [PlayerXPAwardEvent](PlayerXPAwardEvent.md) (17 shared connections)
+- [npc_config_parsing.py](npc_config_parsing.py.md) (16 shared connections)
+- [NPCSpawnRule](NPCSpawnRule.md) (15 shared connections)
+- [FollowService](FollowService.md) (14 shared connections)
+- [._bind_event_type](_bind_event_type.md) (13 shared connections)
 
 ## Source Files
 
+- `server/container/bundles/npc.py`
+- `server/events/__init__.py`
 - `server/events/event_bus.py`
-- `server/events/event_bus_base.py`
-- `server/events/event_bus_processing.py`
 - `server/events/event_types.py`
-- `server/tests/unit/events/test_event_bus.py`
-- `server/tests/unit/events/test_event_bus_lifecycle.py`
+- `server/game/instance_manager.py`
+- `server/game/movement_service.py`
+- `server/models/room.py`
+- `server/npc/__init__.py`
+- `server/npc/aggressive_mob_npc.py`
+- `server/npc/behavior_engine.py`
+- `server/npc/behaviors.py`
+- `server/npc/communication_integration.py`
+- `server/npc/event_reaction_system.py`
+- `server/npc/lifecycle_manager.py`
+- `server/npc/movement_integration.py`
+- `server/npc/npc_base.py`
+- `server/npc/passive_mob_npc.py`
+- `server/npc/population_control.py`
+- `server/npc/shopkeeper_npc.py`
+- `server/npc/spawning_instance_factory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 461 (79%)
-- INFERRED: 123 (21%)
+- EXTRACTED: 1424 (87%)
+- INFERRED: 208 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

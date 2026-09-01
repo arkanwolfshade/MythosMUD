@@ -1,6 +1,6 @@
 # Game Subsystem Design Documents Overview
 
-> 22 nodes
+> 21 nodes
 
 ## Key Concepts
 
@@ -16,7 +16,6 @@
 - **NPC Subsystem Design** (3 connections) — `docs/subsystems/SUBSYSTEM_NPC_DESIGN.md`
 - **Rescue Subsystem Design** (3 connections) — `docs/subsystems/SUBSYSTEM_RESCUE_DESIGN.md`
 - **Respawn Subsystem Design** (3 connections) — `docs/subsystems/SUBSYSTEM_RESPAWN_DESIGN.md`
-- **ADR-019-player-effects-system.md** (2 connections) — `docs/architecture/decisions/ADR-019-player-effects-system.md`
 - **Follow Subsystem Design** (2 connections) — `docs/subsystems/SUBSYSTEM_FOLLOW_DESIGN.md`
 - **Party Subsystem Design** (2 connections) — `docs/subsystems/SUBSYSTEM_PARTY_DESIGN.md`
 - **ADR-003: Dual Event Systems (EventBus + NATS)** (1 connections) — `docs/architecture/decisions/ADR-003-dual-event-systems-eventbus-nats.md`
@@ -29,11 +28,12 @@
 
 ## Relationships
 
-- [packages/README.md](packages-README.md.md) (11 shared connections)
-- [ADR-019: Player Effects System](ADR-019-_Player_Effects_System.md) (1 shared connections)
+- [packages/README.md](packages-README.md.md) (10 shared connections)
 - [Services Package Design](Services_Package_Design.md) (1 shared connections)
+- [ADR-023: Package Ownership (`game/` vs `services/` vs `npc/`) and Fan-Out Watch List](ADR-023-_Package_Ownership_`game-`_vs_`services-`_vs_`npc-`_and_Fan-Out_Watch_List.md) (1 shared connections)
 - [Movement Subsystem Design](Movement_Subsystem_Design.md) (1 shared connections)
-- [Claims by cluster](Claims_by_cluster.md) (1 shared connections)
+- [FRD & Plan-Document Verification Register — 2026-08](FRD_&_Plan-Document_Verification_Register_—_2026-08.md) (1 shared connections)
+- [ADR-019: Player Effects System](ADR-019-_Player_Effects_System.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,7 +41,6 @@
 - `docs/NATS_SUBJECT_PATTERNS.md`
 - `docs/architecture/DISTRIBUTED_EVENTBUS_NATS.md`
 - `docs/architecture/decisions/ADR-003-dual-event-systems-eventbus-nats.md`
-- `docs/architecture/decisions/ADR-019-player-effects-system.md`
 - `docs/packages/PACKAGE_SERVICES_DESIGN.md`
 - `docs/subsystems/README.md`
 - `docs/subsystems/SUBSYSTEM_ADMIN_COMMANDS_DESIGN.md`
@@ -57,10 +56,11 @@
 - `docs/subsystems/SUBSYSTEM_RESPAWN_DESIGN.md`
 - `docs/subsystems/SUBSYSTEM_REST_DESIGN.md`
 - `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
+- `docs/subsystems/SUBSYSTEM_STATUS_EFFECTS_DESIGN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (98%)
+- EXTRACTED: 51 (98%)
 - INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 

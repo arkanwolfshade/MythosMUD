@@ -428,7 +428,7 @@ class PlayerRespawnEventHandler:
         self, room_id: str, respawned_player_name: str
     ) -> tuple[dict[str, object] | None, list[str], list[str], list[str]]:
         """Prepare room data with NPC and player names for a respawn event."""
-        return await respawn_room.prepare_room_data_for_respawn(self, room_id, respawned_player_name)
+        return await respawn_room.prepare_room_data_for_respawn(self, room_id, respawned_player_name, self._logger)
 
     def _room_data_from_persistence_room(
         self, room: Room, respawned_player_name: str

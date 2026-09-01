@@ -7,7 +7,7 @@ cross-instance distribution. Handles UUID, datetime, and nested structures.
 
 from __future__ import annotations
 
-from dataclasses import asdict, fields, is_dataclass
+from dataclasses import Field, asdict, is_dataclass
 from datetime import datetime
 from types import ModuleType, NoneType  # pylint: disable=unused-import  # Used in generator on line 84
 from typing import TypeVar, cast, get_args
@@ -54,15 +54,10 @@ def _register_event_types() -> None:
 
     _register_module_events(event_types, _EVENT_CLASS_REGISTRY, include_base=False)
 
-    # PlayerXPAwardEvent has event_type "player_xp_awarded" - lazy import to avoid pulling config
-    try:
-        from ..services.player_combat_service import PlayerXPAwardEvent
+    # PlayerXPAwardEvent sets event_type in __post_init__; registry lookup uses the serialized key.
+    from .event_types import PlayerXPAwardEvent
 
-        _EVENT_CLASS_REGISTRY["player_xp_awarded"] = PlayerXPAwardEvent
-        _EVENT_CLASS_REGISTRY["PlayerXPAwardEvent"] = PlayerXPAwardEvent
-    except ImportError:
-        # Optional combat XP event type unavailable in this import context
-        pass
+    _EVENT_CLASS_REGISTRY["player_xp_awarded"] = PlayerXPAwardEvent
 
     _register_module_events(combat_events, _EVENT_CLASS_REGISTRY, include_base=True)
 
@@ -97,17 +92,24 @@ def _convert_value_for_json(value: object) -> object:
     if isinstance(value, datetime):
         return value.isoformat()
     if isinstance(value, dict):
-        return {k: _convert_value_for_json(v) for k, v in value.items()}
+        mapping = cast(dict[object, object], value)
+        return {key: _convert_value_for_json(nested) for key, nested in mapping.items()}
     if isinstance(value, list | tuple):
-        return [_convert_value_for_json(v) for v in value]
+        sequence = cast(list[object] | tuple[object, ...], value)
+        return [_convert_value_for_json(nested) for nested in sequence]
     return value
 
 
 def _unwrap_optional_type(field_type: object) -> object:
-    args_raw: object = get_args(field_type)
-    if not isinstance(args_raw, tuple) or not args_raw:
+    optional_args = get_args(field_type)
+    if not optional_args:
         return field_type
-    real_type = next((a for a in args_raw if a is not NoneType), None)
+    typed_args = cast(tuple[object, ...], optional_args)
+    real_type: object | None = None
+    for type_arg in typed_args:
+        if type_arg is not NoneType:
+            real_type = type_arg
+            break
     return field_type if real_type is None else real_type
 
 
@@ -129,7 +131,7 @@ def _convert_value_from_json(value: object, field_type: object) -> object:
     return _parse_typed_json_value(value, field_type)
 
 
-def serialize_event(event: BaseEvent) -> dict[str, object]:
+def serialize_event(event: object) -> dict[str, object]:
     """
     Serialize a BaseEvent to a JSON-compatible dict.
 
@@ -167,7 +169,8 @@ def _event_class_from_payload(data: dict[str, object]) -> type[BaseEvent]:
 
 def _init_kwargs_from_event_data(cls: type[BaseEvent], data: dict[str, object]) -> dict[str, object]:
     kwargs: dict[str, object] = {}
-    init_fields = {f.name: f for f in fields(cls) if f.init}
+    raw_fields = cast(dict[str, Field[object]], cls.__dataclass_fields__)
+    init_fields = {name: field for name, field in raw_fields.items() if field.init}
     for key, value in list(data.items()):
         if key == "_event_type" or key not in init_fields:
             continue

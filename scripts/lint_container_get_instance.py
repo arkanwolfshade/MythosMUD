@@ -68,17 +68,15 @@ class AllowlistEntry:
 # to constructor injection in #679/#636 and carry zero entries here. Everything below is either
 # sanctioned service location (ADR-002 v1.1.0 §3) or dead code tracked under #630.
 CONTAINER_GET_INSTANCE_ALLOWLIST: tuple[AllowlistEntry, ...] = (
-    AllowlistEntry("server/async_persistence.py", 1, "infra fallback; no other way to reach the container"),
     AllowlistEntry("server/container/main.py", 1, "get_container() is the DI accessor itself"),
     AllowlistEntry("server/app/lifespan_startup.py", 1, "startup-sequence helper function, not bundle-constructed"),
     AllowlistEntry(
-        "server/game/stats_generator.py", 1, "FastAPI-dependency/service-local constructed, not by a bundle"
-    ),
-    AllowlistEntry(
         "server/monitoring/memory_leak_metrics.py",
         2,
-        "fallback only, reached when event_bus/nats_service aren't injected -- used by the "
-        "standalone get_monitoring_dashboard() singleton; MonitoringBundle's own instance is injected",
+        (
+            "fallback only, reached when event_bus/nats_service aren't injected -- used by the "
+            + "standalone get_monitoring_dashboard() singleton; MonitoringBundle's own instance is injected"
+        ),
     ),
     AllowlistEntry("server/npc/npc_base.py", 1, "domain entity (ADR-002 v1.1.0 3's own example)"),
     AllowlistEntry(
@@ -133,16 +131,19 @@ def _collect_python_files() -> list[Path]:
     return sorted(out)
 
 
-def _find_get_instance_lines(content: str) -> list[int]:
-    """Return 1-based line numbers of real `ApplicationContainer.get_instance()` calls.
+_GET_INSTANCE_TOKEN_PATTERN: tuple[tuple[int | None, str], ...] = (
+    (tokenize.NAME, "ApplicationContainer"),
+    (None, "."),
+    (tokenize.NAME, "get_instance"),
+    (None, "("),
+    (None, ")"),
+)
 
-    Token-based rather than regex: the pattern is an exact, unambiguous identifier chain (unlike
-    the raw-SQL guard's fuzzy SQL-keyword matching), so a tokenizer that skips STRING/COMMENT
-    tokens is the precise tool -- it can't be fooled by a docstring or comment that merely mentions
-    the pattern in prose, which several migrated files now do.
-    """
+
+def _code_tokens(content: str) -> list[tokenize.TokenInfo]:
+    """Tokenize Python source, omitting comments, strings, and whitespace tokens."""
     try:
-        tokens = [
+        return [
             tok
             for tok in tokenize.generate_tokens(iter(content.splitlines(keepends=True)).__next__)
             if tok.type not in _SKIP_TOKEN_TYPES
@@ -152,69 +153,100 @@ def _find_get_instance_lines(content: str) -> list[int]:
         # already fails the build on a syntax error.
         return []
 
+
+def _is_application_container_get_instance(tokens: list[tokenize.TokenInfo], index: int) -> bool:
+    """True when tokens[index:index+5] is ApplicationContainer.get_instance()."""
+    if index + len(_GET_INSTANCE_TOKEN_PATTERN) > len(tokens):
+        return False
+    for tok, (expected_type, expected_string) in zip(
+        tokens[index : index + len(_GET_INSTANCE_TOKEN_PATTERN)],
+        _GET_INSTANCE_TOKEN_PATTERN,
+        strict=True,
+    ):
+        if expected_type is not None and tok.type != expected_type:
+            return False
+        if tok.string != expected_string:
+            return False
+    return True
+
+
+def _find_get_instance_lines(content: str) -> list[int]:
+    """Return 1-based line numbers of real `ApplicationContainer.get_instance()` calls.
+
+    Token-based rather than regex: the pattern is an exact, unambiguous identifier chain (unlike
+    the raw-SQL guard's fuzzy SQL-keyword matching), so a tokenizer that skips STRING/COMMENT
+    tokens is the precise tool -- it can't be fooled by a docstring or comment that merely mentions
+    the pattern in prose, which several migrated files now do.
+    """
+    tokens = _code_tokens(content)
     hits: set[int] = set()
-    for i in range(len(tokens) - 4):
-        a, b, c, d, e = tokens[i : i + 5]
-        if (
-            a.type == tokenize.NAME
-            and a.string == "ApplicationContainer"
-            and b.string == "."
-            and c.type == tokenize.NAME
-            and c.string == "get_instance"
-            and d.string == "("
-            and e.string == ")"
-        ):
-            hits.add(a.start[0])
+    for i in range(len(tokens) - len(_GET_INSTANCE_TOKEN_PATTERN) + 1):
+        if _is_application_container_get_instance(tokens, i):
+            hits.add(tokens[i].start[0])
     return sorted(hits)
+
+
+def _collect_get_instance_counts() -> tuple[dict[str, int], list[str]]:
+    """Walk server/*.py and count get_instance() hits per file; collect read errors."""
+    counts_by_file: dict[str, int] = {}
+    read_errors: list[str] = []
+    for path in _collect_python_files():
+        rel = str(path.relative_to(PROJECT_ROOT)).replace("\\", "/")
+        try:
+            content = path.read_text(encoding="utf-8", errors="replace")
+        except OSError as e:
+            read_errors.append(f"{rel}: read error: {e}")
+            continue
+        line_nums = _find_get_instance_lines(content)
+        if line_nums:
+            counts_by_file[rel] = len(line_nums)
+    return counts_by_file, read_errors
+
+
+def _allowlist_count_violations(counts_by_file: dict[str, int]) -> tuple[list[str], int]:
+    """Compare per-file hit counts to allowlist; return violations and confirmed entries."""
+    violations: list[str] = []
+    allowlisted_confirmed = 0
+    for rel, found_count in counts_by_file.items():
+        entry = _ALLOWLIST_BY_FILE.get(rel)
+        expected_count = entry.count if entry is not None else 0
+        if found_count > expected_count:
+            violations.append(
+                f"{rel}: {found_count} ApplicationContainer.get_instance() call(s) found, "
+                + f"{expected_count} allowlisted -- inject the dependency at its bundle's "
+                + "construction site instead (ADR-002 v1.1.0 3), or add an allowlist entry with a "
+                + "reason if this site is genuinely sanctioned service location"
+            )
+        elif entry is not None and found_count < expected_count:
+            violations.append(
+                f"{rel}: {found_count} call(s) found, but CONTAINER_GET_INSTANCE_ALLOWLIST expects "
+                + f"{expected_count} -- a site was migrated or removed; lower the allowlist count to {found_count}"
+            )
+        elif entry is not None:
+            allowlisted_confirmed += 1
+    return violations, allowlisted_confirmed
+
+
+def _stale_allowlist_violations(counts_by_file: dict[str, int]) -> list[str]:
+    """Flag allowlist entries whose file no longer contains any get_instance() call."""
+    violations: list[str] = []
+    for entry in CONTAINER_GET_INSTANCE_ALLOWLIST:
+        if entry.file not in counts_by_file:
+            violations.append(
+                f"{entry.file}: CONTAINER_GET_INSTANCE_ALLOWLIST expects {entry.count} call(s), "
+                + "0 found -- remove this allowlist entry"
+            )
+    return violations
 
 
 def scan() -> tuple[list[str], int]:
     """Scan server/ for ApplicationContainer.get_instance() calls. Returns (new_violations,
     allowlisted_confirmed) -- allowlisted_confirmed is the number of entries whose file's actual
     count matches its expected count."""
-    new_violations: list[str] = []
-    allowlisted_confirmed = 0
-    counts_by_file: dict[str, int] = {}
-
-    for path in _collect_python_files():
-        rel = str(path.relative_to(PROJECT_ROOT)).replace("\\", "/")
-        try:
-            content = path.read_text(encoding="utf-8", errors="replace")
-        except OSError as e:
-            new_violations.append(f"{rel}: read error: {e}")
-            continue
-
-        line_nums = _find_get_instance_lines(content)
-        if line_nums:
-            counts_by_file[rel] = len(line_nums)
-
-    for rel, found_count in counts_by_file.items():
-        entry = _ALLOWLIST_BY_FILE.get(rel)
-        expected_count = entry.count if entry is not None else 0
-
-        if found_count > expected_count:
-            new_violations.append(
-                f"{rel}: {found_count} ApplicationContainer.get_instance() call(s) found, "
-                f"{expected_count} allowlisted -- inject the dependency at its bundle's "
-                f"construction site instead (ADR-002 v1.1.0 3), or add an allowlist entry with a "
-                f"reason if this site is genuinely sanctioned service location"
-            )
-        elif entry is not None and found_count < expected_count:
-            new_violations.append(
-                f"{rel}: {found_count} call(s) found, but CONTAINER_GET_INSTANCE_ALLOWLIST expects "
-                f"{expected_count} -- a site was migrated or removed; lower the allowlist count to {found_count}"
-            )
-        elif entry is not None:
-            allowlisted_confirmed += 1
-
-    for entry in CONTAINER_GET_INSTANCE_ALLOWLIST:
-        if entry.file not in counts_by_file:
-            new_violations.append(
-                f"{entry.file}: CONTAINER_GET_INSTANCE_ALLOWLIST expects {entry.count} call(s), "
-                f"0 found -- remove this allowlist entry"
-            )
-
-    return new_violations, allowlisted_confirmed
+    counts_by_file, read_errors = _collect_get_instance_counts()
+    count_violations, allowlisted_confirmed = _allowlist_count_violations(counts_by_file)
+    stale_violations = _stale_allowlist_violations(counts_by_file)
+    return read_errors + count_violations + stale_violations, allowlisted_confirmed
 
 
 def main() -> int:
@@ -231,7 +263,7 @@ def main() -> int:
     if new_violations:
         print(
             f"\n{len(new_violations)} container get_instance() allowlist mismatch(es) found. "
-            "See docs/CONTAINER_INJECTION_AUDIT.md and ADR-002."
+            + "See docs/CONTAINER_INJECTION_AUDIT.md and ADR-002."
         )
         return 1
     return 0

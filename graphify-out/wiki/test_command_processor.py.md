@@ -1,6 +1,6 @@
 # test_command_processor.py
 
-> 78 nodes
+> 80 nodes
 
 ## Key Concepts
 
@@ -14,6 +14,7 @@
 - **._is_combat_command()** (4 connections) — `server/utils/command_processor.py`
 - **.process_command_string()** (4 connections) — `server/utils/command_processor.py`
 - **test_process_command_string_pydantic_validation_error()** (3 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **.__init__()** (3 connections) — `server/utils/command_processor.py`
 - **Any** (3 connections)
 - **test_command_processor_initialization()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **test_extract_attributes_basic()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
@@ -28,18 +29,18 @@
 - **test_get_command_help_runtime_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **test_get_command_help_success()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **test_get_command_help_type_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_get_command_help_value_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- *... and 53 more nodes in this community*
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (6 shared connections)
-- [test_command_parser.py](test_command_parser.py.md) (3 shared connections)
-- [ValidationError](ValidationError.md) (2 shared connections)
-- [AttributeError](AttributeError.md) (2 shared connections)
-- [test_command_validator.py](test_command_validator.py.md) (1 shared connections)
+- [CommandFactory](CommandFactory.md) (6 shared connections)
+- [BaseCommand](BaseCommand.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (2 shared connections)
+- [ValidationError](ValidationError.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
+- [pydantic.md](pydantic.md.md) (1 shared connections)
+- [test_command_service.py](test_command_service.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 99 (96%)
+- EXTRACTED: 101 (96%)
 - INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 

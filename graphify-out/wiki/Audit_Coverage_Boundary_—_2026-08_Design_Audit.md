@@ -25,7 +25,7 @@
 
 ## Relationships
 
-- [Claims by cluster](Claims_by_cluster.md) (1 shared connections)
+- [FRD & Plan-Document Verification Register — 2026-08](FRD_&_Plan-Document_Verification_Register_—_2026-08.md) (1 shared connections)
 
 ## Source Files
 

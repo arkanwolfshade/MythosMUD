@@ -35,8 +35,8 @@
 - [bench_cache.py](bench_cache.py.md) (2 shared connections)
 - [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
 - [CacheService](CacheService.md) (1 shared connections)
-- [.initialize](initialize.md) (1 shared connections)
-- [room_service.py](room_service.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [ExplorationService](ExplorationService.md) (1 shared connections)
 - [LRUCache](LRUCache.md) (1 shared connections)
 - [ProfessionCacheService](ProfessionCacheService.md) (1 shared connections)
 

@@ -19,7 +19,8 @@
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (4 shared connections)
+- [command_service.py](command_service.py.md) (3 shared connections)
+- [AliasStorage](AliasStorage.md) (1 shared connections)
 - [.state](state.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 

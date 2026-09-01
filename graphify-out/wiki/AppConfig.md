@@ -33,16 +33,16 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (11 shared connections)
-- [config/models/__init__.py](config-models-__init__.py.md) (7 shared connections)
-- [CombatInstance](CombatInstance.md) (3 shared connections)
-- [test_config_models.py](test_config_models.py.md) (2 shared connections)
-- [server/tests/conftest.py](server-tests-conftest.py.md) (2 shared connections)
-- [NATSConfig](NATSConfig.md) (1 shared connections)
+- [get_config](get_config.md) (13 shared connections)
+- [config/models/__init__.py](config-models-__init__.py.md) (6 shared connections)
+- [CombatParticipant](CombatParticipant.md) (3 shared connections)
+- [LoggingConfig](LoggingConfig.md) (2 shared connections)
+- [test_config_models.py](test_config_models.py.md) (1 shared connections)
+- [DatabaseConfig](DatabaseConfig.md) (1 shared connections)
+- [NATSService](NATSService.md) (1 shared connections)
 - [GameConfig](GameConfig.md) (1 shared connections)
 - [CORSConfig](CORSConfig.md) (1 shared connections)
-- [PlayerStatsConfig](PlayerStatsConfig.md) (1 shared connections)
-- [MythosChronicle](MythosChronicle.md) (1 shared connections)
+- [MythosTickScheduler](MythosTickScheduler.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

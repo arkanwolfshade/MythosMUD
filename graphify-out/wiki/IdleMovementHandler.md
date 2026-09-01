@@ -1,23 +1,16 @@
 # IdleMovementHandler
 
-> 104 nodes
+> 81 nodes
 
 ## Key Concepts
 
 - **IdleMovementHandler** (56 connections) — `server/npc/idle_movement.py`
 - **test_idle_movement.py** (36 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **idle_movement.py** (18 connections) — `server/npc/idle_movement.py`
-- **.execute_idle_movement()** (8 connections) — `server/npc/idle_movement.py`
 - **._should_idle_move_inner()** (8 connections) — `server/npc/idle_movement.py`
 - **patch** (8 connections)
-- **_npc_id_str()** (7 connections) — `server/npc/idle_movement.py`
-- **.select_exit()** (6 connections) — `server/npc/idle_movement.py`
-- **._calculate_exit_weights()** (5 connections) — `server/npc/idle_movement.py`
 - **.should_idle_move()** (5 connections) — `server/npc/idle_movement.py`
 - **._is_npc_in_combat()** (4 connections) — `server/npc/idle_movement.py`
 - **._npc_registered_in_combat()** (4 connections) — `server/npc/idle_movement.py`
-- **._try_idle_room_change()** (4 connections) — `server/npc/idle_movement.py`
-- **_passes_movement_probability()** (4 connections) — `server/npc/idle_movement.py`
 - **idle_movement_handler()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
 - **test_is_npc_in_combat_true()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
 - **test_should_idle_move_false_when_registered_in_combat()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
@@ -27,20 +20,26 @@
 - **test_should_idle_move_probability_fails_when_random_above_threshold()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
 - **test_should_idle_move_probability_passes_when_random_below_threshold()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
 - **test_should_idle_move_true_when_not_in_combat_and_probability_succeeds()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **_cfg_bool()** (3 connections) — `server/npc/idle_movement.py`
-- **._calculate_distance_to_room()** (3 connections) — `server/npc/idle_movement.py`
-- *... and 79 more nodes in this community*
+- **._check_npc_combat_via_string_mapping()** (3 connections) — `server/npc/idle_movement.py`
+- **._check_npc_combat_via_uuid()** (3 connections) — `server/npc/idle_movement.py`
+- **mock_event_bus()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_calculate_distance_to_room_different_rooms()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_calculate_distance_to_room_different_subzone()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_calculate_distance_to_room_same_room()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_calculate_distance_to_room_same_subzone()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_execute_idle_movement_no_current_room()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- *... and 56 more nodes in this community*
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [NPCMovementIntegration](NPCMovementIntegration.md) (3 shared connections)
+- [idle_movement.py](idle_movement.py.md) (16 shared connections)
 - [PassiveMobNPC](PassiveMobNPC.md) (2 shared connections)
-- [NPCThreadManager](NPCThreadManager.md) (2 shared connections)
-- [.__init__](__init__.md) (2 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [EventBus](EventBus.md) (2 shared connections)
+- [NPCMovementIntegration](NPCMovementIntegration.md) (2 shared connections)
+- [._execute_wander_movement](_execute_wander_movement.md) (1 shared connections)
+- [NPCThreadManager](NPCThreadManager.md) (1 shared connections)
+- [.__init__](__init__.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -50,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 158 (84%)
-- INFERRED: 30 (16%)
+- EXTRACTED: 120 (80%)
+- INFERRED: 30 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

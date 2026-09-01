@@ -24,7 +24,7 @@
 
 ## Relationships
 
-- [test_room_sync_service.py](test_room_sync_service.py.md) (8 shared connections)
+- [event_types.py](event_types.py.md) (8 shared connections)
 - [RoomDataCache](RoomDataCache.md) (1 shared connections)
 - [RoomDataValidator](RoomDataValidator.md) (1 shared connections)
 - [TestRoomDataFixer](TestRoomDataFixer.md) (1 shared connections)

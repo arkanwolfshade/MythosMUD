@@ -33,12 +33,12 @@
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (5 shared connections)
-- [test_command_validator.py](test_command_validator.py.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (3 shared connections)
+- [command_service.py](command_service.py.md) (2 shared connections)
+- [test_command_service.py](test_command_service.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [command_handler_unified.py](command_handler_unified.py.md) (1 shared connections)
-- [test_command_service.py](test_command_service.py.md) (1 shared connections)
-- [command_service](command_service.md) (1 shared connections)
-- [test_command_parser.py](test_command_parser.py.md) (1 shared connections)
+- [CommandFactory](CommandFactory.md) (1 shared connections)
 - [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
 
 ## Source Files

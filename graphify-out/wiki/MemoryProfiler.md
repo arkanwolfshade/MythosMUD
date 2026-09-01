@@ -34,10 +34,11 @@
 ## Relationships
 
 - [HealthStatus](HealthStatus.md) (4 shared connections)
-- [Alias](Alias.md) (2 shared connections)
-- [BaseCommand](BaseCommand.md) (2 shared connections)
-- [server/models/game.py](server-models-game.py.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [pydantic.md](pydantic.md.md) (2 shared connections)
 - [Stats](Stats.md) (1 shared connections)
+- [StatusEffect](StatusEffect.md) (1 shared connections)
+- [TargetMatch](TargetMatch.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,6 +1,6 @@
 # collect_inventory.py
 
-> 43 nodes
+> 47 nodes
 
 ## Key Concepts
 
@@ -21,29 +21,31 @@
 - **_deepcopy_equipped_map()** (4 connections) — `server/game/quest/collect_inventory.py`
 - **_dict_stacks_from_callable()** (4 connections) — `server/game/quest/collect_inventory.py`
 - **_dict_stacks_from_equipped()** (4 connections) — `server/game/quest/collect_inventory.py`
+- **.set_equipped_items()** (3 connections) — `server/models/player.py`
+- **.set_inventory()** (3 connections) — `server/models/player.py`
 - **test_collect_player_stacks_merges_inventory_and_equipped()** (3 connections) — `server/tests/unit/game/test_collect_inventory.py`
 - **test_consume_prototype_from_player_insufficient_returns_false()** (3 connections) — `server/tests/unit/game/test_collect_inventory.py`
 - **test_consume_prototype_from_player_partial_stack()** (3 connections) — `server/tests/unit/game/test_collect_inventory.py`
 - **test_count_prototype_in_stacks_nested_container()** (3 connections) — `server/tests/unit/game/test_collect_inventory.py`
 - **test_count_prototype_in_stacks_top_level()** (3 connections) — `server/tests/unit/game/test_collect_inventory.py`
 - **Inventory helpers for collect_n quest goals. Counts and consumes items by…** (1 connections) — `server/game/quest/collect_inventory.py`
-- **Deep-copy stack dicts from a raw inventory list.** (1 connections) — `server/game/quest/collect_inventory.py`
-- **Deep-copy equipped slot map keeping only dict stacks.** (1 connections) — `server/game/quest/collect_inventory.py`
-- *... and 18 more nodes in this community*
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [QuestService](QuestService.md) (7 shared connections)
+- [quest_service.py](quest_service.py.md) (6 shared connections)
 - [Player](Player.md) (2 shared connections)
+- [QuestService](QuestService.md) (1 shared connections)
 
 ## Source Files
 
 - `server/game/quest/collect_inventory.py`
+- `server/models/player.py`
 - `server/tests/unit/game/test_collect_inventory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 86 (98%)
+- EXTRACTED: 90 (98%)
 - INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 

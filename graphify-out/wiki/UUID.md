@@ -1,29 +1,40 @@
 # UUID
 
-> 5 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **UUID** (8 connections)
-- **._publish_player_dp_correction_event()** (5 connections) — `server/services/combat_hp_sync.py`
-- **._persist_player_dp_background()** (3 connections) — `server/services/combat_hp_sync.py`
-- **Publish a correction event when database persistence fails.** (1 connections) — `server/services/combat_hp_sync.py`
-- **Persist player DP to database in background (fire-and-forget). This method runs…** (1 connections) — `server/services/combat_hp_sync.py`
+- **UUID** (9 connections)
+- **_TickDeathService** (6 connections) — `server/app/game_tick_protocols.py`
+- **_TickCombatService** (5 connections) — `server/app/game_tick_protocols.py`
+- **AsyncSession** (5 connections)
+- **.get_combat_by_participant()** (3 connections) — `server/app/game_tick_protocols.py`
+- **.get_dead_players()** (3 connections) — `server/app/game_tick_protocols.py`
+- **.get_mortally_wounded_players()** (3 connections) — `server/app/game_tick_protocols.py`
+- **.handle_player_death()** (3 connections) — `server/app/game_tick_protocols.py`
+- **.process_mortally_wounded_tick()** (3 connections) — `server/app/game_tick_protocols.py`
+- **.move_player_to_limbo()** (3 connections) — `server/app/game_tick_protocols.py`
+- **.publish_player_dp_decay_event_to_nats()** (2 connections) — `server/app/game_tick_protocols.py`
+- **.send_personal_message()** (2 connections) — `server/app/game_tick_protocols.py`
+- **.process_tick_regeneration()** (2 connections) — `server/app/game_tick_protocols.py`
+- **Player** (2 connections)
+- **.process_game_tick()** (1 connections) — `server/app/game_tick_protocols.py`
 
 ## Relationships
 
-- [NATSError](NATSError.md) (7 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (1 shared connections)
+- [game_tick_death.py](game_tick_death.py.md) (8 shared connections)
+- [CombatInstance](CombatInstance.md) (1 shared connections)
 - [event_types.py](event_types.py.md) (1 shared connections)
+- [game_tick_status_effects.py](game_tick_status_effects.py.md) (1 shared connections)
+- [test_game_tick_death.py](test_game_tick_death.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_hp_sync.py`
+- `server/app/game_tick_protocols.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 32 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -23,10 +23,11 @@
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (1 shared connections)
+- [MythosTickScheduler](MythosTickScheduler.md) (1 shared connections)
 - [test_who_commands.py](test_who_commands.py.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (1 shared connections)
+- [command_service.py](command_service.py.md) (1 shared connections)
 - [.state](state.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 

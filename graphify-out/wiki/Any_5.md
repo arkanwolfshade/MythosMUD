@@ -1,48 +1,41 @@
 # Any
 
-> 35 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **Any** (13 connections)
-- **.get_room()** (8 connections) — `server/game/room_service.py`
-- **.get_room_info()** (7 connections) — `server/game/room_service.py`
-- **.filter_rooms_by_exploration()** (6 connections) — `server/game/room_service.py`
-- **.get_adjacent_rooms()** (6 connections) — `server/game/room_service.py`
-- **.list_rooms()** (5 connections) — `server/game/room_service.py`
-- **.get_local_chat_scope()** (4 connections) — `server/game/room_service.py`
-- **.get_room_exits()** (4 connections) — `server/game/room_service.py`
-- **.get_room_occupants()** (4 connections) — `server/game/room_service.py`
-- **._extract_occupants_from_room()** (3 connections) — `server/game/room_service.py`
-- **.get_environment_state()** (3 connections) — `server/game/room_service.py`
-- **.get_room_by_name()** (3 connections) — `server/game/room_service.py`
-- **.get_rooms_in_zone()** (3 connections) — `server/game/room_service.py`
-- **.list_rooms_in_zone()** (3 connections) — `server/game/room_service.py`
-- **._lookup_explored_stable_ids()** (3 connections) — `server/game/room_service.py`
-- **._prepare_room_for_list()** (3 connections) — `server/game/room_service.py`
-- **._room_matches_zone_filters()** (3 connections) — `server/game/room_service.py`
-- **.search_rooms_by_name()** (3 connections) — `server/game/room_service.py`
-- **.validate_exit_exists()** (3 connections) — `server/game/room_service.py`
-- **AsyncSession** (2 connections)
-- **UUID** (2 connections)
-- **Get a list of rooms adjacent to the specified room. Args: room_id: The room's…** (1 connections) — `server/game/room_service.py`
-- **Get the scope of rooms for local chat (current room + adjacent rooms). Args:…** (1 connections) — `server/game/room_service.py`
-- **Validate that there's a valid exit from one room to another. Args:…** (1 connections) — `server/game/room_service.py`
-- **Get all occupants (players and NPCs) currently in a room using cached data.…** (1 connections) — `server/game/room_service.py`
-- *... and 10 more nodes in this community*
+- **Any** (14 connections)
+- **.cleanup_ghost_players()** (8 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.cleanup_orphaned_data()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._close_and_remove_stale_websocket()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_online_player_ids()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._filter_actual_ghost_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_player_id_from_metadata()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_potential_ghost_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._remove_ghost_players_from_room()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._identify_stale_connections()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Return connection IDs that exceed max_connection_age.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Extract player_id from connection metadata if present.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Close stale WebSocket and remove from tracking. Handles None websocket…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Clean up orphaned data that might accumulate over time. Args:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Return set of online player IDs as strings (room._players uses string UUIDs).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Return players in room but not online. Empty if room has no get_players.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Filter to players with zero WebSocket connections (or invalid UUIDs).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Remove ghost players from room and log.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Clean up ghost players from all rooms. This method removes players from room's…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (18 shared connections)
-- [room_service.py](room_service.py.md) (1 shared connections)
+- [ConnectionCleaner](ConnectionCleaner.md) (16 shared connections)
+- [.check_and_cleanup](check_and_cleanup.md) (2 shared connections)
 
 ## Source Files
 
-- `server/game/room_service.py`
+- `server/realtime/maintenance/connection_cleaner.py`
 
 ## Audit Trail
 
-- EXTRACTED: 62 (100%)
+- EXTRACTED: 42 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

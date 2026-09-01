@@ -1,6 +1,6 @@
 # CombatParticipant
 
-> God node · 195 connections · `server/models/combat.py`
+> God node · 216 connections · `server/models/combat.py`
 
 **Community:** [CombatParticipant](CombatParticipant.md)
 
@@ -33,20 +33,20 @@
 
 ### imports
 - combat_service.py `EXTRACTED`
-- test_combat_service_modules.py `EXTRACTED`
+- [test_combat_service_modules.py](test_combat_service_modules.py.md) `EXTRACTED`
 - test_combat.py `EXTRACTED`
 - test_combat_turn_processor.py `EXTRACTED`
 - combat_turn_participant_actions.py `EXTRACTED`
 - test_combat_attack_handler.py `EXTRACTED`
 - [test_combat_service.py](test_combat_service.py.md) `EXTRACTED`
 - combat_taunt.py `EXTRACTED`
-- [test_combat_flee_handler.py](test_combat_flee_handler.py.md) `EXTRACTED`
+- test_combat_flee_handler.py `EXTRACTED`
 - combat_service_npc.py `EXTRACTED`
 - [test_combat_death_handler.py](test_combat_death_handler.py.md) `EXTRACTED`
 - test_combat_service_npc_helpers.py `EXTRACTED`
-- test_flee_command.py `EXTRACTED`
+- [test_flee_command.py](test_flee_command.py.md) `EXTRACTED`
 - test_spell_targeting.py `EXTRACTED`
-- test_aggro_threat.py `EXTRACTED`
+- [test_aggro_threat.py](test_aggro_threat.py.md) `EXTRACTED`
 - aggro_threat.py `EXTRACTED`
 - combat_service_attack.py `EXTRACTED`
 - [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) `EXTRACTED`
@@ -78,12 +78,12 @@
 - process_player_turn() `EXTRACTED`
 - ._execute_queued_action() `EXTRACTED`
 - _resolve_taunt_combat_and_participant() `EXTRACTED`
-- ._apply_damage() `EXTRACTED`
 - ._create_corpse_on_death() `EXTRACTED`
 - ._publish_attack_events() `EXTRACTED`
 - check_involuntary_flee() `EXTRACTED`
 - apply_damage_and_check_involuntary_flee() `EXTRACTED`
 - validate_melee_location() `EXTRACTED`
+- validate_melee_or_end_combat() `EXTRACTED`
 
 ---
 

@@ -1,6 +1,6 @@
 # talk_command.py
 
-> 89 nodes
+> 91 nodes
 
 ## Key Concepts
 
@@ -19,6 +19,7 @@
 - **get_dialogue_service()** (9 connections) — `server/game/dialogue/dialogue_service.py`
 - **game/dialogue/__init__.py** (9 connections) — `server/game/dialogue/__init__.py`
 - **UUID** (8 connections)
+- **npc_definition_id()** (7 connections) — `server/commands/quest_commands.py`
 - **_resolve_player_id()** (7 connections) — `server/commands/talk_command.py`
 - **_talk_by_option_index()** (7 connections) — `server/commands/talk_command.py`
 - **.clear_cursor()** (7 connections) — `server/game/dialogue/dialogue_service.py`
@@ -28,24 +29,26 @@
 - **._load_tree_or_fade()** (6 connections) — `server/game/dialogue/dialogue_service.py`
 - **reset_dialogue_service_for_tests()** (6 connections) — `server/game/dialogue/dialogue_service.py`
 - **dialogue_tree.py** (6 connections) — `server/schemas/dialogue/dialogue_tree.py`
-- **schemas/dialogue/__init__.py** (6 connections) — `server/schemas/dialogue/__init__.py`
-- *... and 64 more nodes in this community*
+- *... and 66 more nodes in this community*
 
 ## Relationships
 
-- [communication_commands_flows.py](communication_commands_flows.py.md) (7 shared connections)
-- [AliasStorage](AliasStorage.md) (7 shared connections)
-- [quest_commands.py](quest_commands.py.md) (5 shared connections)
-- [DialogueDefinitionRepository](DialogueDefinitionRepository.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (3 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (3 shared connections)
+- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (7 shared connections)
+- [quest_commands.py](quest_commands.py.md) (6 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (4 shared connections)
+- [DialogueDefinitionRepository](DialogueDefinitionRepository.md) (3 shared connections)
 - [test_go_command.py](test_go_command.py.md) (3 shared connections)
-- [BaseCommand](BaseCommand.md) (2 shared connections)
+- [quest_service.py](quest_service.py.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [command_service.py](command_service.py.md) (2 shared connections)
+- [pydantic.md](pydantic.md.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
 
 ## Source Files
 
+- `server/commands/quest_commands.py`
 - `server/commands/talk_command.py`
 - `server/game/dialogue/__init__.py`
 - `server/game/dialogue/dialogue_service.py`
@@ -56,8 +59,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 205 (97%)
-- INFERRED: 6 (3%)
+- EXTRACTED: 209 (97%)
+- INFERRED: 7 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

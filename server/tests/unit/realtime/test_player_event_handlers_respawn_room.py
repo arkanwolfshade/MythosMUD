@@ -1,9 +1,7 @@
 """Unit tests for respawn room occupant enrichment helpers."""
 
 # pyright: reportPrivateUsage=false
-# Reason: Helpers take a Protocol host that exposes _logger for warning paths.
-# pyright: reportAny=false, reportUnknownMemberType=false, reportUnknownArgumentType=false
-# Reason: MagicMock fixtures for connection manager and lifecycle; typing adds no safety.
+# Reason: Tests call module-private respawn room helpers directly.
 
 from __future__ import annotations
 
@@ -17,7 +15,6 @@ from server.realtime import player_event_handlers_respawn_room as respawn_room
 def _host(*, connection_manager: object | None = None) -> MagicMock:
     host: MagicMock = MagicMock()
     host.connection_manager = connection_manager
-    host._logger = MagicMock()
     return host
 
 
@@ -112,11 +109,14 @@ async def test_prepare_room_data_for_respawn_no_connection_manager() -> None:
     persistence: MagicMock = MagicMock()
     persistence.get_room_by_id = MagicMock(return_value=room)
     host = _host(connection_manager=None)
+    logger: MagicMock = MagicMock()
     with patch(
-        "server.async_persistence.get_container_async_persistence",
+        "server.container.async_persistence_access.get_container_async_persistence",
         return_value=persistence,
     ):
-        room_data, _npc, players, occupants = await respawn_room.prepare_room_data_for_respawn(host, "room-1", "Alice")
+        room_data, _npc, players, occupants = await respawn_room.prepare_room_data_for_respawn(
+            host, "room-1", "Alice", logger
+        )
     assert room_data is not None
     assert room_data["id"] == "room-1"
     assert "Alice" in players
@@ -131,15 +131,18 @@ async def test_prepare_room_data_for_respawn_with_connection_manager() -> None:
     cm: MagicMock = MagicMock()
     cm.get_room_occupants = AsyncMock(return_value=[{"player_name": "Bob"}])
     host = _host(connection_manager=cm)
+    logger: MagicMock = MagicMock()
     with (
-        patch("server.async_persistence.get_container_async_persistence", return_value=persistence),
+        patch("server.container.async_persistence_access.get_container_async_persistence", return_value=persistence),
         patch(
             "server.realtime.websocket_initial_state.prepare_room_data_with_occupants",
             new_callable=AsyncMock,
             return_value=({"id": "room-1", "npcs": [], "players": []}, None),
         ),
     ):
-        room_data, _npc, players, occupants = await respawn_room.prepare_room_data_for_respawn(host, "room-1", "Alice")
+        room_data, _npc, players, occupants = await respawn_room.prepare_room_data_for_respawn(
+            host, "room-1", "Alice", logger
+        )
     assert room_data is not None
     assert "Alice" in players
     assert "Bob" in players or "Alice" in occupants
@@ -147,16 +150,19 @@ async def test_prepare_room_data_for_respawn_with_connection_manager() -> None:
 
 @pytest.mark.asyncio
 async def test_prepare_room_data_for_respawn_logs_on_error() -> None:
+    logger: MagicMock = MagicMock()
+    warning: MagicMock = MagicMock()
+    logger.warning = warning
     host = _host(connection_manager=MagicMock())
     with patch(
-        "server.async_persistence.get_container_async_persistence",
+        "server.container.async_persistence_access.get_container_async_persistence",
         side_effect=ImportError("missing"),
     ):
         room_data, npc_names, player_names, occupant_names = await respawn_room.prepare_room_data_for_respawn(
-            host, "room-1", "Alice"
+            host, "room-1", "Alice", logger
         )
     assert room_data is None
     assert npc_names == []
     assert player_names == []
     assert occupant_names == []
-    host._logger.warning.assert_called_once()
+    warning.assert_called_once()

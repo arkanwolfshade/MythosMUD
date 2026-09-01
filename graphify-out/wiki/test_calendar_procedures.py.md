@@ -19,7 +19,7 @@
 
 - [session_factory](session_factory.md) (4 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [sqlalchemy.md](sqlalchemy.md.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

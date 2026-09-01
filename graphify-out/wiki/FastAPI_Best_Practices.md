@@ -16,7 +16,7 @@
 
 ## Relationships
 
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [User](User.md) (1 shared connections)
 
 ## Source Files
 

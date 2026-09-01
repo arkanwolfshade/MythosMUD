@@ -33,7 +33,7 @@
 ## Relationships
 
 - [safe_run](safe_run.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [time.py](time.py.md) (1 shared connections)
 - [log_with_context](log_with_context.md) (1 shared connections)
 - [safe_run_static](safe_run_static.md) (1 shared connections)
 

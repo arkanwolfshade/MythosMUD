@@ -34,10 +34,12 @@
 ## Relationships
 
 - [CombatMonitoringService](CombatMonitoringService.md) (14 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
 - [monitoring_service](monitoring_service.md) (4 shared connections)
+- [time.py](time.py.md) (2 shared connections)
 - [CombatConfiguration](CombatConfiguration.md) (2 shared connections)
 - [FeatureFlagService](FeatureFlagService.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [get_config](get_config.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

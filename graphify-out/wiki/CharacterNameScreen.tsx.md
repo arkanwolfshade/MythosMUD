@@ -33,10 +33,12 @@
 
 ## Relationships
 
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (17 shared connections)
-- [roomHandlers.ts](roomHandlers.ts.md) (4 shared connections)
+- [Profession](Profession.md) (10 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (5 shared connections)
+- [logger.ts](logger.ts.md) (4 shared connections)
 - [App.tsx](App.tsx.md) (2 shared connections)
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (2 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (2 shared connections)
+- [EldritchEffectsDemo.tsx](EldritchEffectsDemo.tsx.md) (2 shared connections)
 - [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (2 shared connections)
 
 ## Source Files

@@ -1,9 +1,5 @@
 """Room occupant enrichment for respawn WebSocket payloads."""
 
-# pyright: reportPrivateUsage=false
-# Reason: Helpers are co-owned with PlayerRespawnEventHandler and use its private logger.
-# pylint: disable=protected-access  # Reason: Same co-owned helper surface as pyright private-usage exemption.
-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Protocol, cast
@@ -26,11 +22,13 @@ class _RespawnRoomHost(Protocol):  # pylint: disable=too-few-public-methods  # R
     """Handler surface required for room preparation helpers."""
 
     connection_manager: ConnectionManager | None
-    _logger: BoundLogger
 
 
 async def prepare_room_data_for_respawn(
-    host: _RespawnRoomHost, room_id: str, respawned_player_name: str
+    host: _RespawnRoomHost,
+    room_id: str,
+    respawned_player_name: str,
+    logger: BoundLogger,
 ) -> tuple[dict[str, object] | None, list[str], list[str], list[str]]:
     """Prepare room data with NPC and player names for a respawn event."""
     room_data = None
@@ -39,7 +37,7 @@ async def prepare_room_data_for_respawn(
     player_names: list[str] = []
 
     try:
-        from ..async_persistence import get_container_async_persistence
+        from ..container.async_persistence_access import get_container_async_persistence
         from .websocket_initial_state import prepare_room_data_with_occupants
 
         async_persistence = get_container_async_persistence()
@@ -59,7 +57,7 @@ async def prepare_room_data_for_respawn(
             )
 
     except (AttributeError, KeyError, ValueError, TypeError, ImportError) as room_err:
-        host._logger.warning(
+        logger.warning(
             "Could not get room data for respawn event",
             room_id=room_id,
             error=str(room_err),

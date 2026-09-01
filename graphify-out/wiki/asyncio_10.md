@@ -1,40 +1,31 @@
 # asyncio
 
-> 15 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **asyncio** (8 connections)
-- **test_call_rejects_when_open()** (6 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_closes_from_half_open_on_success()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_failure_closed_state()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_opens_circuit_after_threshold()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_reopens_from_half_open_on_failure()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_transitions_to_half_open_after_timeout()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_success_closed_state()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test call() closes circuit from HALF_OPEN after success threshold.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test call() reopens circuit from HALF_OPEN on failure.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test call() executes successfully in CLOSED state.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test call() handles failure in CLOSED state.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test call() opens circuit after failure threshold.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test call() raises CircuitBreakerOpen when circuit is OPEN.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test call() transitions to HALF_OPEN after timeout.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **asyncio** (4 connections)
+- **test_get_player_info_invalid_player_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_get_player_info_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_get_player_info_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_get_player_info_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test get_player_info() returns None for invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test get_player_info() returns None when player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test get_player_info() successfully retrieves player info.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test get_player_info() returns None when connection manager not available.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [test_circuit_breaker.py](test_circuit_breaker.py.md) (8 shared connections)
-- [CircuitBreaker](CircuitBreaker.md) (7 shared connections)
-- [CircuitState](CircuitState.md) (6 shared connections)
-- [format_message_content](format_message_content.md) (1 shared connections)
+- [test_player_event_handlers_utils.py](test_player_event_handlers_utils.py.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_circuit_breaker.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (61%)
-- INFERRED: 14 (39%)
+- EXTRACTED: 12 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

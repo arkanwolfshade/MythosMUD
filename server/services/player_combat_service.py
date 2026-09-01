@@ -11,7 +11,7 @@ from uuid import UUID
 from sqlalchemy.exc import SQLAlchemyError
 from structlog.stdlib import BoundLogger
 
-from server.events.event_types import BaseEvent
+from server.events.event_types import PlayerXPAwardEvent
 from server.services.player_combat_service_support import (
     EventBusPublish as _EventBusPublish,
 )
@@ -56,20 +56,6 @@ class PlayerCombatState:
         """Initialize last_activity if not provided."""
         if self.last_activity is None:
             self.last_activity = datetime.now(UTC)
-
-
-@dataclass
-class PlayerXPAwardEvent(BaseEvent):  # pylint: disable=too-few-public-methods  # Reason: Event dataclass with focused responsibility, minimal public interface
-    """Event published when a player receives XP."""
-
-    player_id: UUID
-    xp_amount: int
-    new_level: int
-
-    def __post_init__(self) -> None:
-        """Set event_type for serialization/deserialization."""
-        super().__post_init__()
-        object.__setattr__(self, "event_type", "player_xp_awarded")
 
 
 class PlayerCombatService:

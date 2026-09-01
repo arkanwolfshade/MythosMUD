@@ -1,6 +1,6 @@
 # test_chat_logger.py
 
-> 41 nodes
+> 43 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **.__init__()** (8 connections) — `server/game/chat_service.py`
 - **chat_logger()** (8 connections) — `server/tests/unit/services/test_chat_logger.py`
 - **.__init__()** (5 connections) — `server/services/user_manager.py`
+- **.__init__()** (4 connections) — `server/services/rate_limiter.py`
 - **temp_log_dir()** (3 connections) — `server/tests/unit/services/test_chat_logger.py`
 - **test_chat_logger_initialization_with_directory()** (3 connections) — `server/tests/unit/services/test_chat_logger.py`
 - **test_channel_log_stats_and_cleanup()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
@@ -27,9 +28,8 @@
 - **fixture** (2 connections)
 - **test_log_message_flagged_and_player_left()** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
 - **Initialize chat service. Args: persistence: Database persistence layer…** (1 connections) — `server/game/chat_service.py`
-- **Initialize the user manager. Args: data_dir: Directory for player-specific mute…** (1 connections) — `server/services/user_manager.py`
-- **Unit tests for chat logger service. Tests the ChatLogger class for structured…** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
-- *... and 16 more nodes in this community*
+- **Initialize the rate limiter with configuration-based limits.** (1 connections) — `server/services/rate_limiter.py`
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
@@ -38,24 +38,25 @@
 - [ChatPoseManager](ChatPoseManager.md) (1 shared connections)
 - [ChatWhisperTracker](ChatWhisperTracker.md) (1 shared connections)
 - [ChatModeration](ChatModeration.md) (1 shared connections)
-- [PlayerService](PlayerService.md) (1 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
 - [ChatService](ChatService.md) (1 shared connections)
+- [get_config](get_config.md) (1 shared connections)
+- [RateLimiter](RateLimiter.md) (1 shared connections)
 - [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (1 shared connections)
-- [test_rate_limiter.py](test_rate_limiter.py.md) (1 shared connections)
+- [RealTimeEventHandler](RealTimeEventHandler.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
 - `server/game/chat_service.py`
+- `server/services/rate_limiter.py`
 - `server/services/user_manager.py`
 - `server/tests/unit/services/test_chat_logger.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (91%)
-- INFERRED: 5 (9%)
+- EXTRACTED: 55 (92%)
+- INFERRED: 5 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

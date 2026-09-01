@@ -11,24 +11,64 @@ import os
 import time
 import uuid
 from collections.abc import Awaitable, Callable
-from typing import Any, Protocol, cast
+from typing import Protocol, cast
 from unittest.mock import Mock
 
 from fastapi import APIRouter, Request, WebSocket
+from structlog.stdlib import BoundLogger
 
 from ..auth_utils import decode_access_token
 from ..exceptions import LoggedHTTPException
+from ..models.player import Player
 from ..schemas.realtime import (
     ConnectionStatisticsResponse,
     NewGameSessionResponse,
     PlayerConnectionsResponse,
     SessionInfo,
 )
+from ..schemas.realtime.presence_data import ErrorStatistics, PresenceStatistics, SessionStatistics
+from ..schemas.realtime.realtime import HealthInfo, PresenceInfo
 
 
-class _ConnectionManagerUtilsModule(Protocol):
+class _ConnectionManagerUtilsModule(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     def resolve_connection_manager(self, candidate: object | None = None) -> object | None:
         """Resolve the connection manager singleton (or optional candidate)."""
+
+
+# pylint: disable=missing-function-docstring  # Reason: Protocol stub methods below
+class _PlayerLookupPersistence(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    """Minimal async persistence surface for WebSocket player resolution."""
+
+    async def get_player_by_id(self, player_id: uuid.UUID) -> Player | None: ...
+
+    async def get_player_by_user_id(self, user_id: str) -> Player | None: ...
+
+
+class _RealtimeConnectionManager(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    """Connection manager API used by realtime HTTP/WebSocket routes."""
+
+    async_persistence: _PlayerLookupPersistence | None
+
+    def get_player_presence_info(self, player_id: uuid.UUID) -> dict[str, object]: ...
+
+    def get_player_session(self, player_id: uuid.UUID) -> str | None: ...
+
+    def get_session_connections(self, session_id: str) -> list[str]: ...
+
+    def validate_session(self, player_id: uuid.UUID, session_id: str) -> bool: ...
+
+    async def check_connection_health(self, player_id: uuid.UUID) -> dict[str, object]: ...
+
+    async def handle_new_game_session(self, player_id: uuid.UUID, new_session_id: str) -> dict[str, object]: ...
+
+    def get_presence_statistics(self) -> dict[str, object]: ...
+
+    def get_session_stats(self) -> dict[str, object]: ...
+
+    def get_error_statistics(self) -> dict[str, object]: ...
+
+
+# pylint: enable=missing-function-docstring
 
 
 # Load websocket_handler through importlib; a static import cycles with app.factory.
@@ -72,25 +112,44 @@ async def _invoke_handle_websocket_connection(
     )
 
 
-def _resolve_connection_manager_from_state(state: Any) -> Any:
-    container = getattr(state, "container", None)
-    candidate = None
+def _resolve_connection_manager_from_state(state: object | None) -> _RealtimeConnectionManager | None:
+    if state is None:
+        return None
+    container: object | None = getattr(state, "container", None)
+    candidate: object | None = None
     if container is not None:
         container_dict = getattr(container, "__dict__", None)
-        if container_dict and "connection_manager" in container_dict:
-            candidate = container_dict["connection_manager"]
+        if isinstance(container_dict, dict) and "connection_manager" in container_dict:
+            candidate = cast(object, container_dict["connection_manager"])
         elif not isinstance(container, Mock):
             candidate = getattr(container, "connection_manager", None)
     manager = resolve_connection_manager(candidate)
-    return manager
+    if manager is None:
+        return None
+    return cast(_RealtimeConnectionManager, manager)
 
 
-def _ensure_connection_manager(request: Request) -> Any:
+def _app_state_from_request(request: Request) -> object | None:
+    """Read Starlette app.state without treating Request.app as Any."""
+    app: object = cast(object, request.app)
+    return getattr(app, "state", None)
+
+
+def _app_state_from_websocket(websocket: WebSocket) -> object | None:
+    """Read Starlette app.state from a WebSocket connection."""
+    websocket_obj: object = cast(object, websocket)
+    websocket_app: object | None = getattr(websocket_obj, "app", None)
+    if websocket_app is None:
+        return None
+    return getattr(websocket_app, "state", None)
+
+
+def _ensure_connection_manager(request: Request) -> _RealtimeConnectionManager:
     """
     Ensure connection manager is available.
     Raises LoggedHTTPException with proper context if unavailable.
     """
-    connection_manager = _resolve_connection_manager_from_state(request.app.state)
+    connection_manager = _resolve_connection_manager_from_state(_app_state_from_request(request))
     if connection_manager is None:
         raise LoggedHTTPException(
             status_code=503,
@@ -100,14 +159,16 @@ def _ensure_connection_manager(request: Request) -> Any:
     return connection_manager
 
 
-async def _validate_and_accept_websocket(websocket: WebSocket, connection_manager: Any) -> bool:
+async def _validate_and_accept_websocket(
+    websocket: WebSocket, connection_manager: _RealtimeConnectionManager | None
+) -> bool:
     """
     Validate connection manager and accept WebSocket connection.
     Returns True if connection is valid, False otherwise.
     If invalid, sends error and closes connection.
     """
     # ARCHITECTURAL FIX: Check for async_persistence instead of old sync persistence
-    if connection_manager is None or getattr(connection_manager, "async_persistence", None) is None:
+    if connection_manager is None or connection_manager.async_persistence is None:
         # CRITICAL FIX: Must accept WebSocket before closing or sending messages
         await websocket.accept()
         await websocket.send_json({"type": "error", "message": "Service temporarily unavailable"})
@@ -156,7 +217,7 @@ def _parse_subprotocol_token(subproto_header: str) -> str | None:
     return _extract_bearer_token(parts)
 
 
-def _parse_websocket_token(websocket: WebSocket, logger: Any) -> str | None:
+def _parse_websocket_token(websocket: WebSocket, logger: BoundLogger) -> str | None:
     """
     Parse token from WebSocket subprotocol (preferred) or query params (fallback).
 
@@ -194,16 +255,15 @@ def websocket_player_id_fallback_allowed() -> bool:
     return raw in {"1", "true", "yes", "on"}
 
 
-async def _resolve_player_id_from_test(_websocket: WebSocket, player_id_str: str, logger: Any) -> uuid.UUID:
+async def _resolve_player_id_from_test(_websocket: WebSocket, player_id_str: str, logger: BoundLogger) -> uuid.UUID:
     """
     Resolve player ID from test player_id query parameter.
     Validates that the player exists before returning.
     """
-    from ..async_persistence import get_container_async_persistence
+    from ..container.async_persistence_access import get_container_async_persistence
 
     async_persistence = get_container_async_persistence()
-    # Convert str player_id to UUID for get_player
-    player_id_uuid = uuid.UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
+    player_id_uuid = uuid.UUID(player_id_str)
     player = await async_persistence.get_player_by_id(player_id_uuid)
     if not player:
         logger.warning("WebSocket connection attempt for non-existent player", player_id=player_id_str)
@@ -218,7 +278,7 @@ async def _resolve_player_id_from_test(_websocket: WebSocket, player_id_str: str
     return uuid.UUID(str(player_id_uuid_value)) if isinstance(player_id_uuid_value, str) else player_id_uuid_value
 
 
-async def _resolve_player_id_from_token(websocket: WebSocket, payload: dict[str, Any]) -> uuid.UUID:
+async def _resolve_player_id_from_token(websocket: WebSocket, payload: dict[str, object]) -> uuid.UUID:
     """
     Resolve player ID from JWT token payload.
     Validates that the user has a player record before returning.
@@ -227,7 +287,7 @@ async def _resolve_player_id_from_token(websocket: WebSocket, payload: dict[str,
     Otherwise, fall back to first active character (backward compatibility).
     """
     user_id = str(payload["sub"]).strip()
-    from ..async_persistence import get_container_async_persistence
+    from ..container.async_persistence_access import get_container_async_persistence
 
     async_persistence = get_container_async_persistence()
 
@@ -281,7 +341,7 @@ async def _resolve_player_id_from_token(websocket: WebSocket, payload: dict[str,
     return uuid.UUID(str(player_id_value))
 
 
-async def _resolve_player_id(websocket: WebSocket, token: str | None, logger: Any) -> uuid.UUID:
+async def _resolve_player_id(websocket: WebSocket, token: str | None, logger: BoundLogger) -> uuid.UUID:
     """
     Resolve player ID from token or test player_id parameter.
     Handles both authenticated (JWT) and test (player_id query param) scenarios.
@@ -292,9 +352,6 @@ async def _resolve_player_id(websocket: WebSocket, token: str | None, logger: An
         if not player_id_str or not websocket_player_id_fallback_allowed():
             raise LoggedHTTPException(status_code=401, detail="Invalid or missing token")
         return await _resolve_player_id_from_test(websocket, player_id_str, logger)
-    # Type narrowing: payload is guaranteed to be a dict with "sub" key at this point
-    if payload is None or "sub" not in payload:
-        raise LoggedHTTPException(status_code=401, detail="Invalid payload: missing 'sub' key")
     return await _resolve_player_id_from_token(websocket, payload)
 
 
@@ -308,8 +365,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
 
     logger = get_logger(__name__)
 
-    websocket_app = getattr(websocket, "app", None)
-    websocket_state = getattr(websocket_app, "state", None)
+    websocket_state = _app_state_from_websocket(websocket)
     connection_manager = _resolve_connection_manager_from_state(websocket_state)
 
     if not await _validate_and_accept_websocket(websocket, connection_manager):
@@ -361,13 +417,13 @@ async def get_player_connections(player_id: uuid.UUID, request: Request) -> Play
 
     connection_data = PlayerConnectionsResponse(
         player_id=str(player_id),
-        presence=presence_info,
+        presence=PresenceInfo.model_validate(presence_info),
         session=SessionInfo(
             session_id=session_id,
             session_connections=session_connections,
             is_valid=connection_manager.validate_session(player_id, session_id) if session_id else False,
         ),
-        health=health_info,
+        health=HealthInfo.model_validate(health_info),
         timestamp=time.time(),
     )
 
@@ -391,24 +447,28 @@ async def handle_new_game_session(player_id: uuid.UUID, request: Request) -> New
 
     try:
         # Get new session ID from request body
-        body = await request.json()
-        new_session_id = body.get("session_id")
-
-        if not new_session_id:
+        body_raw = cast(object, await request.json())
+        if not isinstance(body_raw, dict):
+            raise LoggedHTTPException(
+                status_code=400,
+                detail="Invalid JSON in request body",
+                user_id=str(player_id),
+            )
+        body = cast(dict[str, object], body_raw)
+        new_session_id_raw = body.get("session_id")
+        if not isinstance(new_session_id_raw, str) or not new_session_id_raw:
             raise LoggedHTTPException(
                 status_code=400,
                 detail="session_id is required",
                 user_id=str(player_id),
             )
+        new_session_id = new_session_id_raw
 
         # Handle new game session
         session_results = await connection_manager.handle_new_game_session(player_id, new_session_id)
 
         logger.info("New game session handled", player_id=player_id, session_results=session_results)
-        if not isinstance(session_results, dict):
-            raise TypeError("session_results must be a dict")
-        # Convert dict response to Pydantic model
-        return NewGameSessionResponse(**session_results)
+        return NewGameSessionResponse.model_validate(session_results)
 
     except json.JSONDecodeError as e:
         raise LoggedHTTPException(
@@ -444,9 +504,9 @@ async def get_connection_statistics(request: Request) -> ConnectionStatisticsRes
     error_stats = connection_manager.get_error_statistics()
 
     statistics = ConnectionStatisticsResponse(
-        presence=presence_stats,
-        sessions=session_stats,
-        errors=error_stats,
+        presence=PresenceStatistics.model_validate(presence_stats),
+        sessions=SessionStatistics.model_validate(session_stats),
+        errors=ErrorStatistics.model_validate(error_stats),
         timestamp=time.time(),
     )
 
@@ -454,7 +514,7 @@ async def get_connection_statistics(request: Request) -> ConnectionStatisticsRes
     return statistics
 
 
-async def _validate_websocket_connection_manager(websocket: WebSocket) -> Any | None:
+async def _validate_websocket_connection_manager(websocket: WebSocket) -> _RealtimeConnectionManager | None:
     """
     Validate and resolve connection manager for WebSocket.
 
@@ -464,10 +524,9 @@ async def _validate_websocket_connection_manager(websocket: WebSocket) -> Any | 
     Returns:
         Connection manager instance or None if unavailable
     """
-    websocket_app = getattr(websocket, "app", None)
-    websocket_state = getattr(websocket_app, "state", None)
+    websocket_state = _app_state_from_websocket(websocket)
     connection_manager = _resolve_connection_manager_from_state(websocket_state)
-    if connection_manager is None or getattr(connection_manager, "async_persistence", None) is None:
+    if connection_manager is None or connection_manager.async_persistence is None:
         await websocket.accept()
         await websocket.send_json({"type": "error", "message": "Service temporarily unavailable"})
         await websocket.close(code=1013)
@@ -476,7 +535,9 @@ async def _validate_websocket_connection_manager(websocket: WebSocket) -> Any | 
 
 
 async def _resolve_player_id_from_path_or_token(
-    player_id: str, token: str | None, async_persistence: Any | None = None
+    player_id: str,
+    token: str | None,
+    async_persistence: _PlayerLookupPersistence | None = None,
 ) -> uuid.UUID | None:
     """
     Resolve player ID from a valid JWT. Path UUID is an identity check, not a credential.
@@ -537,7 +598,7 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None
 
         token = _parse_websocket_token(websocket, logger)
         resolved_player_id = await _resolve_player_id_from_path_or_token(
-            player_id, token, async_persistence=getattr(connection_manager, "async_persistence", None)
+            player_id, token, async_persistence=connection_manager.async_persistence
         )
 
         if not resolved_player_id:

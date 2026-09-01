@@ -34,8 +34,8 @@
 ## Relationships
 
 - [Any](Any.md) (7 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [test_room_sync_service.py](test_room_sync_service.py.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 

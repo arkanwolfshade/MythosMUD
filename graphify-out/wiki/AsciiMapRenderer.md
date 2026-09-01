@@ -26,16 +26,14 @@
 ## Relationships
 
 - [Any](Any.md) (11 shared connections)
+- [test_ascii_map_renderer_exits.py](test_ascii_map_renderer_exits.py.md) (8 shared connections)
 - [test_ascii_map_renderer_grid.py](test_ascii_map_renderer_grid.py.md) (6 shared connections)
-- [test_ascii_map_renderer_exits.py](test_ascii_map_renderer_exits.py.md) (5 shared connections)
 - [TestHorizontalExitCharBetween](TestHorizontalExitCharBetween.md) (5 shared connections)
 - [TestResolveExitTarget](TestResolveExitTarget.md) (5 shared connections)
-- [TestGetExitEntriesForRoom](TestGetExitEntriesForRoom.md) (3 shared connections)
+- [map_minimap.py](map_minimap.py.md) (3 shared connections)
 - [._get_vertical_exit_char](_get_vertical_exit_char.md) (3 shared connections)
-- [room_service.py](room_service.py.md) (2 shared connections)
 - [ExplorationService](ExplorationService.md) (2 shared connections)
 - [._exit_is_bidirectional](_exit_is_bidirectional.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
 - [._render_empty_map](_render_empty_map.md) (1 shared connections)
 
 ## Source Files

@@ -35,16 +35,16 @@
 
 - [fastapi_integration.py](fastapi_integration.py.md) (6 shared connections)
 - [get_logger](get_logger.md) (6 shared connections)
-- [log_and_raise_enhanced](log_and_raise_enhanced.md) (6 shared connections)
 - [middleware](middleware.md) (5 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (3 shared connections)
+- [test_error_logging.py](test_error_logging.py.md) (5 shared connections)
 - [correct_patterns.py](correct_patterns.py.md) (3 shared connections)
 - [PerformanceMonitor](PerformanceMonitor.md) (3 shared connections)
 - [MonitoringDashboard](MonitoringDashboard.md) (3 shared connections)
 - [testing_examples.py](testing_examples.py.md) (3 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (2 shared connections)
+- [websocket_integration.py](websocket_integration.py.md) (1 shared connections)
 - [migration_examples.py](migration_examples.py.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
-- [TestRunner](TestRunner.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (1 shared connections)
 
 ## Source Files
 

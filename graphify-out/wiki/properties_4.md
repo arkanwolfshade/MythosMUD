@@ -1,11 +1,10 @@
 # properties
 
-> 14 nodes
+> 10 nodes
 
 ## Key Concepts
 
 - **properties** (12 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **sub_zone** (4 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 - **id** (3 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 - **field1** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 - **field2** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
@@ -15,9 +14,6 @@
 - **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 - **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 - **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **pattern** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Relationships
 
@@ -26,6 +22,7 @@
 - [description](description.md) (1 shared connections)
 - [plane](plane.md) (1 shared connections)
 - [zone](zone.md) (1 shared connections)
+- [sub_zone](sub_zone.md) (1 shared connections)
 - [enum](enum.md) (1 shared connections)
 - [exits](exits.md) (1 shared connections)
 
@@ -35,7 +32,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

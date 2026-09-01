@@ -1,31 +1,35 @@
 # fixture
 
-> 9 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **fixture** (4 connections)
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **mock_player()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **mock_request()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **Create a mock request object.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **Create a mock connection manager.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **Create a mock player object.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **room_service()** (5 connections) — `server/tests/unit/game/test_room_service.py`
+- **fixture** (5 connections)
+- **room_service_with_cache()** (4 connections) — `server/tests/unit/game/test_room_service.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **mock_room_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **sample_room_dict()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Create a mock room cache service.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Create a RoomService instance.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Create a RoomService instance with cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Create a sample room dictionary.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [test_logout_commands.py](test_logout_commands.py.md) (4 shared connections)
+- [test_room_service.py](test_room_service.py.md) (5 shared connections)
+- [pydantic.md](pydantic.md.md) (2 shared connections)
+- [PerformanceMonitor](PerformanceMonitor.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_logout_commands.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 15 (83%)
+- INFERRED: 3 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

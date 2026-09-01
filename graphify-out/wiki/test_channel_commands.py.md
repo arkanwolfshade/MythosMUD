@@ -1,11 +1,10 @@
 # test_channel_commands.py
 
-> 42 nodes
+> 40 nodes
 
 ## Key Concepts
 
 - **test_channel_commands.py** (21 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **channel_commands.py** (17 connections) — `server/commands/channel_commands.py`
 - **handle_channel_command()** (14 connections) — `server/commands/channel_commands.py`
 - **_handle_default_channel_setting()** (10 connections) — `server/commands/channel_commands.py`
 - **asyncio** (9 connections)
@@ -26,17 +25,19 @@
 - **test_extract_channel_from_command_missing()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
 - **test_extract_channel_from_command_parsed_fallback()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
 - **test_validate_channel_name_invalid()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **Channel management commands for Advanced Chat Channels. This module provides…** (1 connections) — `server/commands/channel_commands.py`
 - **Validate channel name. Returns error dict if invalid, None if valid.** (1 connections) — `server/commands/channel_commands.py`
 - **Handle the channel command for switching channels or setting default channel.…** (1 connections) — `server/commands/channel_commands.py`
-- *... and 17 more nodes in this community*
+- **Get persistence and player. Returns (persistence, player) or (None, None) if…** (1 connections) — `server/commands/channel_commands.py`
+- **Extract channel name from command_data. Returns channel name or None.** (1 connections) — `server/commands/channel_commands.py`
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (7 shared connections)
-- [ValidationError](ValidationError.md) (3 shared connections)
-- [PlayerPreferencesService](PlayerPreferencesService.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (1 shared connections)
+- [command_service.py](command_service.py.md) (1 shared connections)
+- [PlayerPreferencesService](PlayerPreferencesService.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -46,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 88 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 77 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

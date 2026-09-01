@@ -1,6 +1,6 @@
 # HealthStatus
 
-> 122 nodes
+> 117 nodes
 
 ## Key Concepts
 
@@ -29,21 +29,22 @@
 - **test_generate_alerts_no_alerts()** (7 connections) — `server/tests/unit/services/test_health_service.py`
 - **test_generate_alerts_with_alerts()** (7 connections) — `server/tests/unit/services/test_health_service.py`
 - **test_get_health_status_version_fallback()** (7 connections) — `server/tests/unit/services/test_health_service.py`
-- *... and 97 more nodes in this community*
+- *... and 92 more nodes in this community*
 
 ## Relationships
 
-- [api/monitoring.py](api-monitoring.py.md) (21 shared connections)
-- [HealthService](HealthService.md) (13 shared connections)
-- [get_logger](get_logger.md) (7 shared connections)
-- [sqlalchemy.md](sqlalchemy.md.md) (4 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (22 shared connections)
+- [HealthService](HealthService.md) (12 shared connections)
+- [Player](Player.md) (4 shared connections)
 - [MemoryProfiler](MemoryProfiler.md) (4 shared connections)
 - [_RaisesOnBool](_RaisesOnBool.md) (3 shared connections)
-- [BaseCommand](BaseCommand.md) (2 shared connections)
+- [health_service](health_service.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [pydantic.md](pydantic.md.md) (2 shared connections)
+- [time.py](time.py.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
-- [StandardizedErrorResponse](StandardizedErrorResponse.md) (1 shared connections)
+- [ErrorType](ErrorType.md) (1 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
 
 ## Source Files
 
@@ -56,8 +57,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 271 (85%)
-- INFERRED: 48 (15%)
+- EXTRACTED: 267 (85%)
+- INFERRED: 47 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

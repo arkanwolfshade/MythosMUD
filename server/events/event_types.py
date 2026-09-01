@@ -40,6 +40,10 @@ class BaseEvent:
         # Timestamp is already set by default_factory
         # event_type is set by child classes
 
+    def _bind_event_type(self, event_type: str) -> None:
+        """Set event_type from subclass __post_init__ (field is declared on BaseEvent)."""
+        self.event_type = event_type
+
 
 @dataclass
 class PlayerEnteredRoom(BaseEvent):
@@ -57,7 +61,7 @@ class PlayerEnteredRoom(BaseEvent):
     def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "PlayerEnteredRoom"
+        self._bind_event_type("PlayerEnteredRoom")
 
 
 @dataclass
@@ -76,7 +80,7 @@ class PlayerLeftRoom(BaseEvent):
     def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "PlayerLeftRoom"
+        self._bind_event_type("PlayerLeftRoom")
 
 
 @dataclass
@@ -95,7 +99,7 @@ class ObjectAddedToRoom(BaseEvent):
     def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "ObjectAddedToRoom"
+        self._bind_event_type("ObjectAddedToRoom")
 
 
 @dataclass
@@ -115,7 +119,7 @@ class ObjectRemovedFromRoom(BaseEvent):
     def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "ObjectRemovedFromRoom"
+        self._bind_event_type("ObjectRemovedFromRoom")
 
 
 @dataclass
@@ -134,7 +138,7 @@ class NPCEnteredRoom(BaseEvent):
     def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "NPCEnteredRoom"
+        self._bind_event_type("NPCEnteredRoom")
 
 
 @dataclass
@@ -153,7 +157,7 @@ class NPCLeftRoom(BaseEvent):
     def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "NPCLeftRoom"
+        self._bind_event_type("NPCLeftRoom")
 
 
 @dataclass
@@ -177,7 +181,7 @@ class NPCAttacked(BaseEvent):
     def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "NPCAttacked"
+        self._bind_event_type("NPCAttacked")
 
 
 @dataclass
@@ -202,7 +206,7 @@ class NPCTookDamage(BaseEvent):
     def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "NPCTookDamage"
+        self._bind_event_type("NPCTookDamage")
 
 
 @dataclass
@@ -225,7 +229,7 @@ class NPCDied(BaseEvent):
     def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "NPCDied"
+        self._bind_event_type("NPCDied")
 
 
 @dataclass
@@ -242,7 +246,7 @@ class RoomOccupantsRefreshRequested(BaseEvent):
     def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "RoomOccupantsRefreshRequested"
+        self._bind_event_type("RoomOccupantsRefreshRequested")
 
 
 @dataclass
@@ -264,7 +268,7 @@ class NPCSpoke(BaseEvent):
     def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "NPCSpoke"
+        self._bind_event_type("NPCSpoke")
 
 
 @dataclass
@@ -285,7 +289,7 @@ class NPCListened(BaseEvent):
     def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "NPCListened"
+        self._bind_event_type("NPCListened")
 
 
 @dataclass
@@ -309,7 +313,7 @@ class PlayerDPUpdated(BaseEvent):
     def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "PlayerDPUpdated"
+        self._bind_event_type("PlayerDPUpdated")
 
 
 @dataclass
@@ -332,7 +336,7 @@ class PlayerMortallyWoundedEvent(BaseEvent):
     def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "PlayerMortallyWoundedEvent"
+        self._bind_event_type("PlayerMortallyWoundedEvent")
 
 
 @dataclass
@@ -353,7 +357,7 @@ class PlayerDPDecayEvent(BaseEvent):
     def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "PlayerDPDecayEvent"
+        self._bind_event_type("PlayerDPDecayEvent")
 
 
 @dataclass
@@ -376,7 +380,21 @@ class PlayerDiedEvent(BaseEvent):
     def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "PlayerDiedEvent"
+        self._bind_event_type("PlayerDiedEvent")
+
+
+@dataclass
+class PlayerXPAwardEvent(BaseEvent):
+    """Event published when a player receives XP."""
+
+    player_id: UUID
+    xp_amount: int
+    new_level: int
+
+    def __post_init__(self) -> None:
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self._bind_event_type("player_xp_awarded")
 
 
 @dataclass
@@ -398,7 +416,7 @@ class PlayerRespawnedEvent(BaseEvent):
     def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "PlayerRespawnedEvent"
+        self._bind_event_type("PlayerRespawnedEvent")
 
 
 @dataclass
@@ -420,7 +438,7 @@ class PlayerDeliriumRespawnedEvent(BaseEvent):
     def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "PlayerDeliriumRespawnedEvent"
+        self._bind_event_type("PlayerDeliriumRespawnedEvent")
 
 
 @dataclass
@@ -441,7 +459,7 @@ class MythosHourTickEvent(BaseEvent):
 
     def __post_init__(self) -> None:
         super().__post_init__()
-        self.event_type = "MythosHourTickEvent"
+        self._bind_event_type("MythosHourTickEvent")
 
 
 @dataclass
@@ -460,7 +478,7 @@ class PartyUpdated(BaseEvent):
 
     def __post_init__(self) -> None:
         super().__post_init__()
-        self.event_type = "PartyUpdated"
+        self._bind_event_type("PartyUpdated")
 
 
 @dataclass
@@ -477,4 +495,4 @@ class QuestCompleted(BaseEvent):
 
     def __post_init__(self) -> None:
         super().__post_init__()
-        self.event_type = "QuestCompleted"
+        self._bind_event_type("QuestCompleted")

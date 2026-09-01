@@ -15,6 +15,7 @@ import pytest
 from fastapi import WebSocket
 from starlette.websockets import WebSocketState
 
+from server.constants.spawn_defaults import LIMBO_ROOM_ID
 from server.models.player import Player
 from server.models.room import Room
 from server.realtime.connection_manager import ConnectionManager
@@ -207,7 +208,7 @@ async def test_check_and_send_death_notification_player_dead(
     mock_player.name = "TestPlayer"
     mock_player.get_stats = MagicMock(return_value={"current_dp": -15})  # Dead
 
-    with patch("server.async_persistence.get_container_async_persistence") as mock_get_persistence:
+    with patch("server.container.async_persistence_access.get_container_async_persistence") as mock_get_persistence:
         mock_persistence = AsyncMock()
         mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
         mock_get_persistence.return_value = mock_persistence
@@ -235,7 +236,7 @@ async def test_check_and_send_death_notification_player_alive(
     mock_player.name = "TestPlayer"
     mock_player.get_stats = MagicMock(return_value={"current_dp": 50})  # Alive
 
-    with patch("server.async_persistence.get_container_async_persistence") as mock_get_persistence:
+    with patch("server.container.async_persistence_access.get_container_async_persistence") as mock_get_persistence:
         mock_persistence = AsyncMock()
         mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
         mock_get_persistence.return_value = mock_persistence
@@ -253,8 +254,6 @@ async def test_check_and_send_death_notification_in_limbo(
     mock_websocket: AsyncMock, mock_connection_manager: AsyncMock, mock_room: MagicMock
 ):
     """Test check_and_send_death_notification() sends notification when in limbo."""
-    from server.services.player_respawn_service import LIMBO_ROOM_ID
-
     player_id = uuid.uuid4()
     player_id_str = str(player_id)
     canonical_room_id = LIMBO_ROOM_ID
@@ -265,7 +264,7 @@ async def test_check_and_send_death_notification_in_limbo(
     mock_player.get_stats = MagicMock(return_value={"current_dp": -10})
     mock_player.current_room_id = LIMBO_ROOM_ID
 
-    with patch("server.async_persistence.get_container_async_persistence") as mock_get_persistence:
+    with patch("server.container.async_persistence_access.get_container_async_persistence") as mock_get_persistence:
         mock_persistence = AsyncMock()
         mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
         mock_get_persistence.return_value = mock_persistence
@@ -498,7 +497,7 @@ async def test_send_initial_room_state_success(
     mock_connection_manager.get_room_occupants = AsyncMock(return_value=[])
 
     with (
-        patch("server.async_persistence.get_container_async_persistence") as mock_get_persistence,
+        patch("server.container.async_persistence_access.get_container_async_persistence") as mock_get_persistence,
         patch("server.realtime.websocket_initial_state.add_npc_occupants_to_list") as mock_add_npcs,
         patch("server.realtime.websocket_initial_state.get_event_handler_for_initial_state") as mock_get_handler,
     ):
@@ -528,7 +527,7 @@ async def test_send_initial_room_state_room_not_found(
     player_id_str = str(player_id)
     canonical_room_id = "room_123"
 
-    with patch("server.async_persistence.get_container_async_persistence") as mock_get_persistence:
+    with patch("server.container.async_persistence_access.get_container_async_persistence") as mock_get_persistence:
         mock_persistence = MagicMock()
         mock_persistence.get_room_by_id = MagicMock(return_value=None)
         mock_get_persistence.return_value = mock_persistence
@@ -561,7 +560,7 @@ async def test_send_initial_room_state_skips_closed_websocket(
     mock_websocket.application_state = WebSocketState.DISCONNECTED
 
     with (
-        patch("server.async_persistence.get_container_async_persistence") as mock_get_persistence,
+        patch("server.container.async_persistence_access.get_container_async_persistence") as mock_get_persistence,
         patch("server.realtime.websocket_initial_state.add_npc_occupants_to_list") as mock_add_npcs,
         patch("server.realtime.websocket_initial_state.get_event_handler_for_initial_state") as mock_get_handler,
     ):
@@ -589,7 +588,9 @@ async def test_send_initial_room_state_handles_exception(
     player_id_str = str(player_id)
     canonical_room_id = "room_123"
 
-    with patch("server.async_persistence.get_container_async_persistence", side_effect=RuntimeError("Error")):
+    with patch(
+        "server.container.async_persistence_access.get_container_async_persistence", side_effect=RuntimeError("Error")
+    ):
         # Should not raise
         await send_initial_room_state(
             mock_websocket, player_id, player_id_str, canonical_room_id, mock_connection_manager

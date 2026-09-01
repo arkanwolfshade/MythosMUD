@@ -37,7 +37,7 @@
 - [factory.py](factory.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [AppConfig](AppConfig.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [pydantic.md](pydantic.md.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

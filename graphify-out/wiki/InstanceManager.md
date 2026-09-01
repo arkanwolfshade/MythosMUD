@@ -1,12 +1,11 @@
 # InstanceManager
 
-> 55 nodes
+> 53 nodes
 
 ## Key Concepts
 
 - **InstanceManager** (19 connections) — `server/game/instance_manager.py`
 - **test_instance_manager.py** (16 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **._init_movement_layer()** (11 connections) — `server/container/bundles/game.py`
 - **.create_instance()** (7 connections) — `server/game/instance_manager.py`
 - **._build_instance_rooms()** (6 connections) — `server/game/instance_manager.py`
 - **.__init__()** (5 connections) — `server/game/instance_manager.py`
@@ -29,33 +28,28 @@
 - **test_create_instance_raises_when_no_templates()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
 - **test_destroy_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
 - **test_get_exit_room_id()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- *... and 30 more nodes in this community*
+- **test_get_first_room_id()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (5 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (3 shared connections)
+- [EventBus](EventBus.md) (6 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [Room](Room.md) (2 shared connections)
-- [ExplorationService](ExplorationService.md) (1 shared connections)
-- [MovementService](MovementService.md) (1 shared connections)
-- [PlayerPositionService](PlayerPositionService.md) (1 shared connections)
 - [FollowService](FollowService.md) (1 shared connections)
-- [PartyService](PartyService.md) (1 shared connections)
-- [.initialize](initialize.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [Alias](Alias.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
+- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/game.py`
 - `server/game/instance_manager.py`
 - `server/tests/unit/game/test_instance_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 85 (94%)
-- INFERRED: 5 (6%)
+- EXTRACTED: 76 (95%)
+- INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---
