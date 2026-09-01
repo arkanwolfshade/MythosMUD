@@ -54,10 +54,10 @@ def _register_event_types() -> None:
 
     _register_module_events(event_types, _EVENT_CLASS_REGISTRY, include_base=False)
 
-    # PlayerXPAwardEvent sets event_type in __post_init__; registry lookup uses the serialized key.
-    from .event_types import PlayerXPAwardEvent
-
-    _EVENT_CLASS_REGISTRY["player_xp_awarded"] = PlayerXPAwardEvent
+    # PlayerXPAwardEvent's event_type ("player_xp_awarded") is set in __post_init__, which the
+    # reflective scan's __new__()-without-__init__() probe never runs — so that scan registers it
+    # under its class name only. Register the serialized-key lookup explicitly.
+    _EVENT_CLASS_REGISTRY["player_xp_awarded"] = event_types.PlayerXPAwardEvent
 
     _register_module_events(combat_events, _EVENT_CLASS_REGISTRY, include_base=True)
 

@@ -194,6 +194,10 @@ jobs:
         run: |
           source .venv-ci/bin/activate
           pre-commit run optional-auth-no-guard-lint --all-files
+      - name: Import layer direction guard (ADR-001, #757)
+        run: |
+          source .venv-ci/bin/activate
+          pre-commit run import-linter --all-files
       - name: Bandit security scan
         run: |
           source .venv-ci/bin/activate

@@ -84,6 +84,7 @@ dev = [
     # sqlint>=0.2.1 - REMOVED: Conflicts with click>=8.1.8 (sqlint requires click==7.0)
     # Use sqlfluff instead, which provides comprehensive SQL linting
     "asyncpg-stubs>=0.31.0",
+    "import-linter>=2.5",  # Enforces ADR-001 layer direction as CI-checked contracts (#757)
 ]
 
 [tool.setuptools.packages.find]
@@ -431,6 +432,7 @@ dev = [
     # sqlint>=0.2.1 - REMOVED: Conflicts with click>=8.1.8 (sqlint requires click==7.0)
     # Use sqlfluff instead, which provides comprehensive SQL linting
     "basedpyright>=1.38.2",
+    "import-linter>=2.5", # Enforces ADR-001 layer direction as CI-checked contracts (#757)
 ]
 
 [tool.uv]

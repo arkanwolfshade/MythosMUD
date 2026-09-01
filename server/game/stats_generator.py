@@ -25,6 +25,9 @@ def generate_random_stats(seed: int | None = None) -> Stats:
     Factory function for creating Stats objects with randomly generated attributes.
     This separates business logic from the model's __init__ method.
 
+    The raw rolls come from models/stats_random.py, which imports nothing from game/ —
+    that is what keeps models/ -> game/ off the import graph (ADR-001; #757).
+
     Args:
         seed: Optional random seed for reproducible generation (useful for testing)
 

@@ -37,7 +37,7 @@ PYTEST_COV_OPTS := --cov=server --cov-report=html --cov-report=term-missing --co
 
 # PHONY targets
 .PHONY: help clean install build run run-production apply-procedures
-.PHONY: lint lint-sqlalchemy format mypy
+.PHONY: lint lint-sqlalchemy lint-imports format mypy
 .PHONY: bandit pylint ruff sqlfluff sqlint vulture
 .PHONY: hadolint shellcheck psscriptanalyzer
 .PHONY: stylelint markdownlint jackson-linter
@@ -135,6 +135,11 @@ lint:
 
 lint-sqlalchemy:
 	$(PYTHON) scripts/lint_sqlalchemy_async.py
+
+# ADR-001 layer-direction contracts (models/events/persistence must not import services/game/npc);
+# see .importlinter. CI runs this via pre-commit (see ci.yml "Import layer direction guard").
+lint-imports:
+	$(UV) lint-imports
 
 # CRITICAL: CI/CD uses the same command (pre-commit run mypy --all-files)
 # If you change this, update .github/workflows/ci.yml to match
@@ -365,7 +370,7 @@ run-production:
 # Flattened stages so FAIL-FAST names the exact leaf target (not a nested composite).
 # Tools must exit non-zero on real failures (pylint: any E/W/F/C/R finding). Tracebacks
 # still fail even on exit 0. Grepping tool "WARNING" strings is not a fail condition here.
-ALL_STAGES := format mypy lint lint-sqlalchemy \
+ALL_STAGES := format mypy lint lint-sqlalchemy lint-imports \
 	$(CODACY_TOOL_STAGES) \
 	quality-fragmentation-guard check-postgresql build openapi-spec openapi-check \
 	test-client-coverage test-server-coverage \
