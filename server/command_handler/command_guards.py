@@ -25,7 +25,7 @@ class _PlayerLookup(Protocol):  # pylint: disable=too-few-public-methods
     async def get_player_by_name(self, player_name: str) -> object | None: ...  # pylint: disable=missing-function-docstring
 
 
-class _AppStateCommandGuards(Protocol):
+class _AppStateCommandGuards(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub; fields only
     """App state fields used by grace-period and casting command guards."""
 
     connection_manager: object | None

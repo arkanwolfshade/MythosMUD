@@ -12,7 +12,7 @@ from typing import ClassVar, cast
 
 from pydantic import BaseModel, ConfigDict, Field, computed_field, model_validator
 
-from .stats_random import CORE_STAT_KEYS, roll_random_core_stat_values
+from .stats_random import CORE_STAT_KEYS, CoreStatValues, roll_random_core_stat_values
 
 
 def _coerce_stat_int(value: object, default: int) -> int:
@@ -22,6 +22,18 @@ def _coerce_stat_int(value: object, default: int) -> int:
     if isinstance(value, float):
         return int(value)
     return default
+
+
+def _needs_random_core_stats(raw: dict[str, object]) -> bool:
+    """True when any core stat key is missing or explicitly None."""
+    return not any(key in raw for key in CORE_STAT_KEYS) or any(raw.get(key) is None for key in CORE_STAT_KEYS)
+
+
+def _merge_random_core_stats(raw: dict[str, object], random_values: CoreStatValues) -> None:
+    """Fill missing or None core stat keys from rolled values."""
+    for key in CORE_STAT_KEYS:
+        if key not in raw or raw.get(key) is None:
+            raw[key] = random_values[key]
 
 
 def _new_player_id() -> str:
@@ -178,16 +190,10 @@ class Stats(BaseModel):
         if not isinstance(data, dict):
             return data
         raw: dict[str, object] = cast(dict[str, object], data).copy()
-        needs_random_stats = not any(key in raw for key in CORE_STAT_KEYS) or any(
-            raw.get(key) is None for key in CORE_STAT_KEYS
-        )
-        if needs_random_stats:
+        if _needs_random_core_stats(raw):
             seed_obj = raw.pop("_test_seed", None)
             seed = seed_obj if isinstance(seed_obj, int) else None
-            random_values = roll_random_core_stat_values(seed=seed)
-            for key in CORE_STAT_KEYS:
-                if key not in raw or raw.get(key) is None:
-                    raw[key] = random_values[key]
+            _merge_random_core_stats(raw, roll_random_core_stat_values(seed=seed))
         return raw
 
     @model_validator(mode="before")
