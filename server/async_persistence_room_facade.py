@@ -21,7 +21,7 @@ from .exceptions import DatabaseError
 from .models.room import Room
 
 
-class _AsyncPersistenceRoomFacadeBase:
+class _AsyncPersistenceRoomFacadeBase:  # pylint: disable=too-few-public-methods  # Reason: mixin attr holder; public API lives on AsyncPersistenceLayer
     """Attrs provided by AsyncPersistenceLayer when mixed in."""
 
     _logger: BoundLogger
@@ -64,7 +64,7 @@ class _AsyncPersistenceRoomFacadeBase:
         await self._room_loader.load()
 
 
-class AsyncPersistenceRoomFacade(_AsyncPersistenceRoomFacadeBase):
+class AsyncPersistenceRoomFacade(_AsyncPersistenceRoomFacadeBase):  # pylint: disable=too-few-public-methods  # Reason: test hooks are intentionally private (_process_*)
     """Mixin: lazy room-cache load and loader delegation for unit tests."""
 
     def _process_room_rows(self, rooms_rows: list[dict[str, object]]) -> list[ProcessedRoomData]:

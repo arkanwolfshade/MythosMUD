@@ -15,6 +15,7 @@ import numpy as np
 from ..models.game import AttributeType, Stats
 from ..models.stats_random import CoreStatValues, roll_random_core_stat_values
 from ..structured_logging.enhanced_logging_config import get_logger
+from .stats_generator_summary import build_stat_summary
 
 
 def generate_random_stats(seed: int | None = None) -> Stats:
@@ -479,48 +480,4 @@ class StatsGenerator:
         Returns:
             Dict: Summary of stats with modifiers and totals
         """
-        summary: dict[str, object] = {
-            "attributes": {
-                "strength": {"value": stats.strength, "modifier": stats.get_attribute_modifier(AttributeType.STR)},
-                "dexterity": {"value": stats.dexterity, "modifier": stats.get_attribute_modifier(AttributeType.DEX)},
-                "constitution": {
-                    "value": stats.constitution,
-                    "modifier": stats.get_attribute_modifier(AttributeType.CON),
-                },
-                "size": {"value": stats.size, "modifier": stats.get_attribute_modifier(AttributeType.SIZ)},
-                "intelligence": {
-                    "value": stats.intelligence,
-                    "modifier": stats.get_attribute_modifier(AttributeType.INT),
-                },
-                "power": {"value": stats.power, "modifier": stats.get_attribute_modifier(AttributeType.POW)},
-                "education": {"value": stats.education, "modifier": stats.get_attribute_modifier(AttributeType.EDU)},
-                "charisma": {"value": stats.charisma, "modifier": stats.get_attribute_modifier(AttributeType.CHA)},
-                "luck": {"value": stats.luck, "modifier": stats.get_attribute_modifier(AttributeType.LUCK)},
-            },
-            "derived_stats": {
-                "max_dp": stats.max_dp,
-                "max_magic_points": stats.max_magic_points,
-                "max_lucidity": stats.max_lucidity,
-            },
-        }
-
-        # Use NumPy array to eliminate code duplication and improve efficiency
-        stat_values = np.array(
-            [
-                stats.strength or 50,
-                stats.dexterity or 50,
-                stats.constitution or 50,
-                stats.size or 50,
-                stats.intelligence or 50,
-                stats.power or 50,
-                stats.education or 50,
-                stats.charisma or 50,
-                stats.luck or 50,
-            ],
-            dtype=np.int32,
-        )
-
-        summary["total_points"] = int(np.sum(stat_values))
-        summary["average_stat"] = float(np.mean(stat_values))
-
-        return summary
+        return build_stat_summary(stats)

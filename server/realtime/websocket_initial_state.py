@@ -31,7 +31,7 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
-class _PlayerHandlerForOccupantsSnapshot(Protocol):
+class _PlayerHandlerForOccupantsSnapshot(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """Minimal player handler surface for sending occupants snapshots on connect."""
 
     async def send_occupants_snapshot_to_player(self, player_id: uuid.UUID, room_id: str) -> None:
@@ -39,7 +39,7 @@ class _PlayerHandlerForOccupantsSnapshot(Protocol):
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stub body required by basedpyright
 
 
-class _RealTimeEventHandlerForInitialState(Protocol):
+class _RealTimeEventHandlerForInitialState(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """Minimal real-time event handler surface for initial WebSocket state."""
 
     player_handler: _PlayerHandlerForOccupantsSnapshot
