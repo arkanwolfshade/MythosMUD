@@ -299,6 +299,29 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
             self._pending_thread_starts.append((npc_id, definition))
             logger.debug("Queued NPC thread start request (thread manager not started)", npc_id=npc_id)
 
+    def queue_npc_thread_stop(self, npc_id: str) -> None:
+        """Stop the NPC's thread worker task on despawn.
+
+        Every despawn (death, respawn, manual, or optional-population trimming) routes through
+        `despawn_npc_impl`, which calls this. Without it, `NPCThreadManager._npc_thread_worker`
+        never observes `npc_id` removed from `active_threads` (its loop guard) because nothing
+        ever removes it there -- the task runs forever, and each subsequent spawn gets a fresh
+        `npc_id` (see `generate_npc_id`), so a new worker piles up every cycle. `#768`.
+
+        `NPCThreadManager.stop_npc_thread` is async and idempotent (no-op, with a log, if
+        `npc_id` has no active thread); despawn's own call path is not, so this schedules it as
+        a fire-and-forget task. Despawn is always driven from async game-tick or command-handling
+        code, so a running loop is expected here.
+        """
+        if not self.thread_manager:
+            return
+        try:
+            import asyncio
+
+            _ = asyncio.create_task(self.thread_manager.stop_npc_thread(npc_id))
+        except RuntimeError:
+            logger.warning("No running event loop to stop NPC thread on despawn", npc_id=npc_id)
+
     def spawn_npc(
         self, definition: NPCDefinition, room_id: str, reason: str = "manual"
     ) -> tuple[str | None, str | None]:

@@ -47,6 +47,25 @@ def test_despawn_success_with_persistence_and_room() -> None:
     record.add_event.assert_called_once_with(NPCLifecycleEvent.DESPAWNED, {"reason": "test"})
 
 
+def test_despawn_stops_npc_thread_worker() -> None:
+    """#768: despawn must release the NPCThreadManager worker task for this npc_id.
+
+    Without this call, `_npc_thread_worker`'s loop guard (`npc_id in active_threads`) is never
+    falsified, the task runs forever, and every subsequent spawn (a fresh npc_id) piles up a new
+    one -- the ~25/hour idle leak this issue tracks.
+    """
+    manager = _make_manager()
+    assert despawn_npc_impl(manager, "npc-1", reason="test") is True
+    manager.queue_npc_thread_stop.assert_called_once_with("npc-1")
+
+
+def test_despawn_stops_npc_thread_worker_even_without_active_instance() -> None:
+    """A thread can outlive its `active_npcs` entry; despawn must still release it by npc_id."""
+    manager = _make_manager(with_active=False)
+    assert despawn_npc_impl(manager, "npc-1") is True
+    manager.queue_npc_thread_stop.assert_called_once_with("npc-1")
+
+
 def test_despawn_publishes_event_when_room_missing() -> None:
     manager = _make_manager(with_room=False)
     assert despawn_npc_impl(manager, "npc-1") is True

@@ -4,7 +4,7 @@ NPC Utility Functions.
 This module provides utility functions for extracting metadata from NPC instances.
 """
 
-from typing import Any
+from typing import Any, cast
 
 
 def extract_room_id_from_npc(npc_instance: Any) -> str:
@@ -105,6 +105,35 @@ def _stable_room_id_for_zone(room_id: str) -> str:
         if len(parts) > 2:
             return parts[2]
     return room_id
+
+
+def spawn_npc_via_population_controller(
+    manager: Any, definition: Any, room_id: str, reason: str
+) -> tuple[str | None, str | None]:
+    """
+    Spawn an NPC through `population_controller.spawn_npc` when one is configured (#768).
+
+    `NPCPopulationController._spawn_npc` delegates to `NPCLifecycleManager.spawn_npc` and then
+    registers the new NPC in `population_stats` -- the only place that happens. Calling
+    `manager.spawn_npc` directly (as the periodic optional-spawn check and respawn queue
+    processing both used to) skips that registration, so `current_count` in the population-cap
+    check always reads 0 and the cap never engages: optional NPCs spawn without limit. Falls
+    back to `manager.spawn_npc` when no population controller is configured (e.g. minimal test
+    setups), matching prior behavior there.
+
+    Args:
+        manager: NPCLifecycleManager instance (avoids circular import).
+        definition: NPC definition to spawn.
+        room_id: Room to spawn the NPC in.
+        reason: Spawn reason, passed through to whichever spawn call is used.
+
+    Returns:
+        Tuple of (npc_id, failure_reason), as returned by the underlying spawn call.
+    """
+    population_controller = getattr(manager, "population_controller", None)
+    if population_controller is not None:
+        return cast(tuple[str | None, str | None], population_controller.spawn_npc(definition, room_id, reason))
+    return cast(tuple[str | None, str | None], manager.spawn_npc(definition, room_id, reason))
 
 
 def get_zone_key_from_room_id(room_id: str) -> str:

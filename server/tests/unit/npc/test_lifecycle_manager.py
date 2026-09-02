@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import asyncio
 import time
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 from server.events import EventBus
 from server.events.event_types import NPCDied, NPCEnteredRoom, NPCLeftRoom
@@ -164,3 +167,20 @@ def test_respawn_npc_success() -> None:
 def test_get_npc_lifecycle_record_missing() -> None:
     manager = _make_manager()
     assert manager.get_npc_lifecycle_record("missing") is None
+
+
+@pytest.mark.asyncio
+async def test_queue_npc_thread_stop_schedules_stop_on_thread_manager() -> None:
+    """#768: queue_npc_thread_stop must actually reach NPCThreadManager.stop_npc_thread.
+
+    Patches `stop_npc_thread` on the manager's real `NPCThreadManager` (built by `_make_manager`
+    since `thread_manager=None` there) to prove the scheduled task calls the real method with
+    the right npc_id, not just that *something* got scheduled.
+    """
+    manager = _make_manager()
+    with patch.object(manager.thread_manager, "stop_npc_thread", return_value=True) as mock_stop:
+        manager.queue_npc_thread_stop("npc-1")
+        # queue_npc_thread_stop schedules a fire-and-forget task; let it run.
+        await asyncio.sleep(0)
+
+    mock_stop.assert_called_once_with("npc-1")

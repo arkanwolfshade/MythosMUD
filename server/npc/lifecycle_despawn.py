@@ -77,6 +77,11 @@ def despawn_npc_impl(manager: Any, npc_id: str, reason: str = "manual") -> bool:
         record.change_state(NPCLifecycleState.DESPAWNED, reason)
         record.add_event(NPCLifecycleEvent.DESPAWNED, {"reason": reason})
 
+        # Release the NPCThreadManager worker task tied to this npc_id (#768): despawning the
+        # instance alone leaves the thread's loop guard (`npc_id in active_threads`) satisfied
+        # forever, since nothing else removes it there.
+        manager.queue_npc_thread_stop(npc_id)
+
         logger.info("Successfully despawned NPC", npc_id=npc_id, reason=reason)
         return True
 

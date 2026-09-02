@@ -8,6 +8,7 @@ import time
 from typing import Any
 
 from ..structured_logging.enhanced_logging_config import get_logger
+from .npc_utils import spawn_npc_via_population_controller
 
 logger = get_logger(__name__)
 
@@ -106,7 +107,7 @@ def _attempt_respawn_impl(manager: Any, npc_id: str, respawn_data: dict[str, Any
             logger.debug("Cannot respawn NPC - spawn conditions not met", npc_id=npc_id)
             return False
 
-        new_npc_id, _ = manager.spawn_npc(definition, room_id, f"respawn: {reason}")
+        new_npc_id, _ = spawn_npc_via_population_controller(manager, definition, room_id, f"respawn: {reason}")
         if new_npc_id:
             if new_npc_id != npc_id and npc_id in manager.lifecycle_records:
                 old_record = manager.lifecycle_records[npc_id]

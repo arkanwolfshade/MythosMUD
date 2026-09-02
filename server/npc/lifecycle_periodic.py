@@ -12,6 +12,7 @@ from server.models.npc import NPCDefinition
 
 from ..config.npc_config import NPCMaintenanceConfig
 from ..structured_logging.enhanced_logging_config import get_logger
+from .npc_utils import spawn_npc_via_population_controller
 
 logger = get_logger(__name__)
 
@@ -165,7 +166,7 @@ def _attempt_optional_npc_spawn(manager: Any, definition: Any, zone_key: str) ->
         return None
 
     npc_id: str | None
-    npc_id, _ = manager.spawn_npc(definition, spawn_room_id, "periodic_spawn_check")
+    npc_id, _ = spawn_npc_via_population_controller(manager, definition, spawn_room_id, "periodic_spawn_check")
     if npc_id is not None:
         logger.info(
             "Periodic spawn check successful",

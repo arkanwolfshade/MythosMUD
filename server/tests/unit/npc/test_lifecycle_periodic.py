@@ -212,14 +212,17 @@ def test_check_optional_npc_spawns_successful_spawn() -> None:
     manager.population_controller = controller
     manager.respawn_queue = {}
     manager.last_spawn_check = {}
-    manager.spawn_npc.return_value = ("npc-new", None)
+    # #768: spawns route through population_controller.spawn_npc (registers population_stats),
+    # not manager.spawn_npc directly -- that gap was why the optional-NPC cap never engaged.
+    controller.spawn_npc.return_value = ("npc-new", None)
 
     with patch("server.npc.lifecycle_periodic.random.random", return_value=0.0):
         result = check_optional_npc_spawns_impl(manager)
 
     assert result["checks_performed"] == 1
     assert result["spawned_count"] == 1
-    manager.spawn_npc.assert_called_once()
+    controller.spawn_npc.assert_called_once_with(definition, "room-spawn", "periodic_spawn_check")
+    manager.spawn_npc.assert_not_called()
 
 
 def test_check_optional_npc_spawns_probability_miss() -> None:
@@ -253,6 +256,7 @@ def test_check_optional_npc_spawns_probability_miss() -> None:
 
     assert result["checks_performed"] == 1
     assert result["spawned_count"] == 0
+    controller.spawn_npc.assert_not_called()
     manager.spawn_npc.assert_not_called()
 
 
@@ -303,6 +307,26 @@ def test_attempt_optional_npc_spawn_no_zone_config() -> None:
     controller.get_zone_configuration.return_value = None
     manager = MagicMock(population_controller=controller)
     assert _attempt_optional_npc_spawn(manager, MagicMock(), "zone") is None
+
+
+def test_attempt_optional_npc_spawn_success_routes_through_population_controller() -> None:
+    """#768: a successful optional spawn must go through population_controller.spawn_npc so the
+    new NPC is registered in population_stats -- otherwise the cap never engages.
+    """
+    definition = MagicMock(spawn_probability=1.0, room_id="room-1", name="Mob")
+    zone_config = MagicMock()
+    zone_config.get_effective_spawn_probability.return_value = 1.0
+    controller = MagicMock()
+    controller.get_zone_configuration.return_value = zone_config
+    controller.spawn_npc.return_value = ("npc-new", None)
+    manager = MagicMock(population_controller=controller)
+
+    with patch("server.npc.lifecycle_periodic.random.random", return_value=0.0):
+        result = _attempt_optional_npc_spawn(manager, definition, "zone")
+
+    assert result == "npc-new"
+    controller.spawn_npc.assert_called_once_with(definition, "room-1", "periodic_spawn_check")
+    manager.spawn_npc.assert_not_called()
 
 
 def test_check_optional_npc_spawns_skips_missing_zone_key() -> None:
