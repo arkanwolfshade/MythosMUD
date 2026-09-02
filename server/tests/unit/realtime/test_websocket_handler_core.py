@@ -8,7 +8,6 @@ validation, chat/game commands, and basic app state resolution.
 # pyright: reportPrivateUsage=false, reportAny=false, reportMissingParameterType=false, reportUnknownParameterType=false, reportUnknownArgumentType=false, reportUnknownMemberType=false, reportUnusedCallResult=false
 
 import uuid
-from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -31,6 +30,7 @@ from server.realtime.websocket_handler import (
     process_websocket_command,
     send_system_message,
 )
+from server.schemas.realtime.websocket_messages import ChatData, ChatMessage, CommandData, CommandMessage
 
 # Test UUID constant for player IDs
 TEST_PLAYER_ID = uuid.UUID("12345678-1234-5678-1234-567812345678")
@@ -256,7 +256,7 @@ async def test_handle_game_command_with_provided_args(mock_websocket, mock_ws_co
 @pytest.mark.asyncio
 async def test_handle_websocket_message(mock_websocket):
     """Test handle_websocket_message routes message."""
-    message = cast(dict[str, object], {"type": "command", "command": "look"})
+    message = CommandMessage(type="command", data=CommandData(command="look"))
     with patch("server.realtime.message_handler_factory.message_handler_factory") as mock_factory:
         mock_factory.handle_message = AsyncMock()
         await handle_websocket_message(mock_websocket, TEST_PLAYER_ID_STR, message)
@@ -266,7 +266,7 @@ async def test_handle_websocket_message(mock_websocket):
 @pytest.mark.asyncio
 async def test_handle_websocket_message_chat(mock_websocket):
     """Test handle_websocket_message routes chat message."""
-    message = cast(dict[str, object], {"type": "chat", "message": "Hello"})
+    message = ChatMessage(type="chat", data=ChatData(message="Hello"))
     with patch("server.realtime.websocket_handler.handle_chat_message", new_callable=AsyncMock) as mock_chat:
         await handle_websocket_message(mock_websocket, TEST_PLAYER_ID_STR, message)
         mock_chat.assert_awaited_once()
@@ -275,7 +275,7 @@ async def test_handle_websocket_message_chat(mock_websocket):
 @pytest.mark.asyncio
 async def test_handle_websocket_message_command(mock_websocket):
     """Test handle_websocket_message routes command message."""
-    message = cast(dict[str, object], {"type": "command", "command": "look"})
+    message = CommandMessage(type="command", data=CommandData(command="look"))
     with patch("server.realtime.websocket_handler.handle_game_command", new_callable=AsyncMock) as mock_cmd:
         await handle_websocket_message(mock_websocket, TEST_PLAYER_ID_STR, message)
         mock_cmd.assert_awaited_once()

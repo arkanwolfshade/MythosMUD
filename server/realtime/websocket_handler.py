@@ -61,6 +61,7 @@ from .websocket_initial_state import (
 from .websocket_room_updates import broadcast_room_update
 
 if TYPE_CHECKING:
+    from ..schemas.realtime.websocket_messages import WebSocketInboundMessage
     from .connection_manager import ConnectionManager
 
 # AI Agent: Don't import app at module level - causes circular import!
@@ -176,14 +177,14 @@ async def handle_websocket_connection(
         await _cleanup_connection_and_clear_context(player_id, player_id_str, connection_manager)
 
 
-async def handle_websocket_message(websocket: WebSocket, player_id: str, message: dict[str, object]) -> None:
+async def handle_websocket_message(websocket: WebSocket, player_id: str, message: "WebSocketInboundMessage") -> None:
     """
     Handle a WebSocket message from a player.
 
     Args:
         websocket: The WebSocket connection
         player_id: The player's ID
-        message: The message data
+        message: The validated, typed inbound message
     """
     try:
         # Use the message handler factory to route messages

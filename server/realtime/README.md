@@ -34,17 +34,23 @@ if present.
 
 1. **Validation**: [message_validator.py](message_validator.py) enforces size limits,
    JSON depth, string-length limits, CSRF, and a required-top-level-field check
-   (`type` or `message`). There is no per-message-type Pydantic schema on this path — an
-   earlier `schema` parameter and its models (`server/schemas/realtime/websocket_messages.py`)
-   were removed as dead code in `#754`; typing the WebSocket inbound boundary the way `#755`
-   did for HTTP request bodies is tracked as a separate follow-up issue. Invalid messages get
-   an error response and are not dispatched.
+   (`type` or `message`). It then validates the unwrapped, CSRF-stripped message against
+   `WebSocketInboundMessage` — a `type`-discriminated union of Pydantic schemas in
+   [server/schemas/realtime/websocket_messages.py](../schemas/realtime/websocket_messages.py),
+   each inheriting `SecureBaseModel` (`extra="forbid"`), the same pattern `#755` used for HTTP
+   request bodies. `parse_and_validate` returns the validated, typed message rather than a raw
+   dict. An unrecognized `type` or an unmodelled field is rejected before it reaches routing.
+   `server/tests/unit/realtime/test_websocket_message_schema_registry.py` is a drift guard
+   asserting the schema union's discriminator values exactly match the handler factory's
+   registered types (`#765`; supersedes the dead `schema` parameter removed in `#754`).
 2. **Routing**: [message_handler_factory.py](message_handler_factory.py) looks up the
-   handler by `message.type` (command, chat, ping, follow_response, party_invite_response).
+   handler by `message.type` (command, chat, ping, follow_response, party_invite_response,
+   client_error_report) and dispatches the typed message — no `dict[str, Any]` on this path.
 3. **Handlers**: [message_handlers.py](message_handlers.py) implements each type; e.g.
    command → `handle_game_command` in websocket_handler (unified command handler),
-   chat → `handle_chat_message`, ping → pong. Handlers receive `connection_manager`
-   from the pipeline (or resolve via fallback for backward compatibility).
+   chat → `handle_chat_message`, ping → pong. Handlers receive the validated envelope model
+   and `connection_manager` from the pipeline (or resolve via fallback for backward
+   compatibility).
 
 ## NATS and Room Updates
 
