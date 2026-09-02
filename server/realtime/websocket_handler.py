@@ -7,6 +7,12 @@ from the WebSocket pipeline when invoking handle_game_command,
 process_websocket_command, or handle_chat_message.
 """
 
+# pyright: reportImportCycles=false
+# Reason: websocket_handler_connection.py and websocket_handler_message_loop.py were extracted
+# from this module for Lizard file-nloc limits, and both import back `websocket_handler`
+# (deferred to function scope, so no runtime circular-import) to reach coordinator entry points.
+# basedpyright still flags the structural cycle regardless of the deferred import.
+
 import uuid
 from typing import TYPE_CHECKING
 
@@ -15,6 +21,7 @@ from structlog.stdlib import BoundLogger
 
 from ..error_types import ErrorMessages, ErrorType, create_websocket_error_response
 from ..structured_logging.enhanced_logging_config import get_logger
+from ..structured_logging.logging_context import bind_request_context, clear_request_context
 from .envelope import build_event
 from .websocket_handler_app_state import resolve_and_setup_app_state_services
 from .websocket_handler_commands import (
@@ -104,6 +111,14 @@ _setup_initial_connection_state = setup_initial_connection_state
 _send_welcome_event = send_welcome_event
 
 
+async def _cleanup_connection_and_clear_context(
+    player_id: uuid.UUID, player_id_str: str, connection_manager: "ConnectionManager"
+) -> None:
+    """Run connection cleanup and clear the bound logging context together."""
+    await _cleanup_connection(player_id, player_id_str, connection_manager)
+    clear_request_context()
+
+
 async def handle_websocket_connection(
     websocket: WebSocket,
     player_id: uuid.UUID,
@@ -138,19 +153,27 @@ async def handle_websocket_connection(
     player_id_str = str(player_id)
     await load_player_mute_data(player_id_str)
 
+    connection_id = connection_manager.get_connection_id_from_websocket(websocket)
+    bind_request_context(
+        player_id=player_id_str,
+        session_id=session_id,
+        connection_id=connection_id,
+        connection_type="websocket",
+    )
+
     _, should_exit = await _setup_initial_connection_state(websocket, player_id, player_id_str, connection_manager)
     if should_exit:
-        await _cleanup_connection(player_id, player_id_str, connection_manager)
+        await _cleanup_connection_and_clear_context(player_id, player_id_str, connection_manager)
         return
 
     if not await _send_welcome_event(websocket, player_id, player_id_str):
-        await _cleanup_connection(player_id, player_id_str, connection_manager)
+        await _cleanup_connection_and_clear_context(player_id, player_id_str, connection_manager)
         return
 
     try:
         await _handle_websocket_message_loop(websocket, player_id, player_id_str, connection_manager)
     finally:
-        await _cleanup_connection(player_id, player_id_str, connection_manager)
+        await _cleanup_connection_and_clear_context(player_id, player_id_str, connection_manager)
 
 
 async def handle_websocket_message(websocket: WebSocket, player_id: str, message: dict[str, object]) -> None:

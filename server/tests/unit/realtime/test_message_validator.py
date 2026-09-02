@@ -127,7 +127,7 @@ def test_validate_csrf_snake_case_key(validator: WebSocketMessageValidator) -> N
 
 def test_parse_and_validate_strips_csrf_after_success(validator: WebSocketMessageValidator) -> None:
     raw = json.dumps({"type": "ping", "csrfToken": "tok"})
-    out = validator.parse_and_validate(raw, "pid", schema=None, csrf_token="tok")
+    out = validator.parse_and_validate(raw, "pid", csrf_token="tok")
     assert "csrfToken" not in out
     assert "csrf_token" not in out
     assert out.get("type") == "ping"
@@ -136,7 +136,7 @@ def test_parse_and_validate_strips_csrf_after_success(validator: WebSocketMessag
 def test_parse_and_validate_inner_json_inherits_outer_csrf(validator: WebSocketMessageValidator) -> None:
     inner = json.dumps({"type": "command", "data": {}})
     raw = json.dumps({"message": inner, "csrfToken": "outer"})
-    out = validator.parse_and_validate(raw, "pid", schema=None, csrf_token="outer")
+    out = validator.parse_and_validate(raw, "pid", csrf_token="outer")
     assert out.get("type") == "command"
     assert "csrfToken" not in out
 
@@ -145,7 +145,7 @@ def test_parse_and_validate_unwraps_string_inner_message() -> None:
     v = WebSocketMessageValidator(max_message_size=4096, max_json_depth=10)
     inner = json.dumps({"type": "command", "data": {}, "csrfToken": "tok"})
     raw = json.dumps({"message": inner})
-    assert v.parse_and_validate(raw, "pid", schema=None, csrf_token="tok").get("type") == "command"
+    assert v.parse_and_validate(raw, "pid", csrf_token="tok").get("type") == "command"
 
 
 def test_parse_and_validate_unwraps_without_csrf_rejected() -> None:
@@ -153,7 +153,7 @@ def test_parse_and_validate_unwraps_without_csrf_rejected() -> None:
     inner = json.dumps({"type": "command", "data": {}})
     raw = json.dumps({"message": inner})
     with pytest.raises(MessageValidationError) as exc:
-        _ = v.parse_and_validate(raw, "pid", schema=None, csrf_token=None)
+        _ = v.parse_and_validate(raw, "pid", csrf_token=None)
     assert exc.value.error_type == "csrf_token_missing"
 
 
@@ -163,7 +163,7 @@ def test_parse_and_validate_inner_json_depth_exceeded() -> None:
     inner = json.dumps(_deep_dict(5))
     raw = json.dumps({"message": inner})
     with pytest.raises(MessageValidationError) as exc:
-        _ = v.parse_and_validate(raw, "pid", schema=None, csrf_token=None)
+        _ = v.parse_and_validate(raw, "pid", csrf_token=None)
     assert exc.value.error_type == "depth_limit_exceeded"
 
 
@@ -187,21 +187,21 @@ def test_parse_and_validate_rejects_oversized_raw_payload(validator: WebSocketMe
     """parse_and_validate applies byte size limit to the full wire payload."""
     raw = "x" * 400
     with pytest.raises(MessageValidationError) as exc:
-        _ = validator.parse_and_validate(raw, "pid", schema=None, csrf_token=None)
+        _ = validator.parse_and_validate(raw, "pid", csrf_token=None)
     assert exc.value.error_type == "size_limit_exceeded"
 
 
 def test_parse_and_validate_rejects_invalid_json() -> None:
     v = WebSocketMessageValidator(max_message_size=2048, max_json_depth=10)
     with pytest.raises(MessageValidationError) as exc:
-        _ = v.parse_and_validate("{not json", "pid", schema=None, csrf_token=None)
+        _ = v.parse_and_validate("{not json", "pid", csrf_token=None)
     assert exc.value.error_type == "json_parse_error"
 
 
 def test_parse_and_validate_rejects_non_object_json() -> None:
     v = WebSocketMessageValidator(max_message_size=2048, max_json_depth=10)
     with pytest.raises(MessageValidationError) as exc:
-        _ = v.parse_and_validate(json.dumps([1, 2, 3]), "pid", schema=None, csrf_token=None)
+        _ = v.parse_and_validate(json.dumps([1, 2, 3]), "pid", csrf_token=None)
     assert exc.value.error_type == "invalid_type"
 
 
@@ -211,5 +211,5 @@ def test_parse_and_validate_csrf_inner_token_must_match_expected_not_outer_wrapp
     inner = json.dumps({"type": "cmd", "data": {}, "csrfToken": "inner-wrong"})
     raw = json.dumps({"message": inner, "csrfToken": "outer-ok"})
     with pytest.raises(MessageValidationError) as exc:
-        _ = v.parse_and_validate(raw, "pid", schema=None, csrf_token="outer-ok")
+        _ = v.parse_and_validate(raw, "pid", csrf_token="outer-ok")
     assert exc.value.error_type == "csrf_token_invalid"

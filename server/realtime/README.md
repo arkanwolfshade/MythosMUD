@@ -33,16 +33,18 @@ if present.
 ## Message Flow
 
 1. **Validation**: [message_validator.py](message_validator.py) enforces size limits,
-   JSON depth, and schema (command, chat, ping, etc.). Invalid messages get an error
-   response and are not dispatched.
+   JSON depth, string-length limits, CSRF, and a required-top-level-field check
+   (`type` or `message`). There is no per-message-type Pydantic schema on this path — an
+   earlier `schema` parameter and its models (`server/schemas/realtime/websocket_messages.py`)
+   were removed as dead code in `#754`; typing the WebSocket inbound boundary the way `#755`
+   did for HTTP request bodies is tracked as a separate follow-up issue. Invalid messages get
+   an error response and are not dispatched.
 2. **Routing**: [message_handler_factory.py](message_handler_factory.py) looks up the
    handler by `message.type` (command, chat, ping, follow_response, party_invite_response).
 3. **Handlers**: [message_handlers.py](message_handlers.py) implements each type; e.g.
    command → `handle_game_command` in websocket_handler (unified command handler),
    chat → `handle_chat_message`, ping → pong. Handlers receive `connection_manager`
    from the pipeline (or resolve via fallback for backward compatibility).
-
-Schemas for client messages are in [server/schemas/realtime/websocket_messages.py](../schemas/realtime/websocket_messages.py).
 
 ## NATS and Room Updates
 
