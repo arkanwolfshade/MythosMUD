@@ -9,11 +9,16 @@ import json
 from collections.abc import Mapping
 from typing import ClassVar, cast
 
+from pydantic import TypeAdapter, ValidationError
 from structlog.stdlib import BoundLogger
 
+from ..schemas.realtime.websocket_messages import WebSocketInboundMessage
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger: BoundLogger = get_logger(__name__)
+
+# Built once at import time; the discriminated-union match itself is what does the per-message work.
+_inbound_message_adapter: TypeAdapter[WebSocketInboundMessage] = TypeAdapter(WebSocketInboundMessage)
 
 
 class MessageValidationError(Exception):
@@ -284,12 +289,44 @@ class WebSocketMessageValidator:
         except json.JSONDecodeError:
             return message
 
+    def _validate_message_schema(self, message: dict[str, object], player_id: str) -> WebSocketInboundMessage:
+        """
+        Validate the unwrapped, CSRF-stripped message against its per-type schema.
+
+        Raises:
+            MessageValidationError: If `type` names no known message schema, or the payload
+                doesn't match that schema (unrecognized fields, wrong types, missing required
+                fields).
+        """
+        try:
+            return _inbound_message_adapter.validate_python(message)
+        except ValidationError as e:
+            msg_type = message.get("type")
+            errors = e.errors()
+            # pydantic reports an unmatched discriminator as a "union_tag_invalid" error on the
+            # top-level model; anything else is a real field/type mismatch within a matched schema.
+            if any(err.get("type") == "union_tag_invalid" for err in errors):
+                logger.warning("Unknown WebSocket message type", player_id=player_id, message_type=msg_type)
+                raise MessageValidationError(
+                    f"Unknown message type: {msg_type}", error_type="unknown_message_type"
+                ) from e
+            logger.warning(
+                "WebSocket message failed schema validation",
+                player_id=player_id,
+                message_type=msg_type,
+                errors=str(e),
+            )
+            raise MessageValidationError(
+                f"Message does not match schema for type {msg_type!r}: {e}",
+                error_type="schema_validation_failed",
+            ) from e
+
     def parse_and_validate(
         self,
         data: str,
         player_id: str,
         csrf_token: str | None = None,
-    ) -> dict[str, object]:
+    ) -> WebSocketInboundMessage:
         """
         Parse and validate a complete WebSocket message.
 
@@ -301,7 +338,7 @@ class WebSocketMessageValidator:
             csrf_token: Optional CSRF token for validation
 
         Returns:
-            dict: Parsed and validated message
+            The validated message, typed per its `type` discriminator.
 
         Raises:
             MessageValidationError: If validation fails at any stage
@@ -310,16 +347,17 @@ class WebSocketMessageValidator:
         message = self._unwrap_string_inner_message_if_json(message)
         _ = self._validate_required_top_level_fields(message)
         _ = self.validate_csrf(message, player_id, csrf_token)
-        # csrfToken is validation-only; strip before returning payload to handlers
+        # csrfToken is validation-only; strip before schema validation, so no message schema
+        # needs to model it.
         _ = message.pop("csrfToken", None)
         _ = message.pop("csrf_token", None)
-        msg_type = message.get("type")
+        validated = self._validate_message_schema(message, player_id)
         logger.debug(
             "Message validation successful",
             player_id=player_id,
-            message_type=msg_type if isinstance(msg_type, str) else None,
+            message_type=validated.type,
         )
-        return message
+        return validated
 
 
 # Global validator instance

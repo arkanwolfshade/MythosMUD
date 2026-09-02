@@ -1,7 +1,9 @@
 """
 Unit tests for message handler factory.
 
-Tests the message_handler_factory module classes and functions.
+Tests the message_handler_factory module classes and functions. `handle_message` and each
+`MessageHandler.handle` dispatch validated, typed envelope messages (see
+`server/schemas/realtime/websocket_messages.py`, `#765`), not raw dicts.
 """
 
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -10,10 +12,20 @@ import pytest
 
 from server.realtime.message_handler_factory import (
     ChatMessageHandler,
+    ClientErrorReportMessageHandler,
     CommandMessageHandler,
     MessageHandlerFactory,
     PingMessageHandler,
     message_handler_factory,
+)
+from server.schemas.realtime.websocket_messages import (
+    ChatData,
+    ChatMessage,
+    ClientErrorReportData,
+    ClientErrorReportMessage,
+    CommandData,
+    CommandMessage,
+    PingMessage,
 )
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
@@ -25,13 +37,23 @@ async def test_command_message_handler_handle():
     """Test CommandMessageHandler.handle() calls handle_command_message."""
     mock_websocket = AsyncMock()
     player_id = "player_123"
-    data = {"command": "look"}
+    message = CommandMessage(type="command", data=CommandData(command="look"))
 
     with patch("server.realtime.message_handlers.handle_command_message") as mock_handle:
         handler = CommandMessageHandler()
-        await handler.handle(mock_websocket, player_id, data)
+        await handler.handle(mock_websocket, player_id, message)
 
-        mock_handle.assert_called_once_with(mock_websocket, player_id, data)
+        mock_handle.assert_called_once_with(mock_websocket, player_id, message)
+
+
+@pytest.mark.asyncio
+async def test_command_message_handler_rejects_wrong_type():
+    """Test CommandMessageHandler.handle() raises TypeError for a mismatched message."""
+    mock_websocket = AsyncMock()
+    handler = CommandMessageHandler()
+
+    with pytest.raises(TypeError):
+        await handler.handle(mock_websocket, "player_123", ChatMessage(type="chat"))
 
 
 @pytest.mark.asyncio
@@ -39,13 +61,13 @@ async def test_chat_message_handler_handle():
     """Test ChatMessageHandler.handle() calls handle_chat_message."""
     mock_websocket = AsyncMock()
     player_id = "player_123"
-    data = {"message": "Hello"}
+    message = ChatMessage(type="chat", data=ChatData(message="Hello"))
 
     with patch("server.realtime.message_handlers.handle_chat_message") as mock_handle:
         handler = ChatMessageHandler()
-        await handler.handle(mock_websocket, player_id, data)
+        await handler.handle(mock_websocket, player_id, message)
 
-        mock_handle.assert_called_once_with(mock_websocket, player_id, data)
+        mock_handle.assert_called_once_with(mock_websocket, player_id, message)
 
 
 @pytest.mark.asyncio
@@ -53,15 +75,13 @@ async def test_ping_message_handler_handle():
     """Test PingMessageHandler.handle() calls handle_ping_message."""
     mock_websocket = AsyncMock()
     player_id = "player_123"
-    from typing import Any
-
-    data: dict[str, Any] = {}
+    message = PingMessage(type="ping")
 
     with patch("server.realtime.message_handlers.handle_ping_message") as mock_handle:
         handler = PingMessageHandler()
-        await handler.handle(mock_websocket, player_id, data)
+        await handler.handle(mock_websocket, player_id, message)
 
-        mock_handle.assert_called_once_with(mock_websocket, player_id, data)
+        mock_handle.assert_called_once_with(mock_websocket, player_id, message)
 
 
 def test_message_handler_factory_init():
@@ -109,7 +129,7 @@ async def test_message_handler_factory_handle_message_success():
     factory = MessageHandlerFactory()
     mock_websocket = AsyncMock()
     player_id = "player_123"
-    message = {"type": "command", "data": {"command": "look"}}
+    message = CommandMessage(type="command", data=CommandData(command="look"))
 
     with patch("server.realtime.message_handlers.handle_command_message") as mock_handle:
         await factory.handle_message(mock_websocket, player_id, message)
@@ -119,32 +139,23 @@ async def test_message_handler_factory_handle_message_success():
 
 @pytest.mark.asyncio
 async def test_message_handler_factory_handle_message_unknown_type():
-    """Test MessageHandlerFactory.handle_message() sends error for unknown type."""
+    """
+    Test MessageHandlerFactory.handle_message() sends error for an unregistered type.
+
+    `WebSocketInboundMessage`'s discriminator only admits registered types, so this branch is
+    unreachable via a real validated message (see the drift guard test) — exercised here with a
+    stand-in object to cover the defence-in-depth path for a caller that bypasses validation.
+    """
     factory = MessageHandlerFactory()
     mock_websocket = AsyncMock()
     player_id = "player_123"
-    message = {"type": "unknown", "data": {}}
+    message = MagicMock(type="unknown")
 
     await factory.handle_message(mock_websocket, player_id, message)
 
     mock_websocket.send_json.assert_called_once()
     call_args = mock_websocket.send_json.call_args[0][0]
     assert call_args["type"] == "error"
-
-
-@pytest.mark.asyncio
-async def test_message_handler_factory_handle_message_no_type():
-    """Test MessageHandlerFactory.handle_message() handles message with no type."""
-    factory = MessageHandlerFactory()
-    mock_websocket = AsyncMock()
-    player_id = "player_123"
-    from typing import Any
-
-    message: dict[str, Any] = {"data": {}}
-
-    await factory.handle_message(mock_websocket, player_id, message)
-
-    mock_websocket.send_json.assert_called_once()
 
 
 def test_message_handler_factory_get_supported_message_types():
@@ -183,19 +194,20 @@ def test_global_message_handler_factory():
 @pytest.mark.asyncio
 async def test_client_error_report_handler_logs():
     """Test ClientErrorReportMessageHandler logs via logger.error."""
-    from server.realtime.message_handler_factory import ClientErrorReportMessageHandler
-
     mock_websocket = AsyncMock()
     player_id = "player_456"
-    data = {
-        "error_type": "occupants_panel_empty_players",
-        "message": "Occupants panel players list is empty",
-        "context": {"room_id": "room1", "player_name": "TestPlayer"},
-    }
+    message = ClientErrorReportMessage(
+        type="client_error_report",
+        data=ClientErrorReportData(
+            error_type="occupants_panel_empty_players",
+            message="Occupants panel players list is empty",
+            context={"room_id": "room1", "player_name": "TestPlayer"},
+        ),
+    )
 
     with patch("server.realtime.message_handlers.logger") as mock_logger:
         handler = ClientErrorReportMessageHandler()
-        await handler.handle(mock_websocket, player_id, data)
+        await handler.handle(mock_websocket, player_id, message)
 
         mock_logger.error.assert_called_once()
         call_kwargs = mock_logger.error.call_args[1]

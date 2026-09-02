@@ -3,54 +3,67 @@ Message handler implementations for WebSocket message routing.
 
 This module contains the actual implementations of message handlers,
 separated from the factory to avoid circular imports.
+
+Each handler receives the full validated envelope (see `server/schemas/realtime/websocket_messages.py`,
+`#765`), not a raw dict — field access is typed attribute access, and a missing/malformed field is
+already impossible by the time a handler runs.
 """
 
 import uuid
-from typing import Any
 
 from fastapi import WebSocket
 
+from ..schemas.realtime.websocket_messages import (
+    ChatMessage,
+    ClientErrorReportMessage,
+    CommandMessage,
+    FollowResponseMessage,
+    GameCommandMessage,
+    PartyInviteResponseMessage,
+    PingMessage,
+)
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
 
-async def handle_client_error_report_message(_websocket: WebSocket, player_id: str, data: dict[str, Any]) -> None:  # pylint: disable=unused-argument  # Reason: _websocket required by handler interface, not used for fire-and-forget logging
+async def handle_client_error_report_message(
+    _websocket: WebSocket, player_id: str, message: ClientErrorReportMessage
+) -> None:  # pylint: disable=unused-argument  # Reason: _websocket required by handler interface, not used for fire-and-forget logging
     """Handle client_error_report: log client-reported errors to errors.log (via ERROR-level aggregator)."""
-    error_type = data.get("error_type") or "unknown"
-    message = data.get("message") or "No message"
-    context = data.get("context") or {}
     logger.error(
         "Client-reported error",
         player_id=player_id,
-        error_type=error_type,
-        message=message,
-        context=context,
+        error_type=message.data.error_type or "unknown",
+        message=message.data.message or "No message",
+        context=message.data.context or {},
     )
 
 
-async def handle_command_message(websocket: WebSocket, player_id: str, data: dict[str, Any]) -> None:
+async def handle_command_message(
+    websocket: WebSocket, player_id: str, message: CommandMessage | GameCommandMessage
+) -> None:
     """Handle command message type."""
-    command = data.get("command", "")
-    args = data.get("args", [])
-
     # Import here to avoid circular imports
     from .websocket_handler import handle_game_command
 
-    await handle_game_command(websocket, player_id, command, args)
+    args: list[object] = list(message.data.args)
+    await handle_game_command(websocket, player_id, message.data.command, args)
 
 
-async def handle_chat_message(websocket: WebSocket, player_id: str, data: dict[str, Any]) -> None:
+async def handle_chat_message(websocket: WebSocket, player_id: str, message: ChatMessage) -> None:
     """Handle chat message type."""
-    chat_message = data.get("message", "")
-
     # Import here to avoid circular imports
     from .websocket_handler import handle_chat_message as handle_chat
 
-    await handle_chat(websocket, player_id, chat_message)
+    await handle_chat(websocket, player_id, message.data.message)
 
 
-async def handle_ping_message(websocket: WebSocket, player_id: str, _data: dict[str, Any]) -> None:  # pylint: disable=unused-argument  # Reason: Parameter required for message handler interface, data not used for ping
+async def handle_ping_message(
+    websocket: WebSocket,
+    player_id: str,
+    _message: PingMessage,  # pylint: disable=unused-argument  # Reason: Parameter required for handler interface; PingMessage carries no data
+) -> None:
     """Handle ping message type."""
     from .envelope import build_event
 
@@ -60,13 +73,13 @@ async def handle_ping_message(websocket: WebSocket, player_id: str, _data: dict[
     logger.debug("🔍 DEBUG: Sent pong", player_id=player_id)
 
 
-async def handle_follow_response_message(websocket: WebSocket, player_id: str, data: dict[str, Any]) -> None:
+async def handle_follow_response_message(websocket: WebSocket, player_id: str, message: FollowResponseMessage) -> None:
     """Handle follow_response message (accept/decline follow request)."""
     from .connection_manager_api import send_game_event
     from .envelope import build_event
 
-    request_id = data.get("request_id")
-    accept = data.get("accept", False)
+    request_id = message.data.request_id
+    accept = message.data.accept
     if not request_id:
         await websocket.send_json(
             build_event("command_response", {"result": "Invalid follow response."}, player_id=player_id)
@@ -82,7 +95,7 @@ async def handle_follow_response_message(websocket: WebSocket, player_id: str, d
         return
     follow_service = container.follow_service
     if accept:
-        result = await follow_service.accept_follow(player_id, str(request_id))
+        result = await follow_service.accept_follow(player_id, request_id)
         requestor_id = result.get("requestor_id")
         if result.get("success") and requestor_id:
             followee_name = None
@@ -101,7 +114,7 @@ async def handle_follow_response_message(websocket: WebSocket, player_id: str, d
                     {"following": {"target_name": followee_name, "target_type": "player"}},
                 )
     else:
-        result = await follow_service.decline_follow(player_id, str(request_id))
+        result = await follow_service.decline_follow(player_id, request_id)
         requestor_id = result.get("requestor_id")
         if requestor_id:
             await send_game_event(
@@ -114,12 +127,14 @@ async def handle_follow_response_message(websocket: WebSocket, player_id: str, d
     )
 
 
-async def handle_party_invite_response_message(websocket: WebSocket, player_id: str, data: dict[str, Any]) -> None:
+async def handle_party_invite_response_message(
+    websocket: WebSocket, player_id: str, message: PartyInviteResponseMessage
+) -> None:
     """Handle party_invite_response message (accept/decline party invite)."""
     from .envelope import build_event
 
-    invite_id = data.get("invite_id")
-    accept = data.get("accept", False)
+    invite_id = message.data.invite_id
+    accept = message.data.accept
     if not invite_id:
         await websocket.send_json(
             build_event("command_response", {"result": "Invalid party invite response."}, player_id=player_id)
@@ -135,9 +150,9 @@ async def handle_party_invite_response_message(websocket: WebSocket, player_id: 
         return
     party_service = container.party_service
     if accept:
-        result = await party_service.accept_party_invite(player_id, str(invite_id))
+        result = await party_service.accept_party_invite(player_id, invite_id)
     else:
-        result = await party_service.decline_party_invite(player_id, str(invite_id))
+        result = await party_service.decline_party_invite(player_id, invite_id)
     await websocket.send_json(
         build_event("command_response", {"result": result.get("result", "Done.")}, player_id=player_id)
     )

@@ -128,24 +128,24 @@ def test_validate_csrf_snake_case_key(validator: WebSocketMessageValidator) -> N
 def test_parse_and_validate_strips_csrf_after_success(validator: WebSocketMessageValidator) -> None:
     raw = json.dumps({"type": "ping", "csrfToken": "tok"})
     out = validator.parse_and_validate(raw, "pid", csrf_token="tok")
-    assert "csrfToken" not in out
-    assert "csrf_token" not in out
-    assert out.get("type") == "ping"
+    assert not hasattr(out, "csrfToken")
+    assert not hasattr(out, "csrf_token")
+    assert out.type == "ping"
 
 
 def test_parse_and_validate_inner_json_inherits_outer_csrf(validator: WebSocketMessageValidator) -> None:
     inner = json.dumps({"type": "command", "data": {}})
     raw = json.dumps({"message": inner, "csrfToken": "outer"})
     out = validator.parse_and_validate(raw, "pid", csrf_token="outer")
-    assert out.get("type") == "command"
-    assert "csrfToken" not in out
+    assert out.type == "command"
+    assert not hasattr(out, "csrfToken")
 
 
 def test_parse_and_validate_unwraps_string_inner_message() -> None:
     v = WebSocketMessageValidator(max_message_size=4096, max_json_depth=10)
     inner = json.dumps({"type": "command", "data": {}, "csrfToken": "tok"})
     raw = json.dumps({"message": inner})
-    assert v.parse_and_validate(raw, "pid", csrf_token="tok").get("type") == "command"
+    assert v.parse_and_validate(raw, "pid", csrf_token="tok").type == "command"
 
 
 def test_parse_and_validate_unwraps_without_csrf_rejected() -> None:

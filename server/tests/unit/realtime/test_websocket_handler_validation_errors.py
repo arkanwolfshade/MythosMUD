@@ -8,7 +8,6 @@ _handle_websocket_disconnect, _handle_runtime_error, cleanup/chat/game command e
 # pyright: reportPrivateUsage=false, reportAny=false, reportMissingParameterType=false, reportUnknownParameterType=false, reportUnknownArgumentType=false, reportUnknownMemberType=false, reportUnusedCallResult=false
 
 import uuid
-from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -30,6 +29,7 @@ from server.realtime.websocket_handler import (
     process_websocket_command,
     send_system_message,
 )
+from server.schemas.realtime.websocket_messages import CommandData, CommandMessage
 
 # Test UUID constant for player IDs
 TEST_PLAYER_ID = uuid.UUID("12345678-1234-5678-1234-567812345678")
@@ -376,7 +376,7 @@ async def test_handle_websocket_message_error(mock_websocket):
     """Test handle_websocket_message handles error."""
     from fastapi import WebSocketDisconnect
 
-    message = cast(dict[str, object], {"type": "command", "command": "look"})
+    message = CommandMessage(type="command", data=CommandData(command="look"))
     call_count = 0
 
     async def mock_send_json(*_args, **_kwargs):

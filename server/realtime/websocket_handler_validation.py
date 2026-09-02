@@ -17,6 +17,7 @@ from ..error_types import ErrorMessages, ErrorType, create_websocket_error_respo
 from ..structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
+    from ..schemas.realtime.websocket_messages import WebSocketInboundMessage
     from .connection_manager import ConnectionManager
     from .message_validator import WebSocketMessageValidator
 
@@ -169,7 +170,7 @@ async def validate_websocket_message(
     player_id_str: str,
     validator: "WebSocketMessageValidator",
     connection_manager: "ConnectionManager | None" = None,
-) -> dict[str, object] | None:
+) -> "WebSocketInboundMessage | None":
     """
     Validate message and send error response if validation fails.
 
