@@ -6,6 +6,7 @@ import uuid
 from unittest.mock import MagicMock
 
 import pytest
+from pydantic import ValidationError
 
 from server.api.admin.subject_controller import (
     RegisterPatternRequest,
@@ -17,7 +18,24 @@ from server.api.admin.subject_controller import (
     validate_subject,
 )
 from server.exceptions import LoggedHTTPException
+from server.schemas.shared.base import SecureBaseModel
 from server.services.nats_subject_manager import InvalidPatternError
+
+
+@pytest.mark.parametrize(
+    "model_cls,payload",
+    [
+        (ValidateSubjectRequest, {"subject": "some.subject"}),
+        (
+            RegisterPatternRequest,
+            {"name": "pattern", "pattern": "some.{param}", "required_params": ["param"]},
+        ),
+    ],
+)
+def test_request_schemas_reject_unknown_field(model_cls: type[SecureBaseModel], payload: dict[str, object]) -> None:
+    """#755: an extra field must be rejected, not silently discarded."""
+    with pytest.raises(ValidationError):
+        _ = model_cls.model_validate({**payload, "unexpected_field": "nope"})
 
 
 def _admin_user() -> MagicMock:

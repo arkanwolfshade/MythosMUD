@@ -12,7 +12,7 @@ import uuid
 from typing import TYPE_CHECKING, Any
 
 from fastapi import APIRouter, Depends, Query, Request, status
-from pydantic import BaseModel, Field
+from pydantic import Field
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -35,6 +35,7 @@ from ..schemas.rooms import (
     RoomUpdateRequest,
     RoomUpdateResponse,
 )
+from ..schemas.shared.base import SecureBaseModel
 from ..services.admin_auth_service import AdminAction, get_admin_auth_service
 from ..services.exploration_service import ExplorationService
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -367,7 +368,7 @@ async def list_rooms(  # pylint: disable=too-many-arguments,too-many-positional-
         ) from e
 
 
-class RoomPositionUpdate(BaseModel):
+class RoomPositionUpdate(SecureBaseModel):
     """Request model for updating room map coordinates."""
 
     map_x: float = Field(..., description="X coordinate for map position", ge=-10000, le=10000)

@@ -5,6 +5,7 @@ from datetime import UTC, datetime
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from pydantic import ValidationError
 
 from server.auth.endpoints import LoginRequest, login_user
 from server.exceptions import LoggedHTTPException
@@ -12,6 +13,12 @@ from server.models.user import User
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard for unit testing
 # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter names match fixture names
+
+
+def test_login_request_rejects_unknown_field() -> None:
+    """#755: LoginRequest now inherits SecureBaseModel - extra fields must be rejected."""
+    with pytest.raises(ValidationError):
+        _ = LoginRequest.model_validate({"username": "testuser", "password": "testpass123", "unexpected_field": "nope"})
 
 
 @pytest.mark.asyncio

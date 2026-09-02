@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, NoReturn
 
 from fastapi import APIRouter, Depends, Query, Request
-from pydantic import BaseModel, Field
+from pydantic import Field
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -28,6 +28,7 @@ from ..schemas.maps import (
     CoordinateRecalculationResponse,
     MapOriginSetResponse,
 )
+from ..schemas.shared.base import SecureBaseModel
 from ..services.admin_auth_service import AdminAction, get_admin_auth_service
 from ..services.ascii_map_renderer import AsciiMapRenderer
 from ..services.coordinate_generator import CoordinateGenerator
@@ -440,7 +441,7 @@ async def recalculate_coordinates(  # pylint: disable=too-many-arguments,too-man
         _raise_recalc_error(e, plane, zone, sub_zone)
 
 
-class SetOriginRequest(BaseModel):
+class SetOriginRequest(SecureBaseModel):
     """Request model for setting map origin."""
 
     plane: str = Field(..., description="Plane name")

@@ -1,8 +1,10 @@
 """Unit tests for admin NPC instances API endpoints."""
 
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from pydantic import ValidationError
 
 from server.api.admin.npc_instances_api import (
     despawn_npc_instance,
@@ -13,6 +15,22 @@ from server.api.admin.npc_instances_api import (
 )
 from server.api.admin.npc_schemas import NPCMoveRequest, NPCSpawnRequest
 from server.exceptions import LoggedHTTPException
+from server.schemas.shared.base import SecureBaseModel
+
+
+@pytest.mark.parametrize(
+    "model_cls,payload",
+    [
+        (NPCSpawnRequest, {"definition_id": 1, "room_id": "room-1"}),
+        (NPCMoveRequest, {"room_id": "room-1"}),
+    ],
+)
+def test_npc_instance_request_schemas_reject_unknown_field(
+    model_cls: type[SecureBaseModel], payload: dict[str, object]
+) -> None:
+    """#755: NPCSpawnRequest/NPCMoveRequest now inherit SecureBaseModel - extra fields rejected."""
+    with pytest.raises(ValidationError):
+        _ = model_cls.model_validate({**payload, "unexpected_field": "nope"})
 
 
 @pytest.fixture
@@ -112,7 +130,11 @@ async def test_get_npc_stats_success(admin_user: MagicMock) -> None:
         patch("server.api.admin.npc_instances_api.get_admin_auth_service", return_value=MagicMock()),
     ):
         result = await get_npc_stats("npc-1", request, admin_user)
-    assert result.name == "Mob"
+    # NPCStatsResponse is deliberately field-less (extra="allow") to pass through whatever
+    # the instance service returns, so "name" only exists as an extra field, not a declared
+    # attribute - go through model_extra rather than static attribute access.
+    extra = cast(dict[str, object], result.model_extra or {})
+    assert extra.get("name") == "Mob"
 
 
 @pytest.mark.asyncio

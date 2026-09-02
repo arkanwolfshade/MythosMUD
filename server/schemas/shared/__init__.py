@@ -1,6 +1,6 @@
 """Shared schemas: base models, target resolution, inventory validation."""
 
-from .base import ResponseBaseModel, SecureBaseModel
+from .base import SecureBaseModel
 from .inventory_schema import (
     PLAYER_INVENTORY_SCHEMA,
     InventorySchemaValidationError,
@@ -10,7 +10,6 @@ from .inventory_schema import (
 from .target_resolution import TargetMatch, TargetResolutionResult, TargetType
 
 __all__ = [
-    "ResponseBaseModel",
     "SecureBaseModel",
     "InventorySchemaValidationError",
     "PLAYER_INVENTORY_SCHEMA",

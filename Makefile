@@ -139,7 +139,8 @@ lint-sqlalchemy:
 # ADR-001 layer-direction contracts (models/events/persistence must not import services/game/npc);
 # see .importlinter. CI runs this via pre-commit (see ci.yml "Import layer direction guard").
 lint-imports:
-	$(UV) lint-imports
+	@echo "ADR-001: import-linter fails fast on layer-direction violations (see .importlinter)."
+	$(PYTHON) scripts/lint_imports.py
 
 # CRITICAL: CI/CD uses the same command (pre-commit run mypy --all-files)
 # If you change this, update .github/workflows/ci.yml to match
@@ -370,7 +371,7 @@ run-production:
 # Flattened stages so FAIL-FAST names the exact leaf target (not a nested composite).
 # Tools must exit non-zero on real failures (pylint: any E/W/F/C/R finding). Tracebacks
 # still fail even on exit 0. Grepping tool "WARNING" strings is not a fail condition here.
-ALL_STAGES := format mypy lint lint-sqlalchemy lint-imports \
+ALL_STAGES := format lint-imports mypy lint lint-sqlalchemy \
 	$(CODACY_TOOL_STAGES) \
 	quality-fragmentation-guard check-postgresql build openapi-spec openapi-check \
 	test-client-coverage test-server-coverage \

@@ -5661,6 +5661,7 @@
             "description": "Mutation token from open_container"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "container_id",
@@ -5676,6 +5677,7 @@
             "title": "Command"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "command"
@@ -6152,6 +6154,7 @@
             "default": "unknown"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "amount"
@@ -6218,6 +6221,7 @@
             "default": true
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "name",
@@ -6508,6 +6512,7 @@
             "default": "physical"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "amount"
@@ -6597,6 +6602,7 @@
             "title": "Npc Definition Id"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "id",
@@ -6677,6 +6683,7 @@
             "title": "Npc Definition Id"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "definition"
@@ -6699,6 +6706,7 @@
             "title": "Options"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "text"
@@ -6726,6 +6734,7 @@
             "title": "Next"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "label"
@@ -6749,6 +6758,7 @@
             "title": "Nodes"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "start",
@@ -6993,6 +7003,7 @@
             "description": "Custom exit description"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "direction",
@@ -7088,6 +7099,7 @@
             "description": "Custom exit description"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "title": "ExitUpdateRequest",
         "description": "Request model for updating an existing room exit's target and/or metadata."
@@ -7108,6 +7120,7 @@
             "default": "unknown"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "amount"
@@ -7177,6 +7190,7 @@
             "description": "Amount of health to restore (0-1000)"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "amount"
@@ -7752,6 +7766,7 @@
             "title": "Password"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "username",
@@ -7806,6 +7821,7 @@
             "description": "Mutation token from open_container"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "container_id",
@@ -7830,6 +7846,7 @@
             "default": "unknown"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "amount"
@@ -9161,6 +9178,7 @@
             "default": "unknown"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "amount"
@@ -9181,6 +9199,7 @@
             "description": "Percentage (70, 60, 50, or 40)"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "skill_id",
@@ -9198,6 +9217,7 @@
             "description": "UUID of the container to open"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "container_id"
@@ -9309,6 +9329,7 @@
             "description": "Skill catalog id"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "skill_id"
@@ -9980,6 +10001,7 @@
             "default": ""
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "name",
@@ -10147,6 +10169,7 @@
             "title": "Profession Id"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "title": "RollStatsRequest",
         "description": "Request model for rolling character stats."
@@ -10584,6 +10607,7 @@
             "description": "Y coordinate for map position"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "map_x",
@@ -10681,6 +10705,7 @@
             "description": "New environment value; omit to leave unchanged, '' to clear"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "title": "RoomUpdateRequest",
         "description": "Request model for updating room properties (name, description, environment).\n\nAll fields are optional; omitted fields are left unchanged. `environment: \"\"` clears the\nenvironment to unset (the client's \"Not Set\" option) -- the CHECK constraint on\nrooms.attributes->>'environment' permits NULL but not an empty string, so the API layer\nis responsible for that translation."
@@ -10750,6 +10775,7 @@
             "description": "Character ID (player_id) to select"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "character_id"
@@ -10900,6 +10926,7 @@
             "description": "Sub-zone name"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "plane",
@@ -11533,6 +11560,7 @@
             "description": "Quantity to transfer"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "container_id",
@@ -11570,6 +11598,7 @@
             "title": "Email"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "username",
@@ -11690,6 +11719,7 @@
             "title": "Username"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "title": "UserUpdate",
         "description": "Schema for user update operations."
@@ -11769,6 +11799,7 @@
             "description": "NATS subject to validate"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
           "subject"

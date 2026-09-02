@@ -6,7 +6,7 @@ This module defines Pydantic request models used in player-related API endpoints
 
 from typing import Any
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import Field, field_validator
 
 from server.validators.security_validator import (
     PLAYER_NAME_MAX_LENGTH,
@@ -14,24 +14,24 @@ from server.validators.security_validator import (
     validate_player_name,
 )
 
+from ..shared.base import SecureBaseModel
 
-class OccupationSlot(BaseModel):
+
+class OccupationSlot(SecureBaseModel):
     """One occupation skill slot: skill_id and fixed value (70, 60, 50, or 40)."""
 
     skill_id: int = Field(..., description="Skill catalog id")
     value: int = Field(..., description="Percentage (70, 60, 50, or 40)")
 
 
-class PersonalInterestSlot(BaseModel):
+class PersonalInterestSlot(SecureBaseModel):
     """One personal interest skill: skill_id only (server applies base + 20)."""
 
     skill_id: int = Field(..., description="Skill catalog id")
 
 
-class CreateCharacterRequest(BaseModel):
+class CreateCharacterRequest(SecureBaseModel):
     """Request model for character creation."""
-
-    __slots__ = ()  # Performance optimization
 
     name: str = Field(
         ...,
@@ -61,18 +61,14 @@ class CreateCharacterRequest(BaseModel):
         return validate_player_name(stripped)
 
 
-class SelectCharacterRequest(BaseModel):
+class SelectCharacterRequest(SecureBaseModel):
     """Request model for character selection."""
-
-    __slots__ = ()  # Performance optimization
 
     character_id: str = Field(..., description="Character ID (player_id) to select")
 
 
-class RollStatsRequest(BaseModel):
+class RollStatsRequest(SecureBaseModel):
     """Request model for rolling character stats."""
-
-    __slots__ = ()  # Performance optimization
 
     method: str = "3d6"
     required_class: str | None = None
@@ -80,54 +76,42 @@ class RollStatsRequest(BaseModel):
     profession_id: int | None = None
 
 
-class LucidityLossRequest(BaseModel):
+class LucidityLossRequest(SecureBaseModel):
     """Request model for applying lucidity loss."""
-
-    __slots__ = ()  # Performance optimization
 
     amount: int = Field(..., ge=0, le=100, description="Amount of lucidity to lose (0-100)")
     source: str = Field(default="unknown", description="Source of lucidity loss")
 
 
-class FearRequest(BaseModel):
+class FearRequest(SecureBaseModel):
     """Request model for applying fear."""
-
-    __slots__ = ()  # Performance optimization
 
     amount: int = Field(..., ge=0, le=100, description="Amount of fear to apply (0-100)")
     source: str = Field(default="unknown", description="Source of fear")
 
 
-class CorruptionRequest(BaseModel):
+class CorruptionRequest(SecureBaseModel):
     """Request model for applying corruption."""
-
-    __slots__ = ()  # Performance optimization
 
     amount: int = Field(..., ge=0, le=100, description="Amount of corruption to apply (0-100)")
     source: str = Field(default="unknown", description="Source of corruption")
 
 
-class OccultKnowledgeRequest(BaseModel):
+class OccultKnowledgeRequest(SecureBaseModel):
     """Request model for gaining occult knowledge."""
-
-    __slots__ = ()  # Performance optimization
 
     amount: int = Field(..., ge=0, le=100, description="Amount of occult knowledge to gain (0-100)")
     source: str = Field(default="unknown", description="Source of occult knowledge")
 
 
-class HealRequest(BaseModel):
+class HealRequest(SecureBaseModel):
     """Request model for healing a player."""
-
-    __slots__ = ()  # Performance optimization
 
     amount: int = Field(..., ge=0, le=1000, description="Amount of health to restore (0-1000)")
 
 
-class DamageRequest(BaseModel):
+class DamageRequest(SecureBaseModel):
     """Request model for damaging a player."""
-
-    __slots__ = ()  # Performance optimization
 
     amount: int = Field(..., ge=0, le=1000, description="Amount of damage to apply (0-1000)")
     damage_type: str = Field(default="physical", description="Type of damage")

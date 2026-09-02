@@ -4,11 +4,12 @@ Unit tests for unified command handler.
 Tests core command processing, HTTP endpoints, and legacy compatibility.
 """
 
-from typing import Any
+from typing import cast
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 from fastapi import HTTPException, Request
+from pydantic import ValidationError
 
 from server.command_handler_unified import (
     CommandRequest,
@@ -17,9 +18,16 @@ from server.command_handler_unified import (
     process_command,
     process_command_unified,
 )
+from server.models.user import User
 
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+
+
+def test_command_request_rejects_unknown_field() -> None:
+    """#755: CommandRequest inherits SecureBaseModel - an extra field must be rejected."""
+    with pytest.raises(ValidationError):
+        _ = CommandRequest.model_validate({"command": "look", "unexpected_field": "nope"})
 
 
 class TestLegacyFunctions:
@@ -140,16 +148,22 @@ class TestHandleCommand:
         """Test handle_command raises HTTPException when not authenticated."""
 
         mock_request = MagicMock()
-        mock_user: dict[str, Any] = {}  # Empty dict represents unauthenticated user
 
         with pytest.raises(HTTPException, match="Authentication required"):
-            await handle_command(CommandRequest(command="look"), mock_request, mock_user)
+            # None represents an unauthenticated user - handle_command's `if not current_user`
+            # check raises before current_user is ever read further, so None exercises the
+            # same branch a falsy stand-in did while satisfying the real User | None type.
+            _ = await handle_command(CommandRequest(command="look"), mock_request, None)
 
     @pytest.mark.asyncio
     async def test_handle_command_success(self):
         """Test handle_command successfully processes command."""
         mock_request = MagicMock()
-        mock_user = {"username": "testplayer"}
+        # get_username_from_user(user_obj: object) genuinely accepts this dict shape at
+        # runtime; handle_command's own signature just narrows current_user to User | None
+        # (FastAPI's real dependency type). Cast the duck-typed double through object rather
+        # than building a full User, matching the existing test_professions_endpoints.py precedent.
+        mock_user = cast(User, cast(object, {"username": "testplayer"}))
 
         with patch("server.command_handler_unified.process_command_unified", return_value={"result": "Success"}):
             result = await handle_command(CommandRequest(command="look"), mock_request, mock_user)

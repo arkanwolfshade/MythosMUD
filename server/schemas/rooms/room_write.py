@@ -8,9 +8,10 @@ See #627 and .cursor/plans/room_editor_backend_apis.plan.md for the feature this
 from pydantic import BaseModel, ConfigDict, Field
 
 from ...models.command_base import Direction
+from ..shared.base import SecureBaseModel
 
 
-class RoomUpdateRequest(BaseModel):
+class RoomUpdateRequest(SecureBaseModel):
     """Request model for updating room properties (name, description, environment).
 
     All fields are optional; omitted fields are left unchanged. `environment: ""` clears the
@@ -41,7 +42,7 @@ class RoomUpdateResponse(BaseModel):
     message: str = Field(..., description="Success message")
 
 
-class ExitCreateRequest(BaseModel):
+class ExitCreateRequest(SecureBaseModel):
     """Request model for creating a single directed room exit."""
 
     direction: Direction = Field(..., description="Exit direction")
@@ -50,7 +51,7 @@ class ExitCreateRequest(BaseModel):
     description: str | None = Field(default=None, description="Custom exit description")
 
 
-class ExitUpdateRequest(BaseModel):
+class ExitUpdateRequest(SecureBaseModel):
     """Request model for updating an existing room exit's target and/or metadata."""
 
     target_room_id: str | None = Field(default=None, description="New destination room stable_id")

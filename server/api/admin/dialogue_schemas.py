@@ -10,9 +10,10 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 from ...schemas.dialogue import DialogueTree
+from ...schemas.shared.base import SecureBaseModel
 
 
-class DialogueDefinitionCreate(BaseModel):
+class DialogueDefinitionCreate(SecureBaseModel):
     """Create or upsert body for a dialogue tree."""
 
     id: str = Field(min_length=1, max_length=128)
@@ -20,7 +21,7 @@ class DialogueDefinitionCreate(BaseModel):
     npc_definition_id: int | None = None
 
 
-class DialogueDefinitionUpdate(BaseModel):
+class DialogueDefinitionUpdate(SecureBaseModel):
     """Partial update; id comes from path."""
 
     definition: DialogueTree

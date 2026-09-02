@@ -18,6 +18,7 @@ from server.schemas.players import (
     RollStatsRequest,
     SelectCharacterRequest,
 )
+from server.schemas.shared.base import SecureBaseModel
 
 
 def test_create_character_request():
@@ -183,3 +184,28 @@ def test_damage_request_validation():
     """Test DamageRequest validates amount range."""
     with pytest.raises(ValidationError):
         DamageRequest(amount=1001)
+
+
+@pytest.mark.parametrize(
+    "model_cls,payload",
+    [
+        (CreateCharacterRequest, {"name": "TestCharacter", "stats": {}}),
+        (SelectCharacterRequest, {"character_id": "player_001"}),
+        (RollStatsRequest, {}),
+        (LucidityLossRequest, {"amount": 10}),
+        (FearRequest, {"amount": 10}),
+        (CorruptionRequest, {"amount": 10}),
+        (OccultKnowledgeRequest, {"amount": 10}),
+        (HealRequest, {"amount": 10}),
+        (DamageRequest, {"amount": 10}),
+    ],
+)
+def test_request_schemas_reject_unknown_field(model_cls: type[SecureBaseModel], payload: dict[str, object]) -> None:
+    """
+    #755: every request model in this module now inherits SecureBaseModel.
+
+    An extra field in the request body must be rejected (extra="forbid"), not silently
+    accepted and discarded as it was before the migration.
+    """
+    with pytest.raises(ValidationError):
+        _ = model_cls.model_validate({**payload, "unexpected_field": "nope"})
