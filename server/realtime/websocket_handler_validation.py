@@ -189,7 +189,6 @@ async def validate_websocket_message(
         message = validator.parse_and_validate(
             data=data,
             player_id=player_id_str,
-            schema=None,
             csrf_token=expected_token,
         )
         return message

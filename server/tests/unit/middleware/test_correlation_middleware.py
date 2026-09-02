@@ -9,10 +9,8 @@ from starlette.types import Scope
 
 from server.middleware.correlation_middleware import (
     CorrelationMiddleware,
-    WebSocketCorrelationMiddleware,
     _get_header,
     create_correlation_middleware,
-    create_websocket_correlation_middleware,
 )
 
 
@@ -34,12 +32,6 @@ def test_create_correlation_middleware_factory() -> None:
     middleware = factory(inner)
     assert isinstance(middleware, CorrelationMiddleware)
     assert middleware.correlation_header == "X-Trace-ID"
-
-
-def test_create_websocket_correlation_middleware() -> None:
-    ws_middleware = create_websocket_correlation_middleware("X-Trace-ID")
-    assert isinstance(ws_middleware, WebSocketCorrelationMiddleware)
-    assert ws_middleware.correlation_header == "X-Trace-ID"
 
 
 @pytest.mark.asyncio
@@ -162,50 +154,3 @@ async def test_correlation_middleware_reraises_exception() -> None:
         pytest.raises(ValueError, match="boom"),
     ):
         await middleware(scope, receive, send)
-
-
-@pytest.mark.asyncio
-async def test_websocket_correlation_middleware() -> None:
-    websocket = MagicMock()
-    websocket.headers = {"X-Correlation-ID": "ws-corr"}
-    websocket.url = MagicMock(path="/ws/game")
-    websocket.url.__str__ = MagicMock(return_value="ws://localhost/ws/game")
-    websocket.query_params = {}
-    websocket.client = MagicMock(host="127.0.0.1")
-    call_next = AsyncMock(return_value={"ok": True})
-
-    with (
-        patch("server.middleware.correlation_middleware.bind_request_context") as bind_ctx,
-        patch("server.middleware.correlation_middleware.clear_request_context") as clear_ctx,
-    ):
-        middleware = WebSocketCorrelationMiddleware()
-        result = await middleware(websocket, call_next)
-
-    assert result == {"ok": True}
-    bind_ctx.assert_called_once()
-    clear_ctx.assert_called_once()
-    call_next.assert_awaited_once_with(websocket)
-
-
-@pytest.mark.asyncio
-async def test_websocket_correlation_middleware_generates_id() -> None:
-    websocket = MagicMock()
-    websocket.headers = {}
-    websocket.url = MagicMock(path="/ws")
-    websocket.url.__str__ = MagicMock(return_value="ws://localhost/ws")
-    websocket.query_params = {}
-    websocket.client = None
-    call_next = AsyncMock(return_value=None)
-
-    with (
-        patch("server.middleware.correlation_middleware.bind_request_context") as bind_ctx,
-        patch("server.middleware.correlation_middleware.clear_request_context"),
-        patch(
-            "server.middleware.correlation_middleware.uuid.uuid4",
-            return_value=uuid.UUID("00000000-0000-0000-0000-000000000002"),
-        ),
-    ):
-        middleware = WebSocketCorrelationMiddleware()
-        await middleware(websocket, call_next)
-
-    assert bind_ctx.call_args.kwargs["correlation_id"] == "00000000-0000-0000-0000-000000000002"

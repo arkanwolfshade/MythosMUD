@@ -9,7 +9,6 @@ import json
 from collections.abc import Mapping
 from typing import ClassVar, cast
 
-from pydantic import BaseModel, ValidationError
 from structlog.stdlib import BoundLogger
 
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -172,39 +171,22 @@ class WebSocketMessageValidator:
                     error_type="string_length_exceeded",
                 )
 
-    def validate_schema(self, message: Mapping[str, object], schema: type[BaseModel] | None = None) -> bool:
+    def _validate_required_top_level_fields(self, message: Mapping[str, object]) -> bool:
         """
-        Validate message against Pydantic schema.
-
-        Args:
-            message: Parsed JSON message
-            schema: Pydantic model class to validate against
+        Ensure a message carries a recognizable top-level shape.
 
         Returns:
-            bool: True if message matches schema
+            bool: True if a required field is present
 
         Raises:
-            MessageValidationError: If message doesn't match schema
+            MessageValidationError: If neither 'type' nor 'message' is present
         """
-        if schema is None:
-            # Basic validation - ensure required top-level fields exist
-            if "type" not in message and "message" not in message:
-                raise MessageValidationError(
-                    "Message must contain 'type' or 'message' field",
-                    error_type="missing_required_field",
-                )
-            return True
-
-        try:
-            # Validate against Pydantic schema
-            _ = schema.model_validate(message)
-            return True
-        except ValidationError as e:
-            logger.warning("Schema validation failed", errors=str(e), message_keys=list(message.keys()))
+        if "type" not in message and "message" not in message:
             raise MessageValidationError(
-                f"Schema validation failed: {e}",
-                error_type="schema_validation_failed",
-            ) from e
+                "Message must contain 'type' or 'message' field",
+                error_type="missing_required_field",
+            )
+        return True
 
     @staticmethod
     def _extract_csrf_token_string(message: Mapping[str, object]) -> str | None:
@@ -306,7 +288,6 @@ class WebSocketMessageValidator:
         self,
         data: str,
         player_id: str,
-        schema: type[BaseModel] | None = None,
         csrf_token: str | None = None,
     ) -> dict[str, object]:
         """
@@ -317,7 +298,6 @@ class WebSocketMessageValidator:
         Args:
             data: Raw message data as string
             player_id: Player ID for validation context
-            schema: Optional Pydantic schema to validate against
             csrf_token: Optional CSRF token for validation
 
         Returns:
@@ -327,11 +307,8 @@ class WebSocketMessageValidator:
             MessageValidationError: If validation fails at any stage
         """
         message = self._parse_outer_json_object(data, player_id)
-        if schema is not None:
-            _ = self.validate_schema(message, schema)
         message = self._unwrap_string_inner_message_if_json(message)
-        if schema is None:
-            _ = self.validate_schema(message, schema)
+        _ = self._validate_required_top_level_fields(message)
         _ = self.validate_csrf(message, player_id, csrf_token)
         # csrfToken is validation-only; strip before returning payload to handlers
         _ = message.pop("csrfToken", None)
@@ -349,6 +326,6 @@ class WebSocketMessageValidator:
 _message_validator = WebSocketMessageValidator()
 
 
-def get_message_validator() -> WebSocketMessageValidator:
+def get_message_validator() -> WebSocketMessageValidator:  # lizard: allow (singleton accessor, 1 call site)
     """Get the global message validator instance."""
     return _message_validator

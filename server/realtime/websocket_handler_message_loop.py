@@ -15,6 +15,7 @@ from structlog.stdlib import BoundLogger
 
 from ..error_types import ErrorMessages, ErrorType, create_websocket_error_response
 from ..structured_logging.enhanced_logging_config import get_logger
+from ..structured_logging.logging_context import bind_request_context
 from .websocket_helpers import is_websocket_disconnect_message
 
 if TYPE_CHECKING:
@@ -215,6 +216,9 @@ async def handle_websocket_message_loop(
     while True:
         try:
             data = await websocket.receive_text()
+            # Server-generated only: never read a correlation_id from the message body,
+            # so a client can't inject arbitrary text into a structured log field.
+            bind_request_context(correlation_id=str(uuid.uuid4()))
             _: bool = await ws_handler._process_message(
                 websocket, data, player_id, player_id_str, connection_id, connection_manager, validator
             )

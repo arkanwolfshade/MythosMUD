@@ -123,7 +123,6 @@ async def test_validate_message_passes_expected_token_from_connection_metadata(
     mock_validator.parse_and_validate.assert_called_once_with(
         data='{"type": "test", "csrfToken": "expected-token"}',
         player_id=TEST_PLAYER_ID_STR,
-        schema=None,
         csrf_token="expected-token",
     )
 
@@ -157,7 +156,6 @@ async def test_validate_message_restores_csrf_from_message_jwt_when_metadata_tok
     mock_validator.parse_and_validate.assert_called_once_with(
         data='{"type": "ping", "csrfToken": "jwt-from-client"}',
         player_id=TEST_PLAYER_ID_STR,
-        schema=None,
         csrf_token="jwt-from-client",
     )
 
