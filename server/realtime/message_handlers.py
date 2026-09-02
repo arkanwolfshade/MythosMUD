@@ -10,6 +10,7 @@ already impossible by the time a handler runs.
 """
 
 import uuid
+from typing import TYPE_CHECKING
 
 from fastapi import WebSocket
 
@@ -23,6 +24,9 @@ from ..schemas.realtime.websocket_messages import (
     PingMessage,
 )
 from ..structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from ..container.main import ApplicationContainer
 
 logger = get_logger(__name__)
 
@@ -73,9 +77,46 @@ async def handle_ping_message(
     logger.debug("🔍 DEBUG: Sent pong", player_id=player_id)
 
 
+async def _resolve_followee_display_name(container: "ApplicationContainer", player_id: str) -> str | None:
+    """Resolve the accepting player's display name for a follow-accepted notification."""
+    persistence = getattr(container, "async_persistence", None)
+    if not persistence:
+        return None
+    try:
+        player_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+        followee = await persistence.get_player_by_id(player_uuid)
+        return getattr(followee, "name", None) if followee else str(player_id)
+    except (ValueError, TypeError, AttributeError):
+        return str(player_id)
+
+
+async def _notify_follow_accepted(container: "ApplicationContainer", player_id: str, result: dict[str, object]) -> None:
+    """Send a follow_state event to the requestor once their follow request is accepted."""
+    from .connection_manager_api import send_game_event
+
+    requestor_id = result.get("requestor_id")
+    if not (result.get("success") and isinstance(requestor_id, str)):
+        return
+    followee_name = await _resolve_followee_display_name(container, player_id)
+    if followee_name:
+        await send_game_event(
+            requestor_id,
+            "follow_state",
+            {"following": {"target_name": followee_name, "target_type": "player"}},
+        )
+
+
+async def _notify_follow_declined(result: dict[str, object]) -> None:
+    """Send a follow_state event clearing the requestor's pending follow."""
+    from .connection_manager_api import send_game_event
+
+    requestor_id = result.get("requestor_id")
+    if isinstance(requestor_id, str):
+        await send_game_event(requestor_id, "follow_state", {"following": None})
+
+
 async def handle_follow_response_message(websocket: WebSocket, player_id: str, message: FollowResponseMessage) -> None:
     """Handle follow_response message (accept/decline follow request)."""
-    from .connection_manager_api import send_game_event
     from .envelope import build_event
 
     request_id = message.data.request_id
@@ -96,32 +137,10 @@ async def handle_follow_response_message(websocket: WebSocket, player_id: str, m
     follow_service = container.follow_service
     if accept:
         result = await follow_service.accept_follow(player_id, request_id)
-        requestor_id = result.get("requestor_id")
-        if result.get("success") and requestor_id:
-            followee_name = None
-            persistence = getattr(container, "async_persistence", None)
-            if persistence:
-                try:
-                    player_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
-                    followee = await persistence.get_player_by_id(player_uuid)
-                    followee_name = getattr(followee, "name", None) if followee else str(player_id)
-                except (ValueError, TypeError, AttributeError):
-                    followee_name = str(player_id)
-            if followee_name:
-                await send_game_event(
-                    requestor_id,
-                    "follow_state",
-                    {"following": {"target_name": followee_name, "target_type": "player"}},
-                )
+        await _notify_follow_accepted(container, player_id, result)
     else:
         result = await follow_service.decline_follow(player_id, request_id)
-        requestor_id = result.get("requestor_id")
-        if requestor_id:
-            await send_game_event(
-                requestor_id,
-                "follow_state",
-                {"following": None},
-            )
+        await _notify_follow_declined(result)
     await websocket.send_json(
         build_event("command_response", {"result": result.get("result", "Done.")}, player_id=player_id)
     )
