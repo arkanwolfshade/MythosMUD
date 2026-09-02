@@ -19,6 +19,7 @@ from server.realtime.memory_monitor import (
     IDLE_SAMPLER_ENV,
     MemoryMonitor,
     _max_connection_age_seconds,
+    _task_qualname,
     collect_idle_memory_sample,
     idle_sampler_enabled,
     idle_sampler_interval_seconds,
@@ -168,6 +169,38 @@ def test_collect_idle_sample_shape() -> None:
     assert isinstance(sample["top_alloc_sites"], list)
     for site in sample["top_alloc_sites"]:
         assert set(site.keys()) == {"file", "size"}
+
+
+@pytest.mark.asyncio
+async def test_collect_idle_sample_task_qualnames_attributes_by_coroutine() -> None:
+    """`task_qualnames` counts pending tasks by coroutine qualname, not `Task-N` names."""
+
+    async def _leak_me() -> None:
+        await asyncio.sleep(10)
+
+    task = asyncio.create_task(_leak_me())
+    try:
+        sample = collect_idle_memory_sample()
+        qualnames = sample["task_qualnames"]
+        assert isinstance(qualnames, dict)
+        matching = [name for name in qualnames if name.endswith("_leak_me")]
+        assert matching, f"expected a qualname ending in _leak_me, got {list(qualnames)}"
+        assert qualnames[matching[0]] >= 1
+    finally:
+        _ = task.cancel()
+
+
+class _FakeTask:  # pylint: disable=too-few-public-methods  # Reason: minimal stand-in for asyncio.Task.get_coro
+    """Stand-in for asyncio.Task whose coroutine has no __qualname__ (e.g. a plain object)."""
+
+    def get_coro(self) -> object:
+        """Return a coroutine-like value with no __qualname__ attribute."""
+        return object()
+
+
+def test_task_qualname_falls_back_when_coro_has_no_qualname() -> None:
+    """`_task_qualname` degrades to the coroutine's type name rather than raising."""
+    assert _task_qualname(cast("asyncio.Task[object]", cast(object, _FakeTask()))) == "object"
 
 
 @pytest.mark.asyncio

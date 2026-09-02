@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -56,6 +57,47 @@ def _append_slope_rows(lines_out: list[str], measure: list[JsonSample]) -> None:
         )
 
 
+def _qualname_counts(sample: JsonSample) -> dict[str, int]:
+    """Read the `task_qualnames` histogram out of one sample row.
+
+    `JsonSample` is typed `dict[str, float | int]` for the slope fields; `task_qualnames` is a
+    nested dict added alongside `top_alloc_sites`, neither of which fits that typing. Read it
+    back out via `dict[str, object]` rather than widening `JsonSample` for one field.
+    """
+    raw = cast(dict[str, object], sample).get("task_qualnames")
+    if not isinstance(raw, dict):
+        return {}
+    counts: dict[str, int] = {}
+    for name, count in cast(dict[object, object], raw).items():
+        if isinstance(name, str) and isinstance(count, int):
+            counts[name] = count
+    return counts
+
+
+def _append_qualname_deltas(lines_out: list[str], measure: list[JsonSample]) -> None:
+    """Report which coroutine qualnames grew between the first and last measurement sample.
+
+    Attribution, not a slope fit: a leaking coroutine is identified by name here, then the
+    numeric slope of `asyncio_tasks` above confirms the overall rate.
+    """
+    first_counts = _qualname_counts(measure[0])
+    last_counts = _qualname_counts(measure[-1])
+    names = set(first_counts) | set(last_counts)
+    changed = sorted(
+        ((name, last_counts.get(name, 0) - first_counts.get(name, 0)) for name in names),
+        key=lambda pair: -pair[1],
+    )
+    changed = [pair for pair in changed if pair[1] != 0]
+    if not changed:
+        lines_out.append("task_qualnames: no change")
+        return
+    lines_out.append("task_qualnames (changed, sorted by delta desc):")
+    for name, delta in changed:
+        lines_out.append(
+            f"  {name}: start={first_counts.get(name, 0)} end={last_counts.get(name, 0)} delta={delta:+d}"
+        )
+
+
 def analyze(path: Path, warmup_seconds: int = WARMUP_SECONDS) -> str:
     samples = [
         cast(JsonSample, json.loads(line))
@@ -78,18 +120,26 @@ def analyze(path: Path, warmup_seconds: int = WARMUP_SECONDS) -> str:
         lines_out.append("measurement window too short for slope analysis")
         return "\n".join(lines_out)
     _append_slope_rows(lines_out, measure)
+    _append_qualname_deltas(lines_out, measure)
     return "\n".join(lines_out)
 
 
 def main() -> int:
-    if len(sys.argv) != 2:
-        print("usage: analyze_idle_memory_samples.py <path-to-jsonl>", file=sys.stderr)
-        return 2
-    path = Path(sys.argv[1])
+    parser = argparse.ArgumentParser(description="Analyze idle memory JSONL samples.")
+    _ = parser.add_argument("path", type=Path, help="Path to the JSONL sample file.")
+    _ = parser.add_argument(
+        "--warmup",
+        type=int,
+        default=WARMUP_SECONDS,
+        help=f"Warmup window in seconds, discarded before slope analysis (default: {WARMUP_SECONDS}).",
+    )
+    args = parser.parse_args()
+    path = cast(Path, args.path)
+    warmup_seconds = cast(int, args.warmup)
     if not path.is_file():
         print(f"missing file: {path}", file=sys.stderr)
         return 1
-    print(analyze(path))
+    print(analyze(path, warmup_seconds))
     return 0
 
 

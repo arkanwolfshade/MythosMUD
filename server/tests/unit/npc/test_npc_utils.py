@@ -12,6 +12,7 @@ from server.npc.npc_utils import (
     extract_room_id_from_lifecycle_record,
     extract_room_id_from_npc,
     get_zone_key_from_room_id,
+    spawn_npc_via_population_controller,
 )
 
 
@@ -263,3 +264,33 @@ def test_get_zone_key_from_room_id_instanced() -> None:
     room_id = "instance_e4857769-81a3-40dd-bf65-b1811a1904ee_earth_arkhamcity_sanitarium_room_tutorial_bedroom_001"
     result = get_zone_key_from_room_id(room_id)
     assert result == "arkhamcity/sanitarium"
+
+
+def test_spawn_npc_via_population_controller_routes_through_controller() -> None:
+    """#768: with a population_controller configured, spawn must go through it (not manager
+    directly), so the spawned NPC gets registered in population_stats and the cap can engage.
+    """
+    manager = MagicMock()
+    manager.population_controller.spawn_npc.return_value = ("npc-1", None)
+    definition = MagicMock()
+
+    result = spawn_npc_via_population_controller(manager, definition, "room-1", "periodic_spawn_check")
+
+    assert result == ("npc-1", None)
+    manager.population_controller.spawn_npc.assert_called_once_with(definition, "room-1", "periodic_spawn_check")
+    manager.spawn_npc.assert_not_called()
+
+
+def test_spawn_npc_via_population_controller_falls_back_without_controller() -> None:
+    """No population_controller configured (e.g. minimal test setups): fall back to manager.spawn_npc,
+    matching behavior before this fix existed.
+    """
+    manager = MagicMock()
+    manager.population_controller = None
+    manager.spawn_npc.return_value = ("npc-2", None)
+    definition = MagicMock()
+
+    result = spawn_npc_via_population_controller(manager, definition, "room-2", "respawn: death")
+
+    assert result == ("npc-2", None)
+    manager.spawn_npc.assert_called_once_with(definition, "room-2", "respawn: death")

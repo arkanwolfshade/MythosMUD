@@ -16,6 +16,7 @@ import json
 import os
 import time
 import tracemalloc
+from collections import Counter
 from pathlib import Path
 from typing import TYPE_CHECKING, TypedDict
 
@@ -51,6 +52,7 @@ _SAMPLE_KEYS = (
     "pool_checkedout",
     "pool_overflow",
     "top_alloc_sites",
+    "task_qualnames",
 )
 
 
@@ -80,6 +82,10 @@ class IdleMemorySample(TypedDict):
     pool_checkedout: int
     pool_overflow: int
     top_alloc_sites: list[AllocSiteSample]
+    # Deliberately uncapped, unlike top_alloc_sites' _MAX_ALLOC_SITES: a leaking coroutine
+    # starts at count 0-1 and would sit outside any top-N cap until already large, which is
+    # the early signal this field exists to catch.
+    task_qualnames: dict[str, int]
 
 
 class MemoryStatsSnapshot(TypedDict):
@@ -218,6 +224,21 @@ def _top_alloc_sites(limit: int = _MAX_ALLOC_SITES) -> list[AllocSiteSample]:
     return sites
 
 
+def _task_qualname(task: asyncio.Task[object]) -> str:
+    """Return the coroutine qualname a task was created from, for leak attribution.
+
+    Task names (`task.get_name()`) are useless here: none of the codebase's raw
+    `asyncio.create_task(...)` sites pass `name=`, so every task is `Task-N`. The coroutine's
+    `__qualname__` is the one key that identifies the creating call site for both raw and
+    `TaskRegistry`-tracked tasks alike.
+    """
+    coro = task.get_coro()
+    qualname = getattr(coro, "__qualname__", None)
+    if isinstance(qualname, str):
+        return qualname
+    return type(coro).__name__
+
+
 def collect_idle_memory_sample() -> IdleMemorySample:
     """Collect a count-based idle sample after a GC pass. No user payloads."""
     _ = gc.collect()
@@ -227,9 +248,11 @@ def collect_idle_memory_sample() -> IdleMemorySample:
     if tracemalloc.is_tracing():
         heap_current, heap_peak = tracemalloc.get_traced_memory()
     try:
-        task_count = len(asyncio.all_tasks())
+        tasks: set[asyncio.Task[object]] = asyncio.all_tasks()
     except RuntimeError:
-        task_count = 0
+        tasks = set()
+    task_count = len(tasks)
+    task_qualnames = dict(Counter(_task_qualname(task) for task in tasks))
     perf_metrics, perf_keys, perf_retained = _perf_metric_counts()
     pool_size, pool_checkedout, pool_overflow = _sqlalchemy_pool_counts()
     return {
@@ -249,6 +272,7 @@ def collect_idle_memory_sample() -> IdleMemorySample:
         "pool_checkedout": pool_checkedout,
         "pool_overflow": pool_overflow,
         "top_alloc_sites": _top_alloc_sites(),
+        "task_qualnames": task_qualnames,
     }
 
 
