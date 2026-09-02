@@ -5,14 +5,37 @@ from datetime import UTC, datetime
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from pydantic import ValidationError
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
-from server.auth.endpoints import UserCreate, register_user
+from server.auth.endpoints import UserCreate, UserUpdate, register_user
 from server.exceptions import LoggedHTTPException
 from server.models.user import User
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard for unit testing
 # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter names match fixture names
+
+
+def test_user_create_rejects_unknown_field() -> None:
+    """#755: UserCreate now inherits SecureBaseModel - extra fields must be rejected."""
+    with pytest.raises(ValidationError):
+        _ = UserCreate.model_validate(
+            {
+                "username": "testuser",
+                "password": "testpass123",
+                "invite_code": "valid_invite",
+                "unexpected_field": "nope",
+            }
+        )
+
+
+def test_user_update_rejects_unknown_field() -> None:
+    """
+    #755: UserUpdate now also inherits SecureBaseModel alongside fastapi_users'
+    BaseUserUpdate - assert the multiple-inheritance model_config merge holds.
+    """
+    with pytest.raises(ValidationError):
+        _ = UserUpdate.model_validate({"username": "newname", "unexpected_field": "nope"})
 
 
 def _mock_invite_manager() -> MagicMock:
@@ -610,8 +633,6 @@ async def test_register_user_generic_constraint_violation(mock_request: MagicMoc
 async def test_register_user_password_validation_empty():
     """Test registration with empty password (should be rejected by Pydantic)."""
     # This should be caught by Pydantic validation before reaching the endpoint
-    from pydantic import ValidationError
-
     with pytest.raises(ValidationError):  # Pydantic validation error
         _ = UserCreate(
             username="newuser",
@@ -624,8 +645,6 @@ async def test_register_user_password_validation_empty():
 async def test_register_user_password_validation_whitespace():
     """Test registration with whitespace-only password (should be rejected by Pydantic)."""
     # This should be caught by Pydantic validation before reaching the endpoint
-    from pydantic import ValidationError
-
     with pytest.raises(ValidationError):  # Pydantic validation error
         _ = UserCreate(
             username="newuser",
@@ -645,8 +664,6 @@ async def test_register_user_invite_code_missing():
     "missing argument" call wouldn't compile against UserCreate's own generated __init__ and
     wouldn't reflect what an actual malicious/malformed request looks like.
     """
-    from pydantic import ValidationError
-
     with pytest.raises(ValidationError):
         _ = UserCreate.model_validate({"username": "newuser", "password": "testpass123"})
 
@@ -654,8 +671,6 @@ async def test_register_user_invite_code_missing():
 @pytest.mark.asyncio
 async def test_register_user_invite_code_blank():
     """Test registration with a whitespace-only invite_code is rejected by Pydantic (#733)."""
-    from pydantic import ValidationError
-
     with pytest.raises(ValidationError):
         _ = UserCreate(
             username="newuser",

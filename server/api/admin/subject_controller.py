@@ -19,6 +19,7 @@ from pydantic import BaseModel, Field
 
 from ...auth.dependencies import get_current_user
 from ...exceptions import LoggedHTTPException, create_error_context
+from ...schemas.shared.base import SecureBaseModel
 from ...services.nats_subject_manager import (
     InvalidPatternError,
     NATSSubjectManager,
@@ -38,7 +39,7 @@ router = APIRouter(prefix="/nats/subjects", tags=["admin", "nats", "subjects"])
 # Request/Response Models
 
 
-class ValidateSubjectRequest(BaseModel):
+class ValidateSubjectRequest(SecureBaseModel):
     """Request model for subject validation."""
 
     subject: str = Field(..., description="NATS subject to validate")
@@ -53,7 +54,7 @@ class ValidateSubjectResponse(BaseModel):
     details: str | None = None
 
 
-class RegisterPatternRequest(BaseModel):
+class RegisterPatternRequest(SecureBaseModel):
     """Request model for pattern registration."""
 
     name: str = Field(..., description="Unique name for the pattern")

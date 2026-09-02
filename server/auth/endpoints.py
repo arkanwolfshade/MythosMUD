@@ -24,6 +24,7 @@ from ..exceptions import LoggedHTTPException
 from ..models.user import User
 from ..schemas.auth import InviteRead
 from ..schemas.players import CharacterInfo
+from ..schemas.shared.base import SecureBaseModel
 from ..structured_logging.enhanced_logging_config import get_logger
 from .dependencies import get_current_active_user, get_current_superuser
 from .invites import InviteManager, capture_invite, get_invite_manager, reserve_invite
@@ -48,7 +49,7 @@ class UserRead(schemas.BaseUser[uuid.UUID]):  # pylint: disable=too-few-public-m
     username: str
 
 
-class UserUpdate(schemas.BaseUserUpdate):
+class UserUpdate(SecureBaseModel, schemas.BaseUserUpdate):
     """Schema for user update operations."""
 
     username: str | None = None
@@ -56,7 +57,7 @@ class UserUpdate(schemas.BaseUserUpdate):
 
 # Mythos registration allows optional email (generated in _ensure_user_email). FastAPI Users
 # get_register_router requires BaseUserCreate; factory.py casts at the call site.
-class UserCreate(BaseModel):
+class UserCreate(SecureBaseModel):
     """Schema for user creation with invite code validation."""
 
     username: str
@@ -92,7 +93,7 @@ class UserCreate(BaseModel):
 
 
 # Define login request schema
-class LoginRequest(BaseModel):
+class LoginRequest(SecureBaseModel):
     """Schema for login requests."""
 
     username: str

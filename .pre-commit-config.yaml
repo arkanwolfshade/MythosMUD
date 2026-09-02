@@ -104,10 +104,9 @@ repos:
         stages: [pre-commit]
       - id: import-linter
         name: Import Layer Direction Guard (ADR-001, #757)
-        # `uv run` (not a bare `lint-imports`) so the hook works from a plain `git commit`, where
-        # the project venv is not on PATH. Mirrors `make lint-imports`.
-        entry: uv run lint-imports
-        language: system
+        # Mirrors `make lint-imports` (loud fail-fast wrapper around import-linter).
+        entry: python scripts/lint_imports.py
+        language: python
         pass_filenames: false
         always_run: true
         stages: [pre-commit]

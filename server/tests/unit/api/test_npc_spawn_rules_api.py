@@ -6,13 +6,30 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from fastapi import HTTPException
+from pydantic import ValidationError
 
+from server.api.admin.npc_schemas import NPCSpawnConditionsModel, NPCSpawnRuleCreate
 from server.api.admin.npc_spawn_rules_api import (
     create_npc_spawn_rule,
     delete_npc_spawn_rule,
     get_npc_spawn_rules,
 )
 from server.exceptions import LoggedHTTPException
+
+
+def test_npc_spawn_rule_create_rejects_unknown_field() -> None:
+    """#755: NPCSpawnRuleCreate now inherits SecureBaseModel - extra fields must be rejected."""
+    with pytest.raises(ValidationError):
+        _ = NPCSpawnRuleCreate.model_validate(
+            {"npc_definition_id": 1, "sub_zone_id": "sanitarium", "unexpected_field": "nope"}
+        )
+
+
+def test_npc_spawn_conditions_model_still_allows_extra_field() -> None:
+    """Deliberate override: NPCSpawnConditionsModel stays extra="allow" after the migration."""
+    model = NPCSpawnConditionsModel.model_validate({"time_of_day": ["night"], "future_field": True})
+    assert model.time_of_day == ["night"]
+    assert model.model_extra == {"future_field": True}
 
 
 @pytest.fixture

@@ -4,6 +4,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from fastapi import HTTPException
+from pydantic import ValidationError
 
 from server.api.admin.npc_definitions_api import (
     _update_npc_definition_internal,
@@ -22,6 +23,35 @@ from server.api.admin.npc_schemas import (
 from server.exceptions import LoggedHTTPException
 from server.models.npc import NPCDefinitionType
 from server.models.user import User
+from server.schemas.shared.base import SecureBaseModel
+
+
+@pytest.mark.parametrize(
+    "model_cls,payload",
+    [
+        (
+            NPCDefinitionCreate,
+            {"name": "Ghast", "npc_type": "shopkeeper", "sub_zone_id": "sanitarium", "room_id": "room-1"},
+        ),
+        (NPCDefinitionUpdate, {"name": "Ghast"}),
+    ],
+)
+def test_npc_definition_request_schemas_reject_unknown_field(
+    model_cls: type[SecureBaseModel], payload: dict[str, object]
+) -> None:
+    """#755: NPCDefinitionCreate/Update now inherit SecureBaseModel - extra fields rejected."""
+    with pytest.raises(ValidationError):
+        _ = model_cls.model_validate({**payload, "unexpected_field": "nope"})
+
+
+def test_npc_base_stats_model_still_allows_extra_field() -> None:
+    """
+    #755: NPCBaseStatsModel deliberately overrides SecureBaseModel's extra="forbid" back
+    to extra="allow" - assert that override actually survives the multiple-config merge.
+    """
+    model = NPCBaseStatsModel.model_validate({"determination_points": 5, "future_stat": 42})
+    assert model.determination_points == 5
+    assert model.model_extra == {"future_stat": 42}
 
 
 def _admin_user() -> User:
@@ -110,7 +140,13 @@ async def test_update_npc_definition_internal(mock_build, mock_service, mock_aut
     definition = _mock_definition()
     mock_service.update_npc_definition = AsyncMock(return_value=definition)
     session = AsyncMock()
-    body = NPCDefinitionUpdate(name="Updated")
+    # basedpyright bug, not a real error: NPCDefinitionCreate and NPCDefinitionUpdate share
+    # field names (sub_zone_id, room_id) with different optionality (required vs Field(None,
+    # ...)); its synthesized Pydantic __init__ for the optional class gets corrupted to
+    # require them anyway. Reproduces in a 12-line file with two unrelated classes sharing
+    # one field name, and reproduces identically on an unmodified checkout of main - #755
+    # did not introduce it. All of NPCDefinitionUpdate's fields are genuinely optional.
+    body = NPCDefinitionUpdate(name="Updated")  # pyright: ignore[reportCallIssue]
     with patch("server.api.admin.npc_definitions_api.NPCDefinitionResponse") as resp_cls:
         resp_cls.from_orm.return_value = MagicMock(id=1)
         result = await _update_npc_definition_internal(1, body, MagicMock(), _admin_user(), session)
@@ -129,7 +165,15 @@ async def test_update_npc_definition_not_found(mock_build, mock_service, mock_au
     mock_service.update_npc_definition = AsyncMock(return_value=None)
     session = AsyncMock()
     with pytest.raises(LoggedHTTPException) as exc:
-        await _update_npc_definition_internal(99, NPCDefinitionUpdate(), MagicMock(), _admin_user(), session)
+        # basedpyright bug, not a real error - see the comment on the identical NPCDefinitionUpdate()
+        # call above.
+        _ = await _update_npc_definition_internal(
+            99,
+            NPCDefinitionUpdate(),  # pyright: ignore[reportCallIssue]
+            MagicMock(),
+            _admin_user(),
+            session,
+        )
     assert exc.value.status_code == 404
 
 

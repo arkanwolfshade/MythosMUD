@@ -10,7 +10,7 @@ from datetime import datetime
 
 from pydantic import ConfigDict, Field
 
-from ..shared.base import ResponseBaseModel, SecureBaseModel
+from ..shared.base import SecureBaseModel
 
 
 class UserBase(SecureBaseModel):
@@ -44,7 +44,7 @@ class UserCreate(UserBase):
     )
 
 
-class UserRead(ResponseBaseModel):
+class UserRead(SecureBaseModel):
     """Schema for reading user data."""
 
     __slots__: tuple[str, ...] = ()  # Performance optimization

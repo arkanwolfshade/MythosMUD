@@ -8,21 +8,19 @@ of requests and responses for container operations.
 from typing import Any
 from uuid import UUID
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import Field, field_validator
+
+from ..schemas.shared.base import SecureBaseModel
 
 
-class OpenContainerRequest(BaseModel):
+class OpenContainerRequest(SecureBaseModel):
     """Request model for opening a container."""
-
-    __slots__ = ()  # Performance optimization
 
     container_id: UUID = Field(..., description="UUID of the container to open")
 
 
-class TransferContainerRequest(BaseModel):
+class TransferContainerRequest(SecureBaseModel):
     """Request model for transferring items to/from container."""
-
-    __slots__ = ()  # Performance optimization
 
     container_id: UUID = Field(..., description="UUID of the container")
     mutation_token: str = Field(..., description="Mutation token from open_container")
@@ -39,19 +37,15 @@ class TransferContainerRequest(BaseModel):
         return v
 
 
-class CloseContainerRequest(BaseModel):
+class CloseContainerRequest(SecureBaseModel):
     """Request model for closing a container."""
-
-    __slots__ = ()  # Performance optimization
 
     container_id: UUID = Field(..., description="UUID of the container to close")
     mutation_token: str = Field(..., description="Mutation token from open_container")
 
 
-class LootAllRequest(BaseModel):
+class LootAllRequest(SecureBaseModel):
     """Request model for looting all items from a container."""
-
-    __slots__ = ()  # Performance optimization
 
     container_id: UUID = Field(..., description="UUID of the container")
     mutation_token: str = Field(..., description="Mutation token from open_container")

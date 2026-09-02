@@ -7,18 +7,21 @@ Extracted from npc.py to keep file NLOC under complexity limits.
 from __future__ import annotations
 
 import json
-from typing import Any
+from typing import Any, ClassVar, override
 
 from pydantic import BaseModel, ConfigDict, Field
 
 from ...models.npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule
+from ...schemas.shared.base import SecureBaseModel
 from ...services.npc_service import NPCDefinitionUpdateParams
 
 
-class NPCBaseStatsModel(BaseModel):
+class NPCBaseStatsModel(SecureBaseModel):
     """Model for NPC base statistics."""
 
-    model_config = ConfigDict(
+    # Deliberate override: unlike SecureBaseModel's default, this stays extra="allow" so
+    # future stat fields don't need a schema change to round-trip through the API.
+    model_config: ClassVar[ConfigDict] = ConfigDict(
         extra="allow",
         validate_assignment=True,
         str_strip_whitespace=True,
@@ -34,10 +37,11 @@ class NPCBaseStatsModel(BaseModel):
     constitution: int | None = Field(default=None, ge=0, description="Constitution attribute")
 
 
-class NPCBehaviorConfigModel(BaseModel):
+class NPCBehaviorConfigModel(SecureBaseModel):
     """Model for NPC behavior configuration."""
 
-    model_config = ConfigDict(
+    # Deliberate override: see NPCBaseStatsModel above.
+    model_config: ClassVar[ConfigDict] = ConfigDict(
         extra="allow",
         validate_assignment=True,
         str_strip_whitespace=True,
@@ -54,10 +58,11 @@ class NPCBehaviorConfigModel(BaseModel):
     idle_behavior: str | None = Field(default=None, description="Idle behavior type")
 
 
-class NPCAIIntegrationModel(BaseModel):
+class NPCAIIntegrationModel(SecureBaseModel):
     """Model for NPC AI integration stub configuration."""
 
-    model_config = ConfigDict(
+    # Deliberate override: see NPCBaseStatsModel above.
+    model_config: ClassVar[ConfigDict] = ConfigDict(
         extra="allow",
         validate_assignment=True,
         str_strip_whitespace=True,
@@ -68,10 +73,11 @@ class NPCAIIntegrationModel(BaseModel):
     ai_provider: str | None = Field(default=None, description="AI provider identifier")
 
 
-class NPCSpawnConditionsModel(BaseModel):
+class NPCSpawnConditionsModel(SecureBaseModel):
     """Model for NPC spawn conditions."""
 
-    model_config = ConfigDict(
+    # Deliberate override: see NPCBaseStatsModel above.
+    model_config: ClassVar[ConfigDict] = ConfigDict(
         extra="allow",
         validate_assignment=True,
         str_strip_whitespace=True,
@@ -83,15 +89,8 @@ class NPCSpawnConditionsModel(BaseModel):
     room_tags: list[str] | None = Field(default=None, description="Required room tags")
 
 
-class NPCDefinitionCreate(BaseModel):
+class NPCDefinitionCreate(SecureBaseModel):
     """Model for creating NPC definitions."""
-
-    model_config = ConfigDict(
-        extra="forbid",
-        validate_assignment=True,
-        str_strip_whitespace=True,
-        validate_default=True,
-    )
 
     name: str = Field(..., min_length=1, max_length=100)
     npc_type: NPCDefinitionType
@@ -102,15 +101,8 @@ class NPCDefinitionCreate(BaseModel):
     ai_integration_stub: NPCAIIntegrationModel = Field(default_factory=NPCAIIntegrationModel)
 
 
-class NPCDefinitionUpdate(BaseModel):
+class NPCDefinitionUpdate(SecureBaseModel):
     """Model for updating NPC definitions."""
-
-    model_config = ConfigDict(
-        extra="forbid",
-        validate_assignment=True,
-        str_strip_whitespace=True,
-        validate_default=True,
-    )
 
     name: str | None = Field(None, min_length=1, max_length=100)
     npc_type: NPCDefinitionType | None = None
@@ -135,9 +127,11 @@ class NPCDefinitionResponse(BaseModel):
     behavior_config: NPCBehaviorConfigModel
     ai_integration_stub: NPCAIIntegrationModel
 
+    @override
     @classmethod
-    def from_orm(cls, npc_def: NPCDefinition) -> NPCDefinitionResponse:  # pylint: disable=arguments-renamed
+    def from_orm(cls, obj: NPCDefinition) -> NPCDefinitionResponse:
         """Create response from ORM object."""
+        npc_def = obj
         base_stats_str = str(npc_def.base_stats)
         base_stats_raw = json.loads(base_stats_str) if base_stats_str else {}
         behavior_config_str = str(npc_def.behavior_config)
@@ -163,31 +157,22 @@ class NPCDefinitionResponse(BaseModel):
         )
 
 
-class NPCSpawnRequest(BaseModel):
+class NPCSpawnRequest(SecureBaseModel):
     """Model for NPC spawn requests."""
 
-    model_config = ConfigDict(
-        extra="forbid", validate_assignment=True, str_strip_whitespace=True, validate_default=True
-    )
     definition_id: int = Field(..., gt=0)
     room_id: str = Field(..., min_length=1, max_length=100)
 
 
-class NPCMoveRequest(BaseModel):
+class NPCMoveRequest(SecureBaseModel):
     """Model for NPC movement requests."""
 
-    model_config = ConfigDict(
-        extra="forbid", validate_assignment=True, str_strip_whitespace=True, validate_default=True
-    )
     room_id: str = Field(..., min_length=1, max_length=100)
 
 
-class NPCSpawnRuleCreate(BaseModel):
+class NPCSpawnRuleCreate(SecureBaseModel):
     """Model for creating NPC spawn rules."""
 
-    model_config = ConfigDict(
-        extra="forbid", validate_assignment=True, str_strip_whitespace=True, validate_default=True
-    )
     npc_definition_id: int = Field(..., gt=0)
     sub_zone_id: str = Field(..., min_length=1, max_length=50)
     min_population: int = Field(default=0, ge=0)
@@ -206,9 +191,11 @@ class NPCSpawnRuleResponse(BaseModel):
     max_population: int
     spawn_conditions: NPCSpawnConditionsModel
 
+    @override
     @classmethod
-    def from_orm(cls, spawn_rule: NPCSpawnRule) -> NPCSpawnRuleResponse:  # pylint: disable=arguments-renamed
+    def from_orm(cls, obj: NPCSpawnRule) -> NPCSpawnRuleResponse:
         """Create response from ORM object."""
+        spawn_rule = obj
         spawn_conditions_str = str(spawn_rule.spawn_conditions)
         spawn_conditions_raw = json.loads(spawn_conditions_str) if spawn_conditions_str else {}
         spawn_conditions_dict: dict[str, Any] = spawn_conditions_raw if isinstance(spawn_conditions_raw, dict) else {}

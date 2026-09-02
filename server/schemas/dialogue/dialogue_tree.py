@@ -7,10 +7,12 @@ Rejects unknown next targets, missing start, and empty nodes on write.
 
 from __future__ import annotations
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import Field, model_validator
+
+from ..shared.base import SecureBaseModel
 
 
-class DialogueOption(BaseModel):
+class DialogueOption(SecureBaseModel):
     """Player-facing option; next null/omitted ends the conversation."""
 
     label: str = Field(min_length=1)
@@ -18,14 +20,14 @@ class DialogueOption(BaseModel):
     next: str | None = Field(default=None, min_length=1)
 
 
-class DialogueNode(BaseModel):
+class DialogueNode(SecureBaseModel):
     """One NPC line plus numbered options."""
 
     text: str = Field(min_length=1)
     options: list[DialogueOption] = Field(default_factory=list)
 
 
-class DialogueTree(BaseModel):
+class DialogueTree(SecureBaseModel):
     """Root tree: start node id and nodes map."""
 
     start: str = Field(min_length=1)

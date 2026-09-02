@@ -251,7 +251,12 @@ def test_add_room_drop_negative_quantity(subscription_manager):
 
 def test_add_room_drop_error_handling(subscription_manager):
     """Test add_room_drop() handles errors gracefully."""
-    with patch("builtins.dict", side_effect=Exception("Dict error")):
+    # Scoped to this module's namespace (create=True: dict isn't a real module attribute,
+    # Python's LEGB lookup finds it here before falling through to builtins) - patching
+    # "builtins.dict" directly breaks dict() process-wide, including inside structlog's own
+    # sanitize_sensitive_data processor, which crashes the except block's own logger.error()
+    # call instead of letting this test observe it handling the error gracefully.
+    with patch("server.realtime.room_subscription_manager.dict", side_effect=Exception("Dict error"), create=True):
         subscription_manager.add_room_drop("room_001", {"item": "sword"})
 
 

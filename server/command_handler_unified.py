@@ -13,7 +13,6 @@ consistency there is power."
 from typing import Annotated, cast
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
-from pydantic import BaseModel
 
 from .alias_storage import AliasStorage
 from .auth.users import get_current_user
@@ -41,6 +40,7 @@ from .help.help_content import get_help_content as get_help_content_new
 from .middleware.command_rate_limiter import command_rate_limiter
 from .models.alias import Alias
 from .models.user import User
+from .schemas.shared.base import SecureBaseModel
 from .structured_logging.enhanced_logging_config import get_logger
 from .utils.audit_logger import audit_logger
 from .utils.command_parser import get_username_from_user
@@ -54,7 +54,7 @@ router = APIRouter(prefix="/command", tags=["command"])
 command_service = CommandService()
 
 
-class CommandRequest(BaseModel):
+class CommandRequest(SecureBaseModel):
     """Request model for command processing."""
 
     command: str
