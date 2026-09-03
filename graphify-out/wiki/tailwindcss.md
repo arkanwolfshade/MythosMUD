@@ -1,23 +1,22 @@
-# tailwindcss
+# Tailwindcss
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **tailwindcss** (2 connections) — `client/package.json`
-- **tailwindcss** (1 connections) — `client/package.json`
+- **tailwindcss** (0 connections) — `tailwindcss`
 
 ## Relationships
 
-- [devDependencies](devDependencies.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/package.json`
+- `tailwindcss`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

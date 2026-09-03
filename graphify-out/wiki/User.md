@@ -1,79 +1,105 @@
 # User
 
-> 355 nodes
+> God node · 217 connections · `server/models/user.py`
 
-## Key Concepts
+**Community:** [Container Exception Handling](Container_Exception_Handling.md)
 
-- **User** (305 connections) — `server/models/user.py`
-- **fastapi.md** (118 connections) — `.claude/rules/fastapi.md`
-- **endpoints.py** (66 connections) — `server/auth/endpoints.py`
-- **models/user.py** (66 connections) — `server/models/user.py`
-- **Invite** (49 connections) — `server/models/invite.py`
-- **users.py** (48 connections) — `server/auth/users.py`
-- **login_user()** (35 connections) — `server/auth/endpoints.py`
-- **InviteManager** (33 connections) — `server/auth/invites.py`
-- **api/game.py** (29 connections) — `server/api/game.py`
-- **test_auth_dependencies.py** (26 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_invite_manager.py** (24 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **invites.py** (23 connections) — `server/auth/invites.py`
-- **LoginRequest** (21 connections) — `server/auth/endpoints.py`
-- **professions.py** (21 connections) — `server/api/professions.py`
-- **test_endpoints_login.py** (20 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **auth/dependencies.py** (19 connections) — `server/auth/dependencies.py`
-- **test_invite.py** (17 connections) — `server/tests/unit/models/test_invite.py`
-- **test_endpoints_invites.py** (15 connections) — `server/tests/unit/auth/test_endpoints_invites.py`
-- **list_invites()** (14 connections) — `server/auth/endpoints.py`
-- **asyncio** (14 connections)
-- **asyncio** (14 connections)
-- **RestartInvalidatingJWTStrategy** (13 connections) — `server/auth/jwt_strategy.py`
-- **get_user_manager()** (13 connections) — `server/auth/users.py`
-- **test_users_current_user_logging.py** (13 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **InviteRead** (12 connections) — `server/schemas/auth/invite.py`
-- *... and 330 more nodes in this community*
+## Connections by Relation
 
-## Relationships
+### calls
+- quest_seed_data() `EXTRACTED`
+- test_user_get_display_name_all_empty() `EXTRACTED`
+- test_user_get_display_name_falls_back_to_id() `EXTRACTED`
+- test_user_get_display_name_with_display_name() `EXTRACTED`
+- test_user_get_display_name_with_empty_display_name() `EXTRACTED`
+- test_user_get_display_name_without_display_name() `EXTRACTED`
+- test_user_is_authenticated_when_active() `EXTRACTED`
+- test_user_is_authenticated_when_inactive() `EXTRACTED`
+- test_user_repr() `EXTRACTED`
+- .create_user() `INFERRED`
+- .verify_token() `INFERRED`
+- .verify_token() `INFERRED`
 
-- [LoggedHTTPException](LoggedHTTPException.md) (71 shared connections)
-- [get_logger](get_logger.md) (43 shared connections)
-- [test_users.py](test_users.py.md) (42 shared connections)
-- [register_user](register_user.md) (34 shared connections)
-- [get_admin_auth_service](get_admin_auth_service.md) (31 shared connections)
-- [ExplorationService](ExplorationService.md) (29 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (24 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (24 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (20 shared connections)
-- [Player](Player.md) (18 shared connections)
-- [test_containers.py](test_containers.py.md) (17 shared connections)
-- [players/__init__.py](players-__init__.py.md) (15 shared connections)
+### contains
+- models/user.py `EXTRACTED`
 
-## Source Files
+### imports
+- server/models/__init__.py `EXTRACTED`
+- api/character_creation.py `EXTRACTED`
+- container_endpoints_basic.py `EXTRACTED`
+- test_admin_auth_service.py `EXTRACTED`
+- test_maps.py `EXTRACTED`
+- test_users.py `EXTRACTED`
+- users.py `EXTRACTED`
+- test_container_helpers.py `EXTRACTED`
+- api/container_helpers.py `EXTRACTED`
+- test_async_persistence_core.py `EXTRACTED`
+- test_metrics_endpoints.py `EXTRACTED`
+- npc_definitions_api.py `EXTRACTED`
+- container_endpoints_loot.py `EXTRACTED`
+- database_helpers.py `EXTRACTED`
+- api/metrics.py `EXTRACTED`
+- api/game.py `EXTRACTED`
+- api/player_respawn.py `EXTRACTED`
+- test_containers.py `EXTRACTED`
+- dialogue_definitions_api.py `EXTRACTED`
+- test_container_exception_handlers.py `EXTRACTED`
 
-- `.claude/rules/fastapi.md`
-- `server/api/game.py`
-- `server/api/player_helpers.py`
-- `server/api/professions.py`
-- `server/auth/__init__.py`
-- `server/auth/dependencies.py`
-- `server/auth/endpoints.py`
-- `server/auth/invites.py`
-- `server/auth/jwt_strategy.py`
-- `server/auth/token_epoch.py`
-- `server/auth/users.py`
-- `server/models/invite.py`
-- `server/models/user.py`
-- `server/schemas/auth/invite.py`
-- `server/tests/integration/test_db_connectivity.py`
-- `server/tests/unit/api/test_player_helpers.py`
-- `server/tests/unit/auth/conftest.py`
-- `server/tests/unit/auth/test_auth_dependencies.py`
-- `server/tests/unit/auth/test_endpoints_invites.py`
-- `server/tests/unit/auth/test_endpoints_login.py`
+### inherits
+- Base `EXTRACTED`
+- SQLAlchemyBaseUserTableUUID `EXTRACTED`
 
-## Audit Trail
+### method
+- .is_authenticated() `EXTRACTED`
+- .get_display_name() `EXTRACTED`
+- .__repr__() `EXTRACTED`
 
-- EXTRACTED: 1162 (88%)
-- INFERRED: 158 (12%)
-- AMBIGUOUS: 0 (0%)
+### rationale_for
+- User model for FastAPI Users v14+ with SQLAlchemy 2.0 typing. Extends… `EXTRACTED`
+
+### references
+- validate_admin_permission() `EXTRACTED`
+- transfer_items() `EXTRACTED`
+- handle_transfer_items_exceptions() `EXTRACTED`
+- open_container() `EXTRACTED`
+- roll_character_stats() `EXTRACTED`
+- create_character_with_stats() `EXTRACTED`
+- close_container() `EXTRACTED`
+- handle_open_container_exceptions() `EXTRACTED`
+- handle_close_container_exceptions() `EXTRACTED`
+- handle_loot_all_exceptions() `EXTRACTED`
+- get_player_id_from_user() `EXTRACTED`
+- handle_container_service_error() `EXTRACTED`
+- create_error_context() `EXTRACTED`
+- get_container_and_player_for_loot_all() `EXTRACTED`
+- validate_character_stats() `EXTRACTED`
+- respawn_player() `EXTRACTED`
+- create_dialogue_definition() `EXTRACTED`
+- list_dialogue_definitions() `EXTRACTED`
+- upsert_dialogue_definition() `EXTRACTED`
+- get_npc_population_stats() `EXTRACTED`
+
+### uses
+- Base `INFERRED`
+- Invite `INFERRED`
+- _admin_user() `INFERRED`
+- test_lucidity_adjustment_round_trip() `INFERRED`
+- test_add_player_effect_generates_id() `INFERRED`
+- test_apply_exploration_filter_if_needed_calls_for_normal_user() `INFERRED`
+- test_apply_exploration_filter_if_needed_skips_for_superuser() `INFERRED`
+- test_db_connectivity_create_and_read_user() `INFERRED`
+- test_get_ascii_minimap_success() `INFERRED`
+- test_get_current_superuser_failure() `INFERRED`
+- test_get_current_superuser_with_none_user() `INFERRED`
+- test_get_current_verified_user_failure() `INFERRED`
+- test_get_current_verified_user_with_none_user() `INFERRED`
+- test_login_user_player_no_profession_id() `INFERRED`
+- test_login_user_profession_lookup_error() `INFERRED`
+- test_login_user_profession_lookup_none() `INFERRED`
+- test_login_user_profession_lookup_success() `INFERRED`
+- test_username_authentication_backend_login() `INFERRED`
+- test_get_current_room_id_none_when_persistence_errors() `INFERRED`
+- test_get_player_and_exploration_returns_none_when_no_player() `INFERRED`
 
 ---
 

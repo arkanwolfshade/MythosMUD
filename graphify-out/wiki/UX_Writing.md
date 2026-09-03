@@ -1,4 +1,4 @@
-# UX Writing
+# Ux Writing
 
 > 16 nodes
 
@@ -23,7 +23,7 @@
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- [Color And Contrast](Color_And_Contrast.md) (1 shared connections)
 
 ## Source Files
 
