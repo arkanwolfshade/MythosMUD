@@ -1,53 +1,28 @@
 # Profession
 
-> 84 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **Profession** (53 connections) — `server/models/profession.py`
-- **test_profession.py** (30 connections) — `server/tests/unit/models/test_profession.py`
-- **Any** (8 connections)
 - **.get_stat_requirements()** (5 connections) — `server/models/profession.py`
-- **.get_mechanical_effects()** (3 connections) — `server/models/profession.py`
 - **.get_requirement_display_text()** (3 connections) — `server/models/profession.py`
-- **.get_skill_modifiers()** (3 connections) — `server/models/profession.py`
-- **.get_stat_modifiers()** (3 connections) — `server/models/profession.py`
 - **.meets_stat_requirements()** (3 connections) — `server/models/profession.py`
-- **.set_mechanical_effects()** (3 connections) — `server/models/profession.py`
-- **.set_skill_modifiers()** (3 connections) — `server/models/profession.py`
-- **.set_stat_modifiers()** (3 connections) — `server/models/profession.py`
-- **.set_stat_requirements()** (3 connections) — `server/models/profession.py`
-- **test_profession_get_mechanical_effects_empty_string()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_mechanical_effects_invalid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_mechanical_effects_none()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_mechanical_effects_valid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_requirement_display_text_capitalizes_stat_names()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_requirement_display_text_multiple_requirements()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_requirement_display_text_no_requirements()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_requirement_display_text_single_requirement()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_stat_requirements_empty_string()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_stat_requirements_invalid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_stat_requirements_none()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_stat_requirements_valid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- *... and 59 more nodes in this community*
+- **Check if given stats meet the profession requirements. Args: stats: Dictionary…** (1 connections) — `server/models/profession.py`
+- **Get formatted text for displaying stat requirements. Returns: Formatted string…** (1 connections) — `server/models/profession.py`
+- **Get profession stat requirements as dictionary.** (1 connections) — `server/models/profession.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
-- [test_async_persistence_core.py](test_async_persistence_core.py.md) (3 shared connections)
-- [test_profession_repository.py](test_profession_repository.py.md) (1 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [Profession](Profession.md) (4 shared connections)
 
 ## Source Files
 
 - `server/models/profession.py`
-- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 127 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 9 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

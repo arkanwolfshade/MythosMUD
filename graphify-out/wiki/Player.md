@@ -1,78 +1,72 @@
 # Player
 
-> 352 nodes
+> 81 nodes
 
 ## Key Concepts
 
-- **Player** (232 connections) — `server/models/player.py`
-- **models/player.py** (98 connections) — `server/models/player.py`
-- **server/models/__init__.py** (85 connections) — `server/models/__init__.py`
-- **Base** (60 connections) — `server/models/base.py`
-- **lucidity.py** (35 connections) — `server/models/lucidity.py`
-- **HealthRepository** (31 connections) — `server/persistence/repositories/health_repository.py`
-- **LucidityRepository** (27 connections) — `server/services/lucidity_repository.py`
-- **test_world.py** (27 connections) — `server/tests/unit/models/test_world.py`
-- **test_lucidity_repository.py** (25 connections) — `server/tests/unit/services/test_lucidity_repository.py`
-- **LucidityExposureState** (24 connections) — `server/models/lucidity.py`
-- **LucidityCooldown** (22 connections) — `server/models/lucidity.py`
-- **models/base.py** (22 connections) — `server/models/base.py`
-- **LucidityAdjustmentLog** (20 connections) — `server/models/lucidity.py`
-- **test_health_repository.py** (20 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
-- **PlayerSpell** (19 connections) — `server/models/player_spells.py`
-- **test_item.py** (19 connections) — `server/tests/unit/models/test_item.py`
-- **test_player_related_models.py** (19 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_effect_repository.py** (18 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **PlayerInventory** (16 connections) — `server/models/player.py`
-- **_MockAsyncSession** (16 connections) — `server/tests/unit/services/test_lucidity_repository.py`
-- **PlayerEffect** (15 connections) — `server/models/player_effect.py`
-- **PlayerSkill** (14 connections) — `server/models/player_skill.py`
-- **ItemComponentState** (13 connections) — `server/models/item.py`
-- **ItemPrototype** (13 connections) — `server/models/item.py`
-- **world.py** (13 connections) — `server/models/world.py`
-- *... and 327 more nodes in this community*
+- **executeCommand()** (90 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **player.ts** (49 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **ensurePlayableConnection()** (36 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **combat-messages-game-info.spec.ts** (31 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
+- **getMessages()** (28 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **collect-n-quest.spec.ts** (28 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
+- **ensureStanding()** (27 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **admin-set-stat-command.spec.ts** (23 connections) — `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
+- **ensurePlayableAlive()** (20 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **dialogue-trees.spec.ts** (17 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
+- **executeCommandWithoutRecovery()** (15 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **despawnSanitariumCultists()** (10 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **posture-messages-game-info.spec.ts** (10 connections) — `client/tests/e2e/runtime/commands/posture-messages-game-info.spec.ts`
+- **tryStartCombat()** (9 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
+- **getPageSessionCredentials()** (9 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **spawnCombatTargetNpc()** (8 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
+- **resolveActivePage()** (8 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **ensureNotInCombat()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **goEastFromFoyer()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **listSanitariumCultistIds()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **ensureQuestGiverPresent()** (8 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
+- **retryUntilCombatStarted()** (7 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
+- **listActiveQuestGiverIds()** (7 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
+- **rest-command.spec.ts** (7 connections) — `client/tests/e2e/runtime/commands/rest-command.spec.ts`
+- **resolveSpawnedCultistTarget()** (6 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
+- *... and 56 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (80 shared connections)
-- [test_player_model.py](test_player_model.py.md) (45 shared connections)
-- [LucidityService](LucidityService.md) (33 shared connections)
-- [test_lucidity_models.py](test_lucidity_models.py.md) (20 shared connections)
-- [User](User.md) (18 shared connections)
-- [command_result_text](command_result_text.md) (15 shared connections)
-- [test_player_respawn_service.py](test_player_respawn_service.py.md) (14 shared connections)
-- [coerce_int](coerce_int.md) (14 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (12 shared connections)
-- [pytest.md](pytest.md.md) (12 shared connections)
-- [test_async_persistence_delegates.py](test_async_persistence_delegates.py.md) (12 shared connections)
-- [test_emote.py](test_emote.py.md) (11 shared connections)
+- [Multiplayer Ready](Multiplayer_Ready.md) (112 shared connections)
+- [Auth](Auth.md) (55 shared connections)
+- [Multiplayer Colocated](Multiplayer_Colocated.md) (17 shared connections)
+- [Whisper Movement.spec](Whisper_Movement.spec.md) (12 shared connections)
+- [E2e Bootstrap](E2e_Bootstrap.md) (11 shared connections)
+- [Local Channel Isolation.spec](Local_Channel_Isolation.spec.md) (9 shared connections)
 
 ## Source Files
 
-- `server/metadata.py`
-- `server/models/__init__.py`
-- `server/models/base.py`
-- `server/models/dialogue.py`
-- `server/models/emote.py`
-- `server/models/item.py`
-- `server/models/lucidity.py`
-- `server/models/player.py`
-- `server/models/player_effect.py`
-- `server/models/player_skill.py`
-- `server/models/player_spells.py`
-- `server/models/skill_use_log.py`
-- `server/models/spell_db.py`
-- `server/models/world.py`
-- `server/persistence/protocols.py`
-- `server/persistence/repositories/health_repository.py`
-- `server/services/lucidity_repository.py`
-- `server/tests/integration/test_lucidity_round_trip.py`
-- `server/tests/integration/test_procedures_return_shape.py`
-- `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- `client/src/utils/__tests__/deathVoidLocation.test.ts`
+- `client/src/utils/deathVoidLocation.ts`
+- `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
+- `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
+- `client/tests/e2e/runtime/commands/disconnect-grace-period.spec.ts`
+- `client/tests/e2e/runtime/commands/posture-messages-game-info.spec.ts`
+- `client/tests/e2e/runtime/commands/quit-combat-guard.spec.ts`
+- `client/tests/e2e/runtime/commands/rest-command.spec.ts`
+- `client/tests/e2e/runtime/commands/who-command.spec.ts`
+- `client/tests/e2e/runtime/communication/chat-messages.spec.ts`
+- `client/tests/e2e/runtime/communication/local-channel-basic.spec.ts`
+- `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
+- `client/tests/e2e/runtime/communication/whisper-basic.spec.ts`
+- `client/tests/e2e/runtime/communication/whisper-integration.spec.ts`
+- `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
+- `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
+- `client/tests/e2e/runtime/fixtures/auth.ts`
+- `client/tests/e2e/runtime/fixtures/player.ts`
+- `client/tests/e2e/runtime/movement/movement-between-rooms.spec.ts`
+- `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 1004 (84%)
-- INFERRED: 187 (16%)
+- EXTRACTED: 439 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

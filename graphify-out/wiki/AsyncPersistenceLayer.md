@@ -1,66 +1,114 @@
 # AsyncPersistenceLayer
 
-> 199 nodes
+> God node · 171 connections · `server/async_persistence.py`
 
-## Key Concepts
+**Community:** [Async Persistence](Async_Persistence.md)
 
-- **AsyncPersistenceLayer** (168 connections) — `server/async_persistence.py`
-- **async_persistence.py** (93 connections) — `server/async_persistence.py`
-- **RoomCacheLoader** (26 connections) — `server/async_persistence_room_loader.py`
-- **Player** (20 connections)
-- **AsyncPersistenceRoomFacade** (16 connections) — `server/async_persistence_room_facade.py`
-- **UUID** (15 connections)
-- **async_persistence_room_facade.py** (14 connections) — `server/async_persistence_room_facade.py`
-- **ProcessedRoomData** (12 connections) — `server/async_persistence_room_loader.py`
-- **ExitJsonEntry** (10 connections) — `server/async_persistence_room_loader.py`
-- **.load()** (9 connections) — `server/async_persistence_room_loader.py`
-- **._process_combined_rows()** (8 connections) — `server/async_persistence_room_loader.py`
-- **_AsyncPersistenceRoomFacadeBase** (7 connections) — `server/async_persistence_room_facade.py`
-- **RoomLoadResult** (7 connections) — `server/async_persistence_room_loader.py`
-- **InstanceRoomLookup** (7 connections) — `server/async_persistence_types.py`
-- **._build_room_data_from_row()** (7 connections) — `server/async_persistence_room_loader.py`
-- **._generate_room_id_from_zone_data()** (7 connections) — `server/async_persistence_room_loader.py`
-- **async_persistence_types.py** (7 connections) — `server/async_persistence_types.py`
-- **async_persistence_access.py** (7 connections) — `server/container/async_persistence_access.py`
-- **ContainerCreateKwargs** (6 connections) — `server/async_persistence_types.py`
-- **PlayerEffectOptions** (6 connections) — `server/async_persistence_types.py`
-- **infrastructure/conftest.py** (6 connections) — `server/tests/unit/infrastructure/conftest.py`
-- **_ContainerWithPersistence** (5 connections) — `server/container/async_persistence_access.py`
-- **.create_container()** (5 connections) — `server/async_persistence.py`
-- **._build_room_objects()** (5 connections) — `server/async_persistence_room_loader.py`
-- **_ApplicationContainerType** (4 connections) — `server/container/async_persistence_access.py`
-- *... and 174 more nodes in this community*
+## Connections by Relation
 
-## Relationships
+### calls
+- .initialize() `EXTRACTED`
+- async_persistence_layer() `EXTRACTED`
+- test_async_persistence_layer_init_deprecated_params() `EXTRACTED`
+- test_async_persistence_layer_init_skip_room_cache() `EXTRACTED`
+- test_async_persistence_layer_init_with_room_cache() `EXTRACTED`
 
-- [get_logger](get_logger.md) (33 shared connections)
-- [test_async_persistence_delegates.py](test_async_persistence_delegates.py.md) (26 shared connections)
-- [EventBus](EventBus.md) (17 shared connections)
-- [event_types.py](event_types.py.md) (9 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (8 shared connections)
-- [item_instance_persistence.py](item_instance_persistence.py.md) (8 shared connections)
-- [Player](Player.md) (7 shared connections)
-- [TransferContainerRequest](TransferContainerRequest.md) (6 shared connections)
-- [User](User.md) (6 shared connections)
-- [CombatParticipant](CombatParticipant.md) (6 shared connections)
-- [test_async_persistence_core.py](test_async_persistence_core.py.md) (5 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (4 shared connections)
+### contains
+- async_persistence.py `EXTRACTED`
 
-## Source Files
+### imports
+- server/dependencies.py `EXTRACTED`
+- container_endpoints_basic.py `EXTRACTED`
+- api/monitoring.py `EXTRACTED`
+- maps.py `EXTRACTED`
+- npc_combat_integration_service.py `EXTRACTED`
+- endpoints.py `EXTRACTED`
+- rooms.py `EXTRACTED`
+- combat_handler.py `EXTRACTED`
+- combat_turn_participant_actions.py `EXTRACTED`
+- npc_base.py `EXTRACTED`
+- population_control.py `EXTRACTED`
+- test_async_persistence_core.py `EXTRACTED`
+- lifecycle_manager.py `EXTRACTED`
+- movement_service.py `EXTRACTED`
+- service.py `EXTRACTED`
+- test_async_persistence_delegates.py `EXTRACTED`
+- container_service.py `EXTRACTED`
+- container_service_transfer_to.py `EXTRACTED`
+- game_tick_protocols.py `EXTRACTED`
+- api/player_respawn.py `EXTRACTED`
 
-- `server/async_persistence.py`
-- `server/async_persistence_room_facade.py`
-- `server/async_persistence_room_loader.py`
-- `server/async_persistence_types.py`
-- `server/container/async_persistence_access.py`
-- `server/tests/unit/infrastructure/conftest.py`
-- `server/tests/unit/infrastructure/test_async_persistence_core.py`
+### inherits
+- AsyncPersistenceRoomFacade `EXTRACTED`
 
-## Audit Trail
+### method
+- .get_container() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .create_container() `EXTRACTED`
+- .get_player_by_id() `EXTRACTED`
+- .get_user_by_username_case_insensitive() `EXTRACTED`
+- .get_players_batch() `EXTRACTED`
+- .update_player_last_active() `EXTRACTED`
+- .get_professions() `EXTRACTED`
+- .add_player_effect() `EXTRACTED`
+- .get_active_player_effects() `EXTRACTED`
+- .ensure_item_instance() `EXTRACTED`
+- .set_instance_manager() `EXTRACTED`
+- .get_player_by_name() `EXTRACTED`
+- .get_players_by_user_id() `EXTRACTED`
+- .get_active_players_by_user_id() `EXTRACTED`
+- .get_player_by_user_id() `EXTRACTED`
+- .soft_delete_player() `EXTRACTED`
+- .save_player() `EXTRACTED`
+- .list_players() `EXTRACTED`
+- .get_room_by_id() `EXTRACTED`
 
-- EXTRACTED: 476 (91%)
-- INFERRED: 49 (9%)
-- AMBIGUOUS: 0 (0%)
+### rationale_for
+- Async persistence layer using SQLAlchemy ORM for true async PostgreSQL… `EXTRACTED`
+
+### references
+- transfer_items() `EXTRACTED`
+- open_container() `EXTRACTED`
+- close_container() `EXTRACTED`
+- emit_close_container_event() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- validate_exit() `EXTRACTED`
+- validate_player_room_membership() `EXTRACTED`
+- validate_room_integrity() `EXTRACTED`
+- ._init_npc_submodules() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- _get_user_characters() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- ._init_persistence_and_event_bus() `EXTRACTED`
+- .__init__() `EXTRACTED`
+
+### uses
+- CombatCommandHandler `INFERRED`
+- HolidayService `INFERRED`
+- ScheduleService `INFERRED`
+- RoomCacheLoader `INFERRED`
+- CombatDeathHandler `INFERRED`
+- get_container_async_persistence() `INFERRED`
+- CreateItemInstanceInput `INFERRED`
+- CoreBundle `INFERRED`
+- EnsureItemInstanceInput `INFERRED`
+- _LifecycleManagerForDeath `INFERRED`
+- _weapon_damage_from_equipped_player() `INFERRED`
+- TestEmitCloseContainerEvent `INFERRED`
+- _get_combat_container_services() `INFERRED`
+- resolve_player_attack_damage() `INFERRED`
+- InstanceRoomLookup `INFERRED`
+- test_build_room_objects_defaults_rest_location_false() `INFERRED`
+- test_build_room_objects_promotes_rest_location_from_attributes() `INFERRED`
+- PlayerEffectOptions `INFERRED`
+- ContainerCreateKwargs `INFERRED`
+- _room_from_persistence() `INFERRED`
 
 ---
 
