@@ -15,6 +15,21 @@ import { useConnectionState } from './useConnectionState';
 import { useSessionManagement } from './useSessionManagement';
 import { useWebSocketConnection } from './useWebSocketConnection';
 
+/** Exact reason string connection_session_management.py sends on its ADR-018 "kick prior session" close. */
+const NEW_GAME_SESSION_CLOSE_REASON = 'New game session established';
+
+/**
+ * True only for the server's ADR-018 "kick prior session" close -- the one code-1000 case where
+ * retrying is actively harmful (#297/#610: each side's retry re-triggers the other side's
+ * replacement). Every other code-1000 close (routine dead-connection cleanup, an explicit local
+ * disconnect()) must still retry like any other drop; scoping this by code alone silently
+ * stranded a receiver whose socket got swept as stale mid-test (#297 regression caught via
+ * chat-messages.spec.ts).
+ */
+export function isNewGameSessionClose(closeInfo: { code: number; reason: string }): boolean {
+  return closeInfo.code === 1000 && closeInfo.reason === NEW_GAME_SESSION_CLOSE_REASON;
+}
+
 interface GameEvent {
   event_type: string;
   timestamp: string;
@@ -228,11 +243,7 @@ export function useGameConnection(options: UseGameConnectionOptions) {
         intentionalExitInProgressRef.current = false;
         connectionState.disconnect();
         onIntentionalDisconnect?.();
-      } else if (closeInfo.code === 1000) {
-        // Normal closure (RFC 6455) -- e.g. the server replacing this connection with a newer
-        // session (connection_session_management.py). Not a failure: reconnecting here is what
-        // turns a clean session handoff into two sessions perpetually kicking each other
-        // (#297/#610) -- each side's retry re-triggers the other side's replacement.
+      } else if (isNewGameSessionClose(closeInfo)) {
         logger.info('GameConnection', 'WebSocket closed normally, not reconnecting', {
           reason: closeInfo.reason,
         });

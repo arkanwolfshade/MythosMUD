@@ -4,9 +4,6 @@
  * Multiplayer context lifecycle: create, reopen, cleanup.
  */
 
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
-
 import './multiplayer-browser-window.d.ts';
 
 import type { Browser, BrowserContext, Page } from '@playwright/test';
@@ -18,15 +15,9 @@ import {
   rememberPageSession,
   reopenClosedPage,
 } from './auth';
+import { createInstrumentedContext } from './e2e-browser-helpers';
 import { ensurePlayableAlive, isPlayerDead } from './player';
 import { TEST_PLAYERS, type TestPlayer } from './test-data';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const BROWSER_HELPERS_BUNDLE = join(__dirname, 'multiplayer-browser-helpers.bundle.js');
-
-async function installE2eBrowserHelpers(context: BrowserContext): Promise<void> {
-  await context.addInitScript({ path: BROWSER_HELPERS_BUNDLE });
-}
 
 /** Use 127.0.0.1 to avoid localhost resolving to IPv6 (::1) when server listens on IPv4 only. */
 const SERVER_URL = 'http://127.0.0.1:54768';
@@ -131,8 +122,7 @@ export async function createMultiPlayerContexts(browser: Browser, playerUsername
     }
 
     // Fresh context per player (no storageState). Isolated storage prevents cross-login effects.
-    const context = await browser.newContext();
-    await installE2eBrowserHelpers(context);
+    const context = await createInstrumentedContext(browser);
     const page = await context.newPage();
 
     await loginPlayer(page, player.username, player.password);
