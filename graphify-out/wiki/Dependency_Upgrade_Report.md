@@ -1,10 +1,11 @@
 # Dependency Upgrade Report
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Dependency Upgrade Report** (0 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/dependency_upgrade_report.md`
+- **Incremental Upgrade Strategy (Report)** (1 connections) — `scripts/dependency_upgrade_report.md`
+- **Upgrade Rollback Plan** (1 connections) — `scripts/dependency_upgrade_report.md`
 
 ## Relationships
 
@@ -12,12 +13,12 @@
 
 ## Source Files
 
-- `docs/archive/DEPENDENCY_UPGRADE_SPEC/dependency_upgrade_report.md`
+- `scripts/dependency_upgrade_report.md`
 
 ## Audit Trail
 
 - EXTRACTED: 0 (0%)
-- INFERRED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

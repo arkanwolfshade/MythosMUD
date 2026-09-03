@@ -35,15 +35,15 @@
 
 - [Async Audit Executive Summary](Async_Audit_Executive_Summary.md) (6 shared connections)
 - [Async Remediation Complete](Async_Remediation_Complete.md) (2 shared connections)
-- [Async Code Review - Post Phase 2 Migration](Async_Code_Review_-_Post_Phase_2_Migration.md) (1 shared connections)
+- [Async Code Review Post Migration](Async_Code_Review_Post_Migration.md) (1 shared connections)
 - [Async Remediation Final Report](Async_Remediation_Final_Report.md) (1 shared connections)
-- [ContainerRepository and ItemRepository: Review and Full Async Migration Plan](ContainerRepository_and_ItemRepository-_Review_and_Full_Async_Migration_Plan.md) (1 shared connections)
-- [Async Facades Implementation - COMPLETE ✅](Async_Facades_Implementation_-_COMPLETE_✅.md) (1 shared connections)
+- [Container Item Repository Async Migration](Container_Item_Repository_Async_Migration.md) (1 shared connections)
+- [Facades Implementation Summary](Facades_Implementation_Summary.md) (1 shared connections)
 - [Transaction Boundaries Audit](Transaction_Boundaries_Audit.md) (1 shared connections)
-- [PYDANTIC_CODE_REVIEW.md](PYDANTIC_CODE_REVIEW.md.md) (1 shared connections)
-- [Async Remediation Summary - December 3, 2025](Async_Remediation_Summary_-_December_3,_2025.md) (1 shared connections)
-- [Code Review: Import Analysis and Anti-Patterns](Code_Review-_Import_Analysis_and_Anti-Patterns.md) (1 shared connections)
-- [Phase 2 Async Persistence Migration - Status Update](Phase_2_Async_Persistence_Migration_-_Status_Update.md) (1 shared connections)
+- [Pydantic Code Review](Pydantic_Code_Review.md) (1 shared connections)
+- [Async Remediation Summary 2025 12](Async_Remediation_Summary_2025_12.md) (1 shared connections)
+- [Code Review Import Analysis](Code_Review_Import_Analysis.md) (1 shared connections)
+- [Phase2 Migration Status](Phase2_Migration_Status.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,4 +1,4 @@
-# parse_lint_findings
+# Parse Lint Findings
 
 > 3 nodes
 

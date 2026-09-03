@@ -1,75 +1,93 @@
 # LoggedHTTPException
 
-> 217 nodes
+> God node · 235 connections · `server/exceptions.py`
 
-## Key Concepts
+**Community:** [Test Auth Dependencies](Test_Auth_Dependencies.md)
 
-- **LoggedHTTPException** (369 connections) — `server/exceptions.py`
-- **PlayerService** (106 connections) — `server/game/player_service.py`
-- **players.py** (77 connections) — `server/api/players.py`
-- **test_players_api_coverage.py** (60 connections) — `server/tests/unit/api/test_players_api_coverage.py`
-- **_user()** (31 connections) — `server/tests/unit/api/test_players_api_coverage.py`
-- **asyncio** (29 connections)
-- **skills.py** (19 connections) — `server/api/skills.py`
-- **get_player_quests()** (18 connections) — `server/api/players.py`
-- **_start_login_grace_period_body()** (16 connections) — `server/api/players.py`
-- **FastAPIRequest** (16 connections)
-- **test_skills.py** (16 connections) — `server/tests/unit/api/test_skills.py`
-- **delete_player()** (15 connections) — `server/api/players.py`
-- **get_player()** (15 connections) — `server/api/players.py`
-- **select_character()** (15 connections) — `server/api/players.py`
-- **UUID** (14 connections)
-- **test_players_quests.py** (14 connections) — `server/tests/unit/api/test_players_quests.py`
-- **create_player()** (13 connections) — `server/api/players.py`
-- **get_player_skills()** (13 connections) — `server/api/players.py`
-- **_validate_character_access()** (13 connections) — `server/api/players.py`
-- **UUID** (13 connections)
-- **delete_character()** (12 connections) — `server/api/players.py`
-- **get_skills_catalog()** (12 connections) — `server/api/skills.py`
-- **_disconnect_other_characters()** (11 connections) — `server/api/players.py`
-- **get_player_by_name()** (11 connections) — `server/api/players.py`
-- **list_players()** (11 connections) — `server/api/players.py`
-- *... and 192 more nodes in this community*
+## Connections by Relation
 
-## Relationships
+### calls
+- create_character_with_stats() `EXTRACTED`
+- get_player_id_from_user() `EXTRACTED`
+- handle_container_service_error() `EXTRACTED`
+- get_container_and_player_for_loot_all() `EXTRACTED`
+- validate_character_stats() `EXTRACTED`
+- get_system_metrics() `EXTRACTED`
+- create_dialogue_definition() `EXTRACTED`
+- list_dialogue_definitions() `EXTRACTED`
+- upsert_dialogue_definition() `EXTRACTED`
+- get_npc_population_stats() `EXTRACTED`
+- replay_dlq_message() `EXTRACTED`
+- get_dialogue_definition() `EXTRACTED`
+- get_admin_sessions() `EXTRACTED`
+- _update_npc_definition_internal() `EXTRACTED`
+- get_health_status() `EXTRACTED`
+- delete_dialogue_definition() `EXTRACTED`
+- create_npc_definition() `EXTRACTED`
+- spawn_npc_instance() `EXTRACTED`
+- get_npc_system_status() `EXTRACTED`
+- get_npc_zone_stats() `EXTRACTED`
 
-- [User](User.md) (71 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (43 shared connections)
-- [get_admin_auth_service](get_admin_auth_service.md) (34 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (29 shared connections)
-- [pydantic.md](pydantic.md.md) (25 shared connections)
-- [api/player_respawn.py](api-player_respawn.py.md) (24 shared connections)
-- [players/__init__.py](players-__init__.py.md) (23 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (18 shared connections)
-- [api/monitoring.py](api-monitoring.py.md) (18 shared connections)
-- [get_logger](get_logger.md) (18 shared connections)
-- [test_containers.py](test_containers.py.md) (17 shared connections)
-- [ExplorationService](ExplorationService.md) (16 shared connections)
+### contains
+- server/exceptions.py `EXTRACTED`
 
-## Source Files
+### imports
+- api/character_creation.py `EXTRACTED`
+- api/monitoring.py `EXTRACTED`
+- test_monitoring_endpoints.py `EXTRACTED`
+- test_maps.py `EXTRACTED`
+- test_container_helpers.py `EXTRACTED`
+- test_rooms_write_api.py `EXTRACTED`
+- test_exceptions.py `EXTRACTED`
+- api/container_helpers.py `EXTRACTED`
+- test_metrics_endpoints.py `EXTRACTED`
+- test_exceptions_comprehensive.py `EXTRACTED`
+- standardized_responses.py `EXTRACTED`
+- npc_definitions_api.py `EXTRACTED`
+- container_endpoints_loot.py `EXTRACTED`
+- api/metrics.py `EXTRACTED`
+- test_standardized_responses.py `EXTRACTED`
+- test_error_handling_middleware.py `EXTRACTED`
+- npc_instances_api.py `EXTRACTED`
+- api/player_respawn.py `EXTRACTED`
+- test_containers.py `EXTRACTED`
+- dialogue_definitions_api.py `EXTRACTED`
 
-- `server/api/players.py`
-- `server/api/skills.py`
-- `server/app/game_tick_processing.py`
-- `server/exceptions.py`
-- `server/game/magic/mp_regeneration_service.py`
-- `server/game/magic/spell_costs.py`
-- `server/game/magic/spell_materials.py`
-- `server/game/player_service.py`
-- `server/schemas/players/skill.py`
-- `server/schemas/quest/__init__.py`
-- `server/schemas/quest/quest.py`
-- `server/tests/unit/api/test_players_api_coverage.py`
-- `server/tests/unit/api/test_players_quests.py`
-- `server/tests/unit/api/test_skills.py`
-- `server/tests/unit/test_exceptions.py`
-- `server/tests/unit/test_exceptions_comprehensive.py`
+### inherits
+- LoggedException `EXTRACTED`
+- HTTPException `EXTRACTED`
 
-## Audit Trail
+### method
+- .__init__() `EXTRACTED`
 
-- EXTRACTED: 868 (84%)
-- INFERRED: 171 (16%)
-- AMBIGUOUS: 0 (0%)
+### rationale_for
+- HTTPException with automatic logging. This class extends FastAPI's… `EXTRACTED`
+
+### references
+- ._handle_logged_http_exception() `EXTRACTED`
+- ._get_logged_http_user_friendly_message() `EXTRACTED`
+
+### uses
+- TestLootAllItems `INFERRED`
+- TestMonitoringEndpoints `INFERRED`
+- TestRegisterLootEndpoints `INFERRED`
+- TestRollCharacterStats `INFERRED`
+- TestHandleTransferItemsExceptions `INFERRED`
+- TestOpenContainer `INFERRED`
+- TestTransferItems `INFERRED`
+- TestGetContainerAndPlayerForLootAll `INFERRED`
+- TestHelperFunctions `INFERRED`
+- test_create_room_exit_duplicate_direction_409() `INFERRED`
+- TestHandleLootAllExceptions `INFERRED`
+- TestHandleOpenContainerExceptions `INFERRED`
+- test_create_room_exit_source_room_missing_404() `INFERRED`
+- test_create_room_exit_target_room_missing_404() `INFERRED`
+- test_update_room_exit_not_found_404() `INFERRED`
+- TestCreateCharacterWithStats `INFERRED`
+- TestHandleContainerServiceErrorEdgeCases `INFERRED`
+- TestHandleContainerServiceError `INFERRED`
+- TestCloseContainer `INFERRED`
+- test_delete_room_exit_not_found_404() `INFERRED`
 
 ---
 

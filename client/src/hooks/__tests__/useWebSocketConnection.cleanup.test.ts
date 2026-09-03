@@ -2,8 +2,12 @@
 
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-// Fixtures import must load before the hook (@/ paths survive organizeImports on save).
-import { useWebSocketConnection } from '../useWebSocketConnection';
+// Fixtures import must load before the hook: it calls vi.mock('../../utils/resourceCleanup', ...),
+// and vi.mock() only intercepts a module that hasn't already been imported and cached. Importing
+// the hook first (as this previously did, despite this very comment saying not to -- @/ paths
+// survive organizeImports on save, but this plain relative pair doesn't sort back on its own)
+// evaluates the hook's real `useResourceCleanup` import before the mock registers, so every
+// assertion against mockResourceManager silently watches the wrong object (#297/#778 CI failure).
 import {
   defaultOptions,
   latestWebSocketInstance,
@@ -12,6 +16,7 @@ import {
   wsConnectionBeforeEach,
   wsTestState,
 } from './useWebSocketConnectionTestFixtures';
+import { useWebSocketConnection } from '../useWebSocketConnection';
 
 describe('useWebSocketConnection - Cleanup', () => {
   beforeEach(wsConnectionBeforeEach);

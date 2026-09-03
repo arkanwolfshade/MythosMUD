@@ -1,30 +1,26 @@
-# items
+# Items
 
-> 6 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **items** (5 connections) — `db/static/schemas/holidays.schema.json`
-- **holidays** (4 connections) — `db/static/schemas/holidays.schema.json`
-- **properties** (2 connections) — `db/static/schemas/holidays.schema.json`
-- **minItems** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **additionalProperties** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **items.sql** (3 connections) — `db/procedures/items.sql`
+- **schema_name.item_instance_exists()** (2 connections) — `db/procedures/items.sql`
+- **schema_name.get_item_instance()** (1 connections) — `db/procedures/items.sql`
+- **schema_name.upsert_item_instance()** (1 connections) — `db/procedures/items.sql`
+- **item_instances** (1 connections)
 
 ## Relationships
 
-- [bonus_tags](bonus_tags.md) (1 shared connections)
-- [required](required.md) (1 shared connections)
-- [properties](properties.md) (1 shared connections)
-- [holidays.schema.json](holidays.schema.json.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `db/static/schemas/holidays.schema.json`
+- `db/procedures/items.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

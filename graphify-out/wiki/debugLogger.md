@@ -1,4 +1,4 @@
-# debugLogger
+# Debuglogger
 
 > 27 nodes
 

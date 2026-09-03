@@ -1,8 +1,8 @@
 # Player
 
-> God node · 232 connections · `server/models/player.py`
+> God node · 231 connections · `server/models/player.py`
 
-**Community:** [Player](Player.md)
+**Community:** [Player Model & Migrations](Player_Model_&_Migrations.md)
 
 ## Connections by Relation
 
@@ -32,26 +32,26 @@
 - models/player.py `EXTRACTED`
 
 ### imports
-- async_persistence.py `EXTRACTED`
 - server/models/__init__.py `EXTRACTED`
+- async_persistence.py `EXTRACTED`
 - models/user.py `EXTRACTED`
-- [look_command.py](look_command.py.md) `EXTRACTED`
-- [test_player_respawn_service.py](test_player_respawn_service.py.md) `EXTRACTED`
-- [test_player_death_service.py](test_player_death_service.py.md) `EXTRACTED`
-- [real_time.py](real_time.py.md) `EXTRACTED`
+- look_command.py `EXTRACTED`
+- test_player_respawn_service.py `EXTRACTED`
+- test_player_death_service.py `EXTRACTED`
 - lucidity_service.py `EXTRACTED`
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) `EXTRACTED`
-- [test_player_model.py](test_player_model.py.md) `EXTRACTED`
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) `EXTRACTED`
-- [inventory_equip_command.py](inventory_equip_command.py.md) `EXTRACTED`
+- inventory_command_helpers.py `EXTRACTED`
+- test_player_model.py `EXTRACTED`
+- inventory_equip_command.py `EXTRACTED`
+- test_websocket_initial_state.py `EXTRACTED`
 - websocket_initial_state.py `EXTRACTED`
-- [websocket_helpers.py](websocket_helpers.py.md) `EXTRACTED`
-- [test_async_persistence_core.py](test_async_persistence_core.py.md) `EXTRACTED`
-- [test_player_repository.py](test_player_repository.py.md) `EXTRACTED`
+- test_async_persistence_core.py `EXTRACTED`
+- test_player_repository.py `EXTRACTED`
+- real_time.py `EXTRACTED`
 - player_respawn_service.py `EXTRACTED`
 - test_inventory_equip_command.py `EXTRACTED`
 - movement_service.py `EXTRACTED`
-- [service.py](service.py.md) `EXTRACTED`
+- websocket_helpers.py `EXTRACTED`
+- service.py `EXTRACTED`
 
 ### inherits
 - Base `EXTRACTED`
@@ -85,26 +85,26 @@
 - _convert_legacy_stats_string() `EXTRACTED`
 
 ### uses
-- [User](User.md) `INFERRED`
 - PlayerLucidity `INFERRED`
-- Base `INFERRED`
 - HealthRepository `INFERRED`
 - PlayerRepository `INFERRED`
 - SpellTargetingService `INFERRED`
-- [ExperienceRepository](ExperienceRepository.md) `INFERRED`
 - PlayerDeathService `INFERRED`
+- ExperienceRepository `INFERRED`
 - LucidityExposureState `INFERRED`
-- [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) `INFERRED`
+- PlayerRepositoryProtocol `INFERRED`
 - LucidityCooldown `INFERRED`
 - LucidityAdjustmentLog `INFERRED`
-- PlayerSpell `INFERRED`
 - PositionState `INFERRED`
 - PlayerSavePreparer `INFERRED`
 - PlayerEffect `INFERRED`
-- PlayerSkill `INFERRED`
 - validate_and_fix_player_room() `INFERRED`
 - _sample_work() `INFERRED`
 - should_skip_room_validation() `INFERRED`
+- validate_and_fix_player_room_with_persistence() `INFERRED`
+- test_lucidity_adjustment_round_trip() `INFERRED`
+- test_add_player_effect_generates_id() `INFERRED`
+- test_put_run_validated_container_error() `INFERRED`
 
 ---
 
