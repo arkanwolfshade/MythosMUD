@@ -23,11 +23,19 @@ from typing import Protocol, cast
 
 from anyio import sleep
 
+from ..config import get_config
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
-LOGIN_GRACE_PERIOD_DURATION = 10.0  # 10 seconds
+LOGIN_GRACE_PERIOD_DURATION = 10.0  # 10 seconds (GameConfig.login_grace_period_seconds default)
+
+
+def _login_grace_period_seconds() -> float:
+    """Read the login grace period duration from `GameConfig` (`#297`), retunable via
+    `GAME_LOGIN_GRACE_PERIOD_SECONDS` without a redeploy."""
+    return get_config().game.login_grace_period_seconds
+
 
 GraceEntry = asyncio.Task[None] | bool
 
@@ -142,7 +150,7 @@ async def handle_login_grace_period_expiration(player_id: uuid.UUID, manager: ob
 async def _grace_period_task(player_id: uuid.UUID, manager: object) -> None:
     """Internal task that waits for grace period duration and handles expiration."""
     try:
-        await sleep(LOGIN_GRACE_PERIOD_DURATION)
+        await sleep(_login_grace_period_seconds())
 
         if player_id not in _as_grace(manager).login_grace_period_players:
             logger.debug("Login grace period cancelled", player_id=player_id)
@@ -171,7 +179,7 @@ async def _try_start_effect_based_grace(
     """Add LOGIN_WARDED via persistence. True if in-memory sentinel was set."""
     try:
         tick_interval = get_tick_interval()
-        duration_ticks = max(1, int(LOGIN_GRACE_PERIOD_DURATION / tick_interval))
+        duration_ticks = max(1, int(_login_grace_period_seconds() / tick_interval))
         persistence = cast(_EffectPersistence, async_persistence)
         _ = await persistence.add_player_effect(
             player_id,
@@ -205,7 +213,7 @@ async def start_login_grace_period(
         logger.debug("Player already in login grace period", player_id=player_id)
         return
 
-    logger.info("Starting login grace period for player", player_id=player_id, duration=LOGIN_GRACE_PERIOD_DURATION)
+    logger.info("Starting login grace period for player", player_id=player_id, duration=_login_grace_period_seconds())
     mgr.login_grace_period_start_times[player_id] = time.time()
 
     if async_persistence and get_current_tick and get_tick_interval:
@@ -290,4 +298,4 @@ def get_login_grace_period_remaining(player_id: uuid.UUID, manager: object) -> f
 
     start_time = mgr.login_grace_period_start_times[player_id]
     elapsed = time.time() - start_time
-    return max(0.0, LOGIN_GRACE_PERIOD_DURATION - elapsed)
+    return max(0.0, _login_grace_period_seconds() - elapsed)

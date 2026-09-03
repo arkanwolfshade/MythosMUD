@@ -20,11 +20,11 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.commands.rest_command import (
-    _check_player_in_combat,
     _check_rest_location,
     _disconnect_player_intentionally,
     _start_rest_countdown,
     cancel_rest_countdown,
+    check_player_in_combat,
     handle_rest_command,
     is_player_resting,
 )
@@ -88,7 +88,9 @@ def mock_connection_manager() -> MagicMock:
     manager: MagicMock = MagicMock()
     manager.resting_players = {}
     manager.intentional_disconnects = set()
+    manager.player_websockets = {}
     manager.force_disconnect_player = AsyncMock()
+    manager.disconnect_websocket_connection = AsyncMock(return_value=True)
     return manager
 
 
@@ -215,14 +217,21 @@ async def test_handle_rest_command_rest_location_instant(
     combat_service = mock_request.app.state.combat_service
     combat_service.get_combat_by_participant = AsyncMock(return_value=None)
 
-    with patch(
-        "server.commands.rest_command._disconnect_player_intentionally", new_callable=AsyncMock
-    ) as mock_disconnect:
-        result = await handle_rest_command({}, {}, mock_request, None, "TestPlayer")
+    player_id = uuid.UUID(mock_player.player_id)
+    mock_connection_manager.player_websockets[player_id] = ["conn-1"]
 
-        assert "result" in result
-        assert "rest peacefully" in result["result"].lower() or "disconnect" in result["result"].lower()
-        mock_disconnect.assert_called_once()
+    result = await handle_rest_command({}, {}, mock_request, None, "TestPlayer")
+
+    assert "result" in result
+    assert "rest peacefully" in result["result"].lower() or "disconnect" in result["result"].lower()
+    # #297: the disconnect is deliberately deferred (asyncio.create_task) past a short delay so
+    # the response above reaches the client before the socket closes -- give that task a chance
+    # to run before asserting, matching the fire-and-forget task pattern in
+    # test_disconnect_grace_period.py.
+    await asyncio.sleep(0.2)
+    # Targets the specific connection snapshotted at /rest time (#297) rather than a blanket
+    # force_disconnect_player, so a fast reconnect during the delay isn't swept up too.
+    mock_connection_manager.disconnect_websocket_connection.assert_called_once_with(player_id, "conn-1")
 
 
 @pytest.mark.asyncio
@@ -261,37 +270,37 @@ async def test_handle_rest_command_starts_countdown(
 
 @pytest.mark.asyncio
 async def test_check_player_in_combat_true(mock_app: MagicMock) -> None:
-    """Test _check_player_in_combat() returns True when player is in combat."""
+    """Test check_player_in_combat() returns True when player is in combat."""
     player_id = uuid.uuid4()
     mock_app.state.combat_service = MagicMock()
     combat_service = mock_app.state.combat_service
     combat_service.get_combat_by_participant = AsyncMock(return_value=MagicMock())  # Returns combat instance
 
-    result = await _check_player_in_combat(player_id, mock_app)
+    result = await check_player_in_combat(player_id, mock_app)
 
     assert result is True
 
 
 @pytest.mark.asyncio
 async def test_check_player_in_combat_false(mock_app: MagicMock) -> None:
-    """Test _check_player_in_combat() returns False when player is not in combat."""
+    """Test check_player_in_combat() returns False when player is not in combat."""
     player_id = uuid.uuid4()
     mock_app.state.combat_service = MagicMock()
     combat_service = mock_app.state.combat_service
     combat_service.get_combat_by_participant = AsyncMock(return_value=None)
 
-    result = await _check_player_in_combat(player_id, mock_app)
+    result = await check_player_in_combat(player_id, mock_app)
 
     assert result is False
 
 
 @pytest.mark.asyncio
 async def test_check_player_in_combat_no_service(mock_app: MagicMock) -> None:
-    """Test _check_player_in_combat() returns False when no combat service."""
+    """Test check_player_in_combat() returns False when no combat service."""
     player_id = uuid.uuid4()
     mock_app.state.combat_service = None
 
-    result = await _check_player_in_combat(player_id, mock_app)
+    result = await check_player_in_combat(player_id, mock_app)
 
     assert result is False
 
@@ -385,7 +394,7 @@ async def test_start_rest_countdown_timer_expires(
     with patch(
         "server.commands.rest_command._disconnect_player_intentionally", new_callable=AsyncMock
     ) as mock_disconnect:
-        with patch("server.commands.rest_countdown_task.REST_COUNTDOWN_DURATION", 0.1):
+        with patch("server.commands.rest_countdown_task.rest_countdown_seconds", return_value=0.1):
             await _start_rest_countdown(player_id, player_name, mock_connection_manager, mock_persistence)
 
             # Wait for task to complete

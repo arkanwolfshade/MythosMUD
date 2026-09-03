@@ -7,7 +7,13 @@
 import './multiplayer-browser-window.d.ts';
 
 import { expect, type Browser } from '@playwright/test';
-import { assertNoRestDisconnectPollution, ensurePlayableConnection, loginPlayer, waitForPlayableSession } from './auth';
+import {
+  assertNoRestDisconnectPollution,
+  ensurePlayableConnection,
+  isPageConnected,
+  loginPlayer,
+  waitForPlayableSession,
+} from './auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
@@ -77,6 +83,14 @@ export async function ensureFreshMultiPlayerContexts(
         .isVisible({ timeout: 1500 })
         .catch(() => false);
       if (onLogin) {
+        needsFresh = true;
+        break;
+      }
+      // A page that survived a server-side disconnect (e.g. /rest) stays open showing a
+      // linkdead/reconnecting state -- not the login form -- until the client eventually
+      // falls back to login on its own. Catching only username-input here leaves that window
+      // reusing a dead session, so also require an actively connected WebSocket.
+      if (!(await isPageConnected(c.page))) {
         needsFresh = true;
         break;
       }

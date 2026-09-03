@@ -13,12 +13,19 @@ from typing import Any
 
 from anyio import sleep
 
+from ..config import get_config
 from ..realtime.envelope import build_event
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
-REST_COUNTDOWN_DURATION = 10.0  # 10 seconds
+REST_COUNTDOWN_DURATION = 10.0  # 10 seconds (GameConfig.rest_countdown_seconds default)
+
+
+def rest_countdown_seconds() -> float:
+    """Read the /rest countdown duration from `GameConfig` (`#297`), retunable via
+    `GAME_REST_COUNTDOWN_SECONDS` without a redeploy."""
+    return get_config().game.rest_countdown_seconds
 
 
 def _is_rest_interrupted(player_id: uuid.UUID, connection_manager: Any) -> bool:
@@ -71,7 +78,7 @@ async def _handle_countdown_loop(player_id: uuid.UUID, connection_manager: Any) 
     Returns:
         True if countdown completed, False if interrupted
     """
-    for remaining in range(int(REST_COUNTDOWN_DURATION), 0, -1):
+    for remaining in range(int(rest_countdown_seconds()), 0, -1):
         if _is_rest_interrupted(player_id, connection_manager):
             logger.debug("Rest countdown cancelled (interrupted)", player_id=player_id)
             return False

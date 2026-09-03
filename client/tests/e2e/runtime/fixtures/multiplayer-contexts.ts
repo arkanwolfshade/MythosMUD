@@ -10,7 +10,14 @@ import { fileURLToPath } from 'url';
 import './multiplayer-browser-window.d.ts';
 
 import type { Browser, BrowserContext, Page } from '@playwright/test';
-import { getLivePageForUsername, loginPlayer, logoutPlayer, rememberPageSession, reopenClosedPage } from './auth';
+import {
+  getLivePageForUsername,
+  isPageConnected,
+  loginPlayer,
+  logoutPlayer,
+  rememberPageSession,
+  reopenClosedPage,
+} from './auth';
 import { ensurePlayableAlive, isPlayerDead } from './player';
 import { TEST_PLAYERS, type TestPlayer } from './test-data';
 
@@ -69,13 +76,17 @@ export interface PlayerContext {
  */
 export async function reopenPlayerPageIfClosed(playerContext: PlayerContext): Promise<void> {
   const live = getLivePageForUsername(playerContext.player.username);
-  if (live) {
+  if (live && (await isPageConnected(live))) {
     playerContext.page = live;
     playerContext.context = live.context();
     rememberPageSession(live, playerContext.player.username, playerContext.player.password);
     return;
   }
-  if (!playerContext.page.isClosed()) {
+  // A page that survived a server-side disconnect (e.g. an abrupt context.close() detected
+  // server-side, or /rest) can stay open showing a linkdead/reconnecting state -- not closed,
+  // but not usable -- until the client eventually falls back to login on its own. Trusting
+  // isClosed() alone reuses that dead session; require an actively connected WebSocket too.
+  if (await isPageConnected(playerContext.page)) {
     rememberPageSession(playerContext.page, playerContext.player.username, playerContext.player.password);
     return;
   }

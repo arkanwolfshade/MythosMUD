@@ -139,6 +139,26 @@ async def test_apply_target_rest_grace_raises_on_grace_period() -> None:
 
 
 @pytest.mark.asyncio
+async def test_apply_target_rest_grace_allows_disconnect_grace_target() -> None:
+    """#297/#768: a linkdead (disconnect-grace, not login-grace) target must NOT raise here --
+    `disconnect_grace_period.py`'s docstring claims a zombie "can be attacked and will auto-attack
+    back"; this is the check that would block it if it were wrongly wired to disconnect grace
+    instead of login grace. `manager.grace_period_players` containing the target (disconnect
+    grace) must not trip `is_player_in_login_grace_period`, which reads a different dict.
+    """
+    target = _participant("Target")
+    attacker = _participant("Attacker")
+    connection_manager: MagicMock = MagicMock()
+    connection_manager.grace_period_players = {target.participant_id: MagicMock()}
+    with (
+        patch("server.services.combat_service_start.is_player_in_login_grace_period", return_value=False),
+        patch("server.commands.rest_command.is_player_resting", return_value=False),
+    ):
+        # Must not raise -- a disconnect-grace target is a valid combat target.
+        await combat_service_start.apply_target_rest_and_grace_checks(MagicMock(), connection_manager, target, attacker)
+
+
+@pytest.mark.asyncio
 async def test_apply_target_rest_cancels_rest() -> None:
     """Resting target has rest countdown cancelled."""
     target = _participant("Target")
