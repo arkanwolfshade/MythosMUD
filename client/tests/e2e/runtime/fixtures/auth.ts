@@ -8,6 +8,7 @@ import './multiplayer-browser-window.d.ts';
 
 import { expect, type BrowserContext, type Page } from '@playwright/test';
 import { CharacterSelectionPage, LoginPage, MotdPage } from '../pages';
+import { createInstrumentedContext } from './e2e-browser-helpers';
 import { TEST_TIMEOUTS } from './test-data';
 
 /** Last login credentials per page — used by executeCommand recovery in multiplayer tests. */
@@ -91,7 +92,7 @@ export async function reopenClosedPage(
   // new page's WS opens and is torn down almost immediately, looping through the reconnect
   // backoff without ever settling (observed repeatedly in #297 e2e runs). A genuinely fresh
   // context (matching createMultiPlayerContexts' own always-fresh-context approach) avoids that.
-  context = await browser.newContext();
+  context = await createInstrumentedContext(browser);
   const next = await context.newPage();
   rememberPageSession(next, username, password);
   await loginPlayer(next, username, password);

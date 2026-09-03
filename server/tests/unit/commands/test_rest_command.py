@@ -235,6 +235,50 @@ async def test_handle_rest_command_rest_location_instant(
 
 
 @pytest.mark.asyncio
+async def test_handle_rest_command_rest_location_marks_intentional_before_delay(
+    mock_request: MagicMock,
+    mock_persistence: MockPersistence,
+    mock_connection_manager: MagicMock,
+    mock_player: MagicMock,
+) -> None:
+    """#297 regression: intentional_disconnects must be marked before the deferred close's sleep,
+    not after. The socket has been observed dying (a racing client reconnect, e.g.) faster than
+    that 100ms delay; marking intent only after it elapses left a real disconnect running through
+    the handler while player_id was still absent from intentional_disconnects, misclassifying a
+    /rest disconnect as unintentional and starting a 30s linkdead grace period instead of clean
+    teardown (caught via rest-command.spec.ts's countdown test failing to reconnect afterward).
+    """
+    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.connection_manager = mock_connection_manager
+    mock_request.app.state.combat_service = MagicMock()
+    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    mock_persistence.get_room_by_id = MagicMock(return_value=MagicMock(rest_location=True))
+
+    combat_service = mock_request.app.state.combat_service
+    combat_service.get_combat_by_participant = AsyncMock(return_value=None)
+
+    player_id = uuid.UUID(mock_player.player_id)
+    mock_connection_manager.player_websockets[player_id] = ["conn-1"]
+
+    result = await handle_rest_command({}, {}, mock_request, None, "TestPlayer")
+    assert "result" in result
+
+    # asyncio.create_task() only schedules the deferred task; a single zero-delay yield is enough
+    # for it to run its synchronous prefix (the intent marking, now before the sleep) -- mirroring
+    # the real await (websocket.send_json) production hits between create_task and the response
+    # actually reaching the wire, which is what let the race happen in the first place.
+    await asyncio.sleep(0)
+    assert player_id in mock_connection_manager.intentional_disconnects
+    # The actual close is still deferred -- only the intent marking moved earlier.
+    mock_connection_manager.disconnect_websocket_connection.assert_not_called()
+
+    await asyncio.sleep(0.2)
+    mock_connection_manager.disconnect_websocket_connection.assert_called_once_with(player_id, "conn-1")
+    # Cleaned up in the deferred task's finally block once the close completes.
+    assert player_id not in mock_connection_manager.intentional_disconnects
+
+
+@pytest.mark.asyncio
 async def test_handle_rest_command_starts_countdown(
     mock_request: MagicMock,
     mock_persistence: MockPersistence,

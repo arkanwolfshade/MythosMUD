@@ -14,12 +14,7 @@ import {
   loginPlayer,
   waitForPlayableSession,
 } from './auth';
-import {
-  cleanupMultiPlayerContexts,
-  createMultiPlayerContexts,
-  reopenPlayerPageIfClosed,
-  type PlayerContext,
-} from './multiplayer-contexts';
+import { createMultiPlayerContexts, reopenPlayerPageIfClosed, type PlayerContext } from './multiplayer-contexts';
 import { assertPlayerAlive } from './player';
 import { TEST_TIMEOUTS } from './test-data';
 
@@ -65,8 +60,23 @@ async function waitForPlayerRoomSubscription(
   }
 }
 
+/** True if this context's page needs recovering: closed, on login, or WS not actually connected
+ * (a page that survived a server-side disconnect, e.g. /rest, stays open showing a
+ * linkdead/reconnecting state -- not the login form -- until the client eventually falls back to
+ * login on its own; catching only username-input misses that window). */
+async function playerContextNeedsRecovery(c: PlayerContext): Promise<boolean> {
+  if (c.page.isClosed()) {
+    return true;
+  }
+  const onLogin = await c.page
+    .getByTestId('username-input')
+    .isVisible({ timeout: 1500 })
+    .catch(() => false);
+  return onLogin || !(await isPageConnected(c.page));
+}
+
 /**
- * Recreate multiplayer contexts when pages/browsers died or a player landed on login.
+ * Recover multiplayer contexts when pages/browsers died or a player landed on login.
  * Keeps conditionals out of Playwright test bodies (playwright/no-conditional-in-test).
  */
 export async function ensureFreshMultiPlayerContexts(
@@ -75,34 +85,31 @@ export async function ensureFreshMultiPlayerContexts(
   playerUsernames: string[],
   waitMs: number = 60000
 ): Promise<PlayerContext[]> {
-  let needsFresh = contexts.some(c => c.page.isClosed()) || contexts.some(c => !c.context.browser()?.isConnected());
-  if (!needsFresh) {
-    for (const c of contexts) {
-      const onLogin = await c.page
-        .getByTestId('username-input')
-        .isVisible({ timeout: 1500 })
-        .catch(() => false);
-      if (onLogin) {
-        needsFresh = true;
-        break;
-      }
-      // A page that survived a server-side disconnect (e.g. /rest) stays open showing a
-      // linkdead/reconnecting state -- not the login form -- until the client eventually
-      // falls back to login on its own. Catching only username-input here leaves that window
-      // reusing a dead session, so also require an actively connected WebSocket.
-      if (!(await isPageConnected(c.page))) {
-        needsFresh = true;
-        break;
-      }
+  if (!browser.isConnected()) {
+    // The browser process itself is gone -- nothing per-context can recover from that, only a
+    // full fresh set will do.
+    const next = await createMultiPlayerContexts(browser, playerUsernames);
+    await waitForAllPlayersInGame(next, waitMs);
+    return next;
+  }
+
+  // Recover only the players that actually need it, not the whole array. Tearing down every
+  // context the moment ANY one of them looked doubtful is what produced #297's mutual-kick churn
+  // storm: recreating a healthy player's context minted a new session_id that immediately kicked
+  // that same player's still-live prior session (connection_session_management.py's ADR-018
+  // kick), cascading into 30+ reconnect cycles for a problem that only ever affected one player.
+  let recoveredAny = false;
+  for (const c of contexts) {
+    if (await playerContextNeedsRecovery(c)) {
+      await reopenPlayerPageIfClosed(c);
+      recoveredAny = true;
     }
   }
-  if (!needsFresh) {
-    return contexts;
+
+  if (recoveredAny) {
+    await waitForAllPlayersInGame(contexts, waitMs);
   }
-  await cleanupMultiPlayerContexts(contexts).catch(() => {});
-  const next = await createMultiPlayerContexts(browser, playerUsernames);
-  await waitForAllPlayersInGame(next, waitMs);
-  return next;
+  return contexts;
 }
 
 /**
