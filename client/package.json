@@ -81,9 +81,9 @@
   },
   "overrides": {
     "undici": "^7.28.0",
-    "fast-uri": "4.1.2",
+    "fast-uri": "4.1.4",
     "lodash": "^4.18.1",
-    "flatted": "^3.4.2",
+    "flatted": "^3.4.4",
     "glob": "^13.0.6",
     "magic-string": "0.30.17",
     "@stoplight/spectral-core": {
@@ -94,10 +94,7 @@
     },
     "markdown-it": "14.2.0",
     "linkify-it": "6.1.0",
-    "js-yaml": "5.2.2",
-    "@asyncapi/specs": "6.11.1",
-    "@asyncapi/generator": "3.3.0",
-    "@asyncapi/generator-helpers": "1.1.0",
-    "@asyncapi/generator-components": "0.7.0"
+    "js-yaml": "5.4.1",
+    "@asyncapi/specs": "6.11.1"
   }
 }
