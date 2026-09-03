@@ -140,9 +140,7 @@
           "patternId": "Trivy_vulnerability_minor"
         }
       ],
-      "exclude": [
-        "openapi.json"
-      ]
+      "exclude": ["openapi.json"]
     },
     {
       "toolId": "Semgrep",

@@ -57,9 +57,9 @@
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-playwright": "^2.11.0",
     "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-refresh": "^0.5.4",
+    "eslint-plugin-react-refresh": "^0.5.5",
     "globals": "^17.9.0",
-    "happy-dom": "^20.11.2",
+    "happy-dom": "^20.12.0",
     "jsdom": "^30.0.1",
     "knip": "^6.32.2",
     "markdownlint-cli": "^0.49.1",
@@ -81,9 +81,9 @@
   },
   "overrides": {
     "undici": "^7.28.0",
-    "fast-uri": "4.1.2",
+    "fast-uri": "4.1.4",
     "lodash": "^4.18.1",
-    "flatted": "^3.4.2",
+    "flatted": "^3.4.4",
     "glob": "^13.0.6",
     "magic-string": "0.30.17",
     "@stoplight/spectral-core": {
@@ -94,10 +94,7 @@
     },
     "markdown-it": "14.2.0",
     "linkify-it": "6.1.0",
-    "js-yaml": "5.2.2",
-    "@asyncapi/specs": "6.11.1",
-    "@asyncapi/generator": "3.3.0",
-    "@asyncapi/generator-helpers": "1.1.0",
-    "@asyncapi/generator-components": "0.7.0"
+    "js-yaml": "5.4.1",
+    "@asyncapi/specs": "6.11.1"
   }
 }
