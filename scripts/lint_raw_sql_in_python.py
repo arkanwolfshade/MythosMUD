@@ -118,10 +118,8 @@ def scan() -> list[str]:
 
         line_nums = _find_raw_sql_lines(content)
         if line_nums:
-            violations.append(
-                f"{rel}: {len(line_nums)} raw SQL site(s) at line(s) "
-                f"{', '.join(str(n) for n in line_nums)} -- use a stored procedure (ADR-015)"
-            )
+            lines = ", ".join(str(n) for n in line_nums)
+            violations.append(f"{rel}: {len(line_nums)} raw SQL site(s) at line(s) {lines} -- use a stored procedure (ADR-015)")
 
     return violations
 
@@ -134,10 +132,7 @@ def main() -> int:
         print(msg)
 
     if violations:
-        print(
-            f"\n{len(violations)} file(s) with raw SQL found. "
-            "See docs/POSTGRESQL_CONTRIBUTOR_GUIDE.md and ADR-015."
-        )
+        print(f"\n{len(violations)} file(s) with raw SQL found. See docs/POSTGRESQL_CONTRIBUTOR_GUIDE.md and ADR-015.")
         return 1
 
     print("\nRaw-SQL guard: no raw SQL sites found.")
