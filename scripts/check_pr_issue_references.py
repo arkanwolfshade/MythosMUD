@@ -83,8 +83,7 @@ def get_open_issue_numbers(candidates: set[int]) -> set[int] | None:
 
 
 def _format_message(message: str) -> str:
-    """Format as a GitHub Actions annotation in CI, plain text locally -- same convention as
-    lint_raw_sql_in_python.py's _overdue_message."""
+    """Format as a GitHub Actions annotation in CI, plain text locally."""
     if os.environ.get("GITHUB_ACTIONS"):
         return f"::warning::{message}"
     return message
