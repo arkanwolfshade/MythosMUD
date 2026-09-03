@@ -114,7 +114,11 @@ try {
                 exit 1
             }
             Write-Host "Applying $migrationFile to '$targetDb' ..." -ForegroundColor Yellow
-            $result = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $targetDb -v ON_ERROR_STOP=1 -f $migrationFile 2>&1
+            # psql's idempotent NOTICEs (e.g. "already exists, skipping") land on stderr; merging them via
+            # 2>&1 turns each line into an ErrorRecord that $ErrorActionPreference=Stop would treat as
+            # terminating. Scope ErrorActionPreference to Continue for just this call -- $LASTEXITCODE below
+            # still catches real failures.
+            $result = & { $ErrorActionPreference = "Continue"; & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $targetDb -v ON_ERROR_STOP=1 -f $migrationFile 2>&1 }
             if ($LASTEXITCODE -ne 0) {
                 Write-Host "[ERROR] Failed to apply migration to '$targetDb':" -ForegroundColor Red
                 Write-Host $result -ForegroundColor Red

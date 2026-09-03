@@ -73,7 +73,7 @@ DEFAULT_LOG_CATEGORIES: dict[str, list[str]] = {
         "server.services.schedule_service",
     ],
     "caching": ["caching", "server.caching"],
-    "communications": ["realtime", "communications"],
+    "communications": ["realtime", "server.realtime", "communications"],
     "commands": [
         "commands",
         "server.commands",

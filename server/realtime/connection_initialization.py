@@ -49,6 +49,10 @@ def initialize_connection_state(manager: Any, event_publisher: Any | None = None
     manager.processed_disconnects = set()
     manager.processed_disconnect_lock = Lock()
     manager.grace_period_players = {}
+    # DP snapshot taken when a disconnect-grace window starts, for the reconnect catch-up
+    # summary (#297). Keyed the same as grace_period_players; torn down on both cancel and
+    # expiry alongside it -- never left orphaned.
+    manager.grace_period_snapshots = {}
     manager.login_grace_period_players = {}
     manager.login_grace_period_start_times = {}
     manager.resting_players = {}

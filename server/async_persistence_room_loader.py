@@ -61,6 +61,7 @@ class RoomInitPayload(TypedDict, total=False):
     zone: str
     sub_zone: str | None
     resolved_environment: str
+    rest_location: bool
     exits: dict[str, str]
     attributes: dict[str, object]
 
@@ -459,9 +460,11 @@ class RoomCacheLoader:
                 attributes = cast(dict[str, object], attributes_raw)
                 environment = attributes.get("environment", "outdoors")
                 resolved_environment = environment if isinstance(environment, str) else "outdoors"
+                rest_location = attributes.get("rest_location", False) is True
                 attributes_payload = attributes
             else:
                 resolved_environment = "outdoors"
+                rest_location = False
                 attributes_payload = {}
 
             room_payload: RoomInitPayload = {
@@ -472,6 +475,7 @@ class RoomCacheLoader:
                 "zone": zone_name,
                 "sub_zone": subzone_stable_id,
                 "resolved_environment": resolved_environment,
+                "rest_location": rest_location,
                 "exits": exits,
                 "attributes": attributes_payload,
             }

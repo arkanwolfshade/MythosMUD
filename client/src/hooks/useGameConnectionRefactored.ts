@@ -223,11 +223,21 @@ export function useGameConnection(options: UseGameConnectionOptions) {
       }
       onErrorRef.current?.('Connection failed');
     },
-    onDisconnect: () => {
+    onDisconnect: closeInfo => {
       if (intentionalExitInProgressRef?.current) {
         intentionalExitInProgressRef.current = false;
         connectionState.disconnect();
         onIntentionalDisconnect?.();
+      } else if (closeInfo.code === 1000) {
+        // Normal closure (RFC 6455) -- e.g. the server replacing this connection with a newer
+        // session (connection_session_management.py). Not a failure: reconnecting here is what
+        // turns a clean session handoff into two sessions perpetually kicking each other
+        // (#297/#610) -- each side's retry re-triggers the other side's replacement.
+        logger.info('GameConnection', 'WebSocket closed normally, not reconnecting', {
+          reason: closeInfo.reason,
+        });
+        connectionState.disconnect();
+        onDisconnectRef.current?.();
       } else {
         logger.info('GameConnection', 'WebSocket disconnected');
         connectionState.onWSFailed('Connection failed');

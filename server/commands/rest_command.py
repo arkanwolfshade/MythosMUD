@@ -27,14 +27,12 @@ from ..alias_storage import AliasStorage
 from ..realtime.posture_notify import emit_posture_change
 from ..services.player_position_service import PlayerPositionService
 from ..structured_logging.enhanced_logging_config import get_logger
-from .rest_countdown_task import create_rest_countdown_task
+from .rest_countdown_task import create_rest_countdown_task, rest_countdown_seconds
 
 logger = get_logger(__name__)
 
-REST_COUNTDOWN_DURATION = 10.0  # 10 seconds
 
-
-async def _check_player_in_combat(player_id: uuid.UUID, app: Any) -> bool:
+async def check_player_in_combat(player_id: uuid.UUID, app: Any) -> bool:
     """
     Check if a player is currently in combat.
 
@@ -79,6 +77,34 @@ async def _check_rest_location(room_id: str | None, persistence: Any) -> bool:
         logger.debug("Error checking rest location", room_id=room_id, error=str(e))
 
     return False
+
+
+async def _delayed_disconnect_player_intentionally(
+    player_id: uuid.UUID,
+    connection_manager: Any,
+    _persistence: Any,  # Unused but kept for API consistency with _disconnect_player_intentionally
+) -> None:
+    """Disconnect after a short delay so the "rest peacefully" response has time to reach the
+    client first (#297). Forcing the disconnect before the command response is sent closes the
+    socket out from under it, and the client never sees the confirmation message.
+
+    Snapshots the connections open right now and closes only those after the delay -- not
+    whatever is registered once the delay elapses. force_disconnect_player closes every
+    connection currently on player_id; if the player reconnects during this window (observed in
+    fast-moving E2E runs), that would sweep up their brand-new connection too.
+    """
+    connection_ids_to_close: list[str] = list(connection_manager.player_websockets.get(player_id, []))
+    await asyncio.sleep(0.1)
+
+    logger.info("Disconnecting player intentionally via /rest", player_id=player_id)
+    connection_manager.intentional_disconnects.add(player_id)
+    try:
+        for connection_id in connection_ids_to_close:
+            _ = await connection_manager.disconnect_websocket_connection(player_id, connection_id)
+    except (AttributeError, RuntimeError, ValueError, TypeError) as e:
+        logger.error("Error disconnecting player", player_id=player_id, error=str(e), exc_info=True)
+    finally:
+        connection_manager.intentional_disconnects.discard(player_id)
 
 
 async def _disconnect_player_intentionally(
@@ -128,7 +154,7 @@ async def _start_rest_countdown(
         persistence: Persistence layer
     """
     logger.info(
-        "Starting rest countdown", player_id=player_id, player_name=player_name, duration=REST_COUNTDOWN_DURATION
+        "Starting rest countdown", player_id=player_id, player_name=player_name, duration=rest_countdown_seconds()
     )
 
     # Create and store the task
@@ -315,7 +341,7 @@ async def _begin_seated_rest_countdown(
     return {
         "result": (
             f"You settle into a seated position and begin to rest. You will disconnect in "
-            f"{int(REST_COUNTDOWN_DURATION)} seconds. Any movement, combat, or spellcasting will interrupt your rest."
+            f"{int(rest_countdown_seconds())} seconds. Any movement, combat, or spellcasting will interrupt your rest."
         ),
         "player_update": player_update,
     }
@@ -334,7 +360,7 @@ async def _execute_rest_flow(
     if is_player_resting(player_id, connection_manager):
         return {"result": "You are already resting. The countdown will complete shortly."}
 
-    if await _check_player_in_combat(player_id, app):
+    if await check_player_in_combat(player_id, app):
         return {"result": "You cannot rest during combat. End combat first."}
 
     room_id = getattr(player, "current_room_id", None)
@@ -344,7 +370,7 @@ async def _execute_rest_flow(
             player_id=player_id,
             player_name=player_name,
         )
-        await _disconnect_player_intentionally(player_id, connection_manager, persistence)
+        _ = asyncio.create_task(_delayed_disconnect_player_intentionally(player_id, connection_manager, persistence))
         return {"result": "You rest peacefully and disconnect from the game."}
 
     return await _begin_seated_rest_countdown(player_id, player_name, persistence, connection_manager, alias_storage)

@@ -88,7 +88,7 @@ async def test_start_grace_period_timer_expires(mock_manager):  # pylint: disabl
                 ) as mock_broadcast:
                     with patch("server.realtime.disconnect_grace_period._cleanup_player_references") as mock_cleanup:
                         # Start grace period with shorter duration for testing
-                        with patch("server.realtime.disconnect_grace_period.GRACE_PERIOD_DURATION", 0.1):
+                        with patch("server.realtime.disconnect_grace_period._grace_period_seconds", return_value=0.1):
                             await start_grace_period(player_id, mock_manager)
 
                             # Wait for task to complete
@@ -203,7 +203,7 @@ async def test_grace_period_handles_player_not_found(mock_manager):  # pylint: d
                     "server.realtime.disconnect_grace_period.handle_player_disconnect_broadcast", new_callable=AsyncMock
                 ):
                     with patch("server.realtime.disconnect_grace_period._cleanup_player_references"):
-                        with patch("server.realtime.disconnect_grace_period.GRACE_PERIOD_DURATION", 0.1):
+                        with patch("server.realtime.disconnect_grace_period._grace_period_seconds", return_value=0.1):
                             await start_grace_period(player_id, mock_manager)
 
                             # Wait for task to complete
@@ -232,7 +232,7 @@ async def test_grace_period_handles_errors_gracefully(mock_manager):  # pylint: 
                     "server.realtime.disconnect_grace_period.handle_player_disconnect_broadcast", new_callable=AsyncMock
                 ):
                     with patch("server.realtime.disconnect_grace_period._cleanup_player_references"):
-                        with patch("server.realtime.disconnect_grace_period.GRACE_PERIOD_DURATION", 0.1):
+                        with patch("server.realtime.disconnect_grace_period._grace_period_seconds", return_value=0.1):
                             await start_grace_period(player_id, mock_manager)
 
                             # Wait for task to complete

@@ -119,6 +119,61 @@ def test_game_config_tick_rate_rejects_negative():
         _ = GameConfig(aliases_dir=_GAME_CONFIG_ALIASES_DIR, server_tick_rate=-0.1)
 
 
+def _make_game_config(field: str, value: float) -> GameConfig:
+    """Construct GameConfig with one grace/countdown field set to `value`, others default.
+
+    Avoids `GameConfig(**{field: value})`: pyright cannot type-check a `**dict` unpacking
+    against GameConfig's per-field __init__ signature, since `value`'s type would be checked
+    against every possible keyword field -- including str-typed ones like default_player_room.
+    """
+    if field == "disconnect_grace_period_seconds":
+        return GameConfig(aliases_dir=_GAME_CONFIG_ALIASES_DIR, disconnect_grace_period_seconds=value)
+    if field == "login_grace_period_seconds":
+        return GameConfig(aliases_dir=_GAME_CONFIG_ALIASES_DIR, login_grace_period_seconds=value)
+    if field == "rest_countdown_seconds":
+        return GameConfig(aliases_dir=_GAME_CONFIG_ALIASES_DIR, rest_countdown_seconds=value)
+    raise ValueError(f"Unknown grace/countdown field: {field}")
+
+
+def test_game_config_grace_period_defaults() -> None:
+    """#297: the three grace/countdown durations default to their prior hardcoded values."""
+    config = GameConfig(aliases_dir=_GAME_CONFIG_ALIASES_DIR)
+    assert config.disconnect_grace_period_seconds == 30.0
+    assert config.login_grace_period_seconds == 10.0
+    assert config.rest_countdown_seconds == 10.0
+
+
+@pytest.mark.parametrize(
+    "field",
+    ["disconnect_grace_period_seconds", "login_grace_period_seconds", "rest_countdown_seconds"],
+)
+def test_game_config_grace_period_accepts_override(field: str) -> None:
+    """#297: each grace/countdown duration is independently retunable."""
+    config = _make_game_config(field, 45.0)
+    assert getattr(config, field) == 45.0
+
+
+@pytest.mark.parametrize(
+    "field",
+    ["disconnect_grace_period_seconds", "login_grace_period_seconds", "rest_countdown_seconds"],
+)
+def test_game_config_grace_period_rejects_zero(field: str) -> None:
+    """#297: a zero grace/countdown period would silently disable the corresponding feature."""
+    with pytest.raises(ValueError, match="between 1 and 600"):
+        _ = _make_game_config(field, 0.0)
+
+
+@pytest.mark.parametrize(
+    "field",
+    ["disconnect_grace_period_seconds", "login_grace_period_seconds", "rest_countdown_seconds"],
+)
+def test_game_config_grace_period_rejects_over_max(field: str) -> None:
+    """#297: an absurdly large grace/countdown period is rejected, matching the other Field
+    validators' range-bounding convention in this model."""
+    with pytest.raises(ValueError, match="between 1 and 600"):
+        _ = _make_game_config(field, 601.0)
+
+
 def test_database_config_validate_url_postgresql():
     """Test DatabaseConfig URL validation with PostgreSQL URL."""
     config = DatabaseConfig(url=_POSTGRESQL_DATABASE_URL, npc_url=_POSTGRESQL_DATABASE_URL)

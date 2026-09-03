@@ -25,6 +25,32 @@ export function getPageSessionCredentials(page: Page): { username: string; passw
   return pageSessionCredentials.get(page);
 }
 
+/**
+ * A page can stay open (not isClosed()) yet be dead for testing purposes: a server-side
+ * disconnect (grace-period linkdead, /rest) leaves the tab showing a reconnecting/linkdead
+ * state, not closed, until the client eventually falls back to login on its own. Trusting
+ * isClosed() alone reuses that dead session; require an actively connected WebSocket too.
+ */
+export async function isPageConnected(page: Page): Promise<boolean> {
+  if (page.isClosed()) {
+    return false;
+  }
+  const readStatus = () => page.evaluate(() => window.__mythosE2eHasConnectedStatus?.() === true).catch(() => false);
+  if (!(await readStatus())) {
+    return false;
+  }
+  // A just-issued server-side disconnect (/rest's deliberately deferred close, #297) can lag the
+  // client's own status flag by a beat. Confirm a "connected" read holds rather than trusting a
+  // single snapshot that can race a disconnect already in flight; only paid when the first read
+  // says connected, so the common already-disconnected case returns immediately above.
+  try {
+    await page.waitForFunction(() => window.__mythosE2eHasConnectedStatus?.() !== true, undefined, { timeout: 500 });
+    return false; // flipped to disconnected within the settle window
+  } catch {
+    return true; // stayed connected for the full window
+  }
+}
+
 export function getLivePageForUsername(username: string): Page | undefined {
   const page = livePagesByUsername.get(username);
   if (page && !page.isClosed()) {
@@ -43,7 +69,7 @@ export async function reopenClosedPage(
   password: string,
   timeoutMs: number = 45000
 ): Promise<Page> {
-  if (!page.isClosed()) {
+  if (await isPageConnected(page)) {
     rememberPageSession(page, username, password);
     return page;
   }
@@ -57,17 +83,16 @@ export async function reopenClosedPage(
   if (browser === null) {
     throw new Error(`Cannot recover playable session for ${username}: browser context is closed`);
   }
-  let next: Page;
-  try {
-    next = await context.newPage();
-  } catch {
-    // Context died with the page (common under Firefox serial load); mint a fresh context.
-    if (!browser.isConnected()) {
-      throw new Error(`Cannot recover playable session for ${username}: browser has been closed`);
-    }
-    context = await browser.newContext();
-    next = await context.newPage();
+  if (!browser.isConnected()) {
+    throw new Error(`Cannot recover playable session for ${username}: browser has been closed`);
   }
+  // Always mint a fresh context rather than a new page on the dead one: a context that just lost
+  // its WebSocket can leave the browser-process-level connection to the origin in a state where a
+  // new page's WS opens and is torn down almost immediately, looping through the reconnect
+  // backoff without ever settling (observed repeatedly in #297 e2e runs). A genuinely fresh
+  // context (matching createMultiPlayerContexts' own always-fresh-context approach) avoids that.
+  context = await browser.newContext();
+  const next = await context.newPage();
   rememberPageSession(next, username, password);
   await loginPlayer(next, username, password);
   await waitForPlayableSession(next, timeoutMs);

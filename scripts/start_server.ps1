@@ -205,7 +205,10 @@ function Test-PortInUse {
     )
 
     try {
-        $connection = Get-NetTCPConnection -LocalPort $Port -ErrorAction SilentlyContinue
+        # -State Listen: an ESTABLISHED connection can coincidentally have $Port as its local
+        # ephemeral port (e.g. an outbound browser connection), which is not a listening server
+        # and must not block startup. Same filter as the NATS-readiness check below.
+        $connection = Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction SilentlyContinue
         if ($connection) {
             Write-Host "Port $Port is still in use. Waiting for it to be released..." -ForegroundColor Yellow
             Start-Sleep -Seconds 3

@@ -78,8 +78,12 @@ def mock_connection_manager_full() -> MagicMock:
     manager._get_player = get_player  # pylint: disable=protected-access  # Reason: Accessing protected member is necessary to mock the method used by player_presence_tracker implementation
     # Accessing protected member is necessary to mock the method used by player_presence_tracker implementation
     manager._cleanup_ghost_players = MagicMock()  # pylint: disable=protected-access  # Reason: Accessing protected member is necessary to mock the method used by player_presence_tracker implementation
-    manager.force_disconnect_player = AsyncMock()
-    manager.player_websockets = {}
+    force_disconnect_player: AsyncMock = AsyncMock()
+    manager.force_disconnect_player = force_disconnect_player
+    disconnect_websocket_connection: AsyncMock = AsyncMock(return_value=True)
+    manager.disconnect_websocket_connection = disconnect_websocket_connection
+    player_websockets: dict[uuid.UUID, list[str]] = {}
+    manager.player_websockets = player_websockets
     return manager
 
 
@@ -382,17 +386,25 @@ async def test_rest_location_instant_disconnect(  # pylint: disable=redefined-ou
     mock_request = MagicMock()
     mock_request.app = mock_app_with_services
 
-    with patch(
-        "server.commands.rest_command._disconnect_player_intentionally", new_callable=AsyncMock
-    ) as mock_disconnect:
-        result = await handle_rest_command({}, {}, mock_request, None, "TestPlayer")
+    player_websockets_map: dict[uuid.UUID, list[str]] = cast(
+        dict[uuid.UUID, list[str]], mock_connection_manager_full.player_websockets
+    )
+    player_websockets_map[player_id] = ["conn-1"]
 
-        # Verify instant disconnect (no countdown)
-        mock_disconnect.assert_called_once()
-        assert player_id not in resting_players  # No countdown started
-        assert "result" in result
-        result_text = cast(str, result["result"])
-        assert "rest peacefully" in result_text.lower() or "disconnect" in result_text.lower()
+    result = await handle_rest_command({}, {}, mock_request, None, "TestPlayer")
+
+    # #297: disconnect is deliberately deferred (asyncio.create_task) past a short delay so
+    # the response below reaches the client before the socket closes -- give it a chance to run.
+    await asyncio.sleep(0.2)
+
+    # Verify instant disconnect (no countdown), targeting the specific connection snapshotted at
+    # /rest time rather than a blanket force_disconnect_player (#297).
+    disconnect_ws: AsyncMock = cast(AsyncMock, mock_connection_manager_full.disconnect_websocket_connection)
+    disconnect_ws.assert_called_once_with(player_id, "conn-1")
+    assert player_id not in resting_players  # No countdown started
+    assert "result" in result
+    result_text = cast(str, result["result"])
+    assert "rest peacefully" in result_text.lower() or "disconnect" in result_text.lower()
 
 
 @pytest.mark.asyncio
@@ -468,7 +480,7 @@ async def test_rest_countdown_completes_disconnect(
     with patch(
         "server.commands.rest_command._disconnect_player_intentionally", new_callable=AsyncMock
     ) as mock_disconnect:
-        with patch("server.commands.rest_countdown_task.REST_COUNTDOWN_DURATION", 0.1):
+        with patch("server.commands.rest_countdown_task.rest_countdown_seconds", return_value=0.1):
             await _start_rest_countdown(player_id, player_name, mock_connection_manager_full, mock_persistence_full)
 
             # Wait for countdown to complete

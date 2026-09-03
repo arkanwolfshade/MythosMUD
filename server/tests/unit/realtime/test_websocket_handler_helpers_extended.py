@@ -4,10 +4,13 @@ Extended unit tests for websocket handler helper functions.
 Tests additional helper functions in websocket_handler.py.
 """
 
+# pyright: reportPrivateUsage=false
+
 import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from pytest_mock import MockerFixture
 
 from server.error_types import ErrorMessages, ErrorType
 from server.realtime.websocket_handler import (
@@ -20,7 +23,7 @@ from server.realtime.websocket_handler import (
 
 
 @pytest.fixture
-def mock_websocket():
+def mock_websocket() -> MagicMock:
     """Create a mock WebSocket."""
     websocket = MagicMock()
     websocket.send_json = AsyncMock()
@@ -312,6 +315,36 @@ async def test_handle_message_loop_exception_websocket_disconnect(mock_websocket
     )
     assert should_break is True
     assert should_raise is False
+
+
+@pytest.mark.asyncio
+async def test_handle_message_loop_exception_logs_close_code_and_reason(
+    mock_websocket: MagicMock, mocker: MockerFixture
+):
+    """#297: the WebSocketDisconnect's close code/reason must reach the log.
+
+    Regression: _handle_message_loop_exception previously called handle_websocket_disconnect()
+    without e.code/e.reason at all, silently discarding the one piece of evidence (1000 manual vs.
+    1006 abnormal vs. 1008/1011 server rejection) that would have told a client-initiated close from
+    a server-side or network-level one.
+    """
+    from fastapi import WebSocketDisconnect
+
+    from server.realtime.websocket_handler import _handle_message_loop_exception
+
+    mock_logger_info = mocker.patch("server.realtime.websocket_handler_message_loop.logger.info")
+    player_id = uuid.uuid4()
+    error = WebSocketDisconnect(code=1006, reason="abnormal closure")
+
+    _ = await _handle_message_loop_exception(mock_websocket, error, player_id, str(player_id), "conn_001")
+
+    mock_logger_info.assert_called_once_with(
+        "WebSocket disconnected",
+        player_id=str(player_id),
+        connection_id="conn_001",
+        code=1006,
+        reason="abnormal closure",
+    )
 
 
 @pytest.mark.asyncio

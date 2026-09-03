@@ -20,6 +20,8 @@ from ..models.room import Room
 from ..structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
+    from structlog.stdlib import BoundLogger
+
     from ..events import EventBus
 
 logger = get_logger(__name__)
@@ -41,6 +43,12 @@ class InstanceManager:
 
     Instance room IDs: instance_{instance_uuid}_{template_stable_id}
     """
+
+    _room_cache: dict[str, Room]
+    _event_bus: EventBus | None
+    _instances: dict[str, Instance]
+    _lock: threading.RLock
+    _logger: BoundLogger
 
     def __init__(self, room_cache: dict[str, Room], event_bus: EventBus | None = None) -> None:
         """
@@ -133,6 +141,7 @@ class InstanceManager:
                 "zone": template_room.zone,
                 "sub_zone": template_room.sub_zone,
                 "resolved_environment": getattr(template_room, "environment", "outdoors"),
+                "rest_location": getattr(template_room, "rest_location", False),
                 "exits": remapped_exits,
                 "attributes": dict(getattr(template_room, "attributes", {}) or {}),
             }
