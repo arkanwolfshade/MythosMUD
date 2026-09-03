@@ -18,10 +18,9 @@ already-listed file (its count goes up), or a new file introducing the pattern (
 with a hit). A genuinely bundle-constructed class calling get_instance() from a new site is exactly
 what should fail here, whether or not that file is already listed for other, sanctioned reasons.
 
-No target-date/overdue tracking (unlike the raw-SQL guard): there's no "grandfathered until fixed"
-concept for a call site that is correctly and permanently sanctioned. Each entry instead carries a
-`reason` explaining the classification, cross-referenced against
-docs/CONTAINER_INJECTION_AUDIT.md's table.
+No target-date/overdue tracking: there's no "grandfathered until fixed" concept for a call site
+that is correctly and permanently sanctioned. Each entry instead carries a `reason` explaining the
+classification, cross-referenced against docs/CONTAINER_INJECTION_AUDIT.md's table.
 
 Detection is AST/token-based, not regex: matches the literal token sequence
 `ApplicationContainer . get_instance ( )` only in CODE tokens, skipping STRING and COMMENT tokens

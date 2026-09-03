@@ -12,8 +12,7 @@ target is a function call). Direct table access -- `SELECT ... FROM <bare table 
 FROM-target distinction wrong (flagging legitimate procedure calls) is how a guard like this ends
 up disabled and ignored, which is exactly the fate the semgrep rules already met.
 
-Any raw-SQL site fails the build. The grandfathered allowlist was emptied by #633 (2026-08-25) and
-removed once every site was on stored procedures.
+Any raw-SQL site fails the build.
 
 Usage: python scripts/lint_raw_sql_in_python.py
 Exit: 0 if server/ has no raw-SQL sites, 1 otherwise.
