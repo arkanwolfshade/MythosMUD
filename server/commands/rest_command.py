@@ -92,13 +92,22 @@ async def _delayed_disconnect_player_intentionally(
     whatever is registered once the delay elapses. force_disconnect_player closes every
     connection currently on player_id; if the player reconnects during this window (observed in
     fast-moving E2E runs), that would sweep up their brand-new connection too.
+
+    Marks intentional_disconnects BEFORE the delay, not after: the socket has been observed
+    dying on its own (a racing client-side reconnect, an unrelated proxy hiccup) faster than this
+    100ms sleep, so the disconnect handler ran while player_id was still absent from
+    intentional_disconnects and treated a /rest disconnect as unintentional -- starting a 30s
+    linkdead grace period instead of the clean teardown /rest is supposed to produce (#297
+    regression caught via rest-command.spec.ts's countdown test failing to reconnect after it).
+    Only the actual close() is worth deferring for the response-delivery reason above; marking
+    intent costs nothing to do immediately and closes this race entirely.
     """
     connection_ids_to_close: list[str] = list(connection_manager.player_websockets.get(player_id, []))
-    await asyncio.sleep(0.1)
-
-    logger.info("Disconnecting player intentionally via /rest", player_id=player_id)
     connection_manager.intentional_disconnects.add(player_id)
     try:
+        await asyncio.sleep(0.1)
+
+        logger.info("Disconnecting player intentionally via /rest", player_id=player_id)
         for connection_id in connection_ids_to_close:
             _ = await connection_manager.disconnect_websocket_connection(player_id, connection_id)
     except (AttributeError, RuntimeError, ValueError, TypeError) as e:
