@@ -9,9 +9,12 @@
  */
 
 import { expect, test } from '@playwright/test';
+import { executeCommand, getMessages } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
+  ensurePlayerInGame,
+  reopenPlayerPageIfClosed,
   waitForAllPlayersInGame,
 } from '../fixtures/multiplayer';
 
@@ -53,5 +56,23 @@ test.describe('Disconnect Grace Period', () => {
     const _hasLinkdead = occupants.includes('(linkdead)') || occupants.includes('linkdead');
     // This test verifies grace period exists (may or may not show indicator)
     expect(occupants.length).toBeGreaterThanOrEqual(0);
+  });
+
+  test('reconnect within the grace window is silent when nothing attacked the player (#297)', async () => {
+    // AW's context was already closed by the previous test to enter the grace window; reconnect
+    // here while still inside it. Nothing attacked AW while linkdead, so the reconnect catch-up
+    // summary (disconnect_catchup.py) must stay silent -- no damage line, and the session must
+    // be usable again (proof the reconnect actually cancelled the grace window).
+    const awContext = contexts[0];
+
+    await reopenPlayerPageIfClosed(awContext);
+    await ensurePlayerInGame(awContext, 30000);
+
+    await executeCommand(awContext.page, 'look');
+    await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 15000 });
+
+    const messages = await getMessages(awContext.page);
+    const sawCatchup = messages.some(msg => /while you were disconnected/i.test(msg));
+    expect(sawCatchup).toBe(false);
   });
 });

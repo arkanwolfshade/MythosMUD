@@ -60,14 +60,18 @@ async def handle_json_decode_error(websocket: WebSocket, player_id: uuid.UUID, p
     )
 
 
-def handle_websocket_disconnect(player_id_str: str, connection_id: str | None) -> bool:
+def handle_websocket_disconnect(
+    player_id_str: str, connection_id: str | None, code: int | None = None, reason: str | None = None
+) -> bool:
     """
     Handle WebSocket disconnect.
 
     Returns:
         True to break the loop
     """
-    logger.info("WebSocket disconnected", player_id=player_id_str, connection_id=connection_id)
+    logger.info(
+        "WebSocket disconnected", player_id=player_id_str, connection_id=connection_id, code=code, reason=reason
+    )
     return True
 
 
@@ -180,7 +184,7 @@ async def handle_message_loop_exception(
         return False, False
 
     if isinstance(e, WebSocketDisconnect):
-        return handle_websocket_disconnect(player_id_str, connection_id), False
+        return handle_websocket_disconnect(player_id_str, connection_id, e.code, e.reason), False
 
     if isinstance(e, RuntimeError):
         return handle_websocket_runtime_error(e, player_id_str, connection_id)

@@ -37,7 +37,9 @@ test.describe('Rest Command', () => {
     await cleanupMultiPlayerContexts(contexts);
   });
 
-  test('should start rest countdown when /rest is used', async ({ browser }) => {
+  test('should instantly disconnect via /rest at a rest location (#297)', async ({ browser }) => {
+    // The default spawn room (sanitarium Main Foyer) is a rest location (`rest_location: true`):
+    // /rest there disconnects instantly instead of starting the 10s countdown other rooms use.
     test.setTimeout(300_000);
     contexts = await ensureFreshMultiPlayerContexts(browser, contexts, ['ArkanWolfshade', 'Ithaqua']);
 
@@ -51,8 +53,41 @@ test.describe('Rest Command', () => {
     });
     awContext.page = await ensureStanding(awContext.page, 8000);
     await executeCommand(awContext.page, 'look');
-    await waitForMessage(awContext.page, /Arena|Exits|gladiator|sand|look/i, 20000).catch(() => {});
+    await waitForMessage(awContext.page, /Foyer|Exits|reception|foyer/i, 20000).catch(() => {});
     await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 15000 });
+
+    await executeCommand(awContext.page, '/rest');
+
+    // Instant-disconnect response, not the countdown message ("disconnect in N seconds").
+    const restLocator = awContext.page
+      .locator('[data-message-text]')
+      .filter({ hasText: /rest peacefully|disconnect from the game/i });
+    await restLocator.first().waitFor({ state: 'visible', timeout: 15000 });
+
+    const messages = await getMessages(awContext.page);
+    const seesInstantRest = messages.some(msg => msg.toLowerCase().includes('rest peacefully'));
+    expect(seesInstantRest).toBe(true);
+    const seesCountdown = messages.some(msg => /disconnect in \d+ second/i.test(msg));
+    expect(seesCountdown).toBe(false);
+  });
+
+  test('should still run the 10s countdown for /rest outside a rest location', async ({ browser }) => {
+    test.setTimeout(300_000);
+    // The prior test disconnected AW at the rest location; get a fresh, connected pair and move
+    // off the rest location before testing the countdown path.
+    contexts = await ensureFreshMultiPlayerContexts(browser, contexts, ['ArkanWolfshade', 'Ithaqua']);
+    const awContext = contexts[0];
+
+    await ensurePlayerInGame(awContext, 30000);
+    await awContext.page.bringToFront().catch(() => {});
+    awContext.page = await ensureStanding(awContext.page, 8000);
+    // Main Foyer (the rest location) has no north exit -- "go north" silently fails and leaves
+    // AW still in the rest location, so /rest instantly disconnects instead of running the
+    // countdown this test exists to verify. East (Eastern Hallway) is a real, non-rest-location
+    // exit from Main Foyer.
+    await executeCommand(awContext.page, 'go east');
+    await waitForMessage(awContext.page, /east|Exits|Hallway/i, 15000).catch(() => {});
+    awContext.page = await ensureStanding(awContext.page, 8000);
 
     await executeCommand(awContext.page, '/rest');
 
@@ -62,23 +97,19 @@ test.describe('Rest Command', () => {
     await restLocator.first().waitFor({ state: 'visible', timeout: 20000 });
 
     const messages = await getMessages(awContext.page);
-    const seesRest = messages.some(msg => {
-      const lower = msg.toLowerCase();
-      return (
-        lower.includes('rest') || lower.includes('settle') || lower.includes('seconds') || lower.includes('disconnect')
-      );
-    });
-    expect(seesRest).toBe(true);
+    const seesCountdown = messages.some(msg => /disconnect in \d+ second/i.test(msg));
+    expect(seesCountdown).toBe(true);
 
-    // Cancel countdown so the suite does not intentional-disconnect AW or leave test 2 stuck in "already resting".
-    await executeCommand(awContext.page, 'go north');
-    await waitForMessage(awContext.page, /interrupted|go north|move north|north/i, 15000).catch(() => {});
-    await executeCommand(awContext.page, 'go south');
-    await waitForMessage(awContext.page, /go south|south|Arena/i, 15000).catch(() => {});
+    // Cancel countdown so the suite does not intentional-disconnect AW or leave test 3 stuck in "already resting".
+    await executeCommand(awContext.page, 'go west');
+    await waitForMessage(awContext.page, /interrupted|go west|move west|west/i, 15000).catch(() => {});
+    await executeCommand(awContext.page, 'go east');
+    await waitForMessage(awContext.page, /go east|east|Hallway/i, 15000).catch(() => {});
     awContext.page = await ensureStanding(awContext.page, 8000);
   });
 
-  test('should block /rest during combat', async () => {
+  test('should block /rest during combat', async ({ browser }) => {
+    contexts = await ensureFreshMultiPlayerContexts(browser, contexts, ['ArkanWolfshade', 'Ithaqua']);
     const awContext = contexts[0];
 
     await ensurePlayerInGame(awContext, 30000);

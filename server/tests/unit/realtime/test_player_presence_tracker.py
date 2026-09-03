@@ -5,6 +5,7 @@ Tests the player_presence_tracker module functions.
 """
 
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -252,6 +253,89 @@ async def test_track_player_connected_impl_reconnect_during_grace():
 
                 mock_setup.assert_called_once()
                 mock_manager.mark_player_seen.assert_called_once_with(player_id)
+
+
+@pytest.mark.asyncio
+async def test_track_player_connected_impl_reconnect_sends_catchup():
+    """#297: reconnect during disconnect grace with a DP drop sends a catch-up message,
+    and does so before the caller's subsequent cancel_grace_period would tear the snapshot down.
+    """
+    player_id = uuid.uuid4()
+    mock_player = MagicMock()
+    mock_player.current_room_id = "room_123"
+    mock_player.tutorial_instance_id = None
+    mock_player.configure_mock(
+        **{"get_stats.return_value": {"current_dp": 12, "max_dp": 20}, "is_dead.return_value": False}
+    )
+    mock_manager = MagicMock()
+    mock_manager.online_players = {player_id: {"connected_at": 1234567890.0}}
+    mock_manager.player_websockets = {player_id: ["conn_1"]}
+    mock_manager.grace_period_players = {player_id: MagicMock()}
+    mock_manager.grace_period_snapshots = {player_id: {"current_dp": 20, "max_dp": 20}}
+    mock_manager.mark_player_seen = MagicMock()
+    send_personal_message = AsyncMock()
+    mock_manager.send_personal_message = send_personal_message
+    mock_room = MagicMock()
+    mock_room.id = "room_123"
+    mock_manager.configure_mock(**{"async_persistence.get_room_by_id.return_value": mock_room})
+
+    with patch(
+        "server.realtime.player_presence_tracker.handle_new_connection_setup",
+        new_callable=AsyncMock,
+    ):
+        with patch(
+            "server.realtime.player_presence_tracker.get_player_position",
+            return_value="standing",
+        ):
+            with patch(
+                "server.realtime.player_presence_tracker.extract_player_name",
+                return_value="TestPlayer",
+            ):
+                await track_player_connected_impl(player_id, mock_player, "websocket", mock_manager)
+
+    send_personal_message.assert_called_once()
+    sent_player_id, sent_event = cast(
+        "tuple[uuid.UUID, dict[str, dict[str, str]]]", send_personal_message.call_args.args
+    )
+    assert sent_player_id == player_id
+    assert "8 damage" in sent_event["data"]["result"]
+
+
+@pytest.mark.asyncio
+async def test_track_player_connected_impl_new_connection_no_catchup():
+    """A brand-new connection (not a grace reconnect) must never send a catch-up message."""
+    player_id = uuid.uuid4()
+    mock_player = MagicMock()
+    mock_player.current_room_id = "room_123"
+    mock_player.tutorial_instance_id = None
+    mock_player.configure_mock(**{"get_stats.return_value": {"current_dp": 12, "max_dp": 20}})
+    mock_manager = MagicMock()
+    mock_manager.online_players = {}
+    mock_manager.player_websockets = {}
+    mock_manager.grace_period_players = {}
+    mock_manager.grace_period_snapshots = {}
+    mock_manager.mark_player_seen = MagicMock()
+    send_personal_message = AsyncMock()
+    mock_manager.send_personal_message = send_personal_message
+    mock_room = MagicMock()
+    mock_room.id = "room_123"
+    mock_manager.configure_mock(**{"async_persistence.get_room_by_id.return_value": mock_room})
+
+    with patch(
+        "server.realtime.player_presence_tracker.handle_new_connection_setup",
+        new_callable=AsyncMock,
+    ):
+        with patch(
+            "server.realtime.player_presence_tracker.get_player_position",
+            return_value="standing",
+        ):
+            with patch(
+                "server.realtime.player_presence_tracker.extract_player_name",
+                return_value="TestPlayer",
+            ):
+                await track_player_connected_impl(player_id, mock_player, "websocket", mock_manager)
+
+    send_personal_message.assert_not_called()
 
 
 @pytest.mark.asyncio

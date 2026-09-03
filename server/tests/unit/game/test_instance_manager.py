@@ -16,7 +16,7 @@ from server.models.room import Room
 
 
 @pytest.fixture
-def tutorial_room():
+def tutorial_room() -> Room:
     """Create tutorial bedroom template room."""
     return Room(
         {
@@ -27,10 +27,15 @@ def tutorial_room():
             "zone": "arkhamcity",
             "sub_zone": "sanitarium",
             "exits": {"down": "earth_arkhamcity_sanitarium_room_foyer_001"},
+            # rest_location mirrors what async_persistence_room_loader promotes from
+            # attributes.rest_location onto the room payload's top level (#297) -- Room itself
+            # only reads the top-level key.
+            "rest_location": True,
             "attributes": {
                 "is_instanced": True,
                 "instance_template_id": "tutorial_sanitarium",
                 "instance_exit_room_id": "earth_arkhamcity_sanitarium_room_foyer_001",
+                "rest_location": True,
             },
         },
         event_bus=None,
@@ -38,18 +43,18 @@ def tutorial_room():
 
 
 @pytest.fixture
-def room_cache(tutorial_room):
+def room_cache(tutorial_room: Room) -> dict[str, Room]:
     """Room cache with tutorial template."""
     return {"earth_arkhamcity_sanitarium_room_tutorial_bedroom_001": tutorial_room}
 
 
 @pytest.fixture
-def instance_manager(room_cache):
+def instance_manager(room_cache: dict[str, Room]) -> InstanceManager:
     """Create InstanceManager with tutorial template in cache."""
     return InstanceManager(room_cache=room_cache, event_bus=None)
 
 
-def test_create_instance(instance_manager):
+def test_create_instance(instance_manager: InstanceManager):
     """Test create_instance creates instance with cloned rooms."""
     owner_id = uuid.uuid4()
     instance = instance_manager.create_instance(
@@ -73,7 +78,20 @@ def test_create_instance(instance_manager):
     assert room.exits["down"] == "earth_arkhamcity_sanitarium_room_foyer_001"
 
 
-def test_create_instance_raises_when_no_templates(instance_manager):
+def test_create_instance_clones_rest_location_flag(instance_manager: InstanceManager):
+    """#297: cloning a rest-location template (e.g. the tutorial Patient Bedroom) must carry
+    rest_location onto the instance-scoped room, or /rest there silently falls back to the
+    10s countdown instead of the instant disconnect the template promises."""
+    instance = instance_manager.create_instance(
+        template_id="tutorial_sanitarium",
+        owner_player_id=uuid.uuid4(),
+    )
+
+    room = next(iter(instance.rooms.values()))
+    assert room.rest_location is True
+
+
+def test_create_instance_raises_when_no_templates(instance_manager: InstanceManager):
     """Test create_instance raises when no template rooms found."""
     with pytest.raises(ValueError, match="No template rooms found"):
         instance_manager.create_instance(
@@ -82,7 +100,7 @@ def test_create_instance_raises_when_no_templates(instance_manager):
         )
 
 
-def test_destroy_instance(instance_manager):
+def test_destroy_instance(instance_manager: InstanceManager):
     """Test destroy_instance removes instance from store."""
     instance = instance_manager.create_instance(
         template_id="tutorial_sanitarium",
@@ -95,7 +113,7 @@ def test_destroy_instance(instance_manager):
     assert instance_manager.get_instance(instance_id) is None
 
 
-def test_get_first_room_id(instance_manager):
+def test_get_first_room_id(instance_manager: InstanceManager):
     """Test get_first_room_id returns first room of instance."""
     instance = instance_manager.create_instance(
         template_id="tutorial_sanitarium",
@@ -107,7 +125,7 @@ def test_get_first_room_id(instance_manager):
     assert first_room_id in instance.rooms
 
 
-def test_get_exit_room_id(instance_manager):
+def test_get_exit_room_id(instance_manager: InstanceManager):
     """Test get_exit_room_id returns fixed exit room."""
     instance = instance_manager.create_instance(
         template_id="tutorial_sanitarium",
@@ -118,13 +136,13 @@ def test_get_exit_room_id(instance_manager):
     assert exit_room_id == "earth_arkhamcity_sanitarium_room_foyer_001"
 
 
-def test_get_room_by_id_returns_none_for_non_instance(instance_manager):
+def test_get_room_by_id_returns_none_for_non_instance(instance_manager: InstanceManager):
     """Test get_room_by_id returns None for non-instance room IDs."""
     result = instance_manager.get_room_by_id("earth_arkhamcity_sanitarium_room_foyer_001")
     assert result is None
 
 
-def test_get_room_by_id_returns_room_when_in_instance(instance_manager):
+def test_get_room_by_id_returns_room_when_in_instance(instance_manager: InstanceManager):
     """Test get_room_by_id returns room when room is in an instance."""
     instance = instance_manager.create_instance(
         template_id="tutorial_sanitarium",

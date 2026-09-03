@@ -157,10 +157,10 @@ export class MockWebSocket {
     }
   }
 
-  simulateClose() {
+  simulateClose(code?: number, reason?: string) {
     this.readyState = MockWebSocket.CLOSED;
     if (this.onclose) {
-      this.onclose(new CloseEvent('close'));
+      this.onclose(new CloseEvent('close', code !== undefined ? { code, reason } : undefined));
     }
   }
 

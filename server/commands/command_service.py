@@ -159,8 +159,8 @@ _COMMAND_HANDLERS: dict[str, CommandHandler] = {
     # Utility commands
     "who": handle_who_command,
     "whoami": handle_whoami_command,
-    "quit": handle_quit_command,
-    "logout": handle_logout_command,
+    "quit": cast(CommandHandler, handle_quit_command),
+    "logout": cast(CommandHandler, handle_logout_command),
     "status": handle_status_command,
     "time": handle_time_command,
     "skills": handle_skills_command,

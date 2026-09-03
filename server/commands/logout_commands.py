@@ -7,14 +7,22 @@ This module contains handlers for quit and logout commands.
 import inspect
 import uuid
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, cast
+
+from fastapi import Request
 
 from ..alias_storage import AliasStorage
+from ..models.player import Player
+from ..persistence.protocols import PlayerRepositoryProtocol
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 from ..utils.player_cache import cache_player, get_cached_player
+from .rest_command import check_player_in_combat
 
 logger = get_logger(__name__)
+
+QUIT_COMBAT_BLOCKED_MESSAGE = "You cannot quit during combat. End combat first."
+LOGOUT_COMBAT_BLOCKED_MESSAGE = "You cannot logout during combat. End combat first."
 
 
 def _clear_corrupted_cache_entry(request: Any, lookup_name: str) -> None:
@@ -33,7 +41,27 @@ def _clear_corrupted_cache_entry(request: Any, lookup_name: str) -> None:
         cache.pop(lookup_name, None)
 
 
-async def _get_player_for_logout(request: Any, persistence: Any, lookup_name: str) -> Any:
+def _coerce_player_uuid(player_id: object) -> uuid.UUID:
+    """Normalize player_id to uuid.UUID.
+
+    Production Player.player_id is a UUID string (as_uuid=False). Tests and some
+    mocks pass a uuid.UUID instance; uuid.UUID() only accepts str/bytes.
+    """
+    if isinstance(player_id, uuid.UUID):
+        return player_id
+    if isinstance(player_id, str):
+        return uuid.UUID(player_id)
+    raise TypeError(f"player_id must be UUID or str, got {type(player_id).__name__}")
+
+
+def _is_coroutine_object(value: object) -> bool:
+    """True when value is an awaitable coroutine (not a Player)."""
+    return inspect.iscoroutine(value)
+
+
+async def _get_player_for_logout(
+    request: Request, persistence: PlayerRepositoryProtocol | None, lookup_name: str
+) -> Player | None:
     """
     Get player for logout, handling cache corruption and persistence fallback.
 
@@ -55,11 +83,11 @@ async def _get_player_for_logout(request: Any, persistence: Any, lookup_name: st
 
     if persistence and player is None:
         try:
-            player = await persistence.get_player_by_name(lookup_name)
-            # Double-check we're not caching a coroutine
-            if inspect.iscoroutine(player):
+            fetched: object = await persistence.get_player_by_name(lookup_name)
+            if _is_coroutine_object(fetched):
                 logger.error("get_player_by_name returned a coroutine instead of player", lookup_name=lookup_name)
                 return None
+            player = cast(Player | None, fetched)
             cache_player(request, lookup_name, player)
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Player fetch errors unpredictable, must return None
             logger.error("Error fetching player for logout", error=str(e), error_type=type(e).__name__)
@@ -184,6 +212,23 @@ async def _disconnect_player_connections(
         logger.error("Error disconnecting player", error=str(e), error_type=type(e).__name__)
 
 
+async def _is_player_in_combat_for_logout(request: Request | None, player: Player | None) -> bool:
+    """Check whether `player` is currently in combat, for the quit/logout combat guards.
+
+    Without this guard, `quit`/`logout` mark the disconnect intentional and skip the
+    disconnect-grace zombie window (`disconnect_grace_period.py`) entirely -- a clean,
+    instant escape from a fight that `rest` already blocks via the same underlying check
+    (`rest_command.check_player_in_combat`). `#297`.
+    """
+    if not request or not player:
+        return False
+    app = getattr(request, "app", None)
+    if not app:
+        return False
+    player_id = _coerce_player_uuid(player.player_id)
+    return await check_player_in_combat(player_id, app)
+
+
 async def _mark_quit_intentional(request: Any, username: str) -> None:
     app = request.app if request else None
     if not app:
@@ -205,7 +250,7 @@ async def _mark_quit_intentional(request: Any, username: str) -> None:
 async def handle_quit_command(
     command_data: dict[str, Any],
     current_user: dict[str, Any],
-    request: Any,
+    request: Request,
     _alias_storage: AliasStorage | None,
     _player_name: str,
 ) -> dict[str, str]:
@@ -228,6 +273,7 @@ async def handle_quit_command(
     logger.debug("Processing quit command")
     username = get_username_from_user(current_user)
     persistence, _ = _get_app_services(request)
+    player = None
     if persistence:
         try:
             player = await persistence.get_player_by_name(username)
@@ -236,6 +282,10 @@ async def handle_quit_command(
                 await persistence.save_player(player)
         except (OSError, ValueError, TypeError, Exception) as e:  # pylint: disable=broad-exception-caught  # noqa: B904
             logger.error("Error updating last active on quit", error=str(e), error_type=type(e).__name__)
+
+    if await _is_player_in_combat_for_logout(request, player):
+        logger.info("Quit blocked - player in combat")
+        return {"result": QUIT_COMBAT_BLOCKED_MESSAGE}
 
     if request:
         await _mark_quit_intentional(request, username)
@@ -265,7 +315,7 @@ async def _prepare_player_for_logout(
 async def handle_logout_command(
     command_data: dict[str, Any],
     current_user: dict[str, Any],
-    request: Any,
+    request: Request,
     _alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, Any]:
@@ -292,6 +342,12 @@ async def handle_logout_command(
     try:
         persistence, connection_manager = _get_app_services(request)
         lookup_name = player_name or get_username_from_user(current_user)
+
+        player = await _get_player_for_logout(request, persistence, lookup_name)
+        if await _is_player_in_combat_for_logout(request, player):
+            logger.info("Logout blocked - player in combat")
+            return {"result": LOGOUT_COMBAT_BLOCKED_MESSAGE}
+
         await _prepare_player_for_logout(request, persistence, connection_manager, lookup_name, player_name)
         await _disconnect_player_connections(connection_manager, player_name, mark_intentional=True)
         logger.info("Player logged out successfully")

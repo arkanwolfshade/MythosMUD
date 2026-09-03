@@ -32,6 +32,15 @@ class GameConfig(BaseSettings):
     weather_update_interval: int = Field(default=300, description="Weather update interval in seconds")
     save_interval: int = Field(default=60, description="Player save interval in seconds")
 
+    # Disconnect/login/rest grace periods (#297)
+    disconnect_grace_period_seconds: float = Field(
+        default=30.0, description="Unintentional-disconnect zombie window before despawn, in seconds"
+    )
+    login_grace_period_seconds: float = Field(default=10.0, description="Post-login damage immunity window, in seconds")
+    rest_countdown_seconds: float = Field(
+        default=10.0, description="/rest command countdown before disconnect outside a rest location, in seconds"
+    )
+
     # Combat system configuration
     combat_enabled: bool = Field(default=True, description="Enable/disable combat system")
     combat_timeout_seconds: int = Field(default=180, description="Combat timeout in seconds")
@@ -70,6 +79,15 @@ class GameConfig(BaseSettings):
         """Validate aliases directory path."""
         if not v:
             raise ValueError("Aliases directory must be specified")
+        return v
+
+    @field_validator("disconnect_grace_period_seconds", "login_grace_period_seconds", "rest_countdown_seconds")
+    @classmethod
+    def validate_grace_period_seconds(cls, v: float) -> float:
+        """Validate grace/countdown periods are positive and sane (a zero or negative value
+        would silently disable the corresponding feature)."""
+        if not 1.0 <= v <= 600.0:
+            raise ValueError("Grace/countdown period must be between 1 and 600 seconds")
         return v
 
     @field_validator("combat_tick_interval")

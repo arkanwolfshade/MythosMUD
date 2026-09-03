@@ -19,7 +19,20 @@ export interface WebSocketConnectionOptions {
   onConnected?: () => void;
   onMessage?: (event: MessageEvent) => void;
   onError?: (error: Event) => void;
-  onDisconnect?: () => void;
+  onDisconnect?: (closeInfo: WebSocketCloseInfo) => void;
+}
+
+/**
+ * The WebSocket close code/reason from the browser's CloseEvent (RFC 6455). Threaded through so
+ * callers can distinguish a normal closure (1000 -- e.g. the server replacing this connection with
+ * a newer session, see connection_session_management.py) from an actual failure that should trigger
+ * reconnect-with-backoff. Without this, every close looked identical to the reconnect logic, and a
+ * graceful server-initiated replacement retried indefinitely against whichever session currently
+ * held the connection (#297/#610).
+ */
+export interface WebSocketCloseInfo {
+  code: number;
+  reason: string;
 }
 
 export interface WebSocketConnectionResult {
@@ -98,7 +111,7 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
       setIsConnected(false);
 
       if (hasEverConnectedRef.current) {
-        onDisconnectRef.current?.();
+        onDisconnectRef.current?.({ code: 1000, reason: 'Client disconnect' });
       }
     }
   }, [resourceManager]);
@@ -255,8 +268,8 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
         onErrorRef.current?.(error);
       };
 
-      ws.onclose = () => {
-        logger.info('WebSocketConnection', 'WebSocket closed');
+      ws.onclose = (event: CloseEvent) => {
+        logger.info('WebSocketConnection', 'WebSocket closed', { code: event.code, reason: event.reason });
         setIsConnected(false);
 
         // Clear ping interval
@@ -265,8 +278,14 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
           resourceManager.removeInterval(pingIntervalRef.current);
           pingIntervalRef.current = null;
         }
-        if (hasEverConnectedRef.current) {
-          onDisconnectRef.current?.();
+        if (manualDisconnectRef.current) {
+          // disconnect() already notified onDisconnect synchronously; this close event is its
+          // natural async follow-through, not a new failure. Without this guard, both fire for
+          // the same logical disconnect, double-counting reconnect attempts and opening a second
+          // WebSocket for a single intentional close.
+          manualDisconnectRef.current = false;
+        } else if (hasEverConnectedRef.current) {
+          onDisconnectRef.current?.({ code: event.code, reason: event.reason });
         }
 
         // BUGFIX: Don't schedule reconnection here - let the state machine handle it

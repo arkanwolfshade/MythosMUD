@@ -7,11 +7,15 @@ and disconnections, extracting common logic from ConnectionManager.
 
 import time
 import uuid
-from typing import Any, cast
+from collections.abc import Mapping
+from typing import Any, Protocol, cast
 
 from ..exceptions import DatabaseError
+from ..models.player import Player
 from ..structured_logging.enhanced_logging_config import get_logger
+from .disconnect_catchup import CatchupManager, CatchupPlayer, build_catchup_message
 from .disconnect_grace_period import start_grace_period
+from .envelope import build_event
 from .player_connection_setup import handle_new_connection_setup
 from .player_disconnect_handlers import (
     _cleanup_player_references,
@@ -185,9 +189,33 @@ def _get_instance_manager_from_manager(manager: Any) -> Any:
     return getattr(container, "instance_manager", None)
 
 
+class _GraceReconnectManager(CatchupManager, Protocol):  # pylint: disable=too-few-public-methods
+    """The slice of ConnectionManager needed to send the reconnect catch-up message (#297)."""
+
+    sequence_counter: int
+
+    async def send_personal_message(  # pylint: disable=missing-function-docstring  # Reason: Protocol stub (PEP 544)
+        self, player_id: uuid.UUID, event: Mapping[str, object]
+    ) -> object: ...
+
+
+async def _send_grace_reconnect_catchup(
+    player_id: uuid.UUID, player: CatchupPlayer, manager: _GraceReconnectManager
+) -> None:
+    """Tell a disconnect-grace reconnect what they missed, if anything (#297)."""
+    message = build_catchup_message(player_id, player, manager)
+    if not message:
+        return
+    try:
+        event = build_event("command_response", {"result": message}, player_id=player_id, connection_manager=manager)
+        _ = await manager.send_personal_message(player_id, event)
+    except (AttributeError, RuntimeError, ValueError, TypeError) as e:
+        logger.debug("Could not send grace reconnect catch-up", player_id=player_id, error=str(e))
+
+
 async def track_player_connected_impl(
-    player_id: Any,
-    player: Any,  # Player
+    player_id: uuid.UUID,
+    player: Player,
     connection_type: str,
     manager: Any,  # ConnectionManager
 ) -> None:
@@ -213,6 +241,10 @@ async def track_player_connected_impl(
         manager.mark_player_seen(player_id)
 
         if needs_enter_setup:
+            if in_disconnect_grace:
+                # Must run before cancel_grace_period (caller runs it right after this returns)
+                # tears down the snapshot this reads (#297).
+                await _send_grace_reconnect_catchup(player_id, player, cast(_GraceReconnectManager, manager))
             room_id = await _resolve_room_id_for_tutorial_reconnect(player, manager)
             if not room_id:
                 room_id = _resolve_room_id(player, manager)
