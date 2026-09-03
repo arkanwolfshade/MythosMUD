@@ -1,4 +1,4 @@
-# CI Environment Alignment
+# Ci Environment Alignment
 
 > 1 nodes
 

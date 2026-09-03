@@ -1,4 +1,4 @@
-# check_codacy_yaml
+# Check Codacy Yaml
 
 > 5 nodes
 

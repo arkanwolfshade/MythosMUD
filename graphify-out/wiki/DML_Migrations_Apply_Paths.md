@@ -1,4 +1,4 @@
-# DML Migrations Apply Paths
+# Dml migrations apply paths
 
 > 4 nodes
 

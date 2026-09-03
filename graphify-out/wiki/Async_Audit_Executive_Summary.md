@@ -36,8 +36,8 @@
 - [Async Persistence Migration Tracker](Async_Persistence_Migration_Tracker.md) (6 shared connections)
 - [Async Remediation Complete](Async_Remediation_Complete.md) (1 shared connections)
 - [Async Remediation Final Report](Async_Remediation_Final_Report.md) (1 shared connections)
-- [Code Review: Import Analysis and Anti-Patterns](Code_Review-_Import_Analysis_and_Anti-Patterns.md) (1 shared connections)
-- [Asyncio Code Review - feature/sqlite-to-postgresql Branch](Asyncio_Code_Review_-_feature-sqlite-to-postgresql_Branch.md) (1 shared connections)
+- [Code Review Import Analysis](Code_Review_Import_Analysis.md) (1 shared connections)
+- [Asyncio Code Review](Asyncio_Code_Review.md) (1 shared connections)
 
 ## Source Files
 

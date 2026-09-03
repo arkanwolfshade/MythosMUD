@@ -1,56 +1,51 @@
 # Player
 
-> 55 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **Player** (29 connections) — `server/models/game.py`
-- **test_game_player.py** (23 connections) — `server/tests/unit/models/test_game_player.py`
-- **InventoryItem** (18 connections) — `server/models/game.py`
-- **WeaponStats** (5 connections) — `server/models/game.py`
-- **BaseModel** (5 connections)
-- **.add_item()** (4 connections) — `server/models/game.py`
-- **._inventory_list()** (4 connections) — `server/models/game.py`
-- **test_player_add_item_existing()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_add_status_effect()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_can_carry_weight_false()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_can_carry_weight_true()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_get_active_status_effects()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_get_active_status_effects_all_active()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_insufficient_quantity()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_removes_when_zero()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_success()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_status_effect_success()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **.can_carry_weight()** (3 connections) — `server/models/game.py`
-- **._player_stats()** (3 connections) — `server/models/game.py`
-- **.remove_item()** (3 connections) — `server/models/game.py`
-- **test_inventory_item_creation()** (3 connections) — `server/tests/unit/models/test_game_inventory_item.py`
-- **test_inventory_item_default_quantity()** (3 connections) — `server/tests/unit/models/test_game_inventory_item.py`
-- **test_inventory_item_quantity_validation_min()** (3 connections) — `server/tests/unit/models/test_game_inventory_item.py`
-- **test_player_add_item_default_quantity()** (3 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_add_item_new()** (3 connections) — `server/tests/unit/models/test_game_player.py`
-- *... and 30 more nodes in this community*
+- **.get_stats()** (13 connections) — `server/models/player.py`
+- **_stats_int()** (13 connections) — `server/models/player.py`
+- **.set_stats()** (6 connections) — `server/models/player.py`
+- **.apply_dp_change()** (5 connections) — `server/models/player.py`
+- **.apply_dp_decay()** (5 connections) — `server/models/player.py`
+- **.restore_to_full_health()** (5 connections) — `server/models/player.py`
+- **.get_combat_stats()** (4 connections) — `server/models/player.py`
+- **.get_health_percentage()** (4 connections) — `server/models/player.py`
+- **.get_health_state()** (4 connections) — `server/models/player.py`
+- **.is_alive()** (4 connections) — `server/models/player.py`
+- **.is_dead()** (4 connections) — `server/models/player.py`
+- **.is_mortally_wounded()** (4 connections) — `server/models/player.py`
+- **test_stats_int_delegates_to_coerce_int()** (3 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
+- **Get player stats as dictionary. Returns a MutableDict instance that…** (1 connections) — `server/models/player.py`
+- **Set player stats from dictionary. Accepts both plain dict and MutableDict…** (1 connections) — `server/models/player.py`
+- **Check if player is alive (DP > 0).** (1 connections) — `server/models/player.py`
+- **Check if player is mortally wounded (0 >= DP > -10). Returns: True if player…** (1 connections) — `server/models/player.py`
+- **Check if player is dead (DP <= -10). Returns: True if player has -10 DP or below** (1 connections) — `server/models/player.py`
+- **Get player's current health state. Returns: "alive" if DP > 0…** (1 connections) — `server/models/player.py`
+- **Get stats used for combat participant creation. Returns current_dp, max_dp, and…** (1 connections) — `server/models/player.py`
+- **Get player determination points (DP) as percentage.** (1 connections) — `server/models/player.py`
+- **Apply DP decay (e.g. mortally wounded bleeding) with posture updates. Decreases…** (1 connections) — `server/models/player.py`
+- **Restore player to full health (max DP, standing posture). Used on respawn. Sets…** (1 connections) — `server/models/player.py`
+- **Coerce a JSONB stat value to int for DP and combat helpers.** (1 connections) — `server/models/player.py`
+- **Apply a DP change (e.g. from combat sync) with posture updates. Updates…** (1 connections) — `server/models/player.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [StatusEffect](StatusEffect.md) (10 shared connections)
-- [Stats](Stats.md) (9 shared connections)
-- [PrototypeRegistryError](PrototypeRegistryError.md) (5 shared connections)
-- [pytest.md](pytest.md.md) (4 shared connections)
-- [test_player_schemas.py](test_player_schemas.py.md) (1 shared connections)
-- [time.py](time.py.md) (1 shared connections)
-- [TargetMatch](TargetMatch.md) (1 shared connections)
+- [Player Model & Migrations](Player_Model_&_Migrations.md) (12 shared connections)
+- [Test Inventory Command Coercion](Test_Inventory_Command_Coercion.md) (2 shared connections)
+- [Test Websocket Helpers Player](Test_Websocket_Helpers_Player.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/game.py`
-- `server/tests/unit/models/test_game_inventory_item.py`
-- `server/tests/unit/models/test_game_player.py`
+- `server/models/player.py`
+- `server/tests/unit/commands/test_inventory_command_coercion.py`
 
 ## Audit Trail
 
-- EXTRACTED: 110 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 50 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

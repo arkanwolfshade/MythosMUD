@@ -1,12 +1,10 @@
-# load_seed_data
+# Load Seed Data
 
-> 3 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **load_seed_data()** (2 connections) — `scripts/load_seed_via_asyncpg.py`
-- **load_seed_via_asyncpg.py** (1 connections) — `scripts/load_seed_via_asyncpg.py`
-- **Load all seed data files.** (1 connections) — `scripts/load_seed_via_asyncpg.py`
+- **load_seed_data.ps1** (0 connections) — `scripts/load_seed_data.ps1`
 
 ## Relationships
 
@@ -14,11 +12,11 @@
 
 ## Source Files
 
-- `scripts/load_seed_via_asyncpg.py`
+- `scripts/load_seed_data.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

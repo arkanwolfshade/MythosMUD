@@ -1,47 +1,29 @@
-# asyncio
+# Asyncio
 
-> 19 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **asyncio** (12 connections)
-- **PartyChannelStrategy** (10 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **test_global_channel_strategy_broadcast()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_party_channel_strategy_broadcast_no_party_id()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_party_channel_strategy_broadcast_no_party_service_no_send()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_party_channel_strategy_broadcast_party_not_found_no_send()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_party_channel_strategy_broadcast_sends_only_to_party_members()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_unknown_channel_strategy_broadcast()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_whisper_channel_strategy_broadcast()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_whisper_channel_strategy_broadcast_no_target()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Strategy for party channel broadcasting. Delivers only to current party members.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **When party_service is missing on handler, no message is sent.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **When party does not exist, no message is sent.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test PartyChannelStrategy.broadcast() handles missing party_id.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test WhisperChannelStrategy.broadcast() sends personal message.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test WhisperChannelStrategy.broadcast() handles missing target_player_id.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test UnknownChannelStrategy.broadcast() handles unknown channel.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test GlobalChannelStrategy.broadcast() broadcasts globally.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Party chat is delivered only to current party members (visibility).** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **1. Structured Concurrency: Entry Points and Task Management** (4 connections) — `.claude/rules/asyncio.md`
+- **asyncio Best Practices** (3 connections) — `.claude/rules/asyncio.md`
+- **2. Avoiding Blocking Operations** (2 connections) — `.claude/rules/asyncio.md`
+- **1.1. Top-Level Entry Point** (1 connections) — `.claude/rules/asyncio.md`
+- **1.2. Launching Concurrent Tasks** (1 connections) — `.claude/rules/asyncio.md`
+- **1.3. Grouping Tasks** (1 connections) — `.claude/rules/asyncio.md`
+- **2.1. CPU-Bound Work** (1 connections) — `.claude/rules/asyncio.md`
 
 ## Relationships
 
-- [test_channel_broadcasting_strategies.py](test_channel_broadcasting_strategies.py.md) (9 shared connections)
-- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (6 shared connections)
-- [RoomBasedChannelStrategy](RoomBasedChannelStrategy.md) (2 shared connections)
-- [SystemAdminChannelStrategy](SystemAdminChannelStrategy.md) (2 shared connections)
-- [UUID](UUID.md) (1 shared connections)
-- [UnknownChannelStrategy](UnknownChannelStrategy.md) (1 shared connections)
+- [Memory Monitor & Health Alerts](Memory_Monitor_&_Health_Alerts.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/channel_broadcasting_strategies.py`
-- `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- `.claude/rules/asyncio.md`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (81%)
-- INFERRED: 8 (19%)
+- EXTRACTED: 7 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

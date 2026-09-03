@@ -1,4 +1,4 @@
-# MessageBatcher
+# Messagebatcher
 
 > 15 nodes
 
