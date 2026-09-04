@@ -55,7 +55,11 @@ describe('Connection State Machine', () => {
     expect(snapshot.context.reconnectAttempts).toBeGreaterThanOrEqual(1);
   });
 
-  it('resets reconnect attempts on successful connection', () => {
+  it('does not reset reconnect attempts immediately on successful connection (#297/#610)', () => {
+    // markFullyConnected deliberately leaves reconnectAttempts untouched -- resetting it here
+    // made maxReconnectAttempts unreachable for a flap that reconnects briefly before failing
+    // again (true on main too). The count is refunded only once the connection proves stable
+    // (see useConnectionStateMachine.test.ts for the STABLE_CONNECTION_DELAY-driven coverage).
     actor.send({ type: 'CONNECT' });
     actor.send({ type: 'ERROR', error: 'Test error' });
     // ERROR increments reconnectAttempts
@@ -64,10 +68,9 @@ describe('Connection State Machine', () => {
     actor.send({ type: 'DISCONNECT' });
     actor.send({ type: 'CONNECT' });
     actor.send({ type: 'WS_CONNECTED' });
-    // markFullyConnected resets reconnectAttempts to 0
 
     const snapshot = actor.getSnapshot();
-    expect(snapshot.context.reconnectAttempts).toBe(0);
+    expect(snapshot.context.reconnectAttempts).toBeGreaterThan(0);
   });
 
   it('transitions to reconnecting on connection loss from fully_connected', () => {
@@ -156,9 +159,11 @@ describe('Connection State Machine', () => {
     expect(actor.getSnapshot().context.lastError).toBe('WebSocket failed');
   });
 
-  it('should verify resetConnection action resets all connection metadata', () => {
-    // Test line 93-98: resetConnection action
-    // Set up some state first
+  it('verifies resetConnectionMetadataOnly resets metadata but preserves reconnectAttempts (#297/#610)', () => {
+    // disconnected's entry/CONNECT handler use resetConnectionMetadataOnly, not resetConnection:
+    // these paths fire on every disconnect/reconnect cycle (including a flap), so resetting
+    // reconnectAttempts here would silently refund the retry budget every lap. Only an explicit
+    // RECONNECT (a deliberate fresh start, tested elsewhere) or a stable connection earns a reset.
     actor.send({ type: 'CONNECT' });
     actor.send({ type: 'WS_CONNECTED' });
     actor.send({ type: 'ERROR', error: 'Test error' });
@@ -166,15 +171,14 @@ describe('Connection State Machine', () => {
     let snapshot = actor.getSnapshot();
     expect(snapshot.context.lastError).toBe('Test error');
 
-    // CONNECT triggers resetConnection (via entry action and transition action)
     actor.send({ type: 'DISCONNECT' });
-    actor.send({ type: 'CONNECT' }); // This calls resetConnection
+    actor.send({ type: 'CONNECT' }); // This calls resetConnectionMetadataOnly
 
     snapshot = actor.getSnapshot();
     expect(snapshot.context.sessionId).toBeNull();
     expect(snapshot.context.lastError).toBeNull();
     expect(snapshot.context.connectionStartTime).toBeGreaterThan(0); // New start time set
-    expect(snapshot.context.reconnectAttempts).toBe(0);
+    expect(snapshot.context.reconnectAttempts).toBeGreaterThan(0);
   });
 
   it('should handle RESET from reconnecting state', () => {

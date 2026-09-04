@@ -15,7 +15,7 @@ vi.mock('../utils/messageUtils', () => ({
 }));
 
 // Mock fetch using vi.spyOn for proper cleanup
-const fetchSpy = vi.spyOn(global, 'fetch');
+const fetchSpy = vi.spyOn(globalThis, 'fetch');
 
 describe('useRespawnHandlers', () => {
   const mockSetGameState = vi.fn();
@@ -77,7 +77,9 @@ describe('useRespawnHandlers', () => {
         expect(mockSetIsDead).toHaveBeenCalledWith(false);
         expect(mockSetIsMortallyWounded).toHaveBeenCalledWith(false);
         expect(mockSetIsRespawning).toHaveBeenCalledWith(false);
-        expect(mockSetGameState).toHaveBeenCalled();
+        // Success path routes state exclusively through the projector (#776) -- no direct write.
+        expect(mockAppendRespawnEvent).toHaveBeenCalled();
+        expect(mockSetGameState).not.toHaveBeenCalled();
       });
 
       expect(fetchSpy).toHaveBeenCalledWith('/v1/api/players/respawn', {
@@ -123,7 +125,7 @@ describe('useRespawnHandlers', () => {
       });
     });
 
-    it('should update game state with respawned player data', async () => {
+    it('appends a player_respawned event carrying player, room, and message (#776)', async () => {
       const mockRespawnData = {
         player: { id: 'player1', name: 'Player', dp: 100 },
         room: { id: 'room2', name: 'Hospital', description: 'Hospital room', exits: {} },
@@ -139,8 +141,42 @@ describe('useRespawnHandlers', () => {
       await result.current.handleRespawn();
 
       await waitFor(() => {
-        expect(mockSetGameState).toHaveBeenCalled();
+        expect(mockAppendRespawnEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            event_type: 'player_respawned',
+            data: expect.objectContaining({
+              player: expect.objectContaining({ id: 'player1', name: 'Player' }),
+              room: mockRespawnData.room,
+              message: expect.any(String),
+            }),
+          })
+        );
       });
+    });
+
+    it('does not directly set a room with empty occupants on respawn success (#776)', async () => {
+      // The invariant this issue is about: no write, direct or otherwise, should ever produce a
+      // state with a room set and players empty. Since success now routes only through the
+      // projector event (asserted above), the only way to violate that is a direct setGameState
+      // call -- which must not happen at all on the success path.
+      const mockRespawnData = {
+        player: { id: 'player1', name: 'Player', dp: 100 },
+        room: { id: 'room2', name: 'Hospital', description: 'Hospital room', exits: {} },
+      };
+
+      fetchSpy.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockRespawnData,
+      } as unknown as Response);
+
+      const { result } = renderHook(() => useRespawnHandlers(defaultParams));
+
+      await result.current.handleRespawn();
+
+      await waitFor(() => {
+        expect(mockAppendRespawnEvent).toHaveBeenCalled();
+      });
+      expect(mockSetGameState).not.toHaveBeenCalled();
     });
   });
 
@@ -165,10 +201,12 @@ describe('useRespawnHandlers', () => {
         expect(mockSetIsDeliriumRespawning).toHaveBeenCalledWith(true);
         expect(mockSetIsDelirious).toHaveBeenCalledWith(false);
         expect(mockSetIsDeliriumRespawning).toHaveBeenCalledWith(false);
-        expect(mockSetGameState).toHaveBeenCalled();
+        // Success path routes state exclusively through the projector (#776) -- no direct write.
+        expect(mockAppendRespawnEvent).toHaveBeenCalled();
+        expect(mockSetGameState).not.toHaveBeenCalled();
       });
 
-      expect(global.fetch).toHaveBeenCalledWith('/v1/api/players/respawn-delirium', {
+      expect(globalThis.fetch).toHaveBeenCalledWith('/v1/api/players/respawn-delirium', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -211,7 +249,7 @@ describe('useRespawnHandlers', () => {
       });
     });
 
-    it('should use default message when respawn message is not provided', async () => {
+    it('uses default message when respawn message is not provided', async () => {
       const mockRespawnData = {
         player: { id: 'player1', name: 'Player', lucidity: 50, dp: 100 },
         room: { id: 'room3', name: 'Sanitarium', description: 'Sanitarium room', exits: {} },
@@ -227,14 +265,21 @@ describe('useRespawnHandlers', () => {
       await result.current.handleDeliriumRespawn();
 
       await waitFor(() => {
-        expect(mockSetGameState).toHaveBeenCalled();
+        expect(mockAppendRespawnEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            data: expect.objectContaining({
+              message: 'You have been restored to lucidity and returned to the Sanitarium',
+            }),
+          })
+        );
       });
     });
 
-    it('should update game state with respawned player data including lucidity', async () => {
+    it('appends a player_delirium_respawned event carrying player, room, and message (#776)', async () => {
       const mockRespawnData = {
         player: { id: 'player1', name: 'Player', lucidity: 50, dp: 100 },
         room: { id: 'room3', name: 'Sanitarium', description: 'Sanitarium room', exits: {} },
+        message: 'You have been restored to lucidity',
       };
 
       fetchSpy.mockResolvedValueOnce({
@@ -247,8 +292,22 @@ describe('useRespawnHandlers', () => {
       await result.current.handleDeliriumRespawn();
 
       await waitFor(() => {
-        expect(mockSetGameState).toHaveBeenCalled();
+        expect(mockAppendRespawnEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            event_type: 'player_delirium_respawned',
+            data: expect.objectContaining({
+              player: expect.objectContaining({
+                id: 'player1',
+                name: 'Player',
+                stats: expect.objectContaining({ lucidity: 50, current_dp: 100 }),
+              }),
+              room: mockRespawnData.room,
+              message: 'You have been restored to lucidity',
+            }),
+          })
+        );
       });
+      expect(mockSetGameState).not.toHaveBeenCalled();
     });
   });
 

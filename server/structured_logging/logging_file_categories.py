@@ -73,6 +73,11 @@ DEFAULT_LOG_CATEGORIES: dict[str, list[str]] = {
         "server.services.schedule_service",
     ],
     "caching": ["caching", "server.caching"],
+    # WebSocket connect/disconnect/close-code and ADR-018 session-replacement events land here
+    # (server.realtime.connection_establishment, .connection_disconnection,
+    # .connection_session_management, .websocket_handler_message_loop) -- not in server.log, which
+    # is a catch-all that doesn't include this prefix. Grepping server.log for "WebSocket
+    # connected"/"disconnected" finds nothing; check communications.log (#297/#610 investigation).
     "communications": ["realtime", "server.realtime", "communications"],
     "commands": [
         "commands",
@@ -204,6 +209,15 @@ def add_handler_to_loggers(
             # Set DEBUG level for combat modules in local/debug environments
             if log_file == "combat" and (environment == "local" or log_level == "DEBUG"):
                 target_logger.setLevel(logging.DEBUG)
+            elif log_file == "npc" and environment == "e2e_test":
+                # NPC behavior-engine/threading debug lines fire continuously (idle movement,
+                # condition evaluation, per-tick "Executed NPC behavior") -- at DEBUG level in a
+                # long-running e2e session this rotates connect/disconnect and other genuine
+                # events out of npc.log's small e2e rotation window (10MB x 3) within minutes,
+                # making connection-lifecycle bugs nearly undiagnosable from the logs (#297/#610
+                # investigation cost most of a session to this). Opt back into full NPC debug
+                # detail locally via LOGGING_LEVEL=DEBUG with LOGGING_ENVIRONMENT=local.
+                target_logger.setLevel(logging.INFO)
             else:
                 target_logger.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
             target_logger.propagate = True
