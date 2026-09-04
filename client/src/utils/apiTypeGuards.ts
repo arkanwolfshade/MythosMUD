@@ -251,7 +251,16 @@ function hasAtLeastOneIdentifier(value: Record<string, unknown>): boolean {
 }
 
 function hasServerCharacterCoreFields(value: Record<string, unknown>): boolean {
-  return hasSharedCharacterRecordCoreFields(value) && hasOptionalString(value.profession_name);
+  // profession_name is `str | None` server-side (server/schemas/players/player.py); Pydantic
+  // serializes that None as JSON `null`, not an omitted key, so this must accept null the same
+  // way isCharacterInfoProfessionNameValid does -- hasOptionalString (built for the id/player_id
+  // identifier fields, which should never legitimately be null) only accepts undefined.
+  // Rejecting null here throws on any character whose profession hasn't resolved to a name
+  // (e.g. the persistent Ithaqua E2E account), which silently dropped every delete/create
+  // list-refresh's setCharacters call and stranded deleted characters' cards in the UI (#777).
+  const professionName = value.profession_name;
+  const hasValidProfessionName = professionName === undefined || professionName === null || isString(professionName);
+  return hasSharedCharacterRecordCoreFields(value) && hasValidProfessionName;
 }
 
 export function isServerCharacterResponse(value: unknown): value is ServerCharacterResponse {

@@ -12,7 +12,7 @@ export type DeleteCharacterFlowResult =
   | { outcome: 'ok'; characters: CharacterInfo[] }
   | { outcome: 'server_unavailable' }
   | { outcome: 'delete_failed'; message: string }
-  | { outcome: 'refresh_failed'; message: string; deleteStatus: number; deleteStatusText: string };
+  | { outcome: 'refresh_failed'; message: string; characterId: string };
 
 async function fetchCharacterList(authToken: string): Promise<Response> {
   return fetch(`${API_V1_BASE}/api/players/characters`, {
@@ -88,18 +88,22 @@ export async function runDeleteCharacterFlow(
     return { outcome: 'server_unavailable' };
   }
 
+  // The DELETE already succeeded (response.ok above) -- the server has confirmed this
+  // character is gone. A failed refetch of the list is a secondary read failure, not
+  // evidence the delete didn't happen, so the caller removes it locally (#777 follow-up:
+  // this used to leave the deleted character's card stranded in the UI forever whenever
+  // this refetch hiccuped).
   return {
     outcome: 'refresh_failed',
     message: await parseRefreshFailure(charactersResponse),
-    deleteStatus: response.status,
-    deleteStatusText: response.statusText,
+    characterId,
   };
 }
 
 export type DeleteCharacterNextStep =
   | { step: 'return_to_login' }
   | { step: 'throw'; message: string }
-  | { step: 'throw_refresh'; message: string; deleteStatus: number; deleteStatusText: string }
+  | { step: 'commit_remove_locally'; characterId: string; message: string }
   | { step: 'commit'; characters: CharacterInfo[] };
 
 export function nextStepForDeleteResult(result: DeleteCharacterFlowResult): DeleteCharacterNextStep {
@@ -110,12 +114,7 @@ export function nextStepForDeleteResult(result: DeleteCharacterFlowResult): Dele
     return { step: 'throw', message: result.message };
   }
   if (result.outcome === 'refresh_failed') {
-    return {
-      step: 'throw_refresh',
-      message: result.message,
-      deleteStatus: result.deleteStatus,
-      deleteStatusText: result.deleteStatusText,
-    };
+    return { step: 'commit_remove_locally', characterId: result.characterId, message: result.message };
   }
   return { step: 'commit', characters: result.characters };
 }

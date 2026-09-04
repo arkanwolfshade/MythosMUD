@@ -66,12 +66,6 @@ async function acceptStatsAndSelectFirstProfession(page: Page): Promise<void> {
   });
 }
 
-async function loginAsIthaqua(page: Page): Promise<void> {
-  const loginPage = new LoginPage(page);
-  await loginPage.navigate();
-  await loginPage.login('Ithaqua', 'Cthulhu1');
-}
-
 async function deleteRevisedTestCharacterToMakeRoom(page: Page, createButton: Locator): Promise<void> {
   // beforeEach cleanup should leave a free slot; this is only a last-resort escape hatch at 3/3.
   if (await createButton.isVisible({ timeout: 5000 }).catch(() => false)) {
@@ -298,6 +292,13 @@ test.describe('Revised Character Creation', () => {
 
   test.beforeEach(async ({ page }) => {
     // Each creation test needs a free slot; leftover E2ER_/E4Sk_ from prior tests hit the 3-char cap.
+    // This also logs Ithaqua in on `page` -- do not call loginAsIthaqua-style login again in the
+    // test body. The auth token this leaves in localStorage survives a page.goto() reload, so a
+    // second navigate-and-login would have useAuthSessionRestore auto-restore the session and
+    // skip straight past the login form into character selection (or the game, for a
+    // single-character account); LoginPage.login()'s username-input wait then times out.
+    // Test bodies should pick up from whatever state cleanup left the page in instead --
+    // openStatsRollingFromLogin already handles both (stats screen or character selection).
     await cleanupE2ECharacters(page);
   });
 
@@ -311,7 +312,7 @@ test.describe('Revised Character Creation', () => {
   });
 
   test('should reject spaced character names on the name screen', async ({ page }) => {
-    await loginAsIthaqua(page);
+    // Already logged in by beforeEach's cleanupE2ECharacters -- see its comment.
     await openStatsRollingFromLogin(page);
     await acceptStatsAndSelectFirstProfession(page);
     await assignAllSkillsAndProceedToName(page);
@@ -323,7 +324,7 @@ test.describe('Revised Character Creation', () => {
 
   test('should complete stats → profession → skills → name → create, enter game, and go down', async ({ page }) => {
     const creationCharName = uniqueE2eCharName('E2ER_');
-    await loginAsIthaqua(page);
+    // Already logged in by beforeEach's cleanupE2ECharacters -- see its comment.
     await openStatsRollingFromLogin(page);
     await acceptStatsAndSelectFirstProfession(page);
     await assignAllSkillsAndProceedToName(page);
@@ -338,7 +339,7 @@ test.describe('Revised Character Creation', () => {
 
   test('should complete stats → profession → skills → name → create and show character', async ({ page }) => {
     const creationCharName = uniqueE2eCharName('E2ER_');
-    await loginAsIthaqua(page);
+    // Already logged in by beforeEach's cleanupE2ECharacters -- see its comment.
     await openStatsRollingFromLogin(page);
     await acceptStatsAndSelectFirstProfession(page);
     await assignAllSkillsAndProceedToName(page);
@@ -350,7 +351,7 @@ test.describe('Revised Character Creation', () => {
   });
 
   test('E4: after creation /skills shows character skills (allocated + catalog)', async ({ page }) => {
-    await loginAsIthaqua(page);
+    // Already logged in by beforeEach's cleanupE2ECharacters -- see its comment.
     await openStatsRollingFromLogin(page);
     await acceptStatsAndSelectFirstProfession(page);
     await assignAllSkillsAndProceedToName(page);
