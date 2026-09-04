@@ -349,7 +349,12 @@ async def disconnect_websocket_connection_impl(manager: ConnectionManager, playe
     """Disconnect a specific WebSocket connection for a player."""
     try:
         if connection_id not in manager.connection_metadata:
-            logger.warning("Connection not found in metadata", connection_id=connection_id)
+            # Expected race, not a fault: the only caller is /rest's deferred disconnect, which
+            # snapshots connection IDs before a short delay and closes them afterward (#297) --
+            # if this connection already closed on its own during that window (client
+            # disconnected, tab closed, network blip), it's already gone from metadata by the
+            # time this runs. The desired outcome (disconnected) was already achieved.
+            logger.debug("Connection not found in metadata", connection_id=connection_id)
             return False
         metadata = manager.connection_metadata[connection_id]
         if metadata.player_id != player_id or metadata.connection_type != "websocket":

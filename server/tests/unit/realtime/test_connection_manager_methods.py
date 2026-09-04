@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import logging
 import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -240,6 +241,21 @@ async def test_disconnect_websocket_connection_impl_success(mock_manager: MagicM
     mock_manager.connection_metadata = {"conn-1": metadata}
     mock_manager.disconnect_connection_by_id = AsyncMock(return_value=True)
     assert await cm_methods.disconnect_websocket_connection_impl(mock_manager, player_id, "conn-1") is True
+
+
+@pytest.mark.asyncio
+async def test_disconnect_websocket_connection_impl_missing_connection_logs_debug_not_warning(
+    mock_manager: MagicMock, caplog: pytest.LogCaptureFixture
+) -> None:
+    """A connection absent from metadata is an expected race (the only caller, /rest's deferred
+    disconnect, snapshots connection IDs before a delay and may find one already closed on its
+    own by the time it runs -- #297), not a fault. Must log at debug, not warning."""
+    player_id = uuid.uuid4()
+    mock_manager.connection_metadata = {}
+    with caplog.at_level(logging.WARNING, logger="server.realtime.connection_manager_methods"):
+        result = await cm_methods.disconnect_websocket_connection_impl(mock_manager, player_id, "missing-conn")
+    assert result is False
+    assert not any("Connection not found in metadata" in r.message for r in caplog.records)
 
 
 @pytest.mark.asyncio
