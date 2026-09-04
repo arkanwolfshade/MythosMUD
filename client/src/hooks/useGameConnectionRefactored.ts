@@ -113,6 +113,7 @@ export function useGameConnection(options: UseGameConnectionOptions) {
   const pendingSessionSwitchRef = useRef<string | null>(null);
   const userOnSessionChangeRef = useRef(onSessionChange);
   const connectRef = useRef<() => void>(() => {});
+  const disconnectRef = useRef<() => void>(() => {});
   const connectionStateValueRef = useRef<string>('disconnected');
 
   // Stable callback refs
@@ -343,20 +344,33 @@ export function useGameConnection(options: UseGameConnectionOptions) {
   }, [connect]);
 
   useEffect(() => {
+    disconnectRef.current = disconnect;
+  }, [disconnect]);
+
+  // Deliberately depends only on authToken, not the connect/disconnect callbacks themselves.
+  // connect() is a useCallback whose own deps include connectionStateValue (#297/#610 root
+  // cause), so it gets a new identity on *every* state transition -- disconnected, connecting_ws,
+  // reconnecting, fully_connected, all of it. Depending on that identity here meant this effect
+  // re-ran on every transition and unconditionally called connect() again, including immediately
+  // after a terminal disconnected landed from an ADR-018 session-replacement close: the "not
+  // reconnecting" decision in onDisconnect was correct and undone by this effect within ~1-9ms,
+  // producing an unbounded storm where each tab's revival re-kicked the other. Routing through the
+  // refs (already used elsewhere in this file for the same reason, e.g. connectRef above) makes
+  // this effect react only to what it's meant to: authToken appearing or disappearing.
+  useEffect(() => {
     if (!authToken) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- disconnect updates local state when auth changes
-      disconnect();
+      disconnectRef.current();
       return;
     }
 
-    connect();
-  }, [authToken, connect, disconnect]);
+    connectRef.current();
+  }, [authToken]);
 
   useEffect(() => {
     return () => {
-      disconnect();
+      disconnectRef.current();
     };
-  }, [disconnect]);
+  }, []);
 
   // Send command through WebSocket
   const sendCommand = useCallback(

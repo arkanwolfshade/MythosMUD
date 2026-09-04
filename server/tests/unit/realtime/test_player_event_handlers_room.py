@@ -118,9 +118,26 @@ async def test_subscribe_player_to_room_success(player_room_event_handler, mock_
     player_id = uuid.uuid4()
     room_id = "room_001"
     mock_connection_manager.subscribe_to_room = AsyncMock()
+    mock_connection_manager.update_player_room_cache = MagicMock()
     with patch.object(player_room_event_handler.utils, "normalize_player_id", return_value=player_id):
         await player_room_event_handler.subscribe_player_to_room(player_id, room_id)
         mock_connection_manager.subscribe_to_room.assert_awaited_once_with(player_id, room_id)
+
+
+@pytest.mark.asyncio
+async def test_subscribe_player_to_room_refreshes_online_players_room_cache(
+    player_room_event_handler, mock_connection_manager
+):
+    """#297/#610: subscribing on movement must also refresh online_players[...]['current_room_id'],
+    or room-scoped chat delivery silently drops every recipient whose cache still shows their
+    previous room (message_filtering.is_player_in_room reads only this stale field)."""
+    player_id = uuid.uuid4()
+    room_id = "room_001"
+    mock_connection_manager.subscribe_to_room = AsyncMock()
+    mock_connection_manager.update_player_room_cache = MagicMock()
+    with patch.object(player_room_event_handler.utils, "normalize_player_id", return_value=player_id):
+        await player_room_event_handler.subscribe_player_to_room(player_id, room_id)
+        mock_connection_manager.update_player_room_cache.assert_called_once_with(player_id, room_id)
 
 
 @pytest.mark.asyncio

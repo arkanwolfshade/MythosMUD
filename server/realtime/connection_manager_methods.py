@@ -578,6 +578,26 @@ async def unsubscribe_from_room_impl(manager: ConnectionManager, player_id: UUID
     _ = manager.room_manager.unsubscribe_from_room(str(player_id), canonical_id)
 
 
+def update_player_room_cache_impl(manager: ConnectionManager, player_id: UUID, room_id: str) -> None:
+    """Keep online_players[...]['current_room_id'] in sync with an actual room move.
+
+    online_players is written once at connect time (player_presence_tracker._build_player_info)
+    and never touched again by movement. Room-scoped chat delivery's is_player_in_room check reads
+    this field as its primary (and in practice only, since it's always populated after first
+    connect) source -- so a player who moves rooms without reconnecting silently drops out of
+    every room broadcast aimed at their *actual* room: message_filtering.py compares the
+    message's room_id against this stale value and filters them out with no error to the sender
+    (#297/#610 investigation; confirmed live via communications.log's "BROADCAST FILTERING DEBUG"
+    trail showing a player's cached room lagging their real one after ensureMultiplayerCoLocated's
+    teleport). Called from PlayerEnteredRoom handling, the one path already proven to fire on every
+    genuine movement (spawn deliberately bypasses it via _add_player_to_room_silently, which is
+    correct: connect already sets this field fresh).
+    """
+    player_info = manager.online_players.get(player_id)
+    if player_info is not None:
+        player_info["current_room_id"] = room_id
+
+
 def canonical_room_id_public_impl(manager: ConnectionManager, room_id: str | None) -> str | None:
     """Resolve a room id to the canonical Room.id value (public method)."""
     from .connection_room_utils import canonical_room_id_impl

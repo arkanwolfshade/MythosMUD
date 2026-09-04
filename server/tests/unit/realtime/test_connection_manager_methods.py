@@ -377,6 +377,27 @@ async def test_subscribe_to_room_impl(mock_manager: MagicMock) -> None:
     subscribe_to_room.assert_called_once_with(str(player_id), "room-1")
 
 
+def test_update_player_room_cache_impl_refreshes_existing_entry(mock_manager: MagicMock) -> None:
+    """#297/#610: online_players[...]['current_room_id'] is written once at connect and never
+    touched by movement, so message_filtering.is_player_in_room compares a live message's room_id
+    against a stale value -- silently dropping every room-scoped chat recipient who moved rooms
+    since their last (re)connect. This must actually refresh the cache on movement."""
+    player_id = uuid.uuid4()
+    mock_manager.online_players = {player_id: {"current_room_id": "room-old", "position": "standing"}}
+    cm_methods.update_player_room_cache_impl(mock_manager, player_id, "room-new")
+    assert mock_manager.online_players[player_id]["current_room_id"] == "room-new"
+    # Only the room field changes -- other tracked fields survive untouched.
+    assert mock_manager.online_players[player_id]["position"] == "standing"
+
+
+def test_update_player_room_cache_impl_player_not_online_is_a_noop(mock_manager: MagicMock) -> None:
+    """A player absent from online_players (e.g. NPC-driven room event, or a race with disconnect
+    cleanup) must not raise or fabricate an entry."""
+    mock_manager.online_players = {}
+    cm_methods.update_player_room_cache_impl(mock_manager, uuid.uuid4(), "room-new")
+    assert mock_manager.online_players == {}
+
+
 @pytest.mark.asyncio
 async def test_unsubscribe_from_room_events_impl(mock_manager: MagicMock) -> None:
     with patch(

@@ -4,7 +4,7 @@
  * Tests all state transitions, guards, and edge cases using XState testing utilities.
  */
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { createActor } from 'xstate';
 import { connectionMachine } from './useConnectionStateMachine';
 
@@ -70,7 +70,11 @@ describe('Connection State Machine', () => {
     actor.stop();
   });
 
-  it('should reset reconnect attempts on successful connection', () => {
+  it('does not reset reconnect attempts immediately on successful connection (#297/#610)', () => {
+    // markFullyConnected deliberately leaves reconnectAttempts untouched -- resetting it here
+    // made maxReconnectAttempts unreachable for a WS_FAILED/reconnecting flap that reconnects
+    // briefly before failing again (true on main too). See "reset once the connection proves
+    // stable" below for when the count actually refunds.
     const actor = createActor(connectionMachine);
     actor.start();
 
@@ -84,9 +88,79 @@ describe('Connection State Machine', () => {
     actor.send({ type: 'CONNECT' });
     actor.send({ type: 'WS_CONNECTED' });
 
-    expect(actor.getSnapshot().context.reconnectAttempts).toBe(0);
+    expect(actor.getSnapshot().context.reconnectAttempts).toBe(1);
 
     actor.stop();
+  });
+
+  it('resets reconnect attempts once the connection holds for STABLE_CONNECTION_DELAY (#297/#610)', () => {
+    vi.useFakeTimers();
+    try {
+      const actor = createActor(connectionMachine, { input: {} });
+      actor.start();
+
+      actor.send({ type: 'CONNECT' });
+      actor.send({ type: 'WS_FAILED', error: 'Test' });
+      expect(actor.getSnapshot().context.reconnectAttempts).toBe(1);
+
+      actor.send({ type: 'DISCONNECT' });
+      actor.send({ type: 'CONNECT' });
+      actor.send({ type: 'WS_CONNECTED' });
+      expect(actor.getSnapshot().context.reconnectAttempts).toBe(1);
+
+      // Not yet stable: still holds the accumulated count.
+      vi.advanceTimersByTime(9999);
+      expect(actor.getSnapshot().context.reconnectAttempts).toBe(1);
+
+      // Held for the full stability window: budget is refunded.
+      vi.advanceTimersByTime(1);
+      expect(actor.getSnapshot().context.reconnectAttempts).toBe(0);
+
+      actor.stop();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('a connection that fails again before stability keeps its accumulated count, eventually reaching failed (#297/#610)', () => {
+    // The scenario the bound exists to catch: connect, fail, reconnect, fail again, repeatedly,
+    // faster than STABLE_CONNECTION_DELAY each time. Before this fix, every successful
+    // WS_CONNECTED reset the count to 0, so maxReconnectAttempts was unreachable no matter how
+    // many times this flapped -- the "bound" never actually bounded anything.
+    vi.useFakeTimers();
+    try {
+      const actor = createActor(connectionMachine, { input: { maxReconnectAttempts: 3 } });
+      actor.start();
+
+      actor.send({ type: 'CONNECT' });
+      actor.send({ type: 'WS_CONNECTED' });
+
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        // Fails well before the 10s stability window -- the reconnect budget is not refunded.
+        vi.advanceTimersByTime(50);
+        actor.send({ type: 'WS_FAILED', error: 'Test' });
+        expect(actor.getSnapshot().context.reconnectAttempts).toBe(attempt);
+
+        if (attempt === 3) {
+          // maxAttemptsReached fires the `always` guard straight to `failed` on entry to
+          // `reconnecting`, before RECONNECT_DELAY even has a chance to elapse.
+          break;
+        }
+        // Let the machine's own backoff auto-transition reconnecting -> connecting_ws (canReconnect
+        // is true below max), then reconnect -- simulating the connection flapping on its own,
+        // not an explicit RECONNECT (which would deliberately earn a fresh budget).
+        vi.advanceTimersByTime(30000);
+        expect(actor.getSnapshot().value).toBe('connecting_ws');
+        actor.send({ type: 'WS_CONNECTED' });
+      }
+
+      expect(actor.getSnapshot().value).toBe('failed');
+      expect(actor.getSnapshot().context.reconnectAttempts).toBe(3);
+
+      actor.stop();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('should handle multiple connection/disconnection cycles', () => {

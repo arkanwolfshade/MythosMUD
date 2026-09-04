@@ -198,6 +198,10 @@ class ConnectionManager:
         """Unsubscribe a player from a room (compatibility method)."""
         return await _cmm.unsubscribe_from_room_impl(self, player_id, room_id)
 
+    def update_player_room_cache(self, player_id: uuid.UUID, room_id: str) -> None:
+        """Sync online_players[...]['current_room_id'] with an actual room move (#297/#610)."""
+        _cmm.update_player_room_cache_impl(self, player_id, room_id)
+
     def canonical_room_id(self, room_id: str | None) -> str | None:
         """Resolve a room id to the canonical Room.id value (public method)."""
         return _cmm.canonical_room_id_public_impl(self, room_id)

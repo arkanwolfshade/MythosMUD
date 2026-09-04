@@ -424,6 +424,85 @@ describe('projector', () => {
       expect(next.messages[0].messageType).toBe('combat');
     });
 
+    it('player_respawned merges onto previous player (#776: thin RespawnPlayerData must not wipe stats)', () => {
+      const prev = getInitialGameState();
+      prev.player = {
+        name: 'ArkanWolfshade',
+        id: 'p1',
+        profession_id: 3,
+        profession_name: 'Antiquarian',
+        level: 5,
+        experience: 1200,
+        stats: {
+          current_dp: 10,
+          max_dp: 100,
+          lucidity: 40,
+          strength: 12,
+          luck: 15,
+          occult: 20,
+        },
+      };
+      const event: GameEvent = {
+        event_type: 'player_respawned',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          // Thin RespawnPlayerData shape: id/name/dp/max_dp/current_room_id only.
+          player: {
+            id: 'p1',
+            name: 'ArkanWolfshade',
+            stats: { current_dp: 100 },
+          },
+          room: { id: 'room1', name: 'Main Foyer', description: '', exits: {} },
+        },
+      };
+      const next = projectEvent(prev, event);
+      expect(next.player?.profession_id).toBe(3);
+      expect(next.player?.profession_name).toBe('Antiquarian');
+      expect(next.player?.level).toBe(5);
+      expect(next.player?.experience).toBe(1200);
+      expect(next.player?.stats?.max_dp).toBe(100);
+      expect(next.player?.stats?.lucidity).toBe(40);
+      expect(next.player?.stats?.strength).toBe(12);
+      expect(next.player?.stats?.luck).toBe(15);
+      expect(next.player?.stats?.occult).toBe(20);
+      // The incoming field itself still applies.
+      expect(next.player?.stats?.current_dp).toBe(100);
+    });
+
+    it('player_respawned lists self in room.players (#776)', () => {
+      const prev = getInitialGameState();
+      prev.player = { name: 'ArkanWolfshade', id: 'p1', stats: { current_dp: 10, lucidity: 40 } };
+      const event: GameEvent = {
+        event_type: 'player_respawned',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          player: { id: 'p1', name: 'ArkanWolfshade', stats: { current_dp: 100 } },
+          room: { id: 'room1', name: 'Main Foyer', description: '', exits: {} },
+        },
+      };
+      const next = projectEvent(prev, event);
+      expect(next.room?.players).toContain('ArkanWolfshade');
+    });
+
+    it('player_respawned does not clobber lucidity with an omitted/null value', () => {
+      const prev = getInitialGameState();
+      prev.player = { name: 'ArkanWolfshade', id: 'p1', stats: { current_dp: 10, lucidity: 40 } };
+      const event: GameEvent = {
+        event_type: 'player_respawned',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          // Death respawn payload: no lucidity field at all.
+          player: { id: 'p1', name: 'ArkanWolfshade', stats: { current_dp: 100 } },
+          room: { id: 'room1', name: 'Main Foyer', description: '', exits: {} },
+        },
+      };
+      const next = projectEvent(prev, event);
+      expect(next.player?.stats?.lucidity).toBe(40);
+    });
+
     it('game_state with room replaces previous room (server-authoritative, no merge)', () => {
       const prev = getInitialGameState();
       const withRoom: GameState = {

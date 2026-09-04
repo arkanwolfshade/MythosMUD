@@ -79,14 +79,30 @@ export const connectionMachine = setup({
   },
   actions: {
     /**
-     * Reset connection metadata.
-     * AI: Clean slate for fresh connection attempts.
+     * Reset connection metadata for an explicit, user/caller-initiated fresh start (the RECONNECT
+     * event, sent after giving up in `failed` or mid-backoff in `reconnecting`). Includes
+     * reconnectAttempts: deliberately asking to try again earns a full budget.
      */
     resetConnection: assign({
       sessionId: () => null,
       lastError: () => null,
       connectionStartTime: () => null,
       reconnectAttempts: () => 0,
+    }),
+
+    /**
+     * Reset connection metadata for the PASSIVE paths -- `disconnected`'s entry and its CONNECT
+     * handler. Unlike resetConnection above, this does NOT touch reconnectAttempts: these paths
+     * fire on every disconnect/reconnect, including mid-flap, so resetting the count here would
+     * silently refund the retry budget every lap and make maxReconnectAttempts unreachable for a
+     * flapping connection -- the same class of gap markFullyConnected had. The count is refunded
+     * only once a connection actually holds (resetReconnectAttempts / STABLE_CONNECTION_DELAY) or
+     * via an explicit RECONNECT (a deliberate fresh start earns a full budget).
+     */
+    resetConnectionMetadataOnly: assign({
+      sessionId: () => null,
+      lastError: () => null,
+      connectionStartTime: () => null,
     }),
 
     /**
@@ -99,12 +115,30 @@ export const connectionMachine = setup({
 
     /**
      * Mark connection as fully established.
-     * AI: WebSocket connected - system is operational.
+     *
+     * Deliberately does NOT reset reconnectAttempts (see resetReconnectAttempts below). Previously
+     * this reset the count on every successful connect, so a WS_FAILED/reconnecting flap that
+     * happened to reconnect briefly before failing again never accumulated -- maxReconnectAttempts
+     * was unreachable for that shape (true on main too; see git history for measurement). A
+     * connection that fails again inside STABLE_CONNECTION_DELAY now keeps its accumulated count.
+     * Note: this does not bound the ADR-018 replacement (kick) path -- DISCONNECT never increments
+     * reconnectAttempts (a clean disconnect is not a failure), so a repeated
+     * disconnected->CONNECT->fully_connected cycle is not something this counter can see at all.
+     * That storm shape is closed at its actual source: see the authToken effect in
+     * useGameConnectionRefactored.ts (#297/#610).
      */
     markFullyConnected: assign({
       lastConnectedTime: () => Date.now(),
-      reconnectAttempts: 0,
       lastError: null,
+    }),
+
+    /**
+     * Refund the reconnect budget once a connection has proven itself stable (held for
+     * STABLE_CONNECTION_DELAY without closing). Scheduled via `fully_connected`'s `after`, so it
+     * only fires if the state hasn't already transitioned away.
+     */
+    resetReconnectAttempts: assign({
+      reconnectAttempts: () => 0,
     }),
 
     /**
@@ -174,6 +208,14 @@ export const connectionMachine = setup({
       const delay = Math.min(1000 * Math.pow(2, context.reconnectAttempts), 30000);
       return delay;
     },
+
+    /**
+     * How long a connection must hold before it's trusted enough to refund the reconnect budget.
+     * A connection that fails again sooner than this does not get the count reset, so
+     * maxReconnectAttempts genuinely bounds a WS_FAILED/reconnecting flap instead of being reset
+     * away by every brief reconnect in between.
+     */
+    STABLE_CONNECTION_DELAY: 10000,
   },
 }).createMachine({
   id: 'connection',
@@ -189,11 +231,11 @@ export const connectionMachine = setup({
   }),
   states: {
     disconnected: {
-      entry: 'resetConnection',
+      entry: 'resetConnectionMetadataOnly',
       on: {
         CONNECT: {
           target: 'connecting_ws',
-          actions: ['resetConnection', 'storeConnectionStartTime'],
+          actions: ['resetConnectionMetadataOnly', 'storeConnectionStartTime'],
         },
       },
     },
@@ -232,6 +274,11 @@ export const connectionMachine = setup({
     },
 
     fully_connected: {
+      after: {
+        STABLE_CONNECTION_DELAY: {
+          actions: 'resetReconnectAttempts',
+        },
+      },
       on: {
         DISCONNECT: {
           target: 'disconnected',
