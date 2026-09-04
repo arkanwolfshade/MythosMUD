@@ -1,0 +1,1 @@
+"""NPC unit tests."""

@@ -1,0 +1,465 @@
+---
+# Codacy configuration file
+# Suppresses specific rules for package.json dependency version warnings
+# These warnings are informational - package-lock.json locks exact versions
+#
+# --- Enforced coverage (authoritative; CI and local tooling) ---
+# Python: aggregate line coverage >= 63% on Cobertura from pytest --cov=server (omit tests, alembic, etc.);
+#   see .coveragerc, pyproject.toml [tool.coverage.report] fail_under, and
+#   scripts/validate_codacy_coverage_gate.py --min-python-line-rate (run from scripts/run_test_ci.py).
+# TypeScript/React: LCOV aggregate line rate >= 70% before Codacy upload (ci.yml);
+#   Vitest global thresholds lines/statements/functions 70%, branches 68%, plus per-file 85-90% in
+#   client/vite.vitestOptions.ts; instrumented paths are client/src/**/*.{ts,tsx} per Vitest coverage config.
+# Pre-commit: scripts/check_coverage_thresholds.py on coverage.xml -- critical server files 90% (argon2 85%);
+#   other server files below 70% warn only (non-blocking).
+# Codacy dashboard coverage uses analyzed files that appear in uploaded reports; paths outside pytest-cov
+# server/ and Vitest client/src would otherwise read as 0% and depress the aggregate. exclude_paths below
+# align analysis scope with coverable product code. Quality gate numeric thresholds (e.g. diff coverage) are
+# set in Codacy UI: Repository settings > Gates / Goals (not representable in this file); see
+# https://docs.codacy.com/repositories-configure/adjusting-quality-gates/
+
+# Exclude paths from analysis
+# data/ is the mythosmud_data git submodule (Main (Integration)/data) - excluded from Codacy
+# .cursor/ contains Cursor IDE plans and rules - not production code, exclude from Codacy
+# .claude/ is the same class of agent/editor config (ported rules, hooks) - exclude like .cursor/
+# .pyenv/ excludes pyenv-win Python installation (e.g. .../pyenv-win/versions/3.12.10/) from analysis
+exclude_paths:
+  - "**/node_modules/**"
+  - "**/dist/**"
+  - "**/build/**"
+  # Lockfiles are not product source; Lizard file-nloc on uv.lock is pure noise.
+  - "uv.lock"
+  - "**/uv.lock"
+  - "package-lock.json"
+  - "**/package-lock.json"
+  - "client/package-lock.json"
+  # Makefile is build DSL, not Python/Go source; avoid false parse errors from Pylint/Revive.
+  - "Makefile"
+  - "**/mythosmud_data/**"
+  - ".data/**"
+  - "data/**"
+  - ".cursor/**"
+  - ".claude/**"
+  - "**/.pyenv/**"
+  # Coverage alignment: not in pytest-cov --cov=server (would show as 0% on Codacy otherwise).
+  - "scripts/**"
+  - "tools/**"
+  - "server/tests/**"
+  - "server/alembic/**"
+  # Coverage alignment: not in Vitest coverage include (client/src only); Playwright and config live here.
+  - "client/tests/**"
+  - "client/scripts/**"
+  - "client/vite.config.ts"
+  - "client/vite.*.ts"
+  - "client/coverage/**"
+  # Docs, investigations, CI defs, e2e prose -- not unit-test coverable application code.
+  - "docs/**"
+  - "e2e-tests/**"
+  - "investigations/**"
+  - ".github/**"
+  # Generated / artifact trees
+  - "htmlcov/**"
+  - "**/playwright-report/**"
+  - "**/playwright-report-data/**"
+  - "**/test-results/**"
+  # Graphify knowledge graph artifacts, caches, and local config (not product code).
+  # Cover root trees, nested copies (e.g. client/src/__tests__/graphify-out), and
+  # any path whose name contains graphify (scripts, env examples, ignore files).
+  - "graphify-out/**"
+  - "**/graphify-out/**"
+  - "graphify/**"
+  - "**/graphify/**"
+  - "**/*graphify*"
+  - "**/.graphify*"
+  - ".graphifyignore"
+  - "env.graphify.example"
+  - ".env.graphify.local"
+
+# Bandit: exclude test paths so B101 (assert) and B106 (hardcoded pwd) are not reported in tests.
+# Codacy uses engines.<tool>.exclude_paths; ignore_patterns are not applied to tool analysis.
+# See PR #408 discussion r2838345213.
+engines:
+  lizard:
+    config:
+      CCN: 11
+      arguments: "-a 6"
+      file-nloc: 550
+      length: 55
+    # Cohesive chat/mute service; pylint already exempts module size. Lizard NLOC/CCN here are
+    # metrics, not defects (.cursor/rules/codacy.mdc). exclude_paths applies to CLI tool runs
+    # (ignore_patterns alone does not suppress Lizard locally; see note above engines.*).
+    exclude_paths:
+      - "server/services/user_manager.py"
+      - "scripts/ci/quality_fragmentation_guard.py"
+      # Lockfiles are not source; Lizard file-nloc is noise.
+      - "uv.lock"
+      - "**/uv.lock"
+      - "**/package-lock.json"
+      # Generated graphify trees (CLI local scans; root exclude_paths covers Cloud).
+      - "graphify-out/**"
+      - "**/graphify-out/**"
+      - "**/graphify/**"
+      - "**/*graphify*"
+      # Client unit tests: large fixtures inflate file-nloc; product gate is client/src app code.
+      - "client/src/**/__tests__/**"
+      - "client/src/**/*.test.ts"
+      - "client/src/**/*.test.tsx"
+      # Visual playground only. Lizard 1.17.31 TSX reader mis-attributes first function / *global*
+      # NLOC across the demo shell (false positives; see EldritchEffectsDemo.tsx header comment).
+      - "client/src/components/EldritchEffectsDemo.tsx"
+      - "client/src/components/eldritchEffectsDemoData.ts"
+      - ".claude/**"
+      - ".cursor/**"
+  bandit:
+    exclude_paths:
+      # Bandit should only scan Python files; exclude lock/docs/tooling artifacts that trigger AST parse failures.
+      - "uv.lock"
+      - "tools/room_toolkit/**"
+      - "**/tests/**/*.py"
+      - "**/test_*.py"
+      - "**/*_test.py"
+      - "**/conftest.py"
+      # OpenAPI example strings in Pydantic schemas are documentation only, not real secrets.
+      - "server/schemas/**"
+      - "graphify-out/**"
+      - "**/graphify-out/**"
+      - "**/.venv/**"
+  pylintpython3:
+    # Pydantic/schema models are data holders; R0903 "too few public methods" is expected.
+    exclude_paths:
+      - "Makefile"
+      - "**/Makefile"
+      - "server/schemas/**"
+      - "server/models/**"
+      - "graphify-out/**"
+      - "**/graphify-out/**"
+      - "**/.venv/**"
+  # Codacy Cloud tool-level excludes (see root exclude_paths for Makefile too).
+  # Note: Codacy CLI v2 may still run Pylint/Revive on an opened Makefile; see .vscode/settings.json.
+  revive:
+    exclude_paths:
+      - "Makefile"
+      - "**/Makefile"
+  trivy:
+    exclude_paths:
+      - "openapi.json"
+    # Skip GHSA-qwww-vcr4-c8h2 via root .trivyignore (RSC-only; SPA uses RR 7.x).
+  # TSQLLint is SQL Server-oriented; MythosMUD SQL is PostgreSQL. Exclude rather than
+  # adding invalid T-SQL SET directives to Postgres migrations/verification scripts.
+  tsqllint:
+    exclude_paths:
+      - "db/**"
+      - "server/scripts/**/*.sql"
+      - "**/*.sql"
+
+# Ignore assert and hardcoded secrets in test files (Bandit/Prospector B101/B106)
+# Assert and test passwords are standard in pytest; bandit.yml skips them but Codacy
+# may still report - these patterns suppress for all pytest-related paths.
+ignore_patterns:
+  # Mixin extracted from container_service; Codacy R0801 is a false positive (no twin block).
+  - pattern_id: "PyLintPython3_R0801"
+    file_paths:
+      - "server/services/container_service_access.py"
+  # Bandit B101: Use of assert detected (acceptable in pytest - assert is the test API)
+  # NOTE: Also configured in bandit.yml - see bandit.yml for native Bandit runs.
+  # Multiple pattern_id variants for Codacy/Prospector (Bandit_B101, bandit.B101, etc.)
+  - pattern_id: "Bandit_B101"
+    file_paths:
+      - "**/test_*.py"
+      - "**/tests/**/*.py"
+      - "**/*_test.py"
+      - "**/conftest.py"
+  - pattern_id: "bandit.B101"
+    file_paths:
+      - "**/test_*.py"
+      - "**/tests/**/*.py"
+      - "**/*_test.py"
+      - "**/conftest.py"
+  # Prospector/Bandit B101 (alternative tool ID if Codacy reports via Prospector)
+  - pattern_id: "Prospector_bandit_B101"
+    file_paths:
+      - "**/test_*.py"
+      - "**/tests/**/*.py"
+      - "**/*_test.py"
+      - "**/conftest.py"
+  # Bandit B106: Hardcoded password in tests (test fixtures, mock credentials)
+  - pattern_id: "Bandit_B106"
+    file_paths:
+      - "**/test_*.py"
+      - "**/tests/**/*.py"
+      - "**/*_test.py"
+      - "**/conftest.py"
+  # Bandit B105/B106: OpenAPI example passwords / tokens in Pydantic schemas (docs only)
+  - pattern_id: "Bandit_B105"
+    file_paths:
+      - "server/schemas/**"
+      - "scripts/verify_migration.py"
+      - "scripts/apply_players_migration.py"
+  - pattern_id: "Bandit_B106"
+    file_paths:
+      - "server/schemas/**"
+  # Bandit B608: SQL injection false positive in integration fixtures (db_name used only in ValueError
+  # messages for protected-DB checks, not in any SQL; see PR #408 discussion r2838388474)
+  - pattern_id: "Bandit_B608"
+    file_paths:
+      - "server/tests/fixtures/integration/__init__.py"
+  # Bandit B105: Hardcoded password (acceptable for development defaults with environment variable fallback)
+  # (schema paths already listed above with scripts)
+  # Semgrep: XSS warnings in SafeHtml.test.tsx (false positives - tests verify XSS protection)
+  - pattern_id: "typescript.react.security.audit.dangerouslysetinnerhtml.dangerouslysetinnerhtml"
+    file_paths:
+      - "client/src/components/common/__tests__/SafeHtml.test.tsx"
+  - pattern_id: "typescript.lang.security.audit.xss.xss"
+    file_paths:
+      - "client/src/components/common/__tests__/SafeHtml.test.tsx"
+  # Semgrep: SQL string concatenation in load_world_seed.py (false positive - loading trusted seed data)
+  - pattern_id: "python.lang.security.audit.sqli.asyncpg-sqli"
+    file_paths:
+      - "scripts/load_world_seed.py"
+  # Bandit B404: Subprocess module import (false positive - safe_subprocess.py provides secure wrappers)
+  - pattern_id: "Bandit_B404"
+    file_paths:
+      - "scripts/utils/safe_subprocess.py"
+  # Bandit B603: Subprocess call with validated input (false positive - safe wrappers validate all inputs)
+  # Pattern for "subprocess call - check for execution of untrusted input"
+  # Pattern for "Detected subprocess function 'run' without a static string"
+  - pattern_id: "Bandit_B603"
+    file_paths:
+      - "scripts/utils/safe_subprocess.py"
+      - "scripts/lint.py"
+  # Semgrep: Subprocess patterns (alternative to Bandit for some issues)
+  # Pattern for "Detected subprocess function 'run' without a static string" in safe_subprocess.py
+  - pattern_id: "python.lang.security.audit.subprocess-shell-true.subprocess-shell-true"
+    file_paths:
+      - "scripts/utils/safe_subprocess.py"
+  # Semgrep: RegExp DoS in ChatPanel.tsx (false positive - query is escaped and length-limited)
+  # Multiple RegExp patterns for ChatPanel.tsx (all false positives - query is escaped):
+  # - "The `RegExp` constructor was called with a non-literal value"
+  # - "RegExp() called with a `query` function argument"
+  # - "Found RegExp with non literal argument"
+  # - "Found non-literal argument to RegExp Constructor"
+  - pattern_id: "typescript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp"
+    file_paths:
+      - "client/src/components/panels/ChatPanel.tsx"
+  - pattern_id: "typescript.lang.security.audit.dos.dos"
+    file_paths:
+      - "client/src/components/panels/ChatPanel.tsx"
+  # Semgrep: console.log with non-literal in debugLogger.ts (false positive - debug logger intentionally uses console)
+  # Pattern for "Detect console.log() with non Literal argument"
+  - pattern_id: "typescript.lang.security.audit.detect-non-literal-fs-filename.detect-non-literal-fs-filename"
+    file_paths:
+      - "client/src/utils/debugLogger.ts"
+  # Semgrep: console.log string concatenation (false positive - debug logger intentionally formats messages)
+  # Pattern for "Detected string concatenation with a non-literal variable in a util.format / console.log function"
+  - pattern_id: "typescript.lang.security.audit.unexpected-behaviour.unexpected-behaviour"
+    file_paths:
+      - "client/src/utils/debugLogger.ts"
+  # Semgrep: SQL injection false positives in container_persistence.py (using parameterized queries)
+  # Pattern for "Avoiding SQL string concatenation" - these use parameterized queries via psycopg2.sql.SQL
+  - pattern_id: "python.lang.security.audit.sql-injection.sql-injection"
+    file_paths:
+      - "server/container_persistence/container_persistence.py"
+      - "server/persistence/container_persistence.py"
+  # Semgrep: SQL injection patterns for load_world_seed.py (all false positives - trusted seed data)
+  # Pattern for "Detected possible formatted SQL query"
+  # Pattern for "Detected string concatenation with a non-literal variable in a asyncpg Python SQL statement"
+  # Pattern for "Avoiding SQL string concatenation"
+  - pattern_id: "python.lang.security.audit.sql-injection.sql-injection"
+    file_paths:
+      - "scripts/load_world_seed.py"
+  - pattern_id: "python.lang.security.audit.sqli.asyncpg-sqli"
+    file_paths:
+      - "scripts/load_world_seed.py"
+  # Semgrep/Opengrep: dangerouslySetInnerHTML in SafeHtml.tsx (false positive - DOMPurify sanitizes first)
+  - pattern_id: "typescript.react.security.audit.dangerouslysetinnerhtml.dangerouslysetinnerhtml"
+    file_paths:
+      - "client/src/components/common/SafeHtml.tsx"
+  # Opengrep Cloud / CLI IDs for SafeHtml XSS sink (DOMPurify sanitizes first)
+  - pattern_id: "Semgrep_typescript.react.security.audit.react-dangerouslysetinnerhtml.react-dangerouslysetinnerhtml"
+    file_paths:
+      - "client/src/components/common/SafeHtml.tsx"
+  - pattern_id: "typescript.react.security.audit.react-dangerouslysetinnerhtml.react-dangerouslysetinnerhtml"
+    file_paths:
+      - "client/src/components/common/SafeHtml.tsx"
+  - pattern_id: "codacy.tools-configs.typescript.react.security.audit.react-dangerouslysetinnerhtml.react-dangerouslysetinnerhtml"
+    file_paths:
+      - "client/src/components/common/SafeHtml.tsx"
+  # Semgrep: XSS warnings for SafeHtml.tsx (false positive - DOMPurify sanitizes all HTML)
+  # Pattern for "HTML passed in to function 'DOMPurify.sanitize'"
+  - pattern_id: "typescript.lang.security.audit.xss.xss"
+    file_paths:
+      - "client/src/components/common/SafeHtml.tsx"
+  # Semgrep: XSS warnings for ChatPanel.tsx (false positive - HTML is escaped before replace)
+  # Pattern for "HTML passed in to function 'escapedText.replace'"
+  - pattern_id: "typescript.lang.security.audit.xss.xss"
+    file_paths:
+      - "client/src/components/panels/ChatPanel.tsx"
+  # Semgrep: XSS warnings for SafeHtml.test.tsx (false positive - tests verify XSS protection)
+  # Pattern for "Non-HTML variable 'wrapper' is used to store raw HTML"
+  - pattern_id: "typescript.lang.security.audit.xss.xss"
+    file_paths:
+      - "client/src/components/common/__tests__/SafeHtml.test.tsx"
+  # Pylint: Import outside toplevel (acceptable for lazy imports to avoid circular dependencies)
+  - pattern_id: "Pylint_import-outside-toplevel"
+    file_paths:
+      - "scripts/worktree-ops.py"
+  # Pylint: Constant naming (false positive - these are variables, not constants)
+  # Pattern for "Constant name doesn't conform to UPPER_CASE naming style"
+  - pattern_id: "Pylint_invalid-name"
+    file_paths:
+      - "scripts/run_test_ci.py"
+  # Pylint: Makefile is not Python; suppress parser false positive on GNU Make syntax.
+  - pattern_id: "Pylint_syntax-error"
+    file_paths:
+      - "Makefile"
+  # Pylint: Performance suggestion (already fixed in code - using 'in' operator)
+  # Pattern for "Consider merging these comparisons with 'in'"
+  # Note: This is already fixed in the code, but adding suppression in case Codacy hasn't re-analyzed
+  - pattern_id: "Pylint_consider-using-in"
+    file_paths:
+      - "scripts/run_test_ci.py"
+  # CSSLint: False positives from deprecated CSSLint tool (doesn't understand modern CSS Grid syntax)
+  # CSSLint is deprecated and flags valid modern CSS like repeat(auto-fit, minmax(...))
+  # Pattern for "Expected RBRACE" errors on valid CSS Grid syntax
+  - pattern_id: "CSSLint_errors"
+    file_paths:
+      - "client/src/**/*.css"
+  # GLOBAL: RAC_* table rules (Opengrep / Semgrep) - this project does not use RAC_ prefix.
+  # Tables use standard names (container_contents, zones, players, etc.). Ignore everywhere.
+  # SQL: RAC_TABLE_REQUIRED false positives in migration and configuration files:
+  # - PostgreSQL configuration commands (SET)
+  # - Comment lines
+  # - DO blocks for verification (not data queries)
+  # db/verification/*.sql: SET client_min_messages, DO $$ blocks, information_schema (verify_ddl.sql);
+  # not RAC-layer application queries.
+  - pattern_id: "sql:RAC_TABLE_REQUIRED"
+    file_paths:
+      - "data/db/migrations/11_migrate_weekday_names.sql"
+      - "db/verification/*.sql"
+  # Semgrep: RAC table access - internal verification/migration scripts that do not use RAC_ prefix
+  # Exclude scripts that run one-off migrations or verification (not production data access).
+  # db/databases/databases.sql: GRANT on SEQUENCES is DDL, not a table query; RAC rule is for data tables.
+  # db/roles/roles.sql: queries pg_roles (PostgreSQL system catalog), not application data tables.
+  # db/migrations/019_*: queries information_schema and migration data tables; RAC rule is for app data access.
+  # db/verification/*.sql: manual schema/data checks (users_players.sql, verify_ddl.sql); RAC_* wrappers N/A.
+  - pattern_id: "Semgrep_codacy.generic.sql.rac-table-access"
+    file_paths:
+      - "scripts/verify_*.py"
+      - "scripts/apply_*.py"
+      - "db/migrations/*.sql"
+      - "db/databases/databases.sql"
+      - "db/roles/roles.sql"
+      - "data/db/migrations/*.sql"
+      - "db/verification/*.sql"
+  # Semgrep: Python random - game mechanics (dice rolls, stat generation) where crypto is not required
+  # Suppress for server/game/ and server/npc/ per Codacy PR feedback.
+  - pattern_id: "Semgrep_python_random_rule-random"
+    file_paths:
+      - "server/game/**/*.py"
+      - "server/npc/**/*.py"
+  # Lizard CCN: do NOT ignore Lizard_ccn-medium globally. Codacy CLI/cloud thresholds are set to
+  # CCN 11 in engines.lizard.config and .codacy/tools-configs/lizard.yaml so CCN 9-10 are not
+  # reported; CCN > 10 must be fixed in code (project CI gate).
+  # Pylint R0903: too-few-public-methods on Pydantic models / typed containers (by design).
+  - pattern_id: "Pylint_R0903"
+    file_paths:
+      - "server/schemas/**"
+      - "server/models/**"
+  - pattern_id: "R0903"
+    file_paths:
+      - "server/schemas/**"
+      - "server/models/**"
+  # Lizard file NLOC medium uses tool default threshold 500 in Codacy CLI. Project policy is 550.
+  # Suppress this single file until Codacy CLI honors engines.lizard.config.file-nloc=550.
+  - pattern_id: "Lizard_file-nloc-medium"
+    file_paths:
+      - "scripts/ci/quality_fragmentation_guard.py"
+      - "**/package-lock.json"
+      - "package-lock.json"
+      - "**/uv.lock"
+      - "client/src/**/__tests__/**"
+      - "client/src/**/*.test.ts"
+      - "client/src/**/*.test.tsx"
+      - "client/src/__tests__/**"
+  # Trivy: GHSA-qwww-vcr4-c8h2 (react-router RSC CSRF). SPA does not use RSC APIs;
+  # same rationale as Dependabot #162 and root .trivyignore.
+  - pattern_id: "Trivy_vulnerability_high"
+    file_paths:
+      - "client/package-lock.json"
+      - "client/package.json"
+    reason: "GHSA-qwww-vcr4-c8h2 is RSC-mode CSRF only; MythosMUD SPA uses react-router-dom 7.x without RSC."
+  # TSQLLint: SQL Server rules on Postgres DDL/verification (noise; engines.tsqllint also excluded).
+  - pattern_id: "TSQLLint_set-ansi"
+    file_paths:
+      - "db/**"
+      - "server/scripts/**/*.sql"
+  - pattern_id: "TSQLLint_set-nocount"
+    file_paths:
+      - "db/**"
+      - "server/scripts/**/*.sql"
+  - pattern_id: "TSQLLint_set-quoted-identifier"
+    file_paths:
+      - "db/**"
+      - "server/scripts/**/*.sql"
+  - pattern_id: "TSQLLint_set-transaction-isolation-level"
+    file_paths:
+      - "db/**"
+      - "server/scripts/**/*.sql"
+  - pattern_id: "TSQLLint_schema-qualify"
+    file_paths:
+      - "db/**"
+      - "server/scripts/**/*.sql"
+  # SQLFluff PG01: one-shot DDL scripts; CONCURRENTLY not required offline.
+  - pattern_id: "SQLFluff_PG01_postgres.excessive_locks"
+    file_paths:
+      - "server/scripts/create_professions_table.sql"
+    reason: "One-shot DDL; CREATE INDEX CONCURRENTLY not used for offline apply scripts."
+  - pattern_id: "Lizard_parameter-count-medium"
+    file_paths:
+      - "server/utils/audit_logger.py"
+      - "server/realtime/errors/error_handler.py"
+      - "server/realtime/monitoring/statistics_aggregator.py"
+      - "server/realtime/maintenance/connection_cleaner.py"
+      - "server/realtime/monitoring/health_monitor.py"
+    reason: "Constructors and audit signatures; bundling would be a speculative API churn."
+  # Pylint R0801 duplicate-code: thin shared patterns across cohesive modules; extraction
+  # would create speculative single-use helpers (ponytail / fragmentation rules).
+  - pattern_id: "PyLintPython3_R0801"
+    file_paths:
+      - "server/api/admin/dialogue_definitions_api.py"
+      - "server/auth/token_epoch.py"
+      - "server/commands/combat_flee.py"
+      - "server/game/dialogue/__init__.py"
+      - "server/game/room_service.py"
+      - "server/persistence/container_query_helpers_async.py"
+      - "server/realtime/connection_session_management.py"
+      - "server/services/combat_configuration_service.py"
+
+# Cyclomatic complexity configuration
+# Set cyclomatic complexity threshold to 11 (only report > 10)
+# Since Codacy doesn't support custom CCN thresholds, we use ignore_patterns to suppress
+# Lizard_ccn-medium (which reports complexity > 8), effectively setting threshold to 11
+# Also configured in .codacy/codacy.yaml under engines.lizard.config.CCN (for CLI, if supported)
+# Set file-nloc threshold to 550 (default is 500)
+# Configured in .codacy/codacy.yaml under engines.lizard.config.file-nloc
+# Set method/function length threshold to 55 (was 50; engines.lizard.config.length)
+
+# # Engine-specific exclusions (alternative format that may work for CLI)
+# engines:
+#   lizard:
+#     exclude_patterns:
+#       - 'Lizard_ccn-medium'
+
+# Line length: disabled project-wide
+# Pylint (line-too-long), ESLint (max-len), Ruff (E501), and markdownlint (MD013) are configured
+# in the project to not enforce line length. Codacy uses those configs; no line-length ignore here.
+
+# Package.json "variant versions" (npm: aliases / OR ranges): prefer removing
+# npm: overrides (e.g. use magic-string ^0.30 instead of sourcemap-codec npm: remap).
+# Caret ranges + committed lockfiles remain best practice; JSON cannot host inline
+# suppressions. PR #409 r2842724151: no duplicate dependency keys in client/package.json.
+#
+# Trivy SCA: GHSA-qwww-vcr4-c8h2 (react-router RSC CSRF) ignored in .trivyignore -
+# SPA does not use RSC APIs; same rationale as Dependabot #162 and dependency-review
+# allow-ghsas. Codacy SRM High for this GHSA should be dismissed as tolerable_risk
+# (SPA path; no RSC) until react-router-dom >= 8.3 is a planned client upgrade.

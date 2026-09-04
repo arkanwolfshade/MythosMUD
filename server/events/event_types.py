@@ -10,8 +10,16 @@ dimensional events is essential for maintaining the integrity of our
 eldritch architecture.
 """
 
-from dataclasses import dataclass
+# pylint: disable=too-many-instance-attributes  # Reason: Event dataclasses require many fields to capture complete event state
+
+from dataclasses import dataclass, field
 from datetime import UTC, datetime
+from uuid import UUID
+
+
+def _default_timestamp() -> datetime:
+    """Factory function for default timestamp."""
+    return datetime.now(UTC)
 
 
 @dataclass
@@ -23,13 +31,18 @@ class BaseEvent:
     interface for event handling and logging.
     """
 
-    timestamp: datetime
-    event_type: str
+    timestamp: datetime = field(default_factory=_default_timestamp, init=False)
+    event_type: str = field(default="", init=False)
+    sequence_number: int = field(default=0, init=False)
 
-    def __post_init__(self):
-        """Set timestamp if not provided."""
-        if self.timestamp is None:
-            self.timestamp = datetime.now(UTC)
+    def __post_init__(self) -> None:
+        """Initialize the event timestamp if not already set."""
+        # Timestamp is already set by default_factory
+        # event_type is set by child classes
+
+    def _bind_event_type(self, event_type: str) -> None:
+        """Set event_type from subclass __post_init__ (field is declared on BaseEvent)."""
+        self.event_type = event_type
 
 
 @dataclass
@@ -45,10 +58,10 @@ class PlayerEnteredRoom(BaseEvent):
     room_id: str
     from_room_id: str | None = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "PlayerEnteredRoom"
+        self._bind_event_type("PlayerEnteredRoom")
 
 
 @dataclass
@@ -64,10 +77,10 @@ class PlayerLeftRoom(BaseEvent):
     room_id: str
     to_room_id: str | None = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "PlayerLeftRoom"
+        self._bind_event_type("PlayerLeftRoom")
 
 
 @dataclass
@@ -83,10 +96,10 @@ class ObjectAddedToRoom(BaseEvent):
     room_id: str
     player_id: str | None = None  # Player who added the object
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "ObjectAddedToRoom"
+        self._bind_event_type("ObjectAddedToRoom")
 
 
 @dataclass
@@ -103,10 +116,10 @@ class ObjectRemovedFromRoom(BaseEvent):
     room_id: str
     player_id: str | None = None  # Player who removed the object
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "ObjectRemovedFromRoom"
+        self._bind_event_type("ObjectRemovedFromRoom")
 
 
 @dataclass
@@ -122,10 +135,10 @@ class NPCEnteredRoom(BaseEvent):
     room_id: str
     from_room_id: str | None = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "NPCEnteredRoom"
+        self._bind_event_type("NPCEnteredRoom")
 
 
 @dataclass
@@ -141,7 +154,345 @@ class NPCLeftRoom(BaseEvent):
     room_id: str
     to_room_id: str | None = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "NPCLeftRoom"
+        self._bind_event_type("NPCLeftRoom")
+
+
+@dataclass
+class NPCAttacked(BaseEvent):
+    """
+    Event fired when an NPC attacks a target.
+
+    This event is triggered when an NPC performs an attack action
+    against a player or another NPC.
+    """
+
+    npc_id: str
+    target_id: str
+    room_id: str
+    damage: int
+    attack_type: str = "physical"
+    combat_id: str | None = None  # Combat context
+    npc_name: str | None = None  # NPC name for combat messages
+    target_name: str | None = None  # Target name for combat messages
+
+    def __post_init__(self) -> None:
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self._bind_event_type("NPCAttacked")
+
+
+@dataclass
+class NPCTookDamage(BaseEvent):
+    """
+    Event fired when an NPC takes damage.
+
+    This event is triggered when an NPC receives damage from
+    any source (player attack, environmental, etc.).
+    """
+
+    npc_id: str
+    room_id: str
+    damage: int
+    damage_type: str = "physical"
+    source_id: str | None = None  # ID of the entity that caused the damage
+    combat_id: str | None = None  # Combat context
+    npc_name: str | None = None  # NPC name for combat messages
+    current_dp: int | None = None  # Current DP after damage
+    max_dp: int | None = None  # Maximum DP
+
+    def __post_init__(self) -> None:
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self._bind_event_type("NPCTookDamage")
+
+
+@dataclass
+class NPCDied(BaseEvent):
+    """
+    Event fired when an NPC dies.
+
+    This event is triggered when an NPC's determination points reaches zero
+    or when it is otherwise removed from the game world.
+    """
+
+    npc_id: str
+    room_id: str
+    cause: str = "unknown"  # How the NPC died
+    killer_id: str | None = None  # ID of the entity that killed the NPC
+    combat_id: str | None = None  # Combat context
+    npc_name: str | None = None  # NPC name for combat messages
+    xp_reward: int | None = None  # XP reward for killing the NPC
+
+    def __post_init__(self) -> None:
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self._bind_event_type("NPCDied")
+
+
+@dataclass
+class RoomOccupantsRefreshRequested(BaseEvent):
+    """
+    Event requesting that room occupants be broadcast to clients.
+
+    Used after NPC death (and similar) so the Occupants panel updates
+    even when death is processed via EventBus only (no NATS npc_died).
+    """
+
+    room_id: str
+
+    def __post_init__(self) -> None:
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self._bind_event_type("RoomOccupantsRefreshRequested")
+
+
+@dataclass
+class NPCSpoke(BaseEvent):
+    """
+    Event fired when an NPC speaks.
+
+    This event is triggered when an NPC communicates with players
+    or other NPCs through speech, emotes, or other communication methods.
+    """
+
+    npc_id: str
+    room_id: str
+    message: str
+    channel: str = "local"  # Communication channel (local, say, whisper, etc.)
+    target_id: str | None = None  # Specific target if whispering or directed speech
+    npc_name: str | None = None  # Optional display name for chat delivery
+
+    def __post_init__(self) -> None:
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self._bind_event_type("NPCSpoke")
+
+
+@dataclass
+class NPCListened(BaseEvent):
+    """
+    Event fired when an NPC receives a message.
+
+    This event is triggered when an NPC hears or receives communication
+    from players or other NPCs.
+    """
+
+    npc_id: str
+    room_id: str
+    message: str
+    speaker_id: str
+    channel: str = "local"  # Communication channel
+
+    def __post_init__(self) -> None:
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self._bind_event_type("NPCListened")
+
+
+@dataclass
+class PlayerDPUpdated(BaseEvent):
+    """
+    Event fired when a player's DP changes.
+
+    This event is triggered when a player takes damage, heals,
+    or otherwise has their DP modified.
+    """
+
+    player_id: UUID
+    old_dp: int
+    new_dp: int
+    max_dp: int
+    damage_taken: int = 0  # Amount of damage taken (negative for healing)
+    source_id: str | None = None  # ID of the entity that caused the change
+    combat_id: str | None = None  # Combat context if applicable
+    room_id: str | None = None  # Room where the change occurred
+
+    def __post_init__(self) -> None:
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self._bind_event_type("PlayerDPUpdated")
+
+
+@dataclass
+class PlayerMortallyWoundedEvent(BaseEvent):
+    """
+    Event fired when a player enters mortally wounded state (DP = 0).
+
+    This event is triggered when a player's DP reaches 0 but before they die.
+    The player enters a mortally wounded state where they lose 1 DP per tick
+    until reaching -10 DP (death).
+    """
+
+    player_id: str
+    player_name: str
+    room_id: str
+    attacker_id: str | None = None  # ID of the entity that caused mortally wounded state
+    attacker_name: str | None = None  # Name of the attacker
+    combat_id: str | None = None  # Combat context if applicable
+
+    def __post_init__(self) -> None:
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self._bind_event_type("PlayerMortallyWoundedEvent")
+
+
+@dataclass
+class PlayerDPDecayEvent(BaseEvent):
+    """
+    Event fired when a mortally wounded player loses DP due to decay.
+
+    This event is triggered once per game tick for players in mortally wounded
+    state, decreasing their DP by 1 until they reach -10 DP (death).
+    """
+
+    player_id: UUID
+    old_dp: int
+    new_dp: int
+    decay_amount: int = 1  # Amount of DP lost due to decay
+    room_id: str | None = None  # Room where the decay occurred
+
+    def __post_init__(self) -> None:
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self._bind_event_type("PlayerDPDecayEvent")
+
+
+@dataclass
+class PlayerDiedEvent(BaseEvent):
+    """
+    Event fired when a player dies (DP <= -10).
+
+    This event is triggered when a player's DP reaches -10 or below,
+    signaling the transition to the death/respawn sequence.
+    """
+
+    player_id: UUID
+    player_name: str
+    room_id: str
+    killer_id: str | None = None  # ID of the entity that killed the player
+    killer_name: str | None = None  # Name of the killer
+    combat_id: str | None = None  # Combat context if applicable
+    death_location: str | None = None  # Detailed death location information
+
+    def __post_init__(self) -> None:
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self._bind_event_type("PlayerDiedEvent")
+
+
+@dataclass
+class PlayerXPAwardEvent(BaseEvent):
+    """Event published when a player receives XP."""
+
+    player_id: UUID
+    xp_amount: int
+    new_level: int
+
+    def __post_init__(self) -> None:
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self._bind_event_type("player_xp_awarded")
+
+
+@dataclass
+class PlayerRespawnedEvent(BaseEvent):
+    """
+    Event fired when a player respawns after death.
+
+    This event is triggered when a player completes the death/respawn sequence
+    and returns to the game world at their respawn location.
+    """
+
+    player_id: UUID
+    player_name: str
+    respawn_room_id: str
+    old_dp: int
+    new_dp: int
+    death_room_id: str | None = None  # Where the player died
+
+    def __post_init__(self) -> None:
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self._bind_event_type("PlayerRespawnedEvent")
+
+
+@dataclass
+class PlayerDeliriumRespawnedEvent(BaseEvent):
+    """
+    Event fired when a player respawns after delirium.
+
+    This event is triggered when a player completes the delirium/respawn sequence
+    and returns to the game world at the Sanitarium with restored lucidity.
+    """
+
+    player_id: UUID
+    player_name: str
+    respawn_room_id: str
+    old_lucidity: int
+    new_lucidity: int
+    delirium_location: str | None = None  # Where the player entered delirium
+
+    def __post_init__(self) -> None:
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self._bind_event_type("PlayerDeliriumRespawnedEvent")
+
+
+@dataclass
+class MythosHourTickEvent(BaseEvent):
+    """Event fired when the accelerated Mythos clock rolls over to a new hour."""
+
+    mythos_datetime: datetime
+    month_name: str
+    day_of_month: int
+    week_of_month: int
+    day_of_week: int
+    day_name: str
+    season: str
+    is_daytime: bool
+    is_witching_hour: bool
+    daypart: str
+    active_holidays: list[str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        super().__post_init__()
+        self._bind_event_type("MythosHourTickEvent")
+
+
+@dataclass
+class PartyUpdated(BaseEvent):
+    """
+    Event fired when party membership or leadership changes.
+
+    Emitted by PartyService on create, add_member, remove_member, kick_member,
+    disband, and on_player_disconnect. Subscribers can push party_state to clients.
+    """
+
+    party_id: str
+    leader_id: str
+    member_ids: list[str] = field(default_factory=list)
+    change_type: str = "updated"  # created | member_joined | member_left | disbanded
+
+    def __post_init__(self) -> None:
+        super().__post_init__()
+        self._bind_event_type("PartyUpdated")
+
+
+@dataclass
+class QuestCompleted(BaseEvent):
+    """
+    Event fired when a quest instance is completed (rewards applied, state set to completed).
+
+    Emitted by QuestService after _complete_instance. Subscribers can push updated
+    quest_log to the player's client so the Journal panel refreshes.
+    """
+
+    player_id: str
+    quest_id: str
+
+    def __post_init__(self) -> None:
+        super().__post_init__()
+        self._bind_event_type("QuestCompleted")

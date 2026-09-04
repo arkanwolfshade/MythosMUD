@@ -1,0 +1,94 @@
+"""
+Utility command models for MythosMUD.
+
+This module provides command models for utility functions like help, status, and player listing.
+"""
+
+from typing import Literal
+
+from pydantic import Field, field_validator
+
+from ..validators.security_validator import validate_filter_name, validate_help_topic
+from .command_base import BaseCommand, CommandType
+
+
+class HelpCommand(BaseCommand):
+    """Command for getting help on commands."""
+
+    command_type: Literal[CommandType.HELP] = CommandType.HELP
+    topic: str | None = Field(None, max_length=50, description="Help topic")
+
+    @field_validator("topic")
+    @classmethod
+    def validate_topic(cls: type["HelpCommand"], v: str | None) -> str | None:
+        """Validate help topic format using centralized validation."""
+        if v is None:
+            return v
+        return validate_help_topic(v)
+
+
+class WhoCommand(BaseCommand):
+    """Command for listing online players."""
+
+    command_type: Literal[CommandType.WHO] = CommandType.WHO
+    filter_name: str | None = Field(None, max_length=50, description="Optional player name filter")
+
+    @field_validator("filter_name")
+    @classmethod
+    def validate_filter_name_field(cls: type["WhoCommand"], v: str | None) -> str | None:
+        """Validate filter name format using centralized validation."""
+        if v is None:
+            return v
+        return validate_filter_name(v)
+
+
+class StatusCommand(BaseCommand):
+    """Command for viewing player status."""
+
+    command_type: Literal[CommandType.STATUS] = CommandType.STATUS
+
+
+class TimeCommand(BaseCommand):
+    """Command for viewing the current Mythos time."""
+
+    command_type: Literal[CommandType.TIME] = CommandType.TIME
+
+
+class WhoamiCommand(BaseCommand):
+    """Command for viewing the caller's status (alias of status)."""
+
+    command_type: Literal[CommandType.WHOAMI] = CommandType.WHOAMI
+
+
+class SkillsCommand(BaseCommand):
+    """Command for viewing the active character's skills (plan 10.7 V4)."""
+
+    command_type: Literal[CommandType.SKILLS] = CommandType.SKILLS
+
+
+class JournalCommand(BaseCommand):
+    """Command for viewing the active character's quest log (journal)."""
+
+    command_type: Literal[CommandType.JOURNAL] = CommandType.JOURNAL
+
+
+class QuestsCommand(BaseCommand):
+    """Command for viewing the active character's quest log (alias of journal)."""
+
+    command_type: Literal[CommandType.QUESTS] = CommandType.QUESTS
+
+
+class QuestCommand(BaseCommand):
+    """Command for quest subcommands (e.g. abandon <quest name>)."""
+
+    command_type: Literal[CommandType.QUEST] = CommandType.QUEST
+    args: list[str] = Field(
+        default_factory=list, description="Subcommand and arguments, e.g. ['abandon', 'quest_name']"
+    )
+
+
+class TalkCommand(BaseCommand):  # pylint: disable=too-few-public-methods  # Reason: Pydantic command DTO
+    """Command for NPC dialogue: talk <npc> or talk <number>."""
+
+    command_type: Literal[CommandType.TALK] = CommandType.TALK
+    args: list[str] = Field(default_factory=list, description="NPC name or option number")

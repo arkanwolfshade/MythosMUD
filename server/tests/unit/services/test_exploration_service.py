@@ -1,0 +1,509 @@
+"""
+Unit tests for exploration service.
+
+Tests the ExplorationService class.
+"""
+
+# pylint: disable=redefined-outer-name  # pytest fixture parameters intentionally match fixture names
+# pylint: disable=protected-access  # Tests exercise ExplorationService private helpers by design
+
+# pyright: reportPrivateUsage=false
+# Reason: unit tests intentionally patch and assert ExplorationService "private" collaborators.
+
+import uuid
+from typing import override
+from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
+from sqlalchemy.exc import SQLAlchemyError
+
+from server.exceptions import DatabaseError
+from server.services.exploration_service import ExplorationService
+
+
+def _row_scalar_one_or_none(value: object | None) -> MagicMock:
+    """SQLAlchemy-style result mock with scalar_one_or_none() -> value."""
+    mock_result = MagicMock()
+    scalar_mock: MagicMock = MagicMock(return_value=value)
+    mock_result.scalar_one_or_none = scalar_mock
+    return mock_result
+
+
+def _row_scalar_one(value: object) -> MagicMock:
+    """SQLAlchemy-style result mock with scalar_one() -> value."""
+    mock_result = MagicMock()
+    scalar_one: MagicMock = MagicMock(return_value=value)
+    mock_result.scalar_one = scalar_one
+    return mock_result
+
+
+def _row_fetchall(rows: object) -> MagicMock:
+    """SQLAlchemy-style result mock with fetchall() -> rows."""
+    mock_result = MagicMock()
+    fetch_mock: MagicMock = MagicMock(return_value=rows)
+    mock_result.fetchall = fetch_mock
+    return mock_result
+
+
+def _async_session_maker_mock(mock_session: AsyncMock) -> MagicMock:
+    """Async context manager returned by get_session_maker() -> maker() in tests."""
+    ctx = MagicMock()
+    aenter: AsyncMock = AsyncMock(return_value=mock_session)
+    aexit: AsyncMock = AsyncMock(return_value=None)
+    ctx.__aenter__ = aenter
+    ctx.__aexit__ = aexit
+    return MagicMock(return_value=ctx)
+
+
+@pytest.fixture
+def mock_database_manager() -> MagicMock:
+    """Create a mock database manager."""
+    manager = MagicMock()
+    manager.get_session_maker = MagicMock(return_value=MagicMock())
+    return manager
+
+
+@pytest.fixture
+def exploration_service(mock_database_manager: MagicMock) -> ExplorationService:
+    """Create an ExplorationService instance."""
+    return ExplorationService(mock_database_manager)
+
+
+def test_exploration_service_init(exploration_service: ExplorationService, mock_database_manager: MagicMock) -> None:
+    """Test ExplorationService initialization."""
+    assert exploration_service._database_manager == mock_database_manager
+
+
+@pytest.mark.asyncio
+async def test_mark_room_as_explored_no_session(
+    exploration_service: ExplorationService, mock_database_manager: MagicMock
+) -> None:
+    """Test mark_room_as_explored() creates new session when none provided."""
+    player_id = uuid.uuid4()
+    room_id = "earth_arkhamcity_northside_room_001"
+    # Mock the session maker and session
+    mock_session = AsyncMock()
+    mock_session_maker = _async_session_maker_mock(mock_session)
+    mock_database_manager.get_session_maker = MagicMock(return_value=mock_session_maker)
+    # Mock _get_room_uuid_by_stable_id to return a UUID
+    exploration_service._get_room_uuid_by_stable_id = AsyncMock(return_value=uuid.uuid4())
+    exploration_service._mark_explored_in_session = AsyncMock(return_value=True)
+    result: bool = await exploration_service.mark_room_as_explored(player_id, room_id)
+    assert result is True
+
+
+@pytest.mark.asyncio
+async def test_mark_room_as_explored_with_session(exploration_service: ExplorationService) -> None:
+    """Test mark_room_as_explored() uses provided session."""
+    player_id = uuid.uuid4()
+    room_id = "earth_arkhamcity_northside_room_001"
+    mock_session = AsyncMock()
+    room_uuid = uuid.uuid4()
+    exploration_service._get_room_uuid_by_stable_id = AsyncMock(return_value=room_uuid)
+    exploration_service._mark_explored_in_session = AsyncMock(return_value=True)
+    result: bool = await exploration_service.mark_room_as_explored(player_id, room_id, session=mock_session)
+    assert result is True
+    exploration_service._mark_explored_in_session.assert_awaited_once_with(mock_session, player_id, room_uuid)
+
+
+@pytest.mark.asyncio
+async def test_mark_room_as_explored_room_not_found(exploration_service: ExplorationService) -> None:
+    """Test mark_room_as_explored() returns False when room not found."""
+    player_id = uuid.uuid4()
+    room_id = "nonexistent_room"
+    exploration_service._get_room_uuid_by_stable_id = AsyncMock(return_value=None)
+    result: bool = await exploration_service.mark_room_as_explored(player_id, room_id)
+    assert result is False
+
+
+@pytest.mark.asyncio
+async def test_mark_room_as_explored_database_error(exploration_service: ExplorationService) -> None:
+    """Test mark_room_as_explored() raises DatabaseError on database failure."""
+    player_id = uuid.uuid4()
+    room_id = "earth_arkhamcity_northside_room_001"
+    exploration_service._get_room_uuid_by_stable_id = AsyncMock(side_effect=SQLAlchemyError("Database error"))
+    with pytest.raises(DatabaseError, match="Failed to mark room as explored"):
+        _ = await exploration_service.mark_room_as_explored(player_id, room_id)
+
+
+@pytest.mark.asyncio
+async def test_get_room_uuid_by_stable_id_with_session(exploration_service: ExplorationService) -> None:
+    """Test _get_room_uuid_by_stable_id() with provided session."""
+    mock_session = AsyncMock()
+    room_uuid = uuid.uuid4()
+    mock_result = _row_scalar_one_or_none(room_uuid)
+    execute_mock: AsyncMock = AsyncMock(return_value=mock_result)
+    mock_session.execute = execute_mock
+    result: uuid.UUID | None = await exploration_service._get_room_uuid_by_stable_id("room_001", session=mock_session)
+    assert result == room_uuid
+
+
+@pytest.mark.asyncio
+async def test_get_room_uuid_by_stable_id_no_session(
+    exploration_service: ExplorationService, mock_database_manager: MagicMock
+) -> None:
+    """Test _get_room_uuid_by_stable_id() creates session when none provided."""
+    room_uuid = uuid.uuid4()
+    mock_session = AsyncMock()
+    mock_result = _row_scalar_one_or_none(room_uuid)
+    execute_mock: AsyncMock = AsyncMock(return_value=mock_result)
+    mock_session.execute = execute_mock
+    mock_session_maker = _async_session_maker_mock(mock_session)
+    mock_database_manager.get_session_maker = MagicMock(return_value=mock_session_maker)
+    result: uuid.UUID | None = await exploration_service._get_room_uuid_by_stable_id("room_001")
+    assert result == room_uuid
+
+
+@pytest.mark.asyncio
+async def test_get_room_uuid_by_stable_id_not_found(exploration_service: ExplorationService) -> None:
+    """Test _get_room_uuid_by_stable_id() returns None when room not found."""
+    mock_session = AsyncMock()
+    mock_result = _row_scalar_one_or_none(None)
+    execute_mock: AsyncMock = AsyncMock(return_value=mock_result)
+    mock_session.execute = execute_mock
+    result: uuid.UUID | None = await exploration_service._get_room_uuid_by_stable_id(
+        "nonexistent", session=mock_session
+    )
+    assert result is None
+
+
+@pytest.mark.asyncio
+async def test_get_room_uuid_by_stable_id_string_uuid(exploration_service: ExplorationService) -> None:
+    """Test _get_room_uuid_by_stable_id() handles string UUID from database."""
+    mock_session = AsyncMock()
+    room_uuid_str = str(uuid.uuid4())
+    mock_result = _row_scalar_one_or_none(room_uuid_str)
+    execute_mock: AsyncMock = AsyncMock(return_value=mock_result)
+    mock_session.execute = execute_mock
+    result: uuid.UUID | None = await exploration_service._get_room_uuid_by_stable_id("room_001", session=mock_session)
+    assert isinstance(result, uuid.UUID)
+    assert str(result) == room_uuid_str
+
+
+@pytest.mark.asyncio
+async def test_get_room_uuid_by_stable_id_asyncpg_like_uuid_object(
+    exploration_service: ExplorationService,
+) -> None:
+    """DB drivers may return non-stdlib UUID; conversion via str() must yield stdlib UUID."""
+
+    class _PgprotoLike:
+        """Simulates asyncpg pgproto.UUID: not isinstance(..., UUID) but str() works."""
+
+        def __init__(self, value: uuid.UUID) -> None:
+            self._value: uuid.UUID = value
+
+        @override
+        def __str__(self) -> str:
+            return str(self._value)
+
+    expected = uuid.uuid4()
+    mock_session = AsyncMock()
+    mock_result = _row_scalar_one_or_none(_PgprotoLike(expected))
+    execute_mock: AsyncMock = AsyncMock(return_value=mock_result)
+    mock_session.execute = execute_mock
+    result: uuid.UUID | None = await exploration_service._get_room_uuid_by_stable_id(
+        "earth_zone_room_a", session=mock_session
+    )
+    assert isinstance(result, uuid.UUID)
+    assert result == expected
+
+
+@pytest.mark.asyncio
+async def test_mark_explored_in_session_new_record(exploration_service: ExplorationService) -> None:
+    """Test _mark_explored_in_session() makes one round trip via mark_room_explored() (#633:
+    collapsed from a check-then-insert pair -- see that procedure's comment in
+    db/procedures/exploration.sql), returning True whether the row was newly inserted..."""
+    mock_session = AsyncMock()
+    player_id = uuid.uuid4()
+    room_uuid = uuid.uuid4()
+    mock_result = _row_scalar_one(True)  # mark_room_explored() returns was_new=True
+    execute_mock: AsyncMock = AsyncMock(return_value=mock_result)
+    mock_session.execute = execute_mock
+    result: bool = await exploration_service._mark_explored_in_session(mock_session, player_id, room_uuid)
+    assert result is True
+    assert execute_mock.call_count == 1
+
+
+@pytest.mark.asyncio
+async def test_mark_explored_in_session_existing_record(exploration_service: ExplorationService) -> None:
+    """...or the row already existed -- mark_room_as_explored's contract is "explored", not
+    "explored just now", so the outer result is still True either way."""
+    mock_session = AsyncMock()
+    player_id = uuid.uuid4()
+    room_uuid = uuid.uuid4()
+    mock_result = _row_scalar_one(False)  # mark_room_explored() returns was_new=False
+    execute_mock: AsyncMock = AsyncMock(return_value=mock_result)
+    mock_session.execute = execute_mock
+    result: bool = await exploration_service._mark_explored_in_session(mock_session, player_id, room_uuid)
+    assert result is True
+    assert execute_mock.call_count == 1
+
+
+@pytest.mark.asyncio
+async def test_get_explored_rooms(exploration_service: ExplorationService) -> None:
+    """Test get_explored_rooms() returns list of explored room IDs."""
+    mock_session = AsyncMock()
+    player_id = uuid.uuid4()
+    room_uuid1 = uuid.uuid4()
+    room_uuid2 = uuid.uuid4()
+    mock_rows = [(room_uuid1,), (room_uuid2,)]
+    mock_result = _row_fetchall(mock_rows)
+    execute_mock: AsyncMock = AsyncMock(return_value=mock_result)
+    mock_session.execute = execute_mock
+    result: list[str] = await exploration_service.get_explored_rooms(player_id, mock_session)
+    assert len(result) == 2
+    assert str(room_uuid1) in result
+    assert str(room_uuid2) in result
+
+
+@pytest.mark.asyncio
+async def test_get_explored_rooms_empty(exploration_service: ExplorationService) -> None:
+    """Test get_explored_rooms() returns empty list when no explored rooms."""
+    mock_session = AsyncMock()
+    player_id = uuid.uuid4()
+    mock_result = _row_fetchall([])
+    execute_mock: AsyncMock = AsyncMock(return_value=mock_result)
+    mock_session.execute = execute_mock
+    result: list[str] = await exploration_service.get_explored_rooms(player_id, mock_session)
+    assert result == []
+
+
+@pytest.mark.asyncio
+async def test_get_explored_rooms_database_error(exploration_service: ExplorationService) -> None:
+    """Test get_explored_rooms() raises DatabaseError on database failure."""
+    mock_session = AsyncMock()
+    player_id = uuid.uuid4()
+    mock_session.execute = AsyncMock(side_effect=SQLAlchemyError("Database error"))
+    with pytest.raises(DatabaseError, match="Failed to retrieve explored rooms"):
+        _ = await exploration_service.get_explored_rooms(player_id, mock_session)
+
+
+@pytest.mark.asyncio
+async def test_is_room_explored_true(exploration_service: ExplorationService) -> None:
+    """Test is_room_explored() returns True when room is explored."""
+    mock_session = AsyncMock()
+    player_id = uuid.uuid4()
+    room_id = "room_001"
+    room_uuid = uuid.uuid4()
+    exploration_service._get_room_uuid_by_stable_id = AsyncMock(return_value=room_uuid)
+    mock_result = _row_scalar_one(True)
+    execute_mock: AsyncMock = AsyncMock(return_value=mock_result)
+    mock_session.execute = execute_mock
+    result: bool = await exploration_service.is_room_explored(player_id, room_id, mock_session)
+    assert result is True
+
+
+@pytest.mark.asyncio
+async def test_is_room_explored_false(exploration_service: ExplorationService) -> None:
+    """Test is_room_explored() returns False when room is not explored."""
+    mock_session = AsyncMock()
+    player_id = uuid.uuid4()
+    room_id = "room_001"
+    room_uuid = uuid.uuid4()
+    exploration_service._get_room_uuid_by_stable_id = AsyncMock(return_value=room_uuid)
+    mock_result = _row_scalar_one(False)
+    execute_mock: AsyncMock = AsyncMock(return_value=mock_result)
+    mock_session.execute = execute_mock
+    result: bool = await exploration_service.is_room_explored(player_id, room_id, mock_session)
+    assert result is False
+
+
+@pytest.mark.asyncio
+async def test_is_room_explored_room_not_found(exploration_service: ExplorationService) -> None:
+    """Test is_room_explored() returns False when room not found."""
+    mock_session = AsyncMock()
+    player_id = uuid.uuid4()
+    room_id = "nonexistent"
+    exploration_service._get_room_uuid_by_stable_id = AsyncMock(return_value=None)
+    result: bool = await exploration_service.is_room_explored(player_id, room_id, mock_session)
+    assert result is False
+
+
+@pytest.mark.asyncio
+async def test_is_room_explored_database_error(exploration_service: ExplorationService) -> None:
+    """Test is_room_explored() raises DatabaseError on database failure."""
+    mock_session = AsyncMock()
+    player_id = uuid.uuid4()
+    room_id = "room_001"
+    exploration_service._get_room_uuid_by_stable_id = AsyncMock(side_effect=SQLAlchemyError("Database error"))
+    with pytest.raises(DatabaseError, match="Failed to check room exploration"):
+        _ = await exploration_service.is_room_explored(player_id, room_id, mock_session)
+
+
+def test_mark_room_as_explored_sync_with_loop(exploration_service: ExplorationService) -> None:
+    """Test mark_room_as_explored_sync() schedules task when loop is running."""
+    player_id = uuid.uuid4()
+    room_id = "room_001"
+    # Create a mock loop
+    mock_loop = MagicMock()
+    mock_task = MagicMock()
+    create_task_mock: MagicMock = MagicMock(return_value=mock_task)
+    mock_loop.create_task = create_task_mock
+    with patch("asyncio.get_running_loop", return_value=mock_loop):
+        with patch.object(exploration_service, "mark_room_as_explored", new_callable=AsyncMock):
+            exploration_service.mark_room_as_explored_sync(player_id, room_id)
+            create_task_mock.assert_called_once()
+
+
+def test_mark_room_as_explored_sync_no_loop(exploration_service: ExplorationService) -> None:
+    """Test mark_room_as_explored_sync() handles no running loop gracefully."""
+    player_id = uuid.uuid4()
+    room_id = "room_001"
+    with patch("asyncio.get_running_loop", side_effect=RuntimeError("No running loop")):
+        # Should not raise, just log warning
+        exploration_service.mark_room_as_explored_sync(player_id, room_id)
+
+
+def test_mark_room_as_explored_sync_with_error_handler(exploration_service: ExplorationService) -> None:
+    """Test mark_room_as_explored_sync() calls error handler on error."""
+    player_id = uuid.uuid4()
+    room_id = "room_001"
+    error_handler = MagicMock()
+    mock_loop = MagicMock()
+    mock_task = MagicMock()
+    create_task_mock: MagicMock = MagicMock(return_value=mock_task)
+    mock_loop.create_task = create_task_mock
+    with patch("asyncio.get_running_loop", return_value=mock_loop):
+        # Make mark_room_as_explored raise an error
+        with patch.object(
+            exploration_service,
+            "mark_room_as_explored",
+            new_callable=AsyncMock,
+            side_effect=DatabaseError("Test error"),
+        ):
+            exploration_service.mark_room_as_explored_sync(player_id, room_id, error_handler=error_handler)
+            # Note: fire-and-forget task; we only assert scheduling.
+            create_task_mock.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_get_room_uuid_by_stable_id_asyncpg_uuid(exploration_service: ExplorationService) -> None:
+    """Test _get_room_uuid_by_stable_id() handles asyncpg UUID objects."""
+    mock_session = AsyncMock()
+
+    # Create a mock asyncpg UUID-like object
+    class MockAsyncpgUUID:
+        """Minimal stand-in for asyncpg UUID type: __str__ yields a UUID string."""
+
+        @override
+        def __str__(self) -> str:
+            return str(uuid.uuid4())
+
+    mock_asyncpg_uuid = MockAsyncpgUUID()
+    mock_result = _row_scalar_one_or_none(mock_asyncpg_uuid)
+    execute_mock: AsyncMock = AsyncMock(return_value=mock_result)
+    mock_session.execute = execute_mock
+    result: uuid.UUID | None = await exploration_service._get_room_uuid_by_stable_id("room_001", session=mock_session)
+    assert isinstance(result, uuid.UUID)
+
+
+@pytest.mark.asyncio
+async def test_get_room_uuid_by_stable_id_database_error(exploration_service: ExplorationService) -> None:
+    """Test _get_room_uuid_by_stable_id() raises DatabaseError on SQLAlchemyError."""
+    mock_session = AsyncMock()
+    mock_session.execute = AsyncMock(side_effect=SQLAlchemyError("Database error"))
+    with pytest.raises(DatabaseError, match="Failed to look up room UUID"):
+        _ = await exploration_service._get_room_uuid_by_stable_id("room_001", session=mock_session)
+
+
+@pytest.mark.asyncio
+async def test_get_room_uuid_by_stable_id_generic_exception(exploration_service: ExplorationService) -> None:
+    """Test _get_room_uuid_by_stable_id() raises generic exception."""
+    mock_session = AsyncMock()
+    mock_session.execute = AsyncMock(side_effect=ValueError("Unexpected error"))
+    with pytest.raises(ValueError, match="Unexpected error"):
+        _ = await exploration_service._get_room_uuid_by_stable_id("room_001", session=mock_session)
+
+
+@pytest.mark.asyncio
+async def test_mark_explored_in_session_database_error(exploration_service: ExplorationService) -> None:
+    """Test _mark_explored_in_session() raises SQLAlchemyError on database failure."""
+    mock_session = AsyncMock()
+    player_id = uuid.uuid4()
+    room_uuid = uuid.uuid4()
+    mock_session.execute = AsyncMock(side_effect=SQLAlchemyError("Database error"))
+    with pytest.raises(SQLAlchemyError):
+        _ = await exploration_service._mark_explored_in_session(mock_session, player_id, room_uuid)
+
+
+@pytest.mark.asyncio
+async def test_get_explored_rooms_generic_exception(exploration_service: ExplorationService) -> None:
+    """Test get_explored_rooms() raises generic exception."""
+    mock_session = AsyncMock()
+    player_id = uuid.uuid4()
+    mock_session.execute = AsyncMock(side_effect=ValueError("Unexpected error"))
+    with pytest.raises(ValueError, match="Unexpected error"):
+        _ = await exploration_service.get_explored_rooms(player_id, mock_session)
+
+
+@pytest.mark.asyncio
+async def test_mark_room_as_explored_generic_exception(exploration_service: ExplorationService) -> None:
+    """Test mark_room_as_explored() raises generic exception."""
+    player_id = uuid.uuid4()
+    room_id = "earth_arkhamcity_northside_room_001"
+    exploration_service._get_room_uuid_by_stable_id = AsyncMock(side_effect=ValueError("Unexpected error"))
+    with pytest.raises(ValueError, match="Unexpected error"):
+        _ = await exploration_service.mark_room_as_explored(player_id, room_id)
+
+
+@pytest.mark.asyncio
+async def test_is_room_explored_generic_exception(exploration_service: ExplorationService) -> None:
+    """Test is_room_explored() raises generic exception."""
+    mock_session = AsyncMock()
+    player_id = uuid.uuid4()
+    room_id = "room_001"
+    exploration_service._get_room_uuid_by_stable_id = AsyncMock(side_effect=ValueError("Unexpected error"))
+    with pytest.raises(ValueError, match="Unexpected error"):
+        _ = await exploration_service.is_room_explored(player_id, room_id, mock_session)
+
+
+@pytest.mark.asyncio
+async def test_is_room_explored_database_error_in_query(exploration_service: ExplorationService) -> None:
+    """Test is_room_explored() raises DatabaseError when query fails."""
+    mock_session = AsyncMock()
+    player_id = uuid.uuid4()
+    room_id = "room_001"
+    room_uuid = uuid.uuid4()
+    exploration_service._get_room_uuid_by_stable_id = AsyncMock(return_value=room_uuid)
+    mock_session.execute = AsyncMock(side_effect=SQLAlchemyError("Database error"))
+    with pytest.raises(DatabaseError, match="Failed to check room exploration"):
+        _ = await exploration_service.is_room_explored(player_id, room_id, mock_session)
+
+
+def test_mark_room_as_explored_sync_generic_exception(exploration_service: ExplorationService) -> None:
+    """Test mark_room_as_explored_sync() handles generic exception in task creation."""
+    player_id = uuid.uuid4()
+    room_id = "room_001"
+    # Make get_running_loop raise a generic exception
+    with patch("asyncio.get_running_loop", side_effect=Exception("Unexpected error")):
+        # Should not raise, just log warning
+        exploration_service.mark_room_as_explored_sync(player_id, room_id)
+
+
+def test_mark_room_as_explored_sync_error_handler_called(exploration_service: ExplorationService) -> None:
+    """Test mark_room_as_explored_sync() calls error handler on exception in task creation."""
+    player_id = uuid.uuid4()
+    room_id = "room_001"
+    error_handler = MagicMock()
+    with patch("asyncio.get_running_loop", side_effect=Exception("Unexpected error")):
+        exploration_service.mark_room_as_explored_sync(player_id, room_id, error_handler=error_handler)
+        # Error handler should be called
+        error_handler.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_mark_room_as_explored_commits_session(
+    exploration_service: ExplorationService, mock_database_manager: MagicMock
+) -> None:
+    """Test mark_room_as_explored() commits session when creating new session."""
+    player_id = uuid.uuid4()
+    room_id = "earth_arkhamcity_northside_room_001"
+    mock_session = AsyncMock()
+    commit_mock: AsyncMock = AsyncMock()
+    mock_session.commit = commit_mock
+    mock_session_maker = _async_session_maker_mock(mock_session)
+    mock_database_manager.get_session_maker = MagicMock(return_value=mock_session_maker)
+    exploration_service._get_room_uuid_by_stable_id = AsyncMock(return_value=uuid.uuid4())
+    exploration_service._mark_explored_in_session = AsyncMock(return_value=True)
+    _ = await exploration_service.mark_room_as_explored(player_id, room_id)
+    commit_mock.assert_awaited_once()

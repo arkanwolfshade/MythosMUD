@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "types": ["node"],
+    "typeRoots": ["../../node_modules/@types"],
+    "noEmit": false,
+    "allowImportingTsExtensions": false,
+    "rootDir": "."
+  },
+  "include": ["./**/*.ts"],
+  "exclude": []
+}

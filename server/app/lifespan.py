@@ -1,94 +1,390 @@
 """Application lifecycle management for MythosMUD server.
 
-This module handles application startup and shutdown logic,
-including the game tick loop and persistence layer initialization."""
+This module handles application startup and shutdown orchestration,
+using ApplicationContainer for dependency injection and service lifecycle management.
+
+ARCHITECTURE:
+This module orchestrates startup and shutdown by delegating to specialized modules:
+- lifespan_startup.py: All startup initialization functions
+- lifespan_shutdown.py: All shutdown logic
+- game_tick_processing.py: Game tick loop and processing functions
+
+This module also integrates enhanced logging and monitoring systems.
+"""
 
 import asyncio
-import datetime
+import uuid as uuid_lib
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
+from datetime import UTC, datetime
+from typing import Any
 
 from fastapi import FastAPI
 
-from ..database import init_db
-from ..logging_config import get_logger
-from ..persistence import get_persistence
-from ..realtime.connection_manager import connection_manager
-from ..realtime.event_handler import get_real_time_event_handler
-from ..realtime.sse_handler import broadcast_game_event
+from ..auth.token_epoch import set_auth_epoch
+from ..container import ApplicationContainer
+from ..monitoring.exception_tracker import get_exception_tracker
+from ..monitoring.memory_leak_metrics import MemoryLeakMetricsCollector
+from ..monitoring.monitoring_dashboard import get_monitoring_dashboard
+from ..monitoring.performance_monitor import get_performance_monitor
+from ..realtime.dead_letter_queue import DeadLetterQueue
+from ..structured_logging.enhanced_logging_config import (
+    get_logger,
+    log_exception_once,
+    update_logging_with_player_service,
+)
+from ..structured_logging.log_aggregator import get_log_aggregator
+from ..time.time_service import get_mythos_chronicle
+from .game_tick_processing import game_tick_loop, get_current_tick, reset_current_tick
+from .lifespan_shutdown import shutdown_services
+from .lifespan_startup import (
+    initialize_container_and_legacy_services,
+    initialize_npc_startup_spawning,
+    setup_connection_manager,
+)
 
 logger = get_logger("server.lifespan")
-TICK_INTERVAL = 1.0  # seconds
 
-# Log directory creation is now handled by logging_config.py
+# Re-export tick functions for backward compatibility
+__all__ = ["lifespan", "get_current_tick", "reset_current_tick"]
+
+# Startup metrics snapshot, used to compute the shutdown delta (#679: the collector itself is
+# container-owned, not a module-level singleton -- this is just a before/after data snapshot).
+_startup_metrics: dict[str, Any] | None = None  # pylint: disable=invalid-name  # Reason: Module-level singleton pattern uses underscore prefix to indicate private module variable, not a constant
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Application lifespan manager.
+def _calculate_metrics_delta(
+    shutdown_metrics: dict[str, Any], startup_metrics: dict[str, Any] | None
+) -> dict[str, Any]:
+    """Calculate metrics delta between startup and shutdown."""
+    metrics_delta: dict[str, Any] = {}
+    if startup_metrics is None:
+        return metrics_delta
 
-    Handles startup and shutdown logic for the FastAPI application,
-    including persistence layer initialization and game tick loop."""
-    logger.info("Starting MythosMUD server...")
-    await init_db()
-    # Initialize real-time event handler first to obtain its EventBus
-    app.state.event_handler = get_real_time_event_handler()
-    # Ensure the event handler has access to the connection manager
-    app.state.event_handler.connection_manager = connection_manager
+    # Calculate deltas for key metrics
+    if "connection" in shutdown_metrics and "connection" in startup_metrics:
+        conn_delta = {}
+        conn_shutdown = shutdown_metrics["connection"]
+        conn_startup = startup_metrics["connection"]
+        for key in ["closed_websockets_count", "active_websockets_count"]:
+            if key in conn_shutdown and key in conn_startup:
+                conn_delta[key] = conn_shutdown[key] - conn_startup[key]
+        metrics_delta["connection"] = conn_delta
 
-    # Initialize persistence with the same EventBus so Rooms publish to it
-    app.state.persistence = get_persistence(event_bus=app.state.event_handler.event_bus)
-    connection_manager.persistence = app.state.persistence
-    # Ensure connection manager exposes the same EventBus for command handlers
-    connection_manager._event_bus = app.state.event_handler.event_bus
+    return metrics_delta
+
+
+def _persist_metrics_to_file(
+    startup_metrics: dict[str, Any] | None,
+    shutdown_metrics: dict[str, Any],
+    metrics_delta: dict[str, Any],
+    alerts: list[Any],
+) -> None:
+    """Persist metrics to file in JSON format."""
+    try:
+        import json
+        from pathlib import Path
+
+        metrics_file = Path("logs/local/memory_leak_metrics.json")
+        metrics_file.parent.mkdir(parents=True, exist_ok=True)
+
+        metrics_data = {
+            "startup_metrics": startup_metrics,
+            "shutdown_metrics": shutdown_metrics,
+            "metrics_delta": metrics_delta,
+            "alerts": alerts,
+            "timestamp": datetime.now(UTC).isoformat(),
+        }
+
+        with metrics_file.open("w", encoding="utf-8") as f:
+            json.dump(metrics_data, f, indent=2, default=str)
+        logger.info("Memory leak metrics persisted to file", file_path=str(metrics_file))
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Metrics persistence errors should not fail shutdown
+        logger.warning("Failed to persist metrics to file", error=str(e))
+
+
+async def _log_memory_metrics_periodically(collector: MemoryLeakMetricsCollector, interval_seconds: int = 300) -> None:
+    """
+    Log memory leak metrics periodically.
+
+    Args:
+        collector: MemoryLeakMetricsCollector instance
+        interval_seconds: Interval between metric logs (default 5 minutes)
+    """
+    try:
+        while True:
+            await asyncio.sleep(interval_seconds)
+            metrics = collector.collect_all_metrics()
+            alerts = collector.check_alerts(metrics)
+            growth_rates = collector.calculate_growth_rates()
+
+            logger.info(
+                "Memory leak metrics (periodic)",
+                metrics=metrics,
+                alerts=alerts,
+                growth_rates=growth_rates,
+                interval_seconds=interval_seconds,
+            )
+    except asyncio.CancelledError:
+        logger.debug("Periodic memory metrics logging cancelled")
+        raise
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Periodic logging errors unpredictable, must not crash lifespan
+        logger.error("Error in periodic memory metrics logging", error=str(e), exc_info=True)
+
+
+async def _cleanup_dead_letter_queue_periodically(dlq: DeadLetterQueue, interval_seconds: int = 86400) -> None:
+    """
+    Periodically prune old dead-letter-queue files.
+
+    Args:
+        dlq: DeadLetterQueue instance to clean up
+        interval_seconds: Interval between cleanup runs (default 24 hours)
+    """
+    try:
+        while True:
+            await asyncio.sleep(interval_seconds)
+            removed_count = await asyncio.to_thread(dlq.cleanup_old_messages)
+            logger.info(
+                "Dead letter queue cleanup (periodic)", removed_count=removed_count, interval_seconds=interval_seconds
+            )
+    except asyncio.CancelledError:
+        logger.debug("Periodic dead letter queue cleanup cancelled")
+        raise
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Periodic cleanup errors unpredictable, must not crash lifespan
+        logger.error("Error in periodic dead letter queue cleanup", error=str(e), exc_info=True)
+
+
+async def _initialize_enhanced_systems() -> Any:
+    """
+    Initialize enhanced logging and monitoring systems.
+
+    Returns:
+        LogAggregator instance if successful
+
+    Raises:
+        Exception: If initialization fails
+    """
+    get_performance_monitor()
+    get_exception_tracker()
+    get_monitoring_dashboard()
+    log_aggregator = get_log_aggregator()
+
+    logger.info(
+        "Enhanced logging and monitoring systems initialized",
+        performance_monitoring=True,
+        exception_tracking=True,
+        log_aggregation=True,
+        monitoring_dashboard=True,
+    )
+    return log_aggregator
+
+
+async def _startup_application(app: FastAPI) -> ApplicationContainer:
+    """
+    Perform application startup and return initialized container.
+
+    Args:
+        app: FastAPI application instance
+
+    Returns:
+        Initialized ApplicationContainer
+
+    Raises:
+        RuntimeError: If required services are not initialized
+    """
+    logger.info("Starting MythosMUD server with ApplicationContainer...")
+
+    # Invalidate all prior JWTs so clients must re-authenticate after any server restart
+    set_auth_epoch(uuid_lib.uuid4().hex)
+    logger.info("Auth token epoch set - all pre-restart tokens are now invalid")
+
+    container = ApplicationContainer()
+    await container.initialize()
+    await initialize_container_and_legacy_services(app, container)
+    await setup_connection_manager(app, container)
+    # NPC, combat, magic, chat, and mythos time services are now initialized in container.initialize()
+    await initialize_npc_startup_spawning(app)
+
+    # Enhance logging system with PlayerGuidFormatter now that player service is available
+    update_logging_with_player_service(container.player_service)
+    logger.info("Logging system enhanced with PlayerGuidFormatter")
 
     # Set the main event loop for the EventBus to handle async event handlers
+    if container.event_bus is None:
+        raise RuntimeError("EventBus must be initialized")
     main_loop = asyncio.get_running_loop()
-    app.state.event_handler.event_bus.set_main_loop(main_loop)
+    container.event_bus.set_main_loop(main_loop)
+
+    if container.mythos_tick_scheduler is not None:
+        await container.mythos_tick_scheduler.start()
+        app.state.mythos_tick_scheduler = container.mythos_tick_scheduler
+        logger.info("Mythos tick scheduler running")
 
     logger.info("Real-time event handler initialized")
 
-    # Start the game tick loop
-    tick_task = asyncio.create_task(game_tick_loop(app))
-    app.state.tick_task = tick_task
-    logger.info("MythosMUD server started successfully")
-    yield
+    # NATS, combat, chat, and magic services are now initialized in container.initialize()
 
-    # Shutdown logic
+    # Start the game tick loop using TaskRegistry from container
+    if container.task_registry is None:
+        raise RuntimeError("TaskRegistry must be initialized")
+    tick_task = container.task_registry.register_task(game_tick_loop(app), "lifecycle/game_tick_loop", "lifecycle")
+    container.tick_task = tick_task
+    app.state.tick_task = tick_task  # Backward compatibility
+
+    # Snapshot startup memory metrics for the shutdown delta; collector itself is container-owned
+    global _startup_metrics  # pylint: disable=global-statement  # Reason: Global snapshot for lifespan lifecycle tracking
+    _startup_metrics = container.memory_leak_collector.collect_all_metrics()
+    logger.info("Memory leak metrics collector initialized", startup_metrics=_startup_metrics)
+
+    # Start periodic metrics logging task (5 minute interval)
+    container.task_registry.register_task(
+        _log_memory_metrics_periodically(container.memory_leak_collector, interval_seconds=300),
+        "lifecycle/memory_metrics_logging",
+        "lifecycle",
+    )
+    logger.info("Periodic memory metrics logging started (5 minute interval)")
+
+    # Start periodic dead-letter-queue cleanup task (24 hour interval, #619)
+    if container.nats_message_handler is not None:
+        container.task_registry.register_task(
+            _cleanup_dead_letter_queue_periodically(container.nats_message_handler.dead_letter_queue),
+            "lifecycle/dlq_cleanup",
+            "lifecycle",
+        )
+        logger.info("Periodic dead letter queue cleanup started (24 hour interval)")
+
+    logger.info("MythosMUD server started successfully with ApplicationContainer")
+    return container
+
+
+async def _shutdown_with_error_handling(app: FastAPI, container: ApplicationContainer) -> None:
+    """
+    Perform application shutdown with comprehensive error handling.
+
+    Args:
+        app: FastAPI application instance
+        container: ApplicationContainer instance
+    """
     logger.info("Shutting down MythosMUD server...")
-    if hasattr(app.state, "tick_task"):
-        app.state.tick_task.cancel()
+
+    try:
+        # Log final memory metrics and calculate delta
+        if container.memory_leak_collector is not None:
+            shutdown_metrics = container.memory_leak_collector.collect_all_metrics()
+            alerts = container.memory_leak_collector.check_alerts(shutdown_metrics)
+
+            # Calculate metrics delta over application lifetime
+            metrics_delta = _calculate_metrics_delta(shutdown_metrics, _startup_metrics)
+
+            logger.info(
+                "Memory leak metrics (shutdown)",
+                shutdown_metrics=shutdown_metrics,
+                startup_metrics=_startup_metrics,
+                metrics_delta=metrics_delta,
+                alerts=alerts,
+            )
+
+            # Optional: Persist metrics to file (JSON format)
+            _persist_metrics_to_file(_startup_metrics, shutdown_metrics, metrics_delta, alerts)
+
+        await shutdown_services(app, container)
+        logger.info("MythosMUD server shutdown complete")
+    except (asyncio.CancelledError, KeyboardInterrupt) as e:
+        logger.warning("Shutdown interrupted", error=str(e), error_type=type(e).__name__)
+        _persist_mythos_state_on_error()
+        await _cleanup_container_on_error(container)
+        raise
+    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
+        logger.error("Critical shutdown failure", error=str(e), error_type=type(e).__name__, exc_info=True)
+        _persist_mythos_state_on_error()
+        await _cleanup_container_on_error(container)
+
+
+def _persist_mythos_state_on_error() -> None:
+    """Attempt to persist mythos chronicle state during error conditions."""
+    try:
+        chronicle = get_mythos_chronicle()
+        chronicle.freeze()
+        logger.info("Mythos chronicle state persisted during error shutdown")
+    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError):
+        logger.warning("Failed to persist mythos chronicle state during error shutdown")
+
+
+async def _cleanup_container_on_error(container: ApplicationContainer | None) -> None:
+    """Attempt to cleanup container during error conditions."""
+    if container is None:
+        return
+    try:
+        await container.shutdown()
+    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError):
+        pass
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    """
+    Application lifespan manager with comprehensive monitoring and logging.
+
+    Handles startup and shutdown logic using ApplicationContainer for
+    dependency injection and service lifecycle management.
+
+    This lifespan integrates:
+    - Enhanced logging and monitoring systems
+    - ApplicationContainer for service management
+    - Game tick loop initialization
+    - Proper resource cleanup on shutdown
+
+    ARCHITECTURE:
+    - Uses ApplicationContainer to manage all service dependencies
+    - Services accessed via container instead of scattered app.state attributes
+    - Proper initialization order handled by container
+    - Clean separation of concerns
+    - Delegates to specialized modules for startup, shutdown, and tick processing
+    """
+    # Initialize enhanced logging and monitoring systems first
+    log_aggregator = None
+    try:
+        log_aggregator = await _initialize_enhanced_systems()
+    except Exception as error:
+        log_exception_once(
+            logger,
+            "error",
+            "Failed to initialize enhanced systems",
+            exc=error,
+            lifespan_phase="startup",
+            exc_info=True,
+        )
+        raise
+
+    # Application startup
+    container: ApplicationContainer | None = None
+    try:
+        container = await _startup_application(app)
+        yield
+
+        # Application shutdown
+        await _shutdown_with_error_handling(app, container)
+
+    except (asyncio.CancelledError, KeyboardInterrupt) as e:
+        logger.warning("Startup interrupted", error=str(e), error_type=type(e).__name__)
+        await _cleanup_container_on_error(container)
+        raise
+    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
+        logger.error("Critical startup failure", error=str(e), error_type=type(e).__name__, exc_info=True)
+        await _cleanup_container_on_error(container)
+        raise
+    finally:
+        # Always cleanup enhanced systems, even if shutdown failed
         try:
-            await app.state.tick_task
-        except asyncio.CancelledError:
-            pass
-    logger.info("MythosMUD server shutdown complete")
-
-
-async def game_tick_loop(app: FastAPI):
-    """Main game tick loop.
-
-    This function runs continuously and handles periodic game updates,
-    including broadcasting tick information to connected players."""
-    tick_count = 0
-    logger.info("Game tick loop started")
-
-    while True:
-        try:
-            # TODO: Implement status/effect ticks using persistence layer
-            logger.debug(f"Game tick {tick_count}")
-
-            # Broadcast game tick to all connected players
-            tick_data = {
-                "tick_number": tick_count,
-                "timestamp": datetime.datetime.now(datetime.UTC).isoformat(),
-                "active_players": len(connection_manager.player_websockets),
-            }
-            await broadcast_game_event("game_tick", tick_data)
-            tick_count += 1
-            await asyncio.sleep(TICK_INTERVAL)
-        except asyncio.CancelledError:
-            logger.info("Game tick loop cancelled")
-            break
-        except Exception as e:
-            logger.error(f"Error in game tick loop: {e}")
-            await asyncio.sleep(TICK_INTERVAL)
+            if log_aggregator is not None:
+                log_aggregator.shutdown()
+                logger.info("Enhanced systems shutdown complete")
+        except Exception as error:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Lifespan cleanup must not fail, catch all errors
+            log_exception_once(
+                logger,
+                "error",
+                "Error during enhanced systems shutdown",
+                exc=error,
+                lifespan_phase="shutdown",
+                exc_info=True,
+            )

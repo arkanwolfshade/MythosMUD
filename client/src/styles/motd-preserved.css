@@ -1,0 +1,170 @@
+/* MOTD - preserve original styling completely */
+.motd-display {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  background-color: #0a0a0a !important;
+  color: #d4af37 !important;
+  font-family: 'Courier New', monospace !important;
+  overflow-y: auto !important;
+  padding: 20px !important;
+}
+
+.motd-content {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  max-width: 800px !important;
+  margin: 0 auto !important;
+  width: 100% !important;
+}
+
+.motd-content .container {
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.motd-content .title {
+  margin-bottom: 20px !important;
+  text-align: center !important;
+}
+
+.motd-content .title-border {
+  border: 2px solid #d4af37 !important;
+  border-radius: 5px !important;
+  padding: 20px !important;
+  background: linear-gradient(45deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05)) !important;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.3) !important;
+  position: relative !important;
+}
+
+.motd-content .title-border::before {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: linear-gradient(45deg, transparent 30%, rgba(212, 175, 55, 0.1) 50%, transparent 70%) !important;
+  pointer-events: none !important;
+  animation: shimmer 3s ease-in-out infinite !important;
+}
+
+.motd-content .title-text {
+  font-size: 2.2em !important;
+  color: #d4af37 !important;
+  text-shadow: 0 0 15px #d4af37 !important;
+  font-weight: bold !important;
+  font-family: 'Courier New', monospace !important;
+  margin-bottom: 10px !important;
+  letter-spacing: 2px !important;
+}
+
+.motd-content .title-subtitle {
+  font-size: 1.2em !important;
+  color: #d4af37 !important;
+  text-shadow: 0 0 10px #d4af37 !important;
+  font-family: 'Courier New', monospace !important;
+  font-style: italic !important;
+  letter-spacing: 1px !important;
+}
+
+.motd-content .yellow-sign {
+  font-size: 1em !important;
+  margin: 20px 0 !important;
+  text-align: center !important;
+  color: #ffd700 !important;
+  text-shadow: 0 0 5px #ffd700 !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
+  white-space: pre !important;
+  font-family: 'Courier New', monospace !important;
+}
+
+.motd-content .welcome-text {
+  font-size: 0.95em !important;
+  margin: 20px 0 !important;
+  text-align: left !important;
+  color: #d4af37 !important;
+  line-height: 1.4 !important;
+}
+
+.motd-content .warning {
+  color: #8b0000 !important;
+  font-weight: bold !important;
+  margin: 15px 0 !important;
+  text-align: center !important;
+  font-size: 0.9em !important;
+  text-shadow: 0 0 5px #8b0000 !important;
+}
+
+.motd-content .stats {
+  background-color: #1a1a1a !important;
+  border: 1px solid #333 !important;
+  padding: 15px !important;
+  margin: 15px 0 !important;
+  border-radius: 5px !important;
+}
+
+.motd-content .stats h3 {
+  margin-top: 0 !important;
+  color: #d4af37 !important;
+  font-size: 1.1em !important;
+}
+
+.motd-content .stats p {
+  margin: 5px 0 !important;
+  color: #ccc !important;
+  font-size: 0.9em !important;
+}
+
+.motd-content .footer {
+  margin-top: 20px !important;
+  font-size: 0.8em !important;
+  color: #666 !important;
+  border-top: 1px solid #333 !important;
+  padding-top: 15px !important;
+  text-align: center !important;
+}
+
+.motd-actions {
+  text-align: center !important;
+  margin-top: 20px !important;
+  padding-top: 20px !important;
+  border-top: 1px solid #333 !important;
+}
+
+.continue-button {
+  background: linear-gradient(45deg, #d4af37, #b8941f) !important;
+  color: #0a0a0a !important;
+  border: none !important;
+  padding: 12px 30px !important;
+  font-size: 1.1em !important;
+  font-weight: bold !important;
+  font-family: 'Courier New', monospace !important;
+  border-radius: 5px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  box-shadow: 0 4px 8px rgba(212, 175, 55, 0.3) !important;
+}
+
+.continue-button:hover {
+  background: linear-gradient(45deg, #b8941f, #d4af37) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 12px rgba(212, 175, 55, 0.4) !important;
+}
+
+/* Add shimmer animation */
+@keyframes shimmer {
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}

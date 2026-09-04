@@ -3,135 +3,563 @@ Database configuration for MythosMUD.
 
 This module provides database connection, session management,
 and initialization for the MythosMUD application.
+
+CRITICAL: Database initialization is LAZY and requires configuration to be loaded first.
+         The system will FAIL LOUDLY if configuration is not properly set.
 """
 
-import os
-from collections.abc import AsyncGenerator
-from pathlib import Path
+# pylint: disable=too-many-lines  # Reason: Database module requires extensive configuration, connection management, and session handling code
 
+import asyncio
+import importlib.util
+import threading
+from collections.abc import AsyncIterator
+from pathlib import Path
+from typing import Any
+
+from anyio import sleep
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.pool import StaticPool
 
-from .logging_config import get_logger
-from .metadata import metadata
+from .database_config_helpers import (
+    configure_pool_settings,
+    get_postgres_connect_args,
+    get_test_database_url,
+    load_database_url,
+    normalize_database_url,
+    set_test_database_url,
+    validate_database_url,
+)
+from .exceptions import DatabaseError, ValidationError
+from .structured_logging.enhanced_logging_config import get_logger
+from .utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
-# Database URL configuration - read from environment variables
-DATABASE_URL = os.getenv("DATABASE_URL")
-if not DATABASE_URL:
-    logger.error("DATABASE_URL environment variable not set")
-    raise ValueError(
-        "DATABASE_URL environment variable must be set. See server/env.example for configuration template."
+# Backward-compatibility override for tests expecting module-level URL
+# Tests may patch `server.database._database_url` to control path resolution.
+# This syncs with database_config_helpers for actual storage
+# Using a dict to avoid global statement while maintaining mutable state
+_database_url_state: dict[str, str | None] = {"url": None}
+
+# Expose as simple variable for backward compatibility with tests
+# Tests can patch this directly: `server.database._database_url = "postgresql://..."`
+_database_url: str | None = None  # pylint: disable=invalid-name  # Reason: Private module-level variable for test compatibility, intentionally uses _ prefix
+
+
+def _get_database_url_state() -> str | None:
+    """
+    Get database URL state for testing.
+
+    This is a public function to access the internal _database_url_state
+    without directly accessing the protected member.
+    """
+    return _database_url_state["url"]
+
+
+def _reset_database_url_state() -> None:
+    """
+    Reset database URL state for testing.
+
+    This is a public function to reset the internal _database_url_state
+    without directly accessing the protected member.
+    """
+    _database_url_state["url"] = None
+    # Note: _database_url is for backward compatibility and can be patched directly by tests
+
+
+def _sync_test_url_state() -> None:
+    """Sync module-level and config test database URL overrides."""
+    test_url = _database_url_state["url"] or _database_url
+    if test_url is not None:
+        set_test_database_url(test_url)
+        _database_url_state["url"] = test_url
+        return
+    _database_url_state["url"] = get_test_database_url()
+
+
+def _normalize_connect_args_search_path(database_url: str, connect_args: dict[str, Any]) -> dict[str, Any]:
+    """Ensure PostgreSQL search_path matches the target database schema name.
+
+    Merges into any existing server_settings (e.g. idle_in_transaction_session_timeout from
+    get_postgres_connect_args()) rather than replacing connect_args outright - a prior version
+    of this function returned a brand-new {"server_settings": {"search_path": db_name}}, which
+    silently discarded every other server_settings key whenever search_path didn't already match
+    db_name (i.e. in every dev/test environment on first connect).
+    """
+    db_name = database_url.split("/")[-1].split("?")[0] if database_url else ""
+    if db_name not in ("mythos_dev", "mythos_unit", "mythos_e2e"):
+        return connect_args
+    existing_server_settings: dict[str, str] = connect_args.get("server_settings") or {}
+    current = existing_server_settings.get("search_path", "").strip()
+    if current == db_name:
+        return connect_args
+    logger.info(
+        "PostgreSQL search_path set to database name",
+        database=db_name,
+        previous_search_path=current or None,
     )
-
-logger.info("Database URL configured", database_url=DATABASE_URL)
-
-# Create async engine
-engine = create_async_engine(
-    DATABASE_URL,
-    echo=False,
-    poolclass=StaticPool,
-    pool_pre_ping=True,
-    pool_recycle=3600,
-    connect_args={
-        "check_same_thread": False,
-        "timeout": 30,
-    },
-)
-
-logger.info("Database engine created", pool_class="StaticPool", pool_recycle=3600)
-
-# Create async session maker
-async_session_maker = async_sessionmaker(
-    engine,
-    class_=AsyncSession,
-    expire_on_commit=False,
-    autocommit=False,
-    autoflush=False,
-)
-
-logger.info("Database session maker created")
+    return {"server_settings": {**existing_server_settings, "search_path": db_name}}
 
 
-async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
-    """
-    Dependency to get database session.
+def _create_engine_or_raise(
+    database_url: str, connect_args: dict[str, Any], pool_kwargs: dict[str, Any]
+) -> AsyncEngine:
+    """Create async engine or raise a typed configuration/connection error."""
+    try:
+        engine = create_async_engine(
+            database_url,
+            echo=False,
+            pool_pre_ping=True,
+            connect_args=connect_args,
+            **pool_kwargs,
+        )
+        pool_type = "NullPool" if "test" in database_url else "AsyncAdaptedQueuePool"
+        logger.info("Database engine created", pool_type=pool_type)
+        return engine
+    except (ValueError, TypeError) as e:
+        log_and_raise(
+            ValidationError,
+            f"Invalid database configuration: {e}",
+            operation="create_async_engine",
+            database_url_prefix=database_url[:30],
+            details={
+                "error": str(e),
+                "error_type": type(e).__name__,
+                "pool_config": {k: v for k, v in pool_kwargs.items() if k not in ["pool_recycle"]},
+            },
+            user_friendly="Database configuration error. Please check DATABASE_URL environment variable.",
+        )
+    except (ConnectionError, OSError) as e:
+        log_and_raise(
+            DatabaseError,
+            f"Failed to connect to database: {e}",
+            operation="create_async_engine",
+            details={
+                "error": str(e),
+                "error_type": type(e).__name__,
+                "database_url_prefix": database_url[:30],
+            },
+            user_friendly="Cannot connect to database. Please check database server is running.",
+        )
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: create_async_engine can raise a wide variety of exceptions depending on the driver (asyncpg), network state, and provided credentials, we catch Exception here to provide a unified, context-rich DatabaseError for any failure during this critical infrastructure setup
+        log_and_raise(
+            DatabaseError,
+            f"Failed to create database engine: {e}",
+            operation="create_async_engine",
+            details={
+                "error": str(e),
+                "error_type": type(e).__name__,
+                "database_url_prefix": database_url[:30],
+            },
+            user_friendly="Database connection failed. Please check database configuration and credentials.",
+        )
 
-    Yields:
-        AsyncSession: Database session for async operations
-    """
-    logger.debug("Creating database session")
-    async with async_session_maker() as session:
+
+async def _dispose_engine_safely(engine: AsyncEngine) -> None:
+    """Dispose database engine with Windows/asyncpg-safe cleanup."""
+    await sleep(0.3)
+
+    async def dispose_with_cleanup() -> None:
+        await engine.dispose()
+        await sleep(0.2)
+
+    try:
+        await asyncio.wait_for(asyncio.shield(dispose_with_cleanup()), timeout=3.0)
+        logger.info("Database connections closed")
+    except TimeoutError:
+        logger.warning("Engine disposal timed out, attempting force close")
         try:
-            logger.debug("Database session created successfully")
-            yield session
-        except Exception as e:
-            logger.error("Database session error", error=str(e))
-            await session.rollback()
-            raise
+            if hasattr(engine, "sync_engine") and hasattr(engine.sync_engine, "pool"):
+                pool = engine.sync_engine.pool
+                if pool:
+                    pool.dispose()
+        except (RuntimeError, AttributeError, TypeError):
+            pass
+        logger.info("Database connections force closed")
+
+
+class DatabaseManager:
+    """
+    Thread-safe singleton for database management.
+
+    Manages database engine, session maker, and URL with proper
+    initialization and thread safety.
+    """
+
+    _instance: "DatabaseManager | None" = None
+    _lock: threading.Lock = threading.Lock()
+
+    def __init__(self) -> None:
+        """Initialize the database manager."""
+        if DatabaseManager._instance is not None:
+            raise RuntimeError("Use DatabaseManager.get_instance()")
+
+        self.engine: AsyncEngine | None = None
+        self.session_maker: async_sessionmaker[AsyncSession] | None = None
+        self.database_url: str | None = None
+        self._initialized: bool = False
+        self._creation_loop_id: int | None = None  # Track which loop created the engine
+
+    @classmethod
+    def get_instance(cls) -> "DatabaseManager":
+        """Get the singleton instance."""
+        if cls._instance is None:
+            with cls._lock:
+                if cls._instance is None:
+                    cls._instance = cls()
+        return cls._instance
+
+    @classmethod
+    def reset_instance(cls) -> None:
+        """Reset singleton for testing."""
+        with cls._lock:
+            cls._instance = None
+
+    def _initialize_database(self) -> None:
+        """
+        Initialize database engine and session maker from configuration.
+
+        CRITICAL: This function FAILS LOUDLY if configuration is not properly set.
+
+        Raises:
+            ValidationError: If configuration is missing or invalid
+        """
+        if self._initialized:
+            return
+
+        config_spec = importlib.util.find_spec(".config", package=__package__)
+        if config_spec is None:
+            log_and_raise(
+                ValidationError,
+                "Failed to import config - configuration system unavailable",
+                operation="database_initialization",
+                details={"import_error": "config module not found"},
+                user_friendly="Critical system error: configuration system not available",
+            )
+
+        _sync_test_url_state()
+
+        database_url = load_database_url()
+        validate_database_url(database_url)
+        self.database_url = normalize_database_url(database_url)
+        logger.info("Using PostgreSQL database URL from environment", database_url=self.database_url)
+
+        pool_kwargs = configure_pool_settings(self.database_url)
+        connect_args = _normalize_connect_args_search_path(self.database_url, get_postgres_connect_args())
+        self.engine = _create_engine_or_raise(self.database_url, connect_args, pool_kwargs)
+
+        self.session_maker = async_sessionmaker(
+            self.engine,
+            class_=AsyncSession,
+            expire_on_commit=False,
+            autocommit=False,
+            autoflush=False,
+        )
+
+        logger.info("Database session maker created")
+        self._initialized = True
+        try:
+            loop = asyncio.get_running_loop()
+            self._creation_loop_id = id(loop)
+        except RuntimeError:
+            self._creation_loop_id = None
+
+    def get_engine(self) -> AsyncEngine:
+        """
+        Get the database engine, initializing if necessary.
+
+        Returns:
+            AsyncEngine: The database engine (never None after initialization)
+
+        Raises:
+            ValidationError: If database cannot be initialized
+        """
+        if not self._initialized:
+            self._initialize_database()
+        # Double-check: if initialization didn't set engine, try again
+        if self.engine is None:
+            logger.warning("Engine is None after initialization, attempting re-initialization")
+            self._initialized = False  # Force re-initialization
+            self._initialize_database()
+
+        # CRITICAL: Check if we're in a different event loop than when engine was created
+        # asyncpg connections must be created in the same loop they're used in
+        # If the event loop changes, we need to recreate the engine for the new loop
+        try:
+            current_loop = asyncio.get_running_loop()
+            current_loop_id = id(current_loop)
+            if self._creation_loop_id is not None and current_loop_id != self._creation_loop_id:
+                logger.warning(
+                    "Event loop changed, recreating database engine",
+                    old_loop_id=self._creation_loop_id,
+                    new_loop_id=current_loop_id,
+                )
+                # CRITICAL: asyncpg connections MUST be closed in the same event loop they were created in.
+                # We cannot dispose the old engine here because we're already in a different loop.
+                # The old engine will be properly disposed by the test fixture's event_loop cleanup
+                # (which runs in the original loop) or by garbage collection.
+                # For production, this should never happen as there's only one event loop.
+                # Reset and recreate engine for the new loop
+                self.engine = None
+                self.session_maker = None
+                self._initialized = False
+                self._initialize_database()
+        except RuntimeError:
+            # No running loop - that's okay, engine will be created when needed
+            logger.debug("No running event loop, engine will be created when needed")
+
+        if self.engine is None:
+            raise RuntimeError("Database engine not initialized")
+        return self.engine
+
+    def get_session_maker(self) -> async_sessionmaker[AsyncSession]:
+        """
+        Get the async session maker, initializing if necessary.
+
+        Returns:
+            async_sessionmaker: The session maker (never None after initialization)
+
+        Raises:
+            ValidationError: If database cannot be initialized
+        """
+        if not self._initialized:
+            self._initialize_database()
+        if self.session_maker is None:
+            raise RuntimeError("Session maker not initialized")
+        return self.session_maker
+
+    def get_database_url(self) -> str | None:
+        """
+        Get the database URL, initializing if necessary.
+
+        Returns:
+            str: The database URL
+
+        Raises:
+            ValidationError: If database cannot be initialized
+        """
+        if not self._initialized:
+            self._initialize_database()
+        return self.database_url
+
+    def get_database_path(self) -> Path | None:
+        """
+        Get the database file path.
+
+        DEPRECATED: PostgreSQL does not use file paths. This method always returns None
+        for PostgreSQL databases. Kept for backward compatibility with code that may
+        check for database paths.
+
+        Returns:
+            Path | None: Always None for PostgreSQL (no file path)
+        """
+        database_url = self.get_database_url()
+
+        if database_url is None:
+            log_and_raise(
+                ValidationError,
+                "Database URL is None",
+                operation="get_database_path",
+                user_friendly="Database not initialized",
+            )
+
+        if database_url.startswith("postgresql"):
+            # PostgreSQL doesn't have a file path
+            return None
+
+        log_and_raise(
+            ValidationError,
+            f"Unsupported database URL: {database_url}. Only PostgreSQL is supported.",
+            operation="get_database_path",
+            database_url=database_url,
+            details={"database_url": database_url},
+            user_friendly="Unsupported database configuration - PostgreSQL required",
+        )
+
+    async def close(self) -> None:
+        """Close database connections."""
+        if self.engine is None:
+            self._initialized = False
+            self._creation_loop_id = None
+            return
+
+        engine = self.engine
+        try:
+            try:
+                loop = asyncio.get_running_loop()
+                if loop.is_closed():
+                    logger.warning("Event loop is closed, skipping engine disposal")
+                    return
+            except RuntimeError:
+                pass
+
+            await _dispose_engine_safely(engine)
+        except (RuntimeError, AttributeError) as e:
+            logger.debug("Event loop closed during engine disposal (expected during cleanup)", error=str(e))
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: This is a best-effort cleanup of database connections during engine disposal, we log any unexpected failures but must not raise them, ensuring the application shutdown process can continue for other components even if database cleanup fails
+            logger.warning("Error disposing database engine", error=str(e), error_type=type(e).__name__)
         finally:
-            logger.debug("Closing database session")
-            await session.close()
+            self.engine = None
+            self._initialized = False
+            self._creation_loop_id = None
 
 
-async def init_db():
+# Module-level utility functions for backward compatibility
+
+
+def get_session_maker() -> async_sessionmaker[AsyncSession]:
     """
-    Initialize database with all tables.
-
-    Creates all tables defined in the metadata.
-    """
-    logger.info("Initializing database")
-
-    # Import all models to ensure they're registered with metadata
-    # Configure all mappers before setting up relationships
-    from sqlalchemy.orm import configure_mappers
-
-    from server.models.invite import Invite  # noqa: F401
-    from server.models.player import Player  # noqa: F401
-    from server.models.user import User  # noqa: F401
-
-    logger.debug("Configuring SQLAlchemy mappers")
-    configure_mappers()
-
-    # Set up relationships after all models are imported and configured
-    from server.models.relationships import setup_relationships
-
-    logger.debug("Setting up model relationships")
-    setup_relationships()
-
-    async with engine.begin() as conn:
-        logger.info("Creating database tables")
-        await conn.run_sync(metadata.create_all)
-        logger.info("Database tables created successfully")
-
-
-async def close_db():
-    """Close database connections."""
-    logger.info("Closing database connections")
-    await engine.dispose()
-    logger.info("Database connections closed")
-
-
-def get_database_path() -> Path:
-    """
-    Get the database file path.
+    Get the async session maker from DatabaseManager.
 
     Returns:
-        Path: Path to the database file
+        async_sessionmaker: The session maker
+
+    Raises:
+        ValidationError: If database cannot be initialized
     """
-    if DATABASE_URL.startswith("sqlite+aiosqlite:///"):
-        db_path = DATABASE_URL.replace("sqlite+aiosqlite:///", "")
-        return Path(db_path)
-    else:
-        raise ValueError(f"Unsupported database URL: {DATABASE_URL}")
+    return DatabaseManager.get_instance().get_session_maker()
 
 
-def ensure_database_directory():
-    """Ensure database directory exists."""
-    db_path = get_database_path()
-    db_path.parent.mkdir(parents=True, exist_ok=True)
+async def get_async_session() -> AsyncIterator[AsyncSession]:
+    """
+    Get an async database session as an async context manager.
+
+    Usage:
+        async for session in get_async_session():
+            # Use session here
+            result = await session.execute(query)
+            await session.commit()
+
+    Yields:
+        AsyncSession: An async database session
+    """
+    session_maker = get_session_maker()
+    async with session_maker() as session:
+        try:
+            yield session
+        except Exception:
+            # Rollback on exception before re-raising
+            await session.rollback()
+            raise
+
+
+async def init_db() -> None:
+    """
+    Initialize the database (deprecated - kept for backward compatibility).
+
+    This function initializes the DatabaseManager singleton and configures mappers.
+    The database is now initialized lazily when needed, but this function ensures
+    proper initialization for compatibility.
+    """
+    from sqlalchemy.orm import (
+        configure_mappers,  # noqa: PLC0415  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+    )
+
+    # Configure mappers before initializing database
+    configure_mappers()
+
+    # Initialize database manager
+    manager = DatabaseManager.get_instance()
+    manager._initialize_database()  # noqa: SLF001  # pylint: disable=protected-access  # Reason: Accessing protected method _initialize_database is necessary for database manager initialization, this is part of the DatabaseManager internal API
+
+    # Verify connectivity by getting engine (initializes if needed)
+    engine = get_engine()
+    async with engine.begin() as conn:
+        # Execute a simple query to verify connectivity
+        await conn.execute(select(1))  # noqa: S101  # Reason: Query result not needed, just connectivity check to verify database is accessible
+
+
+def reset_database() -> None:
+    """
+    Reset the database connection state (for testing).
+
+    This resets the DatabaseManager state without closing connections.
+    For actually closing connections, use DatabaseManager.get_instance().close() in async contexts.
+
+    Note: This is a synchronous function for test compatibility.
+    """
+    # Reset singleton instance
+    DatabaseManager.reset_instance()
+    # Reset module-level _database_url for backward compatibility with tests
+    global _database_url  # pylint: disable=global-statement  # Reason: Required for test cleanup, module-level variable must be reset for test isolation
+    _database_url = None
+    _reset_database_url_state()
+    # Also reset database_config_helpers state to ensure tests can mock get_config()
+    set_test_database_url(None)
+
+
+async def close_db() -> None:
+    """
+    Close database connections.
+
+    This closes the database manager's engine and connections properly.
+    For testing, use reset_database() instead.
+    """
+    try:
+        manager = DatabaseManager.get_instance()
+        engine = manager.get_engine()
+        if engine:
+            await manager.close()
+    except RuntimeError as e:
+        raise RuntimeError("Failed to close database connections") from e
+
+
+def ensure_database_directory() -> None:
+    """
+    Ensure database directory exists (deprecated for PostgreSQL).
+
+    This function is a no-op for PostgreSQL databases as they don't use file paths.
+    Kept for backward compatibility with code that may call it.
+    """
+    # PostgreSQL doesn't use file paths, so this is a no-op
+
+
+def get_engine() -> AsyncEngine:
+    """
+    Get the database engine from DatabaseManager.
+
+    Returns:
+        AsyncEngine: The database engine
+
+    Raises:
+        ValidationError: If database cannot be initialized
+    """
+    return DatabaseManager.get_instance().get_engine()
+
+
+def get_database_path() -> Path | None:
+    """
+    Get the database file path (deprecated for PostgreSQL).
+
+    Returns:
+        Path | None: Always None for PostgreSQL (no file path)
+    """
+    return DatabaseManager.get_instance().get_database_path()
+
+
+def get_database_url() -> str | None:
+    """
+    Get the database URL from DatabaseManager.
+
+    Returns:
+        str | None: The database URL
+    """
+    return DatabaseManager.get_instance().get_database_url()
+
+
+__all__ = [
+    "DatabaseManager",
+    "ValidationError",
+    "get_async_session",
+    "get_session_maker",
+    "get_engine",
+    "reset_database",
+    "get_database_path",
+    "get_database_url",
+]

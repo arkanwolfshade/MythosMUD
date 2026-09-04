@@ -9,14 +9,15 @@ systems is essential for maintaining the integrity of our eldritch architecture.
 """
 
 import threading
+import uuid
 from collections import defaultdict
 from datetime import UTC, datetime
 from typing import Any
 
-from ..logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 
-class MovementMonitor:
+class MovementMonitor:  # pylint: disable=too-many-instance-attributes  # Reason: Monitoring system requires many metrics and state tracking attributes
     """
     Comprehensive monitoring system for the movement system.
 
@@ -28,7 +29,7 @@ class MovementMonitor:
     - Alert system for anomalies
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the movement monitor with empty metrics."""
         self._logger = get_logger("MovementMonitor")
         self._lock = threading.RLock()
@@ -38,18 +39,18 @@ class MovementMonitor:
         self._failed_movements = 0
         self._concurrent_movements = 0
         self._max_concurrent_movements = 0
-        self._movement_times = []
-        self._room_occupancy = defaultdict(int)
-        self._player_movements = defaultdict(int)
+        self._movement_times: list[float] = []
+        self._room_occupancy: dict[str, int] = defaultdict(int)
+        self._player_movements: dict[str, int] = defaultdict(int)
 
         # Validation tracking
         self._integrity_checks = 0
         self._integrity_violations = 0
-        self._last_validation_time = None
+        self._last_validation_time: datetime | None = None
 
         # Performance tracking
         self._start_time = datetime.now(UTC)
-        self._last_movement_time = None
+        self._last_movement_time: datetime | None = None
 
         # Alert thresholds
         self._alert_thresholds = {
@@ -61,9 +62,9 @@ class MovementMonitor:
 
         self._logger.info("MovementMonitor initialized")
 
-    def record_movement_attempt(
-        self, player_id: str, from_room_id: str, to_room_id: str, success: bool, duration_ms: float
-    ):
+    def record_movement_attempt(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Movement monitoring requires many parameters to track complete movement state
+        self, player_id: uuid.UUID | str, from_room_id: str, to_room_id: str, success: bool, duration_ms: float
+    ) -> None:
         """Record a movement attempt with metrics."""
         with self._lock:
             self._movement_count += 1
@@ -71,7 +72,9 @@ class MovementMonitor:
                 self._failed_movements += 1
 
             self._movement_times.append(duration_ms)
-            self._player_movements[player_id] += 1
+            # Convert UUID to string for dictionary key (UUIDs are hashable but we use strings for JSON serialization)
+            player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
+            self._player_movements[player_id_str] += 1
             self._last_movement_time = datetime.now(UTC)
 
             # Update room occupancy
@@ -80,21 +83,26 @@ class MovementMonitor:
                 self._room_occupancy[to_room_id] += 1
 
             # Log movement details
+            # Structlog handles UUID objects automatically, no need to convert to string
             self._logger.debug(
-                f"Movement recorded: {player_id} {from_room_id}->{to_room_id} "
-                f"(success={success}, duration={duration_ms:.2f}ms)"
+                "Movement recorded",
+                player_id=player_id,
+                from_room=from_room_id,
+                to_room=to_room_id,
+                success=success,
+                duration_ms=duration_ms,
             )
 
             # Check for alerts
             self._check_alerts()
 
-    def record_concurrent_movement(self, count: int):
+    def record_concurrent_movement(self, count: int) -> None:
         """Record concurrent movement count."""
         with self._lock:
             self._concurrent_movements = count
             self._max_concurrent_movements = max(self._max_concurrent_movements, count)
 
-    def record_integrity_check(self, violation_found: bool):
+    def record_integrity_check(self, violation_found: bool) -> None:
         """Record an integrity check result."""
         with self._lock:
             self._integrity_checks += 1
@@ -102,48 +110,33 @@ class MovementMonitor:
                 self._integrity_violations += 1
             self._last_validation_time = datetime.now(UTC)
 
-    def validate_room_integrity(self, rooms: dict[str, Any]) -> dict[str, Any]:
-        """
-        Validate room data integrity.
-
-        Returns a dictionary with validation results and any violations found.
-        """
-        violations = []
+    def _collect_room_player_map(self, rooms: dict[str, Any]) -> tuple[list[str], int]:
+        violations: list[str] = []
         total_players = 0
-
-        # Check for players in multiple rooms
-        player_rooms = {}
+        player_rooms: dict[str, str] = {}
         for room_id, room in rooms.items():
-            if hasattr(room, "get_players"):
-                players = room.get_players()
-                total_players += len(players)
+            if not hasattr(room, "get_players"):
+                continue
+            players = room.get_players()
+            total_players += len(players)
+            for player_id in players:
+                if player_id in player_rooms:
+                    violations.append(
+                        f"Player {player_id} found in multiple rooms: {player_rooms[player_id]} and {room_id}"
+                    )
+                else:
+                    player_rooms[player_id] = room_id
+        return violations, total_players
 
-                for player_id in players:
-                    if player_id in player_rooms:
-                        violations.append(
-                            f"Player {player_id} found in multiple rooms: {player_rooms[player_id]} and {room_id}"
-                        )
-                    else:
-                        player_rooms[player_id] = room_id
-
-        # Check for orphaned players (players not in any room)
-        orphaned_players = set()
-        for _room_id, room in rooms.items():
-            if hasattr(room, "get_players"):
-                for player_id in room.get_players():
-                    orphaned_players.discard(player_id)
-
-        if orphaned_players:
-            violations.append(f"Orphaned players found: {orphaned_players}")
-
-        # Calculate metrics
+    def validate_room_integrity(self, rooms: dict[str, Any]) -> dict[str, Any]:
+        """Validate players are not in multiple rooms."""
+        violations, total_players = self._collect_room_player_map(rooms)
         avg_occupancy = total_players / len(rooms) if rooms else 0
         max_occupancy = max(
             (len(room.get_players()) for room in rooms.values() if hasattr(room, "get_players")), default=0
         )
-
         result = {
-            "valid": len(violations) == 0,
+            "valid": not violations,
             "violations": violations,
             "total_rooms": len(rooms),
             "total_players": total_players,
@@ -151,14 +144,11 @@ class MovementMonitor:
             "max_occupancy": max_occupancy,
             "timestamp": datetime.now(UTC),
         }
-
         self.record_integrity_check(len(violations) > 0)
-
         if violations:
-            self._logger.warning(f"Room integrity violations found: {violations}")
+            self._logger.warning("Room integrity violations found", violations=violations)
         else:
             self._logger.debug("Room integrity check passed")
-
         return result
 
     def get_metrics(self) -> dict[str, Any]:
@@ -223,13 +213,13 @@ class MovementMonitor:
 
         return alerts
 
-    def _check_alerts(self):
+    def _check_alerts(self) -> None:
         """Check for alerts and log them."""
         alerts = self.get_alerts()
         if alerts:
-            self._logger.warning(f"Movement system alerts: {alerts}")
+            self._logger.warning("Movement system alerts", alerts=alerts)
 
-    def reset_metrics(self):
+    def reset_metrics(self) -> None:
         """Reset all metrics (useful for testing)."""
         with self._lock:
             self._movement_count = 0
@@ -246,36 +236,67 @@ class MovementMonitor:
             self._last_validation_time = None
             self._logger.info("Movement metrics reset")
 
-    def log_performance_summary(self):
+    def get_performance_summary(self) -> dict[str, Any]:
+        """
+        Get a formatted performance summary for API responses.
+
+        This method encapsulates the logic for formatting metrics into a
+        human-readable summary, centralizing business logic that was
+        previously in the API endpoint.
+
+        Returns:
+            dict[str, Any]: Formatted performance summary with summary dict, alerts list, and timestamp
+        """
+        metrics = self.get_metrics()
+        alerts = self.get_alerts()
+
+        summary = {
+            "summary": {
+                "total_movements": metrics["total_movements"],
+                "success_rate": f"{metrics['success_rate']:.2%}",
+                "avg_movement_time": f"{metrics['avg_movement_time_ms']:.2f}ms",
+                "current_concurrent": metrics["current_concurrent_movements"],
+                "max_concurrent": metrics["max_concurrent_movements"],
+                "integrity_rate": f"{metrics['integrity_rate']:.2%}",
+                "uptime": f"{metrics['uptime_seconds']:.1f}s",
+                "alert_count": len(alerts),
+            },
+            "alerts": alerts,
+            "timestamp": metrics["timestamp"].isoformat(),
+        }
+
+        return summary
+
+    def log_performance_summary(self) -> None:
         """Log a comprehensive performance summary."""
         metrics = self.get_metrics()
         alerts = self.get_alerts()
 
         self._logger.info(
-            f"Movement Performance Summary:\n"
-            f"  Total Movements: {metrics['total_movements']}\n"
-            f"  Success Rate: {metrics['success_rate']:.2%}\n"
-            f"  Avg Movement Time: {metrics['avg_movement_time_ms']:.2f}ms\n"
-            f"  Current Concurrent: {metrics['current_concurrent_movements']}\n"
-            f"  Max Concurrent: {metrics['max_concurrent_movements']}\n"
-            f"  Integrity Rate: {metrics['integrity_rate']:.2%}\n"
-            f"  Uptime: {metrics['uptime_seconds']:.1f}s\n"
-            f"  Alerts: {len(alerts)}"
+            "Movement performance summary",
+            total_movements=metrics["total_movements"],
+            success_rate=f"{metrics['success_rate']:.2%}",
+            avg_movement_time_ms=metrics["avg_movement_time_ms"],
+            current_concurrent=metrics["current_concurrent_movements"],
+            max_concurrent=metrics["max_concurrent_movements"],
+            integrity_rate=f"{metrics['integrity_rate']:.2%}",
+            uptime_seconds=metrics["uptime_seconds"],
+            alert_count=len(alerts),
         )
 
         if alerts:
             for alert in alerts:
-                self._logger.warning(f"Alert: {alert}")
+                self._logger.warning("Alert", alert=alert)
 
 
 # Global monitor instance
-_movement_monitor: MovementMonitor | None = None
+_movement_monitor: MovementMonitor | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
 _monitor_lock = threading.RLock()
 
 
 def get_movement_monitor() -> MovementMonitor:
     """Get the global movement monitor instance."""
-    global _movement_monitor
+    global _movement_monitor  # pylint: disable=global-statement  # Reason: Singleton pattern for movement monitor
 
     with _monitor_lock:
         if _movement_monitor is None:
@@ -284,9 +305,9 @@ def get_movement_monitor() -> MovementMonitor:
         return _movement_monitor
 
 
-def reset_movement_monitor():
+def reset_movement_monitor() -> None:
     """Reset the global movement monitor (useful for testing)."""
-    global _movement_monitor
+    global _movement_monitor  # pylint: disable=global-statement  # Reason: Singleton pattern for testing reset
 
     with _monitor_lock:
         if _movement_monitor:

@@ -1,0 +1,440 @@
+"""
+Unified Command Handler for MythosMUD.
+
+This module provides a single, unified command processing system that
+works for both HTTP API and WebSocket connections. It replaces the
+previous command_handler_v2.py and provides a clean, maintainable
+architecture for all command processing.
+
+As the Necronomicon states: "In unity there is strength, and in
+consistency there is power."
+"""
+
+from typing import Annotated, cast
+
+from fastapi import APIRouter, Depends, HTTPException, Request, status
+
+from .alias_storage import AliasStorage
+from .auth.users import get_current_user
+from .command_handler import (
+    MAX_COMMAND_LENGTH,
+    check_alias_safety,
+    check_catatonia_block,
+    clean_command_input,
+    handle_expanded_command,
+    normalize_command,
+    process_command_with_validation,
+    should_treat_as_emote,
+    validate_expanded_command,
+)
+from .command_handler.command_execution_request import CommandExecutionRequest
+from .command_handler.command_guards import (
+    check_casting_state as _check_casting_state,
+)
+from .command_handler.command_guards import (
+    check_grace_period_block as _check_grace_period_block,
+)
+from .commands.command_service import CommandService
+from .config import get_config
+from .help.help_content import get_help_content as get_help_content_new
+from .middleware.command_rate_limiter import command_rate_limiter
+from .models.alias import Alias
+from .models.user import User
+from .schemas.shared.base import SecureBaseModel
+from .structured_logging.enhanced_logging_config import get_logger
+from .utils.audit_logger import audit_logger
+from .utils.command_parser import get_username_from_user
+from .validators.command_validator import CommandValidator
+
+logger = get_logger(__name__)
+
+router = APIRouter(prefix="/command", tags=["command"])
+
+# Global instances
+command_service = CommandService()
+
+
+class CommandRequest(SecureBaseModel):
+    """Request model for command processing."""
+
+    command: str
+
+
+def _as_user_dict(current_user: object) -> dict[str, object]:
+    """Narrow command-path user payloads to dict[str, object] for typed handlers."""
+    return cast(dict[str, object], current_user)
+
+
+def _prepare_command_for_processing(
+    command_line: str, player_name: str, alias_storage: AliasStorage | None
+) -> tuple[str, str, list[str], AliasStorage | None, dict[str, object] | None]:
+    """Prepare command for processing. Returns (command_line, cmd, args, alias_storage, error_result)."""
+    rate_limit_result = _check_rate_limit(player_name)
+    if rate_limit_result:
+        return "", "", [], alias_storage, rate_limit_result
+
+    validation_result = _validate_command_basics(command_line, player_name)
+    if validation_result:
+        return "", "", [], alias_storage, validation_result
+
+    command_line = clean_command_input(command_line)
+    if not command_line:
+        logger.debug("Empty command after cleaning")
+        return "", "", [], alias_storage, {"result": ""}
+
+    command_line = normalize_command(command_line)
+    if not command_line:
+        logger.debug("Empty command after normalization")
+        return "", "", [], alias_storage, {"result": ""}
+
+    alias_storage = _ensure_alias_storage(alias_storage)
+
+    parts = command_line.split()
+    cmd = parts[0].lower()
+    args = parts[1:]
+
+    logger.debug(
+        "Command parsed",
+        player=player_name,
+        command=cmd,
+        args=args,
+        original_command=command_line,
+    )
+
+    return command_line, cmd, args, alias_storage, None
+
+
+async def _check_all_command_blocks(
+    cmd: str, player_name: str, request: CommandExecutionRequest
+) -> dict[str, object] | None:
+    """Check all command blocking conditions. Returns result if blocked, None otherwise."""
+    logger.debug("Checking catatonia before command processing", player=player_name, command=cmd)
+    block_catatonia, catatonia_message = await check_catatonia_block(player_name, cmd, request)
+    logger.debug(
+        "Catatonia check result",
+        player=player_name,
+        command=cmd,
+        block=block_catatonia,
+        message=catatonia_message,
+    )
+    if block_catatonia:
+        logger.info(
+            "Command blocked due to catatonia",
+            player=player_name,
+            command=cmd,
+            message=catatonia_message,
+        )
+        return {"result": catatonia_message}
+
+    grace_period_result = await _check_grace_period_block(player_name, request)
+    if grace_period_result:
+        return grace_period_result
+
+    casting_result = await _check_casting_state(cmd, player_name, request)
+    if casting_result:
+        return casting_result
+
+    return None
+
+
+async def _handle_special_command_routing(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command routing requires many parameters for context and routing logic
+    cmd: str,
+    args: list[str],
+    command_line: str,
+    alias_storage: AliasStorage | None,
+    player_name: str,
+    current_user: object,
+    request: CommandExecutionRequest,
+) -> dict[str, object] | None:
+    """Handle special command routing (alias management, alias expansion, emote). Returns result if handled, None otherwise."""
+    user = _as_user_dict(current_user)
+    if cmd in ["alias", "aliases", "unalias"]:
+        logger.debug("Processing alias management command", player=player_name, command=cmd)
+        if alias_storage is None:
+            return {"result": "Alias system not available"}
+        return await command_service.process_command(command_line, user, request, alias_storage, player_name)
+
+    alias_result = await _process_alias_expansion(cmd, args, alias_storage, player_name, current_user, request)
+    if alias_result:
+        return alias_result
+
+    if not args and should_treat_as_emote(cmd, request):
+        logger.debug(
+            "Single word emote detected, converting to emote command",
+            player=player_name,
+            emote=cmd,
+        )
+        emote_command = f"emote {cmd}"
+        return await command_service.process_command(emote_command, user, request, alias_storage, player_name)
+
+    return None
+
+
+async def process_command_unified(
+    command_line: str,
+    current_user: object,
+    request: CommandExecutionRequest,
+    alias_storage: AliasStorage | None = None,
+    player_name: str | None = None,
+) -> dict[str, object]:
+    """
+    Unified command processing function for both HTTP and WebSocket.
+
+    This is the single source of truth for all command processing in MythosMUD.
+    It handles command validation, alias expansion, and routing to appropriate handlers.
+
+    Args:
+        command_line: The raw command string
+        current_user: Current user information
+        request: FastAPI request object (or WebSocket request context)
+        alias_storage: Optional alias storage instance
+        player_name: Optional player name (will be extracted from current_user if not provided)
+
+    Returns:
+        dict: Command result with 'result' key and optional metadata
+    """
+    if not player_name:
+        player_name = get_username_from_user(current_user)
+
+    logger.debug(
+        "=== UNIFIED COMMAND HANDLER: Processing command ===",
+        player=player_name,
+        command=command_line,
+    )
+
+    command_line, cmd, args, alias_storage, error_result = _prepare_command_for_processing(
+        command_line, player_name, alias_storage
+    )
+    if error_result:
+        return error_result
+
+    block_result = await _check_all_command_blocks(cmd, player_name, request)
+    if block_result:
+        return block_result
+
+    special_result = await _handle_special_command_routing(
+        cmd, args, command_line, alias_storage, player_name, current_user, request
+    )
+    if special_result:
+        return special_result
+
+    logger.debug("Processing command with validation system", player=player_name, command=cmd)
+    return await process_command_with_validation(
+        command_line, _as_user_dict(current_user), request, alias_storage, player_name
+    )
+
+
+def _check_rate_limit(player_name: str) -> dict[str, object] | None:
+    """Check if player is rate limited. Returns result dict if blocked, None if allowed."""
+    if not command_rate_limiter.is_allowed(player_name):
+        wait_time = command_rate_limiter.get_wait_time(player_name)
+        logger.warning("Command rate limit exceeded", player=player_name, wait_time=wait_time)
+        # Log security event
+        audit_logger.log_security_event(
+            event_type="rate_limit_violation",
+            player_name=player_name,
+            description=f"Command rate limit exceeded, wait {wait_time:.1f}s",
+            severity="medium",
+            metadata={"wait_time": wait_time},
+        )
+        return {"result": f"Too many commands. Please wait {wait_time:.1f} seconds."}
+    return None
+
+
+def _validate_command_basics(command_line: str, player_name: str) -> dict[str, object] | None:
+    """Validate basic command requirements. Returns result dict if invalid, None if valid."""
+    if not command_line:
+        logger.debug("Empty command received")
+        return {"result": ""}
+
+    if len(command_line) > MAX_COMMAND_LENGTH:
+        logger.warning(
+            "Command too long rejected",
+            player=player_name,
+            length=len(command_line),
+            max_length=MAX_COMMAND_LENGTH,
+        )
+        return {"result": f"Command too long (max {MAX_COMMAND_LENGTH} characters)"}
+
+    # Command Content Validation (CRITICAL-3)
+    # Prevent command injection and malicious input
+    is_valid, validation_error = CommandValidator.validate_command_content(command_line)
+    if not is_valid:
+        logger.warning(
+            "Command validation failed",
+            player=player_name,
+            error=validation_error,
+            command=CommandValidator.sanitize_for_logging(command_line),
+        )
+        # Log security event
+        audit_logger.log_security_event(
+            event_type="command_injection_attempt",
+            player_name=player_name,
+            description=validation_error or "Invalid command format",
+            severity="high",
+            metadata={"command_sample": command_line[:100]},
+        )
+        return {"result": "Invalid command format"}
+
+    return None
+
+
+def _ensure_alias_storage(alias_storage: AliasStorage | None) -> AliasStorage | None:
+    """Ensure alias storage is initialized."""
+    if alias_storage:
+        return alias_storage
+
+    try:
+        config = get_config()
+        aliases_dir = config.game.aliases_dir
+        storage = AliasStorage(storage_dir=aliases_dir) if aliases_dir else AliasStorage()
+        logger.debug("AliasStorage initialized")
+        return storage
+    except (OSError, ValueError, TypeError) as e:
+        logger.error(
+            "Failed to initialize AliasStorage",
+            error=str(e),
+            error_type=type(e).__name__,
+        )
+        return None
+
+
+async def _run_expanded_alias(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Expansion needs alias, args, user, and request context
+    alias: Alias,
+    args: list[str],
+    cmd: str,
+    alias_storage: AliasStorage,
+    player_name: str,
+    current_user: object,
+    request: CommandExecutionRequest,
+    expansion_depth: int,
+) -> dict[str, object]:
+    """Validate, audit, and execute an expanded alias command."""
+    expanded_command = alias.get_expanded_command(args)
+    is_valid, validation_error = validate_expanded_command(expanded_command, player_name, alias.name, expansion_depth)
+    if not is_valid:
+        return {"result": validation_error}
+
+    audit_logger.log_alias_expansion(
+        player_name=player_name,
+        alias_name=alias.name,
+        expanded_command=expanded_command,
+        cycle_detected=False,
+        expansion_depth=expansion_depth,
+    )
+    logger.debug(
+        "Alias safe to expand",
+        player=player_name,
+        alias_name=alias.name,
+        depth=expansion_depth,
+    )
+
+    result = cast(
+        dict[str, object],
+        await handle_expanded_command(
+            expanded_command,
+            _as_user_dict(current_user),
+            request,
+            alias_storage,
+            player_name,
+            depth=0,
+            alias_chain=[],
+        ),
+    )
+    if "alias_chain" not in result:
+        result["alias_chain"] = [{"original": cmd, "expanded": expanded_command, "alias_name": alias.name}]
+    return result
+
+
+async def _process_alias_expansion(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command processing requires many parameters for context and routing
+    cmd: str,
+    args: list[str],
+    alias_storage: AliasStorage | None,
+    player_name: str,
+    current_user: object,
+    request: CommandExecutionRequest,
+) -> dict[str, object] | None:
+    """Process alias expansion if applicable. Returns result if alias processed."""
+    if not alias_storage:
+        return None
+
+    alias = alias_storage.get_alias(player_name, cmd)
+    if not alias:
+        return None
+
+    logger.debug(
+        "Alias found, checking safety",
+        player=player_name,
+        alias_name=alias.name,
+        original_command=cmd,
+    )
+
+    is_safe, error_msg, expansion_depth = await check_alias_safety(alias_storage, player_name, alias.name)
+    if not is_safe:
+        return {"result": error_msg}
+
+    return await _run_expanded_alias(
+        alias, args, cmd, alias_storage, player_name, current_user, request, expansion_depth
+    )
+
+
+# HTTP API endpoint
+@router.post("", status_code=status.HTTP_200_OK, response_model=None)
+async def handle_command(
+    req: CommandRequest,
+    request: Request,
+    current_user: Annotated[User | None, Depends(get_current_user)],
+) -> dict[str, object]:
+    """Handle incoming HTTP command requests."""
+    command_line = req.command
+
+    # Check if user is authenticated
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Authentication required")
+
+    player_name = get_username_from_user(current_user)
+    logger.info(
+        "HTTP command received",
+        player=player_name,
+        command=command_line,
+        length=len(command_line),
+    )
+
+    # Process command using unified handler
+    result = await process_command_unified(command_line, current_user, request, player_name=player_name)
+
+    logger.debug("HTTP command processed successfully", player=player_name, result=result)
+    return result
+
+
+# Legacy compatibility function
+async def process_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command processing requires many parameters for context and routing
+    cmd: str,
+    args: list[str],
+    current_user: object,
+    request: CommandExecutionRequest,
+    alias_storage: AliasStorage,
+    player_name: str,
+) -> dict[str, object]:
+    """
+    Legacy command processing function for backward compatibility.
+
+    This function maintains compatibility with existing code that expects
+    the old command signature while delegating to the new unified system.
+    """
+    logger.debug("Using legacy command processing", player=player_name, command=cmd, args=args)
+
+    # Reconstruct the command line
+    command_line = f"{cmd} {' '.join(args)}".strip()
+
+    # Use the new unified system
+    return await process_command_unified(command_line, current_user, request, alias_storage, player_name)
+
+
+def get_help_content(command_name: str | None = None) -> str:
+    """
+    Get help content for commands.
+
+    This is a compatibility function that delegates to the new help system.
+    """
+    return get_help_content_new(command_name)

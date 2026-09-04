@@ -1,0 +1,47 @@
+---
+name: mythosmud-full-stack-feature
+description: Implement MythosMUD features across the full stack: client (React/TypeScript), server (FastAPI/Pydantic), and persistence (PostgreSQL). Use when the user asks to implement a feature, add an endpoint, or build a new capability.
+---
+
+# MythosMUD Full-Stack Feature
+
+## Principle
+
+When implementing a feature, implement the **entire stack**: client, server, and persistence (where applicable).
+
+## Authority
+
+**Server is authoritative over the client.** On any disparity, server state is correct; client must follow
+server data (events, command responses, room/game state). See AGENTS.md "Server authority (critical)" and
+`.cursor/rules/server-authority.mdc`.
+
+## Checklist
+
+- [ ] **API / server:** Routes, request/response models (Pydantic), business logic. Location: `server/`
+- [ ] **Persistence:** Schema changes, migrations, repositories if needed. PostgreSQL only; see
+      [mythosmud-database-placement](.cursor/skills/mythosmud-database-placement). Location: `db/`, `server/`
+- [ ] **Client:** UI, hooks, API calls, types. Location: `client/`. Client state must reflect server authority.
+- [ ] **In-game help:** Player-facing commands get `help <command>` in `server/help/help_content.py`
+- [ ] **Authoring docs:** Content tools get a runbook under `docs/runbooks/` (or subsystem doc)
+- [ ] **Terminology:** Use "coordinator" or "controller," not "master"; use "agent," not "slave"
+
+## Stack Summary
+
+| Layer  | Tech                  | Notes                                   |
+| ------ | --------------------- | --------------------------------------- |
+| Client | React 18+, TypeScript | `client/`                               |
+| API    | FastAPI, Pydantic     | `server/`                               |
+| Data   | PostgreSQL            | No SQLite; no `*.db` without permission |
+
+## When to Touch Each Layer
+
+- **New endpoint:** Server route + Pydantic models; client API function + types; optionally OpenAPI regen (see mythosmud-openapi-workflow).
+- **New screen or flow:** Client components + server endpoints + persistence if data is stored.
+- **New persisted entity:** DB schema/migrations, server repository and models, client types and UI.
+
+## Reference
+
+- Full rule: [AGENTS.md](../../AGENTS.md) "Architecture guidelines" / "Implementation requirements"
+- Terminology: [AGENTS.md](../../AGENTS.md) "Code quality and CI policy" / "Terminology"; user rules: coordinator/agent,
+  not master/slave
+- Database: [mythosmud-database-placement](../mythosmud-database-placement/SKILL.md)

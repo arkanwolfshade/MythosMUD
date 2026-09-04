@@ -1,0 +1,24 @@
+name: "CodeQL Configuration for MythosMUD"
+
+# CodeQL configuration to suppress false positives for test credentials
+# These are intentional test passwords for CI/test environments only, not used in production
+
+query-filters:
+  # Exclude hardcoded credential queries for test credentials
+  # The hardcoded passwords are test values for CI/test environments only
+  - exclude:
+      id: py/hardcoded-credentials
+      reason: "Test credentials in CI workflows and example files are intentional and documented"
+  - exclude:
+      id: js/hardcoded-credentials
+      reason: "Test credentials in CI workflows and example files are intentional and documented"
+
+# Path-based exclusions for files containing intentional test credentials
+# Example files are templates showing what secrets are needed, not actual secrets
+# Workflow files contain test passwords for CI environment setup
+# Dockerfile contains test passwords for CI container setup
+paths-ignore:
+  - '.github/workflows/ci.yml'
+  - 'Dockerfile.github-runner'
+  - '**/*.example'
+  - 'env.*.example'

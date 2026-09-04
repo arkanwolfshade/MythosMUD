@@ -1,0 +1,203 @@
+/**
+ * CharacterNameScreen: final step of character creation (plan 10.6 F5).
+ * Name input and POST create-character with rolled stats, profession_id, and skills payload.
+ */
+
+import React, { useState } from 'react';
+import type { Stats } from '../hooks/useStatsRolling.js';
+import { getErrorMessage, isErrorResponse } from '../utils/errorHandler.js';
+import { logger } from '../utils/logger.js';
+import {
+  PLAYER_NAME_MAX_LENGTH,
+  PLAYER_NAME_MIN_LENGTH,
+  PLAYER_NAME_RULES_HINT,
+  validatePlayerName,
+} from '../utils/playerNameValidation.js';
+import type { Profession } from './ProfessionCard.tsx';
+
+export interface OccupationSlotPayload {
+  skill_id: number;
+  value: number;
+}
+
+export interface PersonalInterestPayload {
+  skill_id: number;
+}
+
+export interface SkillsPayload {
+  occupation_slots: OccupationSlotPayload[];
+  personal_interest: PersonalInterestPayload[];
+}
+
+interface CharacterNameScreenProps {
+  stats: Stats;
+  profession: Profession;
+  skillsPayload: SkillsPayload;
+  baseUrl: string;
+  authToken: string;
+  onComplete: () => void;
+  onError: (error: string) => void;
+  onBack: () => void;
+}
+
+interface CreateCharacterPayload {
+  name: string;
+  stats: Stats;
+  profession_id: number;
+  occupation_slots: OccupationSlotPayload[];
+  personal_interest: PersonalInterestPayload[];
+}
+
+function buildCreateCharacterPayload(
+  trimmedName: string,
+  stats: Stats,
+  professionId: number,
+  skillsPayload: SkillsPayload
+): CreateCharacterPayload {
+  return {
+    name: trimmedName,
+    stats,
+    profession_id: professionId,
+    occupation_slots: skillsPayload.occupation_slots,
+    personal_interest: skillsPayload.personal_interest,
+  };
+}
+
+function getCreateCharacterErrorMessage(rawData: unknown): string | null {
+  if (isErrorResponse(rawData)) {
+    return getErrorMessage(rawData);
+  }
+  if (typeof rawData !== 'object' || rawData === null) {
+    return null;
+  }
+
+  const data = rawData as Record<string, unknown>;
+  if (typeof data.detail === 'string') {
+    return data.detail;
+  }
+
+  if (typeof data.detail === 'object' && data.detail !== null && 'message' in data.detail) {
+    return String((data.detail as Record<string, unknown>).message);
+  }
+
+  return null;
+}
+
+export const CharacterNameScreen: React.FC<CharacterNameScreenProps> = ({
+  stats,
+  profession,
+  skillsPayload,
+  baseUrl,
+  authToken,
+  onComplete,
+  onError,
+  onBack,
+}) => {
+  const [name, setName] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const inputId = 'character-name-input';
+  const hintId = 'character-name-hint';
+  const errorId = 'character-name-error';
+
+  const trimmedName = name.trim();
+  const nameValidation = validatePlayerName(trimmedName);
+  const inlineValidationError = trimmedName.length > 0 && !nameValidation.valid ? nameValidation.error : null;
+  const displayError = error ?? inlineValidationError;
+  const canSubmit = nameValidation.valid && !isSubmitting;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!nameValidation.valid) {
+      const validationError = nameValidation.error ?? 'Please enter a valid character name';
+      setError(validationError);
+      return;
+    }
+    setError(null);
+    setIsSubmitting(true);
+    try {
+      const payload = buildCreateCharacterPayload(trimmedName, stats, profession.id, skillsPayload);
+      const response = await fetch(`${baseUrl}/api/players/create-character`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify(payload),
+      });
+      if (response.ok) {
+        logger.info('CharacterNameScreen', 'Character created', { name: trimmedName });
+        onComplete();
+        return;
+      }
+
+      let errorMessage = 'Failed to create character';
+      try {
+        const rawData: unknown = await response.json();
+        const parsedErrorMessage = getCreateCharacterErrorMessage(rawData);
+        if (parsedErrorMessage) {
+          errorMessage = parsedErrorMessage;
+        }
+      } catch {
+        // use default
+      }
+      setError(errorMessage);
+      onError(errorMessage);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Network error';
+      setError(msg);
+      onError(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="character-name-screen" data-testid="character-name-screen">
+      <div className="character-name-container">
+        <h2>Name Your Character</h2>
+        <p className="character-name-instructions">
+          Enter a name for your character. This is the final step before creation.
+        </p>
+        <form onSubmit={handleSubmit}>
+          <label htmlFor={inputId}>Character name</label>
+          <input
+            id={inputId}
+            type="text"
+            value={name}
+            onChange={e => {
+              setName(e.target.value);
+              if (error) {
+                setError(null);
+              }
+            }}
+            placeholder="Enter name"
+            maxLength={PLAYER_NAME_MAX_LENGTH}
+            minLength={PLAYER_NAME_MIN_LENGTH}
+            disabled={isSubmitting}
+            aria-invalid={Boolean(displayError)}
+            aria-describedby={displayError ? `${hintId} ${errorId}` : hintId}
+            // eslint-disable-next-line jsx-a11y/no-autofocus -- single field form: focus name input on this step
+            autoFocus
+          />
+          <p id={hintId} className="character-name-hint">
+            {PLAYER_NAME_RULES_HINT}
+          </p>
+          {displayError && (
+            <p id={errorId} className="error-message" role="alert" aria-live="assertive">
+              {displayError}
+            </p>
+          )}
+          <div className="character-name-actions">
+            <button type="button" onClick={onBack} className="back-button">
+              Back
+            </button>
+            <button type="submit" disabled={!canSubmit} className="submit-button">
+              {isSubmitting ? 'Creating...' : 'Create Character'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};

@@ -1,7 +1,7 @@
 """
 Event envelope utilities for MythosMUD real-time messages.
 
-Provides a single, consistent schema for events emitted over both SSE and WebSocket:
+Provides a single, consistent schema for events emitted over WebSocket:
 - event_type: str
 - timestamp: ISO 8601 UTC with 'Z'
 - sequence_number: int (monotonic per-process)
@@ -12,14 +12,49 @@ Provides a single, consistent schema for events emitted over both SSE and WebSoc
 As noted in the Pnakotic Manuscripts, chronology must be preserved lest causality unravel.
 """
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event envelope building requires many parameters for complete event context
+
 from __future__ import annotations
 
 import json
+import uuid
+from collections.abc import Mapping
 from datetime import UTC, datetime
-from typing import Any
+from typing import Protocol, cast, override
 
-# Importing here avoids circular imports (connection_manager does not import this module)
-from .connection_manager import connection_manager
+
+class _SupportsEventSequence(Protocol):
+    """Minimal typing for connection_manager passed to build_event (sequence_counter only)."""
+
+    sequence_counter: int
+
+
+class UUIDEncoder(json.JSONEncoder):
+    """Custom JSON encoder that handles UUID objects."""
+
+    @override
+    def default(self, o: object) -> object:
+        if isinstance(o, uuid.UUID):
+            return str(o)
+        return cast(object, super().default(o))
+
+
+# Global sequence counter for events (when connection_manager not available)
+_global_sequence_counter = 0  # pylint: disable=invalid-name  # Reason: Private module-level variable, intentionally uses _ prefix
+_sequence_lock = None  # pylint: disable=invalid-name  # Reason: Private module-level variable, intentionally uses _ prefix
+
+
+def _get_next_global_sequence() -> int:
+    """Thread-safe global sequence number generation (fallback when no connection_manager)."""
+    import threading
+
+    global _global_sequence_counter, _sequence_lock  # pylint: disable=global-statement  # Reason: Singleton pattern for sequence counter
+    if _sequence_lock is None:
+        _sequence_lock = threading.Lock()
+
+    with _sequence_lock:
+        _global_sequence_counter += 1
+        return _global_sequence_counter
 
 
 def utc_now_z() -> str:
@@ -27,33 +62,50 @@ def utc_now_z() -> str:
     return datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z")
 
 
-def build_event(
+def build_event(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event building requires many parameters for complete event context
     event_type: str,
-    data: dict[str, Any] | None = None,
+    data: Mapping[str, object] | None = None,
     *,
     room_id: str | None = None,
-    player_id: str | None = None,
+    player_id: uuid.UUID | str | None = None,
     sequence_number: int | None = None,
-) -> dict[str, Any]:
-    """Create a normalized event envelope.
-
-    If sequence_number is not provided, a global monotonic value is assigned.
+    connection_manager: _SupportsEventSequence | None = None,
+) -> dict[str, object]:
     """
+    Create a normalized event envelope.
 
-    seq = sequence_number if sequence_number is not None else connection_manager._get_next_sequence()  # noqa: SLF001
-    event: dict[str, Any] = {
+    Args:
+        event_type: Type of event
+        data: Event data payload
+        room_id: Optional room ID for room-scoped events
+        player_id: Optional player ID for player-scoped events (UUID or string)
+        sequence_number: Optional explicit sequence number
+        connection_manager: Optional object with sequence_counter (see _SupportsEventSequence)
+
+    If sequence_number is not provided and connection_manager is available,
+    uses connection_manager's sequence counter. Otherwise uses global fallback.
+
+    AI Agent: connection_manager is now optional parameter instead of global import
+    """
+    # Prefer explicit sequence_number; otherwise bump connection_manager counter.
+    # Inline bump (same as get_next_sequence_impl) — do not import connection_manager_methods
+    # (that module imports build_event; a cycle breaks static analysis).
+    if sequence_number is not None:
+        seq = sequence_number
+    elif connection_manager is not None:
+        connection_manager.sequence_counter += 1
+        seq = connection_manager.sequence_counter
+    else:
+        seq = _get_next_global_sequence()  # Fallback for backward compatibility
+    event: dict[str, object] = {
         "event_type": event_type,
         "timestamp": utc_now_z(),
         "sequence_number": seq,
-        "data": data or {},
+        "data": {} if data is None else data,
     }
     if room_id is not None:
         event["room_id"] = room_id
     if player_id is not None:
+        # Keep UUID as UUID object - JSON serialization will handle it
         event["player_id"] = player_id
     return event
-
-
-def sse_line(event: dict[str, Any]) -> str:
-    """Encode an event dict as an SSE data line."""
-    return f"data: {json.dumps(event)}\n\n"

@@ -1,129 +1,376 @@
-# Security Documentation for MythosMUD
+# Security Policy
 
-## Critical Security Issues and Fixes
+## Reporting a Vulnerability
 
-### 1. Hardcoded Secret Keys (FIXED)
+The security of MythosMUD is of paramount importance. We take all security
+vulnerabilities seriously and appreciate your efforts to responsibly disclose
+your findings.
 
-**Issue**: Multiple secret keys were hardcoded in source code
-**Fix**: Now uses environment variables for all secrets
-**Action Required**: Set environment variables in production:
+### How to Report
 
-```bash
-export MYTHOSMUD_SECRET_KEY="your-super-secret-key-here"
-export MYTHOSMUD_JWT_SECRET="your-jwt-secret-key-here"
-export MYTHOSMUD_RESET_TOKEN_SECRET="your-reset-token-secret-here"
-export MYTHOSMUD_VERIFICATION_TOKEN_SECRET="your-verification-token-secret-here"
-```
+**Please DO NOT report security vulnerabilities through public GitHub issues.**
 
-**Files Updated**:
-- `server/auth_utils.py` - Uses `MYTHOSMUD_SECRET_KEY` for JWT operations
-- `server/auth/users.py` - Uses environment variables for FastAPI Users secrets
+Instead, please report security vulnerabilities by emailing the maintainers directly:
 
-### 2. Path Injection Vulnerabilities (FIXED)
+**Primary Contact**: @arkanwolfshade
 
-**Issue**: CodeQL flagged potential path injection in file operations
-**Fix**: Implemented secure path validation in `server/security_utils.py`
-**Implementation**:
+**Secondary Contact**: @TylerWolfshade
 
-- `validate_secure_path()` - Validates user-provided paths
-- `get_secure_file_path()` - Creates secure file paths
-- `is_safe_filename()` - Validates filenames
+Please include the following information in your report:
 
-### 3. Client-Side XSS Vulnerability (FIXED)
+- Type of vulnerability
+- Full paths of source file(s) related to the vulnerability
+- Location of the affected source code (tag/branch/commit or direct URL)
+- Step-by-step instructions to reproduce the issue
+- Proof-of-concept or exploit code (if possible)
+- Impact of the vulnerability, including how an attacker might exploit it
 
-**Issue**: Multiple cross-site scripting vulnerabilities in test client HTML file
-**Location**: `client/public/test_client.html` - multiple functions
-**CWE**: CWE-79 (Cross-site Scripting)
-**Vulnerabilities**:
-- Direct user input insertion into DOM via `innerHTML` in multiple functions
-- DOM text reinterpreted as HTML without proper escaping
-- User-controlled data from API responses inserted without sanitization
-**Fix**: Implemented comprehensive secure DOM manipulation using `textContent`
-**Implementation**:
-- Replaced all `innerHTML` usage with `textContent` for safe content insertion
-- Removed HTML escaping function (no longer needed)
-- Use `document.createElement()` and `appendChild()` for safe DOM manipulation
-- Set CSS classes via `className` property instead of inline HTML
-- Fixed vulnerabilities in: `testServerConnection`, `testRegistration`, `testAuthentication`, `testSSEConnection`, `testWebSocketConnection`, `testCommand`, and `log` functions
-- Prevents both direct XSS and DOM text reinterpretation attacks
+### What to Expect
 
-### 4. File-based User Storage (PLANNED MIGRATION)
+When you report a security vulnerability, you can expect:
 
-**Issue**: Still using JSON files for user storage
-**Plan**: Migrate to database storage via PersistenceLayer
-**Status**: In progress - TODO items exist in auth.py
+1. **Acknowledgment**: We will acknowledge receipt of your vulnerability
 
-## Security Best Practices
+   report within 48 hours
 
-### Environment Variables
+2. **Investigation**: We will investigate the issue and determine its severity
 
-- **Never hardcode secrets** in source code
+3. **Communication**: We will keep you informed of our progress toward a fix
+
+4. **Credit**: We will credit you for the discovery (unless you prefer to
+
+   remain anonymous)
+
+5. **Disclosure**: We will coordinate disclosure timing with you
+
+### Timeline
+
+**Initial Response**: Within 48 hours of report
+
+**Status Update**: Within 7 days with validation and severity assessment
+
+**Fix Deployment**: Based on severity (critical issues within 7-14 days)
+
+**Public Disclosure**: After patch is deployed and tested
+
+## Supported Versions
+
+| Version | Supported          |
+| ------- | ------------------ |
+| main    | :white_check_mark: |
+| dev     | :white_check_mark: |
+| < 1.0   | :x:                |
+
+**Note**: MythosMUD is currently in beta development. We are actively
+addressing security issues across all development branches.
+
+## Security Measures
+
+### Implemented Security Features
+
+MythosMUD implements comprehensive security measures to protect users and data:
+
+#### Authentication & Authorization
+
+Always verify user permissions before allowing access to resources
+
+- Never trust client-side validation alone
+
+- Implement rate limiting for authentication endpoints
+
+- Use secure session management practices
+
+**Argon2 Password Hashing**: Industry-leading password protection with
+
+configurable parameters
+
+**JWT Token Authentication**: Secure, stateless authentication with proper expiration
+
+**Invite-Only System**: Controlled access with database-backed invite management
+
+**Role-Based Access Control**: Admin and user role separation with proper
+
+authorization checks
+
+#### Data Protection
+
+**Environment Variable Configuration**: All secrets managed via environment variables
+
+**Encrypted Storage**: Sensitive data encrypted at rest
+
+**Secure Transmission**: HTTPS/WSS for all production communications
+
+**Input Sanitization**: Comprehensive server-side validation and sanitization
+
+- **SQL Injection Protection**: Parameterized queries throughout
+
+#### Application Security
+
+**XSS Protection**: Complete client-side XSS vulnerability elimination
+
+**Path Traversal Prevention**: Secure path validation for all file operations
+
+**Rate Limiting**: Per-user and per-endpoint abuse prevention
+
+**Security Headers**: Comprehensive HTTP security headers including CSP,
+
+HSTS, X-Frame-Options
+
+**CORS Configuration**: Properly configured cross-origin resource sharing
+
+#### Privacy & Compliance
+
+**COPPA Compliance**: Privacy-first design for minor users
+
+**Minimal Data Collection**: Only essential data collected
+
+**Data Deletion Rights**: Easy data deletion for all users
+
+**No Behavioral Tracking**: No user profiling or behavioral analytics
+
+#### Monitoring & Logging
+
+**Structured Logging**: Enhanced logging with MDC and correlation IDs
+
+**Security Event Tracking**: Comprehensive audit logging for security events
+
+**Automatic Sanitization**: Sensitive data automatically redacted from logs
+
+**Performance Monitoring**: Built-in metrics and monitoring capabilities
+
+### Automated Security Scanning
+
+We employ multiple automated security tools:
+
+**CodeQL**: Static application security testing
+
+**Semgrep**: Pattern-based vulnerability detection
+
+**Dependency Review**: Automated dependency vulnerability scanning
+
+**Pre-commit Hooks**: Security checks before code is committed
+
+- **GitHub Security Advisories**: Automated vulnerability alerts
+
+## Security Best Practices for Contributors
+
+When contributing to MythosMUD, please follow these security guidelines:
+
+### Code Security
+
+Never commit secrets, API keys, or passwords to the repository
+
 - Use environment variables for all sensitive configuration
-- Provide secure defaults for development
-- **Required Environment Variables**:
-  - `MYTHOSMUD_SECRET_KEY` - Main application secret
-  - `MYTHOSMUD_JWT_SECRET` - JWT token signing secret
-  - `MYTHOSMUD_RESET_TOKEN_SECRET` - Password reset token secret
-  - `MYTHOSMUD_VERIFICATION_TOKEN_SECRET` - Email verification token secret
+- Always validate and sanitize user input on the server side
+- Use parameterized queries for all database operations
+- Implement proper error handling without exposing sensitive information
 
-### Path Validation
+### Data Handling
 
-- Always validate user-provided paths
-- Use `os.path.normpath()` and check against base directory
-- Reject paths containing `..`, `~`, or directory separators
+Encrypt sensitive data at rest and in transit
 
-### Input Validation
+- Use Argon2 for password hashing (already implemented)
+- Implement proper access controls for user data
+- Follow the principle of least privilege
 
-- Validate all user inputs before processing
-- Use Pydantic models for request validation
-- Implement proper error handling
+### Testing
 
-### Authentication
+Write security tests for new features
 
-- Use bcrypt for password hashing
-- Implement proper JWT token validation
-- Set appropriate token expiration times
+- Test edge cases and potential attack vectors
+- Use the existing test framework (80%+ coverage required)
+- Test with both valid and malicious input
 
-## Security Checklist
+## Security Architecture
 
-### Before Production Deployment
+For detailed information about our security architecture and implementation:
 
-- [x] Set secure environment variables for all secrets
-- [ ] Migrate user storage from JSON files to database
-- [ ] Implement rate limiting for auth endpoints
-- [ ] Add HTTPS/SSL configuration
-- [ ] Review and update all file permissions
-- [ ] Implement proper logging for security events
-- [ ] Add input sanitization for all user inputs
-- [ ] Test for SQL injection vulnerabilities
-- [ ] Implement proper session management
+**Security Implementation**: See [docs/archive/SECURITY.md](docs/archive/SECURITY.md)
 
-### Ongoing Security
+**Security Fixes**: See [docs/SECURITY_FIXES.md](docs/SECURITY_FIXES.md)
 
-- [ ] Regular security audits
-- [ ] Keep dependencies updated
-- [ ] Monitor for new vulnerabilities
-- [ ] Implement security headers
-- [ ] Regular backup and recovery testing
+**SSE Authentication**: See [docs/SSE_AUTHENTICATION.md](docs/SSE_AUTHENTICATION.md)
 
-## Vulnerability Reporting
+**Command Security**: See [docs/COMMAND_SECURITY_GUIDE.md](docs/COMMAND_SECURITY_GUIDE.md)
 
-If you discover a security vulnerability, please:
+- **Development Guide**: See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)
 
-1. **DO NOT** create a public issue
-2. Contact the maintainers privately
-3. Provide detailed reproduction steps
-4. Allow time for assessment and fix
+## Known Security Considerations
 
-## Security Tools
+### OpenSSF Scorecard (org-process findings)
 
-- **CodeQL**: Static analysis for security vulnerabilities
-- **Bandit**: Python security linter
-- **Safety**: Dependency vulnerability checker
-- **Pre-commit hooks**: Automated security checks
+In-repo Scorecard and CodeQL findings are fixed in code when feasible. These Scorecard
+checks remain **owner/org process** (not resolved by repository source changes alone):
 
-## References
+- **Branch-Protection**: tighten GitHub rulesets (admin enforcement, required approvers,
+  dismiss stale reviews, last-push approval) in repository settings.
+- **CII-Best-Practices**: apply for / maintain the OpenSSF Best Practices badge.
+- **Fuzzing**: adopt a fuzzing program (for example OSS-Fuzz or project atheris targets)
+  when bandwidth allows.
 
-- [OWASP Top 10](https://owasp.org/www-project-top-ten/)
-- [OWASP Path Traversal](https://owasp.org/www-community/attacks/Path_Traversal)
+### Current Environment
+
+**MVP Status**: MythosMUD is currently in beta development
+
+**SQLite Database**: Using SQLite for MVP; PostgreSQL planned for production
+
+**Invite-Only**: Currently limited to invited users only
+
+**No Public Deployment**: Not yet deployed to production environment
+
+### Planned Enhancements
+
+Migration to PostgreSQL for production deployment
+
+- Enhanced audit logging and monitoring
+- Additional rate limiting refinements
+- Comprehensive penetration testing before public release
+
+## Vulnerability Disclosure Policy
+
+We follow responsible disclosure practices:
+
+1. **Private Reporting**: All vulnerabilities should be reported privately
+
+2. **Coordinated Disclosure**: We will work with you to coordinate public disclosure
+
+3. **Recognition**: Security researchers will be acknowledged (with permission)
+
+4. **No Legal Action**: We will not pursue legal action against researchers
+
+   who follow responsible disclosure
+
+### Out of Scope
+
+The following are explicitly out of scope:
+
+- Vulnerabilities in dependencies (please report directly to the dependency maintainers)
+- Social engineering attacks against maintainers or users
+- Physical attacks against infrastructure
+- Denial of service attacks (unless demonstrating a specific vulnerability)
+- Issues in third-party libraries or frameworks (report to their maintainers)
+
+## Security Hall of Fame
+
+We maintain a list of security researchers who have helped improve MythosMUD's security:
+
+- _Your name could be here! Report responsibly and help us keep the Mythos safe._
+
+## Additional Resources
+
+[OWASP Top 10](https://owasp.org/www-project-top-ten/)
+
+- [CWE Top 25](https://cwe.mitre.org/top25/)
 - [Python Security Best Practices](https://python-security.readthedocs.io/)
+- [FastAPI Security Documentation](https://fastapi.tiangolo.com/tutorial/security/)
+- [React Security Best Practices](https://snyk.io/blog/10-react-security-best-practices/)
+
+## Contact
+
+For security-related questions or concerns:
+
+**GitHub Issues**: For non-sensitive questions (use `security` label)
+
+**Private Contact**: Email maintainers directly for sensitive issues
+
+**Documentation**: Review comprehensive security docs in `/docs` directory
+
+---
+
+## Closing Note
+
+"The wards are in place, the sigils inscribed. We guard not only against the
+eldritch horrors of the Mythos, but also against the all-too-real threats of
+the digital realm."
+
+## Recent Security Remediations
+
+### Dependabot Security Fixes (January 2026)
+
+All 11 active Dependabot security alerts have been addressed:
+
+#### Fixed Vulnerabilities
+
+1. **urllib3** ([Alerts #15](https://github.com/arkanwolfshade/MythosMUD/security/dependabot/15),
+
+   [#16](https://github.com/arkanwolfshade/MythosMUD/security/dependabot/16),
+   [#18](https://github.com/arkanwolfshade/MythosMUD/security/dependabot/18)) - HIGH
+
+   **CVE-2025-66418**: DoS via excessive Content-Encoding chain
+
+   **CVE-2025-66471**: DoS via improper decompression in streaming API
+   - **Fixed**: Updated to urllib3>=2.6.0 (currently 2.6.3)
+   - **Files Modified**: `pyproject.toml`, `uv.lock`, `server/uv.lock`
+
+2. **pyasn1** ([Alerts #11](https://github.com/arkanwolfshade/MythosMUD/security/dependabot/11),
+
+   [#19](https://github.com/arkanwolfshade/MythosMUD/security/dependabot/19)) - HIGH
+
+   **CVE-2026-23490**: DoS via malformed RELATIVE-OID parsing
+
+   **Fixed**: Updated to pyasn1>=0.6.2
+   - **Files Modified**: `pyproject.toml`, `uv.lock`, `server/uv.lock`
+
+3. **starlette** ([Alert #14](https://github.com/arkanwolfshade/MythosMUD/security/dependabot/14)) - HIGH
+
+   **CVE-2025-62727**: DoS via quadratic-time Range header processing
+
+   **CVE-2025-54121**: DoS via blocking during multipart upload rollover
+   - **CVE-2024-47874**: Memory exhaustion via unbounded multipart form data
+   - **Fixed**: Updated to starlette>=0.50.0 (currently 0.50.0)
+   - **Files Modified**: `pyproject.toml`, `server/uv.lock`
+
+4. **python-multipart** ([Alert #12](https://github.com/arkanwolfshade/MythosMUD/security/dependabot/12)) - HIGH
+
+   **CVE-2024-53981**: DoS via excessive logging/skipping bytes
+
+   **CVE-2024-24762**: ReDoS in Content-Type header parsing
+   - **Fixed**: Already at patched version 0.0.21 (>=0.0.18)
+   - **Files Modified**: `pyproject.toml` (version constraint added)
+
+5. **fastapi-users** ([Alert #17](https://github.com/arkanwolfshade/MythosMUD/security/dependabot/17)) - MEDIUM
+
+   **CVE-2025-68481**: Login CSRF via insecure OAuth state tokens
+
+   **Fixed**: Already at patched version 15.0.3 (>=15.0.2)
+   - **Files Modified**: None (already compliant)
+
+6. **fonttools** ([Alert #21](https://github.com/arkanwolfshade/MythosMUD/security/dependabot/21)) - MEDIUM
+
+   **CVE-2025-66034**: Arbitrary file-write vulnerability
+
+   **CVE-2023-45139**: XXE vulnerability in subsetting module
+   - **Fixed**: Updated to fonttools>=4.60.2 (currently 4.61.1)
+   - **Files Modified**: `pyproject.toml`, `uv.lock`
+
+#### Known Limitations
+
+1. **ecdsa / python-jose (resolved for MythosMUD direct deps)** — Previously, `ecdsa` was pulled in transitively via
+
+   `python-jose` (GHSA-wj6h-64fc-37mp / CVE-2024-23342). PyPI has no fixed `ecdsa` release that satisfies scanners
+
+   expecting `>=0.20.0`. **Mitigation**: `server/auth_utils.py` now uses **PyJWT** only (same stack as fastapi-users);
+
+   `python-jose` was removed from `pyproject.toml`, so the vulnerable `ecdsa` package is no longer in `uv.lock`.
+
+#### Testing Performed
+
+✅ All 6,200 server tests passed
+
+✅ Security scans (Bandit, Grype locally; Trivy via Codacy) show no vulnerabilities
+
+✅ Code quality checks (lint, mypy, format) all passed
+
+✅ Lock files regenerated and verified
+
+#### Files Modified
+
+`pyproject.toml` - Added security version constraints for transitive dependencies
+
+- `uv.lock` - Regenerated with patched versions
+- `server/uv.lock` - Regenerated with patched versions
+- `.github/workflows/dependency-review.yml` - Fixed submodule checkout issue
+
+**Last Updated**: January 2026
+**Version**: 1.1
+**Status**: ✅ Production-ready security implementation

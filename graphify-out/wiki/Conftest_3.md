@@ -1,0 +1,51 @@
+# Conftest
+
+> 27 nodes
+
+## Key Concepts
+
+- **server/tests/conftest.py** (14 connections) — `server/tests/conftest.py`
+- **pytest_asyncio_loop_factories()** (6 connections) — `server/tests/conftest.py`
+- **_apply_path_based_markers()** (5 connections) — `server/tests/conftest.py`
+- **_create_test_event_loop()** (4 connections) — `server/tests/conftest.py`
+- **pytest_collection_modifyitems()** (4 connections) — `server/tests/conftest.py`
+- **test_logger()** (4 connections) — `server/tests/conftest.py`
+- **fixture** (4 connections)
+- **deterministic_random_seed()** (3 connections) — `server/tests/conftest.py`
+- **ensure_test_environment_variables()** (3 connections) — `server/tests/conftest.py`
+- **reset_config_singleton()** (3 connections) — `server/tests/conftest.py`
+- **_test_file_in_category()** (3 connections) — `server/tests/conftest.py`
+- **Item** (3 connections)
+- **_get_db_name_from_url()** (2 connections) — `server/tests/conftest.py`
+- **AbstractEventLoop** (2 connections)
+- **Config** (1 connections)
+- **BoundLogger** (1 connections)
+- **Test configuration and fixtures for MythosMUD greenfield test suite. This…** (1 connections) — `server/tests/conftest.py`
+- **Reset config singleton before and after each test. In test mode, get_config()…** (1 connections) — `server/tests/conftest.py`
+- **Set deterministic random seed for reproducible tests.** (1 connections) — `server/tests/conftest.py`
+- **Create an event loop suitable for MythosMUD tests. CRITICAL: On Windows,…** (1 connections) — `server/tests/conftest.py`
+- **Register platform-appropriate loop factories for pytest-asyncio (Python 3.14+…** (1 connections) — `server/tests/conftest.py`
+- **Provide a logger for tests.** (1 connections) — `server/tests/conftest.py`
+- **True when the collected test file lives under a unit/integration/e2e directory.** (1 connections) — `server/tests/conftest.py`
+- **Apply unit/integration/e2e markers (and xdist grouping) from the test file path.** (1 connections) — `server/tests/conftest.py`
+- **Auto-mark tests based on their file path. Tests in unit/ get @pytest.mark.unit…** (1 connections) — `server/tests/conftest.py`
+- *... and 2 more nodes in this community*
+
+## Relationships
+
+- [Memory Monitor & Health Alerts](Memory_Monitor_&_Health_Alerts.md) (2 shared connections)
+- [Container Exception Handling](Container_Exception_Handling.md) (1 shared connections)
+
+## Source Files
+
+- `server/tests/conftest.py`
+
+## Audit Trail
+
+- EXTRACTED: 37 (97%)
+- INFERRED: 1 (3%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

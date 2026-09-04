@@ -5,9 +5,21 @@ This module handles all room-related business logic including
 room information retrieval and room state management.
 """
 
-from typing import Any
+# pylint: disable=too-many-lines  # Reason: Room service module requires extensive functionality for room retrieval, filtering, exploration tracking, coordinate management, and all room-related business logic
 
-from ..logging_config import get_logger
+import uuid
+from collections.abc import Sequence
+from typing import TYPE_CHECKING, Any, cast
+
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from ..structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from ..async_persistence import AsyncPersistenceLayer
+    from ..caching.cache_service import RoomCacheService
+    from ..services.exploration_service import ExplorationService
 
 logger = get_logger(__name__)
 
@@ -15,14 +27,24 @@ logger = get_logger(__name__)
 class RoomService:
     """Service class for room-related operations."""
 
-    def __init__(self, persistence):
-        """Initialize the room service with a persistence layer."""
+    def __init__(
+        self,
+        persistence: "AsyncPersistenceLayer",
+        room_cache_service: "RoomCacheService | None" = None,
+    ) -> None:
+        """Initialize the room service with a persistence layer and optional cache service."""
         self.persistence = persistence
-        logger.info("RoomService initialized")
+        self.room_cache = room_cache_service
+        self._environment_state: dict[str, Any] = {
+            "daypart": "day",
+            "is_daytime": True,
+            "active_holidays": [],
+        }
+        logger.info("RoomService initialized with caching")
 
-    def get_room(self, room_id: str) -> dict[str, Any] | None:
+    async def get_room(self, room_id: str) -> dict[str, Any] | None:
         """
-        Get room information by room ID.
+        Get room information by room ID with caching.
 
         Args:
             room_id: The room's ID
@@ -32,15 +54,28 @@ class RoomService:
         """
         logger.debug("Getting room by ID", room_id=room_id)
 
-        room = self.persistence.get_room(room_id)
-        if not room:
+        # Use cached room data if available
+        if self.room_cache:
+            room_dict = await self.room_cache.get_room(room_id)
+            if room_dict is None:
+                logger.debug("Room not found by ID", room_id=room_id)
+                return None
+
+            logger.debug("Room found by ID", room_id=room_id, room_name=room_dict.get("name", "Unknown"))
+            return room_dict
+
+        # Fallback to direct persistence call
+        room = self.persistence.get_room_by_id(room_id)
+        if room is None:
             logger.debug("Room not found by ID", room_id=room_id)
             return None
 
-        logger.debug("Room found by ID", room_id=room_id, room_name=room.get("name", "Unknown"))
-        return room
+        # Room is a Room object, convert to dict
+        room_name = room.name if hasattr(room, "name") else "Unknown"
+        logger.debug("Room found by ID", room_id=room_id, room_name=room_name)
+        return room.to_dict() if hasattr(room, "to_dict") else {"id": room_id, "name": room_name}
 
-    def get_room_by_name(self, room_name: str) -> dict[str, Any] | None:
+    def get_room_by_name(self, room_name: str) -> dict[str, Any] | None:  # pylint: disable=useless-return  # Reason: Explicit return None is clearer than implicit return for this placeholder function
         """
         Get room information by room name.
 
@@ -74,7 +109,7 @@ class RoomService:
         logger.debug("Zone room listing not implemented", zone_id=zone_id)
         return []
 
-    def get_adjacent_rooms(self, room_id: str) -> list[dict[str, Any]]:
+    async def get_adjacent_rooms(self, room_id: str) -> list[dict[str, Any]]:
         """
         Get a list of rooms adjacent to the specified room.
 
@@ -82,11 +117,476 @@ class RoomService:
             room_id: The room's ID
 
         Returns:
-            list[Dict[str, Any]]: List of adjacent rooms
+            list[Dict[str, Any]]: List of adjacent rooms with direction and room
+            data
         """
         logger.debug("Getting adjacent rooms", room_id=room_id)
 
+        # Get the source room
+        source_room = await self.get_room(room_id)
+        if not source_room:
+            logger.debug("Source room not found", room_id=room_id)
+            return []
+
+        adjacent_rooms = []
+        exits = source_room.get("exits", {})
+
+        # Check each exit direction
+        for direction, target_room_id in exits.items():
+            if target_room_id:  # Skip null/None exits
+                target_room = await self.get_room(target_room_id)
+                if target_room:
+                    adjacent_rooms.append({"direction": direction, "room_id": target_room_id, "room_data": target_room})
+                    logger.debug(
+                        "Found adjacent room",
+                        source_room_id=room_id,
+                        direction=direction,
+                        target_room_id=target_room_id,
+                    )
+                else:
+                    logger.warning(
+                        "Adjacent room not found",
+                        source_room_id=room_id,
+                        direction=direction,
+                        target_room_id=target_room_id,
+                    )
+
+        logger.debug("Adjacent rooms found", room_id=room_id, adjacent_count=len(adjacent_rooms))
+        return adjacent_rooms
+
+    async def get_local_chat_scope(self, room_id: str) -> list[str]:
+        """
+        Get the scope of rooms for local chat (current room + adjacent rooms).
+
+        Args:
+            room_id: The room's ID
+
+        Returns:
+            list[str]: List of room IDs in the local chat scope
+        """
+        logger.debug("Getting local chat scope", room_id=room_id)
+
+        # Get the source room first
+        source_room = await self.get_room(room_id)
+        if not source_room:
+            logger.debug("Source room not found for local chat scope", room_id=room_id)
+            return []
+
+        # Start with the current room
+        local_scope = [room_id]
+
+        # Add adjacent rooms
+        adjacent_rooms = await self.get_adjacent_rooms(room_id)
+        for adjacent in adjacent_rooms:
+            local_scope.append(adjacent["room_id"])
+
+        logger.debug(
+            "Local chat scope determined", room_id=room_id, scope_count=len(local_scope), scope_rooms=local_scope
+        )
+        return local_scope
+
+    async def validate_room_exists(self, room_id: str) -> bool:
+        """
+        Validate that a room exists using cached data.
+
+        Args:
+            room_id: The room's ID
+
+        Returns:
+            bool: True if the room exists, False otherwise
+        """
+        logger.debug("Validating room exists", room_id=room_id)
+
+        if self.room_cache:
+            room = await self.room_cache.get_room(room_id)
+            exists = room is not None
+        else:
+            # Fallback to direct persistence call
+            # Room object is sufficient for existence check, no dict conversion needed
+            room = self.persistence.get_room_by_id(room_id)  # type: ignore[assignment]  # Reason: get_room_by_id returns Room | None, but None is checked immediately after assignment. Type ignore needed due to SQLAlchemy type inference limitations.
+            exists = room is not None
+
+        logger.debug("Room existence validation", room_id=room_id, exists=exists)
+        return exists
+
+    async def validate_exit_exists(self, from_room_id: str, to_room_id: str) -> bool:
+        """
+        Validate that there's a valid exit from one room to another.
+
+        Args:
+            from_room_id: The ID of the room the player is leaving
+            to_room_id: The ID of the room the player is entering
+
+        Returns:
+            bool: True if there's a valid exit, False otherwise
+        """
+        logger.debug("Validating exit exists", from_room_id=from_room_id, to_room_id=to_room_id)
+
+        from_room = await self.get_room(from_room_id)
+        if not from_room:
+            logger.debug("From room not found for exit validation", from_room_id=from_room_id)
+            return False
+
+        exits = from_room.get("exits", {})
+        if not exits:
+            logger.debug("No exits found in room", room_id=from_room_id)
+            return False
+
+        # Check each exit direction
+        for direction, target_id in exits.items():
+            if target_id == to_room_id:
+                logger.debug("Valid exit found", from_room_id=from_room_id, direction=direction, to_room_id=to_room_id)
+                return True
+
+        logger.debug(
+            "No valid exit found", from_room_id=from_room_id, to_room_id=to_room_id, available_exits=list(exits.keys())
+        )
+        return False
+
+    def _extract_occupants_from_room(self, room: Any) -> list[str]:
+        if hasattr(room, "get_players"):
+            players = room.get_players()
+            npcs = room.get_npcs() if hasattr(room, "get_npcs") else []
+            return cast(list[str], players + npcs)
+        if isinstance(room, dict):
+            return cast(list[str], room.get("occupants", []))
+        return []
+
+    async def get_room_occupants(self, room_id: str) -> list[str]:
+        """
+        Get all occupants (players and NPCs) currently in a room using cached data.
+
+        Args:
+            room_id: The ID of the room to check
+
+        Returns:
+            list[str]: List of player and NPC IDs in the room
+        """
+        logger.debug("Getting room occupants", room_id=room_id)
+
+        if self.room_cache:
+            room = await self.room_cache.get_room(room_id)
+            if not room:
+                logger.debug("Room not found for occupant lookup", room_id=room_id)
+                return []
+            occupants = self._extract_occupants_from_room(room)
+            logger.debug("Room occupants retrieved", room_id=room_id, occupant_count=len(occupants))
+            return occupants
+
+        logger.debug("Room cache not available, falling back to persistence", room_id=room_id)
+        room_obj = self.persistence.get_room_by_id(room_id)
+        if not room_obj:
+            logger.debug("Room not found for occupant lookup", room_id=room_id)
+            return []
+        occupants = self._extract_occupants_from_room(room_obj)
+        logger.debug(
+            "Room occupants retrieved from persistence",
+            room_id=room_id,
+            occupant_count=len(occupants),
+        )
+        return occupants
+
+    async def validate_player_in_room(self, player_id: str, room_id: str) -> bool:
+        """
+        Validate that a player is in the specified room using cached data.
+
+        Args:
+            player_id: The ID of the player to validate
+            room_id: The ID of the room to check
+
+        Returns:
+            bool: True if the player is in the specified room, False otherwise
+        """
+        logger.debug("Validating player in room", player_id=player_id, room_id=room_id)
+
+        if self.room_cache:
+            room = await self.room_cache.get_room(room_id)
+            if not room:
+                logger.debug("Room not found for player validation", room_id=room_id)
+                return False
+
+            # If it's a Room object, use its method
+            if hasattr(room, "has_player"):
+                is_in_room = room.has_player(player_id)
+            else:
+                # If it's a dictionary, check occupants field
+                occupants = room.get("occupants", [])
+                is_in_room = player_id in occupants
+
+            logger.debug("Player room validation", player_id=player_id, room_id=room_id, is_in_room=is_in_room)
+            result: bool = cast(bool, is_in_room)
+            return result
+
+        # If room_cache is not available, fall back to persistence
+        logger.debug("Room cache not available, falling back to persistence", player_id=player_id, room_id=room_id)
+        room_obj = self.persistence.get_room_by_id(room_id)
+        if not room_obj:
+            logger.debug("Room not found for player validation", player_id=player_id, room_id=room_id)
+            return False
+
+        # Check if player is in room using room object methods
+        # Note: get_room_by_id returns Room | None, so after None check, room_obj is always a Room object
+        # Room objects always have has_player method, so we can call it directly
+        is_in_room = room_obj.has_player(player_id)
+
+        logger.debug(
+            "Player validation result from persistence",
+            player_id=player_id,
+            room_id=room_id,
+            is_in_room=is_in_room,
+        )
+        return is_in_room
+
+    async def get_room_exits(self, room_id: str) -> dict[str, str]:
+        """
+        Get all exits from a room.
+
+        Args:
+            room_id: The ID of the room
+
+        Returns:
+            dict[str, str]: Dictionary of direction -> target_room_id mappings
+        """
+        logger.debug("Getting room exits", room_id=room_id)
+
+        room = await self.get_room(room_id)
+        if not room:
+            logger.debug("Room not found for exit lookup", room_id=room_id)
+            return {}
+
+        exits = room.get("exits", {})
+        logger.debug("Room exits retrieved", room_id=room_id, exit_count=len(exits))
+        result: dict[str, str] = cast(dict[str, str], exits)
+        return result
+
+    def _room_matches_zone_filters(
+        self, room_dict: dict[str, Any], plane: str, zone: str, sub_zone: str | None
+    ) -> bool:
+        if room_dict.get("plane") != plane or room_dict.get("zone") != zone:
+            return False
+        if sub_zone is not None and room_dict.get("sub_zone") != sub_zone:
+            return False
+        return True
+
+    def _prepare_room_for_list(self, room: Any, include_exits: bool) -> dict[str, Any]:
+        room_dict: dict[str, Any] = cast(dict[str, Any], room.to_dict() if hasattr(room, "to_dict") else room)
+        if not include_exits and "exits" in room_dict:
+            return {key: value for key, value in room_dict.items() if key != "exits"}
+        return room_dict
+
+    async def list_rooms(
+        self,
+        plane: str,
+        zone: str,
+        sub_zone: str | None = None,
+        include_exits: bool = True,
+    ) -> list[dict[str, Any]]:
+        """
+        List rooms filtered by plane, zone, and optionally sub_zone.
+
+        Args:
+            plane: The plane name (required)
+            zone: The zone name (required)
+            sub_zone: Optional sub-zone name for additional filtering
+            include_exits: Whether to include exit data in response (default: True)
+
+        Returns:
+            List of room dictionaries matching the filter criteria
+        """
+        logger.debug(
+            "Listing rooms",
+            plane=plane,
+            zone=zone,
+            sub_zone=sub_zone,
+            include_exits=include_exits,
+        )
+
+        rooms = await self.persistence.async_list_rooms()
+        filtered_rooms = [
+            self._prepare_room_for_list(room, include_exits)
+            for room in rooms
+            if self._room_matches_zone_filters(
+                cast(dict[str, Any], room.to_dict() if hasattr(room, "to_dict") else room),
+                plane,
+                zone,
+                sub_zone,
+            )
+        ]
+
+        logger.debug(
+            "Rooms filtered",
+            plane=plane,
+            zone=zone,
+            sub_zone=sub_zone,
+            count=len(filtered_rooms),
+        )
+        return filtered_rooms
+
+    async def _lookup_explored_stable_ids(self, explored_room_ids: list[str], session: AsyncSession) -> set[str]:
+        room_uuid_list = [uuid.UUID(rid) for rid in explored_room_ids]
+        lookup_query = text("SELECT stable_id FROM get_room_stable_ids_by_uuids(:room_ids)")
+        result = await session.execute(lookup_query, {"room_ids": room_uuid_list})
+        return {row[0] for row in result.fetchall()}
+
+    async def filter_rooms_by_exploration(
+        self,
+        rooms: list[dict[str, Any]],
+        player_id: uuid.UUID,
+        exploration_service: "ExplorationService",
+        session: AsyncSession,
+    ) -> list[dict[str, Any]]:
+        """
+        Filter rooms to only include those explored by the player.
+
+        Args:
+            rooms: List of room dictionaries to filter
+            player_id: UUID of the player
+            exploration_service: ExplorationService instance for getting explored rooms
+            session: Database session for querying room stable_ids
+
+        Returns:
+            Filtered list of rooms that the player has explored
+        """
+        logger.debug("Filtering rooms by exploration", player_id=str(player_id), total_rooms=len(rooms))
+
+        try:
+            explored_room_ids = await exploration_service.get_explored_rooms(player_id, session)
+            if not explored_room_ids:
+                logger.debug("Player has explored no rooms, returning empty list", player_id=str(player_id))
+                return []
+
+            explored_stable_ids = await self._lookup_explored_stable_ids(explored_room_ids, session)
+            filtered_rooms = [room for room in rooms if room.get("id") in explored_stable_ids]
+
+            logger.debug(
+                "Filtered rooms by exploration",
+                player_id=str(player_id),
+                explored_count=len(explored_stable_ids),
+                filtered_count=len(filtered_rooms),
+            )
+
+            return filtered_rooms
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Exploration filter errors unpredictable, fallback to all rooms
+            # Log error but don't fail - return all rooms as fallback
+            logger.warning(
+                "Error filtering by explored rooms, returning all rooms",
+                player_id=str(player_id),
+                error=str(e),
+                error_type=type(e).__name__,
+            )
+            return rooms
+
+    async def get_room_info(self, room_id: str) -> dict[str, Any] | None:
+        """
+        Get comprehensive room information including occupants and exits.
+
+        Args:
+            room_id: The ID of the room
+
+        Returns:
+            dict[str, Any]: Comprehensive room information, or None if not found
+        """
+        logger.debug("Getting comprehensive room info", room_id=room_id)
+
+        room = await self.get_room(room_id)
+        if not room:
+            logger.debug("Room not found for comprehensive info", room_id=room_id)
+            return None
+
+        # Get additional information
+        occupants = await self.get_room_occupants(room_id)
+        exits = await self.get_room_exits(room_id)
+        adjacent_rooms = await self.get_adjacent_rooms(room_id)
+
+        room_info = {
+            **room,
+            "occupants": occupants,
+            "exits": exits,
+            "adjacent_rooms": adjacent_rooms,
+            "occupant_count": len(occupants),
+            "exit_count": len(exits),
+        }
+
+        logger.debug(
+            "Comprehensive room info retrieved", room_id=room_id, occupant_count=len(occupants), exit_count=len(exits)
+        )
+        return room_info
+
+    # --- Mythos time integration ---
+
+    def update_environment_state(
+        self,
+        *,
+        daypart: str,
+        is_daytime: bool,
+        active_holidays: Sequence[str],
+    ) -> None:
+        """Update environment metadata used for lighting and descriptive text."""
+
+        self._environment_state = {
+            "daypart": daypart,
+            "is_daytime": is_daytime,
+            "active_holidays": list(active_holidays),
+        }
+        logger.debug(
+            "Room environment state updated",
+            daypart=daypart,
+            is_daytime=is_daytime,
+            active_holiday_count=len(active_holidays),
+        )
+
+    def get_environment_state(self) -> dict[str, Any]:
+        """Return the most recent environment metadata."""
+
+        return dict(self._environment_state)
+
+    def describe_lighting(self) -> str:
+        """Return a simple textual description of the current lighting conditions."""
+
+        daypart = self._environment_state.get("daypart", "day")
+        mapping = {
+            "day": "Sunlight filters through Arkham's crooked streets.",
+            "dawn": "First light paints the asylum windows in pale gold.",
+            "dusk": "Lanterns sputter awake as shadows lengthen.",
+            "night": "Only stray gaslights hold back the night.",
+            "witching": "Reality thins and even the lamps refuse to glow.",
+        }
+        return mapping.get(daypart, "The atmosphere shifts with unseen tides.")
+
+    def search_rooms_by_name(self, search_term: str) -> list[dict[str, Any]]:
+        """
+        Search for rooms by name (case-insensitive partial match).
+
+        Args:
+            search_term: The search term to match against room names
+
+        Returns:
+            list[dict[str, Any]]: List of matching rooms
+        """
+        logger.debug("Searching rooms by name", search_term=search_term)
+
+        if not search_term or len(search_term.strip()) < 2:
+            logger.debug("Search term too short", search_term=search_term)
+            return []
+
         # This would need to be implemented in the persistence layer
-        # For now, we'll return an empty list
-        logger.debug("Adjacent room lookup not implemented", room_id=room_id)
+        # For now, we'll return an empty list as this functionality isn't available
+        logger.debug("Room search by name not implemented", search_term=search_term)
+        return []
+
+    def get_rooms_in_zone(self, zone_id: str) -> list[dict[str, Any]]:
+        """
+        Get all rooms in a specific zone.
+
+        Args:
+            zone_id: The zone ID
+
+        Returns:
+            list[dict[str, Any]]: List of rooms in the zone
+        """
+        logger.debug("Getting rooms in zone", zone_id=zone_id)
+
+        # This would need to be implemented in the persistence layer
+        # For now, we'll return an empty list as this functionality isn't available
+        logger.debug("Zone room listing not implemented", zone_id=zone_id)
         return []

@@ -1,0 +1,101 @@
+# USER RULES - CRITICAL SERVER MANAGEMENT
+
+## PRIORITY: TOKEN EFFICIENCY OVER SPEED
+
+When exploring code or narrowing down behavior, **optimize for fewer tokens in
+the conversation**, not for the fastest-looking answer. Prefer targeted
+retrieval, smaller payloads, and one clear pass over the code path instead of
+wide reads or repeated full-file dumps.
+
+**Use the jCodemunch MCP** for discovery and navigation (for example
+`plan_turn`, `search_symbols`, `get_file_outline`, `get_symbol_source`,
+`find_references`, `search_text`). Follow `.cursor/rules/jcodemunch.mdc` in
+this repository for the full workflow. Treat whole-file reads and broad text
+scans as a last resort when jCodemunch cannot answer the question.
+
+Workspace mirror (always-on for agents): `.cursor/rules/token-efficiency.mdc`.
+
+## basedpyright: no `Any`
+
+Do not use `typing.Any` or suppress `reportAny` / `reportExplicitAny`. Protocol + TypedDict
+is required; Ponytail must not treat `Any` as a one-liner. After Python edits:
+`uv run basedpyright <edited files>`. Rule: `.cursor/rules/basedpyright-no-any.mdc`.
+
+## MANDATORY SERVER RULES
+
+### NEVER use is_background: true for server startup commands
+
+Server startup must be visible to catch errors
+
+- Background mode hides critical startup information
+- Always use `is_background: false` for server operations
+
+### ALWAYS use is_background: false for server startup so you can see the output
+
+You need to see "Press any key to exit" to know the server is running
+
+- Error messages are only visible in foreground mode
+- Server startup is a critical operation requiring full attention
+
+### If you need to start a server, you MUST first run ./scripts/stop_server.ps1
+
+Never assume no server is running
+
+- Always stop first, then start
+- This prevents multiple server instances
+
+### After running stop_server.ps1, you MUST verify ports are free with netstat
+
+Run: `netstat -an | findstr :54768`
+
+- Run: `netstat -an | findstr :5173`
+- Both should return empty results before starting server
+
+### Only THEN can you run ./scripts/start_local.ps1 with is_background: false
+
+One start command only
+
+- Use `is_background: false` to see output
+- Wait for "Press any key to exit" message
+
+### If start_local.ps1 fails or shows errors, DO NOT run it again -
+
+investigate the error first
+
+- Don't try multiple starts
+- Read the error message carefully
+- Fix the underlying issue before retrying
+
+## VIOLATION CONSEQUENCES
+
+Multiple server instances running simultaneously
+
+- Port conflicts and connection failures
+- Unpredictable behavior in multiplayer scenarios
+- Complete failure of the testing process
+
+## EXISTING RULES (REINFORCED)
+
+DO NOT START THE SERVER WITHOUT MAKING SURE THERE ARE NO RUNNING
+INSTANCES!
+
+- Always verify that there is not an existing instance of the server running
+
+  before trying to start the server
+
+- Only kill tasks that are part of this project by name
+- Never use taskkill on node.exe
+
+## Git push — explicit permission only
+
+Never run `git push` (or `git push -u`, `gh stack push`, or any equivalent that
+uploads commits to a remote) unless the user **explicitly** says to push in this
+conversation.
+
+Do **not** infer push permission from other requests. These are **not** push
+permission: fix CI, make tests pass, open or update a PR, ship, merge, review,
+review-and-ship, follow a skill that includes a push step, or "the branch is
+behind origin."
+
+If a skill or checklist says to push, skip that step and tell the user the
+commits are local until they say **push**.

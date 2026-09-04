@@ -1,110 +1,227 @@
 """
-Test configuration and fixtures for MythosMUD server tests.
+Test configuration and fixtures for MythosMUD greenfield test suite.
 
-This module sets up environment variables and provides common fixtures
-for all tests in the MythosMUD server.
+This module provides core fixtures and test isolation for the new test suite.
 """
 
+import asyncio
+import importlib
 import os
-import sys
+import random
+from collections.abc import Callable, Generator, Mapping
 from pathlib import Path
+from typing import cast
+from urllib.parse import urlparse
 
 import pytest
-from dotenv import load_dotenv
+from structlog.stdlib import BoundLogger
 
-# Set environment variables BEFORE any imports to prevent module-level instantiations
-# from using the wrong paths
-os.environ["MYTHOSMUD_SECRET_KEY"] = "test-secret-key-for-development"
-os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-for-development"
-os.environ["MYTHOSMUD_RESET_TOKEN_SECRET"] = "test-reset-token-secret-for-development"
-os.environ["MYTHOSMUD_VERIFICATION_TOKEN_SECRET"] = "test-verification-token-secret-for-development"
-# Get the project root (two levels up from this file)
-project_root = Path(__file__).parent.parent.parent
-# Use absolute path to ensure database is created in the correct location
-test_db_path = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
-test_db_path.parent.mkdir(parents=True, exist_ok=True)
-os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
-# Ensure we're using the correct path for test logs
-test_logs_dir = project_root / "server" / "tests" / "logs"
-test_logs_dir.mkdir(parents=True, exist_ok=True)
-# Legacy logging environment variables no longer needed - logging is handled by centralized system
-os.environ["ALIASES_DIR"] = "server/tests/data/players/aliases"
+# Protected DBs: tests must NEVER run against these (integration tests truncate tables).
+# If DATABASE_URL points here, we overwrite with mythos_unit so pytest cannot touch mythos_dev.
+_PROTECTED_DB_NAMES = ("mythos_dev", "mythos_stage", "mythos_prod")
+_DEFAULT_TEST_DATABASE_URL = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
 
-# Add the server directory to the path for imports
-sys.path.append(str(Path(__file__).parent.parent))
 
-# Load test environment variables from .env.test file
-TEST_ENV_PATH = Path(__file__).parent.parent.parent / ".env.test"
-if TEST_ENV_PATH.exists():
-    load_dotenv(TEST_ENV_PATH, override=True)  # Force override existing values
-    print(f"✓ Loaded test environment from {TEST_ENV_PATH}")
+def _get_db_name_from_url(url: str) -> str:
+    """Extract database name from a PostgreSQL URL. Returns empty string on parse failure."""
+    try:
+        parsed = urlparse(url)
+        path = (parsed.path or "").strip("/")
+        return path.split("/")[0] if path else ""
+    except (ValueError, AttributeError, IndexError, TypeError):
+        return ""
+
+
+# Set critical environment variables immediately to prevent module-level config loading failures
+# Use explicit assignment if empty, not setdefault (which only sets if key doesn't exist)
+if not os.environ.get("MYTHOSMUD_ADMIN_PASSWORD"):
+    os.environ["MYTHOSMUD_ADMIN_PASSWORD"] = "test-admin-password-for-development"
+# Fix MYTHOSMUD_JWT_SECRET: handle empty strings (setdefault only sets if key doesn't exist)
+if not os.environ.get("MYTHOSMUD_JWT_SECRET"):
+    os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-key-for-testing-only"
+# Set token secrets for UserManager tests (must not start with 'dev-' per validation)
+if not os.environ.get("MYTHOSMUD_RESET_TOKEN_SECRET"):
+    os.environ["MYTHOSMUD_RESET_TOKEN_SECRET"] = "test-reset-token-secret-for-testing-only-secure-value"
+if not os.environ.get("MYTHOSMUD_VERIFICATION_TOKEN_SECRET"):
+    os.environ["MYTHOSMUD_VERIFICATION_TOKEN_SECRET"] = "test-verification-token-secret-for-testing-only-secure-value"
+if "SERVER_PORT" not in os.environ:
+    os.environ["SERVER_PORT"] = "54768"
+if "SERVER_HOST" not in os.environ:
+    os.environ["SERVER_HOST"] = "127.0.0.1"
+if "LOGGING_ENVIRONMENT" not in os.environ:
+    os.environ["LOGGING_ENVIRONMENT"] = "unit_test"
+# CRITICAL: Never run tests against mythos_dev. If DATABASE_URL points at a protected DB, force mythos_unit.
+# setdefault alone would leave mythos_dev in place if e.g. .env or shell had it set, allowing truncation.
+_current_db_url = os.environ.get("DATABASE_URL", "")
+_current_db_name = _get_db_name_from_url(_current_db_url)
+if _current_db_name in _PROTECTED_DB_NAMES:
+    os.environ["DATABASE_URL"] = _DEFAULT_TEST_DATABASE_URL
 else:
-    print(f"⚠️  Test environment file not found at {TEST_ENV_PATH}")
-    print("Using default test environment variables")
+    if "DATABASE_URL" not in os.environ:
+        os.environ["DATABASE_URL"] = _DEFAULT_TEST_DATABASE_URL
+# Use explicit assignment to ensure DATABASE_NPC_URL is always set (not just setdefault)
+# This prevents test isolation issues where env vars might be cleared by other tests
+if not os.environ.get("DATABASE_NPC_URL"):
+    os.environ["DATABASE_NPC_URL"] = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
+if "GAME_ALIASES_DIR" not in os.environ:
+    os.environ["GAME_ALIASES_DIR"] = "data/unit_test/players/aliases"
+# Unit tests use schema mythos_unit in database mythos_unit (not public)
+if "POSTGRES_SEARCH_PATH" not in os.environ:
+    os.environ["POSTGRES_SEARCH_PATH"] = "mythos_unit"
+# Force NATS TLS off for unit tests so config validation does not require cert files (not present in CI)
+os.environ["NATS_TLS_ENABLED"] = "false"
+
+# Imports must come after environment variables to prevent config loading failures
+from server.config import (  # pylint: disable=wrong-import-position  # noqa: E402  # Reason: Import must come after environment variables to prevent config loading failures during test setup
+    reset_config,
+)
+from server.structured_logging.enhanced_logging_config import (  # pylint: disable=wrong-import-position  # noqa: E402  # Reason: Import must come after environment variables to prevent config loading failures during test setup
+    get_logger,
+)
+
+logger = get_logger(__name__)
+
+project_root = Path(__file__).parent.parent.parent
+
+# Register fixture plugins
+pytest_plugins = [
+    "server.tests.fixtures.shared",
+    "server.tests.fixtures.unit",
+    "server.tests.fixtures.integration",
+]
 
 
-def pytest_configure(config):
-    """Configure pytest with test environment variables."""
-    # Set required test environment variables, overriding any existing values
-    # These are test-specific defaults that should only be used if test.env is not loaded
-    os.environ["MYTHOSMUD_SECRET_KEY"] = "test-secret-key-for-development"
-    os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-for-development"
-    os.environ["MYTHOSMUD_RESET_TOKEN_SECRET"] = "test-reset-token-secret-for-development"
-    os.environ["MYTHOSMUD_VERIFICATION_TOKEN_SECRET"] = "test-verification-token-secret-for-development"
-    # Get the project root (two levels up from this file)
-    project_root = Path(__file__).parent.parent.parent
-    # Use absolute path to ensure database is created in the correct location
-    test_db_path = project_root / "server" / "tests" / "data" / "players" / "test_players.db"
-    test_db_path.parent.mkdir(parents=True, exist_ok=True)
-    os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
-    # Ensure we're using the correct path for test logs
-    test_logs_dir = project_root / "server" / "tests" / "logs"
-    test_logs_dir.mkdir(parents=True, exist_ok=True)
-    # Legacy logging environment variables no longer needed - logging is handled by centralized system
+# autouse: truly global - ensures env vars are set before every test (some tests clear them)
+@pytest.fixture(autouse=True)
+def ensure_test_environment_variables() -> Generator[None, None, None]:
+    """
+    Ensure critical environment variables are set before each test.
+
+    Some tests may clear environment variables (e.g., DATABASE_NPC_URL),
+    so we ensure they're always set before each test runs.
+    """
+    # Ensure DATABASE_NPC_URL is always set (some tests clear it)
+    if "DATABASE_NPC_URL" not in os.environ:
+        os.environ["DATABASE_NPC_URL"] = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
+    yield
+    # No cleanup needed - env vars persist for next test
 
 
-os.environ["ALIASES_DIR"] = "server/tests/data/players/aliases"
+# autouse: truly global - prevents config singleton state from leaking between tests
+@pytest.fixture(autouse=True)
+def reset_config_singleton() -> Generator[None, None, None]:
+    """
+    Reset config singleton before and after each test.
+
+    In test mode, get_config() always returns fresh instances (no caching),
+    but we still clear global state for consistency and to handle any edge cases.
+    """
+    # Reset before test to ensure clean state
+    reset_config()
+    yield
+    # Reset after test to prevent state leakage to next test
+    reset_config()
 
 
-@pytest.fixture(scope="session")
-def test_env_vars():
-    """Provide test environment variables."""
-    return {
-        "MYTHOSMUD_SECRET_KEY": os.getenv("MYTHOSMUD_SECRET_KEY", "test-secret-key-for-development"),
-        "DATABASE_URL": os.getenv("DATABASE_URL", f"sqlite+aiosqlite:///{test_db_path}"),
-        "MYTHOSMUD_JWT_SECRET": os.getenv("MYTHOSMUD_JWT_SECRET", "test-jwt-secret-for-development"),
-        "MYTHOSMUD_RESET_TOKEN_SECRET": os.getenv(
-            "MYTHOSMUD_RESET_TOKEN_SECRET", "test-reset-token-secret-for-development"
-        ),
-        "MYTHOSMUD_VERIFICATION_TOKEN_SECRET": os.getenv(
-            "MYTHOSMUD_VERIFICATION_TOKEN_SECRET", "test-verification-token-secret-for-development"
-        ),
-    }
+# autouse: truly global - reproducible tests; non-interfering
+@pytest.fixture(autouse=True)
+def deterministic_random_seed() -> Generator[None, None, None]:
+    """Set deterministic random seed for reproducible tests."""
+    random.seed(42)
+    yield
+    # Seed is reset automatically per test
 
 
-@pytest.fixture(scope="session")
-def test_database():
-    """Initialize test database with proper schema."""
-    from server.tests.init_test_db import init_test_database
+def _create_test_event_loop() -> asyncio.AbstractEventLoop:
+    """
+    Create an event loop suitable for MythosMUD tests.
 
-    # Initialize the test database
-    init_test_database()
+    CRITICAL: On Windows, SelectorEventLoop is required for asyncpg compatibility.
+    ProactorEventLoop causes "Event loop is closed" errors with asyncpg connections.
+    """
+    if os.name == "nt":
+        return asyncio.SelectorEventLoop()
+    # uvloop is optional (Linux/macOS only; excluded on Windows) - load dynamically to avoid import errors.
+    try:
+        uvloop_module = importlib.import_module("uvloop")
+        new_event_loop_fn = cast(
+            Callable[[], asyncio.AbstractEventLoop] | None,
+            getattr(uvloop_module, "new_event_loop", None),
+        )
+        if new_event_loop_fn is not None:
+            return new_event_loop_fn()
+        policy_factory_cls = cast(
+            Callable[[], object] | None,
+            getattr(uvloop_module, "EventLoopPolicy", None),
+        )
+        if policy_factory_cls is not None:
+            policy = policy_factory_cls()
+            new_loop_fn = cast(
+                Callable[[], asyncio.AbstractEventLoop] | None,
+                getattr(policy, "new_event_loop", None),
+            )
+            if new_loop_fn is not None:
+                return new_loop_fn()
+    except ImportError:
+        pass
+    return asyncio.new_event_loop()
 
-    # Return the database path from environment variable
-    test_db_url = os.getenv("DATABASE_URL")
-    if test_db_url.startswith("sqlite+aiosqlite:///"):
-        return test_db_url.replace("sqlite+aiosqlite:///", "")
-    else:
-        raise ValueError(f"Unsupported database URL format: {test_db_url}")
+
+def pytest_asyncio_loop_factories(
+    config: pytest.Config,
+    item: pytest.Item,
+) -> Mapping[str, Callable[[], asyncio.AbstractEventLoop]]:
+    """
+    Register platform-appropriate loop factories for pytest-asyncio (Python 3.14+ safe).
+
+    Replaces the deprecated asyncio.set_event_loop_policy session fixture.
+    """
+    del config, item  # hook signature; factories are global for the test suite
+    return {"default": _create_test_event_loop}
 
 
-@pytest.fixture(autouse=True)  # Enable automatic use for all tests
-def ensure_test_db_ready(test_database):
-    """Ensure test database is ready for each test."""
-    # This fixture runs automatically for each test
-    # The test_database fixture ensures the database is initialized
-    # Reset persistence to ensure fresh instance with new environment variables
-    from ..persistence import reset_persistence
+@pytest.fixture
+def test_logger() -> BoundLogger:
+    """Provide a logger for tests."""
+    return get_logger(__name__)
 
-    reset_persistence()
-    pass
+
+def _test_file_in_category(file_path: str, category: str) -> bool:
+    """True when the collected test file lives under a unit/integration/e2e directory."""
+    return f"/{category}/" in file_path or f"\\{category}\\" in file_path
+
+
+def _apply_path_based_markers(item: pytest.Item) -> None:
+    """Apply unit/integration/e2e markers (and xdist grouping) from the test file path."""
+    file_path = str(item.fspath)
+    if _test_file_in_category(file_path, "unit"):
+        item.add_marker(pytest.mark.unit)
+        return
+    if _test_file_in_category(file_path, "integration"):
+        item.add_marker(pytest.mark.integration)
+        # Mark integration tests as serial to avoid event loop conflicts in parallel execution
+        item.add_marker(pytest.mark.serial)
+        # Documents intent; not load-bearing under --dist worksteal (see pytest.ini). Kept so
+        # re-enabling a loadgroup-family scheduler later is a one-line revert, not a rediscovery.
+        item.add_marker(pytest.mark.xdist_group(name="integration"))
+        return
+    if _test_file_in_category(file_path, "e2e"):
+        item.add_marker(pytest.mark.e2e)
+
+
+def pytest_collection_modifyitems(items: list[pytest.Item]) -> None:
+    """
+    Auto-mark tests based on their file path.
+
+    Tests in unit/ get @pytest.mark.unit
+    Tests in integration/ get @pytest.mark.integration (and serial for xdist safety)
+    Tests in e2e/ get @pytest.mark.e2e
+
+    Integration tests never actually run under -n (see run_integration_tests_playwright.ps1's
+    -n 1), so no xdist grouping mechanism is needed here; the xdist_group marker above is
+    informational only. No `config` parameter: pluggy only passes the hookspec args a hookimpl
+    actually declares, and this hook no longer reads it (previously used to detect
+    --dist loadgroup).
+    """
+    for item in items:
+        _apply_path_based_markers(item)

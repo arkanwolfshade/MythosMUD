@@ -1,0 +1,296 @@
+"""
+Unit tests for NPC utility functions.
+
+Tests the utility functions in npc_utils.py.
+"""
+
+from unittest.mock import MagicMock
+
+from server.npc.npc_utils import (
+    extract_definition_id_from_npc,
+    extract_npc_metadata,
+    extract_room_id_from_lifecycle_record,
+    extract_room_id_from_npc,
+    get_zone_key_from_room_id,
+    spawn_npc_via_population_controller,
+)
+
+
+def test_extract_room_id_from_npc_current_room() -> None:
+    """Test extract_room_id_from_npc() extracts from current_room."""
+    npc = MagicMock()
+    npc.current_room = "room-123"
+    result = extract_room_id_from_npc(npc)
+    assert result == "room-123"
+
+
+def test_extract_room_id_from_npc_current_room_id() -> None:
+    """Test extract_room_id_from_npc() extracts from current_room_id."""
+    npc = MagicMock()
+    npc.current_room = None
+    npc.current_room_id = "room-456"
+    result = extract_room_id_from_npc(npc)
+    assert result == "room-456"
+
+
+def test_extract_room_id_from_npc_room_id() -> None:
+    """Test extract_room_id_from_npc() extracts from room_id."""
+    npc = MagicMock()
+    npc.current_room = None
+    npc.current_room_id = None
+    npc.spawn_room_id = None
+    npc.room_id = "room-789"
+    result = extract_room_id_from_npc(npc)
+    assert result == "room-789"
+
+
+def test_extract_room_id_from_npc_spawn_room_id() -> None:
+    """Test extract_room_id_from_npc() falls back to spawn_room_id."""
+    npc = MagicMock()
+    npc.current_room = None
+    npc.current_room_id = None
+    npc.spawn_room_id = "room-spawn"
+    npc.room_id = None
+    result = extract_room_id_from_npc(npc)
+    assert result == "room-spawn"
+
+
+def test_extract_room_id_from_npc_skips_unknown_sentinel() -> None:
+    """Literal 'unknown' on current_room must fall through to a real attr."""
+    npc = MagicMock()
+    npc.current_room = "unknown"
+    npc.current_room_id = None
+    npc.spawn_room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
+    npc.room_id = None
+    assert extract_room_id_from_npc(npc) == "earth_arkhamcity_sanitarium_room_foyer_001"
+
+
+def test_extract_room_id_from_npc_not_found() -> None:
+    """Test extract_room_id_from_npc() returns 'unknown' when not found."""
+    npc = MagicMock(spec=[])
+    result = extract_room_id_from_npc(npc)
+    assert result == "unknown"
+
+
+def test_extract_room_id_from_npc_non_string() -> None:
+    """Test extract_room_id_from_npc() returns 'unknown' for non-string value."""
+    npc = MagicMock(spec=["current_room", "current_room_id", "spawn_room_id", "room_id"])
+    npc.current_room = 123  # Not a string
+    npc.current_room_id = None
+    npc.spawn_room_id = None
+    npc.room_id = None
+    result = extract_room_id_from_npc(npc)
+    assert result == "unknown"
+
+
+def test_extract_room_id_from_lifecycle_record() -> None:
+    record = MagicMock()
+    record.events = [
+        {"details": {"room_id": "room-a"}},
+        {"details": {"room_id": "unknown"}},
+        {"details": {"reason": "manual"}},
+    ]
+    assert extract_room_id_from_lifecycle_record(record) == "room-a"
+    assert extract_room_id_from_lifecycle_record(None) is None
+
+
+def test_extract_npc_metadata_valid() -> None:
+    """Test extract_npc_metadata() extracts valid metadata."""
+    npc = MagicMock()
+    npc.npc_type = "aggressive_mob"
+    npc.is_required = True
+    npc_type, is_required = extract_npc_metadata(npc)
+    assert npc_type == "aggressive_mob"
+    assert is_required is True
+
+
+def test_extract_npc_metadata_defaults() -> None:
+    """Test extract_npc_metadata() returns defaults when missing."""
+
+    # Use a simple object without attributes instead of MagicMock
+    class SimpleNPC:
+        """Minimal NPC-like object with no attributes for testing defaults."""
+
+        pass
+
+    npc = SimpleNPC()
+    npc_type, is_required = extract_npc_metadata(npc)
+    assert npc_type == "unknown"
+    assert is_required is False
+
+
+def test_extract_npc_metadata_non_string_type() -> None:
+    """Test extract_npc_metadata() handles non-string npc_type."""
+    npc = MagicMock()
+    npc.npc_type = 123  # Not a string
+    npc.is_required = False
+    npc_type, is_required = extract_npc_metadata(npc)
+    assert npc_type == "unknown"
+    assert is_required is False
+
+
+def test_extract_npc_metadata_truthy_required() -> None:
+    """Test extract_npc_metadata() converts truthy is_required."""
+    npc = MagicMock()
+    npc.npc_type = "passive_mob"
+    npc.is_required = 1  # Truthy but not bool
+    npc_type, is_required = extract_npc_metadata(npc)
+    assert npc_type == "passive_mob"
+    assert is_required is True
+
+
+def test_extract_npc_metadata_none_required() -> None:
+    """Test extract_npc_metadata() handles None is_required."""
+    npc = MagicMock()
+    npc.npc_type = "shopkeeper"
+    npc.is_required = None
+    npc_type, is_required = extract_npc_metadata(npc)
+    assert npc_type == "shopkeeper"
+    assert is_required is False
+
+
+def test_extract_definition_id_from_npc_has_definition_id() -> None:
+    """Test extract_definition_id_from_npc() extracts from NPC instance."""
+    npc = MagicMock()
+    npc.definition_id = 42
+    result = extract_definition_id_from_npc(npc, "npc-123", None)
+    assert result == 42
+
+
+def test_extract_definition_id_from_npc_non_int() -> None:
+    """Test extract_definition_id_from_npc() returns None for non-int."""
+    npc = MagicMock()
+    npc.definition_id = "not-an-int"
+    result = extract_definition_id_from_npc(npc, "npc-123", None)
+    assert result is None
+
+
+def test_extract_definition_id_from_npc_from_lifecycle_manager() -> None:
+    """Test extract_definition_id_from_npc() extracts from lifecycle manager."""
+    npc = MagicMock()
+    # No definition_id on NPC
+    lifecycle_manager = MagicMock()
+    lifecycle_record = MagicMock()
+    lifecycle_record.definition = MagicMock()
+    lifecycle_record.definition.id = 99
+    lifecycle_manager.lifecycle_records = {"npc-123": lifecycle_record}
+    result = extract_definition_id_from_npc(npc, "npc-123", lifecycle_manager)
+    assert result == 99
+
+
+def test_extract_definition_id_from_npc_lifecycle_manager_no_record() -> None:
+    """Test extract_definition_id_from_npc() returns None when no lifecycle record."""
+    npc = MagicMock()
+    lifecycle_manager = MagicMock()
+    lifecycle_manager.lifecycle_records = {}
+    result = extract_definition_id_from_npc(npc, "npc-123", lifecycle_manager)
+    assert result is None
+
+
+def test_extract_definition_id_from_npc_lifecycle_manager_no_definition() -> None:
+    """Test extract_definition_id_from_npc() returns None when record has no definition."""
+    npc = MagicMock()
+    lifecycle_manager = MagicMock()
+
+    # Use a simple object without definition attribute
+    class SimpleRecord:
+        pass
+
+    lifecycle_record = SimpleRecord()
+    lifecycle_manager.lifecycle_records = {"npc-123": lifecycle_record}
+    result = extract_definition_id_from_npc(npc, "npc-123", lifecycle_manager)
+    assert result is None
+
+
+def test_extract_definition_id_from_npc_no_manager() -> None:
+    """Test extract_definition_id_from_npc() returns None when no manager and no definition_id."""
+    npc = MagicMock()
+    # No definition_id attribute
+    result = extract_definition_id_from_npc(npc, "npc-123", None)
+    assert result is None
+
+
+def test_get_zone_key_from_room_id_valid() -> None:
+    """Test get_zone_key_from_room_id() extracts zone key from valid room ID."""
+    room_id = "earth_arkhamcity_downtown_001"
+    result = get_zone_key_from_room_id(room_id)
+    assert result == "arkhamcity/downtown"
+
+
+def test_get_zone_key_from_room_id_with_description() -> None:
+    """Test get_zone_key_from_room_id() handles room ID with description."""
+    room_id = "earth_arkhamcity_sanitarium_room_foyer_entrance_001"
+    result = get_zone_key_from_room_id(room_id)
+    assert result == "arkhamcity/sanitarium"
+
+
+def test_get_zone_key_from_room_id_innsmouth() -> None:
+    """Test get_zone_key_from_room_id() handles Innsmouth room ID."""
+    room_id = "earth_innsmouth_waterfront_dock_002"
+    result = get_zone_key_from_room_id(room_id)
+    assert result == "innsmouth/waterfront"
+
+
+def test_get_zone_key_from_room_id_short() -> None:
+    """Test get_zone_key_from_room_id() returns 'unknown/unknown' for short room ID."""
+    room_id = "earth_arkhamcity"
+    result = get_zone_key_from_room_id(room_id)
+    assert result == "unknown/unknown"
+
+
+def test_get_zone_key_from_room_id_too_short() -> None:
+    """Test get_zone_key_from_room_id() returns 'unknown/unknown' for too short room ID."""
+    room_id = "earth"
+    result = get_zone_key_from_room_id(room_id)
+    assert result == "unknown/unknown"
+
+
+def test_get_zone_key_from_room_id_exactly_four_parts() -> None:
+    """Test get_zone_key_from_room_id() handles room ID with exactly 4 parts."""
+    room_id = "earth_arkhamcity_downtown_001"
+    result = get_zone_key_from_room_id(room_id)
+    assert result == "arkhamcity/downtown"
+
+
+def test_get_zone_key_from_room_id_many_parts() -> None:
+    """Test get_zone_key_from_room_id() handles room ID with many parts."""
+    room_id = "earth_arkhamcity_downtown_intersection_derby_garrison_001"
+    result = get_zone_key_from_room_id(room_id)
+    assert result == "arkhamcity/downtown"
+
+
+def test_get_zone_key_from_room_id_instanced() -> None:
+    """Instanced room IDs (instance_<uuid>_<stable_id>) use stable id for zone key."""
+    room_id = "instance_e4857769-81a3-40dd-bf65-b1811a1904ee_earth_arkhamcity_sanitarium_room_tutorial_bedroom_001"
+    result = get_zone_key_from_room_id(room_id)
+    assert result == "arkhamcity/sanitarium"
+
+
+def test_spawn_npc_via_population_controller_routes_through_controller() -> None:
+    """#768: with a population_controller configured, spawn must go through it (not manager
+    directly), so the spawned NPC gets registered in population_stats and the cap can engage.
+    """
+    manager = MagicMock()
+    manager.population_controller.spawn_npc.return_value = ("npc-1", None)
+    definition = MagicMock()
+
+    result = spawn_npc_via_population_controller(manager, definition, "room-1", "periodic_spawn_check")
+
+    assert result == ("npc-1", None)
+    manager.population_controller.spawn_npc.assert_called_once_with(definition, "room-1", "periodic_spawn_check")
+    manager.spawn_npc.assert_not_called()
+
+
+def test_spawn_npc_via_population_controller_falls_back_without_controller() -> None:
+    """No population_controller configured (e.g. minimal test setups): fall back to manager.spawn_npc,
+    matching behavior before this fix existed.
+    """
+    manager = MagicMock()
+    manager.population_controller = None
+    manager.spawn_npc.return_value = ("npc-2", None)
+    definition = MagicMock()
+
+    result = spawn_npc_via_population_controller(manager, definition, "room-2", "respawn: death")
+
+    assert result == ("npc-2", None)
+    manager.spawn_npc.assert_called_once_with(definition, "room-2", "respawn: death")

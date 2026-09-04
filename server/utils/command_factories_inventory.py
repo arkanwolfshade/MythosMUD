@@ -1,0 +1,418 @@
+"""
+Inventory command factory methods.
+
+This module contains factory methods for inventory and item management commands:
+pickup, drop, put, get, equip, unequip, inventory.
+"""
+
+from ..exceptions import ValidationError as MythosValidationError
+from ..models.command import (
+    DropCommand,
+    EquipCommand,
+    GetCommand,
+    InventoryCommand,
+    PickupCommand,
+    PutCommand,
+    UnequipCommand,
+)
+from ..structured_logging.enhanced_logging_config import get_logger
+from .enhanced_error_logging import log_and_raise_enhanced
+
+logger = get_logger(__name__)
+
+_KNOWN_EQUIP_SLOTS = frozenset(
+    {
+        "head",
+        "torso",
+        "legs",
+        "feet",
+        "hands",
+        "left_hand",
+        "right_hand",
+        "main_hand",
+        "off_hand",
+        "accessory",
+        "ring",
+        "amulet",
+        "belt",
+        "backpack",
+        "waist",
+        "neck",
+    }
+)
+
+_MULTI_WORD_EQUIP_SLOTS = {
+    "main hand": "main_hand",
+    "off hand": "off_hand",
+    "left hand": "left_hand",
+    "right hand": "right_hand",
+}
+
+
+def _normalize_equip_slot_tokens(tokens: list[str]) -> list[str]:
+    """Normalize multi-word slot tokens (e.g. 'main hand' -> 'main_hand'); reduces create_equip_command complexity."""
+    if len(tokens) < 2:
+        return tokens
+    phrase = f"{tokens[-2].strip().lower()} {tokens[-1].strip().lower()}"
+    if phrase in _MULTI_WORD_EQUIP_SLOTS:
+        return tokens[:-2] + [_MULTI_WORD_EQUIP_SLOTS[phrase]]
+    return tokens
+
+
+def _maybe_extract_equip_slot(tokens: list[str]) -> tuple[list[str], str | None]:
+    """If last token is a known slot, return (remaining tokens, slot); else (tokens, None)."""
+    if not tokens:
+        return tokens, None
+    normalized = tokens[-1].strip().lower()
+    if normalized in _KNOWN_EQUIP_SLOTS:
+        return tokens[:-1], normalized
+    return tokens, None
+
+
+def _parse_equip_selector(selector_tokens: list[str], args: list[str]) -> tuple[int | None, str | None, str | None]:
+    """Parse selector tokens into (index, search_term, target_slot); may raise MythosValidationError."""
+    index: int | None = None
+    search_term: str | None = None
+    target_slot: str | None = None
+    try:
+        index_candidate = int(selector_tokens[0])
+    except ValueError:
+        index_candidate = None
+    if index_candidate is not None:
+        if index_candidate <= 0:
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Inventory index must be a positive integer.",
+                args=args,
+                index=index_candidate,
+                logger_name=__name__,
+            )
+        index = index_candidate
+        if len(selector_tokens) > 1:
+            target_slot = selector_tokens[1].strip().lower()
+    else:
+        trimmed_tokens, inferred_slot = _maybe_extract_equip_slot(selector_tokens)
+        search_term = " ".join(trimmed_tokens or selector_tokens).strip()
+        if not search_term:
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Equip item name cannot be empty.",
+                args=args,
+                logger_name=__name__,
+            )
+        target_slot = inferred_slot
+    return index, search_term, target_slot
+
+
+class InventoryCommandFactory:
+    """Factory class for creating inventory and item management command objects."""
+
+    @staticmethod
+    def create_inventory_command(args: list[str]) -> InventoryCommand:
+        """Create InventoryCommand from arguments."""
+        if args:
+            log_and_raise_enhanced(
+                MythosValidationError, "Inventory command takes no arguments", args=args, logger_name=__name__
+            )
+        return InventoryCommand()
+
+    @staticmethod
+    def _parse_quantity_from_args(args: list[str], selector_tokens: list[str]) -> tuple[int | None, list[str]]:
+        """
+        Parse quantity from args if present.
+
+        Args:
+            args: Original args list
+            selector_tokens: Current selector tokens
+
+        Returns:
+            Tuple of (quantity, remaining_selector_tokens)
+        """
+        quantity: int | None = None
+
+        if len(selector_tokens) > 1:
+            potential_quantity = selector_tokens[-1]
+            try:
+                quantity_candidate = int(potential_quantity)
+            except ValueError:
+                quantity_candidate = None
+
+            if quantity_candidate is not None:
+                if quantity_candidate <= 0:
+                    log_and_raise_enhanced(
+                        MythosValidationError,
+                        "Quantity must be a positive integer.",
+                        args=args,
+                        quantity=quantity_candidate,
+                        logger_name=__name__,
+                    )
+                quantity = quantity_candidate
+                selector_tokens = selector_tokens[:-1]
+
+        return quantity, selector_tokens
+
+    @staticmethod
+    def _parse_index_or_search_term(args: list[str], selector_tokens: list[str]) -> tuple[int | None, str | None]:
+        """
+        Parse index or search term from selector tokens.
+
+        Args:
+            args: Original args list
+            selector_tokens: Selector tokens (after quantity extraction)
+
+        Returns:
+            Tuple of (index, search_term)
+        """
+        if not selector_tokens:
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: pickup <item-number|item-name> [quantity]",
+                args=args,
+                logger_name=__name__,
+            )
+
+        primary_token = selector_tokens[0]
+        index: int | None = None
+        search_term: str | None = None
+
+        try:
+            index_candidate = int(primary_token)
+        except ValueError:
+            index_candidate = None
+
+        if index_candidate is not None:
+            if index_candidate <= 0:
+                log_and_raise_enhanced(
+                    MythosValidationError,
+                    "Item number must be a positive integer.",
+                    args=args,
+                    index=index_candidate,
+                    logger_name=__name__,
+                )
+
+            if len(selector_tokens) > 1:
+                log_and_raise_enhanced(
+                    MythosValidationError,
+                    "Usage: pickup <item-number|item-name> [quantity]",
+                    args=args,
+                    logger_name=__name__,
+                )
+
+            index = index_candidate
+        else:
+            search_term = " ".join(selector_tokens).strip()
+            if not search_term:
+                log_and_raise_enhanced(
+                    MythosValidationError,
+                    "Pickup item name cannot be empty.",
+                    args=args,
+                    logger_name=__name__,
+                )
+
+        return index, search_term
+
+    @staticmethod
+    def create_pickup_command(args: list[str]) -> PickupCommand:
+        """Create pickup command supporting numeric indices or fuzzy names."""
+        if not args:
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: pickup <item-number|item-name> [quantity]",
+                logger_name=__name__,
+            )
+
+        selector_tokens = list(args)
+        quantity, selector_tokens = InventoryCommandFactory._parse_quantity_from_args(args, selector_tokens)
+        index, search_term = InventoryCommandFactory._parse_index_or_search_term(args, selector_tokens)
+
+        return PickupCommand(index=index, search_term=search_term, quantity=quantity)
+
+    @staticmethod
+    def create_drop_command(args: list[str]) -> DropCommand:
+        """Create drop command."""
+
+        if not args:
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: drop <inventory-number> [quantity]",
+                logger_name=__name__,
+            )
+
+        try:
+            index = int(args[0])
+        except ValueError:
+            log_and_raise_enhanced(
+                MythosValidationError, "Inventory index must be an integer", args=args, logger_name=__name__
+            )
+
+        quantity = None
+        if len(args) > 1:
+            try:
+                quantity = int(args[1])
+            except ValueError:
+                log_and_raise_enhanced(
+                    MythosValidationError,
+                    "Quantity must be an integer",
+                    args=args,
+                    logger_name=__name__,
+                )
+
+        return DropCommand(index=index, quantity=quantity)
+
+    @staticmethod
+    def create_put_command(args: list[str]) -> PutCommand:
+        """
+        Create put command.
+
+        Supports: put <item> [in] <container> [quantity]
+        The "in" keyword is optional.
+        """
+        if not args:
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: put <item> [in] <container> [quantity]",
+                logger_name=__name__,
+            )
+
+        # Remove optional "in" keyword
+        args_clean = [arg for arg in args if arg.lower() != "in"]
+
+        if len(args_clean) < 2:
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: put <item> [in] <container> [quantity]",
+                logger_name=__name__,
+            )
+
+        item = args_clean[0]
+        container = args_clean[1]
+        quantity = None
+
+        # Check if last argument is a quantity
+        if len(args_clean) > 2:
+            try:
+                quantity = int(args_clean[-1])
+                if quantity <= 0:
+                    log_and_raise_enhanced(
+                        MythosValidationError,
+                        "Quantity must be a positive integer",
+                        quantity=quantity,
+                        logger_name=__name__,
+                    )
+                # If quantity was parsed, container might be multi-word
+                if len(args_clean) > 3:
+                    container = " ".join(args_clean[1:-1])
+            except ValueError:
+                # Last arg is not a number, container might be multi-word
+                container = " ".join(args_clean[1:])
+
+        return PutCommand(item=item, container=container, quantity=quantity)
+
+    @staticmethod
+    def create_get_command(args: list[str]) -> GetCommand:
+        """
+        Create get command.
+
+        Supports: get <item> [from] <container> [quantity]
+        The "from" keyword is optional.
+        """
+        if not args:
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: get <item> [from] <container> [quantity]",
+                logger_name=__name__,
+            )
+
+        # Remove optional "from" keyword
+        args_clean = [arg for arg in args if arg.lower() != "from"]
+        if not args_clean:
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: get <item> [from] <container> [quantity]",
+                logger_name=__name__,
+            )
+        if len(args_clean) == 1:
+            # Single arg: get from room/floor (container sentinel)
+            return GetCommand(item=args_clean[0], container="room", quantity=None)
+
+        item = args_clean[0]
+        container = args_clean[1]
+        quantity = None
+
+        # Check if last argument is a quantity
+        if len(args_clean) > 2:
+            try:
+                quantity = int(args_clean[-1])
+                if quantity <= 0:
+                    log_and_raise_enhanced(
+                        MythosValidationError,
+                        "Quantity must be a positive integer",
+                        quantity=quantity,
+                        logger_name=__name__,
+                    )
+                # If quantity was parsed, container might be multi-word
+                if len(args_clean) > 3:
+                    container = " ".join(args_clean[1:-1])
+            except ValueError:
+                # Last arg is not a number, container might be multi-word
+                container = " ".join(args_clean[1:])
+
+        return GetCommand(item=item, container=container, quantity=quantity)
+
+    @staticmethod
+    def create_equip_command(args: list[str]) -> EquipCommand:
+        """Create equip command."""
+        if not args:
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: equip <inventory-number|item-name> [slot]",
+                logger_name=__name__,
+            )
+        selector_tokens = _normalize_equip_slot_tokens(list(args))
+        index, search_term, target_slot = _parse_equip_selector(selector_tokens, args)
+        return EquipCommand(index=index, search_term=search_term, target_slot=target_slot)
+
+    @staticmethod
+    def create_unequip_command(args: list[str]) -> UnequipCommand:
+        """Create unequip command."""
+
+        if not args:
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: unequip <slot|item-name>",
+                logger_name=__name__,
+            )
+
+        candidate = " ".join(args).strip()
+        if not candidate:
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: unequip <slot|item-name>",
+                args=args,
+                logger_name=__name__,
+            )
+
+        normalized = candidate.lower()
+        known_slots = {
+            "head",
+            "torso",
+            "legs",
+            "feet",
+            "hands",
+            "left_hand",
+            "right_hand",
+            "main_hand",
+            "off_hand",
+            "accessory",
+            "ring",
+            "amulet",
+            "belt",
+            "backpack",
+            "waist",
+            "neck",
+        }
+
+        if normalized in known_slots:
+            return UnequipCommand(slot=candidate)
+
+        return UnequipCommand(search_term=candidate)

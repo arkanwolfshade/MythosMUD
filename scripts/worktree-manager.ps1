@@ -1,19 +1,21 @@
 # MythosMUD Worktree Manager
 # A script to help manage our Git worktree setup
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for user-facing colored output
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'User-facing interactive script requires colored output for better UX')]
 
 param(
-    [Parameter(Mandatory=$false)]
+    [Parameter(Mandatory = $false)]
     [ValidateSet("main", "client", "server", "docs", "testing", "list", "status", "cleanup")]
     [string]$Action = "list"
 )
 
 # Configuration
-$ProjectRoot = "E:/projects/GitHub/MythosMUD"
+# $ProjectRoot variable removed - not used in script
 $Worktrees = @{
-    "main" = "E:/projects/GitHub/MythosMUD"
-    "client" = "E:/projects/GitHub/MythosMUD-client"
-    "server" = "E:/projects/GitHub/MythosMUD-server"
-    "docs" = "E:/projects/GitHub/MythosMUD-docs"
+    "main"    = "E:/projects/GitHub/MythosMUD"
+    "client"  = "E:/projects/GitHub/MythosMUD-client"
+    "server"  = "E:/projects/GitHub/MythosMUD-server"
+    "docs"    = "E:/projects/GitHub/MythosMUD-docs"
     "testing" = "E:/projects/GitHub/MythosMUD-testing"
 }
 
@@ -33,10 +35,12 @@ function Switch-ToWorktree {
             Set-Location $Path
             Write-Host "Switched to $WorktreeName worktree: $Path" -ForegroundColor Green
             Write-Host "Current branch: $(git branch --show-current)" -ForegroundColor Yellow
-        } else {
+        }
+        else {
             Write-Host "Worktree path not found: $Path" -ForegroundColor Red
         }
-    } else {
+    }
+    else {
         Write-Host "Unknown worktree: $WorktreeName" -ForegroundColor Red
         Write-Host "Available worktrees: $($Worktrees.Keys -join ', ')" -ForegroundColor Yellow
     }
@@ -55,21 +59,30 @@ function Show-WorktreeInfo {
             Write-Host "Status:" -ForegroundColor White
             git status --short
             Pop-Location
-        } else {
+        }
+        else {
             Write-Host "Worktree path not found: $Path" -ForegroundColor Red
         }
-    } else {
+    }
+    else {
         Write-Host "Unknown worktree: $WorktreeName" -ForegroundColor Red
     }
 }
 
-function Cleanup-LegacyBranches {
+function Remove-LegacyBranch {
+    [CmdletBinding(SupportsShouldProcess)]
+    param()
+
+    if (-not $PSCmdlet.ShouldProcess("legacy branches", "Remove")) {
+        return
+    }
+
     Write-Host "`n=== Cleaning up legacy branches ===" -ForegroundColor Cyan
 
     # List branches to be cleaned up
     $LegacyBranches = @(
         "overall_cleanup",
-        "arkham_city_generation",
+        "arkhamcity_generation",
         "auth_tests",
         "feature/issue-62-configurable-game-tick-rate",
         "feature/room-pathing-validator",
@@ -111,7 +124,7 @@ switch ($Action) {
         Switch-ToWorktree "testing"
     }
     "cleanup" {
-        Cleanup-LegacyBranches
+        Remove-LegacyBranch
     }
     default {
         Write-Host "`n=== MythosMUD Worktree Manager ===" -ForegroundColor Cyan

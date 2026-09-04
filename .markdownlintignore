@@ -1,0 +1,29 @@
+# Markdownlint ignore patterns
+# These directories are excluded from markdownlint checks
+
+# Dependencies and build artifacts
+**/node_modules/**
+**/dist/**
+**/build/**
+**/.git/**
+
+# Project-specific exclusions
+**/investigations/**
+**/.agent-os/**
+**/.cursor/plans/**
+**/docs/archive/**
+
+# Test and report directories
+**/test-results/**
+**/playwright-report/**
+**/playwright-report-data/**
+
+# Graphify generated knowledge graph / community wiki (not hand-authored docs)
+**/graphify-out/**
+**/graphify/**
+
+# LLM wiki / Obsidian vault (Karpathy raw+wiki; not product docs)
+**/data/MythosMUD-Obsidian/**
+
+# E2E harness one-shot reports (canonical guides live under docs/)
+**/e2e-tests/**

@@ -1,7 +1,10 @@
 /**
  * ANSI to HTML converter for terminal-style output
  * Handles color codes, formatting, and escape sequences
+ * Text is escaped via security.ts before embedding in HTML for defense-in-depth.
  */
+
+import { inputSanitizer } from './security';
 
 interface AnsiState {
   bold: boolean;
@@ -12,127 +15,113 @@ interface AnsiState {
 }
 
 const ANSI_COLORS: { [key: string]: string } = {
-  '30': '#000000', // black
-  '31': '#ff0000', // red
-  '32': '#00ff00', // green
-  '33': '#ffff00', // yellow
-  '34': '#0000ff', // blue
-  '35': '#ff00ff', // magenta
-  '36': '#00ffff', // cyan
-  '37': '#ffffff', // white
-  '90': '#808080', // bright black
-  '91': '#ff8080', // bright red
-  '92': '#80ff80', // bright green
-  '93': '#ffff80', // bright yellow
-  '94': '#8080ff', // bright blue
-  '95': '#ff80ff', // bright magenta
-  '96': '#80ffff', // bright cyan
-  '97': '#ffffff', // bright white
+  '30': '#000000',
+  '31': '#ff4444',
+  '32': '#00ff00',
+  '33': '#ffaa00',
+  '34': '#4488ff',
+  '35': '#ff44ff',
+  '36': '#44ffff',
+  '37': '#ffffff',
+  '90': '#666666',
+  '91': '#ff6666',
+  '92': '#66ff66',
+  '93': '#ffcc66',
+  '94': '#6699ff',
+  '95': '#ff66ff',
+  '96': '#66ffff',
+  '97': '#ffffff',
+  '40': '#000000',
+  '41': '#ff4444',
+  '42': '#00ff00',
+  '43': '#ffaa00',
+  '44': '#4488ff',
+  '45': '#ff44ff',
+  '46': '#44ffff',
+  '47': '#ffffff',
+  '100': '#666666',
+  '101': '#ff6666',
+  '102': '#66ff66',
+  '103': '#ffcc66',
+  '104': '#6699ff',
+  '105': '#ff66ff',
+  '106': '#66ffff',
+  '107': '#ffffff',
 };
 
-export function ansiToHtml(text: string): string {
-  const state: AnsiState = {
-    bold: false,
-    dim: false,
-    italic: false,
-    fgColor: null,
-    bgColor: null,
-  };
+function resetAnsiState(state: AnsiState): void {
+  state.bold = false;
+  state.dim = false;
+  state.italic = false;
+  state.fgColor = null;
+  state.bgColor = null;
+}
 
-  // Split text into segments based on ANSI escape sequences
-  const segments: string[] = [];
-  let currentText = '';
-  let i = 0;
-
-  while (i < text.length) {
-    if (text[i] === '\x1b' && text[i + 1] === '[') {
-      // Found ANSI escape sequence
-      if (currentText) {
-        segments.push(wrapText(currentText, state));
-        currentText = '';
-      }
-
-      // Find the end of the escape sequence
-      let j = i + 2;
-      while (j < text.length && text[j] !== 'm') {
-        j++;
-      }
-
-      if (j < text.length) {
-        const code = text.substring(i + 2, j);
-        updateState(state, code);
-        i = j + 1;
-      } else {
-        // Malformed escape sequence, treat as literal
-        currentText += text[i];
-        i++;
-      }
-    } else {
-      currentText += text[i];
-      i++;
-    }
+function applyStyleCode(state: AnsiState, num: number): void {
+  switch (num) {
+    case 0:
+      resetAnsiState(state);
+      break;
+    case 1:
+      state.bold = true;
+      break;
+    case 2:
+      state.dim = true;
+      break;
+    case 3:
+      state.italic = true;
+      break;
+    case 22:
+      state.bold = false;
+      state.dim = false;
+      break;
+    case 23:
+      state.italic = false;
+      break;
+    default:
+      applyColorCode(state, num);
+      break;
   }
+}
 
-  if (currentText) {
-    segments.push(wrapText(currentText, state));
+const ANSI_FG_CODES = new Set([
+  '30',
+  '31',
+  '32',
+  '33',
+  '34',
+  '35',
+  '36',
+  '37',
+  '90',
+  '91',
+  '92',
+  '93',
+  '94',
+  '95',
+  '96',
+  '97',
+]);
+
+function applyColorCode(state: AnsiState, num: number): void {
+  const key = String(num);
+  const color = ANSI_COLORS[key];
+  if (!color) return;
+  if (ANSI_FG_CODES.has(key)) {
+    state.fgColor = color;
+    return;
   }
-
-  return segments.join('');
+  state.bgColor = color;
 }
 
 function updateState(state: AnsiState, code: string): void {
-  const codes = code.split(';');
-
-  for (const c of codes) {
-    const num = parseInt(c, 10);
-
-    switch (num) {
-      case 0: // Reset
-        state.bold = false;
-        state.dim = false;
-        state.italic = false;
-        state.fgColor = null;
-        state.bgColor = null;
-        break;
-      case 1: // Bold
-        state.bold = true;
-        break;
-      case 2: // Dim
-        state.dim = true;
-        break;
-      case 3: // Italic
-        state.italic = true;
-        break;
-      case 22: // Reset bold/dim
-        state.bold = false;
-        state.dim = false;
-        break;
-      case 23: // Reset italic
-        state.italic = false;
-        break;
-      default:
-        // Color codes
-        if (num >= 30 && num <= 37) {
-          state.fgColor = ANSI_COLORS[num] || null;
-        } else if (num >= 90 && num <= 97) {
-          state.fgColor = ANSI_COLORS[num] || null;
-        } else if (num >= 40 && num <= 47) {
-          state.bgColor = ANSI_COLORS[num] || null;
-        } else if (num >= 100 && num <= 107) {
-          state.bgColor = ANSI_COLORS[num] || null;
-        }
-        break;
-    }
+  for (const c of code.split(';')) {
+    applyStyleCode(state, parseInt(c, 10));
   }
 }
 
-function wrapText(text: string, state: AnsiState): string {
-  if (!state.bold && !state.dim && !state.italic && !state.fgColor && !state.bgColor) {
-    return text;
-  }
-
+function buildStyleList(state: AnsiState): string[] {
   const styles: string[] = [];
-
   if (state.bold) {
     styles.push('font-weight: bold');
   }
@@ -148,12 +137,66 @@ function wrapText(text: string, state: AnsiState): string {
   if (state.bgColor) {
     styles.push(`background-color: ${state.bgColor}`);
   }
+  return styles;
+}
 
-  if (styles.length === 0) {
-    return text;
+function wrapText(text: string, state: AnsiState): string {
+  const escaped = inputSanitizer.sanitizeIncomingPlainText(text);
+  if (!state.bold && !state.dim && !state.italic && !state.fgColor && !state.bgColor) {
+    return escaped;
   }
 
-  return `<span style="${styles.join('; ')}">${text}</span>`;
+  const styles = buildStyleList(state);
+  if (styles.length === 0) {
+    return escaped;
+  }
+
+  return `<span style="${styles.join('; ')}">${escaped}</span>`;
+}
+
+export function ansiToHtml(text: string): string {
+  const state: AnsiState = {
+    bold: false,
+    dim: false,
+    italic: false,
+    fgColor: null,
+    bgColor: null,
+  };
+
+  const segments: string[] = [];
+  let currentText = '';
+  let i = 0;
+
+  while (i < text.length) {
+    if (text[i] === '\x1b' && text[i + 1] === '[') {
+      if (currentText) {
+        segments.push(wrapText(currentText, state));
+        currentText = '';
+      }
+
+      let j = i + 2;
+      while (j < text.length && text[j] !== 'm') {
+        j++;
+      }
+
+      if (j < text.length) {
+        updateState(state, text.substring(i + 2, j));
+        i = j + 1;
+      } else {
+        currentText += text[i];
+        i++;
+      }
+    } else {
+      currentText += text[i];
+      i++;
+    }
+  }
+
+  if (currentText) {
+    segments.push(wrapText(currentText, state));
+  }
+
+  return segments.join('');
 }
 
 /**

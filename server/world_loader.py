@@ -1,50 +1,36 @@
-import json
-import os
+"""World loader utilities for room ID generation and schema validation.
+
+This module provides functions for generating room IDs and loading world data
+with optional schema validation support.
+"""
+
+from pathlib import Path
 from typing import Any
 
-from .logging_config import get_logger
+from .exceptions import ValidationError
+from .structured_logging.enhanced_logging_config import get_logger
+from .utils.enhanced_error_logging import log_and_raise_enhanced
 
 logger = get_logger(__name__)
 
-ROOMS_BASE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "rooms"))
+# Try to import the shared schema validator
+try:
+    import sys
+    # Path is imported at module level (line 1)
 
+    # Add the project root to the path to find the schemas package
+    project_root = Path(__file__).parent.parent
+    if str(project_root) not in sys.path:
+        sys.path.insert(0, str(project_root))
 
-def load_zone_config(zone_path: str) -> dict[str, Any] | None:
-    """
-    Load zone configuration from zone_config.json file.
+    # Try importing with absolute path
+    from schemas.validator import SchemaValidator, create_validator
 
-    Args:
-        zone_path: Path to the zone directory
+    SCHEMA_VALIDATION_AVAILABLE = True
 
-    Returns:
-        Zone configuration dictionary or None if not found
-    """
-    config_path = os.path.join(zone_path, "zone_config.json")
-
-    try:
-        with open(config_path, encoding="utf-8") as f:
-            return json.load(f)
-    except (OSError, json.JSONDecodeError):
-        return None
-
-
-def load_subzone_config(subzone_path: str) -> dict[str, Any] | None:
-    """
-    Load sub-zone configuration from subzone_config.json file.
-
-    Args:
-        subzone_path: Path to the sub-zone directory
-
-    Returns:
-        Sub-zone configuration dictionary or None if not found
-    """
-    config_path = os.path.join(subzone_path, "subzone_config.json")
-
-    try:
-        with open(config_path, encoding="utf-8") as f:
-            return json.load(f)
-    except (OSError, json.JSONDecodeError):
-        return None
+except ImportError as e:
+    SCHEMA_VALIDATION_AVAILABLE = False
+    logger.warning("Schema validation not available - schemas package not found", error=str(e))
 
 
 def generate_room_id(plane: str, zone: str, sub_zone: str, room_file: str) -> str:
@@ -53,12 +39,12 @@ def generate_room_id(plane: str, zone: str, sub_zone: str, room_file: str) -> st
 
     Args:
         plane: Plane identifier (e.g., 'earth', 'yeng')
-        zone: Zone identifier (e.g., 'arkham_city')
+        zone: Zone identifier (e.g., 'arkhamcity')
         sub_zone: Sub-zone identifier (e.g., 'french_hill')
         room_file: Room file name without extension (e.g., 'S_Garrison_St_001')
 
     Returns:
-        Hierarchical room ID (e.g., 'earth_arkham_city_northside_Derby_High')
+        Hierarchical room ID (e.g., 'earth_arkhamcity_intersection_derby_high')
     """
     components = [plane, zone, sub_zone, room_file]
     return "_".join(components)
@@ -86,150 +72,85 @@ def get_room_environment(
     """
     # Check room-specific environment first
     if room_data.get("environment"):
-        return room_data["environment"]
+        result = room_data["environment"]
+        if not isinstance(result, str):
+            raise TypeError("room environment must be a string")
+        return result
 
     # Check sub-zone environment
     if subzone_config and subzone_config.get("environment"):
-        return subzone_config["environment"]
+        result = subzone_config["environment"]
+        if not isinstance(result, str):
+            raise TypeError("subzone environment must be a string")
+        return result
 
     # Check zone environment
     if zone_config and zone_config.get("environment"):
-        return zone_config["environment"]
+        result = zone_config["environment"]
+        if not isinstance(result, str):
+            raise TypeError("zone environment must be a string")
+        return result
 
     # Default fallback
     return "outdoors"
 
 
-def load_hierarchical_world() -> dict[str, Any]:
+def validate_room_data(
+    room_data: dict[str, Any], file_path: str, validator: SchemaValidator | None = None, strict_validation: bool = False
+) -> list[str]:
     """
-    Load the complete hierarchical world structure including zones, sub-zones, and rooms.
-
-    Returns:
-        Dictionary containing all world data with hierarchical structure
-    """
-    world_data = {
-        "rooms": {},
-        "zone_configs": {},
-        "subzone_configs": {},
-        "room_mappings": {},  # Maps old room IDs to new hierarchical IDs
-    }
-
-    if not os.path.exists(ROOMS_BASE_PATH):
-        return world_data
-
-    try:
-        for plane in os.listdir(ROOMS_BASE_PATH):
-            plane_path = os.path.join(ROOMS_BASE_PATH, plane)
-            if not os.path.isdir(plane_path):
-                continue
-
-            for zone in os.listdir(plane_path):
-                zone_path = os.path.join(plane_path, zone)
-                if not os.path.isdir(zone_path):
-                    continue
-
-                zone_config = load_zone_config(zone_path)
-                if zone_config:
-                    world_data["zone_configs"][f"{plane}/{zone}"] = zone_config
-
-                for sub_zone in os.listdir(zone_path):
-                    subzone_path = os.path.join(zone_path, sub_zone)
-                    if not os.path.isdir(subzone_path):
-                        continue
-
-                    subzone_config = load_subzone_config(subzone_path)
-                    if subzone_config:
-                        config_key = f"{plane}/{zone}/{sub_zone}"
-                        world_data["subzone_configs"][config_key] = subzone_config
-
-                    for filename in os.listdir(subzone_path):
-                        if filename.endswith(".json") and not filename.startswith("subzone_config"):
-                            file_path = os.path.join(subzone_path, filename)
-                            try:
-                                with open(file_path, encoding="utf-8") as f:
-                                    room_data = json.load(f)
-
-                                    room_file_name = filename.replace(".json", "")
-                                    new_room_id = generate_room_id(plane, zone, sub_zone, room_file_name)
-
-                                    if "plane" not in room_data:
-                                        room_data["plane"] = plane
-                                    if "zone" not in room_data:
-                                        room_data["zone"] = zone
-                                    if "sub_zone" not in room_data:
-                                        room_data["sub_zone"] = sub_zone
-
-                                    room_data["resolved_environment"] = get_room_environment(
-                                        room_data, subzone_config, zone_config
-                                    )
-
-                                    world_data["rooms"][new_room_id] = room_data
-
-                                    old_room_id = room_data.get("id")
-                                    if old_room_id and old_room_id != new_room_id:
-                                        world_data["room_mappings"][old_room_id] = new_room_id
-
-                                    room_data["id"] = new_room_id
-
-                            except (OSError, json.JSONDecodeError) as e:
-                                logger.warning(f"Could not load room file {file_path}: {e}")
-                                continue
-
-    except OSError as e:
-        logger.warning(f"Could not access rooms directory {ROOMS_BASE_PATH}: {e}")
-
-    return world_data
-
-
-def resolve_room_reference(room_id: str, world_data: dict[str, Any] | None = None) -> str | None:
-    """
-    Resolve room references for both old and new formats.
+    Validate room data against schema if validation is available.
 
     Args:
-        room_id: Room ID to resolve
-        world_data: World data dictionary (loads if not provided)
+        room_data: Room data to validate
+        file_path: Path to the room file for error reporting
+        validator: Schema validator instance (creates one if None)
+        strict_validation: If True, raises exceptions on validation errors
 
     Returns:
-        Resolved room ID or None if not found
+        List of validation error messages (empty if valid)
     """
-    if world_data is None:
-        world_data = load_hierarchical_world()
+    if not SCHEMA_VALIDATION_AVAILABLE:
+        return []
 
-    # Check if it's already a hierarchical ID
-    if room_id in world_data["rooms"]:
-        return room_id
+    if validator is None:
+        try:
+            validator = create_validator("unified")
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Validator creation errors unpredictable, must handle gracefully
+            logger.warning("Could not create schema validator", error=str(e))
+            return []
 
-    # Check if it's an old ID that maps to a new one
-    if room_id in world_data["room_mappings"]:
-        return world_data["room_mappings"][room_id]
+    try:
+        errors = validator.validate_room(room_data, file_path)
+        if errors and strict_validation:
+            log_and_raise_enhanced(
+                ValidationError,
+                f"Room validation failed: {'; '.join(errors)}",
+                operation="validate_room_data",
+                file_path=file_path,
+                validation_errors=errors,
+                details={"file_path": file_path, "validation_errors": errors},
+                user_friendly="Room data validation failed",
+            )
+        if not isinstance(errors, list):
+            raise TypeError("validation errors must be a list")
+        return errors
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Validation errors unpredictable, must handle gracefully
+        if strict_validation:
+            log_and_raise_enhanced(
+                ValidationError,
+                f"Schema validation error for {file_path}: {e}",
+                operation="validate_room_data",
+                file_path=file_path,
+                error_type=type(e).__name__,
+                details={"file_path": file_path, "error": str(e), "error_type": type(e).__name__},
+                user_friendly="Room data validation failed",
+            )
+        logger.warning("Schema validation error", file_path=file_path, error=str(e))
+        return [f"Validation error: {e}"]
 
-    return None
 
-
-def load_rooms() -> dict[str, Any]:
-    """
-    Load all rooms from the world structure.
-
-    This function maintains backward compatibility with the original flat structure
-    while also supporting the new hierarchical structure.
-
-    Returns:
-        Dictionary mapping room IDs to room data
-    """
-    world_data = load_hierarchical_world()
-    return world_data["rooms"]
-
-
-if __name__ == "__main__":
-    from .logging_config import get_logger
-
-    logger = get_logger(__name__)
-    world_data = load_hierarchical_world()
-    logger.info(f"Loaded {len(world_data['rooms'])} rooms:")
-    for room_id, room in world_data["rooms"].items():
-        env = room.get("resolved_environment", "unknown")
-        logger.info(f"- {room_id}: {room['name']} (Environment: {env})")
-
-    logger.info(f"Zone configurations: {len(world_data['zone_configs'])}")
-    logger.info(f"Sub-zone configurations: {len(world_data['subzone_configs'])}")
-    logger.info(f"Room mappings: {len(world_data['room_mappings'])}")
+# DEPRECATED: JSON file loading functions have been removed.
+# All game data (rooms, zones, subzones) now loads from PostgreSQL.
+# These functions are kept for backward compatibility in tests only.
+# Production code should use PersistenceLayer or AsyncPersistenceLayer to load from database.

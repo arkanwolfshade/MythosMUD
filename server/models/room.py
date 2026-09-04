@@ -10,6 +10,9 @@ for maintaining the integrity of our eldritch architecture and ensuring
 that dimensional shifts are properly tracked.
 """
 
+import uuid
+from typing import Any
+
 from ..events import EventBus
 from ..events.event_types import (
     NPCEnteredRoom,
@@ -19,10 +22,10 @@ from ..events.event_types import (
     PlayerEnteredRoom,
     PlayerLeftRoom,
 )
-from ..logging_config import get_logger
+from ..structured_logging.enhanced_logging_config import get_logger
 
 
-class Room:
+class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requires many fields to capture complete room state
     """
     Represents a room in the MythosMUD game world.
 
@@ -35,7 +38,7 @@ class Room:
     shifts that occur when entities move between spaces.
     """
 
-    def __init__(self, room_data: dict, event_bus: EventBus | None = None):
+    def __init__(self, room_data: dict[str, Any], event_bus: EventBus | None = None) -> None:
         """
         Initialize a Room from JSON data.
 
@@ -52,6 +55,11 @@ class Room:
         self.sub_zone = room_data.get("sub_zone", "")
         self.environment = room_data.get("resolved_environment", "outdoors")
         self.exits = room_data.get("exits", {})
+        self.rest_location: bool = room_data.get("rest_location", False)
+        self.attributes: dict[str, Any] = dict(room_data.get("attributes", {}) or {})
+
+        # Containers in this room (loaded from PostgreSQL)
+        self._containers: list[Any] = room_data.get("containers", [])
 
         # Dynamic state (tracked in memory)
         self._players: set[str] = set()
@@ -62,50 +70,115 @@ class Room:
         self._event_bus = event_bus
         self._logger = get_logger(f"Room({self.id})")
 
-        self._logger.debug(f"Initialized room: {self.name} ({self.id})")
+        self._logger.debug("Initialized room", room_name=self.name, room_id=self.id)
 
-    def player_entered(self, player_id: str) -> None:
+    def player_entered(
+        self,
+        player_id: uuid.UUID | str,
+        force_event: bool = False,
+        from_room_id: str | None = None,
+    ) -> None:
         """
         Add a player to the room and trigger event.
 
         Args:
-            player_id: The ID of the player entering the room
+            player_id: The ID of the player entering the room (UUID or string)
+            force_event: If True, always trigger PlayerEnteredRoom event even if player already in room
+                        (used when player returns to a previously visited room to ensure room_update is sent)
+            from_room_id: Optional ID of the room the player left (for follow propagation and event consumers)
         """
         if not player_id:
             raise ValueError("Player ID cannot be empty")
 
-        if player_id in self._players:
-            self._logger.warning(f"Player {player_id} already in room {self.id}")
+        # Convert to string for internal storage (Room uses set[str] for _players)
+        player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
+
+        player_already_in_room = player_id_str in self._players
+
+        if player_already_in_room and not force_event:
+            self._logger.warning("Player already in room", player_id=player_id, room_id=self.id)
             return
 
-        self._players.add(player_id)
-        self._logger.debug(f"Player {player_id} entered room {self.id}")
+        # Add player to room if not already present
+        if not player_already_in_room:
+            self._players.add(player_id_str)
+            self._logger.debug("Player entered room", player_id=player_id, room_id=self.id)
+        else:
+            self._logger.debug("Player re-entered room (forcing event)", player_id=player_id, room_id=self.id)
 
         # Publish event if event bus is available
+        # CRITICAL: Always publish event if force_event=True to ensure room_update is sent
+        # even when returning to a previously visited room
         if self._event_bus:
-            event = PlayerEnteredRoom(timestamp=None, event_type="", player_id=player_id, room_id=self.id)
+            event = PlayerEnteredRoom(player_id=player_id_str, room_id=self.id, from_room_id=from_room_id)
             self._event_bus.publish(event)
 
-    def player_left(self, player_id: str) -> None:
+    def add_player_silently(self, player_id: uuid.UUID | str) -> None:
+        """
+        Add a player to the room without triggering an event.
+
+        This method is used for initial connections where we want to track
+        the player's presence without triggering PlayerEnteredRoom events.
+        PlayerEnteredRoom events should be triggered when players move between rooms.
+
+        Args:
+            player_id: The ID of the player to add (UUID or string)
+        """
+        if not player_id:
+            raise ValueError("Player ID cannot be empty")
+
+        # Convert to string for internal storage (Room uses set[str] for _players)
+        player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
+
+        if player_id_str not in self._players:
+            self._players.add(player_id_str)
+            self._logger.debug("Player added to room silently", player_id=player_id, room_id=self.id)
+
+    def remove_player_silently(self, player_id: uuid.UUID | str) -> None:
+        """
+        Remove a player from the room without triggering an event.
+
+        This method is used during connection cleanup or initial setup
+        where we want to update the player's presence without triggering
+        PlayerLeftRoom events.
+
+        Args:
+            player_id: The ID of the player to remove (UUID or string)
+        """
+        if not player_id:
+            raise ValueError("Player ID cannot be empty")
+
+        # Convert to string for internal storage (Room uses set[str] for _players)
+        player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
+
+        if player_id_str in self._players:
+            self._players.remove(player_id_str)
+            self._logger.debug("Player removed from room silently", player_id=player_id, room_id=self.id)
+
+    def player_left(self, player_id: uuid.UUID | str) -> None:
         """
         Remove a player from the room and trigger event.
 
         Args:
-            player_id: The ID of the player leaving the room
+            player_id: The ID of the player leaving the room (UUID or string)
         """
         if not player_id:
             raise ValueError("Player ID cannot be empty")
 
-        if player_id not in self._players:
-            self._logger.warning(f"Player {player_id} not in room {self.id}")
+        # Convert to string for internal storage (Room uses set[str] for _players)
+        player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
+
+        if player_id_str not in self._players:
+            self._logger.warning("Player not in room", player_id=player_id, room_id=self.id)
             return
 
-        self._players.remove(player_id)
-        self._logger.debug(f"Player {player_id} left room {self.id}")
+        self._players.remove(player_id_str)
+        self._logger.debug("Player left room", player_id=player_id, room_id=self.id)
 
         # Publish event if event bus is available
+        # Events still expect string, so convert for event creation
         if self._event_bus:
-            event = PlayerLeftRoom(timestamp=None, event_type="", player_id=player_id, room_id=self.id)
+            event = PlayerLeftRoom(player_id=player_id_str, room_id=self.id)
             self._event_bus.publish(event)
 
     def object_added(self, object_id: str, player_id: str | None = None) -> None:
@@ -120,17 +193,15 @@ class Room:
             raise ValueError("Object ID cannot be empty")
 
         if object_id in self._objects:
-            self._logger.warning(f"Object {object_id} already in room {self.id}")
+            self._logger.warning("Object already in room", object_id=object_id, room_id=self.id)
             return
 
         self._objects.add(object_id)
-        self._logger.debug(f"Object {object_id} added to room {self.id}")
+        self._logger.debug("Object added to room", object_id=object_id, room_id=self.id)
 
         # Publish event if event bus is available
         if self._event_bus:
-            event = ObjectAddedToRoom(
-                timestamp=None, event_type="", object_id=object_id, room_id=self.id, player_id=player_id
-            )
+            event = ObjectAddedToRoom(object_id=object_id, room_id=self.id, player_id=player_id)
             self._event_bus.publish(event)
 
     def object_removed(self, object_id: str, player_id: str | None = None) -> None:
@@ -145,61 +216,65 @@ class Room:
             raise ValueError("Object ID cannot be empty")
 
         if object_id not in self._objects:
-            self._logger.warning(f"Object {object_id} not in room {self.id}")
+            self._logger.warning("Object not in room", object_id=object_id, room_id=self.id)
             return
 
         self._objects.remove(object_id)
-        self._logger.debug(f"Object {object_id} removed from room {self.id}")
+        self._logger.debug("Object removed from room", object_id=object_id, room_id=self.id)
 
         # Publish event if event bus is available
         if self._event_bus:
-            event = ObjectRemovedFromRoom(
-                timestamp=None, event_type="", object_id=object_id, room_id=self.id, player_id=player_id
-            )
+            event = ObjectRemovedFromRoom(object_id=object_id, room_id=self.id, player_id=player_id)
             self._event_bus.publish(event)
 
-    def npc_entered(self, npc_id: str) -> None:
+    def npc_entered(self, npc_id: str, from_room_id: str | None = None) -> None:
         """
         Add an NPC to the room and trigger event.
 
         Args:
             npc_id: The ID of the NPC entering the room
+            from_room_id: Optional source room ID for movement tracking
         """
         if not npc_id:
             raise ValueError("NPC ID cannot be empty")
 
         if npc_id in self._npcs:
-            self._logger.warning(f"NPC {npc_id} already in room {self.id}")
+            self._logger.warning("NPC already in room", npc_id=npc_id, room_id=self.id)
             return
 
         self._npcs.add(npc_id)
-        self._logger.debug(f"NPC {npc_id} entered room {self.id}")
+        self._logger.debug("NPC entered room", npc_id=npc_id, room_id=self.id, from_room_id=from_room_id)
 
         # Publish event if event bus is available
         if self._event_bus:
-            event = NPCEnteredRoom(timestamp=None, event_type="", npc_id=npc_id, room_id=self.id)
+            event = NPCEnteredRoom(npc_id=npc_id, room_id=self.id, from_room_id=from_room_id)
+            self._logger.debug(
+                "Publishing NPCEnteredRoom event", npc_id=npc_id, room_id=self.id, from_room_id=from_room_id
+            )
             self._event_bus.publish(event)
 
-    def npc_left(self, npc_id: str) -> None:
+    def npc_left(self, npc_id: str, to_room_id: str | None = None) -> None:
         """
         Remove an NPC from the room and trigger event.
 
         Args:
             npc_id: The ID of the NPC leaving the room
+            to_room_id: Optional destination room ID for movement tracking
         """
         if not npc_id:
             raise ValueError("NPC ID cannot be empty")
 
         if npc_id not in self._npcs:
-            self._logger.warning(f"NPC {npc_id} not in room {self.id}")
+            self._logger.warning("NPC not in room", npc_id=npc_id, room_id=self.id)
             return
 
         self._npcs.remove(npc_id)
-        self._logger.debug(f"NPC {npc_id} left room {self.id}")
+        self._logger.debug("NPC left room", npc_id=npc_id, room_id=self.id, to_room_id=to_room_id)
 
         # Publish event if event bus is available
         if self._event_bus:
-            event = NPCLeftRoom(timestamp=None, event_type="", npc_id=npc_id, room_id=self.id)
+            event = NPCLeftRoom(npc_id=npc_id, room_id=self.id, to_room_id=to_room_id)
+            self._logger.debug("Publishing NPCLeftRoom event", npc_id=npc_id, room_id=self.id, to_room_id=to_room_id)
             self._event_bus.publish(event)
 
     def get_players(self) -> list[str]:
@@ -229,17 +304,19 @@ class Room:
         """
         return list(self._npcs)
 
-    def has_player(self, player_id: str) -> bool:
+    def has_player(self, player_id: uuid.UUID | str) -> bool:
         """
         Check if a player is in the room.
 
         Args:
-            player_id: The ID of the player to check
+            player_id: The ID of the player to check (UUID or string)
 
         Returns:
             True if the player is in the room, False otherwise
         """
-        return player_id in self._players
+        # Convert to string for set lookup (Room uses set[str] for _players)
+        player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
+        return player_id_str in self._players
 
     def has_object(self, object_id: str) -> bool:
         """
@@ -281,14 +358,27 @@ class Room:
         Returns:
             True if the room is empty, False otherwise
         """
-        return self.get_occupant_count() == 0
+        return not self.get_occupant_count()
 
-    def to_dict(self) -> dict:
+    def get_containers(self) -> list[Any]:
+        """
+        Get list of containers in this room.
+
+        Returns:
+            List of container data dictionaries
+        """
+        return list(self._containers)
+
+    def to_dict(self) -> dict[str, Any]:
         """
         Convert the room to a dictionary representation.
 
         Returns:
-            Dictionary containing room data and current occupants
+            Dictionary containing room metadata and current occupant data.
+            Note: For production use, occupant data may be more accurately
+            obtained via RealTimeEventHandler._get_room_occupants() which
+            queries authoritative sources, but for unit testing and in-memory
+            Room instances, this method provides the current state.
         """
         return {
             "id": self.id,
@@ -299,6 +389,7 @@ class Room:
             "sub_zone": self.sub_zone,
             "environment": self.environment,
             "exits": self.exits,
+            "containers": self.get_containers(),
             "players": self.get_players(),
             "objects": self.get_objects(),
             "npcs": self.get_npcs(),

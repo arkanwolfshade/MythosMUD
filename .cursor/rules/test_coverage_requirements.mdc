@@ -1,0 +1,51 @@
+---
+description: Test coverage requirements for all new code
+alwaysApply: true
+---
+
+# Test Coverage Requirements
+
+## Minimum Coverage Standard
+
+**All new code must have at least 70% test coverage.**
+
+**Critical files must have at least 90% test coverage.** Critical files include:
+
+- Security-related code (authentication, authorization, data protection)
+- Core game features (combat, magic, persistence)
+- User-facing functionality (API endpoints, real-time messaging)
+- Business logic and critical paths
+
+### Coverage Measurement
+
+- Use appropriate coverage tools for your language:
+  - **Python**: `pytest-cov` or `coverage.py`
+  - **TypeScript/JavaScript**: `vitest --coverage` or `jest --coverage`
+  - **Other languages**: Use standard coverage tools for that ecosystem
+
+### Enforcement
+
+- Run coverage checks before committing new code
+- Coverage reports should be generated and reviewed as part of the development workflow
+- Aim to exceed the minimum threshold - 70% is the floor for general code, 90% for critical files
+- Identify critical files during code review and ensure they meet the higher standard
+
+### What Counts Toward Coverage
+
+- Unit tests for individual functions and methods
+- Integration tests for component interactions
+- Edge case and error handling tests
+- Critical path testing for security and core functionality
+
+### Exclusions
+
+- Generated code and boilerplate may be excluded from coverage requirements
+- Third-party library code should not be included in coverage calculations
+- Configuration files and simple data structures may have relaxed requirements
+
+### Best Practices
+
+- Write tests alongside code (TDD approach preferred)
+- Focus on meaningful coverage - test critical paths, edge cases, and error conditions
+- Don't sacrifice test quality for coverage percentage
+- Review coverage reports to identify untested code paths

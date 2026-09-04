@@ -1,0 +1,15 @@
+{
+  "18651087-eccd-4683-80c2-551c9b33f45e": [
+    "C:\\projects\\MythosMUD\\client\\src\\components\\ui-v2\\GameClientV2.tsx",
+    "C:\\projects\\MythosMUD\\client\\src\\components\\ui-v2\\GameClientV2MinimapSection.tsx",
+    "C:\\projects\\MythosMUD\\client\\src\\components\\ui-v2\\GameClientV2AuxiliaryPanels.tsx",
+    "C:\\projects\\MythosMUD\\client\\src\\components\\map\\AsciiMapViewer.tsx",
+    "C:\\projects\\MythosMUD\\client\\src\\components\\MapView.tsx",
+    "C:\\projects\\MythosMUD\\client\\src\\components\\ui-v2\\GameClientV2ContainerView.tsx",
+    "C:\\projects\\MythosMUD\\client\\src\\components\\map\\RoomDetailsPanel.tsx",
+    "C:\\projects\\MythosMUD\\client\\src\\components\\map\\RoomMapViewer.tsx",
+    "C:\\projects\\MythosMUD\\client\\src\\pages\\mapPageState.ts",
+    "C:\\projects\\MythosMUD\\client\\src\\pages\\MapPage.tsx",
+    "C:\\projects\\MythosMUD\\client\\src\\pages\\mapPageRenderer.tsx"
+  ]
+}

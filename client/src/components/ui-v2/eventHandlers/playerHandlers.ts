@@ -1,0 +1,252 @@
+// Player-related event handlers
+// As documented in "Player State Management" - Dr. Armitage, 1928
+
+import { determineDpTier } from '../../../types/health';
+import { buildHealthStatusFromEvent } from '../../../utils/healthEventUtils';
+import { logger } from '../../../utils/logger';
+import type { Player } from '../types';
+import type { EventHandler, GameStateUpdates } from './types';
+
+export const handlePlayerEnteredGame: EventHandler = (event, _context, appendMessage) => {
+  const playerName = event.data.player_name as string | undefined;
+  if (playerName && typeof playerName === 'string' && playerName.trim()) {
+    appendMessage({
+      text: `${playerName} has entered the game.`,
+      timestamp: event.timestamp,
+      isHtml: false,
+      messageType: 'system',
+      channel: 'game',
+      type: 'system',
+    });
+  }
+};
+
+export const handlePlayerEntered: EventHandler = (event, _context, appendMessage) => {
+  const playerName = event.data.player_name as string;
+  const messageText = event.data.message as string;
+  if (messageText && playerName) {
+    appendMessage({
+      text: messageText,
+      timestamp: event.timestamp,
+      isHtml: false,
+      messageType: 'system',
+      channel: 'game',
+      type: 'system',
+    });
+  }
+};
+
+export const handlePlayerLeftGame: EventHandler = (event, _context, appendMessage) => {
+  const playerName = event.data.player_name as string;
+  if (playerName) {
+    appendMessage({
+      text: `${playerName} has left the game.`,
+      timestamp: event.timestamp,
+      isHtml: false,
+      messageType: 'system',
+      channel: 'game',
+      type: 'system',
+    });
+  }
+};
+
+export const handlePlayerLeft: EventHandler = (event, _context, appendMessage) => {
+  const messageText = event.data.message as string;
+  if (messageText) {
+    appendMessage({
+      text: messageText,
+      timestamp: event.timestamp,
+      isHtml: false,
+      messageType: 'system',
+      channel: 'game',
+      type: 'system',
+    });
+  }
+};
+
+export const handlePlayerDied: EventHandler = (event, context) => {
+  const deathData = event.data as {
+    death_location?: string;
+    room_id?: string;
+    current_dp?: number;
+    [key: string]: unknown;
+  };
+  // Only show respawn modal when actually dead (DP <= -10). Require explicit current_dp so we never
+  // show at 0 DP when the server sends player_died without current_dp (client will set isDead from
+  // usePlayerStatusEffects when state syncs to -10).
+  // CRITICAL: Defensive check - reject if current_dp is 0, undefined, null, or > -10
+  const currentDp = deathData.current_dp;
+  const currentDpNum = typeof currentDp === 'number' ? currentDp : NaN;
+  const willReturnEarly = !Number.isFinite(currentDpNum) || currentDpNum > -10;
+
+  if (willReturnEarly) {
+    // Log why we're returning early for debugging
+    if (currentDp === 0) {
+      console.warn('[handlePlayerDied] Rejecting player_died event with current_dp=0 (incapacitated, not dead)');
+    }
+    return;
+  }
+  const extractedDeathLocation = deathData.death_location || deathData.room_id || 'Unknown Location';
+  context.setDeathLocation(extractedDeathLocation);
+  context.setIsDead(true);
+};
+
+export const handlePlayerRespawned: EventHandler = (event, context) => {
+  const respawnData = event.data as {
+    player?: Player;
+    respawn_room_id?: string;
+    old_dp?: number;
+    new_dp?: number;
+    message?: string;
+    [key: string]: unknown;
+  };
+
+  context.setIsDead(false);
+  context.setIsMortallyWounded(false);
+  context.setIsRespawning(false);
+
+  const updates: GameStateUpdates = {};
+
+  if (respawnData.player) {
+    updates.player = respawnData.player as Player;
+    // Update health status from player data
+    if (respawnData.player.stats?.current_dp !== undefined) {
+      const playerStats = respawnData.player.stats;
+      const currentDp = playerStats.current_dp;
+      const maxDp = playerStats.max_dp ?? 100;
+      const healthStatusUpdate = {
+        current: currentDp,
+        max: maxDp,
+        tier: determineDpTier(currentDp, maxDp),
+        posture: playerStats.position,
+        inCombat: respawnData.player.in_combat ?? false,
+        lastChange: {
+          delta: currentDp - (context.healthStatusRef.current?.current ?? 0),
+          reason: 'respawn',
+          timestamp: event.timestamp,
+        },
+      };
+      context.setDpStatus(healthStatusUpdate);
+    }
+  }
+
+  if (respawnData.message) {
+    // This will be handled by the caller via appendMessage if needed
+  }
+
+  return updates;
+};
+
+export const handlePlayerDeliriumRespawned: EventHandler = (event, context) => {
+  const respawnData = event.data as {
+    player?: Player;
+    respawn_room_id?: string;
+    old_lucidity?: number;
+    new_lucidity?: number;
+    message?: string;
+    [key: string]: unknown;
+  };
+
+  context.setIsDelirious(false);
+  context.setIsDeliriumRespawning(false);
+
+  const updates: GameStateUpdates = {};
+
+  if (respawnData.player) {
+    updates.player = respawnData.player as Player;
+    // Update lucidity status from player data
+    if (respawnData.player.stats?.lucidity !== undefined) {
+      const playerStats = respawnData.player.stats;
+      const currentLucidity = playerStats.lucidity;
+      if (context.lucidityStatusRef.current) {
+        context.setLucidityStatus({
+          ...context.lucidityStatusRef.current,
+          current: currentLucidity,
+        });
+      }
+    }
+  }
+
+  return updates;
+};
+
+function pickStatNumber(incoming: number | undefined, existing: number | undefined, fallback: number): number {
+  return incoming ?? existing ?? fallback;
+}
+
+function mergePlayerStats(
+  existingStats: Player['stats'] | undefined,
+  incoming: Partial<NonNullable<Player['stats']>> & Record<string, unknown>
+): Player['stats'] {
+  return {
+    ...(existingStats || {}),
+    ...incoming,
+    current_dp: pickStatNumber(incoming.current_dp, existingStats?.current_dp, 0),
+    lucidity: pickStatNumber(incoming.lucidity, existingStats?.lucidity, 0),
+  } as Player['stats'];
+}
+
+export const handlePlayerUpdate: EventHandler = (event, context) => {
+  const playerData = event.data as {
+    in_combat?: boolean;
+    stats?: {
+      magic_points?: number;
+      max_magic_points?: number;
+      current_dp?: number;
+      max_dp?: number;
+      [key: string]: unknown;
+    };
+    [key: string]: unknown;
+  };
+
+  const updates: GameStateUpdates = {};
+  const current = context.currentPlayerRef.current;
+  if (!current) {
+    return updates;
+  }
+
+  const updatedPlayer = { ...current };
+  if (playerData.in_combat !== undefined) {
+    updatedPlayer.in_combat = playerData.in_combat;
+  }
+  if (playerData.stats) {
+    updatedPlayer.stats = mergePlayerStats(current.stats, playerData.stats);
+  }
+  updates.player = updatedPlayer;
+  return updates;
+};
+
+export const handlePlayerDpUpdated: EventHandler = (event, context) => {
+  logger.info('playerHandlers', 'Received player_dp_updated event', {
+    old_dp: event.data.old_dp,
+    new_dp: event.data.new_dp,
+    max_dp: event.data.max_dp,
+    damage_taken: event.data.damage_taken,
+  });
+
+  const { status: updatedDpStatus } = buildHealthStatusFromEvent(
+    context.healthStatusRef.current,
+    event.data,
+    event.timestamp
+  );
+
+  context.setDpStatus(updatedDpStatus);
+
+  if (context.currentPlayerRef.current) {
+    const postureFromEvent = (event.data as { posture?: string; player?: { stats?: { position?: string } } }).posture;
+    const positionFromPlayer = (event.data as { player?: { stats?: { position?: string } } }).player?.stats?.position;
+    const posture = postureFromEvent ?? positionFromPlayer ?? context.currentPlayerRef.current.stats?.position;
+    return {
+      player: {
+        ...context.currentPlayerRef.current,
+        stats: {
+          ...context.currentPlayerRef.current.stats,
+          current_dp: updatedDpStatus.current,
+          max_dp: updatedDpStatus.max,
+          lucidity: context.currentPlayerRef.current.stats?.lucidity ?? 0,
+          ...(posture !== undefined && { position: posture }),
+        },
+      },
+    };
+  }
+};

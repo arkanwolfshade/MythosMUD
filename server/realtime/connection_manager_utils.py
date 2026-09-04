@@ -1,0 +1,109 @@
+"""
+Utility functions and module-level code for ConnectionManager.
+
+This module contains helper functions that were extracted from connection_manager.py
+to reduce its line count. It must not import connection_manager (even under
+TYPE_CHECKING) or basedpyright reportImportCycles will fail.
+"""
+
+import inspect
+from collections.abc import Callable, Coroutine
+from typing import cast
+
+
+def _coerce_connection_manager(manager: object) -> object:
+    """Pass-through for container values; typing lives at call sites."""
+    return manager
+
+
+# Constants for async compatibility
+_ASYNC_METHODS_REQUIRING_COMPAT: set[str] = {
+    "handle_new_game_session",
+    "force_cleanup",
+    "check_connection_health",
+    "cleanup_orphaned_data",
+    "broadcast_room_event",
+    "broadcast_global_event",
+    "broadcast_global",
+    "send_personal_message",
+}
+
+
+def _make_async_compat_wrapper(
+    attr: Callable[..., object],
+) -> Callable[..., Coroutine[None, None, object]]:
+    """Wrap a sync or async callable so callers can always await it."""
+
+    async def _async_wrapper(*args: object, **kwargs: object) -> object:
+        result: object = attr(*args, **kwargs)
+        if inspect.isawaitable(result):
+            return cast(object, await result)
+        return result
+
+    return _async_wrapper
+
+
+def _ensure_async_compat(manager: object | None) -> object | None:
+    """
+    Ensure connection manager methods are awaitable.
+
+    Wraps synchronous callables in async wrappers to ensure production code
+    can await methods that might be synchronous (e.g., in test scenarios).
+    Uses duck typing to detect mock-like objects without importing test utilities.
+    """
+    if manager is None:
+        return None
+
+    for method_name in _ASYNC_METHODS_REQUIRING_COMPAT:
+        if not hasattr(manager, method_name):
+            continue
+
+        attr = cast(object, getattr(manager, method_name))
+
+        # Already awaitable - nothing to do
+        if inspect.iscoroutinefunction(attr) or inspect.isawaitable(attr):
+            continue
+
+        # Wrap any callable (including mock-like objects) in an async wrapper
+        # This works for both real methods and test mocks without importing Mock types
+        if callable(attr):
+            wrapped = _make_async_compat_wrapper(attr)
+            setattr(manager, method_name, wrapped)
+
+    return manager
+
+
+def resolve_connection_manager(candidate: object | None = None) -> object | None:
+    """
+    Resolve a connection manager instance.
+
+    Prefers explicitly supplied candidate, then tries to resolve from:
+    1. FastAPI app state container (if available in context)
+    2. ApplicationContainer.get_instance() (for background tasks)
+
+    Args:
+        candidate: Explicit connection manager to prefer.
+
+    Returns:
+        The resolved connection manager instance (if any). Typed as object to avoid
+        an import cycle with connection_manager; cast at typed call sites if needed.
+    """
+    if candidate is not None:
+        return _ensure_async_compat(candidate)
+
+    # Try to get from app state (for API routes)
+    # This requires accessing the current request context, which is not always available
+    # For now, try ApplicationContainer.get_instance() as fallback
+    try:
+        # Deferred: ApplicationContainer import graph includes combat/magic, which import this module.
+        from ..container import ApplicationContainer  # noqa: I001,PLC0415  # Reason: Break import cycle with container/combat/magic
+
+        container = ApplicationContainer.get_instance()
+        manager = cast(object | None, getattr(container, "connection_manager", None))
+        if manager is not None:
+            return _ensure_async_compat(_coerce_connection_manager(manager))
+    except (AttributeError, RuntimeError, ImportError):
+        # Container not available or not initialized
+        pass
+
+    return None

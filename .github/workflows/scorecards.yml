@@ -10,12 +10,15 @@ on:
   # To guarantee Maintained check is occasionally updated. See
   # https://github.com/ossf/scorecard/blob/main/docs/checks.md#maintained
   schedule:
-    - cron: '20 7 * * 2'
+    - cron: "20 7 * * 2"
   push:
     branches: ["main"]
+  # Manual re-run after ruleset hardening (Scorecard Branch-Protection).
+  workflow_dispatch:
 
 # Declare default permissions as read only.
-permissions: read-all
+permissions:
+  contents: read
 
 jobs:
   analysis:
@@ -36,17 +39,80 @@ jobs:
 
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 # v2.13.0
+        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
           egress-policy: audit
+      # Standard bootstrap: harden + checkout
+      # github.token for parent repo; GITHUB_TOKEN cannot read other private repos.
+      # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
 
       - name: "Checkout code"
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          submodules: false
+          token: ${{ github.token }}
+
+      - name: Resolve data submodule (repository + commit)
+        id: data_submodule
+        run: |
+          set -euo pipefail
+          data_url="$(git config -f .gitmodules --get submodule.data.url)"
+          suffix="${data_url#https://github.com/}"
+          suffix="${suffix%.git}"
+          if [ -z "${suffix}" ] || [ "${suffix}" = "${data_url}" ]; then
+            echo "::error::submodule.data.url must be https://github.com/OWNER/REPO.git"
+            exit 1
+          fi
+          line=$(git ls-tree HEAD data)
+          mode=$(echo "${line}" | awk '{print $1}')
+          kind=$(echo "${line}" | awk '{print $2}')
+          sha=$(echo "${line}" | awk '{print $3}')
+          if [ "${mode}" != "160000" ] || [ "${kind}" != "commit" ] || [ -z "${sha}" ]; then
+            echo "::error::Path data is not a git submodule at HEAD (expected gitlink 160000 commit)."
+            exit 1
+          fi
+          echo "repository=${suffix}" >> "${GITHUB_OUTPUT}"
+          echo "sha=${sha}" >> "${GITHUB_OUTPUT}"
+          echo "::notice::Will fetch ${suffix}@${sha}"
+      - name: Clone private data into data/
+        env:
+          SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+        run: |
+          set -euo pipefail
+          pat_trim=$(printf '%s' "${SUBMODULE_PAT}" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+          if [ -z "${pat_trim}" ]; then
+            echo "::notice::No MYTHOSMUD_PAT in this run (common for Dependabot pull_request workflows). Scorecard continues with a placeholder data/ directory; optional: add the same PAT under Dependabot secrets for a full mythosmud_data checkout."
+            rm -rf data
+            mkdir -p data
+            printf '%s\n' \
+              "Placeholder: private submodule mythosmud_data was not cloned (no secrets in this workflow context)." \
+              "CI with PAT: clone runs as before." \
+              > data/README.scorecard-placeholder.md
+            exit 0
+          fi
+          case "${pat_trim}" in
+            github_pat_*) git_user="x-access-token" ;;
+            *) git_user="${GITHUB_REPOSITORY_OWNER}" ;;
+          esac
+          repo="${{ steps.data_submodule.outputs.repository }}"
+          sha="${{ steps.data_submodule.outputs.sha }}"
+          export GIT_USER_Q="${git_user}" PAT_Q="${pat_trim}"
+          auth_host=$(python3 -c "import os, urllib.parse as u; x=os.environ['GIT_USER_Q']; y=os.environ['PAT_Q']; print(u.quote(x, safe='') + ':' + u.quote(y, safe=''))")
+          unset GIT_USER_Q PAT_Q
+          rm -rf data
+          mkdir data
+          cd data
+          git init -q
+          git remote add origin "https://${auth_host}@github.com/${repo}.git"
+          GIT_TERMINAL_PROMPT=0 git fetch --depth 1 origin "${sha}"
+          git checkout -q FETCH_HEAD
+          git remote set-url origin "https://github.com/${repo}.git"
+          cd ..
 
       - name: "Run analysis"
-        uses: ossf/scorecard-action@05b42c624433fc40578a4040d5cf5e36ddca8cde # v2.4.2
+        uses: ossf/scorecard-action@2d1146689b8cda280b9bc96326124645441f03bc # v2.4.4
         with:
           results_file: results.sarif
           results_format: sarif
@@ -63,12 +129,16 @@ jobs:
           # For private repositories:
           #   - `publish_results` will always be set to `false`, regardless
           #     of the value entered here.
-          publish_results: true
+          # When `publish_results` is true, scorecard-action enforces that every step in
+          # this job is one of a short allow-listed actions only (no custom `run:`).
+          # This workflow uses shell steps for optional mythosmud_data checkout; keep
+          # publish_results false so analysis + SARIF upload to code scanning still run.
+          publish_results: false
 
       # Upload the results as artifacts (optional). Commenting out will disable uploads of run results in SARIF
       # format to the repository Actions tab.
       - name: "Upload artifact"
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: SARIF file
           path: results.sarif
@@ -76,6 +146,6 @@ jobs:
 
       # Upload the results to GitHub's code scanning dashboard.
       - name: "Upload to code-scanning"
-        uses: github/codeql-action/upload-sarif@51f77329afa6477de8c49fc9c7046c15b9a4e79d # v3.29.5
+        uses: github/codeql-action/upload-sarif@ba454b8ab46733eb6145342877cd148270bb77ab # codeql-bundle-v2.23.5
         with:
           sarif_file: results.sarif

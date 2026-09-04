@@ -1,0 +1,321 @@
+/**
+ * WebSocket connection hook.
+ *
+ * Manages WebSocket connection lifecycle with ping/pong heartbeat and automatic cleanup.
+ *
+ * AI: Extracted from useGameConnection to reduce complexity and improve testability.
+ */
+
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { API_V1_BASE } from '../utils/config';
+import { logger } from '../utils/logger';
+import { useResourceCleanup } from '../utils/resourceCleanup';
+import { inputSanitizer } from '../utils/security';
+
+export interface WebSocketConnectionOptions {
+  authToken: string;
+  characterId?: string; // MULTI-CHARACTER: Selected character ID for WebSocket connection
+  sessionId: string | null;
+  onConnected?: () => void;
+  onMessage?: (event: MessageEvent) => void;
+  onError?: (error: Event) => void;
+  onDisconnect?: (closeInfo: WebSocketCloseInfo) => void;
+}
+
+/**
+ * The WebSocket close code/reason from the browser's CloseEvent (RFC 6455). Threaded through so
+ * callers can distinguish a normal closure (1000 -- e.g. the server replacing this connection with
+ * a newer session, see connection_session_management.py) from an actual failure that should trigger
+ * reconnect-with-backoff. Without this, every close looked identical to the reconnect logic, and a
+ * graceful server-initiated replacement retried indefinitely against whichever session currently
+ * held the connection (#297/#610).
+ */
+export interface WebSocketCloseInfo {
+  code: number;
+  reason: string;
+}
+
+export interface WebSocketConnectionResult {
+  connect: () => void;
+  disconnect: () => void;
+  sendMessage: (message: string) => void;
+  isConnected: boolean;
+  lastError: string | null;
+}
+
+/**
+ * Hook for managing WebSocket connection.
+ *
+ * Handles connection, ping/pong heartbeat, and message sending for WebSocket.
+ *
+ * @param options - WebSocket connection configuration
+ * @returns WebSocket connection state and control methods
+ *
+ * AI: WebSocket requires session ID for authentication and connection tracking.
+ */
+export function useWebSocketConnection(options: WebSocketConnectionOptions): WebSocketConnectionResult {
+  const { authToken, characterId, sessionId, onConnected, onMessage, onError, onDisconnect } = options;
+
+  // Server stores the handshake JWT as connection metadata.token and requires the same value in
+  // each message as csrfToken (see server.realtime.message_validator / connection_establishment).
+  const authTokenRef = useRef(authToken);
+  useEffect(() => {
+    authTokenRef.current = authToken;
+  }, [authToken]);
+
+  const resourceManager = useResourceCleanup();
+  const websocketRef = useRef<WebSocket | null>(null);
+  const lastWebSocketRef = useRef<WebSocket | null>(null);
+  const pingIntervalRef = useRef<number | null>(null);
+  const manualDisconnectRef = useRef<boolean>(false);
+  const reconnectAttemptsRef = useRef<number>(0);
+  const hasEverConnectedRef = useRef<boolean>(false);
+  const connectRef = useRef<(() => void) | undefined>(undefined);
+
+  // Use state instead of refs for values that need to trigger re-renders
+  const [isConnected, setIsConnected] = useState(false);
+  const [lastError, setLastError] = useState<string | null>(null);
+
+  // Stable callback refs
+  const onConnectedRef = useRef(onConnected);
+  const onMessageRef = useRef(onMessage);
+  const onErrorRef = useRef(onError);
+  const onDisconnectRef = useRef(onDisconnect);
+
+  // Update callback refs
+  useEffect(() => {
+    onConnectedRef.current = onConnected;
+    onMessageRef.current = onMessage;
+    onErrorRef.current = onError;
+    onDisconnectRef.current = onDisconnect;
+  }, [onConnected, onMessage, onError, onDisconnect]);
+
+  const disconnect = useCallback(() => {
+    manualDisconnectRef.current = true;
+    // Clear ping interval
+    if (pingIntervalRef.current !== null) {
+      window.clearInterval(pingIntervalRef.current);
+      resourceManager.removeInterval(pingIntervalRef.current);
+      pingIntervalRef.current = null;
+    }
+
+    const socketToClose = websocketRef.current ?? lastWebSocketRef.current;
+    if (socketToClose) {
+      logger.debug('WebSocketConnection', 'Disconnecting WebSocket');
+
+      socketToClose.close();
+      if (socketToClose === websocketRef.current) {
+        websocketRef.current = null;
+      }
+      lastWebSocketRef.current = null;
+      setIsConnected(false);
+
+      if (hasEverConnectedRef.current) {
+        onDisconnectRef.current?.({ code: 1000, reason: 'Client disconnect' });
+      }
+    }
+  }, [resourceManager]);
+
+  const sendMessage = useCallback(
+    (message: string) => {
+      if (!websocketRef.current || !isConnected) {
+        logger.warn('WebSocketConnection', 'Cannot send message: WebSocket not connected');
+        return;
+      }
+
+      try {
+        // Enhanced input validation
+        if (!message || typeof message !== 'string') {
+          logger.warn('WebSocketConnection', 'Invalid message type');
+          return;
+        }
+
+        if (message.length > 1000) {
+          // Message length limit
+          logger.warn('WebSocketConnection', 'Message too long');
+          return;
+        }
+
+        // Sanitize the message first
+        const sanitizedMessage = inputSanitizer.sanitizeCommand(message);
+
+        // Validate sanitization didn't remove too much
+        if (sanitizedMessage.length < message.length * 0.5) {
+          logger.warn('WebSocketConnection', 'Message heavily sanitized, rejecting');
+          return;
+        }
+
+        // Outer csrfToken must match the JWT used on the WebSocket URL; validator copies it into
+        // the inner payload when the inner JSON omits csrfToken (message_validator._unwrap_*).
+        const tokenForCsrf = authTokenRef.current;
+        if (!tokenForCsrf) {
+          logger.warn('WebSocketConnection', 'Cannot send: missing CSRF token');
+          return;
+        }
+        const outbound = JSON.stringify({
+          message: sanitizedMessage,
+          timestamp: Date.now(),
+          csrfToken: tokenForCsrf,
+        });
+
+        websocketRef.current.send(outbound);
+        logger.debug('WebSocketConnection', 'Message sent', {
+          messageLength: sanitizedMessage.length,
+        });
+      } catch (error) {
+        logger.error('WebSocketConnection', 'Error sending message', { error });
+      }
+    },
+    [isConnected]
+  );
+
+  const connect = useCallback(() => {
+    if (!authToken || !sessionId) {
+      logger.warn('WebSocketConnection', 'Cannot connect: missing auth token or session ID');
+      return;
+    }
+
+    // Check if WebSocket exists AND is actually connected (readyState 0 = CONNECTING, 1 = OPEN)
+    if (websocketRef.current) {
+      const readyState = websocketRef.current.readyState;
+      if (readyState === WebSocket.CONNECTING || readyState === WebSocket.OPEN) {
+        logger.debug('WebSocketConnection', 'WebSocket already connected, notifying state machine', { readyState });
+        // BUGFIX: Still call onConnected even if WebSocket is already connected
+        // This allows the state machine to transition to fully_connected
+        // when the connection is restored after a page reload or reconnect
+        if (readyState === WebSocket.OPEN) {
+          logger.debug('WebSocketConnection', 'WebSocket already connected, calling onConnected', { readyState });
+          setIsConnected(true);
+          onConnectedRef.current?.();
+        }
+        return;
+      }
+      // WebSocket exists but is closed/closing - clean it up before reconnecting
+      logger.debug('WebSocketConnection', 'WebSocket exists but is closed, cleaning up before reconnect', {
+        readyState,
+      });
+      disconnect();
+    }
+
+    try {
+      manualDisconnectRef.current = false;
+      // CRITICAL FIX: Pass JWT via query parameter, not subprotocol
+      // JWT tokens contain characters (dots, etc.) that are invalid in WebSocket subprotocols
+      // This causes the browser to reject the handshake
+      // Production must be served over HTTPS so the same-origin WebSocket uses WSS.
+      // MULTI-CHARACTER: Include character_id if provided to connect as the selected character
+      let wsUrl = `${API_V1_BASE}/api/ws?session_id=${encodeURIComponent(sessionId)}&token=${encodeURIComponent(authToken)}`;
+      if (characterId) {
+        wsUrl += `&character_id=${encodeURIComponent(characterId)}`;
+      }
+
+      logger.info('WebSocketConnection', 'Connecting to WebSocket', { url: wsUrl });
+
+      const ws = new WebSocket(wsUrl);
+      websocketRef.current = ws;
+      lastWebSocketRef.current = ws;
+
+      ws.onopen = () => {
+        logger.info('WebSocketConnection', 'WebSocket connected successfully');
+        setIsConnected(true);
+        setLastError(null);
+        hasEverConnectedRef.current = true;
+
+        // reset reconnect attempts on successful open
+        reconnectAttemptsRef.current = 0;
+
+        // Enhanced ping with NATS health check
+        pingIntervalRef.current = window.setInterval(async () => {
+          if (ws.readyState === WebSocket.OPEN) {
+            // Send ping to WebSocket (same csrf field as other realtime messages)
+            const tokenNow = authTokenRef.current;
+            if (!tokenNow) {
+              logger.warn('WebSocketConnection', 'Skipping ping: missing CSRF token');
+              return;
+            }
+            ws.send(JSON.stringify({ type: 'ping', csrfToken: tokenNow }));
+
+            // DEV-only: check NATS health via server
+            if (import.meta.env.DEV) {
+              try {
+                const healthResponse = await fetch(`${API_V1_BASE}/monitoring/health`, {
+                  method: 'GET',
+                  headers: { Authorization: `Bearer ${authTokenRef.current}` },
+                });
+                if (!healthResponse.ok) {
+                  logger.warn('WebSocketConnection', 'NATS health check failed');
+                }
+              } catch (error) {
+                logger.warn('WebSocketConnection', 'NATS health check error', { error });
+              }
+            }
+          }
+        }, 30000);
+
+        resourceManager.registerInterval(pingIntervalRef.current);
+
+        onConnectedRef.current?.();
+      };
+
+      ws.onmessage = event => {
+        onMessageRef.current?.(event);
+      };
+
+      ws.onerror = error => {
+        logger.error('WebSocketConnection', 'WebSocket error', { error });
+        setLastError('WebSocket connection error');
+        setIsConnected(false);
+        onErrorRef.current?.(error);
+      };
+
+      ws.onclose = (event: CloseEvent) => {
+        logger.info('WebSocketConnection', 'WebSocket closed', { code: event.code, reason: event.reason });
+        setIsConnected(false);
+
+        // Clear ping interval
+        if (pingIntervalRef.current !== null) {
+          window.clearInterval(pingIntervalRef.current);
+          resourceManager.removeInterval(pingIntervalRef.current);
+          pingIntervalRef.current = null;
+        }
+        if (manualDisconnectRef.current) {
+          // disconnect() already notified onDisconnect synchronously; this close event is its
+          // natural async follow-through, not a new failure. Without this guard, both fire for
+          // the same logical disconnect, double-counting reconnect attempts and opening a second
+          // WebSocket for a single intentional close.
+          manualDisconnectRef.current = false;
+        } else if (hasEverConnectedRef.current) {
+          onDisconnectRef.current?.({ code: event.code, reason: event.reason });
+        }
+
+        // BUGFIX: Don't schedule reconnection here - let the state machine handle it
+        // The state machine's reconnection logic is more robust and prevents conflicts
+        // The onDisconnect callback will notify the state machine, which will handle reconnection
+        logger.debug('WebSocketConnection', 'WebSocket closed, state machine will handle reconnection');
+      };
+    } catch (error) {
+      logger.error('WebSocketConnection', 'Error creating WebSocket connection', { error });
+      setLastError(error instanceof Error ? error.message : 'Unknown WebSocket error');
+      onErrorRef.current?.(error as Event);
+    }
+  }, [authToken, characterId, sessionId, resourceManager, disconnect]);
+
+  useEffect(() => {
+    connectRef.current = connect;
+  }, [connect]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      disconnect();
+    };
+  }, [disconnect]);
+
+  return {
+    connect,
+    disconnect,
+    sendMessage,
+    isConnected,
+    lastError,
+  };
+}

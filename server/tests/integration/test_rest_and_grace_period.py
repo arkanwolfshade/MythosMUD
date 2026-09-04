@@ -1,0 +1,491 @@
+"""
+Integration tests for rest command and disconnect grace period.
+
+Tests the integration between rest command, grace period system,
+combat blocking, and visual indicators.
+"""
+
+import asyncio
+import os
+import uuid
+from typing import cast, override
+from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
+
+# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+
+# pyright: reportPrivateUsage=false
+# Reason: unit tests patch and assert ScheduleService private state by design.
+
+# Set environment variables before imports that require config
+# This ensures config can be initialized during import
+# CRITICAL: These must be set before importing server modules that initialize config
+_ = os.environ.setdefault("SERVER_PORT", "54768")
+_ = os.environ.setdefault("SERVER_HOST", "127.0.0.1")
+_ = os.environ.setdefault("LOGGING_ENVIRONMENT", "unit_test")
+_ = os.environ.setdefault("DATABASE_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
+_ = os.environ.setdefault("DATABASE_NPC_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
+_ = os.environ.setdefault("GAME_ALIASES_DIR", "data/unit_test/players/aliases")
+if not os.environ.get("MYTHOSMUD_ADMIN_PASSWORD"):
+    os.environ["MYTHOSMUD_ADMIN_PASSWORD"] = "test-admin-password-for-development"
+if not os.environ.get("MYTHOSMUD_JWT_SECRET"):
+    os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-key-for-testing-only"
+
+# Imports must come after environment variable setup to allow config initialization
+# Use lazy imports to avoid circular import issues
+# ruff: noqa: E402, I001  # Reason: Imports must come after environment variable setup to allow config initialization, wrong import position is intentional
+# pylint: disable=wrong-import-position  # Reason: Imports must come after environment variable setup to allow config initialization, wrong import position is intentional
+from server.realtime.disconnect_grace_period import (
+    cancel_grace_period,
+    is_player_in_grace_period,
+)
+# pylint: enable=wrong-import-position
+
+# Lazy imports for rest_command and player_presence_tracker to avoid circular import
+# Import inside functions that need them to avoid triggering circular import chain
+
+
+@pytest.fixture
+def mock_app_with_services() -> MagicMock:
+    """Create a mock app with all required services."""
+    app = MagicMock()
+    state: MagicMock = MagicMock()
+    # Ensure container is None so _get_services_from_app uses app.state.persistence
+    # instead of trying to get it from app.state.container.async_persistence
+    state.container = None
+    app.state = state
+    return app
+
+
+@pytest.fixture
+def mock_connection_manager_full() -> MagicMock:
+    """Create a fully configured mock connection manager."""
+    manager = MagicMock()
+    grace_period_players: dict[uuid.UUID, asyncio.Task[None]] = {}
+    manager.grace_period_players = grace_period_players
+    resting_players: dict[uuid.UUID, asyncio.Task[None]] = {}
+    manager.resting_players = resting_players
+    manager.intentional_disconnects = set()
+    manager.disconnecting_players = set()
+    disconnect_lock: AsyncMock = AsyncMock()
+    disconnect_lock.__aenter__ = AsyncMock(return_value=None)
+    disconnect_lock.__aexit__ = AsyncMock(return_value=None)
+    manager.disconnect_lock = disconnect_lock
+    # Accessing protected member is necessary to mock the method used by player_presence_tracker implementation
+    get_player: AsyncMock = AsyncMock()
+    manager._get_player = get_player  # pylint: disable=protected-access  # Reason: Accessing protected member is necessary to mock the method used by player_presence_tracker implementation
+    # Accessing protected member is necessary to mock the method used by player_presence_tracker implementation
+    manager._cleanup_ghost_players = MagicMock()  # pylint: disable=protected-access  # Reason: Accessing protected member is necessary to mock the method used by player_presence_tracker implementation
+    force_disconnect_player: AsyncMock = AsyncMock()
+    manager.force_disconnect_player = force_disconnect_player
+    disconnect_websocket_connection: AsyncMock = AsyncMock(return_value=True)
+    manager.disconnect_websocket_connection = disconnect_websocket_connection
+    player_websockets: dict[uuid.UUID, list[str]] = {}
+    manager.player_websockets = player_websockets
+    return manager
+
+
+class MockPersistenceFull:
+    """Mock persistence layer with async methods for integration tests."""
+
+    def __init__(self):
+        self._get_player_by_name_mock: AsyncMock = AsyncMock(return_value=None)
+        self._get_room_by_id_mock: MagicMock = MagicMock(return_value=None)
+
+    async def get_player_by_name(self, name: str) -> object | None:
+        """Mock async method that uses configured mock."""
+        return cast(object | None, await self._get_player_by_name_mock(name))
+
+    def get_room_by_id(self, room_id: str) -> object | None:
+        """Mock method that uses configured mock."""
+        return cast(object | None, self._get_room_by_id_mock(room_id))
+
+    @override
+    def __setattr__(self, name: str, value: object) -> None:
+        """Allow setting get_player_by_name and get_room_by_id to mocks."""
+        if name == "get_player_by_name":
+            object.__setattr__(self, "_get_player_by_name_mock", value)
+        elif name == "get_room_by_id":
+            object.__setattr__(self, "_get_room_by_id_mock", value)
+        else:
+            super().__setattr__(name, value)
+
+
+@pytest.fixture
+def mock_persistence_full() -> MockPersistenceFull:
+    """Create a fully configured mock persistence layer."""
+    return MockPersistenceFull()
+
+
+@pytest.mark.asyncio
+async def test_unintentional_disconnect_starts_grace_period(
+    mock_connection_manager_full: MagicMock, mock_persistence_full: MockPersistenceFull
+) -> None:  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
+    """Test that unintentional disconnect starts grace period."""
+    # Lazy import to avoid circular import
+    from server.realtime.player_presence_tracker import track_player_disconnected_impl  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+
+    player_id = uuid.uuid4()
+    grace_period_players: dict[uuid.UUID, asyncio.Task[None]] = {}
+    mock_connection_manager_full.grace_period_players = grace_period_players
+    mock_player = MagicMock()
+    mock_player.current_room_id = "room_123"
+    # Accessing protected member is necessary to mock the method used by player_presence_tracker implementation
+    get_player: AsyncMock = AsyncMock(return_value=mock_player)
+    mock_connection_manager_full._get_player = get_player  # pylint: disable=protected-access  # Reason: Accessing protected member is necessary to mock the method used by player_presence_tracker implementation
+    mock_connection_manager_full.async_persistence = mock_persistence_full
+
+    with patch("server.realtime.player_presence_tracker._should_skip_disconnect", return_value=False):
+        with patch("server.realtime.player_presence_tracker._acquire_disconnect_lock", return_value=True):
+            with patch("server.realtime.player_presence_tracker.extract_player_name", return_value="TestPlayer"):
+                with patch(
+                    "server.realtime.player_presence_tracker._collect_disconnect_keys",
+                    return_value=(set(), set()),
+                ):
+                    # Player NOT in intentional_disconnects (unintentional)
+                    await track_player_disconnected_impl(player_id, mock_connection_manager_full, connection_type=None)
+
+                    # Verify grace period was started
+                    assert player_id in grace_period_players
+
+
+@pytest.mark.asyncio
+async def test_intentional_disconnect_no_grace_period(
+    mock_connection_manager_full: MagicMock, mock_persistence_full: MockPersistenceFull
+) -> None:  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
+    """Test that intentional disconnect does NOT start grace period."""
+    # Lazy import to avoid circular import
+    from server.realtime.player_presence_tracker import track_player_disconnected_impl  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+
+    player_id = uuid.uuid4()
+    mock_player = MagicMock()
+    mock_player.current_room_id = "room_123"
+    # Accessing protected member is necessary to mock the method used by player_presence_tracker implementation
+    get_player: AsyncMock = AsyncMock(return_value=mock_player)
+    mock_connection_manager_full._get_player = get_player  # pylint: disable=protected-access  # Reason: Accessing protected member is necessary to mock the method used by player_presence_tracker implementation
+    mock_connection_manager_full.async_persistence = mock_persistence_full
+    intentional_disconnects: set[uuid.UUID] = set()
+    mock_connection_manager_full.intentional_disconnects = intentional_disconnects
+    intentional_disconnects.add(player_id)  # Mark as intentional
+
+    with patch("server.realtime.player_presence_tracker._should_skip_disconnect", return_value=False):
+        with patch("server.realtime.player_presence_tracker._acquire_disconnect_lock", return_value=True):
+            with patch("server.realtime.player_presence_tracker.extract_player_name", return_value="TestPlayer"):
+                with patch(
+                    "server.realtime.player_presence_tracker._collect_disconnect_keys",
+                    return_value=(set(), set()),
+                ):
+                    with patch(
+                        "server.realtime.player_presence_tracker.handle_player_disconnect_broadcast",
+                        new_callable=AsyncMock,
+                    ):
+                        with patch("server.realtime.player_presence_tracker._remove_player_from_online_tracking"):
+                            with patch("server.realtime.player_presence_tracker._cleanup_player_references"):
+                                with patch(
+                                    "server.realtime.disconnect_grace_period.start_grace_period", new_callable=AsyncMock
+                                ) as mock_start_grace:
+                                    await track_player_disconnected_impl(
+                                        player_id, mock_connection_manager_full, connection_type=None
+                                    )
+
+                                    # Verify grace period was NOT started
+                                    mock_start_grace.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_rest_command_blocks_during_combat(  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
+    mock_app_with_services: MagicMock,
+    mock_connection_manager_full: MagicMock,
+    mock_persistence_full: MockPersistenceFull,
+) -> None:
+    """Test that /rest command is blocked during combat."""
+    # Lazy import to avoid circular import
+    from server.commands.rest_command import handle_rest_command  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+
+    player_id = uuid.uuid4()
+    resting_players: dict[uuid.UUID, asyncio.Task[None]] = {}
+    mock_connection_manager_full.resting_players = resting_players
+    mock_player = MagicMock()
+    mock_player.player_id = str(player_id)
+    mock_player.name = "TestPlayer"
+    mock_player.current_room_id = "room_123"
+    mock_persistence_full.get_player_by_name = AsyncMock(return_value=mock_player)
+
+    # Mock combat service to return player in combat
+    mock_combat_service = MagicMock()
+    mock_combat_service.get_combat_by_participant = AsyncMock(return_value=MagicMock())  # Returns combat instance
+    app_state: MagicMock = cast(MagicMock, mock_app_with_services.state)
+    app_state.combat_service = mock_combat_service
+    app_state.persistence = mock_persistence_full
+    app_state.connection_manager = mock_connection_manager_full
+
+    mock_request = MagicMock()
+    mock_request.app = mock_app_with_services
+
+    result = await handle_rest_command({}, {}, mock_request, None, "TestPlayer")
+
+    assert "result" in result
+    result_text = cast(str, result["result"])
+    assert "cannot rest during combat" in result_text.lower() or "combat" in result_text.lower()
+    assert player_id not in resting_players
+
+
+@pytest.mark.asyncio
+async def test_rest_command_starts_countdown_not_in_combat(  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
+    mock_app_with_services: MagicMock,
+    mock_connection_manager_full: MagicMock,
+    mock_persistence_full: MockPersistenceFull,
+) -> None:
+    """Test that /rest command starts countdown when not in combat."""
+    # Lazy import to avoid circular import
+    from server.commands.rest_command import handle_rest_command  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+
+    player_id = uuid.uuid4()
+    resting_players: dict[uuid.UUID, asyncio.Task[None]] = {}
+    mock_connection_manager_full.resting_players = resting_players
+    mock_player = MagicMock()
+    mock_player.player_id = str(player_id)
+    mock_player.name = "TestPlayer"
+    mock_player.current_room_id = "room_123"
+    mock_persistence_full.get_player_by_name = AsyncMock(return_value=mock_player)
+
+    # Mock combat service to return player NOT in combat
+    mock_combat_service = MagicMock()
+    mock_combat_service.get_combat_by_participant = AsyncMock(return_value=None)
+    app_state: MagicMock = cast(MagicMock, mock_app_with_services.state)
+    app_state.combat_service = mock_combat_service
+    app_state.persistence = mock_persistence_full
+    app_state.connection_manager = mock_connection_manager_full
+
+    # Mock room is NOT a rest location
+    mock_room = MagicMock()
+    mock_room.rest_location = False
+    mock_persistence_full.get_room_by_id = MagicMock(return_value=mock_room)
+
+    # Mock position service
+    with patch("server.commands.rest_command.PlayerPositionService") as mock_position_service_class:
+        mock_position_service = MagicMock()
+        mock_position_service_class.return_value = mock_position_service
+        mock_position_service.change_position = AsyncMock(return_value={"success": True, "message": "Sitting"})
+
+        mock_request = MagicMock()
+        mock_request.app = mock_app_with_services
+
+        result = await handle_rest_command({}, {}, mock_request, None, "TestPlayer")
+
+        # Verify countdown started
+        assert player_id in resting_players
+        assert "result" in result
+        result_text = cast(str, result["result"])
+        assert "rest" in result_text.lower() or "countdown" in result_text.lower()
+
+
+@pytest.mark.asyncio
+async def test_rest_interrupts_combat_action(mock_connection_manager_full: MagicMock) -> None:  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+    """Test that combat action interrupts rest countdown."""
+    # Lazy import to avoid circular import
+    from server.commands.rest_command import cancel_rest_countdown  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+
+    player_id = uuid.uuid4()
+    resting_players: dict[uuid.UUID, asyncio.Task[None]] = {}
+    mock_connection_manager_full.resting_players = resting_players
+    task = asyncio.create_task(asyncio.sleep(10))
+    resting_players[player_id] = task
+
+    # Simulate combat action interrupting rest
+    await cancel_rest_countdown(player_id, mock_connection_manager_full)
+
+    # Verify rest was cancelled
+    assert task.cancelled()
+    assert player_id not in resting_players
+
+
+@pytest.mark.asyncio
+async def test_reconnection_cancels_grace_period(mock_connection_manager_full: MagicMock) -> None:  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+    """Test that reconnection cancels grace period."""
+    player_id = uuid.uuid4()
+    grace_period_players: dict[uuid.UUID, asyncio.Task[None]] = {}
+    mock_connection_manager_full.grace_period_players = grace_period_players
+    task = asyncio.create_task(asyncio.sleep(30))
+    grace_period_players[player_id] = task
+
+    # Simulate reconnection
+    await cancel_grace_period(player_id, mock_connection_manager_full)
+
+    # Verify grace period was cancelled
+    assert task.cancelled()
+    assert player_id not in grace_period_players
+
+
+@pytest.mark.asyncio
+async def test_grace_period_player_can_auto_attack(mock_connection_manager_full: MagicMock) -> None:  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+    """Test that grace period player can auto-attack when attacked."""
+    player_id = uuid.uuid4()
+    grace_period_players: dict[uuid.UUID, asyncio.Task[None]] = {}
+    mock_connection_manager_full.grace_period_players = grace_period_players
+    task = asyncio.create_task(asyncio.sleep(30))
+    grace_period_players[player_id] = task
+
+    # Verify player is in grace period
+    assert is_player_in_grace_period(player_id, mock_connection_manager_full) is True
+
+    # Note: Actual auto-attack behavior is tested in combat_turn_processor tests
+    # This test verifies the state is correct for auto-attack to work
+
+
+@pytest.mark.asyncio
+async def test_grace_period_player_cannot_use_commands(mock_connection_manager_full: MagicMock) -> None:  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+    """Test that grace period player cannot use commands."""
+    player_id = uuid.uuid4()
+    grace_period_players: dict[uuid.UUID, asyncio.Task[None]] = {}
+    mock_connection_manager_full.grace_period_players = grace_period_players
+    task = asyncio.create_task(asyncio.sleep(30))
+    grace_period_players[player_id] = task
+
+    # Verify player is in grace period
+    assert is_player_in_grace_period(player_id, mock_connection_manager_full) is True
+
+    # Note: Command blocking is tested in command_handler_unified tests
+    # This test verifies the state is correct for command blocking to work
+
+
+@pytest.mark.asyncio
+async def test_rest_location_instant_disconnect(  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
+    mock_app_with_services: MagicMock,
+    mock_connection_manager_full: MagicMock,
+    mock_persistence_full: MockPersistenceFull,
+) -> None:
+    """Test that rest location provides instant disconnect when not in combat."""
+    # Lazy import to avoid circular import
+    from server.commands.rest_command import handle_rest_command  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+
+    player_id = uuid.uuid4()
+    resting_players: dict[uuid.UUID, asyncio.Task[None]] = {}
+    mock_connection_manager_full.resting_players = resting_players
+    mock_player = MagicMock()
+    mock_player.player_id = str(player_id)
+    mock_player.name = "TestPlayer"
+    mock_player.current_room_id = "room_123"
+    mock_persistence_full.get_player_by_name = AsyncMock(return_value=mock_player)
+
+    # Mock combat service to return player NOT in combat
+    mock_combat_service = MagicMock()
+    mock_combat_service.get_combat_by_participant = AsyncMock(return_value=None)
+    app_state: MagicMock = cast(MagicMock, mock_app_with_services.state)
+    app_state.combat_service = mock_combat_service
+    app_state.persistence = mock_persistence_full
+    app_state.connection_manager = mock_connection_manager_full
+
+    # Mock room IS a rest location
+    mock_room = MagicMock()
+    mock_room.rest_location = True
+    mock_persistence_full.get_room_by_id = MagicMock(return_value=mock_room)
+
+    mock_request = MagicMock()
+    mock_request.app = mock_app_with_services
+
+    player_websockets_map: dict[uuid.UUID, list[str]] = cast(
+        dict[uuid.UUID, list[str]], mock_connection_manager_full.player_websockets
+    )
+    player_websockets_map[player_id] = ["conn-1"]
+
+    result = await handle_rest_command({}, {}, mock_request, None, "TestPlayer")
+
+    # #297: disconnect is deliberately deferred (asyncio.create_task) past a short delay so
+    # the response below reaches the client before the socket closes -- give it a chance to run.
+    await asyncio.sleep(0.2)
+
+    # Verify instant disconnect (no countdown), targeting the specific connection snapshotted at
+    # /rest time rather than a blanket force_disconnect_player (#297).
+    disconnect_ws: AsyncMock = cast(AsyncMock, mock_connection_manager_full.disconnect_websocket_connection)
+    disconnect_ws.assert_called_once_with(player_id, "conn-1")
+    assert player_id not in resting_players  # No countdown started
+    assert "result" in result
+    result_text = cast(str, result["result"])
+    assert "rest peacefully" in result_text.lower() or "disconnect" in result_text.lower()
+
+
+@pytest.mark.asyncio
+async def test_rest_location_blocked_during_combat(  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
+    mock_app_with_services: MagicMock,
+    mock_connection_manager_full: MagicMock,
+    mock_persistence_full: MockPersistenceFull,
+) -> None:
+    """Test that /rest in rest location is still blocked during combat."""
+    # Lazy import to avoid circular import
+    from server.commands.rest_command import handle_rest_command  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+
+    player_id = uuid.uuid4()
+    mock_player = MagicMock()
+    mock_player.player_id = str(player_id)
+    mock_player.name = "TestPlayer"
+    mock_player.current_room_id = "room_123"
+    mock_persistence_full.get_player_by_name = AsyncMock(return_value=mock_player)
+
+    # Mock combat service to return player IN combat
+    mock_combat_service = MagicMock()
+    mock_combat_service.get_combat_by_participant = AsyncMock(return_value=MagicMock())  # Returns combat instance
+    app_state: MagicMock = cast(MagicMock, mock_app_with_services.state)
+    app_state.combat_service = mock_combat_service
+    app_state.persistence = mock_persistence_full
+    app_state.connection_manager = mock_connection_manager_full
+
+    # Mock room IS a rest location
+    mock_room = MagicMock()
+    mock_room.rest_location = True
+    mock_persistence_full.get_room_by_id = MagicMock(return_value=mock_room)
+
+    mock_request = MagicMock()
+    mock_request.app = mock_app_with_services
+
+    result = await handle_rest_command({}, {}, mock_request, None, "TestPlayer")
+
+    # Verify command is blocked (combat check happens before rest location check)
+    assert "result" in result
+    result_text = cast(str, result["result"])
+    assert "cannot rest during combat" in result_text.lower() or "combat" in result_text.lower()
+
+
+@pytest.mark.asyncio
+async def test_visual_indicator_in_grace_period(mock_connection_manager_full: MagicMock) -> None:  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+    """Test that visual indicator (linkdead) is shown for grace period players."""
+    player_id = uuid.uuid4()
+    grace_period_players: dict[uuid.UUID, asyncio.Task[None]] = {}
+    mock_connection_manager_full.grace_period_players = grace_period_players
+    task = asyncio.create_task(asyncio.sleep(30))
+    grace_period_players[player_id] = task
+
+    # Verify player is in grace period
+    assert is_player_in_grace_period(player_id, mock_connection_manager_full) is True
+
+    # Note: Actual visual indicator display is tested in visual_indicator tests
+    # This test verifies the state is correct for visual indicator to work
+
+
+@pytest.mark.asyncio
+async def test_rest_countdown_completes_disconnect(
+    mock_connection_manager_full: MagicMock, mock_persistence_full: MockPersistenceFull
+) -> None:  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter names match fixture function names, pytest standard pattern
+    """Test that rest countdown completes and disconnects player."""
+    # Lazy import to avoid circular import
+    from server.commands.rest_command import _start_rest_countdown  # noqa: E402  # Reason: Lazy import inside function to avoid circular import chain during module initialization
+
+    player_id = uuid.uuid4()
+    player_name = "TestPlayer"
+    resting_players: dict[uuid.UUID, asyncio.Task[None]] = {}
+    mock_connection_manager_full.resting_players = resting_players
+
+    with patch(
+        "server.commands.rest_command._disconnect_player_intentionally", new_callable=AsyncMock
+    ) as mock_disconnect:
+        with patch("server.commands.rest_countdown_task.rest_countdown_seconds", return_value=0.1):
+            await _start_rest_countdown(player_id, player_name, mock_connection_manager_full, mock_persistence_full)
+
+            # Wait for countdown to complete
+            await asyncio.sleep(0.2)
+
+            # Verify disconnect was called
+            mock_disconnect.assert_called_once_with(player_id, mock_connection_manager_full, mock_persistence_full)
+            assert player_id not in resting_players

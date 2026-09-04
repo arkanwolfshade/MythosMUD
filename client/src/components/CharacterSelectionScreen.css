@@ -1,0 +1,255 @@
+/* Character selection — mythos-terminal language (no purple/coral consumer chrome) */
+
+.character-selection-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: var(--color-mythos-terminal-background, #0a0a0a);
+  padding: 2rem;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.character-selection-container {
+  max-width: 720px;
+  width: 100%;
+  background: var(--color-mythos-terminal-surface, #1a1a1a);
+  border: 1px solid var(--color-mythos-terminal-border, #333);
+  border-radius: 4px;
+  padding: 1.75rem 2rem;
+}
+
+.character-selection-header {
+  text-align: left;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-mythos-terminal-border, #333);
+  padding-bottom: 1rem;
+}
+
+.character-selection-header h1 {
+  color: var(--color-mythos-sepia, #a88e76);
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+  text-shadow: none;
+}
+
+.character-instructions {
+  color: var(--color-mythos-terminal-text-secondary, #4caf50);
+  font-size: 0.95rem;
+  margin-top: 0.35rem;
+}
+
+.characters-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 1.5rem;
+}
+
+.character-card {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-mythos-terminal-border, #333);
+  border-radius: 0;
+  padding: 1rem 0.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.character-card:hover {
+  background: rgba(0, 255, 0, 0.04);
+  border-color: var(--color-mythos-terminal-primary, #0f0);
+  box-shadow: none;
+}
+
+.character-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.character-name {
+  color: var(--color-mythos-terminal-text, #0f0);
+  font-size: 1.25rem;
+  margin-bottom: 0.35rem;
+}
+
+.character-details {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.character-profession,
+.character-level {
+  color: var(--color-mythos-terminal-text-secondary, #4caf50);
+  font-size: 0.85rem;
+}
+
+.character-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-top: 0.35rem;
+}
+
+.character-created,
+.character-last-active {
+  color: var(--color-mythos-sepia-muted, #84705c);
+  font-size: 0.8rem;
+}
+
+.character-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 140px;
+}
+
+.select-character-button,
+.create-character-button {
+  padding: 0.6rem 1rem;
+  border-radius: 2px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.select-character-button.primary,
+.create-character-button.primary {
+  background: var(--color-mythos-terminal-surface, #1a1a1a);
+  color: var(--color-mythos-terminal-primary, #0f0);
+  border: 1px solid var(--color-mythos-terminal-primary, #0f0);
+}
+
+.select-character-button.primary:hover,
+.create-character-button.primary:hover {
+  background: rgba(0, 255, 0, 0.12);
+  transform: none;
+  box-shadow: none;
+}
+
+.create-character-button.secondary {
+  background: transparent;
+  color: var(--color-mythos-sepia, #a88e76);
+  border: 1px solid var(--color-mythos-sepia-muted, #84705c);
+}
+
+.create-character-button.secondary:hover {
+  background: rgba(168, 142, 118, 0.12);
+  border-color: var(--color-mythos-sepia, #a88e76);
+}
+
+.delete-character-button {
+  padding: 0.4rem 0.75rem;
+  background: transparent;
+  color: var(--color-mythos-terminal-error, #f44336);
+  border: 1px solid var(--color-mythos-terminal-error, #f44336);
+  border-radius: 2px;
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.delete-character-button:hover {
+  background: rgba(244, 67, 54, 0.15);
+}
+
+.delete-character-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.delete-confirmation {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: rgba(244, 67, 54, 0.08);
+  border: 1px solid var(--color-mythos-terminal-error, #f44336);
+  border-radius: 2px;
+}
+
+.delete-confirmation p {
+  color: var(--color-mythos-terminal-text, #0f0);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.delete-confirmation-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.confirm-delete-button,
+.cancel-delete-button {
+  padding: 0.4rem 0.75rem;
+  border-radius: 2px;
+  font-size: 0.8rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.confirm-delete-button {
+  background: var(--color-mythos-terminal-error, #f44336);
+  color: #fff;
+  border: none;
+}
+
+.confirm-delete-button:hover {
+  filter: brightness(0.9);
+}
+
+.confirm-delete-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cancel-delete-button {
+  background: transparent;
+  color: var(--color-mythos-terminal-text-secondary, #4caf50);
+  border: 1px solid var(--color-mythos-terminal-border, #333);
+}
+
+.cancel-delete-button:hover {
+  border-color: var(--color-mythos-terminal-text-secondary, #4caf50);
+}
+
+.character-selection-actions {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 1.25rem;
+}
+
+.character-limit-message {
+  color: var(--color-mythos-sepia-muted, #84705c);
+  font-size: 0.85rem;
+  text-align: left;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .character-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .character-actions {
+    min-width: auto;
+    margin-top: 0.75rem;
+  }
+}

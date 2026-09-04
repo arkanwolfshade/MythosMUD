@@ -1,0 +1,77 @@
+#!/usr/bin/env node
+
+import { spawn } from 'child_process';
+import { existsSync } from 'fs';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const clientRoot = join(__dirname, '..');
+const testsDir = join(clientRoot, 'tests');
+
+// Check if tests directory exists
+if (!existsSync(testsDir)) {
+  console.log('No Playwright tests found - this is expected if tests directory does not exist');
+  process.exit(0);
+}
+
+// Local/CI health probe only (loopback). Override via E2E_BACKEND_BASE_URL when needed.
+const E2E_BACKEND_BASE_URL = (process.env.E2E_BACKEND_BASE_URL ?? 'http://localhost:54768').replace(/\/$/, '');
+
+// In CI, check if backend server is available (E2E tests require it)
+async function checkBackendServer() {
+  if (process.env.CI === 'true') {
+    try {
+      // nosemgrep: codacy.tools-configs.typescript.react.security.react-insecure-request.react-insecure-request
+      const response = await fetch(`${E2E_BACKEND_BASE_URL}/v1/monitoring/health`, {
+        signal: AbortSignal.timeout(2000),
+      });
+      if (!response.ok) {
+        console.log('Backend server not available - skipping E2E tests in CI');
+        console.log('This is expected in frontend-only CI jobs');
+        process.exit(0);
+      }
+    } catch {
+      // Backend server not available - this is expected in frontend-only CI jobs
+      console.log('Backend server not available - skipping E2E tests in CI');
+      console.log('This is expected in frontend-only CI jobs');
+      process.exit(0);
+    }
+  }
+}
+
+// Run backend check before starting tests
+await checkBackendServer();
+
+// Run Playwright tests
+const isWindows = process.platform === 'win32';
+
+// Avoid "NO_COLOR is ignored due to FORCE_COLOR" warning: when NO_COLOR is set,
+// omit FORCE_COLOR so Node respects the no-color preference.
+const env = { ...process.env };
+if ('NO_COLOR' in process.env) {
+  delete env.FORCE_COLOR;
+}
+// Prefer IPv4 for localhost (Windows can hit EACCES on ::1 when Node resolves localhost to IPv6).
+const ipv4First = '--dns-result-order=ipv4first';
+if (!String(env.NODE_OPTIONS ?? '').includes('dns-result-order')) {
+  env.NODE_OPTIONS = env.NODE_OPTIONS ? `${env.NODE_OPTIONS} ${ipv4First}` : ipv4First;
+}
+
+const npxBin = isWindows ? 'npx.cmd' : 'npx';
+const playwright = spawn(npxBin, ['playwright', 'test'], {
+  stdio: 'inherit',
+  shell: false,
+  cwd: clientRoot,
+  env,
+});
+
+playwright.on('close', code => {
+  process.exit(code || 0);
+});
+
+playwright.on('error', error => {
+  console.error('Error running Playwright:', error);
+  process.exit(1);
+});

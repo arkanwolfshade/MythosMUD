@@ -1,0 +1,1 @@
+"""Project-wide constants packages."""

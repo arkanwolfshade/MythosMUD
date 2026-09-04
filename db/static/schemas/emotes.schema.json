@@ -1,0 +1,28 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://mythosmud.org/schemas/emotes.schema.json",
+	"title": "Emotes",
+	"type": "object",
+	"required": ["emotes"],
+	"properties": {
+		"emotes": {
+			"type": "object",
+			"minProperties": 1,
+			"additionalProperties": {
+				"type": "object",
+				"required": ["self_message", "other_message", "aliases"],
+				"properties": {
+					"self_message": { "type": "string", "minLength": 1 },
+					"other_message": { "type": "string", "minLength": 1 },
+					"aliases": {
+						"type": "array",
+						"items": { "type": "string", "minLength": 1 },
+						"uniqueItems": true
+					}
+				},
+				"additionalProperties": false
+			}
+		}
+	},
+	"additionalProperties": false
+}

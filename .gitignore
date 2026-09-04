@@ -1,6 +1,42 @@
+# =============================================================================
+# Operating System Files
+# =============================================================================
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+ehthumbs.db
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# =============================================================================
+# MythosMUD local scratch (CI log exports, etc.; never commit as gitlink/submodule)
+# =============================================================================
+tmp/
+
+# Codacy CLI/MCP temp artifacts (must not land in repo root)
+*codacy-makefile-test.json
+.codacy/generated/
+.codacy/codacy.config.baseline.json
+
+# Local Codacy/lizard investigation dumps and one-shot scrapers (never commit)
+docs/investigations/_*.py
+docs/investigations/*lizard*
+docs/investigations/codacy_*
+
+# =============================================================================
+# Python
+# =============================================================================
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[codz]
+*.py[cod]
 *$py.class
 
 # C extensions
@@ -27,9 +63,8 @@ share/python-wheels/
 MANIFEST
 
 # PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
+!docs/hads.manifest
 *.spec
 
 # Installer logs
@@ -50,22 +85,22 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
-
+coverage/
+coverage-final.json
+node_modules/.vite/vitest/
 # Translations
 *.mo
 *.pot
 
-# Django stuff:
+# Django stuff
 *.log
 local_settings.py
-db.sqlite3
-db.sqlite3-journal
 
-# Flask stuff:
+# Flask stuff
 instance/
 .webassets-cache
 
-# Scrapy stuff:
+# Scrapy stuff
 .scrapy
 
 # Sphinx documentation
@@ -134,26 +169,6 @@ celerybeat.pid
 # SageMath parsed files
 *.sage.py
 
-# Environments
-.env
-.envrc
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
 # mypy
 .mypy_cache/
 .dmypy.json
@@ -168,12 +183,75 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-# PyCharm
+# Ruff
+.ruff_cache/
+
+# PyPI configuration file
+.pypirc
+
+# Marimo
+marimo/_static/
+marimo/_lsp/
+__marimo__/
+
+# =============================================================================
+# Node.js / TypeScript / JavaScript
+# =============================================================================
+
+# Dependencies
+node_modules/
+scripts/node_modules/
+scripts/static_data/node_modules/
+.npm/
+.node_repl_history
+
+# Yarn
+.yarn/
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# TypeScript build artifacts
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# =============================================================================
+# IDEs and Editors
+# =============================================================================
+
+# PyCharm / IntelliJ IDEA
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-#.idea/
+.idea/
+
+# Visual Studio Code
+#  NOTE: The `.vscode/` directory is INTENTIONALLY TRACKED in this repository.
+#  Project-specific VS Code settings (settings.json, launch.json, extensions.json) are
+#  committed to version control for team consistency.
+#  Visual Studio Code specific template is maintained in a separate VisualStudioCode.gitignore
+#  that can be found at https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
+
+# Cursor
+#  NOTE: The `.cursor/` directory is INTENTIONALLY TRACKED in this repository.
+#  Project-specific Cursor configuration (rules, plans, commands) are committed to version control.
+#  Only the following Cursor configuration files at the root are ignored:
+.cursorignore
+.cursorindexingignore
+.cursorrules
+# Hook state (ephemeral; edited-files.json for test-agent trigger)
+.cursor/hooks/state/
+# MCP: Codacy / Context7 credentials live in `.env.mcp.local` (covered by `.env.*` below).
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
 
 # Abstra
 # Abstra is an AI-powered process automation framework.
@@ -181,45 +259,176 @@ cython_debug/
 # Learn more at https://abstra.io/docs
 .abstra/
 
-# Visual Studio Code
-#  Visual Studio Code specific template is maintained in a separate VisualStudioCode.gitignore
-#  that can be found at https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
-#  and can be added to the global gitignore or merged into this file. However, if you prefer,
-#  you could uncomment the following to ignore the entire vscode folder
-# .vscode/
+# =============================================================================
+# Environment and Configuration Files
+# =============================================================================
 
-# Ruff stuff:
-.ruff_cache/
+# Local NATS TLS certificates (generated by scripts/generate_nats_local_certs.ps1)
+certs/nats/
 
-# PyPI configuration file
-.pypirc
+# CRITICAL: Never commit actual .env files
+.env
+.env.*
+.env.local
+.env.development
+.env.dev
+.env.production
+.env.prod
+.env.test
+.env.unit_test
+.env.e2e_test
+.act.secrets
+config.local.js
 
-# Cursor
-#  Cursor is an AI-powered code editor. `.cursorignore` specifies files/directories to
-#  exclude from AI features like autocomplete and code analysis. Recommended for sensitive data
-#  refer to https://docs.cursor.com/context/ignore-files
-.cursorignore
-.cursorindexingignore
-.cursorrules
+# Virtual environments
+.venv
+.venv-ci
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
-# Marimo
-marimo/_static/
-marimo/_lsp/
-__marimo__/
+# Allow example environment files ONLY (never actual secrets)
+!.env.example
+!*.env.example
+!env.*.example
+
+# =============================================================================
+# Build Artifacts
+# =============================================================================
+
+# Build output directories
+dist/
+client/dist/
+build/
+out/
+
+# Performance and benchmark artifacts
+artifacts/
+*.bench.json
+*.perf.json
+
+# =============================================================================
+# Testing
+# =============================================================================
+
+# Test output files
+*-out.txt
+test-*.txt
+*.test.log
+
+# Client test output and coverage reports
+client/coverage/
+client/.nyc_output/
+client/*.lcov
+client/test-results/
+client/playwright-report/
+client/playwright/.cache/
+
+# Playwright test output and coverage reports
+playwright-report/
+test-results/
+.cache/
+.playwright-mcp/
+
+# Playwright authentication storage state (contains session cookies)
+client/tests/e2e/.auth/
+
+# Coverage reports
+.nyc_output/
+*.lcov
+server/tests/coverage/
+
+# =============================================================================
+# Logs
+# =============================================================================
+
+# CRITICAL: Never commit log files
+logs/
+server/tests/logs/
+*.log
+*.debug
+
+# =============================================================================
+# Database Files
+# =============================================================================
+
+# CRITICAL: Never commit database files
+server/tests/data/players/unit_test_players.db
+data/players/local_players.db
+
+# =============================================================================
+# Graphify knowledge graph
+# =============================================================================
+# Commit durable artifacts other developers need to query/navigate the graph:
+#   graphify-out/graph.json
+#   graphify-out/manifest.json          (incremental update baseline)
+#   graphify-out/GRAPH_REPORT.md
+#   graphify-out/.graphify_labels.json  (community names)
+#   graphify-out/wiki/                  (optional community articles)
+# Ignore ephemeral extraction/session/cache/viz/backup outputs (regenerable).
+graphify-out/cache/
+graphify-out/**/cache/
+graphify-out/.graphify_*
+graphify-out/**/.graphify_*
+!graphify-out/.graphify_labels.json
+graphify-out/.graphify_labels.json.sig
+graphify-out/label_batches/
+graphify-out/_label_communities.py
+graphify-out/_finalize_labels.py
+graphify-out/_detect_backend.txt
+graphify-out/_label_helpers.txt
+graphify-out/GRAPH_TREE.html
+graphify-out/graph.html
+graphify-out/graph.svg
+graphify-out/obsidian/
+graphify-out/cypher.txt
+graphify-out/memory/
+# Dated update snapshots, nested re-exports, merge/backup copies
+graphify-out/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/
+graphify-out/external/
+graphify-out/*.bak
+graphify-out/*.bak-*
+graphify-out/**/*.bak
+graphify-out/**/*.bak-*
+graphify-out/graph.merged-with-plans.json
+graphify-out/**/graph.merged-with-plans.json
+
+# =============================================================================
+# Project-Specific Files
+# =============================================================================
 
 # Local development files
 TASKS.local.md
 
-# Environment files (CRITICAL: Never commit actual .env files)
-.env.local
+# Documentation build
+/site
 
-# Logging files (CRITICAL: Never commit log files)
-logs/
-server/tests/logs/
+# Debug files
+debug-*.png
+debug-*.jpg
+debug-*.jpeg
 
-# Database files (CRITICAL: Never commit database files)
-server/tests/data/players/test_players.db
-server\tests\data\players\test_players.db
-data/players/players.db
-client/playwright-report
-client/test-results
+# Linter output
+pylint_output.txt
+
+# =============================================================================
+# Temporary Files
+# =============================================================================
+
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+*.bak
+*.backup
+*.orig
+client/.auth/admin-auth.json
+client/.auth/user-auth.json
+
+
+#Ignore vscode AI rules
+.github\instructions\codacy.instructions.md
+server/.claude/hooks/state/edited-files.json

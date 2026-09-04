@@ -1,0 +1,25 @@
+.git
+.gitignore
+.github
+.mypy_cache
+.pytest_cache
+.ruff_cache
+.venv
+.venv-ci
+__pycache__/
+artifacts/
+coverage.xml
+htmlcov/
+logs/
+# Exclude data subdirectories but allow data/db/ SQL files for Docker build
+data/local/
+data/e2e_test/
+data/unit_test/
+data/static/
+client/node_modules/
+client/dist/
+client/playwright-report/
+client/test-results/
+client/coverage/
+client/.vite/
+*.log

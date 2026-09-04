@@ -1,0 +1,262 @@
+# ADR-022: ui-v2 Client Transition and Legacy Retirement
+
+**Version 1.5.1** · MythosMUD · 2026-08-27
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
+**Status:** Accepted
+**Date:** 2026-08-26
+
+`client/src/components/ui-v2/` (`GameClientV2Container` / `PanelSystem`, 95 modules) is the
+client architecture. This ADR records that decision — which had never been written down — and
+the retirement plan for the legacy surface that still sits alongside it. It closes #637.
+
+## 2. Context
+
+**[NOTE]**
+Issue #637 asked to replace "ADR-021 section 6." No ADR named
+`ADR-021-ui-v2-client-transition.md` exists; `ADR-021` is
+[Character Display Name Validation](ADR-021-character-display-name-validation.md), dated
+2026-08-23. No ADR anywhere records the ui-v2 transition. A contributor reading
+`client/src/components/` sees two plausible client architectures — `ui-v2/` (95 modules) and the
+remainder (155 modules) — with nothing indicating which one ships.
+
+**[BUG]**
+**Symptom:** The 2026-08 design audit that filed #637 both cited a document that never existed and
+undercounted the legacy surface by roughly 6x (~26 claimed vs. 155 actual `.ts`/`.tsx` files
+outside `ui-v2/`, tests excluded). This is the fourth ranked item in the 618-639 campaign with a
+materially false premise, and the first citing a nonexistent document.
+**Fix:** this ADR records which architecture ships (`ui-v2/`) against the corrected file count,
+and the retirement clusters that followed (#690–#694) deleted the undercounted legacy surface
+file by file rather than trusting the audit's number.
+
+## 3. Decision
+
+**[SPEC]**
+
+- `client/src/components/ui-v2/` is the client architecture. It is what `appLazyScreens.tsx` and
+  `AppRouter.tsx` route into for gameplay.
+- The onboarding/character-creation flow (`CharacterNameScreen`, `CharacterSelectionScreen`,
+  `SkillAssignmentScreen`, `ProfessionSelectionScreen`, `StatsRollingScreen`,
+  `MotdInterstitialScreen`) is **not** superseded — `ui-v2` has no character-creation flow of its
+  own, and these six screens are lazily routed from `src/mythosApp/appLazyScreens.tsx`. They stay.
+- Everything else under `client/src/components/` outside `ui-v2/` that is not transitively
+  reachable from the production entry is retired per the plan in §6.
+
+## 4. Alternatives Considered
+
+**[SPEC]**
+
+1. **Retirement plan only, no transition decision** — Rejected: a removal sequence with no
+   statement of which tree is live doesn't close the ambiguity #637 exists to resolve.
+2. **Two ADRs (transition, then retirement)** — Rejected: the retirement plan is meaningless
+   without the transition decision it depends on; splitting doubles review surface for no benefit.
+3. **Number this `ADR-021`, matching the issue's stale link** — Rejected: `ADR-021` is taken.
+   Reusing it would misdate a 2026-08-26 decision behind one accepted 2026-08-23.
+
+## 5. Consequences
+
+**[SPEC]**
+
+- Positive: the live architecture is on record; the orphaned surface had an inventory and named
+  owners (§6); as of #694, a real CI gate (§6) prevents silent re-accumulation — `npm run knip`
+  failing the build is no longer advisory.
+- Negative: the 82-of-155 orphan count this ADR opened with is fully retired (#690-#693), and the
+  gate enforces (#694). What remains is backlog, not retirement work: nine open decide-then-port
+  product decisions (#699, #706-#709, #711, #713-#715) for capabilities the retirement found had no
+  live client, and #718 to triage the 94 unused-export/unused-type findings knip's `exports`/`types`
+  rules would surface if enabled (still `"off"` — see §6's gate-condition close-out).
+- Neutral: no runtime behavior changes in the PR that introduces this ADR.
+
+## 6. Retirement Plan
+
+**[SPEC]**
+
+**Definition of "live":** transitively reachable via a static or `import()` reference — including
+extension-inclusive imports (`from '../components/X.tsx'`) — from the production entry
+(`index.html` → `main.tsx`), following imports to closure, **and** lying on a path from a real
+input (a server event, a user action) to a rendered output or an observable side effect. A module
+reachable only from its own test file, or only from another module that is itself only
+test-reachable, is **orphaned**, not live. Reachability alone is not liveness: a reference that
+sits on no such input-to-output path — however the reference is written — does not make the
+referenced module live. Two shapes of this were found in practice and are illustrative, not
+exhaustive:
+
+- **Consumer-side**: a reference whose result is discarded — `void expr;`, a subscription whose
+  value no downstream code ever reads, an import used only inside a discarded expression. (Found
+  by #692; see the cluster-3 `[NOTE]` below.)
+- **Producer-side**: a state slot that is read and acted on, but whose setter is never invoked with
+  a real value in production — the real event handler for the data it claims to represent never
+  calls it. (Found by #693; see the cluster-4 `[NOTE]` below.)
+
+**Stub exemption:** a module kept alive by tests alone is not orphaned if it carries an explicit
+comment naming it a stub for future implementation *and* references a GitHub Issue tracking that
+work. No candidate module in this inventory carries such a comment — the exemption found zero
+matches.
+
+**Inventory method:** `client/knip.json` `files` rule enabled (`"error"`, was `"off"`); a
+script-driven import closure over `client/src` (not knip's own file-unused report, which — even
+with `files: error` — reports only directly-unreferenced files and does not, by itself, resolve
+the transitive case above) computed reachability from every module under
+`client/src/components/` excluding `ui-v2/`. Two known false-negative sources were found and
+corrected before trusting the result: import strings with an explicit `.tsx`/`.ts` extension, and
+one-hop-only reachability (a module counts as live only if traced to something outside the
+candidate set, not merely to any importer). **82 of 155** legacy modules are orphaned under this
+definition; **73** remain live, including the six onboarding screens named in §3.
+
+**[NOTE]**
+Cluster 1's own removal PR (#690) found `MythosTimeHud.tsx` had a real behaviour gap (no `ui-v2`
+equivalent for daypart/season/witching-hour/holiday display) and carved it out rather than delete
+it — stub-exempted per this section's policy, tracked in
+[#699](https://github.com/arkanwolfshade/MythosMUD/issues/699). Updated counts: **81 of 155**
+orphaned, **74** live. Cluster 1 is 26 files, not 27.
+
+**[NOTE]**
+Cluster 2's own removal PR (#691) found the issue's list undercounted the legacy `panels/` tree by
+7: `chatPanelChannelFilter.ts`, `chatPanelChannelVisibility.ts`, `chatPanelMessageClass.ts`,
+`chatPanelRuntimeUtils.ts`, `chatPanelUnreadBump.ts`, `chatPanelUnreadCounts.ts`, and
+`MonitoringPanel.css` — a closed loop with the listed 35, missed because the cluster tables were
+hand-assembled thematically and these `chatPanel*Utils`-style names read as shared infrastructure.
+Cluster 2 is 42 files, not 35. Unlike cluster 1's gap (three files just outside the scanned
+`client/src/components/` tree), this PR found a **second, farther-out scope gap**: two files in
+`src/utils/` (`gameLogFilter.ts`, `performanceTester.ts`) that were orphaned only by this cluster's
+own removals. `gameLogFilter.ts` was deleted with its test; `performanceTester.ts` was kept alive
+by porting its caller (`performance.test.tsx`) to benchmark `ui-v2` panels instead of the deleted
+legacy ones. Four real behaviour gaps were found (chat transcript export, chat statistics, chat
+history search, monitoring dashboard) and — unlike `MythosTimeHud`'s carve-out — **deleted, not
+stub-exempted**: each is tracked in its own decide-then-port issue
+([#706](https://github.com/arkanwolfshade/MythosMUD/issues/706),
+[#707](https://github.com/arkanwolfshade/MythosMUD/issues/707),
+[#708](https://github.com/arkanwolfshade/MythosMUD/issues/708),
+[#709](https://github.com/arkanwolfshade/MythosMUD/issues/709)) rather than adding four more
+permanent exceptions to the knip gate #694 is meant to enforce.
+
+**[NOTE]**
+Cluster 3's own removal PR (#692) found the issue's 6-file list was accurate — the first cluster
+with no undercount, after both #690 and #691 had scope gaps. `ui-v2` has no container/inventory UI
+at all, but the capability stayed playable via `server/commands/`'s existing `get`/`put`/`drop`/
+`equip`/`inventory`/`look <container>` text commands, so — like #691's four gaps — it was **deleted,
+not stub-exempted**, and tracked in a single decide-then-port issue
+([#711](https://github.com/arkanwolfshade/MythosMUD/issues/711)) rather than three, since a
+backpack tab, a transfer pane, and a corpse overlay are one product decision. This PR also found a
+cascade orphan of a different shape than #691's: `src/stores/containerStore.ts` (275 lines, plus a
+529-line test) had exactly one non-test importer left, and that importer only ever discarded the
+subscription's result —
+`void useContainerStore(s => s.openContainer)` and five siblings, dead since `#447`. This is what
+the §6 inert-reference clause above now rules out explicitly. A client-wide audit swept all 18
+`void <expr>;` statements outside this file; the other 12 are the idiomatic discarded-floating-
+promise pattern (`void fetchMinimap()` and similar) — real, live calls. All 6 inert anchors were
+isolated to this one file, so **#694's knip gate is trustworthy**: nothing else in the client is
+hiding behind a fake reference. `CorpseOverlay.tsx`'s sole use of `OpenContainerApiResponse` /
+`isOpenContainerApiResponse` in `src/utils/apiTypeGuards.ts` was removed too — knip's `exports`
+rule is `"off"`, so dead exports like these are invisible to today's gate; broader dead-export
+cleanup is left to #694. All four Playwright specs under `tests/e2e/runtime/containers/` passed
+unmodified — they were already command-driven with no GUI assertions, independently confirming the
+text-command-reachable premise the deletion rests on.
+
+**[NOTE]**
+Cluster 4's own removal PR (#693) found the issue's 14-file list was accurate — the second cluster
+running with no undercount, after #692. Every remaining `ui/` sibling and `MythosPanel` (flagged in
+cluster 3's `[NOTE]` as "not our cascade") stayed live, confirming that call. Three status banners
+were flagged as possible behaviour gaps; investigation found the underlying server subsystems live
+but the client pipelines dead **end-to-end**, in ways worse than the flag suggested:
+`RescueStatusBanner`'s `rescueState` was read and ref-synced, but `setRescueState` was never called
+with a non-null value anywhere in production — the real `rescue_update` handler never touched it,
+only appended a chat line. `HallucinationTicker`'s feed slot discarded its own value at the
+destructure (`const [, setHallucinationFeed] = useState(...)`), and its sole producer function had
+no callers outside its own test. Both pipelines, plus their type/factory contract
+(`HallucinationMessage`, `RescueState`, `createHallucinationEntry`, `createRescueState`), were
+deleted alongside the banners — direct precedent from #692's `OpenContainerApiResponse` removal,
+not deferred to #694. This producer-side inertness is what the §6 generalization above now covers;
+it is a different flavour from #692's discarded-reference case, and finding two distinct flavours
+in two consecutive clusters is why §6 was generalized rather than given a third enumerated clause.
+`IncapacitatedBanner` had no client pipeline at all — a pure missing-renderer gap. All three are
+tracked as separate decide-then-port issues
+([#713](https://github.com/arkanwolfshade/MythosMUD/issues/713) rescue,
+[#714](https://github.com/arkanwolfshade/MythosMUD/issues/714) hallucination feed,
+[#715](https://github.com/arkanwolfshade/MythosMUD/issues/715) incapacitation) — three, not one,
+since each has a distinct server owner. `AsciiMapEditor.tsx` was an unrouted placeholder (zero
+importers, its own docstring calling it unfinished) but the sole client of a live endpoint,
+`POST /api/maps/coordinates/recalculate`; unlike every other orphan this ADR has retired, its
+action was **ported** into the live `RoomMapEditor`'s `MapEditToolbar` rather than dropped — the
+first port in the sequence since #691's `performanceTester.ts`. `src/components/ui/README.md`
+documented five deleted components alongside still-live ones and was edited, not deleted — a
+knip-invisible artifact class, the documentation counterpart to #691's stranded
+`MonitoringPanel.css`.
+
+**Removal clusters** (one issue each, filed alongside this ADR):
+
+| Cluster | Files | Contents | Issue |
+| --- | --- | --- | --- |
+| Top-level demo/test + legacy GameTerminal | 26 | `*Test.tsx`/`*.helper` demo components, `CommandPanelTest.*` family, `DraggablePanel*` family, `GameTerminal`/`GameTerminalContainer`/`GameTerminalPresentation` | [#690](https://github.com/arkanwolfshade/MythosMUD/issues/690) |
+| `panels/` chat & game-log family | 42 | `ChatPanel*`, `GameLogPanel*`, `PlayerPanel`, `RoomPanel`, `ConnectionPanel`, `MonitoringPanel`, `panels/chat/*`, plus 7 `chatPanel*` satellite modules found during removal | [#691](https://github.com/arkanwolfshade/MythosMUD/issues/691) |
+| `containers/` | 6, plus the `containerStore.ts` cascade | `BackpackTab`, `ContainerSplitPane*`, `CorpseOverlay*`; cascade: `stores/containerStore.ts` + its test | [#692](https://github.com/arkanwolfshade/MythosMUD/issues/692) |
+| `ui/` misc + stray singletons | 14, plus the rescue/hallucination client pipeline cascade | `ui/` leftovers (`StyleGuide*`, `FeedbackForm`, `RoomInfo`, …), `map/AsciiMapEditor.tsx`, `layout/GridLayoutManager.tsx`, `health/IncapacitatedBanner.tsx`, `lucidity/*`; cascade: `rescueState`/`hallucinationFeed` pipelines + their type/factory contract | [#693](https://github.com/arkanwolfshade/MythosMUD/issues/693) |
+
+Each cluster issue carries its own per-file list, an export-signature comparison against its
+apparent `ui-v2` counterpart (flagging suspected behaviour gaps — not claiming equivalence, which
+a signature comparison cannot establish), and is removed in one reviewable PR. Deep behavioural
+verification happens inside that PR, not here.
+
+**Gate condition — the sequence's completion test:** `.github/workflows/ci.yml`'s knip step
+carries `continue-on-error: true` (comment: *"Baseline has many findings; reduce over time, then
+remove this"*), so even the enabled knip rules cannot fail CI today. The **final** follow-up issue
+([#694](https://github.com/arkanwolfshade/MythosMUD/issues/694), explicitly last, depends on all
+four cluster issues) removes that line. `npm run knip` returning clean with the gate enforcing is
+what proves the retirement finished — not this ADR.
+
+**[NOTE]**
+`#694` landed the gate. Its own `npm run knip` baseline (13 unused files + 1 unused devDependency)
+was traced file-by-file rather than deleted wholesale: 12 were genuinely dead (3 legacy `#691`
+residue, a closed `PanelContainerShared`/`PanelContainerViews`/`usePanelContainerBody` trio last
+used before PR `#611`, a dead 2-line `usePanelManager.ts` re-export shim, a `testAnsi.ts` dev-scratch
+script, two dead Playwright e2e fixtures, and a diverged tool-artifact duplicate of
+`useMythosAppState.ts`); one, `LoginGracePeriodBanner.tsx`, was dead but **superseded, not
+regressed** — the same login-grace-period state already renders live as a `HeaderBar` active-effect
+badge (`deriveActiveEffectsForHeader`), so unlike `#693`'s rescue/hallucination banners no tracking
+issue was needed. The 13th finding, `multiplayer-browser-helpers.d.ts`, was a **false positive** —
+genuinely imported via `import type`, which knip's file-usage tracing didn't credit through a `.d.ts`
+companion — suppressed by name in `knip.json`'s new `ignore` list rather than deleted. The unused
+`@testing-library/user-event` devDependency was removed, same "own the cascade" precedent as `#693`'s
+`react-resizable`.
+
+`exports`/`types` remain `"off"`. A planning-time non-destructive check (`npx knip --exports`)
+suggested flipping them was free, but that check couldn't actually override rules the config sets
+`"off"` — CLI `--include` only adds issue types on top of what's already enabled, it doesn't force
+one on. Flipping the config for real surfaced **94 findings** (44 unused exports, 50 unused exported
+types — mostly the classic knip `types`-rule noise pattern: the same type name re-exported from
+several files, e.g. `RoomMapEditorProps` in 5 files). That is real triage work distinct in kind from
+this gate issue, filed separately as
+[#718](https://github.com/arkanwolfshade/MythosMUD/issues/718) rather than folded into `#694`.
+
+## 7. Related ADRs
+
+**[SPEC]**
+
+- ADR-008: React + TypeScript Client
+- ADR-021: Character Display Name Validation (the onboarding flow this ADR keeps live)
+
+## 8. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-08-26 | Initial version. Records the ui-v2 transition decision and the legacy retirement plan for #637. |
+| 1.1.0 | 2026-08-26 | #690 carved `MythosTimeHud.tsx` out of cluster 1 (real behaviour gap, no `ui-v2` equivalent; tracked in #699). Counts corrected: 81 orphaned / 74 live; cluster 1 is 26 files. |
+| 1.2.0 | 2026-08-26 | #691 found cluster 2 undercounted by 7 satellite modules (42 files, not 35) and a second `src/utils/` scope gap outside the original scanned tree. Four real behaviour gaps deleted (not carved out) and tracked in #706-#709. |
+| 1.3.0 | 2026-08-26 | #692's 6-file cluster-3 count was accurate. Added an inert-reference clause to §6's "live" definition after finding `containerStore.ts` kept alive only by discarded `void` subscriptions; deleted the store and its test as a cascade orphan. Container/inventory UI gap deleted, not carved out, and tracked in one issue (#711) rather than three. |
+| 1.4.0 | 2026-08-27 | #693's 14-file cluster-4 count was accurate. Generalized §6's liveness definition to one principle (input-to-output path) after finding a producer-side inertness distinct from 1.3.0's consumer-side case: `rescueState`/`hallucinationFeed` were read but never fed by a real producer. Deleted both pipelines and their contract; ported `AsciiMapEditor`'s coordinate-recalculation action into `RoomMapEditor` rather than dropping it. Three status-banner gaps tracked in #713-#715. All four removal clusters now landed; only #694 (the gate) remains. |
+| 1.5.0 | 2026-08-27 | #694 removed CI's `continue-on-error` exception — the knip gate now enforces. Its own 14-finding baseline resolved: 12 genuinely dead files deleted, one (`LoginGracePeriodBanner.tsx`) deleted as superseded by a live `HeaderBar` effect (no tracking issue needed), one false positive suppressed by name, one unused devDependency removed. `exports`/`types` stay `"off"`: flipping them for real (not the flawed CLI check used during planning) surfaces 94 findings, triaged separately in #718. Retirement sequence from #637 complete; #718 and the nine open decide-then-port issues are independent backlog. |
+| 1.5.1 | 2026-08-27 | Restructure the `[BUG]` block into HADS-required Symptom/Fix fields; registered in `docs/hads.manifest` for the first time (audit deferred register, #648). |

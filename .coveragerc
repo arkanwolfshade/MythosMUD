@@ -1,0 +1,36 @@
+[run]
+source = server
+relative_files = True
+omit =
+    */tests/*
+    */tests_backup_original/*
+    */alembic/*
+    */__pycache__/*
+    */stubs/*
+    server/domain/__init__.py
+    server/domain/*/__init__.py
+    server/persistence/utils/__init__.py
+
+[report]
+precision = 2
+show_missing = True
+skip_covered = False
+exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: no cover
+    # Don't complain about missing debug-only code
+    def __repr__
+    # Don't complain if tests don't hit defensive assertion code
+    raise AssertionError
+    raise NotImplementedError
+    # Don't complain if non-runnable code isn't run
+    if __name__ == .__main__.:
+    # Don't complain about abstract methods
+    @(abc\.)?abstractmethod
+
+# Coverage policy
+# - Critical codepaths (scripts/check_coverage_thresholds.py CRITICAL_FILES) require 90%
+#   (or a justified lowered per-file threshold registered there / in PYTHON_COVERAGE_STATUS.md).
+# - All other measured server code must meet or exceed 70% line coverage.
+# Per-path enforcement is validated by scripts/check_coverage_thresholds.py; this is the global floor.
+fail_under = 70

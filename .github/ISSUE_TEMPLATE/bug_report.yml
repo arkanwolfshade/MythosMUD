@@ -1,0 +1,64 @@
+name: 🐛 Bug Report
+description: Report an anomaly in the archives that requires investigation
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        *"Not all errors are of this world. Some are merely bugs. Let us investigate."*
+
+        Thank you for reporting a bug. Please provide details to help us understand and fix the issue.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What went wrong? What did you expect to happen?
+      placeholder: Clear description of the bug and expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce this issue?
+      placeholder: |
+        1. Go to...
+        2. Click on...
+        3. See error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: What environment are you using?
+      placeholder: |
+        - OS: Windows/Mac/Linux
+        - Python version: 3.12
+        - Node version: 22
+        - Browser: Chrome 120
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs/Screenshots
+      description: Include error messages, logs, or screenshots
+      placeholder: Paste logs or drag images here
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      options:
+        - label: I've searched existing issues and this isn't a duplicate
+          required: true
+        - label: I've tested on the latest version
+          required: false

@@ -1,0 +1,94 @@
+"""
+Combat command models for MythosMUD.
+
+This module provides command models for combat actions.
+"""
+
+from typing import Literal
+
+from pydantic import Field, field_validator
+
+from ..validators.security_validator import MAX_COMBAT_TARGET_LENGTH, validate_combat_target
+from .command_base import BaseCommand, CommandType
+
+
+class AttackCommand(BaseCommand):
+    """Command for attacking a target."""
+
+    command_type: Literal[CommandType.ATTACK] = CommandType.ATTACK
+    # Instance IDs (e.g. cultist_of_the_yellow_sign_...) exceed typical display-name length.
+    target: str | None = Field(None, min_length=1, max_length=MAX_COMBAT_TARGET_LENGTH, description="Target to attack")
+
+    @field_validator("target")
+    @classmethod
+    def validate_target(cls: type["AttackCommand"], v: str | None) -> str | None:
+        """Validate combat target name format using centralized validation."""
+        if v is None:
+            return None
+        return validate_combat_target(v)
+
+
+class PunchCommand(BaseCommand):
+    """Command for punching a target."""
+
+    command_type: Literal[CommandType.PUNCH] = CommandType.PUNCH
+    target: str | None = Field(None, min_length=1, max_length=MAX_COMBAT_TARGET_LENGTH, description="Target to punch")
+
+    @field_validator("target")
+    @classmethod
+    def validate_target(cls: type["PunchCommand"], v: str | None) -> str | None:
+        """Validate combat target name format using centralized validation."""
+        if v is None:
+            return None
+        return validate_combat_target(v)
+
+
+class KickCommand(BaseCommand):
+    """Command for kicking a target."""
+
+    command_type: Literal[CommandType.KICK] = CommandType.KICK
+    target: str | None = Field(None, min_length=1, max_length=MAX_COMBAT_TARGET_LENGTH, description="Target to kick")
+
+    @field_validator("target")
+    @classmethod
+    def validate_target(cls: type["KickCommand"], v: str | None) -> str | None:
+        """Validate combat target name format using centralized validation."""
+        if v is None:
+            return None
+        return validate_combat_target(v)
+
+
+class StrikeCommand(BaseCommand):
+    """Command for striking a target."""
+
+    command_type: Literal[CommandType.STRIKE] = CommandType.STRIKE
+    target: str | None = Field(None, min_length=1, max_length=MAX_COMBAT_TARGET_LENGTH, description="Target to strike")
+
+    @field_validator("target")
+    @classmethod
+    def validate_target(cls: type["StrikeCommand"], v: str | None) -> str | None:
+        """Validate combat target name format using centralized validation."""
+        if v is None:
+            return None
+        return validate_combat_target(v)
+
+
+class TauntCommand(BaseCommand):
+    """Command for taunting an NPC to draw aggro (ADR-016). Room-local only."""
+
+    command_type: Literal[CommandType.TAUNT] = CommandType.TAUNT
+    target: str | None = Field(None, min_length=1, max_length=MAX_COMBAT_TARGET_LENGTH, description="NPC to taunt")
+
+    @field_validator("target")
+    @classmethod
+    def validate_target(cls: type["TauntCommand"], v: str | None) -> str | None:
+        """Validate combat target name format using centralized validation."""
+        if v is None:
+            return None
+        return validate_combat_target(v)
+
+
+class FleeCommand(BaseCommand):
+    """Command for fleeing combat (no target)."""
+
+    command_type: Literal[CommandType.FLEE] = CommandType.FLEE

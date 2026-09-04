@@ -1,0 +1,61 @@
+# Bandit configuration for Codacy
+# This file configures Bandit to skip common false positives in test files
+# Test files contain test data, mock values, and intentional patterns that trigger
+# security warnings but are not actual security issues
+
+# Configure assert_used plugin to skip B101 checks only for test files.
+# Assert statements are standard in pytest. Bandit matches skips with fnmatch against full path;
+# * does not match /, so we need one pattern per depth for nested dirs (e.g. server/tests/unit/...).
+assert_used:
+  skips:
+    - "*_test.py"
+    - "*/test_*.py"
+    - "*/*/test_*.py"
+    - "*/*/*/test_*.py"
+    - "*/*/*/*/test_*.py"
+    - "*/*/*/*/*/test_*.py"
+    - "*/*/*/*/*/*/test_*.py"
+    - "*/tests/*.py"
+    - "*/*/tests/*.py"
+    - "*/*/*/tests/*.py"
+    - "*/*/*/*/tests/*.py"
+    - "*/*/*/*/*/tests/*.py"
+    - "*/conftest.py"
+    - "*/*/conftest.py"
+    - "*/*/*/conftest.py"
+    - "*/*/*/*/conftest.py"
+
+# Configure hardcoded_password_string plugin to skip B105/B106 checks in test files.
+# Same multi-level path patterns as assert_used (fnmatch * does not match /).
+hardcoded_password_string:
+  skips:
+    - "*_test.py"
+    - "*/test_*.py"
+    - "*/*/test_*.py"
+    - "*/*/*/test_*.py"
+    - "*/*/*/*/test_*.py"
+    - "*/*/*/*/*/test_*.py"
+    - "*/*/*/*/*/*/test_*.py"
+    - "*/tests/*.py"
+    - "*/*/tests/*.py"
+    - "*/*/*/tests/*.py"
+    - "*/*/*/*/tests/*.py"
+    - "*/*/*/*/*/tests/*.py"
+    - "*/conftest.py"
+    - "*/*/conftest.py"
+    - "*/*/*/conftest.py"
+    - "*/*/*/*/conftest.py"
+
+# Note: B101, B105, and B106 will remain enabled for production code files to catch
+# inappropriate use of assert statements and hardcoded credentials in production code.
+
+# Skip B608 globally - PostgreSQL array literals cannot be parameterized
+# When array literals come from validated, hardcoded dictionaries (not user input),
+# they must be embedded in SQL strings. This is safe and documented with nosec comments.
+skips:
+  - B608
+
+# Nested graphify trees and venvs are not product code (same idea as ruff extend-exclude).
+exclude_dirs:
+  - graphify-out
+  - .venv

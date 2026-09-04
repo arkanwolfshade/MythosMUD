@@ -1,25 +1,44 @@
-import os
-from datetime import UTC, datetime, timedelta
+"""Authentication utilities for JWT token generation and validation.
 
-from jose import JWTError, jwt
+JWT encode/decode use PyJWT only. The ``python-jose`` / ``ecdsa`` packages are not project
+dependencies; they do not appear in ``pyproject.toml`` or ``uv.lock``. Do not reintroduce them.
+
+This module provides functions for creating and verifying JWT access tokens
+used for user authentication in the MythosMUD server.
+"""
+
+import os
+from collections.abc import Mapping
+from datetime import UTC, datetime, timedelta
+from typing import cast
+
+import jwt
+from structlog.stdlib import BoundLogger
 
 # Import our Argon2 implementation
 from server.auth.argon2_utils import hash_password as argon2_hash_password
 from server.auth.argon2_utils import verify_password as argon2_verify_password
-from server.logging_config import get_logger
+from server.exceptions import AuthenticationError
+from server.structured_logging.enhanced_logging_config import get_logger
+from server.utils.error_logging import log_and_raise
 
-logger = get_logger(__name__)
+logger: BoundLogger = get_logger(__name__)
 
 # Use environment variable for secret key - CRITICAL: Must be set in production
 # Use MYTHOSMUD_JWT_SECRET for consistency with FastAPI Users system
 SECRET_KEY = os.getenv("MYTHOSMUD_JWT_SECRET")
 if not SECRET_KEY:
     logger.error("MYTHOSMUD_JWT_SECRET environment variable not set")
-    raise ValueError(
-        "MYTHOSMUD_JWT_SECRET environment variable must be set. Generate a secure random key for production deployment."
+    log_and_raise(
+        AuthenticationError,
+        "MYTHOSMUD_JWT_SECRET environment variable must be set. Generate a secure random key for production deployment.",
+        details={"missing_env_var": "MYTHOSMUD_JWT_SECRET"},
+        user_friendly="Server configuration error",
     )
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
+# Match fastapi-users JWT audience so decode_access_token validates the same claim.
+TOKEN_AUDIENCE = "fastapi-users:auth"  # nosec B105: JWT audience identifier, not a password
 
 logger.info("Auth utilities initialized", algorithm=ALGORITHM, token_expire_minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
 
@@ -37,9 +56,14 @@ def hash_password(password: str) -> str:
         hashed = argon2_hash_password(password)
         logger.debug("Password hashed successfully")
         return hashed
-    except Exception as e:
+    except (AuthenticationError, ValueError, TypeError, RuntimeError) as e:
         logger.error("Password hashing failed", error=str(e))
-        raise
+        log_and_raise(
+            AuthenticationError,
+            f"Password hashing failed: {e}",
+            details={"original_error": str(e), "error_type": type(e).__name__},
+            user_friendly="Password processing failed",
+        )
 
 
 def verify_password(password: str, password_hash: str) -> bool:
@@ -57,46 +81,62 @@ def verify_password(password: str, password_hash: str) -> bool:
         else:
             logger.debug("Password verification failed")
         return result
-    except Exception as e:
+    except (ValueError, TypeError, AttributeError, RuntimeError) as e:
         logger.error("Password verification error", error=str(e))
         return False
 
 
 def create_access_token(
-    data: dict,
+    data: Mapping[str, object],
     expires_delta: timedelta | None = None,
-    secret_key: str = SECRET_KEY,
+    secret_key: str | None = SECRET_KEY,
     algorithm: str = ALGORITHM,
 ) -> str:
     """Create a JWT access token."""
-    logger.debug("Creating access token", user_id=data.get("sub"), expires_delta=expires_delta)
+    logger.debug("Creating access token", expires_delta=expires_delta)
 
-    to_encode = data.copy()
+    to_encode = dict(data)
     expire = datetime.now(UTC) + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode.update({"exp": expire})
+    if "aud" not in to_encode:
+        to_encode["aud"] = TOKEN_AUDIENCE
+
+    if secret_key is None:
+        raise AuthenticationError("JWT secret key is not configured")
 
     try:
         token = jwt.encode(to_encode, secret_key, algorithm=algorithm)
-        logger.debug("Access token created successfully", user_id=data.get("sub"))
+        logger.debug("Access token created successfully")
         return token
-    except Exception as e:
-        logger.error("Failed to create access token", error=str(e), user_id=data.get("sub"))
-        raise
+    except (jwt.PyJWTError, ValueError, TypeError, AttributeError, RuntimeError) as e:
+        logger.error("Failed to create access token", error=str(e))
+        log_and_raise(
+            AuthenticationError,
+            f"Failed to create access token: {e}",
+            details={"original_error": str(e), "error_type": type(e).__name__, "user_id": data.get("sub")},
+            user_friendly="Authentication token creation failed",
+        )
 
 
-def decode_access_token(token: str, secret_key: str = SECRET_KEY, algorithm: str = ALGORITHM) -> dict:
+def decode_access_token(
+    token: str | None, secret_key: str | None = SECRET_KEY, algorithm: str = ALGORITHM
+) -> dict[str, object] | None:
     """Decode and validate a JWT access token."""
     if token is None:
         logger.debug("No token provided for decoding")
         return None
 
+    if secret_key is None:
+        logger.error("JWT secret key is not configured for decoding")
+        return None
+
     try:
-        payload = jwt.decode(token, secret_key, algorithms=[algorithm], audience="fastapi-users:auth")
-        logger.debug("Access token decoded successfully", user_id=payload.get("sub"))
-        return payload
-    except JWTError as e:
+        payload = jwt.decode(token, secret_key, algorithms=[algorithm], audience=TOKEN_AUDIENCE)
+        logger.debug("Access token decoded successfully")
+        return cast(dict[str, object], payload)
+    except jwt.PyJWTError as e:
         logger.warning("JWT decode error", error=str(e))
         return None
-    except Exception as e:
+    except (ValueError, TypeError, AttributeError, RuntimeError) as e:
         logger.error("Unexpected error decoding token", error=str(e))
         return None

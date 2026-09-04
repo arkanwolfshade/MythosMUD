@@ -1,100 +1,417 @@
 # 🐙 MythosMUD
 
+**Version 1.1.0** · MythosMUD · 2026-08-28
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 A text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulhu Mythos.
 
----
+## 2. Status Badges
 
+**[NOTE]**
 [![CI](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/ci.yml/badge.svg)](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/ci.yml)
----
+[![CodeQL](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/codeql.yml/badge.svg)](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/codeql.yml)
+[![Codacy
+Badge](https://app.codacy.com/project/badge/Grade/0c361cf70a234b86b1b0f058ffd00549)](https://app.codacy.com/gh/arkanwolfshade/MythosMUD/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
-## Table of Contents
+## 3. Table of Contents
+
+**[SPEC]**
+[🐙 MythosMUD](#-mythosmud)
 
 - [🐙 MythosMUD](#-mythosmud)
-  - [](#)
-  - [Table of Contents](#table-of-contents)
-  - [Overview](#overview)
-  - [Getting Started](#getting-started)
+  - [Status Badges](#2-status-badges)
+  - [Table of Contents](#3-table-of-contents)
+  - [Overview](#4-overview)
+  - [Current Status](#5-current-status)
+    - [✅ Completed Systems](#-completed-systems)
+    - [🔄 In Progress](#-in-progress)
+    - [📋 Planned Features](#-planned-features)
+  - [Features](#6-features)
+    - [Core Gameplay](#core-gameplay)
+    - [Technical Features](#technical-features)
+    - [Security \& Privacy](#security--privacy)
+  - [Getting Started](#7-getting-started)
     - [Quickstart](#quickstart)
-  - [Project Structure](#project-structure)
-  - [Development](#development)
+  - [Project Structure](#8-project-structure)
+  - [Development](#9-development)
     - [Utility Scripts](#utility-scripts)
     - [Development Tools](#development-tools)
-  - [Documentation](#documentation)
-  - [License](#license)
+  - [Documentation](#10-documentation)
+    - [Core Documentation](#core-documentation)
+    - [Development Guides](#development-guides)
+    - [Testing Documentation](#testing-documentation)
+    - [Architecture \& Technical Specs](#architecture--technical-specs)
+    - [Logging \& Monitoring](#logging--monitoring)
+    - [Security \& Error Handling](#security--error-handling)
+  - [License](#11-license)
 
 ---
 
-## Overview
+## 4. Overview
 
-**MythosMUD** is a persistent, multiplayer, text-based adventure game with a Lovecraftian horror theme. It is designed to be beginner-friendly for both players and contributors, with a focus on exploration, narrative, and light horror combat.
+**[SPEC]**
+**MythosMUD** is a persistent, multiplayer, text-based adventure game with a Lovecraftian horror theme. It is designed
+to be beginner-friendly for both players and contributors, with a focus on exploration, narrative, and light horror
+combat.
 
-- **Author:** Mark Henry
-- **Audience:** Friends, family, and invited contributors (not public)
-- **Tech Stack:**
-  - Frontend: React + TypeScript (Vite)
-  - Backend: Python (FastAPI)
-  - Database: PostgreSQL (preferred)
+**Authors:** @arkanwolfshade & @TylerWolfshade
+
+**Audience:** Friends, family, and invited contributors (not public)
+
+**Tech Stack:**
+
+- Frontend: React 19.1+ + TypeScript 5.9 (Vite 7.1+)
+- Backend: Python 3.12+ (FastAPI 0.121+)
+- Database: PostgreSQL (development, tests, and production)
+- Real-time: WebSockets + NATS messaging
+- Authentication: FastAPI Users + Argon2 + JWT
+- Testing: pytest + Playwright + Vitest
+- Dependency Management: uv for Python, npm for Node.js
+- Code Quality: ruff (Python linter/formatter), ESLint + Prettier (JavaScript/TypeScript)
 
 ---
 
-## Getting Started
+## 5. Current Status
 
-See [DEVELOPMENT.md](DEVELOPMENT.md) for full setup instructions.
+**[SPEC]**
+**🟢 Beta Development** - Core systems implemented and tested, multiplayer features active
+
+### ✅ Completed Systems
+
+**Authentication & User Management** - Complete JWT-based auth with Argon2 password hashing and invite system
+
+**Real-time Communication** - Dual connection system with NATS-based messaging and WebSocket/SSE clients
+
+**Player Management** - Character creation, stats generation, and persistence with PostgreSQL
+
+**Room System** - Hierarchical room structure with movement, navigation, and dynamic descriptions
+
+**Chat System** - Multi-channel communication (say, local, whisper, system, emotes)
+
+**Command Processing** - Unified command handler with alias system and help system
+
+**Admin Tools** - Teleportation, player management, and monitoring commands
+
+**NPC System** - Basic NPC spawning, behavior, and combat interactions
+
+**Magic/Spellcasting System** - Complete spell system with MP (Magic Points), spell learning and mastery, material
+
+components, casting times, and integration with combat and lucidity systems
+
+**Database Layer** - PostgreSQL persistence with async operations, connection pooling, and migration support
+
+**Enhanced Logging** - Structured logging with MDC, correlation IDs, security sanitization, and performance monitoring
+
+- **Testing Framework** - Comprehensive test suite with 80%+ coverage, 304 test files, and automated E2E tests
+- **Security Framework** - Input validation, rate limiting, XSS protection, and COPPA compliance measures
+
+### 🔄 In Progress
+
+**Advanced Chat Channels** - Tab-based channel management and filtering
+
+**Combat System** - Expanded combat mechanics with lucidity effects
+
+**Performance Optimization** - Database connection pooling and query optimization
+
+**Advanced NPC Behaviors** - Improved AI patterns and dialogue systems
+
+### 📋 Planned Features
+
+**Quest System** - Dynamic quest generation and tracking
+
+**Crafting System** - Item crafting and modification
+
+**Advanced World Systems** - Dynamic events, weather, and time progression
+
+**Player Housing** - Personal spaces and storage systems
+
+- **Achievement System** - Tracking player accomplishments
+
+---
+
+## 6. Features
+
+**[SPEC]**
+
+### Core Gameplay
+
+**Real-time Multiplayer** - Multiple players can interact simultaneously (100ms server tick rate for responsive
+gameplay)
+
+**Character Creation** - Random stats generation with Lovecraftian investigator archetypes
+
+**Room-based Exploration** - Navigate through a persistent world with exits and descriptions
+
+**Chat Communication** - Multiple channels including say, local, whisper, and system messages
+
+**Command System** - Text-based commands with alias support and help system
+
+**Magic System** - Cast spells, learn new spells, track mastery, and manage MP (Magic Points) with automatic
+
+regeneration
+
+### Technical Features
+
+**Browser Accessible** - No client installation required, runs in modern browsers
+
+**Dual Connection System** - WebSocket for commands + Server-Sent Events for real-time updates
+
+**Secure Authentication** - JWT tokens with Argon2 password hashing and invite-only system
+
+**COPPA Compliant** - Privacy-first design for minor users with no personal data collection
+
+**Comprehensive Testing** - 80%+ test coverage with automated CI/CD and comprehensive E2E test suite
+
+**Enhanced Structured Logging** - Enterprise-grade logging with:
+
+- MDC (Mapped Diagnostic Context) for automatic context propagation
+
+- Correlation IDs for request tracing across service boundaries
+
+- Automatic security sanitization of sensitive data
+
+- Built-in performance monitoring and metrics collection
+
+- 100% exception coverage with rich context
+
+**Modular Test Framework** - Hierarchical test organization with 304 test files across unit, integration, E2E,
+
+security, and performance categories
+
+### Security & Privacy
+
+**Security-First Design** - All features built with security in mind
+
+**Input Validation** - Comprehensive server-side validation for all inputs
+
+**Rate Limiting** - Per-user and per-endpoint rate limiting
+
+**XSS Protection** - Complete client-side XSS vulnerability elimination
+
+- **Privacy by Design** - Minimal data collection with easy deletion rights
+
+---
+
+## 7. Getting Started
+
+**[NOTE]**
+See [DEVELOPMENT.md](docs/DEVELOPMENT.md) or [CONTRIBUTING.md](CONTRIBUTING.md) for full setup.
 
 ### Quickstart
 
-1. **Clone the repository:**
+1. **Prerequisites:**
+   - Python 3.12+ (managed via pyenv-win recommended)
+   - Node.js 22+ and npm (NVM for Windows recommended)
+   - PostgreSQL 15+ (required for development and tests)
+   - [uv](https://github.com/astral-sh/uv) for Python dependency management
+   - Git
+   - NATS Server binary (set `NATS_SERVER_PATH` in `.env.local`)
+
+2. **Clone the repository with submodules:**
 
    ```sh
-   git clone <your-repo-url>
+   # Option 1: Clone with submodules in one command
+
+   git clone --recursive <your-repo-url>
    cd MythosMUD
    ```
 
-2. **Start the development environment:**
+   ```sh
+   # Option 2: Clone first, then fetch submodules
+
+   git clone <your-repo-url>
+   cd MythosMUD
+   git submodule update --init --recursive
+   ```
+
+3. **Create environment files:**
 
    ```powershell
-   # Windows PowerShell
-   .\scripts\start_dev.ps1
+   # Local development (required before start_local / start_server)
+
+   Copy-Item env.local.example .env.local
+   # Edit .env.local: DATABASE_URL, NATS_SERVER_PATH, secrets
+
+   # Test env files
+
+   Copy-Item env.unit_test.example .env.unit_test
+   .\scripts\setup_test_environment.ps1
    ```
 
-   Or manually:
+4. **Install dependencies:**
 
    ```sh
-   # Backend
-    cd server
-    pyenv local 3.12.11  # or your preferred Python 3.12+ version
-   uv sync
-   uv run uvicorn main:app --reload
+   # Python dependencies
 
-   # Frontend (in another terminal)
-   cd client
+   cd server
+   uv sync
+   uv run pre-commit install -f
+
+   # Client dependencies
+
+   cd ../client
    npm install
-   npm run dev
+   cd ..
    ```
 
-3. **Visit:**
-   - Backend: <http://localhost:54731>
+5. **Bootstrap the local database:**
+
+   ```powershell
+   # Create mythos_dev + apply DDL (reads DATABASE_URL from .env.local)
+
+   .\scripts\setup_postgresql_test_db.ps1 -EnvFile .env.local
+
+   # Apply stored procedures to mythos_dev
+
+   make apply-procedures
+   ```
+
+   See `db/mythos_dev_ddl.sql` and [POSTGRESQL_CONTRIBUTOR_GUIDE.md](docs/POSTGRESQL_CONTRIBUTOR_GUIDE.md).
+
+6. **Start the development environment:**
+
+   ```powershell
+   .\scripts\stop_server.ps1
+   .\scripts\start_local.ps1
+   ```
+
+   Or start components separately: `.\scripts\start_server.ps1` /
+   `.\scripts\start_client.ps1`.
+
+7. **Visit:**
    - Frontend: <http://localhost:5173>
+   - Backend API: <http://localhost:54768>
+   - API Documentation: <http://localhost:54768/docs>
+
+8. **Test the setup:**
+
+   ```sh
+   make test
+   make lint
+   ```
 
 ---
 
-## Project Structure
+## 8. Project Structure
 
-```
+**[NOTE]**
+
+```text
 MythosMUD/
-├── client/      # React + TypeScript frontend (Vite)
-├── server/      # Python FastAPI backend
-├── scripts/     # Utility scripts (PowerShell & Python)
-├── docs/        # Documentation (PRD, etc.)
-├── .github/     # GitHub Actions workflows
-├── PLANNING.md  # Vision, architecture, stack
-├── DEVELOPMENT.md # Dev environment setup
-└── README.md    # This file
+├── client/                    # React 19 + TypeScript frontend (Vite 7)
+│   ├── src/
+│   │   ├── components/        # React components (GameTerminal, Panels, UI)
+│   │   │   ├── panels/        # Chat, Command, Room, Connection panels
+│   │   │   ├── ui/            # Reusable UI components
+│   │   │   └── layout/        # Grid layout management
+│   │   ├── hooks/             # React hooks (useGameConnection, useGameTerminal)
+│   │   ├── stores/            # Zustand state management
+│   │   ├── contexts/          # React contexts (GameTerminal, Panel, Theme)
+│   │   ├── utils/             # Utility functions (ansiToHtml, errorHandler)
+│   │   ├── theme/             # Theming system (mythosTheme)
+│   │   ├── styles/            # Style files (motd-preserved.css)
+│   │   └── test/              # Test utilities and setup
+│   ├── tests/                 # End-to-end tests (Playwright)
+│   ├── public/                # Public assets
+│   └── [config files]         # TypeScript, Vite, TailwindCSS, ESLint configs
+│
+├── server/                    # Python FastAPI backend
+│   ├── auth/                  # Authentication system (Argon2, JWT, invites)
+│   ├── api/                   # API endpoints (game, players, rooms, monitoring, admin)
+│   ├── game/                  # Game logic services (chat, movement, stats, character creation)
+│   ├── realtime/              # Real-time communication (WebSockets, NATS, SSE dual connection)
+│   ├── commands/              # Command processing (admin, alias, chat, help, exploration)
+│   ├── models/                # Data models (player, room, command, chat, user, NPC)
+│   ├── services/              # Business logic services (NATS, chat logging, rate limiting)
+│   ├── utils/                 # Utility modules (command parsing, processing)
+│   ├── validators/            # Input validation (command, security)
+│   ├── middleware/            # Request middleware (correlation IDs, logging, security headers)
+│   ├── schemas/               # JSON schemas (player, invite, user)
+│   ├── sql/                   # Database schema and migrations
+│   ├── help/                  # Help system (help_content)
+│   ├── events/                # Event system (event_bus, event_types)
+│   ├── app/                   # Application factory (factory, lifespan, memory management)
+│   ├── npc/                   # NPC system (behaviors, combat, communication, state machines)
+│   ├── structured_logging/    # Enhanced logging (MDC, correlation IDs, security sanitization)
+│   ├── tests/                 # Hierarchical test suite (304 test files organized by type)
+│   │   ├── unit/              # Unit tests
+│   │   ├── integration/       # Integration tests
+│   │   ├── e2e/               # End-to-end tests
+│   │   ├── security/          # Security-specific tests
+│   │   ├── performance/       # Performance and load tests
+│   │   ├── regression/        # Bug fix regression tests
+│   │   ├── monitoring/        # Monitoring and observability tests
+│   │   ├── coverage/          # Coverage improvement tests
+│   │   ├── verification/      # Verification tests
+│   │   ├── fixtures/          # Shared test fixtures
+│   │   └── scripts/           # Test utility scripts
+│   └── [core files]           # Main app, persistence, config, etc.
+│
+├── data/                      # World data (git submodule)
+│   ├── players/               # Player database files (PostgreSQL)
+│   ├── npcs/                  # NPC database files
+│   ├── rooms/                 # Hierarchical room structure (earth/yeng planes)
+│   ├── user_management/       # User management data
+│   └── [game data]            # Emotes, MOTD, visualizations
+│
+├── scripts/                   # Utility scripts (PowerShell & Python)
+│   ├── start_local.ps1          # Development server startup
+│   ├── stop_server.ps1        # Server shutdown
+│   ├── start_server.ps1       # Server-only startup
+│   ├── start_client.ps1       # Client-only startup
+│   └── [other utilities]      # Testing, linting, formatting
+│
+├── e2e-tests/                 # End-to-end testing framework
+│   ├── scenarios/             # 21 multiplayer test scenarios
+│   ├── MULTIPLAYER_TEST_RULES.md # Master test execution rules
+│   ├── CLEANUP.md             # Post-scenario cleanup procedures
+│   └── TROUBLESHOOTING.md     # Error handling and debugging
+│
+├── docs/                      # Documentation
+│   ├── archive/               # Consolidated planning documents
+│   ├── PRD.md                 # Product Requirements Document
+│   ├── REAL_TIME_ARCHITECTURE.md # Real-time system architecture
+│   └── [technical docs]       # Security, database, room planning
+│
+├── schemas/                   # JSON schemas for validation
+│   ├── room_schema.json       # Room definition schema
+│   ├── intersection_schema.json # Intersection schema
+│   └── unified_room_schema.json # Unified room schema
+│
+├── tools/                     # Development tools
+│   ├── invite_tools/          # Invite management utilities
+│   └── room_toolkit/          # Room validation and tools
+│
+├── .github/                   # GitHub Actions workflows (CI, CodeQL)
+├── .cursor/                   # Cursor IDE configuration
+├── PLANNING.md                # Comprehensive project planning
+├── docs/DEVELOPMENT.md         # Development environment setup
+├── docs/DEVELOPMENT_AI.md     # AI agent development guide
+├── TASKS.md                   # Task tracking (deprecated - use GitHub Issues)
+├── TASKS.local.md             # Local task tracking
+├── Makefile                   # Build and development commands
+├── pyproject.toml             # Python project configuration
+├── uv.lock                    # Python dependency lock file
+└── README.md                  # This file
 ```
 
 ---
 
-## Development
+## 9. Development
+
+**[SPEC]**
 
 ### Utility Scripts
 
@@ -102,47 +419,135 @@ The `scripts/` directory contains PowerShell and Python utility scripts for mana
 
 **PowerShell Scripts:**
 
-- `scripts/start_server.ps1` - Start the FastAPI server
+- `scripts/start_local.ps1` - Start complete development environment (server + client)
+- `scripts/start_server.ps1` - Start the FastAPI server only
+- `scripts/start_client.ps1` - Start the React client only
 - `scripts/stop_server.ps1` - Stop server processes
-- `scripts/start_dev.ps1` - Start complete development environment
 
 **Python Scripts:**
 
 - `scripts/run.py` - Run the server
-- `scripts/test.py` - Run tests
-- `scripts/lint.py` - Lint code
-- `scripts/format.py` - Format code
+- `scripts/test.py` - Run tests (server, client, or both)
+- `scripts/lint.py` - Lint code with ruff
+- `scripts/format.py` - Format code with ruff
+
+**Test Setup Scripts:**
+
+- `scripts/setup_test_environment.ps1` - Setup test environment files (required before running tests)
+
+**Make Commands:**
+
+- `make test` - Default suite from project root (client + server)
+- `make test-coverage` - Coverage reports
+- `make test-ci` - CI-style suite (legacy alias: `make test-comprehensive`)
+- `make test-client` - Client unit tests (Vitest)
+- `make test-client-e2e` - Playwright E2E (alias: `make test-e2e`)
+- `make test-playwright` - Client E2E + server integration helpers
+- `make lint` / `make format` - Lint and format
+
+For Playwright E2E layout, see `client/tests/e2e/`.
 
 See [scripts/README.md](scripts/README.md) for detailed documentation.
 
 ### Development Tools
 
-- **Linting and formatting:**
-  - Python: `ruff check .` and `ruff format .` in `/server`
-  - JS/TS: `npx prettier --check .` and `npx eslint .` in `/client`
+**Linting and formatting:**
+
+- Python: `ruff check .` and `ruff format .` in `/server` (120 char line limit)
+- JS/TS: `npx prettier --check .` and `npx eslint .` in `/client`
 - **Pre-commit hooks:**
   - Installed at the repository root to catch linting/formatting issues before commit
-- **CI:**
+  - Includes ruff, prettier, eslint, and semgrep security analysis
+- **Cursor Hooks:**
+  - Configured in `.cursor/hooks.json` (Settings → Hooks in Cursor IDE)
+  - **afterFileEdit:** Records non-test source files for test-agent trigger (`.cursor/hooks/record_edited_file.py`)
+  - **stop:** Auto-continues agent with test-creation prompt when non-test files were edited (`.cursor/hooks/trigger_test_agent.py`)
+  - Project hooks run from the project root; scripts live in `.cursor/hooks/`
+  - For manual edits use "Format Document" or run pre-commit before commit
+- **CI/CD:**
   - Automated with GitHub Actions for both backend and frontend
+  - Includes CI, CodeQL security analysis, and Semgrep static analysis
+- **Testing:**
+  - Server: pytest with 80%+ coverage (target 90%)
+  - Client: Vitest for unit tests, Playwright for E2E tests
+  - Test Organization: Hierarchical structure with 304 test files across 9 categories
+  - E2E Automated: Comprehensive Playwright CLI tests for runtime scenarios
+  - E2E Manual: 21 multiplayer MCP scenarios requiring AI Agent coordination (see e2e-tests/scenarios/)
+  - See [E2E Testing Guide](docs/E2E_TESTING_GUIDE.md) for details
+  - **CRITICAL**: Run `make setup-test-env` before running server tests for the first time
+  - **CRITICAL**: Always use `make test` from project root, NEVER from `/server/` directory
+- **Security:**
+  - COPPA compliance verification
+  - Comprehensive input validation and XSS protection
 - **AI Agents:**
-  - See [DEVELOPMENT_AI.md](DEVELOPMENT_AI.md) for comprehensive AI agent guidelines
+  - See [DEVELOPMENT_AI.md](docs/DEVELOPMENT_AI.md) for comprehensive AI agent guidelines
+  - Includes task prioritization framework and development workflow
 
 ---
 
 ---
 
-## Documentation
+## 10. Documentation
 
-- [Product Requirements Document (PRD)](docs/PRD.md) — Full game and technical design
-- [PLANNING.md](PLANNING.md) — Vision, architecture, stack
+**[SPEC]**
+
+### Core Documentation
+
+[Product Requirements Document (PRD)](docs/archive/PRD.md) — Full game and technical design
+
+- [Deployment](docs/deployment.md) — Production deployment with Gunicorn + Uvicorn
+- [PLANNING.md](PLANNING.md) — Comprehensive project planning and current status
 - [GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues) — Current tasks and development priorities
-- [DEVELOPMENT.md](DEVELOPMENT.md) — Dev environment setup
-- [DEVELOPMENT_AI.md](DEVELOPMENT_AI.md) — AI agent development guide
-- [Security Documentation](SECURITY.md) — Security practices and vulnerability reporting
-- [OpenSSF Best Practices](docs/OPENSSF_BEST_PRACTICES.md) — Security badge compliance documentation
+
+### Development Guides
+
+[DEVELOPMENT.md](docs/DEVELOPMENT.md) — Dev environment setup with security guidelines
+
+- [DEVELOPMENT_AI.md](docs/DEVELOPMENT_AI.md) — AI agent development guide and workflow
+- [AI Development Workflow](docs/AI_DEVELOPMENT_WORKFLOW.md) — Detailed AI agent task management
+- [Cursor Setup Guide](docs/CURSOR_SETUP_GUIDE.md) — Optimize Cursor IDE for subagents and CLI usage
+- [Cursor Hooks](docs/CURSOR_HOOKS.md) — Cursor Hooks (test-trigger agent, Settings → Hooks)
+
+### Testing Documentation
+
+[E2E Testing Guide](docs/E2E_TESTING_GUIDE.md) — Comprehensive E2E testing documentation
+
+- [Multiplayer Test Rules](e2e-tests/MULTIPLAYER_TEST_RULES.md) — E2E testing framework and 21 scenarios
+- [Command Testing Guide](docs/COMMAND_TESTING_GUIDE.md) — Testing command implementations
+
+### Architecture & Technical Specs
+
+[Real-time Architecture](docs/REAL_TIME_ARCHITECTURE.md) — Dual connection system architecture
+
+- [Advanced Chat Channels Spec](docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md) — Communication system design
+- [Dual Connection System](docs/archive/DUAL_CONNECTION_SYSTEM_SPEC.md) — WebSocket + SSE architecture
+
+### Logging & Monitoring
+
+[Enhanced Logging Guide](docs/LOGGING_BEST_PRACTICES.md) — Structured logging best practices and patterns
+
+- [Logging Quick Reference](docs/LOGGING_QUICK_REFERENCE.md) — One-page logging cheat sheet
+- [Enhanced Logging Implementation](docs/ENHANCED_LOGGING_GUIDE.md) — Detailed logging implementation guide
+
+### Security & Error Handling
+
+[Security Fixes](docs/archive/SECURITY_FIXES.md) — Security implementation and fixes
+
+- [Error Handling Guide](docs/ERROR_HANDLING_GUIDE.md) — Error handling patterns and best practices
+- [Troubleshooting Guide](docs/TROUBLESHOOTING_GUIDE.md) — Common issues and solutions
 
 ---
 
-## License
+## 11. License
 
+**[NOTE]**
 [https://github.com/arkanwolfshade/MythosMUD/blob/main/LICENSE](https://github.com/arkanwolfshade/MythosMUD/blob/main/LICENSE)
+
+## 12. Changelog
+
+**[SPEC]**
+
+| Version | Date       | Change                             |
+| ------- | ---------- | ---------------------------------- |
+| 1.0.0   | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Fix broken links: `server/tests/SETUP.md` references removed (file deleted in #337, no successor); `DEVELOPMENT_AI.md` (wrong depth); `docs/PRD.md`, `ADVANCED_CHAT_CHANNELS_SPEC.md`, `DUAL_CONNECTION_SYSTEM_SPEC.md`, `SECURITY_FIXES.md` (now in `docs/archive/`) (#695) |

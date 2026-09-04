@@ -1,0 +1,194 @@
+"""
+Database configuration helper functions.
+
+This module provides utility functions for loading, validating, and configuring
+database URLs and connection pool settings.
+"""
+
+import os
+
+from pydantic import ValidationError as PydanticValidationError
+from sqlalchemy.pool import NullPool
+
+from .exceptions import ValidationError
+from .utils.error_logging import log_and_raise
+
+# Module-level test override for database URL
+# Using a dict to avoid global statement while maintaining mutable state
+_database_url_state: dict[str, str | None] = {"url": None}
+
+
+def get_test_database_url() -> str | None:
+    """Get test override database URL."""
+    return _database_url_state["url"]
+
+
+def set_test_database_url(url: str | None) -> None:
+    """Set test override database URL."""
+    _database_url_state["url"] = url
+
+
+def load_database_url() -> str:
+    """
+    Load database URL from config or test override.
+
+    Returns:
+        Database URL string
+
+    Raises:
+        ValidationError: If URL cannot be loaded
+    """
+    test_url = _database_url_state["url"]
+    if test_url is not None:
+        return test_url
+
+    try:
+        from .config import get_config
+
+        config = get_config()
+        database_url = config.database.url
+        return database_url
+    except (PydanticValidationError, ImportError, RuntimeError) as e:
+        log_and_raise(
+            ValidationError,
+            f"Failed to load configuration: {e}",
+            operation="load_database_url",
+            details={"config_error": str(e), "error_type": type(e).__name__},
+            user_friendly="Database cannot be initialized: configuration not loaded or invalid",
+        )
+
+
+def validate_database_url(database_url: str | None) -> None:
+    """
+    Validate database URL is set and is PostgreSQL.
+
+    Args:
+        database_url: Database URL to validate
+
+    Raises:
+        ValidationError: If URL is invalid
+    """
+    if not database_url:
+        log_and_raise(
+            ValidationError,
+            "Database URL is not configured",
+            operation="validate_database_url",
+            user_friendly="Database configuration error - URL not set",
+        )
+    if not database_url.startswith("postgresql"):
+        log_and_raise(
+            ValidationError,
+            f"Unsupported database URL: {database_url}. Only PostgreSQL is supported.",
+            operation="validate_database_url",
+            database_url=database_url,
+            user_friendly="Database configuration error - PostgreSQL required",
+        )
+
+
+def normalize_database_url(database_url: str) -> str:
+    """
+    Normalize database URL for asyncpg.
+
+    Args:
+        database_url: Original database URL
+
+    Returns:
+        Normalized database URL
+    """
+    if not database_url.startswith("postgresql+asyncpg"):
+        return database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+    return database_url
+
+
+# Default pool settings when config is unavailable (e.g. scripts with only DATABASE_URL set).
+# Matches DatabaseConfig defaults in config/models.py.
+_DEFAULT_POOL_SETTINGS: dict[str, int] = {
+    "pool_size": 5,
+    "max_overflow": 10,
+    "pool_timeout": 30,
+}
+
+
+def get_postgres_connect_args() -> dict[str, dict[str, str]]:
+    """
+    Build connect_args for asyncpg: always a hung-transaction timeout, plus search_path when set.
+
+    idle_in_transaction_session_timeout is a backstop against a request that hangs (never errors,
+    never crashes) while holding a row lock across multiple awaits - see reserve_invite/
+    capture_invite in server/auth/endpoints.py (#733), the first thing in this codebase to hold a
+    lock that way. A crash or dropped connection already releases locks via Postgres's own
+    backend teardown; this covers the hang-without-dying case, for every transaction, not just
+    invite registration. Generous value so it never fires on a legitimately slow request.
+
+    search_path is set so unit tests (and any env) can target [database].[schema]
+    (e.g. mythos_unit.mythos_unit) instead of the default public schema; omitted if
+    POSTGRES_SEARCH_PATH is not set (true in production).
+
+    Returns:
+        Dict suitable for create_async_engine(..., connect_args=...).
+    """
+    server_settings: dict[str, str] = {"idle_in_transaction_session_timeout": "30s"}
+    search_path = os.environ.get("POSTGRES_SEARCH_PATH", "").strip()
+    if search_path:
+        server_settings["search_path"] = search_path
+    return {"server_settings": server_settings}
+
+
+def get_asyncpg_server_settings_for_database_url(database_url: str) -> dict[str, str]:
+    """
+    Build asyncpg ``server_settings`` so unqualified table names resolve like SQLAlchemy.
+
+    For ``mythos_dev``, ``mythos_unit``, and ``mythos_e2e``, DDL places tables in a schema
+    named like the database. Raw ``asyncpg.connect(url)`` uses PostgreSQL defaults
+    (typically only ``public``), so unqualified names (for example ``FROM zones`` or
+    ``FROM calendar_holidays``) fail with UndefinedTableError
+    unless ``search_path`` matches :func:`DatabaseManager._initialize_database` in
+    ``server.database``.
+
+    Returns:
+        Dict suitable for ``asyncpg.connect(..., server_settings=...)`` (may be empty).
+    """
+    connect_args = get_postgres_connect_args()
+    current = (connect_args.get("server_settings") or {}).get("search_path", "").strip()
+    db_name = database_url.split("/")[-1].split("?")[0] if database_url else ""
+    if db_name in ("mythos_dev", "mythos_unit", "mythos_e2e"):
+        if current != db_name:
+            return {"search_path": db_name}
+    if current:
+        return {"search_path": current}
+    return {}
+
+
+def configure_pool_settings(database_url: str) -> dict[str, object]:
+    """
+    Configure pool settings based on database URL and config.
+
+    When full config is not available (e.g. script with only DATABASE_URL),
+    uses default pool settings so the script can run without AppConfig.
+
+    Args:
+        database_url: Database URL
+
+    Returns:
+        Dictionary of pool configuration kwargs
+    """
+    pool_kwargs: dict[str, object] = {}
+    if "test" in database_url:
+        pool_kwargs["poolclass"] = NullPool
+    else:
+        try:
+            from .config import get_config
+
+            config = get_config()
+            db_config_dict = config.database.model_dump()
+            pool_kwargs.update(
+                {
+                    "pool_size": db_config_dict["pool_size"],
+                    "max_overflow": db_config_dict["max_overflow"],
+                    "pool_timeout": db_config_dict["pool_timeout"],
+                }
+            )
+        except (PydanticValidationError, ImportError, RuntimeError):
+            # Script or minimal env: use defaults so DB can connect without full AppConfig
+            pool_kwargs.update(_DEFAULT_POOL_SETTINGS)
+    return pool_kwargs

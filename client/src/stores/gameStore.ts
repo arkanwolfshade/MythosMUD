@@ -1,0 +1,346 @@
+import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
+
+export interface Player {
+  id: string;
+  name: string;
+  stats: {
+    current_dp: number; // Represents determination points (DP)
+    max_dp?: number; // Represents max determination points (DP)
+    lucidity: number;
+    max_lucidity?: number;
+    strength?: number;
+    dexterity?: number;
+    constitution?: number;
+    size?: number;
+    intelligence?: number;
+    power?: number;
+    education?: number;
+    charisma?: number;
+    luck?: number;
+    occult?: number;
+    corruption?: number;
+    magic_points?: number;
+    max_magic_points?: number;
+    position?: string;
+  };
+  level?: number;
+  experience?: number;
+  position?: string;
+  inventory?: Array<{
+    id: string;
+    name: string;
+    type: string;
+    [key: string]: unknown;
+  }>;
+}
+
+export interface Room {
+  id: string;
+  name: string;
+  description: string;
+  plane?: string;
+  zone?: string;
+  sub_zone?: string;
+  environment?: string;
+  exits: Record<string, string>;
+  occupants?: string[];
+  players?: string[];
+  npcs?: string[];
+  occupant_count?: number;
+  entities?: Array<{
+    id: string;
+    name: string;
+    type: string;
+    [key: string]: unknown;
+  }>;
+  /** Map X coordinate (admin-set position) */
+  map_x?: number | null;
+  /** Map Y coordinate (admin-set position) */
+  map_y?: number | null;
+}
+
+export interface ChatMessage {
+  id?: string;
+  text: string;
+  timestamp: string;
+  isHtml: boolean;
+  type: 'say' | 'tell' | 'shout' | 'whisper' | 'system' | 'combat' | 'emote';
+  channel: 'local' | 'global' | 'party' | 'tell' | 'system' | 'game';
+  sender?: string;
+  target?: string;
+  /** Server/UI may send a separate display type string; terminal UI maps this alongside `type`. */
+  messageType?: string;
+  isCompleteHtml?: boolean;
+  rawText?: string;
+  aliasChain?: Array<{
+    original: string;
+    expanded: string;
+    alias_name: string;
+  }>;
+  [key: string]: unknown;
+  tags?: string[];
+}
+
+export interface GameLogEntry {
+  id?: string;
+  text: string;
+  timestamp: string;
+  isHtml: boolean;
+  type: 'system' | 'combat' | 'action' | 'error' | 'info';
+  [key: string]: unknown;
+}
+
+export interface GameState {
+  // Core game data
+  player: Player | null;
+  room: Room | null;
+  chatMessages: ChatMessage[];
+  gameLog: GameLogEntry[];
+
+  // UI state
+  isLoading: boolean;
+  lastUpdate: number | null;
+}
+
+export interface GameActions {
+  // Player management
+  setPlayer: (player: Player | null) => void;
+  updatePlayerStats: (stats: Partial<Player['stats']>) => void;
+  clearPlayer: () => void;
+
+  // Room management
+  setRoom: (room: Room | null) => void;
+  updateRoomOccupants: (occupants: string[]) => void;
+  clearRoom: () => void;
+
+  // Chat messages
+  addChatMessage: (message: ChatMessage) => void;
+  clearChatMessages: () => void;
+
+  // Game log
+  addGameLogEntry: (entry: GameLogEntry) => void;
+  clearGameLog: () => void;
+
+  // UI state
+  setLoading: (loading: boolean) => void;
+  updateLastUpdate: (timestamp: number) => void;
+
+  // State management
+  reset: () => void;
+}
+
+export interface GameSelectors {
+  // Computed properties
+  getPlayerStats: () => Player['stats'] | null;
+  getRoomOccupantsCount: () => number;
+  getRecentChatMessages: (count: number) => ChatMessage[];
+  getRecentGameLogEntries: (count: number) => GameLogEntry[];
+}
+
+type GameStore = GameState & GameActions & GameSelectors;
+
+/**
+ * **Zustand Store Usage Patterns:**
+ *
+ * **CORRECT Usage Examples:**
+ *
+ * ```tsx
+ * // ✅ GOOD: Using selectors with shallow comparison for arrays/objects
+ * import { shallow } from 'zustand/shallow';
+ *
+ * function ChatComponent() {
+ *   const chatMessages = useGameStore(state => state.chatMessages, shallow);
+ *   const player = useGameStore(state => state.player, shallow);
+ *   const addChatMessage = useGameStore(state => state.addChatMessage);
+ *
+ *   return <div>{chatMessages.map(msg => <div key={msg.id}>{msg.text}</div>)}</div>;
+ * }
+ *
+ * // ✅ GOOD: Using selectors for specific fields
+ * function PlayerStats() {
+ *   const playerStats = useGameStore(state => state.player?.stats);
+ *   return <div>DP: {playerStats?.current_dp}</div>;
+ * }
+ * ```
+ *
+ * **INCORRECT Usage Examples (Anti-patterns):**
+ *
+ * ```tsx
+ * // ❌ BAD: Subscribing to entire store
+ * function MyComponent() {
+ *   const gameState = useGameStore(); // Don't do this!
+ *   return <div>{gameState.player?.name}</div>;
+ * }
+ *
+ * // ❌ BAD: Calling selector functions inside selectors
+ * function MyComponent() {
+ *   const stats = useGameStore(state => state.getPlayerStats()); // Don't do this!
+ *   // Instead, use: const stats = useGameStore(state => state.player?.stats);
+ * }
+ *
+ * // ❌ BAD: Not using shallow for arrays/objects (causes unnecessary re-renders)
+ * function MyComponent() {
+ *   const chatMessages = useGameStore(state => state.chatMessages); // Missing shallow!
+ *   // Should be: const chatMessages = useGameStore(state => state.chatMessages, shallow);
+ * }
+ * ```
+ *
+ * **Note on Selector Functions:**
+ * - Selector functions like `getPlayerStats()`, `getRoomOccupantsCount()`, etc.
+ *   are kept for backward compatibility but should NOT be called inside component selectors.
+ * - Instead, access the underlying state directly (e.g., use `player?.stats` instead of `getPlayerStats()`).
+ */
+
+/**
+ * Maximum number of chat messages to keep in memory.
+ *
+ * **Memory Leak Prevention:**
+ * This limit prevents unbounded growth of the chatMessages array during long-running sessions.
+ * When the limit is reached, older messages are automatically trimmed (FIFO - oldest removed first).
+ *
+ * **Cleanup Pattern:**
+ * Components using this store should not need to manually clean up subscriptions as Zustand
+ * automatically handles subscription lifecycle. However, components should:
+ * - Use the store's built-in actions (addChatMessage, clearChatMessages) rather than
+ *   directly manipulating the array
+ * - Call clearChatMessages() when appropriate (e.g., on logout, session reset)
+ */
+const MAX_CHAT_MESSAGES = 100;
+
+/**
+ * Maximum number of game log entries to keep in memory.
+ *
+ * **Memory Leak Prevention:**
+ * This limit prevents unbounded growth of the gameLog array during long-running sessions.
+ * When the limit is reached, older entries are automatically trimmed (FIFO - oldest removed first).
+ *
+ * **Cleanup Pattern:**
+ * Components using this store should not need to manually clean up subscriptions as Zustand
+ * automatically handles subscription lifecycle. However, components should:
+ * - Use the store's built-in actions (addGameLogEntry, clearGameLog) rather than
+ *   directly manipulating the array
+ * - Call clearGameLog() when appropriate (e.g., on logout, session reset)
+ */
+const MAX_GAME_LOG_ENTRIES = 100;
+
+const createInitialState = (): GameState => ({
+  player: null,
+  room: null,
+  chatMessages: [],
+  gameLog: [],
+  isLoading: false,
+  lastUpdate: null,
+});
+
+export const useGameStore = create<GameStore>()(
+  devtools(
+    (set, get) => ({
+      ...createInitialState(),
+
+      // Player management actions
+      setPlayer: (player: Player | null) => set({ player, lastUpdate: Date.now() }, false, 'setPlayer'),
+
+      updatePlayerStats: (stats: Partial<Player['stats']>) =>
+        set(
+          state => ({
+            player: state.player ? { ...state.player, stats: { ...state.player.stats, ...stats } } : null,
+            lastUpdate: Date.now(),
+          }),
+          false,
+          'updatePlayerStats'
+        ),
+
+      clearPlayer: () => set({ player: null, lastUpdate: Date.now() }, false, 'clearPlayer'),
+
+      // Room management actions
+      setRoom: (room: Room | null) => set({ room, lastUpdate: Date.now() }, false, 'setRoom'),
+
+      updateRoomOccupants: (occupants: string[]) =>
+        set(
+          state => ({
+            room: state.room ? { ...state.room, occupants, occupant_count: occupants.length } : null,
+            lastUpdate: Date.now(),
+          }),
+          false,
+          'updateRoomOccupants'
+        ),
+
+      clearRoom: () => set({ room: null, lastUpdate: Date.now() }, false, 'clearRoom'),
+
+      // Chat messages actions
+      addChatMessage: (message: ChatMessage) =>
+        set(
+          state => {
+            const newMessages = [...state.chatMessages, message];
+            // Limit the number of messages to prevent memory issues
+            const limitedMessages = newMessages.slice(-MAX_CHAT_MESSAGES);
+            return {
+              chatMessages: limitedMessages,
+              lastUpdate: Date.now(),
+            };
+          },
+          false,
+          'addChatMessage'
+        ),
+
+      clearChatMessages: () => set({ chatMessages: [], lastUpdate: Date.now() }, false, 'clearChatMessages'),
+
+      // Game log actions
+      addGameLogEntry: (entry: GameLogEntry) =>
+        set(
+          state => {
+            const newEntries = [...state.gameLog, entry];
+            // Limit the number of entries to prevent memory issues
+            const limitedEntries = newEntries.slice(-MAX_GAME_LOG_ENTRIES);
+            return {
+              gameLog: limitedEntries,
+              lastUpdate: Date.now(),
+            };
+          },
+          false,
+          'addGameLogEntry'
+        ),
+
+      clearGameLog: () => set({ gameLog: [], lastUpdate: Date.now() }, false, 'clearGameLog'),
+
+      // UI state actions
+      setLoading: (loading: boolean) => set({ isLoading: loading }, false, 'setLoading'),
+
+      updateLastUpdate: (timestamp: number) => set({ lastUpdate: timestamp }, false, 'updateLastUpdate'),
+
+      // State management actions
+      reset: () => set(createInitialState(), false, 'reset'),
+
+      // Selectors
+      getPlayerStats: () => {
+        const state = get();
+        return state.player?.stats || null;
+      },
+
+      getRoomOccupantsCount: () => {
+        const state = get();
+        return state.room?.occupant_count || 0;
+      },
+
+      getRecentChatMessages: (count: number) => {
+        const state = get();
+        return state.chatMessages.slice(-count);
+      },
+
+      getRecentGameLogEntries: (count: number) => {
+        const state = get();
+        return state.gameLog.slice(-count);
+      },
+    }),
+    {
+      name: 'game-store',
+      enabled: import.meta.env.MODE === 'development',
+      partialize: (state: GameStore) => ({
+        player: state.player,
+        room: state.room,
+        lastUpdate: state.lastUpdate,
+      }),
+    }
+  )
+);

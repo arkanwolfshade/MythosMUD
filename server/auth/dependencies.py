@@ -5,8 +5,9 @@ This module provides dependency injection functions for
 authentication and authorization in FastAPI endpoints.
 """
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, status
 
+from ..exceptions import LoggedHTTPException
 from ..models.user import User
 from .invites import InviteManager, get_invite_manager
 from .users import get_current_active_user, get_current_user
@@ -18,7 +19,11 @@ async def get_current_superuser(
     """Get current superuser or raise 403."""
 
     if not current_user.is_superuser:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="The user doesn't have enough privileges")
+        raise LoggedHTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="The user doesn't have enough privileges",
+            context=None,
+        )
     return current_user
 
 
@@ -28,7 +33,11 @@ async def get_current_verified_user(
     """Get current verified user or raise 403."""
 
     if not current_user.is_verified:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="The user is not verified")
+        raise LoggedHTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="The user is not verified",
+            context=None,
+        )
     return current_user
 
 
@@ -40,8 +49,14 @@ async def require_invite_code(
 
     try:
         await invite_manager.validate_invite(invite_code)
-    except HTTPException as err:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired invite code") from err
+    except LoggedHTTPException as err:
+        raise err
+    except Exception as err:
+        raise LoggedHTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired invite code",
+            context=None,
+        ) from err
 
 
 async def get_optional_current_user(

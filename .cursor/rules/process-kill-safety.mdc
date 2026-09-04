@@ -1,0 +1,32 @@
+---
+alwaysApply: true
+---
+
+# Process termination (PowerShell and agents)
+
+## Mandatory policy
+
+- **Never** terminate a process unless it is **provably tied to this MythosMUD worktree** (canonical repo root appears in
+  `Win32_Process` `ExecutablePath` or `CommandLine`, as implemented in `scripts/MythosMudProcessScope.ps1`).
+- **Do not** use `Stop-Process`, `taskkill`, or broad name-only filters (for example all `python.exe` or all `node.exe`)
+  without that project-scope check.
+- **Never** use `taskkill` on `node.exe`. Prefer stopping the dev server from the terminal that owns it, or project
+  scripts that enforce repo scoping.
+- **Do not** kill processes belonging to **other** repositories, global services, or unrelated NATS/Python servers even
+  if they match a generic pattern or port (unless the scope test passes for **this** repo).
+- **Never** stop **jcodemunch** (indexer/watch), **Model Context Protocol** servers, **Cursor MCP** host processes, or
+  **Cursor plugin** runners. Repo-root matching alone is not enough (those tools often embed the workspace path). Use
+  `Test-MythosMudProtectedDevToolProcess` in `scripts/MythosMudProcessScope.ps1`; extend `Get-MythosMudProtectedDevToolPattern`
+  when new tool patterns appear.
+
+## Scripts
+
+- Process-tree shutdown must go through `Stop-MythosMudProjectProcessTree` after `Test-MythosMudProjectProcess` (or rely
+  on those helpers inside `stop_server.ps1` / `nats_manager.ps1` / `start_server.ps1`). Protected dev-tool processes are
+  skipped even when the repo path appears on their command line.
+- Optional override: set `MYTHOSMUD_REPO_ROOT` to an existing directory when the repo root must be pinned explicitly.
+
+## Agents
+
+- When editing or adding PowerShell that stops processes, **reuse** `MythosMudProcessScope.ps1` or extend it; do not add
+  parallel kill logic.

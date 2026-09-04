@@ -1,50 +1,381 @@
 # MythosMUD Makefile
 
-.PHONY: help clean lint format test coverage build install run semgrep
+# Project root = directory containing this Makefile (main clone or linked worktree).
+# Do not use CURDIR + "MythosMUD-" substring: paths like .../MythosMUD-worktrees/<slug> match
+# that pattern and incorrectly set PROJECT_ROOT to the worktrees parent (breaking targets).
+_THIS_MAKEFILE := $(abspath $(lastword $(MAKEFILE_LIST)))
+PROJECT_ROOT := $(dir $(_THIS_MAKEFILE))
+PROJECT_ROOT := $(PROJECT_ROOT:%/=%)
 
-# Determine project root for worktree contexts
-PROJECT_ROOT := $(shell python -c "import os; print(os.path.dirname(os.getcwd()) if 'MythosMUD-' in os.getcwd() else os.getcwd())")
+# Common command patterns
+# Use uv-run interpreter so Windows does not spawn bare `python` (pyenv-win shims / PATH gaps
+# trigger "Select an app to open 'python'").
+PYTHON := cd $(PROJECT_ROOT) && uv run python
+UV := cd $(PROJECT_ROOT) && uv run
+# PowerShell 7+ (pwsh); avoids Windows PowerShell 5.1 for gallery/modules and matches project rules
+POWERSHELL := cd $(PROJECT_ROOT) && pwsh -NoProfile -ExecutionPolicy Bypass -File
+
+# When Make's SHELL is Git Bash or WSL bash, `npm` may resolve to a Windows path that bash
+# cannot execute (/bin/bash: C:/Program Files/nodejs/npm: No such file or directory). Run via
+# PowerShell on Windows so the Windows Node/npm install is used. Non-Windows keeps plain npm.
+ifeq ($(OS),Windows_NT)
+define run_npm_client
+	cd $(PROJECT_ROOT) && pwsh -NoProfile -ExecutionPolicy Bypass -Command "Set-Location -LiteralPath (Join-Path '$(PROJECT_ROOT)' 'client'); npm run $(1); exit $$LASTEXITCODE"
+endef
+else
+define run_npm_client
+	cd $(PROJECT_ROOT)/client && npm run $(1)
+endef
+endif
+
+# Pytest common options
+# Note: -n auto is already in pytest.ini addopts, so we don't duplicate it here
+PYTEST_OPTS := --maxfail=10 --tb=short
+# Coverage options: pytest-cov automatically aggregates worker coverage when used with pytest-xdist
+# The --cov option must be specified, and pytest-cov will handle worker aggregation
+PYTEST_COV_OPTS := --cov=server --cov-report=html --cov-report=term-missing --cov-report=xml
+
+# PHONY targets
+.PHONY: help clean install build run run-production apply-procedures
+.PHONY: lint lint-sqlalchemy lint-imports format mypy
+.PHONY: bandit pylint ruff sqlfluff sqlint vulture
+.PHONY: hadolint shellcheck psscriptanalyzer
+.PHONY: stylelint markdownlint jackson-linter
+.PHONY: grype lizard quality-fragmentation-guard
+.PHONY: codacy-tools
+.PHONY: setup-test-env setup-test-env-force check-postgresql setup-postgresql-test-db bootstrap-e2e-database ensure-e2e-database verify-schema
+.PHONY: openapi-spec sync-obsidian-graphify
+.PHONY: test test-coverage test-client test-client-e2e test-playwright test-client-coverage test-server test-server-coverage test-ci
+.PHONY: test-comprehensive test-e2e coverage all
+
+# ============================================================================
+# HELP
+# ============================================================================
 
 help:
-	@echo "Available targets:"
-	@echo "  clean     - Remove build, dist, and cache files"
-	@echo "  lint      - Run ruff (Python) and ESLint (Node)"
-	@echo "  format    - Run ruff format (Python) and Prettier (Node)"
-	@echo "  test      - Run Python and Node tests (includes test DB cleanup)"
-	@echo "  coverage  - Run Python tests with coverage"
-	@echo "  build     - Build the client (Node)"
-	@echo "  install   - Install dependencies (worktree-aware)"
-	@echo "  semgrep   - Run Semgrep static analysis (security and best practices)"
+	@echo "MythosMUD Development Commands"
+	@echo ""
+	@echo "Code Quality:"
+	@echo "  lint            - Run ruff (Python) and ESLint (Node)"
+	@echo "  lint-sqlalchemy - Run SQLAlchemy async pattern linter"
+	@echo "  format          - Run ruff format (Python) and Prettier (Node)"
+	@echo "  mypy            - Run mypy static type checking"
+	@echo "  vulture         - Dead code check (server + vulture_allowlist; same as CI)"
+	@echo ""
+	@echo "Codacy Tools (Python):"
+	@echo "  bandit          - Python security linter"
+	@echo "  pylint         - Python code quality linter"
+	@echo "  sqlfluff       - SQL linting and formatting"
+	@echo "  sqlint         - SQL linting"
+	@echo ""
+	@echo "Codacy Tools (Other):"
+	@echo "  hadolint       - Dockerfile linter"
+	@echo "  shellcheck     - Shell script linter"
+	@echo "  psscriptanalyzer - PowerShell script linter"
+	@echo "  stylelint      - CSS linter"
+	@echo "  markdownlint   - Markdown linter (use ARGS='--fix' to auto-fix)"
+	@echo "  jackson-linter - JSON linter"
+	@echo "  grype          - Dependency SCA from project root (excludes E2E harness trees; not in make all)"
+	@echo "  lizard         - Code complexity analyzer"
+	@echo "  quality-fragmentation-guard - Run local PR fragmentation/complexity guard"
+	@echo "  codacy-tools   - Run all Codacy tools (fail-fast)"
+	@echo ""
+	@echo "Database Setup:"
+	@echo "  setup-test-env         - Create test environment files"
+	@echo "  setup-test-env-force  - Overwrite .env.unit_test from template (PostgreSQL)"
+	@echo "  check-postgresql       - Verify PostgreSQL connectivity"
+	@echo "  setup-postgresql-test-db - Create PostgreSQL test database (mythos_unit via .env.unit_test)"
+	@echo "  bootstrap-e2e-database   - Force-recreate mythos_e2e (DDL + DML + E2E users)"
+	@echo "  ensure-e2e-database      - Bootstrap mythos_e2e if missing or professions empty"
+	@echo "  verify-schema          - Verify db/mythos_<env>_ddl.sql matches database"
+	@echo ""
+	@echo "Documentation:"
+	@echo "  openapi-spec          - Generate OpenAPI spec to docs/openapi/openapi.json"
+	@echo "  openapi-check          - Regenerate OpenAPI spec + tag table, fail if either drifted"
+	@echo "  sync-obsidian-graphify - Sync graphify community wiki into Obsidian LLM vault"
+	@echo ""
+	@echo "Testing:"
+	@echo "  test                  - Run all tests (client + server; fail-fast)"
+	@echo "  test-coverage         - Run all tests with coverage (fail-fast)"
+	@echo "  test-client           - Run client unit tests only (no coverage)"
+	@echo "  test-client-e2e       - Run client E2E tests (Playwright)"
+	@echo "  test-playwright   - Run client E2E + server integration tests (requires running server; mucks with runtime data)"
+	@echo "  test-client-coverage  - Run client unit tests with coverage"
+	@echo "  test-server           - Run server tests only (no coverage)"
+	@echo "  test-server-coverage  - Run server tests with coverage"
+	@echo "  test-ci               - CI/CD test suite (enforces coverage thresholds)"
+	@echo "  test-comprehensive    - Alias for test-ci"
+	@echo "  test-e2e              - Alias for test-client-e2e"
+	@echo ""
+	@echo "Build & Deploy:"
+	@echo "  clean             - Remove build, dist, and cache files"
+	@echo "  install           - Install dependencies (worktree-aware)"
+	@echo "  build             - Apply procedures, then build the client (Node)"
+	@echo "  apply-procedures  - Apply db/procedures/*.sql to target databases"
+	@echo "  run               - Start the development server (Uvicorn)"
+	@echo "  run-production    - Start the server for production (Gunicorn + Uvicorn workers)"
+	@echo ""
+	@echo "Note: Server integration tests run under test-playwright (with running server). Unit only: make test-server."
+	@echo "  uv run pytest -m unit server/tests   # unit only"
+	@echo "  See TESTING.md for details."
 
-clean:
-	cd $(PROJECT_ROOT) && python scripts/clean.py
+# ============================================================================
+# CODE QUALITY
+# ============================================================================
 
+# Ruff command in scripts/lint.py matches CI (.github/workflows/ci.yml "Lint with ruff")
+# so local make lint fails on the same issues as CI
 lint:
-	cd $(PROJECT_ROOT) && python scripts/lint.py
+	$(PYTHON) scripts/lint.py
+	$(PYTHON) scripts/check_logging_consistency.py
+	$(PYTHON) scripts/check_asyncio_run_guardrails.py
+	$(PYTHON) scripts/lint_sql_guardrails.py
+	$(PYTHON) scripts/lint_raw_sql_in_python.py
+	$(PYTHON) scripts/lint_container_get_instance.py
+
+lint-sqlalchemy:
+	$(PYTHON) scripts/lint_sqlalchemy_async.py
+
+# ADR-001 layer-direction contracts (models/events/persistence must not import services/game/npc);
+# see .importlinter. CI runs this via pre-commit (see ci.yml "Import layer direction guard").
+lint-imports:
+	@echo "ADR-001: import-linter fails fast on layer-direction violations (see .importlinter)."
+	$(PYTHON) scripts/lint_imports.py
+
+# CRITICAL: CI/CD uses the same command (pre-commit run mypy --all-files)
+# If you change this, update .github/workflows/ci.yml to match
+mypy:
+	$(UV) pre-commit run mypy --all-files
 
 format:
-	cd $(PROJECT_ROOT) && python scripts/format.py
+	$(PYTHON) scripts/format.py
 
+# ============================================================================
+# CODACY TOOLS - Python
+# ============================================================================
+
+bandit:
+	$(PYTHON) scripts/bandit.py
+
+pylint:
+	@echo "Pylint: any E/W/F/C/R finding fails this target (and make all)."
+	$(PYTHON) scripts/pylint.py
+
+sqlfluff:
+	$(PYTHON) scripts/sqlfluff.py
+
+sqlint:
+	$(PYTHON) scripts/sqlint.py
+
+# Lightweight guardrails for hand-maintained SQL (select *, NOT IN subquery)
+lint-sql-guardrails:
+	$(PYTHON) scripts/lint_sql_guardrails.py
+
+# Forbid asyncio.run() in server/ (AnyIO best practice; use anyio.run() at entry points)
+lint-asyncio-run-guardrails:
+	$(PYTHON) scripts/check_asyncio_run_guardrails.py
+
+# ============================================================================
+# CODACY TOOLS - Other Languages
+# ============================================================================
+
+hadolint:
+	$(POWERSHELL) scripts/hadolint.ps1
+
+shellcheck:
+	$(POWERSHELL) scripts/shellcheck.ps1
+
+psscriptanalyzer:
+	$(POWERSHELL) scripts/psscriptanalyzer.ps1
+
+stylelint:
+	$(PYTHON) scripts/stylelint.py
+
+markdownlint:
+	$(PYTHON) scripts/markdownlint.py $(ARGS)
+
+jackson-linter:
+	$(PYTHON) scripts/jackson_linter.py
+
+grype:
+	$(PYTHON) scripts/grype.py
+
+lizard:
+	$(PYTHON) scripts/lizard.py
+
+quality-fragmentation-guard:
+	@echo "Running quality fragmentation guard..."
+	$(PYTHON) scripts/run_quality_fragmentation_guard.py
+
+# CRITICAL: CI runs the same command (.github/workflows/ci.yml "Dead code check (vulture)")
+# Config: pyproject.toml [tool.vulture], allowlist: vulture_allowlist.py
+vulture:
+	$(UV) vulture
+
+# Run all Codacy tools (except those already in lint/format).
+# Grype is standalone: make grype (project-root SCA; not part of E2E or make all).
+# Fail-fast: stop on first non-zero exit or traceback in stage output (see run_make_stages.py).
+CODACY_TOOL_STAGES := bandit pylint sqlfluff hadolint shellcheck psscriptanalyzer \
+	stylelint markdownlint jackson-linter lizard vulture
+codacy-tools:
+	@$(PYTHON) scripts/run_make_stages.py --make "$(MAKE)" -- $(CODACY_TOOL_STAGES)
+
+# ============================================================================
+# DATABASE SETUP
+# ============================================================================
+
+setup-test-env:
+	@echo "Setting up test environment files..."
+	$(POWERSHELL) scripts/setup_test_environment.ps1
+
+# Overwrite .env.unit_test from env.unit_test.example (use when file has stale SQLite URL)
+setup-test-env-force:
+	@echo "Refreshing test environment from template (overwrite)..."
+	$(POWERSHELL) scripts/setup_test_environment.ps1 -Force
+
+check-postgresql:
+	@echo "Checking PostgreSQL connectivity..."
+	$(POWERSHELL) scripts/check_postgresql.ps1
+
+setup-postgresql-test-db:
+	@echo "Setting up PostgreSQL test database..."
+	$(POWERSHELL) scripts/setup_postgresql_test_db.ps1
+
+bootstrap-e2e-database:
+	@echo "Bootstrapping mythos_e2e (force recreate, DML, E2E users)..."
+	$(POWERSHELL) scripts/bootstrap_e2e_database.ps1
+
+ensure-e2e-database:
+	@echo "Ensuring mythos_e2e has reference seed (professions)..."
+	$(POWERSHELL) scripts/ensure_e2e_database.ps1
+
+verify-schema:
+	@echo "Verifying environment DDL matches database (from .env.local or .env)..."
+	$(POWERSHELL) scripts/verify_schema_match.ps1
+
+# ============================================================================
+# DOCUMENTATION
+# ============================================================================
+
+openapi-spec:
+	@echo "Generating OpenAPI spec..."
+	$(UV) python scripts/generate_openapi_spec.py
+
+# Regenerates the OpenAPI spec + tag table and fails if either drifted from what's committed.
+.PHONY: openapi-check
+openapi-check:
+	$(UV) python scripts/check_openapi_drift.py
+
+# Sync graphify community wiki into data/MythosMUD-Obsidian/raw/graphify/
+sync-obsidian-graphify:
+	@echo "Syncing graphify wiki into Obsidian LLM vault..."
+	$(POWERSHELL) scripts/sync_obsidian_graphify.ps1
+
+
+
+# ============================================================================
+# TESTING
+# ============================================================================
+
+test-client:
+	@echo "Running client unit tests (no coverage)..."
+	$(call run_npm_client,test:unit:run)
+
+test-client-e2e:
+	@echo "Running client E2E tests (Playwright)..."
+	$(call run_npm_client,test)
+
+# Integration tests (server pytest -m integration) run here: they muck with runtime data
+# and belong in the same flow as Playwright (running server context). They are NOT run by make test-server.
+test-playwright: setup-test-env ensure-e2e-database
+	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_e2e
+	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_e2e
+	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_e2e
+	$(POWERSHELL) scripts/apply_aggression_level_migration.ps1 -TargetDbs mythos_e2e
+	$(POWERSHELL) scripts/apply_dialogue_migration.ps1 -TargetDbs mythos_e2e
+	@echo "Running Playwright E2E then integration tests (fails fast on Playwright/bootstrap errors)..."
+	$(POWERSHELL) scripts/run_test_playwright.ps1 $(PYTEST_OPTS)
+
+test-client-coverage:
+	@echo "Running client unit tests with coverage..."
+	$(call run_npm_client,test:coverage)
+
+test-server: setup-test-env setup-postgresql-test-db
+	@echo "Running server tests (no coverage)..."
+	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_unit
+	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_unit
+	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_unit
+	$(POWERSHELL) scripts/apply_aggression_level_migration.ps1 -TargetDbs mythos_unit
+	$(POWERSHELL) scripts/apply_dialogue_migration.ps1 -TargetDbs mythos_unit
+	$(UV) pytest server/tests/ -m "not integration" $(PYTEST_OPTS)
+
+test-server-coverage: setup-test-env setup-postgresql-test-db
+	@echo "Running server tests with coverage..."
+	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_unit
+	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_unit
+	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_unit
+	$(POWERSHELL) scripts/apply_aggression_level_migration.ps1 -TargetDbs mythos_unit
+	$(POWERSHELL) scripts/apply_dialogue_migration.ps1 -TargetDbs mythos_unit
+	$(UV) pytest server/tests/ -m "not integration" $(PYTEST_OPTS) $(PYTEST_COV_OPTS)
+
+# Fail-fast multi-stage runners (loud banner + skip remaining stages on first failure).
 test:
-	cd $(PROJECT_ROOT) && python scripts/test.py
+	@$(PYTHON) scripts/run_make_stages.py --make "$(MAKE)" -- test-client test-server
 
-coverage:
-	cd $(PROJECT_ROOT) && python scripts/coverage.py
+test-coverage:
+	@$(PYTHON) scripts/run_make_stages.py --make "$(MAKE)" -- test-client-coverage test-server-coverage
 
-build:
-	cd $(PROJECT_ROOT) && python scripts/build.py
+# CI/CD test suite (with coverage, enforces thresholds)
+# Runs in Docker locally to match CI/CD Ubuntu environment
+# Runs directly when already in CI/CD environment (detected via CI or GITHUB_ACTIONS env vars)
+# CI/CD test suite (with coverage, enforces thresholds)
+# run_test_ci.py automatically detects and uses .venv-ci or .venv if available
+# This ensures local test-ci matches CI environment behavior
+test-ci:
+	$(PYTHON) scripts/run_test_ci.py
+
+# Legacy aliases for docs / agent muscle memory
+test-comprehensive: test-ci
+test-e2e: test-client-e2e
+coverage: test-coverage
+
+# ============================================================================
+# BUILD & DEPLOY
+# ============================================================================
+
+clean:
+	$(PYTHON) scripts/clean.py
 
 install:
-	cd $(PROJECT_ROOT) && python scripts/install.py
+	$(PYTHON) scripts/install.py
 
-semgrep:
-	cd $(PROJECT_ROOT) && python scripts/semgrep.py
+build: apply-procedures
+	$(PYTHON) scripts/build.py
+
+apply-procedures:
+	@echo "Applying PostgreSQL procedures to mythos_dev..."
+	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_dev
 
 run:
-	cd $(PROJECT_ROOT) && python scripts/run.py
+	$(PYTHON) scripts/run.py
+
+# Production: Gunicorn with Uvicorn workers (see docs/deployment.md)
+# Default port 8000; for another port run the gunicorn command with -b 0.0.0.0:PORT
+run-production:
+	$(UV) gunicorn server.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000
+
+# ============================================================================
+# COMPOSITE TARGETS
+# ============================================================================
+
+# Flattened stages so FAIL-FAST names the exact leaf target (not a nested composite).
+# Tools must exit non-zero on real failures (pylint: any E/W/F/C/R finding). Tracebacks
+# still fail even on exit 0. Grepping tool "WARNING" strings is not a fail condition here.
+ALL_STAGES := format lint-imports mypy lint lint-sqlalchemy \
+	$(CODACY_TOOL_STAGES) \
+	quality-fragmentation-guard check-postgresql build openapi-spec openapi-check \
+	test-client-coverage test-server-coverage \
+	sync-obsidian-graphify
 
 all:
-	cd $(PROJECT_ROOT) && make format
-	cd $(PROJECT_ROOT) && make lint
-	cd $(PROJECT_ROOT) && make coverage
-	cd $(PROJECT_ROOT) && make build
+	@$(PYTHON) scripts/run_make_stages.py --make "$(MAKE)" -- $(ALL_STAGES)

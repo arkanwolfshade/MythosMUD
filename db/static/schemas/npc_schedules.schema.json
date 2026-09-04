@@ -1,0 +1,45 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://mythosmud.org/schemas/npc_schedules.schema.json",
+	"title": "NPC Schedules",
+	"type": "object",
+	"required": ["schedules"],
+	"properties": {
+		"schedules": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": ["id", "name", "category", "start_hour", "end_hour", "days", "applies_to", "effects"],
+				"properties": {
+					"id": { "type": "string", "minLength": 1 },
+					"name": { "type": "string", "minLength": 1 },
+					"category": { "type": "string", "minLength": 1 },
+					"start_hour": { "type": "integer", "minimum": 0, "maximum": 24 },
+					"end_hour": { "type": "integer", "minimum": 0, "maximum": 24 },
+					"days": {
+						"type": "array",
+						"items": { "type": "string", "minLength": 1 },
+						"minItems": 1,
+						"uniqueItems": true
+					},
+					"applies_to": {
+						"type": "array",
+						"items": { "type": "string", "minLength": 1 },
+						"minItems": 1,
+						"uniqueItems": true
+					},
+					"effects": {
+						"type": "array",
+						"items": { "type": "string", "minLength": 1 },
+						"minItems": 1,
+						"uniqueItems": true
+					},
+					"notes": { "type": "string" }
+				},
+				"additionalProperties": false
+			},
+			"minItems": 1
+		}
+	},
+	"additionalProperties": false
+}

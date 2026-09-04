@@ -1,0 +1,369 @@
+/**
+ * Browser-side helpers for Playwright waitForFunction / page.evaluate().
+ * Each export must be self-contained: Playwright serializes only the export body into the page.
+ * Plain JavaScript so Codacy Lizard can parse complexity (TS syntax confuses lizard 1.17.x).
+ */
+
+const LOGIN_SUBMIT_BUTTON_LABELS = ['Enter the Void', 'Login'];
+
+function isValidElement(el) {
+  return Boolean(el && el instanceof Element);
+}
+
+function computedStyleHidesElement(style) {
+  if (style.display === 'none') {
+    return true;
+  }
+  if (style.visibility === 'hidden') {
+    return true;
+  }
+  return Number(style.opacity) === 0;
+}
+
+function isElementVisible(el) {
+  if (!isValidElement(el)) {
+    return false;
+  }
+  let current = el;
+  while (current && current instanceof Element) {
+    const style = window.getComputedStyle(current);
+    if (computedStyleHidesElement(style)) {
+      return false;
+    }
+    current = current.parentElement;
+  }
+  const rects = el.getClientRects();
+  if (rects.length > 0) {
+    return true;
+  }
+  return el.isConnected;
+}
+
+function getBodyInnerText() {
+  const body = document.body;
+  if (!body) {
+    return '';
+  }
+  return body.innerText ?? body.textContent ?? '';
+}
+
+function hasUsernameInputInBrowser() {
+  const inputs = document.querySelectorAll('input');
+  for (const input of inputs) {
+    if (!isElementVisible(input)) {
+      continue;
+    }
+    const placeholder = input.getAttribute('placeholder');
+    if (placeholder && placeholder.toLowerCase().indexOf('username') >= 0) {
+      return true;
+    }
+    const name = input.getAttribute('name');
+    if (name && name.toLowerCase().indexOf('username') >= 0) {
+      return true;
+    }
+    if (input.getAttribute('data-testid') === 'username-input') {
+      return true;
+    }
+  }
+  return false;
+}
+
+function buttonHasLoginSubmitLabel(text) {
+  if (!text) {
+    return false;
+  }
+  for (const label of LOGIN_SUBMIT_BUTTON_LABELS) {
+    if (text.includes(label)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function hasLoginSubmitButtonInBrowser() {
+  return Array.from(document.querySelectorAll('button')).some(button => {
+    if (!isElementVisible(button)) {
+      return false;
+    }
+    return buttonHasLoginSubmitLabel(button.textContent);
+  });
+}
+
+function isLoginFormVisibleInBrowser() {
+  return hasUsernameInputInBrowser() && hasLoginSubmitButtonInBrowser();
+}
+
+function fieldHasCommandPlaceholder(field) {
+  const tag = field.tagName;
+  if (tag !== 'INPUT' && tag !== 'TEXTAREA') {
+    return false;
+  }
+  const placeholder = field.getAttribute('placeholder');
+  return placeholder !== null && placeholder.toLowerCase().indexOf('command') >= 0;
+}
+
+function hasCommandInputInBrowser() {
+  const byTestId = document.querySelector('[data-testid="command-input"]');
+  if (byTestId !== null && isElementVisible(byTestId)) {
+    return true;
+  }
+  const fields = document.querySelectorAll('input, textarea');
+  for (const field of fields) {
+    if (!isElementVisible(field)) {
+      continue;
+    }
+    if (fieldHasCommandPlaceholder(field)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function elementTextIncludesGameInfo(text) {
+  return text !== null && text.indexOf('Game Info') >= 0;
+}
+
+function hasGameInfoPanelInBrowser() {
+  const byTestId = document.querySelector('[data-testid="game-info-panel"]');
+  if (byTestId !== null && isElementVisible(byTestId)) {
+    return true;
+  }
+  const elements = document.querySelectorAll('*');
+  for (const el of elements) {
+    if (!isElementVisible(el)) {
+      continue;
+    }
+    if (elementTextIncludesGameInfo(el.textContent)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function hasBodyTextGameUiIndicators(bodyText) {
+  const hasPlayerHeader = bodyText.includes('Player:') && !bodyText.includes('Enter the Void');
+  const hasMythosTime = bodyText.includes('Mythos Time');
+  const hasRoomContent = bodyText.includes('Occupants') || bodyText.includes('Location');
+  return hasPlayerHeader || hasMythosTime || hasRoomContent;
+}
+
+function hasPrimaryGameUiMarkersInBrowser() {
+  const gameTerminal = document.querySelector('[data-testid="game-terminal"]');
+  return (
+    hasCommandInputInBrowser() ||
+    hasGameInfoPanelInBrowser() ||
+    (gameTerminal !== null && isElementVisible(gameTerminal))
+  );
+}
+
+function evaluateGameUiLoaded() {
+  if (hasCommandInputInBrowser()) {
+    return true;
+  }
+  if (hasGameInfoPanelInBrowser()) {
+    return true;
+  }
+  const bodyText = getBodyInnerText();
+  if (hasBodyTextGameUiIndicators(bodyText)) {
+    return true;
+  }
+  if (isLoginFormVisibleInBrowser()) {
+    return false;
+  }
+  return hasPrimaryGameUiMarkersInBrowser();
+}
+
+export function isGameUiLoadedInBrowser() {
+  return evaluateGameUiLoaded();
+}
+
+export function captureGameUiDiagnosticsInBrowser() {
+  const bodyText = getBodyInnerText();
+  return {
+    isGameUiLoaded: evaluateGameUiLoaded(),
+    hasVisibleCommandInput: hasCommandInputInBrowser(),
+    hasVisibleGameInfoPanel: hasGameInfoPanelInBrowser(),
+    hasVisibleLoginForm: isLoginFormVisibleInBrowser(),
+    hasBodyGameUiIndicators: hasBodyTextGameUiIndicators(bodyText),
+    bodySnippet: bodyText.slice(0, 400),
+  };
+}
+
+function elementShowsConnectedStatus(text) {
+  if (!text) {
+    return false;
+  }
+  if (text.trim() === 'Connected') {
+    return true;
+  }
+  return text.includes('Connected') && !text.includes('linkdead');
+}
+
+export function hasConnectedStatusInBrowser() {
+  const statusElements = Array.from(document.querySelectorAll('*'));
+  return statusElements.some(el => {
+    if (!isElementVisible(el)) {
+      return false;
+    }
+    return elementShowsConnectedStatus(el.textContent);
+  });
+}
+
+function hasTickMessageInBrowser() {
+  const gameInfoElements = Array.from(document.querySelectorAll('*'));
+  return gameInfoElements.some(el => {
+    if (!isElementVisible(el)) {
+      return false;
+    }
+    const text = el.textContent;
+    return text !== null && text.indexOf('[Tick') >= 0 && text.indexOf(']') >= 0;
+  });
+}
+
+function isEmptyGameInfoPanelText(text) {
+  return text.includes('No messages to display') || text.includes('No messages yet');
+}
+
+function hasGameInfoAnyMessageInBrowser() {
+  const gameInfoPanel = Array.from(document.querySelectorAll('*')).find(el => {
+    if (!isElementVisible(el)) {
+      return false;
+    }
+    return elementTextIncludesGameInfo(el.textContent);
+  });
+  const panelText = gameInfoPanel ? gameInfoPanel.textContent : null;
+  if (!panelText) {
+    return false;
+  }
+  return !isEmptyGameInfoPanelText(panelText);
+}
+
+function hasRoomStateIndicatorsInBrowser() {
+  const bodyText = getBodyInnerText();
+  const hasOccupants = bodyText.includes('Occupants');
+  const hasExitsOrDescription = bodyText.includes('Exits:') || bodyText.includes('Room Description');
+  return hasOccupants && hasExitsOrDescription;
+}
+
+export function hasRoomSubscriptionInBrowser() {
+  return hasTickMessageInBrowser() || hasGameInfoAnyMessageInBrowser() || hasRoomStateIndicatorsInBrowser();
+}
+
+export function hasExpectedOccupantCountInBrowser(expected) {
+  const bodyText = getBodyInnerText();
+  const occupantsMatch = bodyText.match(/Occupants\s*\((\d+)\)/);
+  if (occupantsMatch) {
+    return parseInt(occupantsMatch[1], 10) >= expected;
+  }
+  const playersMatch = bodyText.match(/Players\s*\((\d+)\)/);
+  if (playersMatch) {
+    return parseInt(playersMatch[1], 10) >= expected;
+  }
+  return false;
+}
+
+export function hasOtherPlayerNamesInBrowser(names) {
+  // data-names survives overflow clipping; innerText of a header-height Occupants panel does not.
+  const root = document.querySelector('[data-testid="occupants-other-players"]');
+  const listed = root?.getAttribute('data-names');
+  if (listed !== null && listed !== undefined) {
+    return names.every(name => listed.includes(name));
+  }
+  const bodyText = document.body ? (document.body.textContent ?? '') : '';
+  return names.every(name => bodyText.includes(name));
+}
+
+export function isDisconnectedBannerVisibleInBrowser() {
+  return !getBodyInnerText().includes('You are disconnected and cannot perform actions');
+}
+
+// Presence-event recorder. The Occupants panel is a projection, so a bare panel snapshot cannot
+// say whether the server omitted a player or the projector dropped one. Recording the raw
+// room_occupants / room_state payloads as they arrive answers both from a single failure.
+const PRESENCE_EVENT_LIMIT = 25;
+const presenceEvents = [];
+
+// Lizard counts each `?` in `??` as a decision; coalesce keeps presenceEventFrom under the CCN limit.
+function coalesce() {
+  for (let i = 0; i < arguments.length; i++) {
+    const value = arguments[i];
+    if (value !== undefined && value !== null) {
+      return value;
+    }
+  }
+  return null;
+}
+
+function presenceEventFrom(parsed) {
+  const data = coalesce(parsed.data, {});
+  const room = coalesce(data.room, {});
+  return {
+    eventType: parsed.event_type,
+    sequence: coalesce(parsed.sequence_number),
+    roomId: coalesce(parsed.room_id, room.id),
+    players: coalesce(data.players, room.players),
+    npcs: coalesce(data.npcs, room.npcs),
+    count: coalesce(data.count, data.occupant_count, room.occupant_count),
+  };
+}
+
+function recordPresenceEvent(raw) {
+  let parsed;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return;
+  }
+  if (!parsed || (parsed.event_type !== 'room_occupants' && parsed.event_type !== 'room_state')) {
+    return;
+  }
+  presenceEvents.push(presenceEventFrom(parsed));
+  if (presenceEvents.length > PRESENCE_EVENT_LIMIT) {
+    presenceEvents.shift();
+  }
+}
+
+export function installPresenceRecorderInBrowser() {
+  const NativeWebSocket = window.WebSocket;
+  if (!NativeWebSocket || NativeWebSocket.__mythosE2ePatched) {
+    return;
+  }
+  class RecordingWebSocket extends NativeWebSocket {
+    constructor(url, protocols) {
+      super(url, protocols);
+      this.addEventListener('message', event => {
+        if (typeof event.data === 'string') {
+          recordPresenceEvent(event.data);
+        }
+      });
+    }
+  }
+  RecordingWebSocket.__mythosE2ePatched = true;
+  window.WebSocket = RecordingWebSocket;
+}
+
+export function getPresenceEventsInBrowser() {
+  return presenceEvents.slice();
+}
+
+export function captureOccupantsSnapshotInBrowser() {
+  const bodyText = getBodyInnerText();
+  const occupantsMatch = bodyText.match(/Occupants\s*\((\d+)\)/);
+  const playersMatch = bodyText.match(/Players\s*\((\d+)\)/);
+  const occupantLine = bodyText.split('\n').find(line => line.includes('Occupants') || line.includes('Players ('));
+  const occupantsSection = occupantLine !== undefined ? occupantLine.slice(0, 200) : undefined;
+  // The header count is players + NPCs, while data-names is players only. Report both so a
+  // failure distinguishes "no presence update arrived" from "count and player list disagree".
+  const panel = document.querySelector('[data-testid="occupants-other-players"]');
+  const panelNames = panel?.getAttribute('data-names');
+  return {
+    hasOccupantsMatch: !!occupantsMatch,
+    occupantsCount: occupantsMatch ? parseInt(occupantsMatch[1], 10) : null,
+    hasPlayersMatch: !!playersMatch,
+    playersCount: playersMatch ? parseInt(playersMatch[1], 10) : null,
+    occupantsSnippet: occupantsSection ?? 'not found',
+    panelFound: panel !== null,
+    panelNames: panelNames ?? null,
+    hasLinkdead: bodyText.includes('(linkdead)'),
+  };
+}

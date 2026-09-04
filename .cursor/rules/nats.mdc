@@ -1,0 +1,169 @@
+---
+description: Comprehensive best practices for developing robust and scalable applications using NATS messaging system. Covers code organization, performance optimization, security considerations, testing strategies, and common pitfalls.
+globs: *.py,*.js,*.go,*.java,*.c,*.cpp,*.rb,*.php,*.ts,*.rs,*.kt,*.scala
+---
+# NATS Messaging System Best Practices
+
+This document outlines best practices and coding standards for developing applications with NATS messaging system. NATS is a high-performance, cloud-native messaging system that enables secure communication between distributed services.
+
+## 1. Code Organization and Structure
+
+### 1.1. Directory Structure
+
+Organize your NATS-based application with clear separation of concerns:
+
+```
+project_name/
+├── src/
+│   ├── main.py              # Application entry point
+│   ├── nats/
+│   │   ├── __init__.py
+│   │   ├── client.py        # NATS client configuration
+│   │   ├── handlers/        # Message handlers
+│   │   │   ├── __init__.py
+│   │   │   ├── user_handlers.py
+│   │   │   └── order_handlers.py
+│   │   ├── publishers/      # Message publishers
+│   │   │   ├── __init__.py
+│   │   │   └── event_publisher.py
+│   │   └── subscribers/     # Message subscribers
+│   │       ├── __init__.py
+│   │       └── event_subscriber.py
+│   ├── models/
+│   │   ├── __init__.py
+│   │   └── messages.py      # Message models
+│   └── utils/
+│       ├── __init__.py
+│       └── serialization.py
+├── tests/
+│   ├── __init__.py
+│   ├── test_handlers.py
+│   └── test_publishers.py
+├── requirements.txt
+└── README.md
+```
+
+### 1.2. File Naming Conventions
+
+- Use descriptive names for all files and directories
+- Follow language-specific naming conventions
+- Use clear, consistent naming for handlers and publishers
+
+### 1.3. Module Organization
+
+- **Client Configuration:** Centralize NATS client setup
+- **Handlers:** Organize message handlers by domain
+- **Publishers:** Separate publishers by event type
+- **Subscribers:** Organize subscribers by functionality
+
+## 2. Common Patterns and Anti-patterns
+
+### 2.1. Design Patterns
+
+- **Publisher-Subscriber Pattern:** Use for event-driven architectures
+- **Request-Reply Pattern:** Use for synchronous communication
+- **Queue Pattern:** Use for load balancing and work distribution
+- **Subject-Based Routing:** Use hierarchical subjects for organization
+
+### 2.2. Recommended Approaches
+
+- Use connection pooling for high-throughput applications
+- Implement proper error handling and retry logic
+- Use structured message formats (JSON, Protocol Buffers)
+- Implement proper connection management
+
+### 2.3. Anti-patterns
+
+- Don't use blocking operations in message handlers
+- Avoid creating too many connections
+- Don't ignore connection errors
+- Avoid using subjects that are too broad or too specific
+
+## 3. Performance Considerations
+
+### 3.1. Optimization Techniques
+
+- Use connection pooling
+- Implement message batching for high throughput
+- Use appropriate subject naming strategies
+- Optimize message serialization/deserialization
+
+### 3.2. Memory Management
+
+- Monitor memory usage in message handlers
+- Use streaming for large messages
+- Implement proper cleanup of resources
+- Avoid memory leaks in long-running processes
+
+## 4. Security Best Practices
+
+### 4.1. Common Vulnerabilities
+
+- **Authentication:** Implement proper authentication mechanisms
+- **Authorization:** Use subject-based access control
+- **Encryption:** Use TLS for secure communication
+- **Input Validation:** Validate all incoming messages
+
+### 4.2. Security Implementation
+
+- Use NATS authentication and authorization
+- Implement proper TLS configuration
+- Validate and sanitize all message content
+- Use secure connection strings
+
+## 5. Testing Approaches
+
+### 5.1. Unit Testing
+
+- Test message handlers in isolation
+- Mock NATS connections for testing
+- Test error conditions and edge cases
+- Use test containers for integration testing
+
+### 5.2. Integration Testing
+
+- Test complete message flows
+- Test connection handling
+- Test error recovery scenarios
+- Test performance under load
+
+## 6. Common Pitfalls and Gotchas
+
+### 6.1. Frequent Mistakes
+
+- Not handling connection failures properly
+- Ignoring message acknowledgment
+- Not implementing proper error handling
+- Using inappropriate subject naming
+
+### 6.2. Debugging Strategies
+
+- Use NATS monitoring tools
+- Implement proper logging
+- Use message tracing for debugging
+- Monitor connection health
+
+## 7. Tooling and Environment
+
+### 7.1. Recommended Development Tools
+
+- **NATS Client Libraries:** Official NATS client for your language
+- **Testing:** Test containers for integration testing
+- **Monitoring:** NATS monitoring tools
+- **Logging:** Structured logging with correlation IDs
+
+### 7.2. Deployment Best Practices
+
+- Use NATS clustering for high availability
+- Implement proper health checks
+- Use load balancers for NATS servers
+- Monitor cluster health and performance
+
+### 7.3. CI/CD Integration
+
+- Automate testing in CI/CD pipelines
+- Implement automated deployments
+- Use infrastructure as code
+- Monitor deployment health
+
+By following these best practices, you can build robust, scalable, and maintainable applications with NATS messaging system.

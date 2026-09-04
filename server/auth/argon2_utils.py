@@ -5,21 +5,43 @@ This module implements the gold standard for password hashing using Argon2id,
 as documented in the restricted archives of Miskatonic University.
 """
 
-import time
-from typing import Any
+import os
 
-from argon2 import PasswordHasher, exceptions
-from argon2.exceptions import HashingError, VerificationError
+from argon2 import PasswordHasher, Type, exceptions
+from argon2.exceptions import VerificationError
 
-from ..logging_config import get_logger
+from ..exceptions import AuthenticationError
+from ..structured_logging.enhanced_logging_config import get_logger
+from ..utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
 # Default Argon2 parameters - optimized for security vs performance
-TIME_COST = 3  # Number of iterations
-MEMORY_COST = 65536  # Memory usage in KiB (64MB)
-PARALLELISM = 1  # Number of parallel threads
-HASH_LENGTH = 32  # Length of the hash in bytes
+# Can be overridden via environment variables: ARGON2_TIME_COST, ARGON2_MEMORY_COST,
+# ARGON2_PARALLELISM, ARGON2_HASH_LENGTH
+# TIME_COST: 1-10 range (3 is recommended for web apps, higher = more secure but slower)
+# MEMORY_COST: 1024-1048576 KiB range (65536 = 64MB recommended, higher = more secure)
+# PARALLELISM: 1-16 range (1 recommended for web servers, higher for dedicated machines)
+# HASH_LENGTH: 16-64 bytes range (32 bytes = 256 bits recommended)
+TIME_COST = int(os.getenv("ARGON2_TIME_COST", "3"))
+MEMORY_COST = int(os.getenv("ARGON2_MEMORY_COST", "65536"))  # 64MB
+PARALLELISM = int(os.getenv("ARGON2_PARALLELISM", "1"))
+HASH_LENGTH = int(os.getenv("ARGON2_HASH_LENGTH", "32"))  # 256 bits
+
+# Maximum password length to prevent DoS attacks
+# 1024 characters is a reasonable limit that prevents resource exhaustion
+# while allowing for passphrases and complex passwords
+MAX_PASSWORD_LENGTH = 1024
+
+# Validate parameters are within safe ranges
+if TIME_COST < 1 or TIME_COST > 10:
+    raise ValueError(f"ARGON2_TIME_COST must be between 1 and 10, got {TIME_COST}")
+if MEMORY_COST < 1024 or MEMORY_COST > 1048576:  # 1MB to 1GB
+    raise ValueError(f"ARGON2_MEMORY_COST must be between 1024 and 1048576, got {MEMORY_COST}")
+if PARALLELISM < 1 or PARALLELISM > 16:
+    raise ValueError(f"ARGON2_PARALLELISM must be between 1 and 16, got {PARALLELISM}")
+if HASH_LENGTH < 16 or HASH_LENGTH > 64:
+    raise ValueError(f"ARGON2_HASH_LENGTH must be between 16 and 64, got {HASH_LENGTH}")
 
 logger.info(
     "Argon2 utilities initialized",
@@ -29,8 +51,9 @@ logger.info(
     hash_length=HASH_LENGTH,
 )
 
-# Create default hasher instance
+# Create default hasher instance with explicit Argon2id variant
 _default_hasher = PasswordHasher(
+    type=Type.ID,  # Explicitly use Argon2id (hybrid approach, recommended)
     time_cost=TIME_COST,
     memory_cost=MEMORY_COST,
     parallelism=PARALLELISM,
@@ -45,6 +68,22 @@ def create_hasher_with_params(
     hash_len: int = HASH_LENGTH,
 ) -> PasswordHasher:
     """Create a PasswordHasher with custom parameters."""
+    # Validate parameters are within safe ranges
+    if time_cost < 1 or time_cost > 10:
+        raise ValueError(f"time_cost must be between 1 and 10, got {time_cost}")
+    if memory_cost < 1024 or memory_cost > 1048576:
+        raise ValueError(f"memory_cost must be between 1024 and 1048576, got {memory_cost}")
+    if parallelism < 1 or parallelism > 16:
+        raise ValueError(f"parallelism must be between 1 and 16, got {parallelism}")
+    if hash_len < 16 or hash_len > 64:
+        raise ValueError(f"hash_len must be between 16 and 64, got {hash_len}")
+
+    # Log warning if parameters are outside recommended ranges
+    if time_cost < 3:
+        logger.warning("time_cost is below recommended minimum of 3", time_cost=time_cost)
+    if memory_cost < 65536:
+        logger.warning("memory_cost is below recommended minimum of 65536 (64MB)", memory_cost=memory_cost)
+
     logger.debug(
         "Creating custom Argon2 hasher",
         time_cost=time_cost,
@@ -54,11 +93,27 @@ def create_hasher_with_params(
     )
 
     return PasswordHasher(
+        type=Type.ID,  # Explicitly use Argon2id
         time_cost=time_cost,
         memory_cost=memory_cost,
         parallelism=parallelism,
         hash_len=hash_len,
     )
+
+
+def _validate_password_for_hashing(password: str) -> None:
+    """Validate password input before Argon2 hashing."""
+    if not isinstance(password, str):
+        logger.error("Password must be a string", password_type=type(password).__name__)  # type: ignore[unreachable]  # Reason: Runtime type validation catches incorrect calls, but mypy infers str from function signature and marks this branch as unreachable
+        raise AuthenticationError("Password must be a string")
+
+    if len(password) > MAX_PASSWORD_LENGTH:
+        logger.error("Password exceeds maximum length", password_length=len(password), max_length=MAX_PASSWORD_LENGTH)
+        raise AuthenticationError(f"Password must not exceed {MAX_PASSWORD_LENGTH} characters")  # pylint: disable=redefined-outer-name  # Reason: MAX_PASSWORD_LENGTH is a module-level constant, not being redefined; Pylint false positive
+
+    if not password:
+        logger.error("Password cannot be empty")
+        raise AuthenticationError("Password cannot be empty")
 
 
 def hash_password(password: str) -> str:
@@ -68,32 +123,66 @@ def hash_password(password: str) -> str:
     This function provides superior security compared to bcrypt,
     implementing the gold standard for password hashing as documented
     in the restricted archives of Miskatonic University.
+
+    Args:
+        password: Plaintext password. Must be between 1 and 1024 characters
+                  to prevent DoS attacks. Argon2 handles arbitrary input safely,
+                  but we limit length to prevent resource exhaustion.
+
+    Returns:
+        Argon2id hash string in format: $argon2id$v=19$m=65536,t=3,p=1$...
+
+    Raises:
+        AuthenticationError: If password is not a string, is empty, exceeds maximum length, or hashing fails
     """
-    if not isinstance(password, str):
-        logger.error("Password hashing failed - invalid type", password_type=type(password))
-        raise TypeError("Password must be a string")
+    _validate_password_for_hashing(password)
 
     logger.debug("Hashing password with Argon2id")
     try:
         hashed = _default_hasher.hash(password)
         logger.debug("Password hashed successfully")
+        if not isinstance(hashed, str):
+            raise TypeError("Argon2 hash must return a string")
         return hashed
-    except Exception as e:
-        logger.error("Password hashing failed", error=str(e))
-        raise HashingError(f"Failed to hash password: {e}") from e
+    except exceptions.HashingError as e:
+        logger.error("Argon2 hashing error", error=str(e), error_type=type(e).__name__)
+        log_and_raise(
+            AuthenticationError,
+            f"Failed to hash password: {e}",
+            details={"original_error": str(e), "error_type": type(e).__name__},
+            user_friendly="Password processing failed",
+        )
+    except (TypeError, ValueError, MemoryError) as e:
+        logger.error("Unexpected error during password hashing", error=str(e), error_type=type(e).__name__)
+        log_and_raise(
+            AuthenticationError,
+            f"Failed to hash password: {e}",
+            details={"original_error": str(e), "error_type": type(e).__name__},
+            user_friendly="Password processing failed",
+        )
 
 
 def verify_password(password: str, hashed: str) -> bool:
     """
-    Verify a plaintext password against a hash.
+    Verify a plaintext password against an Argon2 hash.
 
-    This function safely handles both Argon2 and legacy bcrypt hashes,
-    ensuring backward compatibility during the transition period.
+    This function verifies passwords using Argon2id hashing.
+    All passwords in the system use Argon2 for security.
+
+    Args:
+        password: Plaintext password to verify
+        hashed: Argon2 hash string to verify against
+
+    Returns:
+        True if password matches hash, False otherwise
     """
-    if not isinstance(password, str) or not isinstance(hashed, str):
-        logger.warning(
-            "Password verification failed - invalid types", password_type=type(password), hash_type=type(hashed)
-        )
+    # Runtime type validation (defensive programming - catches incorrect calls at runtime)
+    if not isinstance(password, str):
+        logger.warning("Password verification failed - password not a string", password_type=type(password).__name__)  # type: ignore[unreachable]  # Reason: Runtime type validation catches incorrect calls, but mypy infers str from function signature and marks this branch as unreachable
+        return False
+
+    if not isinstance(hashed, str):
+        logger.warning("Password verification failed - hash not a string", hash_type=type(hashed).__name__)  # type: ignore[unreachable]  # Reason: Runtime type validation catches incorrect calls, but mypy infers str from function signature and marks this branch as unreachable
         return False
 
     if not hashed:
@@ -102,23 +191,14 @@ def verify_password(password: str, hashed: str) -> bool:
 
     logger.debug("Verifying password")
     try:
-        # Try Argon2 verification first
-        if is_argon2_hash(hashed):
-            _default_hasher.verify(hashed, password)
-            logger.debug("Password verification successful (Argon2)")
-            return True
-        else:
-            # For backward compatibility, we could add bcrypt verification here
-            # But since we're fully converting to Argon2, we'll return False for
-            # non-Argon2 hashes
-            logger.warning("Password verification failed - non-Argon2 hash")
-            return False
+        _default_hasher.verify(hashed, password)
+        logger.debug("Password verification successful (Argon2)")
+        return True
     except (VerificationError, exceptions.InvalidHash) as e:
         logger.warning("Password verification failed - invalid hash", error=str(e))
         return False
-    except Exception as e:
-        # Any other exception means verification failed
-        logger.error("Password verification error", error=str(e))
+    except (TypeError, ValueError, MemoryError) as e:
+        logger.error("Password verification error", error=str(e), error_type=type(e).__name__)
         return False
 
 
@@ -139,14 +219,22 @@ def needs_rehash(hashed: str) -> bool:
         return True
 
     try:
-        return _default_hasher.check_needs_rehash(hashed)
-    except Exception:
+        result = _default_hasher.check_needs_rehash(hashed)
+        if not isinstance(result, bool):
+            raise TypeError("check_needs_rehash must return a bool")
+        return result
+    except (ValueError, TypeError, AttributeError) as e:
+        logger.error("Error checking password rehash needs", error=str(e), error_type=type(e).__name__)
         return True
 
 
 def get_hash_info(hashed: str | None) -> dict[str, str | int] | None:
     """Extract parameters from an Argon2 hash string."""
     if not is_argon2_hash(hashed):
+        return None
+
+    # Type guard: is_argon2_hash returns True only if hashed is a str
+    if hashed is None:
         return None
 
     try:
@@ -157,7 +245,7 @@ def get_hash_info(hashed: str | None) -> dict[str, str | int] | None:
 
         # Extract parameters from the format string
         params_str = parts[3]  # m=65536,t=3,p=1
-        params = {}
+        params: dict[str, str | int] = {}
         for param in params_str.split(","):
             if "=" in param:
                 key, value = param.split("=", 1)
@@ -167,38 +255,6 @@ def get_hash_info(hashed: str | None) -> dict[str, str | int] | None:
                     params[key] = value
 
         return params
-    except Exception:
+    except (ValueError, TypeError, AttributeError) as e:
+        logger.error("Error extracting hash parameters", error=str(e), error_type=type(e).__name__)
         return None
-
-
-def benchmark_hash_time(
-    password: str = "test_password",
-    iterations: int = 3,
-    time_cost: int = TIME_COST,
-    memory_cost: int = MEMORY_COST,
-    parallelism: int = PARALLELISM,
-) -> dict[str, Any]:
-    """Benchmark hashing performance with given parameters."""
-    hasher = create_hasher_with_params(
-        time_cost=time_cost,
-        memory_cost=memory_cost,
-        parallelism=parallelism,
-    )
-
-    times = []
-    for _ in range(iterations):
-        start_time = time.time()
-        hasher.hash(password)
-        end_time = time.time()
-        times.append((end_time - start_time) * 1000)  # Convert to milliseconds
-
-    return {
-        "iterations": iterations,
-        "time_cost": time_cost,
-        "memory_cost": memory_cost,
-        "parallelism": parallelism,
-        "average_time_ms": sum(times) / len(times),
-        "min_time_ms": min(times),
-        "max_time_ms": max(times),
-        "times_ms": times,
-    }

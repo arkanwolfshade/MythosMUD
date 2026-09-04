@@ -1,0 +1,20 @@
+{
+  "name": "mythosmud-static-data",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Static data validator and SQL generator for MythosMUD",
+  "scripts": {
+    "validate": "node ./validate.mjs",
+    "generate-sql": "node ./generate_sql.mjs",
+    "build": "npm run validate && npm run generate-sql"
+  },
+  "dependencies": {
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "uuid": "^14.0.1"
+  },
+  "overrides": {
+    "fast-uri": ">=4.1.1"
+  }
+}

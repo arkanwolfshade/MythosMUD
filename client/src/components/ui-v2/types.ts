@@ -1,0 +1,133 @@
+// TypeScript interfaces for UI v2 panel system
+// Type definitions for UI v2 components
+
+export interface Player {
+  /** Character/player UUID from server (player_id). Used for Skills tab URL, etc. */
+  id?: string;
+  name: string;
+  profession_id?: number;
+  profession_name?: string;
+  profession_description?: string;
+  profession_flavor_text?: string;
+  stats?: {
+    current_dp: number; // Represents determination points (DP)
+    max_dp?: number; // Represents max determination points (DP)
+    lucidity: number;
+    max_lucidity?: number;
+    strength?: number;
+    dexterity?: number;
+    constitution?: number;
+    size?: number;
+    intelligence?: number;
+    power?: number;
+    education?: number;
+    charisma?: number;
+    luck?: number;
+    occult?: number;
+    corruption?: number;
+    magic_points?: number;
+    max_magic_points?: number;
+    position?: string;
+  };
+  level?: number;
+  experience?: number;
+  xp?: number;
+  current_room_id?: string;
+  in_combat?: boolean;
+}
+
+export interface Room {
+  id: string;
+  name: string;
+  description: string;
+  plane?: string;
+  zone?: string;
+  sub_zone?: string;
+  environment?: string;
+  exits: Record<string, string>;
+  // Legacy: flat list of occupant names (for backward compatibility)
+  occupants?: string[];
+  // New: structured occupant data with separate players and NPCs
+  players?: string[];
+  npcs?: string[];
+  occupant_count?: number;
+  entities?: Array<{
+    name: string;
+    type: string;
+  }>;
+}
+
+/** Single quest log entry (same shape as GET /api/players/{id}/quests and game_state.quest_log). */
+export interface QuestLogEntry {
+  quest_id: string;
+  name: string;
+  title: string;
+  description: string;
+  goals_with_progress: Array<{
+    goal_type?: string;
+    target?: string;
+    current?: number;
+    required?: number;
+    done?: boolean;
+    [key: string]: unknown;
+  }>;
+  state: string;
+}
+
+export interface ChatMessage {
+  text: string;
+  timestamp: string;
+  isHtml: boolean;
+  isCompleteHtml?: boolean;
+  messageType?: string;
+  channel?: string;
+  type?: string;
+  /** Optional: 'npc' | 'system' when server marks non-player speakers. */
+  speakerKind?: string;
+  aliasChain?: Array<{
+    original: string;
+    expanded: string;
+    alias_name: string;
+  }>;
+  rawText?: string;
+  tags?: string[];
+}
+
+export interface PanelPosition {
+  x: number;
+  y: number;
+}
+
+export interface PanelSize {
+  width: number;
+  height: number;
+}
+
+export interface PanelState {
+  id: string;
+  title: string;
+  position: PanelPosition;
+  size: PanelSize;
+  isMinimized: boolean;
+  isMaximized: boolean;
+  isVisible: boolean;
+  zIndex: number;
+  minSize?: PanelSize;
+  maxSize?: PanelSize;
+  /** When true, panel uses opaque background so it stays readable over other panels (e.g. minimap popout). */
+  opaque?: boolean;
+  /** Minimum content height in px so the panel does not collapse (e.g. inline map visibility). */
+  minHeight?: number;
+  /** Layout saved when minimizing; restored when the panel is expanded again. */
+  preMinimizePosition?: PanelPosition;
+  preMinimizeSize?: PanelSize;
+}
+
+export interface PanelLayout {
+  panels: Record<string, PanelState>;
+}
+
+export type PanelVariant = 'default' | 'eldritch' | 'elevated';
+
+// Import MythosTimeState from the types directory
+export type { MythosTimeState } from '../../types/mythosTime';

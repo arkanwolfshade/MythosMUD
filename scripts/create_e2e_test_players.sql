@@ -1,0 +1,120 @@
+-- Legacy manual seed for ArkanWolfshade + Ithaqua (users + players).
+-- Prefer: uv run python scripts/seed_e2e_users.py (used by Playwright global-setup; ArkanWolfshade + Ithaqua).
+-- Password for both: Cthulhu1
+-- Hash: $argon2id$v=19$m=65536,t=3,p=1$QboiqUn+9UiguuaKTN12HA$/mjnMcE390t4zRYqeK7xl/TTTK8VOCPytuSge+KSvug
+-- nosemgrep
+-- NOPMD
+-- Note: This script targets standard game tables (users, players), not RAC_* tables.
+-- The Codacy RAC_* rule does not apply to this project's database schema.
+-- ArkanWolfshade (Admin)
+WITH arkan_user AS (
+    INSERT INTO users (
+            id,
+            email,
+            username,
+            hashed_password,
+            is_active,
+            is_superuser,
+            is_verified,
+            created_at,
+            updated_at
+        )
+    VALUES (
+            gen_random_uuid(),
+            'arkanwolfshade@test.local',
+            'ArkanWolfshade',
+            '$argon2id$v=19$m=65536,t=3,p=1$QboiqUn+9UiguuaKTN12HA$/mjnMcE390t4zRYqeK7xl/TTTK8VOCPytuSge+KSvug',
+            true,
+            false,
+            true,
+            NOW(),
+            NOW()
+        )
+    RETURNING id
+)
+INSERT INTO players (
+        player_id,
+        user_id,
+        name,
+        stats,
+        inventory,
+        status_effects,
+        current_room_id,
+        experience_points,
+        level,
+        is_admin,
+        created_at,
+        last_active
+    )
+SELECT gen_random_uuid(),
+    u.id,
+    'ArkanWolfshade',
+    '{"strength": 50, "dexterity": 50, "constitution": 50, "size": 50, "intelligence": 50, "power": 50, "education": 50, "charisma": 50, "luck": 50, "lucidity": 100, "occult": 0, "corruption": 0, "current_dp": 20, "max_dp": 20, "magic_points": 10, "max_magic_points": 10, "max_lucidity": 100, "position": "standing"}'::jsonb,
+    '[]'::jsonb,
+    '[]'::jsonb,
+    'earth_arkhamcity_sanitarium_room_foyer_001',
+    0,
+    1,
+    1,
+    NOW(),
+    NOW()
+FROM arkan_user u;
+-- Ithaqua (Regular Player)
+WITH ithaqua_user AS (
+    INSERT INTO users (
+            id,
+            email,
+            username,
+            hashed_password,
+            is_active,
+            is_superuser,
+            is_verified,
+            created_at,
+            updated_at
+        )
+    VALUES (
+            gen_random_uuid(),
+            'ithaqua@test.local',
+            'Ithaqua',
+            '$argon2id$v=19$m=65536,t=3,p=1$QboiqUn+9UiguuaKTN12HA$/mjnMcE390t4zRYqeK7xl/TTTK8VOCPytuSge+KSvug',
+            true,
+            false,
+            true,
+            NOW(),
+            NOW()
+        )
+    RETURNING id
+)
+INSERT INTO players (
+        player_id,
+        user_id,
+        name,
+        stats,
+        inventory,
+        status_effects,
+        current_room_id,
+        experience_points,
+        level,
+        is_admin,
+        created_at,
+        last_active
+    )
+SELECT gen_random_uuid(),
+    u.id,
+    'Ithaqua',
+    '{"strength": 50, "dexterity": 50, "constitution": 50, "size": 50, "intelligence": 50, "power": 50, "education": 50, "charisma": 50, "luck": 50, "lucidity": 100, "occult": 0, "corruption": 0, "current_dp": 20, "max_dp": 20, "magic_points": 10, "max_magic_points": 10, "max_lucidity": 100, "position": "standing"}'::jsonb,
+    '[]'::jsonb,
+    '[]'::jsonb,
+    'earth_arkhamcity_sanitarium_room_foyer_001',
+    0,
+    1,
+    0,
+    NOW(),
+    NOW()
+FROM ithaqua_user u;
+-- Ensure ArkanWolfshade has admin privileges
+-- nosemgrep
+-- NOPMD
+UPDATE players
+SET is_admin = 1
+WHERE name = 'ArkanWolfshade';

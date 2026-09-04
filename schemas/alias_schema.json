@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mythosmud.org/schemas/alias_schema.json",
+  "title": "Alias Bundle",
+  "description": "Schema governing persisted player command aliases stored in JSON bundles.",
+  "type": "object",
+  "required": ["version", "aliases"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Version marker for the alias bundle format.",
+      "pattern": "^[0-9]+\\.[0-9]+$"
+    },
+    "aliases": {
+      "type": "array",
+      "description": "Player-defined aliases contained in this bundle.",
+      "items": {
+        "$ref": "#/$defs/alias"
+      }
+    }
+  },
+  "$defs": {
+    "alias": {
+      "type": "object",
+      "description": "Serialized Alias model instance.",
+      "required": ["name", "command"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the alias.",
+          "pattern": "^[0-9a-fA-F-]{36}$"
+        },
+        "name": {
+          "type": "string",
+          "description": "Alias keyword invoked by the player.",
+          "pattern": "^[A-Za-z][A-Za-z0-9_]*$",
+          "minLength": 1,
+          "maxLength": 20
+        },
+        "command": {
+          "type": "string",
+          "description": "Full command text executed when the alias is invoked.",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "version": {
+          "type": "string",
+          "description": "Alias entry version for compatibility tracking.",
+          "pattern": "^[0-9]+\\.[0-9]+$"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "Timestamp representing when the alias was created.",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?Z$"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "Timestamp representing the last modification time for the alias.",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?Z$"
+        }
+      }
+    }
+  }
+}

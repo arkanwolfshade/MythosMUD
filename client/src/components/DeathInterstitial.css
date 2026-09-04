@@ -1,0 +1,152 @@
+/* Death Interstitial — terminal dread; restrained motion */
+
+.death-interstitial-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: color-mix(in srgb, var(--color-mythos-terminal-background) 96%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: death-fade-in 0.6s ease-out;
+}
+
+.death-interstitial-container {
+  max-width: 800px;
+  width: 90%;
+  padding: 40px;
+  background: var(--color-mythos-terminal-surface);
+  border: 1px solid var(--color-mythos-terminal-error);
+  border-radius: 4px;
+  box-shadow: none;
+  animation: none;
+}
+
+.death-interstitial-content {
+  text-align: center;
+  color: var(--color-mythos-sepia);
+  font-family: 'Courier New', monospace;
+}
+
+.death-title {
+  font-size: 2.25em;
+  color: var(--color-mythos-terminal-error);
+  text-shadow: none;
+  margin-bottom: 30px;
+  letter-spacing: 0.2em;
+  animation: none;
+}
+
+.death-narrative {
+  font-size: 1.05em;
+  line-height: 1.8;
+  margin-bottom: 40px;
+  color: var(--color-mythos-sepia);
+  text-shadow: none;
+}
+
+.death-narrative p {
+  margin-bottom: 20px;
+}
+
+.death-location {
+  margin-bottom: 40px;
+  padding: 20px;
+  background-color: color-mix(in srgb, var(--color-mythos-terminal-error) 8%, transparent);
+  border: 1px solid var(--color-mythos-terminal-border);
+  border-radius: 2px;
+}
+
+.death-location-label {
+  font-size: 0.9em;
+  color: var(--color-mythos-sepia-muted);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.death-location-name {
+  font-size: 1.3em;
+  color: var(--color-mythos-terminal-error);
+  text-shadow: none;
+  font-weight: bold;
+}
+
+.respawn-button {
+  font-size: 1.15em;
+  padding: 14px 36px;
+  background: var(--color-mythos-terminal-surface);
+  color: var(--color-mythos-sepia);
+  border: 1px solid var(--color-mythos-sepia);
+  border-radius: 2px;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: bold;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+  box-shadow: none;
+}
+
+.respawn-button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-mythos-sepia) 12%, transparent);
+  transform: none;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+.respawn-button:active:not(:disabled) {
+  transform: none;
+  box-shadow: none;
+}
+
+.respawn-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  filter: grayscale(0.5);
+}
+
+.respawn-loading {
+  margin-top: 20px;
+  font-size: 1em;
+  color: var(--color-mythos-sepia-muted);
+  font-style: italic;
+  animation: none;
+}
+
+@keyframes death-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .death-interstitial-overlay {
+    animation: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .death-interstitial-container {
+    width: 95%;
+    padding: 20px;
+  }
+
+  .death-title {
+    font-size: 1.8em;
+  }
+
+  .death-narrative {
+    font-size: 1em;
+  }
+
+  .respawn-button {
+    font-size: 1em;
+    padding: 12px 24px;
+  }
+}

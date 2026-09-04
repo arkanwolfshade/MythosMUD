@@ -1,4 +1,6 @@
 #Requires -Version 5.1
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for user-facing status messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'User-facing script requires Write-Host for status messages')]
 
 <#
 .SYNOPSIS
@@ -6,16 +8,21 @@
 
 .DESCRIPTION
     This script provides robust server shutdown functionality for MythosMUD by:
-    - Terminating processes using port 54731
-    - Killing processes by name patterns (uvicorn, python)
-    - Terminating processes by command line patterns
-    - Force killing all Python processes if Force flag is set
+    - Terminating processes using port 54768
+    - Killing processes by name patterns (uvicorn and gunicorn)
+    - Terminating processes by command line patterns (MythosMUD-specific)
+    - Force killing MythosMUD-related Python processes in THIS repo if Force flag is set
     - Verifying port is free after shutdown
     - Terminating PowerShell processes that spawned the server
     - Cleaning up orphaned terminal windows
 
+    SECURITY NOTE: Processes are terminated only when Win32_Process data shows the
+    executable or command line contains THIS repository root (see MythosMudProcessScope.ps1).
+    Name-only or broad pattern matches are never sufficient to kill a process.
+
 .PARAMETER Force
-    When specified, forces termination of all Python processes regardless of command line.
+    When specified, forces termination of Python processes that match MythosMUD command-line
+    patterns and are owned by this repository root (see MythosMudProcessScope.ps1).
 
 .PARAMETER Verbose
     When specified, provides detailed output including remaining connections. This parameter is automatically available due to CmdletBinding.
@@ -26,7 +33,7 @@
 
 .EXAMPLE
     .\stop_server.ps1 -Force -Verbose
-    Force stops all Python processes and provides detailed output.
+    Force-stops MythosMUD-scoped Python processes in this repo and provides detailed output.
 
 .NOTES
     Author: MythosMUD Development Team
@@ -36,44 +43,24 @@
 
 [CmdletBinding()]
 param(
-    [Parameter(HelpMessage = "Force termination of all Python processes")]
+    [Parameter(HelpMessage = "Force termination of Python processes that match MythosMUD patterns AND this repo root")]
     [switch]$Force
 )
 
-# Function to kill entire process trees
-function Stop-ProcessTree {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true)]
-        [int]$ProcessId
-    )
-
-    try {
-        # Get child processes
-        $children = Get-WmiObject -Class Win32_Process | Where-Object { $_.ParentProcessId -eq $ProcessId }
-
-        # Kill children first
-        foreach ($child in $children) {
-            Stop-ProcessTree -ProcessId $child.ProcessId
-        }
-
-        # Kill the parent
-        Stop-Process -Id $ProcessId -Force
-        Write-Host "Terminated process tree for PID: $ProcessId" -ForegroundColor Green
-    }
-    catch {
-        Write-Host "Could not terminate process tree for PID: $ProcessId" -ForegroundColor Yellow
-    }
-}
+. (Join-Path $PSScriptRoot 'MythosMudProcessScope.ps1')
 
 # Function to kill processes by port
 function Stop-ProcessesByPort {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory = $true)]
         [ValidateRange(1, 65535)]
         [int]$Port
     )
+
+    if (-not $PSCmdlet.ShouldProcess("processes using port $Port", "Stop")) {
+        return
+    }
 
     Write-Host "Checking for processes using port ${Port}..." -ForegroundColor Cyan
 
@@ -85,7 +72,7 @@ function Stop-ProcessesByPort {
                     $process = Get-Process -Id $connection.OwningProcess -ErrorAction SilentlyContinue
                     if ($process) {
                         Write-Host "Found process using port ${Port}: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
-                        Stop-ProcessTree -ProcessId $process.Id
+                        Stop-MythosMudProjectProcessTree -ProcessId $process.Id
                     }
                 }
                 catch {
@@ -102,14 +89,55 @@ function Stop-ProcessesByPort {
     }
 }
 
+# Function to stop NATS server
+function Stop-NatsServerForMythosMUD {
+    [CmdletBinding(SupportsShouldProcess)]
+    param()
+
+    if (-not $PSCmdlet.ShouldProcess("NATS server", "Stop")) {
+        return
+    }
+
+    Write-Host "Stopping NATS server..." -ForegroundColor Cyan
+
+    # Import NATS management functions
+    $natsManagerPath = Join-Path $PSScriptRoot "nats_manager.ps1"
+    if (Test-Path $natsManagerPath) {
+        . $natsManagerPath
+        Stop-NatsServer
+    }
+    else {
+        Write-Host "Warning: NATS manager not found, stopping NATS processes manually..." -ForegroundColor Yellow
+        # Manual NATS process cleanup
+        $natsProcesses = Get-Process | Where-Object {
+            $_.ProcessName -like "*nats*" -or
+            $_.ProcessName -like "*nats-server*"
+        }
+        if ($natsProcesses) {
+            foreach ($process in $natsProcesses) {
+                if (-not (Test-MythosMudProjectProcess -ProcessId $process.Id)) {
+                    Write-Host "Skipping NATS PID $($process.Id): not owned by this MythosMUD repo" -ForegroundColor Yellow
+                    continue
+                }
+                Write-Host "Stopping NATS process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Yellow
+                Stop-MythosMudProjectProcessTree -ProcessId $process.Id
+            }
+        }
+    }
+}
+
 # Function to kill processes by name pattern
 function Stop-ProcessesByName {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string]$NamePattern
     )
+
+    if (-not $PSCmdlet.ShouldProcess("processes matching '$NamePattern'", "Stop")) {
+        return
+    }
 
     Write-Host "Checking for processes matching '$NamePattern'..." -ForegroundColor Cyan
 
@@ -119,7 +147,7 @@ function Stop-ProcessesByName {
             foreach ($process in $processes) {
                 Write-Host "Found process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
                 try {
-                    Stop-ProcessTree -ProcessId $process.Id
+                    Stop-MythosMudProjectProcessTree -ProcessId $process.Id
                 }
                 catch {
                     Write-Host "Could not terminate process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Yellow
@@ -137,12 +165,16 @@ function Stop-ProcessesByName {
 
 # Function to kill processes by command line pattern
 function Stop-ProcessesByCommandLine {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string]$CommandPattern
     )
+
+    if (-not $PSCmdlet.ShouldProcess("processes with command line containing '$CommandPattern'", "Stop")) {
+        return
+    }
 
     Write-Host "Checking for processes with command line containing '$CommandPattern'..." -ForegroundColor Cyan
 
@@ -150,10 +182,14 @@ function Stop-ProcessesByCommandLine {
         $pythonProcesses = Get-Process | Where-Object { $_.ProcessName -like "*python*" }
         foreach ($process in $pythonProcesses) {
             try {
-                $commandLine = (Get-WmiObject -Class Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
+                $commandLine = (Get-CimInstance -ClassName Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
                 if ($commandLine -and $commandLine -like "*$CommandPattern*") {
+                    if (-not (Test-MythosMudProjectProcess -ProcessId $process.Id)) {
+                        Write-Verbose "Skipping PID $($process.Id): command matched '$CommandPattern' but not this repo"
+                        continue
+                    }
                     Write-Host "Found process with command line '$CommandPattern': $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
-                    Stop-ProcessTree -ProcessId $process.Id
+                    Stop-MythosMudProjectProcessTree -ProcessId $process.Id
                 }
             }
             catch {
@@ -168,9 +204,13 @@ function Stop-ProcessesByCommandLine {
 }
 
 # Function to kill PowerShell processes that spawned the server
-function Stop-PowerShellServerProcesses {
-    [CmdletBinding()]
+function Stop-PowerShellServerProcess {
+    [CmdletBinding(SupportsShouldProcess)]
     param()
+
+    if (-not $PSCmdlet.ShouldProcess("PowerShell server processes", "Stop")) {
+        return
+    }
 
     Write-Host "Checking for PowerShell processes running server..." -ForegroundColor Cyan
 
@@ -178,10 +218,26 @@ function Stop-PowerShellServerProcesses {
         $powerShellProcesses = Get-Process | Where-Object { $_.ProcessName -like "*powershell*" }
         foreach ($process in $powerShellProcesses) {
             try {
-                $commandLine = (Get-WmiObject -Class Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
-                if ($commandLine -and ($commandLine -like "*uvicorn*" -or $commandLine -like "*start_server.ps1*" -or $commandLine -like "*server.main:app*" -or $commandLine -like "*mythosmud*")) {
+                $commandLine = (Get-CimInstance -ClassName Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
+                # Do not kill the E2E launcher (start_e2e_test.ps1); it calls this script and must survive to start the server.
+                if ($commandLine -and $commandLine -like "*start_e2e_test.ps1*") {
+                    continue
+                }
+                if (-not (Test-MythosMudProjectProcess -ProcessId $process.Id)) {
+                    continue
+                }
+                # Exclude path-only hits (e.g. ...\MythosMUD-worktrees\... matching *mythosmud*): require server entry cues.
+                if ($commandLine -and (
+                        $commandLine -like "*uvicorn*" -or
+                        $commandLine -like "*gunicorn*" -or
+                        $commandLine -like "*start_server.ps1*" -or
+                        $commandLine -like "*start_local.ps1*" -or
+                        $commandLine -like "*server.main:app*" -or
+                        $commandLine -like "*uv run*"
+                    )) {
                     Write-Host "Found PowerShell server process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
-                    Stop-ProcessTree -ProcessId $process.Id
+                    Write-Host "  Command line: $commandLine" -ForegroundColor Gray
+                    Stop-MythosMudProjectProcessTree -ProcessId $process.Id
                 }
             }
             catch {
@@ -206,10 +262,61 @@ function Close-OrphanedTerminalWindows {
         $processes = Get-Process | Where-Object { $_.ProcessName -like "*powershell*" -or $_.ProcessName -like "*cmd*" }
         foreach ($process in $processes) {
             try {
-                $commandLine = (Get-WmiObject -Class Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
-                if ($commandLine -and ($commandLine -like "*mythosmud*" -or $commandLine -like "*server*" -or $commandLine -like "*uvicorn*" -or $commandLine -like "*start_server.ps1*")) {
+                $cimProc = Get-CimInstance -ClassName Win32_Process -Filter "ProcessId = $($process.Id)" -ErrorAction SilentlyContinue
+                $commandLine = $null
+                $executablePath = $null
+                if ($cimProc) {
+                    $commandLine = $cimProc.CommandLine
+                    $executablePath = $cimProc.ExecutablePath
+                }
+                if (-not $executablePath) {
+                    $executablePath = $process.Path
+                }
+                # Do not kill the E2E launcher (start_e2e_test.ps1) or the terminal running e2e.bat (cmd /c e2e.bat).
+                if ($commandLine -and ($commandLine -like "*start_e2e_test.ps1*" -or $commandLine -like "*e2e.bat*")) {
+                    continue
+                }
+                if (-not (Test-MythosMudProjectProcess -ProcessId $process.Id)) {
+                    continue
+                }
+                if ($commandLine -and (
+                        $commandLine -like "*uvicorn*" -or
+                        $commandLine -like "*gunicorn*" -or
+                        $commandLine -like "*start_server.ps1*" -or
+                        $commandLine -like "*start_local.ps1*" -or
+                        $commandLine -like "*server.main*" -or
+                        $commandLine -like "*uv run*"
+                    )) {
                     Write-Host "Found orphaned terminal: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
-                    Stop-ProcessTree -ProcessId $process.Id
+                    if ($executablePath) {
+                        Write-Host "  Executable path: $executablePath" -ForegroundColor Gray
+                    }
+                    else {
+                        Write-Host "  Executable path: (unavailable)" -ForegroundColor Gray
+                    }
+                    Write-Host "  Command line: $commandLine" -ForegroundColor Gray
+
+                    $shouldStop = $false
+                    $canPrompt = [Environment]::UserInteractive -and -not [Console]::IsInputRedirected
+                    if ($canPrompt) {
+                        $prompt = "Terminate this process? [Y]es / [N]o (leave running, default: N)"
+                        $answer = Read-Host $prompt
+                        if ($null -ne $answer -and $answer.Trim() -match '^(?i:y|yes)$') {
+                            $shouldStop = $true
+                        }
+                    }
+                    else {
+                        Write-Host "Non-interactive input: skipping orphaned terminal termination for PID $($process.Id). Re-run stop_server.ps1 in an interactive console to confirm." -ForegroundColor Yellow
+                    }
+
+                    if ($shouldStop) {
+                        Stop-MythosMudProjectProcessTree -ProcessId $process.Id
+                    }
+                    else {
+                        if ($canPrompt) {
+                            Write-Host "Leaving process $($process.Id) running." -ForegroundColor Yellow
+                        }
+                    }
                 }
             }
             catch {
@@ -257,18 +364,24 @@ function Wait-ForPortFree {
 try {
     Write-Host "Starting robust server shutdown process..." -ForegroundColor Green
 
-    # Method 1: Kill PowerShell processes that spawned the server
-    Stop-PowerShellServerProcesses
+    # Method 1: Stop NATS server
+    Stop-NatsServerForMythosMUD
 
-    # Method 2: Kill processes by port
-    Stop-ProcessesByPort -Port 54731
+    # Method 2: Kill PowerShell processes that spawned the server
+    Stop-PowerShellServerProcess
+
+    # Method 3: Kill processes by port
+    Stop-ProcessesByPort -Port 54768
 
     # Method 3: Kill processes by name patterns
     Stop-ProcessesByName -NamePattern "*uvicorn*"
-    Stop-ProcessesByName -NamePattern "*python*"
+    Stop-ProcessesByName -NamePattern "*gunicorn*"
+    # Note: Removed broad Python process killing to avoid affecting Playwright MCP server
+    # Python processes are now targeted more specifically via command line patterns below
 
     # Method 4: Kill processes by command line patterns
     Stop-ProcessesByCommandLine -CommandPattern "uvicorn"
+    Stop-ProcessesByCommandLine -CommandPattern "gunicorn"
     Stop-ProcessesByCommandLine -CommandPattern "main:app"
     Stop-ProcessesByCommandLine -CommandPattern "start_server.ps1"
     Stop-ProcessesByCommandLine -CommandPattern "uv run"
@@ -276,17 +389,39 @@ try {
     # Method 5: Close orphaned terminal windows
     Close-OrphanedTerminalWindows
 
-    # Method 6: Force kill all Python processes if Force flag is set
+    # Method 6: Force kill MythosMUD-related Python processes if Force flag is set
     if ($Force) {
-        Write-Host "Force mode: Terminating all Python processes..." -ForegroundColor Red
+        Write-Host "Force mode: Terminating MythosMUD-related Python processes..." -ForegroundColor Red
         $pythonProcesses = Get-Process | Where-Object { $_.ProcessName -like "*python*" }
         foreach ($process in $pythonProcesses) {
-            Write-Host "Force terminating: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
             try {
-                Stop-ProcessTree -ProcessId $process.Id
+                $commandLine = (Get-CimInstance -ClassName Win32_Process -Filter "ProcessId = $($process.Id)").CommandLine
+                # Only kill Python processes that are running MythosMUD-related code
+                if ($commandLine -and (
+                        $commandLine -like "*uvicorn*" -or
+                        $commandLine -like "*gunicorn*" -or
+                        $commandLine -like "*main:app*" -or
+                        $commandLine -like "*start_server.ps1*" -or
+                        $commandLine -like "*start_local.ps1*" -or
+                        $commandLine -like "*uv run*" -or
+                        $commandLine -like "*server.main*"
+                    )) {
+                    if (-not (Test-MythosMudProjectProcess -ProcessId $process.Id)) {
+                        continue
+                    }
+                    Write-Host "Force terminating MythosMUD process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
+                    Write-Host "  Command line: $commandLine" -ForegroundColor Gray
+                    Stop-MythosMudProjectProcessTree -ProcessId $process.Id
+                }
+                else {
+                    Write-Host "Skipping non-MythosMUD Python process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Cyan
+                    if ($commandLine) {
+                        Write-Host "  Command line: $commandLine" -ForegroundColor Gray
+                    }
+                }
             }
             catch {
-                Write-Host "Could not force terminate: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Yellow
+                Write-Host "Could not check command line for process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Yellow
             }
         }
     }
@@ -301,24 +436,24 @@ try {
     $portFree = $false
 
     while (-not $portFree -and $retryCount -lt $maxRetries) {
-        $portFree = Wait-ForPortFree -Port 54731 -MaxWaitSeconds 15
+        $portFree = Wait-ForPortFree -Port 54768 -MaxWaitSeconds 15
         if (-not $portFree) {
             $retryCount++
             Write-Host "Port still in use, retrying... (Attempt $retryCount/$maxRetries)" -ForegroundColor Yellow
             # Force kill any remaining processes
-            Stop-ProcessesByPort -Port 54731
+            Stop-ProcessesByPort -Port 54768
             Start-Sleep -Seconds 2
         }
     }
 
     if ($portFree) {
-        Write-Host "`n🎉 MythosMUD Server shutdown complete!" -ForegroundColor Green
+        Write-Host "`nMythosMUD Server shutdown complete!" -ForegroundColor Green
     }
     else {
-        Write-Host "`n⚠️  Server shutdown may be incomplete. Port 54731 is still in use." -ForegroundColor Yellow
+        Write-Host "`nWARNING: Server shutdown may be incomplete. Port 54768 is still in use." -ForegroundColor Yellow
         if ($Verbose) {
-            Write-Host "Remaining connections on port 54731:" -ForegroundColor Yellow
-            Get-NetTCPConnection -LocalPort 54731 -ErrorAction SilentlyContinue | ForEach-Object {
+            Write-Host "Remaining connections on port 54768:" -ForegroundColor Yellow
+            Get-NetTCPConnection -LocalPort 54768 -ErrorAction SilentlyContinue | ForEach-Object {
                 Write-Host "  $($_.LocalAddress):$($_.LocalPort) -> $($_.RemoteAddress):$($_.RemotePort) (PID: $($_.OwningProcess))" -ForegroundColor Gray
             }
         }

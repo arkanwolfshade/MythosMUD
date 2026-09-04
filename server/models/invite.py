@@ -8,13 +8,24 @@ can create accounts.
 
 import uuid
 from datetime import UTC, datetime, timedelta
+from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String
-from sqlalchemy.orm import declarative_base
+from sqlalchemy import (  # pylint: disable=unused-import  # func used in insert_default
+    Boolean,
+    DateTime,
+    ForeignKey,
+    String,
+    func,
+)
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from ..metadata import metadata
+from .base import Base  # ARCHITECTURE FIX Phase 3.1: Use shared Base
 
-Base = declarative_base(metadata=metadata)
+# Forward references for type checking (resolves circular imports)
+# Note: SQLAlchemy will resolve string references via shared registry at runtime
+if TYPE_CHECKING:
+    from .user import User
 
 
 class Invite(Base):
@@ -22,17 +33,45 @@ class Invite(Base):
 
     __tablename__ = "invites"
 
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    invite_code = Column(String, unique=True, nullable=False, index=True)
-    created_by_user_id = Column(String, ForeignKey("users.user_id"), nullable=True)
-    used_by_user_id = Column(String, ForeignKey("users.user_id"), nullable=True)
-    used = Column(Boolean, default=False, nullable=False)
-    expires_at = Column(DateTime, nullable=False)
-    # Store datetimes in database as naive UTC to keep SQLite comparisons simple.
-    created_at = Column(DateTime, default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    invite_code: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
+    # Add indexes on foreign keys for query performance
+    created_by_user_id: Mapped[str | None] = mapped_column(
+        UUID(as_uuid=False), ForeignKey("users.id"), nullable=True, index=True
+    )
+    used_by_user_id: Mapped[str | None] = mapped_column(
+        UUID(as_uuid=False), ForeignKey("users.id"), nullable=True, index=True
+    )
+    # is_active: True means invite is available, False means used
+    is_active: Mapped[bool] = mapped_column(Boolean, default=lambda: True, nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    # Timestamps (server-side per SQLAlchemy 2.x rule)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        insert_default=func.now(),  # pylint: disable=not-callable  # func.now() callable at runtime
+        nullable=False,
+    )
+
+    # ARCHITECTURE FIX Phase 3.1: Relationships defined directly in model (no circular imports)
+    # Using simple string references - SQLAlchemy resolves via registry after all models imported
+    created_by_user: Mapped["User | None"] = relationship(
+        "User", foreign_keys=[created_by_user_id], back_populates="created_invites"
+    )
+    used_by_user: Mapped["User | None"] = relationship(
+        "User", foreign_keys=[used_by_user_id], back_populates="used_invite", uselist=False
+    )
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Initialize Invite with defaults."""
+        super().__init__(*args, **kwargs)
+        # Apply defaults if not provided (SQLAlchemy may set to None initially)
+        _sentinel = object()
+        is_active_val = getattr(self, "is_active", _sentinel)
+        if is_active_val is _sentinel or is_active_val is None:
+            object.__setattr__(self, "is_active", True)
 
     def __repr__(self) -> str:
-        return f"<Invite(id='{self.id}', code='{self.invite_code}', used={self.used})>"
+        return f"<Invite(id='{self.id}', code='{self.invite_code}', is_active={self.is_active})>"
 
     def is_expired(self) -> bool:
         """Check if the invite has expired. Handles naive timestamps as UTC."""
@@ -42,15 +81,15 @@ class Invite(Base):
             if getattr(self.expires_at, "tzinfo", None) is not None
             else self.expires_at.replace(tzinfo=UTC)
         )
-        return now_utc > expires_at_utc
+        return bool(now_utc > expires_at_utc)
 
     def is_valid(self) -> bool:
-        """Check if the invite is valid (not used and not expired)."""
-        return not self.used and not self.is_expired()
+        """Check if the invite is valid (active and not expired)."""
+        return bool(self.is_active) and not self.is_expired()
 
     def use_invite(self, user_id: str) -> None:
         """Mark this invite as used by a specific user."""
-        self.used = True
+        self.is_active = False
         self.used_by_user_id = user_id
 
     @classmethod
@@ -59,7 +98,7 @@ class Invite(Base):
         return cls(
             invite_code=cls._generate_invite_code(),
             created_by_user_id=created_by_user_id,
-            # Persist naive UTC in DB
+            # Persist naive UTC for PostgreSQL TIMESTAMP WITHOUT TIME ZONE
             expires_at=(datetime.now(UTC) + timedelta(days=expires_in_days)).replace(tzinfo=None),
         )
 

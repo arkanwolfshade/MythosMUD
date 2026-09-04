@@ -9,15 +9,17 @@ preservation and understanding.
 
 import traceback
 from dataclasses import dataclass, field
-from datetime import datetime
-from typing import Any
+from datetime import UTC, datetime
+from typing import Any, TypedDict, Unpack
 
-from .logging_config import get_logger
+from fastapi import HTTPException
+
+from .structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
 
-@dataclass
+@dataclass(slots=True)
 class ErrorContext:
     """
     Contextual information for error handling.
@@ -32,8 +34,8 @@ class ErrorContext:
     command: str | None = None
     session_id: str | None = None
     request_id: str | None = None
-    timestamp: datetime = field(default_factory=datetime.now)
-    metadata: dict[str, Any] = field(default_factory=dict)
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
+    metadata: dict[str, object] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         """Convert context to dictionary for logging."""
@@ -48,7 +50,40 @@ class ErrorContext:
         }
 
 
-class MythosMUDError(Exception):
+class ErrorContextInitKwargs(TypedDict, total=False):
+    """Keyword arguments accepted by create_error_context and ErrorContext()."""
+
+    user_id: str | None
+    room_id: str | None
+    command: str | None
+    session_id: str | None
+    request_id: str | None
+    timestamp: datetime
+    metadata: dict[str, object]
+
+
+class LoggedException(Exception):
+    """
+    Marker base class indicating an exception has already produced a log entry.
+    """
+
+    __slots__ = ("_already_logged",)
+
+    def __init__(self, *args: Any, already_logged: bool = False) -> None:
+        super().__init__(*args)
+        self._already_logged = already_logged
+
+    def mark_logged(self) -> None:
+        """Mark this exception instance as already logged."""
+        self._already_logged = True
+
+    @property
+    def already_logged(self) -> bool:
+        """Return True if this exception instance has already been logged."""
+        return self._already_logged
+
+
+class MythosMUDError(LoggedException):
     """
     Base exception for all MythosMUD errors.
 
@@ -62,7 +97,8 @@ class MythosMUDError(Exception):
         context: ErrorContext | None = None,
         details: dict[str, Any] | None = None,
         user_friendly: str | None = None,
-    ):
+        skip_log: bool = False,
+    ) -> None:
         """
         Initialize MythosMUD error.
 
@@ -71,27 +107,31 @@ class MythosMUDError(Exception):
             context: Error context information
             details: Additional error details
             user_friendly: User-friendly error message
+            skip_log: If True, do not log in constructor (caller already logged, e.g. log_and_raise_enhanced).
         """
-        super().__init__(message)
+        LoggedException.__init__(self, message)
         self.message = message
         self.context = context or ErrorContext()
         self.details = details or {}
         self.user_friendly = user_friendly or message
-        self.timestamp = datetime.now()
+        self.timestamp = datetime.now(UTC)
 
-        # Log the error with context
-        self._log_error()
+        # Log the error with context unless caller already logged (e.g. log_and_raise_enhanced).
+        if not skip_log:
+            self._log_error()
+        self.mark_logged()
 
-    def _log_error(self):
+    def _log_error(self) -> None:
         """Log the error with structured context."""
-        log_data = {
-            "error_type": self.__class__.__name__,
-            "message": self.message,
-            "context": self.context.to_dict(),
-            "details": self.details,
-            "timestamp": self.timestamp.isoformat(),
-        }
-        logger.error("MythosMUD error occurred", **log_data)
+        logger.error(
+            # Include the specific error message in the log text for coverage tests
+            # while still providing structured fields for analysis.
+            "MythosMUD error occurred: " + str(self.message),
+            message=self.message,
+            error_type=self.__class__.__name__,
+            details=self.details,
+            timestamp=self.timestamp.isoformat(),
+        )
 
     def to_dict(self) -> dict[str, Any]:
         """Convert error to dictionary for API responses."""
@@ -108,7 +148,9 @@ class MythosMUDError(Exception):
 class AuthenticationError(MythosMUDError):
     """Authentication and authorization errors."""
 
-    def __init__(self, message: str, context: ErrorContext | None = None, auth_type: str = "unknown", **kwargs):
+    def __init__(
+        self, message: str, context: ErrorContext | None = None, auth_type: str = "unknown", **kwargs: Any
+    ) -> None:
         super().__init__(message, context, **kwargs)
         self.auth_type = auth_type
         self.details["auth_type"] = auth_type
@@ -123,8 +165,8 @@ class DatabaseError(MythosMUDError):
         context: ErrorContext | None = None,
         operation: str = "unknown",
         table: str | None = None,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> None:
         super().__init__(message, context, **kwargs)
         self.operation = operation
         self.table = table
@@ -134,29 +176,41 @@ class DatabaseError(MythosMUDError):
 
 
 class ValidationError(MythosMUDError):
-    """Data validation errors."""
+    """Data validation errors (e.g. empty local/whisper message). Log at warning, not error."""
 
     def __init__(
         self,
         message: str,
         context: ErrorContext | None = None,
-        field: str | None = None,
+        field_name: str | None = None,  # pylint: disable=redefined-outer-name  # noqa: F811  # Renamed to avoid shadowing dataclasses.field
         value: Any | None = None,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> None:
         super().__init__(message, context, **kwargs)
-        self.field = field
+        self.field = field_name
         self.value = value
-        if field:
-            self.details["field"] = field
+        if field_name:
+            self.details["field"] = field_name
         if value is not None:
             self.details["value"] = str(value)
+
+    def _log_error(self) -> None:
+        """Log validation errors at warning so expected user-input errors do not flood error log."""
+        logger.warning(
+            "MythosMUD error occurred: " + str(self.message),
+            message=self.message,
+            error_type=self.__class__.__name__,
+            details=self.details,
+            timestamp=self.timestamp.isoformat(),
+        )
 
 
 class GameLogicError(MythosMUDError):
     """Game mechanics and logic errors."""
 
-    def __init__(self, message: str, context: ErrorContext | None = None, game_action: str | None = None, **kwargs):
+    def __init__(
+        self, message: str, context: ErrorContext | None = None, game_action: str | None = None, **kwargs: Any
+    ) -> None:
         super().__init__(message, context, **kwargs)
         self.game_action = game_action
         if game_action:
@@ -166,7 +220,9 @@ class GameLogicError(MythosMUDError):
 class ConfigurationError(MythosMUDError):
     """Configuration and setup errors."""
 
-    def __init__(self, message: str, context: ErrorContext | None = None, config_key: str | None = None, **kwargs):
+    def __init__(
+        self, message: str, context: ErrorContext | None = None, config_key: str | None = None, **kwargs: Any
+    ) -> None:
         super().__init__(message, context, **kwargs)
         self.config_key = config_key
         if config_key:
@@ -176,7 +232,9 @@ class ConfigurationError(MythosMUDError):
 class NetworkError(MythosMUDError):
     """Network and communication errors."""
 
-    def __init__(self, message: str, context: ErrorContext | None = None, connection_type: str = "unknown", **kwargs):
+    def __init__(
+        self, message: str, context: ErrorContext | None = None, connection_type: str = "unknown", **kwargs: Any
+    ) -> None:
         super().__init__(message, context, **kwargs)
         self.connection_type = connection_type
         self.details["connection_type"] = connection_type
@@ -191,8 +249,8 @@ class ResourceNotFoundError(MythosMUDError):
         context: ErrorContext | None = None,
         resource_type: str | None = None,
         resource_id: str | None = None,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> None:
         super().__init__(message, context, **kwargs)
         self.resource_type = resource_type
         self.resource_id = resource_id
@@ -211,8 +269,8 @@ class RateLimitError(MythosMUDError):
         context: ErrorContext | None = None,
         limit_type: str = "unknown",
         retry_after: int | None = None,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> None:
         super().__init__(message, context, **kwargs)
         self.limit_type = limit_type
         self.retry_after = retry_after
@@ -221,7 +279,7 @@ class RateLimitError(MythosMUDError):
             self.details["retry_after"] = retry_after
 
 
-def create_error_context(**kwargs) -> ErrorContext:
+def create_error_context(**kwargs: Unpack[ErrorContextInitKwargs]) -> ErrorContext:
     """
     Create an error context with the given parameters.
 
@@ -232,6 +290,66 @@ def create_error_context(**kwargs) -> ErrorContext:
         ErrorContext object
     """
     return ErrorContext(**kwargs)
+
+
+class LoggedHTTPException(HTTPException, LoggedException):
+    """
+    HTTPException with automatic logging.
+
+    This class extends FastAPI's HTTPException to include automatic logging
+    with proper context information before raising the exception.
+    """
+
+    def __init__(
+        self,
+        status_code: int,
+        detail: str,
+        logger_name: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        """
+        Initialize LoggedHTTPException.
+
+        Args:
+            status_code: HTTP status code
+            detail: Error detail message
+            logger_name: Specific logger name to use (defaults to current module)
+            **kwargs: Additional structured logging data (e.g., operation, user_id, etc.)
+        """
+        HTTPException.__init__(self, status_code=status_code, detail=detail)
+        LoggedException.__init__(self)
+
+        # Use specified logger or default to current module logger
+        error_logger = get_logger(logger_name) if logger_name else logger
+
+        # Create ErrorContext internally from kwargs for exception object (exceptions need ErrorContext)
+        # Extract common context fields from kwargs
+        context_metadata = {k: v for k, v in kwargs.items() if k not in ["error_type", "status_code", "detail"]}
+        context = create_error_context(
+            user_id=kwargs.get("user_id"),
+            session_id=kwargs.get("session_id"),
+            request_id=kwargs.get("request_id"),
+            metadata=context_metadata,
+        )
+
+        # Store context as instance attribute for testability
+        self.context = context
+
+        # Prepare structured log data using kwargs directly
+        log_data = {
+            "error_type": "LoggedHTTPException",
+            "status_code": status_code,
+            "detail": detail,
+            **kwargs,
+        }
+
+        try:
+            error_logger.warning("HTTP error logged and exception raised", **log_data)
+        except (OSError, PermissionError, RuntimeError) as log_err:
+            # Avoid test failures due to file handler rotation issues on Windows
+            logger.debug("Suppressed logging backend error during HTTP error logging", error=str(log_err))
+        else:
+            self.mark_logged()
 
 
 def handle_exception(exc: Exception, context: ErrorContext | None = None) -> MythosMUDError:
@@ -251,15 +369,14 @@ def handle_exception(exc: Exception, context: ErrorContext | None = None) -> Myt
     # Convert common exceptions to MythosMUD errors
     if isinstance(exc, ValueError | TypeError):
         return ValidationError(str(exc), context, details={"original_type": type(exc).__name__})
-    elif isinstance(exc, FileNotFoundError):
+    if isinstance(exc, FileNotFoundError):
         return ResourceNotFoundError(str(exc), context, details={"original_type": type(exc).__name__})
-    elif isinstance(exc, ConnectionError | TimeoutError):
+    if isinstance(exc, ConnectionError | TimeoutError):
         return NetworkError(str(exc), context, details={"original_type": type(exc).__name__})
-    elif isinstance(exc, OSError):
+    if isinstance(exc, OSError):
         # OSError is a parent of FileNotFoundError, so check it after FileNotFoundError
         return ResourceNotFoundError(str(exc), context, details={"original_type": type(exc).__name__})
-    else:
-        # Generic error for unknown exceptions
-        return MythosMUDError(
-            str(exc), context, details={"original_type": type(exc).__name__, "traceback": traceback.format_exc()}
-        )
+    # Generic error for unknown exceptions
+    return MythosMUDError(
+        str(exc), context, details={"original_type": type(exc).__name__, "traceback": traceback.format_exc()}
+    )

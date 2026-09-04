@@ -7,14 +7,42 @@ to real-time communication, enabling players to see each other in the game world
 As noted in the Pnakotic Manuscripts, proper event propagation is essential
 for maintaining awareness of the dimensional shifts that occur throughout our
 eldritch architecture.
+
+Refactored to delegate to specialized modules for better maintainability.
 """
 
-from datetime import UTC, datetime
+# pylint: disable=too-many-instance-attributes  # Reason: Event handler requires many service and state tracking attributes
 
+import uuid
+from typing import TYPE_CHECKING
+
+from structlog.stdlib import BoundLogger
+
+from ..app.task_registry import TaskRegistry
 from ..events import EventBus
-from ..events.event_types import PlayerEnteredRoom, PlayerLeftRoom
-from ..logging_config import get_logger
-from .connection_manager import connection_manager
+from ..events.event_types import (
+    NPCEnteredRoom,
+    NPCLeftRoom,
+    PlayerDeliriumRespawnedEvent,
+    PlayerDiedEvent,
+    PlayerDPDecayEvent,
+    PlayerDPUpdated,
+    PlayerEnteredRoom,
+    PlayerLeftRoom,
+    PlayerRespawnedEvent,
+    PlayerXPAwardEvent,
+)
+from ..services.chat_logger import ChatLogger, chat_logger
+from ..services.room_sync_service import RoomSyncService, get_room_sync_service
+from ..structured_logging.enhanced_logging_config import get_logger
+from .message_builders import MessageBuilder
+from .npc_event_handlers import NPCEventHandler
+from .player_event_handlers import PlayerEventHandler
+from .player_name_utils import PlayerNameExtractor
+from .room_occupant_manager import RoomOccupantManager
+
+if TYPE_CHECKING:
+    from .connection_manager import ConnectionManager
 
 
 class RealTimeEventHandler:
@@ -25,273 +53,276 @@ class RealTimeEventHandler:
     messages that are broadcast to connected clients. It serves as the
     critical link between the event system and the real-time communication
     layer.
+
+    Refactored to delegate to specialized handler modules for better
+    maintainability and reduced complexity.
     """
 
-    def __init__(self, event_bus: EventBus | None = None):
+    event_bus: EventBus
+    connection_manager: "ConnectionManager | None"
+    _logger: BoundLogger
+    _sequence_counter: int
+    task_registry: TaskRegistry | None
+    chat_logger: ChatLogger
+    room_sync_service: RoomSyncService
+    name_extractor: PlayerNameExtractor
+    occupant_manager: RoomOccupantManager
+    message_builder: MessageBuilder
+    player_handler: PlayerEventHandler
+    npc_handler: NPCEventHandler
+
+    def __init__(
+        self,
+        event_bus: EventBus | None = None,
+        task_registry: TaskRegistry | None = None,
+        connection_manager: "ConnectionManager | None" = None,
+    ) -> None:
         """
         Initialize the real-time event handler.
 
         Args:
-            event_bus: Optional EventBus instance. If None, will get the global
-                instance.
+            event_bus: Optional EventBus instance. If None, will get the global instance.
+            task_registry: Optional TaskRegistry instance for current lifecycle task tracking
+            connection_manager: ConnectionManager instance (injected dependency)
+
+        AI Agent: connection_manager now injected as parameter instead of using global import
         """
         self.event_bus = event_bus or EventBus()
         self.connection_manager = connection_manager
         self._logger = get_logger("RealTimeEventHandler")
         self._sequence_counter = 0
 
+        # Task registry for tracking child tasks spawned by event broadcasting
+        self.task_registry = task_registry
+
+        # Chat logger for AI processing
+        self.chat_logger = chat_logger
+
+        # Room synchronization service for enhanced event processing
+        self.room_sync_service = get_room_sync_service()
+
+        # Initialize specialized modules (after setting up sequence counter)
+        self._initialize_modules()
+
         # Subscribe to relevant game events
         self._subscribe_to_events()
 
-        self._logger.info("RealTimeEventHandler initialized")
+        self._logger.info("RealTimeEventHandler initialized with modular architecture")
 
-    def _subscribe_to_events(self):
-        """Subscribe to relevant game events."""
-        self.event_bus.subscribe(PlayerEnteredRoom, self._handle_player_entered)
-        self.event_bus.subscribe(PlayerLeftRoom, self._handle_player_left)
+    def _initialize_modules(self) -> None:
+        """Initialize specialized handler modules."""
+        # Player name extraction utilities
+        self.name_extractor = PlayerNameExtractor()
 
-        self._logger.info("Subscribed to PlayerEnteredRoom and PlayerLeftRoom events")
+        # Room occupant management
+        self.occupant_manager = RoomOccupantManager(self.connection_manager, self.name_extractor)
+
+        # Message building utilities
+        self.message_builder = MessageBuilder(self._get_next_sequence)
+
+        # Player event handler
+        self.player_handler = PlayerEventHandler(
+            connection_manager=self.connection_manager,
+            room_sync_service=self.room_sync_service,
+            chat_logger=self.chat_logger,
+            task_registry=self.task_registry,
+            message_builder=self.message_builder,
+            name_extractor=self.name_extractor,
+            occupant_manager=self.occupant_manager,
+        )
+
+        # NPC event handler (needs send_occupants_update callback)
+        # Create a bound method reference for the callback
+        self.npc_handler = NPCEventHandler(
+            connection_manager=self.connection_manager,
+            task_registry=self.task_registry,
+            message_builder=self.message_builder,
+            send_occupants_update=self._send_room_occupants_update_internal,
+        )
 
     def _get_next_sequence(self) -> int:
         """Get the next sequence number for events."""
         self._sequence_counter += 1
         return self._sequence_counter
 
-    async def _handle_player_entered(self, event: PlayerEnteredRoom):
+    def _subscribe_to_events(self) -> None:
+        """Subscribe to relevant game events."""
+        # Use service_id for tracking and cleanup (Task 2: Event Subscriber Cleanup)
+        self.event_bus.subscribe(PlayerEnteredRoom, self._handle_player_entered, service_id="event_handler")
+        self.event_bus.subscribe(PlayerLeftRoom, self._handle_player_left, service_id="event_handler")
+        self.event_bus.subscribe(NPCEnteredRoom, self._handle_npc_entered, service_id="event_handler")
+        self.event_bus.subscribe(NPCLeftRoom, self._handle_npc_left, service_id="event_handler")
+        self.event_bus.subscribe(PlayerXPAwardEvent, self._handle_player_xp_awarded, service_id="event_handler")
+        self.event_bus.subscribe(PlayerDPUpdated, self._handle_player_dp_updated, service_id="event_handler")
+
+        # Log subscription for debugging
+        self._logger.info(
+            "Subscribed to game events",
+            event_types=[
+                "PlayerEnteredRoom",
+                "PlayerLeftRoom",
+                "NPCEnteredRoom",
+                "NPCLeftRoom",
+                "PlayerXPAwardEvent",
+                "PlayerDPUpdated",
+            ],
+            event_bus_id=id(self.event_bus),
+        )
+
+        # Subscribe to death/respawn events
+        self.event_bus.subscribe(PlayerDiedEvent, self._handle_player_died)
+        self.event_bus.subscribe(PlayerDPDecayEvent, self._handle_player_dp_decay)
+        self.event_bus.subscribe(PlayerRespawnedEvent, self._handle_player_respawned)
+        self.event_bus.subscribe(PlayerDeliriumRespawnedEvent, self._handle_player_delirium_respawned)
+
+        self._logger.info("Subscribed to all player and NPC events")
+
+    # Event handler delegation methods
+    async def _handle_player_entered(self, event: PlayerEnteredRoom) -> None:
+        """Delegate player entered event to specialized handler."""
+        await self.player_handler.handle_player_entered(event, self._send_room_occupants_update_internal)
+
+    async def _handle_player_left(self, event: PlayerLeftRoom) -> None:
+        """Delegate player left event to specialized handler."""
+        await self.player_handler.handle_player_left(event, self._send_room_occupants_update_internal)
+
+    async def _handle_npc_entered(self, event: NPCEnteredRoom) -> None:
+        """Delegate NPC entered event to specialized handler."""
+        await self.npc_handler.handle_npc_entered(event)
+
+    async def _handle_npc_left(self, event: NPCLeftRoom) -> None:
+        """Delegate NPC left event to specialized handler."""
+        await self.npc_handler.handle_npc_left(event)
+
+    async def _handle_player_xp_awarded(self, event: PlayerXPAwardEvent) -> None:
+        """Delegate player XP awarded event to specialized handler."""
+        await self.player_handler.handle_player_xp_awarded(event)
+
+    async def _handle_player_dp_updated(self, event: PlayerDPUpdated) -> None:
+        """Delegate player DP updated event to specialized handler."""
+        await self.player_handler.handle_player_dp_updated(event)
+
+    async def _handle_player_died(self, event: PlayerDiedEvent) -> None:
+        """Delegate player died event to specialized handler."""
+        await self.player_handler.handle_player_died(event)
+
+    async def _handle_player_dp_decay(self, event: PlayerDPDecayEvent) -> None:
+        """Delegate player DP decay event to specialized handler."""
+        await self.player_handler.handle_player_dp_decay(event)
+
+    async def _handle_player_respawned(self, event: PlayerRespawnedEvent) -> None:
+        """Delegate player respawned event to specialized handler."""
+        await self.player_handler.handle_player_respawned(event)
+
+    async def _handle_player_delirium_respawned(self, event: PlayerDeliriumRespawnedEvent) -> None:
+        """Delegate player delirium respawned event to specialized handler."""
+        await self.player_handler.handle_player_delirium_respawned(event)
+
+    # Internal method for NPC handler callback (defined before NPC handler initialization)
+    async def _send_room_occupants_update_internal(self, room_id: str, exclude_player: str | None = None) -> None:
         """
-        Handle player entering a room.
+        Internal implementation for sending room occupants update.
 
-        Args:
-            event: The PlayerEnteredRoom event
-        """
-        try:
-            self._logger.debug(f"Handling player entered event: {event.player_id} -> {event.room_id}")
-
-            # Get player information
-            player = self.connection_manager._get_player(event.player_id)
-            if not player:
-                self._logger.warning(f"Player not found for entered event: {event.player_id}")
-                return
-
-            player_name = getattr(player, "name", event.player_id)
-
-            # Create real-time message
-            message = self._create_player_entered_message(event, player_name)
-
-            # Subscribe player to the room so they will receive subsequent broadcasts
-            await self.connection_manager.subscribe_to_room(event.player_id, event.room_id)
-
-            # Broadcast to room occupants (excluding the entering player)
-            await self.connection_manager.broadcast_to_room(event.room_id, message, exclude_player=event.player_id)
-
-            # Send room occupants update to the entering player as a personal message
-            # so they immediately see who is present on joining
-            await self._send_room_occupants_update(event.room_id)
-            try:
-                # Also send a direct occupants snapshot to the entering player
-                occupants_info = self._get_room_occupants(event.room_id)
-                names: list[str] = []
-                for occ in occupants_info or []:
-                    if isinstance(occ, dict):
-                        n = occ.get("player_name") or occ.get("name")
-                        if n:
-                            names.append(n)
-                    elif isinstance(occ, str):
-                        names.append(occ)
-                personal = {
-                    "event_type": "room_occupants",
-                    "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
-                    "sequence_number": self._get_next_sequence(),
-                    "room_id": event.room_id,
-                    "data": {"occupants": names, "count": len(names)},
-                }
-                await self.connection_manager.send_personal_message(event.player_id, personal)
-            except Exception as e:
-                self._logger.error(f"Error sending personal occupants update: {e}")
-
-            self._logger.info(f"Player {player_name} entered room {event.room_id}")
-
-        except Exception as e:
-            self._logger.error(f"Error handling player entered event: {e}", exc_info=True)
-
-    async def _handle_player_left(self, event: PlayerLeftRoom):
-        """
-        Handle player leaving a room.
-
-        Args:
-            event: The PlayerLeftRoom event
-        """
-        try:
-            self._logger.debug(f"Handling player left event: {event.player_id} <- {event.room_id}")
-
-            # Get player information
-            player = self.connection_manager._get_player(event.player_id)
-            if not player:
-                self._logger.warning(f"Player not found for left event: {event.player_id}")
-                return
-
-            player_name = getattr(player, "name", event.player_id)
-
-            # Create real-time message
-            message = self._create_player_left_message(event, player_name)
-
-            # Unsubscribe player from the room
-            await self.connection_manager.unsubscribe_from_room(event.player_id, event.room_id)
-
-            # Broadcast to remaining room occupants
-            await self.connection_manager.broadcast_to_room(event.room_id, message)
-
-            # Send room occupants update to remaining players
-            await self._send_room_occupants_update(event.room_id)
-
-            self._logger.info(f"Player {player_name} left room {event.room_id}")
-
-        except Exception as e:
-            self._logger.error(f"Error handling player left event: {e}", exc_info=True)
-
-    def _create_player_entered_message(self, event: PlayerEnteredRoom, player_name: str) -> dict:
-        """
-        Create a real-time message for player entering a room.
-
-        Args:
-            event: The PlayerEnteredRoom event
-            player_name: The name of the player
-
-        Returns:
-            dict: The formatted message
-        """
-        return {
-            "event_type": "player_entered",
-            "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
-            "sequence_number": self._get_next_sequence(),
-            "room_id": event.room_id,
-            "data": {
-                "player_id": event.player_id,
-                "player_name": player_name,
-                "message": f"{player_name} enters the room.",
-            },
-        }
-
-    def _create_player_left_message(self, event: PlayerLeftRoom, player_name: str) -> dict:
-        """
-        Create a real-time message for player leaving a room.
-
-        Args:
-            event: The PlayerLeftRoom event
-            player_name: The name of the player
-
-        Returns:
-            dict: The formatted message
-        """
-        return {
-            "event_type": "player_left",
-            "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
-            "sequence_number": self._get_next_sequence(),
-            "room_id": event.room_id,
-            "data": {
-                "player_id": event.player_id,
-                "player_name": player_name,
-                "message": f"{player_name} leaves the room.",
-            },
-        }
-
-    async def _send_room_occupants_update(self, room_id: str, exclude_player: str = None):
-        """
-        Send room occupants update to players in the room.
+        This method is used as a callback for the NPC handler and is also
+        called by the public send_room_occupants_update method.
 
         Args:
             room_id: The room ID
             exclude_player: Optional player ID to exclude from the update
         """
         try:
-            # Get room occupants
-            occupants_info = self._get_room_occupants(room_id)
+            # Get room occupants with structured data
+            occupants_info = await self.occupant_manager.get_room_occupants(room_id)
 
-            # Transform to list of names for client UI consistency
-            occupant_names: list[str] = []
-            for occ in occupants_info or []:
-                if isinstance(occ, dict):
-                    name = occ.get("player_name") or occ.get("name")
-                    if name:
-                        occupant_names.append(name)
-                elif isinstance(occ, str):
-                    occupant_names.append(occ)
+            # Separate players and NPCs while maintaining backward compatibility
+            players, npcs, all_occupants = self.occupant_manager.separate_occupants_by_type(occupants_info, room_id)
 
-            # Create occupants update message
-            message = {
-                "event_type": "room_occupants",
-                "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
-                "sequence_number": self._get_next_sequence(),
-                "room_id": room_id,
-                "data": {"occupants": occupant_names, "count": len(occupant_names)},
-            }
+            # Convert room_id to string for JSON serialization
+            room_id_str = str(room_id) if room_id else ""
 
-            # Send to room occupants
-            await self.connection_manager.broadcast_to_room(room_id, message, exclude_player=exclude_player)
+            # Log what we're about to send
+            self._logger.debug(
+                "Sending room_occupants event",
+                room_id=room_id_str,
+                players=players,
+                npcs=npcs,
+                all_occupants=all_occupants,
+                players_count=len(players),
+                npcs_count=len(npcs),
+            )
 
-        except Exception as e:
-            self._logger.error(f"Error sending room occupants update: {e}", exc_info=True)
+            # Build and send the message
+            message = self.message_builder.build_occupants_update_message(room_id_str, players, npcs, all_occupants)
+            if self.connection_manager is not None:
+                _ = await self.connection_manager.broadcast_to_room(room_id, message, exclude_player=exclude_player)
 
-    def _get_room_occupants(self, room_id: str) -> list[dict]:
+        except (ValueError, TypeError, KeyError, AttributeError, RuntimeError) as e:
+            self._logger.error("Error sending room occupants update", error=str(e), exc_info=True)
+
+    # Public API methods (called externally)
+    async def send_room_occupants_update(self, room_id: str, exclude_player: str | None = None) -> None:
         """
-        Get the list of occupants in a room.
+        Send room occupants update to players in the room (public API).
+
+        Preserves player/NPC distinction by sending structured data with separate
+        players and npcs arrays, enabling the client UI to display them in separate columns.
+
+        Args:
+            room_id: The room ID
+            exclude_player: Optional player ID to exclude from the update
+        """
+        await self._send_room_occupants_update_internal(room_id, exclude_player)
+
+    async def _get_room_occupants(self, room_id: str) -> list[dict[str, object] | str]:
+        """
+        Get room occupants (public API for backward compatibility).
 
         Args:
             room_id: The room ID
 
         Returns:
-            list[dict]: List of occupant information
+            List of occupant information dictionaries or strings
         """
-        occupants = []
+        return await self.occupant_manager.get_room_occupants(room_id)
 
-        try:
-            # Get room from persistence
-            persistence = self.connection_manager.persistence
-            if not persistence:
-                return occupants
+    def _create_player_entered_message(self, event: PlayerEnteredRoom, player_name: str) -> dict[str, object]:
+        """
+        Create player entered message (public API for tests).
 
-            room = persistence.get_room(room_id)
-            if not room:
-                return occupants
+        Args:
+            event: The PlayerEnteredRoom event
+            player_name: The player's name
 
-            # Get player IDs in the room
-            player_ids = room.get_players()
+        Returns:
+            Message dictionary
+        """
+        return self.message_builder.create_player_entered_message(event, player_name)
 
-            # Convert to occupant information
-            for player_id in player_ids:
-                player = self.connection_manager._get_player(player_id)
-                if player:
-                    occupant_info = {
-                        "player_id": player_id,
-                        "player_name": getattr(player, "name", player_id),
-                        "level": getattr(player, "level", 1),
-                        "online": player_id in self.connection_manager.player_websockets,
-                    }
-                    occupants.append(occupant_info)
+    def _create_player_left_message(self, event: PlayerLeftRoom, player_name: str) -> dict[str, object]:
+        """
+        Create player left message (public API for tests).
 
-        except Exception as e:
-            self._logger.error(f"Error getting room occupants: {e}", exc_info=True)
+        Args:
+            event: The PlayerLeftRoom event
+            player_name: The player's name
 
-        return occupants
+        Returns:
+            Message dictionary
+        """
+        return self.message_builder.create_player_left_message(event, player_name)
 
-    def shutdown(self):
+    async def _send_occupants_snapshot_to_player(self, player_id: uuid.UUID | str, room_id: str) -> None:
+        """
+        Send occupants snapshot to a specific player (public API for websocket_handler).
+
+        Args:
+            player_id: The player's ID
+            room_id: The room ID
+        """
+        # Delegate to player handler's public method
+        await self.player_handler.send_occupants_snapshot_to_player(player_id, room_id)
+
+    def shutdown(self) -> None:
         """Shutdown the event handler."""
         self._logger.info("Shutting down RealTimeEventHandler")
         # Note: EventBus will handle its own shutdown
-
-
-# Global instance
-real_time_event_handler: RealTimeEventHandler | None = None
-
-
-def get_real_time_event_handler() -> RealTimeEventHandler:
-    """
-    Get the global RealTimeEventHandler instance.
-
-    Returns:
-        RealTimeEventHandler: The global event handler instance
-    """
-    global real_time_event_handler
-    if real_time_event_handler is None:
-        real_time_event_handler = RealTimeEventHandler()
-    return real_time_event_handler

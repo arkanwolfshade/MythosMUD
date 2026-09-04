@@ -1,0 +1,200 @@
+"""
+Rescue service encapsulating rescue flows with injectable dependencies.
+
+This isolates the rescue logic from command handlers so tests can exercise the
+real behavior by mocking persistence, session providers, and event dispatch.
+"""
+
+# pylint: disable=too-few-public-methods,too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-return-statements  # Reason: Rescue service has focused responsibility with minimal public interface, and requires many parameters and intermediate variables for complex rescue logic and multiple return statements for early validation returns
+
+from __future__ import annotations
+
+import asyncio
+import uuid
+from collections.abc import Awaitable, Callable
+from datetime import UTC, datetime
+from typing import Any
+
+from server.models.lucidity import PlayerLucidity
+from server.services.lucidity_event_dispatcher import send_rescue_update_event
+from server.services.lucidity_service import LucidityService
+from server.structured_logging.enhanced_logging_config import get_logger
+from server.utils.command_parser import get_username_from_user
+
+logger = get_logger(__name__)
+
+# Type alias for async session factory: produces an async generator of sessions
+AsyncSessionFactory = Callable[[], Any]
+LucidityServiceFactory = Callable[[Any], LucidityService]
+EventDispatcher = Callable[..., Awaitable[None]]
+
+
+def _ensure_uuid(value: Any) -> uuid.UUID:
+    """Convert value to UUID, raising ValueError if invalid."""
+    if isinstance(value, uuid.UUID):
+        return value
+    return uuid.UUID(str(value))
+
+
+async def _maybe_await(value: Any) -> Any:
+    """Await the value if it is awaitable."""
+    if asyncio.iscoroutine(value) or isinstance(value, Awaitable):
+        return await value
+    return value
+
+
+async def _load_rescue_participants(
+    persistence: Any, target_name: str, current_user: dict[str, Any], player_name: str | None
+) -> tuple[Any, Any, str] | dict[str, str]:
+    """Load rescuer and target or return an error payload."""
+    rescuer_name = player_name or get_username_from_user(current_user)
+    rescuer = await _maybe_await(persistence.get_player_by_name(rescuer_name))
+    if rescuer is None:
+        return {"result": "Unable to identify rescuer."}
+
+    target = await _maybe_await(persistence.get_player_by_name(target_name))
+    if target is None:
+        return {"result": f"Could not find {target_name} to rescue."}
+
+    if getattr(rescuer, "current_room_id", None) != getattr(target, "current_room_id", None):
+        return {"result": f"{target_name} is not within reach to be rescued."}
+
+    return rescuer, target, rescuer_name
+
+
+async def _dispatch_rescue_events(
+    event_dispatcher: EventDispatcher,
+    target_player_id_str: str,
+    rescuer_player_id_str: str,
+    rescuer_name: str,
+    target_name: str,
+) -> None:
+    """Dispatch rescue notifications (best-effort)."""
+    try:
+        await event_dispatcher(
+            target_player_id_str,
+            status="rescued",
+            rescuer_name=rescuer_name,
+            target_name=target_name,
+            message=f"{rescuer_name} steadies {target_name}.",
+            progress=100.0,
+        )
+        await event_dispatcher(
+            rescuer_player_id_str,
+            status="rescued",
+            rescuer_name=rescuer_name,
+            target_name=target_name,
+            message=f"You rescue {target_name}, their lucidity stabilizing.",
+            progress=100.0,
+        )
+    except Exception:  # noqa: B904  # pragma: no cover - notifications are best-effort  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Event dispatch errors unpredictable, must log but continue
+        logger.warning("Rescue event dispatch failed", rescuer=rescuer_name, target=target_name)
+
+
+def _rescue_success_payload(rescuer_name: str, target_name: str, result: Any) -> dict[str, str]:
+    new_lcd = getattr(result, "new_lcd", None)
+    return {
+        "result": f"{rescuer_name} rushes to rescue {target_name}, restoring their lucidity.",
+        "new_lcd": str(new_lcd) if new_lcd is not None else "",
+    }
+
+
+class RescueService:  # pylint: disable=too-few-public-methods  # Reason: Rescue service class with focused responsibility, minimal public interface
+    """Service for performing rescue operations."""
+
+    def __init__(
+        self,
+        persistence: Any,
+        session_factory: AsyncSessionFactory,
+        *,
+        catatonia_registry: Any | None = None,
+        lucidity_service_factory: LucidityServiceFactory | None = None,
+        event_dispatcher: EventDispatcher = send_rescue_update_event,
+    ) -> None:
+        self.persistence = persistence
+        self.session_factory = session_factory
+        self.catatonia_registry = catatonia_registry
+        self.lucidity_service_factory = lucidity_service_factory or (
+            lambda session: LucidityService(session, catatonia_observer=catatonia_registry)
+        )
+        self.event_dispatcher = event_dispatcher
+
+    async def _apply_rescue_adjustment(
+        self,
+        session: Any,
+        target_player_id: uuid.UUID,
+        lucidity_record: PlayerLucidity,
+        rescuer_name: str,
+        rescuer_room: str | None,
+    ) -> Any:
+        delta = 1 - lucidity_record.current_lcd
+        if delta <= 0:
+            delta = 1
+
+        lucidity_service = self.lucidity_service_factory(session)
+        result = await lucidity_service.apply_lucidity_adjustment(
+            target_player_id,
+            delta,
+            reason_code="rescue_command",
+            metadata={
+                "rescuer": rescuer_name,
+                "timestamp": datetime.now(UTC).isoformat(),
+                "source": "rescue_command",
+            },
+            location_id=str(rescuer_room),
+        )
+        await session.commit()
+        return result
+
+    async def rescue(
+        self, target_name: str, current_user: dict[str, Any], player_name: str | None = None
+    ) -> dict[str, str]:  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Rescue operation requires many parameters and intermediate variables for complex rescue logic
+        """
+        Perform a rescue for the given target.
+
+        Returns:
+            dict containing a user-facing result message.
+        """
+        if not self.persistence:
+            return {"result": "Rescue service is not available right now."}
+
+        participants = await _load_rescue_participants(self.persistence, target_name, current_user, player_name)
+        if isinstance(participants, dict):
+            return participants
+
+        rescuer, target, rescuer_name = participants
+        target_player_id = _ensure_uuid(target.player_id)
+        rescuer_player_id = _ensure_uuid(rescuer.player_id)
+        target_player_id_str = str(target_player_id)
+        rescuer_player_id_str = str(rescuer_player_id)
+
+        async for session in self.session_factory():
+            lucidity_record = await session.get(PlayerLucidity, target_player_id_str)
+            if lucidity_record is None:
+                return {"result": "The target's lucidity record could not be found."}
+
+            if lucidity_record.current_tier != "catatonic":
+                return {"result": f"{target_name} isn't catatonic and needs no rescue."}
+
+            try:
+                result = await self._apply_rescue_adjustment(
+                    session,
+                    target_player_id,
+                    lucidity_record,
+                    rescuer_name,
+                    getattr(rescuer, "current_room_id", None),
+                )
+            except Exception as exc:  # noqa: B904  # pragma: no cover - defensive path  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Rescue operation errors unpredictable, must rollback and return error
+                await session.rollback()
+                logger.error("Rescue failed", rescuer=rescuer_name, target=target_name, error=str(exc))
+                return {"result": "Rescue failed due to an unexpected error."}
+
+            await _dispatch_rescue_events(
+                self.event_dispatcher,
+                target_player_id_str,
+                rescuer_player_id_str,
+                rescuer_name,
+                target_name,
+            )
+
+        return _rescue_success_payload(rescuer_name, target_name, result)

@@ -1,0 +1,1 @@
+"""Game magic unit tests."""

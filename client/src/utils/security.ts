@@ -1,0 +1,561 @@
+/**
+ * Security utilities for MythosMUD client
+ * Provides secure token storage, session management, input sanitization, and CSRF protection
+ */
+
+import { type Config as DOMPurifyConfig } from 'dompurify';
+
+import { API_V1_BASE } from './config';
+import { sanitizeWithDomPurify } from './domPurifyClient';
+
+interface Session {
+  id: string;
+  userId: string;
+  expiresAt: number;
+  onTimeout?: (sessionId: string) => void;
+}
+
+interface RefreshTokenResponse {
+  access_token: string;
+  expires_in: number;
+  refresh_token?: string;
+}
+
+/**
+ * Secure token storage using httpOnly cookies
+ * MULTI-TAB SUPPORT: Uses user-specific keys to prevent token conflicts between tabs
+ */
+export const secureTokenStorage = {
+  /**
+   * Get the storage key for a specific username
+   * Uses sessionStorage to track which user is logged in on this tab
+   */
+  getStorageKey(): string {
+    // Get username from sessionStorage (per-tab, so each tab knows its own user)
+    const username = sessionStorage.getItem('mythosmud_username');
+    if (username) {
+      return `authToken_${username}`;
+    }
+    // Fallback to default key for backward compatibility
+    return 'authToken';
+  },
+
+  /**
+   * Store authentication token in localStorage with user-specific key
+   * Also stores username in sessionStorage to track which user this tab belongs to
+   * NOTE: For production, this should be stored in httpOnly cookies set by the server
+   */
+  setToken(token: string, username?: string): void {
+    if (import.meta.env.DEV || import.meta.env.MODE === 'test') {
+      // If username provided, store it in sessionStorage (per-tab)
+      if (username) {
+        sessionStorage.setItem('mythosmud_username', username);
+      }
+      const key = this.getStorageKey();
+      localStorage.setItem(key, token);
+    }
+  },
+
+  /**
+   * Retrieve authentication token from localStorage using user-specific key
+   */
+  getToken(): string | null {
+    if (!(import.meta.env.DEV || import.meta.env.MODE === 'test')) {
+      return null;
+    }
+    const key = this.getStorageKey();
+    return localStorage.getItem(key);
+  },
+
+  /**
+   * Clear authentication token for the current user
+   */
+  clearToken(): void {
+    if (import.meta.env.DEV || import.meta.env.MODE === 'test') {
+      const key = this.getStorageKey();
+      localStorage.removeItem(key);
+      // Also clear username from sessionStorage
+      sessionStorage.removeItem('mythosmud_username');
+    }
+  },
+
+  /**
+   * Validate JWT token format
+   */
+  isValidToken(token: string): boolean {
+    if (!token || typeof token !== 'string') {
+      return false;
+    }
+
+    // Basic JWT format validation (3 parts separated by dots)
+    const parts = token.split('.');
+    return parts.length === 3;
+  },
+
+  /**
+   * Check if token is expired
+   */
+  isTokenExpired(token: string): boolean {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url
+        .replace(/-/g, '+')
+        .replace(/_/g, '/')
+        .padEnd(Math.ceil(base64Url.length / 4) * 4, '=');
+      const payload = JSON.parse(atob(base64));
+      const currentTime = Math.floor(Date.now() / 1000);
+      // If exp is missing, token is not expired (no expiration = never expires)
+      if (!payload.exp) {
+        return false;
+      }
+      return payload.exp < currentTime;
+    } catch {
+      return true; // If we can't parse, consider it expired
+    }
+  },
+
+  /**
+   * Refresh token if needed
+   */
+  async refreshTokenIfNeeded(token: string): Promise<boolean> {
+    if (!this.isValidToken(token) || !this.isTokenExpired(token)) {
+      return true; // Token is valid, no refresh needed
+    }
+
+    try {
+      const response = await fetch(`${API_V1_BASE}/auth/refresh`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          refresh_token: this.getRefreshToken(),
+        }),
+      });
+
+      if (!response.ok) {
+        return false;
+      }
+
+      const data: RefreshTokenResponse = await response.json();
+
+      if (data.access_token) {
+        this.setToken(data.access_token);
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      console.error('Token refresh failed:', error);
+      return false;
+    }
+  },
+
+  /**
+   * Get refresh token from localStorage using user-specific key
+   */
+  getRefreshToken(): string | null {
+    if (!(import.meta.env.DEV || import.meta.env.MODE === 'test')) {
+      return null;
+    }
+    const username = sessionStorage.getItem('mythosmud_username');
+    const key = username ? `refreshToken_${username}` : 'refreshToken';
+    return localStorage.getItem(key);
+  },
+
+  /**
+   * Set refresh token in localStorage with user-specific key
+   */
+  setRefreshToken(token: string, username?: string): void {
+    if (import.meta.env.DEV || import.meta.env.MODE === 'test') {
+      if (username) {
+        sessionStorage.setItem('mythosmud_username', username);
+      }
+      const usernameFromStorage = sessionStorage.getItem('mythosmud_username');
+      const key = usernameFromStorage ? `refreshToken_${usernameFromStorage}` : 'refreshToken';
+      localStorage.setItem(key, token);
+    }
+  },
+
+  /**
+   * Clear refresh token for the current user
+   */
+  clearRefreshToken(): void {
+    if (import.meta.env.DEV || import.meta.env.MODE === 'test') {
+      const username = sessionStorage.getItem('mythosmud_username');
+      const key = username ? `refreshToken_${username}` : 'refreshToken';
+      localStorage.removeItem(key);
+    }
+  },
+
+  /**
+   * Clear all tokens (both access and refresh) for the current user
+   * Note: This only clears tokens for the user associated with this tab (via sessionStorage)
+   */
+  clearAllTokens(): void {
+    this.clearToken();
+    this.clearRefreshToken();
+  },
+};
+
+/**
+ * Session management with timeout handling
+ */
+class SessionManager {
+  private sessions: Map<string, Session> = new Map();
+  private cleanupInterval: number | null = null;
+
+  constructor() {
+    // Start cleanup interval
+    this.startCleanupInterval();
+  }
+
+  /**
+   * Create a new session
+   */
+  createSession(userId: string, timeoutSeconds: number, onTimeout?: (sessionId: string) => void): string {
+    const sessionId = this.generateSessionId();
+    const expiresAt = Date.now() + timeoutSeconds * 1000;
+
+    const session: Session = {
+      id: sessionId,
+      userId,
+      expiresAt,
+      onTimeout,
+    };
+
+    this.sessions.set(sessionId, session);
+
+    return sessionId;
+  }
+
+  /**
+   * Check if session is valid
+   */
+  isSessionValid(sessionId: string): boolean {
+    const session = this.sessions.get(sessionId);
+    if (!session) {
+      return false;
+    }
+
+    return Date.now() < session.expiresAt;
+  }
+
+  /**
+   * Refresh session timeout
+   */
+  refreshSession(sessionId: string, additionalSeconds: number = 3600): boolean {
+    const session = this.sessions.get(sessionId);
+    if (!session) {
+      return false;
+    }
+
+    session.expiresAt = Date.now() + additionalSeconds * 1000;
+    return true;
+  }
+
+  /**
+   * Remove session
+   */
+  removeSession(sessionId: string): boolean {
+    return this.sessions.delete(sessionId);
+  }
+
+  /**
+   * Clean up expired sessions
+   */
+  cleanupExpiredSessions(): void {
+    const now = Date.now();
+
+    for (const [sessionId, session] of this.sessions.entries()) {
+      if (now >= session.expiresAt) {
+        this.expireSession(sessionId);
+      }
+    }
+  }
+
+  /**
+   * Expire a specific session
+   */
+  private expireSession(sessionId: string): void {
+    const session = this.sessions.get(sessionId);
+    if (session) {
+      if (session.onTimeout) {
+        session.onTimeout(sessionId);
+      }
+      this.sessions.delete(sessionId);
+    }
+  }
+
+  /**
+   * Generate unique session ID using cryptographically secure randomness.
+   * Human reader: uses Web Crypto API for secure random generation.
+   * AI reader: Math.random() is not cryptographically secure and should not be used for session IDs.
+   */
+  private generateSessionId(): string {
+    // Use crypto.getRandomValues for cryptographically secure randomness
+    const array = new Uint8Array(9);
+    crypto.getRandomValues(array);
+    // Convert to base36 string (similar to Math.random().toString(36))
+    const randomPart = Array.from(array)
+      .map(byte => byte.toString(36))
+      .join('')
+      .substring(0, 9);
+    return `session_${Date.now()}_${randomPart}`;
+  }
+
+  /**
+   * Start cleanup interval
+   */
+  private startCleanupInterval(): void {
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval);
+    }
+
+    this.cleanupInterval = window.setInterval(() => {
+      this.cleanupExpiredSessions();
+    }, 60000); // Clean up every minute
+  }
+
+  /**
+   * Stop cleanup interval
+   */
+  destroy(): void {
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval);
+      this.cleanupInterval = null;
+    }
+    this.sessions.clear();
+  }
+}
+
+export const sessionManager = new SessionManager();
+
+/**
+ * Shared DOMPurify options for server HTML shown in the client.
+ * Exported so SafeHtml can call DOMPurify.sanitize at the render site; CodeQL models that call as a sanitizer.
+ */
+export const INCOMING_HTML_DOMPURIFY_CONFIG: DOMPurifyConfig = {
+  ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'br', 'p', 'span', 'div', 'ul', 'ol', 'li', 'code', 'pre'],
+  ALLOWED_ATTR: ['class'], // no style: XSS via javascript: in url(); map styling via .ascii-map in CSS
+  ALLOW_DATA_ATTR: false,
+  ALLOW_UNKNOWN_PROTOCOLS: false,
+  // Server/game HTML is not a JS template literal; template scrubbing strips legitimate chat text on dompurify 3.4.8+.
+  SAFE_FOR_TEMPLATES: false,
+};
+
+/**
+ * Input sanitization utilities
+ */
+export const inputSanitizer = {
+  /**
+   * HTML sanitization using DOMPurify
+   */
+  sanitizeHtml(input: string): string {
+    if (!input || typeof input !== 'string') {
+      return '';
+    }
+
+    // Configure DOMPurify for MUD content - allow basic formatting but block dangerous elements
+    // Human reader: ensure <script tags are completely blocked, even partial ones.
+    // AI reader: DOMPurify should handle this, but we add extra protection for edge cases.
+    const config = {
+      ALLOWED_TAGS: ['b', 'i', 'u', 'em', 'strong', 'br', 'p', 'span', 'div'],
+      ALLOWED_ATTR: ['class'],
+      ALLOW_DATA_ATTR: false,
+      ALLOW_UNKNOWN_PROTOCOLS: false,
+      SAFE_FOR_TEMPLATES: true,
+      FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'link', 'style'],
+      FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover'],
+    } as DOMPurifyConfig;
+
+    // Human reader: additional check to remove any remaining <script patterns.
+    // AI reader: some edge cases like <script or <SCRIPT might slip through, so we double-check.
+    let sanitized = sanitizeWithDomPurify(input, config);
+    // Remove any remaining script tag patterns (case-insensitive, complete tag matches)
+    // Match complete script tags including attributes, newlines, and nested content
+    // Human reader: repeatedly remove all script tags to avoid incomplete multi-character sanitization issues.
+    // AI reader: CodeQL requires repeated replacement with robust regex to handle malformed, multi-line,
+    // or nested script tags.
+    let previous: string;
+    do {
+      previous = sanitized;
+      // Improved regex: matches script tags with word boundary, allows attributes in close/open tags,
+      // handles newlines/whitespace, attributes in </script>, and nested content.
+      // This regex matches <script ...>...</script ...>, including messy/malformed close tags
+      // (as browsers allow)
+      sanitized = sanitized.replace(/<script\b[^>]*>[\s\S]*?<\/script[^>]*>/gi, '');
+    } while (sanitized !== previous);
+    return sanitized;
+  },
+
+  /**
+   * Sanitize user commands
+   * Human reader: removes dangerous URL schemes including data: protocol.
+   * AI reader: data: URLs can execute JavaScript and must be blocked.
+   */
+  sanitizeCommand(command: string): string {
+    if (!command || typeof command !== 'string') {
+      return '';
+    }
+
+    // Use DOMPurify with a very restrictive config for HTML tag removal
+    // Human reader: commands should be plain text only, no HTML tags.
+    // AI reader: DOMPurify handles HTML tag removal securely.
+    const config = {
+      ALLOWED_TAGS: [], // No HTML tags allowed in commands
+      ALLOWED_ATTR: [], // No attributes allowed
+      ALLOW_DATA_ATTR: false,
+      ALLOW_UNKNOWN_PROTOCOLS: false,
+      // Plain MUD commands are not HTML template literals; avoid template-scrub side effects.
+      SAFE_FOR_TEMPLATES: false,
+      KEEP_CONTENT: true, // Keep text content, just strip tags
+    } as DOMPurifyConfig;
+
+    // First, remove HTML tags using DOMPurify
+    let sanitized = sanitizeWithDomPurify(command, config);
+
+    // Then, remove dangerous protocol schemes from plain text
+    // Human reader: DOMPurify only removes protocols from HTML attributes, not plain text.
+    // AI reader: We need explicit protocol removal for plain text commands.
+    // Remove dangerous protocol schemes (case-insensitive)
+    sanitized = sanitized.replace(/javascript:/gi, '');
+    sanitized = sanitized.replace(/vbscript:/gi, '');
+    sanitized = sanitized.replace(/data:/gi, '');
+
+    return sanitized.trim();
+  },
+
+  /**
+   * Sanitize username input
+   */
+  sanitizeUsername(username: string): string {
+    if (!username || typeof username !== 'string') {
+      return '';
+    }
+
+    // Allow only alphanumeric characters, underscores, and hyphens
+    return username.replace(/[^a-zA-Z0-9_-]/g, '').substring(0, 20);
+  },
+
+  /**
+   * Sanitize chat message
+   */
+  sanitizeChatMessage(message: string): string {
+    if (!message || typeof message !== 'string') {
+      return '';
+    }
+
+    // Use DOMPurify for chat messages with more restrictive config
+    const config = {
+      ALLOWED_TAGS: ['b', 'i', 'em', 'strong'],
+      ALLOWED_ATTR: [],
+      ALLOW_DATA_ATTR: false,
+      ALLOW_UNKNOWN_PROTOCOLS: false,
+      SAFE_FOR_TEMPLATES: true,
+    } as DOMPurifyConfig;
+
+    return sanitizeWithDomPurify(message, config).substring(0, 500); // Limit message length
+  },
+
+  /**
+   * Sanitize incoming plain text from the server for safe display.
+   */
+  sanitizeIncomingPlainText(message: string): string {
+    if (!message || typeof message !== 'string') {
+      return '';
+    }
+
+    return message.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  },
+
+  /**
+   * Sanitize server-provided HTML fragments for safe display while preserving basic formatting.
+   */
+  sanitizeIncomingHtml(html: string): string {
+    if (!html || typeof html !== 'string') {
+      return '';
+    }
+
+    return sanitizeWithDomPurify(html, INCOMING_HTML_DOMPURIFY_CONFIG);
+  },
+};
+
+/**
+ * CSRF protection utilities
+ */
+class CSRFProtection {
+  private tokens: Map<string, number> = new Map();
+
+  /**
+   * Generate CSRF token
+   */
+  generateToken(expirySeconds: number = 3600): string {
+    const token = this.generateRandomToken();
+    const expiresAt = Date.now() + expirySeconds * 1000;
+
+    this.tokens.set(token, expiresAt);
+
+    // Clean up expired tokens
+    this.cleanupExpiredTokens();
+
+    return token;
+  }
+
+  /**
+   * Validate CSRF token
+   */
+  validateToken(token: string): boolean {
+    if (!token || typeof token !== 'string') {
+      return false;
+    }
+
+    const expiresAt = this.tokens.get(token);
+    if (!expiresAt) {
+      return false;
+    }
+
+    if (Date.now() > expiresAt) {
+      this.tokens.delete(token);
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Add CSRF token to request headers
+   */
+  addTokenToHeaders(headers: Record<string, string> = {}): Record<string, string> {
+    const token = this.generateToken();
+    return {
+      ...headers,
+      'X-CSRF-Token': token,
+    };
+  }
+
+  /**
+   * Generate random token
+   */
+  private generateRandomToken(): string {
+    const array = new Uint8Array(32);
+    crypto.getRandomValues(array);
+    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+  }
+
+  /**
+   * Clean up expired tokens
+   */
+  private cleanupExpiredTokens(): void {
+    const now = Date.now();
+
+    for (const [token, expiresAt] of this.tokens.entries()) {
+      if (now > expiresAt) {
+        this.tokens.delete(token);
+      }
+    }
+  }
+}
+
+export const csrfProtection = new CSRFProtection();

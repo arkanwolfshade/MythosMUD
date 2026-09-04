@@ -1,0 +1,117 @@
+/**
+ * Tabbed Interface component.
+ *
+ * Provides a tabbed interface within the React app, similar to browser tabs.
+ * Allows multiple views (like the map) to be open simultaneously.
+ *
+ * As documented in the Pnakotic Manuscripts, proper dimensional navigation
+ * requires careful management of multiple viewing portals.
+ */
+
+import { X } from 'lucide-react';
+import React, { useCallback, useState } from 'react';
+
+export interface Tab {
+  id: string;
+  label: string;
+  content: React.ReactNode;
+  closable?: boolean;
+}
+
+export interface TabbedInterfaceProps {
+  /** Initial tabs */
+  initialTabs?: Tab[];
+  /** Callback when tabs change */
+  onTabsChange?: (tabs: Tab[]) => void;
+  /** Whether to show the tab bar */
+  showTabBar?: boolean;
+}
+
+/**
+ * Tabbed Interface component for managing multiple views within the app.
+ */
+export const TabbedInterface: React.FC<TabbedInterfaceProps> = ({
+  initialTabs = [],
+  onTabsChange,
+  showTabBar = true,
+}) => {
+  const [tabs, setTabs] = useState<Tab[]>(initialTabs);
+  const [activeTabId, setActiveTabId] = useState<string | null>(initialTabs.length > 0 ? initialTabs[0].id : null);
+
+  const closeTab = useCallback(
+    (tabId: string) => {
+      setTabs(prev => {
+        const newTabs = prev.filter(tab => tab.id !== tabId);
+        onTabsChange?.(newTabs);
+
+        // If we closed the active tab, switch to another tab
+        if (activeTabId === tabId) {
+          if (newTabs.length > 0) {
+            setActiveTabId(newTabs[newTabs.length - 1].id);
+          } else {
+            setActiveTabId(null);
+          }
+        }
+
+        return newTabs;
+      });
+    },
+    [activeTabId, onTabsChange]
+  );
+
+  const setActiveTab = useCallback((tabId: string) => {
+    setActiveTabId(tabId);
+  }, []);
+
+  const activeTab = tabs.find(tab => tab.id === activeTabId);
+
+  return (
+    <div className="flex flex-col h-full w-full bg-mythos-terminal-background">
+      {showTabBar && tabs.length > 0 && (
+        <div className="flex items-center border-b border-mythos-terminal-border bg-mythos-terminal-background overflow-x-auto">
+          {tabs.map(tab => (
+            <div key={tab.id} className="flex items-stretch border-r border-mythos-terminal-border min-w-0">
+              <button
+                type="button"
+                className={`
+                  flex flex-1 items-center gap-2 px-4 py-2 min-w-0
+                  cursor-pointer transition-colors
+                  ${
+                    activeTabId === tab.id
+                      ? 'bg-mythos-terminal-primary text-white'
+                      : 'bg-mythos-terminal-background text-mythos-terminal-text hover:bg-mythos-terminal-border/50'
+                  }
+                `}
+                onClick={() => {
+                  setActiveTab(tab.id);
+                }}
+              >
+                <span className="text-sm font-medium whitespace-nowrap">{tab.label}</span>
+              </button>
+              {tab.closable !== false && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    closeTab(tab.id);
+                  }}
+                  className="shrink-0 min-h-9 min-w-9 px-2 hover:bg-black/20 transition-colors self-stretch flex items-center justify-center"
+                  aria-label={`Close ${tab.label}`}
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="flex-1 overflow-hidden">
+        {activeTab ? (
+          <div className="h-full w-full">{activeTab.content}</div>
+        ) : (
+          <div className="flex items-center justify-center h-full text-mythos-terminal-text/50">No tabs open</div>
+        )}
+      </div>
+    </div>
+  );
+};

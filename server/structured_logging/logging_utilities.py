@@ -1,0 +1,300 @@
+"""
+Logging utilities for directory management, path resolution, and environment detection.
+
+This module provides thread-safe directory creation, log path resolution,
+log file rotation, and environment detection utilities.
+"""
+
+# pylint: disable=too-many-return-statements  # Reason: Logging utilities require multiple return statements for different path resolution and environment detection scenarios
+
+from __future__ import annotations
+
+import os
+import sys
+import threading
+import time
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import TYPE_CHECKING, cast
+
+import structlog
+from structlog.stdlib import BoundLogger
+
+from .log_time_formats import LOG_FILE_TIMESTAMP
+
+if TYPE_CHECKING:
+    from server.structured_logging.player_guid_formatter import PlayerGuidFormatter as _PlayerGuidFormatterType
+
+# NOTE: Infrastructure files may use structlog.get_logger() directly to avoid
+# circular imports during logging system initialization. This is acceptable
+# for internal logging infrastructure code only. All other modules must use
+# get_logger() from enhanced_logging_config.
+# structlog.get_logger is typed as Any; cast for static analysis (matches enhanced_logging_config).
+logger = cast(BoundLogger, structlog.get_logger(__name__))  # type: ignore[redundant-cast]
+
+
+def _rotation_bound_logger() -> BoundLogger:
+    """Structlog logger for rotate_log_files (cast silences basedpyright Any from get_logger)."""
+    return cast(BoundLogger, structlog.get_logger("server.structured_logging"))  # type: ignore[redundant-cast]
+
+
+# Thread-safe directory creation locks (one lock per directory path)
+_dir_locks: dict[str, threading.Lock] = {}
+_dir_locks_lock = threading.Lock()
+
+# Cache of directories we've successfully created (avoids repeated mkdir calls)
+# This prevents blocking on os.stat() inside mkdir() under heavy filesystem load
+_created_dirs: set[str] = set()
+_created_dirs_lock = threading.Lock()
+
+
+def ensure_log_directory(log_path: Path | None) -> None:
+    """
+    Thread-safe directory creation for log files.
+
+    This function ensures that the parent directory of a log file exists,
+    using per-directory locks to prevent deadlocks when multiple threads
+    try to create the same directory simultaneously.
+
+    Uses a cache to avoid repeated mkdir() calls, which prevents blocking
+    on os.stat() inside mkdir() under heavy filesystem load.
+
+    Args:
+        log_path: Path to the log file (directory will be created for parent), or None / empty to no-op
+    """
+    if not log_path or not log_path.parent:
+        return
+
+    dir_path = log_path.parent
+    dir_str = str(dir_path)
+
+    # Fast path: check cache first (no filesystem access needed)
+    with _created_dirs_lock:
+        if dir_str in _created_dirs:
+            return  # Directory already created in this process
+
+    # Get or create lock for this specific directory path
+    with _dir_locks_lock:
+        if dir_str not in _dir_locks:
+            _dir_locks[dir_str] = threading.Lock()
+        lock = _dir_locks[dir_str]
+
+    # Use per-directory lock to prevent concurrent creation attempts
+    with lock:
+        # Double-check cache after acquiring lock (another thread may have created it)
+        with _created_dirs_lock:
+            if dir_str in _created_dirs:
+                return
+
+        try:
+            dir_path.mkdir(parents=True, exist_ok=True)
+            # Successfully created - add to cache
+            with _created_dirs_lock:
+                _created_dirs.add(dir_str)
+        except (OSError, PermissionError) as e:
+            # Log but don't raise - logging should not fail due to directory issues
+            # This prevents deadlocks if directory creation fails
+            # Note: We don't add to cache on failure, so we'll retry next time
+            logger.warning(
+                "Failed to create log directory",
+                directory=str(dir_path),
+                error=str(e),
+                error_type=type(e).__name__,
+            )
+
+
+def resolve_log_base(log_base: str) -> Path:
+    """
+    Resolve log_base path to absolute path relative to project root.
+
+    Args:
+        log_base: Relative or absolute path to log directory
+
+    Returns:
+        Absolute path to log directory
+    """
+    log_path = Path(log_base)
+
+    # If already absolute, return as is
+    if log_path.is_absolute():
+        return log_path
+
+    # Find the project root (where pyproject.toml is located)
+    current_dir = Path.cwd()
+    project_root = None
+
+    # Look for pyproject.toml in current directory or parents
+    for parent in [current_dir] + list(current_dir.parents):
+        if (parent / "pyproject.toml").exists():
+            project_root = parent
+            break
+
+    if project_root:
+        return project_root / log_path
+    # Fallback to current directory if project root not found
+    return current_dir / log_path
+
+
+def _collect_rotatable_logs(env_log_dir: Path, timestamp: str) -> list[Path]:
+    """Collect non-empty log files eligible for rotation."""
+    log_files: list[Path] = []
+    log_files.extend(env_log_dir.glob("*.log"))
+    log_files.extend(env_log_dir.glob("*.jsonl"))
+    log_files.extend(env_log_dir.rglob("*.log"))
+    log_files.extend(env_log_dir.rglob("*.jsonl"))
+
+    unique_files = list(set(log_files))
+    return [path for path in unique_files if not path.name.endswith(f".{timestamp}")]
+
+
+def _running_on_windows() -> bool:
+    """Indirection so mypy does not treat sys.platform as a dead-code constant."""
+    return sys.platform == "win32"
+
+
+def _rename_or_copy_log_file(log_file: Path, rotated_path: Path) -> None:
+    """Rename a log file, using copy-then-truncate on Windows when needed."""
+    if _running_on_windows():
+        try:
+            from server.structured_logging.windows_safe_rotation import copy_then_truncate
+
+            copy_then_truncate(str(log_file), str(rotated_path))
+            return
+        except OSError:
+            pass
+    _ = log_file.rename(rotated_path)
+
+
+def _rotate_single_log_file(log_file: Path, timestamp: str) -> None:
+    """Rotate one log file, with Windows retry handling."""
+    try:
+        exists = log_file.exists()
+        size = log_file.stat().st_size if exists else 0
+    except FileNotFoundError:
+        return
+
+    if not exists or size <= 0:
+        return
+
+    rotated_name = f"{log_file.stem}.log.{timestamp}"
+    rotated_path = log_file.parent / rotated_name
+    max_retries = 3
+    retry_delay = 0.1
+
+    for attempt in range(max_retries):
+        try:
+            _rename_or_copy_log_file(log_file, rotated_path)
+            rotation_logger = _rotation_bound_logger()
+            rotation_logger.info(
+                "Rotated log file",
+                old_name=log_file.name,
+                new_name=rotated_name,
+            )
+            return
+        except (OSError, PermissionError) as e:
+            if attempt < max_retries - 1:
+                time.sleep(retry_delay)
+                retry_delay *= 2
+                continue
+            rotation_logger = _rotation_bound_logger()
+            rotation_logger.warning(
+                "Could not rotate log file after retries",
+                name=log_file.name,
+                error=str(e),
+                attempts=max_retries,
+            )
+
+
+def rotate_log_files(env_log_dir: Path) -> None:
+    """
+    Rotate existing log files by renaming them with timestamps.
+
+    This function implements the startup-time log rotation as described in the
+    restricted archives. When the server starts, existing log files are renamed
+    with timestamps before new log files are created, ensuring clean separation
+    between server sessions.
+
+    Enhanced with Windows-specific file locking handling to prevent
+    PermissionError: [WinError 32] exceptions during concurrent access.
+    Now recursively processes subdirectories to ensure all log files are
+    rotated.
+
+    Args:
+        env_log_dir: Path to the environment-specific log directory
+    """
+    if not env_log_dir.exists():
+        return
+
+    timestamp = datetime.now(UTC).strftime(LOG_FILE_TIMESTAMP)
+    log_files = _collect_rotatable_logs(env_log_dir, timestamp)
+    if not log_files:
+        return
+
+    for log_file in log_files:
+        _rotate_single_log_file(log_file, timestamp)
+
+
+def detect_environment() -> str:
+    """
+    Detect the current environment based on various indicators.
+
+    Returns:
+        Environment name: "e2e_test", "unit_test", "local", or "production"
+
+    Note: Valid environments are defined in .env files via LOGGING_ENVIRONMENT:
+        - e2e_test: End-to-end testing with Playwright
+        - unit_test: Unit and integration testing with pytest
+        - local: Local development
+        - production: Production deployment
+    """
+    # Define valid environments to prevent invalid directory creation
+    valid_environments = ["e2e_test", "unit_test", "production", "local"]  # pylint: disable=invalid-name  # Reason: Local variable, not a constant
+
+    # Check if running under pytest (unit tests)
+    if "pytest" in sys.modules or "pytest" in sys.argv[0]:
+        return "unit_test"
+
+    # Check explicit environment variable (with validation)
+    env = os.getenv("MYTHOSMUD_ENV")
+    if env and env in valid_environments:
+        return env
+
+    # Check if test configuration is being used
+    if os.getenv("MYTHOSMUD_TEST_MODE"):
+        return "unit_test"
+
+    # Try to determine from LOGGING_ENVIRONMENT (Pydantic config)
+    logging_env = os.getenv("LOGGING_ENVIRONMENT", "")
+    if logging_env in valid_environments:
+        return logging_env
+
+    # Fallback: check legacy config path for backward compatibility
+    config_path = os.getenv("MYTHOSMUD_CONFIG_PATH", "")
+    if "e2e_test" in config_path:
+        return "e2e_test"
+    if "unit_test" in config_path:
+        return "unit_test"
+    if "production" in config_path:
+        return "production"
+    if "local" in config_path:
+        return "local"
+
+    # Default to local (not "development" - that's not a valid environment)
+    return "local"
+
+
+def load_player_guid_formatter_class() -> type[_PlayerGuidFormatterType]:
+    """
+    Return PlayerGuidFormatter without a static import from caller modules.
+
+    Import-graph tools treat `from ... import PlayerGuidFormatter` inside
+    logging_handlers / logging_file_setup as an edge into player_guid_formatter,
+    which produced a false-positive cycle with enhanced_logging_config. A lazy
+    import inside this function keeps the same runtime order without that edge.
+
+    Return type uses TYPE_CHECKING import so mypy/pyright know the real
+    ``player_service`` constructor.
+    """
+    from server.structured_logging.player_guid_formatter import PlayerGuidFormatter
+
+    return PlayerGuidFormatter

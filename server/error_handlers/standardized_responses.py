@@ -1,0 +1,582 @@
+"""
+Standardized error response formats for all API endpoints.
+
+This module provides comprehensive error response standardization to ensure
+all API endpoints return consistent error formats across the entire application.
+It integrates with the existing error handling infrastructure while providing
+enhanced standardization and user-friendly message generation.
+
+As noted in the Necronomicon: "The responses of the ancients must be
+consistent in form and structure, lest the mortal mind be overwhelmed
+by the chaos of inconsistent error reporting."
+"""
+
+# pylint: disable=too-many-return-statements,too-many-lines
+# Reason: Standardized response handlers require multiple return statements for different error type handling.
+# Module slightly exceeds 550-line limit; refactoring would fragment cohesive error response logic.
+
+from typing import Any, Literal
+
+from fastapi import HTTPException, Request, status
+from fastapi.responses import JSONResponse
+from pydantic import ValidationError
+
+from ..error_types import (
+    ErrorMessages,
+    ErrorSeverity,
+    ErrorType,
+    StandardizedErrorResponseDict,
+    create_standard_error_response,
+    create_websocket_error_response,
+)
+from ..exceptions import (
+    AuthenticationError,
+    DatabaseError,
+    ErrorContext,
+    GameLogicError,
+    LoggedHTTPException,
+    MythosMUDError,
+    NetworkError,
+    RateLimitError,
+    ResourceNotFoundError,
+    create_error_context,
+)
+from ..exceptions import (
+    ValidationError as MythosValidationError,
+)
+from ..structured_logging.enhanced_logging_config import get_logger
+from .pydantic_error_handler import PydanticErrorHandler
+
+logger = get_logger(__name__)
+
+_SENSITIVE_EXCEPTION_PATTERNS = (
+    "traceback",
+    "stack",
+    "file:",
+    "line:",
+    "traceback (most recent call last)",
+)
+_EXCEPTION_PATH_INDICATORS = (".py", ".js", "c:\\", "/home/", "/usr/", "e:\\")
+
+
+def _contains_sensitive_exception_pattern(message_lower: str) -> bool:
+    return any(pattern in message_lower for pattern in _SENSITIVE_EXCEPTION_PATTERNS)
+
+
+def _contains_file_path_in_exception(message: str, message_lower: str) -> bool:
+    if "/" not in message and "\\" not in message:
+        return False
+    return any(indicator in message_lower for indicator in _EXCEPTION_PATH_INDICATORS)
+
+
+class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Reason: Utility class with focused responsibility, minimal public interface
+    """
+    Standardized error response handler for all API endpoints.
+
+    This class provides comprehensive error response standardization
+    with automatic error type detection, user-friendly message generation,
+    and consistent formatting across all response types.
+    """
+
+    # HTTP status code mappings for different error types
+    STATUS_CODE_MAPPINGS = {
+        # Authentication errors
+        ErrorType.AUTHENTICATION_FAILED: status.HTTP_401_UNAUTHORIZED,
+        ErrorType.AUTHORIZATION_DENIED: status.HTTP_403_FORBIDDEN,
+        ErrorType.INVALID_TOKEN: status.HTTP_401_UNAUTHORIZED,
+        ErrorType.TOKEN_EXPIRED: status.HTTP_401_UNAUTHORIZED,
+        # Validation errors
+        ErrorType.VALIDATION_ERROR: status.HTTP_422_UNPROCESSABLE_CONTENT,
+        ErrorType.INVALID_INPUT: status.HTTP_400_BAD_REQUEST,
+        ErrorType.MISSING_REQUIRED_FIELD: status.HTTP_400_BAD_REQUEST,
+        ErrorType.INVALID_FORMAT: status.HTTP_400_BAD_REQUEST,
+        # Resource errors
+        ErrorType.RESOURCE_NOT_FOUND: status.HTTP_404_NOT_FOUND,
+        ErrorType.RESOURCE_ALREADY_EXISTS: status.HTTP_409_CONFLICT,
+        ErrorType.RESOURCE_CONFLICT: status.HTTP_409_CONFLICT,
+        # Game logic errors
+        ErrorType.GAME_LOGIC_ERROR: status.HTTP_400_BAD_REQUEST,
+        ErrorType.INVALID_COMMAND: status.HTTP_400_BAD_REQUEST,
+        ErrorType.INVALID_MOVEMENT: status.HTTP_400_BAD_REQUEST,
+        ErrorType.PLAYER_NOT_IN_ROOM: status.HTTP_400_BAD_REQUEST,
+        # Database errors
+        ErrorType.DATABASE_ERROR: status.HTTP_503_SERVICE_UNAVAILABLE,
+        ErrorType.DATABASE_CONNECTION_ERROR: status.HTTP_503_SERVICE_UNAVAILABLE,
+        ErrorType.DATABASE_QUERY_ERROR: status.HTTP_503_SERVICE_UNAVAILABLE,
+        # Network errors
+        ErrorType.NETWORK_ERROR: status.HTTP_503_SERVICE_UNAVAILABLE,
+        ErrorType.CONNECTION_ERROR: status.HTTP_503_SERVICE_UNAVAILABLE,
+        ErrorType.TIMEOUT_ERROR: status.HTTP_504_GATEWAY_TIMEOUT,
+        # Rate limiting
+        ErrorType.RATE_LIMIT_EXCEEDED: status.HTTP_429_TOO_MANY_REQUESTS,
+        ErrorType.TOO_MANY_REQUESTS: status.HTTP_429_TOO_MANY_REQUESTS,
+        # System errors
+        ErrorType.CONFIGURATION_ERROR: status.HTTP_500_INTERNAL_SERVER_ERROR,
+        ErrorType.SYSTEM_ERROR: status.HTTP_500_INTERNAL_SERVER_ERROR,
+        ErrorType.INTERNAL_ERROR: status.HTTP_500_INTERNAL_SERVER_ERROR,
+        # Real-time communication
+        ErrorType.WEBSOCKET_ERROR: status.HTTP_400_BAD_REQUEST,
+        ErrorType.MESSAGE_PROCESSING_ERROR: status.HTTP_400_BAD_REQUEST,
+    }
+
+    # User-friendly message mappings for common scenarios
+    USER_FRIENDLY_MESSAGES = {
+        ErrorType.AUTHENTICATION_FAILED: ErrorMessages.AUTHENTICATION_REQUIRED,
+        ErrorType.AUTHORIZATION_DENIED: "Access denied",
+        ErrorType.INVALID_TOKEN: "Invalid authentication token",
+        ErrorType.TOKEN_EXPIRED: ErrorMessages.TOKEN_EXPIRED,
+        ErrorType.VALIDATION_ERROR: ErrorMessages.INVALID_INPUT,
+        ErrorType.INVALID_INPUT: ErrorMessages.INVALID_INPUT,
+        ErrorType.MISSING_REQUIRED_FIELD: ErrorMessages.MISSING_REQUIRED_FIELD,
+        ErrorType.INVALID_FORMAT: ErrorMessages.INVALID_FORMAT,
+        ErrorType.RESOURCE_NOT_FOUND: ErrorMessages.RESOURCE_NOT_FOUND,
+        ErrorType.RESOURCE_ALREADY_EXISTS: "Resource already exists",
+        ErrorType.RESOURCE_CONFLICT: "Resource conflict occurred",
+        ErrorType.GAME_LOGIC_ERROR: "Invalid game action",
+        ErrorType.INVALID_COMMAND: ErrorMessages.INVALID_COMMAND,
+        ErrorType.INVALID_MOVEMENT: ErrorMessages.INVALID_MOVEMENT,
+        ErrorType.PLAYER_NOT_IN_ROOM: ErrorMessages.PLAYER_NOT_IN_ROOM,
+        ErrorType.DATABASE_ERROR: "Database error occurred",
+        ErrorType.DATABASE_CONNECTION_ERROR: "Database connection failed",
+        ErrorType.DATABASE_QUERY_ERROR: "Database query failed",
+        ErrorType.NETWORK_ERROR: ErrorMessages.CONNECTION_ERROR,
+        ErrorType.CONNECTION_ERROR: ErrorMessages.CONNECTION_ERROR,
+        ErrorType.TIMEOUT_ERROR: ErrorMessages.TIMEOUT_ERROR,
+        ErrorType.RATE_LIMIT_EXCEEDED: ErrorMessages.TOO_MANY_REQUESTS,
+        ErrorType.TOO_MANY_REQUESTS: ErrorMessages.TOO_MANY_REQUESTS,
+        ErrorType.CONFIGURATION_ERROR: "Configuration error",
+        ErrorType.SYSTEM_ERROR: "System error occurred",
+        ErrorType.INTERNAL_ERROR: ErrorMessages.INTERNAL_ERROR,
+        ErrorType.WEBSOCKET_ERROR: ErrorMessages.WEBSOCKET_ERROR,
+        ErrorType.MESSAGE_PROCESSING_ERROR: ErrorMessages.MESSAGE_PROCESSING_ERROR,
+    }
+
+    def __init__(self, request: Request | None = None) -> None:
+        """
+        Initialize standardized error response handler.
+
+        Args:
+            request: Optional FastAPI request for context extraction
+        """
+        self.request = request
+        self.context = self._extract_context_from_request(request)
+
+    @staticmethod
+    def _extract_user_id_from_state(state: Any) -> str | None:
+        """Extract user id from request state when present."""
+        if not (hasattr(state, "user") and state.user):
+            return None
+
+        user = state.user
+        try:
+            if hasattr(user, "get"):
+                return str(user.get("id", ""))
+            if hasattr(user, "__getitem__"):
+                return str(user["id"])
+            if hasattr(user, "id"):
+                return str(user.id)
+        except (KeyError, AttributeError, TypeError):
+            # Silently skip if user information cannot be extracted
+            pass
+        return None
+
+    @staticmethod
+    def _extract_request_metadata(request: Request) -> dict[str, str]:
+        """Extract URL, method, and header metadata from a request."""
+        metadata: dict[str, str] = {}
+        if hasattr(request, "url"):
+            metadata["url"] = str(request.url)
+        if hasattr(request, "method"):
+            metadata["method"] = request.method
+        if hasattr(request, "headers"):
+            metadata["user_agent"] = request.headers.get("user-agent", "")
+            metadata["content_type"] = request.headers.get("content-type", "")
+        return metadata
+
+    def _extract_context_from_request(self, request: Request | None) -> ErrorContext:
+        """Extract error context from FastAPI request."""
+        if not request:
+            return create_error_context()
+
+        # AI Agent: Explicit typing to prevent mypy from inferring dict[str, str]
+        context_data: dict[str, Any] = {}
+
+        user_id = self._extract_user_id_from_state(request.state)
+        if user_id is not None:
+            context_data["user_id"] = user_id
+
+        if hasattr(request.state, "session_id"):
+            context_data["session_id"] = request.state.session_id
+
+        # AI Agent: getattr returns Any, which is compatible with str | None in ErrorContext
+        context_data["request_id"] = getattr(request.state, "request_id", None)
+        context_data["metadata"] = self._extract_request_metadata(request)
+
+        return create_error_context(**context_data)
+
+    def handle_exception(
+        self, exc: Exception, include_details: bool = False, response_type: Literal["http", "websocket"] = "http"
+    ) -> JSONResponse:
+        """
+        Handle any exception and return a standardized error response.
+
+        Args:
+            exc: The exception to handle
+            include_details: Whether to include detailed error information
+            response_type: Type of response ("http", "websocket")
+
+        Returns:
+            Standardized JSONResponse
+        """
+        try:
+            # Handle different exception types
+            if isinstance(exc, MythosMUDError):
+                return self._handle_mythos_error(exc, include_details, response_type)
+            if isinstance(exc, ValidationError):
+                return self._handle_pydantic_validation_error(exc, include_details, response_type)
+            if isinstance(exc, LoggedHTTPException):
+                return self._handle_logged_http_exception(exc, include_details, response_type)
+            if isinstance(exc, HTTPException):
+                return self._handle_http_exception(exc, include_details, response_type)
+            return self._handle_generic_exception(exc, include_details, response_type)
+
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Error handler errors unpredictable, must have fallback
+            # Fallback error handling
+            logger.error("Error in StandardizedErrorResponse", error=str(e), exc_info=True)
+            return self._create_fallback_response(exc, response_type)
+
+    def _handle_mythos_error(
+        self, error: MythosMUDError, include_details: bool, response_type: Literal["http", "websocket"]
+    ) -> JSONResponse:
+        """Handle MythosMUDError instances."""
+        # Determine error type and status code
+        error_type = self._determine_error_type_from_exception(error)
+        status_code = self.STATUS_CODE_MAPPINGS.get(error_type, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        # Generate user-friendly message
+        user_friendly = self._generate_user_friendly_message(error_type, error)
+
+        # Create error details
+        details = self._create_error_details(error, include_details)
+
+        # Create appropriate response
+        public_message = user_friendly
+        response_data: StandardizedErrorResponseDict
+        if response_type == "websocket":
+            response_data = create_websocket_error_response(
+                error_type=error_type, message=public_message, user_friendly=user_friendly, details=details
+            )
+        else:
+            response_data = create_standard_error_response(
+                error_type=error_type,
+                message=public_message,
+                user_friendly=user_friendly,
+                details=details,
+                severity=ErrorSeverity.MEDIUM,
+            )
+        return JSONResponse(status_code=status_code, content=response_data)
+
+    def _handle_pydantic_validation_error(
+        self,
+        error: ValidationError,
+        include_details: bool,  # pylint: disable=unused-argument  # Reason: Parameter reserved for future use
+        response_type: Literal["http", "websocket"],  # pylint: disable=unused-argument  # Reason: used indirectly via handler
+    ) -> JSONResponse:
+        """Handle Pydantic ValidationError instances."""
+        # Use PydanticErrorHandler for consistent processing
+        handler = PydanticErrorHandler(context=self.context)
+        response_data = handler.handle_validation_error(error, response_type=response_type)
+
+        # Determine status code
+        error_type = ErrorType(response_data.get("error_type", "validation_error"))
+        status_code = self.STATUS_CODE_MAPPINGS.get(error_type, status.HTTP_422_UNPROCESSABLE_CONTENT)
+
+        return JSONResponse(status_code=status_code, content=response_data)
+
+    def _handle_logged_http_exception(
+        self, exc: LoggedHTTPException, include_details: bool, response_type: Literal["http", "websocket"]
+    ) -> JSONResponse:
+        """Handle LoggedHTTPException instances."""
+        # Map status code to error type
+        error_type = self._map_status_code_to_error_type(exc.status_code)
+        # Determine user-friendly message with special handling for certain operations
+        # Human reader: keep invite-code errors explicit for better UX.
+        # AI reader: rely on sanitized_detail for invite-code messages, not raw exception text.
+
+        # Create error details
+        details: dict[str, Any] = {"status_code": exc.status_code}
+        # Human reader: sanitize detail to prevent stack trace exposure.
+        # AI reader: ensure no stack traces leak into user-facing responses.
+        sanitized_detail = self._sanitize_http_detail(exc.detail)
+        user_friendly = self._get_logged_http_user_friendly_message(error_type, exc, sanitized_detail)
+        if include_details and sanitized_detail:
+            details["original_detail"] = sanitized_detail
+
+        # Create appropriate response
+        response_data: StandardizedErrorResponseDict
+        if response_type == "websocket":
+            response_data = create_websocket_error_response(
+                error_type=error_type, message=user_friendly, user_friendly=user_friendly, details=details
+            )
+        else:  # HTTP
+            response_data = create_standard_error_response(
+                error_type=error_type,
+                message=user_friendly,
+                user_friendly=user_friendly,
+                details=details,
+                severity=ErrorSeverity.MEDIUM,
+            )
+
+        return JSONResponse(status_code=exc.status_code, content=response_data)
+
+    def _get_logged_http_user_friendly_message(
+        self,
+        error_type: ErrorType,
+        exc: LoggedHTTPException,
+        sanitized_detail: str,
+    ) -> str:
+        """
+        Determine user-friendly message for LoggedHTTPException.
+
+        For most errors we use the generic mapping, but for some operations (like
+        invite validation) we want the specific detail string so the user gets a
+        clear explanation instead of a vague "Invalid input provided".
+
+        This helper intentionally uses the sanitized detail text to avoid leaking
+        stack traces or sensitive data.
+        """
+        try:
+            context = getattr(exc, "context", None)
+            metadata = getattr(context, "metadata", {}) if context is not None else {}
+            operation = metadata.get("operation")
+        except Exception:  # pylint: disable=broad-exception-caught  # Reason: Defensive - context structure may vary
+            operation = None
+
+        # Special-case invite validation failures so registration UX is clear.
+        if error_type is ErrorType.INVALID_INPUT and operation == "validate_invite":
+            # Example sanitized_detail: "Invite code is expired or already used"
+            # This is safe to show directly to the user and much more helpful than
+            # the generic "Invalid input provided".
+            return sanitized_detail or ErrorMessages.INVALID_INPUT
+
+        return self.USER_FRIENDLY_MESSAGES.get(error_type, ErrorMessages.INTERNAL_ERROR)
+
+    def _handle_http_exception(
+        self, exc: HTTPException, include_details: bool, _response_type: Literal["http", "websocket"]
+    ) -> JSONResponse:
+        """Handle standard HTTPException instances."""
+        # Map status code to error type
+        error_type = self._map_status_code_to_error_type(exc.status_code)
+        user_friendly = self.USER_FRIENDLY_MESSAGES.get(error_type, ErrorMessages.INTERNAL_ERROR)
+
+        # Create error details
+        details: dict[str, Any] = {"status_code": exc.status_code}
+        if include_details:
+            # Human reader: sanitize detail to prevent stack trace exposure.
+            # AI reader: ensure no stack traces leak into user-facing responses.
+            sanitized_detail = self._sanitize_http_detail(exc.detail)
+            if sanitized_detail:
+                details["original_detail"] = sanitized_detail
+
+        # Create appropriate response
+        response_data = create_standard_error_response(
+            error_type=error_type,
+            message=user_friendly,
+            user_friendly=user_friendly,
+            details=details,
+            severity=ErrorSeverity.MEDIUM,
+        )
+
+        return JSONResponse(status_code=exc.status_code, content=response_data)
+
+    def _handle_generic_exception(
+        self, exc: Exception, include_details: bool, _response_type: Literal["http", "websocket"]
+    ) -> JSONResponse:
+        """Handle generic exceptions."""
+        error_type = ErrorType.INTERNAL_ERROR
+        user_friendly = ErrorMessages.INTERNAL_ERROR
+
+        # Create error details
+        details = {}
+        if include_details:
+            details["exception_type"] = type(exc).__name__
+
+        # Log the error
+        logger.error("Unhandled exception", error=str(exc), exc_info=True, **self.context.to_dict())
+
+        # Create appropriate response
+        response_data = create_standard_error_response(
+            error_type=error_type,
+            message=user_friendly,
+            user_friendly=user_friendly,
+            details=details,
+            severity=ErrorSeverity.HIGH,
+        )
+
+        status_code = self.STATUS_CODE_MAPPINGS.get(error_type, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return JSONResponse(status_code=status_code, content=response_data)
+
+    def _determine_error_type_from_exception(self, error: MythosMUDError) -> ErrorType:
+        """Determine ErrorType from MythosMUDError instance."""
+        # Map exception types to error types
+        if isinstance(error, AuthenticationError):
+            return ErrorType.AUTHENTICATION_FAILED
+        if isinstance(error, MythosValidationError):
+            return ErrorType.VALIDATION_ERROR
+        if isinstance(error, GameLogicError):
+            return ErrorType.GAME_LOGIC_ERROR
+        if isinstance(error, DatabaseError):
+            return ErrorType.DATABASE_ERROR
+        if isinstance(error, NetworkError):
+            return ErrorType.NETWORK_ERROR
+        if isinstance(error, RateLimitError):
+            return ErrorType.RATE_LIMIT_EXCEEDED
+        if isinstance(error, ResourceNotFoundError):
+            return ErrorType.RESOURCE_NOT_FOUND
+        return ErrorType.INTERNAL_ERROR
+
+    def _map_status_code_to_error_type(self, status_code: int) -> ErrorType:
+        """Map HTTP status code to ErrorType."""
+        mapping = {
+            400: ErrorType.INVALID_INPUT,
+            401: ErrorType.AUTHENTICATION_FAILED,
+            403: ErrorType.AUTHORIZATION_DENIED,
+            404: ErrorType.RESOURCE_NOT_FOUND,
+            409: ErrorType.RESOURCE_CONFLICT,
+            422: ErrorType.VALIDATION_ERROR,
+            429: ErrorType.RATE_LIMIT_EXCEEDED,
+            500: ErrorType.INTERNAL_ERROR,
+            503: ErrorType.SYSTEM_ERROR,
+            504: ErrorType.TIMEOUT_ERROR,
+        }
+        return mapping.get(status_code, ErrorType.INTERNAL_ERROR)
+
+    def _generate_user_friendly_message(self, error_type: ErrorType, error: MythosMUDError) -> str:
+        """Generate user-friendly message for error."""
+        # Use error's user_friendly message if available
+        if hasattr(error, "user_friendly") and error.user_friendly:
+            return error.user_friendly
+
+        # Fall back to predefined messages
+        return self.USER_FRIENDLY_MESSAGES.get(error_type, ErrorMessages.INTERNAL_ERROR)
+
+    def _create_error_details(self, error: MythosMUDError, include_details: bool) -> dict[str, Any]:
+        """Create error details dictionary."""
+        details = {}
+
+        if include_details:
+            # Include error details
+            details.update(error.details)
+
+            # Include context information
+            details["context"] = {
+                "user_id": error.context.user_id,
+                "session_id": error.context.session_id,
+                "request_id": error.context.request_id,
+            }
+
+        return details
+
+    def _sanitize_http_detail(self, detail: object) -> str:
+        """
+        Sanitize HTTPException detail for optional inclusion in error details.
+
+        Only string details are considered; non-string values are omitted from responses.
+        """
+        if not isinstance(detail, str):
+            return ""
+        return self._sanitize_exception_message(detail)
+
+    def _sanitize_exception_message(self, message: str) -> str:
+        """
+        Sanitize exception message to prevent stack trace exposure.
+
+        Removes sensitive information like file paths, line numbers, and stack traces
+        from error messages before exposing them to users.
+
+        Args:
+            message: The exception message to sanitize
+
+        Returns:
+            Sanitized message safe for user exposure
+        """
+        if not message:
+            return "An unexpected error occurred"
+
+        message_lower = message.lower()
+        if _contains_sensitive_exception_pattern(message_lower) or _contains_file_path_in_exception(
+            message, message_lower
+        ):
+            return "[REDACTED]"
+
+        # Limit length to prevent information disclosure
+        if len(message) > 200:
+            return message[:200] + "..."
+
+        return message
+
+    def _create_fallback_response(self, _exc: Exception, response_type: Literal["http", "websocket"]) -> JSONResponse:  # pylint: disable=unused-argument  # Reason: exc unused in fallback
+        """Create fallback error response when normal handling fails."""
+        message = "An unexpected error occurred"
+        user_friendly = "Please try again later"
+
+        response_data: StandardizedErrorResponseDict
+        if response_type == "websocket":
+            response_data = create_websocket_error_response(
+                error_type=ErrorType.INTERNAL_ERROR,
+                message=message,
+                user_friendly=user_friendly,
+                details={"fallback": True},
+            )
+        else:
+            response_data = create_standard_error_response(
+                error_type=ErrorType.INTERNAL_ERROR,
+                message=message,
+                user_friendly=user_friendly,
+                details={"fallback": True},
+                severity=ErrorSeverity.HIGH,
+            )
+
+        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content=response_data)
+
+
+# Convenience functions for common use cases
+def create_standardized_error_response(
+    request: Request | None = None,
+    _include_details: bool = False,  # pylint: disable=unused-argument  # Reason: Parameter reserved for future response customization
+    _response_type: Literal["http", "websocket"] = "http",  # pylint: disable=unused-argument  # Reason: Parameter reserved for future response customization
+) -> StandardizedErrorResponse:
+    """
+    Create a standardized error response handler.
+
+    Args:
+        request: Optional FastAPI request for context
+        include_details: Whether to include detailed error information
+        response_type: Type of response ("http", "websocket")
+
+    Returns:
+        StandardizedErrorResponse instance
+    """
+    return StandardizedErrorResponse(request=request)
+
+
+def handle_api_error(
+    exc: Exception,
+    request: Request | None = None,
+    include_details: bool = False,
+    response_type: Literal["http", "websocket"] = "http",
+) -> JSONResponse:
+    """
+    Convenience function to handle API errors with standardized responses.
+
+    Args:
+        exc: The exception to handle
+        request: Optional FastAPI request for context
+        include_details: Whether to include detailed error information
+        response_type: Type of response ("http", "websocket")
+
+    Returns:
+        Standardized JSONResponse
+    """
+    handler = StandardizedErrorResponse(request=request)
+    return handler.handle_exception(exc, include_details, response_type)

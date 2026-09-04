@@ -17,17 +17,19 @@ Starts the MythosMUD FastAPI server with optional process cleanup.
 **Parameters:**
 
 - `-ServerHost`: Host address to bind server to (default: "127.0.0.1")
-- `-Port`: Port number to bind server to (default: 54731)
-- `-Reload`: Enable auto-reload for development (default: true)
+- `-Port`: Port number to bind server to (default: 54768)
+- `-Reload`: Enable auto-reload for development (default: false - hot reloading disabled due to client compatibility issues)
 
 **Examples:**
 
 ```powershell
 # Start with default settings
+
 .\start_server.ps1
 
-# Start on all interfaces, port 8080, without auto-reload
-.\start_server.ps1 -ServerHost "0.0.0.0" -Port 8080 -Reload:$false
+# Start on all interfaces, port 8080, with auto-reload enabled
+
+.\start_server.ps1 -ServerHost "0.0.0.0" -Port 8080 -Reload
 ```
 
 ### `stop_server.ps1`
@@ -49,20 +51,22 @@ Stops MythosMUD server processes using multiple detection methods.
 
 ```powershell
 # Stop server processes gracefully
+
 .\stop_server.ps1
 
 # Force stop all Python processes with detailed output
+
 .\stop_server.ps1 -Force -Verbose
 ```
 
-### `start_dev.ps1`
+### `start_local.ps1`
 
 Starts the complete MythosMUD development environment (both FastAPI server and React client).
 
 **Usage:**
 
 ```powershell
-.\start_dev.ps1
+.\start_local.ps1
 ```
 
 **Features:**
@@ -93,9 +97,14 @@ Formats code using ruff.
 
 Installs project dependencies.
 
-### `bootstrap_db.py`
+### Database Initialization (PostgreSQL)
 
-Bootstraps the database with initial data.
+Database initialization is handled via environment-specific DDL files: `db/mythos_dev_ddl.sql`,
+`db/mythos_unit_ddl.sql`, and `db/mythos_e2e_ddl.sql`. Use the one that matches your database.
+See `data/db/README.md` and `db/` for database setup instructions.
+
+**Note:** SQLite database initialization scripts have been removed as the project
+now uses PostgreSQL exclusively.
 
 ### `build.py`
 
@@ -111,13 +120,15 @@ Cleans build artifacts and temporary files.
 
 ## Requirements
 
-- PowerShell 5.1 or higher (for PowerShell scripts)
+PowerShell 5.1 or higher (for PowerShell scripts)
+
 - Python 3.12+ (for Python scripts)
 - Node.js 18+ (for client development)
 
 ## Notes
 
-- All PowerShell scripts include comprehensive help documentation
+All PowerShell scripts include comprehensive help documentation
+
 - Use `Get-Help .\script_name.ps1 -Full` for detailed help
 - Scripts automatically handle process cleanup and port management
 - Error handling and logging are built into all scripts

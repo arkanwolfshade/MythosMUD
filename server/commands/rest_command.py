@@ -1,0 +1,426 @@
+"""
+Rest command handler for clean disconnection.
+
+This module handles the /rest command which allows players to cleanly disconnect
+from the game. In rest locations (inns/hotels/motels), disconnection is instant
+when not in combat. Otherwise, a 10-second countdown begins during which the
+player can be interrupted by combat, movement, or spellcasting.
+
+As documented in "The Art of Restful Departure" - Dr. Armitage, 1931,
+proper rest requires tranquility and freedom from disturbance.
+
+Handlers resolve persistence, connection_manager, and combat from FastAPI
+app.state without a single shared typed protocol; file-scoped pyright
+relaxation limits Any/unknown noise on that boundary.
+"""
+
+# pyright: reportAny=false, reportExplicitAny=false, reportUnknownVariableType=false, reportUnknownMemberType=false, reportUnknownArgumentType=false
+
+# pylint: disable=too-many-return-statements  # Reason: Rest command handler requires multiple return statements for early validation returns (combat checks, rest location validation, error handling)
+
+import asyncio
+import uuid
+from collections.abc import Awaitable, Callable
+from typing import Any, cast
+
+from ..alias_storage import AliasStorage
+from ..realtime.posture_notify import emit_posture_change
+from ..services.player_position_service import PlayerPositionService
+from ..structured_logging.enhanced_logging_config import get_logger
+from .rest_countdown_task import create_rest_countdown_task, rest_countdown_seconds
+
+logger = get_logger(__name__)
+
+
+async def check_player_in_combat(player_id: uuid.UUID, app: Any) -> bool:
+    """
+    Check if a player is currently in combat.
+
+    Args:
+        player_id: The player's ID
+        app: FastAPI app instance
+
+    Returns:
+        True if player is in combat, False otherwise
+    """
+    combat_service = getattr(app.state, "combat_service", None) if app else None
+    if not combat_service:
+        return False
+
+    try:
+        combat = await combat_service.get_combat_by_participant(str(player_id))
+        return combat is not None
+    except (AttributeError, TypeError, ValueError) as e:
+        logger.debug("Error checking combat status", player_id=player_id, error=str(e))
+        return False
+
+
+async def _check_rest_location(room_id: str | None, persistence: Any) -> bool:
+    """
+    Check if the current room is a rest location (inn/hotel/motel).
+
+    Args:
+        room_id: The room ID
+        persistence: Persistence layer
+
+    Returns:
+        True if room is a rest location, False otherwise
+    """
+    if not room_id or not persistence:
+        return False
+
+    try:
+        room = persistence.get_room_by_id(room_id)
+        if room and hasattr(room, "rest_location"):
+            return cast(bool, room.rest_location)
+    except (AttributeError, TypeError) as e:
+        logger.debug("Error checking rest location", room_id=room_id, error=str(e))
+
+    return False
+
+
+async def _delayed_disconnect_player_intentionally(
+    player_id: uuid.UUID,
+    connection_manager: Any,
+    _persistence: Any,  # Unused but kept for API consistency with _disconnect_player_intentionally
+) -> None:
+    """Disconnect after a short delay so the "rest peacefully" response has time to reach the
+    client first (#297). Forcing the disconnect before the command response is sent closes the
+    socket out from under it, and the client never sees the confirmation message.
+
+    Snapshots the connections open right now and closes only those after the delay -- not
+    whatever is registered once the delay elapses. force_disconnect_player closes every
+    connection currently on player_id; if the player reconnects during this window (observed in
+    fast-moving E2E runs), that would sweep up their brand-new connection too.
+
+    Marks intentional_disconnects BEFORE the delay, not after: the socket has been observed
+    dying on its own (a racing client-side reconnect, an unrelated proxy hiccup) faster than this
+    100ms sleep, so the disconnect handler ran while player_id was still absent from
+    intentional_disconnects and treated a /rest disconnect as unintentional -- starting a 30s
+    linkdead grace period instead of the clean teardown /rest is supposed to produce (#297
+    regression caught via rest-command.spec.ts's countdown test failing to reconnect after it).
+    Only the actual close() is worth deferring for the response-delivery reason above; marking
+    intent costs nothing to do immediately and closes this race entirely.
+    """
+    connection_ids_to_close: list[str] = list(connection_manager.player_websockets.get(player_id, []))
+    connection_manager.intentional_disconnects.add(player_id)
+    try:
+        await asyncio.sleep(0.1)
+
+        logger.info("Disconnecting player intentionally via /rest", player_id=player_id)
+        for connection_id in connection_ids_to_close:
+            _ = await connection_manager.disconnect_websocket_connection(player_id, connection_id)
+    except (AttributeError, RuntimeError, ValueError, TypeError) as e:
+        logger.error("Error disconnecting player", player_id=player_id, error=str(e), exc_info=True)
+    finally:
+        connection_manager.intentional_disconnects.discard(player_id)
+
+
+async def _disconnect_player_intentionally(
+    player_id: uuid.UUID,
+    connection_manager: Any,
+    _persistence: Any,  # Unused but kept for API consistency
+) -> None:
+    """
+    Disconnect a player intentionally (via /rest command).
+
+    This marks the disconnect as intentional so no grace period is applied.
+
+    Args:
+        player_id: The player's ID
+        connection_manager: ConnectionManager instance
+        _persistence: Persistence layer (unused, kept for API consistency)
+    """
+    logger.info("Disconnecting player intentionally via /rest", player_id=player_id)
+
+    # Mark as intentional disconnect (no grace period)
+    connection_manager.intentional_disconnects.add(player_id)
+
+    # Disconnect all connections
+    try:
+        await connection_manager.force_disconnect_player(player_id)
+    except (AttributeError, RuntimeError, ValueError, TypeError) as e:
+        logger.error("Error disconnecting player", player_id=player_id, error=str(e), exc_info=True)
+    finally:
+        # Remove from intentional disconnects set after a delay to ensure cleanup
+        # This is handled in track_player_disconnected_impl, but we clean up here too
+        connection_manager.intentional_disconnects.discard(player_id)
+
+
+async def _start_rest_countdown(
+    player_id: uuid.UUID,
+    player_name: str,
+    connection_manager: Any,
+    persistence: Any,
+) -> None:
+    """
+    Start the 10-second rest countdown.
+
+    Args:
+        player_id: The player's ID
+        player_name: The player's name
+        connection_manager: ConnectionManager instance
+        persistence: Persistence layer
+    """
+    logger.info(
+        "Starting rest countdown", player_id=player_id, player_name=player_name, duration=rest_countdown_seconds()
+    )
+
+    # Create and store the task
+    task = create_rest_countdown_task(
+        player_id, player_name, connection_manager, persistence, _disconnect_player_intentionally
+    )
+    connection_manager.resting_players[player_id] = task
+
+
+async def _stand_after_cancelled_rest(player_id: uuid.UUID, connection_manager: Any) -> None:
+    """/rest sits the player; interrupting rest must restore standing so sessions are not stuck Sitting."""
+    persistence = getattr(connection_manager, "async_persistence", None)
+    if persistence is None:
+        return
+
+    player = None
+    get_player = getattr(connection_manager, "get_player", None)
+    if callable(get_player):
+        try:
+            load_player = cast(Callable[[uuid.UUID], Awaitable[object]], get_player)
+            player = await load_player(player_id)
+        except (AttributeError, RuntimeError, TypeError, ValueError) as e:
+            logger.warning("Could not load player to stand after rest cancel", player_id=player_id, error=str(e))
+
+    player_name = getattr(player, "name", None) if player is not None else None
+    if not player_name:
+        return
+
+    try:
+        position_service = PlayerPositionService(persistence, connection_manager, None)
+        result = await position_service.change_position(player_name, "standing")
+        if result.get("success"):
+            _ = await emit_posture_change(
+                connection_manager,
+                player_id=player_id,
+                display_name=result.get("player_display_name", player_name),
+                room_id=str(result.get("room_id")) if result.get("room_id") else None,
+                previous_position=result.get("previous_position"),
+                new_position=result["position"],
+                include_self_message=True,
+                send_personal_update=True,
+            )
+    except (AttributeError, RuntimeError, TypeError, ValueError) as e:
+        logger.warning("Failed to stand player after rest cancel", player_id=player_id, error=str(e))
+
+
+async def cancel_rest_countdown(player_id: uuid.UUID, connection_manager: Any) -> None:
+    """
+    Cancel the rest countdown for a player.
+
+    Called from combat, movement, and spell paths when rest must be interrupted.
+    Also restores standing posture (/rest had sat the player).
+
+    Args:
+        player_id: The player's ID
+        connection_manager: ConnectionManager instance
+    """
+    if player_id not in connection_manager.resting_players:
+        return
+
+    logger.info("Cancelling rest countdown", player_id=player_id)
+
+    task = connection_manager.resting_players[player_id]
+    task.cancel()
+
+    try:
+        await task
+    except asyncio.CancelledError:
+        pass
+    except (AttributeError, RuntimeError, ValueError, TypeError) as e:
+        logger.error("Error cancelling rest countdown task", player_id=player_id, error=str(e), exc_info=True)
+    finally:
+        if player_id in connection_manager.resting_players:
+            del connection_manager.resting_players[player_id]
+        await _stand_after_cancelled_rest(player_id, connection_manager)
+
+
+def is_player_resting(player_id: uuid.UUID, connection_manager: Any) -> bool:
+    """
+    Check if a player is currently resting (in /rest countdown).
+
+    Args:
+        player_id: The player's ID
+        connection_manager: ConnectionManager instance
+
+    Returns:
+        True if player is resting, False otherwise
+    """
+    if not hasattr(connection_manager, "resting_players"):
+        return False
+
+    return player_id in connection_manager.resting_players
+
+
+async def _get_services_from_app(app: Any) -> tuple[Any, Any]:
+    """
+    Get persistence and connection_manager services from app state.
+
+    Args:
+        app: FastAPI app instance
+
+    Returns:
+        Tuple of (persistence, connection_manager) or (None, None) if unavailable
+    """
+    if not app:
+        return None, None
+
+    # Prefer container, fallback to app.state for backward compatibility
+    persistence = None
+    if hasattr(app.state, "container") and app.state.container:
+        persistence = app.state.container.async_persistence
+    else:
+        persistence = getattr(app.state, "persistence", None)
+
+    # Prefer container, fallback to app.state for backward compatibility
+    connection_manager = None
+    if hasattr(app.state, "container") and app.state.container:
+        connection_manager = app.state.container.connection_manager
+    else:
+        connection_manager = getattr(app.state, "connection_manager", None)
+
+    return persistence, connection_manager
+
+
+async def _resolve_rest_command_setup(
+    request: Any,
+    player_name: str,
+) -> dict[str, Any] | tuple[Any, Any, Any, Any, uuid.UUID]:
+    """
+    Load app, services, and player for /rest.
+
+    Returns:
+        Error response dict, or (app, persistence, connection_manager, player, player_id).
+    """
+    app = request.app if request else None
+    if not app:
+        return {"result": "System error: application not available."}
+
+    persistence, connection_manager = await _get_services_from_app(app)
+    if not persistence:
+        return {"result": "System error: persistence layer not available."}
+    if not connection_manager:
+        return {"result": "System error: connection manager not available."}
+
+    player = await persistence.get_player_by_name(player_name)
+    if not player:
+        return {"result": "You are not recognized by the cosmic forces."}
+
+    raw_id = player.player_id
+    player_id = uuid.UUID(raw_id) if isinstance(raw_id, str) else raw_id
+    return app, persistence, connection_manager, player, player_id
+
+
+async def _begin_seated_rest_countdown(
+    player_id: uuid.UUID,
+    player_name: str,
+    persistence: Any,
+    connection_manager: Any,
+    alias_storage: AliasStorage | None,
+) -> dict[str, Any]:
+    """Set sitting position if needed, then start rest countdown and build client payload."""
+    position_service = PlayerPositionService(persistence, connection_manager, alias_storage)
+    position_result = await position_service.change_position(player_name, "sitting")
+
+    if not position_result.get("success") and position_result.get("position") != "sitting":
+        return {"result": position_result.get("message", "Failed to assume resting position.")}
+
+    if position_result.get("success"):
+        _ = await emit_posture_change(
+            connection_manager,
+            player_id=player_id,
+            display_name=position_result.get("player_display_name", player_name),
+            room_id=str(position_result.get("room_id")) if position_result.get("room_id") else None,
+            previous_position=position_result.get("previous_position"),
+            new_position=position_result.get("position", "sitting"),
+            include_self_message=False,
+        )
+
+    await _start_rest_countdown(player_id, player_name, connection_manager, persistence)
+    player_update = {
+        "position": position_result.get("position", "sitting"),
+        "previous_position": position_result.get("previous_position"),
+    }
+    return {
+        "result": (
+            f"You settle into a seated position and begin to rest. You will disconnect in "
+            f"{int(rest_countdown_seconds())} seconds. Any movement, combat, or spellcasting will interrupt your rest."
+        ),
+        "player_update": player_update,
+    }
+
+
+async def _execute_rest_flow(
+    app: Any,
+    persistence: Any,
+    connection_manager: Any,
+    player: Any,
+    player_id: uuid.UUID,
+    player_name: str,
+    alias_storage: AliasStorage | None,
+) -> dict[str, Any]:
+    """Run rest rules after setup: resting check, combat, rest location vs countdown."""
+    if is_player_resting(player_id, connection_manager):
+        return {"result": "You are already resting. The countdown will complete shortly."}
+
+    if await check_player_in_combat(player_id, app):
+        return {"result": "You cannot rest during combat. End combat first."}
+
+    room_id = getattr(player, "current_room_id", None)
+    if await _check_rest_location(room_id, persistence):
+        logger.info(
+            "Player resting in rest location, instant disconnect",
+            player_id=player_id,
+            player_name=player_name,
+        )
+        _ = asyncio.create_task(_delayed_disconnect_player_intentionally(player_id, connection_manager, persistence))
+        return {"result": "You rest peacefully and disconnect from the game."}
+
+    return await _begin_seated_rest_countdown(player_id, player_name, persistence, connection_manager, alias_storage)
+
+
+async def handle_rest_command(
+    command_data: dict[str, Any],
+    _current_user: dict[str, Any],  # Unused: player_name parameter is used instead
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
+) -> dict[str, Any]:
+    """
+    Handle /rest command for clean disconnection.
+
+    Usage: /rest
+
+    Behavior:
+    - If in combat: Command is blocked
+    - If in rest location (inn/hotel/motel) and not in combat: Instant disconnect
+    - Otherwise: Sets position to sitting, starts 10-second countdown
+    - Countdown can be interrupted by: combat, movement, spellcasting
+    - Countdown does NOT interrupt on: chat, look, inventory management
+    - On completion: Clean disconnect (no grace period)
+
+    Args:
+        command_data: Command data dictionary
+        _current_user: Current user information (unused, player_name is used instead)
+        request: FastAPI request object
+        alias_storage: Alias storage instance
+        player_name: Player name
+
+    Returns:
+        dict: Command result
+    """
+    logger.debug("Handling rest command", player_name=player_name, command_data=command_data)
+
+    setup = await _resolve_rest_command_setup(request, player_name)
+    if isinstance(setup, tuple):
+        app, persistence, connection_manager, player, player_id = setup
+        return await _execute_rest_flow(
+            app, persistence, connection_manager, player, player_id, player_name, alias_storage
+        )
+    return setup

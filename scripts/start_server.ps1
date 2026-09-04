@@ -1,4 +1,6 @@
 #Requires -Version 5.1
+# Suppress PSAvoidUsingWriteHost: This script uses Write-Host for user-facing status messages
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'User-facing startup script requires Write-Host for status messages')]
 
 <#
 .SYNOPSIS
@@ -15,18 +17,18 @@
     The host address to bind the server to. Default is "127.0.0.1".
 
 .PARAMETER Port
-    The port number to bind the server to. Default is 54731.
+    The port number to bind the server to. Default is 54768.
 
 .PARAMETER Reload
-    When specified, enables auto-reload for development. Default is true.
+    When specified, enables auto-reload for development. Default is false (hot reloading disabled due to client compatibility issues).
 
 .EXAMPLE
     .\start_server.ps1
-    Starts the server with default settings (127.0.0.1:54731 with reload).
+    Starts the server with default settings (127.0.0.1:54768 without reload).
 
 .EXAMPLE
-    .\start_server.ps1 -ServerHost "0.0.0.0" -Port 8080 -Reload:$false
-    Starts the server on all interfaces, port 8080, without auto-reload.
+    .\start_server.ps1 -ServerHost "0.0.0.0" -Port 8080 -Reload
+    Starts the server on all interfaces, port 8080, with auto-reload enabled.
 
 .NOTES
     Author: MythosMUD Development Team
@@ -45,18 +47,20 @@ param(
     [int]$Port = 0,
 
     [Parameter(HelpMessage = "Enable auto-reload for development")]
-    [switch]$Reload = $true,
+    [switch]$Reload = $false,
 
-    [Parameter(HelpMessage = "Environment to run in (local, test, production)")]
-    [ValidateSet("local", "test", "production")]
+    [Parameter(HelpMessage = "Environment to run in (local, unit_test, e2e_test, production)")]
+    [ValidateSet("local", "unit_test", "e2e_test", "production")]
     [string]$Environment = "local",
 
     [Parameter(HelpMessage = "Show help information")]
     [switch]$Help
 )
 
+. (Join-Path $PSScriptRoot 'MythosMudProcessScope.ps1')
+
 # Function to load environment variables
-function Load-EnvironmentConfig {
+function Import-EnvironmentConfig {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -65,7 +69,8 @@ function Load-EnvironmentConfig {
 
     $envFile = switch ($Environment) {
         "local" { ".env.local" }
-        "test" { ".env.test" }
+        "unit_test" { ".env.unit_test" }
+        "e2e_test" { ".env.e2e_test" }
         "production" { ".env.production" }
         default { ".env.local" }
     }
@@ -76,41 +81,64 @@ function Load-EnvironmentConfig {
             if ($_ -match "^([^#][^=]+)=(.*)$") {
                 $name = $matches[1].Trim()
                 $value = $matches[2].Trim()
-                [Environment]::SetEnvironmentVariable($name, $value, "Process")
+                # Use Set-Item for env: drive to handle all variable names correctly
+                Set-Item -Path "env:$name" -Value $value -Force
             }
         }
-    } else {
+    }
+    else {
         Write-Host "Warning: Environment file $envFile not found" -ForegroundColor Yellow
     }
 }
 
-# Function to read server configuration
+# Function to get environment file path based on environment
+function Get-EnvFilePath {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Environment
+    )
+
+    $envFile = switch ($Environment) {
+        "local" { ".env.local" }
+        "unit_test" { ".env.unit_test" }
+        "e2e_test" { ".env.e2e_test" }
+        "production" { ".env.production" }
+        default { ".env.local" }
+    }
+
+    return $envFile
+}
+
+# Function to read server configuration from environment
 function Get-ServerConfig {
     [CmdletBinding()]
-    param()
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$EnvFile
+    )
 
-    $configPath = "server\server_config.yaml"
     $defaultHost = "127.0.0.1"
-    $defaultPort = 54731
+    $defaultPort = 54768
 
-    if (Test-Path $configPath) {
+    if (Test-Path $EnvFile) {
         try {
-            # Simple YAML parsing for host and port
-            $configContent = Get-Content $configPath -Raw
-            if ($configContent -match "host:\s*([^\s#]+)") {
+            # Parse .env file for SERVER_HOST and SERVER_PORT
+            $envContent = Get-Content $EnvFile -Raw
+            if ($envContent -match "SERVER_HOST\s*=\s*([^\s#]+)") {
                 $defaultHost = $matches[1].Trim()
             }
-            if ($configContent -match "port:\s*(\d+)") {
+            if ($envContent -match "SERVER_PORT\s*=\s*(\d+)") {
                 $defaultPort = [int]$matches[1]
             }
-            Write-Host "Loaded config from $configPath" -ForegroundColor Gray
+            Write-Host "Loaded config from $EnvFile" -ForegroundColor Gray
         }
         catch {
-            Write-Host "Warning: Could not parse config file, using defaults" -ForegroundColor Yellow
+            Write-Host "Warning: Could not parse .env file, using defaults" -ForegroundColor Yellow
         }
     }
     else {
-        Write-Host "Warning: Config file not found at $configPath, using defaults" -ForegroundColor Yellow
+        Write-Host "Warning: .env file not found at $EnvFile, using defaults" -ForegroundColor Yellow
     }
 
     Write-Host "Config loaded - Host: $defaultHost, Port: $defaultPort" -ForegroundColor Cyan
@@ -126,19 +154,17 @@ if ($Help) {
     exit 0
 }
 
-# Load configuration and set defaults
-$config = Get-ServerConfig
-if ([string]::IsNullOrEmpty($ServerHost)) {
-    $ServerHost = $config.Host
-}
-if ($Port -eq 0) {
-    $Port = $config.Port
-}
+# Configuration is now handled in the main execution block below
+# (Pydantic BaseSettings loads from .env files automatically)
 
 # Function to terminate server processes
-function Stop-ServerProcesses {
-    [CmdletBinding()]
+function Stop-ServerProcess {
+    [CmdletBinding(SupportsShouldProcess)]
     param()
+
+    if (-not $PSCmdlet.ShouldProcess("server processes", "Stop")) {
+        return
+    }
 
     Write-Host "Checking for existing server processes..." -ForegroundColor Yellow
 
@@ -149,10 +175,14 @@ function Stop-ServerProcesses {
         }
 
         if ($serverProcesses) {
-            Write-Host "Found $($serverProcesses.Count) existing server process(es). Terminating..." -ForegroundColor Yellow
+            Write-Host "Found $($serverProcesses.Count) candidate server process(es). Checking repo scope..." -ForegroundColor Yellow
             $serverProcesses | ForEach-Object {
+                if (-not (Test-MythosMudProjectProcess -ProcessId $_.Id)) {
+                    Write-Host "  Skipping PID $($_.Id): not owned by this MythosMUD repo" -ForegroundColor Cyan
+                    return
+                }
                 Write-Host "  Terminating process: $($_.ProcessName) (PID: $($_.Id))" -ForegroundColor Gray
-                Stop-Process -Id $_.Id -Force
+                Stop-MythosMudProjectProcessTree -ProcessId $_.Id
             }
             Start-Sleep -Seconds 2
         }
@@ -175,7 +205,10 @@ function Test-PortInUse {
     )
 
     try {
-        $connection = Get-NetTCPConnection -LocalPort $Port -ErrorAction SilentlyContinue
+        # -State Listen: an ESTABLISHED connection can coincidentally have $Port as its local
+        # ephemeral port (e.g. an outbound browser connection), which is not a listening server
+        # and must not block startup. Same filter as the NATS-readiness check below.
+        $connection = Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction SilentlyContinue
         if ($connection) {
             Write-Host "Port $Port is still in use. Waiting for it to be released..." -ForegroundColor Yellow
             Start-Sleep -Seconds 3
@@ -189,9 +222,47 @@ function Test-PortInUse {
     }
 }
 
+# Function to start NATS server
+function Start-NatsServerForMythosMUD {
+    [CmdletBinding(SupportsShouldProcess)]
+    param()
+
+    Write-Host "Checking NATS server..." -ForegroundColor Cyan
+
+    # Import NATS management functions
+    $natsManagerPath = Join-Path $PSScriptRoot "nats_manager.ps1"
+    if (Test-Path $natsManagerPath) {
+        . $natsManagerPath
+
+        # Check if NATS is running
+        if (-not (Test-NatsServerRunning)) {
+            if ($PSCmdlet.ShouldProcess("NATS server for MythosMUD", "Start")) {
+                Write-Host "Starting NATS server for MythosMUD..." -ForegroundColor Yellow
+                # Do not use -UseConfig so nats_manager uses default config and TLS from certs/nats/ when present
+                $natsStarted = Start-NatsServer -Background
+            }
+            else {
+                $natsStarted = $false
+            }
+            if ($natsStarted) {
+                Write-Host "NATS server started successfully" -ForegroundColor Green
+            }
+            else {
+                Write-Host "Warning: Failed to start NATS server" -ForegroundColor Yellow
+            }
+        }
+        else {
+            Write-Host "NATS server is already running" -ForegroundColor Green
+        }
+    }
+    else {
+        Write-Host "Warning: NATS manager not found at $natsManagerPath" -ForegroundColor Yellow
+    }
+}
+
 # Function to start the server
 function Start-MythosMUDServer {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -202,7 +273,10 @@ function Start-MythosMUDServer {
         [int]$Port,
 
         [Parameter(Mandatory = $true)]
-        [bool]$Reload
+        [bool]$Reload,
+
+        [Parameter(Mandatory = $false)]
+        [string]$EnvFile = ""
     )
 
     # Use 127.0.0.1 for health check even if server binds to 0.0.0.0
@@ -210,24 +284,57 @@ function Start-MythosMUDServer {
     $serverUrl = "http://" + $ServerHost + ":" + $Port
     Write-Host "Starting server on $serverUrl..." -ForegroundColor Cyan
 
-    $reloadFlag = if ($Reload) { "--reload" } else { "" }
+    if ($Reload) {
+        # Use uvicorn CLI with reload for optimal development experience
+        # This provides better reload control and faster iteration than programmatic reload
+        # Explicitly watch server directory to ensure command handler changes are detected
+        # Note: --reload-dir ensures uvicorn watches the entire server directory tree
+        # --no-sync: Cursor's ruff server locks .venv\Scripts\ruff.exe; uv sync then fails with
+        # Access denied (os error 5). Run `uv sync` when deps change, not on every server start.
+        $serverCommand = "uv run --no-sync uvicorn server.main:app --host $ServerHost --port $Port --reload --reload-dir server"
+        Write-Host "Using uvicorn with auto-reload enabled (watching server directory)" -ForegroundColor Cyan
+    }
+    else {
+        # Build command arguments for non-reload mode (--no-sync: do not replace locked venv tools on start)
+        $commandArgs = @("uv", "run", "--no-sync", "uvicorn", "server.main:app", "--host", $ServerHost, "--port", $Port.ToString())
+        $serverCommand = ($commandArgs | ForEach-Object { if ($_ -contains ' ') { "`"$_`"" } else { $_ } }) -join ' '
+    }
 
-    # Run uvicorn from project root with proper module path
-    # Use our StructLog system for all logging
-    $serverCommand = "uv run uvicorn server.main:app --host $ServerHost --port $Port $reloadFlag"
+    if (-not $PSCmdlet.ShouldProcess("MythosMUD server on $($ServerHost):$($Port)", "Start")) {
+        return
+    }
 
     Write-Host "Executing: $serverCommand" -ForegroundColor Gray
 
     try {
-        # Start the server process from project root
-        Start-Process powershell -ArgumentList "-NoExit", "-Command", $serverCommand -WindowStyle Normal
+        # Build command that loads environment variables first, then starts server
+        # This ensures the spawned process has access to secrets from .env file
+        $envLoadCommand = ""
+        if ($EnvFile -and (Test-Path $EnvFile)) {
+            # Escape single quotes in path for PowerShell string
+            $escapedEnvFile = $EnvFile -replace "'", "''"
+            $envLoadCommand = "Get-Content '$escapedEnvFile' | ForEach-Object { if (`$_ -match '^([^#][^=]+)=(.*)$') { Set-Item -Path `"env:`$(`$matches[1].Trim())`" -Value `$matches[2].Trim() -Force } }; "
+            Write-Host "Environment file will be loaded in spawned process: $EnvFile" -ForegroundColor Cyan
+        }
+
+        # Set MYTHOSMUD_ENV in the spawned process to ensure logging uses correct directory
+        $mythosmudEnv = [Environment]::GetEnvironmentVariable("MYTHOSMUD_ENV", "Process")
+        if ($mythosmudEnv) {
+            $envLoadCommand += "`$env:MYTHOSMUD_ENV='$mythosmudEnv'; "
+            Write-Host "MYTHOSMUD_ENV=$mythosmudEnv will be set in spawned process" -ForegroundColor Cyan
+        }
+
+        $fullCommand = $envLoadCommand + $serverCommand
+
+        # Start the server process from project root with environment variables loaded
+        Start-Process powershell -ArgumentList "-NoExit", "-Command", $fullCommand -WindowStyle Normal
 
         # Wait for server to start
         Write-Host "Waiting for server to start..." -ForegroundColor Yellow
         Start-Sleep -Seconds 5
 
         # Test if server is responding
-        $maxAttempts = 10
+        $maxAttempts = 20
         $attempt = 0
 
         while ($attempt -lt $maxAttempts) {
@@ -242,6 +349,7 @@ function Start-MythosMUDServer {
             }
             catch {
                 $attempt++
+                # Error details logged via exception object, no need to store separately
                 Write-Host "Attempt $attempt of $maxAttempts - Server not ready yet..." -ForegroundColor Yellow
                 Start-Sleep -Seconds 2
             }
@@ -260,20 +368,75 @@ function Start-MythosMUDServer {
 try {
     Write-Host "Starting MythosMUD Server..." -ForegroundColor Green
 
-    # Step 1: Load environment configuration
-    Load-EnvironmentConfig -Environment $Environment
+    # Step 1: Get environment file path
+    $envFile = Get-EnvFilePath -Environment $Environment
+    $absoluteEnvFile = Join-Path $PWD $envFile
 
-    # Step 2: Stop existing processes
-    Stop-ServerProcesses
+    # Verify .env file exists
+    if (-not (Test-Path $absoluteEnvFile)) {
+        Write-Error "Environment file not found: $absoluteEnvFile"
+        Write-Host ""
+        Write-Host "Available environment files:" -ForegroundColor Yellow
+        Write-Host "  - .env.local (for local development)" -ForegroundColor Gray
+        Write-Host "  - .env.unit_test (for unit tests)" -ForegroundColor Gray
+        Write-Host "  - .env.e2e_test (for E2E tests)" -ForegroundColor Gray
+        Write-Host ""
+        Write-Host "Copy the appropriate env.*.example file to create your environment file:" -ForegroundColor Cyan
+        Write-Host "  Copy-Item env.local.example .env.local" -ForegroundColor Gray
+        exit 1
+    }
 
-    # Step 2: Check if port is free
+    # Step 2: Load environment configuration
+    Import-EnvironmentConfig -Environment $Environment
+
+    # Step 2.5: Set LOGGING_ENVIRONMENT for Pydantic configuration
+    # The Pydantic config uses this to determine log directories
+    [Environment]::SetEnvironmentVariable("LOGGING_ENVIRONMENT", $Environment, "Process")
+    Write-Host "Set LOGGING_ENVIRONMENT=$Environment for Pydantic config" -ForegroundColor Cyan
+
+    # Step 3: Read config from .env file for display purposes
+    $config = Get-ServerConfig -EnvFile $absoluteEnvFile
+    if ([string]::IsNullOrEmpty($ServerHost)) {
+        $ServerHost = $config.Host
+    }
+    if ($Port -eq 0) {
+        $Port = $config.Port
+    }
+
+    # Step 4: Stop existing processes
+    Stop-ServerProcess
+
+    # Step 5: Start NATS server
+    Start-NatsServerForMythosMUD
+
+    # Step 5.5: Wait for NATS to accept connections (avoids app connect timeout when NATS was just started)
+    $natsPort = 4222
+    $natsWaitMaxAttempts = 15
+    $natsWaitAttempt = 0
+    while ($natsWaitAttempt -lt $natsWaitMaxAttempts) {
+        $natsConnection = Get-NetTCPConnection -LocalPort $natsPort -State Listen -ErrorAction SilentlyContinue
+        if ($natsConnection) {
+            Write-Host "NATS port $natsPort is listening" -ForegroundColor Green
+            break
+        }
+        $natsWaitAttempt++
+        if ($natsWaitAttempt -lt $natsWaitMaxAttempts) {
+            Write-Host "Waiting for NATS on port $natsPort... ($natsWaitAttempt of $natsWaitMaxAttempts)" -ForegroundColor Gray
+            Start-Sleep -Seconds 1
+        }
+    }
+    if ($natsWaitAttempt -ge $natsWaitMaxAttempts) {
+        Write-Host "NATS did not bind to port $natsPort within $natsWaitMaxAttempts seconds; server will continue without NATS" -ForegroundColor Yellow
+    }
+
+    # Step 6: Check if port is free
     if (Test-PortInUse -Port $Port) {
         Write-Host "Port $Port is still in use. Please check for other processes." -ForegroundColor Red
         exit 1
     }
 
-    # Step 3: Start the server
-    $success = Start-MythosMUDServer -ServerHost $ServerHost -Port $Port -Reload $Reload
+    # Step 7: Start the server
+    $success = Start-MythosMUDServer -ServerHost $ServerHost -Port $Port -Reload $Reload -EnvFile $absoluteEnvFile
 
     if ($success) {
         Write-Host "MythosMUD Server is ready!" -ForegroundColor Green

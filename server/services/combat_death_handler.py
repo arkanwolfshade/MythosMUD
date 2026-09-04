@@ -1,0 +1,352 @@
+"""
+Combat death handling logic.
+
+Handles player death, NPC death, mortally wounded states, and related events.
+"""
+
+# pylint: disable=too-many-locals,too-many-arguments,too-many-positional-arguments  # Reason: Death handling requires many intermediate variables and parameters for complex death processing logic
+# pylint: disable=too-few-public-methods  # Reason: Local Protocol stubs provide minimal callable surfaces for dependency injection.
+
+from typing import TYPE_CHECKING, Protocol, cast
+from uuid import UUID
+
+from structlog.stdlib import BoundLogger
+
+from server.async_persistence import AsyncPersistenceLayer
+from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType
+from server.services.nats_exceptions import NATSError
+from server.structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from server.events.combat_events import NPCDiedEvent
+    from server.events.event_types import PlayerDiedEvent, PlayerMortallyWoundedEvent
+
+
+class _ConnectionManagerLike(Protocol):
+    """Connection manager surface used for room subscriber diagnostics."""
+
+    room_subscriptions: dict[str, set[str]]
+
+    def canonical_room_id(self, room_id: str) -> str | None:
+        """Return canonical room id when available."""
+
+
+class _NPCCombatIntegrationLike(Protocol):
+    """UUID mapping surface used to resolve NPC string ids."""
+
+    def get_original_string_id(self, npc_id: UUID) -> str | None:
+        """Return original NPC id when mapping exists."""
+        raise NotImplementedError
+
+
+class _CombatServiceDeps(Protocol):
+    """Minimal CombatService surface required by CombatDeathHandler."""
+
+    def get_npc_combat_integration_service(self) -> object | None:
+        """Return NPC combat integration service when available."""
+        raise NotImplementedError
+
+    async def publish_npc_died_event_to_nats(self, event: "NPCDiedEvent") -> bool:
+        """Publish NPCDiedEvent to NATS."""
+        raise NotImplementedError
+
+    async def publish_player_died_event_to_nats(self, event: "PlayerDiedEvent") -> bool:
+        """Publish PlayerDiedEvent to NATS (#634)."""
+        raise NotImplementedError
+
+    async def publish_player_mortally_wounded_event_to_nats(self, event: "PlayerMortallyWoundedEvent") -> bool:
+        """Publish PlayerMortallyWoundedEvent to NATS (#634)."""
+        raise NotImplementedError
+
+
+CombatServiceDeps = _CombatServiceDeps
+
+
+logger: BoundLogger = get_logger(__name__)
+
+
+class CombatDeathHandler:
+    """Handles combat death events and state changes."""
+
+    _combat_service: _CombatServiceDeps
+
+    def __init__(self, combat_service: _CombatServiceDeps) -> None:
+        """
+        Initialize the death handler.
+
+        Args:
+            combat_service: Reference to the parent CombatService
+        """
+        self._combat_service = combat_service
+
+    def _resolve_connection_manager_for_corpse_creation(self) -> _ConnectionManagerLike | None:
+        """Return connection manager from CombatService getter when exposed."""
+        getter = getattr(self._combat_service, "get_connection_manager", None)
+        if callable(getter):
+            manager = getter()
+            return cast(_ConnectionManagerLike | None, manager)
+        return None
+
+    async def _handle_player_death_events(self, target: CombatParticipant, combat: CombatInstance) -> None:
+        """Handle player death events including mortally wounded, death, and corpse creation."""
+        try:
+            from ..events.event_types import PlayerDiedEvent
+            from ..services.combat_messaging_integration import combat_messaging_integration
+
+            # CRITICAL: Always send current_dp=-10 for death events, never use target.current_dp
+            # Players can be at 0 DP (mortally wounded) but death events should only fire at -10 DP
+            # The client gates the respawn modal on current_dp <= -10, so we must send -10
+            _ = await combat_messaging_integration.broadcast_player_death(
+                player_id=str(target.participant_id),
+                player_name=target.name,
+                room_id=combat.room_id,
+                death_location=combat.room_id,
+                current_dp=-10,  # Always -10 for death events (client gates modal on current_dp <= -10)
+            )
+            # NATS-consumable in addition to the direct room broadcast above (#634)
+            _ = await self._combat_service.publish_player_died_event_to_nats(
+                PlayerDiedEvent(
+                    player_id=target.participant_id,
+                    player_name=target.name,
+                    room_id=combat.room_id,
+                    combat_id=str(combat.combat_id),
+                    death_location=combat.room_id,
+                )
+            )
+            logger.info("Player death event published", player_id=target.participant_id, player_name=target.name)
+
+            # Create corpse container on death
+            await self._create_corpse_on_death(target, combat)
+        except (NATSError, ValueError, RuntimeError, AttributeError, ConnectionError, TypeError, KeyError) as e:
+            logger.error("Error publishing player death event", error=str(e), exc_info=True)
+
+    async def _create_corpse_on_death(self, target: CombatParticipant, combat: CombatInstance) -> None:
+        """Create corpse container when player dies."""
+        try:
+            from ..container import ApplicationContainer
+            from ..services.corpse_lifecycle_service import CorpseLifecycleService
+
+            connection_manager = self._resolve_connection_manager_for_corpse_creation()
+            persistence: AsyncPersistenceLayer | None = None
+
+            if connection_manager is None:
+                try:
+                    container = ApplicationContainer.get_instance()
+                    connection_manager = getattr(container, "connection_manager", None)
+                    persistence = cast(
+                        AsyncPersistenceLayer | None,
+                        getattr(container, "async_persistence", None) if container else None,
+                    )
+                except (ImportError, AttributeError, RuntimeError, ValueError):
+                    pass
+
+            if persistence is None:
+                logger.warning("Could not get persistence for corpse creation, skipping")
+                return
+
+            corpse_service = CorpseLifecycleService(persistence=persistence, connection_manager=connection_manager)
+            corpse = await corpse_service.create_corpse_on_death(
+                player_id=target.participant_id,
+                room_id=combat.room_id,
+                grace_period_seconds=300,
+                decay_hours=1,
+            )
+            logger.info(
+                "Corpse container created on death",
+                container_id=str(corpse.container_id),
+                player_id=target.participant_id,
+                room_id=combat.room_id,
+            )
+        except (ImportError, AttributeError, RuntimeError, ValueError, ConnectionError, OSError) as corpse_error:
+            logger.error(
+                "Error creating corpse container on death",
+                error=str(corpse_error),
+                player_id=target.participant_id,
+                room_id=combat.room_id,
+                exc_info=True,
+            )
+
+    def _log_room_subscribers_before_npc_death(self, combat: CombatInstance) -> None:
+        """Best-effort connection diagnostics before publishing NPC death event."""
+        try:
+            from ..container import ApplicationContainer
+
+            container = ApplicationContainer.get_instance()
+            connection_manager = cast(
+                _ConnectionManagerLike | None, getattr(container, "connection_manager", None) if container else None
+            )
+            if connection_manager is not None:
+                canonical_room_id = connection_manager.canonical_room_id(combat.room_id) or combat.room_id
+                room_subscribers = connection_manager.room_subscriptions.get(canonical_room_id, set())
+                logger.debug(
+                    "Connection state check before NPC death event",
+                    room_id=combat.room_id,
+                    canonical_room_id=canonical_room_id,
+                    connected_players_count=len(room_subscribers),
+                    connected_player_ids=list(room_subscribers),
+                )
+        except (
+            AttributeError,
+            ValueError,
+            TypeError,
+            RuntimeError,
+            NATSError,
+            ConnectionError,
+            KeyError,
+        ) as conn_check_error:
+            logger.warning(
+                "Could not check connection state before NPC death event",
+                error=str(conn_check_error),
+                room_id=combat.room_id,
+            )
+
+    def _resolve_original_npc_id(self, target: CombatParticipant, combat: CombatInstance) -> str:
+        """Resolve UUID participant id to canonical NPC string id when mapping exists."""
+        original_npc_id = str(target.participant_id)
+        npc_combat_integration_raw = self._combat_service.get_npc_combat_integration_service()
+        getter = getattr(npc_combat_integration_raw, "get_original_string_id", None)
+        npc_combat_integration_service = (
+            cast(_NPCCombatIntegrationLike, npc_combat_integration_raw) if callable(getter) else None
+        )
+        if npc_combat_integration_service is None:
+            logger.error(
+                "NPC combat integration service not available - NPC WILL NOT RESPAWN!",
+                uuid=target.participant_id,
+                npc_name=target.name,
+                combat_id=combat.combat_id,
+            )
+            return original_npc_id
+
+        resolved_id = npc_combat_integration_service.get_original_string_id(target.participant_id)
+        if resolved_id:
+            original_npc_id = resolved_id
+            logger.info(
+                "Resolved UUID to original NPC ID for death event",
+                uuid=target.participant_id,
+                original_id=original_npc_id,
+            )
+            return original_npc_id
+
+        logger.error(
+            "UUID not found in mapping - NPC WILL NOT RESPAWN!",
+            uuid=target.participant_id,
+            npc_name=target.name,
+            combat_id=combat.combat_id,
+        )
+        return original_npc_id
+
+    async def _publish_npc_death_event(
+        self,
+        target: CombatParticipant,
+        combat: CombatInstance,
+        xp_reward: int,
+        killer_id: str | None,
+        original_npc_id: str,
+    ) -> None:
+        """Publish NPC death event to NATS when combat publisher is available."""
+        try:
+            from server.events.combat_events import NPCDiedEvent
+
+            death_event = NPCDiedEvent(
+                combat_id=combat.combat_id,
+                room_id=combat.room_id,
+                npc_id=original_npc_id,
+                npc_name=target.name,
+                xp_reward=xp_reward,
+                killer_id=killer_id,
+            )
+            _ = await self._combat_service.publish_npc_died_event_to_nats(death_event)
+            logger.info("NPCDiedEvent published successfully", npc_id=original_npc_id, combat_id=combat.combat_id)
+
+        except (NATSError, ValueError, RuntimeError, AttributeError, ConnectionError, TypeError) as death_event_error:
+            logger.error(
+                "Error publishing NPC death event - preventing disconnect",
+                target_name=target.name,
+                target_id=target.participant_id,
+                combat_id=combat.combat_id,
+                room_id=combat.room_id,
+                error=str(death_event_error),
+                exc_info=True,
+            )
+
+    async def _handle_npc_death(
+        self,
+        target: CombatParticipant,
+        combat: CombatInstance,
+        xp_reward: int,
+        killer_id: str | None = None,
+    ) -> None:
+        """Handle NPC death event publishing and ID resolution."""
+        self._log_room_subscribers_before_npc_death(combat)
+        original_npc_id = self._resolve_original_npc_id(target, combat)
+        await self._publish_npc_death_event(target, combat, xp_reward, killer_id, original_npc_id)
+
+    async def handle_target_state_changes(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: State change handling requires many parameters for context and state updates
+        self,
+        target: CombatParticipant,
+        current_participant: CombatParticipant,
+        target_mortally_wounded: bool,
+        target_died: bool,
+        combat: CombatInstance,
+    ) -> None:
+        """
+        Handle mortally wounded and death state changes for target.
+
+        Args:
+            target: Target participant
+            current_participant: Attacking participant
+            target_mortally_wounded: Whether target became mortally wounded
+            target_died: Whether target died
+            combat: Combat instance
+        """
+        if target_mortally_wounded and target.participant_type == CombatParticipantType.PLAYER:
+            try:
+                from ..events.event_types import PlayerMortallyWoundedEvent
+                from ..services.combat_messaging_integration import combat_messaging_integration
+
+                attacker_name = current_participant.name if current_participant else None
+                _ = await combat_messaging_integration.broadcast_player_mortally_wounded(
+                    player_id=str(target.participant_id),
+                    player_name=target.name,
+                    attacker_name=attacker_name,
+                    room_id=combat.room_id,
+                )
+                # NATS-consumable in addition to the direct room broadcast above (#634)
+                _ = await self._combat_service.publish_player_mortally_wounded_event_to_nats(
+                    PlayerMortallyWoundedEvent(
+                        player_id=str(target.participant_id),
+                        player_name=target.name,
+                        room_id=combat.room_id,
+                        attacker_id=str(current_participant.participant_id) if current_participant else None,
+                        attacker_name=attacker_name,
+                        combat_id=str(combat.combat_id),
+                    )
+                )
+                logger.info(
+                    "Player mortally wounded event published",
+                    player_id=target.participant_id,
+                    player_name=target.name,
+                )
+            except (NATSError, ValueError, RuntimeError, AttributeError, ConnectionError, TypeError, KeyError) as e:
+                logger.error("Error publishing player mortally wounded event", error=str(e), exc_info=True)
+
+        if target_died and target.participant_type == CombatParticipantType.PLAYER:
+            await self._handle_player_death_events(target, combat)
+
+    async def handle_npc_death(
+        self,
+        target: CombatParticipant,
+        combat: CombatInstance,
+        xp_reward: int,
+        killer_id: str | None = None,
+    ) -> None:
+        """
+        Handle NPC death event publishing and ID resolution.
+
+        Args:
+            target: NPC participant that died
+            combat: Combat instance
+            xp_reward: XP reward amount for defeating the NPC
+            killer_id: Optional player UUID string who killed the NPC (for quest/NATS payload)
+        """
+        await self._handle_npc_death(target, combat, xp_reward, killer_id=killer_id)

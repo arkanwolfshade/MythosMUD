@@ -1,0 +1,14 @@
+{
+  "ignoreFiles": [
+    "**/coverage/**",
+    "**/dist/**",
+    "**/node_modules/**",
+    "**/test-results/**",
+    "**/playwright-report/**"
+  ],
+  "rules": {
+    "color-hex-length": "short",
+    "color-named": "never",
+    "no-duplicate-selectors": true
+  }
+}

@@ -1,0 +1,24 @@
+---
+description: Prefer minimal context and jCodemunch navigation over speed of the first answer
+alwaysApply: true
+---
+
+## Priority: token efficiency over speed
+
+When exploring code or narrowing behavior, optimize for **fewer tokens in the
+conversation**, not for the fastest-looking answer. Prefer targeted retrieval,
+smaller payloads, and one clear pass over the relevant path instead of wide reads
+or repeated full-file dumps.
+
+**Use jCodemunch MCP** for discovery and navigation (for example `plan_turn`,
+`search_symbols`, `get_file_outline`, `get_symbol_source`, `find_references`,
+`search_text`). Follow `.cursor/rules/jcodemunch.mdc` for the full workflow,
+including when `Read` is required before edits.
+
+The same priority for humans and copy-paste into global Cursor rules lives in
+`USER_RULES.md` under **PRIORITY: TOKEN EFFICIENCY OVER SPEED**. If anything
+conflicts, this file plus `jcodemunch.mdc` govern agent behavior; keep
+`USER_RULES.md` aligned when workflow changes.
+
+Treat whole-file reads and broad text scans as **last resort** when jCodemunch
+cannot answer the question.

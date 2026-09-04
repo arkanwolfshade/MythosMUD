@@ -1,0 +1,270 @@
+"""
+Utility command factory methods.
+
+This module contains factory methods for utility commands:
+alias, aliases, unalias, help, npc, summon, teleport, goto, shutdown, learn.
+"""
+
+from typing import Literal, cast
+
+from ..exceptions import ValidationError as MythosValidationError
+from ..models.command import (
+    AliasCommand,
+    AliasesCommand,
+    CastCommand,
+    Direction,
+    GotoCommand,
+    HelpCommand,
+    LearnCommand,
+    NPCCommand,
+    ShutdownCommand,
+    SpellCommand,
+    SpellsCommand,
+    SummonCommand,
+    TeleportCommand,
+    UnaliasCommand,
+)
+from ..structured_logging.enhanced_logging_config import get_logger
+from .enhanced_error_logging import log_and_raise_enhanced
+
+logger = get_logger(__name__)
+
+
+class UtilityCommandFactory:
+    """Factory class for creating utility command objects."""
+
+    @staticmethod
+    def create_alias_command(args: list[str]) -> AliasCommand:
+        """Create AliasCommand from arguments."""
+        if not args:
+            log_and_raise_enhanced(
+                MythosValidationError, "Alias command requires an alias name", args=args, logger_name=__name__
+            )
+
+        alias_name = args[0]
+        command = " ".join(args[1:]) if len(args) > 1 else None
+
+        return AliasCommand(alias_name=alias_name, command=command)
+
+    @staticmethod
+    def create_aliases_command(args: list[str]) -> AliasesCommand:
+        """Create AliasesCommand from arguments."""
+        if args:
+            log_and_raise_enhanced(
+                MythosValidationError, "Aliases command takes no arguments", args=args, logger_name=__name__
+            )
+        return AliasesCommand()
+
+    @staticmethod
+    def create_unalias_command(args: list[str]) -> UnaliasCommand:
+        """Create UnaliasCommand from arguments."""
+        if not args:
+            log_and_raise_enhanced(
+                MythosValidationError, "Unalias command requires an alias name", args=args, logger_name=__name__
+            )
+        if len(args) > 1:
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Unalias command takes only one argument",
+                args=args,
+                arg_count=len(args),
+                logger_name=__name__,
+            )
+
+        return UnaliasCommand(alias_name=args[0])
+
+    @staticmethod
+    def create_help_command(args: list[str]) -> HelpCommand:
+        """Create HelpCommand from arguments."""
+        topic = args[0] if args else None
+        return HelpCommand(topic=topic)
+
+    @staticmethod
+    def create_npc_command(args: list[str]) -> NPCCommand:
+        """Create NPCCommand from arguments."""
+        # NPC command can be called with or without subcommand
+        # If no args, subcommand is None (will show help)
+        # If args, first arg is subcommand, rest are args
+        if not args:
+            return NPCCommand(subcommand=None, args=[])
+
+        subcommand = args[0].lower()
+        remaining_args = args[1:]
+
+        return NPCCommand(subcommand=subcommand, args=remaining_args)
+
+    @staticmethod
+    def create_summon_command(args: list[str]) -> SummonCommand:
+        """Create SummonCommand from arguments."""
+        if not args:
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: summon <prototype_id> [quantity] [item|npc]",
+                args=args,
+                logger_name=__name__,
+            )
+
+        prototype_id = args[0]
+        quantity: int | None = None
+        target_type: Literal["item", "npc"] | None = None
+
+        for token in args[1:]:
+            lowered = token.lower()
+            if lowered in {"item", "npc"} and target_type is None:
+                target_type = cast(Literal["item", "npc"], lowered)
+                continue
+            if quantity is None:
+                try:
+                    parsed_quantity = int(token)
+                except ValueError as error:
+                    log_and_raise_enhanced(
+                        MythosValidationError,
+                        "Usage: summon <prototype_id> [quantity] [item|npc]",
+                        args=args,
+                        invalid_token=token,
+                        error=str(error),
+                        logger_name=__name__,
+                    )
+                if parsed_quantity <= 0:
+                    log_and_raise_enhanced(
+                        MythosValidationError,
+                        "Summon quantity must be a positive number.",
+                        args=args,
+                        invalid_quantity=parsed_quantity,
+                        logger_name=__name__,
+                    )
+                quantity = parsed_quantity
+                continue
+
+            # Extra positional argument that we don't recognise.
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: summon <prototype_id> [quantity] [item|npc]",
+                args=args,
+                unexpected_token=token,
+                logger_name=__name__,
+            )
+
+        return SummonCommand(
+            prototype_id=prototype_id,
+            quantity=quantity if quantity is not None else 1,
+            target_type=target_type if target_type is not None else "item",
+        )
+
+    @staticmethod
+    def create_teleport_command(args: list[str]) -> TeleportCommand:
+        """Create TeleportCommand from arguments."""
+        if not args:
+            log_and_raise_enhanced(
+                MythosValidationError, "Teleport command requires a player name", args=args, logger_name=__name__
+            )
+
+        player_name = args[0]
+        direction = None
+
+        if len(args) > 1:
+            if len(args) > 2:
+                log_and_raise_enhanced(
+                    MythosValidationError,
+                    "Teleport command accepts at most one direction argument",
+                    args=args,
+                    logger_name=__name__,
+                )
+            raw_direction = args[1].lower()
+            try:
+                direction = Direction(raw_direction)
+            except ValueError as error:
+                log_and_raise_enhanced(
+                    MythosValidationError,
+                    "Teleport command direction must be a valid Mythos cardinal or intercardinal direction",
+                    args=args,
+                    direction=raw_direction,
+                    error=str(error),
+                    logger_name=__name__,
+                )
+
+        return TeleportCommand(player_name=player_name, direction=direction)
+
+    @staticmethod
+    def create_goto_command(args: list[str]) -> GotoCommand:
+        """Create GotoCommand from arguments."""
+        if not args:
+            log_and_raise_enhanced(
+                MythosValidationError, "Goto command requires a player name", args=args, logger_name=__name__
+            )
+        player_name = args[0]
+        return GotoCommand(player_name=player_name)
+
+    @staticmethod
+    def create_shutdown_command(args: list[str]) -> ShutdownCommand:
+        """
+        Create ShutdownCommand from arguments.
+
+        Args can be:
+        - Empty: Default 10 second countdown
+        - Number: Countdown duration in seconds
+        - "cancel": Cancel active shutdown
+        """
+        return ShutdownCommand(args=args)
+
+    @staticmethod
+    def _resolve_heal_cast(args: list[str]) -> CastCommand | None:
+        """Resolve 'heal' command variations to (spell_name, target). Returns None if not a heal command."""
+        if not args or args[0].strip().lower() != "heal":
+            return None
+        # Heal aliases that map to heal_self (no target)
+        heal_self_tokens = ("self", "me")
+        if len(args) == 1:
+            return CastCommand(spell_name="heal_self", target=None)
+        second = args[1].strip().lower()
+        if second in heal_self_tokens:
+            return CastCommand(spell_name="heal_self", target=None)
+        if second == "other":
+            target = " ".join(args[2:]).strip() if len(args) > 2 else None
+            return CastCommand(spell_name="heal_other", target=target or None)
+        # heal <target> -> heal_other with that target
+        target = " ".join(args[1:]).strip()
+        return CastCommand(spell_name="heal_other", target=target or None)
+
+    @staticmethod
+    def create_cast_command(args: list[str]) -> CastCommand:
+        """Create CastCommand from arguments."""
+        if not args:
+            log_and_raise_enhanced(
+                MythosValidationError, "Cast command requires a spell name", args=args, logger_name=__name__
+            )
+        heal_cmd = UtilityCommandFactory._resolve_heal_cast(args)
+        if heal_cmd is not None:
+            return heal_cmd
+        spell_name = args[0].strip()
+        target = " ".join(args[1:]).strip() if len(args) > 1 else None
+        return CastCommand(spell_name=spell_name, target=target or None)
+
+    @staticmethod
+    def create_spell_command(args: list[str]) -> SpellCommand:
+        """Create SpellCommand from arguments."""
+        if not args:
+            log_and_raise_enhanced(
+                MythosValidationError, "Spell command requires a spell name", args=args, logger_name=__name__
+            )
+        spell_name = " ".join(args)  # Allow multi-word spell names
+        return SpellCommand(spell_name=spell_name)
+
+    @staticmethod
+    def create_spells_command(args: list[str]) -> SpellsCommand:
+        """Create SpellsCommand from arguments."""
+        if args:
+            log_and_raise_enhanced(
+                MythosValidationError, "Spells command takes no arguments", args=args, logger_name=__name__
+            )
+        return SpellsCommand()
+
+    @staticmethod
+    def create_learn_command(args: list[str]) -> LearnCommand:
+        """Create LearnCommand from arguments."""
+        if not args:
+            log_and_raise_enhanced(
+                MythosValidationError, "Learn command requires a spell name", args=args, logger_name=__name__
+            )
+        spell_name = " ".join(args)  # Allow multi-word spell names
+        return LearnCommand(spell_name=spell_name)

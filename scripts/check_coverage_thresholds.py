@@ -1,0 +1,166 @@
+#!/usr/bin/env python3
+"""Check coverage thresholds for critical and normal files."""
+
+import os
+import sys
+from pathlib import Path
+
+from defusedxml import ElementTree as etree
+
+# Critical files requiring 90% coverage (or custom threshold as specified)
+# Keep in sync with scripts/analyze_coverage_gaps.py CRITICAL_FILES.
+CRITICAL_FILES = {
+    "server/auth/argon2_utils.py": 85,  # Lowered due to PasswordHasher read-only methods being untestable
+    "server/auth_utils.py": 90,
+    "server/security_utils.py": 90,
+    "server/validators/security_validator.py": 90,
+    "server/validators/optimized_security_validator.py": 90,
+    "server/validators/combat_validator.py": 90,
+    "server/auth/dependencies.py": 90,
+    "server/auth/endpoints.py": 90,
+    "server/auth/users.py": 90,
+    "server/middleware/security_headers.py": 90,
+    "server/persistence/container_persistence.py": 90,
+    "server/database.py": 90,
+    "server/async_persistence.py": 90,
+    "server/services/admin_auth_service.py": 90,
+    "server/services/inventory_mutation_guard.py": 90,
+    # Command factories - critical for command processing
+    "server/utils/command_factories.py": 90,
+    "server/utils/command_factories_combat.py": 90,
+    "server/utils/command_factories_communication.py": 90,
+    "server/utils/command_factories_exploration.py": 90,
+    "server/utils/command_factories_inventory.py": 90,
+    "server/utils/command_factories_moderation.py": 90,
+    "server/utils/command_factories_player_state.py": 90,
+    "server/utils/command_factories_utility.py": 90,
+    # Combat services - critical for game combat mechanics
+    "server/services/wearable_container_service.py": 90,
+    "server/services/player_combat_service.py": 90,
+    "server/services/npc_combat_integration_service.py": 90,
+    "server/services/npc_combat_handlers.py": 90,
+    "server/services/container_websocket_events.py": 90,
+    "server/services/combat_persistence_handler.py": 90,
+    "server/services/combat_monitoring_service.py": 90,
+    "server/services/combat_messaging_integration.py": 90,
+    "server/services/combat_messaging/__init__.py": 90,
+    "server/services/combat_messaging/base.py": 90,
+    "server/services/combat_messaging/combat_broadcasts.py": 90,
+    "server/services/combat_messaging/player_broadcasts.py": 90,
+    "server/services/combat_messaging/integration.py": 90,
+    "server/services/combat_cleanup_handler.py": 90,
+    "server/services/combat_attack_handler.py": 90,
+    # Realtime services - critical for WebSocket and real-time game state
+    "server/realtime/websocket_handler.py": 90,
+    "server/realtime/room_subscription_manager.py": 90,
+    "server/realtime/room_occupant_manager.py": 90,
+    "server/realtime/room_id_utils.py": 90,
+    "server/realtime/player_occupant_processor.py": 90,
+    "server/realtime/player_disconnect_handlers.py": 90,
+    "server/realtime/nats_message_handler.py": 90,
+}
+
+# Normal files require 70% coverage
+NORMAL_THRESHOLD = 70
+
+# Known coverage debt, unmasked by the #668 CI pipefail fix (this check was silently failing on
+# main for an unknown period; `tee` swallowed the exit code before pipefail was added). #677 paid
+# this down: `server/realtime/connection_manager_health_cleanup.py` (0%) turned out to be dead code
+# (zero importers) and was deleted rather than backfilled; the other six files were brought back up
+# to their normal/critical thresholds with real tests. Empty until new debt is discovered — keep
+# this mechanism rather than deleting it outright, so a future regression is measured, not silent.
+KNOWN_COVERAGE_DEBT: dict[str, int] = {}
+
+
+def parse_coverage_xml(coverage_xml_path: Path) -> dict[str, float]:
+    """Parse coverage.xml and return file coverage percentages."""
+    tree = etree.parse(coverage_xml_path)
+    root = tree.getroot()
+
+    file_coverage = {}
+    for package in root.findall(".//package"):
+        for cls in package.findall(".//class"):
+            filename = cls.get("filename")
+            if filename:
+                # Coverage XML uses relative paths from source root
+                # Normalize to match our file paths
+                if filename.startswith("server/"):
+                    file_path = filename
+                else:
+                    file_path = f"server/{filename}"
+
+                line_rate = float(cls.get("line-rate", 0))
+                coverage_percent = line_rate * 100
+                file_coverage[file_path] = coverage_percent
+
+    return file_coverage
+
+
+def check_thresholds(file_coverage: dict[str, float]) -> list[str]:
+    """Check files against their thresholds. Returns hard-fail messages."""
+    failures = []
+
+    # Check critical files
+    for file_path, threshold in CRITICAL_FILES.items():
+        threshold = KNOWN_COVERAGE_DEBT.get(file_path, threshold)
+        coverage = file_coverage.get(file_path, 0)
+        if coverage < threshold:
+            failures.append(f"CRITICAL: {file_path} has {coverage:.2f}% coverage, requires {threshold}%")
+
+    # Check normal files (all other server files) — hard-fail after Phase A ratchet
+    for file_path, coverage in file_coverage.items():
+        # Skip if it's a critical file (already checked)
+        if file_path in CRITICAL_FILES:
+            continue
+
+        # Skip test files
+        if "/tests/" in file_path or file_path.endswith("test_*.py"):
+            continue
+
+        threshold = KNOWN_COVERAGE_DEBT.get(file_path, NORMAL_THRESHOLD)
+        if coverage < threshold:
+            failures.append(f"NORMAL: {file_path} has {coverage:.2f}% coverage, requires {threshold}%")
+
+    return failures
+
+
+def _ensure_coverage_xml_or_exit(coverage_xml: Path) -> None:
+    """Exit if coverage.xml not found. In pre-commit context, exit 0 so commits aren't blocked."""
+    if coverage_xml.exists():
+        return
+    if os.getenv("PRE_COMMIT"):
+        print("INFO: Coverage XML not found. Skipping threshold check.")
+        print("Run 'make test-server-coverage' to generate coverage before committing.")
+        sys.exit(0)
+    print(f"ERROR: Coverage XML not found at {coverage_xml}")
+    print("Run tests with coverage first: make test-server-coverage")
+    sys.exit(1)
+
+
+def _print_results_and_exit(failures: list[str]) -> None:
+    """Print coverage results and exit with appropriate code."""
+    if failures:
+        print("\n[FAIL] FILES BELOW COVERAGE THRESHOLD:")
+        for failure in failures[:20]:
+            print(f"  {failure}")
+        if len(failures) > 20:
+            print(f"  ... and {len(failures) - 20} more files")
+        print(f"\n[FAIL] {len(failures)} file(s) below threshold (normal floor={NORMAL_THRESHOLD}%)")
+        sys.exit(1)
+    print("\n[PASS] All critical and normal files meet coverage thresholds!")
+    sys.exit(0)
+
+
+def main():
+    """Main entry point."""
+    project_root = Path(__file__).parent.parent
+    coverage_xml = project_root / "coverage.xml"
+    _ensure_coverage_xml_or_exit(coverage_xml)
+    print(f"Checking coverage thresholds from {coverage_xml}...")
+    file_coverage = parse_coverage_xml(coverage_xml)
+    failures = check_thresholds(file_coverage)
+    _print_results_and_exit(failures)
+
+
+if __name__ == "__main__":
+    main()

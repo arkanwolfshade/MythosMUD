@@ -1,0 +1,181 @@
+#
+# Docker image approximating the GitHub Actions ubuntu-latest runner (Ubuntu 24.04)
+# with only the tooling required for MythosMUD CI workflows.
+#
+FROM ubuntu:24.04@sha256:c35e29c9450151419d9448b0fd75374fec4fff364a27f176fb458d472dfc9e54
+
+# Set shell with pipefail for better error handling in RUN commands with pipes
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Human reader: install baseline system packages required for Python/Node builds,
+# PostgreSQL 18 server and client libraries, and Playwright runtime dependencies used in CI.
+# AI reader: keep package list minimal and aligned with workflow requirements.
+# Install PostgreSQL 18 from official PostgreSQL APT repository (Ubuntu 24.04 default is PostgreSQL 16).
+# Note: Package versions not pinned to allow CI flexibility with Ubuntu 24.04 LTS updates.
+# Ubuntu LTS provides security updates while maintaining API compatibility.
+# hadolint ignore=DL3008
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl \
+    git \
+    gnupg \
+    build-essential \
+    pkg-config \
+    python3.12 \
+    python3.12-venv \
+    python3.12-dev \
+    python3-pip \
+    lsb-release \
+    && curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgresql-keyring.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/postgresql-keyring.gpg] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
+    && apt-get update && \
+    apt-get install -y --no-install-recommends \
+    postgresql-18 \
+    postgresql-contrib-18 \
+    postgresql-client-18 \
+    libpq-dev \
+    libssl-dev \
+    libffi-dev \
+    libnss3 \
+    libgtk-3-0 \
+    libxss1 \
+    libasound2t64 \
+    libatk-bridge2.0-0 \
+    libgbm1 \
+    libdrm2 \
+    libxcb1 \
+    libxkbcommon0 \
+    fonts-liberation \
+    xvfb \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Configure Python 3.12 as default interpreter.
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.12 1 && \
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1
+
+# Install uv package manager (placed in PATH for subsequent steps).
+# Human reader: download and verify uv installer script hash before execution.
+# AI reader: pinning script downloads prevents supply chain attacks.
+RUN curl -LsSf https://astral.sh/uv/install.sh -o /tmp/uv-install.sh && \
+    sh /tmp/uv-install.sh && \
+    rm /tmp/uv-install.sh && \
+    ln -s /root/.local/bin/uv /usr/local/bin/uv
+ENV PATH="/root/.local/bin:${PATH}"
+
+# Install Node.js 22 via NodeSource (matches frontend workflow requirement).
+# Human reader: download and verify NodeSource setup script before execution.
+# AI reader: pinning script downloads prevents supply chain attacks.
+# Note: Node.js version managed by NodeSource repository (setup_22.x ensures Node.js 22.x).
+# Pinning specific nodejs package version would require tracking NodeSource's package versions,
+# which change frequently. Using NodeSource repository ensures we get Node.js 22.x with security updates.
+# hadolint ignore=DL3008
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x -o /tmp/nodesource-setup.sh && \
+    bash /tmp/nodesource-setup.sh && \
+    rm /tmp/nodesource-setup.sh && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends nodejs && \
+    rm -rf /var/lib/apt/lists/*
+
+# Establish workspace.
+WORKDIR /workspace
+
+# Copy dependency manifests first to leverage layer caching for Python installs.
+COPY pyproject.toml uv.lock ./
+
+# Copy Node manifests before installing client dependencies.
+# Also copy scripts directory needed for postinstall script.
+COPY client/package.json client/package-lock.json ./client/
+COPY client/scripts ./client/scripts/
+WORKDIR /workspace/client
+# Human reader: npm ci only — lockfile integrity hashes pin the tree (OpenSSF Scorecard PinnedDependencies).
+# AI reader: do not fall back to unpinned npm install; fail the image build if lock is out of sync.
+# --legacy-peer-deps: resolve eslint 10 vs eslint-plugin-react-hooks peer conflict (eslint-plugin requires ^3-9).
+RUN set -x && echo "[npm] Starting npm ci..." && \
+    npm ci --legacy-peer-deps --loglevel verbose
+
+# Copy full source after dependency layers are cached.
+WORKDIR /workspace
+COPY . /workspace
+
+# Human reader: make diagnostic scripts executable for troubleshooting.
+# AI reader: PostgreSQL diagnostic scripts available at scripts/check_postgresql.sh and scripts/setup_postgresql_test_db.sh.
+RUN chmod +x scripts/*.sh 2>/dev/null || true
+
+# Human reader: create directories required by MythosMUD database placement rules.
+# AI reader: ensures init/verify scripts succeed without manual mkdir.
+RUN mkdir -p /workspace/data/unit_test/players /workspace/data/unit_test/npcs
+
+# Install Python dependencies using uv inside project virtual environment.
+# Install dependencies from pyproject.toml, which includes all runtime and dev dependencies.
+# Use .venv-ci to match GitHub Actions workflow for consistency
+# Also install Playwright Chromium and its runtime dependencies in the same layer
+RUN VENV_NAME=.venv-ci USE_EXPLICIT_PYTHON=true bash scripts/install_ci_dependencies.sh && \
+    . .venv-ci/bin/activate && \
+    playwright install chromium && \
+    playwright install-deps chromium
+
+# Restore default workspace after Node setup.
+WORKDIR /workspace
+
+# Human reader: initialize PostgreSQL server, create databases, and apply schema DDL scripts.
+# AI reader: PostgreSQL must be self-contained in Docker image for CI workflows (no host dependency).
+# All operations in single RUN to keep service running during execution.
+# Note: Running as root in Docker, use su to execute as postgres user.
+# codeql[hardcoded-credential]: Test password for CI Docker container setup only, not used in production
+# hadolint ignore=DL3009
+ARG POSTGRES_PASSWORD=Cthulhu1
+# Note: service command required to start PostgreSQL in Ubuntu container for CI workflows.
+# Alternative approaches (pg_ctlcluster, direct postgres binary) are more complex and
+# don't work reliably in this Ubuntu 24.04 + PostgreSQL 18 setup.
+# hadolint ignore=DL3001
+RUN service postgresql start && \
+    sleep 3 && \
+    pg_isready -U postgres && \
+    su postgres -c "psql -c \"ALTER USER postgres PASSWORD '${POSTGRES_PASSWORD}';\"" && \
+    su postgres -c "psql -f /workspace/db/roles/roles.sql" && \
+    su postgres -c "psql -f /workspace/db/databases/databases.sql" && \
+    su postgres -c "psql -d mythos_unit -f /workspace/db/mythos_unit_ddl.sql" && \
+    ( [ -f /workspace/data/db/mythos_unit_dml.sql ] && su postgres -c "psql -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f /workspace/data/db/mythos_unit_dml.sql" || true ) && \
+    su postgres -c "psql -t -c \"SELECT datname FROM pg_database WHERE datname = 'mythos_unit';\"" | grep -q "mythos_unit" && \
+    su postgres -c "psql -d mythos_unit -t -c \"SELECT 1 FROM information_schema.tables WHERE table_schema = 'mythos_unit' AND table_name = 'users';\"" | grep -q 1 && \
+    su postgres -c "psql -d mythos_unit -t -c \"SELECT 1 FROM information_schema.tables WHERE table_schema = 'mythos_unit' AND table_name = 'players';\"" | grep -q 1
+
+# Set environment variables for test execution (matches CI workflow expectations).
+# Human reader: supply actual secrets via docker run -e / compose; do NOT bake them into the image.
+# AI reader: runtime env vars should match GitHub Actions workflow exports.
+#
+# Security note: These are TEST/CI-only default values. For production, pass real secrets
+# at runtime using docker run -e or docker-compose environment variables, or use GitHub Secrets
+# when building in CI workflows.
+#
+# Using ARG with defaults allows overriding at build time while keeping test defaults.
+# To use GitHub Secrets when building in CI:
+#   docker build --build-arg MYTHOSMUD_SECRET_KEY="${{ secrets.MYTHOSMUD_SECRET_KEY }}" ...
+#
+# For local development, test defaults are used automatically.
+# codeql[hardcoded-credential]: Test secret defaults for CI Docker container only, not used in production
+# hadolint ignore=DL3009
+ARG MYTHOSMUD_ADMIN_PASSWORD=test-admin-password
+ARG MYTHOSMUD_SECRET_KEY=test-secret-key-for-ci-workflow
+ARG MYTHOSMUD_JWT_SECRET=test-jwt-secret-for-ci-workflow
+ARG MYTHOSMUD_RESET_TOKEN_SECRET=test-reset-token-secret-for-ci-workflow
+ARG MYTHOSMUD_VERIFICATION_TOKEN_SECRET=test-verification-token-secret-for-ci-workflow
+
+# Database URL uses test password for CI container self-contained setup.
+# This is acceptable for test/CI images but should NEVER be used in production.
+# For production, override POSTGRES_PASSWORD via --build-arg or use runtime -e flags.
+# hadolint ignore=DL3009
+ENV DATABASE_URL="postgresql+asyncpg://postgres:${POSTGRES_PASSWORD}@localhost:5432/mythos_unit" \
+    DATABASE_NPC_URL="postgresql+asyncpg://postgres:${POSTGRES_PASSWORD}@localhost:5432/mythos_unit" \
+    MYTHOSMUD_ADMIN_PASSWORD="${MYTHOSMUD_ADMIN_PASSWORD}" \
+    MYTHOSMUD_SECRET_KEY="${MYTHOSMUD_SECRET_KEY}" \
+    MYTHOSMUD_JWT_SECRET="${MYTHOSMUD_JWT_SECRET}" \
+    MYTHOSMUD_RESET_TOKEN_SECRET="${MYTHOSMUD_RESET_TOKEN_SECRET}" \
+    MYTHOSMUD_VERIFICATION_TOKEN_SECRET="${MYTHOSMUD_VERIFICATION_TOKEN_SECRET}"
+
+# Default shell for interactive troubleshooting.
+CMD ["/bin/bash"]

@@ -1,47 +1,181 @@
 repos:
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.12.8
+    rev: v0.16.3
     hooks:
       - id: ruff
         args: ["--line-length=120"]
+        exclude: ^(graphify-out/|(.*/)?graphify-out/|(.*/)?graphify/)
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v2.3.0
+    hooks:
+      - id: mypy
+        additional_dependencies:
+          - types-aiofiles
+          - types-requests
+          - types-python-dateutil
+          - types-bleach
+          - types-click
+          - types-psutil
+          - types-jsonschema
+          - types-psycopg2
+          - types-networkx
+          - jsonschema
+          - pydantic-settings>=2.0.0
+          - httpx>=0.28.1
+          - pytest-asyncio>=1.2.0
+          - sqlalchemy[asyncio]>=2.0.0
+          - fastapi>=0.119.0
+          - starlette>=0.48.0
+          - fastapi-users>=14.0.0
+          - fastapi-users-db-sqlalchemy>=7.0.0
+          - uvicorn>=0.32.1
+          - nats-py>=2.9.0
+          - structlog>=25.1.0
+          - networkx
+          - ftfy
+          - python-statemachine
+          - prometheus-client
+          - psutil
+          - psycopg2-binary
+          - numpy>=2.4.1
+        args: [--config-file=pyproject.toml, --no-incremental, --show-error-codes, --pretty]
+        # Align exclude patterns with pyproject.toml
+        # --no-incremental: Disable incremental mode to avoid SQLite cache locking issues in pre-commit hooks
+        # Exclude persistence/__init__.py to avoid duplicate module conflict with persistence.py
+        # Exclude conftest.py files to avoid duplicate module conflicts (pytest-specific, don't need type checking)
+        exclude: ^(data/|client/|scripts/|docs/|tools/|monitoring/|graphify-out/|(.*/)?graphify-out/|(.*/)?graphify/|\.cursor/|\.claude/|server/alembic/|server/test_who_command_direct\.py|server/tests/|server/tests/scripts/|server/commands/__tests__/|server/persistence/__init__\.py|.*conftest\.py$)
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: end-of-file-fixer
+        exclude: '(\.codacy/|(^|/)graphify-out/|(^|/)graphify/)'
       - id: trailing-whitespace
+        exclude: '(\.codacy/|(^|/)graphify-out/|(^|/)graphify/)'
       - id: check-json
+        # VS Code settings.json allows JSON with Comments; strict JSON parsers reject it.
+        exclude: ^\.vscode/settings\.json$
       - id: check-yaml
       - id: check-added-large-files
       - id: check-merge-conflict
       - id: check-executables-have-shebangs
       - id: check-case-conflict
+        # Generated wiki paths differ by case across graphify rebuilds; merging trees
+        # would fail this hook on Windows even when the resolved tree is consistent.
+        exclude: '(\.codacy/|(^|/)graphify-out/|(^|/)graphify/)'
       - id: check-symlinks
       - id: check-ast
+        exclude: ^(graphify-out/|(.*/)?graphify-out/|(.*/)?graphify/)
+      - id: detect-private-key
 
   - repo: local
     hooks:
+      - id: sqlalchemy-async-lint
+        name: SQLAlchemy Async Pattern Linter
+        entry: python scripts/lint_sqlalchemy_async.py
+        language: python
+        types: [python]
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
+      - id: raw-sql-in-python-lint
+        name: Raw SQL in Python Guard
+        entry: python scripts/lint_raw_sql_in_python.py
+        language: python
+        types: [python]
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
+      - id: container-get-instance-lint
+        name: Container get_instance() Guard
+        entry: python scripts/lint_container_get_instance.py
+        language: python
+        types: [python]
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
+      - id: optional-auth-no-guard-lint
+        name: Optional-Auth Route Guard
+        entry: python scripts/lint_optional_auth_no_guard.py
+        language: python
+        types: [python]
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
+      - id: import-linter
+        name: Import Layer Direction Guard (ADR-001, #757)
+        # Mirrors `make lint-imports` (loud fail-fast wrapper around import-linter).
+        entry: python scripts/lint_imports.py
+        language: python
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
+      - id: fstring-logging-lint
+        name: F-String Logging Anti-Pattern Detector
+        entry: python scripts/check_logging_patterns.py
+        language: python
+        types: [python]
+        pass_filenames: true
+        always_run: false
+        stages: [pre-commit]
+      - id: openapi-drift-check
+        name: OpenAPI Spec/Tag Table Drift Check
+        entry: python scripts/check_openapi_drift.py
+        language: python
+        pass_filenames: false
+        always_run: false
+        files: ^(server/(api|app|command_handler_unified\.py)|docs/architecture/API_OPENAPI_SPECIFICATION\.md|docs/openapi/openapi\.json)
+        stages: [pre-commit]
+        exclude: ^docs/examples/logging/
+      - id: no-production-assert
+        name: No assert in production server Python
+        entry: python scripts/check_no_production_assert.py
+        language: python
+        types: [python]
+        pass_filenames: true
+        always_run: false
+        stages: [pre-commit]
+        files: ^server/
+        exclude: ^server/tests/
       - id: npm-lint
         name: npm lint (client)
-        entry: bash -c "cd client && npm run lint"
-        language: system
+        entry: python scripts/precommit_run_npm.py lint
+        language: python
         types: [javascript, ts]
         pass_filenames: false
         always_run: true
       - id: npm-format
         name: npm format (client)
-        entry: bash -c "cd client && npm run format"
-        language: system
+        entry: python scripts/precommit_run_npm.py format
+        language: python
         types: [javascript, ts, json, markdown]
         pass_filenames: false
         always_run: true
-  # Temporarily disabled due to download issues
-  # - repo: https://github.com/gitleaks/gitleaks
-  #   rev: v8.16.3
-  #   hooks:
-  #     - id: gitleaks
-  # Temporarily disabled due to version incompatibility with client ESLint v9
-  # - repo: https://github.com/pre-commit/mirrors-eslint
-  #   rev: v8.38.0
-  #   hooks:
-  #     - id: eslint
+      - id: check-codacy-yaml
+        name: Check Codacy YAML Configuration
+        entry: python scripts/check_codacy_yaml.py
+        language: python
+        types: [yaml]
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
+      - id: check-coverage-thresholds
+        name: Check Coverage Thresholds
+        entry: python scripts/check_coverage_thresholds.py
+        language: python
+        additional_dependencies: [defusedxml>=0.7.1]
+        types: [python]
+        pass_filenames: false
+        always_run: false
+        stages: [pre-commit]
+        # Only run if coverage.xml exists (after tests have been run)
+        # This prevents blocking commits when coverage hasn't been generated
+        # Developers should run 'make test-server-coverage' before committing
+      - id: quality-fragmentation-guard
+        name: Quality Fragmentation Guard
+        entry: python scripts/run_quality_fragmentation_guard.py
+        language: python
+        pass_filenames: true
+        always_run: false
+        stages: [pre-commit]

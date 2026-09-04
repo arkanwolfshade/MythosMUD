@@ -8,70 +8,108 @@ persistence layers into a cohesive gaming experience.
 
 As noted in the Pnakotic Manuscripts, the proper organization of arcane
 knowledge is essential for maintaining the delicate balance between order
-and chaos in our digital realm.
+and chaos. This server implementation follows those ancient principles.
 """
 
-import warnings
+# Load environment variables from .env.local FIRST, before any other imports
+# This ensures environment variables are available regardless of how the server is started
+from pathlib import Path
 
-from fastapi import Depends
+from dotenv import load_dotenv
+
+project_root = Path(__file__).parent.parent  # server/main.py -> server/ -> project root
+env_local_path = project_root / ".env.local"
+if env_local_path.exists():
+    _ = load_dotenv(env_local_path, override=False)  # override=False to respect already-set env vars
+
+# These imports must come after load_dotenv() to ensure environment variables are loaded first
+# This is necessary because some imported modules depend on environment variables being set
+# Note: E402 (module level import not at top of file) is ignored for this file via pyproject.toml
+# because these imports must come after load_dotenv() to ensure env vars are loaded first
+# pylint: disable=wrong-import-position,wrong-import-order  # Reason: Imports must come after load_dotenv() to ensure environment variables are loaded first
+import warnings
+from collections.abc import Callable
+from typing import Annotated
+
+from fastapi import Depends, FastAPI
 from fastapi.security import HTTPBearer
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.requests import Request as StarletteRequest
 
 from .app.factory import create_app
 from .auth.users import get_current_user
-from .config_loader import get_config
-from .logging_config import get_logger, setup_logging
+from .config import get_config
+from .middleware.correlation_middleware import CorrelationMiddleware
+from .models.user import User
+from .structured_logging.enhanced_logging_config import get_logger, setup_enhanced_logging
 
 # Suppress passlib deprecation warning about pkg_resources
+# Note: We keep passlib for fastapi-users compatibility but use our own Argon2 implementation
 warnings.filterwarnings("ignore", category=DeprecationWarning, module="passlib")
 
-# Get logger
+# Early logging setup - must happen before any logger creation
+# This ensures all startup information is captured in logfiles
+config = get_config()
+setup_enhanced_logging(config.logging)
+
+# Get logger - now created AFTER logging is set up
 logger = get_logger(__name__)
+logger.info("Logging setup completed", environment=config.logging.environment)  # pylint: disable=no-member  # Reason: Pydantic model fields are dynamically accessible, pylint cannot detect them statically but they exist at runtime
 
 
-class ErrorLoggingMiddleware(BaseHTTPMiddleware):
-    """Middleware to log all errors and exceptions."""
+# ErrorLoggingMiddleware has been replaced by ComprehensiveLoggingMiddleware
+# which provides the same functionality plus request/response logging and better organization
 
-    async def dispatch(self, request: StarletteRequest, call_next):
-        try:
-            response = await call_next(request)
-            return response
-        except Exception as e:
-            logger.error("Unhandled exception in request", path=request.url.path, error=str(e), exc_info=True)
-            # Re-raise the exception to maintain the error handling chain
-            raise e
+# Handler functions moved to server/api/monitoring.py
+# These are kept for backward compatibility but are no longer used
 
 
-def main():
+def main() -> FastAPI:
     """Main entry point for the MythosMUD server."""
-    from .config_loader import get_config
-
-    # Set up logging based on configuration
-    config = get_config()
-    setup_logging(config)
-
     logger.info("Starting MythosMUD server...")
-    app = create_app()
+    app = create_app()  # pylint: disable=redefined-outer-name  # noqa: F811  # Reason: Module-level app instance for main entry point
 
-    # Add error logging middleware
-    app.add_middleware(ErrorLoggingMiddleware)
+    # Error logging is now handled by ComprehensiveLoggingMiddleware in the factory
+    # Lifespan (including enhanced logging/monitoring) is configured in factory
 
     logger.info("MythosMUD server started successfully")
     return app
 
 
-# Set up logging when module is imported
-config = get_config()
-logger.info("Setting up logging with config", config=config)
-setup_logging(config)
-logger.info("Logging setup completed")
+def _create_get_app() -> Callable[[], FastAPI]:
+    """
+    Factory function that creates the get_app function with encapsulated cache.
 
-# Create the FastAPI application
-app = create_app()
+    This closure pattern avoids global variables while maintaining lazy initialization.
+    """
+    app_instance: FastAPI | None = None
 
-# Add error logging middleware
-app.add_middleware(ErrorLoggingMiddleware)
+    def _app_getter() -> FastAPI:
+        """
+        Get or create the FastAPI application instance.
+
+        This function provides lazy app creation for better testability and
+        uvicorn reload compatibility. The app is created on first access.
+
+        Returns:
+            FastAPI: The configured FastAPI application instance
+        """
+        nonlocal app_instance
+        if app_instance is None:
+            app_instance = create_app()
+        return app_instance
+
+    return _app_getter
+
+
+get_app = _create_get_app()
+
+
+# Module-level app is intentionally exposed for Uvicorn's "server.main:app" entry point.
+# Application construction is encapsulated in get_app()/create_app(); this is the single
+# global reference required by the process.
+app = get_app()
+
+# Add correlation middleware (CORS is already configured in factory)
+app.add_middleware(CorrelationMiddleware, correlation_header="X-Correlation-ID")
 
 # Security
 security = HTTPBearer()
@@ -79,19 +117,18 @@ security = HTTPBearer()
 
 # Root endpoint
 @app.get("/")
-async def read_root():
+async def read_root() -> dict[str, str]:
     """Root endpoint providing basic server information."""
     return {"message": "Welcome to MythosMUD!"}
 
 
 # Test endpoint for JWT validation
 @app.get("/test-auth")
-async def test_auth(current_user: dict = Depends(get_current_user)):
+async def test_auth(current_user: Annotated[User | None, Depends(get_current_user)]) -> dict[str, str]:
     """Test endpoint to verify JWT authentication is working."""
     if current_user:
-        return {"message": "Authentication successful", "user": current_user}
-    else:
-        return {"message": "No user found"}
+        return {"message": "Authentication successful", "user": str(current_user)}
+    return {"message": "No user found"}
 
 
 if __name__ == "__main__":
@@ -100,9 +137,9 @@ if __name__ == "__main__":
     config = get_config()
     uvicorn.run(
         "server.main:app",  # Use the correct module path from project root
-        host=config["host"],
-        port=config["port"],
-        reload=True,
+        host=config.server.host,
+        port=config.server.port,  # pylint: disable=no-member  # Reason: Pydantic model fields are dynamically accessible, pylint cannot detect them statically but they exist at runtime
+        reload=False,  # Hot reloading disabled due to client compatibility issues
         # Use our StructLog system for all logging
         access_log=True,
         use_colors=False,  # Disable colors for structured logging
