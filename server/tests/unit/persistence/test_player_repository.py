@@ -15,11 +15,47 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from server.exceptions import DatabaseError
 from server.models.player import Player
+from server.models.room import Room
 from server.persistence.repositories.player_repository import PlayerRepository
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
 # pylint: disable=too-many-lines  # Reason: Comprehensive test file for AsyncPersistenceLayer requires extensive test coverage across many scenarios
+
+
+class _ScalarResult:
+    """Minimal typed stand-in for the sqlalchemy Result returned by session.execute()
+    when only .scalar() is used (the player_is_deleted guard read, #777). A bare
+    MagicMock() types .scalar as Any; this keeps the mock's return type concrete."""
+
+    def __init__(self, value: bool | None) -> None:
+        self._value: bool | None = value
+
+    def scalar(self) -> bool | None:
+        return self._value
+
+
+class _SessionCM:
+    """Typed async context manager stand-in for `async with session_maker() as session:`.
+    Avoids chaining through MagicMock.return_value (typed Any in typeshed) to wire up
+    __aenter__/__aexit__ by hand."""
+
+    def __init__(self, session: AsyncMock) -> None:
+        self._session: AsyncMock = session
+
+    async def __aenter__(self) -> AsyncMock:
+        return self._session
+
+    async def __aexit__(self, *_args: object) -> None:
+        return None
+
+
+def _session_maker_double(session: AsyncMock) -> MagicMock:
+    """Build the `session_maker` callable that `get_session_maker()` returns: calling it
+    (`session_maker()`) returns the async context manager over `session`. Assigned
+    wholesale to `mock_get_session.return_value` so callers never need to read an
+    Any-typed Mock attribute to chain further setup."""
+    return MagicMock(return_value=_SessionCM(session))
 
 
 def _make_mock_row(
@@ -56,13 +92,14 @@ def _make_mock_row(
 @pytest.fixture
 def player_repository():
     """Create a PlayerRepository instance."""
+    # Cache only checks key membership (player.current_room_id in room_cache); real Room
+    # instances are cheap to build and keep the fixture correctly typed as dict[str, Room].
     room_cache = {
-        "arkham_square": MagicMock(),
-        "room1": MagicMock(),
-        "earth_arkhamcity_sanitarium_room_foyer_001": MagicMock(),  # Fallback room
+        "arkham_square": Room({"id": "arkham_square"}),
+        "room1": Room({"id": "room1"}),
+        "earth_arkhamcity_sanitarium_room_foyer_001": Room({"id": "earth_arkhamcity_sanitarium_room_foyer_001"}),
     }
-    # Reason: Using MagicMock for Room objects in tests - compatible at runtime
-    return PlayerRepository(room_cache=room_cache)  # type: ignore[arg-type]
+    return PlayerRepository(room_cache=room_cache)
 
 
 @pytest.fixture
@@ -104,9 +141,8 @@ def test_player_repository_initialization():
 
 def test_player_repository_initialization_with_cache():
     """Test PlayerRepository initializes with room cache."""
-    room_cache = {"room1": MagicMock(), "room2": MagicMock()}
-    # Reason: Using MagicMock for Room objects in tests - compatible at runtime
-    repo = PlayerRepository(room_cache=room_cache)  # type: ignore[arg-type]
+    room_cache = {"room1": Room({"id": "room1"}), "room2": Room({"id": "room2"})}
+    repo = PlayerRepository(room_cache=room_cache)
 
     assert repo._room_cache == room_cache
 
@@ -230,6 +266,48 @@ async def test_save_player_with_bool_is_admin(player_repository, mock_player):
         await player_repository.save_player(mock_player)
 
         assert mock_player.is_admin == 1
+
+
+@pytest.mark.asyncio
+async def test_save_player_refuses_deleted_player(player_repository: PlayerRepository, mock_player: MagicMock):
+    """save_player must not resurrect a soft-deleted row (#777): when player_is_deleted()
+    reports True for a stale in-memory Player, the upsert is skipped entirely and the
+    session is never committed."""
+    guard_result = _ScalarResult(True)
+    mock_execute = AsyncMock(return_value=guard_result)
+    mock_commit = AsyncMock()
+    mock_session = AsyncMock()
+    mock_session.execute = mock_execute
+    mock_session.commit = mock_commit
+
+    with patch("server.persistence.repositories.player_repository.get_session_maker") as mock_get_session:
+        mock_get_session.return_value = _session_maker_double(mock_session)
+
+        await player_repository.save_player(mock_player)
+
+        mock_execute.assert_awaited_once()  # only the guard read, no upsert
+        mock_commit.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_save_player_allows_new_player(player_repository: PlayerRepository, mock_player: MagicMock):
+    """save_player must still upsert a not-yet-inserted player, where player_is_deleted()
+    returns NULL (no row) rather than True."""
+    guard_result = _ScalarResult(None)
+    upsert_result = MagicMock()
+    mock_execute = AsyncMock(side_effect=[guard_result, upsert_result])
+    mock_commit = AsyncMock()
+    mock_session = AsyncMock()
+    mock_session.execute = mock_execute
+    mock_session.commit = mock_commit
+
+    with patch("server.persistence.repositories.player_repository.get_session_maker") as mock_get_session:
+        mock_get_session.return_value = _session_maker_double(mock_session)
+
+        await player_repository.save_player(mock_player)
+
+        assert mock_execute.await_count == 2
+        mock_commit.assert_awaited_once()
 
 
 @pytest.mark.asyncio

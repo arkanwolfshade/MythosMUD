@@ -311,10 +311,14 @@ async def test_soft_delete_character_already_deleted(player_service, mock_persis
 
 
 @pytest.mark.asyncio
-async def test_soft_delete_character_persistence_fails(player_service, mock_persistence):
-    """Test soft_delete_character() when persistence.soft_delete_player fails."""
-    from server.exceptions import DatabaseError
-
+async def test_soft_delete_character_lost_race_returns_already_deleted(
+    player_service: PlayerService, mock_persistence: AsyncMock
+):
+    """Test soft_delete_character() when the pre-check passed (is_deleted=False) but
+    soft_delete_player still returns False -- a concurrent delete won the race between the
+    read and the write. This must surface as "already deleted" (-> 404), not a DatabaseError
+    (-> 500): soft_delete_player's WHERE ... AND is_deleted = false no-ops in exactly this
+    case (#777)."""
     player_id = uuid.uuid4()
     user_id = uuid.uuid4()
     mock_player = MagicMock()
@@ -323,8 +327,9 @@ async def test_soft_delete_character_persistence_fails(player_service, mock_pers
     mock_player.is_deleted = False
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
     mock_persistence.soft_delete_player = AsyncMock(return_value=False)
-    with pytest.raises(DatabaseError, match="Failed to soft delete"):
-        await player_service.soft_delete_character(player_id, user_id)
+    success, message = await player_service.soft_delete_character(player_id, user_id)
+    assert success is False
+    assert "already deleted" in message.lower()
 
 
 @pytest.mark.asyncio
