@@ -1,77 +1,7 @@
-import React, { useCallback, useState } from 'react';
-import { stringIndicatesServerUnavailable } from '../mythosApp/serverAvailability.js';
+import React, { useState } from 'react';
 import type { CharacterInfo } from '../types/auth.js';
-import { assertServerCharacterResponseArray } from '../utils/apiTypeGuards.js';
-import { getErrorMessage, isErrorResponse } from '../utils/errorHandler.js';
 import { logger } from '../utils/logger.js';
 import './CharacterSelectionScreen.css';
-
-const LOAD_CHARACTERS_ERROR = 'Failed to load characters';
-const SERVER_UNAVAILABLE_MESSAGE = 'Server is unavailable. Please try again later.';
-
-function extractErrorMessageFromResponseBody(rawData: unknown, defaultMessage: string): string {
-  if (isErrorResponse(rawData)) {
-    return getErrorMessage(rawData);
-  }
-
-  const genericMessage = getErrorMessage(rawData);
-  if (genericMessage !== 'An unknown error occurred') {
-    return genericMessage;
-  }
-
-  if (typeof rawData === 'object' && rawData !== null) {
-    const detail = (rawData as Record<string, unknown>).detail;
-    if (typeof detail === 'object' && detail !== null && 'message' in detail) {
-      return String((detail as Record<string, unknown>).message);
-    }
-  }
-
-  return defaultMessage;
-}
-
-async function extractCharactersFetchErrorMessage(response: Response): Promise<string> {
-  if (response.status >= 500 && response.status < 600) {
-    return SERVER_UNAVAILABLE_MESSAGE;
-  }
-
-  try {
-    const rawData: unknown = await response.json();
-    return extractErrorMessageFromResponseBody(rawData, LOAD_CHARACTERS_ERROR);
-  } catch {
-    return LOAD_CHARACTERS_ERROR;
-  }
-}
-
-async function fetchCharactersList(baseUrl: string, authToken: string) {
-  const response = await fetch(`${baseUrl}/api/players/characters`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${authToken}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(await extractCharactersFetchErrorMessage(response));
-  }
-
-  const rawData: unknown = await response.json();
-  return assertServerCharacterResponseArray(rawData);
-}
-
-function handleRefreshCharactersFailure(error: unknown, onError: (error: string) => void): void {
-  const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-
-  if (stringIndicatesServerUnavailable(errorMessage)) {
-    onError(SERVER_UNAVAILABLE_MESSAGE);
-    logger.error('CharacterSelectionScreen', 'Server unavailable when refreshing characters', {
-      error: errorMessage,
-    });
-    return;
-  }
-
-  logger.error('CharacterSelectionScreen', 'Failed to refresh characters', { error: errorMessage });
-}
 
 interface CharacterSelectionScreenProps {
   characters: CharacterInfo[];
@@ -239,20 +169,9 @@ function CharacterSelectionList({
 }
 
 export const CharacterSelectionScreen: React.FC<CharacterSelectionScreenProps> = props => {
-  const { characters, onCharacterSelected, onCreateCharacter, onDeleteCharacter, onError, baseUrl, authToken } = props;
+  const { characters, onCharacterSelected, onCreateCharacter, onDeleteCharacter, onError } = props;
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
-
-  const refreshCharacters = useCallback(async () => {
-    try {
-      const refreshedCharacters = await fetchCharactersList(baseUrl, authToken);
-      // Note: The parent component should update the characters prop
-      // This is just for refreshing if needed
-      logger.info('CharacterSelectionScreen', 'Characters refreshed', { count: refreshedCharacters.length });
-    } catch (error) {
-      handleRefreshCharactersFailure(error, onError);
-    }
-  }, [baseUrl, authToken, onError]);
 
   const handleDeleteClick = (characterId: string) => {
     setDeleteConfirm(characterId);
@@ -261,10 +180,12 @@ export const CharacterSelectionScreen: React.FC<CharacterSelectionScreenProps> =
   const handleDeleteConfirm = async (characterId: string) => {
     try {
       setIsDeleting(characterId);
+      // onDeleteCharacter (executeDeleteCharacterUi) already refetches and updates the
+      // characters list on success; a second, redundant fetch here (whose result was
+      // discarded anyway -- see prior comment) added a second, spurious source of delete
+      // errors on top of a delete that had already succeeded. #777 follow-up.
       await onDeleteCharacter(characterId);
       setDeleteConfirm(null);
-      // Refresh characters list after deletion
-      await refreshCharacters();
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to delete character';
       onError(errorMessage);

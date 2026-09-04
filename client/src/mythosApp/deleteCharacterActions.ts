@@ -29,15 +29,22 @@ export async function executeDeleteCharacterUi(
     if (next.step === 'throw') {
       throw new Error(next.message);
     }
-    if (next.step === 'throw_refresh') {
-      console.error('Failed to refresh characters list after deletion:', next.message);
-      deps.setError(next.message);
-      const deletionError = new Error(next.message);
-      (deletionError as Error & { cause?: unknown }).cause = {
-        status: next.deleteStatus,
-        statusText: next.deleteStatusText,
-      };
-      throw deletionError;
+    if (next.step === 'commit_remove_locally') {
+      // The delete itself already succeeded server-side; only the follow-up list refetch
+      // failed. Don't strand the deleted character's card in the UI over a secondary read
+      // failure (#777 follow-up) -- drop it from local state directly instead of throwing.
+      console.warn('Character deleted, but failed to refresh character list; removing locally:', next.message);
+      let remaining: CharacterInfo[] = [];
+      deps.setCharacters(prev => {
+        remaining = prev.filter(c => c.player_id !== next.characterId);
+        return remaining;
+      });
+      if (remaining.length === 0) {
+        deps.setShowCharacterSelection(false);
+        deps.setCreationStep('stats');
+        deps.setSelectedProfession(undefined);
+      }
+      return;
     }
     deps.setCharacters(next.characters);
     if (next.characters.length === 0) {

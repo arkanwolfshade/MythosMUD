@@ -3,6 +3,8 @@
  * Covers type guard branches to improve global branch coverage.
  */
 
+/// <reference lib="es2015" />
+
 import { describe, expect, it } from 'vitest';
 import {
   assertCharacterInfoArray,
@@ -84,6 +86,24 @@ describe.concurrent('apiTypeGuards', () => {
         name: 'Test',
         profession_id: 1,
         profession_name: 'Scholar',
+        level: 1,
+        created_at: '2020-01-01',
+        last_active: '2020-01-01',
+      };
+      expect(isServerCharacterResponse(value)).toBe(true);
+    });
+
+    it('should return true when profession_name is null (Pydantic serializes str | None as JSON null, #777)', () => {
+      // A character whose profession hasn't resolved to a name (e.g. a system/E2E account)
+      // gets profession_name: null from the server, not an omitted key. Rejecting this used
+      // to throw on every delete/create list-refresh whenever the response included such a
+      // character, silently skipping the characters-state update and stranding deleted
+      // characters' cards in the UI.
+      const value = {
+        id: 'char-1',
+        name: 'Test',
+        profession_id: 0,
+        profession_name: null,
         level: 1,
         created_at: '2020-01-01',
         last_active: '2020-01-01',
