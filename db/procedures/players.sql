@@ -402,6 +402,8 @@ END;
 $$;
 
 -- soft_delete_player: set is_deleted=true, deleted_at=now()
+-- Idempotent: a repeat call against an already-deleted row no-ops (returns false) rather
+-- than reporting success again -- see issue #777.
 CREATE OR REPLACE FUNCTION :schema_name.soft_delete_player(p_id UUID)
 RETURNS BOOLEAN
 LANGUAGE plpgsql
@@ -411,9 +413,29 @@ DECLARE
 BEGIN
     UPDATE players
     SET is_deleted = true, deleted_at = now()
-    WHERE player_id = p_id;
+    WHERE player_id = p_id
+      AND is_deleted = false;
     GET DIAGNOSTICS v_updated = ROW_COUNT;
     RETURN v_updated > 0;
+END;
+$$;
+
+-- player_is_deleted: cheap single-column read used by save_player's stale-object guard
+-- (issue #777) to avoid resurrecting a soft-deleted row via upsert_player. Returns NULL
+-- for a non-existent player id -- callers must treat only TRUE as "deleted".
+-- plpgsql (not LANGUAGE sql) to match every other function in this file: a plain SQL
+-- function body is parsed and bound to "players" at CREATE FUNCTION time, which fails
+-- unless the applying session's search_path already resolves the target schema.
+CREATE OR REPLACE FUNCTION :schema_name.player_is_deleted(p_id UUID)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+STABLE
+AS $$
+DECLARE
+    v_deleted boolean;
+BEGIN
+    SELECT is_deleted INTO v_deleted FROM players WHERE player_id = p_id;
+    RETURN v_deleted;
 END;
 $$;
 

@@ -8,6 +8,7 @@ and inventory management using PostgreSQL stored procedures.
 # pylint: disable=too-few-public-methods,too-many-lines
 # Reason: Repository class with focused responsibility; single module kept to avoid fragmenting player persistence.
 
+import traceback
 import uuid
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
@@ -294,6 +295,21 @@ class PlayerRepository:
             params = self._save_preparer.prepare(player)
             session_maker = get_session_maker()
             async with session_maker() as session:
+                # Guard against resurrecting a soft-deleted character (#777): upsert_player's
+                # ON CONFLICT DO UPDATE writes is_deleted/deleted_at from this in-memory Player,
+                # so a stale object loaded before a delete would silently un-delete the row.
+                # NULL (not-yet-inserted player) must fall through to the upsert.
+                deleted = (
+                    await session.execute(text("SELECT player_is_deleted(:id)"), {"id": str(player.player_id)})
+                ).scalar()
+                if deleted is True:
+                    self._logger.warning(
+                        "Refusing to save deleted player (stale in-memory Player)",
+                        player_id=player.player_id,
+                        player_name=player.name,
+                        caller="".join(traceback.format_stack(limit=12)),
+                    )
+                    return
                 await self._save_preparer.execute(session, params)
                 await session.commit()
                 self._logger.debug("Player saved successfully", player_id=player.player_id)

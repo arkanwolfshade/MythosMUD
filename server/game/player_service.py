@@ -411,18 +411,14 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
             logger.warning("Character already deleted", player_id=player_id)
             return False, "Character is already deleted"
 
-        # Soft delete the character
+        # Soft delete the character. A False return now means the row was already deleted
+        # (soft_delete_player's WHERE ... AND is_deleted = false no-ops on a repeat call) --
+        # the guard above should normally catch this first, but a concurrent delete can still
+        # lose the race here. Treat it the same way: "already deleted", not a DB failure (#777).
         success = await self.persistence.soft_delete_player(player_id)
         if not success:
-            logger.error("Failed to soft delete character", player_id=player_id)
-            log_and_raise_enhanced(
-                DatabaseError,
-                "Failed to soft delete character",
-                player_id=str(player_id),
-                operation="soft_delete_character",
-                details={"player_id": player_id},
-                user_friendly="Failed to delete character",
-            )
+            logger.warning("Character already deleted (lost delete race)", player_id=player_id)
+            return False, "Character is already deleted"
 
         player_name = player.name if hasattr(player, "name") else "unknown"
         logger.info("Character soft-deleted successfully", player_id=player_id, character_name=player_name)
