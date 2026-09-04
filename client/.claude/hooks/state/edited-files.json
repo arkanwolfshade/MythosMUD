@@ -1,8 +1,1 @@
-{
-  "18651087-eccd-4683-80c2-551c9b33f45e": [
-    "C:\\projects\\MythosMUD\\client\\tests\\e2e\\runtime\\fixtures\\multiplayer-contexts.ts",
-    "C:\\projects\\MythosMUD\\client\\src\\hooks\\useWebSocketConnection.ts",
-    "C:\\projects\\MythosMUD\\client\\tests\\e2e\\runtime\\fixtures\\auth.ts",
-    "C:\\projects\\MythosMUD\\client\\src\\hooks\\useGameConnectionRefactored.ts"
-  ]
-}
+{}

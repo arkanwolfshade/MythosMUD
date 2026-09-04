@@ -6,8 +6,8 @@
     "organization": null,
     "repositoryId": null,
     "repositoryName": null,
-    "createdAt": "2026-09-03T22:17:44.348Z",
-    "updatedAt": "2026-09-03T22:17:44.348Z",
+    "createdAt": "2026-09-04T14:50:31.074Z",
+    "updatedAt": "2026-09-04T14:50:31.074Z",
     "languages": [
       "CSS",
       "HTML",
@@ -140,7 +140,9 @@
           "patternId": "Trivy_vulnerability_minor"
         }
       ],
-      "exclude": ["openapi.json"]
+      "exclude": [
+        "openapi.json"
+      ]
     },
     {
       "toolId": "Semgrep",
