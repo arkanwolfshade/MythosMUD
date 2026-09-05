@@ -27,7 +27,8 @@ function makeDeps(initialCharacters: CharacterInfo[]) {
   const deps: DeleteCharacterUiDeps = {
     returnToLogin: vi.fn(),
     setCharacters: vi.fn(update => {
-      characters = typeof update === 'function' ? (update as (prev: CharacterInfo[]) => CharacterInfo[])(characters) : update;
+      characters =
+        typeof update === 'function' ? (update as (prev: CharacterInfo[]) => CharacterInfo[])(characters) : update;
     }),
     setShowCharacterSelection: vi.fn(),
     setCreationStep: vi.fn(),

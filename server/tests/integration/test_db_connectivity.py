@@ -8,13 +8,9 @@ from server.models.user import User
 
 
 @pytest.mark.asyncio
-@pytest.mark.serial  # Ensure this runs serially to avoid event loop conflicts
 async def test_db_connectivity_create_and_read_user(session_factory):
     """
     Test that we can create and read a User from the database.
-
-    CRITICAL: This test is marked as serial to ensure it runs sequentially
-    and avoids Windows event loop issues with asyncpg.
     """
     import uuid
 

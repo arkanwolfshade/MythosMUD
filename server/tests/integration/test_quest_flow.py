@@ -3,11 +3,10 @@ Integration tests for quest subsystem: start, quest log, abandon flow.
 
 Uses real PostgreSQL (session_factory), patches get_session_maker so QuestService
 and repositories use the test DB. Seeds leave_the_tutorial definition and offer
-via ON CONFLICT DO NOTHING (safe for parallel workers); tests start_quest,
-get_quest_log, and abandon.
+via ON CONFLICT DO NOTHING; tests start_quest, get_quest_log, and abandon.
 
 Uses a single shared session per test so all repo operations see the same
-transaction and committed rows (avoids cross-session visibility issues under xdist).
+transaction and committed rows.
 """
 
 # Ensure quest and player tables are registered on Base.metadata before create_all
@@ -114,7 +113,6 @@ async def quest_seed_data(session_factory):
 
 
 @pytest.mark.asyncio
-@pytest.mark.serial
 @pytest.mark.integration
 async def test_quest_start_log_abandon_flow(
     session_factory,
@@ -175,7 +173,6 @@ async def test_quest_start_log_abandon_flow(
 
 
 @pytest.mark.asyncio
-@pytest.mark.serial
 @pytest.mark.integration
 async def test_quest_start_by_trigger_then_abandon(  # pylint: disable=redefined-outer-name
     session_factory, quest_seed_data

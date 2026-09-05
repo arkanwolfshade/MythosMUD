@@ -45,7 +45,7 @@ if [ "$USE_EXPLICIT_PYTHON" = "true" ]; then
     uv pip install --python "$PYTHON_EXE" -e .
     uv pip install --python "$PYTHON_EXE" -e ".[dev]"
     # Quote version specifiers to prevent shell redirection interpretation
-    uv pip install --python "$PYTHON_EXE" "pytest-mock>=3.14.0" "pytest-xdist>=3.8.0"
+    uv pip install --python "$PYTHON_EXE" "pytest-mock>=3.14.0"
 else
     echo "Installing dependencies with venv activation (ensures proper site-packages isolation)..."
     # shellcheck disable=SC1091
@@ -67,7 +67,7 @@ else
     uv pip install --python "$PYTHON_EXE" -e .
     uv pip install --python "$PYTHON_EXE" -e ".[dev]"
     # Quote version specifiers to prevent shell redirection interpretation
-    uv pip install --python "$PYTHON_EXE" "pytest-mock>=3.14.0" "pytest-xdist>=3.8.0"
+    uv pip install --python "$PYTHON_EXE" "pytest-mock>=3.14.0"
     deactivate
 fi
 

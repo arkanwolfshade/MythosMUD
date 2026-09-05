@@ -56,8 +56,6 @@ Tests are automatically marked based on their directory:
 Additional markers:
 
 - `@pytest.mark.slow` - Slow running tests
-- `@pytest.mark.serial` - Must run sequentially (not in parallel)
-- `@pytest.mark.xdist_group(name="...")` - Group tests for xdist worker assignment
 
 ## Coverage Policy
 
@@ -127,13 +125,12 @@ Place in `server/tests/e2e/`
 - `session_factory` - Async session factory
 - `db_cleanup` - Automatic table truncation after tests
 
-## Parallel Execution
+## Execution Model
 
-Tests run in parallel by default using `pytest-xdist`. To prevent race conditions:
-
-1. Use `@pytest.mark.serial` for tests that modify global state
-2. Use `@pytest.mark.xdist_group(name="...")` to group related tests
-3. Ensure proper test isolation (no shared mutable state)
+The suite runs serially (see #724: pytest-xdist removed entirely -- its worker
+restart/shutdown protocol produced false "worker crashed" reports for workers that exited
+cleanly, an unresolved upstream xdist/execnet gap). Ensure proper test isolation (no shared
+mutable state) regardless -- there is no worker boundary protecting tests from each other.
 
 ## Environment Variables
 

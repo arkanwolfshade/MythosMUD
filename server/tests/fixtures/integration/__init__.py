@@ -143,8 +143,8 @@ async def session_factory(request: pytest.FixtureRequest) -> AsyncGenerator[asyn
     """
     engine = request.getfixturevalue("integration_engine")
 
-    # Create tables on first use (with simple flag to avoid concurrent creation)
-    # Since integration tests are marked as serial, this should be safe
+    # Create tables on first use (with simple flag to avoid concurrent creation).
+    # The whole suite runs serially (#724), so this is safe.
     if not _IntegrationState.tables_created:
         try:
             async with engine.begin() as conn:

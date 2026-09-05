@@ -29,10 +29,11 @@ endef
 endif
 
 # Pytest common options
-# Note: -n auto is already in pytest.ini addopts, so we don't duplicate it here
+# The suite runs serially (see #724: pytest-xdist removed entirely -- its worker
+# restart/shutdown protocol produced false "worker crashed" reports, an unresolved
+# upstream xdist/execnet gap).
 PYTEST_OPTS := --maxfail=10 --tb=short
-# Coverage options: pytest-cov automatically aggregates worker coverage when used with pytest-xdist
-# The --cov option must be specified, and pytest-cov will handle worker aggregation
+# Coverage options
 PYTEST_COV_OPTS := --cov=server --cov-report=html --cov-report=term-missing --cov-report=xml
 
 # PHONY targets

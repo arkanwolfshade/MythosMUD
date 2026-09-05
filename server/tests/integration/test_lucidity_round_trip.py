@@ -16,7 +16,6 @@ from server.services.lucidity_service import LucidityService
 
 
 @pytest.mark.asyncio
-@pytest.mark.serial  # Ensure this runs serially to avoid event loop conflicts
 async def test_lucidity_adjustment_round_trip(session_factory):
     """
     Test that LucidityService can adjust lucidity and persist changes.

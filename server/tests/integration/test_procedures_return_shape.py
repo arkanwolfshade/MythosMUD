@@ -194,7 +194,6 @@ async def test_get_npc_system_statistics_return_shape(
 
 
 @pytest.mark.asyncio
-@pytest.mark.serial
 async def test_add_player_effect_generates_id(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:

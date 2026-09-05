@@ -432,3 +432,4 @@ client/.auth/user-auth.json
 #Ignore vscode AI rules
 .github\instructions\codacy.instructions.md
 server/.claude/hooks/state/edited-files.json
+client/.claude/hooks/state/edited-files.json

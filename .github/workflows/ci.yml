@@ -166,7 +166,7 @@ jobs:
           # pip would ignore overrides and fail on fastapi-users vs python-multipart conflict.
           uv pip install --python .venv-ci/bin/python -e .
           uv pip install --python .venv-ci/bin/python -e ".[dev]"
-          uv pip install --python .venv-ci/bin/python "pytest-mock>=3.14.0" "pytest-xdist>=3.8.0"
+          uv pip install --python .venv-ci/bin/python "pytest-mock>=3.14.0"
           # Verify pytest was installed correctly and show where it's installed
           python -c "import pytest, sys, site; print(f'pytest {pytest.__version__}'); print(f'Python: {sys.executable}'); print(f'Site-packages: {site.getsitepackages()[0] if site.getsitepackages() else site.getusersitepackages()}')"
       - name: Lint with ruff
@@ -319,30 +319,23 @@ jobs:
           source .venv-ci/bin/activate
           # Fail if warnings exceed 100 (should be ~72 after fixes)
           # --override-ini replaces server/pytest.ini's whole addopts string (it does not merge),
-          # so everything the step needs from addopts has to be listed explicitly here. The one
-          # real reason for the override: dropping --maxfail=1 so this step still counts warnings
-          # across the whole suite on a red run (see the rc>1 check below) instead of stopping at
-          # the first failure. --timeout=30 --timeout-method=thread must be carried through too --
-          # server/pytest.ini's copy is the suite's only per-test timeout, and its absence here
-          # once let this step hang for 1h45m+ on an unrelated docs-only commit with nothing to
-          # fail it fast (no test even needs to genuinely hang; anything slow enough compounds
-          # under -n 0). See #731.
-          # --deselect: test_logging_file_setup.py crashes pytest-xdist workers under -n auto
-          # (QueueListener/root logger teardown in forked process -- see run_test_ci.py's own
-          # comment on the same module). Without this deselect, this step hangs indefinitely
-          # instead of failing. See #668.
+          # so everything the step needs from addopts has to be listed explicitly here.
+          # --timeout=30 --timeout-method=thread must be carried through -- server/pytest.ini's
+          # copy is the suite's only per-test timeout, and its absence here once let this step
+          # hang for 1h45m+ on an unrelated docs-only commit with nothing to fail it fast. See #731.
+          # pytest-xdist has been removed from the project entirely (#724: its worker
+          # restart/shutdown protocol produced false "worker crashed" reports -- workers exit
+          # cleanly, Exit Status: 0, no OS-level fault, yet get reported as crashed -- an
+          # unresolved xdist/execnet gap with no fix to adopt), so this step no longer needs a
+          # -n override, and test_logging_file_setup.py no longer needs to be deselected -- that
+          # module only crashed xdist *workers*, not the suite running in-process.
           # `|| true` on its own would also swallow a pytest INTERNALERROR crash (rc 3) the same
           # way #668 documented for the coverage run -- this step only wants to tolerate ordinary
           # test pass/fail (rc 0/1) so it can still count warnings from a red run. set +e/-e
           # captures the real exit code instead of letting `-e` (bash's GH Actions default) abort
           # the step outright. See #666.
-          # -n 0: this step is CI-gating (a real INTERNALERROR now fails it, per the rc>1 check
-          # below), so it goes serial for the same reason run_test_ci.py's coverage run does --
-          # pytest-xdist's worker restart/shutdown protocol produces false "worker crashed"
-          # reports under -n auto (workers exit cleanly -- Exit Status: 0, no OS-level fault --
-          # yet get reported as crashed), an unresolved xdist/execnet gap. See #724.
           set +e
-          WARNING_OUTPUT=$(uv run pytest server/tests/ -m "not slow and not e2e" --deselect tests/unit/structured_logging/test_logging_file_setup.py -n 0 --tb=short --override-ini=addopts="--strict-markers --strict-config --timeout=30 --timeout-method=thread" 2>&1)
+          WARNING_OUTPUT=$(uv run pytest server/tests/ -m "not slow and not e2e" --tb=short --override-ini=addopts="--strict-markers --strict-config --timeout=30 --timeout-method=thread" 2>&1)
           PYTEST_RC=$?
           set -e
           if [ "$PYTEST_RC" -gt 1 ]; then

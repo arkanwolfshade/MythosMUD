@@ -56,9 +56,9 @@ ImportError: PyO3 modules compiled for CPython 3.8 or older may only be initiali
 
 uv run pytest server/tests/unit/api/test_metrics.py -v --cov=server.api.metrics --cov-report=term-missing
 
-# Or run all unit tests in isolated workers
+# Or run the whole unit tier
 
-uv run pytest server/tests/unit/ -n auto -v
+uv run pytest server/tests/unit/ -v
 ```
 
 ### Affected Modules
@@ -186,14 +186,6 @@ uv run pytest server/tests/unit/api/ server/tests/unit/commands/test_utility_com
 make test-ci  # Docker locally when not already in CI
 ```
 
-### Option 4: Pytest-xdist with Forked Mode (Linux/Mac only)
-
-```bash
-# Note: --forked not available on Windows
-
-pytest -n auto --forked
-```
-
 ### Prevention During Development
 
 Test bcrypt-dependent modules in fresh sessions
@@ -245,10 +237,11 @@ server/tests/
 **[SPEC]**
 
 - Preferred entrypoints: `make test`, `make test-ci`, `make test-coverage` (repo root only)
-- Markers: `unit`, `integration`, `e2e`, `slow`, `serial`, `xdist_group(name=...)`
+- Markers: `unit`, `integration`, `e2e`, `slow`
 - Never start the MythosMUD server inside tests
-- Tests that mutate process-global env must use `@pytest.mark.serial` and
-  `@pytest.mark.xdist_group`
+- The suite runs serially (see #724: pytest-xdist removed entirely -- its worker
+  restart/shutdown protocol produced false "worker crashed" reports, an unresolved upstream
+  xdist/execnet gap)
 - Unit tier: no real network/DB/filesystem writes; use fakes/mocks
 - Integration tier: ephemeral Postgres; truncate/rollback between tests
 - See also `server/tests/README.md`

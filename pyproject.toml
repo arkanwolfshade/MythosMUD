@@ -64,7 +64,6 @@ room-validator = "tools.room_toolkit.room_validator.validator:main"
 dev = [
     "pytest>=9.0.3",
     "pytest-cov>=7.0.0",
-    "pytest-xdist>=3.8.0",  # Parallel test execution (required for -n auto in pytest.ini)
     "networkx>=3.6.1",
     "matplotlib>=3.10.8",
     "pytest-asyncio>=1.3.0",
@@ -428,7 +427,6 @@ dev = [
     "sqlfluff>=4.2.0", # SQL linting and formatting; >=4.1.0 CVE-2026-46373, >=4.2.0 CVE-2026-46374
     "lizard>=1.19.0", # Code complexity analyzer (used by Codacy)
     "vulture>=2.11", # Dead code finder (unused functions, classes, variables)
-    "pytest-xdist>=3.8.0", # Parallel test execution (required for -n auto in pytest.ini)
     # sqlint>=0.2.1 - REMOVED: Conflicts with click>=8.1.8 (sqlint requires click==7.0)
     # Use sqlfluff instead, which provides comprehensive SQL linting
     "basedpyright>=1.38.2",

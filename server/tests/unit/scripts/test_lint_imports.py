@@ -72,6 +72,27 @@ Contracts: 2 kept, 0 broken.
     assert mod.lint_imports_failed(output, 0) is False
 
 
+def test_utf8_env_forces_child_encoding_regardless_of_host_console() -> None:
+    """import-linter's rich progress spinner renders emoji; on a non-UTF-8 Windows console
+    (e.g. cp1252) that crashes mid-render with UnicodeEncodeError before printing any real
+    contract results, and the crash's exit code was previously misreported as a broken
+    contract. Forcing PYTHONUTF8/PYTHONIOENCODING for the child process only avoids that."""
+    source = SCRIPT.read_text(encoding="utf-8")
+    assert '"PYTHONUTF8": "1"' in source
+    assert '"PYTHONIOENCODING": "utf-8"' in source
+    assert source.count("env=_UTF8_ENV") == 2
+
+
+def test_lint_imports_subprocess_calls_decode_as_utf8() -> None:
+    """The parent must decode the child's output as UTF-8 too -- subprocess.run(text=True)
+    without an explicit encoding falls back to the host locale's preferred encoding, which
+    mismatches a child forced to emit UTF-8 and raises UnicodeDecodeError in the background
+    reader thread even after the child-side fix above."""
+    source = SCRIPT.read_text(encoding="utf-8")
+    assert source.count('encoding="utf-8"') == 2
+    assert source.count('errors="replace"') == 2
+
+
 def test_makefile_runs_lint_imports_early_in_all() -> None:
     makefile = (PROJECT_ROOT / "Makefile").read_text(encoding="utf-8")
     all_line = next(line for line in makefile.splitlines() if line.startswith("ALL_STAGES :="))
