@@ -3,7 +3,7 @@ import type { CharacterInfo } from '../types/auth.js';
 import { logger } from '../utils/logger.js';
 import './CharacterSelectionScreen.css';
 
-interface CharacterSelectionScreenProps {
+export interface CharacterSelectionScreenProps {
   characters: CharacterInfo[];
   onCharacterSelected: (characterId: string) => void;
   onCreateCharacter: () => void;

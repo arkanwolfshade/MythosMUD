@@ -65,7 +65,6 @@ function makeProps(): GameClientV2ContainerViewProps {
     mythosTime: null,
     healthStatus: null,
     lucidityStatus: null,
-    isMortallyWounded: false,
     isDead: false,
     deathLocation: '',
     isRespawning: false,

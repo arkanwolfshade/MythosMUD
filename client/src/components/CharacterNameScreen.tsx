@@ -29,7 +29,7 @@ export interface SkillsPayload {
   personal_interest: PersonalInterestPayload[];
 }
 
-interface CharacterNameScreenProps {
+export interface CharacterNameScreenProps {
   stats: Stats;
   profession: Profession;
   skillsPayload: SkillsPayload;

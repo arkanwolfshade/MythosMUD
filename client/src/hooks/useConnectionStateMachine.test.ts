@@ -10,7 +10,7 @@ import { connectionMachine } from './useConnectionStateMachine';
 
 describe('Connection State Machine', () => {
   it('should start in disconnected state', () => {
-    const actor = createActor(connectionMachine);
+    const actor = createActor(connectionMachine, { input: {} });
     actor.start();
 
     expect(actor.getSnapshot().value).toBe('disconnected');
@@ -20,7 +20,7 @@ describe('Connection State Machine', () => {
   });
 
   it('should transition from disconnected to connecting_ws on CONNECT', () => {
-    const actor = createActor(connectionMachine);
+    const actor = createActor(connectionMachine, { input: {} });
     actor.start();
 
     actor.send({ type: 'CONNECT' });
@@ -31,7 +31,7 @@ describe('Connection State Machine', () => {
   });
 
   it('should transition to fully_connected on WS_CONNECTED', () => {
-    const actor = createActor(connectionMachine);
+    const actor = createActor(connectionMachine, { input: {} });
     actor.start();
 
     actor.send({ type: 'CONNECT' });
@@ -44,7 +44,7 @@ describe('Connection State Machine', () => {
   });
 
   it('should transition to reconnecting on WS_FAILED', () => {
-    const actor = createActor(connectionMachine);
+    const actor = createActor(connectionMachine, { input: {} });
     actor.start();
 
     actor.send({ type: 'CONNECT' });
@@ -58,7 +58,7 @@ describe('Connection State Machine', () => {
   });
 
   it('should transition to reconnecting on connection timeout', () => {
-    const actor = createActor(connectionMachine);
+    const actor = createActor(connectionMachine, { input: {} });
     actor.start();
 
     actor.send({ type: 'CONNECT' });
@@ -75,7 +75,7 @@ describe('Connection State Machine', () => {
     // made maxReconnectAttempts unreachable for a WS_FAILED/reconnecting flap that reconnects
     // briefly before failing again (true on main too). See "reset once the connection proves
     // stable" below for when the count actually refunds.
-    const actor = createActor(connectionMachine);
+    const actor = createActor(connectionMachine, { input: {} });
     actor.start();
 
     // Fail once
@@ -164,7 +164,7 @@ describe('Connection State Machine', () => {
   });
 
   it('should handle multiple connection/disconnection cycles', () => {
-    const actor = createActor(connectionMachine);
+    const actor = createActor(connectionMachine, { input: {} });
     actor.start();
 
     for (let i = 0; i < 3; i++) {
@@ -183,7 +183,7 @@ describe('Connection State Machine', () => {
   });
 
   it('should handle disconnection from reconnecting state', () => {
-    const actor = createActor(connectionMachine);
+    const actor = createActor(connectionMachine, { input: {} });
     actor.start();
 
     // Start connecting
@@ -201,7 +201,7 @@ describe('Connection State Machine', () => {
   });
 
   it('should preserve error information', () => {
-    const actor = createActor(connectionMachine);
+    const actor = createActor(connectionMachine, { input: {} });
     actor.start();
 
     actor.send({ type: 'CONNECT' });
@@ -213,7 +213,7 @@ describe('Connection State Machine', () => {
   });
 
   it('should test guard canReconnect returns true when attempts < max', () => {
-    const actor = createActor(connectionMachine);
+    const actor = createActor(connectionMachine, { input: {} });
     actor.start();
 
     actor.send({ type: 'CONNECT' });
@@ -233,7 +233,7 @@ describe('Connection State Machine', () => {
     // The actual transition to failed happens when the always guard in reconnecting
     // state evaluates maxAttemptsReached as true (attempts >= maxReconnectAttempts)
 
-    const actor = createActor(connectionMachine);
+    const actor = createActor(connectionMachine, { input: {} });
     actor.start();
 
     // Send CONNECT which resets attempts to 0
@@ -267,7 +267,7 @@ describe('Connection State Machine', () => {
   });
 
   it('should handle RETRY event from fully_connected state', () => {
-    const actor = createActor(connectionMachine);
+    const actor = createActor(connectionMachine, { input: {} });
     actor.start();
 
     actor.send({ type: 'CONNECT' });
@@ -284,7 +284,7 @@ describe('Connection State Machine', () => {
 
   it('should handle RETRY event from failed state', () => {
     // First get to failed state by exhausting reconnect attempts
-    const actor = createActor(connectionMachine);
+    const actor = createActor(connectionMachine, { input: {} });
     actor.start();
 
     // Manually set reconnect attempts to max to trigger failed state
@@ -317,7 +317,7 @@ describe('Connection State Machine', () => {
   });
 
   it('should handle ERROR event from fully_connected state', () => {
-    const actor = createActor(connectionMachine);
+    const actor = createActor(connectionMachine, { input: {} });
     actor.start();
 
     actor.send({ type: 'CONNECT' });
@@ -334,7 +334,7 @@ describe('Connection State Machine', () => {
   });
 
   it('should handle ERROR event from connecting_ws state', () => {
-    const actor = createActor(connectionMachine);
+    const actor = createActor(connectionMachine, { input: {} });
     actor.start();
 
     actor.send({ type: 'CONNECT' });
@@ -351,7 +351,7 @@ describe('Connection State Machine', () => {
   });
 
   it('should handle RESET event from reconnecting state', () => {
-    const actor = createActor(connectionMachine);
+    const actor = createActor(connectionMachine, { input: {} });
     actor.start();
 
     actor.send({ type: 'CONNECT' });
@@ -369,7 +369,7 @@ describe('Connection State Machine', () => {
   });
 
   it('should handle RESET event from failed state', () => {
-    const actor = createActor(connectionMachine);
+    const actor = createActor(connectionMachine, { input: {} });
     actor.start();
 
     // Get to failed state (simplified - actual transition requires max attempts)
@@ -393,7 +393,7 @@ describe('Connection State Machine', () => {
   });
 
   it('should handle RECONNECT event from failed state', () => {
-    const actor = createActor(connectionMachine);
+    const actor = createActor(connectionMachine, { input: {} });
     actor.start();
 
     // Get to failed state by exhausting attempts
@@ -412,7 +412,7 @@ describe('Connection State Machine', () => {
   });
 
   it('should verify clearAllState action clears all context fields', () => {
-    const actor = createActor(connectionMachine);
+    const actor = createActor(connectionMachine, { input: {} });
     actor.start();
 
     // Set some context values
@@ -433,7 +433,7 @@ describe('Connection State Machine', () => {
   });
 
   it('should verify markFullyConnected action updates context correctly', () => {
-    const actor = createActor(connectionMachine);
+    const actor = createActor(connectionMachine, { input: {} });
     actor.start();
 
     actor.send({ type: 'CONNECT' });
@@ -448,7 +448,7 @@ describe('Connection State Machine', () => {
   });
 
   it('should test RECONNECT_DELAY delay calculation', () => {
-    const actor = createActor(connectionMachine);
+    const actor = createActor(connectionMachine, { input: {} });
     actor.start();
 
     actor.send({ type: 'CONNECT' });
@@ -466,7 +466,7 @@ describe('Connection State Machine', () => {
   });
 
   it('should verify resetConnection action resets all connection metadata', () => {
-    const actor = createActor(connectionMachine);
+    const actor = createActor(connectionMachine, { input: {} });
     actor.start();
 
     // Connect and then disconnect to trigger resetConnection

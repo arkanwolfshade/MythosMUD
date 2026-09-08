@@ -81,7 +81,6 @@ export interface EventHandlerContext {
   setLucidityStatus: (status: LucidityStatus) => void;
   setMythosTime: (time: MythosTimeState) => void;
   setIsDead: (dead: boolean) => void;
-  setIsMortallyWounded: (wounded: boolean) => void;
   setIsRespawning: (respawning: boolean) => void;
   setIsDelirious: (delirious: boolean) => void;
   setIsDeliriumRespawning: (respawning: boolean) => void;

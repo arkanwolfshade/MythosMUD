@@ -1,5 +1,6 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest';
 import { PerformanceTester, usePerformanceTester } from '../performanceTester';
+import type { PerformanceTestResult } from '../performanceTester';
 import { renderHook, act } from '@testing-library/react';
 import React from 'react';
 
@@ -205,8 +206,7 @@ describe('PerformanceTester', () => {
       // Arrange
       const testFunction = vi.fn(() => {
         // Create some objects to use memory
-        const arr = new Array(100).fill(0);
-        return arr;
+        new Array(100).fill(0);
       });
 
       // Act
@@ -390,7 +390,7 @@ describe('usePerformanceTester Hook', () => {
     const { result } = renderHook(() => usePerformanceTester());
 
     // Act
-    let testResult;
+    let testResult: PerformanceTestResult | undefined;
     await act(async () => {
       testResult = await result.current.runTest('Hook Test', vi.fn(), {
         iterations: 1,
@@ -418,8 +418,9 @@ describe('usePerformanceTester Hook', () => {
     const results = result.current.getResults();
 
     // Assert
-    expect(results.length).toBe(1);
-    expect(results[0].name).toBe('Test 1');
+    expect(results).toBeDefined();
+    expect(results?.length).toBe(1);
+    expect(results?.[0].name).toBe('Test 1');
   });
 
   it('should generate report through hook', async () => {
@@ -458,7 +459,7 @@ describe('usePerformanceTester Hook', () => {
     rerender();
 
     // Assert - should still have the same results
-    expect(result.current.getResults().length).toBe(initialResults.length);
+    expect(result.current.getResults()?.length).toBe(initialResults?.length);
   });
 
   it('should call runComponentTest through hook', async () => {
@@ -467,7 +468,7 @@ describe('usePerformanceTester Hook', () => {
     const renderFunction = () => React.createElement('div', null, 'Test Component');
 
     // Act
-    let testResult;
+    let testResult: PerformanceTestResult | undefined;
     await act(async () => {
       testResult = await result.current.runComponentTest('Hook Component Test', renderFunction, {
         iterations: 1,
@@ -487,7 +488,7 @@ describe('usePerformanceTester Hook', () => {
     const testFunction = vi.fn();
 
     // Act
-    let testResult;
+    let testResult: PerformanceTestResult | undefined;
     await act(async () => {
       testResult = await result.current.runMemoryTest('Hook Memory Test', testFunction, {
         iterations: 1,

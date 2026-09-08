@@ -4,6 +4,7 @@ import type { HealthStatus } from '../../types/health';
 import { deriveHealthStatusFromPlayer } from '../../types/health';
 import { deriveLucidityStatusFromPlayer, type LucidityStatus } from '../../types/lucidity';
 import { publishTier } from '../../utils/lucidityTierRelay';
+import { IncapacitatedBanner } from '../health/IncapacitatedBanner';
 import { GameClientV2AuxiliaryPanels } from './GameClientV2AuxiliaryPanels';
 import { HeaderBar } from './HeaderBar';
 import { ChatHistoryPanel } from './panels/ChatHistoryPanel';
@@ -145,6 +146,9 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
     [lucidityStatus, player]
   );
 
+  // Self-clearing: tracks the authoritative DP tier exactly, no minimum dwell time (#715).
+  const isIncapacitated = derivedHealthStatus?.tier === 'incapacitated';
+
   // Relay tier to other tabs (e.g. /map) so their direction hallucination stays in sync (#626).
   useEffect(() => {
     publishTier(derivedLucidityStatus?.tier);
@@ -273,6 +277,13 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
         <div
           className={`relative flex min-h-0 flex-1 ${headerHeightClass(isHeaderCollapsed, mythosTime).padding} transition-[padding-top] duration-300`}
         >
+          {isIncapacitated && (
+            <div
+              className={`absolute inset-x-0 ${headerHeightClass(isHeaderCollapsed, mythosTime).offset} z-40 px-4 pt-2`}
+            >
+              <IncapacitatedBanner />
+            </div>
+          )}
           {mainDockSlots.map(slot => {
             const panel = panelManager.getPanel(slot.id);
             if (!panel?.isVisible) {

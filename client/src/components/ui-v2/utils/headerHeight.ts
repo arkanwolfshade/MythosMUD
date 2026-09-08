@@ -10,9 +10,11 @@ export function hasFlavorRow(mythosTime: MythosTimeState | null): boolean {
 export function headerHeightClass(
   isCollapsed: boolean,
   mythosTime: MythosTimeState | null
-): { header: string; padding: string } {
+): { header: string; padding: string; offset: string } {
   if (isCollapsed) {
-    return { header: 'h-8', padding: 'pt-8' };
+    return { header: 'h-8', padding: 'pt-8', offset: 'top-8' };
   }
-  return hasFlavorRow(mythosTime) ? { header: 'h-20', padding: 'pt-20' } : { header: 'h-12', padding: 'pt-12' };
+  return hasFlavorRow(mythosTime)
+    ? { header: 'h-20', padding: 'pt-20', offset: 'top-20' }
+    : { header: 'h-12', padding: 'pt-12', offset: 'top-12' };
 }

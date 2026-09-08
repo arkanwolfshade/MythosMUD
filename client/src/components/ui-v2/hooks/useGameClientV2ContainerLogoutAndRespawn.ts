@@ -21,7 +21,6 @@ export function useGameClientV2ContainerLogoutAndRespawn(
     authToken: props.authToken,
     setGameState: slice.setGameState,
     setIsDead: slice.setIsDead,
-    setIsMortallyWounded: slice.setIsMortallyWounded,
     setIsRespawning: slice.setIsRespawning,
     setIsDelirious: slice.setIsDelirious,
     setIsDeliriumRespawning: slice.setIsDeliriumRespawning,

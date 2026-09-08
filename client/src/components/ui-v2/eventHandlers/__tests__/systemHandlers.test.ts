@@ -64,13 +64,11 @@ describe('systemHandlers', () => {
     setLucidityStatus: vi.fn(),
     setMythosTime: vi.fn(),
     setIsDead: vi.fn(),
-    setIsMortallyWounded: vi.fn(),
     setIsRespawning: vi.fn(),
     setIsDelirious: vi.fn(),
     setIsDeliriumRespawning: vi.fn(),
     setDeathLocation: vi.fn(),
     setDeliriumLocation: vi.fn(),
-    setRescueState: vi.fn(),
     onLogout: undefined,
   };
 
