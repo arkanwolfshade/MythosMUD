@@ -1,5 +1,4 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { App } from '../App';
 import { CharacterNameScreen } from '../components/CharacterNameScreen.tsx';

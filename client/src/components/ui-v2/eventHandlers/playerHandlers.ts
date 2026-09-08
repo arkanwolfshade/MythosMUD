@@ -102,7 +102,6 @@ export const handlePlayerRespawned: EventHandler = (event, context) => {
   };
 
   context.setIsDead(false);
-  context.setIsMortallyWounded(false);
   context.setIsRespawning(false);
 
   const updates: GameStateUpdates = {};

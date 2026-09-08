@@ -20,7 +20,6 @@ const fetchSpy = vi.spyOn(globalThis, 'fetch');
 describe('useRespawnHandlers', () => {
   const mockSetGameState = vi.fn();
   const mockSetIsDead = vi.fn();
-  const mockSetIsMortallyWounded = vi.fn();
   const mockSetIsRespawning = vi.fn();
   const mockSetIsDelirious = vi.fn();
   const mockSetIsDeliriumRespawning = vi.fn();
@@ -31,7 +30,6 @@ describe('useRespawnHandlers', () => {
     authToken: 'test-token',
     setGameState: mockSetGameState,
     setIsDead: mockSetIsDead,
-    setIsMortallyWounded: mockSetIsMortallyWounded,
     setIsRespawning: mockSetIsRespawning,
     setIsDelirious: mockSetIsDelirious,
     setIsDeliriumRespawning: mockSetIsDeliriumRespawning,
@@ -75,7 +73,6 @@ describe('useRespawnHandlers', () => {
       await waitFor(() => {
         expect(mockSetIsRespawning).toHaveBeenCalledWith(true);
         expect(mockSetIsDead).toHaveBeenCalledWith(false);
-        expect(mockSetIsMortallyWounded).toHaveBeenCalledWith(false);
         expect(mockSetIsRespawning).toHaveBeenCalledWith(false);
         // Success path routes state exclusively through the projector (#776) -- no direct write.
         expect(mockAppendRespawnEvent).toHaveBeenCalled();

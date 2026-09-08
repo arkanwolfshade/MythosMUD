@@ -621,6 +621,7 @@ describe('useFeedbackManager Hook', () => {
     let feedbackId: string;
 
     await act(async () => {
+      // managerRef.current is always set synchronously before render (feedbackManager.ts:221-222).
       feedbackId = result.current.addFeedback({
         type: 'bug',
         title: 'Original Title',
@@ -629,7 +630,7 @@ describe('useFeedbackManager Hook', () => {
         component: 'chat',
         userAgent: 'test',
         timestamp: '2024-01-01T00:00:00Z',
-      });
+      })!;
     });
 
     // Act
@@ -649,6 +650,7 @@ describe('useFeedbackManager Hook', () => {
     let feedbackId: string;
 
     await act(async () => {
+      // managerRef.current is always set synchronously before render (feedbackManager.ts:221-222).
       feedbackId = result.current.addFeedback({
         type: 'bug',
         title: 'Test Bug',
@@ -657,7 +659,7 @@ describe('useFeedbackManager Hook', () => {
         component: 'chat',
         userAgent: 'test',
         timestamp: '2024-01-01T00:00:00Z',
-      });
+      })!;
     });
 
     expect(result.current.feedback).toHaveLength(1);
@@ -723,7 +725,8 @@ describe('useFeedbackManager Hook', () => {
     const exported = result.current.exportFeedback();
     await act(async () => {
       result.current.clearFeedback();
-      result.current.importFeedback(exported);
+      // managerRef.current is always set synchronously before render (feedbackManager.ts:221-222).
+      result.current.importFeedback(exported!);
     });
 
     // Assert

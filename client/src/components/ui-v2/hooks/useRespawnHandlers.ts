@@ -14,7 +14,6 @@ interface UseRespawnHandlersParams {
   authToken: string;
   setGameState: React.Dispatch<React.SetStateAction<GameState>>;
   setIsDead: (dead: boolean) => void;
-  setIsMortallyWounded: (wounded: boolean) => void;
   setIsRespawning: (respawning: boolean) => void;
   setIsDelirious: (delirious: boolean) => void;
   setIsDeliriumRespawning: (respawning: boolean) => void;
@@ -106,7 +105,6 @@ function applyDeathRespawnSuccess(params: UseRespawnHandlersParams, raw: Respawn
   });
 
   params.setIsDead(false);
-  params.setIsMortallyWounded(false);
   params.setIsRespawning(false);
   params.setHasRespawned(true);
 }

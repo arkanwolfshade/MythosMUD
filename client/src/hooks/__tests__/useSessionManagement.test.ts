@@ -107,7 +107,8 @@ describe('useSessionManagement', () => {
 
     // Act
     act(() => {
-      result2.current.switchToSession(originalSessionId);
+      // Hook always initializes sessionId to a generated string, never null (useSessionManagement.ts:51-53).
+      result2.current.switchToSession(originalSessionId!);
     });
 
     // Assert - onSessionChange should not be called for same session
@@ -196,7 +197,8 @@ describe('useSessionManagement', () => {
     // Act
     for (let i = 0; i < 10; i++) {
       const { result } = renderHook(() => useSessionManagement());
-      sessionIds.add(result.current.sessionId);
+      // Hook always initializes sessionId to a generated string, never null (useSessionManagement.ts:51-53).
+      sessionIds.add(result.current.sessionId!);
     }
 
     // Assert - all session IDs should be unique

@@ -1,14 +1,15 @@
 import { describe, expect, it, beforeEach, vi, afterEach } from 'vitest';
 import { MessageBatcher, useMessageBatcher } from '../messageBatcher';
+import type { BatchedMessage } from '../messageBatcher';
 import { renderHook, act } from '@testing-library/react';
 
 describe('MessageBatcher', () => {
   let batcher: MessageBatcher;
-  let onBatchReady: ReturnType<typeof vi.fn>;
+  let onBatchReady: ReturnType<typeof vi.fn<(messages: BatchedMessage[]) => void>>;
 
   beforeEach(() => {
     vi.useFakeTimers();
-    onBatchReady = vi.fn();
+    onBatchReady = vi.fn<(messages: BatchedMessage[]) => void>();
     batcher = new MessageBatcher(onBatchReady);
   });
 
@@ -432,11 +433,11 @@ describe('MessageBatcher', () => {
 });
 
 describe('useMessageBatcher Hook', () => {
-  let onBatchReady: ReturnType<typeof vi.fn>;
+  let onBatchReady: ReturnType<typeof vi.fn<(messages: BatchedMessage[]) => void>>;
 
   beforeEach(() => {
     vi.useFakeTimers();
-    onBatchReady = vi.fn();
+    onBatchReady = vi.fn<(messages: BatchedMessage[]) => void>();
   });
 
   afterEach(() => {

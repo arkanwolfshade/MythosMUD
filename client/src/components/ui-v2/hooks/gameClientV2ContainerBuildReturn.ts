@@ -17,7 +17,6 @@ export interface GameClientV2ContainerPublicApi {
   mythosTime: GameClientV2MergedSlice['mythosTime'];
   healthStatus: GameClientV2MergedSlice['healthStatus'];
   lucidityStatus: GameClientV2MergedSlice['lucidityStatus'];
-  isMortallyWounded: boolean;
   isDead: boolean;
   deathLocation: string;
   isRespawning: boolean;

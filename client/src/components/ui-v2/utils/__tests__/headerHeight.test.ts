@@ -56,23 +56,35 @@ describe('headerHeight', () => {
 
   describe('headerHeightClass', () => {
     it('returns the collapsed height regardless of mythos time', () => {
-      expect(headerHeightClass(true, witchingMythosTime)).toEqual({ header: 'h-8', padding: 'pt-8' });
+      expect(headerHeightClass(true, witchingMythosTime)).toEqual({ header: 'h-8', padding: 'pt-8', offset: 'top-8' });
     });
 
     it('returns the ordinary expanded height with no flavor content', () => {
-      expect(headerHeightClass(false, baseMythosTime)).toEqual({ header: 'h-12', padding: 'pt-12' });
+      expect(headerHeightClass(false, baseMythosTime)).toEqual({
+        header: 'h-12',
+        padding: 'pt-12',
+        offset: 'top-12',
+      });
     });
 
     it('returns the tall expanded height during witching hour', () => {
-      expect(headerHeightClass(false, witchingMythosTime)).toEqual({ header: 'h-20', padding: 'pt-20' });
+      expect(headerHeightClass(false, witchingMythosTime)).toEqual({
+        header: 'h-20',
+        padding: 'pt-20',
+        offset: 'top-20',
+      });
     });
 
     it('returns the tall expanded height with an active holiday', () => {
-      expect(headerHeightClass(false, holidayMythosTime)).toEqual({ header: 'h-20', padding: 'pt-20' });
+      expect(headerHeightClass(false, holidayMythosTime)).toEqual({
+        header: 'h-20',
+        padding: 'pt-20',
+        offset: 'top-20',
+      });
     });
 
     it('returns the ordinary expanded height when mythos time is null', () => {
-      expect(headerHeightClass(false, null)).toEqual({ header: 'h-12', padding: 'pt-12' });
+      expect(headerHeightClass(false, null)).toEqual({ header: 'h-12', padding: 'pt-12', offset: 'top-12' });
     });
   });
 });

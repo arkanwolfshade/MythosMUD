@@ -3,7 +3,7 @@
  */
 
 import { HealthStatus } from '@/types/health';
-import { LucidityStatus, RescueState } from '@/types/lucidity';
+import { LucidityStatus } from '@/types/lucidity';
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { EventHandlerContext, GameEvent } from '../../eventHandlers/types';
@@ -69,9 +69,6 @@ describe('useEventProcessing', () => {
     setIsDead: function (_dead: boolean): void {
       throw new Error('Function not implemented.');
     },
-    setIsMortallyWounded: function (_wounded: boolean): void {
-      throw new Error('Function not implemented.');
-    },
     setIsRespawning: function (_respawning: boolean): void {
       throw new Error('Function not implemented.');
     },
@@ -85,9 +82,6 @@ describe('useEventProcessing', () => {
       throw new Error('Function not implemented.');
     },
     setDeliriumLocation: function (_location: string): void {
-      throw new Error('Function not implemented.');
-    },
-    setRescueState: function (_state: RescueState | null): void {
       throw new Error('Function not implemented.');
     },
   };

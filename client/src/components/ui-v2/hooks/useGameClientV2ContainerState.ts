@@ -44,7 +44,6 @@ export function useGameClientV2GameModelState() {
 }
 
 export function useGameClientV2SurvivalAndTimeState() {
-  const [isMortallyWounded, setIsMortallyWounded] = useState(false);
   const [isDead, setIsDead] = useState(false);
   const [deathLocation] = useState<string>('Unknown Location');
   const [isRespawning, setIsRespawning] = useState(false);
@@ -57,8 +56,6 @@ export function useGameClientV2SurvivalAndTimeState() {
   const [hasRespawned, setHasRespawned] = useState(false);
 
   return {
-    isMortallyWounded,
-    setIsMortallyWounded,
     isDead,
     setIsDead,
     deathLocation,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { MotdContent } from './MotdContent';
 
-interface MotdInterstitialScreenProps {
+export interface MotdInterstitialScreenProps {
   onContinue: () => void;
   onReturnToLogin: () => void;
 }

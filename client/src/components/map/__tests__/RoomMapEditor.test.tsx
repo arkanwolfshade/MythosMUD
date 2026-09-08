@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { UseRoomMapDataResult } from '../hooks/useRoomMapData';
 
 const useRoomMapDataMock = vi.hoisted(() =>
-  vi.fn((_options?: unknown) => ({
+  vi.fn((_options?: unknown): UseRoomMapDataResult => ({
     rooms: [
       {
         id: 'room1',
@@ -15,6 +16,7 @@ const useRoomMapDataMock = vi.hoisted(() =>
     isLoading: false,
     error: null,
     refetch: vi.fn(),
+    total: 1,
   }))
 );
 
@@ -27,7 +29,6 @@ import { recalculateCoordinatesMock } from './roomMapEditorTestSetup';
 
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import React from 'react';
 import { RoomMapEditor } from '../RoomMapEditor';
 import type { UseRoomMapDataOptions } from '../hooks/useRoomMapData';
 
@@ -54,6 +55,7 @@ describe('RoomMapEditor', () => {
       isLoading: false,
       error: null,
       refetch: vi.fn(),
+      total: 1,
     }));
   });
 
@@ -212,6 +214,7 @@ describe('RoomMapEditor', () => {
         isLoading: false,
         error: null,
         refetch: vi.fn(),
+        total: 0,
       });
 
       render(<RoomMapEditor {...defaultProps} />);
@@ -277,6 +280,7 @@ describe('RoomMapEditor', () => {
         isLoading: false,
         error: null,
         refetch,
+        total: 1,
       });
       recalculateCoordinatesMock.mockResolvedValueOnce({ conflict_count: 0 });
 
@@ -296,8 +300,9 @@ describe('RoomMapEditor', () => {
         isLoading: false,
         error: null,
         refetch,
+        total: 1,
       });
-      recalculateCoordinatesMock.mockResolvedValueOnce({ conflict_count: 2, conflicts: ['room1', 'room2'] });
+      recalculateCoordinatesMock.mockResolvedValueOnce({ conflict_count: 2 });
 
       render(<RoomMapEditor {...defaultProps} />);
       fireEvent.click(screen.getByTestId('recalculate-button'));

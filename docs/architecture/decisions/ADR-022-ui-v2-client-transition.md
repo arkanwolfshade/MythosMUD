@@ -202,6 +202,17 @@ documented five deleted components alongside still-live ones and was edited, not
 knip-invisible artifact class, the documentation counterpart to #691's stranded
 `MonitoringPanel.css`.
 
+**[NOTE]**
+[#715](https://github.com/arkanwolfshade/MythosMUD/issues/715) found the "pure missing-renderer
+gap" claim above was incomplete: `isMortallyWounded` (state slot, setter, and a
+`mortally-wounded` CSS class with zero rules in `index.css`) was itself a dead pipeline of the
+same producer-side-inertness flavour as #713/#714's `rescueState`/`hallucinationFeed` — every
+production call site set it `false`, never `true`. The rebuilt `IncapacitatedBanner` does not
+revive that pipeline; it derives visibility directly from the authoritative
+`healthStatus.tier === 'incapacitated'` (DP ≤ 0), which covers every route to 0 DP rather than
+only the combat-only `player_mortally_wounded` event, per the server-authority rule. The dead
+`isMortallyWounded` slot and its inert CSS class were deleted in the same PR.
+
 **Removal clusters** (one issue each, filed alongside this ADR):
 
 | Cluster | Files | Contents | Issue |
@@ -268,3 +279,4 @@ this gate issue, filed separately as
 | 1.4.0 | 2026-08-27 | #693's 14-file cluster-4 count was accurate. Generalized §6's liveness definition to one principle (input-to-output path) after finding a producer-side inertness distinct from 1.3.0's consumer-side case: `rescueState`/`hallucinationFeed` were read but never fed by a real producer. Deleted both pipelines and their contract; ported `AsciiMapEditor`'s coordinate-recalculation action into `RoomMapEditor` rather than dropping it. Three status-banner gaps tracked in #713-#715. All four removal clusters now landed; only #694 (the gate) remains. |
 | 1.5.0 | 2026-08-27 | #694 removed CI's `continue-on-error` exception — the knip gate now enforces. Its own 14-finding baseline resolved: 12 genuinely dead files deleted, one (`LoginGracePeriodBanner.tsx`) deleted as superseded by a live `HeaderBar` effect (no tracking issue needed), one false positive suppressed by name, one unused devDependency removed. `exports`/`types` stay `"off"`: flipping them for real (not the flawed CLI check used during planning) surfaces 94 findings, triaged separately in #718. Retirement sequence from #637 complete; #718 and the nine open decide-then-port issues are independent backlog. |
 | 1.5.1 | 2026-08-27 | Restructure the `[BUG]` block into HADS-required Symptom/Fix fields; registered in `docs/hads.manifest` for the first time (audit deferred register, #648). |
+| 1.6.0 | 2026-09-08 | #715 rebuilt `IncapacitatedBanner` in `ui-v2`, derived from the authoritative DP tier rather than the combat-only `player_mortally_wounded` event. Corrected the "pure missing-renderer gap" claim: the dead `isMortallyWounded` pipeline (a fourth producer-side-inertness instance) was found and deleted alongside its inert CSS class. |
