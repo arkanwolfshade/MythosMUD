@@ -4,11 +4,12 @@ Unit tests for websocket room updates build event function.
 Tests the build_room_update_event function in websocket_room_updates.py.
 """
 
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from server.realtime.websocket_room_updates import build_room_update_event
+from server.realtime.room_update_event_builder import build_room_update_event
 
 
 @pytest.fixture
@@ -38,8 +39,9 @@ async def test_build_room_update_event(mock_room, mock_connection_manager):
     """Test build_room_update_event() creates room update event."""
     occupant_names = ["Player1", "NPC1"]
     result = await build_room_update_event(mock_room, "room_001", "player_001", occupant_names, mock_connection_manager)
+    data = cast(dict[str, object], result["data"])
     assert "event_type" in result
     assert result["event_type"] == "room_update"
     assert "data" in result
-    assert "room" in result["data"]
-    assert "occupants" in result["data"]
+    assert "room" in data
+    assert "occupants" in data

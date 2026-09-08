@@ -17,7 +17,6 @@ from server.commands.look_room import (
     _format_players_section,
     _get_room_description,
     _get_room_id,
-    _get_viewer_phantom_names,
     _handle_direction_look,
     _handle_room_look,
     _try_lookup_phantom_implicit,
@@ -112,27 +111,6 @@ async def test_format_npcs_section_empty():
         mock_get_npcs.return_value = []
         result = await _format_npcs_section("test_room")
         assert not result
-
-
-def test_get_viewer_phantom_names_no_viewer_or_room():
-    """#625: no phantom names without both a viewer id and a room id."""
-    assert _get_viewer_phantom_names(None, "room_1") == []
-    assert _get_viewer_phantom_names("player-1", None) == []
-
-
-def test_get_viewer_phantom_names_matches_own_room():
-    """#625: only the viewer's own active phantoms in this room are returned."""
-    with (
-        patch(
-            "server.services.phantom_hostile_service.phantom_hostile_service.get_active_phantoms",
-            return_value=["phantom_1"],
-        ),
-        patch(
-            "server.services.phantom_hostile_service.phantom_hostile_service.get_phantom_data",
-            return_value={"phantom_id": "phantom_1", "room_id": "room_1", "name": "Shambling Horror"},
-        ),
-    ):
-        assert _get_viewer_phantom_names("player-1", "room_1") == ["Shambling Horror"]
 
 
 @pytest.mark.asyncio

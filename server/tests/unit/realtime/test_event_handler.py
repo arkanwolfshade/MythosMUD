@@ -279,6 +279,47 @@ async def test_event_handler_send_room_occupants_update_internal_success(event_h
 
 
 @pytest.mark.asyncio
+async def test_event_handler_send_room_occupants_update_internal_personalizes(event_handler):
+    """#714: a hallucinating viewer in the room fans out per-player instead of broadcasting."""
+    room_id = "room_123"
+    hallucinator_id = str(uuid.uuid4())
+    other_id = str(uuid.uuid4())
+    event_handler.connection_manager.send_personal_message = AsyncMock(return_value={})
+
+    with (
+        patch.object(event_handler.occupant_manager, "get_room_occupants") as mock_get_occupants,
+        patch.object(event_handler.occupant_manager, "separate_occupants_by_type") as mock_separate,
+        patch(
+            "server.realtime.event_handler.room_has_hallucinating_viewer",
+            return_value=True,
+        ),
+        patch(
+            "server.services.phantom_hostile_service.phantom_hostile_service.get_active_phantoms",
+            side_effect=lambda pid: ["phantom_1"] if str(pid) == hallucinator_id else [],
+        ),
+        patch(
+            "server.services.phantom_hostile_service.phantom_hostile_service.get_phantom_data",
+            return_value={"phantom_id": "phantom_1", "room_id": room_id, "name": "Shambling Horror"},
+        ),
+    ):
+        mock_get_occupants.return_value = [
+            {"player_id": hallucinator_id, "player_name": "Hallucinator"},
+            {"player_id": other_id, "player_name": "Other"},
+        ]
+        mock_separate.return_value = (["Hallucinator", "Other"], [], ["Hallucinator", "Other"])
+
+        await event_handler._send_room_occupants_update_internal(room_id)
+
+    event_handler.connection_manager.broadcast_to_room.assert_not_called()
+    assert event_handler.connection_manager.send_personal_message.call_count == 2
+    calls = event_handler.connection_manager.send_personal_message.call_args_list
+    sent_to_hallucinator = next(c for c in calls if str(c.args[0]) == hallucinator_id)
+    sent_to_other = next(c for c in calls if str(c.args[0]) == other_id)
+    assert "Shambling Horror" in sent_to_hallucinator.args[1]["data"]["npcs"]
+    assert "Shambling Horror" not in sent_to_other.args[1]["data"]["npcs"]
+
+
+@pytest.mark.asyncio
 async def test_event_handler_send_room_occupants_update_internal_error(event_handler):
     """Test RealTimeEventHandler._send_room_occupants_update_internal() handles errors."""
     room_id = "room_123"
