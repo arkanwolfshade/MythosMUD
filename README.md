@@ -1,6 +1,6 @@
 # 🐙 MythosMUD
 
-**Version 1.1.0** · MythosMUD · 2026-08-28
+**Version 1.2.0** · MythosMUD · 2026-09-08
 
 ---
 
@@ -72,8 +72,8 @@ combat.
 
 **Tech Stack:**
 
-- Frontend: React 19.1+ + TypeScript 5.9 (Vite 7.1+)
-- Backend: Python 3.12+ (FastAPI 0.121+)
+- Frontend: React 19+ + TypeScript 6+ (Vite 8+)
+- Backend: Python 3.12+ (FastAPI 0.128+)
 - Database: PostgreSQL (development, tests, and production)
 - Real-time: WebSockets + NATS messaging
 - Authentication: FastAPI Users + Argon2 + JWT
@@ -92,7 +92,7 @@ combat.
 
 **Authentication & User Management** - Complete JWT-based auth with Argon2 password hashing and invite system
 
-**Real-time Communication** - Dual connection system with NATS-based messaging and WebSocket/SSE clients
+**Real-time Communication** - WebSocket gameplay with NATS-based messaging
 
 **Player Management** - Character creation, stats generation, and persistence with PostgreSQL
 
@@ -114,7 +114,7 @@ components, casting times, and integration with combat and lucidity systems
 
 **Enhanced Logging** - Structured logging with MDC, correlation IDs, security sanitization, and performance monitoring
 
-- **Testing Framework** - Comprehensive test suite with 80%+ coverage, 304 test files, and automated E2E tests
+- **Testing Framework** - Hierarchical unit/integration/E2E suites with CI coverage gates and automated E2E tests
 - **Security Framework** - Input validation, rate limiting, XSS protection, and COPPA compliance measures
 
 ### 🔄 In Progress
@@ -166,13 +166,13 @@ regeneration
 
 **Browser Accessible** - No client installation required, runs in modern browsers
 
-**Dual Connection System** - WebSocket for commands + Server-Sent Events for real-time updates
+**WebSocket Real-time** - Bidirectional WebSocket for commands and game state updates (NATS on the server)
 
 **Secure Authentication** - JWT tokens with Argon2 password hashing and invite-only system
 
 **COPPA Compliant** - Privacy-first design for minor users with no personal data collection
 
-**Comprehensive Testing** - 80%+ test coverage with automated CI/CD and comprehensive E2E test suite
+**Comprehensive Testing** - Coverage gates in CI with automated CI/CD and E2E test suites
 
 **Enhanced Structured Logging** - Enterprise-grade logging with:
 
@@ -186,9 +186,8 @@ regeneration
 
 - 100% exception coverage with rich context
 
-**Modular Test Framework** - Hierarchical test organization with 304 test files across unit, integration, E2E,
-
-security, and performance categories
+**Modular Test Framework** - Hierarchical test organization across unit, integration, E2E, security, and performance
+categories
 
 ### Security & Privacy
 
@@ -331,7 +330,7 @@ MythosMUD/
 │   ├── auth/                  # Authentication system (Argon2, JWT, invites)
 │   ├── api/                   # API endpoints (game, players, rooms, monitoring, admin)
 │   ├── game/                  # Game logic services (chat, movement, stats, character creation)
-│   ├── realtime/              # Real-time communication (WebSockets, NATS, SSE dual connection)
+│   ├── realtime/              # Real-time communication (WebSockets, NATS)
 │   ├── commands/              # Command processing (admin, alias, chat, help, exploration)
 │   ├── models/                # Data models (player, room, command, chat, user, NPC)
 │   ├── services/              # Business logic services (NATS, chat logging, rate limiting)
@@ -345,7 +344,7 @@ MythosMUD/
 │   ├── app/                   # Application factory (factory, lifespan, memory management)
 │   ├── npc/                   # NPC system (behaviors, combat, communication, state machines)
 │   ├── structured_logging/    # Enhanced logging (MDC, correlation IDs, security sanitization)
-│   ├── tests/                 # Hierarchical test suite (304 test files organized by type)
+│   ├── tests/                 # Hierarchical test suite (unit, integration, E2E, and more)
 │   │   ├── unit/              # Unit tests
 │   │   ├── integration/       # Integration tests
 │   │   ├── e2e/               # End-to-end tests
@@ -398,7 +397,7 @@ MythosMUD/
 ├── .cursor/                   # Cursor IDE configuration
 ├── PLANNING.md                # Comprehensive project planning
 ├── docs/DEVELOPMENT.md         # Development environment setup
-├── docs/DEVELOPMENT_AI.md     # AI agent development guide
+├── docs/DEVELOPMENT_AI.md     # AI agent on-ramp (router to AGENTS.md)
 ├── TASKS.md                   # Task tracking (deprecated - use GitHub Issues)
 ├── TASKS.local.md             # Local task tracking
 ├── Makefile                   # Build and development commands
@@ -427,9 +426,9 @@ The `scripts/` directory contains PowerShell and Python utility scripts for mana
 **Python Scripts:**
 
 - `scripts/run.py` - Run the server
-- `scripts/test.py` - Run tests (server, client, or both)
 - `scripts/lint.py` - Lint code with ruff
 - `scripts/format.py` - Format code with ruff
+- Prefer `make test` from the repo root for tests (there is no `scripts/test.py`)
 
 **Test Setup Scripts:**
 
@@ -468,9 +467,9 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
   - Automated with GitHub Actions for both backend and frontend
   - Includes CI, CodeQL security analysis, and Semgrep static analysis
 - **Testing:**
-  - Server: pytest with 80%+ coverage (target 90%)
+  - Server: pytest with CI coverage gates (see AGENTS.md: 70% new code / 90% critical)
   - Client: Vitest for unit tests, Playwright for E2E tests
-  - Test Organization: Hierarchical structure with 304 test files across 9 categories
+  - Test Organization: Hierarchical structure across unit, integration, E2E, and related categories
   - E2E Automated: Comprehensive Playwright CLI tests for runtime scenarios
   - E2E Manual: 21 multiplayer MCP scenarios requiring AI Agent coordination (see e2e-tests/scenarios/)
   - See [E2E Testing Guide](docs/E2E_TESTING_GUIDE.md) for details
@@ -480,8 +479,8 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
   - COPPA compliance verification
   - Comprehensive input validation and XSS protection
 - **AI Agents:**
-  - See [DEVELOPMENT_AI.md](docs/DEVELOPMENT_AI.md) for comprehensive AI agent guidelines
-  - Includes task prioritization framework and development workflow
+  - Authoritative rules: [AGENTS.md](AGENTS.md)
+  - Short on-ramp: [DEVELOPMENT_AI.md](docs/DEVELOPMENT_AI.md)
 
 ---
 
@@ -503,7 +502,8 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
 
 [DEVELOPMENT.md](docs/DEVELOPMENT.md) — Dev environment setup with security guidelines
 
-- [DEVELOPMENT_AI.md](docs/DEVELOPMENT_AI.md) — AI agent development guide and workflow
+- [DEVELOPMENT_AI.md](docs/DEVELOPMENT_AI.md) — AI agent on-ramp (router to AGENTS.md)
+- [AGENTS.md](AGENTS.md) — Authoritative AI agent rules
 - [AI Development Workflow](docs/AI_DEVELOPMENT_WORKFLOW.md) — Detailed AI agent task management
 - [Cursor Setup Guide](docs/CURSOR_SETUP_GUIDE.md) — Optimize Cursor IDE for subagents and CLI usage
 - [Cursor Hooks](docs/CURSOR_HOOKS.md) — Cursor Hooks (test-trigger agent, Settings → Hooks)
@@ -517,10 +517,10 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
 
 ### Architecture & Technical Specs
 
-[Real-time Architecture](docs/REAL_TIME_ARCHITECTURE.md) — Dual connection system architecture
+[Real-time Architecture](docs/REAL_TIME_ARCHITECTURE.md) — WebSocket-only real-time architecture
 
 - [Advanced Chat Channels Spec](docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md) — Communication system design
-- [Dual Connection System](docs/archive/DUAL_CONNECTION_SYSTEM_SPEC.md) — WebSocket + SSE architecture
+- [Dual Connection System](docs/archive/DUAL_CONNECTION_SYSTEM_SPEC.md) — Archived WebSocket + SSE design (historical)
 
 ### Logging & Monitoring
 
@@ -547,7 +547,8 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
 
 **[SPEC]**
 
-| Version | Date       | Change                             |
-| ------- | ---------- | ---------------------------------- |
-| 1.0.0   | 2026-07-30 | Initial HADS structural conversion |
-| 1.1.0 | 2026-08-28 | Fix broken links: `server/tests/SETUP.md` references removed (file deleted in #337, no successor); `DEVELOPMENT_AI.md` (wrong depth); `docs/PRD.md`, `ADVANCED_CHAT_CHANNELS_SPEC.md`, `DUAL_CONNECTION_SYSTEM_SPEC.md`, `SECURITY_FIXES.md` (now in `docs/archive/`) (#695) |
+| Version | Date       | Change                                                                                                                                                                                                                                                                       |
+| ------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.2.0   | 2026-09-08 | Surgical fact-fix: WebSocket+NATS (not SSE dual); soft coverage/test counts; stack floors; drop missing scripts/test.py; AGENTS.md as agent SoT                                                                                                                              |
+| 1.1.0   | 2026-08-28 | Fix broken links: `server/tests/SETUP.md` references removed (file deleted in #337, no successor); `DEVELOPMENT_AI.md` (wrong depth); `docs/PRD.md`, `ADVANCED_CHAT_CHANNELS_SPEC.md`, `DUAL_CONNECTION_SYSTEM_SPEC.md`, `SECURITY_FIXES.md` (now in `docs/archive/`) (#695) |
+| 1.0.0   | 2026-07-30 | Initial HADS structural conversion                                                                                                                                                                                                                                           |
