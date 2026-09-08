@@ -28,6 +28,8 @@ describe('HeaderBar', () => {
     mythosTime: null,
     onLogout: vi.fn(),
     isLoggingOut: false,
+    isCollapsed: false,
+    onToggleCollapse: vi.fn(),
   };
 
   const mockMythosTime: MythosTimeState = {
@@ -45,6 +47,28 @@ describe('HeaderBar', () => {
     active_holidays: [],
     upcoming_holidays: [],
     formatted_date: 'January 1, 1928',
+  };
+
+  const witchingMythosTime: MythosTimeState = {
+    ...mockMythosTime,
+    daypart: 'witching',
+    is_daytime: false,
+    is_witching_hour: true,
+  };
+
+  const holidayMythosTime: MythosTimeState = {
+    ...mockMythosTime,
+    active_holidays: [
+      {
+        id: 'hol_hallowmas',
+        name: 'Hallowmas',
+        tradition: 'mythos',
+        season: 'autumn',
+        duration_hours: 24,
+        bonus_tags: ['harvest_bonus'],
+        notes: 'The veil is thin.',
+      },
+    ],
   };
 
   beforeEach(() => {
@@ -126,44 +150,100 @@ describe('HeaderBar', () => {
     });
   });
 
-  describe('collapse/expand functionality', () => {
-    it('should render expanded by default', () => {
-      render(<HeaderBar {...defaultProps} />);
+  describe('flavor row (daypart/season/witching/holidays)', () => {
+    it('should not render a flavor row on an ordinary day', () => {
+      render(<HeaderBar {...defaultProps} mythosTime={mockMythosTime} />);
+      expect(screen.queryByText('midday')).not.toBeInTheDocument();
+      expect(screen.queryByText('Winter')).not.toBeInTheDocument();
+    });
+
+    it('should render daypart and season during witching hour', () => {
+      render(<HeaderBar {...defaultProps} mythosTime={witchingMythosTime} />);
+      expect(screen.getByText('witching')).toBeInTheDocument();
+      expect(screen.getByText('Winter')).toBeInTheDocument();
+    });
+
+    it('should use the purple witching accent for daypart text', () => {
+      render(<HeaderBar {...defaultProps} mythosTime={witchingMythosTime} />);
+      expect(screen.getByText('witching').className).toContain('text-purple-300');
+    });
+
+    it('should show "The Veil Thins" only during witching hour', () => {
+      render(<HeaderBar {...defaultProps} mythosTime={witchingMythosTime} />);
+      expect(screen.getByText('The Veil Thins')).toBeInTheDocument();
+    });
+
+    it('should not show "The Veil Thins" outside witching hour', () => {
+      render(<HeaderBar {...defaultProps} mythosTime={holidayMythosTime} />);
+      expect(screen.queryByText('The Veil Thins')).not.toBeInTheDocument();
+    });
+
+    it('should render a holiday chip with name, bonus tags, and notes as title', () => {
+      render(<HeaderBar {...defaultProps} mythosTime={holidayMythosTime} />);
+      const chip = screen.getByText(/Hallowmas/);
+      expect(chip).toBeInTheDocument();
+      expect(chip.textContent).toContain('harvest bonus');
+      expect(chip.closest('span')).toHaveAttribute('title', 'The veil is thin.');
+    });
+
+    it('should apply the tradition color palette to a holiday chip', () => {
+      render(<HeaderBar {...defaultProps} mythosTime={holidayMythosTime} />);
+      const chip = screen.getByText(/Hallowmas/).closest('span');
+      expect(chip?.className).toContain('from-violet-400/30');
+    });
+
+    it('should render the flavor row for an active holiday even without witching hour', () => {
+      render(<HeaderBar {...defaultProps} mythosTime={holidayMythosTime} />);
+      expect(screen.getByText('midday')).toBeInTheDocument();
+    });
+  });
+
+  describe('witching-hour border tint', () => {
+    it('should tint the expanded header border during witching hour', () => {
+      const { container } = render(<HeaderBar {...defaultProps} mythosTime={witchingMythosTime} />);
+      expect(container.firstElementChild?.className).toContain('border-purple-400/60');
+    });
+
+    it('should tint the collapsed header border during witching hour', () => {
+      const { container } = render(<HeaderBar {...defaultProps} isCollapsed={true} mythosTime={witchingMythosTime} />);
+      expect(container.firstElementChild?.className).toContain('border-purple-400/60');
+    });
+
+    it('should not tint the border outside witching hour', () => {
+      const { container } = render(<HeaderBar {...defaultProps} mythosTime={mockMythosTime} />);
+      expect(container.firstElementChild?.className).not.toContain('border-purple-400/60');
+    });
+  });
+
+  describe('collapse/expand functionality (controlled by GameClientV2)', () => {
+    it('should render expanded when isCollapsed is false', () => {
+      render(<HeaderBar {...defaultProps} isCollapsed={false} />);
       expect(screen.getByText(/Player: TestPlayer/)).toBeInTheDocument();
       expect(screen.getByLabelText('Collapse header')).toBeInTheDocument();
     });
 
-    it('should render collapsed when localStorage has collapsed state', () => {
-      localStorage.setItem('mythosmud-ui-v2-header-collapsed', 'true');
-      render(<HeaderBar {...defaultProps} />);
+    it('should render collapsed when isCollapsed is true', () => {
+      render(<HeaderBar {...defaultProps} isCollapsed={true} />);
       expect(screen.getByLabelText('Expand header')).toBeInTheDocument();
       expect(screen.queryByText(/Player: TestPlayer/)).not.toBeInTheDocument();
     });
 
-    it('should toggle collapse state when collapse button is clicked', () => {
-      render(<HeaderBar {...defaultProps} />);
-      const collapseButton = screen.getByLabelText('Collapse header');
-
-      fireEvent.click(collapseButton);
-
-      expect(screen.getByLabelText('Expand header')).toBeInTheDocument();
-      expect(localStorage.getItem('mythosmud-ui-v2-header-collapsed')).toBe('true');
+    it('should call onToggleCollapse when the collapse button is clicked', () => {
+      const onToggleCollapse = vi.fn();
+      render(<HeaderBar {...defaultProps} isCollapsed={false} onToggleCollapse={onToggleCollapse} />);
+      fireEvent.click(screen.getByLabelText('Collapse header'));
+      expect(onToggleCollapse).toHaveBeenCalledTimes(1);
     });
 
-    it('should toggle expand state when expand button is clicked', () => {
-      localStorage.setItem('mythosmud-ui-v2-header-collapsed', 'true');
-      render(<HeaderBar {...defaultProps} />);
-      const expandButton = screen.getByLabelText('Expand header');
-
-      fireEvent.click(expandButton);
-
-      expect(screen.getByLabelText('Collapse header')).toBeInTheDocument();
-      expect(localStorage.getItem('mythosmud-ui-v2-header-collapsed')).toBe('false');
+    it('should call onToggleCollapse when the expand button is clicked', () => {
+      const onToggleCollapse = vi.fn();
+      render(<HeaderBar {...defaultProps} isCollapsed={true} onToggleCollapse={onToggleCollapse} />);
+      fireEvent.click(screen.getByLabelText('Expand header'));
+      expect(onToggleCollapse).toHaveBeenCalledTimes(1);
     });
 
     it('should show player name in collapsed state', () => {
-      localStorage.setItem('mythosmud-ui-v2-header-collapsed', 'true');
-      render(<HeaderBar {...defaultProps} />);
+      render(<HeaderBar {...defaultProps} isCollapsed={true} />);
       expect(screen.getByText('TestPlayer')).toBeInTheDocument();
     });
   });

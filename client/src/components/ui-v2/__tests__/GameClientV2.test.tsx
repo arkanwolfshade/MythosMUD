@@ -12,6 +12,10 @@ vi.mock('../HeaderBar', () => ({
   HeaderBar: ({ playerName }: { playerName: string }) => <div data-testid="header-bar">{playerName}</div>,
 }));
 
+vi.mock('../utils/headerHeight', () => ({
+  headerHeightClass: () => ({ header: 'h-12', padding: 'pt-12' }),
+}));
+
 vi.mock('../PanelSystem/PanelContainer', () => ({
   PanelContainer: ({ children, title }: { children: React.ReactNode; title: string }) => (
     <div data-testid={`panel-${title}`}>{children}</div>

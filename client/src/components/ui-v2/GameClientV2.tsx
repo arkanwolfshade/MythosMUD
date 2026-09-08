@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { HealthStatus } from '../../types/health';
 import { deriveHealthStatusFromPlayer } from '../../types/health';
@@ -18,6 +18,7 @@ import { usePanelManager } from './PanelSystem/usePanelManager';
 import { TentacleBackdrop } from './TentacleBackdrop';
 import type { ChatMessage, MythosTimeState, PanelVariant, Player, QuestLogEntry, Room } from './types';
 import { getGameInfoPanelCombatClassName } from './utils/characterInfoPanelOutline';
+import { headerHeightClass } from './utils/headerHeight';
 import { createDefaultPanelLayout } from './utils/panelLayout';
 import type { ActiveEffectDisplay } from './utils/stateUpdateUtils';
 
@@ -110,6 +111,28 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
     authToken,
   } = props;
   const panelManager = usePanelManager();
+
+  // Collapse state lives here (not in HeaderBar) so the panel area's top offset can be derived
+  // from the same source as the header's own height - see headerHeightClass (#699).
+  const [isHeaderCollapsed, setIsHeaderCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem('mythosmud-ui-v2-header-collapsed') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const toggleHeaderCollapse = useCallback(() => {
+    setIsHeaderCollapsed(prev => {
+      const next = !prev;
+      try {
+        localStorage.setItem('mythosmud-ui-v2-header-collapsed', String(next));
+      } catch {
+        // localStorage unavailable (private mode, etc.) - collapse state just won't persist.
+      }
+      return next;
+    });
+  }, []);
 
   // Prefer container-derived status; fall back to projector-authoritative player stats only.
   const derivedHealthStatus = useMemo<HealthStatus | null>(
@@ -241,10 +264,15 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
           isLoggingOut={isLoggingOut}
           activeEffects={activeEffects}
           followingTarget={followingTarget}
+          isCollapsed={isHeaderCollapsed}
+          onToggleCollapse={toggleHeaderCollapse}
         />
 
-        {/* Main Content Area - Panels: flex-1 min-h-0 so panel area is bounded and scroll/overflow work */}
-        <div className="relative flex min-h-0 flex-1 pt-12">
+        {/* Main Content Area - Panels: flex-1 min-h-0 so panel area is bounded and scroll/overflow work.
+            Top padding mirrors HeaderBar's own height via headerHeightClass (single source, #699). */}
+        <div
+          className={`relative flex min-h-0 flex-1 ${headerHeightClass(isHeaderCollapsed, mythosTime).padding} transition-[padding-top] duration-300`}
+        >
           {mainDockSlots.map(slot => {
             const panel = panelManager.getPanel(slot.id);
             if (!panel?.isVisible) {

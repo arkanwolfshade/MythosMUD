@@ -11,7 +11,7 @@ interface UseMythosTimeBootstrapParams {
   authToken: string;
   setMythosTime: (time: MythosTimeState) => void;
   lastDaypartRef: React.MutableRefObject<string | null>;
-  lastHolidayIdsRef: React.MutableRefObject<string[]>;
+  lastHolidayIdsRef: React.MutableRefObject<{ id: string; name: string }[]>;
 }
 
 export const useMythosTimeBootstrap = ({
@@ -49,7 +49,7 @@ export const useMythosTimeBootstrap = ({
         setMythosTime(nextState);
         lastDaypartRef.current = nextState.daypart;
         // Ensure active_holidays is always an array before calling .map() (defensive coding)
-        lastHolidayIdsRef.current = (nextState.active_holidays ?? []).map(h => h.id);
+        lastHolidayIdsRef.current = (nextState.active_holidays ?? []).map(h => ({ id: h.id, name: h.name }));
       } catch (error) {
         logger.warn('GameClientV2Container', 'Failed to bootstrap Mythos time', { error: String(error) });
       }

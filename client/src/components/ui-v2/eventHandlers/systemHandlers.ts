@@ -119,6 +119,48 @@ function appendDaypartChange(
   context.lastDaypartRef.current = daypart;
 }
 
+function appendHolidayChange(
+  context: Parameters<EventHandler>[1],
+  appendMessage: NonNullable<Parameters<EventHandler>[2]>,
+  activeHolidays: { id: string; name: string }[],
+  timestamp: string
+): void {
+  const previous = context.lastHolidayIdsRef.current;
+  // Bootstrap always sets lastDaypartRef alongside lastHolidayIdsRef (useMythosTimeBootstrap),
+  // so a non-null daypart ref is a reliable "we have a real previous state to diff against"
+  // signal - unlike previous.length, which is legitimately 0 when bootstrap found no holidays.
+  const wasBootstrapped = context.lastDaypartRef.current !== null;
+  if (wasBootstrapped) {
+    const previousIds = new Set(previous.map(h => h.id));
+    const nextIds = new Set(activeHolidays.map(h => h.id));
+    const started = activeHolidays.filter(h => !previousIds.has(h.id));
+    const ended = previous.filter(h => !nextIds.has(h.id));
+    for (const holiday of started) {
+      appendMessage(
+        sanitizeChatMessageForState({
+          text: `[Time] The observance of ${holiday.name} begins.`,
+          timestamp,
+          messageType: 'system',
+          channel: 'system',
+          isHtml: false,
+        })
+      );
+    }
+    for (const holiday of ended) {
+      appendMessage(
+        sanitizeChatMessageForState({
+          text: `[Time] The observance of ${holiday.name} has passed.`,
+          timestamp,
+          messageType: 'system',
+          channel: 'system',
+          isHtml: false,
+        })
+      );
+    }
+  }
+  context.lastHolidayIdsRef.current = activeHolidays;
+}
+
 export const handleMythosTimeUpdate: EventHandler = (event, context, appendMessage) => {
   const payload = event.data as unknown as MythosTimePayload;
   if (!payload?.mythos_clock) {
@@ -130,6 +172,17 @@ export const handleMythosTimeUpdate: EventHandler = (event, context, appendMessa
   if (currentHour !== null) {
     appendHourChime(context, appendMessage, payload, event.timestamp, currentHour);
   }
+  // Diff holidays before appendDaypartChange mutates lastDaypartRef - appendHolidayChange reads
+  // that ref (still holding its pre-update value here) to detect the very first payload of a
+  // session, same as appendDaypartChange's own `previousDaypart &&` guard does for itself.
+  appendHolidayChange(
+    context,
+    appendMessage,
+    // Defensive: buildMythosTimeState always populates this on real payloads, but test doubles
+    // and incomplete server responses may omit it.
+    (nextState.active_holidays ?? []).map(h => ({ id: h.id, name: h.name })),
+    event.timestamp
+  );
   appendDaypartChange(context, appendMessage, nextState.daypart, event.timestamp);
 };
 
