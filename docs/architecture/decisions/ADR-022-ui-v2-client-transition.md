@@ -123,6 +123,13 @@ it — stub-exempted per this section's policy, tracked in
 orphaned, **74** live. Cluster 1 is 26 files, not 27.
 
 **[NOTE]**
+[#699](https://github.com/arkanwolfshade/MythosMUD/issues/699) resolved the carve-out: daypart/season/witching-hour accent and active-holiday display were
+ported into `ui-v2/HeaderBar.tsx` (the data was already reaching `ui-v2` via the `mythosTime`
+prop, just never rendered), holiday start/end transitions now log to chat, and
+`MythosTimeHud.tsx` + its test were deleted. The stub exemption above is closed; counts revert to
+this section's original scan: **82 of 155** orphaned, **73** live.
+
+**[NOTE]**
 Cluster 2's own removal PR (#691) found the issue's list undercounted the legacy `panels/` tree by
 7: `chatPanelChannelFilter.ts`, `chatPanelChannelVisibility.ts`, `chatPanelMessageClass.ts`,
 `chatPanelRuntimeUtils.ts`, `chatPanelUnreadBump.ts`, `chatPanelUnreadCounts.ts`, and
@@ -257,6 +264,7 @@ this gate issue, filed separately as
 | 1.1.0 | 2026-08-26 | #690 carved `MythosTimeHud.tsx` out of cluster 1 (real behaviour gap, no `ui-v2` equivalent; tracked in #699). Counts corrected: 81 orphaned / 74 live; cluster 1 is 26 files. |
 | 1.2.0 | 2026-08-26 | #691 found cluster 2 undercounted by 7 satellite modules (42 files, not 35) and a second `src/utils/` scope gap outside the original scanned tree. Four real behaviour gaps deleted (not carved out) and tracked in #706-#709. |
 | 1.3.0 | 2026-08-26 | #692's 6-file cluster-3 count was accurate. Added an inert-reference clause to §6's "live" definition after finding `containerStore.ts` kept alive only by discarded `void` subscriptions; deleted the store and its test as a cascade orphan. Container/inventory UI gap deleted, not carved out, and tracked in one issue (#711) rather than three. |
+| 1.4.0 | 2026-09-08 | #699 closed cluster 1's `MythosTimeHud.tsx` carve-out: ported into `HeaderBar.tsx`, file and test deleted. Counts revert to §6's original 82 orphaned / 73 live. |
 | 1.4.0 | 2026-08-27 | #693's 14-file cluster-4 count was accurate. Generalized §6's liveness definition to one principle (input-to-output path) after finding a producer-side inertness distinct from 1.3.0's consumer-side case: `rescueState`/`hallucinationFeed` were read but never fed by a real producer. Deleted both pipelines and their contract; ported `AsciiMapEditor`'s coordinate-recalculation action into `RoomMapEditor` rather than dropping it. Three status-banner gaps tracked in #713-#715. All four removal clusters now landed; only #694 (the gate) remains. |
 | 1.5.0 | 2026-08-27 | #694 removed CI's `continue-on-error` exception — the knip gate now enforces. Its own 14-finding baseline resolved: 12 genuinely dead files deleted, one (`LoginGracePeriodBanner.tsx`) deleted as superseded by a live `HeaderBar` effect (no tracking issue needed), one false positive suppressed by name, one unused devDependency removed. `exports`/`types` stay `"off"`: flipping them for real (not the flawed CLI check used during planning) surfaces 94 findings, triaged separately in #718. Retirement sequence from #637 complete; #718 and the nine open decide-then-port issues are independent backlog. |
 | 1.5.1 | 2026-08-27 | Restructure the `[BUG]` block into HADS-required Symptom/Fix fields; registered in `docs/hads.manifest` for the first time (audit deferred register, #648). |
