@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import random
 import uuid
-from typing import Any
+from typing import TypedDict
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -31,6 +31,19 @@ PHANTOM_HOSTILE_NAMES: list[str] = [
     "Dread Apparition",
     "Nightmare Form",
 ]
+
+
+class PhantomData(TypedDict):
+    """Data describing one active phantom hostile (#625)."""
+
+    phantom_id: str
+    player_id: str
+    room_id: str
+    name: str
+    tier: str
+    max_dp: int
+    current_dp: int
+    is_non_damaging: bool
 
 
 class PhantomHostileService:
@@ -52,7 +65,7 @@ class PhantomHostileService:
         # Track active phantom hostiles per player (player_id -> list of phantom_ids)
         self._active_phantoms: dict[str, list[str]] = {}
         # Full phantom data by phantom_id, for target-resolution/combat lookups (#625)
-        self._phantom_data: dict[str, dict[str, Any]] = {}
+        self._phantom_data: dict[str, PhantomData] = {}
 
     def should_spawn_phantom_hostile(self, tier: str) -> bool:
         """
@@ -82,7 +95,7 @@ class PhantomHostileService:
         """
         return random.choice(PHANTOM_HOSTILE_NAMES)  # nosec B311 - Game mechanics, not security-critical
 
-    def create_phantom_hostile_data(self, player_id: uuid.UUID, room_id: str, tier: str) -> dict[str, Any]:
+    def create_phantom_hostile_data(self, player_id: uuid.UUID, room_id: str, tier: str) -> PhantomData:
         """
         Create phantom hostile data structure.
 
@@ -103,7 +116,7 @@ class PhantomHostileService:
             self._active_phantoms[player_id_str] = []
         self._active_phantoms[player_id_str].append(phantom_id)
 
-        data = {
+        data: PhantomData = {
             "phantom_id": phantom_id,
             "player_id": str(player_id),
             "room_id": room_id,
@@ -116,11 +129,11 @@ class PhantomHostileService:
         self._phantom_data[phantom_id] = data
         return data
 
-    def get_phantom_data(self, phantom_id: str) -> dict[str, Any] | None:
+    def get_phantom_data(self, phantom_id: str) -> PhantomData | None:
         """Return the full data dict for one phantom, or None if it's gone (#625)."""
         return self._phantom_data.get(phantom_id)
 
-    def find_phantom_by_name_in_room(self, player_id: uuid.UUID, room_id: str, name: str) -> dict[str, Any] | None:
+    def find_phantom_by_name_in_room(self, player_id: uuid.UUID, room_id: str, name: str) -> PhantomData | None:
         """
         Find one of the player's active phantoms by (case-insensitive) name, scoped to a room (#625).
 
@@ -154,12 +167,12 @@ class PhantomHostileService:
                 return True
         return False
 
-    def get_active_phantoms(self, player_id: uuid.UUID) -> list[str]:
+    def get_active_phantoms(self, player_id: uuid.UUID | str) -> list[str]:
         """
         Get list of active phantom IDs for a player.
 
         Args:
-            player_id: Player UUID
+            player_id: Player UUID (or its string form -- both key into the same tracking dict)
 
         Returns:
             List of active phantom IDs

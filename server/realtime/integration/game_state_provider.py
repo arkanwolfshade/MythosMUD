@@ -16,6 +16,7 @@ from typing import TYPE_CHECKING, Any, cast
 
 from ...models import Player
 from ...services.npc_instance_service import get_npc_instance_service
+from ...services.phantom_visibility import get_viewer_phantom_names
 from ...structured_logging.enhanced_logging_config import get_logger
 from ..disconnect_grace_period import is_player_in_grace_period
 from ..envelope import build_event
@@ -510,6 +511,12 @@ class GameStateProvider:
             occupants, player_names_list, npc_names_list = await self._process_occupants_with_grace_periods(
                 room_id, player_id, online_players
             )
+            # This viewer's own phantom hostiles (#625, #714) -- player-specific, so merged in
+            # per-recipient here rather than being part of the room's real occupant data.
+            viewer_phantom_names = get_viewer_phantom_names(player_id, room_id)
+            if viewer_phantom_names:
+                npc_names_list = [*npc_names_list, *viewer_phantom_names]
+                occupants = [*occupants, *viewer_phantom_names]
 
             # Get complete player data using PlayerService or fallback
             player_data_for_client = await self._get_player_data_for_client(player, player_id, room_id)

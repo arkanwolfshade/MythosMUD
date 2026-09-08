@@ -8,6 +8,7 @@ listing items, NPCs, players, and exits in the room.
 from typing import Any, cast
 
 from ..realtime.occupant_display import format_occupant_display_name
+from ..services.phantom_visibility import get_viewer_phantom_names
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.room_renderer import format_room_drop_lines
 from .look_npc import _get_npcs_in_room
@@ -57,32 +58,12 @@ async def _format_containers_section(room_id: str | None, persistence: Any) -> l
     return lines
 
 
-def _get_viewer_phantom_names(viewer_player_id: Any | None, room_id: str | None) -> list[str]:
-    """
-    Return the viewer's own active phantom hostiles in this room, styled as NPC names (#625).
-
-    Phantoms are player-specific hallucinations (FR-3.1): only the hallucinating player's own
-    `look`/occupants queries ever see them. No other viewer, and no query without a viewer id,
-    injects anything here.
-    """
-    if not viewer_player_id or not room_id:
-        return []
-    from ..services.phantom_hostile_service import phantom_hostile_service
-
-    names: list[str] = []
-    for phantom_id in phantom_hostile_service.get_active_phantoms(viewer_player_id):
-        data = phantom_hostile_service.get_phantom_data(phantom_id)
-        if data and data["room_id"] == room_id:
-            names.append(str(data["name"]))
-    return names
-
-
 async def _format_npcs_section(room_id: str | None, viewer_player_id: Any | None = None) -> list[str]:
     """Format the NPCs/Mobs section of room look, including the viewer's own phantoms."""
     if not room_id:
         return []
     npc_names = await _get_npcs_in_room(room_id)
-    npc_names = [*npc_names, *_get_viewer_phantom_names(viewer_player_id, room_id)]
+    npc_names = [*npc_names, *get_viewer_phantom_names(viewer_player_id, room_id)]
     if not npc_names:
         return []
     npc_list = ", ".join(npc_names)
@@ -242,7 +223,6 @@ __all__ = [
     "_format_items_section",
     "_format_containers_section",
     "_format_npcs_section",
-    "_get_viewer_phantom_names",
     "_try_lookup_phantom_implicit",
     "_filter_other_players",
     "_format_players_section",
