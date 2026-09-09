@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -16,6 +17,7 @@ def mock_manager() -> MagicMock:
     mgr.send_personal_message = AsyncMock(return_value={"ok": True})
     mgr.broadcast_global = AsyncMock(return_value={"ok": True})
     mgr.broadcast_to_room = AsyncMock(return_value={"ok": True})
+    mgr.online_players = {}
     return mgr
 
 
@@ -24,6 +26,32 @@ async def test_require_manager_raises_when_missing() -> None:
     with patch("server.realtime.connection_manager_api.resolve_connection_manager", return_value=None):
         with pytest.raises(RuntimeError, match="not available"):
             cm_api._require_manager()
+
+
+def test_remove_online_player_pops_the_roster_entry(mock_manager: MagicMock) -> None:
+    """#784 follow-up: deleting a connected character must drop it from the tick roster,
+    or the game-tick loop keeps regenerating stats for it and the #777 soft-delete guard
+    refuses every save -- one warning + full stack trace per tick, indefinitely."""
+    player_id = uuid.uuid4()
+    # mock_manager.online_players is a real dict (set by the fixture); the cast states that
+    # honestly for basedpyright, which otherwise sees MagicMock attribute access as Any.
+    online_players = cast("dict[uuid.UUID, dict[str, object]]", mock_manager.online_players)
+    online_players[player_id] = {"name": "Doomed"}
+    with patch("server.realtime.connection_manager_api.resolve_connection_manager", return_value=mock_manager):
+        cm_api.remove_online_player(player_id)
+    assert player_id not in online_players
+
+
+def test_remove_online_player_is_a_noop_for_an_absent_player(mock_manager: MagicMock) -> None:
+    with patch("server.realtime.connection_manager_api.resolve_connection_manager", return_value=mock_manager):
+        cm_api.remove_online_player(uuid.uuid4())  # must not raise KeyError
+
+
+def test_remove_online_player_is_a_noop_without_a_manager() -> None:
+    """Unlike _require_manager(), a missing manager must not raise: deletion has to succeed
+    in contexts with no live connection manager (unit tests, offline tooling, startup)."""
+    with patch("server.realtime.connection_manager_api.resolve_connection_manager", return_value=None):
+        cm_api.remove_online_player(uuid.uuid4())  # must not raise
 
 
 @pytest.mark.asyncio
