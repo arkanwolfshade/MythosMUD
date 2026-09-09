@@ -39,10 +39,21 @@ def test_fake_hallucination_generate_room_overlay() -> None:
     assert result["hallucination_id"].startswith(f"room_overlay_{player_id}_")
 
 
+def _mock_rng(**method_return_values: object) -> MagicMock:
+    """A MagicMock standing in for `hallucination_rng.get()`'s `random.Random`."""
+    rng = MagicMock()
+    for method, value in method_return_values.items():
+        setattr(rng, method, MagicMock(return_value=value))
+    return rng
+
+
 def test_fake_hallucination_select_type() -> None:
     """Selection returns one of the two hallucination types."""
     service = FakeHallucinationService()
-    with patch("server.services.fake_hallucination_service.random.choice", return_value="fake_npc_tell"):
+    with patch(
+        "server.services.hallucination_rng.hallucination_rng.get",
+        return_value=_mock_rng(choice="fake_npc_tell"),
+    ):
         assert service.select_hallucination_type() == "fake_npc_tell"
 
 
@@ -65,9 +76,13 @@ async def test_hallucination_frequency_room_entry_roll() -> None:
     """Room entry uses probability roll without session."""
     service = HallucinationFrequencyService()
     player_id = uuid.uuid4()
-    with patch("server.services.hallucination_frequency_service.random.random", return_value=0.05):
+    with patch(
+        "server.services.hallucination_rng.hallucination_rng.get", return_value=_mock_rng(random=0.05)
+    ):
         assert await service.should_trigger_hallucination(player_id, "uneasy", "room_entry") is True
-    with patch("server.services.hallucination_frequency_service.random.random", return_value=0.99):
+    with patch(
+        "server.services.hallucination_rng.hallucination_rng.get", return_value=_mock_rng(random=0.99)
+    ):
         assert await service.should_trigger_hallucination(player_id, "uneasy", "room_entry") is False
 
 
@@ -106,7 +121,7 @@ async def test_hallucination_frequency_time_based_triggers_and_sets_cooldown() -
 
     with (
         patch("server.services.hallucination_frequency_service.LucidityService", return_value=mock_lucidity),
-        patch("server.services.hallucination_frequency_service.random.random", return_value=0.01),
+        patch("server.services.hallucination_rng.hallucination_rng.get", return_value=_mock_rng(random=0.01)),
     ):
         assert await service.should_trigger_hallucination(player_id, "fractured", "time_based", session) is True
     mock_lucidity.set_cooldown.assert_awaited_once()
@@ -133,6 +148,7 @@ async def test_check_room_entry_delegates_to_should_trigger() -> None:
         result = await service.check_room_entry_hallucination(player_id, current_lcd=45)
     assert result is True
     mock_trigger.assert_awaited_once()
+    assert mock_trigger.await_args is not None
     assert mock_trigger.await_args.args[2] == "room_entry"
 
 
@@ -146,15 +162,16 @@ async def test_check_time_based_delegates_to_should_trigger() -> None:
         result = await service.check_time_based_hallucination(player_id, current_lcd=15, session=session)
     assert result is False
     mock_trigger.assert_awaited_once()
+    assert mock_trigger.await_args is not None
     assert mock_trigger.await_args.args[2] == "time_based"
 
 
 def test_phantom_should_spawn_fractured() -> None:
     """Fractured tier uses 15% spawn chance."""
     service = PhantomHostileService()
-    with patch("server.services.phantom_hostile_service.random.random", return_value=0.10):
+    with patch("server.services.hallucination_rng.hallucination_rng.get", return_value=_mock_rng(random=0.10)):
         assert service.should_spawn_phantom_hostile("fractured") is True
-    with patch("server.services.phantom_hostile_service.random.random", return_value=0.99):
+    with patch("server.services.hallucination_rng.hallucination_rng.get", return_value=_mock_rng(random=0.99)):
         assert service.should_spawn_phantom_hostile("fractured") is False
 
 
@@ -168,7 +185,10 @@ def test_phantom_should_spawn_deranged() -> None:
 def test_phantom_generate_name() -> None:
     """Generated name comes from phantom name pool."""
     service = PhantomHostileService()
-    with patch("server.services.phantom_hostile_service.random.choice", return_value=PHANTOM_HOSTILE_NAMES[0]):
+    with patch(
+        "server.services.hallucination_rng.hallucination_rng.get",
+        return_value=_mock_rng(choice=PHANTOM_HOSTILE_NAMES[0]),
+    ):
         assert service.generate_phantom_name() == PHANTOM_HOSTILE_NAMES[0]
 
 

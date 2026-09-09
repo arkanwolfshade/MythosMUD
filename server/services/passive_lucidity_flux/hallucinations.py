@@ -51,7 +51,7 @@ async def handle_phantom_hostile_hallucination(
 
 async def handle_fake_hallucination(player_id_uuid: uuid.UUID, room_id: str, tier: str, current_lcd: int) -> None:
     """Handle fake hallucination (NPC tells or room text overlays) (#714)."""
-    from ...game.chat_npc_system import deliver_fake_npc_whisper, deliver_personal_system
+    from ...game.chat_npc_system import deliver_fake_npc_whisper
     from ...services.fake_hallucination_service import FakeHallucinationService
     from ...services.fake_sender_registry import fake_sender_registry
     from ...services.lucidity_event_dispatcher import send_hallucination_event
@@ -86,28 +86,50 @@ async def handle_fake_hallucination(player_id_uuid: uuid.UUID, room_id: str, tie
             npc_name=fake_tell_data["npc_name"],
         )
     else:  # room_text_overlay
-        overlay_data = fake_hallucination_service.generate_room_text_overlay(player_id_uuid, room_id)
-        # #714: a spontaneous ambient line, not persisted into the room description -- the
-        # authored strings ("the temperature suddenly drops") are events, not static text, and
-        # would read as broken prose if repeated on a later `look`.
-        _ = await deliver_personal_system(player_id_uuid, overlay_data["overlay_text"])
-        await send_hallucination_event(
-            player_id_uuid,
-            hallucination_type="room_text_overlay",
-            message=overlay_data["overlay_text"],
-            metadata={
-                "tier": tier,
-                "lcd": current_lcd,
-                "room_id": room_id,
-                "hallucination_id": overlay_data["hallucination_id"],
-            },
-        )
-        logger.debug(
-            "Room text overlay hallucination triggered",
-            player_id=player_id_uuid,
-            tier=tier,
-            room_id=room_id,
-        )
+        await handle_room_text_overlay_hallucination(player_id_uuid, room_id, tier, current_lcd)
+
+
+async def handle_room_text_overlay_hallucination(
+    player_id_uuid: uuid.UUID, room_id: str, tier: str, current_lcd: int
+) -> None:
+    """Handle a room text overlay hallucination (#714) -- shared by fractured/deranged and Uneasy."""
+    from ...game.chat_npc_system import deliver_personal_system
+    from ...services.fake_hallucination_service import FakeHallucinationService
+    from ...services.lucidity_event_dispatcher import send_hallucination_event
+
+    overlay_data = FakeHallucinationService().generate_room_text_overlay(player_id_uuid, room_id)
+    # #714: a spontaneous ambient line, not persisted into the room description -- the
+    # authored strings ("the temperature suddenly drops") are events, not static text, and
+    # would read as broken prose if repeated on a later `look`.
+    _ = await deliver_personal_system(player_id_uuid, overlay_data["overlay_text"])
+    await send_hallucination_event(
+        player_id_uuid,
+        hallucination_type="room_text_overlay",
+        message=overlay_data["overlay_text"],
+        metadata={
+            "tier": tier,
+            "lcd": current_lcd,
+            "room_id": room_id,
+            "hallucination_id": overlay_data["hallucination_id"],
+        },
+    )
+    logger.debug(
+        "Room text overlay hallucination triggered",
+        player_id=player_id_uuid,
+        tier=tier,
+        room_id=room_id,
+    )
+
+
+async def handle_uneasy_room_entry_hallucination(player_id_uuid: uuid.UUID, room_id: str) -> None:
+    """
+    Handle the Uneasy tier's room-entry hallucination (#714).
+
+    Spec palette for Uneasy is "ambient whispers, fleeting shadows" -- narrower than
+    fractured/deranged's palette, which also includes fake NPC tells and phantom hostiles.
+    Uneasy gets only the ambient overlay line, never a fake NPC voice or a phantom.
+    """
+    await handle_room_text_overlay_hallucination(player_id_uuid, room_id, "uneasy", 0)
 
 
 async def handle_hallucination_triggers(

@@ -1,6 +1,7 @@
 """Unit tests for passive lucidity flux hallucination triggers."""
 
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -73,6 +74,32 @@ async def test_handle_fake_hallucination_room_overlay() -> None:
     assert send.await_args is not None
     assert send.await_args.kwargs["hallucination_type"] == "room_text_overlay"
     deliver.assert_awaited_once_with(player_id, "Walls bleed.")
+
+
+@pytest.mark.asyncio
+async def test_handle_uneasy_room_entry_hallucination_delivers_overlay_only() -> None:
+    """#714: Uneasy's room-entry hallucination is always the ambient overlay, never a fake tell."""
+    player_id = uuid.uuid4()
+    with (
+        patch("server.services.fake_hallucination_service.FakeHallucinationService") as svc_cls,
+        patch(
+            "server.services.lucidity_event_dispatcher.send_hallucination_event", new_callable=AsyncMock
+        ) as send,
+        patch("server.game.chat_npc_system.deliver_personal_system", new_callable=AsyncMock) as deliver,
+        patch("server.game.chat_npc_system.deliver_fake_npc_whisper", new_callable=AsyncMock) as deliver_whisper,
+    ):
+        svc = cast(MagicMock, svc_cls.return_value)
+        cast(MagicMock, svc.generate_room_text_overlay).return_value = {
+            "overlay_text": "A chill runs down your spine.",
+            "hallucination_id": "h3",
+        }
+        await hall.handle_uneasy_room_entry_hallucination(player_id, "room-a")
+    deliver.assert_awaited_once_with(player_id, "A chill runs down your spine.")
+    deliver_whisper.assert_not_awaited()
+    send.assert_awaited_once()
+    assert send.await_args is not None
+    assert send.await_args.kwargs["hallucination_type"] == "room_text_overlay"
+    assert send.await_args.kwargs["metadata"]["tier"] == "uneasy"
 
 
 @pytest.mark.asyncio

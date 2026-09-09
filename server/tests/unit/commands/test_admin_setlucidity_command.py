@@ -33,6 +33,7 @@ def test_validate_lcd_value_none() -> None:
 def test_validate_lcd_value_out_of_range() -> None:
     val, err = cmd._validate_lcd_value(200, "Admin")
     assert val is None
+    assert err is not None
     assert "out of range" in err["result"]
 
 
@@ -46,7 +47,7 @@ def test_get_player_service_from_container() -> None:
     svc = object()
     app = MagicMock()
     app.state.container.player_service = svc
-    assert cmd._get_player_service_from_app(app) is svc
+    assert cmd.get_player_service_from_app(app) is svc
 
 
 @pytest.mark.asyncio
@@ -67,7 +68,7 @@ def test_get_player_service_missing() -> None:
     app = MagicMock()
     app.state.container = None
     app.state.player_service = None
-    assert cmd._get_player_service_from_app(app) is None
+    assert cmd.get_player_service_from_app(app) is None
 
 
 def test_get_player_service_legacy_app_state() -> None:
@@ -75,7 +76,7 @@ def test_get_player_service_legacy_app_state() -> None:
     app = MagicMock()
     app.state.container = None
     app.state.player_service = svc
-    assert cmd._get_player_service_from_app(app) is svc
+    assert cmd.get_player_service_from_app(app) is svc
 
 
 def test_get_catatonia_registry_from_container() -> None:
@@ -96,7 +97,7 @@ def test_validate_lcd_value_invalid_int() -> None:
 async def test_check_admin_permissions_no_user_manager() -> None:
     app = MagicMock()
     app.state.user_manager = None
-    _player, err = await cmd._check_admin_permissions(app, "Admin", MagicMock())
+    _player, err = await cmd.check_admin_permissions(app, "Admin", MagicMock())
     assert err is not None
     assert "not available" in err["result"]
 
@@ -107,7 +108,7 @@ async def test_check_admin_permissions_current_player_missing() -> None:
     app.state.user_manager = MagicMock()
     player_service = MagicMock()
     player_service.resolve_player_name = AsyncMock(return_value=None)
-    _player, err = await cmd._check_admin_permissions(app, "Admin", player_service)
+    _player, err = await cmd.check_admin_permissions(app, "Admin", player_service)
     assert err is not None
     assert "Current player not found" in err["result"]
 
@@ -120,7 +121,7 @@ async def test_check_admin_permissions_denied() -> None:
     current = MagicMock(id=str(uuid.uuid4()))
     player_service = MagicMock()
     player_service.resolve_player_name = AsyncMock(return_value=current)
-    _player, err = await cmd._check_admin_permissions(app, "Admin", player_service)
+    _player, err = await cmd.check_admin_permissions(app, "Admin", player_service)
     assert err is not None
     assert "permission" in err["result"]
 
@@ -133,7 +134,7 @@ async def test_check_admin_permissions_ok() -> None:
     current = MagicMock(id=str(uuid.uuid4()))
     player_service = MagicMock()
     player_service.resolve_player_name = AsyncMock(return_value=current)
-    player, err = await cmd._check_admin_permissions(app, "Admin", player_service)
+    player, err = await cmd.check_admin_permissions(app, "Admin", player_service)
     assert err is None
     assert player is current
 
@@ -142,8 +143,9 @@ async def test_check_admin_permissions_ok() -> None:
 async def test_resolve_target_player_not_found() -> None:
     player_service = MagicMock()
     player_service.resolve_player_name = AsyncMock(return_value=None)
-    player_id, err = await cmd._resolve_target_player(player_service, "Missing")
+    player_id, err = await cmd.resolve_target_player(player_service, "Missing")
     assert player_id is None
+    assert err is not None
     assert "not found" in err["result"]
 
 
@@ -153,7 +155,7 @@ async def test_resolve_target_player_success() -> None:
     target = MagicMock(id=str(target_uuid))
     player_service = MagicMock()
     player_service.resolve_player_name = AsyncMock(return_value=target)
-    player_id, err = await cmd._resolve_target_player(player_service, "Alice")
+    player_id, err = await cmd.resolve_target_player(player_service, "Alice")
     assert err is None
     assert player_id == target_uuid
 
@@ -164,7 +166,7 @@ async def test_get_current_lcd_default_when_missing() -> None:
     result_mock = MagicMock()
     result_mock.scalar_one_or_none.return_value = None
     session.execute = AsyncMock(return_value=result_mock)
-    lcd = await cmd._get_current_lcd(session, uuid.uuid4())
+    lcd = await cmd.get_current_lcd(session, uuid.uuid4())
     assert lcd == 100
 
 
@@ -175,7 +177,7 @@ async def test_get_current_lcd_from_record() -> None:
     result_mock = MagicMock()
     result_mock.scalar_one_or_none.return_value = record
     session.execute = AsyncMock(return_value=result_mock)
-    lcd = await cmd._get_current_lcd(session, uuid.uuid4())
+    lcd = await cmd.get_current_lcd(session, uuid.uuid4())
     assert lcd == 42
 
 
@@ -244,7 +246,7 @@ async def test_execute_lucidity_change_success() -> None:
     target_id = uuid.uuid4()
     session = AsyncMock()
     with patch("server.commands.admin_setlucidity_command.get_async_session", return_value=_async_session_gen(session)):
-        with patch.object(cmd, "_get_current_lcd", AsyncMock(return_value=60)):
+        with patch.object(cmd, "get_current_lcd", AsyncMock(return_value=60)):
             with patch.object(
                 cmd,
                 "_apply_lucidity_change",
@@ -395,6 +397,7 @@ async def test_setup_command_execution_target_not_found() -> None:
     user_id, target_id, err = await cmd._setup_command_execution(app, "Admin", "Missing", player_service)
     assert user_id is not None
     assert target_id is None
+    assert err is not None
     assert "not found" in err["result"]
 
 
@@ -404,7 +407,7 @@ async def test_resolve_target_player_uuid_id() -> None:
     target = MagicMock(id=target_uuid)
     player_service = MagicMock()
     player_service.resolve_player_name = AsyncMock(return_value=target)
-    player_id, err = await cmd._resolve_target_player(player_service, "Alice")
+    player_id, err = await cmd.resolve_target_player(player_service, "Alice")
     assert err is None
     assert player_id == target_uuid
 

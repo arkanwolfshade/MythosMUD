@@ -88,6 +88,25 @@ async def test_handle_admin_command_unknown():
 
 
 @pytest.mark.asyncio
+async def test_handle_admin_command_hallucinate_dispatches_to_handler():
+    """#714: the 'hallucinate' subcommand routes to _handle_admin_hallucinate_command."""
+    with patch(
+        "server.commands.admin_commands._handle_admin_hallucinate_command",
+        AsyncMock(return_value={"result": "Forced 'phantom' hallucination on Alice."}),
+    ) as mock_handler:
+        result = await handle_admin_command(
+            {"subcommand": "hallucinate", "target_player": "Alice", "hallucination_type": "phantom"},
+            {"name": "TestPlayer"},
+            MagicMock(),
+            None,
+            "TestPlayer",
+        )
+
+    mock_handler.assert_awaited_once()
+    assert "Forced 'phantom' hallucination on Alice." in result["result"]
+
+
+@pytest.mark.asyncio
 async def test_handle_mute_command_no_user_manager():
     """Test handle_mute_command() when user manager is not available."""
     mock_request = MagicMock()
