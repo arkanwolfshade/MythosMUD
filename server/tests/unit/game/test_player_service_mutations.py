@@ -7,7 +7,7 @@ error paths. Shared fixtures mirror test_player_service.py.
 
 import uuid
 from datetime import UTC, datetime
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -224,6 +224,52 @@ async def test_soft_delete_character_success(player_service, mock_persistence):
     success, message = await player_service.soft_delete_character(player_id, user_id)
     assert success is True
     assert "deleted" in message.lower() or "success" in message.lower()
+
+
+@pytest.mark.asyncio
+async def test_soft_delete_character_prunes_online_players_roster(
+    player_service: PlayerService, mock_persistence: AsyncMock
+) -> None:
+    """#784 follow-up (#777 fallout): deleting a still-connected character must drop it from
+    the live online-players roster, or the game-tick loop keeps regenerating its MP/lucidity
+    every tick and the soft-delete guard refuses every save -- one warning + full stack trace
+    per tick, indefinitely, until the connection happens to drop."""
+    player_id = uuid.uuid4()
+    user_id = uuid.uuid4()
+    mock_player = MagicMock()
+    mock_player.player_id = player_id
+    mock_player.user_id = user_id
+    mock_player.is_deleted = False
+    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
+    mock_persistence.soft_delete_player = AsyncMock(return_value=True)
+
+    with patch("server.realtime.connection_manager_api.remove_online_player") as mock_remove:
+        success, _message = await player_service.soft_delete_character(player_id, user_id)
+
+    assert success is True
+    mock_remove.assert_called_once_with(player_id)
+
+
+@pytest.mark.asyncio
+async def test_soft_delete_character_lost_race_does_not_touch_online_players_roster(
+    player_service: PlayerService, mock_persistence: AsyncMock
+) -> None:
+    """A no-op delete (lost the race against a concurrent delete) must not prune the roster;
+    only a delete this call actually performed should."""
+    player_id = uuid.uuid4()
+    user_id = uuid.uuid4()
+    mock_player = MagicMock()
+    mock_player.player_id = player_id
+    mock_player.user_id = user_id
+    mock_player.is_deleted = False
+    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
+    mock_persistence.soft_delete_player = AsyncMock(return_value=False)  # lost the race
+
+    with patch("server.realtime.connection_manager_api.remove_online_player") as mock_remove:
+        success, _message = await player_service.soft_delete_character(player_id, user_id)
+
+    assert success is False
+    mock_remove.assert_not_called()
 
 
 @pytest.mark.asyncio
