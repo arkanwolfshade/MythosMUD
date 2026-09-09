@@ -226,12 +226,15 @@ class LucidityService:
             tier_after=ctx.new_tier,
             liabilities_added=liabilities_added,
         )
-        # #625: phantoms only make sense while the player remains in a hallucination-eligible
-        # tier. Leaving fractured/deranged (in either direction) clears any still-active phantom.
+        # #625/#714: phantoms and fake whisper senders only make sense while the player remains
+        # in a hallucination-eligible tier. Leaving fractured/deranged (in either direction)
+        # clears both.
         if ctx.previous_tier != ctx.new_tier and ctx.new_tier not in ("fractured", "deranged"):
+            from .fake_sender_registry import fake_sender_registry
             from .phantom_hostile_service import phantom_hostile_service
 
             phantom_hostile_service.clear_all_phantoms(ctx.player_id)
+            fake_sender_registry.clear(ctx.player_id)
         # #714: keep the in-memory tier cache (exit hallucination's cheap eligibility check)
         # write-through fresh -- write unconditionally, not just on a transition, since this is
         # the authoritative point where new_tier was just computed.

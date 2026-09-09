@@ -53,6 +53,7 @@ async def handle_fake_hallucination(player_id_uuid: uuid.UUID, room_id: str, tie
     """Handle fake hallucination (NPC tells or room text overlays) (#714)."""
     from ...game.chat_npc_system import deliver_fake_npc_whisper, deliver_personal_system
     from ...services.fake_hallucination_service import FakeHallucinationService
+    from ...services.fake_sender_registry import fake_sender_registry
     from ...services.lucidity_event_dispatcher import send_hallucination_event
 
     fake_hallucination_service = FakeHallucinationService()
@@ -61,8 +62,11 @@ async def handle_fake_hallucination(player_id_uuid: uuid.UUID, room_id: str, tie
     if hallucination_type == "fake_npc_tell":
         fake_tell_data = fake_hallucination_service.generate_fake_npc_tell(player_id_uuid, room_id)
         # #714: delivered as an ordinary whisper from the fake NPC name -- byte-identical on the
-        # wire to a real NPC whisper, no separate "hallucination" event type.
+        # wire to a real NPC whisper, no separate "hallucination" event type. Recorded in the
+        # fake-sender registry too, so `reply` can answer in-fiction instead of leaking
+        # "player not found" the moment someone reacts naturally to it.
         _ = await deliver_fake_npc_whisper(player_id_uuid, fake_tell_data["npc_name"], fake_tell_data["message"])
+        fake_sender_registry.record_fake_whisper(player_id_uuid, fake_tell_data["npc_name"])
         await send_hallucination_event(
             player_id_uuid,
             hallucination_type="fake_npc_tell",
