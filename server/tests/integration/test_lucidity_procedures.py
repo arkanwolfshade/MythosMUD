@@ -35,6 +35,9 @@ async def zone_with_override_and_subzone_without(session_factory: async_sessionm
         )
         await session.commit()
     yield zone_stable_id
+    async with session_factory() as session:
+        _ = await session.execute(text("DELETE FROM zones WHERE id = :id"), {"id": zone_id})
+        await session.commit()
 
 
 @pytest.mark.asyncio
@@ -86,6 +89,9 @@ async def subzone_with_override(session_factory: async_sessionmaker[AsyncSession
         )
         await session.commit()
     yield zone_stable_id, subzone_stable_id
+    async with session_factory() as session:
+        _ = await session.execute(text("DELETE FROM zones WHERE id = :id"), {"id": zone_id})
+        await session.commit()
 
 
 @pytest.mark.asyncio

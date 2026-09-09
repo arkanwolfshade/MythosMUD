@@ -30,6 +30,9 @@ async def emote_row(session_factory: async_sessionmaker[AsyncSession]):
         )
         await session.commit()
     yield stable_id, alias
+    async with session_factory() as session:
+        _ = await session.execute(text("DELETE FROM emotes WHERE id = :id"), {"id": emote_id})
+        await session.commit()
 
 
 @pytest.mark.asyncio

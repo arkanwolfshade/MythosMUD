@@ -21,9 +21,11 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 async def room_pair(session_factory: async_sessionmaker[AsyncSession]):
     """Create a zone, subzone, and two rooms (source, target) with unique stable_ids.
 
-    Yields (source_stable_id, target_stable_id). No explicit teardown: each run uses fresh
-    uuid4-derived ids, matching this suite's existing pattern (test_quest_flow.py) for
-    mythos_unit/mythos_e2e, which are safe to reset/leak-tolerant per test databases.
+    Yields (source_stable_id, target_stable_id). zones/subzones/rooms/room_links are excluded
+    from the autouse db_cleanup fixture (world topology is preserved across tests), so this
+    fixture tears itself down explicitly -- otherwise every run leaks a zone/subzone/2 rooms
+    forever (#784 follow-up: this exact leak pattern in a sibling fixture left a row that
+    failed startup validation and blocked the whole E2E stack).
     """
     suffix = uuid.uuid4().hex[:8]
     zone_id = uuid.uuid4()
@@ -71,6 +73,20 @@ async def room_pair(session_factory: async_sessionmaker[AsyncSession]):
         await session.commit()
 
     yield source_stable_id, target_stable_id
+
+    async with session_factory() as session:
+        # Tests in this file exercise create_room_link/update_room_link/delete_room_link against
+        # these two rooms, so room_links rows may exist beyond the ones this fixture created.
+        # to_room_id is ON DELETE RESTRICT (not CASCADE), so any surviving link would block the
+        # zone delete below unless cleared first.
+        _ = await session.execute(
+            text(
+                "DELETE FROM room_links WHERE from_room_id IN (:source_id, :target_id) OR to_room_id IN (:source_id, :target_id)"
+            ),
+            {"source_id": source_id, "target_id": target_id},
+        )
+        _ = await session.execute(text("DELETE FROM zones WHERE id = :id"), {"id": zone_id})
+        await session.commit()
 
 
 @pytest.mark.asyncio

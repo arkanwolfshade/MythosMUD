@@ -60,6 +60,19 @@ async def room_pair(session_factory: async_sessionmaker[AsyncSession]):
 
     yield zone_stable_id, subzone_stable_id, source_id, source_stable_id, target_id, target_stable_id
 
+    async with session_factory() as session:
+        # to_room_id is ON DELETE RESTRICT (not CASCADE); the conflict test below adds a third
+        # room under this same subzone but no room_links reference it, so clearing links for
+        # source/target here is sufficient before the zone cascade removes rooms/subzones.
+        _ = await session.execute(
+            text(
+                "DELETE FROM room_links WHERE from_room_id IN (:source_id, :target_id) OR to_room_id IN (:source_id, :target_id)"
+            ),
+            {"source_id": source_id, "target_id": target_id},
+        )
+        _ = await session.execute(text("DELETE FROM zones WHERE id = :id"), {"id": zone_id})
+        await session.commit()
+
 
 @pytest.mark.asyncio
 async def test_get_rooms_for_coordinate_generation_matches_pattern(
@@ -205,6 +218,9 @@ async def player_row(session_factory: async_sessionmaker[AsyncSession]):
         )
         await session.commit()
     yield player_id
+    async with session_factory() as session:
+        _ = await session.execute(text("DELETE FROM users WHERE id = :id"), {"id": user_id})
+        await session.commit()
 
 
 @pytest.mark.asyncio

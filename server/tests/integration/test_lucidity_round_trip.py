@@ -8,6 +8,8 @@ apply adjustments, and persist changes correctly.
 import uuid
 
 import pytest
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from server.models.lucidity import PlayerLucidity
 from server.models.player import Player
@@ -15,8 +17,22 @@ from server.models.user import User
 from server.services.lucidity_service import LucidityService
 
 
+@pytest.fixture
+async def cleanup_test_user(session_factory: async_sessionmaker[AsyncSession]):
+    """Yield a fresh user id and guarantee its row is deleted after the test, pass or fail.
+    Deleting the user cascades to players/player_lucidity/lucidity_adjustment_log/
+    lucidity_cooldowns/lucidity_exposure_state."""
+    user_id = uuid.uuid4()
+    yield user_id
+    async with session_factory() as session:
+        _ = await session.execute(text("DELETE FROM users WHERE id = :id"), {"id": str(user_id)})
+        await session.commit()
+
+
 @pytest.mark.asyncio
-async def test_lucidity_adjustment_round_trip(session_factory):
+async def test_lucidity_adjustment_round_trip(
+    session_factory: async_sessionmaker[AsyncSession], cleanup_test_user: uuid.UUID
+):
     """
     Test that LucidityService can adjust lucidity and persist changes.
 
@@ -32,7 +48,7 @@ async def test_lucidity_adjustment_round_trip(session_factory):
     async with session_factory() as session:
         # Create user and player - prerequisites for lucidity record
         # These must be committed before the service can create PlayerLucidity
-        user_id = uuid.uuid4()
+        user_id = cleanup_test_user
         player_id = uuid.uuid4()
 
         user = User(

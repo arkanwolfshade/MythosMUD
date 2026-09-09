@@ -29,6 +29,11 @@ async def container_row(session_factory: async_sessionmaker[AsyncSession]):
         )
         await session.commit()
     yield container_id
+    async with session_factory() as session:
+        _ = await session.execute(
+            text("DELETE FROM containers WHERE container_instance_id = :id"), {"id": container_id}
+        )
+        await session.commit()
 
 
 @pytest.mark.asyncio

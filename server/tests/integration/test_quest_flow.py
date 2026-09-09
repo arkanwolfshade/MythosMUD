@@ -16,6 +16,7 @@ from unittest.mock import patch
 
 import pytest
 from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from server.game.quest import QuestService
 from server.models import Player, User  # noqa: F401
@@ -61,7 +62,7 @@ def _make_shared_session_factory(shared_session):
 
 
 @pytest.fixture
-async def quest_seed_data(session_factory):
+async def quest_seed_data(session_factory: async_sessionmaker[AsyncSession]):
     """
     Create User, Player, leave_the_tutorial QuestDefinition and QuestOffer.
     Quest definition and offer are inserted only if missing (idempotent for parallel runs).
@@ -88,7 +89,7 @@ async def quest_seed_data(session_factory):
         )
         session.add_all([user, player])
         # Insert quest definition and offer with ON CONFLICT DO NOTHING so parallel workers are safe
-        await session.execute(
+        _ = await session.execute(
             text(
                 """
                 INSERT INTO quest_definitions (id, definition, created_at, updated_at)
@@ -98,7 +99,7 @@ async def quest_seed_data(session_factory):
             ),
             {"defn": json.dumps(LEAVE_THE_TUTORIAL_DEFINITION)},
         )
-        await session.execute(
+        _ = await session.execute(
             text(
                 """
                 INSERT INTO quest_offers (quest_id, offer_entity_type, offer_entity_id)
@@ -110,6 +111,12 @@ async def quest_seed_data(session_factory):
         )
         await session.commit()
     yield (player_id, user_id)
+    # Only the user/player rows are per-run leaks; quest_definitions/quest_offers above use a
+    # fixed id with ON CONFLICT DO NOTHING and are deliberately shared, idempotent seed data
+    # other parallel tests may depend on -- do not delete those.
+    async with session_factory() as session:
+        _ = await session.execute(text("DELETE FROM users WHERE id = :id"), {"id": str(user_id)})
+        await session.commit()
 
 
 @pytest.mark.asyncio
