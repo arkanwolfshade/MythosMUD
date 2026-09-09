@@ -1,7 +1,7 @@
 """Unit tests for whisper and reply communication command handlers."""
 
 import uuid
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -184,6 +184,37 @@ async def test_handle_reply_command_no_last_whisper_sender():
     )
 
     assert "No one has whispered to you recently" in result["result"]
+
+
+@pytest.mark.asyncio
+async def test_handle_reply_command_to_fake_whisper_sender_is_in_fiction():
+    """#625/#714: replying to a fake NPC's whisper answers in-fiction, never 'player not found'."""
+    mock_request, container = request_with_app_container()
+    mock_chat_service = MagicMock()
+    mock_chat_service.get_last_whisper_sender = MagicMock(return_value=None)
+    mock_player_service = AsyncMock()
+    mock_player = MagicMock()
+    mock_player.id = uuid.uuid4()
+    mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
+    container.chat_service = mock_chat_service
+    container.player_service = mock_player_service
+
+    with patch(
+        "server.commands.communication_commands_flows.fake_sender_registry.get_last_fake_sender",
+        return_value="The Whisperer",
+    ):
+        result = await handle_reply_command(
+            command_data={"message": "who are you?"},
+            _current_user={},
+            request=mock_request,
+            _alias_storage=None,
+            player_name="TestPlayer",
+        )
+
+    assert "player" not in result["result"].lower()
+    assert "no answer" in result["result"].lower()
+    # The fake-sender check short-circuits before the real whisper tracker is ever consulted.
+    mock_chat_service.get_last_whisper_sender.assert_not_called()
 
 
 @pytest.mark.asyncio
