@@ -7,6 +7,8 @@ with proper categorization, rotation, and Windows safety.
 
 # pylint: disable=too-few-public-methods,too-many-locals,too-many-statements  # Reason: File setup helpers have focused responsibility; setup uses many locals/statements for category, aggregator, console, and async wiring
 
+from __future__ import annotations
+
 import logging
 import queue
 import sys
@@ -14,7 +16,7 @@ import threading
 from dataclasses import dataclass
 from logging.handlers import QueueHandler, QueueListener, RotatingFileHandler
 from pathlib import Path
-from typing import cast, override
+from typing import TYPE_CHECKING, override
 
 from server.structured_logging.logging_file_categories import (
     DEFAULT_LOG_CATEGORIES,
@@ -29,6 +31,9 @@ from server.structured_logging.logging_utilities import (
     resolve_log_base,
     rotate_log_files,
 )
+
+if TYPE_CHECKING:
+    from server.config.models.security_logging import LoggingConfig
 
 # Global queue and listener for async logging (initialized once)
 # ponytail: 10k cap; Queue(-1) retained copied LogRecords through Windows rotation stalls (13GB soak).
@@ -389,45 +394,28 @@ def _get_handler_classes() -> tuple[type[RotatingFileHandler], type[RotatingFile
     return (win_safe, SafeRotatingFileHandler)
 
 
-def _rotation_subconfig(log_config: dict[str, object]) -> dict[str, object]:
-    """Return rotation settings as dict[str, object] for typed .get() without Any."""
-    raw = log_config.get("rotation", {})
-    if not isinstance(raw, dict):
-        return {}
-    # Rotation blocks in config use string keys; cast narrows dict[Unknown, Unknown] for type checkers.
-    return dict(cast(dict[str, object], raw).items())
-
-
-def _prepare_log_environment(log_config: dict[str, object], environment: str, log_level: str) -> tuple[Path, int, int]:
+def _prepare_log_environment(config: LoggingConfig, log_level: str) -> tuple[Path, int, int]:
     """Ensure log dirs exist, rotate logs, set root level; return env_log_dir, max_bytes, backup_count."""
-    log_base_raw = log_config.get("log_base", "logs")
-    log_base = resolve_log_base(str(log_base_raw) if log_base_raw is not None else "logs")
-    env_log_dir = log_base / environment
+    log_base = resolve_log_base(config.log_base)
+    env_log_dir = log_base / config.environment
     ensure_log_directory(env_log_dir / ".dummy")
     rotate_log_files(env_log_dir)
     root_logger = logging.getLogger()
     root_logger.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
-    rotation_config = _rotation_subconfig(log_config)
-    max_size_raw = rotation_config.get("max_size", "10MB")
-    if isinstance(max_size_raw, (str, int)):
-        max_bytes = _convert_max_size_to_bytes(max_size_raw)
-    else:
-        max_bytes = _convert_max_size_to_bytes("10MB")
-    backup_count_raw = rotation_config.get("backup_count", 5)
-    backup_count = backup_count_raw if isinstance(backup_count_raw, int) else 5
+    max_bytes = _convert_max_size_to_bytes(config.rotation_max_size)
+    backup_count = config.rotation_backup_count
     return (env_log_dir, max_bytes, backup_count)
 
 
 def setup_enhanced_file_logging(
-    environment: str,
-    log_config: dict[str, object],
+    config: LoggingConfig,
     log_level: str,
     player_service: object | None = None,
     enable_async: bool = True,
 ) -> None:
     """Set up enhanced file logging with async QueueHandler/QueueListener when enable_async is True."""
     win_safe_handler, base_handler = _get_handler_classes()
-    env_log_dir, max_bytes, backup_count = _prepare_log_environment(log_config, environment, log_level)
+    env_log_dir, max_bytes, backup_count = _prepare_log_environment(config, log_level)
     root_logger = logging.getLogger()
     log_queue = _get_or_create_log_queue() if enable_async else None
     handler_class = _get_handler_class(win_safe_handler, base_handler)
@@ -441,7 +429,7 @@ def setup_enhanced_file_logging(
             player_service=player_service,
             enable_async=enable_async,
             log_queue=log_queue,
-            environment=environment,
+            environment=config.environment,
             log_level=log_level,
         ),
     )

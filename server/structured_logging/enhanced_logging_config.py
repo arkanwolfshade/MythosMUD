@@ -52,7 +52,6 @@ from server.structured_logging.logging_processors import (
     set_global_player_service,
 )
 from server.structured_logging.logging_utilities import (
-    detect_environment,
     ensure_log_directory,
     load_player_guid_formatter_class,
     resolve_log_base,
@@ -93,9 +92,7 @@ _logging_state = _LoggingState()
 
 
 def configure_enhanced_structlog(
-    environment: str | None = None,
-    log_level: str = "INFO",
-    log_config: dict[str, object] | None = None,
+    config: LoggingConfig,
     player_service: object | None = None,
     enable_async: bool = True,
 ) -> None:
@@ -103,14 +100,11 @@ def configure_enhanced_structlog(
     Configure enhanced Structlog with MDC, security, and performance features.
 
     Args:
-        environment: Environment name (auto-detected if None)
-        log_level: Logging level (DEBUG, INFO, WARNING, ERROR)
-        log_config: Logging configuration dictionary
+        config: Logging configuration
         player_service: Optional player service for GUID-to-name conversion
         enable_async: Enable async logging for better performance
     """
-    if environment is None:
-        environment = detect_environment()
+    environment = config.environment
 
     # Base processors with MDC support (no renderer)
     base_processors = [
@@ -136,8 +130,8 @@ def configure_enhanced_structlog(
 
     # Configure standard library logging for file output FIRST
     # This ensures file handlers are set up before structlog configuration
-    if log_config and not bool(log_config.get("disable_logging", False)):
-        setup_enhanced_file_logging(environment, log_config, log_level, player_service, enable_async)
+    if not config.disable_logging:
+        setup_enhanced_file_logging(config, config.level, player_service, enable_async)
 
     # Configure structlog with a custom renderer that strips ANSI codes
     def strip_ansi_renderer(_logger: object, name: str, event_dict: EventDict) -> str | bytes:
@@ -186,9 +180,8 @@ def configure_enhanced_structlog(
 
     # AI Agent: Now that structlog is configured, log the enhanced error handling setup
     # This confirms that the global error handler is capturing all errors from all modules
-    if log_config and not bool(log_config.get("disable_logging", False)):
-        log_base_raw = log_config.get("log_base", "logs")
-        env_log_dir = resolve_log_base(str(log_base_raw) if log_base_raw is not None else "logs") / environment
+    if not config.disable_logging:
+        env_log_dir = resolve_log_base(config.log_base) / environment
         errors_log_path = env_log_dir / "errors.log"
         # NOTE: upstream structlog types get_logger() as Any; cast narrows to BoundLogger.
         configured_logger = cast(BoundLogger, structlog.get_logger(__name__))
@@ -224,32 +217,13 @@ def setup_enhanced_logging(
         )
         return
 
-    logging_config: dict[str, object] = {
-        "environment": config.environment,
-        "level": config.level,
-        "format": config.format,
-        "log_base": config.log_base,
-        "rotation": {
-            "max_size": config.rotation_max_size,
-            "backup_count": config.rotation_backup_count,
-        },
-        "compression": config.compression,
-        "disable_logging": config.disable_logging,
-    }
-    environment = config.environment
-    log_level = config.level
     enable_async = True  # no LoggingConfig field yet; preserves the historical flat-dict default
 
-    # Check if logging should be disabled
-    disable_logging = config.disable_logging
+    # Configure enhanced Structlog (file handlers are skipped internally when config.disable_logging)
+    configure_enhanced_structlog(config, player_service, enable_async)
 
-    if disable_logging:
-        # Configure minimal logging without file handlers
-        configure_enhanced_structlog(environment, log_level, {"disable_logging": True}, player_service)
+    if config.disable_logging:
         return
-
-    # Configure enhanced Structlog
-    configure_enhanced_structlog(environment, log_level, logging_config, player_service, enable_async)
 
     # Configure uvicorn to use our enhanced StructLog system
     _configure_enhanced_uvicorn_logging()
@@ -261,9 +235,9 @@ def setup_enhanced_logging(
     setup_logger = get_logger("server.structured_logging.enhanced")
     setup_logger.info(
         "Enhanced logging system initialized",
-        environment=environment,
-        log_level=log_level,
-        log_base=logging_config.get("log_base", "logs"),
+        environment=config.environment,
+        log_level=config.level,
+        log_base=config.log_base,
         mdc_enabled=True,
         security_sanitization=True,
         correlation_ids=True,

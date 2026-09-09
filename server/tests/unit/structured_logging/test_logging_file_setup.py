@@ -15,6 +15,7 @@ from pathlib import Path
 
 import pytest
 
+from server.config.models.security_logging import LoggingConfig
 from server.structured_logging.logging_file_setup import (
     LOG_QUEUE_MAXSIZE,
     DropOldestQueueHandler,
@@ -33,13 +34,14 @@ def temp_log_base(tmp_path: Path) -> Path:
 
 
 @pytest.fixture
-def default_log_config(temp_log_base: Path) -> dict[str, object]:
-    """Default log config with rotation."""
-    rotation: dict[str, object] = {"max_size": "1MB", "backup_count": 2}
-    return {
-        "log_base": str(temp_log_base),
-        "rotation": rotation,
-    }
+def default_logging_config(temp_log_base: Path) -> LoggingConfig:
+    """Default logging config with rotation."""
+    return LoggingConfig(
+        environment="unit_test",
+        log_base=str(temp_log_base),
+        rotation_max_size="1MB",
+        rotation_backup_count=2,
+    )
 
 
 def _root_handlers_snapshot() -> list[logging.Handler]:
@@ -52,14 +54,13 @@ def _restore_root_handlers(handlers: list[logging.Handler]) -> None:
     logging.getLogger().handlers = handlers
 
 
-def test_aggregator_handlers_on_root_when_async(default_log_config: dict[str, object]) -> None:
+def test_aggregator_handlers_on_root_when_async(default_logging_config: LoggingConfig) -> None:
     """H1: With async enabled, root logger has a QueueHandler for the aggregator path."""
     root = logging.getLogger()
     before = _root_handlers_snapshot()
     try:
         setup_enhanced_file_logging(
-            environment="test",
-            log_config=default_log_config,
+            config=default_logging_config,
             log_level="INFO",
             player_service=None,
             enable_async=True,
@@ -73,13 +74,12 @@ def test_aggregator_handlers_on_root_when_async(default_log_config: dict[str, ob
         _restore_root_handlers(before)
 
 
-def test_queue_listener_has_aggregator_handlers(default_log_config: dict[str, object]) -> None:
+def test_queue_listener_has_aggregator_handlers(default_logging_config: LoggingConfig) -> None:
     """H3: QueueListener is started and includes aggregator handlers."""
     before = _root_handlers_snapshot()
     try:
         setup_enhanced_file_logging(
-            environment="test",
-            log_config=default_log_config,
+            config=default_logging_config,
             log_level="INFO",
             player_service=None,
             enable_async=True,
@@ -97,15 +97,14 @@ def test_queue_listener_has_aggregator_handlers(default_log_config: dict[str, ob
         _restore_root_handlers(before)
 
 
-def test_warning_and_error_reach_aggregator_files(temp_log_base: Path, default_log_config: dict[str, object]) -> None:
+def test_warning_and_error_reach_aggregator_files(temp_log_base: Path, default_logging_config: LoggingConfig) -> None:
     """H2/H5: WARNING and ERROR logged from root appear in warnings.log and errors.log."""
     root = logging.getLogger()
     before = _root_handlers_snapshot()
     try:
         stop_queue_listener()
         setup_enhanced_file_logging(
-            environment="test",
-            log_config=default_log_config,
+            config=default_logging_config,
             log_level="DEBUG",
             player_service=None,
             enable_async=True,
@@ -119,8 +118,8 @@ def test_warning_and_error_reach_aggregator_files(temp_log_base: Path, default_l
         stop_queue_listener()
         time.sleep(0.15)
 
-        warnings_log = temp_log_base / "test" / "warnings.log"
-        errors_log = temp_log_base / "test" / "errors.log"
+        warnings_log = temp_log_base / "unit_test" / "warnings.log"
+        errors_log = temp_log_base / "unit_test" / "errors.log"
         assert warnings_log.exists(), "warnings.log should exist"
         assert errors_log.exists(), "errors.log should exist"
 
@@ -133,31 +132,29 @@ def test_warning_and_error_reach_aggregator_files(temp_log_base: Path, default_l
         _restore_root_handlers(before)
 
 
-def test_log_directory_under_env(temp_log_base: Path, default_log_config: dict[str, object]) -> None:
-    """H4 (setup): Log files are created under env_log_dir (e.g. .../test/)."""
+def test_log_directory_under_env(temp_log_base: Path, default_logging_config: LoggingConfig) -> None:
+    """H4 (setup): Log files are created under env_log_dir (e.g. .../unit_test/)."""
     before = _root_handlers_snapshot()
     try:
         setup_enhanced_file_logging(
-            environment="test",
-            log_config=default_log_config,
+            config=default_logging_config,
             log_level="INFO",
             player_service=None,
             enable_async=False,
         )
-        env_dir = temp_log_base / "test"
+        env_dir = temp_log_base / "unit_test"
         assert env_dir.is_dir()
         assert env_dir.exists()
     finally:
         _restore_root_handlers(before)
 
 
-def test_async_log_queue_is_bounded(default_log_config: dict[str, object]) -> None:
+def test_async_log_queue_is_bounded(default_logging_config: LoggingConfig) -> None:
     """Idle soak: Queue(-1) retained LogRecords until RSS hit 13GB; queue must be finite."""
     before = _root_handlers_snapshot()
     try:
         setup_enhanced_file_logging(
-            environment="test",
-            log_config=default_log_config,
+            config=default_logging_config,
             log_level="INFO",
             player_service=None,
             enable_async=True,
