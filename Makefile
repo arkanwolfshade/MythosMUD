@@ -38,7 +38,7 @@ PYTEST_COV_OPTS := --cov=server --cov-report=html --cov-report=term-missing --co
 
 # PHONY targets
 .PHONY: help clean install build run run-production apply-procedures
-.PHONY: lint lint-sqlalchemy lint-imports format mypy
+.PHONY: lint lint-sqlalchemy lint-imports format mypy basedpyright typecheck any-report
 .PHONY: bandit pylint ruff sqlfluff sqlint vulture
 .PHONY: hadolint shellcheck psscriptanalyzer
 .PHONY: stylelint markdownlint jackson-linter
@@ -61,6 +61,9 @@ help:
 	@echo "  lint-sqlalchemy - Run SQLAlchemy async pattern linter"
 	@echo "  format          - Run ruff format (Python) and Prettier (Node)"
 	@echo "  mypy            - Run mypy static type checking"
+	@echo "  basedpyright    - Run the no-Any gate against .basedpyright/baseline.json (#784)"
+	@echo "  typecheck       - Run both type checkers (mypy + basedpyright)"
+	@echo "  any-report      - Show remaining Any debt by directory and suppressions by category"
 	@echo "  vulture         - Dead code check (server + vulture_allowlist; same as CI)"
 	@echo ""
 	@echo "Codacy Tools (Python):"
@@ -147,6 +150,24 @@ lint-imports:
 # If you change this, update .github/workflows/ci.yml to match
 mypy:
 	$(UV) pre-commit run mypy --all-files
+
+# basedpyright gate (#784): fails on any diagnostic not already in .basedpyright/baseline.json.
+# Scope and severities live in [tool.basedpyright]; CI runs the same check in ci.yml.
+basedpyright:
+	$(UV) basedpyright
+
+# Both type checkers. basedpyright is authoritative wherever the two disagree.
+typecheck: mypy basedpyright
+
+# Where the remaining Any lives, and what is currently suppressed. Use this to pick the next
+# burn-down target: a category repeated across many files usually means one Protocol or
+# TypedDict retires all of them at once.
+any-report:
+	@echo "=== baseline: reportAny / reportExplicitAny by directory ==="
+	$(PYTHON) scripts/report_any_baseline.py
+	@echo ""
+	@echo "=== pyright suppressions by rule and category ==="
+	$(PYTHON) scripts/lint_pyright_suppressions.py --report
 
 format:
 	$(PYTHON) scripts/format.py
@@ -372,7 +393,7 @@ run-production:
 # Flattened stages so FAIL-FAST names the exact leaf target (not a nested composite).
 # Tools must exit non-zero on real failures (pylint: any E/W/F/C/R finding). Tracebacks
 # still fail even on exit 0. Grepping tool "WARNING" strings is not a fail condition here.
-ALL_STAGES := format lint-imports mypy lint lint-sqlalchemy \
+ALL_STAGES := format lint-imports mypy basedpyright lint lint-sqlalchemy \
 	$(CODACY_TOOL_STAGES) \
 	quality-fragmentation-guard check-postgresql build openapi-spec openapi-check \
 	test-client-coverage test-server-coverage \

@@ -351,6 +351,12 @@ async def test_handle_npc_death_broadcasts_room_update(integration_service: NPCC
     mock_player = MagicMock()
     mock_player.current_room_id = "room_002"
     integration_service._messaging_integration.connection_manager = MagicMock()
+    # Reason: TEST_MOCK - connection_manager was just replaced with a bare MagicMock on the
+    # line above, so every attribute read off it is typed Any by typeshed regardless of spec=.
+    # Appropriate because: this test asserts handle_npc_death's control flow, not the
+    # connection-manager contract; mock_of(ConnectionManager) would statically type the
+    # attribute but MagicMock.__getattr__ still yields Any at the assignment target, so the
+    # helper buys nothing here and a one-off Protocol would be type-safety theatre.
     integration_service._messaging_integration.connection_manager.get_player = AsyncMock(  # pyright: ignore[reportAny]
         return_value=mock_player
     )
@@ -383,6 +389,11 @@ def test_get_npc_combat_memory(integration_service: NPCCombatIntegrationService)
     integration_service._combat_memory.get_attacker = MagicMock(return_value="player_001")
     result = integration_service.get_npc_combat_memory(npc_id)
     assert result == "player_001"
+    # Reason: TEST_MOCK - _combat_memory is a bare MagicMock (assigned above), so the chained
+    # .get_attacker.assert_called_once_with read is Any at every step of the chain.
+    # Appropriate because: asserting on the mock's call record is the point of this test, and
+    # Python has no intersection type for "the real NPCCombatMemory AND a MagicMock", so any
+    # annotation here would have to lie about one half of what the object actually is.
     integration_service._combat_memory.get_attacker.assert_called_once_with(npc_id)  # pyright: ignore[reportAny]
 
 

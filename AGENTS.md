@@ -38,7 +38,9 @@ bodies).
 - **basedpyright `Any`:** Do not introduce `typing.Any` or suppress `reportAny` / `reportExplicitAny`.
   Rule: `.cursor/rules/basedpyright-no-any.mdc` (Claude: `.claude/rules/basedpyright.md`). After
   Python edits, run `uv run basedpyright <edited files>`. Ponytail must not treat `Any` as a
-  shortcut; Protocol + TypedDict is the shortest correct diff.
+  shortcut; Protocol + TypedDict is the shortest correct diff. **This is now enforced** by a
+  pre-commit hook and a CI step against `.basedpyright/baseline.json` — see
+  [No `Any` in `server/`](#no-any-in-server-enforced) below (#784).
 - **Obsidian LLM wiki (permanent memory):** Karpathy-pattern vault at
   `data/MythosMUD-Obsidian/` (`raw/` immutable, `wiki/` agent-owned, schema in vault
   `AGENTS.md`). File durable lore, design, and answers there; sync code-graph community
@@ -323,12 +325,83 @@ The definition of done for any work must include:
 - Passing linting checks
 - Passing testing (with appropriate coverage)
 - All code quality standards met
-- After Python edits: `uv run basedpyright <edited files>` with no `reportAny` /
-  `reportExplicitAny` (no `typing.Any`, no ignore comments for those rules)
+- After Python edits: `uv run basedpyright` (full run — the baseline is only bookkept
+  correctly whole) exits 0, with no `reportAny` / `reportExplicitAny` (no `typing.Any`, no
+  ignore comments for those rules). See [No `Any` in `server/`](#no-any-in-server-enforced)
 - **In-game help** for player-facing commands and features (`help <command>` /
   `server/help/help_content.py`, plus short entries in command help lists when applicable)
 - Content-creator documentation when the feature adds authoring tools (runbooks under
   `docs/runbooks/` or subsystem docs)
+
+### No `Any` in `server/` (enforced)
+
+Scope is `server/**` (prod **and** tests), set by `include` in `[tool.basedpyright]`. The gate is
+`uv run basedpyright` — a full run, wired as a `pre-commit` hook, a CI step, and `make typecheck`.
+It fails on **any** diagnostic not already recorded in `.basedpyright/baseline.json`, whatever its
+severity. No rule severity overrides exist: every rule keeps its `recommended` level.
+
+`.basedpyright/baseline.json` is the honest debt ledger. It must only ever shrink —
+`git log .basedpyright/baseline.json` is the burn-down chart, and `make any-report` shows where the
+remaining work is. Never run `--writebaseline` to make a new finding go away; that is the one move
+this whole gate exists to prevent. Regenerate it only when you have *removed* findings.
+
+**Four rules are the burn-down commitment:** `reportAny`, `reportExplicitAny`,
+`reportMissingParameterType`, `reportUnknownParameterType`. The last two are not optional extras —
+in basedpyright, `Unknown` is the *implicit* form of `Any`, so deleting an annotation converts an
+explicit `Any` into an implicit one and makes the type strictly worse. Without those two rules the
+gate would wave that through.
+
+`# type: ignore` does nothing for basedpyright here (`enableTypeIgnoreComments = false`). It remains
+a mypy comment only.
+
+#### Replacing an `Any`
+
+| Where | Use | Precedent |
+| --- | --- | --- |
+| Trust boundary (HTTP, NATS, JSON on disk) | Pydantic model inheriting `SecureBaseModel` | `server/schemas/shared/base.py` |
+| Internal payloads (cache entries, `to_dict()`, event dicts) | `TypedDict` in a sibling `*_types.py` | `server/alias_storage.py` |
+| DI parameter (`service: Any`, `repo: Any`) | `Protocol` in `*_protocols.py`, imported under `TYPE_CHECKING` | `server/game/magic/spell_effect_types.py` |
+| `*args`/`**kwargs: Any` | `ParamSpec`, or concrete parameters | — |
+| Tests | real objects > typed fakes > `Protocol` > `TypedDict` > `mock_of()` | `server/tests/support.py` |
+
+Never invent a one-off `Protocol` or stack `cast()` calls to quiet a report — that is type-safety
+theatre. In genuinely mock-heavy tests a scoped, justified suppression is the better answer.
+
+**Any Pydantic conversion must ship three tests**: a valid payload passes; a malformed payload
+produces the *intended* behaviour (reject / log / fall back — an explicit decision, not a default);
+and unknown fields behave as intended. `SecureBaseModel` sets `extra="forbid"`; deviating from that
+at a boundary requires saying why. This is not ceremony — #765/#754 record Pydantic models deleted
+as dead code because their field lists were never run against real traffic, and a wrong guess at a
+gameplay boundary kills a live message mid-session rather than returning a 422.
+
+#### Suppressing a finding
+
+Every `# pyright: ignore` must name its rules. Suppressions naming `reportAny` or
+`reportExplicitAny` must additionally carry a justification block, enforced by
+`scripts/lint_pyright_suppressions.py`:
+
+```python
+# Reason: THIRD_PARTY_UNTYPED:nats - Msg.data is annotated bytes | Any upstream.
+# Appropriate because: the payload is validated by _decode_envelope() on the next line,
+# which returns a typed Envelope; annotating a shape here would assert a structure we
+# have not yet checked.
+msg = await sub.next_msg()  # pyright: ignore[reportAny]
+```
+
+The block may sit immediately above or below the suppression. Categories:
+`THIRD_PARTY_UNTYPED:<lib>`, `TEST_MOCK`, `CHECKER_CONFLICT:<mypy code>`,
+`SERIALIZATION_BOUNDARY`, `DYNAMIC_DISPATCH`.
+
+The two fields are separate on purpose. `Reason:` states the **cause**; `Appropriate because:`
+(≥40 chars) must argue `Any` is the **correct engineering decision** rather than unfinished work.
+If the honest answer is "we haven't gotten to it yet", no sentence fits — delete the suppression and
+let the finding land in the baseline as honest debt instead of a false claim of permanence.
+
+Both checkers stay. mypy is narrower (it skips `server/tests/` and carries 40+ leniency overrides)
+and is kept for its SQLAlchemy and Pydantic plugins; **basedpyright is authoritative wherever the
+two disagree.** Do not add hand-written stubs to paper over a disagreement — `server/stubs/` was
+deleted in #784 precisely because mypy read it and basedpyright did not, so the two checkers saw
+different definitions of the same library.
 
 ### Verification and audit sweeps
 
@@ -349,7 +422,7 @@ register**, never as a count:
 
 **Why:** `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md` §4.7 records a sweep that did
 exactly the failure mode above — ~15 findings written as `unverifiable: 15` in a frontmatter field,
-with no claim IDs — and its own `[BUG]` block calls the resulting debt _irrecoverable_: the sweep
+with no claim IDs — and its own `[BUG]` block calls the resulting debt *irrecoverable*: the sweep
 had to be re-run wholesale to produce what a citable register would have preserved the first time.
 The same document's plan-document sweep, on the same day, recorded its unresolved items as a named
 prose list instead — and those survived and were resolved directly, no re-run needed. One habit
@@ -707,7 +780,7 @@ jobs:
   90% to 88%) is acceptable if justified
 - Put Cursor implementation-plan markdown under `C:\Users\arkan\.cursor\plans` when the user asks for that location
 - Never create, remove, or switch Git worktrees without explicit user permission (same bar as branch switches); plans may
-  _propose_ a worktree step, but do not execute it unless the user approves; default is stay on the current working tree
+  *propose* a worktree step, but do not execute it unless the user approves; default is stay on the current working tree
 - Never `git push` (or equivalent remote upload) unless the user explicitly says to push in this conversation. Do not
   infer permission from fix CI, open PR, ship, merge, review-and-ship, or skills that include a push step; skip push
   and say the commits are local until they say **push**
@@ -803,7 +876,7 @@ jobs:
 ## Code Exploration Policy
 
 Always use jCodemunch-MCP tools for code navigation. Never fall back to Read, Grep, Glob, or Bash for code exploration.
-**Exception:** Use `Read` when you need to edit a file — the agent harness requires a `Read` before `Edit`/`Write` will succeed. Use jCodemunch tools to _find and understand_ code, then `Read` only the specific file you're about to modify.
+**Exception:** Use `Read` when you need to edit a file — the agent harness requires a `Read` before `Edit`/`Write` will succeed. Use jCodemunch tools to *find and understand* code, then `Read` only the specific file you're about to modify.
 
 **Start any session:**
 
@@ -813,7 +886,7 @@ Always use jCodemunch-MCP tools for code navigation. Never fall back to Read, Gr
 **Finding code:**
 
 - symbol by name → `search_symbols` (add `kind=`, `language=`, `file_pattern=`, `decorator=` to narrow)
-- decorator-aware queries → `search_symbols(decorator="X")` to find symbols with a specific decorator (e.g. `@property`, `@route`); combine with set-difference to find symbols _lacking_ a decorator (e.g. "which endpoints lack CSRF protection?")
+- decorator-aware queries → `search_symbols(decorator="X")` to find symbols with a specific decorator (e.g. `@property`, `@route`); combine with set-difference to find symbols *lacking* a decorator (e.g. "which endpoints lack CSRF protection?")
 - string, comment, config value → `search_text` (supports regex, `context_lines`)
 - database columns (dbt/SQLMesh) → `search_columns`
 

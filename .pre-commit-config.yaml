@@ -58,6 +58,11 @@ repos:
         exclude: ^\.vscode/settings\.json$
       - id: check-yaml
       - id: check-added-large-files
+        # basedpyright writes .basedpyright/baseline.json pretty-printed (~9 MB across
+        # 39,649 recorded diagnostics) and rewrites it in that format on every update, so
+        # minifying would not survive. It is a required, generated artifact -- the gate has
+        # nothing to compare against without it -- and it only ever shrinks. See #784.
+        exclude: ^\.basedpyright/baseline\.json$
       - id: check-merge-conflict
       - id: check-executables-have-shebangs
       - id: check-case-conflict
@@ -138,6 +143,27 @@ repos:
         stages: [pre-commit]
         files: ^server/
         exclude: ^server/tests/
+      - id: pyright-suppressions
+        name: Pyright Suppression Standard (#784)
+        # Bare `# pyright: ignore` is banned everywhere; reportAny/reportExplicitAny
+        # suppressions must additionally carry `# Reason:` + `# Appropriate because:`.
+        entry: python scripts/lint_pyright_suppressions.py
+        language: python
+        types: [python]
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
+      - id: basedpyright
+        name: basedpyright (no new Any -- #784)
+        # Full run, never per-file: the baseline in .basedpyright/baseline.json is only
+        # bookkept correctly when basedpyright sees the whole `include` set at once.
+        # Scope and severities come from [tool.basedpyright] in pyproject.toml.
+        entry: uv run basedpyright
+        language: system
+        types: [python]
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
       - id: npm-lint
         name: npm lint (client)
         entry: python scripts/precommit_run_npm.py lint

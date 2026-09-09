@@ -31,7 +31,14 @@ class SafeRotatingFileHandler(RotatingFileHandler):
     """
 
     @override
-    def _open(self) -> Any:  # noqa: N802  # Reason: Method name required by parent class logging.handlers.RotatingFileHandler, cannot change to follow PEP8 naming  # pyright: ignore[reportExplicitAny, reportAny]  # Reason: Return is TextIOWrapper from super or StringIO fallback; precise union is Liskov-incompatible with FileHandler stubs
+    # Reason: THIRD_PARTY_UNTYPED:logging - typeshed declares FileHandler._open() as returning
+    # TextIOWrapper, but this override also returns io.StringIO() as a last-resort fallback
+    # (see the final except branch below) so a failed log open cannot recurse into the logger.
+    # Appropriate because: the precise return type is `TextIOWrapper | StringIO`, which is a
+    # supertype of the parent's declared TextIOWrapper and therefore violates Liskov - writing it
+    # trades reportAny for reportIncompatibleMethodOverride without making any caller safer.
+    # No annotation both honours the parent contract and describes what this method returns.
+    def _open(self) -> Any:  # noqa: N802  # pyright: ignore[reportExplicitAny, reportAny]
         """
         Open the log file, ensuring directory exists first.
 

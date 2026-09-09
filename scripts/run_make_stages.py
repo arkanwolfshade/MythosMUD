@@ -67,6 +67,11 @@ def run_stage(make_cmd: str, stage: str) -> tuple[int, str]:
     )
     chunks: list[str] = []
     assert proc.stdout is not None
+    # Stage output is decoded with errors="replace", which can yield U+FFFD. On Windows the
+    # default stdout encoding is cp1252 and cannot encode it, so relaying a stage's own output
+    # would crash the runner with UnicodeEncodeError and mask the real stage result.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     for line in proc.stdout:
         sys.stdout.write(line)
         sys.stdout.flush()
