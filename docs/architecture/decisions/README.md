@@ -1,6 +1,6 @@
 # Architecture Decision Records (ADRs)
 
-**Version 1.2.0** · MythosMUD · 2026-08-28
+**Version 1.3.0** · MythosMUD · 2026-09-08
 
 ---
 
@@ -65,6 +65,8 @@ Each ADR follows this structure:
 | [ADR-020](ADR-020-websocket-authentication-and-csrf.md)          | WebSocket Authentication and CSRF                    | Accepted | 2026-08-19 |
 | [ADR-021](ADR-021-character-display-name-validation.md)          | Character Display Name Validation                    | Accepted | 2026-08-23 |
 | [ADR-022](ADR-022-ui-v2-client-transition.md)                    | ui-v2 Client Transition and Legacy Retirement         | Accepted | 2026-08-26 |
+| [ADR-023](ADR-023-package-ownership-and-fan-out.md)               | Package Ownership (`game/` vs `services/` vs `npc/`) and Fan-Out Watch List | Accepted | 2026-08-30 |
+| [ADR-024](ADR-024-server-authoritative-perceived-reality.md)     | Server-Authoritative Perceived Reality for Hallucinations | Accepted | 2026-09-08 |
 
 ## 4. Related Documentation
 
@@ -86,3 +88,4 @@ Each ADR follows this structure:
 | 1.0.0   | 2026-07-30 | Initial HADS structural conversion                                            |
 | 1.1.0   | 2026-08-28 | Document the Provenance field; fix broken `APPLICATION_CONTAINER_ANALYSIS.md` link (ADR-001–017 backfill, #721) |
 | 1.2.0   | 2026-08-28 | Repoint the `APPLICATION_CONTAINER_ANALYSIS.md` link at `docs/`: the file was restored there per audit ruling C4 — four live documents cite it as authoritative, so it is not archival; fix broken Architecture Review Plan link (wrong depth) (#722) |
+| 1.3.0   | 2026-09-08 | Add ADR-024 (server-authoritative hallucination delivery, #714); backfill the missing ADR-023 index row |

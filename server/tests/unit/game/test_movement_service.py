@@ -308,6 +308,7 @@ async def test_move_player_triggers_uneasy_room_entry_hallucination(
     mock_from.has_player = MagicMock(return_value=True)
     mock_to = MagicMock()
     mock_to.id = "room_002"
+
     def _get_room_by_id(rid: str) -> MagicMock:
         return mock_from if rid == "room_001" else mock_to
 

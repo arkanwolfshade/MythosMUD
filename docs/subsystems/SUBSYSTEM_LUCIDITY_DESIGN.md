@@ -1,6 +1,6 @@
 # Lucidity Subsystem Design
 
-**Version 1.1.0** · MythosMUD · 2026-08-28
+**Version 1.2.0** · MythosMUD · 2026-09-08
 
 ---
 
@@ -111,7 +111,62 @@ flowchart LR
    `fractured`/`deranged` tiers in either direction – phantoms only make sense while the player
    remains hallucination-eligible.
 
-## 6. Developer guide
+## 6. Hallucinations (Uneasy/Fractured/Deranged, #714)
+
+**[SPEC]**
+
+Hallucinations are server-authoritative (see
+[ADR-024](../architecture/decisions/ADR-024-server-authoritative-perceived-reality.md)): the
+server decides per-viewer reality and delivers it through the same real chat/room-update/game-state
+channels every other player-visible fact uses. The client holds no hallucination logic and cannot
+distinguish a hallucinated fact from a real one.
+
+**Frequency and triggers** (`services/hallucination_frequency_service.py`,
+`HALLUCINATION_FREQUENCIES`):
+
+| Tier | Trigger | Chance | Cooldown |
+| --- | --- | --- | --- |
+| Uneasy | room entry | 10% | none |
+| Fractured | time-based | 25% | 30s |
+| Deranged | time-based | 45% | 20s |
+
+Uneasy's room-entry trigger fires from `MovementService._maybe_trigger_room_entry_hallucination`
+(a post-move-success hook), reading the cached tier from `services/lucidity_tier_cache.py` rather
+than resolving a fresh LCD — the `"room_entry"` trigger type never touches the database, so this
+path needs no DB session. Fractured/Deranged's time-based trigger fires from the passive lucidity
+flux tick loop (`services/passive_lucidity_flux/service.py`) and does use a session, for its
+cooldown lookup.
+
+**Delivery by type** (`services/passive_lucidity_flux/hallucinations.py`):
+
+- **Phantom hostile spawn** (Fractured 15% chance, Deranged always) — the phantom itself is made
+  visible via the per-viewer room payload (`services/phantom_visibility.py`'s
+  `get_viewer_phantom_names`, merged into `npcs`/`room_occupants`/`game_state`); the spawn moment
+  is narrated with an ordinary ambient system line (`deliver_personal_system`), not a labelled
+  event.
+- **Fake NPC tell** — delivered as a real whisper (`game/chat_npc_system.py`'s
+  `deliver_fake_npc_whisper`), byte-identical on the wire to a real NPC whisper. The sender name is
+  recorded in `services/fake_sender_registry.py` so `reply`/`whisper <name>` answer in-fiction
+  instead of leaking "player not found."
+- **Room text overlay** — a spontaneous ambient line (`deliver_personal_system`), not persisted
+  into the room description and not re-shown on a later `look` — the authored strings ("the
+  temperature suddenly drops") are events, not description text.
+- **Hallucinated exits** (Deranged only) — `services/exit_hallucination.py` (a deterministic
+  `seedFrom`/`mulberry32` port of the client's pre-#714 `directionHallucination.ts`) overrides the
+  exit list in the per-viewer `room_update`/`game_state` payload and in `/look`. `go <direction>`
+  always resolves against the real exits — only the display lies.
+
+`lucidity_event_dispatcher.send_hallucination_event` is retained **only** for structured
+server-side logging; it is never dispatched to a client. There is no player-facing `hallucination`
+event type.
+
+**Verification affordances**: `admin hallucinate <target> <fake_tell|overlay|phantom>`
+(`commands/admin_hallucinate_command.py`) forces a specific hallucination bypassing the chance
+roll and cooldown. `GameConfig.hallucination_rng_seed` (`GAME_HALLUCINATION_RNG_SEED`) seeds the
+shared `services/hallucination_rng.py` RNG for deterministic integration-test runs through the real
+trigger path.
+
+## 7. Developer guide
 
 **[SPEC]**
 
@@ -122,7 +177,7 @@ flowchart LR
   for commands with mocked service.
 - **Client**: Cooldown message format ("Return in N minutes") is in \_format_cooldown_message.
 
-## 7. Troubleshooting
+## 8. Troubleshooting
 
 **[NOTE]**
 
@@ -135,13 +190,15 @@ flowchart LR
 
 See also [SUBSYSTEM_RESCUE_DESIGN.md](SUBSYSTEM_RESCUE_DESIGN.md), [SUBSYSTEM_MAGIC_DESIGN.md](SUBSYSTEM_MAGIC_DESIGN.md). Archived: [docs/archive/lucidity-system.md](../archive/lucidity-system.md).
 
-## 8. Related docs
+## 9. Related docs
 
 **[SPEC]**
 
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md)
+- [ADR-024](../architecture/decisions/ADR-024-server-authoritative-perceived-reality.md) — the
+  server-authoritative hallucination delivery decision §6 documents.
 
-## 9. Changelog
+## 10. Changelog
 
 **[SPEC]**
 
@@ -149,3 +206,4 @@ See also [SUBSYSTEM_RESCUE_DESIGN.md](SUBSYSTEM_RESCUE_DESIGN.md), [SUBSYSTEM_MA
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
 | 1.1.0 | 2026-08-28 | Fix 3 broken component links (wrong depth, 2 also broken across a line wrap); fix `lucidity*recovery_commands.py` typo (asterisk for underscore); fix 1 link where the closing bracket and opening paren landed on separate lines (#695) |
+| 1.2.0 | 2026-09-08 | Add §6 Hallucinations: server-authoritative phenomenology and delivery per ADR-024 (#714); renumber subsequent sections |

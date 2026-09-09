@@ -80,7 +80,9 @@ async def test_build_room_update_event_no_viewer_id_leaves_exits_untouched(
 ):
     """The non-personalized fast path (no viewer_id) never triggers the exit override."""
     with patch("server.realtime.room_update_event_builder.get_hallucinated_exits") as mock_get_hallucinated:
-        result = await build_room_update_event(mock_room, "room_001", "player_001", ["Player1"], mock_connection_manager)
+        result = await build_room_update_event(
+            mock_room, "room_001", "player_001", ["Player1"], mock_connection_manager
+        )
 
     mock_get_hallucinated.assert_not_called()
     data = cast(dict[str, object], result["data"])

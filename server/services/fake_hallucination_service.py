@@ -35,6 +35,7 @@ class RoomTextOverlayData(TypedDict):
     room_id: str
     hallucination_id: str
 
+
 # Fake NPC names for hallucinatory tells
 FAKE_NPC_NAMES: list[str] = [
     "The Whisperer",
