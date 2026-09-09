@@ -84,6 +84,7 @@ dev = [
     # Use sqlfluff instead, which provides comprehensive SQL linting
     "asyncpg-stubs>=0.31.0",
     "import-linter>=2.5",  # Enforces ADR-001 layer direction as CI-checked contracts (#757)
+    "basedpyright>=1.38.2",  # #784 gate; CI installs .[dev], not [dependency-groups] dev
 ]
 
 [tool.setuptools.packages.find]

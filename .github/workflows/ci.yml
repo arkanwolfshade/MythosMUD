@@ -181,12 +181,13 @@ jobs:
       - name: Type check with basedpyright (no new Any -- #784)
         run: |
           source .venv-ci/bin/activate
-          # Run the binary directly rather than via pre-commit: [tool.basedpyright] pins
-          # venv = ".venv" for local/IDE import resolution, and CI builds .venv-ci instead.
-          # --pythonpath overrides only the interpreter; scope, severities and the baseline
-          # in .basedpyright/baseline.json still come from pyproject.toml, so this run and
-          # the local pre-commit hook check exactly the same thing.
-          basedpyright --pythonpath .venv-ci/bin/python
+          # Run via python -m (not pre-commit): [tool.basedpyright] pins venv = ".venv" for
+          # local/IDE import resolution, and CI builds .venv-ci instead. --pythonpath overrides
+          # only the interpreter; scope, severities and the baseline in
+          # .basedpyright/baseline.json still come from pyproject.toml, so this run and the
+          # local pre-commit hook check exactly the same thing. Package is in .[dev] so
+          # uv pip install -e ".[dev]" puts it on PATH for this venv.
+          python -m basedpyright --pythonpath .venv-ci/bin/python
       - name: Pyright suppression standard (#784)
         run: |
           source .venv-ci/bin/activate
