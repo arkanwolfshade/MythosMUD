@@ -10,6 +10,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, TypedDict, cast
 
+from ..services.exit_hallucination import get_hallucinated_exits
+from ..services.lucidity_tier_cache import lucidity_tier_cache
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.room_renderer import build_room_drop_summary, clone_room_drops
 from .envelope import build_event
@@ -39,8 +41,16 @@ async def build_room_update_event(
     connection_manager: ConnectionManager,
     players: list[str] | None = None,
     npcs: list[str] | None = None,
+    viewer_id: str | None = None,
 ) -> dict[str, object]:
-    """Build room update event with room data and occupants (players/npcs for structured client UI)."""
+    """
+    Build room update event with room data and occupants (players/npcs for structured client UI).
+
+    `viewer_id` is the actual recipient (distinct from `player_id`, the triggering mover) --
+    when given and cached as deranged (#626, #714), this viewer's exits are replaced with their
+    seeded hallucinated set. Omitted (None) on the non-personalized fast path, where by
+    construction nobody in the room is hallucination-eligible.
+    """
     # Room.to_dict() is pre-existing `dict[str, Any]` on the Room model itself; narrowing that
     # return type is outside this module's scope, so room_data is accepted as-is from here.
     room_data = room.to_dict()
@@ -48,6 +58,8 @@ async def build_room_update_event(
     # convert_uuids_to_strings is a generic object -> object recursive walk; it preserves the
     # dict shape at runtime but can't say so statically, so narrow it back explicitly.
     room_data = cast(dict[str, object], convert_uuids_to_strings(room_data))
+    if viewer_id is not None and lucidity_tier_cache.is_deranged(viewer_id):
+        room_data["exits"] = dict.fromkeys(get_hallucinated_exits(room_id, viewer_id), "?")
 
     room_drops: list[dict[str, object]] = []
     try:

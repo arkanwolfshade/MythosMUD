@@ -32,11 +32,17 @@ def test_get_viewer_phantom_names_matches_own_room():
         assert get_viewer_phantom_names("player-1", "room_1") == ["Shambling Horror"]
 
 
-def test_room_has_hallucinating_viewer_false_when_no_phantoms():
-    """#714: the fast-path gate is False when nobody in the room has an active phantom."""
-    with patch(
-        "server.services.phantom_hostile_service.phantom_hostile_service.get_active_phantoms",
-        return_value=[],
+def test_room_has_hallucinating_viewer_false_when_no_phantoms_or_deranged():
+    """#714: the fast-path gate is False when nobody has an active phantom or is deranged."""
+    with (
+        patch(
+            "server.services.phantom_hostile_service.phantom_hostile_service.get_active_phantoms",
+            return_value=[],
+        ),
+        patch(
+            "server.services.lucidity_tier_cache.lucidity_tier_cache.is_deranged",
+            return_value=False,
+        ),
     ):
         assert room_has_hallucinating_viewer(["player-1", "player-2"]) is False
 
@@ -47,8 +53,33 @@ def test_room_has_hallucinating_viewer_true_when_any_player_has_phantoms():
     def fake_active_phantoms(player_id: object) -> list[str]:
         return ["phantom_1"] if player_id == "player-2" else []
 
-    with patch(
-        "server.services.phantom_hostile_service.phantom_hostile_service.get_active_phantoms",
-        side_effect=fake_active_phantoms,
+    with (
+        patch(
+            "server.services.phantom_hostile_service.phantom_hostile_service.get_active_phantoms",
+            side_effect=fake_active_phantoms,
+        ),
+        patch(
+            "server.services.lucidity_tier_cache.lucidity_tier_cache.is_deranged",
+            return_value=False,
+        ),
+    ):
+        assert room_has_hallucinating_viewer(["player-1", "player-2"]) is True
+
+
+def test_room_has_hallucinating_viewer_true_when_any_player_is_deranged():
+    """#714/#626: True as soon as one player is cached as deranged, even with no phantom."""
+
+    def fake_is_deranged(player_id: object) -> bool:
+        return player_id == "player-2"
+
+    with (
+        patch(
+            "server.services.phantom_hostile_service.phantom_hostile_service.get_active_phantoms",
+            return_value=[],
+        ),
+        patch(
+            "server.services.lucidity_tier_cache.lucidity_tier_cache.is_deranged",
+            side_effect=fake_is_deranged,
+        ),
     ):
         assert room_has_hallucinating_viewer(["player-1", "player-2"]) is True

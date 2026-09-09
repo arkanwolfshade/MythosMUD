@@ -258,6 +258,28 @@ async def test_apply_lucidity_adjustment_keeps_phantoms_within_eligible_tiers() 
     clear_mock.assert_not_called()
 
 
+@pytest.mark.asyncio
+async def test_apply_lucidity_adjustment_writes_through_the_tier_cache() -> None:
+    """#714: every adjustment writes the player's freshly-computed tier into the shared cache."""
+    record = PlayerLucidity(player_id=uuid.uuid4(), current_lcd=20, current_tier="fractured")
+    session = MagicMock()
+    session.flush = AsyncMock()
+    mock_repo = MagicMock(
+        get_or_create_player_lucidity=AsyncMock(return_value=record),
+        add_adjustment_log=AsyncMock(),
+    )
+    with (
+        patch("server.services.lucidity_service.LucidityRepository", return_value=mock_repo),
+        patch("server.services.lucidity_service.send_lucidity_change_event", new=AsyncMock()),
+        patch("server.services.lucidity_tier_cache.lucidity_tier_cache.set_tier") as set_tier_mock,
+    ):
+        service = LucidityService(session)
+        result = await service.apply_lucidity_adjustment(
+            player_id=record.player_id, delta=-10, reason_code="test_worsen"
+        )
+    set_tier_mock.assert_called_once_with(record.player_id, result.new_tier)
+
+
 def test_max_lcd_from_stats():
     """Test max LCD calculation from stats dict."""
     assert LucidityService._max_lcd_from_stats({"education": 80}) == 80

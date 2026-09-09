@@ -224,7 +224,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
           />
         );
       case 'location':
-        return <LocationPanel room={room} tier={derivedLucidityStatus?.tier} playerId={player?.id ?? player?.name} />;
+        return <LocationPanel room={room} />;
       case 'roomDescription':
         return <RoomDescriptionPanel room={room} />;
       case 'occupants':

@@ -15,6 +15,8 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING, Any, cast
 
 from ...models import Player
+from ...services.exit_hallucination import get_hallucinated_exits
+from ...services.lucidity_tier_cache import lucidity_tier_cache
 from ...services.npc_instance_service import get_npc_instance_service
 from ...services.phantom_visibility import get_viewer_phantom_names
 from ...structured_logging.enhanced_logging_config import get_logger
@@ -517,6 +519,11 @@ class GameStateProvider:
             if viewer_phantom_names:
                 npc_names_list = [*npc_names_list, *viewer_phantom_names]
                 occupants = [*occupants, *viewer_phantom_names]
+
+            # This viewer's hallucinated exits (#626, #714) -- game_state is already a
+            # single-recipient payload, so no fan-out is needed, just a direct override.
+            if room_data is not None and lucidity_tier_cache.is_deranged(player_id):
+                room_data["exits"] = dict.fromkeys(get_hallucinated_exits(room_id, str(player_id)), "?")
 
             # Get complete player data using PlayerService or fallback
             player_data_for_client = await self._get_player_data_for_client(player, player_id, room_id)

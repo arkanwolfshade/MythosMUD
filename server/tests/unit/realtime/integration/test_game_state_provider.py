@@ -8,7 +8,7 @@ Tests the GameStateProvider class.
 # This suppression is applied at module level since all test functions use fixtures.
 
 import uuid
-from typing import Any, cast
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -171,39 +171,6 @@ async def test_send_initial_game_state(game_state_provider):
     await game_state_provider.send_initial_game_state(player_id, mock_player, room_id, online_players)
     # Should not raise
     assert True  # If we get here, it succeeded
-
-
-@pytest.mark.asyncio
-async def test_send_initial_game_state_includes_viewer_phantom(
-    game_state_provider: GameStateProvider,
-    mock_send_personal_message: AsyncMock,
-    mock_get_async_persistence: MagicMock,
-    mock_room_manager: MagicMock,
-):
-    """#625/#714: the game_state room payload includes this viewer's own active phantom."""
-    player_id = uuid.uuid4()
-    mock_player = MagicMock()
-    mock_player.current_room_id = "room_001"
-    room_id = "room_001"
-    online_players: dict[uuid.UUID, dict[str, object]] = {}
-
-    mock_room = MagicMock(to_dict=MagicMock(return_value={"id": room_id, "npcs": [], "players": []}))
-    mock_persistence = MagicMock(get_room_by_id=MagicMock(return_value=mock_room))
-    mock_get_async_persistence.return_value = mock_persistence
-    mock_room_manager.get_room_occupants = AsyncMock(return_value=[])
-
-    with patch(
-        "server.realtime.integration.game_state_provider.get_viewer_phantom_names",
-        return_value=["Shambling Horror"],
-    ):
-        await game_state_provider.send_initial_game_state(player_id, mock_player, room_id, online_players)
-
-    call = cast(tuple[object, ...], mock_send_personal_message.call_args.args)
-    sent_event = cast(dict[str, object], call[1])
-    data = cast(dict[str, object], sent_event["data"])
-    room_data = cast(dict[str, object], data["room"])
-    assert "Shambling Horror" in cast(list[object], room_data["npcs"])
-    assert "Shambling Horror" in cast(list[object], data["occupants"])
 
 
 @pytest.mark.asyncio

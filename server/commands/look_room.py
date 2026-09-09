@@ -8,6 +8,8 @@ listing items, NPCs, players, and exits in the room.
 from typing import Any, cast
 
 from ..realtime.occupant_display import format_occupant_display_name
+from ..services.exit_hallucination import get_hallucinated_exits
+from ..services.lucidity_tier_cache import lucidity_tier_cache
 from ..services.phantom_visibility import get_viewer_phantom_names
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.room_renderer import format_room_drop_lines
@@ -151,8 +153,18 @@ async def _handle_room_look(
 ) -> dict[str, Any]:
     """Handle looking at the current room."""
     desc = _get_room_description(room)
-    exit_list = _format_exits_list(room.exits)
     room_id = _get_room_id(room)
+    # viewer_player_id comes in as Any (this module's caller-supplied values are untyped
+    # throughout); narrow it once, here, rather than passing Any into is_deranged/
+    # get_hallucinated_exits below.
+    viewer_id_str = str(cast("object", viewer_player_id)) if viewer_player_id is not None else None
+    # #626/#714: a deranged viewer sees the same seeded, hallucinated exit set here as in the
+    # room_update/game_state payloads -- server-authoritative, so /look can no longer contradict
+    # the client's Location panel the way #626's client-side-only version did.
+    if room_id and viewer_id_str and lucidity_tier_cache.is_deranged(viewer_id_str):
+        exit_list = ", ".join(get_hallucinated_exits(room_id, viewer_id_str)) or "none"
+    else:
+        exit_list = _format_exits_list(cast("dict[str, object]", room.exits))
 
     logger.debug(
         "Looked at current room",

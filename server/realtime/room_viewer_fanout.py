@@ -65,6 +65,7 @@ async def send_personalized_room_events(
             connection_manager,
             players=player_occupant_names,
             npcs=viewer_npcs,
+            viewer_id=viewer_id,
         )
         occ_event = build_event(
             "room_occupants",
