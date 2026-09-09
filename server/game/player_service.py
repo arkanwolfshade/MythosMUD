@@ -420,6 +420,17 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
             logger.warning("Character already deleted (lost delete race)", player_id=player_id)
             return False, "Character is already deleted"
 
+        # Drop the deleted character from the live online-players roster (#784 follow-up).
+        # Without this, a character deleted while still connected stays in the game-tick
+        # loop's roster: every tick regenerates MP for it, tries to save, and the #777
+        # soft-delete guard refuses the write -- one warning + full stack trace per tick,
+        # indefinitely, until the connection happens to drop.
+        from ..realtime.connection_manager_api import (
+            remove_online_player,  # noqa: PLC0415  # Reason: avoid import cycle (realtime imports game indirectly via container wiring)
+        )
+
+        remove_online_player(player_id)
+
         player_name = player.name if hasattr(player, "name") else "unknown"
         logger.info("Character soft-deleted successfully", player_id=player_id, character_name=player_name)
 
