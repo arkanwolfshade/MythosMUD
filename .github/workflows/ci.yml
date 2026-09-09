@@ -205,6 +205,9 @@ jobs:
       - name: Install Playwright browsers
         run: |
           source .venv-ci/bin/activate
+          # GHA images ship google-chrome.list; dl.google.com Hash Sum mismatches
+          # break apt during install-deps (Playwright only needs OS libs, not Chrome).
+          sudo rm -f /etc/apt/sources.list.d/google-chrome.list
           playwright install chromium
           playwright install-deps chromium
       - name: Install PostgreSQL 18
@@ -457,7 +460,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+        run: |
+          # GHA images ship google-chrome.list; dl.google.com Hash Sum mismatches
+          # break apt during --with-deps (Playwright only needs OS libs, not Chrome).
+          sudo rm -f /etc/apt/sources.list.d/google-chrome.list
+          npx playwright install --with-deps chromium
       - name: Lint with ESLint
         run: |
           npx eslint .
