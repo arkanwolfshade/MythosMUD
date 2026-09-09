@@ -117,6 +117,45 @@ async def send_personal_system_message(
     return {"success": True, "message": cast(dict[str, object], chat_message.to_dict())}
 
 
+async def send_fake_npc_whisper(
+    chat_service: _ChatDeliveryService, player_id: uuid.UUID | str, npc_name: str, message: str
+) -> dict[str, object]:
+    """
+    Send a whisper-shaped message from a fake NPC to one player (#714).
+
+    Used for hallucinated NPC tells (see server/services/passive_lucidity_flux/hallucinations.py)
+    -- the recipient sees an ordinary whisper, byte-identical on the wire to a real one from an
+    NPC, with no separate "hallucination" event type to give it away.
+    """
+    if not message or not message.strip():
+        return {"success": False, "error": "Message cannot be empty"}
+    player_id_str = str(player_id)
+    chat_message = ChatMessage(
+        sender_id=npc_sender_id(npc_name),
+        sender_name=npc_name,
+        channel="whisper",
+        content=message.strip(),
+        target_id=player_id_str,
+    )
+    chat_message.speaker_kind = "npc"
+    chat_message.log_message()
+    success = await publish_chat_message_to_nats(
+        chat_message, None, chat_service.nats_service, chat_service.subject_manager
+    )
+    if not success:
+        logger.error("Fake NPC whisper NATS publish failed", player_id=player_id_str, npc_name=npc_name)
+        return {"success": False, "error": "Chat system temporarily unavailable."}
+    return {"success": True, "message": cast(dict[str, object], chat_message.to_dict())}
+
+
+async def deliver_fake_npc_whisper(player_id: uuid.UUID | str, npc_name: str, message: str) -> dict[str, object]:
+    """Deliver a fake NPC whisper using the wired ChatService, if any (#714)."""
+    if _chat_service is None:
+        logger.debug("ChatService not wired; fake NPC whisper skipped", player_id=str(player_id))
+        return {"success": False, "error": "ChatService unavailable"}
+    return await send_fake_npc_whisper(_chat_service, player_id, npc_name, message)
+
+
 async def deliver_npc_room_speech(
     *,
     npc_id: str,
