@@ -178,15 +178,22 @@ async def send_hallucination_event(
     message: str,
     metadata: Mapping[str, object] | None = None,
 ) -> None:
-    """Send a hallucination event to a player."""
-    payload: dict[str, object] = {
-        "hallucination_type": hallucination_type,
-        "message": message,
-    }
-    if metadata:
-        payload["metadata"] = metadata
+    """
+    Log a hallucination trigger for observability (#714).
 
-    await _dispatch_player_event(player_id, "hallucination", payload)
+    This never reaches the client: a dedicated `hallucination` event type would itself be a
+    truth-leak under server-authoritative hallucinations -- the actual player-facing content is
+    delivered through the real chat/game-log channels instead (see
+    server/services/passive_lucidity_flux/hallucinations.py and ADR-024). This function is the
+    structured-logging record of "a hallucination fired," kept for ops/debugging only.
+    """
+    logger.debug(
+        "Hallucination triggered",
+        player_id=player_id,
+        hallucination_type=hallucination_type,
+        message=message,
+        metadata=dict(metadata) if metadata else None,
+    )
 
 
 __all__ = [

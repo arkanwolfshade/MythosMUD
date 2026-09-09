@@ -12,11 +12,28 @@ from __future__ import annotations
 
 import random
 import uuid
-from typing import Any
+from typing import TypedDict
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
+
+
+class FakeNpcTellData(TypedDict):
+    """Data describing one fake NPC tell hallucination (#714)."""
+
+    npc_name: str
+    message: str
+    room_id: str
+    hallucination_id: str
+
+
+class RoomTextOverlayData(TypedDict):
+    """Data describing one room text overlay hallucination (#714)."""
+
+    overlay_text: str
+    room_id: str
+    hallucination_id: str
 
 # Fake NPC names for hallucinatory tells
 FAKE_NPC_NAMES: list[str] = [
@@ -75,7 +92,7 @@ class FakeHallucinationService:
         """Initialize the fake hallucination service."""
         logger.info("FakeHallucinationService initialized")
 
-    def generate_fake_npc_tell(self, player_id: uuid.UUID, room_id: str) -> dict[str, Any]:
+    def generate_fake_npc_tell(self, player_id: uuid.UUID, room_id: str) -> FakeNpcTellData:
         """
         Generate a fake NPC tell hallucination.
 
@@ -96,7 +113,7 @@ class FakeHallucinationService:
             "hallucination_id": f"fake_tell_{player_id}_{uuid.uuid4().hex[:8]}",
         }
 
-    def generate_room_text_overlay(self, player_id: uuid.UUID, room_id: str) -> dict[str, Any]:
+    def generate_room_text_overlay(self, player_id: uuid.UUID, room_id: str) -> RoomTextOverlayData:
         """
         Generate a room text overlay hallucination.
 

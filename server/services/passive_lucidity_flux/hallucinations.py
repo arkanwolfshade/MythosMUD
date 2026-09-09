@@ -14,15 +14,21 @@ logger = get_logger(__name__)
 async def handle_phantom_hostile_hallucination(
     player_id_uuid: uuid.UUID, room_id: str, tier: str, current_lcd: int
 ) -> None:
-    """Handle phantom hostile spawn hallucination."""
+    """Handle phantom hostile spawn hallucination (#625, #714)."""
+    from ...game.chat_npc_system import deliver_personal_system
     from ...services.lucidity_event_dispatcher import send_hallucination_event
     from ...services.phantom_hostile_service import phantom_hostile_service
 
     phantom_data = phantom_hostile_service.create_phantom_hostile_data(player_id_uuid, room_id, tier)
+    spawn_message = f"A {phantom_data['name']} materializes before you!"
+    # #714: the phantom itself is already visible via the per-viewer room payload (see
+    # phantom_visibility.py) -- this is just the spawn moment's ambient narration, delivered
+    # like any other environmental system line so it carries no "this is fake" marker.
+    _ = await deliver_personal_system(player_id_uuid, spawn_message)
     await send_hallucination_event(
         player_id_uuid,
         hallucination_type="phantom_hostile_spawn",
-        message=f"A {phantom_data['name']} materializes before you!",
+        message=spawn_message,
         metadata={
             "tier": tier,
             "lcd": current_lcd,
@@ -44,7 +50,8 @@ async def handle_phantom_hostile_hallucination(
 
 
 async def handle_fake_hallucination(player_id_uuid: uuid.UUID, room_id: str, tier: str, current_lcd: int) -> None:
-    """Handle fake hallucination (NPC tells or room text overlays)."""
+    """Handle fake hallucination (NPC tells or room text overlays) (#714)."""
+    from ...game.chat_npc_system import deliver_fake_npc_whisper, deliver_personal_system
     from ...services.fake_hallucination_service import FakeHallucinationService
     from ...services.lucidity_event_dispatcher import send_hallucination_event
 
@@ -53,6 +60,9 @@ async def handle_fake_hallucination(player_id_uuid: uuid.UUID, room_id: str, tie
 
     if hallucination_type == "fake_npc_tell":
         fake_tell_data = fake_hallucination_service.generate_fake_npc_tell(player_id_uuid, room_id)
+        # #714: delivered as an ordinary whisper from the fake NPC name -- byte-identical on the
+        # wire to a real NPC whisper, no separate "hallucination" event type.
+        _ = await deliver_fake_npc_whisper(player_id_uuid, fake_tell_data["npc_name"], fake_tell_data["message"])
         await send_hallucination_event(
             player_id_uuid,
             hallucination_type="fake_npc_tell",
@@ -73,6 +83,10 @@ async def handle_fake_hallucination(player_id_uuid: uuid.UUID, room_id: str, tie
         )
     else:  # room_text_overlay
         overlay_data = fake_hallucination_service.generate_room_text_overlay(player_id_uuid, room_id)
+        # #714: a spontaneous ambient line, not persisted into the room description -- the
+        # authored strings ("the temperature suddenly drops") are events, not static text, and
+        # would read as broken prose if repeated on a later `look`.
+        _ = await deliver_personal_system(player_id_uuid, overlay_data["overlay_text"])
         await send_hallucination_event(
             player_id_uuid,
             hallucination_type="room_text_overlay",
