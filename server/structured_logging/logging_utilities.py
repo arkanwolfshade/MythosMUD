@@ -30,12 +30,12 @@ if TYPE_CHECKING:
 # for internal logging infrastructure code only. All other modules must use
 # get_logger() from enhanced_logging_config.
 # structlog.get_logger is typed as Any; cast for static analysis (matches enhanced_logging_config).
-logger = cast(BoundLogger, structlog.get_logger(__name__))  # type: ignore[redundant-cast]
+logger = cast(BoundLogger, structlog.get_logger(__name__))
 
 
 def _rotation_bound_logger() -> BoundLogger:
     """Structlog logger for rotate_log_files (cast silences basedpyright Any from get_logger)."""
-    return cast(BoundLogger, structlog.get_logger("server.structured_logging"))  # type: ignore[redundant-cast]
+    return cast(BoundLogger, structlog.get_logger("server.structured_logging"))
 
 
 # Thread-safe directory creation locks (one lock per directory path)

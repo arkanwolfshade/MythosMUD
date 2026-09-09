@@ -10,8 +10,19 @@ Do not write Python that triggers **`reportAny`** or **`reportExplicitAny`**. Do
 `from typing import Any`, `dict[str, Any]`, `list[Any]`, `*args: Any`, `manager: Any`, or
 `# type: ignore` / `# pyright: ignore` to hide those rules.
 
-After editing Python, run `uv run basedpyright <edited files>` from the repo root. Fix findings before
-considering the change done.
+**Enforced since #784.** After editing Python, run `uv run basedpyright` (full run, no file arguments)
+from the repo root. It exits non-zero on any finding not already in `.basedpyright/baseline.json`.
+The same check runs in pre-commit, in CI, and via `make typecheck`.
+
+Deleting an annotation to dodge the rule does not work either: an unannotated parameter fires
+`reportMissingParameterType` / `reportUnknownParameterType`, which are gated too. `Unknown` is
+simply the implicit form of `Any`.
+
+**Never run `basedpyright --writebaseline` to silence a new finding.** The baseline may only shrink;
+`make any-report` shows what remains. A genuinely correct suppression must name its rule and carry
+`# Reason: <CATEGORY> - <cause>` plus `# Appropriate because: <why Any is right, ≥40 chars>`
+(enforced by `scripts/lint_pyright_suppressions.py`). Full rules: **No `Any` in `server/` (enforced)**
+in `AGENTS.md`.
 
 ## Ponytail / shortest-diff
 

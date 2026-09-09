@@ -76,8 +76,10 @@ _create_aggregator_handler = create_aggregator_handler
 _setup_enhanced_file_logging = setup_enhanced_file_logging
 
 # Module-level logger for internal use (infrastructure only; app code uses get_logger()).
-# structlog._config types get_logger as Any; cast -> BoundLogger for basedpyright; mypy flags redundant-cast.
-logger = cast(BoundLogger, structlog.get_logger(__name__))  # type: ignore[redundant-cast]
+# Upstream structlog deliberately types get_logger() as Any: the bound logger class is chosen at
+# runtime by configure(). Both checkers now agree on that (server/stubs deleted in #784), so this
+# cast is the honest narrowing at the library boundary rather than a redundant one.
+logger = cast(BoundLogger, structlog.get_logger(__name__))
 
 
 class _LoggingState:  # pylint: disable=too-few-public-methods  # Reason: State container class with focused responsibility, minimal public interface
@@ -175,7 +177,7 @@ def configure_enhanced_structlog(
                     structlog.stdlib.add_log_level,
                     structlog.processors.TimeStamper(fmt="iso"),
                     structlog.processors.format_exc_info,
-                    structlog.dev.ConsoleRenderer(),  # type: ignore[attr-defined]  # Reason: structlog.dev module exists at runtime but type stubs may not include it, this is fallback configuration for error recovery
+                    structlog.dev.ConsoleRenderer(),
                 ],
             ),
             wrapper_class=BoundLogger,
@@ -188,8 +190,8 @@ def configure_enhanced_structlog(
         log_base_raw = log_config.get("log_base", "logs")
         env_log_dir = resolve_log_base(str(log_base_raw) if log_base_raw is not None else "logs") / environment
         errors_log_path = env_log_dir / "errors.log"
-        # NOTE: structlog.get_logger is Any in stubs; cast aligns with BoundLogger.
-        configured_logger = cast(BoundLogger, structlog.get_logger(__name__))  # type: ignore[redundant-cast]
+        # NOTE: upstream structlog types get_logger() as Any; cast narrows to BoundLogger.
+        configured_logger = cast(BoundLogger, structlog.get_logger(__name__))
         configured_logger.info(
             "Enhanced error logging configured",
             errors_log_path=str(errors_log_path),
@@ -327,7 +329,7 @@ def get_enhanced_logger(name: str) -> BoundLogger:
     base_logger = get_logger(name)
 
     # structlog.wrap_logger is typed as Any in stubs; cast aligns with BoundLogger for basedpyright.
-    return cast(BoundLogger, structlog.wrap_logger(base_logger))  # type: ignore[redundant-cast]
+    return cast(BoundLogger, structlog.wrap_logger(base_logger))
 
 
 def get_logger(name: str) -> BoundLogger:
@@ -350,7 +352,7 @@ def get_logger(name: str) -> BoundLogger:
         Configured Structlog logger instance
     """
     # NOTE: Public API; same as structlog.get_logger with return type for callers.
-    return cast(BoundLogger, structlog.get_logger(name))  # type: ignore[redundant-cast]
+    return cast(BoundLogger, structlog.get_logger(name))
 
 
 def update_logging_with_player_service(player_service: object) -> None:
