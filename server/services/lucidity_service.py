@@ -232,6 +232,12 @@ class LucidityService:
             from .phantom_hostile_service import phantom_hostile_service
 
             phantom_hostile_service.clear_all_phantoms(ctx.player_id)
+        # #714: keep the in-memory tier cache (exit hallucination's cheap eligibility check)
+        # write-through fresh -- write unconditionally, not just on a transition, since this is
+        # the authoritative point where new_tier was just computed.
+        from .lucidity_tier_cache import lucidity_tier_cache
+
+        lucidity_tier_cache.set_tier(ctx.player_id, ctx.new_tier)
         return LucidityUpdateResult(
             player_id=ctx.player_id,
             previous_lcd=ctx.previous_lcd,

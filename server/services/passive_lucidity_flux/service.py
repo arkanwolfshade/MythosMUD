@@ -10,7 +10,7 @@ import uuid
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
-from typing import Protocol, cast
+from typing import TYPE_CHECKING, Protocol, cast
 
 from sqlalchemy import Select, select
 from sqlalchemy.exc import DatabaseError, SQLAlchemyError
@@ -20,6 +20,7 @@ from ...async_persistence import AsyncPersistenceLayer
 from ...models.lucidity import PlayerLucidity
 from ...models.player import Player
 from ...services.lucidity_service import CatatoniaObserverProtocol, LucidityService, LucidityUpdateResult
+from ...services.lucidity_tier_cache import lucidity_tier_cache
 from ...structured_logging.enhanced_logging_config import get_logger
 from .config import (
     DEFAULT_ENVIRONMENT_CONFIG,
@@ -32,10 +33,11 @@ from .hallucinations import handle_hallucination_triggers
 from .models import CachedRoom, PassiveFluxContext
 from .rate_overrides import build_override_key, load_lucidity_rate_overrides
 
-try:
+if TYPE_CHECKING:
+    # Type-only: with `from __future__ import annotations`, the annotation below is never
+    # evaluated at runtime, so this need not survive monitoring being an optional dependency
+    # the way a real import would.
     from server.monitoring.performance_monitor import PerformanceMonitor
-except ImportError:  # pragma: no cover - monitoring is optional in some test harnesses
-    PerformanceMonitor = None  # type: ignore[assignment, misc]  # Reason: PerformanceMonitor is optional dependency
 
 logger = get_logger(__name__)
 
@@ -392,7 +394,12 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
         stmt: Select[tuple[PlayerLucidity]] = select(PlayerLucidity)
         result = await session.execute(stmt)
         records = result.scalars().all()
-        return {str(record.player_id): record for record in records}
+        records_by_player = {str(record.player_id): record for record in records}
+        # #714: backstop refresh for the in-memory tier cache -- runs every tick
+        # (server_tick_rate = 0.1s), so a missed write-through elsewhere self-heals fast.
+        for player_id_str, record in records_by_player.items():
+            lucidity_tier_cache.set_tier(player_id_str, record.current_tier)
+        return records_by_player
 
     def _lookup_base_flux_for_room(self, room: FluxRoom, period: str) -> tuple[float, str]:
         """Look up base_flux and profile_source from room overrides. Returns (base_flux, profile_source)."""

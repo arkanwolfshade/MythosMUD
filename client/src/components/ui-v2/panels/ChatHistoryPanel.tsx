@@ -17,8 +17,10 @@ interface ChatHistoryPanelProps {
   isConnected?: boolean;
 }
 
+// #714: no 'hallucination' entry here -- under server-authoritative hallucinations, a fake
+// whisper or NPC tell arrives as an ordinary chat message (see ADR-024) and must render
+// indistinguishably from a real one. A distinct color would itself be the truth-leak.
 const TAG_MESSAGE_CLASSES: Record<string, string> = {
-  hallucination: 'text-fuchsia-300 italic',
   'command-misfire': 'text-mythos-terminal-warning font-semibold',
   rescue: 'text-mythos-terminal-primary font-semibold',
 };
