@@ -36,7 +36,9 @@ class PlayerLike(Protocol):
 class PlayerServiceLike(Protocol):
     """Structural shape admin commands need from the player service."""
 
-    async def resolve_player_name(self, name: str) -> PlayerLike | None: ...
+    async def resolve_player_name(self, name: str) -> PlayerLike | None:
+        """Resolve a player name to a player record, or None if not found."""
+        ...
 
 
 def _extract_command_args(command_data: dict[str, Any]) -> tuple[str | None, int | None]:
