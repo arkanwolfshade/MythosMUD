@@ -8,12 +8,12 @@
 
 .DESCRIPTION
     This script provides robust server shutdown functionality for MythosMUD by:
-    - Terminating processes using port 54768
+    - Terminating processes using ports 54768 (API) and 5173 (Vite client)
     - Killing processes by name patterns (uvicorn and gunicorn)
     - Terminating processes by command line patterns (MythosMUD-specific)
     - Force killing MythosMUD-related Python processes in THIS repo if Force flag is set
-    - Verifying port is free after shutdown
-    - Terminating PowerShell processes that spawned the server
+    - Verifying ports are free after shutdown
+    - Terminating PowerShell processes that spawned the server or Vite client
     - Cleaning up orphaned terminal windows
 
     SECURITY NOTE: Processes are terminated only when Win32_Process data shows the
@@ -226,16 +226,21 @@ function Stop-PowerShellServerProcess {
                 if (-not (Test-MythosMudProjectProcess -ProcessId $process.Id)) {
                     continue
                 }
-                # Exclude path-only hits (e.g. ...\MythosMUD-worktrees\... matching *mythosmud*): require server entry cues.
+                # Exclude path-only hits (e.g. ...\MythosMUD-worktrees\... matching *mythosmud*):
+                # require server or Vite client entry cues.
                 if ($commandLine -and (
                         $commandLine -like "*uvicorn*" -or
                         $commandLine -like "*gunicorn*" -or
                         $commandLine -like "*start_server.ps1*" -or
                         $commandLine -like "*start_local.ps1*" -or
+                        $commandLine -like "*start_client.ps1*" -or
                         $commandLine -like "*server.main:app*" -or
-                        $commandLine -like "*uv run*"
+                        $commandLine -like "*uv run*" -or
+                        $commandLine -like "*npm run dev*" -or
+                        $commandLine -like "*vite.js*" -or
+                        $commandLine -like "*\vite\bin\*"
                     )) {
-                    Write-Host "Found PowerShell server process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
+                    Write-Host "Found PowerShell server/client process: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
                     Write-Host "  Command line: $commandLine" -ForegroundColor Gray
                     Stop-MythosMudProjectProcessTree -ProcessId $process.Id
                 }
@@ -284,8 +289,12 @@ function Close-OrphanedTerminalWindows {
                         $commandLine -like "*gunicorn*" -or
                         $commandLine -like "*start_server.ps1*" -or
                         $commandLine -like "*start_local.ps1*" -or
+                        $commandLine -like "*start_client.ps1*" -or
                         $commandLine -like "*server.main*" -or
-                        $commandLine -like "*uv run*"
+                        $commandLine -like "*uv run*" -or
+                        $commandLine -like "*npm run dev*" -or
+                        $commandLine -like "*vite.js*" -or
+                        $commandLine -like "*\vite\bin\*"
                     )) {
                     Write-Host "Found orphaned terminal: $($process.ProcessName) (PID: $($process.Id))" -ForegroundColor Red
                     if ($executablePath) {
@@ -370,26 +379,28 @@ try {
     # Method 2: Kill PowerShell processes that spawned the server
     Stop-PowerShellServerProcess
 
-    # Method 3: Kill processes by port
+    # Method 3: Kill processes by port (API + Vite; scoped via MythosMudProcessScope)
     Stop-ProcessesByPort -Port 54768
+    Stop-ProcessesByPort -Port 5173
 
-    # Method 3: Kill processes by name patterns
+    # Method 4: Kill processes by name patterns
     Stop-ProcessesByName -NamePattern "*uvicorn*"
     Stop-ProcessesByName -NamePattern "*gunicorn*"
     # Note: Removed broad Python process killing to avoid affecting Playwright MCP server
     # Python processes are now targeted more specifically via command line patterns below
+    # Note: Never kill node.exe by name; Vite is stopped via port 5173 + client cmdline cues.
 
-    # Method 4: Kill processes by command line patterns
+    # Method 5: Kill processes by command line patterns
     Stop-ProcessesByCommandLine -CommandPattern "uvicorn"
     Stop-ProcessesByCommandLine -CommandPattern "gunicorn"
     Stop-ProcessesByCommandLine -CommandPattern "main:app"
     Stop-ProcessesByCommandLine -CommandPattern "start_server.ps1"
     Stop-ProcessesByCommandLine -CommandPattern "uv run"
 
-    # Method 5: Close orphaned terminal windows
+    # Method 6: Close orphaned terminal windows
     Close-OrphanedTerminalWindows
 
-    # Method 6: Force kill MythosMUD-related Python processes if Force flag is set
+    # Method 7: Force kill MythosMUD-related Python processes if Force flag is set
     if ($Force) {
         Write-Host "Force mode: Terminating MythosMUD-related Python processes..." -ForegroundColor Red
         $pythonProcesses = Get-Process | Where-Object { $_.ProcessName -like "*python*" }
@@ -430,31 +441,48 @@ try {
     Write-Host "Waiting for processes to fully terminate..." -ForegroundColor Yellow
     Start-Sleep -Seconds 5
 
-    # Add multiple verification attempts
+    # Add multiple verification attempts for API and Vite ports
     $maxRetries = 3
     $retryCount = 0
-    $portFree = $false
+    $apiPortFree = $false
+    $clientPortFree = $false
 
-    while (-not $portFree -and $retryCount -lt $maxRetries) {
-        $portFree = Wait-ForPortFree -Port 54768 -MaxWaitSeconds 15
-        if (-not $portFree) {
+    while ((-not $apiPortFree -or -not $clientPortFree) -and $retryCount -lt $maxRetries) {
+        if (-not $apiPortFree) {
+            $apiPortFree = Wait-ForPortFree -Port 54768 -MaxWaitSeconds 15
+        }
+        if (-not $clientPortFree) {
+            $clientPortFree = Wait-ForPortFree -Port 5173 -MaxWaitSeconds 10
+        }
+        if (-not $apiPortFree -or -not $clientPortFree) {
             $retryCount++
-            Write-Host "Port still in use, retrying... (Attempt $retryCount/$maxRetries)" -ForegroundColor Yellow
-            # Force kill any remaining processes
-            Stop-ProcessesByPort -Port 54768
+            Write-Host "Port(s) still in use, retrying... (Attempt $retryCount/$maxRetries)" -ForegroundColor Yellow
+            if (-not $apiPortFree) {
+                Stop-ProcessesByPort -Port 54768
+            }
+            if (-not $clientPortFree) {
+                Stop-ProcessesByPort -Port 5173
+            }
             Start-Sleep -Seconds 2
         }
     }
 
-    if ($portFree) {
-        Write-Host "`nMythosMUD Server shutdown complete!" -ForegroundColor Green
+    if ($apiPortFree -and $clientPortFree) {
+        Write-Host "`nMythosMUD server and Vite client shutdown complete!" -ForegroundColor Green
     }
     else {
-        Write-Host "`nWARNING: Server shutdown may be incomplete. Port 54768 is still in use." -ForegroundColor Yellow
+        if (-not $apiPortFree) {
+            Write-Host "`nWARNING: Server shutdown may be incomplete. Port 54768 is still in use." -ForegroundColor Yellow
+        }
+        if (-not $clientPortFree) {
+            Write-Host "`nWARNING: Vite client shutdown may be incomplete. Port 5173 is still in use." -ForegroundColor Yellow
+        }
         if ($Verbose) {
-            Write-Host "Remaining connections on port 54768:" -ForegroundColor Yellow
-            Get-NetTCPConnection -LocalPort 54768 -ErrorAction SilentlyContinue | ForEach-Object {
-                Write-Host "  $($_.LocalAddress):$($_.LocalPort) -> $($_.RemoteAddress):$($_.RemotePort) (PID: $($_.OwningProcess))" -ForegroundColor Gray
+            foreach ($port in @(54768, 5173)) {
+                Write-Host "Remaining connections on port ${port}:" -ForegroundColor Yellow
+                Get-NetTCPConnection -LocalPort $port -ErrorAction SilentlyContinue | ForEach-Object {
+                    Write-Host "  $($_.LocalAddress):$($_.LocalPort) -> $($_.RemoteAddress):$($_.RemotePort) (PID: $($_.OwningProcess))" -ForegroundColor Gray
+                }
             }
         }
     }
