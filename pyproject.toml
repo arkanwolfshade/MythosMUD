@@ -135,7 +135,10 @@ max-complexity = 11
 "__init__.py" = ["F401"]
 "tests/**/*" = ["B011"]
 "docs/**/*" = ["F821", "F841", "F811", "B904", "E402"]
-"server/stubs/**/*.pyi" = ["UP046"]  # Stub files use old Generic syntax for compatibility
+# Codacy's containerised PyLintPython3 uses a pre-3.12 parser and fails to parse PEP 695 type
+# parameter lists ("Parsing failed: expected '('"). Keep the TypeVar spelling used by the
+# repo's other 12 generics until that runtime catches up. See #784.
+"server/tests/support.py" = ["UP047"]
 "server/main.py" = ["E402"]  # Reason: Imports must come after load_dotenv() to ensure env vars are loaded before any modules that depend on them are imported
 # Alembic requires exact names revision, down_revision, branch_labels, depends_on; cannot use UPPER_CASE
 "server/alembic/versions/*.py" = ["N816"]
@@ -246,7 +249,6 @@ fail_under = 63
 python_version = "3.12"
 files = ["server"]
 plugins = ["sqlalchemy.ext.mypy.plugin", "pydantic.mypy"]
-mypy_path = "server/stubs"
 
 # Gradual strictness: Enable checks incrementally for established codebase
 strict = true # NOTE: revealed 962 errors. Enabling selectively instead.
@@ -309,10 +311,11 @@ module = [
 ]
 ignore_missing_imports = true
 
-# Libraries with local stubs - use our enhanced type definitions
-[[tool.mypy.overrides]]
-module = ["nats.*", "structlog.*", "fastapi_users.*"]
-ignore_missing_imports = false  # Use our stubs!
+# NOTE: nats / structlog / fastapi_users previously pointed at hand-written stubs under
+# server/stubs/ via mypy_path. All three ship py.typed inline types upstream, and basedpyright
+# never read those stubs at all (no stubPath was set), so the two checkers disagreed about the
+# same libraries -- which is what produced the `redundant-cast` conflicts. Stubs deleted in #784;
+# the global `ignore_missing_imports = false` already covers these modules.
 
 # Core libraries - use their official types
 [[tool.mypy.overrides]]
@@ -396,6 +399,16 @@ venvPath = "."
 venv = ".venv"
 # Repo root on path so scripts/*.py can import the top-level `server` package (same as runtime sys.path).
 extraPaths = ["."]
+# Scope: server/** only (prod + tests). Mirrors `files = ["server"]` under [tool.mypy].
+# A no-argument `basedpyright` run -- which is what the pre-commit gate and CI run -- checks
+# exactly this set, so the baseline in .basedpyright/baseline.json stays meaningful. See #784.
+include = ["server"]
+# `# type: ignore[code]` is a mypy comment. basedpyright honours a bare `# type: ignore` by
+# suppressing EVERY rule on that line and ignoring the mypy rule code, so 372 such comments
+# under server/ were blanket-laundering Any findings. Rule-specific `# pyright: ignore[rule]`
+# is the only suppression this project accepts, and it must carry the justification comment
+# enforced by scripts/lint_pyright_suppressions.py. See #784.
+enableTypeIgnoreComments = false
 exclude = [
     "**/.venv",
     "**/node_modules",

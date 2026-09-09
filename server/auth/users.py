@@ -224,8 +224,10 @@ def get_current_user_with_logging() -> DependsParam:
             )
             logger.debug("Authentication attempt - Auth header", auth_preview=auth_preview)
 
-            # Get the raw dependency result
-            user = await get_current_user(request)
+            # Get the raw dependency result. fastapi_users.current_user() returns an untyped
+            # callable, so the await yields Any; the annotation pins the contract this
+            # dependency is documented to honour (optional=True -> User | None).
+            user: User | None = await get_current_user(request)
 
             if user:
                 logger.info("Authentication successful for user", username=user.username, user_id=user.id)

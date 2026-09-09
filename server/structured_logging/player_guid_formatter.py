@@ -17,7 +17,7 @@ from structlog.stdlib import BoundLogger
 # structlog.get_logger here (not enhanced_logging_config.get_logger) avoids an import cycle:
 # enhanced_logging_config -> logging_file_setup -> logging_handlers -> this module.
 # structlog.get_logger is typed as Any; cast for static analysis (matches other structured_logging modules).
-logger = cast(BoundLogger, structlog.get_logger(__name__))  # type: ignore[redundant-cast]
+logger = cast(BoundLogger, structlog.get_logger(__name__))
 
 
 class PlayerGuidFormatter(logging.Formatter):
