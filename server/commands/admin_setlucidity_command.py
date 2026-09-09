@@ -27,18 +27,17 @@ from ..structured_logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
-class PlayerLike(Protocol):
+class PlayerLike(Protocol):  # pylint: disable=too-few-public-methods  # Reason: PEP 544 Protocol stub; fields only
     """Structural shape admin commands need from a resolved player record."""
 
     current_room_id: str | None
 
 
-class PlayerServiceLike(Protocol):
+class PlayerServiceLike(Protocol):  # pylint: disable=too-few-public-methods  # Reason: PEP 544 Protocol stub
     """Structural shape admin commands need from the player service."""
 
     async def resolve_player_name(self, name: str) -> PlayerLike | None:
         """Resolve a player name to a player record, or None if not found."""
-        ...
 
 
 def _extract_command_args(command_data: dict[str, Any]) -> tuple[str | None, int | None]:
