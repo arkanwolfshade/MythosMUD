@@ -76,13 +76,9 @@ async def test_hallucination_frequency_room_entry_roll() -> None:
     """Room entry uses probability roll without session."""
     service = HallucinationFrequencyService()
     player_id = uuid.uuid4()
-    with patch(
-        "server.services.hallucination_rng.hallucination_rng.get", return_value=_mock_rng(random=0.05)
-    ):
+    with patch("server.services.hallucination_rng.hallucination_rng.get", return_value=_mock_rng(random=0.05)):
         assert await service.should_trigger_hallucination(player_id, "uneasy", "room_entry") is True
-    with patch(
-        "server.services.hallucination_rng.hallucination_rng.get", return_value=_mock_rng(random=0.99)
-    ):
+    with patch("server.services.hallucination_rng.hallucination_rng.get", return_value=_mock_rng(random=0.99)):
         assert await service.should_trigger_hallucination(player_id, "uneasy", "room_entry") is False
 
 

@@ -1,5 +1,11 @@
 # Phantom Hostile Implementation Requirements
 
+> **Archived — superseded.** Phase 3's remaining gaps below (per-viewer visibility across the
+> Occupants panel, integrated in-fiction delivery) were closed by `#714`. See
+> [`docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`](../architecture/decisions/ADR-024-server-authoritative-perceived-reality.md)
+> and [`docs/subsystems/SUBSYSTEM_LUCIDITY_DESIGN.md`](../subsystems/SUBSYSTEM_LUCIDITY_DESIGN.md)
+> §6 for the current, authoritative delivery model.
+
 **Status**: Partial Implementation (Foundation Complete)
 
 **Last Updated**: 2026-01-02

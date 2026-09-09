@@ -19,9 +19,7 @@ async def test_handle_phantom_hostile_hallucination() -> None:
             "server.services.phantom_hostile_service.phantom_hostile_service.create_phantom_hostile_data",
             return_value=phantom_data,
         ),
-        patch(
-            "server.services.lucidity_event_dispatcher.send_hallucination_event", new_callable=AsyncMock
-        ) as send,
+        patch("server.services.lucidity_event_dispatcher.send_hallucination_event", new_callable=AsyncMock) as send,
         patch("server.game.chat_npc_system.deliver_personal_system", new_callable=AsyncMock) as deliver,
     ):
         await hall.handle_phantom_hostile_hallucination(player_id, "room-a", "fractured", -20)
@@ -37,9 +35,7 @@ async def test_handle_fake_hallucination_npc_tell() -> None:
     player_id = uuid.uuid4()
     with (
         patch("server.services.fake_hallucination_service.FakeHallucinationService") as svc_cls,
-        patch(
-            "server.services.lucidity_event_dispatcher.send_hallucination_event", new_callable=AsyncMock
-        ) as send,
+        patch("server.services.lucidity_event_dispatcher.send_hallucination_event", new_callable=AsyncMock) as send,
         patch("server.game.chat_npc_system.deliver_fake_npc_whisper", new_callable=AsyncMock) as deliver,
     ):
         svc = svc_cls.return_value
@@ -62,9 +58,7 @@ async def test_handle_fake_hallucination_room_overlay() -> None:
     player_id = uuid.uuid4()
     with (
         patch("server.services.fake_hallucination_service.FakeHallucinationService") as svc_cls,
-        patch(
-            "server.services.lucidity_event_dispatcher.send_hallucination_event", new_callable=AsyncMock
-        ) as send,
+        patch("server.services.lucidity_event_dispatcher.send_hallucination_event", new_callable=AsyncMock) as send,
         patch("server.game.chat_npc_system.deliver_personal_system", new_callable=AsyncMock) as deliver,
     ):
         svc = svc_cls.return_value
@@ -82,9 +76,7 @@ async def test_handle_uneasy_room_entry_hallucination_delivers_overlay_only() ->
     player_id = uuid.uuid4()
     with (
         patch("server.services.fake_hallucination_service.FakeHallucinationService") as svc_cls,
-        patch(
-            "server.services.lucidity_event_dispatcher.send_hallucination_event", new_callable=AsyncMock
-        ) as send,
+        patch("server.services.lucidity_event_dispatcher.send_hallucination_event", new_callable=AsyncMock) as send,
         patch("server.game.chat_npc_system.deliver_personal_system", new_callable=AsyncMock) as deliver,
         patch("server.game.chat_npc_system.deliver_fake_npc_whisper", new_callable=AsyncMock) as deliver_whisper,
     ):
