@@ -11,8 +11,10 @@ from collections.abc import Mapping
 from typing import Any, Protocol, cast
 
 from ..exceptions import DatabaseError
+from ..models.corruption import compute_tier
 from ..models.player import Player
 from ..structured_logging.enhanced_logging_config import get_logger
+from ..utils.int_coercion import coerce_int
 from .disconnect_catchup import CatchupManager, CatchupPlayer, build_catchup_message
 from .disconnect_grace_period import start_grace_period
 from .envelope import build_event
@@ -26,6 +28,25 @@ from .player_disconnect_handlers import (
 from .player_presence_utils import extract_player_name, get_player_position
 
 logger = get_logger(__name__)
+
+
+def _warm_corruption_tier_cache(player_id: uuid.UUID, player: Player) -> None:
+    """Populate `corruption_tier_cache` from the player's stored value on connect (#815).
+
+    Mirrors the existing clear on disconnect (`connection_disconnection.py:214`). The cache has
+    exactly one writer otherwise -- `CorruptionService.apply_corruption_adjustment` -- so a
+    player who connects without having triggered an adjustment this session would otherwise read
+    back as the `pure` miss-default regardless of their real tier, which can misreport a tier
+    crossing on their next adjustment. No tick-loop backstop is needed alongside this: corruption
+    has a single enforced write path, so nothing but a bug could cause further drift.
+    """
+    # Inline import: corruption_tier_cache is a service; importing it at module scope from
+    # realtime risks the same cycle the disconnect-side clear already sidesteps this way.
+    from ..services.corruption_tier_cache import corruption_tier_cache
+
+    stats = player.get_stats()
+    corruption_value = coerce_int(stats.get("corruption", 0), default=0)
+    corruption_tier_cache.set_tier(player_id, compute_tier(corruption_value))
 
 
 async def _disconnect_during_rest_is_intentional(player_id: uuid.UUID, manager: Any) -> bool:
@@ -239,6 +260,7 @@ async def track_player_connected_impl(
 
         manager.online_players[player_id] = player_info
         manager.mark_player_seen(player_id)
+        _warm_corruption_tier_cache(player_id, player)
 
         if needs_enter_setup:
             if in_disconnect_grace:

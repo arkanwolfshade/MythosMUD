@@ -105,19 +105,8 @@ async def test_apply_corruption_adjustment_pushes_a_player_update_event(
 
 
 @pytest.mark.asyncio
-async def test_apply_corruption_adjustment_clamps_to_0_and_100(persistence: MagicMock, mock_repo: MagicMock) -> None:
+async def test_apply_corruption_adjustment_clamps_to_100(persistence: MagicMock, mock_repo: MagicMock) -> None:
     player_id = uuid.uuid4()
-    with (
-        patch("server.services.corruption_service.CorruptionRepository", return_value=mock_repo),
-        patch(
-            "server.services.corruption_service.get_async_session",
-            side_effect=lambda: _async_session_gen(AsyncMock()),
-        ),
-    ):
-        persistence.get_player_by_id.return_value = _player(corruption=2)
-        low = await CorruptionService(persistence).apply_corruption_adjustment(player_id, -50, reason_code="test")
-        assert low.new_value == 0
-
     with (
         patch("server.services.corruption_service.CorruptionRepository", return_value=mock_repo),
         patch(
@@ -128,6 +117,78 @@ async def test_apply_corruption_adjustment_clamps_to_0_and_100(persistence: Magi
         persistence.get_player_by_id.return_value = _player(corruption=98)
         high = await CorruptionService(persistence).apply_corruption_adjustment(player_id, 50, reason_code="test")
         assert high.new_value == 100
+
+
+@pytest.mark.asyncio
+async def test_apply_corruption_adjustment_stays_at_0_when_never_touched(
+    persistence: MagicMock, mock_repo: MagicMock
+) -> None:
+    """#815: a player who has never been corrupted has no floor -- 0 is a real, reachable value."""
+    player_id = uuid.uuid4()
+    persistence.get_player_by_id.return_value = _player(corruption=0)
+
+    with (
+        patch("server.services.corruption_service.CorruptionRepository", return_value=mock_repo),
+        patch(
+            "server.services.corruption_service.get_async_session",
+            side_effect=lambda: _async_session_gen(AsyncMock()),
+        ),
+    ):
+        result = await CorruptionService(persistence).apply_corruption_adjustment(player_id, -50, reason_code="test")
+
+    assert result.new_value == 0
+
+
+@pytest.mark.parametrize(
+    ("starting_value", "delta", "expected_new_value"),
+    [
+        (5, -8, 1),  # a partial cleanse cannot fully cleanse
+        (1, -8, 1),  # the scar holds even when already at the floor
+        (50, -1000, 1),  # no negative delta, however large, crosses back to 0
+    ],
+)
+@pytest.mark.asyncio
+async def test_apply_corruption_adjustment_floors_at_1_once_touched(
+    persistence: MagicMock, mock_repo: MagicMock, starting_value: int, delta: int, expected_new_value: int
+) -> None:
+    """#815: once corruption exceeds 0, this service can never take it back below 1."""
+    player_id = uuid.uuid4()
+    persistence.get_player_by_id.return_value = _player(corruption=starting_value)
+
+    with (
+        patch("server.services.corruption_service.CorruptionRepository", return_value=mock_repo),
+        patch(
+            "server.services.corruption_service.get_async_session",
+            side_effect=lambda: _async_session_gen(AsyncMock()),
+        ),
+    ):
+        result = await CorruptionService(persistence).apply_corruption_adjustment(player_id, delta, reason_code="test")
+
+    assert result.new_value == expected_new_value
+
+
+@pytest.mark.asyncio
+async def test_apply_corruption_adjustment_notifies_on_first_taint(
+    persistence: MagicMock, mock_repo: MagicMock
+) -> None:
+    """#815: the very first point of corruption is a real tier crossing (pure -> touched) and
+    must narrate exactly once, same as any other crossing."""
+    player_id = uuid.uuid4()
+    persistence.get_player_by_id.return_value = _player(corruption=0)
+
+    with (
+        patch("server.services.corruption_service.CorruptionRepository", return_value=mock_repo),
+        patch(
+            "server.services.corruption_service.get_async_session",
+            side_effect=lambda: _async_session_gen(AsyncMock()),
+        ),
+        patch("server.services.corruption_service.deliver_personal_system", new_callable=AsyncMock) as notify,
+    ):
+        result = await CorruptionService(persistence).apply_corruption_adjustment(player_id, 3, reason_code="test")
+
+    assert result.previous_tier is CorruptionTier.PURE
+    assert result.new_tier is CorruptionTier.TOUCHED
+    notify.assert_awaited_once()
 
 
 @pytest.mark.asyncio

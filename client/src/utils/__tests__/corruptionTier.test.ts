@@ -4,7 +4,8 @@ import { computeCorruptionTier } from '../corruptionTier';
 describe('computeCorruptionTier', () => {
   it.each([
     [0, 'pure'],
-    [24, 'pure'],
+    [1, 'touched'],
+    [24, 'touched'],
     [25, 'marked'],
     [49, 'marked'],
     [50, 'corrupted'],
