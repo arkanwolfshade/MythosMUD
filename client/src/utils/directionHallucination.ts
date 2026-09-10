@@ -19,7 +19,7 @@ export type HallucinatedDirection = (typeof DIRECTION_POOL)[number];
 const NOISE_CHARS = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`';
 
 /** 32-bit string hash (djb2 variant) — deterministic, no crypto dependency needed. */
-function hashString(input: string): number {
+export function hashString(input: string): number {
   let hash = 5381;
   for (let i = 0; i < input.length; i++) {
     hash = ((hash << 5) + hash + input.charCodeAt(i)) | 0;

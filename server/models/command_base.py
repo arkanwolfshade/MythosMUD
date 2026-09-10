@@ -68,6 +68,7 @@ class CommandType(StrEnum):
     LIE = "lie"
     REST = "rest"
     GROUND = "ground"
+    CLEANSE = "cleanse"
     TIME = "time"
     SKILLS = "skills"
     # Communication commands

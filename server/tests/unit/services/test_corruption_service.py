@@ -82,6 +82,29 @@ async def test_apply_corruption_adjustment_positive_delta(persistence: MagicMock
 
 
 @pytest.mark.asyncio
+async def test_apply_corruption_adjustment_pushes_a_player_update_event(
+    persistence: MagicMock, mock_repo: MagicMock
+) -> None:
+    """A live client only ever learns its own corruption changed via this event -- nothing else
+    pushes it (no dedicated wire event, per SUBSYSTEM_CORRUPTION_DESIGN.md §4)."""
+    player = _player(corruption=10)
+    persistence.get_player_by_id.return_value = player
+    player_id = uuid.uuid4()
+
+    with (
+        patch("server.services.corruption_service.CorruptionRepository", return_value=mock_repo),
+        patch(
+            "server.services.corruption_service.get_async_session",
+            side_effect=lambda: _async_session_gen(AsyncMock()),
+        ),
+        patch("server.realtime.connection_manager_api.send_game_event", new_callable=AsyncMock) as send_event,
+    ):
+        _ = await CorruptionService(persistence).apply_corruption_adjustment(player_id, 5, reason_code="spell_cast")
+
+    send_event.assert_awaited_once_with(player_id, "player_update", {"stats": {"corruption": 15}})
+
+
+@pytest.mark.asyncio
 async def test_apply_corruption_adjustment_clamps_to_0_and_100(persistence: MagicMock, mock_repo: MagicMock) -> None:
     player_id = uuid.uuid4()
     with (

@@ -56,6 +56,10 @@ vi.mock('../panels/ChatHistoryPanel', () => ({
   ChatHistoryPanel: () => <div data-testid="chat-history-panel">Chat History</div>,
 }));
 
+vi.mock('../panels/SettingsPanel', () => ({
+  SettingsPanel: () => <div data-testid="settings-panel">Settings</div>,
+}));
+
 vi.mock('../panels/CommandHistoryPanel', () => ({
   CommandHistoryPanel: () => <div data-testid="command-history-panel">Command History</div>,
 }));

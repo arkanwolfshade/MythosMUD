@@ -79,6 +79,22 @@ describe('CharacterInfoPanel', () => {
     expect(screen.getByText('TestPlayer')).toBeInTheDocument();
   });
 
+  it('should render corruption value with its tier name (#804)', () => {
+    const player: Player = {
+      id: 'player1',
+      name: 'TestPlayer',
+      stats: {
+        current_dp: 100,
+        max_dp: 100,
+        lucidity: 50,
+        corruption: 62,
+      },
+    };
+
+    renderCharacterPanel(player);
+    expect(screen.getByText('62 (corrupted)')).toBeInTheDocument();
+  });
+
   it('should render profession when available', () => {
     const player: Player = {
       id: 'player1',

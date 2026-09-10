@@ -1,6 +1,7 @@
 /// <reference lib="es2015" />
 import { cleanup, render } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ThemeProvider } from '../../../contexts/ThemeContext';
 import { PerformanceTester, type PerformanceTestResult } from '../../../utils/performanceTester';
 import { ChatHistoryPanel } from '../panels/ChatHistoryPanel';
 import { CommandHistoryPanel } from '../panels/CommandHistoryPanel';
@@ -48,7 +49,7 @@ describe('Performance Tests', () => {
           // RTL appends a new root each render; without cleanup, N iterations stack N trees and
           // inflate timings (looks like a regression or flakiness). Reset DOM before each sample.
           cleanup();
-          render(<ChatHistoryPanel {...defaultProps} />);
+          render(<ChatHistoryPanel {...defaultProps} />, { wrapper: ThemeProvider });
         },
         { iterations: 20, warmupIterations: 3 }
       );
@@ -59,7 +60,7 @@ describe('Performance Tests', () => {
     }, 15000);
 
     it('handles rapid state updates efficiently', async () => {
-      const { rerender } = render(<ChatHistoryPanel {...defaultProps} />);
+      const { rerender } = render(<ChatHistoryPanel {...defaultProps} />, { wrapper: ThemeProvider });
 
       const result = await performanceTester.runTest(
         'ChatHistoryPanel - Rapid State Updates',
@@ -84,7 +85,7 @@ describe('Performance Tests', () => {
     }, 15000);
 
     it('filters messages by channel efficiently', async () => {
-      render(<ChatHistoryPanel {...defaultProps} />);
+      render(<ChatHistoryPanel {...defaultProps} />, { wrapper: ThemeProvider });
 
       const result = await performanceTester.runTest(
         'ChatHistoryPanel - Channel Filtering',
@@ -196,7 +197,8 @@ describe('Performance Tests', () => {
               onDownloadLogs={vi.fn()}
               disabled={false}
               isConnected={true}
-            />
+            />,
+            { wrapper: ThemeProvider }
           );
 
           render(<CommandHistoryPanel commandHistory={mockCommandHistory} onClearHistory={vi.fn()} />);

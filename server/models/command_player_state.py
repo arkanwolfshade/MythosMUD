@@ -61,6 +61,12 @@ class RestCommand(BaseCommand):
     command_type: Literal[CommandType.REST] = CommandType.REST
 
 
+class CleanseCommand(BaseCommand):
+    """Command for the corruption cleansing rite (#804)."""
+
+    command_type: Literal[CommandType.CLEANSE] = CommandType.CLEANSE
+
+
 class GroundCommand(BaseCommand):
     """Command for grounding a catatonic ally back to lucidity."""
 

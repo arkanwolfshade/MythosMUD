@@ -94,6 +94,18 @@ def test_create_rest_command_with_args():
         PlayerStateCommandFactory.create_rest_command(["quickly"])
 
 
+def test_create_cleanse_command():
+    """Test create_cleanse_command() creates CleanseCommand (#804)."""
+    command = PlayerStateCommandFactory.create_cleanse_command([])
+    assert command is not None
+
+
+def test_create_cleanse_command_with_args():
+    """Test create_cleanse_command() raises error with args."""
+    with pytest.raises(ValidationError):
+        _ = PlayerStateCommandFactory.create_cleanse_command(["quickly"])
+
+
 def test_create_skills_command():
     """Test create_skills_command() creates SkillsCommand."""
     command = PlayerStateCommandFactory.create_skills_command([])
