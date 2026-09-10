@@ -13,7 +13,13 @@ from typing import Any
 from ..realtime.disconnect_grace_period import is_player_in_grace_period
 from ..realtime.login_grace_period import is_player_in_login_grace_period
 from ..structured_logging.enhanced_logging_config import get_logger
-from .look_helpers import _get_health_label, _get_lucidity_label, _get_visible_equipment
+from .look_helpers import (
+    _get_corruption_label,
+    _get_corruption_prose,
+    _get_health_label,
+    _get_lucidity_label,
+    _get_visible_equipment,
+)
 
 logger = get_logger(__name__)
 
@@ -157,6 +163,7 @@ def _format_player_look_display(target_player: Any, connection_manager: Any | No
 
     health_label = _get_health_label(stats)
     lucidity_label = _get_lucidity_label(stats)
+    corruption_label = _get_corruption_label(stats)  # pyright: ignore[reportUnknownArgumentType] -- stats is Any here, same as the health/lucidity calls above (target_player: Any)
     visible_equipment = _get_visible_equipment(target_player)
 
     lines = [player_name_display]
@@ -171,6 +178,14 @@ def _format_player_look_display(target_player: Any, connection_manager: Any | No
     lines.append(f"Position: {position}")
     lines.append(f"Health: {health_label}")
     lines.append(f"lucidity: {lucidity_label}")
+    lines.append(f"Corruption: {corruption_label}")
+
+    # #815: atmosphere for a marked-or-worse tier -- the permanent `touched` scar (label alone,
+    # no prose) stays undramatic and private to close examination.
+    corruption_prose = _get_corruption_prose(stats)  # pyright: ignore[reportUnknownArgumentType] -- same Any-from-target_player shape as above
+    if corruption_prose:
+        lines.append("")
+        lines.append(corruption_prose)
 
     return "\n".join(lines)
 

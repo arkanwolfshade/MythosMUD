@@ -3,12 +3,19 @@ Unit tests for player look functionality.
 
 Tests the helper functions for looking at players in rooms.
 """
+# pyright: reportUnknownParameterType=false, reportMissingParameterType=false
+# pyright: reportUnknownMemberType=false
+# TEST_MOCK: the `mock_player` fixture parameter is untyped throughout this file (117 findings
+# already baselined for the identical pattern); new tests using it inherit the same shape.
 
 import uuid
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
+from server.commands.look_helpers import (
+    _CORRUPTION_PROSE,  # pyright: ignore[reportPrivateUsage] -- asserted against directly in tests below, same as the other private helpers imported here
+)
 from server.commands.look_player import (
     _find_matching_players,
     _format_player_look_display,
@@ -17,6 +24,7 @@ from server.commands.look_player import (
     _select_target_player,
     _try_lookup_player_implicit,
 )
+from server.models.corruption import CorruptionTier
 
 
 @pytest.fixture
@@ -163,6 +171,24 @@ def test_format_player_look_display_basic(mock_player):
     assert "Position:" in result
     assert "Health:" in result
     assert "lucidity:" in result
+    assert "Corruption: untainted" in result
+
+
+def test_format_player_look_display_touched_has_no_prose(mock_player):
+    """#815: the permanent scar shows a label but no atmosphere, even on close examination."""
+    mock_player.get_stats.return_value = {**mock_player.get_stats.return_value, "corruption": 10}
+    result = _format_player_look_display(mock_player)
+    assert "Corruption: faintly tainted" in result
+    for prose in _CORRUPTION_PROSE.values():
+        assert prose not in result
+
+
+def test_format_player_look_display_marked_or_worse_adds_prose(mock_player):
+    """#815: a marked-or-worse tier appends its atmosphere paragraph after the label line."""
+    mock_player.get_stats.return_value = {**mock_player.get_stats.return_value, "corruption": 60}
+    result = _format_player_look_display(mock_player)
+    assert "Corruption: defiled" in result
+    assert _CORRUPTION_PROSE[CorruptionTier.CORRUPTED] in result
 
 
 def test_format_player_look_display_with_equipment(mock_player):
