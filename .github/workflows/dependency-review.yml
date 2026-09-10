@@ -14,15 +14,18 @@ permissions:
   contents: read
 
 jobs:
-  dependency-review:
-    name: Dependency Review
+  # Scorecard TokenPermissions (#150): contents:write is mandated by GitHub's Dependency
+  # Submission API (POST .../dependency-graph/snapshots) for the Component Detection step below —
+  # not something a newer action version can avoid. Isolated into its own job so the actual
+  # PR-blocking review job never needs write access, only this snapshot-upload job does.
+  submit-snapshot:
+    name: Submit dependency snapshot
     runs-on: ubuntu-latest
     # contents:write — Component Detection dependency-submission API only.
-    # id-token — OIDC when uploading snapshots; pull-requests — failure comment summary.
+    # id-token — OIDC when uploading snapshots.
     permissions:
       contents: write
       id-token: write
-      pull-requests: write
     # Opt into Node 24 for JS actions until dependency-review-action ships node24 (see GitHub changelog).
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -127,6 +130,32 @@ jobs:
         uses: advanced-security/component-detection-dependency-submission-action@31f25a8de68ae5ce2ca274bc28546a78683c15ce # v0.1.4
         with:
           detectorArgs: UvLock=EnableIfDefaultOff,NpmLockfile3=EnableIfDefaultOff
+
+  # Runs after the snapshot job so a freshly-submitted uv.lock snapshot is available before this
+  # queries the dependency graph; needs only contents:read + pull-requests:write for its own
+  # failure-comment, never contents:write.
+  dependency-review:
+    name: Dependency Review
+    needs: submit-snapshot
+    runs-on: ubuntu-latest
+    # Job-level permissions replace the workflow default entirely (unlisted scopes become
+    # "none"), so contents:read must be restated here even though it matches the top-level default.
+    permissions:
+      contents: read
+      pull-requests: write # PR failure-comment summary only.
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        with:
+          egress-policy: audit
+
+      - name: "Checkout Repository"
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          submodules: false
+          token: ${{ github.token }}
+          ref: ${{ github.event.pull_request.head.sha }}
 
       # Transitive dev deps (e.g. stacktracey via Spectral) may score <3 on OpenSSF; warn only below 2.
       # GHSA-qwww-vcr4-c8h2 is RSC-mode only; MythosMUD SPA uses react-router-dom 7.x (no RSC APIs).
