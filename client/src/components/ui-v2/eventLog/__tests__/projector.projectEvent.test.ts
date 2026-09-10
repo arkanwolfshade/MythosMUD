@@ -234,6 +234,30 @@ describe('projector', () => {
       expect(next.room?.players).toEqual(['Arkan_Lovecraft (linkdead) (warded)']);
     });
 
+    it('does not duplicate self when already listed with a corruption badge (#815)', () => {
+      const prev = {
+        ...getInitialGameState(),
+        player: { name: 'Arkan_Lovecraft', id: 'p1' },
+        room: {
+          id: 'room1',
+          name: 'Patient Bedroom',
+          description: '',
+          exits: {},
+          players: ['Arkan_Lovecraft (defiled)'],
+          npcs: [],
+          occupants: ['Arkan_Lovecraft (defiled)'],
+          occupant_count: 1,
+        },
+      };
+      const next = projectEvent(prev, {
+        event_type: 'chat_message',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { message: 'hello', channel: 'say' },
+      });
+      expect(next.room?.players).toEqual(['Arkan_Lovecraft (defiled)']);
+    });
+
     it('does not inject self when player name is empty', () => {
       const prev = {
         ...getInitialGameState(),

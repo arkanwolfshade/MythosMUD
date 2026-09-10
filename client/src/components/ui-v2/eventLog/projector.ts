@@ -18,11 +18,15 @@ export { getInitialGameState };
 /**
  * Project a single event onto previous state. Pure function; no refs or side effects.
  */
-/** Server appends these to a display name (player_occupant_processor.py); strip before matching self. */
-const GRACE_INDICATOR_SUFFIX = /\s*\((?:linkdead|warded)\)/gi;
+/**
+ * Server appends these to a display name (server/realtime/occupant_display.py): grace-period
+ * badges (linkdead/warded) and, since #815, an ambient corruption badge (marked/defiled/warped,
+ * shown from the `marked` tier up) -- strip all of them before matching self.
+ */
+const NAME_BADGE_SUFFIX = /\s*\((?:linkdead|warded|marked|defiled|warped)\)/gi;
 
-function stripGraceIndicators(displayName: string): string {
-  return displayName.replace(GRACE_INDICATOR_SUFFIX, '').trim();
+function stripNameBadges(displayName: string): string {
+  return displayName.replace(NAME_BADGE_SUFFIX, '').trim();
 }
 
 /** Keep connected self in room.players so Occupants never looks empty after settle. */
@@ -33,7 +37,7 @@ function ensureSelfListedInRoomPlayers(state: GameState): GameState {
     return state;
   }
   const players = room.players ?? [];
-  if (players.some(p => stripGraceIndicators(p).toLowerCase() === name.toLowerCase())) {
+  if (players.some(p => stripNameBadges(p).toLowerCase() === name.toLowerCase())) {
     return state;
   }
   const nextPlayers = [...players, name];
