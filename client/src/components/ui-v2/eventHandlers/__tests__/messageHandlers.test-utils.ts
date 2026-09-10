@@ -3,7 +3,7 @@
  */
 
 import { HealthStatus } from '@/types/health';
-import { LucidityStatus, RescueState } from '@/types/lucidity';
+import { LucidityStatus } from '@/types/lucidity';
 import { vi } from 'vitest';
 import type { MythosTimeState } from '../../types';
 import type { EventHandlerContext } from '../types';
@@ -54,9 +54,6 @@ export const createMockContext = (overrides: Partial<EventHandlerContext> = {}):
   setIsDead: function (_dead: boolean): void {
     throw new Error('Function not implemented.');
   },
-  setIsMortallyWounded: function (_wounded: boolean): void {
-    throw new Error('Function not implemented.');
-  },
   setIsRespawning: function (_respawning: boolean): void {
     throw new Error('Function not implemented.');
   },
@@ -70,9 +67,6 @@ export const createMockContext = (overrides: Partial<EventHandlerContext> = {}):
     throw new Error('Function not implemented.');
   },
   setDeliriumLocation: function (_location: string): void {
-    throw new Error('Function not implemented.');
-  },
-  setRescueState: function (_state: RescueState | null): void {
     throw new Error('Function not implemented.');
   },
   ...overrides,

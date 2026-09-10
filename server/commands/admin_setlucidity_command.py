@@ -11,18 +11,33 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Protocol, cast
 
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..alias_storage import AliasStorage
 from ..database import get_async_session
 from ..exceptions import DatabaseError
+from ..services.lucidity_helpers import CatatoniaObserverProtocol
 from ..services.lucidity_service import LucidityService
 from ..structured_logging.admin_actions_logger import get_admin_actions_logger
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
+
+
+class PlayerLike(Protocol):  # pylint: disable=too-few-public-methods  # Reason: PEP 544 Protocol stub; fields only
+    """Structural shape admin commands need from a resolved player record."""
+
+    current_room_id: str | None
+
+
+class PlayerServiceLike(Protocol):  # pylint: disable=too-few-public-methods  # Reason: PEP 544 Protocol stub
+    """Structural shape admin commands need from the player service."""
+
+    async def resolve_player_name(self, name: str) -> PlayerLike | None:
+        """Resolve a player name to a player record, or None if not found."""
 
 
 def _extract_command_args(command_data: dict[str, Any]) -> tuple[str | None, int | None]:
@@ -62,7 +77,7 @@ def _validate_lcd_value(lcd_value: Any, player_name: str) -> tuple[int | None, d
     return lcd_value_int, None
 
 
-async def _check_admin_permissions(
+async def check_admin_permissions(
     app: Any, player_name: str, player_service: Any
 ) -> tuple[Any | None, dict[str, str] | None]:
     """Check if current player is admin and return player object."""
@@ -83,7 +98,7 @@ async def _check_admin_permissions(
     return current_player_obj, None
 
 
-async def _get_current_lcd(session: Any, target_player_id: uuid.UUID) -> int:
+async def get_current_lcd(session: AsyncSession, target_player_id: uuid.UUID) -> int:
     """Get current LCD value from database, defaulting to 100 if no record exists."""
     from sqlalchemy import select
 
@@ -174,25 +189,35 @@ async def _apply_lucidity_change(ctx: LucidityChangeCtx) -> dict[str, str] | Non
         return {"result": f"Error setting lucidity for {ctx.target_player}: {str(adjust_exc)}"}
 
 
-def _get_player_service_from_app(app: Any) -> Any | None:
+def get_player_service_from_app(app: object) -> PlayerServiceLike | None:
     """Get player service from container, fallback to app.state for backward compatibility."""
-    if app and hasattr(app.state, "container") and app.state.container:
-        return app.state.container.player_service
-    if app:
-        return getattr(app.state, "player_service", None)
-    return None
+    if not app:
+        return None
+    # app.state is Starlette's untyped `State` bag (its own `__getattr__` is declared `Any`) --
+    # cast immediately at this boundary rather than let that Any propagate into our code.
+    state = cast("object | None", getattr(app, "state", None))
+    if state is None:
+        return None
+    container = cast("object | None", getattr(state, "container", None))
+    if container is not None:
+        return cast("PlayerServiceLike | None", getattr(container, "player_service", None))
+    return cast("PlayerServiceLike | None", getattr(state, "player_service", None))
 
 
-def _get_catatonia_registry_from_app(app: Any) -> Any | None:
+def _get_catatonia_registry_from_app(app: object) -> CatatoniaObserverProtocol | None:
     """Get catatonia registry from container, fallback to app.state for backward compatibility."""
-    if app and hasattr(app.state, "container") and app.state.container:
-        return app.state.container.catatonia_registry
-    if app:
-        return getattr(app.state, "catatonia_registry", None)
-    return None
+    if not app:
+        return None
+    state = cast("object | None", getattr(app, "state", None))
+    if state is None:
+        return None
+    container = cast("object | None", getattr(state, "container", None))
+    if container is not None:
+        return cast("CatatoniaObserverProtocol | None", getattr(container, "catatonia_registry", None))
+    return cast("CatatoniaObserverProtocol | None", getattr(state, "catatonia_registry", None))
 
 
-async def _resolve_target_player(
+async def resolve_target_player(
     player_service: Any, target_player: str
 ) -> tuple[uuid.UUID | None, dict[str, str] | None]:
     """Resolve target player name to UUID, returning error message if not found."""
@@ -218,7 +243,7 @@ async def _execute_lucidity_change(  # pylint: disable=too-many-arguments,too-ma
     try:
         async for session in get_async_session():
             lucidity_service = LucidityService(session, catatonia_observer=catatonia_observer)
-            current_lcd = await _get_current_lcd(session, target_player_id)
+            current_lcd = await get_current_lcd(session, target_player_id)
 
             result = await _apply_lucidity_change(
                 LucidityChangeCtx(
@@ -282,13 +307,13 @@ async def _setup_command_execution(
     app: Any, player_name: str, target_player: str, player_service: Any
 ) -> tuple[str | None, uuid.UUID | None, dict[str, str] | None]:
     """Setup command execution by checking permissions and resolving target player."""
-    current_player_obj, permission_error = await _check_admin_permissions(app, player_name, player_service)
+    current_player_obj, permission_error = await check_admin_permissions(app, player_name, player_service)
     if permission_error or current_player_obj is None:
         return None, None, permission_error or {"result": "Current player not found."}
 
     current_user_id = str(current_player_obj.id)
 
-    target_player_id, resolve_error = await _resolve_target_player(player_service, target_player)
+    target_player_id, resolve_error = await resolve_target_player(player_service, target_player)
     if resolve_error:
         return current_user_id, None, resolve_error
 
@@ -323,7 +348,7 @@ async def _handle_admin_set_lucidity_command(  # pylint: disable=too-many-argume
         return {"result": "LCD value is required."}
 
     # Get player service from container
-    player_service = _get_player_service_from_app(app)
+    player_service = get_player_service_from_app(app)
     if not player_service:
         return {"result": "Player service not available."}
 

@@ -26,6 +26,7 @@ vi.mock('../../../utils/mythosTime', () => ({
     daypart: payload.daypart || 'morning',
     hour: 12,
     minute: 0,
+    active_holidays: payload.active_holidays ?? [],
   })),
   formatMythosTime12Hour: vi.fn((_clock: string | undefined) => '12:00 PM'),
   DAYPART_MESSAGES: {
@@ -63,13 +64,11 @@ describe('systemHandlers', () => {
     setLucidityStatus: vi.fn(),
     setMythosTime: vi.fn(),
     setIsDead: vi.fn(),
-    setIsMortallyWounded: vi.fn(),
     setIsRespawning: vi.fn(),
     setIsDelirious: vi.fn(),
     setIsDeliriumRespawning: vi.fn(),
     setDeathLocation: vi.fn(),
     setDeliriumLocation: vi.fn(),
-    setRescueState: vi.fn(),
     onLogout: undefined,
   };
 
@@ -78,6 +77,7 @@ describe('systemHandlers', () => {
     mockContext.lastDaypartRef.current = null;
     mockContext.lastHourRef.current = null;
     mockContext.lastQuarterHourRef.current = null;
+    mockContext.lastHolidayIdsRef.current = [];
     vi.useFakeTimers();
   });
 
@@ -559,6 +559,93 @@ describe('systemHandlers', () => {
         })
       );
       expect(mockContext.lastDaypartRef.current).toBe('afternoon');
+    });
+
+    describe('holiday transitions', () => {
+      const hallowmas = { id: 'hol_hallowmas', name: 'Hallowmas' };
+      const yule = { id: 'hol_yule', name: 'Yule' };
+
+      it('should not append a holiday message on the first payload (ref unset)', () => {
+        mockContext.lastDaypartRef.current = null;
+        mockContext.lastHolidayIdsRef.current = [];
+        const event = {
+          event_type: 'mythos_time_update',
+          timestamp: new Date().toISOString(),
+          sequence_number: 1,
+          data: { mythos_clock: '12:00 PM', daypart: 'afternoon', active_holidays: [hallowmas] },
+        };
+        handleMythosTimeUpdate(event, mockContext, mockAppendMessage);
+        expect(mockAppendMessage).not.toHaveBeenCalledWith(
+          expect.objectContaining({ text: expect.stringContaining('observance') })
+        );
+        expect(mockContext.lastHolidayIdsRef.current).toEqual([hallowmas]);
+      });
+
+      it('should append a begins message when a holiday starts', () => {
+        mockContext.lastDaypartRef.current = 'afternoon';
+        mockContext.lastHolidayIdsRef.current = [];
+        const event = {
+          event_type: 'mythos_time_update',
+          timestamp: new Date().toISOString(),
+          sequence_number: 1,
+          data: { mythos_clock: '12:00 PM', daypart: 'afternoon', active_holidays: [hallowmas] },
+        };
+        handleMythosTimeUpdate(event, mockContext, mockAppendMessage);
+        expect(mockAppendMessage).toHaveBeenCalledWith(
+          expect.objectContaining({ text: '[Time] The observance of Hallowmas begins.' })
+        );
+        expect(mockContext.lastHolidayIdsRef.current).toEqual([hallowmas]);
+      });
+
+      it('should append a has-passed message when a holiday ends', () => {
+        mockContext.lastDaypartRef.current = 'afternoon';
+        mockContext.lastHolidayIdsRef.current = [hallowmas];
+        const event = {
+          event_type: 'mythos_time_update',
+          timestamp: new Date().toISOString(),
+          sequence_number: 1,
+          data: { mythos_clock: '12:00 PM', daypart: 'afternoon', active_holidays: [] },
+        };
+        handleMythosTimeUpdate(event, mockContext, mockAppendMessage);
+        expect(mockAppendMessage).toHaveBeenCalledWith(
+          expect.objectContaining({ text: '[Time] The observance of Hallowmas has passed.' })
+        );
+        expect(mockContext.lastHolidayIdsRef.current).toEqual([]);
+      });
+
+      it('should not append a holiday message when the active set is unchanged', () => {
+        mockContext.lastDaypartRef.current = 'afternoon';
+        mockContext.lastHolidayIdsRef.current = [hallowmas];
+        const event = {
+          event_type: 'mythos_time_update',
+          timestamp: new Date().toISOString(),
+          sequence_number: 1,
+          data: { mythos_clock: '12:00 PM', daypart: 'afternoon', active_holidays: [hallowmas] },
+        };
+        handleMythosTimeUpdate(event, mockContext, mockAppendMessage);
+        expect(mockAppendMessage).not.toHaveBeenCalledWith(
+          expect.objectContaining({ text: expect.stringContaining('observance') })
+        );
+      });
+
+      it('should append exactly one begins and one has-passed when one holiday ends and another starts', () => {
+        mockContext.lastDaypartRef.current = 'afternoon';
+        mockContext.lastHolidayIdsRef.current = [hallowmas];
+        const event = {
+          event_type: 'mythos_time_update',
+          timestamp: new Date().toISOString(),
+          sequence_number: 1,
+          data: { mythos_clock: '12:00 PM', daypart: 'afternoon', active_holidays: [yule] },
+        };
+        handleMythosTimeUpdate(event, mockContext, mockAppendMessage);
+        expect(mockAppendMessage).toHaveBeenCalledWith(
+          expect.objectContaining({ text: '[Time] The observance of Hallowmas has passed.' })
+        );
+        expect(mockAppendMessage).toHaveBeenCalledWith(
+          expect.objectContaining({ text: '[Time] The observance of Yule begins.' })
+        );
+        expect(mockContext.lastHolidayIdsRef.current).toEqual([yule]);
+      });
     });
   });
 

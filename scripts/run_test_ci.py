@@ -266,31 +266,21 @@ if IN_CI:
             f"[INFO] Setting PYTHONPATH={PROJECT_ROOT}{path_sep}{venv_site_packages}... to ensure packages and project are found"
         )
 
-    # Run tests with coverage. The whole logging file_setup module crashes pytest-xdist
-    # workers (QueueListener/root logger teardown in forked process), so run that file
-    # with -n 0 and merge coverage.
-    # Node id for deselect is relative to pytest rootdir (server/), so no "server/" prefix.
-    FLAKY_XDIST_MODULE_NODE_ID = "tests/unit/structured_logging/test_logging_file_setup.py"
-    FLAKY_XDIST_MODULE_PATH = "server/tests/unit/structured_logging/test_logging_file_setup.py"
-    # Run 1: full suite excluding integration and the logging file_setup module (coverage to
-    # .coverage.unit -- NOT the bare .coverage; that name collides with `coverage combine`'s own
-    # default output file below, and combine overwrites an input that shares its output name
-    # before reading it, silently discarding this run's data (reproduced locally: the combined
-    # total dropped to ~3% with only the tiny serial run's data surviving). See #668.
-    # Integration tests (-m integration) are excluded here by design (not for flakiness): they require
-    # a runtime DB and single-worker execution and run under 'make test-playwright' (Makefile).
-    # Repository/EventBus and other integration paths are verified in that flow. This keeps the CI
-    # backend job fast and stable without a dedicated integration DB; coverage here is unit-only.
-    # -n 0: overrides server/pytest.ini's default -n auto. pytest-xdist's worker restart/shutdown
-    # protocol produces false "worker crashed" reports under -n auto (workers observed exiting
-    # cleanly -- Exit Status: 0, no OS-level fault -- yet reported as crashed); a decade-old,
-    # unresolved, cross-platform xdist/execnet gap (see #724). Serial measured 100% clean across
-    # every run in that investigation, at comparable wall-clock to parallel-when-it-doesn't-crash
-    # on this suite (per-worker import cost swamps the parallelism gain). This is the CI-gating
-    # invocation, so it goes serial; local `make test-server` keeps -n auto for dev-loop speed.
-    env_unit = env.copy()
-    coverage_unit = os.path.join(PROJECT_ROOT, ".coverage.unit")
-    env_unit["COVERAGE_FILE"] = coverage_unit
+    # Run tests with coverage. The suite runs serially (see #724: pytest-xdist's worker
+    # restart/shutdown protocol produces false "worker crashed" reports under any per-item
+    # scheduler -- workers observed exiting cleanly, Exit Status: 0, no OS-level fault, yet
+    # reported as crashed; a decade-old, unresolved, cross-platform xdist/execnet gap with no
+    # fix to adopt). Serial measured 100% clean across every run, at comparable wall-clock to
+    # parallel-when-it-doesn't-crash on this suite (per-worker import cost swamps the
+    # parallelism gain). pytest-xdist has been removed from the project entirely, so there is
+    # no longer a separate xdist-unsafe module to run apart from the rest (that module-level
+    # split existed only because it crashed xdist *workers*) and no worker-count knob to tune.
+    # Integration tests (-m integration) are excluded here by design (not for flakiness): they
+    # require a runtime DB and run under 'make test-playwright' (Makefile). Repository/EventBus
+    # and other integration paths are verified in that flow. This keeps the CI backend job fast
+    # and stable without a dedicated integration DB; coverage here is unit-only.
+    coverage_file = os.path.join(PROJECT_ROOT, ".coverage")
+    env["COVERAGE_FILE"] = coverage_file
     _ = safe_run_static(
         python_exe,
         "-m",
@@ -298,51 +288,12 @@ if IN_CI:
         "server/tests/",
         "-m",
         "not integration",
-        "--deselect",
-        FLAKY_XDIST_MODULE_NODE_ID,
-        "-n",
-        "0",
         "--cov=server",
         "--cov-report=",
         "--cov-config=.coveragerc",
         "--cov-fail-under=0",
         "-v",
         "--tb=short",
-        cwd=PROJECT_ROOT,
-        check=True,
-        env=env_unit,
-    )
-    # Run 2: logging file_setup module only, no xdist (coverage to .coverage.serial)
-    env_serial = env.copy()
-    coverage_serial = os.path.join(PROJECT_ROOT, ".coverage.serial")
-    env_serial["COVERAGE_FILE"] = coverage_serial
-    _ = safe_run_static(
-        python_exe,
-        "-m",
-        "pytest",
-        FLAKY_XDIST_MODULE_PATH,
-        "-n",
-        "0",
-        "--cov=server",
-        "--cov-report=",
-        "--cov-config=.coveragerc",
-        "--cov-fail-under=0",
-        "-v",
-        "--tb=short",
-        cwd=PROJECT_ROOT,
-        check=True,
-        env=env_serial,
-    )
-    # Merge coverage and generate reports (--keep before paths so it is not parsed as a path).
-    # Neither input shares the default combined-output filename (.coverage) -- see the note above.
-    _ = safe_run_static(
-        python_exe,
-        "-m",
-        "coverage",
-        "combine",
-        "--keep",
-        coverage_unit,
-        coverage_serial,
         cwd=PROJECT_ROOT,
         check=True,
         env=env,
@@ -512,11 +463,10 @@ else:
         # Playwright E2E tests are excluded from test-ci (run separately in CI workflow)
         # "cd /workspace/client && npm run test && "
         # Use .venv-ci from Docker volume (preserved from build, not overwritten by mount)
-        # Ensure pytest-mock and pytest-xdist are installed in the venv before running tests
-        # pytest-xdist is required for -n auto in pytest.ini
+        # Ensure pytest-mock is installed in the venv before running tests
         # -m 'not integration': integration tests run under make test-playwright (see Makefile).
         "cd /workspace && source .venv-ci/bin/activate && "
-        "uv pip install pytest-mock>=3.14.0 pytest-xdist>=3.8.0 && "
+        "uv pip install pytest-mock>=3.14.0 && "
         "PYTHONUNBUFFERED=1 pytest server/tests/ -m 'not integration' --cov=server --cov-report=xml "
         "--cov-report=html --cov-config=.coveragerc -v --tb=short && "
         "python scripts/check_coverage_thresholds.py"

@@ -1,6 +1,6 @@
 # Contributing to MythosMUD
 
-**Version 1.1.0** · MythosMUD · 2026-08-28
+**Version 1.2.0** · MythosMUD · 2026-09-08
 
 ---
 
@@ -1216,7 +1216,8 @@ We value all contributions, large and small. Contributors will be:
 - [PLANNING.md](PLANNING.md) - Development roadmap
 - [SECURITY.md](SECURITY.md) - Security policies
 - [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) - Development guide
-- [docs/DEVELOPMENT_AI.md](docs/DEVELOPMENT_AI.md) - AI agent guidelines
+- [AGENTS.md](AGENTS.md) - Authoritative AI agent rules
+- [docs/DEVELOPMENT_AI.md](docs/DEVELOPMENT_AI.md) - AI agent on-ramp (router)
 
 ### Technical Documentation
 
@@ -1269,7 +1270,8 @@ If you have questions about contributing:
 
 **[SPEC]**
 
-| Version | Date       | Change                             |
-| ------- | ---------- | ---------------------------------- |
-| 1.0.0   | 2026-07-30 | Initial HADS structural conversion |
-| 1.1.0 | 2026-08-28 | Fix broken `docs/PRD.md` links (now in `docs/archive/`); remove 2 dead `server/tests/SETUP.md` references (file deleted in #337, no successor) (#695) |
+| Version | Date       | Change                                                                                                                                                |
+| ------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.2.0   | 2026-09-08 | Point AI essential reading at AGENTS.md; DEVELOPMENT_AI.md is on-ramp router                                                                          |
+| 1.1.0   | 2026-08-28 | Fix broken `docs/PRD.md` links (now in `docs/archive/`); remove 2 dead `server/tests/SETUP.md` references (file deleted in #337, no successor) (#695) |
+| 1.0.0   | 2026-07-30 | Initial HADS structural conversion                                                                                                                    |

@@ -8,12 +8,14 @@ import uuid
 from typing import TYPE_CHECKING, Any, cast
 
 from ..services.npc_instance_service import get_npc_instance_service
+from ..services.phantom_visibility import room_has_hallucinating_viewer
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.room_renderer import build_room_drop_summary, clone_room_drops
 from .envelope import build_event
 from .occupant_display import format_occupant_display_name
+from .room_update_event_builder import RoomOccupancyPayload, build_room_update_event
+from .room_viewer_fanout import send_personalized_room_events
 from .running_app import connection_manager_from_running_app
-from .websocket_helpers import convert_uuids_to_strings, get_npc_name_from_instance
+from .websocket_helpers import get_npc_name_from_instance
 
 if TYPE_CHECKING:
     from ..models.room import Room
@@ -106,54 +108,6 @@ async def get_npc_occupants(room: "Room | Any", room_id: str) -> list[str]:
             occupant_names.append(npc_name)
 
     return occupant_names
-
-
-async def build_room_update_event(
-    room: "Room | Any",
-    room_id: str,
-    player_id: str,
-    occupant_names: list[str],
-    connection_manager: "ConnectionManager | Any",
-    players: list[str] | None = None,
-    npcs: list[str] | None = None,
-) -> dict[str, Any]:
-    """Build room update event with room data and occupants (players/npcs for structured client UI)."""
-    room_data = room.to_dict() if hasattr(room, "to_dict") else room
-    if isinstance(room_data, dict):
-        room_data = await connection_manager.convert_room_players_uuids_to_names(room_data)
-
-    room_data = convert_uuids_to_strings(room_data)
-
-    room_drops: list[dict[str, Any]] = []
-    room_manager = getattr(connection_manager, "room_manager", None)
-    if room_manager and hasattr(room_manager, "list_room_drops"):
-        try:
-            room_drops = clone_room_drops(room_manager.list_room_drops(room_id))
-        except (AttributeError, KeyError, TypeError, ValueError) as exc:
-            logger.debug("Failed to collect room drops for broadcast", room_id=room_id, error=str(exc))
-
-    drop_summary = build_room_drop_summary(room_drops)
-
-    payload: dict[str, Any] = {
-        "room": room_data,
-        "entities": [],
-        "occupants": occupant_names,
-        "occupant_count": len(occupant_names),
-        "room_drops": room_drops,
-        "drop_summary": drop_summary,
-    }
-    if players is not None:
-        payload["players"] = players
-    if npcs is not None:
-        payload["npcs"] = npcs
-
-    event_room_id = getattr(room, "id", None) or room_id
-    return build_event(
-        "room_update",
-        payload,
-        player_id=player_id,
-        room_id=event_room_id,
-    )
 
 
 async def _resolve_room_with_fallback(
@@ -263,7 +217,7 @@ async def broadcast_room_update(  # pylint: disable=too-many-locals,too-many-sta
         npc_occupants = await get_npc_occupants(room, effective_room_id) if room else []
         occupant_names = list(player_occupant_names) + list(npc_occupants)
 
-        occ_payload = {
+        occ_payload: RoomOccupancyPayload = {
             "occupants": occupant_names,
             "count": len(occupant_names),
             "players": player_occupant_names,
@@ -280,6 +234,33 @@ async def broadcast_room_update(  # pylint: disable=too-many-locals,too-many-sta
             logger.debug("Room occupants broadcast (no room cache) completed", room_id=effective_room_id)
             return
 
+        # Only update a player's subscription when player_id is a valid UUID (e.g. killer).
+        # When triggering a room-only refresh (e.g. after NPC death via EventBus), caller may pass
+        # room_id as player_id; skip subscription update in that case. A genuine failure inside
+        # update_player_room_subscription itself now propagates to this function's own outer
+        # except below, instead of being misread as "player_id just wasn't a UUID".
+        if _looks_like_player_uuid(player_id):
+            await update_player_room_subscription(connection_manager, player_id, room_id)
+
+        # Fast path (#714): a plain broadcast is only correct when nobody in the room is
+        # hallucination-eligible. `room.get_players()` is the same membership source
+        # get_npc_occupants above already trusts for NPCs; checking active phantoms against it
+        # is an in-memory lookup, not a DB round trip, so this stays cheap on every call.
+        room_player_ids = room.get_players()
+        if room_has_hallucinating_viewer(room_player_ids):
+            logger.debug("Sending personalized room events (hallucination-eligible viewer)", room_id=room_id)
+            await send_personalized_room_events(
+                connection_manager,
+                room,
+                room_id,
+                player_id,
+                room_player_ids,
+                player_occupant_names,
+                npc_occupants,
+                occ_payload,
+            )
+            return
+
         update_event = await build_room_update_event(
             room,
             room_id,
@@ -289,14 +270,6 @@ async def broadcast_room_update(  # pylint: disable=too-many-locals,too-many-sta
             players=player_occupant_names,
             npcs=npc_occupants,
         )
-
-        # Only update a player's subscription when player_id is a valid UUID (e.g. killer).
-        # When triggering a room-only refresh (e.g. after NPC death via EventBus), caller may pass
-        # room_id as player_id; skip subscription update in that case. A genuine failure inside
-        # update_player_room_subscription itself now propagates to this function's own outer
-        # except below, instead of being misread as "player_id just wasn't a UUID".
-        if _looks_like_player_uuid(player_id):
-            await update_player_room_subscription(connection_manager, player_id, room_id)
 
         logger.debug("Broadcasting room update to room", room_id=room_id)
         await connection_manager.broadcast_to_room(room_id, update_event)

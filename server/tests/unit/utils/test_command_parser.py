@@ -5,6 +5,10 @@ Tests the CommandParser class which provides secure command parsing and validati
 """
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+# pyright: reportUnknownParameterType=false, reportMissingParameterType=false
+# pyright: reportUnknownVariableType=false, reportUnknownMemberType=false
+# TEST_MOCK: the `command_parser` fixture parameter is untyped throughout this file (207 findings
+# already baselined for the identical pattern); new tests using it inherit the same shape.
 
 from unittest.mock import MagicMock, patch
 
@@ -68,6 +72,16 @@ def test_parse_command_valid_look(command_parser):
 
     assert isinstance(result, Command)
     assert result.command_type == CommandType.LOOK
+
+
+def test_parse_command_valid_cleanse(command_parser):
+    """#804: parse_command must recognize 'cleanse' -- this is the exact gate a new command's
+    (CommandType, CommandFactory registration, factory dict entry) can silently miss, leaving
+    the handler registered in command_service.py but unreachable through real command input."""
+    result = command_parser.parse_command("cleanse")
+
+    assert isinstance(result, Command)
+    assert result.command_type == CommandType.CLEANSE
 
 
 def test_parse_command_valid_go(command_parser):

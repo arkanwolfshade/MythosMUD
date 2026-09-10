@@ -6,7 +6,7 @@ vi.useFakeTimers();
 
 // Mock WebSocket
 class MockWebSocket implements WebSocket {
-  public readyState: number = WebSocket.CONNECTING;
+  public readyState: 0 | 1 | 2 | 3 = WebSocket.CONNECTING;
   public binaryType: BinaryType = 'blob';
   public bufferedAmount = 0;
   public extensions = '';

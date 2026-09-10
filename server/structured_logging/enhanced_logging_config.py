@@ -52,7 +52,6 @@ from server.structured_logging.logging_processors import (
     set_global_player_service,
 )
 from server.structured_logging.logging_utilities import (
-    detect_environment,
     ensure_log_directory,
     load_player_guid_formatter_class,
     resolve_log_base,
@@ -76,8 +75,10 @@ _create_aggregator_handler = create_aggregator_handler
 _setup_enhanced_file_logging = setup_enhanced_file_logging
 
 # Module-level logger for internal use (infrastructure only; app code uses get_logger()).
-# structlog._config types get_logger as Any; cast -> BoundLogger for basedpyright; mypy flags redundant-cast.
-logger = cast(BoundLogger, structlog.get_logger(__name__))  # type: ignore[redundant-cast]
+# Upstream structlog deliberately types get_logger() as Any: the bound logger class is chosen at
+# runtime by configure(). Both checkers now agree on that (server/stubs deleted in #784), so this
+# cast is the honest narrowing at the library boundary rather than a redundant one.
+logger = cast(BoundLogger, structlog.get_logger(__name__))
 
 
 class _LoggingState:  # pylint: disable=too-few-public-methods  # Reason: State container class with focused responsibility, minimal public interface
@@ -91,9 +92,7 @@ _logging_state = _LoggingState()
 
 
 def configure_enhanced_structlog(
-    environment: str | None = None,
-    log_level: str = "INFO",
-    log_config: dict[str, object] | None = None,
+    config: LoggingConfig,
     player_service: object | None = None,
     enable_async: bool = True,
 ) -> None:
@@ -101,14 +100,11 @@ def configure_enhanced_structlog(
     Configure enhanced Structlog with MDC, security, and performance features.
 
     Args:
-        environment: Environment name (auto-detected if None)
-        log_level: Logging level (DEBUG, INFO, WARNING, ERROR)
-        log_config: Logging configuration dictionary
+        config: Logging configuration
         player_service: Optional player service for GUID-to-name conversion
         enable_async: Enable async logging for better performance
     """
-    if environment is None:
-        environment = detect_environment()
+    environment = config.environment
 
     # Base processors with MDC support (no renderer)
     base_processors = [
@@ -134,8 +130,8 @@ def configure_enhanced_structlog(
 
     # Configure standard library logging for file output FIRST
     # This ensures file handlers are set up before structlog configuration
-    if log_config and not bool(log_config.get("disable_logging", False)):
-        setup_enhanced_file_logging(environment, log_config, log_level, player_service, enable_async)
+    if not config.disable_logging:
+        setup_enhanced_file_logging(config, config.level, player_service, enable_async)
 
     # Configure structlog with a custom renderer that strips ANSI codes
     def strip_ansi_renderer(_logger: object, name: str, event_dict: EventDict) -> str | bytes:
@@ -175,7 +171,7 @@ def configure_enhanced_structlog(
                     structlog.stdlib.add_log_level,
                     structlog.processors.TimeStamper(fmt="iso"),
                     structlog.processors.format_exc_info,
-                    structlog.dev.ConsoleRenderer(),  # type: ignore[attr-defined]  # Reason: structlog.dev module exists at runtime but type stubs may not include it, this is fallback configuration for error recovery
+                    structlog.dev.ConsoleRenderer(),
                 ],
             ),
             wrapper_class=BoundLogger,
@@ -184,12 +180,11 @@ def configure_enhanced_structlog(
 
     # AI Agent: Now that structlog is configured, log the enhanced error handling setup
     # This confirms that the global error handler is capturing all errors from all modules
-    if log_config and not bool(log_config.get("disable_logging", False)):
-        log_base_raw = log_config.get("log_base", "logs")
-        env_log_dir = resolve_log_base(str(log_base_raw) if log_base_raw is not None else "logs") / environment
+    if not config.disable_logging:
+        env_log_dir = resolve_log_base(config.log_base) / environment
         errors_log_path = env_log_dir / "errors.log"
-        # NOTE: structlog.get_logger is Any in stubs; cast aligns with BoundLogger.
-        configured_logger = cast(BoundLogger, structlog.get_logger(__name__))  # type: ignore[redundant-cast]
+        # NOTE: upstream structlog types get_logger() as Any; cast narrows to BoundLogger.
+        configured_logger = cast(BoundLogger, structlog.get_logger(__name__))
         configured_logger.info(
             "Enhanced error logging configured",
             errors_log_path=str(errors_log_path),
@@ -222,32 +217,13 @@ def setup_enhanced_logging(
         )
         return
 
-    logging_config: dict[str, object] = {
-        "environment": config.environment,
-        "level": config.level,
-        "format": config.format,
-        "log_base": config.log_base,
-        "rotation": {
-            "max_size": config.rotation_max_size,
-            "backup_count": config.rotation_backup_count,
-        },
-        "compression": config.compression,
-        "disable_logging": config.disable_logging,
-    }
-    environment = config.environment
-    log_level = config.level
     enable_async = True  # no LoggingConfig field yet; preserves the historical flat-dict default
 
-    # Check if logging should be disabled
-    disable_logging = config.disable_logging
+    # Configure enhanced Structlog (file handlers are skipped internally when config.disable_logging)
+    configure_enhanced_structlog(config, player_service, enable_async)
 
-    if disable_logging:
-        # Configure minimal logging without file handlers
-        configure_enhanced_structlog(environment, log_level, {"disable_logging": True}, player_service)
+    if config.disable_logging:
         return
-
-    # Configure enhanced Structlog
-    configure_enhanced_structlog(environment, log_level, logging_config, player_service, enable_async)
 
     # Configure uvicorn to use our enhanced StructLog system
     _configure_enhanced_uvicorn_logging()
@@ -259,9 +235,9 @@ def setup_enhanced_logging(
     setup_logger = get_logger("server.structured_logging.enhanced")
     setup_logger.info(
         "Enhanced logging system initialized",
-        environment=environment,
-        log_level=log_level,
-        log_base=logging_config.get("log_base", "logs"),
+        environment=config.environment,
+        log_level=config.level,
+        log_base=config.log_base,
         mdc_enabled=True,
         security_sanitization=True,
         correlation_ids=True,
@@ -327,7 +303,7 @@ def get_enhanced_logger(name: str) -> BoundLogger:
     base_logger = get_logger(name)
 
     # structlog.wrap_logger is typed as Any in stubs; cast aligns with BoundLogger for basedpyright.
-    return cast(BoundLogger, structlog.wrap_logger(base_logger))  # type: ignore[redundant-cast]
+    return cast(BoundLogger, structlog.wrap_logger(base_logger))
 
 
 def get_logger(name: str) -> BoundLogger:
@@ -350,7 +326,7 @@ def get_logger(name: str) -> BoundLogger:
         Configured Structlog logger instance
     """
     # NOTE: Public API; same as structlog.get_logger with return type for callers.
-    return cast(BoundLogger, structlog.get_logger(name))  # type: ignore[redundant-cast]
+    return cast(BoundLogger, structlog.get_logger(name))
 
 
 def update_logging_with_player_service(player_service: object) -> None:

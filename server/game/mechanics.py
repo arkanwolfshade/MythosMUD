@@ -6,9 +6,11 @@ lucidity, fear, corruption, healing, and damage mechanics.
 """
 
 from pathlib import Path  # noqa: F401  # pylint: disable=unused-import  # Reserved for future use
+from typing import cast
 
 from ..async_persistence import AsyncPersistenceLayer
 from ..exceptions import ValidationError
+from ..services.corruption_service import CorruptionPersistenceProtocol, CorruptionService
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
 
@@ -88,7 +90,13 @@ class GameMechanicsService:
                 user_friendly="Player not found",
             )
 
-        await self.persistence.apply_corruption(player, amount, source)
+        # #804: route through CorruptionService, not persistence.apply_corruption directly --
+        # it clamps 0..100, logs the ledger row, and updates the tier cache. Cast needed:
+        # AsyncPersistenceLayer.save_player(player: Player) doesn't structurally satisfy
+        # CorruptionPersistenceProtocol's (player: CorruptionPersistencePlayer) parameter under
+        # strict contravariance, even though Player satisfies CorruptionPersistencePlayer.
+        persistence = cast(CorruptionPersistenceProtocol, cast(object, self.persistence))
+        _ = await CorruptionService(persistence).apply_corruption_adjustment(player_uuid, amount, reason_code=source)
         logger.info("Corruption applied", player_id=player_id, amount=amount, source=source)
         return True, f"Applied {amount} corruption to {player.name}"
 

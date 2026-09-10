@@ -206,6 +206,13 @@ def _cleanup_player_data(player_id: uuid.UUID, manager: _DisconnectConnectionMan
 
     phantom_hostile_service.clear_all_phantoms(player_id)
 
+    # #804: corruption_tier_cache is write-through with no tick-loop backstop (unlike
+    # lucidity_tier_cache), so a stale entry would otherwise survive until the player's next
+    # corruption adjustment, however long that is.
+    from ..services.corruption_tier_cache import corruption_tier_cache
+
+    corruption_tier_cache.clear(player_id)
+
 
 async def _apply_disconnect_side_effects(
     player_id: uuid.UUID,

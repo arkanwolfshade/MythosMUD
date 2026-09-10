@@ -92,7 +92,6 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
     mythosTime,
     healthStatus,
     lucidityStatus,
-    isMortallyWounded,
     isDead,
     deathLocation,
     isRespawning,
@@ -166,7 +165,7 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
   const showPartyModal = Boolean(
     gameState.pendingPartyInvite && clearedPartyInviteId !== gameState.pendingPartyInvite.invite_id
   );
-  const containerClass = `game-terminal-container ${isMortallyWounded ? 'mortally-wounded' : ''} ${isDead ? 'dead' : ''}`;
+  const containerClass = `game-terminal-container ${isDead ? 'dead' : ''}`;
   const currentRoomForMenu =
     gameState.room == null
       ? null

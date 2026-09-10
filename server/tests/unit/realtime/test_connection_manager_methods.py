@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import logging
 import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -243,6 +244,21 @@ async def test_disconnect_websocket_connection_impl_success(mock_manager: MagicM
 
 
 @pytest.mark.asyncio
+async def test_disconnect_websocket_connection_impl_missing_connection_logs_debug_not_warning(
+    mock_manager: MagicMock, caplog: pytest.LogCaptureFixture
+) -> None:
+    """A connection absent from metadata is an expected race (the only caller, /rest's deferred
+    disconnect, snapshots connection IDs before a delay and may find one already closed on its
+    own by the time it runs -- #297), not a fault. Must log at debug, not warning."""
+    player_id = uuid.uuid4()
+    mock_manager.connection_metadata = {}
+    with caplog.at_level(logging.WARNING, logger="server.realtime.connection_manager_methods"):
+        result = await cm_methods.disconnect_websocket_connection_impl(mock_manager, player_id, "missing-conn")
+    assert result is False
+    assert not any("Connection not found in metadata" in r.message for r in caplog.records)
+
+
+@pytest.mark.asyncio
 async def test_check_connection_health_impl(mock_manager: MagicMock) -> None:
     player_id = uuid.uuid4()
     check_player_connection_health: AsyncMock = AsyncMock(return_value={"ok": True})
@@ -375,6 +391,27 @@ async def test_subscribe_to_room_impl(mock_manager: MagicMock) -> None:
     mock_manager.room_manager = room_manager
     await cm_methods.subscribe_to_room_impl(mock_manager, player_id, "room-1")
     subscribe_to_room.assert_called_once_with(str(player_id), "room-1")
+
+
+def test_update_player_room_cache_impl_refreshes_existing_entry(mock_manager: MagicMock) -> None:
+    """#297/#610: online_players[...]['current_room_id'] is written once at connect and never
+    touched by movement, so message_filtering.is_player_in_room compares a live message's room_id
+    against a stale value -- silently dropping every room-scoped chat recipient who moved rooms
+    since their last (re)connect. This must actually refresh the cache on movement."""
+    player_id = uuid.uuid4()
+    mock_manager.online_players = {player_id: {"current_room_id": "room-old", "position": "standing"}}
+    cm_methods.update_player_room_cache_impl(mock_manager, player_id, "room-new")
+    assert mock_manager.online_players[player_id]["current_room_id"] == "room-new"
+    # Only the room field changes -- other tracked fields survive untouched.
+    assert mock_manager.online_players[player_id]["position"] == "standing"
+
+
+def test_update_player_room_cache_impl_player_not_online_is_a_noop(mock_manager: MagicMock) -> None:
+    """A player absent from online_players (e.g. NPC-driven room event, or a race with disconnect
+    cleanup) must not raise or fabricate an entry."""
+    mock_manager.online_players = {}
+    cm_methods.update_player_room_cache_impl(mock_manager, uuid.uuid4(), "room-new")
+    assert mock_manager.online_players == {}
 
 
 @pytest.mark.asyncio

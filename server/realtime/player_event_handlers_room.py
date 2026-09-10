@@ -50,6 +50,8 @@ class RoomConnectionManager(Protocol):
 
     async def unsubscribe_from_room(self, player_id: uuid.UUID, room_id: str) -> None: ...
 
+    def update_player_room_cache(self, player_id: uuid.UUID, room_id: str) -> None: ...
+
     async def send_personal_message(self, player_id: uuid.UUID, event: Mapping[str, object]) -> None: ...
 
     async def convert_room_players_uuids_to_names(self, room_data: JsonMap) -> JsonMap: ...
@@ -211,6 +213,7 @@ class PlayerRoomEventHandler:
             if self.connection_manager is None:
                 return
             await self.connection_manager.subscribe_to_room(player_id_uuid, room_id)
+            self.connection_manager.update_player_room_cache(player_id_uuid, room_id)
         except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
             self._logger.warning(
                 "Failed to subscribe player to room", player_id=player_id, room_id=room_id, error=str(e)

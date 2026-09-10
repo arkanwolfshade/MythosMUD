@@ -11,6 +11,7 @@ This package contains all database models including:
 from .alias import Alias
 from .calendar import HolidayModel, NPCScheduleModel
 from .container import ContainerComponent, ContainerLockState, ContainerSourceType
+from .corruption import CorruptionAdjustmentLog, CorruptionCooldown, CorruptionTier, compute_tier
 from .dialogue import DialogueDefinition
 from .emote import Emote, EmoteAlias
 from .game import AttributeType, Stats, StatusEffect, StatusEffectType
@@ -44,6 +45,10 @@ __all__ = [
     "LucidityAdjustmentLog",
     "LucidityExposureState",
     "LucidityCooldown",
+    "CorruptionAdjustmentLog",
+    "CorruptionCooldown",
+    "CorruptionTier",
+    "compute_tier",
     "Invite",
     "Alias",
     "Emote",

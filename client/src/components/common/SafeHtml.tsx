@@ -19,7 +19,7 @@ interface SafeHtmlProps extends React.HTMLAttributes<HTMLElement> {
   /**
    * Host element tag name (default: 'span'). Intrinsic tags only.
    */
-  tag?: keyof JSX.IntrinsicElements;
+  tag?: keyof React.JSX.IntrinsicElements;
 }
 
 /**

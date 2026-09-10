@@ -14,7 +14,7 @@ Refactored to delegate to specialized modules for better maintainability.
 # pylint: disable=too-many-instance-attributes  # Reason: Event handler requires many service and state tracking attributes
 
 import uuid
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from structlog.stdlib import BoundLogger
 
@@ -33,6 +33,7 @@ from ..events.event_types import (
     PlayerXPAwardEvent,
 )
 from ..services.chat_logger import ChatLogger, chat_logger
+from ..services.phantom_visibility import room_has_hallucinating_viewer
 from ..services.room_sync_service import RoomSyncService, get_room_sync_service
 from ..structured_logging.enhanced_logging_config import get_logger
 from .message_builders import MessageBuilder
@@ -40,6 +41,7 @@ from .npc_event_handlers import NPCEventHandler
 from .player_event_handlers import PlayerEventHandler
 from .player_name_utils import PlayerNameExtractor
 from .room_occupant_manager import RoomOccupantManager
+from .room_viewer_fanout import send_personalized_occupants_update
 
 if TYPE_CHECKING:
     from .connection_manager import ConnectionManager
@@ -251,10 +253,31 @@ class RealTimeEventHandler:
                 npcs_count=len(npcs),
             )
 
-            # Build and send the message
+            if self.connection_manager is None:
+                return
+
+            # Fast path (#714): only fan out per-viewer when someone in the room is
+            # hallucination-eligible -- everyone else gets exactly the plain broadcast below.
+            player_ids = [
+                str(cast("object", occ["player_id"]))
+                for occ in occupants_info
+                if isinstance(occ, dict) and occ.get("player_id")
+            ]
+            if room_has_hallucinating_viewer(player_ids):
+                await send_personalized_occupants_update(
+                    self.connection_manager,
+                    self.message_builder,
+                    room_id_str,
+                    player_ids,
+                    players,
+                    npcs,
+                    all_occupants,
+                    exclude_player,
+                )
+                return
+
             message = self.message_builder.build_occupants_update_message(room_id_str, players, npcs, all_occupants)
-            if self.connection_manager is not None:
-                _ = await self.connection_manager.broadcast_to_room(room_id, message, exclude_player=exclude_player)
+            _ = await self.connection_manager.broadcast_to_room(room_id, message, exclude_player=exclude_player)
 
         except (ValueError, TypeError, KeyError, AttributeError, RuntimeError) as e:
             self._logger.error("Error sending room occupants update", error=str(e), exc_info=True)

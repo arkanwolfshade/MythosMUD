@@ -6,12 +6,13 @@ spellbooks, NPC teachers, and quest rewards.
 """
 
 import uuid
-from typing import Any
+from typing import Any, cast
 
 from server.game.magic.spell_registry import SpellRegistry
 from server.game.player_service import PlayerService
 from server.models.spell import Spell
 from server.persistence.repositories.player_spell_repository import PlayerSpellRepository
+from server.services.corruption_service import CorruptionPersistenceProtocol, CorruptionService
 from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -53,10 +54,17 @@ class SpellLearningService:
     async def _apply_mythos_corruption_on_learn(self, player: Any, spell: Spell) -> int:
         if not spell.is_mythos() or spell.corruption_on_learn <= 0:
             return 0
-        stats = player.get_stats()
-        current_corruption = stats.get("corruption", 0)
-        stats["corruption"] = current_corruption + spell.corruption_on_learn
-        await self.player_service.persistence.save_player(player)
+        # #804: route through CorruptionService, not a direct stats["corruption"] mutation --
+        # it clamps 0..100, logs the ledger row, and updates the tier cache. `player`/
+        # `persistence` are typed Any (pre-existing); cast() avoids reportAny on each.
+        persistence = cast(CorruptionPersistenceProtocol, self.player_service.persistence)
+        player_uuid = cast(uuid.UUID, player.player_id)
+        _ = await CorruptionService(persistence).apply_corruption_adjustment(
+            player_uuid,
+            spell.corruption_on_learn,
+            reason_code="spell_learn",
+            metadata={"spell_id": spell.spell_id},
+        )
         logger.info(
             "Applied corruption on spell learning",
             player_id=player.player_id,

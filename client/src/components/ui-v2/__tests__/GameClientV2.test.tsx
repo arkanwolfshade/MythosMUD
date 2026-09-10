@@ -12,6 +12,10 @@ vi.mock('../HeaderBar', () => ({
   HeaderBar: ({ playerName }: { playerName: string }) => <div data-testid="header-bar">{playerName}</div>,
 }));
 
+vi.mock('../utils/headerHeight', () => ({
+  headerHeightClass: () => ({ header: 'h-12', padding: 'pt-12', offset: 'top-12' }),
+}));
+
 vi.mock('../PanelSystem/PanelContainer', () => ({
   PanelContainer: ({ children, title }: { children: React.ReactNode; title: string }) => (
     <div data-testid={`panel-${title}`}>{children}</div>
@@ -50,6 +54,10 @@ vi.mock('../panels/CharacterInfoPanel', () => ({
 
 vi.mock('../panels/ChatHistoryPanel', () => ({
   ChatHistoryPanel: () => <div data-testid="chat-history-panel">Chat History</div>,
+}));
+
+vi.mock('../panels/SettingsPanel', () => ({
+  SettingsPanel: () => <div data-testid="settings-panel">Settings</div>,
 }));
 
 vi.mock('../panels/CommandHistoryPanel', () => ({
@@ -192,6 +200,35 @@ describe('GameClientV2', () => {
     };
     render(<GameClientV2 {...defaultProps} healthStatus={healthStatus} />);
     expect(screen.getByTestId('character-info-panel')).toBeInTheDocument();
+  });
+
+  it('should render the incapacitated banner when healthStatus.tier is incapacitated', () => {
+    const healthStatus = {
+      current: -3,
+      max: 100,
+      tier: 'incapacitated' as const,
+      posture: 'lying',
+      inCombat: false,
+    };
+    render(<GameClientV2 {...defaultProps} healthStatus={healthStatus} />);
+    expect(screen.getByTestId('incapacitated-banner')).toBeInTheDocument();
+  });
+
+  it('should not render the incapacitated banner for a non-incapacitated tier', () => {
+    const healthStatus = {
+      current: 50,
+      max: 100,
+      tier: 'wounded' as const,
+      posture: 'standing',
+      inCombat: false,
+    };
+    render(<GameClientV2 {...defaultProps} healthStatus={healthStatus} />);
+    expect(screen.queryByTestId('incapacitated-banner')).not.toBeInTheDocument();
+  });
+
+  it('should not render the incapacitated banner when healthStatus is null', () => {
+    render(<GameClientV2 {...defaultProps} healthStatus={null} player={null} />);
+    expect(screen.queryByTestId('incapacitated-banner')).not.toBeInTheDocument();
   });
 
   it('should handle lucidityStatus prop', () => {

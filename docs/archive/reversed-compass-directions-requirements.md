@@ -1,5 +1,13 @@
 # Reversed Compass Directions Implementation Requirements
 
+> **Archived — superseded.** The client-side placement below was reversed by `#714`: exit
+> hallucination is now server-authoritative, applied to the per-viewer room payload and `/look`
+> rather than computed client-side in `LocationPanel.tsx`. See
+> [`docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`](../architecture/decisions/ADR-024-server-authoritative-perceived-reality.md)
+> for the current, authoritative decision. The client-side determinism this document describes
+> (`seedFrom`/`mulberry32`) survives only as `client/src/utils/directionHallucination.ts`, now used
+> solely by the `/map` page's out-of-world `AsciiNoise` distortion.
+
 **Status**: Pending Implementation (Client-Side Display Feature)
 
 **Last Updated**: 2026-01-02

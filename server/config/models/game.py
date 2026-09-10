@@ -65,6 +65,12 @@ class GameConfig(BaseSettings):
         default=1.0, description="Damage threat multiplier (tanks may use >1.0 later)"
     )
 
+    # Hallucination system (#714)
+    hallucination_rng_seed: int | None = Field(
+        default=None,
+        description="Deterministic seed for hallucination RNG (test-only; unset uses system randomness)",
+    )
+
     @field_validator("max_connections_per_player")
     @classmethod
     def validate_max_connections(cls, v: int) -> int:

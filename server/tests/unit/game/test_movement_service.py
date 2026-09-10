@@ -5,6 +5,7 @@ Tests the MovementService class.
 """
 
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -291,6 +292,132 @@ async def test_move_player_success(movement_service, mock_persistence):
     mock_from.player_left.assert_called_once()
     mock_to.player_entered.assert_called_once()
     mock_persistence.save_player.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_move_player_triggers_uneasy_room_entry_hallucination(
+    movement_service: MovementService, mock_persistence: MagicMock
+):
+    """#714: a successful move into a new room checks the Uneasy room-entry hallucination."""
+    player_id = uuid.uuid4()
+    mock_player = MagicMock()
+    mock_player.player_id = player_id
+    mock_player.current_room_id = "room_001"
+    mock_from = MagicMock()
+    mock_from.id = "room_001"
+    mock_from.has_player = MagicMock(return_value=True)
+    mock_to = MagicMock()
+    mock_to.id = "room_002"
+
+    def _get_room_by_id(rid: str) -> MagicMock:
+        return mock_from if rid == "room_001" else mock_to
+
+    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
+    mock_persistence.get_room_by_id = MagicMock(side_effect=_get_room_by_id)
+    mock_persistence.save_player = AsyncMock()
+
+    with (
+        patch.object(movement_service, "_validate_movement", new=AsyncMock(return_value=True)),
+        patch("server.game.movement_service.validate_exit", return_value=True),
+        patch("server.game.movement_service.get_movement_monitor") as monitor_mock,
+        patch(
+            "server.services.lucidity_tier_cache.lucidity_tier_cache.get_tier",
+            return_value="uneasy",
+        ),
+        patch(
+            "server.services.hallucination_frequency_service.HallucinationFrequencyService.should_trigger_hallucination",
+            new_callable=AsyncMock,
+            return_value=True,
+        ),
+        patch(
+            "server.services.passive_lucidity_flux.hallucinations.handle_uneasy_room_entry_hallucination",
+            new_callable=AsyncMock,
+        ) as handle_uneasy,
+    ):
+        cast(MagicMock, monitor_mock.return_value).record_movement = MagicMock()
+        result = await movement_service.move_player(player_id, "room_001", "room_002")
+
+    assert result is True
+    handle_uneasy.assert_awaited_once_with(player_id, "room_002")
+
+
+@pytest.mark.asyncio
+async def test_move_player_skips_hallucination_check_for_non_uneasy_tier(
+    movement_service: MovementService, mock_persistence: MagicMock
+):
+    """A move succeeds normally, and no hallucination fires, when the player isn't Uneasy."""
+    player_id = uuid.uuid4()
+    mock_player = MagicMock()
+    mock_player.player_id = player_id
+    mock_player.current_room_id = "room_001"
+    mock_from = MagicMock()
+    mock_from.id = "room_001"
+    mock_from.has_player = MagicMock(return_value=True)
+    mock_to = MagicMock()
+    mock_to.id = "room_002"
+
+    def _get_room_by_id(rid: str) -> MagicMock:
+        return mock_from if rid == "room_001" else mock_to
+
+    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
+    mock_persistence.get_room_by_id = MagicMock(side_effect=_get_room_by_id)
+    mock_persistence.save_player = AsyncMock()
+
+    with (
+        patch.object(movement_service, "_validate_movement", new=AsyncMock(return_value=True)),
+        patch("server.game.movement_service.validate_exit", return_value=True),
+        patch("server.game.movement_service.get_movement_monitor") as monitor_mock,
+        patch(
+            "server.services.lucidity_tier_cache.lucidity_tier_cache.get_tier",
+            return_value=None,
+        ),
+        patch(
+            "server.services.passive_lucidity_flux.hallucinations.handle_uneasy_room_entry_hallucination",
+            new_callable=AsyncMock,
+        ) as handle_uneasy,
+    ):
+        cast(MagicMock, monitor_mock.return_value).record_movement = MagicMock()
+        result = await movement_service.move_player(player_id, "room_001", "room_002")
+
+    assert result is True
+    handle_uneasy.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_move_player_survives_hallucination_check_error(
+    movement_service: MovementService, mock_persistence: MagicMock
+):
+    """A hallucination-check failure must never fail the move itself (#714)."""
+    player_id = uuid.uuid4()
+    mock_player = MagicMock()
+    mock_player.player_id = player_id
+    mock_player.current_room_id = "room_001"
+    mock_from = MagicMock()
+    mock_from.id = "room_001"
+    mock_from.has_player = MagicMock(return_value=True)
+    mock_to = MagicMock()
+    mock_to.id = "room_002"
+
+    def _get_room_by_id(rid: str) -> MagicMock:
+        return mock_from if rid == "room_001" else mock_to
+
+    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
+    mock_persistence.get_room_by_id = MagicMock(side_effect=_get_room_by_id)
+    mock_persistence.save_player = AsyncMock()
+
+    with (
+        patch.object(movement_service, "_validate_movement", new=AsyncMock(return_value=True)),
+        patch("server.game.movement_service.validate_exit", return_value=True),
+        patch("server.game.movement_service.get_movement_monitor") as monitor_mock,
+        patch(
+            "server.services.lucidity_tier_cache.lucidity_tier_cache.get_tier",
+            side_effect=RuntimeError("cache unavailable"),
+        ),
+    ):
+        cast(MagicMock, monitor_mock.return_value).record_movement = MagicMock()
+        result = await movement_service.move_player(player_id, "room_001", "room_002")
+
+    assert result is True
 
 
 @pytest.mark.asyncio

@@ -22,6 +22,10 @@ PYTHON_PATTERNS = [
     (r"#\s*pylint:\s*disable[=:]\s*([^\n#]+)", "pylint"),
     (r"#\s*type:\s*ignore", "mypy"),
     (r"#\s*type:\s*ignore\[([^\]]+)\]", "mypy"),
+    # basedpyright suppressions were invisible to this audit until #784. Note that
+    # `# type: ignore` no longer suppresses anything for basedpyright (the project sets
+    # enableTypeIgnoreComments = false), so these are the only pyright suppressions that count.
+    (r"#\s*pyright:\s*ignore(?:\[([^\]]+)\])?", "pyright"),
     (r"#\s*noqa(?::\s*([^\n#]+))?", "ruff"),
     (r"#\s*mypy:\s*([^\n#]+)", "mypy"),
     (r"#\s*ruff:\s*([^\n#]+)", "ruff"),
@@ -34,13 +38,19 @@ TYPESCRIPT_PATTERNS = [
     (r"//\s*@ts-expect-error", "typescript"),
 ]
 
-# Patterns that indicate an explanation exists
+# Patterns that indicate an explanation exists.
+# `# followed by any capitalised word` used to live here, which passed almost every suppression
+# in the tree and made the audit's "explained" percentage meaningless (#784).
 EXPLANATION_PATTERNS = [
     r"#\s*Reason:",
     r"#\s*JUSTIFICATION:",
+    r"#\s*Appropriate because:",
     r"--\s*[A-Z]",  # TypeScript: -- followed by capital letter (common pattern)
-    r"#\s*[A-Z][a-z]+",  # Python: # followed by capital letter (likely explanation)
 ]
+
+# Minimum trailing prose to count as an explanation when no explicit marker is present.
+# Ten characters accepted "see above" and "legacy code"; neither tells a reader anything.
+MIN_EXPLANATION_CHARS = 30
 
 
 def has_explanation(line: str, suppression_end: int) -> bool:
@@ -64,10 +74,7 @@ def has_explanation(line: str, suppression_end: int) -> bool:
     # Check if there's substantial text after the suppression
     # (more than just whitespace or closing characters)
     text_after = remaining.lstrip("#").lstrip("/").strip()
-    if len(text_after) > 10:  # Substantial explanation likely
-        return True
-
-    return False
+    return len(text_after) >= MIN_EXPLANATION_CHARS
 
 
 def find_suppressions(file_path: Path, patterns: list[tuple[str, str]]) -> list[dict[str, Any]]:

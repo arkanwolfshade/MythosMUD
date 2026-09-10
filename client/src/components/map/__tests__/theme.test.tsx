@@ -32,6 +32,9 @@ describe('Theme Integration', () => {
           availablePlanes={['earth']}
           availableZones={['arkhamcity']}
           availableSubZones={[]}
+          onPlaneChange={() => {}}
+          onZoneChange={() => {}}
+          onSubZoneChange={() => {}}
         />
       );
 
@@ -54,6 +57,9 @@ describe('Theme Integration', () => {
           availablePlanes={['earth']}
           availableZones={['arkhamcity']}
           availableSubZones={[]}
+          onPlaneChange={() => {}}
+          onZoneChange={() => {}}
+          onSubZoneChange={() => {}}
           onResetView={() => {}}
         />
       );
@@ -120,6 +126,9 @@ describe('Theme Integration', () => {
           availablePlanes={['earth']}
           availableZones={['arkhamcity']}
           availableSubZones={[]}
+          onPlaneChange={() => {}}
+          onZoneChange={() => {}}
+          onSubZoneChange={() => {}}
         />
       );
 
@@ -188,6 +197,9 @@ describe('Theme Integration', () => {
           availablePlanes={['earth']}
           availableZones={['arkhamcity']}
           availableSubZones={[]}
+          onPlaneChange={() => {}}
+          onZoneChange={() => {}}
+          onSubZoneChange={() => {}}
         />
       );
 

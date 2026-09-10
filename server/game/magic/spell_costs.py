@@ -5,12 +5,13 @@ This module handles applying spell costs (MP, lucidity, corruption) to players.
 """
 
 import uuid
-from typing import Any
+from typing import Any, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
 from server.game.player_service import PlayerService
 from server.models.spell import Spell
+from server.services.corruption_service import CorruptionPersistenceProtocol, CorruptionService
 from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -64,19 +65,29 @@ class SpellCostsService:
                 remaining_lucidity=new_lucidity,
             )
 
-        # Apply corruption if Mythos spell
+        # Save player (MP and lucidity). Corruption is applied separately below, *after* this
+        # save -- CorruptionService.apply_corruption_adjustment does its own read-modify-write
+        # cycle on the persisted row, so applying it before this save would have this save's
+        # stale local `stats` dict immediately overwrite the corruption change.
+        await self.player_service.persistence.save_player(player)
+
+        # Apply corruption if Mythos spell. #804: route through CorruptionService, not a direct
+        # stats["corruption"] mutation -- it clamps 0..100, logs the ledger row, and updates the
+        # tier cache.
         if spell.is_mythos() and spell.corruption_on_cast > 0:
-            current_corruption = stats.get("corruption", 0)
-            stats["corruption"] = current_corruption + spell.corruption_on_cast
+            # `self.player_service.persistence` is typed Any (pre-existing); cast() avoids reportAny.
+            persistence = cast(CorruptionPersistenceProtocol, self.player_service.persistence)
+            _ = await CorruptionService(persistence).apply_corruption_adjustment(
+                player_id,
+                spell.corruption_on_cast,
+                reason_code="spell_cast",
+                metadata={"spell_id": spell.spell_id},
+            )
             logger.debug(
                 "Applied corruption",
                 player_id=player_id,
                 corruption_gained=spell.corruption_on_cast,
-                total_corruption=stats["corruption"],
             )
-
-        # Save player
-        await self.player_service.persistence.save_player(player)
 
         # Send player_update event to notify client of MP change
         try:

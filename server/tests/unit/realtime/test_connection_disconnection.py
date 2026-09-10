@@ -276,6 +276,24 @@ def test_cleanup_player_data_has_connection_does_not_clear_phantoms(mock_manager
     clear_mock.assert_not_called()
 
 
+def test_cleanup_player_data_clears_corruption_tier_cache(mock_manager: MagicMock):
+    """#804: a player's last disconnect clears their cached corruption tier (write-through, no
+    tick-loop backstop -- a stale entry would otherwise survive until their next adjustment)."""
+    player_id = uuid.uuid4()
+    with patch("server.services.corruption_tier_cache.corruption_tier_cache.clear") as clear_mock:
+        _cleanup_player_data(player_id, mock_manager)
+    clear_mock.assert_called_once_with(player_id)
+
+
+def test_cleanup_player_data_has_connection_does_not_clear_corruption_tier_cache(mock_manager: MagicMock):
+    """#804: the corruption tier cache is untouched while the player still has a live connection."""
+    player_id = uuid.uuid4()
+    mock_manager.has_websocket_connection = MagicMock(return_value=True)
+    with patch("server.services.corruption_tier_cache.corruption_tier_cache.clear") as clear_mock:
+        _cleanup_player_data(player_id, mock_manager)
+    clear_mock.assert_not_called()
+
+
 @pytest.mark.asyncio
 async def test_disconnect_all_websockets(mock_manager: MagicMock):
     """Test disconnect_all_websockets_impl() disconnects all websockets."""

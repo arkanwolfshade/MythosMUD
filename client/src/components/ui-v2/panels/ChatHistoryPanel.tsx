@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { ALL_MESSAGES_CHANNEL, CHAT_CHANNEL_OPTIONS, DEFAULT_CHANNEL } from '../../../config/channels';
+import { useChatGrainPreference } from '../../../contexts/hooks/useThemeContext';
 import { ansiToHtmlWithBreaks } from '../../../utils/ansiToHtml';
+import { decayMessageText } from '../../../utils/corruptionDecay';
 import { extractChannelFromMessage, isChatContent } from '../../../utils/messageTypeUtils';
 import { SafeHtml } from '../../common/SafeHtml';
 import { ChannelSelector } from '../../ui/ChannelSelector';
@@ -15,10 +17,15 @@ interface ChatHistoryPanelProps {
   onDownloadLogs?: () => void;
   disabled?: boolean;
   isConnected?: boolean;
+  /** #804: the viewer's own corruption stat (0-100), driving the chat pane's perceptual filter.
+   * A global filter on the viewer's own value only, per ADR-025 -- never per-message. */
+  corruption?: number;
 }
 
+// #714: no 'hallucination' entry here -- under server-authoritative hallucinations, a fake
+// whisper or NPC tell arrives as an ordinary chat message (see ADR-024) and must render
+// indistinguishably from a real one. A distinct color would itself be the truth-leak.
 const TAG_MESSAGE_CLASSES: Record<string, string> = {
-  hallucination: 'text-fuchsia-300 italic',
   'command-misfire': 'text-mythos-terminal-warning font-semibold',
   rescue: 'text-mythos-terminal-primary font-semibold',
 };
@@ -79,7 +86,12 @@ function classFromTags(tags: string[] | undefined): string | undefined {
 }
 
 function getMessageClass(message: ChatMessage): string {
-  return classFromTags(message.tags) ?? TYPE_MESSAGE_CLASSES[message.messageType ?? ''] ?? 'text-mythos-terminal-text';
+  // #804: corruption's tint only reaches ordinary chat lines -- a tagged or typed message (error,
+  // warning, whisper, ...) keeps its semantic color untouched, since that color carries meaning
+  // the decorative filter shouldn't dilute. Which messages qualify is a static property of type/
+  // tag, never of the message's own content, so this stays a *global* filter (ADR-025): the same
+  // corruption value affects every default-colored line identically.
+  return classFromTags(message.tags) ?? TYPE_MESSAGE_CLASSES[message.messageType ?? ''] ?? 'mythos-corruption-text';
 }
 
 function formatTimestamp(timestamp: string): string {
@@ -158,7 +170,7 @@ function ChatHistoryScopeToggle(props: { isHistoryVisible: boolean; onToggle: ()
   );
 }
 
-function ChatHistoryMessageList(props: { messages: ChatMessage[] }) {
+function ChatHistoryMessageList(props: { messages: ChatMessage[]; corruption: number }) {
   if (props.messages.length === 0) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -175,16 +187,17 @@ function ChatHistoryMessageList(props: { messages: ChatMessage[] }) {
   return (
     <div className="space-y-3">
       {props.messages.map((message, index) => (
-        <ChatHistoryMessageRow key={index} message={message} index={index} />
+        <ChatHistoryMessageRow key={index} message={message} index={index} corruption={props.corruption} />
       ))}
     </div>
   );
 }
 
 export const ChatHistoryPanel: React.FC<ChatHistoryPanelProps> = props => {
-  const { messages, onClearMessages, onDownloadLogs, disabled = false, isConnected = true } = props;
+  const { messages, onClearMessages, onDownloadLogs, disabled = false, isConnected = true, corruption = 0 } = props;
   const [isHistoryVisible, setIsHistoryVisible] = useState(false);
   const [currentChannel, setCurrentChannel] = useState<string>(ALL_MESSAGES_CHANNEL.id);
+  const { chatGrain } = useChatGrainPreference();
 
   const normalizedSelectedChannel = currentChannel ?? DEFAULT_CHANNEL;
   const isAllChannelSelected = normalizedSelectedChannel === ALL_MESSAGES_CHANNEL.id;
@@ -200,8 +213,17 @@ export const ChatHistoryPanel: React.FC<ChatHistoryPanelProps> = props => {
   );
   const visibleMessages = isHistoryVisible ? historyEligibleMessages : filteredMessages;
 
+  // #804: one CSS custom property, derived from the viewer's own corruption stat, drives both the
+  // text-color filter (.mythos-corruption-text) and the grain overlay -- a single wire value, no
+  // new event type (SUBSYSTEM_CORRUPTION_DESIGN.md §4).
+  const corruptionIntensity = Math.max(0, Math.min(1, corruption / 100));
+
   return (
-    <div className="h-full flex flex-col font-mono" data-testid="chat-history-panel">
+    <div
+      className="h-full flex flex-col font-mono"
+      data-testid="chat-history-panel"
+      style={{ '--corruption-intensity': corruptionIntensity } as React.CSSProperties}
+    >
       <ChatHistoryPanelToolbar onClearMessages={onClearMessages} onDownloadLogs={onDownloadLogs} />
       <ChatHistoryChannelBar
         normalizedSelectedChannel={normalizedSelectedChannel}
@@ -215,12 +237,12 @@ export const ChatHistoryPanel: React.FC<ChatHistoryPanelProps> = props => {
         visibleCount={visibleMessages.length}
       />
       <div
-        className="flex-1 overflow-auto p-3 bg-mythos-terminal-background"
+        className={`flex-1 overflow-auto p-3 bg-mythos-terminal-background${chatGrain ? ' mythos-corruption-grain' : ''}`}
         role="log"
         aria-label="Chat Messages"
         style={{ minHeight: '200px' }}
       >
-        <ChatHistoryMessageList messages={visibleMessages} />
+        <ChatHistoryMessageList messages={visibleMessages} corruption={corruption} />
       </div>
     </div>
   );
@@ -246,13 +268,30 @@ function AliasChainBlock({ chain }: { chain: NonNullable<ChatMessage['aliasChain
   );
 }
 
-function ChatHistoryMessageBody({ message }: { message: ChatMessage }): React.ReactElement {
+function ChatHistoryMessageBody({
+  message,
+  corruption,
+}: {
+  message: ChatMessage;
+  corruption: number;
+}): React.ReactElement {
   const html = message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text);
   if (message.isHtml) return <SafeHtml html={html} />;
-  return <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{message.rawText ?? message.text}</span>;
+  // #804: decay is scoped to plain text only -- corrupting arbitrary sanitized HTML text nodes
+  // would need DOM-tree-aware processing, out of proportion for a decorative effect.
+  const bodyText = decayMessageText(message.rawText ?? message.text, corruption, message.timestamp);
+  return <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{bodyText}</span>;
 }
 
-function ChatHistoryMessageRow({ message, index }: { message: ChatMessage; index: number }) {
+function ChatHistoryMessageRow({
+  message,
+  index,
+  corruption,
+}: {
+  message: ChatMessage;
+  index: number;
+  corruption: number;
+}) {
   const chain = message.aliasChain;
   return (
     <div
@@ -269,7 +308,7 @@ function ChatHistoryMessageRow({ message, index }: { message: ChatMessage; index
         className={`text-sm leading-relaxed ${getMessageClass(message)}`}
         data-message-text={message.rawText ?? message.text}
       >
-        <ChatHistoryMessageBody message={message} />
+        <ChatHistoryMessageBody message={message} corruption={corruption} />
       </div>
     </div>
   );

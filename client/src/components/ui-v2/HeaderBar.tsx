@@ -1,9 +1,19 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import type { MythosTimeState } from '../../types/mythosTime';
 import { formatMythosTime12Hour } from '../../utils/mythosTime';
 import { EldritchIcon, MythosIcons } from '../ui/EldritchIcon';
 import { LogoutButton } from '../ui/LogoutButton';
+import { hasFlavorRow, headerHeightClass } from './utils/headerHeight';
 import type { ActiveEffectDisplay } from './utils/stateUpdateUtils';
+
+// Ported from the legacy MythosTimeHud.tsx (#699) - do not rewrite the palette.
+const TRADITION_COLORS: Record<string, string> = {
+  catholic: 'from-amber-400/30 to-amber-600/20 text-amber-100',
+  islamic: 'from-emerald-400/30 to-emerald-600/20 text-emerald-100',
+  jewish: 'from-cyan-400/30 to-cyan-700/20 text-cyan-100',
+  neo_pagan: 'from-rose-400/30 to-rose-700/20 text-rose-100',
+  mythos: 'from-violet-400/30 to-purple-700/20 text-purple-100',
+};
 
 /** Who the player is currently following (for title panel). */
 export interface FollowingTarget {
@@ -24,6 +34,9 @@ interface HeaderBarProps {
   activeEffects?: ActiveEffectDisplay[];
   /** Who the player is following (shown in title area). Server-authoritative. */
   followingTarget?: FollowingTarget | null;
+  /** Collapse state is owned by GameClientV2 so it can size the panel area's top offset to match. */
+  isCollapsed: boolean;
+  onToggleCollapse: () => void;
 }
 
 // Collapsible header bar with player info, connection status, in-game time, and logout
@@ -33,6 +46,14 @@ function formatRemaining(seconds: number | undefined): string {
   const m = Math.floor(seconds / 60);
   const s = Math.floor(seconds % 60);
   return m > 0 ? `${m}:${s.toString().padStart(2, '0')}` : `0:${s.toString().padStart(2, '0')}`;
+}
+
+/** Daypart accent color, ported from the legacy MythosTimeHud.tsx (#699). */
+function daypartAccent(mythosTime: MythosTimeState): string {
+  if (mythosTime.is_witching_hour && mythosTime.daypart === 'witching') {
+    return 'text-purple-300';
+  }
+  return mythosTime.is_daytime ? 'text-amber-200' : 'text-sky-200';
 }
 
 export const HeaderBar: React.FC<HeaderBarProps> = props => {
@@ -47,19 +68,13 @@ export const HeaderBar: React.FC<HeaderBarProps> = props => {
     isLoggingOut = false,
     activeEffects = [],
     followingTarget = null,
+    isCollapsed,
+    onToggleCollapse,
   } = props;
-  const [isCollapsed, setIsCollapsed] = useState(() => {
-    const stored = localStorage.getItem('mythosmud-ui-v2-header-collapsed');
-    return stored === 'true';
-  });
 
   const toggleCollapse = useCallback(() => {
-    setIsCollapsed(prev => {
-      const newValue = !prev;
-      localStorage.setItem('mythosmud-ui-v2-header-collapsed', String(newValue));
-      return newValue;
-    });
-  }, []);
+    onToggleCollapse();
+  }, [onToggleCollapse]);
 
   // Format time display in 12-hour AM/PM format
   const timeDisplay = mythosTime
@@ -75,9 +90,16 @@ export const HeaderBar: React.FC<HeaderBarProps> = props => {
       : 'Disconnected';
   const connectionColor = isConnected ? 'text-mythos-terminal-success' : 'text-mythos-terminal-error';
 
+  const isWitching = Boolean(mythosTime?.is_witching_hour);
+  const borderClass = isWitching ? 'border-purple-400/60' : 'border-mythos-terminal-border';
+  const showFlavorRow = hasFlavorRow(mythosTime);
+  const { header: headerClass } = headerHeightClass(isCollapsed, mythosTime);
+
   if (isCollapsed) {
     return (
-      <div className="fixed top-0 left-0 right-0 h-8 bg-mythos-terminal-surface border-b border-mythos-terminal-border flex items-center justify-between px-4 z-50">
+      <div
+        className={`fixed top-0 left-0 right-0 ${headerClass} bg-mythos-terminal-surface border-b ${borderClass} flex items-center justify-between px-4 z-50`}
+      >
         <button
           onClick={toggleCollapse}
           className="flex items-center gap-2 text-mythos-terminal-text-secondary hover:text-mythos-terminal-primary transition-colors"
@@ -95,64 +117,95 @@ export const HeaderBar: React.FC<HeaderBarProps> = props => {
   }
 
   return (
-    <div className="fixed top-0 left-0 right-0 h-12 bg-mythos-terminal-surface border-b border-mythos-terminal-border flex items-center justify-between px-4 z-50">
-      <div className="flex items-center gap-4">
-        <button
-          onClick={toggleCollapse}
-          className="flex items-center gap-1 text-mythos-terminal-text-secondary hover:text-mythos-terminal-primary transition-colors"
-          aria-label="Collapse header"
-        >
-          <EldritchIcon name={MythosIcons.minimize} size={14} variant="primary" />
-        </button>
-        <span className="text-base text-mythos-terminal-text-secondary">Player: {playerName}</span>
-        {followingTarget && (
-          <span
-            className="text-sm text-mythos-terminal-text-secondary"
-            title={`Following: ${followingTarget.target_name}`}
+    <div
+      className={`fixed top-0 left-0 right-0 ${headerClass} bg-mythos-terminal-surface border-b ${borderClass} flex flex-col justify-center gap-1 px-4 z-50 transition-[height] duration-300`}
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={toggleCollapse}
+            className="flex items-center gap-1 text-mythos-terminal-text-secondary hover:text-mythos-terminal-primary transition-colors"
+            aria-label="Collapse header"
           >
-            Following: {followingTarget.target_name}
+            <EldritchIcon name={MythosIcons.minimize} size={14} variant="primary" />
+          </button>
+          <span className="text-base text-mythos-terminal-text-secondary">Player: {playerName}</span>
+          {followingTarget && (
+            <span
+              className="text-sm text-mythos-terminal-text-secondary"
+              title={`Following: ${followingTarget.target_name}`}
+            >
+              Following: {followingTarget.target_name}
+            </span>
+          )}
+          <span
+            className={`px-2 py-1 rounded text-sm ${isConnected ? 'bg-mythos-terminal-success text-black' : 'bg-mythos-terminal-error text-white'}`}
+          >
+            {connectionStatus}
           </span>
-        )}
-        <span
-          className={`px-2 py-1 rounded text-sm ${isConnected ? 'bg-mythos-terminal-success text-black' : 'bg-mythos-terminal-error text-white'}`}
-        >
-          {connectionStatus}
-        </span>
-        {error && <span className="text-mythos-terminal-error text-sm">{error}</span>}
-        {reconnectAttempts > 0 && (
-          <span className="text-mythos-terminal-warning text-sm">Reconnect: {reconnectAttempts}</span>
-        )}
-        {activeEffects.length > 0 && (
-          <div className="flex items-center gap-2 flex-wrap">
-            {activeEffects.map((eff, idx) => (
-              <span
-                key={eff.effect_type + (eff.remaining_seconds ?? 0) + idx}
-                className="px-2 py-0.5 rounded text-xs bg-mythos-terminal-surface border border-mythos-terminal-border text-mythos-terminal-text-secondary"
-                title={
-                  eff.remaining_seconds != null
-                    ? `${eff.label ?? eff.effect_type}: ${formatRemaining(eff.remaining_seconds)} left`
-                    : undefined
-                }
-              >
-                {eff.label ?? eff.effect_type}
-                {eff.remaining_seconds != null && eff.remaining_seconds > 0 && (
-                  <span className="ml-1 opacity-80">({formatRemaining(eff.remaining_seconds)})</span>
-                )}
-              </span>
-            ))}
+          {error && <span className="text-mythos-terminal-error text-sm">{error}</span>}
+          {reconnectAttempts > 0 && (
+            <span className="text-mythos-terminal-warning text-sm">Reconnect: {reconnectAttempts}</span>
+          )}
+          {activeEffects.length > 0 && (
+            <div className="flex items-center gap-2 flex-wrap">
+              {activeEffects.map((eff, idx) => (
+                <span
+                  key={eff.effect_type + (eff.remaining_seconds ?? 0) + idx}
+                  className="px-2 py-0.5 rounded text-xs bg-mythos-terminal-surface border border-mythos-terminal-border text-mythos-terminal-text-secondary"
+                  title={
+                    eff.remaining_seconds != null
+                      ? `${eff.label ?? eff.effect_type}: ${formatRemaining(eff.remaining_seconds)} left`
+                      : undefined
+                  }
+                >
+                  {eff.label ?? eff.effect_type}
+                  {eff.remaining_seconds != null && eff.remaining_seconds > 0 && (
+                    <span className="ml-1 opacity-80">({formatRemaining(eff.remaining_seconds)})</span>
+                  )}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="flex items-center gap-4">
+          <div className="flex flex-col items-end text-xs text-mythos-terminal-text-secondary">
+            <span className="text-xs-2 uppercase tracking-wide">Mythos Time</span>
+            <span className="text-sm text-mythos-terminal-primary">{timeDisplay}</span>
           </div>
-        )}
+          <div className="w-32">
+            <LogoutButton onLogout={onLogout} disabled={!isConnected || isLoggingOut} isLoggingOut={isLoggingOut} />
+          </div>
+        </div>
       </div>
 
-      <div className="flex items-center gap-4">
-        <div className="flex flex-col items-end text-xs text-mythos-terminal-text-secondary">
-          <span className="text-xs-2 uppercase tracking-wide">Mythos Time</span>
-          <span className="text-sm text-mythos-terminal-primary">{timeDisplay}</span>
+      {showFlavorRow && mythosTime && (
+        <div className="flex flex-wrap items-center gap-3 text-xs text-mythos-terminal-text-secondary">
+          <span className={`font-semibold uppercase tracking-wide ${daypartAccent(mythosTime)}`}>
+            {mythosTime.daypart}
+          </span>
+          <span>{mythosTime.season}</span>
+          {mythosTime.is_witching_hour && <span className="text-purple-300">The Veil Thins</span>}
+          {mythosTime.active_holidays.map(holiday => {
+            const palette = TRADITION_COLORS[holiday.tradition] ?? 'from-slate-500/30 to-slate-700/30 text-slate-100';
+            return (
+              <span
+                key={holiday.id}
+                title={holiday.notes ?? undefined}
+                className={`rounded-full bg-linear-to-br ${palette} px-3 py-0.5`}
+              >
+                {holiday.name}
+                {holiday.bonus_tags.length > 0 && (
+                  <span className="ml-1 opacity-80 text-xs-2 uppercase">
+                    ({holiday.bonus_tags.map(tag => tag.replace(/_/g, ' ')).join(', ')})
+                  </span>
+                )}
+              </span>
+            );
+          })}
         </div>
-        <div className="w-32">
-          <LogoutButton onLogout={onLogout} disabled={!isConnected || isLoggingOut} isLoggingOut={isLoggingOut} />
-        </div>
-      </div>
+      )}
     </div>
   );
 };

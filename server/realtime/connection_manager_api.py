@@ -23,6 +23,8 @@ class _ConnectionManagerAPI(Protocol):
 
     # pylint: disable=missing-function-docstring  # Reason: Protocol stubs; docs live on ConnectionManager
 
+    online_players: dict[UUID, dict[str, object]]
+
     def send_personal_message(self, player_id: UUID, event: object) -> Awaitable[object]: ...
 
     def broadcast_global(self, event: object, exclude_player: str | None = None) -> Awaitable[object]: ...
@@ -38,6 +40,25 @@ def _require_manager() -> _ConnectionManagerAPI:
     if manager is None:
         raise RuntimeError("Connection manager not available")
     return cast(_ConnectionManagerAPI, manager)
+
+
+def remove_online_player(player_id: uuid.UUID) -> None:
+    """
+    Drop a player from the live online-players roster, best-effort.
+
+    Call this the moment a character is deleted while still connected. Without it, the
+    game-tick loop keeps regenerating MP/lucidity for the stale roster entry every tick and
+    each attempted save is refused by the soft-delete guard (#777) -- one warning, with a full
+    stack trace, per player per tick, forever (or until they happen to disconnect).
+
+    Unlike `_require_manager()`, a missing manager is not an error here: deletion can run in
+    contexts with no live connection manager (unit tests, offline tooling, startup), and it
+    must still succeed.
+    """
+    manager = resolve_connection_manager()
+    if manager is None:
+        return
+    _ = cast(_ConnectionManagerAPI, manager).online_players.pop(player_id, None)
 
 
 async def send_game_event(player_id: uuid.UUID | str, event_type: str, data: Mapping[str, object]) -> None:

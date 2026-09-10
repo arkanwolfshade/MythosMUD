@@ -5,7 +5,7 @@ import type { Profession } from './ProfessionCard.tsx';
 import './StatsRollingScreen.css';
 
 /** Plan 10.6 F2: Stats-first flow; name and create-character happen on CharacterNameScreen. */
-interface StatsRollingScreenProps {
+export interface StatsRollingScreenProps {
   onStatsAccepted: (stats: Stats) => void;
   onError: (error: string) => void;
   onBack?: () => void;

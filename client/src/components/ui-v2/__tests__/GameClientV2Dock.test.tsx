@@ -84,6 +84,10 @@ vi.mock('../HeaderBar', () => ({
   HeaderBar: ({ playerName }: { playerName: string }) => <div data-testid="header-bar">{playerName}</div>,
 }));
 
+vi.mock('../utils/headerHeight', () => ({
+  headerHeightClass: () => ({ header: 'h-12', padding: 'pt-12' }),
+}));
+
 vi.mock('../TentacleBackdrop', () => ({
   TentacleBackdrop: () => null,
 }));
@@ -111,6 +115,10 @@ vi.mock('../panels/ChatHistoryPanel', () => ({
     dockTest.chatHistoryBodyRenders += 1;
     return <div data-testid="chat-history-panel">Chat History</div>;
   },
+}));
+
+vi.mock('../panels/SettingsPanel', () => ({
+  SettingsPanel: () => <div data-testid="settings-panel">Settings</div>,
 }));
 
 vi.mock('../panels/GameInfoPanel', () => ({

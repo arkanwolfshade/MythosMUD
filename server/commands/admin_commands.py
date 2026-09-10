@@ -20,6 +20,7 @@ from ..exceptions import DatabaseError
 from ..structured_logging.admin_actions_logger import get_admin_actions_logger
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..time.time_service import get_mythos_chronicle
+from .admin_hallucinate_command import _handle_admin_hallucinate_command
 from .admin_mute_commands import (
     handle_add_admin_command,
     handle_mute_command,
@@ -74,6 +75,8 @@ async def handle_admin_command(
         return await _handle_admin_set_lucidity_command(command_data, current_user, request, alias_storage, player_name)
     if subcommand == "set":
         return await _handle_admin_set_stat_command(command_data, current_user, request, alias_storage, player_name)
+    if subcommand == "hallucinate":
+        return await _handle_admin_hallucinate_command(command_data, current_user, request, alias_storage, player_name)
 
     logger.warning("Unknown admin subcommand requested", player_name=player_name, subcommand=subcommand)
     return {"result": f"Unknown admin subcommand '{subcommand}'."}

@@ -13,7 +13,6 @@ export function buildSliceAndPropsPublicFields(props: GameClientV2ContainerProps
     mythosTime: slice.mythosTime,
     healthStatus: slice.healthStatus,
     lucidityStatus: slice.lucidityStatus,
-    isMortallyWounded: slice.isMortallyWounded,
     isDead: slice.isDead,
     deathLocation: slice.deathLocation,
     isRespawning: slice.isRespawning,

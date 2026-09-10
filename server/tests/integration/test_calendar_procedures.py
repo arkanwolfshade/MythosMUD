@@ -25,6 +25,9 @@ async def holiday_row(session_factory: async_sessionmaker[AsyncSession]):
         )
         await session.commit()
     yield stable_id
+    async with session_factory() as session:
+        _ = await session.execute(text("DELETE FROM calendar_holidays WHERE stable_id = :id"), {"id": stable_id})
+        await session.commit()
 
 
 @pytest.mark.asyncio
@@ -68,6 +71,9 @@ async def npc_schedule_row(session_factory: async_sessionmaker[AsyncSession]):
         )
         await session.commit()
     yield stable_id
+    async with session_factory() as session:
+        _ = await session.execute(text("DELETE FROM calendar_npc_schedules WHERE stable_id = :id"), {"id": stable_id})
+        await session.commit()
 
 
 @pytest.mark.asyncio

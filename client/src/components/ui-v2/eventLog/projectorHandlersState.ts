@@ -30,6 +30,30 @@ function mergePostureMessageIntoState(prevState: GameState, event: GameEvent): G
   return appendPostureGameInfoMessage(prevState, event, postureMessage);
 }
 
+/** Drop undefined-valued keys so a spread doesn't clobber a good prior value with `undefined`. */
+function withoutUndefined<T extends object>(obj: T | undefined): Partial<T> {
+  if (!obj) return {};
+  return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined)) as Partial<T>;
+}
+
+/**
+ * Merge a respawn payload onto the previous player rather than replacing it. Respawn API payloads
+ * (RespawnPlayerData) are deliberately thin -- id/name/dp/max_dp/current_room_id/lucidity -- so a
+ * flat replace would wipe profession, level, xp, and the rest of stats until the next server
+ * broadcast (#776). `undefined` fields (e.g. omitted `lucidity` on a death respawn) are stripped
+ * before spreading so they don't clobber a good prior value.
+ */
+function mergeRespawnedPlayer(prevPlayer: Player | null, incoming: Player): Player {
+  return {
+    ...prevPlayer,
+    ...withoutUndefined(incoming),
+    stats: {
+      ...prevPlayer?.stats,
+      ...withoutUndefined(incoming.stats),
+    },
+  } as Player;
+}
+
 export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
   game_state(prevState, event) {
     const playerData = event.data.player as unknown;
@@ -176,7 +200,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
     const room = event.data.room as Room | undefined;
     const messageText = typeof event.data.message === 'string' ? event.data.message.trim() : '';
     let next = prevState;
-    if (player) next = { ...next, player };
+    if (player) next = { ...next, player: mergeRespawnedPlayer(next.player, player) };
     if (room) next = { ...next, room };
     if (messageText) {
       const msg = buildChatMessage(messageText, event.timestamp, {

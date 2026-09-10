@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { HealthStatus } from '../../types/health';
 import { deriveHealthStatusFromPlayer } from '../../types/health';
 import { deriveLucidityStatusFromPlayer, type LucidityStatus } from '../../types/lucidity';
 import { publishTier } from '../../utils/lucidityTierRelay';
+import { IncapacitatedBanner } from '../health/IncapacitatedBanner';
 import { GameClientV2AuxiliaryPanels } from './GameClientV2AuxiliaryPanels';
 import { HeaderBar } from './HeaderBar';
 import { ChatHistoryPanel } from './panels/ChatHistoryPanel';
@@ -12,19 +13,22 @@ import { LocationPanel } from './panels/LocationPanel';
 import { OccupantsPanel } from './panels/OccupantsPanel';
 import { QuestLogPanel } from './panels/QuestLogPanel';
 import { RoomDescriptionPanel } from './panels/RoomDescriptionPanel';
+import { SettingsPanel } from './panels/SettingsPanel';
 import { PanelContainer } from './PanelSystem/PanelContainer';
 import { PanelManagerProvider } from './PanelSystem/PanelManager';
 import { usePanelManager } from './PanelSystem/usePanelManager';
 import { TentacleBackdrop } from './TentacleBackdrop';
 import type { ChatMessage, MythosTimeState, PanelVariant, Player, QuestLogEntry, Room } from './types';
 import { getGameInfoPanelCombatClassName } from './utils/characterInfoPanelOutline';
+import { headerHeightClass } from './utils/headerHeight';
 import { createDefaultPanelLayout } from './utils/panelLayout';
 import type { ActiveEffectDisplay } from './utils/stateUpdateUtils';
 
 // Helper function to calculate occupant count from room data
 // Extracted to reduce cyclomatic complexity
 /** Panel ids rendered in the main dock (single source for mapped PanelContainers). */
-type MainDockPanelId = 'chatHistory' | 'location' | 'roomDescription' | 'occupants' | 'gameInfo' | 'questLog';
+type MainDockPanelId =
+  'chatHistory' | 'location' | 'roomDescription' | 'occupants' | 'gameInfo' | 'questLog' | 'settings';
 
 /** Dock slot metadata (stable); panel bodies read messages/room in render to avoid invalidating a memo on every chat line. */
 type MainDockSlotMeta = {
@@ -111,6 +115,28 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
   } = props;
   const panelManager = usePanelManager();
 
+  // Collapse state lives here (not in HeaderBar) so the panel area's top offset can be derived
+  // from the same source as the header's own height - see headerHeightClass (#699).
+  const [isHeaderCollapsed, setIsHeaderCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem('mythosmud-ui-v2-header-collapsed') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const toggleHeaderCollapse = useCallback(() => {
+    setIsHeaderCollapsed(prev => {
+      const next = !prev;
+      try {
+        localStorage.setItem('mythosmud-ui-v2-header-collapsed', String(next));
+      } catch {
+        // localStorage unavailable (private mode, etc.) - collapse state just won't persist.
+      }
+      return next;
+    });
+  }, []);
+
   // Prefer container-derived status; fall back to projector-authoritative player stats only.
   const derivedHealthStatus = useMemo<HealthStatus | null>(
     () => healthStatus ?? deriveHealthStatusFromPlayer(player, undefined),
@@ -121,6 +147,9 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
     () => lucidityStatus ?? deriveLucidityStatusFromPlayer(player, undefined),
     [lucidityStatus, player]
   );
+
+  // Self-clearing: tracks the authoritative DP tier exactly, no minimum dwell time (#715).
+  const isIncapacitated = derivedHealthStatus?.tier === 'incapacitated';
 
   // Relay tier to other tabs (e.g. /map) so their direction hallucination stays in sync (#626).
   useEffect(() => {
@@ -180,6 +209,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
         panelClassName: getGameInfoPanelCombatClassName(Boolean(player?.in_combat)),
       },
       { id: 'questLog', variant: 'default' },
+      { id: 'settings', variant: 'default' },
     ],
     [occupantsTitle, player]
   );
@@ -194,10 +224,11 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
             onClearMessages={onClearMessages}
             onDownloadLogs={onDownloadLogs}
             isConnected={isConnected}
+            corruption={player?.stats?.corruption ?? 0}
           />
         );
       case 'location':
-        return <LocationPanel room={room} tier={derivedLucidityStatus?.tier} playerId={player?.id ?? player?.name} />;
+        return <LocationPanel room={room} />;
       case 'roomDescription':
         return <RoomDescriptionPanel room={room} />;
       case 'occupants':
@@ -213,6 +244,8 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
         );
       case 'questLog':
         return <QuestLogPanel questLog={questLog} />;
+      case 'settings':
+        return <SettingsPanel />;
       default: {
         const _exhaustive: never = id;
         return _exhaustive;
@@ -241,10 +274,22 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
           isLoggingOut={isLoggingOut}
           activeEffects={activeEffects}
           followingTarget={followingTarget}
+          isCollapsed={isHeaderCollapsed}
+          onToggleCollapse={toggleHeaderCollapse}
         />
 
-        {/* Main Content Area - Panels: flex-1 min-h-0 so panel area is bounded and scroll/overflow work */}
-        <div className="relative flex min-h-0 flex-1 pt-12">
+        {/* Main Content Area - Panels: flex-1 min-h-0 so panel area is bounded and scroll/overflow work.
+            Top padding mirrors HeaderBar's own height via headerHeightClass (single source, #699). */}
+        <div
+          className={`relative flex min-h-0 flex-1 ${headerHeightClass(isHeaderCollapsed, mythosTime).padding} transition-[padding-top] duration-300`}
+        >
+          {isIncapacitated && (
+            <div
+              className={`absolute inset-x-0 ${headerHeightClass(isHeaderCollapsed, mythosTime).offset} z-40 px-4 pt-2`}
+            >
+              <IncapacitatedBanner />
+            </div>
+          )}
           {mainDockSlots.map(slot => {
             const panel = panelManager.getPanel(slot.id);
             if (!panel?.isVisible) {

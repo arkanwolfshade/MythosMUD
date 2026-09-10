@@ -10,13 +10,31 @@ Spec: Fractured tier (part of hallucination event palette when not a phantom hos
 
 from __future__ import annotations
 
-import random
 import uuid
-from typing import Any
+from typing import TypedDict
 
 from ..structured_logging.enhanced_logging_config import get_logger
+from .hallucination_rng import hallucination_rng
 
 logger = get_logger(__name__)
+
+
+class FakeNpcTellData(TypedDict):
+    """Data describing one fake NPC tell hallucination (#714)."""
+
+    npc_name: str
+    message: str
+    room_id: str
+    hallucination_id: str
+
+
+class RoomTextOverlayData(TypedDict):
+    """Data describing one room text overlay hallucination (#714)."""
+
+    overlay_text: str
+    room_id: str
+    hallucination_id: str
+
 
 # Fake NPC names for hallucinatory tells
 FAKE_NPC_NAMES: list[str] = [
@@ -75,7 +93,7 @@ class FakeHallucinationService:
         """Initialize the fake hallucination service."""
         logger.info("FakeHallucinationService initialized")
 
-    def generate_fake_npc_tell(self, player_id: uuid.UUID, room_id: str) -> dict[str, Any]:
+    def generate_fake_npc_tell(self, player_id: uuid.UUID, room_id: str) -> FakeNpcTellData:
         """
         Generate a fake NPC tell hallucination.
 
@@ -86,8 +104,9 @@ class FakeHallucinationService:
         Returns:
             Dictionary with fake NPC tell data
         """
-        fake_npc_name = random.choice(FAKE_NPC_NAMES)  # nosec B311: Game mechanics hallucination generation, not cryptographic
-        fake_message = random.choice(FAKE_NPC_TELL_MESSAGES)  # nosec B311: Game mechanics hallucination generation, not cryptographic
+        rng = hallucination_rng.get()
+        fake_npc_name = rng.choice(FAKE_NPC_NAMES)  # nosec B311: Game mechanics hallucination generation, not cryptographic
+        fake_message = rng.choice(FAKE_NPC_TELL_MESSAGES)  # nosec B311: Game mechanics hallucination generation, not cryptographic
 
         return {
             "npc_name": fake_npc_name,
@@ -96,7 +115,7 @@ class FakeHallucinationService:
             "hallucination_id": f"fake_tell_{player_id}_{uuid.uuid4().hex[:8]}",
         }
 
-    def generate_room_text_overlay(self, player_id: uuid.UUID, room_id: str) -> dict[str, Any]:
+    def generate_room_text_overlay(self, player_id: uuid.UUID, room_id: str) -> RoomTextOverlayData:
         """
         Generate a room text overlay hallucination.
 
@@ -107,7 +126,7 @@ class FakeHallucinationService:
         Returns:
             Dictionary with room text overlay data
         """
-        overlay_text = random.choice(ROOM_TEXT_OVERLAYS)  # nosec B311: Game mechanics hallucination generation, not cryptographic
+        overlay_text = hallucination_rng.get().choice(ROOM_TEXT_OVERLAYS)  # nosec B311: Game mechanics hallucination generation, not cryptographic
 
         return {
             "overlay_text": overlay_text,
@@ -122,7 +141,7 @@ class FakeHallucinationService:
         Returns:
             Either "fake_npc_tell" or "room_text_overlay"
         """
-        return random.choice(["fake_npc_tell", "room_text_overlay"])  # nosec B311: Game mechanics hallucination type selection, not cryptographic
+        return hallucination_rng.get().choice(["fake_npc_tell", "room_text_overlay"])  # nosec B311: Game mechanics hallucination type selection, not cryptographic
 
 
 __all__ = ["FakeHallucinationService", "FAKE_NPC_NAMES", "FAKE_NPC_TELL_MESSAGES", "ROOM_TEXT_OVERLAYS"]

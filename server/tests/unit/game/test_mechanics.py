@@ -1,7 +1,11 @@
 """Unit tests for GameMechanicsService."""
 
+# pyright: reportAny=false
+# TEST_MOCK: `_player()`'s MagicMock attributes (player_id, get_stats) resolve to Any; typing them
+# precisely would need a fake Protocol with no runtime value in this mock-driven suite.
+
 import uuid
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -9,10 +13,16 @@ from server.exceptions import ValidationError
 from server.game.mechanics import GameMechanicsService
 
 
+async def _async_session_gen(session: AsyncMock):
+    """Yield a single fake session -- mirrors get_async_session's shape for CorruptionService."""
+    yield session
+
+
 @pytest.fixture
 def persistence() -> MagicMock:
     p = MagicMock()
     p.get_player_by_id = AsyncMock()
+    p.save_player = AsyncMock()
     p.apply_lucidity_loss = AsyncMock()
     p.apply_fear = AsyncMock()
     p.apply_corruption = AsyncMock()
@@ -32,6 +42,9 @@ def _player(name: str = "Armitage") -> MagicMock:
     p = MagicMock()
     p.name = name
     p.player_id = uuid.uuid4()
+    stats: dict[str, object] = {"corruption": 0}
+    p.get_stats = MagicMock(return_value=stats)
+    p.set_stats = MagicMock(side_effect=stats.update)
     return p
 
 
@@ -66,9 +79,15 @@ async def test_apply_fear_success(service: GameMechanicsService, persistence: Ma
 async def test_apply_corruption_success(service: GameMechanicsService, persistence: MagicMock) -> None:
     player = _player()
     persistence.get_player_by_id.return_value = player
-    ok, msg = await service.apply_corruption(str(player.player_id), 2)
+    session = AsyncMock()
+    with patch(
+        "server.services.corruption_service.get_async_session",
+        return_value=_async_session_gen(session),
+    ):
+        ok, msg = await service.apply_corruption(str(player.player_id), 2)
     assert ok is True
     assert "corruption" in msg
+    assert player.get_stats()["corruption"] == 2
 
 
 @pytest.mark.asyncio

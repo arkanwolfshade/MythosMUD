@@ -385,6 +385,19 @@ async def test_delete_character_success() -> None:
 
 
 @pytest.mark.asyncio
+async def test_delete_character_already_deleted_is_404_not_500() -> None:
+    """A lost concurrent-delete race (soft_delete_character returns success=False with
+    "already deleted") must surface as 404, not 500 (#777)."""
+    from server.api.players import delete_character
+
+    svc = MagicMock()
+    svc.soft_delete_character = AsyncMock(return_value=(False, "Character is already deleted"))
+    with pytest.raises(LoggedHTTPException) as ei:
+        _ = await delete_character(str(uuid.uuid4()), MagicMock(spec=Request), _user(), svc)
+    assert ei.value.status_code == 404
+
+
+@pytest.mark.asyncio
 async def test_delete_character_invalid_id() -> None:
     from server.api.players import delete_character
 

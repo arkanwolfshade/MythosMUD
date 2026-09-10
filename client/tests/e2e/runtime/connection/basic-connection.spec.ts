@@ -49,7 +49,16 @@ test.describe('Basic Connection/Disconnection Flow', () => {
         waitForMessage(awContext.page, /Ithaqua has left the game/i, 60000),
         forceLogoutPlayer(ithaquaContext.page),
       ]);
-      // /logout force-disconnects server-side but does not always restore login UI; navigate explicitly.
+      // The /logout command only disconnects server-side; it never touches the browser's
+      // persisted auth token (by design, so a transient disconnect can reconnect without
+      // re-login -- see useAuthSessionRestore.ts). That token is still valid after /logout, so
+      // reloading without clearing it first has useAuthSessionRestore auto-restore the session
+      // and skip straight past the login form this waits for. Clear the client-side session
+      // (equivalent to secureTokenStorage.clearAllTokens()) before navigating.
+      await ithaquaContext.page.evaluate(() => {
+        localStorage.clear();
+        sessionStorage.clear();
+      });
       await ithaquaContext.page.goto('/', { waitUntil: 'domcontentloaded' });
       await ithaquaContext.page.getByTestId('username-input').waitFor({ state: 'visible', timeout: 45000 });
 

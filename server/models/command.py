@@ -70,6 +70,7 @@ from .command_party import PartyCommand
 
 # Import player state commands
 from .command_player_state import (
+    CleanseCommand,
     GroundCommand,
     LieCommand,
     LogoutCommand,
@@ -163,6 +164,7 @@ __all__ = [
     "LieCommand",
     "RestCommand",
     "GroundCommand",
+    "CleanseCommand",
     # System commands
     "ShutdownCommand",
     # Combat commands
@@ -228,6 +230,7 @@ Command = (
     | LieCommand
     | RestCommand
     | GroundCommand
+    | CleanseCommand
     | ShutdownCommand
     | ChannelCommand
     | WhisperCommand

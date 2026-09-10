@@ -1,6 +1,6 @@
 # MythosMUD Development Environment Setup
 
-**Version 1.2.0** · MythosMUD · 2026-08-28
+**Version 1.3.0** · MythosMUD · 2026-09-08
 
 ---
 
@@ -22,8 +22,8 @@ us ensure our tools are both powerful and safe."_
 This guide will help you bootstrap your workspace for developing MythosMUD, with particular emphasis on security,
 privacy, and COPPA compliance.
 
-For contributor workflow and pull requests, see [CONTRIBUTING.md](../CONTRIBUTING.md). Agent-oriented rules live in
-[AGENTS.md](../AGENTS.md) and [DEVELOPMENT_AI.md](DEVELOPMENT_AI.md).
+For contributor workflow and pull requests, see [CONTRIBUTING.md](../CONTRIBUTING.md). Authoritative agent rules:
+[AGENTS.md](../AGENTS.md). Short AI on-ramp: [DEVELOPMENT_AI.md](DEVELOPMENT_AI.md).
 
 ---
 
@@ -397,7 +397,7 @@ npm run build
 This file is for **human** lab setup. Do not duplicate agent policy here.
 
 - Hard rules (server, DB, tests, COPPA): [AGENTS.md](../AGENTS.md)
-- Agent workflow, patterns, pitfalls: [DEVELOPMENT_AI.md](DEVELOPMENT_AI.md)
+- AI on-ramp (router only): [DEVELOPMENT_AI.md](DEVELOPMENT_AI.md)
 
 ---
 
@@ -505,7 +505,7 @@ curl http://localhost:54768/game/status
 - Check [GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues) for current development priorities
 - Review security requirements and COPPA compliance guidelines
 - Contributors: [CONTRIBUTING.md](../CONTRIBUTING.md)
-- Agents: [DEVELOPMENT_AI.md](DEVELOPMENT_AI.md) and [AGENTS.md](../AGENTS.md)
+- Agents: [AGENTS.md](../AGENTS.md) (on-ramp: [DEVELOPMENT_AI.md](DEVELOPMENT_AI.md))
 
 ---
 
@@ -540,6 +540,7 @@ forces we seek to understand."_
 
 | Version | Date       | Change                                                                        |
 | ------- | ---------- | ----------------------------------------------------------------------------- |
+| 1.3.0   | 2026-09-08 | Point agents at AGENTS.md as SoT; DEVELOPMENT_AI.md is on-ramp router only    |
 | 1.2.0   | 2026-08-28 | Fix broken `PLANNING.md` link (wrong depth) (#722)                            |
 | 1.1.0   | 2026-08-03 | Fact-fix PostgreSQL/env/ports/Make; move agent rules to pointer; fix encoding |
 | 1.0.0   | 2026-07-30 | Initial HADS structural conversion                                            |

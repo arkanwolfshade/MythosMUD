@@ -5,16 +5,17 @@ Tests the websocket_room_updates module functions.
 """
 
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+from server.realtime.room_update_event_builder import build_room_update_event
 from server.realtime.websocket_room_updates import (
     _looks_like_player_uuid,
     broadcast_room_update,
-    build_room_update_event,
     get_npc_occupants,
     get_player_occupants,
     update_player_room_subscription,
@@ -259,11 +260,12 @@ async def test_build_room_update_event(mock_connection_manager, mock_room):
     mock_connection_manager.room_manager.list_room_drops.return_value = []
 
     result = await build_room_update_event(mock_room, room_id, player_id, occupant_names, mock_connection_manager)
+    data = cast(dict[str, object], result["data"])
 
     assert result["event_type"] == "room_update"
-    assert result["data"]["room"] is not None
-    assert result["data"]["occupants"] == occupant_names
-    assert result["data"]["occupant_count"] == 2
+    assert data["room"] is not None
+    assert data["occupants"] == occupant_names
+    assert data["occupant_count"] == 2
 
 
 @pytest.mark.asyncio
@@ -278,9 +280,10 @@ async def test_build_room_update_event_with_drops(mock_connection_manager, mock_
     mock_connection_manager.room_manager.list_room_drops.return_value = mock_drops
 
     result = await build_room_update_event(mock_room, room_id, player_id, occupant_names, mock_connection_manager)
+    data = cast(dict[str, object], result["data"])
 
-    assert "room_drops" in result["data"]
-    assert "drop_summary" in result["data"]
+    assert "room_drops" in data
+    assert "drop_summary" in data
 
 
 @pytest.mark.asyncio

@@ -85,3 +85,13 @@ export const useDebugInfoPreference = () => {
     },
   };
 };
+
+export const useChatGrainPreference = () => {
+  const { preferences, updatePreferences } = useTheme();
+  return {
+    chatGrain: preferences.chatGrain,
+    setChatGrain: (chatGrain: boolean) => {
+      updatePreferences({ chatGrain });
+    },
+  };
+};

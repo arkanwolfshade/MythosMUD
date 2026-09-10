@@ -349,7 +349,12 @@ async def disconnect_websocket_connection_impl(manager: ConnectionManager, playe
     """Disconnect a specific WebSocket connection for a player."""
     try:
         if connection_id not in manager.connection_metadata:
-            logger.warning("Connection not found in metadata", connection_id=connection_id)
+            # Expected race, not a fault: the only caller is /rest's deferred disconnect, which
+            # snapshots connection IDs before a short delay and closes them afterward (#297) --
+            # if this connection already closed on its own during that window (client
+            # disconnected, tab closed, network blip), it's already gone from metadata by the
+            # time this runs. The desired outcome (disconnected) was already achieved.
+            logger.debug("Connection not found in metadata", connection_id=connection_id)
             return False
         metadata = manager.connection_metadata[connection_id]
         if metadata.player_id != player_id or metadata.connection_type != "websocket":
@@ -576,6 +581,26 @@ async def unsubscribe_from_room_impl(manager: ConnectionManager, player_id: UUID
     """Unsubscribe a player from a room (compatibility method)."""
     canonical_id = manager.canonical_room_id(room_id) or room_id
     _ = manager.room_manager.unsubscribe_from_room(str(player_id), canonical_id)
+
+
+def update_player_room_cache_impl(manager: ConnectionManager, player_id: UUID, room_id: str) -> None:
+    """Keep online_players[...]['current_room_id'] in sync with an actual room move.
+
+    online_players is written once at connect time (player_presence_tracker._build_player_info)
+    and never touched again by movement. Room-scoped chat delivery's is_player_in_room check reads
+    this field as its primary (and in practice only, since it's always populated after first
+    connect) source -- so a player who moves rooms without reconnecting silently drops out of
+    every room broadcast aimed at their *actual* room: message_filtering.py compares the
+    message's room_id against this stale value and filters them out with no error to the sender
+    (#297/#610 investigation; confirmed live via communications.log's "BROADCAST FILTERING DEBUG"
+    trail showing a player's cached room lagging their real one after ensureMultiplayerCoLocated's
+    teleport). Called from PlayerEnteredRoom handling, the one path already proven to fire on every
+    genuine movement (spawn deliberately bypasses it via _add_player_to_room_silently, which is
+    correct: connect already sets this field fresh).
+    """
+    player_info = manager.online_players.get(player_id)
+    if player_info is not None:
+        player_info["current_room_id"] = room_id
 
 
 def canonical_room_id_public_impl(manager: ConnectionManager, room_id: str | None) -> str | None:

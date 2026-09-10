@@ -5,19 +5,50 @@ import {
   formatMythosDateTime12Hour,
   DAYPART_MESSAGES,
 } from '../mythosTime';
-import type { MythosTimePayload } from '../../types/mythosTime';
+import type { MythosHoliday, MythosTimePayload } from '../../types/mythosTime';
+
+/** Fills in the MythosTimePayload fields buildMythosTimeState() ignores, so each test only states what it varies. */
+function buildPayload(
+  overrides: Partial<MythosTimePayload> &
+    Pick<MythosTimePayload, 'month_name' | 'day_of_month' | 'daypart' | 'active_holidays'>
+): MythosTimePayload {
+  return {
+    mythos_datetime: '1928-01-01T12:00:00Z',
+    mythos_clock: '12:00',
+    day_name: 'Sunday',
+    week_of_month: 1,
+    season: 'Winter',
+    is_daytime: true,
+    is_witching_hour: false,
+    server_timestamp: '2025-01-01T12:00:00Z',
+    upcoming_holidays: [],
+    ...overrides,
+  };
+}
+
+function buildHoliday(name: string, notes: string): MythosHoliday {
+  return {
+    id: name.toLowerCase().replace(/\s+/g, '_'),
+    name,
+    tradition: 'folk',
+    season: 'autumn',
+    duration_hours: 24,
+    bonus_tags: [],
+    notes,
+  };
+}
 
 describe('MythosTime Utilities', () => {
   describe('buildMythosTimeState', () => {
     it('should build state with formatted date', () => {
       // Arrange
-      const payload: MythosTimePayload = {
+      const payload = buildPayload({
         month_name: 'September',
         day_of_month: 21,
-        clock: '14:00',
+        mythos_clock: '14:00',
         daypart: 'afternoon',
         active_holidays: [],
-      };
+      });
 
       // Act
       const state = buildMythosTimeState(payload);
@@ -30,16 +61,16 @@ describe('MythosTime Utilities', () => {
 
     it('should append active holidays to formatted date', () => {
       // Arrange
-      const payload: MythosTimePayload = {
+      const payload = buildPayload({
         month_name: 'October',
         day_of_month: 31,
-        clock: '20:00',
+        mythos_clock: '20:00',
         daypart: 'night',
         active_holidays: [
-          { name: 'Halloween', description: 'Spooky day' },
-          { name: 'All Hallows Eve', description: 'Another spooky day' },
+          buildHoliday('Halloween', 'Spooky day'),
+          buildHoliday('All Hallows Eve', 'Another spooky day'),
         ],
-      };
+      });
 
       // Act
       const state = buildMythosTimeState(payload);
@@ -50,13 +81,13 @@ describe('MythosTime Utilities', () => {
 
     it('should handle empty active holidays array', () => {
       // Arrange
-      const payload: MythosTimePayload = {
+      const payload = buildPayload({
         month_name: 'January',
         day_of_month: 1,
-        clock: '00:00',
+        mythos_clock: '00:00',
         daypart: 'witching',
         active_holidays: [],
-      };
+      });
 
       // Act
       const state = buildMythosTimeState(payload);
@@ -67,19 +98,19 @@ describe('MythosTime Utilities', () => {
 
     it('should preserve all payload properties', () => {
       // Arrange
-      const payload: MythosTimePayload = {
+      const payload = buildPayload({
         month_name: 'March',
         day_of_month: 15,
-        clock: '12:00',
+        mythos_clock: '12:00',
         daypart: 'midday',
         active_holidays: [],
-      };
+      });
 
       // Act
       const state = buildMythosTimeState(payload);
 
       // Assert
-      expect(state.clock).toBe('12:00');
+      expect(state.mythos_clock).toBe('12:00');
       expect(state.daypart).toBe('midday');
     });
   });

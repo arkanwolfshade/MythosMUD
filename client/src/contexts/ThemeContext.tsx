@@ -19,6 +19,9 @@ export interface UIPreferences {
   showDebugInfo: boolean;
   highContrast: boolean;
   reducedMotion: boolean;
+  /** #804: corruption's chat-pane grain overlay. Presentation-only (ADR-025), so a client toggle
+   * over it carries no fairness concern the way toggling a server-side effect would (ADR-024). */
+  chatGrain: boolean;
 }
 
 // Context type
@@ -39,6 +42,7 @@ const defaultPreferences: UIPreferences = {
   showDebugInfo: false,
   highContrast: false,
   reducedMotion: false,
+  chatGrain: true,
 };
 
 // Create context

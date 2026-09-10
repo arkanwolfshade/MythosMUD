@@ -106,7 +106,7 @@ describe('roomMergeUtils', () => {
       const updatesRoom: Room = {
         id: 'room1',
         name: 'Room 1',
-        npcs: [],
+        npcs: [] as string[],
       } as Room;
 
       const result = mergeRoomState(updatesRoom, prevRoom);

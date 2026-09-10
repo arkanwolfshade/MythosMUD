@@ -76,7 +76,7 @@ vi.mock('./ui/TerminalInput', () => ({
     className,
   }: {
     value: string;
-    onChange: (value: string) => void;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     placeholder?: string;
     className?: string;
   }) => (

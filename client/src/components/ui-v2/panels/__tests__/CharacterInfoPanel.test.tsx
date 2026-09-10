@@ -4,7 +4,6 @@
 
 import '@testing-library/jest-dom/vitest';
 import { render, screen } from '@testing-library/react';
-import React from 'react';
 import { describe, expect, it } from 'vitest';
 import type { HealthStatus } from '../../../../types/health';
 import type { LucidityStatus } from '../../../../types/lucidity';
@@ -78,6 +77,22 @@ describe('CharacterInfoPanel', () => {
 
     renderCharacterPanel(player);
     expect(screen.getByText('TestPlayer')).toBeInTheDocument();
+  });
+
+  it('should render corruption value with its tier name (#804)', () => {
+    const player: Player = {
+      id: 'player1',
+      name: 'TestPlayer',
+      stats: {
+        current_dp: 100,
+        max_dp: 100,
+        lucidity: 50,
+        corruption: 62,
+      },
+    };
+
+    renderCharacterPanel(player);
+    expect(screen.getByText('62 (corrupted)')).toBeInTheDocument();
   });
 
   it('should render profession when available', () => {

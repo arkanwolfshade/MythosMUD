@@ -192,18 +192,13 @@ def _test_file_in_category(file_path: str, category: str) -> bool:
 
 
 def _apply_path_based_markers(item: pytest.Item) -> None:
-    """Apply unit/integration/e2e markers (and xdist grouping) from the test file path."""
+    """Apply unit/integration/e2e markers from the test file path."""
     file_path = str(item.fspath)
     if _test_file_in_category(file_path, "unit"):
         item.add_marker(pytest.mark.unit)
         return
     if _test_file_in_category(file_path, "integration"):
         item.add_marker(pytest.mark.integration)
-        # Mark integration tests as serial to avoid event loop conflicts in parallel execution
-        item.add_marker(pytest.mark.serial)
-        # Documents intent; not load-bearing under --dist worksteal (see pytest.ini). Kept so
-        # re-enabling a loadgroup-family scheduler later is a one-line revert, not a rediscovery.
-        item.add_marker(pytest.mark.xdist_group(name="integration"))
         return
     if _test_file_in_category(file_path, "e2e"):
         item.add_marker(pytest.mark.e2e)
@@ -214,14 +209,13 @@ def pytest_collection_modifyitems(items: list[pytest.Item]) -> None:
     Auto-mark tests based on their file path.
 
     Tests in unit/ get @pytest.mark.unit
-    Tests in integration/ get @pytest.mark.integration (and serial for xdist safety)
+    Tests in integration/ get @pytest.mark.integration
     Tests in e2e/ get @pytest.mark.e2e
 
-    Integration tests never actually run under -n (see run_integration_tests_playwright.ps1's
-    -n 1), so no xdist grouping mechanism is needed here; the xdist_group marker above is
-    informational only. No `config` parameter: pluggy only passes the hookspec args a hookimpl
-    actually declares, and this hook no longer reads it (previously used to detect
-    --dist loadgroup).
+    The whole suite runs serially (see #724: pytest-xdist's worker restart/shutdown protocol
+    produces false "worker crashed" reports under any per-item scheduler, an unresolved
+    upstream xdist/execnet gap). Integration tests still get their own marker so they can be
+    selected independently; there is no parallel worker to isolate them from any more.
     """
     for item in items:
         _apply_path_based_markers(item)

@@ -41,7 +41,9 @@ def mock_get_app():
 
 
 @pytest.fixture
-def game_state_provider(mock_room_manager, mock_get_async_persistence, mock_send_personal_message, mock_get_app):
+def game_state_provider(
+    mock_room_manager, mock_get_async_persistence, mock_send_personal_message, mock_get_app
+) -> GameStateProvider:
     """Create a GameStateProvider instance."""
     return GameStateProvider(
         room_manager=mock_room_manager,

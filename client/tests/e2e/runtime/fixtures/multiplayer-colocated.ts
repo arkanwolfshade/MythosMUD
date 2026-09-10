@@ -260,7 +260,21 @@ async function resyncE2ePlayersAfterDatabaseReset(contexts: PlayerContext[], tim
   for (const ctx of contexts) {
     await reopenPlayerPageIfClosed(ctx);
     await ctx.page.bringToFront().catch(() => {});
-    await logoutPlayer(ctx.page, Math.min(timeoutMs, 60000)).catch(() => {});
+    // spaFallback: the graceful Exit-the-Realm click can silently fail to reach the server
+    // (observed: zero /logout traffic server-side despite the button being visible+enabled) or
+    // just be slow; without it logoutPlayer's own username-input wait eats the full timeout with
+    // nothing to show for it.
+    await logoutPlayer(ctx.page, Math.min(timeoutMs, 60000), { spaFallback: true }).catch(() => {});
+    // Force-clear the persisted session regardless of how the above went: this function's whole
+    // point is a hard resync, and if the graceful logout never actually ran (handleLogout never
+    // cleared storage), loginPlayer's own page.goto() below would have useAuthSessionRestore
+    // auto-restore the still-valid token and skip straight past the login screen it needs.
+    await ctx.page
+      .evaluate(() => {
+        localStorage.clear();
+        sessionStorage.clear();
+      })
+      .catch(() => {});
     await reopenPlayerPageIfClosed(ctx);
     await loginPlayer(ctx.page, ctx.player.username, ctx.player.password);
     await ensurePlayerInGame(ctx, timeoutMs);

@@ -4,6 +4,7 @@ Unit tests for look room command handlers.
 Tests room look functionality including formatting and display.
 """
 
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -17,7 +18,6 @@ from server.commands.look_room import (
     _format_players_section,
     _get_room_description,
     _get_room_id,
-    _get_viewer_phantom_names,
     _handle_direction_look,
     _handle_room_look,
     _try_lookup_phantom_implicit,
@@ -112,27 +112,6 @@ async def test_format_npcs_section_empty():
         mock_get_npcs.return_value = []
         result = await _format_npcs_section("test_room")
         assert not result
-
-
-def test_get_viewer_phantom_names_no_viewer_or_room():
-    """#625: no phantom names without both a viewer id and a room id."""
-    assert _get_viewer_phantom_names(None, "room_1") == []
-    assert _get_viewer_phantom_names("player-1", None) == []
-
-
-def test_get_viewer_phantom_names_matches_own_room():
-    """#625: only the viewer's own active phantoms in this room are returned."""
-    with (
-        patch(
-            "server.services.phantom_hostile_service.phantom_hostile_service.get_active_phantoms",
-            return_value=["phantom_1"],
-        ),
-        patch(
-            "server.services.phantom_hostile_service.phantom_hostile_service.get_phantom_data",
-            return_value={"phantom_id": "phantom_1", "room_id": "room_1", "name": "Shambling Horror"},
-        ),
-    ):
-        assert _get_viewer_phantom_names("player-1", "room_1") == ["Shambling Horror"]
 
 
 @pytest.mark.asyncio
@@ -313,6 +292,47 @@ async def test_handle_room_look_success():
 
         assert "test room description" in result["result"].lower()
         assert "result" in result
+
+
+@pytest.mark.asyncio
+async def test_handle_room_look_hallucinates_exits_for_deranged_viewer():
+    """#626/#714: a deranged viewer's /look shows the same seeded lie, not the real exits."""
+    mock_room = MagicMock()
+    mock_room.id = "test_room"
+    mock_room.name = "Test Room"
+    mock_room.description = "A test room description"
+    mock_room.exits = {"north": "room_north"}
+    mock_room.get_players = MagicMock(return_value=[])
+
+    mock_persistence = AsyncMock()
+    mock_persistence.get_containers_by_room_id = AsyncMock(return_value=[])
+    mock_persistence.get_player_by_id = AsyncMock(return_value=None)
+
+    with (
+        patch("server.commands.look_room._get_npcs_in_room", new_callable=AsyncMock) as mock_get_npcs,
+        patch(
+            "server.commands.look_room.lucidity_tier_cache.is_deranged",
+            return_value=True,
+        ),
+        patch(
+            "server.commands.look_room.get_hallucinated_exits",
+            return_value=["east", "up"],
+        ) as mock_get_hallucinated,
+    ):
+        mock_get_npcs.return_value = []
+
+        result = await _handle_room_look(
+            room=mock_room,
+            room_drops=[],
+            persistence=mock_persistence,
+            player_name="TestPlayer",
+            viewer_player_id="player-1",
+        )
+
+    mock_get_hallucinated.assert_called_once_with("test_room", "player-1")
+    rendered = cast(str, result["result"])
+    assert "Exits: east, up" in rendered
+    assert "north" not in rendered.lower().split("exits:")[1]
 
 
 @pytest.mark.asyncio

@@ -73,13 +73,14 @@ export interface EventHandlerContext {
   lastDaypartRef: React.RefObject<string | null>;
   lastHourRef: React.RefObject<number | null>;
   lastQuarterHourRef: React.RefObject<number | null>;
-  lastHolidayIdsRef: React.RefObject<string[]>;
+  /** id+name of holidays active as of the previous payload; needed to name a holiday that has
+   *  since ended (it's no longer in active_holidays by then). */
+  lastHolidayIdsRef: React.RefObject<{ id: string; name: string }[]>;
   lastRoomUpdateTime: React.RefObject<number>;
   setDpStatus: (status: HealthStatus) => void;
   setLucidityStatus: (status: LucidityStatus) => void;
   setMythosTime: (time: MythosTimeState) => void;
   setIsDead: (dead: boolean) => void;
-  setIsMortallyWounded: (wounded: boolean) => void;
   setIsRespawning: (respawning: boolean) => void;
   setIsDelirious: (delirious: boolean) => void;
   setIsDeliriumRespawning: (respawning: boolean) => void;

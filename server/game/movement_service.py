@@ -414,9 +414,12 @@ class MovementService:
 
         with self._lock:
             try:
-                return await self._execute_move_locked(
+                moved = await self._execute_move_locked(
                     player_id, from_room_id, to_room_id, start_time, timing_breakdown, monitor
                 )
+                if moved:
+                    await self._maybe_trigger_room_entry_hallucination(player_id, to_room_id)
+                return moved
 
             except ValidationError as e:
                 duration_ms = (time.time() - start_time) * 1000
@@ -426,6 +429,33 @@ class MovementService:
             except (DatabaseError, SQLAlchemyError) as e:
                 self._handle_movement_error(e, player_id, from_room_id, to_room_id, start_time, timing_breakdown)
                 return False
+
+    async def _maybe_trigger_room_entry_hallucination(self, player_id: uuid.UUID | str, room_id: str) -> None:
+        """
+        Check the Uneasy tier's room-entry hallucination trigger after a successful move (#714).
+
+        `check_room_entry_hallucination`'s "room_entry" trigger type never touches the database
+        (only "time_based" does), so this reads the cheap in-memory tier cache directly rather
+        than resolving a fresh current_lcd -- no session needed. Any failure here is swallowed:
+        a hallucination check must never break movement.
+        """
+        try:
+            from ..services.lucidity_tier_cache import lucidity_tier_cache
+
+            if lucidity_tier_cache.get_tier(player_id) != "uneasy":
+                return
+
+            from ..services.hallucination_frequency_service import HallucinationFrequencyService
+            from ..services.passive_lucidity_flux.hallucinations import handle_uneasy_room_entry_hallucination
+
+            player_id_uuid = player_id if isinstance(player_id, uuid.UUID) else uuid.UUID(str(player_id))
+            should_trigger = await HallucinationFrequencyService().should_trigger_hallucination(
+                player_id_uuid, "uneasy", "room_entry"
+            )
+            if should_trigger:
+                await handle_uneasy_room_entry_hallucination(player_id_uuid, room_id)
+        except (AttributeError, TypeError, ValueError, RuntimeError) as e:
+            self._logger.debug("Room-entry hallucination check failed", player_id=player_id, error=str(e))
 
     async def _resolve_posture_player(self, player_obj: Any, player_id: uuid.UUID) -> Any:
         """Load fresh player from persistence for posture check when available."""

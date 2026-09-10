@@ -68,19 +68,23 @@ async function confirmCharacterDeletion(page: Page, charName: string): Promise<v
   );
   await domClick(confirmBtn);
   const resp = await deleteResponse;
-  if (!resp.ok()) {
+  // A 404 means the character is already gone -- exactly what this cleanup fixture wants.
+  // It can happen legitimately if the previous iteration's detach wait (below) let the loop
+  // re-match a card whose delete had already landed (#777).
+  if (!resp.ok() && resp.status() !== 404) {
     throw new Error(`E2E character delete failed: HTTP ${resp.status()}`);
   }
   // Wait for THIS character's card to actually leave the DOM before the next cleanup
   // iteration re-queries .character-card -- waiting for "any card attached" (the old check)
   // is satisfied trivially by the protected Ithaqua card that never leaves, so it resolved
   // before the parent's re-render and let the loop match the same stale card twice, firing
-  // a second DELETE for an id the server had already removed (404).
+  // a second DELETE for an id the server had already removed (404). Let past a real timeout
+  // throw instead of swallowing it -- a card that never detaches is the actual bug to surface,
+  // not a signal to silently re-loop over a stale reference.
   await page
     .locator('.character-card')
     .filter({ has: page.locator('h3.character-name', { hasText: charName, exact: true }) })
-    .waitFor({ state: 'detached', timeout: 5000 })
-    .catch(() => {});
+    .waitFor({ state: 'detached', timeout: TEST_TIMEOUTS.LOGIN });
 }
 
 async function deleteCharacterFromCard(page: Page, card: CharacterCardLocator, charName: string): Promise<void> {

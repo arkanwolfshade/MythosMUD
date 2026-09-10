@@ -7,7 +7,7 @@ error paths. Shared fixtures mirror test_player_service.py.
 
 import uuid
 from datetime import UTC, datetime
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -102,6 +102,11 @@ async def test_apply_fear(player_service, mock_persistence):
     assert "fear" in result["message"].lower()
 
 
+async def _async_session_gen(session: AsyncMock):
+    """Yield a single fake session -- mirrors get_async_session's shape for CorruptionService."""
+    yield session
+
+
 @pytest.mark.asyncio
 async def test_apply_corruption(player_service, mock_persistence):
     """Test apply_corruption() applies corruption."""
@@ -109,11 +114,22 @@ async def test_apply_corruption(player_service, mock_persistence):
     mock_player = MagicMock()
     mock_player.player_id = player_id
     mock_player.name = "TestPlayer"
+    stats: dict[str, object] = {"corruption": 0}
+    mock_player.get_stats = MagicMock(return_value=stats)
+    mock_player.set_stats = MagicMock(side_effect=stats.update)
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.apply_corruption = AsyncMock()
-    result = await player_service.apply_corruption(player_id, 3, "test_source")
+    mock_persistence.save_player = AsyncMock()
+    session = AsyncMock()
+    with patch(
+        "server.services.corruption_service.get_async_session",
+        return_value=_async_session_gen(session),
+    ):
+        # TEST_MOCK: `player_service` fixture is untyped MagicMock; this finding only appears
+        # because the line below moved inside a `with` for the get_async_session patch.
+        result = await player_service.apply_corruption(player_id, 3, "test_source")  # pyright: ignore[reportUnknownVariableType, reportUnknownMemberType]
     assert "message" in result
     assert "corruption" in result["message"].lower()
+    assert stats["corruption"] == 3
 
 
 @pytest.mark.asyncio
@@ -227,6 +243,52 @@ async def test_soft_delete_character_success(player_service, mock_persistence):
 
 
 @pytest.mark.asyncio
+async def test_soft_delete_character_prunes_online_players_roster(
+    player_service: PlayerService, mock_persistence: AsyncMock
+) -> None:
+    """#784 follow-up (#777 fallout): deleting a still-connected character must drop it from
+    the live online-players roster, or the game-tick loop keeps regenerating its MP/lucidity
+    every tick and the soft-delete guard refuses every save -- one warning + full stack trace
+    per tick, indefinitely, until the connection happens to drop."""
+    player_id = uuid.uuid4()
+    user_id = uuid.uuid4()
+    mock_player = MagicMock()
+    mock_player.player_id = player_id
+    mock_player.user_id = user_id
+    mock_player.is_deleted = False
+    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
+    mock_persistence.soft_delete_player = AsyncMock(return_value=True)
+
+    with patch("server.realtime.connection_manager_api.remove_online_player") as mock_remove:
+        success, _message = await player_service.soft_delete_character(player_id, user_id)
+
+    assert success is True
+    mock_remove.assert_called_once_with(player_id)
+
+
+@pytest.mark.asyncio
+async def test_soft_delete_character_lost_race_does_not_touch_online_players_roster(
+    player_service: PlayerService, mock_persistence: AsyncMock
+) -> None:
+    """A no-op delete (lost the race against a concurrent delete) must not prune the roster;
+    only a delete this call actually performed should."""
+    player_id = uuid.uuid4()
+    user_id = uuid.uuid4()
+    mock_player = MagicMock()
+    mock_player.player_id = player_id
+    mock_player.user_id = user_id
+    mock_player.is_deleted = False
+    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
+    mock_persistence.soft_delete_player = AsyncMock(return_value=False)  # lost the race
+
+    with patch("server.realtime.connection_manager_api.remove_online_player") as mock_remove:
+        success, _message = await player_service.soft_delete_character(player_id, user_id)
+
+    assert success is False
+    mock_remove.assert_not_called()
+
+
+@pytest.mark.asyncio
 async def test_soft_delete_character_not_found(player_service, mock_persistence):
     """Test soft_delete_character() when player not found."""
     from server.exceptions import ValidationError
@@ -311,10 +373,14 @@ async def test_soft_delete_character_already_deleted(player_service, mock_persis
 
 
 @pytest.mark.asyncio
-async def test_soft_delete_character_persistence_fails(player_service, mock_persistence):
-    """Test soft_delete_character() when persistence.soft_delete_player fails."""
-    from server.exceptions import DatabaseError
-
+async def test_soft_delete_character_lost_race_returns_already_deleted(
+    player_service: PlayerService, mock_persistence: AsyncMock
+):
+    """Test soft_delete_character() when the pre-check passed (is_deleted=False) but
+    soft_delete_player still returns False -- a concurrent delete won the race between the
+    read and the write. This must surface as "already deleted" (-> 404), not a DatabaseError
+    (-> 500): soft_delete_player's WHERE ... AND is_deleted = false no-ops in exactly this
+    case (#777)."""
     player_id = uuid.uuid4()
     user_id = uuid.uuid4()
     mock_player = MagicMock()
@@ -323,8 +389,9 @@ async def test_soft_delete_character_persistence_fails(player_service, mock_pers
     mock_player.is_deleted = False
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
     mock_persistence.soft_delete_player = AsyncMock(return_value=False)
-    with pytest.raises(DatabaseError, match="Failed to soft delete"):
-        await player_service.soft_delete_character(player_id, user_id)
+    success, message = await player_service.soft_delete_character(player_id, user_id)
+    assert success is False
+    assert "already deleted" in message.lower()
 
 
 @pytest.mark.asyncio

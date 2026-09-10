@@ -38,7 +38,9 @@ bodies).
 - **basedpyright `Any`:** Do not introduce `typing.Any` or suppress `reportAny` / `reportExplicitAny`.
   Rule: `.cursor/rules/basedpyright-no-any.mdc` (Claude: `.claude/rules/basedpyright.md`). After
   Python edits, run `uv run basedpyright <edited files>`. Ponytail must not treat `Any` as a
-  shortcut; Protocol + TypedDict is the shortest correct diff.
+  shortcut; Protocol + TypedDict is the shortest correct diff. **This is now enforced** by a
+  pre-commit hook and a CI step against `.basedpyright/baseline.json` — see
+  [No `Any` in `server/`](#no-any-in-server-enforced) below (#784).
 - **Obsidian LLM wiki (permanent memory):** Karpathy-pattern vault at
   `data/MythosMUD-Obsidian/` (`raw/` immutable, `wiki/` agent-owned, schema in vault
   `AGENTS.md`). File durable lore, design, and answers there; sync code-graph community
@@ -51,7 +53,8 @@ bodies).
 
 You are an untenured professor of Occult Studies at Miskatonic University
 
-- Address the user as "Professor Wolfshade" or "Prof. Wolfshade"
+- Address the user as "Professor <name>" or "Prof. <name>" where "<name>" is their preferred way to be addressed by
+  their AI Agent harness
 - You're enthusiastic about forbidden knowledge but pragmatic about implementation
 - Occasionally grumble about being assigned the "dirty work" of actual coding
 - Break character when technical clarity is needed
@@ -323,12 +326,83 @@ The definition of done for any work must include:
 - Passing linting checks
 - Passing testing (with appropriate coverage)
 - All code quality standards met
-- After Python edits: `uv run basedpyright <edited files>` with no `reportAny` /
-  `reportExplicitAny` (no `typing.Any`, no ignore comments for those rules)
+- After Python edits: `uv run basedpyright` (full run — the baseline is only bookkept
+  correctly whole) exits 0, with no `reportAny` / `reportExplicitAny` (no `typing.Any`, no
+  ignore comments for those rules). See [No `Any` in `server/`](#no-any-in-server-enforced)
 - **In-game help** for player-facing commands and features (`help <command>` /
   `server/help/help_content.py`, plus short entries in command help lists when applicable)
 - Content-creator documentation when the feature adds authoring tools (runbooks under
   `docs/runbooks/` or subsystem docs)
+
+### No `Any` in `server/` (enforced)
+
+Scope is `server/**` (prod **and** tests), set by `include` in `[tool.basedpyright]`. The gate is
+`uv run basedpyright` — a full run, wired as a `pre-commit` hook, a CI step, and `make typecheck`.
+It fails on **any** diagnostic not already recorded in `.basedpyright/baseline.json`, whatever its
+severity. No rule severity overrides exist: every rule keeps its `recommended` level.
+
+`.basedpyright/baseline.json` is the honest debt ledger. It must only ever shrink —
+`git log .basedpyright/baseline.json` is the burn-down chart, and `make any-report` shows where the
+remaining work is. Never run `--writebaseline` to make a new finding go away; that is the one move
+this whole gate exists to prevent. Regenerate it only when you have _removed_ findings.
+
+**Four rules are the burn-down commitment:** `reportAny`, `reportExplicitAny`,
+`reportMissingParameterType`, `reportUnknownParameterType`. The last two are not optional extras —
+in basedpyright, `Unknown` is the _implicit_ form of `Any`, so deleting an annotation converts an
+explicit `Any` into an implicit one and makes the type strictly worse. Without those two rules the
+gate would wave that through.
+
+`# type: ignore` does nothing for basedpyright here (`enableTypeIgnoreComments = false`). It remains
+a mypy comment only.
+
+#### Replacing an `Any`
+
+| Where                                                       | Use                                                                 | Precedent                                 |
+| ----------------------------------------------------------- | ------------------------------------------------------------------- | ----------------------------------------- |
+| Trust boundary (HTTP, NATS, JSON on disk)                   | Pydantic model inheriting `SecureBaseModel`                         | `server/schemas/shared/base.py`           |
+| Internal payloads (cache entries, `to_dict()`, event dicts) | `TypedDict` in a sibling `*_types.py`                               | `server/alias_storage.py`                 |
+| DI parameter (`service: Any`, `repo: Any`)                  | `Protocol` in `*_protocols.py`, imported under `TYPE_CHECKING`      | `server/game/magic/spell_effect_types.py` |
+| `*args`/`**kwargs: Any`                                     | `ParamSpec`, or concrete parameters                                 | —                                         |
+| Tests                                                       | real objects > typed fakes > `Protocol` > `TypedDict` > `mock_of()` | `server/tests/support.py`                 |
+
+Never invent a one-off `Protocol` or stack `cast()` calls to quiet a report — that is type-safety
+theatre. In genuinely mock-heavy tests a scoped, justified suppression is the better answer.
+
+**Any Pydantic conversion must ship three tests**: a valid payload passes; a malformed payload
+produces the _intended_ behaviour (reject / log / fall back — an explicit decision, not a default);
+and unknown fields behave as intended. `SecureBaseModel` sets `extra="forbid"`; deviating from that
+at a boundary requires saying why. This is not ceremony — #765/#754 record Pydantic models deleted
+as dead code because their field lists were never run against real traffic, and a wrong guess at a
+gameplay boundary kills a live message mid-session rather than returning a 422.
+
+#### Suppressing a finding
+
+Every `# pyright: ignore` must name its rules. Suppressions naming `reportAny` or
+`reportExplicitAny` must additionally carry a justification block, enforced by
+`scripts/lint_pyright_suppressions.py`:
+
+```python
+# Reason: THIRD_PARTY_UNTYPED:nats - Msg.data is annotated bytes | Any upstream.
+# Appropriate because: the payload is validated by _decode_envelope() on the next line,
+# which returns a typed Envelope; annotating a shape here would assert a structure we
+# have not yet checked.
+msg = await sub.next_msg()  # pyright: ignore[reportAny]
+```
+
+The block may sit immediately above or below the suppression. Categories:
+`THIRD_PARTY_UNTYPED:<lib>`, `TEST_MOCK`, `CHECKER_CONFLICT:<mypy code>`,
+`SERIALIZATION_BOUNDARY`, `DYNAMIC_DISPATCH`.
+
+The two fields are separate on purpose. `Reason:` states the **cause**; `Appropriate because:`
+(≥40 chars) must argue `Any` is the **correct engineering decision** rather than unfinished work.
+If the honest answer is "we haven't gotten to it yet", no sentence fits — delete the suppression and
+let the finding land in the baseline as honest debt instead of a false claim of permanence.
+
+Both checkers stay. mypy is narrower (it skips `server/tests/` and carries 40+ leniency overrides)
+and is kept for its SQLAlchemy and Pydantic plugins; **basedpyright is authoritative wherever the
+two disagree.** Do not add hand-written stubs to paper over a disagreement — `server/stubs/` was
+deleted in #784 precisely because mypy read it and basedpyright did not, so the two checkers saw
+different definitions of the same library.
 
 ### Verification and audit sweeps
 

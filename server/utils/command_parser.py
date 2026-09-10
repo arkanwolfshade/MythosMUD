@@ -76,6 +76,7 @@ def _build_command_factory_part2(factory: CommandFactory) -> dict[str, object]:
         CommandType.STAND.value: factory.create_stand_command,
         CommandType.LIE.value: factory.create_lie_command,
         CommandType.REST.value: factory.create_rest_command,
+        CommandType.CLEANSE.value: factory.create_cleanse_command,
         CommandType.SKILLS.value: factory.create_skills_command,
         CommandType.JOURNAL.value: factory.create_journal_command,
         CommandType.QUESTS.value: factory.create_quests_command,

@@ -16,7 +16,7 @@ export interface GameClientV2RefsBundle {
   lucidityStatusRef: React.MutableRefObject<LucidityStatus | null>;
   healthStatusRef: React.MutableRefObject<HealthStatus | null>;
   lastDaypartRef: React.MutableRefObject<string | null>;
-  lastHolidayIdsRef: React.MutableRefObject<string[]>;
+  lastHolidayIdsRef: React.MutableRefObject<{ id: string; name: string }[]>;
   sendCommandRef: React.MutableRefObject<((command: string, args?: string[]) => Promise<boolean>) | null>;
   intentionalExitInProgressRef: React.MutableRefObject<boolean>;
   roomFirstSetAtRef: React.MutableRefObject<number | null>;
@@ -30,7 +30,7 @@ function useGameClientV2ContainerMutableRefs(): GameClientV2RefsBundle {
   const lucidityStatusRef = useRef<LucidityStatus | null>(null);
   const healthStatusRef = useRef<HealthStatus | null>(null);
   const lastDaypartRef = useRef<string | null>(null);
-  const lastHolidayIdsRef = useRef<string[]>([]);
+  const lastHolidayIdsRef = useRef<{ id: string; name: string }[]>([]);
   const sendCommandRef = useRef<((command: string, args?: string[]) => Promise<boolean>) | null>(null);
   const intentionalExitInProgressRef = useRef(false);
   const roomFirstSetAtRef = useRef<number | null>(null);

@@ -11,7 +11,6 @@ Implements tier-based hallucination frequency system:
 
 from __future__ import annotations
 
-import random
 import uuid
 from datetime import UTC, datetime, timedelta
 from typing import Any, cast
@@ -19,6 +18,7 @@ from typing import Any, cast
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..models.lucidity import LucidityActionCode
+from ..services.hallucination_rng import hallucination_rng
 from ..services.lucidity_service import LucidityService, resolve_tier
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -55,7 +55,7 @@ class HallucinationFrequencyService:
             if now < expires_at:
                 return False
 
-        should_trigger: bool = random.random() < cast(float, config["chance"])  # nosec B311
+        should_trigger: bool = hallucination_rng.get().random() < cast(float, config["chance"])  # nosec B311
         if should_trigger:
             cooldown_expires = now + timedelta(seconds=cast(int, config["cooldown_seconds"]))
             await lucidity_service.set_cooldown(
@@ -97,7 +97,7 @@ class HallucinationFrequencyService:
 
         # For room entry (Uneasy), no cooldown - just roll the chance
         if trigger_type == "room_entry":
-            return random.random() < cast(float, config["chance"])  # nosec B311: Game mechanics probability check, not cryptographic
+            return hallucination_rng.get().random() < cast(float, config["chance"])  # nosec B311: Game mechanics probability check, not cryptographic
 
         if trigger_type == "time_based":
             if session is None:

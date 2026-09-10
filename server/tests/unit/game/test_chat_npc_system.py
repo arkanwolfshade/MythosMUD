@@ -9,10 +9,12 @@ import pytest
 from server.events.event_types import NPCSpoke
 from server.game.chat_message import ChatMessage
 from server.game.chat_npc_system import (
+    deliver_fake_npc_whisper,
     deliver_npc_room_speech,
     deliver_personal_system,
     npc_sender_id,
     reset_npc_spoke_subscription_for_tests,
+    send_fake_npc_whisper,
     send_npc_say_to_room,
     send_personal_system_message,
     set_chat_service_for_npc_system,
@@ -139,12 +141,46 @@ async def test_send_personal_system_rejects_empty():
 
 
 @pytest.mark.asyncio
+async def test_send_fake_npc_whisper_targets_player_as_whisper():
+    """#714: a fake NPC tell is a whisper-channel message, indistinguishable from a real one."""
+    chat_service = _mock_chat_service()
+    player_id = uuid.uuid4()
+
+    with patch(
+        "server.game.chat_npc_system.publish_chat_message_to_nats",
+        new_callable=AsyncMock,
+        return_value=True,
+    ) as publish:
+        result = await send_fake_npc_whisper(chat_service, player_id, "The Whisperer", "They're watching you...")
+
+    assert result["success"] is True
+    message = cast(dict[str, object], result["message"])
+    assert message["channel"] == "whisper"
+    assert message["sender_name"] == "The Whisperer"
+    assert message["target_id"] == str(player_id)
+    assert message["speaker_kind"] == "npc"
+    assert message["sender_id"] == npc_sender_id("The Whisperer")
+    publish.assert_awaited_once()
+    assert publish.await_args is not None
+    assert publish.await_args.args[1] is None  # no room for a personal whisper
+
+
+@pytest.mark.asyncio
+async def test_send_fake_npc_whisper_rejects_empty():
+    """Fake NPC whisper fails closed on empty content, same as a real whisper would."""
+    result = await send_fake_npc_whisper(_mock_chat_service(), uuid.uuid4(), "The Whisperer", "")
+    assert result["success"] is False
+
+
+@pytest.mark.asyncio
 async def test_deliver_when_chat_service_unwired():
     """Delivery helpers no-op when ChatService is not wired."""
     npc = await deliver_npc_room_speech(npc_id="n1", room_id="r1", message="Hi", npc_name="N")
     system = await deliver_personal_system(uuid.uuid4(), "Quest started: X")
+    fake_whisper = await deliver_fake_npc_whisper(uuid.uuid4(), "The Whisperer", "They're watching you...")
     assert npc["success"] is False
     assert system["success"] is False
+    assert fake_whisper["success"] is False
 
 
 @pytest.mark.asyncio

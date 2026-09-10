@@ -28,6 +28,9 @@ async def user_row(session_factory: async_sessionmaker[AsyncSession]):
         )
         await session.commit()
     yield user_id, username
+    async with session_factory() as session:
+        _ = await session.execute(text("DELETE FROM users WHERE id = :id"), {"id": user_id})
+        await session.commit()
 
 
 @pytest.mark.asyncio
@@ -60,14 +63,18 @@ async def test_get_user_id_by_username_ci_unknown_username_returns_null(
 @pytest.fixture
 async def invite_row(session_factory: async_sessionmaker[AsyncSession]):
     """Create one active invite. Yields its invite_code."""
+    invite_id = uuid.uuid4()
     invite_code = f"TEST-{uuid.uuid4().hex[:8]}"
     async with session_factory() as session:
         await session.execute(
             text("INSERT INTO invites (id, invite_code, is_active) VALUES (:id, :code, true)"),
-            {"id": uuid.uuid4(), "code": invite_code},
+            {"id": invite_id, "code": invite_code},
         )
         await session.commit()
     yield invite_code
+    async with session_factory() as session:
+        _ = await session.execute(text("DELETE FROM invites WHERE id = :id"), {"id": invite_id})
+        await session.commit()
 
 
 @pytest.mark.asyncio

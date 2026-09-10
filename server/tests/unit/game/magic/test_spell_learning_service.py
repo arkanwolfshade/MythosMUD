@@ -1,6 +1,12 @@
 """Unit tests for SpellLearningService."""
 
+# pyright: reportAny=false
+# TEST_MOCK: `learning_service` fixture wires MagicMock collaborators (registry, persistence)
+# through concretely-typed constructor parameters, so their mocked attributes resolve to Any;
+# this file already carries 21 baselined findings of the identical pattern (pre-#804).
+
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -63,6 +69,40 @@ async def test_learn_spell_success(learning_service: SpellLearningService) -> No
         result = await learning_service.learn_spell(uuid.uuid4(), "s1", source="test")
     assert result["success"] is True
     assert "learned" in result["message"]
+
+
+@pytest.mark.asyncio
+async def test_learn_mythos_spell_applies_corruption(learning_service: SpellLearningService) -> None:
+    """#804: learning a Mythos spell routes corruption through CorruptionService."""
+    spell = MagicMock(spell_id="s1", name="Necrotic Rite", is_mythos=MagicMock(return_value=True))
+    spell.corruption_on_learn = 4
+    spell.effect_data = {}
+    player_id = uuid.uuid4()
+    player = MagicMock()
+    player.player_id = player_id
+    stats: dict[str, object] = {"corruption": 1}
+    player.get_stats = MagicMock(return_value=stats)
+    player.set_stats = MagicMock(side_effect=stats.update)
+    cast(MagicMock, learning_service.spell_registry).get_spell.return_value = spell
+    cast(MagicMock, learning_service.player_service).persistence.get_player_by_id = AsyncMock(return_value=player)
+    cast(MagicMock, learning_service.player_service).persistence.save_player = AsyncMock()
+
+    async def _async_session_gen(session: AsyncMock):
+        yield session
+
+    session = AsyncMock()
+    with (
+        patch.object(learning_service, "_validate_prerequisites", new_callable=AsyncMock, return_value={"valid": True}),
+        patch(
+            "server.services.corruption_service.get_async_session",
+            return_value=_async_session_gen(session),
+        ),
+    ):
+        result = await learning_service.learn_spell(player_id, "s1", source="test")
+
+    assert result["success"] is True
+    assert result["corruption_applied"] == 4
+    assert stats["corruption"] == 5
 
 
 @pytest.mark.asyncio

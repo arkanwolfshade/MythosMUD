@@ -10,6 +10,7 @@ from dataclasses import dataclass
 
 from structlog.stdlib import BoundLogger
 
+from ..services.fake_sender_registry import fake_sender_registry
 from ..structured_logging.enhanced_logging_config import get_logger
 from .communication_commands_support import (
     ChatCommandsProtocol,
@@ -459,6 +460,19 @@ async def _deliver_reply_to_last_whisper(
     sender_obj = await ps.resolve_player_name(player_name)
     if not sender_obj:
         return {"result": "Player not found."}
+    sender_id = primary_id(sender_obj)
+    if sender_id is None:
+        return {"result": "Player ID not found."}
+
+    # #625/#714: a fake NPC whisper never touched the real whisper tracker below (it isn't a
+    # real player) -- check the hallucination-sender registry first, so replying to one answers
+    # in-fiction instead of leaking "player not found" or contradicting the whisper the player
+    # just watched arrive.
+    fake_sender = fake_sender_registry.get_last_fake_sender(str(sender_id))
+    if fake_sender:
+        logger.info("Reply addressed to a fake whisper sender", player_name=player_name, fake_sender=fake_sender)
+        return {"result": "Your words dissolve into the dark; no answer comes."}
+
     last_whisper_sender = cs.get_last_whisper_sender(player_name)
     if not last_whisper_sender:
         return {"result": "No one has whispered to you recently."}
@@ -466,9 +480,8 @@ async def _deliver_reply_to_last_whisper(
     target_obj = await ps.resolve_player_name(last_str)
     if not target_obj:
         return {"result": "The player you're trying to reply to is no longer available."}
-    sender_id = primary_id(sender_obj)
     target_id = primary_id(target_obj)
-    if sender_id is None or target_id is None:
+    if target_id is None:
         return {"result": "Player ID not found."}
     result_raw = await cs.send_whisper_message(sender_id, target_id, message)
     result = chat_result_map(result_raw)
