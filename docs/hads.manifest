@@ -31,6 +31,8 @@ docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md
 docs/architecture/decisions/ADR-021-character-display-name-validation.md
 docs/architecture/decisions/ADR-022-ui-v2-client-transition.md
 docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md
+docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md
+docs/architecture/decisions/ADR-025-corruption-perceptual-filter.md
 docs/architecture/decisions/README.md
 docs/architecture/DISTRIBUTED_EVENTBUS_NATS.md
 docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md
@@ -97,8 +99,13 @@ docs/STRUCTURED_CONCURRENCY_PATTERNS.md
 docs/SUBMODULE_SETUP.md
 docs/subsystems/README.md
 docs/subsystems/SUBSYSTEM_ADMIN_COMMANDS_DESIGN.md
+docs/subsystems/SUBSYSTEM_CHAT_EFFECT_ACCESSIBILITY_DESIGN.md
 docs/subsystems/SUBSYSTEM_COMBAT_DESIGN.md
+docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md
+docs/subsystems/SUBSYSTEM_CULT_CHAT_DESIGN.md
+docs/subsystems/SUBSYSTEM_DREAM_MESSAGING_DESIGN.md
 docs/subsystems/SUBSYSTEM_EMOTE_POSE_DESIGN.md
+docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md
 docs/subsystems/SUBSYSTEM_FOLLOW_DESIGN.md
 docs/subsystems/SUBSYSTEM_LUCIDITY_DESIGN.md
 docs/subsystems/SUBSYSTEM_MAGIC_DESIGN.md
