@@ -6,6 +6,7 @@ import uuid
 from unittest.mock import MagicMock, patch
 
 from server.events import EventBus
+from server.npc.event_reaction_system import NPCEventReactionSystem
 from server.npc.spawning_instance_factory import (
     create_npc_instance,
     generate_npc_id,
@@ -44,6 +45,48 @@ def test_create_npc_instance_passive() -> None:
     npc = create_npc_instance(definition, "room-002", EventBus(), None, npc_id="rat-1")
     assert npc is not None
     assert npc.current_room == "room-002"
+
+
+def test_create_npc_instance_threads_event_reaction_system() -> None:
+    """#815: create_npc_instance must pass a real reaction system through to the NPC, not the
+    hardcoded None every builder used before this revival."""
+    definition = MagicMock()
+    definition.id = 4
+    definition.name = "Shopkeeper"
+    definition.npc_type = "shopkeeper"
+    definition.room_id = "room-004"
+    definition.description = None
+    definition.base_stats = "{}"
+    definition.behavior_config = '{"greeting_message": "Welcome!"}'
+    definition.ai_integration_stub = "{}"
+    reaction_system = NPCEventReactionSystem(EventBus())
+
+    npc = create_npc_instance(
+        definition, "room-004", EventBus(), None, npc_id="shop-1", event_reaction_system=reaction_system
+    )
+
+    assert npc is not None
+    assert npc.event_reaction_system is reaction_system
+    # Registration is a side effect of NPCBase.__init__ when a real system is present.
+    assert "shop-1" in reaction_system._npc_reactions  # noqa: SLF001  # pyright: ignore[reportPrivateUsage] -- verifying the real side effect, not a mock's behavior
+
+
+def test_create_npc_instance_defaults_to_no_reaction_system() -> None:
+    """Omitting event_reaction_system must keep the pre-#815 behavior -- no reactions, no error."""
+    definition = MagicMock()
+    definition.id = 5
+    definition.name = "Loner"
+    definition.npc_type = "passive_mob"
+    definition.room_id = "room-005"
+    definition.description = None
+    definition.base_stats = "{}"
+    definition.behavior_config = "{}"
+    definition.ai_integration_stub = "{}"
+
+    npc = create_npc_instance(definition, "room-005", EventBus(), None, npc_id="loner-1")
+
+    assert npc is not None
+    assert npc.event_reaction_system is None
 
 
 def test_create_npc_instance_unknown_type() -> None:
@@ -127,6 +170,36 @@ def test_spawn_npc_from_request_room_missing() -> None:
         )
     assert result.success is False
     assert result.error_message == "Room not found"
+
+
+def test_spawning_service_threads_event_reaction_system_to_created_npcs() -> None:
+    """#815: the service must hold and forward its event_reaction_system on every instance it
+    creates -- this is the single choke point NPCLifecycleManager always goes through."""
+    reaction_system = NPCEventReactionSystem(EventBus())
+    service = NPCSpawningService(
+        event_bus=EventBus(), population_controller=None, event_reaction_system=reaction_system
+    )
+    assert service.event_reaction_system is reaction_system
+
+    definition = MagicMock()
+    definition.id = 6
+    definition.name = "Wanderer"
+    definition.npc_type = "passive_mob"
+    definition.room_id = "room-006"
+    definition.description = None
+    definition.base_stats = "{}"
+    definition.behavior_config = "{}"
+    definition.ai_integration_stub = "{}"
+
+    npc = service.create_npc_instance(definition, "room-006", npc_id="wanderer-1")
+
+    assert npc is not None
+    assert npc.event_reaction_system is reaction_system
+
+
+def test_spawning_service_event_reaction_system_defaults_to_none() -> None:
+    service = NPCSpawningService(event_bus=EventBus(), population_controller=None)
+    assert service.event_reaction_system is None
 
 
 def test_spawning_service_queue_and_stats() -> None:
