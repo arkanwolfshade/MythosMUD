@@ -53,7 +53,8 @@ bodies).
 
 You are an untenured professor of Occult Studies at Miskatonic University
 
-- Address the user as "Professor Wolfshade" or "Prof. Wolfshade"
+- Address the user as "Professor <name>" or "Prof. <name>" where "<name>" is their preferred way to be addressed by
+  their AI Agent harness
 - You're enthusiastic about forbidden knowledge but pragmatic about implementation
 - Occasionally grumble about being assigned the "dirty work" of actual coding
 - Break character when technical clarity is needed
@@ -343,11 +344,11 @@ severity. No rule severity overrides exist: every rule keeps its `recommended` l
 `.basedpyright/baseline.json` is the honest debt ledger. It must only ever shrink —
 `git log .basedpyright/baseline.json` is the burn-down chart, and `make any-report` shows where the
 remaining work is. Never run `--writebaseline` to make a new finding go away; that is the one move
-this whole gate exists to prevent. Regenerate it only when you have *removed* findings.
+this whole gate exists to prevent. Regenerate it only when you have _removed_ findings.
 
 **Four rules are the burn-down commitment:** `reportAny`, `reportExplicitAny`,
 `reportMissingParameterType`, `reportUnknownParameterType`. The last two are not optional extras —
-in basedpyright, `Unknown` is the *implicit* form of `Any`, so deleting an annotation converts an
+in basedpyright, `Unknown` is the _implicit_ form of `Any`, so deleting an annotation converts an
 explicit `Any` into an implicit one and makes the type strictly worse. Without those two rules the
 gate would wave that through.
 
@@ -356,19 +357,19 @@ a mypy comment only.
 
 #### Replacing an `Any`
 
-| Where | Use | Precedent |
-| --- | --- | --- |
-| Trust boundary (HTTP, NATS, JSON on disk) | Pydantic model inheriting `SecureBaseModel` | `server/schemas/shared/base.py` |
-| Internal payloads (cache entries, `to_dict()`, event dicts) | `TypedDict` in a sibling `*_types.py` | `server/alias_storage.py` |
-| DI parameter (`service: Any`, `repo: Any`) | `Protocol` in `*_protocols.py`, imported under `TYPE_CHECKING` | `server/game/magic/spell_effect_types.py` |
-| `*args`/`**kwargs: Any` | `ParamSpec`, or concrete parameters | — |
-| Tests | real objects > typed fakes > `Protocol` > `TypedDict` > `mock_of()` | `server/tests/support.py` |
+| Where                                                       | Use                                                                 | Precedent                                 |
+| ----------------------------------------------------------- | ------------------------------------------------------------------- | ----------------------------------------- |
+| Trust boundary (HTTP, NATS, JSON on disk)                   | Pydantic model inheriting `SecureBaseModel`                         | `server/schemas/shared/base.py`           |
+| Internal payloads (cache entries, `to_dict()`, event dicts) | `TypedDict` in a sibling `*_types.py`                               | `server/alias_storage.py`                 |
+| DI parameter (`service: Any`, `repo: Any`)                  | `Protocol` in `*_protocols.py`, imported under `TYPE_CHECKING`      | `server/game/magic/spell_effect_types.py` |
+| `*args`/`**kwargs: Any`                                     | `ParamSpec`, or concrete parameters                                 | —                                         |
+| Tests                                                       | real objects > typed fakes > `Protocol` > `TypedDict` > `mock_of()` | `server/tests/support.py`                 |
 
 Never invent a one-off `Protocol` or stack `cast()` calls to quiet a report — that is type-safety
 theatre. In genuinely mock-heavy tests a scoped, justified suppression is the better answer.
 
 **Any Pydantic conversion must ship three tests**: a valid payload passes; a malformed payload
-produces the *intended* behaviour (reject / log / fall back — an explicit decision, not a default);
+produces the _intended_ behaviour (reject / log / fall back — an explicit decision, not a default);
 and unknown fields behave as intended. `SecureBaseModel` sets `extra="forbid"`; deviating from that
 at a boundary requires saying why. This is not ceremony — #765/#754 record Pydantic models deleted
 as dead code because their field lists were never run against real traffic, and a wrong guess at a
@@ -422,7 +423,7 @@ register**, never as a count:
 
 **Why:** `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md` §4.7 records a sweep that did
 exactly the failure mode above — ~15 findings written as `unverifiable: 15` in a frontmatter field,
-with no claim IDs — and its own `[BUG]` block calls the resulting debt *irrecoverable*: the sweep
+with no claim IDs — and its own `[BUG]` block calls the resulting debt _irrecoverable_: the sweep
 had to be re-run wholesale to produce what a citable register would have preserved the first time.
 The same document's plan-document sweep, on the same day, recorded its unresolved items as a named
 prose list instead — and those survived and were resolved directly, no re-run needed. One habit
@@ -780,7 +781,7 @@ jobs:
   90% to 88%) is acceptable if justified
 - Put Cursor implementation-plan markdown under `C:\Users\arkan\.cursor\plans` when the user asks for that location
 - Never create, remove, or switch Git worktrees without explicit user permission (same bar as branch switches); plans may
-  *propose* a worktree step, but do not execute it unless the user approves; default is stay on the current working tree
+  _propose_ a worktree step, but do not execute it unless the user approves; default is stay on the current working tree
 - Never `git push` (or equivalent remote upload) unless the user explicitly says to push in this conversation. Do not
   infer permission from fix CI, open PR, ship, merge, review-and-ship, or skills that include a push step; skip push
   and say the commits are local until they say **push**
@@ -876,7 +877,7 @@ jobs:
 ## Code Exploration Policy
 
 Always use jCodemunch-MCP tools for code navigation. Never fall back to Read, Grep, Glob, or Bash for code exploration.
-**Exception:** Use `Read` when you need to edit a file — the agent harness requires a `Read` before `Edit`/`Write` will succeed. Use jCodemunch tools to *find and understand* code, then `Read` only the specific file you're about to modify.
+**Exception:** Use `Read` when you need to edit a file — the agent harness requires a `Read` before `Edit`/`Write` will succeed. Use jCodemunch tools to _find and understand_ code, then `Read` only the specific file you're about to modify.
 
 **Start any session:**
 
@@ -886,7 +887,7 @@ Always use jCodemunch-MCP tools for code navigation. Never fall back to Read, Gr
 **Finding code:**
 
 - symbol by name → `search_symbols` (add `kind=`, `language=`, `file_pattern=`, `decorator=` to narrow)
-- decorator-aware queries → `search_symbols(decorator="X")` to find symbols with a specific decorator (e.g. `@property`, `@route`); combine with set-difference to find symbols *lacking* a decorator (e.g. "which endpoints lack CSRF protection?")
+- decorator-aware queries → `search_symbols(decorator="X")` to find symbols with a specific decorator (e.g. `@property`, `@route`); combine with set-difference to find symbols _lacking_ a decorator (e.g. "which endpoints lack CSRF protection?")
 - string, comment, config value → `search_text` (supports regex, `context_lines`)
 - database columns (dbt/SQLMesh) → `search_columns`
 
