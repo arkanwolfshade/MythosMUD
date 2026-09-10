@@ -33,6 +33,10 @@ body {
   --color-mythos-terminal-error: #f44336;
   --color-mythos-terminal-warning: #ff9800;
   --color-mythos-terminal-success: #4caf50;
+  /* #804: corruption's chat filter endpoint. Verdigris-toward-bruise; individually AA (~6.5:1)
+     against --color-mythos-terminal-background, so any color-mix() midpoint toward it from the
+     (much brighter) terminal text color stays compliant too. */
+  --color-mythos-corruption: #5f9ea0;
   /* Sepia ink accents (scholarly occult; pairs with tentacle backdrop) */
   --color-mythos-sepia: #a88e76;
   --color-mythos-sepia-muted: #84705c;
@@ -1356,4 +1360,32 @@ input,
 textarea,
 select {
   font-size: 1rem !important; /* 16px - same as room name field */
+}
+
+/* #804: corruption's chat pane filter. --corruption-intensity (0-1) is set on the pane root
+   (ChatHistoryPanel) from the viewer's own corruption stat -- a global, viewer-scoped filter
+   licensed by ADR-025, never a per-message style (that stays forbidden by ADR-024). */
+.mythos-corruption-text {
+  color: color-mix(
+    in oklab,
+    var(--color-mythos-terminal-text),
+    var(--color-mythos-corruption) calc(var(--corruption-intensity, 0) * 100%)
+  );
+}
+
+/* Static grain -- no animation, so it needs no prefers-reduced-motion guard (that guideline is
+   about motion, not intensity; SUBSYSTEM_CHAT_EFFECT_ACCESSIBILITY_DESIGN.md §4). Gated on the
+   chatGrain preference (ThemeContext) by the caller adding/omitting this class, not by CSS. */
+.mythos-corruption-grain {
+  position: relative;
+}
+
+.mythos-corruption-grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle at 1px 1px, rgba(95, 158, 160, 0.7) 1px, transparent 0);
+  background-size: 3px 3px;
+  opacity: calc(var(--corruption-intensity, 0) * 0.35);
 }

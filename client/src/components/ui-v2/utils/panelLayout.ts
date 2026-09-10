@@ -150,5 +150,20 @@ export const createDefaultPanelLayout = (viewportWidth: number, viewportHeight: 
       zIndex: 1009,
       minSize: { width: 250, height: 180 },
     },
+    // #804: minimized by default -- a control panel, not primary content, mirrors commandHistory.
+    settings: {
+      id: 'settings',
+      title: 'Settings',
+      position: {
+        x: rightColumnX,
+        y: headerHeight + padding + availableHeight * 0.67,
+      },
+      size: { width: rightColumnWidth, height: availableHeight * 0.12 },
+      isMinimized: true,
+      isMaximized: false,
+      isVisible: true,
+      zIndex: 1008,
+      minSize: { width: 220, height: 150 },
+    },
   };
 };

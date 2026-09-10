@@ -16,6 +16,7 @@ describe('panelLayout', () => {
       expect(layout.commandHistory).toBeDefined();
       expect(layout.commandInput).toBeDefined();
       expect(layout.questLog).toBeDefined();
+      expect(layout.settings).toBeDefined();
     });
 
     it('should create panels with correct IDs', () => {
@@ -30,6 +31,7 @@ describe('panelLayout', () => {
       expect(layout.commandHistory.id).toBe('commandHistory');
       expect(layout.commandInput.id).toBe('commandInput');
       expect(layout.questLog.id).toBe('questLog');
+      expect(layout.settings.id).toBe('settings');
     });
 
     it('should create panels with correct titles', () => {
@@ -44,6 +46,7 @@ describe('panelLayout', () => {
       expect(layout.commandHistory.title).toBe('Command History');
       expect(layout.commandInput.title).toBe('Command Input');
       expect(layout.questLog.title).toBe('Journal');
+      expect(layout.settings.title).toBe('Settings');
     });
 
     it('should create panels with correct initial state', () => {
@@ -64,6 +67,7 @@ describe('panelLayout', () => {
       expect(layout.occupants.isMinimized).toBe(true);
       expect(layout.commandHistory.isMinimized).toBe(true);
       expect(layout.questLog.isMinimized).toBe(true);
+      expect(layout.settings.isMinimized).toBe(true);
     });
 
     it('should give command input a wider primary footprint', () => {
@@ -170,6 +174,10 @@ describe('panelLayout', () => {
       expect(layout.commandInput.minSize).toBeDefined();
       expect(layout.commandInput.minSize?.width).toBeGreaterThan(0);
       expect(layout.commandInput.minSize?.height).toBeGreaterThan(0);
+
+      expect(layout.settings.minSize).toBeDefined();
+      expect(layout.settings.minSize?.width).toBeGreaterThan(0);
+      expect(layout.settings.minSize?.height).toBeGreaterThan(0);
     });
 
     it('should handle different viewport sizes', () => {

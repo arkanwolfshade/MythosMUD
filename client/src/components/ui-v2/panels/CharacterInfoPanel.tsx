@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import type { HealthStatus } from '../../../types/health';
 import type { LucidityStatus } from '../../../types/lucidity';
+import { computeCorruptionTier } from '../../../utils/corruptionTier';
 import { HealthMeter } from '../../health/HealthMeter';
 import { LucidityMeter } from '../../lucidity/LucidityMeter';
 import { MagicPointsMeter, type MagicPointsStatus } from '../../magic/MagicPointsMeter';
@@ -84,7 +85,14 @@ function HorrorStatsGrid({ stats }: { stats: NonNullable<Player['stats']> }) {
       <h5 className="text-sm text-mythos-terminal-primary font-bold mb-1">Horror Stats:</h5>
       <div className="grid grid-cols-2 gap-1 text-sm">
         {stats.occult !== undefined && <AttributeCell label="Occult" value={stats.occult} />}
-        {stats.corruption !== undefined && <AttributeCell label="Corruption" value={stats.corruption} />}
+        {stats.corruption !== undefined && (
+          <div className="flex items-center gap-2">
+            <span className="text-mythos-terminal-text-secondary">Corruption:</span>
+            <span className="text-mythos-terminal-text">
+              {stats.corruption} ({computeCorruptionTier(stats.corruption)})
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );

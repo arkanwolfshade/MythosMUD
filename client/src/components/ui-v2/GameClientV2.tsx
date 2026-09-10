@@ -13,6 +13,7 @@ import { LocationPanel } from './panels/LocationPanel';
 import { OccupantsPanel } from './panels/OccupantsPanel';
 import { QuestLogPanel } from './panels/QuestLogPanel';
 import { RoomDescriptionPanel } from './panels/RoomDescriptionPanel';
+import { SettingsPanel } from './panels/SettingsPanel';
 import { PanelContainer } from './PanelSystem/PanelContainer';
 import { PanelManagerProvider } from './PanelSystem/PanelManager';
 import { usePanelManager } from './PanelSystem/usePanelManager';
@@ -26,7 +27,8 @@ import type { ActiveEffectDisplay } from './utils/stateUpdateUtils';
 // Helper function to calculate occupant count from room data
 // Extracted to reduce cyclomatic complexity
 /** Panel ids rendered in the main dock (single source for mapped PanelContainers). */
-type MainDockPanelId = 'chatHistory' | 'location' | 'roomDescription' | 'occupants' | 'gameInfo' | 'questLog';
+type MainDockPanelId =
+  'chatHistory' | 'location' | 'roomDescription' | 'occupants' | 'gameInfo' | 'questLog' | 'settings';
 
 /** Dock slot metadata (stable); panel bodies read messages/room in render to avoid invalidating a memo on every chat line. */
 type MainDockSlotMeta = {
@@ -207,6 +209,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
         panelClassName: getGameInfoPanelCombatClassName(Boolean(player?.in_combat)),
       },
       { id: 'questLog', variant: 'default' },
+      { id: 'settings', variant: 'default' },
     ],
     [occupantsTitle, player]
   );
@@ -221,6 +224,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
             onClearMessages={onClearMessages}
             onDownloadLogs={onDownloadLogs}
             isConnected={isConnected}
+            corruption={player?.stats?.corruption ?? 0}
           />
         );
       case 'location':
@@ -240,6 +244,8 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
         );
       case 'questLog':
         return <QuestLogPanel questLog={questLog} />;
+      case 'settings':
+        return <SettingsPanel />;
       default: {
         const _exhaustive: never = id;
         return _exhaustive;

@@ -3,6 +3,10 @@ Unit tests for command factories.
 
 Tests the CommandFactory class.
 """
+# pyright: reportUnknownParameterType=false, reportMissingParameterType=false
+# pyright: reportUnknownVariableType=false, reportUnknownMemberType=false
+# TEST_MOCK: the `factory` fixture parameter is untyped throughout this file; new tests using it
+# inherit the same shape as every existing `test_create_*_command(factory)` test here.
 
 import pytest
 
@@ -253,6 +257,12 @@ def test_create_logout_command(factory):
 def test_create_rest_command(factory):
     """Test create_rest_command delegates to player_state factory."""
     command = factory.create_rest_command([])
+    assert command is not None
+
+
+def test_create_cleanse_command(factory):
+    """Test create_cleanse_command delegates to player_state factory (#804)."""
+    command = factory.create_cleanse_command([])
     assert command is not None
 
 

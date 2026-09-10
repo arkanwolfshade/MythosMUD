@@ -3,9 +3,17 @@
  */
 
 import { fireEvent, render, screen } from '@testing-library/react';
+import type { ReactElement } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ThemeProvider } from '../../../../contexts/ThemeContext';
 import type { ChatMessage } from '../../types';
 import { ChatHistoryPanel } from '../ChatHistoryPanel';
+
+// ChatHistoryPanel reads the chatGrain preference via useTheme(), which throws outside a
+// ThemeProvider -- every render in this suite needs one, per #804.
+function renderPanel(ui: ReactElement) {
+  return render(<ThemeProvider>{ui}</ThemeProvider>);
+}
 
 describe('ChatHistoryPanel', () => {
   const mockOnSendChatMessage = vi.fn();
@@ -36,12 +44,16 @@ describe('ChatHistoryPanel', () => {
   });
 
   it('should render chat history panel', () => {
-    render(<ChatHistoryPanel messages={mockMessages} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />);
+    renderPanel(
+      <ChatHistoryPanel messages={mockMessages} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />
+    );
     expect(screen.getByText('Hello world')).toBeInTheDocument();
   });
 
   it('should filter out system messages by default', () => {
-    render(<ChatHistoryPanel messages={mockMessages} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />);
+    renderPanel(
+      <ChatHistoryPanel messages={mockMessages} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />
+    );
     expect(screen.getByText('Hello world')).toBeInTheDocument();
     expect(screen.queryByText('System message')).not.toBeInTheDocument();
   });
@@ -58,7 +70,7 @@ describe('ChatHistoryPanel', () => {
       },
     ];
 
-    render(
+    renderPanel(
       <ChatHistoryPanel messages={messagesWithGameLog} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />
     );
     expect(screen.queryByText('Game log message')).not.toBeInTheDocument();
@@ -76,14 +88,14 @@ describe('ChatHistoryPanel', () => {
       },
     ];
 
-    render(
+    renderPanel(
       <ChatHistoryPanel messages={messagesWithCombat} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />
     );
     expect(screen.queryByText('Combat message')).not.toBeInTheDocument();
   });
 
   it('should call onClearMessages when clear button is clicked', () => {
-    render(
+    renderPanel(
       <ChatHistoryPanel
         messages={mockMessages}
         onSendChatMessage={mockOnSendChatMessage}
@@ -111,7 +123,7 @@ describe('ChatHistoryPanel', () => {
   });
 
   it('should call onDownloadLogs when download button is clicked', () => {
-    render(
+    renderPanel(
       <ChatHistoryPanel
         messages={mockMessages}
         onSendChatMessage={mockOnSendChatMessage}
@@ -139,7 +151,7 @@ describe('ChatHistoryPanel', () => {
   });
 
   it('should disable panel when disabled prop is true', () => {
-    render(
+    renderPanel(
       <ChatHistoryPanel
         messages={mockMessages}
         onSendChatMessage={mockOnSendChatMessage}
@@ -152,16 +164,116 @@ describe('ChatHistoryPanel', () => {
   });
 
   it('should handle empty messages array', () => {
-    render(<ChatHistoryPanel messages={[]} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />);
+    renderPanel(<ChatHistoryPanel messages={[]} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />);
     // Should render without errors
     expect(screen.queryByText('Hello world')).not.toBeInTheDocument();
   });
 
   it('does not render a compose input; chat is typed in the Commands panel', () => {
-    render(<ChatHistoryPanel messages={mockMessages} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />);
+    renderPanel(
+      <ChatHistoryPanel messages={mockMessages} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />
+    );
     expect(screen.getByTestId('chat-history-panel')).toBeInTheDocument();
     expect(screen.queryByTestId('command-input')).not.toBeInTheDocument();
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
     expect(mockOnSendChatMessage).not.toHaveBeenCalled();
+  });
+
+  describe('corruption filter (#804)', () => {
+    it('sets --corruption-intensity to 0 when no corruption prop is given', () => {
+      renderPanel(
+        <ChatHistoryPanel messages={mockMessages} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />
+      );
+      const panel = screen.getByTestId('chat-history-panel');
+      expect(panel.style.getPropertyValue('--corruption-intensity')).toBe('0');
+    });
+
+    it('derives --corruption-intensity from the corruption prop (0-100 -> 0-1)', () => {
+      renderPanel(
+        <ChatHistoryPanel
+          messages={mockMessages}
+          onSendChatMessage={mockOnSendChatMessage}
+          isConnected={true}
+          corruption={62}
+        />
+      );
+      const panel = screen.getByTestId('chat-history-panel');
+      expect(panel.style.getPropertyValue('--corruption-intensity')).toBe('0.62');
+    });
+
+    it('clamps an out-of-range corruption value into 0-1', () => {
+      renderPanel(
+        <ChatHistoryPanel
+          messages={mockMessages}
+          onSendChatMessage={mockOnSendChatMessage}
+          isConnected={true}
+          corruption={150}
+        />
+      );
+      const panel = screen.getByTestId('chat-history-panel');
+      expect(panel.style.getPropertyValue('--corruption-intensity')).toBe('1');
+    });
+
+    it('applies the grain class by default (chatGrain defaults to on)', () => {
+      renderPanel(
+        <ChatHistoryPanel messages={mockMessages} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />
+      );
+      expect(screen.getByRole('log', { name: 'Chat Messages' }).className).toContain('mythos-corruption-grain');
+    });
+
+    it('does not tint tagged or typed messages away from their semantic color', () => {
+      const taggedMessages: ChatMessage[] = [
+        {
+          text: 'A rescue attempt',
+          timestamp: new Date().toISOString(),
+          isHtml: false,
+          messageType: 'chat',
+          tags: ['rescue'],
+        },
+      ];
+      renderPanel(
+        <ChatHistoryPanel
+          messages={taggedMessages}
+          onSendChatMessage={mockOnSendChatMessage}
+          isConnected={true}
+          corruption={100}
+        />
+      );
+      const messageEl = screen.getByText('A rescue attempt').closest('[data-message-text]');
+      expect(messageEl).not.toBeNull();
+      expect(messageEl!.className).not.toContain('mythos-corruption-text');
+      expect(messageEl!.className).toContain('text-mythos-terminal-primary');
+    });
+
+    it('leaves an old message unaltered at zero corruption but decays it at high corruption', () => {
+      const oldMessage: ChatMessage = {
+        text: 'one two three four five six seven eight nine ten eleven twelve',
+        timestamp: new Date(Date.now() - 60 * 60 * 1000).toISOString(), // 1 hour old
+        isHtml: false,
+        messageType: 'chat',
+        channel: 'say',
+      };
+
+      const { unmount } = renderPanel(
+        <ChatHistoryPanel
+          messages={[oldMessage]}
+          onSendChatMessage={mockOnSendChatMessage}
+          isConnected={true}
+          corruption={0}
+        />
+      );
+      expect(screen.getByText(oldMessage.text)).toBeInTheDocument();
+      unmount();
+
+      renderPanel(
+        <ChatHistoryPanel
+          messages={[oldMessage]}
+          onSendChatMessage={mockOnSendChatMessage}
+          isConnected={true}
+          corruption={100}
+        />
+      );
+      expect(screen.queryByText(oldMessage.text)).not.toBeInTheDocument();
+    });
   });
 });

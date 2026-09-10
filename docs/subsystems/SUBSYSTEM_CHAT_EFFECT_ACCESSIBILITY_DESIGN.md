@@ -1,6 +1,6 @@
 # Chat Effect Accessibility Floor Design
 
-**Version 1.0.0** · MythosMUD · 2026-09-09
+**Version 1.1.0** · MythosMUD · 2026-09-10
 
 ---
 
@@ -28,29 +28,36 @@ more legibly than an opponent, which is a combat advantage and directly contradi
 "Fairness" balance criterion. This document specifies hard, server-side guarantees instead of a
 settings surface.
 
-## 2. Why not a settings panel
+## 2. Why (almost) no settings panel
 
 **[SPEC]**
 
-Investigation found `client/src/contexts/ThemeContext.tsx:12`'s `UIPreferences` already has a shape
-that *looks* like the right home for an intensity slider (`reducedMotion`, `colorScheme`,
-`animations`), persisted to `localStorage`. It is **not currently mounted anywhere** —
-`ThemeProvider` has zero imports outside `contexts/` and its own tests; there is no settings panel
-component in `client/src/components/ui-v2/` at all.
+As of `#804`'s client PR, `ThemeProvider` **is mounted** (`client/src/AppRouter.tsx`, wrapping the
+whole app) and a settings panel **does exist**
+(`client/src/components/ui-v2/panels/SettingsPanel.tsx`). This section originally argued against
+building either; §1.1.0 narrows that argument rather than discarding it — the reasoning below still
+holds for every *server-side* effect, and still explains why the panel that got built is
+deliberately small.
 
-This document does **not** propose mounting it or building a panel. The reasoning:
-
-- **Server-side effects can't be tuned client-side without a fairness problem.** Garbling, shout
-  blocking, and hallucination content are decided server-side per ADR-024; a client toggle over them
-  would either do nothing (the client can't undo a decision it never made) or require the server to
-  send an *undistorted* copy alongside the distorted one and let the client choose — which defeats
-  the entire point of the effects (an opponent with the toggle off reads clean text while yours is
-  garbled).
-- **Corruption's filter is presentation-only** (per
-  [ADR-025](../architecture/decisions/ADR-025-corruption-perceptual-filter.md)) and *could* be
-  tuned client-side without a fairness issue — but building a settings panel for exactly one slider,
-  when no such panel exists yet, is a larger diff than the value justifies this round. If the
-  intensity-slider need becomes concrete, the corruption filter is the piece to build it against.
+- **Server-side effects still can't be tuned client-side without a fairness problem.** Garbling,
+  shout blocking, and hallucination content are decided server-side per ADR-024; a client toggle
+  over them would either do nothing (the client can't undo a decision it never made) or require the
+  server to send an *undistorted* copy alongside the distorted one and let the client choose — which
+  defeats the entire point of the effects (an opponent with the toggle off reads clean text while
+  yours is garbled). `SettingsPanel.tsx` exposes **no control over any of these**, and never should.
+- **Corruption's grain overlay is the one exception, because it's presentation-only** (per
+  [ADR-025](../architecture/decisions/ADR-025-corruption-perceptual-filter.md)): the `chatGrain`
+  preference toggles a decorative texture derived from the viewer's own already-delivered corruption
+  value, touching no game state and creating no fairness gap between players. That is the single
+  toggle `SettingsPanel.tsx` ships for chat effects; the text-color filter itself
+  (`--corruption-intensity`, `SUBSYSTEM_CORRUPTION_DESIGN.md` §5) has no toggle, since a player
+  darkening their own text tint would still be reading identical characters — there is nothing there
+  to gain an advantage from hiding.
+- **The panel also surfaces unrelated, already-built preferences** (`animations`, `compactMode`,
+  `highContrast`, `reducedMotion`, `showDebugInfo`) that had storage and hooks
+  (`useThemeContext.ts`) but no control surface until now. Their inclusion piggybacks on `chatGrain`
+  needing a panel to exist at all; it does not expand this document's scope, since none of them
+  touch a server-side effect either.
 
 ## 3. The floor — server-side hard guarantees
 
@@ -96,11 +103,14 @@ corruption filter (no animation) is exempt — this guarantee is about *motion*,
 
 **[SPEC]**
 
-- It does not add a settings panel, mount `ThemeProvider`, or expose any per-player configuration.
+- It does not add, and never will add, a settings control over any server-side effect (garbling,
+  shout blocking, hallucination content) — `chatGrain` (§2) is deliberately the only chat-effect
+  toggle in `SettingsPanel.tsx`, and it governs presentation only.
 - It does not weaken any server-side effect's actual intensity — it bounds what future effects may
   do, and audits that the existing dampening effects already comply (they do, per §3.1 and §3.3).
-- It does not resolve whether `ThemeProvider` should eventually be mounted for unrelated UI
-  preferences — that is out of scope for `#145`.
+- It does not specify `SettingsPanel.tsx`'s design beyond the one row this document is responsible
+  for; the panel's other rows (`animations`, `compactMode`, etc.) are `ThemeContext.tsx`'s existing
+  preferences getting a control surface, not new accessibility guarantees this document makes.
 
 ## 6. Related docs
 
@@ -120,3 +130,4 @@ corruption filter (no animation) is exempt — this guarantee is about *motion*,
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-09-09 | Initial version, filed to close part of `#145`: server-side accessibility guarantees in place of a client intensity slider |
+| 1.1.0 | 2026-09-10 | `#804`'s client PR mounted `ThemeProvider` and built `SettingsPanel.tsx`, taken up in this document's §2 carve-out for corruption's presentation-only filter (`chatGrain`); §5 updated to match. No change to the §3 server-side floor or §4 motion guarantee. |

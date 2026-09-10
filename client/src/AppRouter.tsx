@@ -8,6 +8,7 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { App } from './App';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 // Lazy load MapPage and SkillsPage for code splitting
 const MapPage = lazy(() => import('./pages/MapPage').then(m => ({ default: m.MapPage })));
@@ -32,34 +33,36 @@ function LoadingFallback() {
  */
 export function AppRouter() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/map"
-          element={
-            <Suspense fallback={<LoadingFallback />}>
-              <MapPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/skills"
-          element={
-            <Suspense fallback={<LoadingFallback />}>
-              <SkillsPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/admin/content/dialogue"
-          element={
-            <Suspense fallback={<LoadingFallback />}>
-              <DialogueEditorPage />
-            </Suspense>
-          }
-        />
-        <Route path="/*" element={<App />} />
-      </Routes>
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/map"
+            element={
+              <Suspense fallback={<LoadingFallback />}>
+                <MapPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/skills"
+            element={
+              <Suspense fallback={<LoadingFallback />}>
+                <SkillsPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/admin/content/dialogue"
+            element={
+              <Suspense fallback={<LoadingFallback />}>
+                <DialogueEditorPage />
+              </Suspense>
+            }
+          />
+          <Route path="/*" element={<App />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }

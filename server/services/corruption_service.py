@@ -136,6 +136,7 @@ class CorruptionService:
         stats["corruption"] = new_value
         player.set_stats(stats)
         await self._persistence.save_player(player)
+        await self._send_corruption_update_event(player_id, new_value)
 
         previous_tier = compute_tier(previous_value)
         new_tier = compute_tier(new_value)
@@ -169,6 +170,18 @@ class CorruptionService:
             new_tier=new_tier,
             delta=delta,
         )
+
+    async def _send_corruption_update_event(self, player_id: uuid.UUID, new_value: int) -> None:
+        """Push the new corruption value to the client. Client reads it via the existing
+        player_update handling -- no new event *type*, per SUBSYSTEM_CORRUPTION_DESIGN.md §4, but
+        this service must actually be the one sending it (nothing else pushes corruption)."""
+        try:
+            from ..realtime.connection_manager_api import send_game_event
+
+            await send_game_event(player_id, "player_update", {"stats": {"corruption": new_value}})
+        except (ValueError, AttributeError, RuntimeError, OSError) as e:
+            # RuntimeError: connection manager unavailable (e.g. unit tests, offline player).
+            logger.warning("Failed to send corruption update event", player_id=player_id, error=str(e))
 
     async def _notify_tier_crossing(
         self, player_id: uuid.UUID, previous_tier: CorruptionTier, new_tier: CorruptionTier

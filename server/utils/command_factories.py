@@ -214,6 +214,10 @@ class CommandFactory:
         """Create RestCommand from arguments."""
         return self._player_state.create_rest_command(args)
 
+    def create_cleanse_command(self, args: list[str]) -> BaseCommand:
+        """Create CleanseCommand from arguments (#804)."""
+        return self._player_state.create_cleanse_command(args)
+
     def create_skills_command(self, args: list[str]) -> BaseCommand:
         """Create SkillsCommand from arguments (plan 10.7 V4)."""
         return self._player_state.create_skills_command(args)
