@@ -56,6 +56,11 @@ async def test_apply_costs_spends_mp(costs_service, player_service):
     player_service.persistence.save_player.assert_awaited_once()
 
 
+async def _async_session_gen(session: AsyncMock):
+    """Yield a single fake session -- mirrors get_async_session's shape for CorruptionService."""
+    yield session
+
+
 @pytest.mark.asyncio
 async def test_apply_costs_mythos_lucidity_and_corruption(costs_service, player_service):
     player = MagicMock()
@@ -73,7 +78,14 @@ async def test_apply_costs_mythos_lucidity_and_corruption(costs_service, player_
         lucidity_cost=10,
         corruption_on_cast=2,
     )
-    with patch("server.realtime.connection_manager_api.send_game_event", new_callable=AsyncMock):
+    session = AsyncMock()
+    with (
+        patch("server.realtime.connection_manager_api.send_game_event", new_callable=AsyncMock),
+        patch(
+            "server.services.corruption_service.get_async_session",
+            return_value=_async_session_gen(session),
+        ),
+    ):
         await costs_service.apply_costs(uuid.uuid4(), spell)
     stats = player.get_stats()
     assert stats["lucidity"] == 40
