@@ -11,15 +11,74 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.exceptions import DatabaseError
+from server.models.corruption import CorruptionTier
 from server.realtime.player_presence_tracker import (
     _acquire_disconnect_lock,
     _build_player_info,
     _resolve_room_id,
     _should_skip_disconnect,
+    _warm_corruption_tier_cache,  # pyright: ignore[reportPrivateUsage] -- unit-tested directly, same as the other private helpers imported here
     broadcast_connection_message_impl,
     track_player_connected_impl,
     track_player_disconnected_impl,
 )
+from server.services.corruption_tier_cache import corruption_tier_cache
+
+
+@pytest.fixture(autouse=True)
+def _clear_corruption_tier_cache():  # pyright: ignore[reportUnusedFunction] -- pytest autouse fixture, used implicitly
+    """The tier cache is a module-level singleton (#815) -- reset it around each test."""
+    yield
+    corruption_tier_cache._tiers.clear()  # noqa: SLF001  # pyright: ignore[reportPrivateUsage]
+
+
+def test_warm_corruption_tier_cache_reads_the_players_stat():
+    """#815: connect-time warming must reflect the player's real stored value, not the cache
+    miss-default -- this is what closes the relog-staleness gap the cache otherwise has."""
+    player_id = uuid.uuid4()
+    mock_player = MagicMock()
+    mock_player.get_stats = MagicMock(return_value={"corruption": 80})
+
+    _warm_corruption_tier_cache(player_id, mock_player)
+
+    assert corruption_tier_cache.get_tier(player_id) is CorruptionTier.WARPED
+
+
+def test_warm_corruption_tier_cache_defaults_to_pure_when_stat_missing():
+    player_id = uuid.uuid4()
+    mock_player = MagicMock()
+    mock_player.get_stats = MagicMock(return_value={})
+
+    _warm_corruption_tier_cache(player_id, mock_player)
+
+    assert corruption_tier_cache.get_tier(player_id) is CorruptionTier.PURE
+
+
+@pytest.mark.asyncio
+async def test_track_player_connected_impl_warms_corruption_tier_cache():
+    """#815: a freshly-connected player's real tier must be readable immediately, without waiting
+    for their next corruption adjustment (the cache's only other writer)."""
+    player_id = uuid.uuid4()
+    mock_player = MagicMock()
+    mock_player.current_room_id = "room_123"
+    mock_player.tutorial_instance_id = None
+    mock_player.get_stats = MagicMock(return_value={"corruption": 60})
+    mock_manager = MagicMock()
+    mock_manager.online_players = {}
+    mock_manager.player_websockets = {player_id: ["conn_1"]}
+    mock_manager.grace_period_players = {}
+    mock_manager.mark_player_seen = MagicMock()
+    # handle_new_connection_setup is mocked below, so the room-resolution path it would otherwise
+    # feed through async_persistence never actually runs -- no need to configure it here.
+
+    with (
+        patch("server.realtime.player_presence_tracker.handle_new_connection_setup", new_callable=AsyncMock),
+        patch("server.realtime.player_presence_tracker.get_player_position", return_value="standing"),
+        patch("server.realtime.player_presence_tracker.extract_player_name", return_value="TestPlayer"),
+    ):
+        await track_player_connected_impl(player_id, mock_player, "websocket", mock_manager)
+
+    assert corruption_tier_cache.get_tier(player_id) is CorruptionTier.CORRUPTED
 
 
 def test_build_player_info_new_connection():

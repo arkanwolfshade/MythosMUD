@@ -26,12 +26,19 @@ if TYPE_CHECKING:
 class CorruptionTier(StrEnum):
     """Corruption bands over 0..100.
 
+    `PURE` is reserved for exactly 0 (#815) -- `CorruptionService.apply_corruption_adjustment`
+    floors any player who has ever been corrupted at 1, so `PURE` is an absorbing state you can
+    only ever leave. `TOUCHED` (1-24) exists so that permanent scar is *observable*: without it,
+    a cleansed veteran sitting at 1 and a novice at 0 would read identically everywhere the tier
+    is consulted.
+
     The `corrupted` floor MUST stay at exactly 50 -- `Stats.is_corrupted()`
     (`server/models/game.py:322`) already treats `>= 50` as corrupted, and moving this
     boundary silently changes that check's behavior everywhere it's read.
     """
 
     PURE = "pure"
+    TOUCHED = "touched"
     MARKED = "marked"
     CORRUPTED = "corrupted"
     WARPED = "warped"
@@ -51,6 +58,8 @@ def compute_tier(value: int) -> CorruptionTier:
         return CorruptionTier.CORRUPTED
     if value >= 25:
         return CorruptionTier.MARKED
+    if value >= 1:
+        return CorruptionTier.TOUCHED
     return CorruptionTier.PURE
 
 
