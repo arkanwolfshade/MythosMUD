@@ -410,6 +410,12 @@ async def test_npc_bundle_initialize_success() -> None:
     assert bundle.npc_lifecycle_manager is lifecycle
     assert bundle.npc_spawning_service is spawn_instance
     assert bundle.npc_population_controller is pop_instance
+    # #815: revives NPC reactions -- a real system must be constructed and threaded to the
+    # spawning service, not the None that shipped every NPC reaction-less before this.
+    from server.npc.event_reaction_system import NPCEventReactionSystem
+
+    assert isinstance(bundle.npc_event_reaction_system, NPCEventReactionSystem)
+    assert spawn_cls.call_args.kwargs["event_reaction_system"] is bundle.npc_event_reaction_system
 
 
 @pytest.mark.asyncio
