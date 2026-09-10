@@ -72,6 +72,8 @@ ALTER TABLE IF EXISTS ONLY mythos_unit.invites DROP CONSTRAINT IF EXISTS invites
 ALTER TABLE IF EXISTS ONLY mythos_unit.id_map_players DROP CONSTRAINT IF EXISTS id_map_players_user_uuid_fkey;
 ALTER TABLE IF EXISTS ONLY mythos_unit.containers DROP CONSTRAINT IF EXISTS fk_containers_container_item_instance;
 ALTER TABLE IF EXISTS ONLY mythos_unit.emote_aliases DROP CONSTRAINT IF EXISTS emote_aliases_emote_id_fkey;
+ALTER TABLE IF EXISTS ONLY mythos_unit.corruption_cooldowns DROP CONSTRAINT IF EXISTS corruption_cooldowns_player_id_fkey;
+ALTER TABLE IF EXISTS ONLY mythos_unit.corruption_adjustment_log DROP CONSTRAINT IF EXISTS corruption_adjustment_log_player_id_fkey;
 ALTER TABLE IF EXISTS ONLY mythos_unit.containers DROP CONSTRAINT IF EXISTS containers_owner_id_fkey;
 ALTER TABLE IF EXISTS ONLY mythos_unit.containers DROP CONSTRAINT IF EXISTS containers_entity_id_fkey;
 ALTER TABLE IF EXISTS ONLY mythos_unit.container_contents DROP CONSTRAINT IF EXISTS container_contents_item_instance_id_fkey;
@@ -143,6 +145,7 @@ DROP INDEX IF EXISTS mythos_unit.idx_invites_used_by_user_id;
 DROP INDEX IF EXISTS mythos_unit.idx_invites_expires_at;
 DROP INDEX IF EXISTS mythos_unit.idx_invites_active;
 DROP INDEX IF EXISTS mythos_unit.idx_emote_alias_on_alias;
+DROP INDEX IF EXISTS mythos_unit.idx_corruption_adjustment_player_created;
 DROP INDEX IF EXISTS mythos_unit.idx_containers_source_type;
 DROP INDEX IF EXISTS mythos_unit.idx_containers_room_id;
 DROP INDEX IF EXISTS mythos_unit.idx_containers_owner_id;
@@ -158,6 +161,7 @@ ALTER TABLE IF EXISTS ONLY mythos_unit.zones DROP CONSTRAINT IF EXISTS zones_pke
 ALTER TABLE IF EXISTS ONLY mythos_unit.zone_configurations DROP CONSTRAINT IF EXISTS zone_configurations_zone_id_subzone_id_key;
 ALTER TABLE IF EXISTS ONLY mythos_unit.zone_configurations DROP CONSTRAINT IF EXISTS zone_configurations_pkey;
 ALTER TABLE IF EXISTS ONLY mythos_unit.users DROP CONSTRAINT IF EXISTS users_pkey;
+ALTER TABLE IF EXISTS ONLY mythos_unit.corruption_cooldowns DROP CONSTRAINT IF EXISTS uq_corruption_cooldown_player_action;
 ALTER TABLE IF EXISTS ONLY mythos_unit.subzones DROP CONSTRAINT IF EXISTS subzones_zone_id_stable_id_key;
 ALTER TABLE IF EXISTS ONLY mythos_unit.subzones DROP CONSTRAINT IF EXISTS subzones_pkey;
 ALTER TABLE IF EXISTS ONLY mythos_unit.spells DROP CONSTRAINT IF EXISTS spells_pkey;
@@ -173,6 +177,8 @@ ALTER TABLE IF EXISTS ONLY mythos_unit.quest_instances DROP CONSTRAINT IF EXISTS
 ALTER TABLE IF EXISTS ONLY mythos_unit.quest_instances DROP CONSTRAINT IF EXISTS quest_instances_pkey;
 ALTER TABLE IF EXISTS ONLY mythos_unit.dialogue_definitions DROP CONSTRAINT IF EXISTS dialogue_definitions_npc_definition_id_fkey;
 ALTER TABLE IF EXISTS ONLY mythos_unit.dialogue_definitions DROP CONSTRAINT IF EXISTS dialogue_definitions_npc_definition_id_key;
+ALTER TABLE IF EXISTS ONLY mythos_unit.corruption_cooldowns DROP CONSTRAINT IF EXISTS corruption_cooldowns_pkey;
+ALTER TABLE IF EXISTS ONLY mythos_unit.corruption_adjustment_log DROP CONSTRAINT IF EXISTS corruption_adjustment_log_pkey;
 ALTER TABLE IF EXISTS ONLY mythos_unit.dialogue_definitions DROP CONSTRAINT IF EXISTS dialogue_definitions_pkey;
 ALTER TABLE IF EXISTS ONLY mythos_unit.quest_definitions DROP CONSTRAINT IF EXISTS quest_definitions_pkey;
 ALTER TABLE IF EXISTS ONLY mythos_unit.professions DROP CONSTRAINT IF EXISTS professions_pkey;
@@ -258,6 +264,8 @@ DROP TABLE IF EXISTS mythos_unit.id_map_users;
 DROP TABLE IF EXISTS mythos_unit.id_map_players;
 DROP TABLE IF EXISTS mythos_unit.emotes;
 DROP TABLE IF EXISTS mythos_unit.emote_aliases;
+DROP TABLE IF EXISTS mythos_unit.corruption_cooldowns;
+DROP TABLE IF EXISTS mythos_unit.corruption_adjustment_log;
 DROP TABLE IF EXISTS mythos_unit.containers;
 DROP TABLE IF EXISTS mythos_unit.container_contents;
 DROP TABLE IF EXISTS mythos_unit.calendar_npc_schedules;
@@ -1271,6 +1279,75 @@ COMMENT ON TABLE mythos_unit.quest_definitions IS 'Quest templates; definition J
 -- Name: dialogue_definitions; Type: TABLE; Schema: mythos_unit; Owner: -
 --
 
+--
+-- Name: corruption_adjustment_log; Type: TABLE; Schema: mythos_unit; Owner: -
+--
+
+CREATE TABLE mythos_unit.corruption_adjustment_log (
+    id bigint NOT NULL,
+    player_id uuid NOT NULL,
+    delta integer NOT NULL,
+    reason_code text NOT NULL,
+    metadata text DEFAULT '{}'::text NOT NULL,
+    location_id character varying(255),
+    created_at timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: TABLE corruption_adjustment_log; Type: COMMENT; Schema: mythos_unit; Owner: -
+--
+
+COMMENT ON TABLE mythos_unit.corruption_adjustment_log IS 'Immutable ledger for every corruption gain or loss event.';
+
+
+--
+-- Name: corruption_adjustment_log_id_seq; Type: SEQUENCE; Schema: mythos_unit; Owner: -
+--
+
+ALTER TABLE mythos_unit.corruption_adjustment_log ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME mythos_unit.corruption_adjustment_log_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: corruption_cooldowns; Type: TABLE; Schema: mythos_unit; Owner: -
+--
+
+CREATE TABLE mythos_unit.corruption_cooldowns (
+    id bigint NOT NULL,
+    player_id uuid NOT NULL,
+    action_code text NOT NULL,
+    cooldown_expires_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: TABLE corruption_cooldowns; Type: COMMENT; Schema: mythos_unit; Owner: -
+--
+
+COMMENT ON TABLE mythos_unit.corruption_cooldowns IS 'Cooldown tracker for corruption recovery rites (e.g. /cleanse).';
+
+
+--
+-- Name: corruption_cooldowns_id_seq; Type: SEQUENCE; Schema: mythos_unit; Owner: -
+--
+
+ALTER TABLE mythos_unit.corruption_cooldowns ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME mythos_unit.corruption_cooldowns_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
 CREATE TABLE mythos_unit.dialogue_definitions (
     id text NOT NULL,
     definition jsonb NOT NULL,
@@ -1678,6 +1755,26 @@ ALTER TABLE ONLY mythos_unit.calendar_npc_schedules
 
 ALTER TABLE ONLY mythos_unit.container_contents
     ADD CONSTRAINT container_contents_pkey PRIMARY KEY (container_id, item_instance_id);
+
+
+--
+-- Name: containers containers_pkey; Type: CONSTRAINT; Schema: mythos_unit; Owner: -
+--
+
+--
+-- Name: corruption_adjustment_log corruption_adjustment_log_pkey; Type: CONSTRAINT; Schema: mythos_unit; Owner: -
+--
+
+ALTER TABLE ONLY mythos_unit.corruption_adjustment_log
+    ADD CONSTRAINT corruption_adjustment_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: corruption_cooldowns corruption_cooldowns_pkey; Type: CONSTRAINT; Schema: mythos_unit; Owner: -
+--
+
+ALTER TABLE ONLY mythos_unit.corruption_cooldowns
+    ADD CONSTRAINT corruption_cooldowns_pkey PRIMARY KEY (id);
 
 
 --
@@ -2113,6 +2210,14 @@ ALTER TABLE ONLY mythos_unit.users
 
 
 --
+-- Name: corruption_cooldowns uq_corruption_cooldown_player_action; Type: CONSTRAINT; Schema: mythos_unit; Owner: -
+--
+
+ALTER TABLE ONLY mythos_unit.corruption_cooldowns
+    ADD CONSTRAINT uq_corruption_cooldown_player_action UNIQUE (player_id, action_code);
+
+
+--
 -- Name: zone_configurations zone_configurations_pkey; Type: CONSTRAINT; Schema: mythos_unit; Owner: -
 --
 
@@ -2203,6 +2308,9 @@ CREATE INDEX idx_containers_owner_id ON mythos_unit.containers USING btree (owne
 --
 -- Name: idx_containers_room_id; Type: INDEX; Schema: mythos_unit; Owner: -
 --
+
+CREATE INDEX idx_corruption_adjustment_player_created ON mythos_unit.corruption_adjustment_log USING btree (player_id, created_at);
+
 
 CREATE INDEX idx_containers_room_id ON mythos_unit.containers USING btree (room_id) WHERE (room_id IS NOT NULL);
 
@@ -2752,6 +2860,22 @@ ALTER TABLE ONLY mythos_unit.containers
 --
 -- Name: containers containers_owner_id_fkey; Type: FK CONSTRAINT; Schema: mythos_unit; Owner: -
 --
+
+--
+-- Name: corruption_adjustment_log corruption_adjustment_log_player_id_fkey; Type: FK CONSTRAINT; Schema: mythos_unit; Owner: -
+--
+
+ALTER TABLE ONLY mythos_unit.corruption_adjustment_log
+    ADD CONSTRAINT corruption_adjustment_log_player_id_fkey FOREIGN KEY (player_id) REFERENCES mythos_unit.players(player_id) ON DELETE CASCADE;
+
+
+--
+-- Name: corruption_cooldowns corruption_cooldowns_player_id_fkey; Type: FK CONSTRAINT; Schema: mythos_unit; Owner: -
+--
+
+ALTER TABLE ONLY mythos_unit.corruption_cooldowns
+    ADD CONSTRAINT corruption_cooldowns_player_id_fkey FOREIGN KEY (player_id) REFERENCES mythos_unit.players(player_id) ON DELETE CASCADE;
+
 
 ALTER TABLE ONLY mythos_unit.containers
     ADD CONSTRAINT containers_owner_id_fkey FOREIGN KEY (owner_id) REFERENCES mythos_unit.players(player_id) ON DELETE SET NULL;

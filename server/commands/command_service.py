@@ -35,6 +35,7 @@ from .alias_commands import (
     handle_unalias_command,
 )
 from .channel_commands import handle_channel_command
+from .cleanse_command import handle_cleanse_command
 from .combat import (
     handle_attack_command,
     handle_flee_command,
@@ -202,6 +203,8 @@ _COMMAND_HANDLERS: dict[str, CommandHandler] = {
     "group_solace": handle_group_solace_command,
     "therapy": handle_therapy_command,
     "folk_tonic": handle_folk_tonic_command,
+    # corruption recovery rite
+    "cleanse": handle_cleanse_command,
     "debrief": handle_debrief_command,
     "ground": handle_ground_command,
 }

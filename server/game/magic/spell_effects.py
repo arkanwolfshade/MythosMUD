@@ -14,6 +14,7 @@ from typing import assert_never, cast
 
 from structlog.stdlib import BoundLogger
 
+from server.exceptions import ValidationError
 from server.game.magic.spell_effect_flee import run_flee_effect
 from server.game.magic.spell_effect_types import (
     NpcSpellDamageTarget,
@@ -39,6 +40,7 @@ from server.persistence.repositories.player_spell_repository import PlayerSpellR
 from server.schemas.shared import TargetMatch, TargetType
 from server.services.combat_service import CombatService
 from server.services.combat_service_npc import get_combat_id_for_npc, resolve_npc_participant_id_in_combat
+from server.services.corruption_service import CorruptionPersistenceProtocol, CorruptionService
 from server.structured_logging.enhanced_logging_config import get_logger
 
 logger: BoundLogger = get_logger(__name__)
@@ -379,21 +381,19 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
 
         try:
             target_id = uuid.UUID(target.target_id)
-            player = await self._spell_player_persistence().get_player_by_id(target_id)
-            if not player:
-                return {"success": False, "message": "Target player not found", "effect_applied": False}
-
-            pe_player = cast(SpellEffectPlayer, player)
-            stats = dict(pe_player.get_stats())
-            co = stats.get("corruption", 0)
-            current_corruption = int(co) if isinstance(co, (int, float)) else 0
-
-            # Corruption is bounded 0-100
-            new_corruption = max(0, min(100, current_corruption + adjust_amount))
-            stats["corruption"] = new_corruption
-
-            pe_player.set_stats(stats)
-            await self._spell_player_persistence().save_player(player)
+            # #804: route through CorruptionService (`self.player_service.persistence`, not the
+            # narrowly-typed `_spell_player_persistence()` port -- CorruptionService needs the
+            # real AsyncPersistenceLayer's `Player`-returning methods) rather than a direct
+            # stats["corruption"] mutation. It clamps 0..100, logs the ledger row, and updates
+            # the tier cache; a negative `adjust_amount` here is this spell effect type's own
+            # existing bidirectional-adjustment design, unrelated to the `/cleanse` recovery rite.
+            persistence = cast(CorruptionPersistenceProtocol, self.player_service.persistence)
+            result = await CorruptionService(persistence).apply_corruption_adjustment(
+                target_id,
+                adjust_amount,
+                reason_code="spell_effect",
+                metadata={"spell_id": spell.spell_id},
+            )
 
             direction = "increased" if adjust_amount > 0 else "decreased"
             return {
@@ -401,8 +401,10 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
                 "message": f"{direction.capitalize()} {target.target_name}'s corruption by {abs(adjust_amount)}",
                 "effect_applied": True,
                 "corruption_adjust": adjust_amount,
-                "new_corruption": new_corruption,
+                "new_corruption": result.new_value,
             }
+        except ValidationError:
+            return {"success": False, "message": "Target player not found", "effect_applied": False}
         except OSError as e:
             logger.error("Error adjusting corruption", target_id=target.target_id, error=str(e))
             return {"success": False, "message": f"Failed to adjust corruption: {str(e)}", "effect_applied": False}

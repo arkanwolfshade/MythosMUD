@@ -27,6 +27,7 @@ from .base import Base  # ARCHITECTURE FIX Phase 3.1: Use shared Base
 from .game import PositionState
 
 if TYPE_CHECKING:
+    from .corruption import CorruptionAdjustmentLog, CorruptionCooldown
     from .lucidity import (
         LucidityAdjustmentLog,
         LucidityCooldown,
@@ -475,6 +476,19 @@ class Player(Base):
 
     lucidity_cooldowns: Mapped[list[LucidityCooldown]] = relationship(
         "LucidityCooldown",
+        back_populates="player",
+        cascade="all, delete-orphan",
+    )
+
+    corruption_adjustments: Mapped[list[CorruptionAdjustmentLog]] = relationship(
+        "CorruptionAdjustmentLog",
+        back_populates="player",
+        cascade="all, delete-orphan",
+        order_by="desc(CorruptionAdjustmentLog.created_at)",
+    )
+
+    corruption_cooldowns: Mapped[list[CorruptionCooldown]] = relationship(
+        "CorruptionCooldown",
         back_populates="player",
         cascade="all, delete-orphan",
     )

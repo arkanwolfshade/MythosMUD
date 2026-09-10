@@ -102,6 +102,11 @@ async def test_apply_fear(player_service, mock_persistence):
     assert "fear" in result["message"].lower()
 
 
+async def _async_session_gen(session: AsyncMock):
+    """Yield a single fake session -- mirrors get_async_session's shape for CorruptionService."""
+    yield session
+
+
 @pytest.mark.asyncio
 async def test_apply_corruption(player_service, mock_persistence):
     """Test apply_corruption() applies corruption."""
@@ -109,11 +114,22 @@ async def test_apply_corruption(player_service, mock_persistence):
     mock_player = MagicMock()
     mock_player.player_id = player_id
     mock_player.name = "TestPlayer"
+    stats: dict[str, object] = {"corruption": 0}
+    mock_player.get_stats = MagicMock(return_value=stats)
+    mock_player.set_stats = MagicMock(side_effect=stats.update)
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.apply_corruption = AsyncMock()
-    result = await player_service.apply_corruption(player_id, 3, "test_source")
+    mock_persistence.save_player = AsyncMock()
+    session = AsyncMock()
+    with patch(
+        "server.services.corruption_service.get_async_session",
+        return_value=_async_session_gen(session),
+    ):
+        # TEST_MOCK: `player_service` fixture is untyped MagicMock; this finding only appears
+        # because the line below moved inside a `with` for the get_async_session patch.
+        result = await player_service.apply_corruption(player_id, 3, "test_source")  # pyright: ignore[reportUnknownVariableType, reportUnknownMemberType]
     assert "message" in result
     assert "corruption" in result["message"].lower()
+    assert stats["corruption"] == 3
 
 
 @pytest.mark.asyncio
