@@ -1,6 +1,6 @@
 # Game Subsystem Design Documents
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-09-09
 
 ---
 
@@ -40,6 +40,11 @@ troubleshooting. Code is the source of truth; these docs are derived from it.
 | Respawn        | [SUBSYSTEM_RESPAWN_DESIGN.md](SUBSYSTEM_RESPAWN_DESIGN.md)               | Dead (DP -10 or limbo) respawn by user_id; PlayerRespawnWrapper and PlayerRespawnService.                |
 | NPC system     | [SUBSYSTEM_NPC_DESIGN.md](SUBSYSTEM_NPC_DESIGN.md)                       | Lifecycle, spawning, behavior, combat/movement/communication integration; population control.            |
 | Admin commands | [SUBSYSTEM_ADMIN_COMMANDS_DESIGN.md](SUBSYSTEM_ADMIN_COMMANDS_DESIGN.md) | Mute, teleport, goto, shutdown, summon, setstat, setlucidity, npc; validate_admin_permission; audit log. |
+| Corruption *(planned)* | [SUBSYSTEM_CORRUPTION_DESIGN.md](SUBSYSTEM_CORRUPTION_DESIGN.md) | Tier model, ledger, designed removal path, global chat perceptual filter (#145). |
+| Entity contact *(planned)* | [SUBSYSTEM_ENTITY_CONTACT_DESIGN.md](SUBSYSTEM_ENTITY_CONTACT_DESIGN.md) | Scripted narrative contact reusing hallucination delivery; no persistent entity (#145). |
+| Cult chat seam *(planned, blocked on #29)* | [SUBSYSTEM_CULT_CHAT_DESIGN.md](SUBSYSTEM_CULT_CHAT_DESIGN.md) | Chat-only seam and assumed membership interface for a future cult host (#145). |
+| Dream messaging *(planned)* | [SUBSYSTEM_DREAM_MESSAGING_DESIGN.md](SUBSYSTEM_DREAM_MESSAGING_DESIGN.md) | `/sleep` connected-resting state; roadmapped Dreamlands plane and status-effect dreams (#145). |
+| Chat effect accessibility *(planned)* | [SUBSYSTEM_CHAT_EFFECT_ACCESSIBILITY_DESIGN.md](SUBSYSTEM_CHAT_EFFECT_ACCESSIBILITY_DESIGN.md) | Server-side hard guarantees bounding chat atmosphere effects (#145). |
 
 ## 3. Related documentation
 
@@ -58,3 +63,4 @@ troubleshooting. Code is the source of truth; these docs are derived from it.
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-09-09 | Add 5 planned subsystems from #145 decomposition: Corruption, Entity contact, Cult chat seam, Dream messaging, Chat effect accessibility |
