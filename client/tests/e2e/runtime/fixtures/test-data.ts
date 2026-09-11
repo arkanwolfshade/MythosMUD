@@ -26,6 +26,9 @@ export const DEFAULT_SPAWN_LOOK_CUE =
 /** Foyer east exit lands in Eastern Hallway Section 1 — use for room-split asserts (not bare Exits:). */
 export const EASTERN_HALLWAY_LOOK_CUE = /Eastern Hallway|hallway, branching|first section of the eastern hallway/i;
 
+/** #824: the consecrated room off Eastern Hallway Section 5 (hallway_009), east exit. */
+export const CHAPEL_LOOK_CUE = /Sanitarium Chapel|stained-glass|disused chapel/i;
+
 export interface TestPlayer {
   username: string;
   password: string;

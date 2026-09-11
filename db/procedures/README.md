@@ -34,26 +34,28 @@ alphabetical order -- there is no separate manifest to keep in sync. `CREATE OR 
 FUNCTION` is order-independent for function-to-function references (Postgres resolves those
 at call time), so alphabetical ordering is safe as long as no file's *table* dependencies
 (created by DDL/migrations, not by another procedure file) postdate it -- none currently do.
-The list below is the actual current directory contents (2026-08-25, #633), documentation
+The list below is the actual current directory contents (2026-09-11), documentation
 only:
 
-1. `calendar.sql` - calendar_holidays, calendar_npc_schedules (reads only)
-2. `containers.sql` - containers, container_contents
-3. `dialogues.sql` - dialogue_definitions
-4. `emotes.sql` - emotes, emote_aliases (reads only)
-5. `experience.sql` - players table updates
-6. `exploration.sql` - player_exploration, coordinate-generation reads over rooms/subzones/zones
-7. `health.sql` - players table updates (depends on players from DDL)
-8. `items.sql` - item_prototypes, item_instances
-9. `lucidity.sql` - zones/subzones special_rules reads
-10. `npcs.sql` - npc_definitions, npc_spawn_rules, zone/subzone config reads
-11. `player_effects.sql` - player_effects
-12. `players.sql` - users, players, player_inventories, invites
-13. `professions.sql` - professions
-14. `quests.sql` - quest_definitions, quest_offers, quest_instances
-15. `rooms.sql` - rooms, room_links, subzones, zones
-16. `skills.sql` - skills
-17. `spells.sql` - spells
+1. `account_sanctions.sql` - account_sanctions (table DDL in
+   `server/alembic/versions/2026_09_11_add_account_sanctions_table.py`)
+2. `calendar.sql` - calendar_holidays, calendar_npc_schedules (reads only)
+3. `containers.sql` - containers, container_contents
+4. `dialogues.sql` - dialogue_definitions
+5. `emotes.sql` - emotes, emote_aliases (reads only)
+6. `experience.sql` - players table updates
+7. `exploration.sql` - player_exploration, coordinate-generation reads over rooms/subzones/zones
+8. `health.sql` - players table updates (depends on players from DDL)
+9. `items.sql` - item_prototypes, item_instances
+10. `lucidity.sql` - zones/subzones special_rules reads
+11. `npcs.sql` - npc_definitions, npc_spawn_rules, zone/subzone config reads
+12. `player_effects.sql` - player_effects
+13. `players.sql` - users, players, player_inventories, invites
+14. `professions.sql` - professions
+15. `quests.sql` - quest_definitions, quest_offers, quest_instances
+16. `rooms.sql` - rooms, room_links, subzones, zones
+17. `skills.sql` - skills
+18. `spells.sql` - spells
 
 ## Schema Notes
 

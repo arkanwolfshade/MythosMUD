@@ -261,3 +261,57 @@ async def test_process_tick_for_player_zero_delta_skips_write() -> None:
 
     assert result == {"delta": 0}
     adjust.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_innsmouth_pier_converges_upward_and_clamps_at_its_own_ceiling() -> None:
+    """#824 (PR-C): models the real Innsmouth Waterfront Pier as authored in the DML --
+    attributes.corruption: 65 on the room, corruption_rate: 0.05 + corruption_target: 40 on the
+    earth/innsmouth zone's special_rules -- and confirms the room's own target (65) wins over the
+    broader zone target (40) per PR-A's room-beats-zone precedence, that a lingering player
+    converges upward, and that the ceiling clamps exactly at 65 rather than continuing to rise."""
+    svc = _make_service(
+        ticks_per_minute=1,
+        corruption_overrides={"earth|innsmouth|waterfront": CorruptionOverride(rate=0.05, target=40.0)},
+    )
+    room = _room(
+        room_id="earth_innsmouth_waterfront_room_waterfront_001",
+        plane="earth",
+        zone="innsmouth",
+        sub_zone="waterfront",
+        environment="outdoors",
+        attributes={"corruption": 65},
+    )
+    persistence = MagicMock()
+    persistence.get_room_by_id = MagicMock(return_value=room)
+
+    # A player seeded just below the ceiling should rise into it and stop; one further tick with
+    # a real signed_flux/residual/bound pipeline (no mocked _apply_residual here) confirms the
+    # ceiling holds rather than merely asserting the isolated _bound_delta unit in isolation.
+    persistence.get_player_by_id = AsyncMock(return_value=_player(corruption=64))
+    svc._persistence = persistence
+
+    with patch(
+        "server.services.passive_corruption_flux.service.CorruptionService.apply_corruption_adjustment",
+        new_callable=AsyncMock,
+        return_value=CorruptionUpdateResult(
+            player_id=uuid.uuid4(),
+            previous_value=64,
+            new_value=65,
+            previous_tier=CorruptionTier.MARKED,
+            new_tier=CorruptionTier.MARKED,
+            delta=1,
+        ),
+    ) as adjust:
+        player_id = uuid.uuid4()
+        # Force enough banked residual to emit a delta this tick without waiting out 0.05's real
+        # ~20-tick cadence -- the cadence itself is covered by test_apply_residual_accumulates_*.
+        with patch.object(svc, "_apply_residual", return_value=1):
+            result = await svc.process_tick_for_player(player_id, tick_count=0)
+
+    assert result["delta"] == 1
+    assert result["new_value"] == 65
+    adjust.assert_awaited_once()
+    assert adjust.await_args is not None
+    assert adjust.await_args.args[1] == 1  # actual_delta clamped to +1, not overshooting past 65
+    assert adjust.await_args.kwargs["metadata"]["target"] == 65.0  # room wins over the zone's 40
