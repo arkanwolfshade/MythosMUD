@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from structlog.stdlib import BoundLogger
 
 from ..structured_logging.enhanced_logging_config import get_logger
+from ..utils.int_coercion import coerce_int
 
 if TYPE_CHECKING:
     from .event_reaction_system import NPCEventReactionSystem
@@ -17,9 +18,11 @@ def register_default_reactions_for_npc(
     npc_type: str,
     behavior_config: dict[str, object],
     event_reaction_system: "NPCEventReactionSystem",
+    stats: dict[str, object] | None = None,
 ) -> None:
     """Build and register default event reactions for this NPC (greeting, farewell, etc.)."""
     try:
+        from .corruption_reactions import build_corruption_aware_greeting
         from .event_reaction_system import NPCEventReaction, NPCEventReactionTemplates
 
         reactions: list[NPCEventReaction] = []
@@ -29,7 +32,9 @@ def register_default_reactions_for_npc(
         # farewell_message, so these are rarely reached in practice. Kept in-tone regardless.
         if npc_type in ["shopkeeper", "passive_mob"]:
             greeting = str(behavior_config.get("greeting_message", "A wary nod is offered in greeting."))
-            reactions.append(NPCEventReactionTemplates.player_entered_room_greeting(npc_id, greeting))
+            # #815 PR-4: the greeting reaction is corruption-aware -- a variant, not an addition.
+            npc_corruption = coerce_int((stats or {}).get("corruption", 0), default=0)
+            reactions.append(build_corruption_aware_greeting(npc_id, npc_corruption, greeting))
 
         if npc_type in ["shopkeeper", "passive_mob"]:
             farewell = str(behavior_config.get("farewell_message", "A wary nod, and nothing more, marks your leaving."))

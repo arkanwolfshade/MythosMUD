@@ -1,4 +1,8 @@
 """Unit tests for aggro/threat module (ADR-016)."""
+# pyright: reportPrivateUsage=false
+# #815: _corruption_scale is tested directly (5 call sites below) to isolate its boundary
+# behavior from _aggression_scale's, which the indirect add_damage_threat/add_heal_threat tests
+# elsewhere in this file can't cleanly separate.
 
 import uuid
 from unittest.mock import MagicMock, patch
@@ -17,6 +21,7 @@ def _make_participant(
     current_dp: int = 50,
     npc_type: str | None = None,
     aggression_level: int | None = None,
+    corruption: int | None = None,
 ) -> CombatParticipant:
     return CombatParticipant(
         participant_id=uuid.uuid4(),
@@ -27,6 +32,7 @@ def _make_participant(
         dexterity=10,
         npc_type=npc_type,
         aggression_level=aggression_level,
+        corruption=corruption,
     )
 
 
@@ -282,3 +288,41 @@ def test_aggression_level_scales_heal_threat() -> None:
     aggro_threat.add_heal_threat(combat, npc0.participant_id, healer_id, 20.0, factor=0.5, npc_participant=npc0)
     # 20 * 0.5 (factor) * 0.5 (scale for level 0) = 5.0
     assert combat.npc_hate_lists[npc0.participant_id][healer_id] == 5.0
+
+
+def test_corruption_scale_neutral_when_data_missing() -> None:
+    """#815: missing corruption on either side must not silently discount threat -- only a
+    genuine, populated match (e.g. both 0) is a real kinship signal."""
+    assert aggro_threat._corruption_scale(None, None) == 1.0
+    npc = _make_participant("Mob", CombatParticipantType.NPC, corruption=None)
+    player = _make_participant("Player", corruption=50)
+    assert aggro_threat._corruption_scale(npc, player) == 1.0
+    assert aggro_threat._corruption_scale(player, npc) == 1.0
+
+
+def test_corruption_scale_softens_when_identical() -> None:
+    """#815: an NPC and player with matching (populated) corruption discount threat to 0.5x."""
+    npc = _make_participant("CorruptMob", CombatParticipantType.NPC, corruption=60)
+    player = _make_participant("CorruptPlayer", corruption=60)
+    assert aggro_threat._corruption_scale(npc, player) == 0.5
+
+
+def test_corruption_scale_sharpens_with_maximal_gap() -> None:
+    """#815: an NPC and player at opposite ends of the corruption range scale threat to 1.5x."""
+    npc = _make_participant("PureMob", CombatParticipantType.NPC, corruption=0)
+    player = _make_participant("WarpedPlayer", corruption=100)
+    assert aggro_threat._corruption_scale(npc, player) == 1.5
+
+
+def test_add_damage_threat_scales_by_corruption_gap() -> None:
+    """add_damage_threat applies the corruption gap as an additional multiplier on top of
+    aggression_level, mirroring how the two scales already compose in the existing tests above."""
+    combat = _make_combat()
+    npc = _make_participant("CorruptMob", CombatParticipantType.NPC, npc_type="aggressive_mob", corruption=90)
+    player = _make_participant("PurePlayer", corruption=0)
+    player_id = player.participant_id
+    combat.participants[npc.participant_id] = npc
+    combat.participants[player_id] = player
+    aggro_threat.add_damage_threat(combat, npc.participant_id, player_id, 10.0, multiplier=1.0, npc_participant=npc)
+    # gap=90 -> scale 0.5 + 0.9 = 1.4; aggression_level unset -> _aggression_scale(None) = 1.0
+    assert combat.npc_hate_lists[npc.participant_id][player_id] == 14.0

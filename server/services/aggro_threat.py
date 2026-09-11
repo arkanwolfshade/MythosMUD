@@ -37,6 +37,18 @@ def _aggression_scale(aggression_level: int | None) -> float:
     return 0.5 + 0.05 * level
 
 
+def _corruption_scale(npc_participant: CombatParticipant | None, source_participant: CombatParticipant | None) -> float:
+    """#815: threat scale from the NPC<->source corruption gap. Function-local import --
+    server.npc's package __init__ pulls in a combat/mechanics/corruption_service import chain that
+    risks a cycle with server.services at module scope (same reason chat_npc_system is imported
+    lazily inside NPCEventReactionTemplates' action closures)."""
+    from server.npc.corruption_reactions import corruption_hostility_scale
+
+    npc_corruption = getattr(npc_participant, "corruption", None) if npc_participant else None
+    source_corruption = getattr(source_participant, "corruption", None) if source_participant else None
+    return corruption_hostility_scale(npc_corruption, source_corruption)
+
+
 def add_damage_threat(
     combat: CombatInstance,
     npc_id: UUID,
@@ -65,6 +77,7 @@ def add_damage_threat(
     mult = multiplier if multiplier is not None else getattr(config, "aggro_damage_threat_multiplier", 1.0)
     scale = _aggression_scale(getattr(participant, "aggression_level", None) if participant else None)
     mult *= scale
+    mult *= _corruption_scale(participant, combat.participants.get(source_entity_id))
     delta = amount * mult
     hate = get_or_create_hate_list(combat, npc_id)
     hate[source_entity_id] = hate.get(source_entity_id, 0.0) + delta
@@ -98,6 +111,7 @@ def add_heal_threat(
     fac = factor if factor is not None else getattr(config, "aggro_healing_threat_factor", 0.5)
     scale = _aggression_scale(getattr(participant, "aggression_level", None) if participant else None)
     fac *= scale
+    fac *= _corruption_scale(participant, combat.participants.get(healer_entity_id))
     delta = amount * fac
     hate = get_or_create_hate_list(combat, npc_id)
     hate[healer_entity_id] = hate.get(healer_entity_id, 0.0) + delta

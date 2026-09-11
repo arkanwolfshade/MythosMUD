@@ -26,3 +26,4 @@ class CombatParticipantData:
     aggression_level: int | None = None  # 0-10; None = full threat
     is_non_damaging: bool = False  # #625: only set for PHANTOM participants
     phantom_id: str | None = None  # #625: PhantomHostileService's own id, not the synthetic UUID above
+    corruption: int | None = None  # 0-100; #815 -- static NPC trait or the player's live value
