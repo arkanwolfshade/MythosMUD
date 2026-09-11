@@ -24,19 +24,22 @@ def register_default_reactions_for_npc(
 
         reactions: list[NPCEventReaction] = []
 
+        # #815: fallbacks for an NPC with no authored greeting/farewell of its own -- every one of
+        # the ten seeded NPCs (data/db/mythos_*_dml.sql) sets its own greeting_message/
+        # farewell_message, so these are rarely reached in practice. Kept in-tone regardless.
         if npc_type in ["shopkeeper", "passive_mob"]:
-            greeting = str(behavior_config.get("greeting_message", "Hello there!"))
+            greeting = str(behavior_config.get("greeting_message", "A wary nod is offered in greeting."))
             reactions.append(NPCEventReactionTemplates.player_entered_room_greeting(npc_id, greeting))
 
         if npc_type in ["shopkeeper", "passive_mob"]:
-            farewell = str(behavior_config.get("farewell_message", "Goodbye!"))
+            farewell = str(behavior_config.get("farewell_message", "A wary nod, and nothing more, marks your leaving."))
             reactions.append(NPCEventReactionTemplates.player_left_room_farewell(npc_id, farewell))
 
         if npc_type == "aggressive_mob":
             reactions.append(NPCEventReactionTemplates.npc_attacked_retaliation(npc_id))
 
         if npc_type in ["shopkeeper", "passive_mob"]:
-            response = str(behavior_config.get("response_message", "I heard you!"))
+            response = str(behavior_config.get("response_message", "There is no answer, only silence."))
             reactions.append(NPCEventReactionTemplates.player_spoke_response(npc_id, response))
 
         if reactions:

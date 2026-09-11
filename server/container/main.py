@@ -97,6 +97,7 @@ class ApplicationContainer:
     npc_spawning_service: Any
     npc_population_controller: Any
     npc_startup_service: Any
+    npc_event_reaction_system: Any
     catatonia_registry: Any
     passive_lucidity_flux_service: Any
     mythos_time_consumer: Any
@@ -167,6 +168,7 @@ class ApplicationContainer:
         self.npc_spawning_service = None
         self.npc_population_controller = None
         self.npc_startup_service = None
+        self.npc_event_reaction_system = None
         self.catatonia_registry = None
         self.passive_lucidity_flux_service = None
         self.mythos_time_consumer = None

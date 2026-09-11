@@ -7,6 +7,8 @@ Tests the helper functions in look_helpers.py module.
 from unittest.mock import MagicMock
 
 from server.commands.look_helpers import (
+    _get_corruption_label,
+    _get_corruption_prose,
     _get_health_label,
     _get_lucidity_label,
     _get_visible_equipment,
@@ -70,6 +72,40 @@ def test_get_health_label_mortally_wounded():
     result = _get_health_label(stats)
 
     assert result == "mortally wounded"
+
+
+def test_get_corruption_label_all_tiers():
+    """#815: every tier boundary maps to its own label word, both edges."""
+    cases = [
+        (0, "untainted"),
+        (1, "faintly tainted"),
+        (24, "faintly tainted"),
+        (25, "marked"),
+        (49, "marked"),
+        (50, "defiled"),
+        (74, "defiled"),
+        (75, "warped"),
+        (100, "warped"),
+    ]
+    for corruption, expected in cases:
+        assert _get_corruption_label({"corruption": corruption}) == expected
+
+
+def test_get_corruption_label_defaults_to_untainted_when_missing():
+    """No 'corruption' key at all -- same fail-safe default as the tier cache miss."""
+    assert _get_corruption_label({}) == "untainted"
+
+
+def test_get_corruption_prose_none_below_marked():
+    """#815: the permanent 'touched' scar gets a label but no atmosphere -- undramatic on purpose."""
+    assert _get_corruption_prose({"corruption": 0}) is None
+    assert _get_corruption_prose({"corruption": 24}) is None
+
+
+def test_get_corruption_prose_present_from_marked():
+    assert _get_corruption_prose({"corruption": 25}) is not None
+    assert _get_corruption_prose({"corruption": 74}) is not None
+    assert _get_corruption_prose({"corruption": 100}) is not None
 
 
 def test_get_lucidity_label_lucid():

@@ -40,13 +40,19 @@ logger = get_logger(__name__)
 # Tier-crossing narration -- fires once per crossing, never per adjustment. Deliberately vague
 # about cause; the player learns "something changed", not the mechanism, matching the mystery
 # the design doc's tier-feedback discussion favored.
+#
+# #815: PURE has no fall message -- it is unreachable as a *new* tier through this service. The
+# permanence floor (see apply_corruption_adjustment) means new_value can only be 0 when
+# previous_value was already 0, in which case previous_tier == new_tier == PURE and no crossing
+# is detected. Once left, PURE cannot be re-entered through this write path.
 _TIER_RISE_MESSAGES: dict[CorruptionTier, str] = {
+    CorruptionTier.TOUCHED: "Something in you gives way, just slightly. The taint has taken hold.",
     CorruptionTier.MARKED: "A faint wrongness clings to your thoughts. You have been marked.",
     CorruptionTier.CORRUPTED: "The taint settles deeper into you. You feel less yourself.",
     CorruptionTier.WARPED: "Something in you has come loose. The world looks subtly, permanently wrong.",
 }
 _TIER_FALL_MESSAGES: dict[CorruptionTier, str] = {
-    CorruptionTier.PURE: "The wrongness recedes. For the first time in a while, your mind feels wholly your own.",
+    CorruptionTier.TOUCHED: "The wrongness fades to little more than a shadow -- though it never fully leaves you.",
     CorruptionTier.MARKED: "The taint loosens its grip, if only somewhat.",
     CorruptionTier.CORRUPTED: "You claw back some measure of yourself from the warp.",
 }
@@ -132,7 +138,12 @@ class CorruptionService:
 
         stats = player.get_stats()
         previous_value = coerce_int(stats.get("corruption", 0), default=0)
-        new_value = max(0, min(100, previous_value + delta))
+        # #815: once a soul has been touched at all, it can never fall back to 0 through this
+        # service -- the floor is derived from the current value, not tracked separately, so a
+        # player who has never been corrupted is unaffected. `admin setstat` writes corruption
+        # directly and does not call this method, so an admin zero still wipes the scar (#816).
+        floor = 1 if previous_value > 0 else 0
+        new_value = max(floor, min(100, previous_value + delta))
         stats["corruption"] = new_value
         player.set_stats(stats)
         await self._persistence.save_player(player)

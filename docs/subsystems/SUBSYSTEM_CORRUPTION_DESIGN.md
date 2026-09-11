@@ -1,6 +1,6 @@
 # Corruption Subsystem Design
 
-**Version 1.0.0** · MythosMUD · 2026-09-09
+**Version 1.1.0** · MythosMUD · 2026-09-10
 
 ---
 
@@ -112,16 +112,22 @@ flowchart LR
 
 **[SPEC]**
 
-- **Tiers, not a boolean, and not lucidity's tick-driven state machine.** Four tiers over
-  `0..100`, chosen so the existing `is_corrupted() >= 50` threshold lands exactly on a tier
-  boundary and needs no change:
+- **Tiers, not a boolean, and not lucidity's tick-driven state machine.** Five tiers over
+  `0..100` (#815 added `touched`), chosen so the existing `is_corrupted() >= 50` threshold lands
+  exactly on a tier boundary and needs no change:
 
   | Tier | Range |
   | --- | --- |
-  | `pure` | 0–24 |
+  | `pure` | 0 only |
+  | `touched` | 1–24 |
   | `marked` | 25–49 |
   | `corrupted` | 50–74 (`is_corrupted()` becomes true entering this tier) |
   | `warped` | 75–100 |
+
+  `pure` is reserved for exactly 0 rather than a 0–24 band. `#815`'s permanence floor (below) makes
+  `pure` an **absorbing state you can only ever leave** — once corruption exceeds 0 it can never
+  return to 0 through `CorruptionService`, so a cleansed veteran and a novice must read differently
+  everywhere the tier is consulted. `touched` exists to carry that distinction.
 
   Unlike lucidity, corruption has **no passive tick service** — there is nothing analogous to
   `PassiveLucidityFluxService` for corruption, because corruption never decays passively (see next
@@ -151,6 +157,12 @@ flowchart LR
 - **Range**: `0..100`, clamped in `CorruptionService`, mirroring `PlayerLucidity`'s
   `CheckConstraint("current_lcd BETWEEN -100 AND 100")` pattern
   (`server/models/lucidity.py:54`) but unsigned (corruption has no "negative corruption" concept).
+- **Permanence floor (#815)**: within `CorruptionService.apply_corruption_adjustment`, once a
+  player's corruption exceeds 0 it can never return below 1 — the floor is derived from the current
+  value (`1 if current > 0 else 0`), not tracked as separate state. This applies only to writes
+  through the service; `admin setstat` bypasses the service entirely for every occult-range stat
+  (tracked in `#816`) and can still zero a player's corruption directly, by design — an admin
+  override wipes the scar.
 - **`is_corrupted()` compatibility**: any tier boundary change must keep the `corrupted` tier's
   floor at exactly 50, or `server/models/game.py:322`'s existing callers silently change behavior.
 - **Dependencies**: `CorruptionService` depends on persistence (for the ledger table) and
@@ -245,3 +257,4 @@ flowchart LR
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-09-09 | Initial version, filed to close part of `#145`: corruption tier model, ledger, removal path, and global chat perceptual filter |
+| 1.1.0 | 2026-09-10 | `#815` PR-1: added the `touched` tier (1–24), reserved `pure` for exactly 0, and made corruption permanent once touched (a floor of 1, enforced in `CorruptionService`) |

@@ -11,12 +11,14 @@ Depends on Core (event_bus, persistence, async_persistence).
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from server.container.main import ApplicationContainer
+    from server.events.event_bus import EventBus
+    from server.npc.event_reaction_system import NPCEventReactionSystem
 
 logger = get_logger(__name__)
 
@@ -25,6 +27,7 @@ NPC_ATTRS = (
     "npc_spawning_service",
     "npc_population_controller",
     "npc_startup_service",
+    "npc_event_reaction_system",
 )
 
 
@@ -35,9 +38,11 @@ class NPCBundle:  # pylint: disable=too-few-public-methods
     npc_spawning_service: Any = None
     npc_population_controller: Any = None
     npc_startup_service: Any = None
+    npc_event_reaction_system: NPCEventReactionSystem | None = None
 
     async def _create_npc_services(self, container: ApplicationContainer) -> None:
         from server.npc.combat_integration import NPCCombatIntegration
+        from server.npc.event_reaction_system import NPCEventReactionSystem
         from server.npc.lifecycle_manager import NPCLifecycleManager
         from server.npc.population_control import NPCPopulationController
         from server.npc.spawning_service import NPCSpawningService
@@ -49,7 +54,18 @@ class NPCBundle:  # pylint: disable=too-few-public-methods
         combat_integration = NPCCombatIntegration(
             event_bus=container.event_bus, async_persistence=container.async_persistence
         )
-        self.npc_spawning_service = NPCSpawningService(container.event_bus, None, combat_integration=combat_integration)
+        # #815: revives NPC greetings/farewells, dormant since this system was written -- every
+        # NPC spawned from here on registers its reactions (server/npc/npc_base.py:79).
+        # container.event_bus is declared `Any` on ApplicationContainer (a cross-cutting
+        # namespace shared by every bundle); it is always a real EventBus by construction.
+        event_bus = cast("EventBus", container.event_bus)
+        self.npc_event_reaction_system = NPCEventReactionSystem(event_bus)
+        self.npc_spawning_service = NPCSpawningService(
+            event_bus,
+            None,
+            combat_integration=combat_integration,
+            event_reaction_system=self.npc_event_reaction_system,
+        )
         self.npc_lifecycle_manager = NPCLifecycleManager(
             event_bus=container.event_bus,
             population_controller=None,

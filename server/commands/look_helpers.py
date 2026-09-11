@@ -9,10 +9,32 @@ import re
 from collections.abc import Mapping
 from typing import Protocol, cast
 
+from ..models.corruption import CorruptionTier, compute_tier
 from ..services.wearable_container_service import WearableContainerService
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
+
+# #815: evocative vocabulary, not the raw tier enum names -- mirrors how lucidity maps its tiers
+# onto lucid/disturbed/unstable/mad rather than printing the enum. The ambient room badge
+# (server/realtime/occupant_display.py) reuses this same vocabulary for marked+ so a player learns
+# one set of words and reads it consistently in both places.
+_CORRUPTION_LABELS: dict[CorruptionTier, str] = {
+    CorruptionTier.PURE: "untainted",
+    CorruptionTier.TOUCHED: "faintly tainted",
+    CorruptionTier.MARKED: "marked",
+    CorruptionTier.CORRUPTED: "defiled",
+    CorruptionTier.WARPED: "warped",
+}
+
+# Atmosphere for a close look, `marked`+ only -- `pure` and `touched` get the label line alone.
+# The permanent `touched` scar (#815) is deliberately undramatic: it is discoverable on
+# examination but doesn't editorialize the way real corruption does.
+_CORRUPTION_PROSE: dict[CorruptionTier, str] = {
+    CorruptionTier.MARKED: "A faint wrongness clings to them, subtle but unmistakable up close.",
+    CorruptionTier.CORRUPTED: "Something behind their eyes does not blink when it should.",
+    CorruptionTier.WARPED: "The wrongness in them no longer bothers to hide.",
+}
 
 
 class _WearableContainerServiceHolder:  # pylint: disable=too-few-public-methods  # Reason: mutable cache holder, not a behavior class
@@ -186,6 +208,27 @@ def _get_lucidity_label(stats: Mapping[str, object]) -> str:
     return "mad"
 
 
+def _get_corruption_label(stats: Mapping[str, object]) -> str:
+    """
+    Get descriptive corruption label based on the player's corruption tier (#815).
+
+    Args:
+        stats: Dictionary containing a 'corruption' key
+
+    Returns:
+        Descriptive corruption label: "untainted", "faintly tainted", "marked", "defiled", or
+        "warped"
+    """
+    corruption = _stat_number(stats, "corruption", 0.0)
+    return _CORRUPTION_LABELS[compute_tier(int(corruption))]
+
+
+def _get_corruption_prose(stats: Mapping[str, object]) -> str | None:
+    """Return an atmospheric sentence for a `marked`-or-worse corruption tier, else None (#815)."""
+    corruption = _stat_number(stats, "corruption", 0.0)
+    return _CORRUPTION_PROSE.get(compute_tier(int(corruption)))
+
+
 def _get_visible_equipment(player: _EquippedPlayer) -> dict[str, Mapping[str, object]]:
     """
     Get visible equipment from player, excluding internal/hidden slots.
@@ -215,6 +258,8 @@ __all__ = [
     "_parse_instance_number",
     "_get_health_label",
     "_get_lucidity_label",
+    "_get_corruption_label",
+    "_get_corruption_prose",
     "_get_visible_equipment",
     "_is_direction",
 ]

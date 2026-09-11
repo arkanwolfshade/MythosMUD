@@ -24,6 +24,7 @@ from server.events.event_bus import EventBus
 
 if TYPE_CHECKING:
     from server.npc.behaviors import NPCBase
+    from server.npc.event_reaction_system import NPCEventReactionSystem
     from server.npc.population_control import NPCPopulationController
     from server.services.npc_combat_integration_service import NPCCombatIntegrationService
 
@@ -74,6 +75,7 @@ class NPCSpawningService:
     event_bus: EventBus
     population_controller: NPCPopulationController | None
     combat_integration: NPCCombatIntegration | NPCCombatIntegrationService | None
+    event_reaction_system: NPCEventReactionSystem | None
     max_spawn_queue_size: int
     spawn_retry_attempts: int
     spawn_retry_delay: float
@@ -83,6 +85,7 @@ class NPCSpawningService:
         event_bus: EventBus,
         population_controller: NPCPopulationController | None,
         combat_integration: NPCCombatIntegration | NPCCombatIntegrationService | None = None,
+        event_reaction_system: NPCEventReactionSystem | None = None,
     ) -> None:
         """
         Initialize the NPC spawning service.
@@ -93,10 +96,13 @@ class NPCSpawningService:
             combat_integration: Optional combat integration for aggressive mob NPCs. Use
                 NPCCombatIntegration when combat_service is not yet wired (e.g. container NPC bundle
                 before NATS combat); use NPCCombatIntegrationService when the full combat stack is available.
+            event_reaction_system: Optional NPC event reaction system (#815). When absent, NPCs
+                spawn with no reactions at all -- the pre-#815 behavior -- rather than failing.
         """
         self.event_bus = event_bus
         self.population_controller = population_controller
         self.combat_integration = combat_integration
+        self.event_reaction_system = event_reaction_system
 
         self.spawn_queue: list[NPCSpawnRequest] = []
         self.spawn_history: list[NPCSpawnResult] = []
@@ -355,6 +361,7 @@ class NPCSpawningService:
             self.event_bus,
             self.combat_integration,
             npc_id=npc_id,
+            event_reaction_system=self.event_reaction_system,
         )
 
     def create_npc_instance(self, definition: NPCDefinition, room_id: str, npc_id: str | None = None) -> NPCBase | None:

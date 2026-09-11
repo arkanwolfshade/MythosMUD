@@ -17,6 +17,7 @@ from server.npc.spawning_models import SimpleNPCDefinition
 from ..structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
+    from server.npc.event_reaction_system import NPCEventReactionSystem
     from server.services.npc_combat_integration_service import NPCCombatIntegrationService
 
 logger: BoundLogger = get_logger(__name__)
@@ -44,21 +45,31 @@ def _coerce_simple_definition(definition: NPCDefinition) -> SimpleNPCDefinition:
     )
 
 
-def _build_shopkeeper(simple: SimpleNPCDefinition, npc_id: str, event_bus: EventBus) -> NPCBase:
+def _build_shopkeeper(
+    simple: SimpleNPCDefinition,
+    npc_id: str,
+    event_bus: EventBus,
+    event_reaction_system: NPCEventReactionSystem | None,
+) -> NPCBase:
     return ShopkeeperNPC(
         definition=simple,
         npc_id=npc_id,
         event_bus=event_bus,
-        event_reaction_system=None,
+        event_reaction_system=event_reaction_system,
     )
 
 
-def _build_passive(simple: SimpleNPCDefinition, npc_id: str, event_bus: EventBus) -> NPCBase:
+def _build_passive(
+    simple: SimpleNPCDefinition,
+    npc_id: str,
+    event_bus: EventBus,
+    event_reaction_system: NPCEventReactionSystem | None,
+) -> NPCBase:
     return PassiveMobNPC(
         definition=simple,
         npc_id=npc_id,
         event_bus=event_bus,
-        event_reaction_system=None,
+        event_reaction_system=event_reaction_system,
     )
 
 
@@ -67,12 +78,13 @@ def _build_aggressive(
     npc_id: str,
     event_bus: EventBus,
     combat_integration: NPCCombatIntegration | NPCCombatIntegrationService | None,
+    event_reaction_system: NPCEventReactionSystem | None,
 ) -> NPCBase:
     npc = AggressiveMobNPC(
         definition=cast(NPCDefinition, cast(object, simple)),
         npc_id=npc_id,
         event_bus=event_bus,
-        event_reaction_system=None,
+        event_reaction_system=event_reaction_system,
     )
     if combat_integration:
         npc.combat_integration = combat_integration
@@ -84,16 +96,17 @@ def _instantiate_by_type(
     npc_id: str,
     event_bus: EventBus,
     combat_integration: NPCCombatIntegration | NPCCombatIntegrationService | None,
+    event_reaction_system: NPCEventReactionSystem | None,
 ) -> NPCBase | None:
     kind = simple.npc_type
     if kind == "shopkeeper":
-        return _build_shopkeeper(simple, npc_id, event_bus)
+        return _build_shopkeeper(simple, npc_id, event_bus, event_reaction_system)
     if kind == "passive_mob":
-        return _build_passive(simple, npc_id, event_bus)
+        return _build_passive(simple, npc_id, event_bus, event_reaction_system)
     if kind == "aggressive_mob":
-        return _build_aggressive(simple, npc_id, event_bus, combat_integration)
+        return _build_aggressive(simple, npc_id, event_bus, combat_integration, event_reaction_system)
     if kind == "quest_giver":
-        return _build_passive(simple, npc_id, event_bus)
+        return _build_passive(simple, npc_id, event_bus, event_reaction_system)
     logger.warning("Unknown NPC type", npc_type=kind)
     return None
 
@@ -109,6 +122,7 @@ def create_npc_instance(
     event_bus: EventBus,
     combat_integration: NPCCombatIntegration | NPCCombatIntegrationService | None,
     npc_id: str | None = None,
+    event_reaction_system: NPCEventReactionSystem | None = None,
 ) -> NPCBase | None:
     """
     Create an NPC instance from a definition.
@@ -118,7 +132,7 @@ def create_npc_instance(
     try:
         simple = _coerce_simple_definition(definition)
         resolved_id = npc_id if npc_id is not None else generate_npc_id(simple, room_id)
-        npc_instance = _instantiate_by_type(simple, resolved_id, event_bus, combat_integration)
+        npc_instance = _instantiate_by_type(simple, resolved_id, event_bus, combat_integration, event_reaction_system)
         if npc_instance is None:
             return None
         _set_spawn_room(npc_instance, room_id)
