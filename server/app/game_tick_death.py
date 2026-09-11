@@ -21,6 +21,7 @@ from .game_tick_protocols import (
     _online_player_ids,
     _tick_online_players,
     _TickContainer,
+    _TickCorruptionFlux,
     _TickMpRegen,
 )
 
@@ -36,9 +37,11 @@ __all__ = [
     "_process_mortally_wounded_player",
     "_process_mortally_wounded_players",
     "_process_mp_regeneration",
+    "_process_passive_corruption_flux",
     "_process_passive_lucidity_flux",
     "_process_session_dp_decay_and_death",
     "_process_single_player_mp_regeneration",
+    "_process_single_player_room_flux",
     "_validate_mp_regeneration_services",
     "process_dp_decay_and_death",
 ]
@@ -167,6 +170,48 @@ async def _process_passive_lucidity_flux(container: _TickContainer, session: Asy
         logger.error("Error processing passive LCD flux", tick_count=tick_count, error=str(lcd_flux_error))
 
 
+async def _process_single_player_room_flux(
+    flux_service: _TickCorruptionFlux, player_id_str: str, tick_count: int
+) -> bool:
+    """
+    Process passive room corruption flux for a single online player.
+
+    Args:
+        flux_service: Passive corruption flux service instance
+        player_id_str: Player ID as string
+        tick_count: Current game tick count
+
+    Returns:
+        True if corruption changed, False otherwise
+    """
+    try:
+        player_uuid = uuid.UUID(player_id_str)
+        result = await flux_service.process_tick_for_player(player_uuid, tick_count)
+        return bool(coerce_int(result.get("delta", 0), default=0))
+    except (ValueError, AttributeError, TypeError) as e:
+        logger.warning("Error processing room corruption flux for player", player_id=player_id_str, error=str(e))
+        return False
+
+
+async def _process_passive_corruption_flux(container: _TickContainer, _session: AsyncSession, tick_count: int) -> None:
+    """Process passive room corruption flux for online players (#815 PR-5)."""
+    flux_service = container.passive_corruption_flux_service
+    if not flux_service or not container.connection_manager:
+        return
+
+    try:
+        await _tick_online_players(
+            _online_player_ids(container),
+            tick_count,
+            "Processed room corruption flux",
+            lambda player_id_str: _process_single_player_room_flux(flux_service, player_id_str, tick_count),
+        )
+    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as corruption_flux_error:
+        logger.error(
+            "Error processing passive corruption flux", tick_count=tick_count, error=str(corruption_flux_error)
+        )
+
+
 def _validate_mp_regeneration_services(container: _TickContainer) -> bool:
     """
     Validate that required services exist for MP regeneration.
@@ -254,6 +299,7 @@ async def _process_session_dp_decay_and_death(
     """Process DP decay and death for a single database session."""
     await _process_mortally_wounded_players(container, session, tick_count)
     await _process_passive_lucidity_flux(container, session, tick_count)
+    await _process_passive_corruption_flux(container, session, tick_count)
     await _process_mp_regeneration(container, session, tick_count)
     await _process_dead_players(container, session)
 

@@ -3,6 +3,9 @@
 # pylint: disable=missing-function-docstring  # Reason: test names document behavior
 # pyright: reportPrivateUsage=false
 # Reason: this module unit-tests private tick helpers (_process_*, corpse cleanup internals).
+# pyright: reportAny=false
+# TEST_MOCK: MagicMock/AsyncMock attribute and call chains (flux_service.process_tick_for_player,
+# .assert_awaited_once, .assert_not_awaited, ...) resolve to Any throughout this file.
 
 from __future__ import annotations
 
@@ -22,7 +25,9 @@ from server.app.game_tick_corpses import (
 from server.app.game_tick_processing import (
     _process_dead_players,
     _process_mortally_wounded_player,
+    _process_passive_corruption_flux,
     _process_passive_lucidity_flux,
+    _process_single_player_room_flux,
     broadcast_tick_event,
     game_tick_loop,
     process_dp_decay_and_death,
@@ -276,6 +281,52 @@ async def test_process_passive_lucidity_flux() -> None:
     container.passive_lucidity_flux_service = passive_lucidity_flux_service
     await _process_passive_lucidity_flux(container, AsyncMock(), tick_count=1)
     process_tick.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_process_single_player_room_flux_reports_nonzero_delta() -> None:
+    flux_service: MagicMock = MagicMock()
+    flux_service.process_tick_for_player = AsyncMock(return_value={"delta": 1, "new_value": 11})
+    player_id = str(uuid.uuid4())
+    assert await _process_single_player_room_flux(flux_service, player_id, tick_count=1) is True
+
+
+@pytest.mark.asyncio
+async def test_process_single_player_room_flux_no_change() -> None:
+    flux_service: MagicMock = MagicMock()
+    flux_service.process_tick_for_player = AsyncMock(return_value={"delta": 0})
+    player_id = str(uuid.uuid4())
+    assert await _process_single_player_room_flux(flux_service, player_id, tick_count=1) is False
+
+
+@pytest.mark.asyncio
+async def test_process_single_player_room_flux_swallows_bad_player_id() -> None:
+    flux_service: MagicMock = MagicMock()
+    flux_service.process_tick_for_player = AsyncMock()
+    assert await _process_single_player_room_flux(flux_service, "not-a-uuid", tick_count=1) is False
+    flux_service.process_tick_for_player.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_process_passive_corruption_flux_no_service_is_noop() -> None:
+    container: MagicMock = MagicMock()
+    container.passive_corruption_flux_service = None
+    await _process_passive_corruption_flux(container, MagicMock(), tick_count=1)
+
+
+@pytest.mark.asyncio
+async def test_process_passive_corruption_flux_ticks_online_players() -> None:
+    flux_service: MagicMock = MagicMock()
+    flux_service.process_tick_for_player = AsyncMock(return_value={"delta": 2})
+    connection_manager: MagicMock = MagicMock()
+    connection_manager.online_players = {uuid.uuid4(): {}}
+    container: MagicMock = MagicMock()
+    container.passive_corruption_flux_service = flux_service
+    container.connection_manager = connection_manager
+
+    await _process_passive_corruption_flux(container, MagicMock(), tick_count=1)
+
+    flux_service.process_tick_for_player.assert_awaited_once()
 
 
 def test_log_cleanup_results_warning_path() -> None:
