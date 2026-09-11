@@ -146,6 +146,12 @@ class PassiveCorruptionFluxService:  # pylint: disable=too-few-public-methods
             return None
 
     def _lookup_rate_for_room(self, room: FluxRoom, period: str) -> tuple[float, str]:
+        # Room's own attributes.corruption_rate takes precedence over everything -- symmetric with
+        # _lookup_target_for_room's attributes.corruption branch below (#824).
+        own_rate = room.attributes.get("corruption_rate")
+        if isinstance(own_rate, int | float):
+            return float(own_rate), f"room:{_as_str_attr(room.id)}"
+
         room_id = _as_str_attr(room.id)
         sub_zone = _as_str_attr(room.sub_zone)
         zone = _as_str_attr(room.zone)
@@ -226,12 +232,18 @@ class PassiveCorruptionFluxService:  # pylint: disable=too-few-public-methods
         target, target_source = self._lookup_target_for_room(room, period)
         source = target_source if target != self._default_target else rate_source
 
+        # A DB zone/subzone override is a fallback, not an override of an override: a room's own
+        # attributes.corruption_rate / attributes.corruption must not be clobbered by a broader
+        # zone-level special_rules entry -- "most specific wins" applies uniformly (#824). Gate on
+        # rate_source/target_source (not the collapsed `source` above), since `source` is aliased
+        # to rate_source whenever target == self._default_target -- exactly the case for a room
+        # that authored a room-level target of 0.
         db_override = self._lookup_db_override(room)
         if db_override is not None:
-            if db_override.rate is not None:
+            if db_override.rate is not None and not rate_source.startswith("room:"):
                 rate = db_override.rate
                 source = "db_override"
-            if db_override.target is not None:
+            if db_override.target is not None and not target_source.startswith("room:"):
                 target = db_override.target
                 source = "db_override"
 
