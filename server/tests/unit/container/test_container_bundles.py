@@ -482,10 +482,15 @@ async def test_combat_bundle_initialize() -> None:
                         "server.services.passive_lucidity_flux_service.PassiveLucidityFluxService",
                         return_value=MagicMock(),
                     ):
-                        await bundle.initialize(container)
+                        with patch(
+                            "server.services.passive_corruption_flux.service.PassiveCorruptionFluxService",
+                            return_value=MagicMock(),
+                        ):
+                            await bundle.initialize(container)
 
     assert bundle.player_combat_service is not None
     assert bundle.passive_lucidity_flux_service is not None
+    assert bundle.passive_corruption_flux_service is not None
 
 
 @pytest.mark.asyncio

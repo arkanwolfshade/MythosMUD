@@ -13,14 +13,16 @@ from __future__ import annotations
 
 import uuid as uuid_lib
 from collections.abc import Awaitable
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from anyio import sleep
 
 from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
+    from server.async_persistence import AsyncPersistenceLayer
     from server.container.main import ApplicationContainer
+    from server.services.passive_corruption_flux.service import PassiveCorruptionFluxService
 
 logger = get_logger(__name__)
 
@@ -31,6 +33,7 @@ COMBAT_ATTRS = (
     "combat_service",
     "catatonia_registry",
     "passive_lucidity_flux_service",
+    "passive_corruption_flux_service",
 )
 
 
@@ -43,6 +46,7 @@ class CombatBundle:
     combat_service: Any = None
     catatonia_registry: Any = None
     passive_lucidity_flux_service: Any = None
+    passive_corruption_flux_service: PassiveCorruptionFluxService | None = None
 
     async def _sanitarium_failover_callback(
         self, container: ApplicationContainer, player_id: str, current_lcd: int
@@ -138,6 +142,15 @@ class CombatBundle:
             catatonia_observer=self.catatonia_registry,
         )
         logger.info("Passive lucidity flux service initialized")
+
+        from server.services.passive_corruption_flux.service import PassiveCorruptionFluxService
+
+        # container.async_persistence is declared `Any` on ApplicationContainer (a cross-cutting
+        # namespace shared by every bundle); it is always a real AsyncPersistenceLayer by
+        # construction -- same precedent as container/bundles/npc.py's event_bus cast.
+        async_persistence = cast("AsyncPersistenceLayer", container.async_persistence)
+        self.passive_corruption_flux_service = PassiveCorruptionFluxService(persistence=async_persistence)
+        logger.info("Passive corruption flux service initialized")
 
         logger.info("All combat services initialized")
 

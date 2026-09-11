@@ -24,6 +24,7 @@ __all__ = [
     "_TickCombatService",
     "_TickConnectionManager",
     "_TickContainer",
+    "_TickCorruptionFlux",
     "_TickDeathService",
     "_TickEventBus",
     "_TickMagicService",
@@ -83,6 +84,10 @@ class _TickMpRegen(Protocol):
     async def process_tick_regeneration(self, player_id: uuid.UUID) -> Mapping[str, object]: ...
 
 
+class _TickCorruptionFlux(Protocol):
+    async def process_tick_for_player(self, player_id: uuid.UUID, tick_count: int) -> Mapping[str, object]: ...
+
+
 class _TickNpcLifecycle(Protocol):
     respawn_queue: dict[str, Mapping[str, object]]
 
@@ -98,6 +103,7 @@ class _TickContainer(Protocol):
     player_respawn_service: _TickRespawnService | None
     event_bus: _TickEventBus | None
     passive_lucidity_flux_service: PassiveLucidityFluxService | None
+    passive_corruption_flux_service: _TickCorruptionFlux | None
     mp_regeneration_service: _TickMpRegen | None
     npc_lifecycle_manager: _TickNpcLifecycle | None
 

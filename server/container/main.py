@@ -100,6 +100,7 @@ class ApplicationContainer:
     npc_event_reaction_system: Any
     catatonia_registry: Any
     passive_lucidity_flux_service: Any
+    passive_corruption_flux_service: Any
     mythos_time_consumer: Any
     chat_service: Any
     server_shutdown_pending: bool
@@ -171,6 +172,7 @@ class ApplicationContainer:
         self.npc_event_reaction_system = None
         self.catatonia_registry = None
         self.passive_lucidity_flux_service = None
+        self.passive_corruption_flux_service = None
         self.mythos_time_consumer = None
         self.chat_service = None
         self.server_shutdown_pending = False
