@@ -14,7 +14,7 @@
 
 ## Relationships
 
-- [P6 Review Queue](P6_Review_Queue.md) (1 shared connections)
+- [INDEX.md](INDEX.md.md) (1 shared connections)
 
 ## Source Files
 

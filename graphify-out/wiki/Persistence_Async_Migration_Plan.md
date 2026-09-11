@@ -1,21 +1,20 @@
 # Persistence Async Migration Plan
 
-> 8 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **API Endpoints (Phase 2)** (4 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Detailed File Migration Instructions** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Services (Phase 4)** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **`server/api/containers.py`** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **`server/api/players.py`** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **`server/api/rooms.py`** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **`server/services/combat_service.py`** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **`server/services/user_manager.py`** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Migration Workflow (Per File)** (7 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Step 1: Pre-Migration Assessment** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Step 2: Create Async Repository Instances** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Step 3: Convert Methods to Async** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Step 4: Update All Callers** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Step 5: Test Migration** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Step 6: Validate Performance** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Relationships
 
-- [Persistence Async Migration Plan](Persistence_Async_Migration_Plan.md) (1 shared connections)
+- [Persistence Layer Async Migration Plan](Persistence_Layer_Async_Migration_Plan.md) (1 shared connections)
 
 ## Source Files
 
@@ -23,7 +22,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

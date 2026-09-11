@@ -1,4 +1,4 @@
-# Sqlalchemy Async Best Practices
+# SQLAlchemy Async Best Practices
 
 > 1 nodes
 

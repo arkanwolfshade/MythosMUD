@@ -1,32 +1,28 @@
 # Skill
 
-> 11 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **Improve Typography Systematically** (6 connections) — `.claude/skills/typeset/SKILL.md`
-- **Typeset Skill** (6 connections) — `.claude/skills/typeset/SKILL.md`
-- **Assess Current Typography** (1 connections) — `.claude/skills/typeset/SKILL.md`
-- **Establish Hierarchy** (1 connections) — `.claude/skills/typeset/SKILL.md`
-- **Fix Readability** (1 connections) — `.claude/skills/typeset/SKILL.md`
-- **Font Selection** (1 connections) — `.claude/skills/typeset/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/typeset/SKILL.md`
-- **Plan Typography Improvements** (1 connections) — `.claude/skills/typeset/SKILL.md`
-- **Refine Details** (1 connections) — `.claude/skills/typeset/SKILL.md`
-- **Verify Typography Improvements** (1 connections) — `.claude/skills/typeset/SKILL.md`
-- **Weight Consistency** (1 connections) — `.claude/skills/typeset/SKILL.md`
+- **Git Workflow** (6 connections) — `.claude/skills/git-workflow/SKILL.md`
+- **git-workflow/SKILL.md** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
+- **Branching** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
+- **Commit messages** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
+- **History hygiene** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
+- **Never** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
+- **Repository hygiene** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
 
 ## Relationships
 
-- [Color And Contrast](Color_And_Contrast.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/skills/typeset/SKILL.md`
+- `.claude/skills/git-workflow/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

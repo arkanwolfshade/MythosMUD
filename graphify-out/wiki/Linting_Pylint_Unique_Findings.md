@@ -1,21 +1,20 @@
 # Linting Pylint Unique Findings
 
-> 8 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **3. REFACTOR Findings (935 findings)** (8 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **3.1 Too Many Instance Attributes (R0902)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **3.2 Too Many Arguments (R0913, R0917)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **3.3 Too Many Local Variables (R0914)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **3.4 Too Many Statements (R0915)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **3.5 Too Many Return Statements (R0911)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **3.6 Too Many Public Methods (R0904)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **3.7 No-Else-Return (R1705)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **1. CONVENTION Findings (260 findings)** (7 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **1.1 Missing Module Docstrings (C0114)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **1.2 Invalid Name (C0103)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **1.3 Too Many Lines in Module (C0302)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **1.4 Use Implicit Booleaness (C1805, C1804)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **1.5 Singleton Comparison (C0121)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **1.6 Missing Function Docstring (C0116)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
 
 ## Relationships
 
-- [Linting Pylint Unique Findings](Linting_Pylint_Unique_Findings.md) (1 shared connections)
+- [Unique Pylint Findings Analysis](Unique_Pylint_Findings_Analysis.md) (1 shared connections)
 
 ## Source Files
 
@@ -23,7 +22,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,26 +1,30 @@
-# Items
+# items
 
-> 5 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **items.sql** (3 connections) — `db/procedures/items.sql`
-- **schema_name.item_instance_exists()** (2 connections) — `db/procedures/items.sql`
-- **schema_name.get_item_instance()** (1 connections) — `db/procedures/items.sql`
-- **schema_name.upsert_item_instance()** (1 connections) — `db/procedures/items.sql`
-- **item_instances** (1 connections)
+- **items** (5 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **schedules** (4 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **properties** (2 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **additionalProperties** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [npc_schedules.schema.json](npc_schedules.schema.json.md) (1 shared connections)
+- [applies_to](applies_to.md) (1 shared connections)
+- [required](required.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `db/procedures/items.sql`
+- `db/static/schemas/npc_schedules.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

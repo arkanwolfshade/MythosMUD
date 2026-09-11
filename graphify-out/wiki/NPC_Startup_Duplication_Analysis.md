@@ -1,4 +1,4 @@
-# Npc Startup Duplication Analysis
+# NPC Startup Duplication Analysis
 
 > 6 nodes
 

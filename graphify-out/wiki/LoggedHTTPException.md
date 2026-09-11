@@ -1,93 +1,75 @@
 # LoggedHTTPException
 
-> God node · 235 connections · `server/exceptions.py`
+> 232 nodes
 
-**Community:** [Test Auth Dependencies](Test_Auth_Dependencies.md)
+## Key Concepts
 
-## Connections by Relation
+- **LoggedHTTPException** (370 connections) — `server/exceptions.py`
+- **api/monitoring.py** (60 connections) — `server/api/monitoring.py`
+- **test_monitoring_endpoints.py** (55 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
+- **subject_controller.py** (31 connections) — `server/api/admin/subject_controller.py`
+- **system_monitoring.py** (24 connections) — `server/api/system_monitoring.py`
+- **test_subject_controller.py** (24 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
+- **monitoring_models.py** (22 connections) — `server/api/monitoring_models.py`
+- **get_cache_manager()** (21 connections) — `server/caching/lru_cache.py`
+- **Request** (20 connections)
+- **BaseModel** (19 connections)
+- **test_player_respawn_api.py** (17 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- **respawn_player()** (15 connections) — `server/api/player_respawn.py`
+- **get_system_metrics()** (15 connections) — `server/api/system_monitoring.py`
+- **asyncio** (15 connections)
+- **_resolve_connection_manager_from_request()** (14 connections) — `server/api/monitoring.py`
+- **get_movement_monitor()** (14 connections) — `server/game/movement_monitor.py`
+- **get** (14 connections)
+- **test_player_respawn_handlers.py** (14 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **get_health_status()** (13 connections) — `server/api/monitoring.py`
+- **respawn_player_from_delirium()** (13 connections) — `server/api/player_respawn.py`
+- **_request_with_container()** (13 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
+- **test_main.py** (13 connections) — `server/tests/unit/test_main.py`
+- **_handle_delirium_respawn_validation_error()** (12 connections) — `server/api/player_respawn.py`
+- **movement_monitor.py** (12 connections) — `server/game/movement_monitor.py`
+- **register_pattern()** (11 connections) — `server/api/admin/subject_controller.py`
+- *... and 207 more nodes in this community*
 
-### calls
-- create_character_with_stats() `EXTRACTED`
-- get_player_id_from_user() `EXTRACTED`
-- handle_container_service_error() `EXTRACTED`
-- get_container_and_player_for_loot_all() `EXTRACTED`
-- validate_character_stats() `EXTRACTED`
-- get_system_metrics() `EXTRACTED`
-- create_dialogue_definition() `EXTRACTED`
-- list_dialogue_definitions() `EXTRACTED`
-- upsert_dialogue_definition() `EXTRACTED`
-- get_npc_population_stats() `EXTRACTED`
-- replay_dlq_message() `EXTRACTED`
-- get_dialogue_definition() `EXTRACTED`
-- get_admin_sessions() `EXTRACTED`
-- _update_npc_definition_internal() `EXTRACTED`
-- get_health_status() `EXTRACTED`
-- delete_dialogue_definition() `EXTRACTED`
-- create_npc_definition() `EXTRACTED`
-- spawn_npc_instance() `EXTRACTED`
-- get_npc_system_status() `EXTRACTED`
-- get_npc_zone_stats() `EXTRACTED`
+## Relationships
 
-### contains
-- server/exceptions.py `EXTRACTED`
+- [PlayerService](PlayerService.md) (100 shared connections)
+- [get_logger](get_logger.md) (52 shared connections)
+- [User](User.md) (49 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (42 shared connections)
+- [RoomService](RoomService.md) (24 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (22 shared connections)
+- [HealthStatus](HealthStatus.md) (22 shared connections)
+- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) (18 shared connections)
+- [rooms.py](rooms.py.md) (16 shared connections)
+- [ContainerComponent](ContainerComponent.md) (15 shared connections)
+- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (15 shared connections)
+- [real_time.py](real_time.py.md) (15 shared connections)
 
-### imports
-- api/character_creation.py `EXTRACTED`
-- api/monitoring.py `EXTRACTED`
-- test_monitoring_endpoints.py `EXTRACTED`
-- test_maps.py `EXTRACTED`
-- test_container_helpers.py `EXTRACTED`
-- test_rooms_write_api.py `EXTRACTED`
-- test_exceptions.py `EXTRACTED`
-- api/container_helpers.py `EXTRACTED`
-- test_metrics_endpoints.py `EXTRACTED`
-- test_exceptions_comprehensive.py `EXTRACTED`
-- standardized_responses.py `EXTRACTED`
-- npc_definitions_api.py `EXTRACTED`
-- container_endpoints_loot.py `EXTRACTED`
-- api/metrics.py `EXTRACTED`
-- test_standardized_responses.py `EXTRACTED`
-- test_error_handling_middleware.py `EXTRACTED`
-- npc_instances_api.py `EXTRACTED`
-- api/player_respawn.py `EXTRACTED`
-- test_containers.py `EXTRACTED`
-- dialogue_definitions_api.py `EXTRACTED`
+## Source Files
 
-### inherits
-- LoggedException `EXTRACTED`
-- HTTPException `EXTRACTED`
+- `server/api/admin/subject_controller.py`
+- `server/api/monitoring.py`
+- `server/api/monitoring_models.py`
+- `server/api/player_respawn.py`
+- `server/api/system_monitoring.py`
+- `server/caching/lru_cache.py`
+- `server/exceptions.py`
+- `server/game/movement_monitor.py`
+- `server/tests/unit/api/admin/test_subject_controller.py`
+- `server/tests/unit/api/test_monitoring_endpoints.py`
+- `server/tests/unit/api/test_player_respawn_api.py`
+- `server/tests/unit/api/test_player_respawn_handlers.py`
+- `server/tests/unit/game/test_movement_monitor.py`
+- `server/tests/unit/test_exceptions.py`
+- `server/tests/unit/test_exceptions_comprehensive.py`
+- `server/tests/unit/test_main.py`
 
-### method
-- .__init__() `EXTRACTED`
+## Audit Trail
 
-### rationale_for
-- HTTPException with automatic logging. This class extends FastAPI's… `EXTRACTED`
-
-### references
-- ._handle_logged_http_exception() `EXTRACTED`
-- ._get_logged_http_user_friendly_message() `EXTRACTED`
-
-### uses
-- TestLootAllItems `INFERRED`
-- TestMonitoringEndpoints `INFERRED`
-- TestRegisterLootEndpoints `INFERRED`
-- TestRollCharacterStats `INFERRED`
-- TestHandleTransferItemsExceptions `INFERRED`
-- TestOpenContainer `INFERRED`
-- TestTransferItems `INFERRED`
-- TestGetContainerAndPlayerForLootAll `INFERRED`
-- TestHelperFunctions `INFERRED`
-- test_create_room_exit_duplicate_direction_409() `INFERRED`
-- TestHandleLootAllExceptions `INFERRED`
-- TestHandleOpenContainerExceptions `INFERRED`
-- test_create_room_exit_source_room_missing_404() `INFERRED`
-- test_create_room_exit_target_room_missing_404() `INFERRED`
-- test_update_room_exit_not_found_404() `INFERRED`
-- TestCreateCharacterWithStats `INFERRED`
-- TestHandleContainerServiceErrorEdgeCases `INFERRED`
-- TestHandleContainerServiceError `INFERRED`
-- TestCloseContainer `INFERRED`
-- test_delete_room_exit_not_found_404() `INFERRED`
+- EXTRACTED: 910 (85%)
+- INFERRED: 159 (15%)
+- AMBIGUOUS: 0 (0%)
 
 ---
 

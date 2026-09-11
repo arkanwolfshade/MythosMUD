@@ -1,31 +1,32 @@
 # Python Coverage Status
 
-> 9 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **Python Code Coverage Status** (5 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
-- **Priority Recommendations** (3 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
-- **Normal Files Below 70% Threshold** (2 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
-- **PYTHON_COVERAGE_STATUS.md** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
-- **Critical Files Below Threshold** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
-- **Immediate Priority (Critical Files)** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
-- **Secondary Priority (Normal Files)** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
-- **Showing top 50 files with largest coverage gaps** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
-- **Summary** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **Easy Coverage Wins** (4 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
+- **Coverage Improvement Summary** (3 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **Python Code Coverage Status** (3 connections) — `docs/PYTHON_COVERAGE_STATUS.md`
+- **Realtime Small-File Coverage Sweep** (2 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
+- **70% Coverage Threshold** (2 connections) — `docs/PYTHON_COVERAGE_STATUS.md`
+- **analyze_coverage_gaps.py** (1 connections) — `docs/PYTHON_COVERAGE_STATUS.md`
+- **bcrypt PyO3 Reimport Limitation** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Coverage Improvement Summary - Plan 2 Execution](Coverage_Improvement_Summary_-_Plan_2_Execution.md) (1 shared connections)
+- [Easy Coverage Wins - Quick Analysis](Easy_Coverage_Wins_-_Quick_Analysis.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- `docs/PYTHON_COVERAGE_STATUS.md`
+- `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- `docs/archive/EASY_COVERAGE_WINS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 8 (89%)
+- INFERRED: 1 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

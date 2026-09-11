@@ -22,7 +22,7 @@
 
 ## Relationships
 
-- [Color And Contrast](Color_And_Contrast.md) (2 shared connections)
+- [Frontend Design Skill](Frontend_Design_Skill.md) (2 shared connections)
 
 ## Source Files
 

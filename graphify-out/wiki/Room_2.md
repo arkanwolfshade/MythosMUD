@@ -1,47 +1,69 @@
 # Room
 
-> 19 nodes
+> 51 nodes
 
 ## Key Concepts
 
-- **rooms/room.py** (8 connections) — `server/schemas/rooms/room.py`
-- **players/player_respawn.py** (7 connections) — `server/schemas/players/player_respawn.py`
-- **RoomData** (6 connections) — `server/schemas/rooms/room_data.py`
-- **RoomListResponse** (6 connections) — `server/schemas/rooms/room.py`
-- **RoomPositionUpdateResponse** (5 connections) — `server/schemas/rooms/room.py`
-- **RoomResponse** (5 connections) — `server/schemas/rooms/room.py`
-- **room_data.py** (5 connections) — `server/schemas/rooms/room_data.py`
-- **RespawnPlayerData** (4 connections) — `server/schemas/players/player_respawn.py`
-- **BaseModel** (3 connections)
-- **BaseModel** (2 connections)
-- **BaseModel** (1 connections)
-- **Player respawn API response schemas for MythosMUD server. This module provides…** (1 connections) — `server/schemas/players/player_respawn.py`
-- **Simplified player data returned in respawn responses.** (1 connections) — `server/schemas/players/player_respawn.py`
-- **Room data schema for MythosMUD. This module defines Pydantic models for room…** (1 connections) — `server/schemas/rooms/room_data.py`
-- **Room data structure for API responses. This model represents room information…** (1 connections) — `server/schemas/rooms/room_data.py`
-- **Room API response schemas for MythosMUD server. This module provides Pydantic…** (1 connections) — `server/schemas/rooms/room.py`
-- **Response model for listing rooms.** (1 connections) — `server/schemas/rooms/room.py`
-- **Response model for updating room position.** (1 connections) — `server/schemas/rooms/room.py`
-- **Response model for single room information. This model uses a flexible…** (1 connections) — `server/schemas/rooms/room.py`
+- **Room** (35 connections) — `client/src/components/ui-v2/types.ts`
+- **usePlayerStatusEffects.ts** (17 connections) — `client/src/components/ui-v2/hooks/usePlayerStatusEffects.ts`
+- **OccupantsPanel.tsx** (10 connections) — `client/src/components/ui-v2/panels/OccupantsPanel.tsx`
+- **roomMergeUtils.ts** (10 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- **@testing-library/jest-dom/vitest** (10 connections) — `client/tsconfig.test.json`
+- **mergeRoomState()** (7 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- **LocationPanel.tsx** (6 connections) — `client/src/components/ui-v2/panels/LocationPanel.tsx`
+- **RoomDescriptionPanel.tsx** (6 connections) — `client/src/components/ui-v2/panels/RoomDescriptionPanel.tsx`
+- **compilerOptions** (6 connections) — `client/tsconfig.test.json`
+- **syncDeathState()** (5 connections) — `client/src/components/ui-v2/hooks/usePlayerStatusEffects.ts`
+- **usePlayerStatusEffects()** (5 connections) — `client/src/components/ui-v2/hooks/usePlayerStatusEffects.ts`
+- **OccupantsPanel.test.tsx** (5 connections) — `client/src/components/ui-v2/panels/__tests__/OccupantsPanel.test.tsx`
+- **tsconfig.test.json** (5 connections) — `client/tsconfig.test.json`
+- **types** (5 connections) — `client/tsconfig.test.json`
+- **UsePlayerStatusEffectsParams** (4 connections) — `client/src/components/ui-v2/hooks/usePlayerStatusEffects.ts`
+- **OccupantsPanel()** (4 connections) — `client/src/components/ui-v2/panels/OccupantsPanel.tsx`
+- **LocationPanel.test.tsx** (4 connections) — `client/src/components/ui-v2/panels/__tests__/LocationPanel.test.tsx`
+- **RoomDescriptionPanel.test.tsx** (4 connections) — `client/src/components/ui-v2/panels/__tests__/RoomDescriptionPanel.test.tsx`
+- **roomMergeUtils.test.ts** (4 connections) — `client/src/components/ui-v2/utils/__tests__/roomMergeUtils.test.ts`
+- **syncDeliriumState()** (3 connections) — `client/src/components/ui-v2/hooks/usePlayerStatusEffects.ts`
+- **LocationPanel()** (3 connections) — `client/src/components/ui-v2/panels/LocationPanel.tsx`
+- **RoomDescriptionPanel()** (3 connections) — `client/src/components/ui-v2/panels/RoomDescriptionPanel.tsx`
+- **selectNpcsArray()** (3 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- **selectPlayersArray()** (3 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- **include** (3 connections) — `client/tsconfig.test.json`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [Test Rooms Write Api](Test_Rooms_Write_Api.md) (4 shared connections)
-- [Npc Admin](Npc_Admin.md) (3 shared connections)
-- [Command Aliases](Command_Aliases.md) (3 shared connections)
-- [Character Creation API](Character_Creation_API.md) (2 shared connections)
-- [Test Auth Dependencies](Test_Auth_Dependencies.md) (2 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (13 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (11 shared connections)
+- [GameClientV2.tsx](GameClientV2.tsx.md) (10 shared connections)
+- [GameClientV2AuxiliaryPanels.tsx](GameClientV2AuxiliaryPanels.tsx.md) (8 shared connections)
+- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (6 shared connections)
+- [projectorRoom.ts](projectorRoom.ts.md) (4 shared connections)
+- [roomHandlers.ts](roomHandlers.ts.md) (2 shared connections)
+- [logger.ts](logger.ts.md) (2 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (1 shared connections)
+- [useStatsRollingActions.ts](useStatsRollingActions.ts.md) (1 shared connections)
+- [setup.ts](setup.ts.md) (1 shared connections)
+- [App.tsx](App.tsx.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/players/player_respawn.py`
-- `server/schemas/rooms/room.py`
-- `server/schemas/rooms/room_data.py`
+- `client/src/components/ui-v2/hooks/usePlayerStatusEffects.ts`
+- `client/src/components/ui-v2/panels/LocationPanel.tsx`
+- `client/src/components/ui-v2/panels/OccupantsPanel.tsx`
+- `client/src/components/ui-v2/panels/RoomDescriptionPanel.tsx`
+- `client/src/components/ui-v2/panels/__tests__/LocationPanel.test.tsx`
+- `client/src/components/ui-v2/panels/__tests__/OccupantsPanel.test.tsx`
+- `client/src/components/ui-v2/panels/__tests__/RoomDescriptionPanel.test.tsx`
+- `client/src/components/ui-v2/types.ts`
+- `client/src/components/ui-v2/utils/__tests__/roomMergeUtils.test.ts`
+- `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- `client/tsconfig.test.json`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 133 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

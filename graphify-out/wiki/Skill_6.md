@@ -1,29 +1,28 @@
 # Skill
 
-> 8 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **gh-stack** (11 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Agent rules** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Exit codes and error recovery** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Known limitations** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Output conventions** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Prerequisites** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Quick reference** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **When to use this skill** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **MythosMUD Test Writing** (6 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
+- **Coverage** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
+- **How to Run Tests** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
+- **Reference** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
+- **Rules** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
+- **Where Tests Live** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
+- **MythosMUD Test Writing Skill** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
 
 ## Relationships
 
-- [Skill](Skill.md) (4 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.agents/skills/gh-stack/SKILL.md`
+- `.claude/skills/mythosmud-test-writing/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
