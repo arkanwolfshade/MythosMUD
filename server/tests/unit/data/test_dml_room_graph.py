@@ -22,9 +22,10 @@ from server.utils.project_paths import get_project_root
 _OPPOSITE = {"north": "south", "south": "north", "east": "west", "west": "east", "up": "down", "down": "up"}
 
 # Pre-existing, fully isolated (zero room_links) rooms, unrelated to #823's broken-reciprocal bug.
-# Each is either an administrative/instanced stub (elevator, secret entrance, other-plane anchor)
-# or a room deliberately deferred to a follow-up issue (the Innsmouth Pier, #824). This list may
-# only shrink -- adding a room here to silence a new orphan defeats the guard.
+# Each is an administrative/instanced stub: an elevator, a secret entrance, or a single-room plane
+# anchor reached by a mechanic other than walking. This list may only shrink -- adding a room here
+# to silence a new orphan defeats the guard. (The Innsmouth Waterfront Pier was on this list until
+# #824 wired it into the map; it is intentionally absent now.)
 _KNOWN_ISOLATED_ROOMS = frozenset(
     {
         "earth_arkhamcity_easttown_intersection_derby_federal",
@@ -36,7 +37,6 @@ _KNOWN_ISOLATED_ROOMS = frozenset(
         "earth_arkhamcity_sanitarium_room_kitchen_001",
         "earth_arkhamcity_sanitarium_room_secret_entrance_001",
         "earth_arkhamcity_uptown_intersection_derby_halsey",
-        "earth_innsmouth_waterfront_room_waterfront_001",  # wired up by #824
         "limbo_death_void",
         "yeng_katmandu_palace_palace_ground_001",
     }
@@ -200,8 +200,7 @@ def test_unit_room_links_diff_from_dev_is_limited_to_the_known_exclusion() -> No
     dev_only = [link for link in dev_links if link not in unit_links]
     unexpected_dev_only = [link for link in dev_only if not touches_excluded_room(link, dev_stable_id)]
     assert not unexpected_dev_only, (
-        f"mythos_dev_dml.sql has room_links unit lacks, beyond the known exclusion's own links: "
-        f"{unexpected_dev_only}"
+        f"mythos_dev_dml.sql has room_links unit lacks, beyond the known exclusion's own links: {unexpected_dev_only}"
     )
 
     unit_only = [link for link in unit_links if link not in dev_links]
