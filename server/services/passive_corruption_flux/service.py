@@ -79,7 +79,10 @@ def _profile_map(raw: object) -> dict[str, dict[str, float]]:
     return out
 
 
-class PassiveCorruptionFluxService:
+class PassiveCorruptionFluxService:  # pylint: disable=too-few-public-methods
+    # Reason: single-purpose tick service -- one public entry point (process_tick_for_player) plus
+    # many private resolution/bounds helpers is the correct shape here, not a design smell; adding
+    # a second public method purely to satisfy this count would be an unrequested fake API surface.
     """Converges lingering players' corruption toward each room's target, each ~0.6s tick."""
 
     _persistence: AsyncPersistenceLayer | None
