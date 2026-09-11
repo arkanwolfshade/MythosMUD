@@ -1,23 +1,20 @@
 # Async Audit 2025 12 03
 
-> 10 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **Phase 1: Critical Fixes (Week 1) - BLOCKING ISSUES** (7 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **📋 REMEDIATION PLAN** (4 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Phase 3: Medium Priority Improvements (Week 4) - POLISH** (2 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 1.1: Fix Synchronous Blocking in Passive Lucidity Flux Service** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 1.2: Eliminate asyncio.run() from Library Code** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 1.3: Ensure Connection Pool Cleanup** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 1.4: Add Exception Handling to Pool Creation** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 1.5: Fix Blocking Operations in NATS Message Handlers** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 1.6: Audit and Fix F-String Logging** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Tasks 3.1-3.7: Medium Priority Fixes** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **🔴 CRITICAL ISSUES** (7 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **1. Synchronous Blocking Operations in Async Context (CONFIRMED PERFORMANCE ISSUE)** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **2. asyncio.run() Called from Existing Event Loop Context** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **3. Connection Pool Resource Leak Risk** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **4. Missing Exception Handling in Pool Creation** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **5. Blocking Operations in NATS Message Handlers** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **6. F-String Logging Destroying Structured Logging** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- [Async Audit 2025 12 03](Async_Audit_2025_12_03.md) (2 shared connections)
+- [Asynchronous Code Audit - December 3, 2025](Asynchronous_Code_Audit_-_December_3,_2025.md) (1 shared connections)
 
 ## Source Files
 
@@ -25,7 +22,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

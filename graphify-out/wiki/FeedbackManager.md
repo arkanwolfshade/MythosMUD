@@ -1,4 +1,4 @@
-# Feedbackmanager
+# FeedbackManager
 
 > 25 nodes
 

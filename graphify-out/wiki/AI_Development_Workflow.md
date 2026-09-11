@@ -1,4 +1,4 @@
-# Ai Development Workflow
+# AI Development Workflow
 
 > 1 nodes
 

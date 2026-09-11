@@ -1,30 +1,50 @@
+// Yellow Sign after the Hastur glyph: four tapered strokes around a sparse hub.
+// CSS .yellow-sign uses white-space: pre.
+const YELLOW_SIGN_ASCII = `
+               .@@@@@@@@@@@@@@@@.
+          .@@@@@@'            '@@@@@.
+       .@@@@'                     '@@@@.
+     .@@@'                           '@@@
+    @@@                               '@@
+   @@                                  @@
+  @@                                   @@
+  @@                                  @@@
+  '@@.                             .@@@@
+   '@@@.                        .@@@@'
+     '@@@@@.                .@@@@@'
+       '*@@@@@@@.       .@@@@@@'
+            '*@@@*@@@@@@@'
+                   @@@
+                   @@@
+                   '@@@
+                    @@@.
+                     @@@*
+                       *@@*
+            .@@@.   .@@@.
+            @@@@'   '@@@@
+            '*@'     '@@*
+                 .@@@@
+                 @@@@@
+                  '@@*
+        *@@@@*                 *@@@@@@@@.
+      .@@@@'                     '@@@@@@@@@.
+    .@@@'                            '@@@@@@@.
+  .@@@'                                 '@@@@@
+ @@@'                                     '@@@
+@@@                                        @@@
+@@                                         @@@
+@@.                         .@@@.           @@@
+'@@.                       .@@@@@.          @@@
+ '@@@.                     @@@@@'          @@@'
+   '@@@@.                   '@@'          @@@'
+      '@@@@.                           .@@@@'
+        '*@@@*                     .@@@@@@'
+           *                      *@@@@'
+                                    *
+`.replace(/^\n|\n$/g, '');
+
 function MotdYellowSign() {
-  return (
-    <div className="yellow-sign">
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~
-      <br />
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ &nbsp;\
-      <br />
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;( &nbsp;&nbsp;)
-      <br />
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ &nbsp;@ &nbsp;\
-      <br />
-      &nbsp;&nbsp;&nbsp;&nbsp;/ &nbsp;&nbsp;| &nbsp;&nbsp;\
-      <br />
-      &nbsp;&nbsp;&nbsp;( &nbsp;&nbsp;&nbsp;| &nbsp;&nbsp;&nbsp;)
-      <br />
-      &nbsp;&nbsp;&nbsp;\ &nbsp;&nbsp;&nbsp;| &nbsp;&nbsp;&nbsp;/
-      <br />
-      &nbsp;&nbsp;&nbsp;&nbsp;\ &nbsp;&nbsp;| &nbsp;&nbsp;/
-      <br />
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\ &nbsp;| &nbsp;/
-      <br />
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\ | /
-      <br />
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* &nbsp;&nbsp;&nbsp;*
-      <br />
-    </div>
-  );
+  return <div className="yellow-sign">{YELLOW_SIGN_ASCII}</div>;
 }
 
 function MotdWelcomeIntro() {

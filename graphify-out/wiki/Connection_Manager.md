@@ -1,61 +1,53 @@
-# Connection Manager
+# .connection_manager
 
-> 159 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **ConnectionManager** (149 connections) — `server/realtime/connection_manager.py`
-- **UUID** (41 connections)
-- **test_connection_manager_class.py** (16 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
-- **ConnectionManager** (11 connections)
-- **NewGameSessionResult** (7 connections) — `server/realtime/connection_session_management.py`
-- **._track_player_disconnected()** (7 connections) — `server/realtime/connection_manager.py`
-- **.broadcast_connection_message()** (5 connections) — `server/realtime/connection_manager.py`
-- **.disconnect_websocket()** (5 connections) — `server/realtime/connection_manager.py`
-- **._get_player()** (5 connections) — `server/realtime/connection_manager.py`
-- **.handle_new_game_session()** (5 connections) — `server/realtime/connection_manager.py`
-- **.track_player_connected()** (5 connections) — `server/realtime/connection_manager.py`
-- **Player** (5 connections)
-- **._check_and_process_disconnect()** (4 connections) — `server/realtime/connection_manager.py`
-- **.check_connection_health()** (4 connections) — `server/realtime/connection_manager.py`
-- **.cleanup_dead_connections()** (4 connections) — `server/realtime/connection_manager.py`
-- **._cleanup_dead_websocket()** (4 connections) — `server/realtime/connection_manager.py`
-- **.force_disconnect_player()** (4 connections) — `server/realtime/connection_manager.py`
-- **._get_players_batch()** (4 connections) — `server/realtime/connection_manager.py`
-- **.handle_new_login()** (4 connections) — `server/realtime/connection_manager.py`
-- **.mark_player_seen()** (4 connections) — `server/realtime/connection_manager.py`
-- **._send_initial_game_state()** (4 connections) — `server/realtime/connection_manager.py`
-- **.send_personal_message_old()** (4 connections) — `server/realtime/connection_manager.py`
-- **._validate_token()** (4 connections) — `server/realtime/connection_manager.py`
-- **manager()** (4 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
-- **test_broadcast_and_health_delegates()** (4 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
-- *... and 134 more nodes in this community*
+- **.connection_manager()** (13 connections) — `server/services/combat_messaging/base.py`
+- **is_npc_attack_on_player_blocked_by_login_grace_period()** (10 connections) — `server/services/npc_combat_grace.py`
+- **is_player_attack_blocked_by_login_grace_period()** (10 connections) — `server/services/npc_combat_grace.py`
+- **test_npc_combat_grace.py** (9 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **_connection_manager_from_config_app()** (8 connections) — `server/services/npc_combat_grace.py`
+- **.check_connection_state()** (4 connections) — `server/services/combat_cleanup_handler.py`
+- **test_npc_attack_blocked_when_target_in_grace_period()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **test_npc_attack_fail_open_without_app()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **test_player_attack_blocked_when_in_grace_period()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **test_player_attack_fail_open_on_invalid_uuid()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **test_player_attack_fail_open_without_connection_manager()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **UUID** (2 connections)
+- **setter** (1 connections)
+- **ConnectionManager** (1 connections)
+- **Check connection state before publishing combat ended event.** (1 connections) — `server/services/combat_cleanup_handler.py`
+- **Return the connection manager, resolving it from the application container if…** (1 connections) — `server/services/combat_messaging/base.py`
+- **Explicitly set the connection manager (primarily used in tests).** (1 connections) — `server/services/combat_messaging/base.py`
+- **Resolve connection_manager from the public config app accessor. Uses getattr on…** (1 connections) — `server/services/npc_combat_grace.py`
+- **True if the player should not attack (in login grace period). Fail-open on…** (1 connections) — `server/services/npc_combat_grace.py`
+- **True if NPC attack on this player should be blocked (player in login grace…** (1 connections) — `server/services/npc_combat_grace.py`
+- **Unit tests for npc_combat_grace login grace checks.** (1 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
 
 ## Relationships
 
-- [Memory Monitor & Health Alerts](Memory_Monitor_&_Health_Alerts.md) (15 shared connections)
-- [Connection Error Methods](Connection_Error_Methods.md) (10 shared connections)
-- [Test Container Events](Test_Container_Events.md) (8 shared connections)
-- [Connection Cleanup Methods](Connection_Cleanup_Methods.md) (6 shared connections)
-- [Connection Manager](Connection_Manager.md) (5 shared connections)
-- [Event Handlers](Event_Handlers.md) (5 shared connections)
-- [Test Connection Room Utils](Test_Connection_Room_Utils.md) (4 shared connections)
-- [Container/Loot Events](Container-Loot_Events.md) (3 shared connections)
-- [Test Envelope](Test_Envelope.md) (3 shared connections)
-- [Test Player Presence Tracker](Test_Player_Presence_Tracker.md) (3 shared connections)
-- [Test Connection Disconnection](Test_Connection_Disconnection.md) (3 shared connections)
-- [Test Container Bundles](Test_Container_Bundles.md) (2 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (6 shared connections)
+- [combat_service.py](combat_service.py.md) (2 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [CombatInstance](CombatInstance.md) (1 shared connections)
+- [NPCCombatDataProvider](NPCCombatDataProvider.md) (1 shared connections)
+- [build_event](build_event.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_manager.py`
-- `server/realtime/connection_session_management.py`
-- `server/tests/unit/realtime/test_connection_manager_class.py`
+- `server/services/combat_cleanup_handler.py`
+- `server/services/combat_messaging/base.py`
+- `server/services/npc_combat_grace.py`
+- `server/tests/unit/services/test_npc_combat_grace.py`
 
 ## Audit Trail
 
-- EXTRACTED: 283 (89%)
-- INFERRED: 36 (11%)
+- EXTRACTED: 40 (82%)
+- INFERRED: 9 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

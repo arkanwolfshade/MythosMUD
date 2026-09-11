@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Gladiator Ring (Arena)** (0 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **Gladiator Ring Arena Plan** (0 connections) — `.cursor/plans/gladiator_ring_arena_6a674c58.plan.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/plans/gladiator_ring_arena_plan.md`
+- `.cursor/plans/gladiator_ring_arena_6a674c58.plan.md`
 
 ## Audit Trail
 

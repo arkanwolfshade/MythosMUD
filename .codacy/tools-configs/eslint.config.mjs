@@ -32,7 +32,7 @@ export default [
           "no-import-assign": ["error"],
           "no-inner-declarations": ["error", "functions"],
           "no-invalid-regexp": ["error"],
-          "no-irregular-whitespace": ["error", {"skipStrings": true, "skipJSXText": false, "skipRegExps": false, "skipComments": false, "skipTemplates": false}],
+          "no-irregular-whitespace": ["error", {"skipComments": false, "skipJSXText": false, "skipRegExps": false, "skipStrings": true, "skipTemplates": false}],
           "no-loss-of-precision": ["error"],
           "no-misleading-character-class": ["error"],
           "no-mixed-spaces-and-tabs": ["error"],

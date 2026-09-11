@@ -19,7 +19,7 @@
 
 ## Relationships
 
-- [Color And Contrast](Color_And_Contrast.md) (1 shared connections)
+- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
 
 ## Source Files
 

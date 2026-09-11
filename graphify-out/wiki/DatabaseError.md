@@ -1,8 +1,8 @@
 # DatabaseError
 
-> God node · 224 connections · `server/exceptions.py`
+> God node · 248 connections · `server/exceptions.py`
 
-**Community:** [Error Handling & Exceptions](Error_Handling_&_Exceptions.md)
+**Community:** [get_logger](get_logger.md)
 
 ## Connections by Relation
 
@@ -33,25 +33,25 @@
 
 ### imports
 - connection_manager_methods.py `EXTRACTED`
-- test_maps.py `EXTRACTED`
+- database.py `EXTRACTED`
+- players.py `EXTRACTED`
+- maps.py `EXTRACTED`
+- test_combat_service_modules.py `EXTRACTED`
 - test_player_respawn_service.py `EXTRACTED`
+- [container_persistence.py](container_persistence.py.md) `EXTRACTED`
+- test_maps.py `EXTRACTED`
 - test_container_persistence_extended_row_helpers.py `EXTRACTED`
-- container_persistence.py `EXTRACTED`
 - test_connection_delegates.py `EXTRACTED`
-- test_connection_session_management.py `EXTRACTED`
-- test_npc_service.py `EXTRACTED`
 - player_service.py `EXTRACTED`
-- test_admin_setlucidity_command.py `EXTRACTED`
+- [player_presence_tracker.py](player_presence_tracker.py.md) `EXTRACTED`
+- [test_connection_session_management.py](test_connection_session_management.py.md) `EXTRACTED`
+- [test_npc_service.py](test_npc_service.py.md) `EXTRACTED`
+- test_player_presence_tracker.py `EXTRACTED`
+- [test_player_repository.py](test_player_repository.py.md) `EXTRACTED`
+- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) `EXTRACTED`
 - test_exploration_service.py `EXTRACTED`
 - test_exceptions.py `EXTRACTED`
-- test_database_error_handling.py `EXTRACTED`
-- connection_establishment.py `EXTRACTED`
-- test_container_persistence_extended_crud.py `EXTRACTED`
-- test_async_persistence_core.py `EXTRACTED`
-- test_container_persistence_async_helpers.py `EXTRACTED`
-- test_player_repository.py `EXTRACTED`
-- connection_delegates.py `EXTRACTED`
-- player_respawn_service.py `EXTRACTED`
+- [connection_establishment.py](connection_establishment.py.md) `EXTRACTED`
 
 ### inherits
 - MythosMUDError `EXTRACTED`
@@ -64,25 +64,25 @@
 
 ### uses
 - PlayerSpellRepository `INFERRED`
-- DialogueDefinitionRepository `INFERRED`
-- HealthRepository `INFERRED`
-- SkillRepository `INFERRED`
 - PlayerRepository `INFERRED`
-- ConnectionCleaner `INFERRED`
+- [HealthRepository](HealthRepository.md) `INFERRED`
+- DialogueDefinitionRepository `INFERRED`
+- [SkillRepository](SkillRepository.md) `INFERRED`
+- [ConnectionCleaner](ConnectionCleaner.md) `INFERRED`
+- RoomCacheLoader `INFERRED`
+- [ExperienceRepository](ExperienceRepository.md) `INFERRED`
 - MythosTimeEventConsumer `INFERRED`
 - PlayerSkillRepository `INFERRED`
 - QuestInstanceRepository `INFERRED`
+- PlayerEffectRepository `INFERRED`
 - QuestDefinitionRepository `INFERRED`
 - SkillUseLogRepository `INFERRED`
 - SpellRepository `INFERRED`
 - EmoteRepository `INFERRED`
 - ProfessionRepository `INFERRED`
+- fetch_user_by_username_case_insensitive() `INFERRED`
 - test_establish_websocket_connection_error() `INFERRED`
 - test_disconnect_connection_for_session_close_error() `INFERRED`
-- test_persist_all_players_database_error_on_player() `INFERRED`
-- test_initialize_database_connection_error() `INFERRED`
-- test_initialize_database_generic_exception() `INFERRED`
-- test_initialize_database_os_error() `INFERRED`
 
 ---
 

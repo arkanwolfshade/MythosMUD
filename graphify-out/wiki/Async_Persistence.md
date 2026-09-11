@@ -1,61 +1,61 @@
-# Async Persistence
+# .async_persistence
 
-> 151 nodes
+> 47 nodes
 
 ## Key Concepts
 
-- **AsyncPersistenceLayer** (171 connections) — `server/async_persistence.py`
-- **test_async_persistence_delegates.py** (34 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **asyncio** (22 connections)
-- **Player** (20 connections)
-- **UUID** (15 connections)
-- **async_persistence_access.py** (7 connections) — `server/container/async_persistence_access.py`
-- **_ContainerWithPersistence** (5 connections) — `server/container/async_persistence_access.py`
-- **.create_container()** (5 connections) — `server/async_persistence.py`
-- **test_apply_corruption_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_apply_fear_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_apply_lucidity_loss_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_async_damage_player_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_async_heal_player_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_create_container_with_params()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_damage_player_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_gain_occult_knowledge_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_player_by_user_id_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_heal_player_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **_ApplicationContainerType** (4 connections) — `server/container/async_persistence_access.py`
-- **.ensure_item_instance()** (4 connections) — `server/async_persistence.py`
-- **.get_active_player_effects()** (4 connections) — `server/async_persistence.py`
-- **.get_player_by_id()** (4 connections) — `server/async_persistence.py`
-- **.get_players_batch()** (4 connections) — `server/async_persistence.py`
-- **.get_professions()** (4 connections) — `server/async_persistence.py`
-- **.update_player_last_active()** (4 connections) — `server/async_persistence.py`
-- *... and 126 more nodes in this community*
+- **.async_persistence()** (27 connections) — `server/commands/cleanse_command.py`
+- **test_follow_commands.py** (23 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **follow_commands.py** (18 connections) — `server/commands/follow_commands.py`
+- **handle_follow_command()** (17 connections) — `server/commands/follow_commands.py`
+- **asyncio** (13 connections)
+- **_make_container()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **_make_request()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **handle_following_command()** (11 connections) — `server/commands/follow_commands.py`
+- **handle_unfollow_command()** (11 connections) — `server/commands/follow_commands.py`
+- **test_handle_follow_same_room_npc_immediate()** (8 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_same_room_player_sends_request()** (8 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_self_rejected()** (8 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_no_such_player_or_npc()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **_get_container()** (6 connections) — `server/commands/follow_commands.py`
+- **_load_follow_context()** (6 connections) — `server/commands/follow_commands.py`
+- **test_handle_follow_no_persistence()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_no_target()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_player_not_in_game()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_following_display()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_unfollow_success()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_unfollow_was_not_following()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **Any** (6 connections)
+- **_resolve_follow_target()** (4 connections) — `server/commands/follow_commands.py`
+- **test_handle_follow_no_container()** (4 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_following_no_container()** (4 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [Async Persistence & NPC Events](Async_Persistence_&_NPC_Events.md) (18 shared connections)
-- [Player Model & Migrations](Player_Model_&_Migrations.md) (12 shared connections)
-- [Memory Monitor & Health Alerts](Memory_Monitor_&_Health_Alerts.md) (5 shared connections)
-- [Combat Turn Participant Actions](Combat_Turn_Participant_Actions.md) (5 shared connections)
-- [Async Persistence Room Loader](Async_Persistence_Room_Loader.md) (5 shared connections)
-- [Test Websocket Initial State](Test_Websocket_Initial_State.md) (5 shared connections)
-- [Test Async Persistence Core](Test_Async_Persistence_Core.md) (4 shared connections)
-- [Container/Inventory Helpers](Container-Inventory_Helpers.md) (4 shared connections)
-- [Test Container Events](Test_Container_Events.md) (4 shared connections)
-- [Test Movement Service](Test_Movement_Service.md) (4 shared connections)
-- [Item Instance Persistence](Item_Instance_Persistence.md) (4 shared connections)
-- [Application Container Bundles](Application_Container_Bundles.md) (3 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (10 shared connections)
+- [command_service.py](command_service.py.md) (5 shared connections)
+- [AliasStorage](AliasStorage.md) (4 shared connections)
+- [TargetMatch](TargetMatch.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [Player](Player.md) (3 shared connections)
+- [CorruptionService](CorruptionService.md) (2 shared connections)
+- [PlayerCombatService](PlayerCombatService.md) (2 shared connections)
+- [build_event](build_event.md) (2 shared connections)
+- [PlayerService](PlayerService.md) (1 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (1 shared connections)
+- [test_communication_commands_support.py](test_communication_commands_support.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/async_persistence.py`
-- `server/container/async_persistence_access.py`
-- `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- `server/commands/cleanse_command.py`
+- `server/commands/follow_commands.py`
+- `server/tests/unit/commands/test_follow_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 307 (85%)
-- INFERRED: 56 (15%)
+- EXTRACTED: 129 (81%)
+- INFERRED: 31 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

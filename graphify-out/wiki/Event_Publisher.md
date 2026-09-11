@@ -1,35 +1,30 @@
-# Event Publisher
+# event_publisher
 
-> 11 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **_EventPersistence** (6 connections) — `server/realtime/event_publisher.py`
-- **_NatsPublish** (5 connections) — `server/realtime/event_publisher.py`
-- **.__init__()** (5 connections) — `server/realtime/event_publisher.py`
-- **_Named** (4 connections) — `server/realtime/event_publisher.py`
-- **.get_player_by_id()** (3 connections) — `server/realtime/event_publisher.py`
-- **Protocol** (3 connections)
-- **.get_room_by_id()** (2 connections) — `server/realtime/event_publisher.py`
-- **UUID** (2 connections)
-- **.is_connected()** (1 connections) — `server/realtime/event_publisher.py`
-- **.publish()** (1 connections) — `server/realtime/event_publisher.py`
-- **Initialize EventPublisher service. Args: nats_service: NATS service instance…** (1 connections) — `server/realtime/event_publisher.py`
+- **event_publisher()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **mock_nats_service()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **mock_subject_manager()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **fixture** (3 connections)
+- **Create a mock NATS service.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Create a mock subject manager.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Create an EventPublisher instance.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
 
 ## Relationships
 
-- [Memory Monitor & Health Alerts](Memory_Monitor_&_Health_Alerts.md) (4 shared connections)
-- [Event Publisher](Event_Publisher.md) (2 shared connections)
-- [Test Manager](Test_Manager.md) (1 shared connections)
+- [test_event_publisher.py](test_event_publisher.py.md) (3 shared connections)
+- [EventPublisher](EventPublisher.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/event_publisher.py`
+- `server/tests/unit/realtime/test_event_publisher.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 9 (90%)
+- INFERRED: 1 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

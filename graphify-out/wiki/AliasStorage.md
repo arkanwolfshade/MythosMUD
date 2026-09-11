@@ -1,112 +1,62 @@
 # AliasStorage
 
-> God node · 235 connections · `server/alias_storage.py`
+> 175 nodes
 
-**Community:** [Test Npc Admin Commands](Test_Npc_Admin_Commands.md)
+## Key Concepts
 
-## Connections by Relation
+- **AliasStorage** (269 connections) — `server/alias_storage.py`
+- **test_alias_storage.py** (67 connections) — `server/tests/unit/test_alias_storage.py`
+- **Path** (11 connections)
+- **.get_player_aliases()** (10 connections) — `server/alias_storage.py`
+- **.get_alias_file_path()** (9 connections) — `server/alias_storage.py`
+- **._load_alias_data()** (9 connections) — `server/alias_storage.py`
+- **.create_alias()** (7 connections) — `server/alias_storage.py`
+- **._save_alias_data()** (7 connections) — `server/alias_storage.py`
+- **.save_player_aliases()** (7 connections) — `server/alias_storage.py`
+- **._validate_alias_payload()** (7 connections) — `server/alias_storage.py`
+- **alias_storage()** (7 connections) — `server/tests/unit/test_alias_storage.py`
+- **.add_alias()** (6 connections) — `server/alias_storage.py`
+- **Path** (6 connections)
+- **test_alias_storage_init_with_env_var()** (5 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_backup_aliases_custom_dir()** (5 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_backup_aliases_io_error()** (5 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_delete_player_aliases_io_error()** (5 connections) — `server/tests/unit/test_alias_storage.py`
+- **AliasPayload** (5 connections)
+- **MonkeyPatch** (5 connections)
+- **.backup_aliases()** (4 connections) — `server/alias_storage.py`
+- **.get_alias()** (4 connections) — `server/alias_storage.py`
+- **.get_alias_count()** (4 connections) — `server/alias_storage.py`
+- **.remove_alias()** (4 connections) — `server/alias_storage.py`
+- **_as_alias_payload()** (4 connections) — `server/alias_storage.py`
+- **.get_alias_storage()** (4 connections) — `server/realtime/request_context.py`
+- *... and 150 more nodes in this community*
 
-### calls
-- _websocket_unified_command_result() `EXTRACTED`
-- alias_storage() `EXTRACTED`
-- .delete_player() `EXTRACTED`
-- test_alias_storage_init_with_env_var() `EXTRACTED`
-- test_alias_storage_creates_directory() `EXTRACTED`
-- test_alias_storage_init_with_storage_dir() `EXTRACTED`
-- test_alias_storage_init_without_env_var() `EXTRACTED`
+## Relationships
 
-### contains
-- alias_storage.py `EXTRACTED`
+- [Alias](Alias.md) (28 shared connections)
+- [test_npc_admin_commands.py](test_npc_admin_commands.py.md) (21 shared connections)
+- [get_logger](get_logger.md) (16 shared connections)
+- [PlayerCombatService](PlayerCombatService.md) (12 shared connections)
+- [test_magic_commands.py](test_magic_commands.py.md) (12 shared connections)
+- [TestHelperFunctions](TestHelperFunctions.md) (9 shared connections)
+- [command_service.py](command_service.py.md) (8 shared connections)
+- [admin_commands.py](admin_commands.py.md) (7 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (7 shared connections)
+- [test_alias_commands.py](test_alias_commands.py.md) (6 shared connections)
+- [command_result_text](command_result_text.md) (5 shared connections)
+- [communication_commands.py](communication_commands.py.md) (4 shared connections)
 
-### imports
-- test_alias_storage.py `EXTRACTED`
-- look_command.py `EXTRACTED`
-- test_admin_shutdown_command.py `EXTRACTED`
-- player_service.py `EXTRACTED`
-- combat_handler.py `EXTRACTED`
-- inventory_equip_command.py `EXTRACTED`
-- quest_commands.py `EXTRACTED`
-- admin_teleport_commands.py `EXTRACTED`
-- admin_shutdown_command.py `EXTRACTED`
-- admin_summon_command.py `EXTRACTED`
-- inventory_pickup_command.py `EXTRACTED`
-- websocket_handler_commands.py `EXTRACTED`
-- combat_taunt.py `EXTRACTED`
-- admin_commands.py `EXTRACTED`
-- inventory_unequip_command.py `EXTRACTED`
-- rescue_commands.py `EXTRACTED`
-- admin_setlucidity_command.py `EXTRACTED`
-- communication_commands.py `EXTRACTED`
-- go_command.py `EXTRACTED`
-- inventory_get_command.py `EXTRACTED`
+## Source Files
 
-### method
-- .get_player_aliases() `EXTRACTED`
-- .get_alias_file_path() `EXTRACTED`
-- ._load_alias_data() `EXTRACTED`
-- ._save_alias_data() `EXTRACTED`
-- .save_player_aliases() `EXTRACTED`
-- .create_alias() `EXTRACTED`
-- ._validate_alias_payload() `EXTRACTED`
-- .add_alias() `EXTRACTED`
-- .remove_alias() `EXTRACTED`
-- .get_alias() `EXTRACTED`
-- .get_alias_count() `EXTRACTED`
-- .backup_aliases() `EXTRACTED`
-- ._resolved_alias_open_path() `EXTRACTED`
-- .clear_aliases() `EXTRACTED`
-- .validate_alias_name() `EXTRACTED`
-- .validate_alias_command() `EXTRACTED`
-- .delete_player_aliases() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- .list_alias_files() `EXTRACTED`
+- `server/alias_storage.py`
+- `server/realtime/request_context.py`
+- `server/tests/unit/test_alias_storage.py`
 
-### rationale_for
-- Manages player alias storage in JSON files. Each player's aliases are stored in… `EXTRACTED`
+## Audit Trail
 
-### references
-- handle_teleport_command() `EXTRACTED`
-- handle_ground_command() `EXTRACTED`
-- handle_alias_command() `EXTRACTED`
-- handle_pray_command() `EXTRACTED`
-- handle_party_command() `EXTRACTED`
-- handle_goto_command() `EXTRACTED`
-- handle_whisper_command() `EXTRACTED`
-- handle_go_command() `EXTRACTED`
-- handle_quest_command() `EXTRACTED`
-- handle_debrief_command() `EXTRACTED`
-- handle_unequip_command() `EXTRACTED`
-- handle_mute_command() `EXTRACTED`
-- _handle_admin_set_lucidity_command() `EXTRACTED`
-- handle_pickup_command() `EXTRACTED`
-- handle_look_command() `EXTRACTED`
-- handle_follow_command() `EXTRACTED`
-- handle_get_command() `EXTRACTED`
-- handle_put_command() `EXTRACTED`
-- handle_npc_command() `EXTRACTED`
-- handle_confirm_goto_command() `EXTRACTED`
-
-### uses
-- CombatCommandHandler `INFERRED`
-- MagicCommandHandler `INFERRED`
-- handle_read_command() `INFERRED`
-- handle_teach_command() `INFERRED`
-- run_handle_taunt_command() `INFERRED`
-- handle_attack_command() `INFERRED`
-- handle_flee_command() `INFERRED`
-- handle_kick_command() `INFERRED`
-- handle_punch_command() `INFERRED`
-- handle_strike_command() `INFERRED`
-- handle_taunt_command() `INFERRED`
-- handle_cast_command() `INFERRED`
-- handle_learn_command() `INFERRED`
-- handle_spell_command() `INFERRED`
-- handle_spells_command() `INFERRED`
-- handle_stop_command() `INFERRED`
-- test_backup_aliases_custom_dir() `INFERRED`
-- test_backup_aliases_io_error() `INFERRED`
-- test_delete_player_aliases_io_error() `INFERRED`
-- test_add_alias_case_insensitive() `INFERRED`
+- EXTRACTED: 413 (81%)
+- INFERRED: 94 (19%)
+- AMBIGUOUS: 0 (0%)
 
 ---
 
