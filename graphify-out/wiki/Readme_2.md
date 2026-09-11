@@ -1,27 +1,33 @@
 # Readme
 
-> 5 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **DML Migrations** (4 connections) — `data/db/migrations/README.md`
-- **data/db/migrations/README.md** (1 connections) — `data/db/migrations/README.md`
-- **Dialogue definitions (#583)** (1 connections) — `data/db/migrations/README.md`
-- **Historical CSV files** (1 connections) — `data/db/migrations/README.md`
-- **Migration files** (1 connections) — `data/db/migrations/README.md`
+- **E2E Tests Playwright** (3 connections) — `client/tests/e2e/README.md`
+- **Playwright storageState Session Sharing** (3 connections) — `client/tests/e2e/SESSION_SHARING_IMPLEMENTATION.md`
+- **Runtime Auth Isolation** (2 connections) — `client/tests/e2e/README.md`
+- **authenticatedTest Fixture** (2 connections) — `client/tests/e2e/TIMEOUT_ANALYSIS.md`
+- **E2E Login Timeout Issue** (2 connections) — `client/tests/e2e/TEST_EXECUTION_STATUS.md`
+- **E2E Timeout Analysis and Fixes** (2 connections) — `client/tests/e2e/TIMEOUT_ANALYSIS.md`
+- **Playwright E2E Runtime Tests** (1 connections) — `client/README.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [mythos_e2e Database](mythos_e2e_Database.md) (1 shared connections)
 
 ## Source Files
 
-- `data/db/migrations/README.md`
+- `client/README.md`
+- `client/tests/e2e/README.md`
+- `client/tests/e2e/SESSION_SHARING_IMPLEMENTATION.md`
+- `client/tests/e2e/TEST_EXECUTION_STATUS.md`
+- `client/tests/e2e/TIMEOUT_ANALYSIS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (38%)
+- INFERRED: 5 (62%)
 - AMBIGUOUS: 0 (0%)
 
 ---

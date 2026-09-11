@@ -1,4 +1,4 @@
-# Messagebatcher
+# MessageBatcher
 
 > 15 nodes
 
@@ -8,16 +8,16 @@
 - **useMessageBatcher()** (6 connections) — `client/src/utils/messageBatcher.ts`
 - **.addMessage()** (5 connections) — `client/src/utils/messageBatcher.ts`
 - **messageBatcher.ts** (5 connections) — `client/src/utils/messageBatcher.ts`
+- **messageBatcher.test.ts** (4 connections) — `client/src/utils/__tests__/messageBatcher.test.ts`
 - **.flush()** (3 connections) — `client/src/utils/messageBatcher.ts`
 - **.sendBatch()** (3 connections) — `client/src/utils/messageBatcher.ts`
 - **.shouldSendBatch()** (3 connections) — `client/src/utils/messageBatcher.ts`
-- **messageBatcher.test.ts** (3 connections) — `client/src/utils/__tests__/messageBatcher.test.ts`
+- **BatchedMessage** (2 connections) — `client/src/utils/messageBatcher.ts`
 - **.clear()** (2 connections) — `client/src/utils/messageBatcher.ts`
 - **.generateId()** (2 connections) — `client/src/utils/messageBatcher.ts`
 - **.getBatchSize()** (2 connections) — `client/src/utils/messageBatcher.ts`
 - **.getBatchSizeBytes()** (2 connections) — `client/src/utils/messageBatcher.ts`
 - **BatchConfig** (1 connections) — `client/src/utils/messageBatcher.ts`
-- **BatchedMessage** (1 connections) — `client/src/utils/messageBatcher.ts`
 - **.constructor()** (1 connections) — `client/src/utils/messageBatcher.ts`
 
 ## Relationships
@@ -31,7 +31,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 26 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

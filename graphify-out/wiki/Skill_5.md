@@ -1,30 +1,28 @@
 # Skill
 
-> 9 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **Frontend Aesthetics Guidelines** (9 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Color & Theme** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Interaction** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Layout & Space** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Motion** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Responsive** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Typography** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **UX Writing** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Visual Details** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **MythosMUD Server Runbook** (6 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **Commands** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **Critical Rules** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **ONE SERVER ONLY RULE** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **Pre-Start Checklist** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **Reference** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **Server Runbook Skill** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
 
 ## Relationships
 
-- [Color And Contrast](Color_And_Contrast.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/skills/frontend-design/SKILL.md`
+- `.claude/skills/mythosmud-server-runbook/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,4 +1,4 @@
-# Nats Error Handling Strategy
+# NATS Error Handling Strategy
 
 > 1 nodes
 

@@ -1,30 +1,28 @@
 # Skill
 
-> 9 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **Workflows** (9 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **End-to-end: create a stack from scratch** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Handle rebase conflicts (agent workflow)** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Making mid-stack changes** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Modify a mid-stack branch and sync** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Parsing `--json` output** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Restructure a stack (remove a branch, reorder, or rename)** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Routine sync after merges** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Squash-merge recovery** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **MythosMUD Logging Standards** (6 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Import** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Optional Helpers** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Reference** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Structured Logging** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Summary** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Logging Standards Skill** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
 
 ## Relationships
 
-- [Skill](Skill.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.agents/skills/gh-stack/SKILL.md`
+- `.claude/skills/mythosmud-logging-standards/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,72 +1,78 @@
 # Player
 
-> 81 nodes
+> 707 nodes
 
 ## Key Concepts
 
-- **executeCommand()** (90 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **player.ts** (49 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **ensurePlayableConnection()** (36 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **combat-messages-game-info.spec.ts** (31 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **getMessages()** (28 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **collect-n-quest.spec.ts** (28 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **ensureStanding()** (27 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **admin-set-stat-command.spec.ts** (23 connections) — `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
-- **ensurePlayableAlive()** (20 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **dialogue-trees.spec.ts** (17 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- **executeCommandWithoutRecovery()** (15 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **despawnSanitariumCultists()** (10 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **posture-messages-game-info.spec.ts** (10 connections) — `client/tests/e2e/runtime/commands/posture-messages-game-info.spec.ts`
-- **tryStartCombat()** (9 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **getPageSessionCredentials()** (9 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **spawnCombatTargetNpc()** (8 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **resolveActivePage()** (8 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **ensureNotInCombat()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **goEastFromFoyer()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **listSanitariumCultistIds()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **ensureQuestGiverPresent()** (8 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **retryUntilCombatStarted()** (7 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **listActiveQuestGiverIds()** (7 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **rest-command.spec.ts** (7 connections) — `client/tests/e2e/runtime/commands/rest-command.spec.ts`
-- **resolveSpawnedCultistTarget()** (6 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- *... and 56 more nodes in this community*
+- **Player** (240 connections) — `server/models/player.py`
+- **models/player.py** (105 connections) — `server/models/player.py`
+- **server/models/__init__.py** (90 connections) — `server/models/__init__.py`
+- **PlayerLucidity** (72 connections) — `server/models/lucidity.py`
+- **Base** (63 connections) — `server/models/base.py`
+- **test_player_respawn_service.py** (54 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **lucidity_service.py** (53 connections) — `server/services/lucidity_service.py`
+- **get_username_from_user()** (51 connections) — `server/utils/command_helpers.py`
+- **test_player_model.py** (48 connections) — `server/tests/unit/models/test_player_model.py`
+- **server/models/game.py** (42 connections) — `server/models/game.py`
+- **player_respawn_service.py** (41 connections) — `server/services/player_respawn_service.py`
+- **corruption_service.py** (40 connections) — `server/services/corruption_service.py`
+- **lucidity.py** (34 connections) — `server/models/lucidity.py`
+- **rescue_commands.py** (33 connections) — `server/commands/rescue_commands.py`
+- **send_game_event()** (31 connections) — `server/realtime/connection_manager_api.py`
+- **test_lucidity_models.py** (28 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **LucidityRepository** (27 connections) — `server/services/lucidity_repository.py`
+- **handle_ground_command()** (27 connections) — `server/commands/rescue_commands.py`
+- **test_world.py** (27 connections) — `server/tests/unit/models/test_world.py`
+- **asyncio** (27 connections)
+- **lucidity_helpers.py** (26 connections) — `server/services/lucidity_helpers.py`
+- **corruption.py** (25 connections) — `server/models/corruption.py`
+- **LucidityExposureState** (24 connections) — `server/models/lucidity.py`
+- **test_lucidity_repository.py** (24 connections) — `server/tests/unit/services/test_lucidity_repository.py`
+- **models/base.py** (23 connections) — `server/models/base.py`
+- *... and 682 more nodes in this community*
 
 ## Relationships
 
-- [Multiplayer Ready](Multiplayer_Ready.md) (112 shared connections)
-- [Auth](Auth.md) (55 shared connections)
-- [Multiplayer Colocated](Multiplayer_Colocated.md) (17 shared connections)
-- [Whisper Movement.spec](Whisper_Movement.spec.md) (12 shared connections)
-- [E2e Bootstrap](E2e_Bootstrap.md) (11 shared connections)
-- [Local Channel Isolation.spec](Local_Channel_Isolation.spec.md) (9 shared connections)
+- [get_logger](get_logger.md) (65 shared connections)
+- [LucidityService](LucidityService.md) (30 shared connections)
+- [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (24 shared connections)
+- [coerce_int](coerce_int.md) (23 shared connections)
+- [get_session_maker](get_session_maker.md) (21 shared connections)
+- [User](User.md) (19 shared connections)
+- [PlayerService](PlayerService.md) (19 shared connections)
+- [PlayerRespawnService](PlayerRespawnService.md) (18 shared connections)
+- [CorruptionService](CorruptionService.md) (18 shared connections)
+- [RoomService](RoomService.md) (17 shared connections)
+- [test_item.py](test_item.py.md) (16 shared connections)
+- [command_result_text](command_result_text.md) (15 shared connections)
 
 ## Source Files
 
-- `client/src/utils/__tests__/deathVoidLocation.test.ts`
-- `client/src/utils/deathVoidLocation.ts`
-- `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
-- `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- `client/tests/e2e/runtime/commands/disconnect-grace-period.spec.ts`
-- `client/tests/e2e/runtime/commands/posture-messages-game-info.spec.ts`
-- `client/tests/e2e/runtime/commands/quit-combat-guard.spec.ts`
-- `client/tests/e2e/runtime/commands/rest-command.spec.ts`
-- `client/tests/e2e/runtime/commands/who-command.spec.ts`
-- `client/tests/e2e/runtime/communication/chat-messages.spec.ts`
-- `client/tests/e2e/runtime/communication/local-channel-basic.spec.ts`
-- `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
-- `client/tests/e2e/runtime/communication/whisper-basic.spec.ts`
-- `client/tests/e2e/runtime/communication/whisper-integration.spec.ts`
-- `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- `client/tests/e2e/runtime/fixtures/auth.ts`
-- `client/tests/e2e/runtime/fixtures/player.ts`
-- `client/tests/e2e/runtime/movement/movement-between-rooms.spec.ts`
-- `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
+- `server/commands/rescue_commands.py`
+- `server/models/__init__.py`
+- `server/models/base.py`
+- `server/models/calendar.py`
+- `server/models/corruption.py`
+- `server/models/dialogue.py`
+- `server/models/emote.py`
+- `server/models/game.py`
+- `server/models/invite.py`
+- `server/models/item.py`
+- `server/models/lucidity.py`
+- `server/models/player.py`
+- `server/models/player_effect.py`
+- `server/models/player_spells.py`
+- `server/models/skill_use_log.py`
+- `server/models/spell_db.py`
+- `server/models/world.py`
+- `server/persistence/protocols.py`
+- `server/persistence/repositories/player_repository_mappers.py`
+- `server/realtime/connection_manager_api.py`
 
 ## Audit Trail
 
-- EXTRACTED: 439 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1813 (87%)
+- INFERRED: 261 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

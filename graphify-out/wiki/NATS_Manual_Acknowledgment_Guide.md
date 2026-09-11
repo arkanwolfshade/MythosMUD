@@ -1,4 +1,4 @@
-# Nats Manual Acknowledgment Guide
+# NATS Manual Acknowledgment Guide
 
 > 1 nodes
 

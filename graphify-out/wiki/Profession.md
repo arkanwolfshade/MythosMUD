@@ -1,45 +1,57 @@
 # Profession
 
-> 15 nodes
+> 117 nodes
 
 ## Key Concepts
 
-- **Profession** (51 connections) — `server/models/profession.py`
-- **models/profession.py** (11 connections) — `server/models/profession.py`
-- **test_profession_is_available_for_selection_false()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_repr()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_set_stat_requirements_empty_dict()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **.is_available_for_selection()** (2 connections) — `server/models/profession.py`
-- **.__repr__()** (2 connections) — `server/models/profession.py`
-- **Base** (1 connections)
-- **Profession model for game data. This module defines the Profession model that…** (1 connections) — `server/models/profession.py`
-- **Check if profession is available for player selection.** (1 connections) — `server/models/profession.py`
-- **Profession model for game data. Stores profession information including name,…** (1 connections) — `server/models/profession.py`
-- **String representation of the profession.** (1 connections) — `server/models/profession.py`
-- **Test __repr__ returns expected string format.** (1 connections) — `server/tests/unit/models/test_profession.py`
-- **Test is_available_for_selection returns False when is_available is False.** (1 connections) — `server/tests/unit/models/test_profession.py`
-- **Test set_stat_requirements handles empty dict.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **Profession** (53 connections) — `server/models/profession.py`
+- **test_profession.py** (30 connections) — `server/tests/unit/models/test_profession.py`
+- **profession_repository.py** (18 connections) — `server/persistence/repositories/profession_repository.py`
+- **test_profession_repository.py** (18 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **ProfessionRepository** (13 connections) — `server/persistence/repositories/profession_repository.py`
+- **_row_to_profession()** (11 connections) — `server/persistence/repositories/profession_repository.py`
+- **Any** (8 connections)
+- **_bool_or_default()** (6 connections) — `server/persistence/repositories/profession_repository.py`
+- **.get_all_professions()** (6 connections) — `server/persistence/repositories/profession_repository.py`
+- **.get_profession_by_id()** (6 connections) — `server/persistence/repositories/profession_repository.py`
+- **_text_or_default()** (6 connections) — `server/persistence/repositories/profession_repository.py`
+- **.get_stat_requirements()** (5 connections) — `server/models/profession.py`
+- **_str_or_default()** (5 connections) — `server/persistence/repositories/profession_repository.py`
+- **_mock_session()** (4 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **test_get_all_professions()** (4 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **test_get_profession_by_id()** (4 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **test_helpers_defaults()** (4 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **Any** (4 connections)
+- **asyncio** (4 connections)
+- **.get_mechanical_effects()** (3 connections) — `server/models/profession.py`
+- **.get_requirement_display_text()** (3 connections) — `server/models/profession.py`
+- **.get_skill_modifiers()** (3 connections) — `server/models/profession.py`
+- **.get_stat_modifiers()** (3 connections) — `server/models/profession.py`
+- **.meets_stat_requirements()** (3 connections) — `server/models/profession.py`
+- **.set_mechanical_effects()** (3 connections) — `server/models/profession.py`
+- *... and 92 more nodes in this community*
 
 ## Relationships
 
-- [Test Profession](Test_Profession.md) (29 shared connections)
-- [Profession](Profession.md) (10 shared connections)
-- [Profession Repository](Profession_Repository.md) (4 shared connections)
-- [Test Async Persistence Core](Test_Async_Persistence_Core.md) (4 shared connections)
-- [Player Model & Migrations](Player_Model_&_Migrations.md) (4 shared connections)
-- [Memory Monitor & Health Alerts](Memory_Monitor_&_Health_Alerts.md) (2 shared connections)
-- [Async Persistence & NPC Events](Async_Persistence_&_NPC_Events.md) (1 shared connections)
-- [Async Persistence Direct Queries](Async_Persistence_Direct_Queries.md) (1 shared connections)
+- [get_logger](get_logger.md) (17 shared connections)
+- [RoomService](RoomService.md) (8 shared connections)
+- [get_session_maker](get_session_maker.md) (3 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
+- [item_instance_persistence_async.py](item_instance_persistence_async.py.md) (1 shared connections)
+- [server/persistence/__init__.py](server-persistence-__init__.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/models/profession.py`
+- `server/persistence/repositories/profession_repository.py`
 - `server/tests/unit/models/test_profession.py`
+- `server/tests/unit/persistence/repositories/test_profession_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (94%)
-- INFERRED: 4 (6%)
+- EXTRACTED: 206 (97%)
+- INFERRED: 7 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---
