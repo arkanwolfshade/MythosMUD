@@ -124,3 +124,50 @@ def test_get_npc_combat_data_fallback_stats(persistence: MagicMock) -> None:
     data = provider.get_npc_combat_data(npc, uuid.uuid4())
     assert data.current_dp == 30
     assert data.max_dp == 40
+
+
+def test_get_npc_combat_data_reads_static_corruption_trait(persistence: MagicMock) -> None:
+    """#815: the NPC's corruption is read from get_stats() (base_stats) independent of which
+    combat_stats projection (get_combat_stats vs. the get_stats fallback) supplied DP/dex."""
+    npc = MagicMock(spec=["name", "npc_type", "get_combat_stats", "get_stats", "id"])
+    npc.name = "Cultist of the Yellow Sign"
+    npc.npc_type = "aggressive_mob"
+    # Reason: TEST_MOCK - npc is a spec-restricted MagicMock; .return_value on a dynamically
+    # generated mock attribute is untyped by construction.
+    # Appropriate because: the assertion below (data.corruption == 90) is what actually checks
+    # the real value flowed through; the mock's own typing carries no information here.
+    npc.get_combat_stats.return_value = {"current_dp": 50, "max_dp": 50, "dexterity": 8}  # pyright: ignore[reportAny]
+    # Reason: TEST_MOCK - same spec-restricted MagicMock shape as the line above.
+    # Appropriate because: same as above -- the assertion is what verifies behavior.
+    npc.get_stats.return_value = {"corruption": 90}  # pyright: ignore[reportAny]
+    provider = NPCCombatDataProvider(persistence)
+    data = provider.get_npc_combat_data(npc, uuid.uuid4())
+    assert data.corruption == 90
+
+
+def test_get_npc_combat_data_defaults_corruption_when_stats_missing(persistence: MagicMock) -> None:
+    npc = MagicMock(spec=["name", "get_combat_stats"])
+    npc.name = "Undeclared Mob"
+    # Reason: TEST_MOCK - same spec-restricted MagicMock shape as the test above.
+    # Appropriate because: same as above -- the assertion is what verifies behavior.
+    npc.get_combat_stats.return_value = {"current_dp": 50, "max_dp": 50, "dexterity": 8}  # pyright: ignore[reportAny]
+    provider = NPCCombatDataProvider(persistence)
+    data = provider.get_npc_combat_data(npc, uuid.uuid4())
+    assert data.corruption == 0
+
+
+@pytest.mark.asyncio
+async def test_get_player_combat_data_reads_live_corruption(persistence: MagicMock) -> None:
+    player_id = uuid.uuid4()
+    player = MagicMock()
+    # Reason: TEST_MOCK - player is an unrestricted MagicMock; its .return_value assignments are
+    # untyped by construction, same shape as test_get_player_combat_data above.
+    # Appropriate because: the assertion (data.corruption == 45) verifies the real behavior.
+    player.get_combat_stats.return_value = {"current_dp": 80, "max_dp": 100, "dexterity": 12}  # pyright: ignore[reportAny]
+    # Reason: TEST_MOCK - same unrestricted MagicMock shape as the line above.
+    # Appropriate because: same as above -- the assertion is what verifies behavior.
+    player.get_stats.return_value = {"corruption": 45}  # pyright: ignore[reportAny]
+    persistence.get_player_by_id = AsyncMock(return_value=player)
+    provider = NPCCombatDataProvider(persistence)
+    data = await provider.get_player_combat_data(str(player_id), uuid.uuid4(), "Hero")
+    assert data.corruption == 45

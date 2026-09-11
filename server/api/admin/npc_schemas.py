@@ -35,6 +35,12 @@ class NPCBaseStatsModel(SecureBaseModel):
     strength: int | None = Field(default=None, ge=0, description="Strength attribute")
     dexterity: int | None = Field(default=None, ge=0, description="Dexterity attribute")
     constitution: int | None = Field(default=None, ge=0, description="Constitution attribute")
+    corruption: int | None = Field(
+        default=None,
+        ge=0,
+        le=100,
+        description="Static corruption trait (#815) -- shapes NPC reactions to tainted players",
+    )
 
 
 class NPCBehaviorConfigModel(SecureBaseModel):
@@ -151,7 +157,13 @@ class NPCDefinitionResponse(BaseModel):
             npc_type=str(npc_def.npc_type),
             sub_zone_id=str(npc_def.sub_zone_id),
             room_id=str(npc_def.room_id),
-            base_stats=NPCBaseStatsModel(**base_stats_dict),
+            # Reason: SERIALIZATION_BOUNDARY - base_stats_dict comes from json.loads() above; its
+            # values are untyped JSON, and #815's new `corruption` field is one more keyword
+            # pyright checks against that Any-sourced dict when unpacking.
+            # Appropriate because: NPCBaseStatsModel validates and types every field on
+            # construction (Field(..., ge=0, le=100) for corruption); this is the validation
+            # boundary, not a place asserting an untyped structure is already safe.
+            base_stats=NPCBaseStatsModel(**base_stats_dict),  # pyright: ignore[reportAny]
             behavior_config=NPCBehaviorConfigModel(**behavior_config_dict),
             ai_integration_stub=NPCAIIntegrationModel(**ai_integration_stub_dict),
         )

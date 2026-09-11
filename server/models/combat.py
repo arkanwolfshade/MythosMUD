@@ -73,6 +73,10 @@ class CombatParticipant:  # pylint: disable=too-many-instance-attributes  # Reas
     # up in PhantomHostileService on death. participant_id is a synthetic UUID for combat bookkeeping
     # only -- phantom_id is the one PhantomHostileService actually tracks.
     phantom_id: str | None = None
+    # #815: NPCs carry a static corruption trait (base_stats); players carry their live value.
+    # None means "no data" -- aggro_threat.py treats that as 0 (pure), same fail-safe default as
+    # corruption_tier_cache.
+    corruption: int | None = None
 
     def is_alive(self) -> bool:
         """

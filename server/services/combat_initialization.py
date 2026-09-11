@@ -46,6 +46,7 @@ def _build_participant(data: CombatParticipantData) -> CombatParticipant:
         aggression_level=data.aggression_level,
         is_non_damaging=data.is_non_damaging,
         phantom_id=data.phantom_id,
+        corruption=data.corruption,
     )
 
 

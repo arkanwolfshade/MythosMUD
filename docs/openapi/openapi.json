@@ -8474,6 +8474,20 @@
             ],
             "title": "Constitution",
             "description": "Constitution attribute"
+          },
+          "corruption": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 100.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Corruption",
+            "description": "Static corruption trait (#815) -- shapes NPC reactions to tainted players"
           }
         },
         "additionalProperties": true,

@@ -14,6 +14,7 @@ from structlog.stdlib import BoundLogger
 from ..models.combat import CombatParticipantType
 from ..npc.lifecycle_manager import NPCLifecycleManager
 from ..structured_logging.enhanced_logging_config import get_logger
+from ..utils.int_coercion import coerce_int
 from .combat_types import CombatParticipantData
 
 logger: BoundLogger = get_logger(__name__)
@@ -168,6 +169,14 @@ class NPCCombatDataProvider:
             raise ValueError(f"Player {player_id} not found")
 
         combat_stats = player.get_combat_stats()
+        # #815: the player's live corruption, for the NPC-side aggro affinity curve.
+        # Reason: DYNAMIC_DISPATCH - player comes from self._persistence.get_player_by_id(), and
+        # _persistence is declared Any throughout this data-provider layer (a mock in tests, a
+        # real AsyncPersistence in production).
+        # Appropriate because: coerce_int() is the same defensive-parsing helper already used
+        # everywhere else in this codebase for untyped stats dict values; retyping _persistence
+        # is a much larger, unrelated change out of scope here.
+        corruption = coerce_int(player.get_stats().get("corruption", 0), default=0)  # pyright: ignore[reportAny]
 
         logger.info(
             "Starting combat with player stats",
@@ -184,6 +193,7 @@ class NPCCombatDataProvider:
             max_dp=combat_stats["max_dp"],
             dexterity=combat_stats["dexterity"],
             participant_type=CombatParticipantType.PLAYER,
+            corruption=corruption,
         )
 
     def get_npc_combat_data(self, npc_instance: Any, target_uuid: UUID) -> CombatParticipantData:
@@ -206,6 +216,20 @@ class NPCCombatDataProvider:
                 "max_dp": int(npc_stats.get("max_dp", npc_stats.get("max_hp", 100))),
                 "dexterity": int(npc_stats.get("dexterity", 10)),
             }
+
+        # #815: the NPC's static corruption trait (base_stats), independent of which combat_stats
+        # projection was used above -- for the aggro affinity curve.
+        # Reason: DYNAMIC_DISPATCH - npc_instance is declared Any (this provider accepts a plain
+        # test double or a real NPCBase subclass interchangeably).
+        # Appropriate because: the isinstance(..., dict) guard below is the actual type safety
+        # net; retyping npc_instance would mean picking one concrete NPC class for a parameter
+        # this file deliberately keeps duck-typed.
+        npc_stats_for_corruption: object = npc_instance.get_stats() if hasattr(npc_instance, "get_stats") else {}  # pyright: ignore[reportAny]
+        corruption = (
+            coerce_int(npc_stats_for_corruption.get("corruption", 0), default=0)  # pyright: ignore[reportUnknownMemberType, reportUnknownArgumentType]
+            if isinstance(npc_stats_for_corruption, dict)
+            else 0
+        )
 
         npc_id = getattr(npc_instance, "id", getattr(npc_instance, "npc_id", "unknown"))
         npc_type = getattr(npc_instance, "npc_type", None)
@@ -238,5 +262,6 @@ class NPCCombatDataProvider:
             dexterity=combat_stats["dexterity"],
             participant_type=CombatParticipantType.NPC,
             npc_type=npc_type,
+            corruption=corruption,
             aggression_level=aggression_level,
         )

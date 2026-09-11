@@ -86,6 +86,7 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
                 self.npc_type,
                 self._behavior_config,
                 self.event_reaction_system,
+                stats=self._stats,
             )
             self.event_reaction_system.set_npc_context(
                 self.npc_id,
