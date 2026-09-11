@@ -106,12 +106,54 @@ def test_lookup_rate_night_profile_differs_from_day() -> None:
 
 
 def test_lookup_db_override_wins_over_static_config() -> None:
+    """A DB override still applies when the room authored neither rate nor target itself."""
     svc = _make_service(corruption_overrides={"earth|arkham|downtown": CorruptionOverride(rate=0.5, target=99.0)})
     room = _room(plane="earth", zone="arkham", sub_zone="downtown", environment="eldritch")
     ctx = svc._resolve_context(room, datetime.now(UTC))
     assert ctx.rate == 0.5
     assert ctx.target == 99.0
     assert ctx.source == "db_override"
+
+
+def test_room_attribute_rate_wins_over_environment_default() -> None:
+    svc = _make_service()
+    room = _room(environment="eldritch", attributes={"corruption_rate": 0.10})
+    rate, source = svc._lookup_rate_for_room(room, "day")
+    assert rate == 0.10
+    assert source == "room:room-1"
+
+
+def test_room_attribute_rate_wins_over_db_override() -> None:
+    """#824: a room's own attributes.corruption_rate must not be clobbered by a broader
+    zone-level special_rules override -- 'most specific wins' applies to rate, not just target.
+    (`ctx.source` isn't asserted here: it's a single label that _resolve_context aliases to
+    whichever of rate/target last matched a non-default branch, so with the room authoring only a
+    rate and the DB override supplying the target, `source` ends up describing the target's
+    provenance -- the numeric rate value is the real invariant under test.)"""
+    svc = _make_service(corruption_overrides={"earth|arkham|downtown": CorruptionOverride(rate=0.5, target=99.0)})
+    room = _room(plane="earth", zone="arkham", sub_zone="downtown", attributes={"corruption_rate": 0.10})
+    ctx = svc._resolve_context(room, datetime.now(UTC))
+    assert ctx.rate == 0.10
+
+
+def test_room_attribute_target_wins_over_db_override() -> None:
+    """#824: a room's own attributes.corruption (target) must not be clobbered by a broader
+    zone-level special_rules corruption_target -- this is what makes a consecrated room with
+    target 0 sit safely inside a zone that authors a broadly-corrupting zone-level target."""
+    svc = _make_service(corruption_overrides={"earth|arkham|downtown": CorruptionOverride(rate=0.5, target=99.0)})
+    room = _room(plane="earth", zone="arkham", sub_zone="downtown", attributes={"corruption": 0})
+    ctx = svc._resolve_context(room, datetime.now(UTC))
+    assert ctx.target == 0.0
+    assert ctx.rate == 0.5  # rate still falls through to the DB override -- room authored no rate
+    assert ctx.source == "db_override"
+
+
+def test_room_authoring_only_rate_still_inherits_db_target() -> None:
+    svc = _make_service(corruption_overrides={"earth|arkham|downtown": CorruptionOverride(rate=0.5, target=99.0)})
+    room = _room(plane="earth", zone="arkham", sub_zone="downtown", attributes={"corruption_rate": 0.10})
+    ctx = svc._resolve_context(room, datetime.now(UTC))
+    assert ctx.rate == 0.10
+    assert ctx.target == 99.0
 
 
 def test_signed_flux_direction_derived_from_current_vs_target() -> None:

@@ -52,6 +52,11 @@ class CorruptionFluxServiceConfig:
 # speed. Target is the corruption value a lingering player converges toward; 0 (the default) means
 # "no ambient effect at all" rather than "pulls toward purity" -- only a room/zone that explicitly
 # sets a target does anything.
+#
+# Precedence (most specific wins, identical for rate and target, #824): a room's own
+# attributes.corruption_rate / attributes.corruption beats a DB-driven zone/subzone
+# special_rules override, which beats this static environment/sub_zone/zone config, which beats
+# the defaults below.
 DEFAULT_ENVIRONMENT_CONFIG: dict[str, object] = {
     "default_rate": 0.0,
     "default_target": 0.0,
