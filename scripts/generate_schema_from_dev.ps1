@@ -170,6 +170,13 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
+# pg_dump 17+ emits "SET transaction_timeout = 0;" in its preamble, matching whatever GUCs the
+# dumping server supports. CI installs postgresql-18 explicitly, but the runner's `service
+# postgresql start` has been observed to bring up a different, older pre-installed cluster on
+# port 5432 instead -- one that predates this GUC (added in PG17) and rejects it outright. Strip
+# it so the exported DDL stays loadable regardless of which cluster actually answers on 5432.
+(Get-Content $OUTPUT_FILE) | Where-Object { $_ -notmatch '^SET transaction_timeout = 0;$' } | Set-Content $OUTPUT_FILE
+
 # Add header comment to the generated file
 $headerComment = @"
 -- Environment DDL ($DB_NAME)
