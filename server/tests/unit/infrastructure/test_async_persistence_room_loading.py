@@ -181,6 +181,8 @@ def test_build_room_objects_success(async_persistence_layer):
             "plane": "earth",
             "zone": "arkhamcity",
             "sub_zone": "subzone",
+            "map_x": None,
+            "map_y": None,
         }
     ]
     exits_by_room: dict[str, dict[str, str]] = {
@@ -209,6 +211,8 @@ def test_build_room_objects_with_non_dict_attributes(async_persistence_layer):
             "plane": "earth",
             "zone": "arkhamcity",
             "sub_zone": "subzone",
+            "map_x": None,
+            "map_y": None,
         }
     ]
     exits_by_room: dict[str, dict[str, str]] = {}
@@ -235,6 +239,8 @@ def test_build_room_objects_debug_logging(async_persistence_layer):
             "plane": "earth",
             "zone": "arkhamcity",
             "sub_zone": "sanitarium",
+            "map_x": None,
+            "map_y": None,
         }
     ]
     exits_by_room: dict[str, dict[str, str]] = {}
@@ -389,6 +395,8 @@ def test_build_room_objects_with_exits(async_persistence_layer):
             "plane": "earth",
             "zone": "arkhamcity",
             "sub_zone": "subzone",
+            "map_x": None,
+            "map_y": None,
         }
     ]
     exits_by_room: dict[str, dict[str, str]] = {
@@ -420,6 +428,8 @@ def test_build_room_objects_with_dict_attributes(async_persistence_layer):
             "plane": "earth",
             "zone": "arkhamcity",
             "sub_zone": "subzone",
+            "map_x": None,
+            "map_y": None,
         }
     ]
     exits_by_room: dict[str, dict[str, str]] = {}
@@ -446,6 +456,8 @@ def test_build_room_objects_without_environment_in_attributes(async_persistence_
             "plane": "earth",
             "zone": "arkhamcity",
             "sub_zone": "subzone",
+            "map_x": None,
+            "map_y": None,
         }
     ]
     exits_by_room: dict[str, dict[str, str]] = {}

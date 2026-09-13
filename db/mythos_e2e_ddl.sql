@@ -3922,7 +3922,7 @@ CREATE TABLE mythos_e2e.npc_definitions (
     description text,
     npc_type character varying(20) NOT NULL,
     sub_zone_id character varying(50) NOT NULL,
-    room_id character varying(50),
+    room_id character varying(255),
     required_npc boolean DEFAULT false NOT NULL,
     max_population integer DEFAULT 1 NOT NULL,
     spawn_probability real DEFAULT 1.0 NOT NULL,

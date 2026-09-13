@@ -30,6 +30,8 @@ def test_build_room_objects_promotes_rest_location_from_attributes(async_persist
             "plane": "earth",
             "zone": "arkhamcity",
             "sub_zone": "sanitarium",
+            "map_x": 100.0,
+            "map_y": -1.0,
         }
     ]
     exits_by_room: dict[str, dict[str, str]] = {}
@@ -55,6 +57,8 @@ def test_build_room_objects_defaults_rest_location_false(async_persistence_layer
             "plane": "earth",
             "zone": "arkhamcity",
             "sub_zone": "subzone",
+            "map_x": None,
+            "map_y": None,
         }
     ]
     exits_by_room: dict[str, dict[str, str]] = {}
@@ -66,3 +70,64 @@ def test_build_room_objects_defaults_rest_location_false(async_persistence_layer
 
     room_init: RoomInitPayload = cast(RoomInitPayload, mock_room_class.call_args[0][0])
     assert room_init.get("rest_location") is False
+
+
+def test_build_room_objects_carries_map_coordinates(async_persistence_layer: AsyncPersistenceLayer):
+    """#829: map_x/map_y must survive the ProcessedRoomData -> RoomInitPayload hop.
+
+    get_rooms_with_exits() selects the columns and Room.__init__ reads them, but for a
+    while nothing carried them between the two. The result was not an error - every room
+    simply arrived at GET /api/rooms/list with null coordinates, so the React Flow map and
+    the room editor fell back to force layout and drew edges across nodes.
+    """
+    room_data_list: list[ProcessedRoomData] = [
+        {
+            "room_id": "earth_arkhamcity_northside_intersection_derby_parsonage",
+            "stable_id": "intersection_derby_parsonage",
+            "name": "Derby Street and Parsonage Street Intersection",
+            "description": "A crossing.",
+            "attributes": {"environment": "intersection"},
+            "plane": "earth",
+            "zone": "arkhamcity",
+            "sub_zone": "northside",
+            "map_x": 14.0,
+            "map_y": 2.0,
+        }
+    ]
+    exits_by_room: dict[str, dict[str, str]] = {}
+    result_container: RoomLoadResult = {"rooms": {}}
+
+    with patch("server.models.room.Room") as mock_room_class:
+        mock_room_class.return_value = MagicMock()
+        async_persistence_layer._build_room_objects(room_data_list, exits_by_room, result_container)
+
+    room_init: RoomInitPayload = cast(RoomInitPayload, mock_room_class.call_args[0][0])
+    assert room_init.get("map_x") == 14.0
+    assert room_init.get("map_y") == 2.0
+
+
+def test_build_room_objects_tolerates_missing_coordinates(async_persistence_layer: AsyncPersistenceLayer):
+    """A room with no coordinates must still load - the keys are present and null, not absent."""
+    room_data_list: list[ProcessedRoomData] = [
+        {
+            "room_id": "earth_arkhamcity_subzone_room_001",
+            "stable_id": "room_001",
+            "name": "Test Room",
+            "description": "A test room",
+            "attributes": {"environment": "outdoors"},
+            "plane": "earth",
+            "zone": "arkhamcity",
+            "sub_zone": "subzone",
+            "map_x": None,
+            "map_y": None,
+        }
+    ]
+    result_container: RoomLoadResult = {"rooms": {}}
+
+    with patch("server.models.room.Room") as mock_room_class:
+        mock_room_class.return_value = MagicMock()
+        async_persistence_layer._build_room_objects(room_data_list, {}, result_container)
+
+    room_init: RoomInitPayload = cast(RoomInitPayload, mock_room_class.call_args[0][0])
+    assert room_init.get("map_x") is None
+    assert room_init.get("map_y") is None
