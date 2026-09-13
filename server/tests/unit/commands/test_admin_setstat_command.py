@@ -8,7 +8,7 @@ Tests the admin set command handler function.
 # Reason: Unit tests intentionally call admin_setstat_command private helpers.
 
 import uuid
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -47,9 +47,11 @@ _ALL_STAT_TYPE_CASES: list[tuple[str, int]] = [
     ("Corruption", 15),
 ]
 
+_OCCULT_STAT_INPUTS = frozenset({"LCD", "Corruption"})
 
-def _make_all_stat_types_harness() -> tuple[MagicMock, MagicMock, MagicMock]:
-    """Build request/target/apply_dp mocks for the all-stat-types success path."""
+
+def _make_all_stat_types_harness() -> tuple[MagicMock, MagicMock, MagicMock, AsyncMock]:
+    """Build request/target/apply_dp/persistence mocks for the all-stat-types success path."""
     request: MagicMock = MagicMock()
     app: MagicMock = MagicMock()
     state: MagicMock = MagicMock()
@@ -76,18 +78,25 @@ def _make_all_stat_types_harness() -> tuple[MagicMock, MagicMock, MagicMock]:
     state.connection_manager = None
     app.state = state
     request.app = app
-    return request, target, apply_dp
+    return request, target, apply_dp, persistence
 
 
 def _assert_stat_write_path(stat_input: str, value: int, set_stats: MagicMock, apply_dp: MagicMock) -> None:
     if stat_input == "DP":
         apply_dp.assert_called_once_with(value)
         set_stats.assert_not_called()
+    elif stat_input in _OCCULT_STAT_INPUTS:
+        set_stats.assert_not_called()
+        apply_dp.assert_not_called()
     else:
         set_stats.assert_called_once()
         apply_dp.assert_not_called()
     set_stats.reset_mock()
     apply_dp.reset_mock()
+
+
+async def _async_session_gen(session: AsyncMock):
+    yield session
 
 
 @pytest.mark.asyncio
@@ -130,21 +139,104 @@ async def test_handle_admin_set_stat_command_success_str():
 @pytest.mark.asyncio
 async def test_handle_admin_set_stat_command_success_all_stat_types():
     """Test successful setting of various stat types."""
-    request, target, apply_dp = _make_all_stat_types_harness()
-    for stat_input, value in _ALL_STAT_TYPE_CASES:
-        target.get_stats = MagicMock(return_value=dict(_BASELINE_STATS))
-        set_stats: MagicMock = MagicMock()
-        target.set_stats = set_stats
+    request, target, apply_dp, _persistence = _make_all_stat_types_harness()
+    corr_svc: MagicMock = MagicMock()
+    corr_svc.apply_corruption_adjustment = AsyncMock()
+    luc_svc: MagicMock = MagicMock()
+    luc_svc.apply_lucidity_adjustment = AsyncMock()
+    with (
+        patch("server.commands.admin_setstat_command.CorruptionService", return_value=corr_svc),
+        patch("server.commands.admin_setstat_command.LucidityService", return_value=luc_svc),
+        patch(
+            "server.commands.admin_setstat_command.get_async_session",
+            side_effect=lambda: _async_session_gen(AsyncMock()),
+        ),
+        patch("server.commands.admin_setstat_command.get_current_lcd", new_callable=AsyncMock, return_value=100),
+    ):
+        for stat_input, value in _ALL_STAT_TYPE_CASES:
+            target.get_stats = MagicMock(return_value=dict(_BASELINE_STATS))
+            set_stats: MagicMock = MagicMock()
+            target.set_stats = set_stats
+            result = await _handle_admin_set_stat_command(
+                {"args": [stat_input, "TargetPlayer", str(value)]},
+                {"name": "AdminPlayer"},
+                request,
+                None,
+                "AdminPlayer",
+            )
+            assert "result" in result
+            assert "Set TargetPlayer's" in result["result"]
+            _assert_stat_write_path(stat_input, value, set_stats, apply_dp)
+
+
+@pytest.mark.asyncio
+async def test_handle_admin_set_stat_corruption_routes_through_service():
+    """#816: Corruption uses CorruptionService with permanence-floor bypass, not set_stats."""
+    request, target, _apply_dp, persistence = _make_all_stat_types_harness()
+    target.get_stats = MagicMock(return_value={**_BASELINE_STATS, "corruption": 40})
+    set_stats: MagicMock = MagicMock()
+    target.set_stats = set_stats
+    save_player: AsyncMock = AsyncMock()
+    persistence.save_player = save_player
+    apply_corruption: AsyncMock = AsyncMock()
+    corr_svc: MagicMock = MagicMock()
+    corr_svc.apply_corruption_adjustment = apply_corruption
+
+    with patch("server.commands.admin_setstat_command.CorruptionService", return_value=corr_svc) as corr_cls:
         result = await _handle_admin_set_stat_command(
-            {"args": [stat_input, "TargetPlayer", str(value)]},
+            {"args": ["Corruption", "TargetPlayer", "0"]},
             {"name": "AdminPlayer"},
             request,
             None,
             "AdminPlayer",
         )
-        assert "result" in result
-        assert "Set TargetPlayer's" in result["result"]
-        _assert_stat_write_path(stat_input, value, set_stats, apply_dp)
+
+    assert "Set TargetPlayer's Corruption from 40 to 0" in result["result"]
+    set_stats.assert_not_called()
+    save_player.assert_not_called()
+    corr_cls.assert_called_once()
+    apply_corruption.assert_awaited_once()
+    assert apply_corruption.await_args is not None
+    assert apply_corruption.await_args.args[1] == -40
+    assert apply_corruption.await_args.kwargs["reason_code"] == "admin_set"
+    assert apply_corruption.await_args.kwargs["bypass_permanence_floor"] is True
+
+
+@pytest.mark.asyncio
+async def test_handle_admin_set_stat_lucidity_routes_through_service():
+    """#816: LCD uses LucidityService adjustment, not set_stats."""
+    request, target, _apply_dp, persistence = _make_all_stat_types_harness()
+    set_stats: MagicMock = MagicMock()
+    target.set_stats = set_stats
+    save_player: AsyncMock = AsyncMock()
+    persistence.save_player = save_player
+    apply_lucidity: AsyncMock = AsyncMock()
+    luc_svc: MagicMock = MagicMock()
+    luc_svc.apply_lucidity_adjustment = apply_lucidity
+
+    with (
+        patch("server.commands.admin_setstat_command.LucidityService", return_value=luc_svc),
+        patch(
+            "server.commands.admin_setstat_command.get_async_session",
+            side_effect=lambda: _async_session_gen(AsyncMock()),
+        ),
+        patch("server.commands.admin_setstat_command.get_current_lcd", new_callable=AsyncMock, return_value=100),
+    ):
+        result = await _handle_admin_set_stat_command(
+            {"args": ["LCD", "TargetPlayer", "85"]},
+            {"name": "AdminPlayer"},
+            request,
+            None,
+            "AdminPlayer",
+        )
+
+    assert "Set TargetPlayer's LCD from 100 to 85" in result["result"]
+    set_stats.assert_not_called()
+    save_player.assert_not_called()
+    apply_lucidity.assert_awaited_once()
+    assert apply_lucidity.await_args is not None
+    assert apply_lucidity.await_args.kwargs["delta"] == -15
+    assert apply_lucidity.await_args.kwargs["reason_code"] == "admin_set"
 
 
 @pytest.mark.asyncio

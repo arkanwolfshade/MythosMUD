@@ -168,6 +168,31 @@ async def test_apply_corruption_adjustment_floors_at_1_once_touched(
 
 
 @pytest.mark.asyncio
+async def test_apply_corruption_adjustment_bypass_permanence_floor_allows_zero(
+    persistence: MagicMock, mock_repo: MagicMock
+) -> None:
+    """#816: admin setstat may wipe corruption to 0 via bypass_permanence_floor."""
+    player_id = uuid.uuid4()
+    persistence.get_player_by_id.return_value = _player(corruption=40)
+
+    with (
+        patch("server.services.corruption_service.CorruptionRepository", return_value=mock_repo),
+        patch(
+            "server.services.corruption_service.get_async_session",
+            side_effect=lambda: _async_session_gen(AsyncMock()),
+        ),
+    ):
+        result = await CorruptionService(persistence).apply_corruption_adjustment(
+            player_id, -40, reason_code="admin_set", bypass_permanence_floor=True
+        )
+
+    assert result.new_value == 0
+    assert result.previous_value == 40
+    mock_repo.add_adjustment_log.assert_awaited_once()
+    assert corruption_tier_cache.get_tier(player_id) == CorruptionTier.PURE
+
+
+@pytest.mark.asyncio
 async def test_apply_corruption_adjustment_notifies_on_first_taint(
     persistence: MagicMock, mock_repo: MagicMock
 ) -> None:
