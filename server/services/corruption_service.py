@@ -41,10 +41,9 @@ logger = get_logger(__name__)
 # about cause; the player learns "something changed", not the mechanism, matching the mystery
 # the design doc's tier-feedback discussion favored.
 #
-# #815: PURE has no fall message -- it is unreachable as a *new* tier through this service. The
-# permanence floor (see apply_corruption_adjustment) means new_value can only be 0 when
-# previous_value was already 0, in which case previous_tier == new_tier == PURE and no crossing
-# is detected. Once left, PURE cannot be re-entered through this write path.
+# #815: under the permanence floor, PURE is unreachable as a *new* tier via normal writes.
+# #816: admin setstat may call apply_corruption_adjustment(bypass_permanence_floor=True) and
+# re-enter PURE; the fall message below narrates that GM wipe.
 _TIER_RISE_MESSAGES: dict[CorruptionTier, str] = {
     CorruptionTier.TOUCHED: "Something in you gives way, just slightly. The taint has taken hold.",
     CorruptionTier.MARKED: "A faint wrongness clings to your thoughts. You have been marked.",
@@ -52,6 +51,7 @@ _TIER_RISE_MESSAGES: dict[CorruptionTier, str] = {
     CorruptionTier.WARPED: "Something in you has come loose. The world looks subtly, permanently wrong.",
 }
 _TIER_FALL_MESSAGES: dict[CorruptionTier, str] = {
+    CorruptionTier.PURE: "The last of the taint leaves you. For a moment, you feel almost whole again.",
     CorruptionTier.TOUCHED: "The wrongness fades to little more than a shadow -- though it never fully leaves you.",
     CorruptionTier.MARKED: "The taint loosens its grip, if only somewhat.",
     CorruptionTier.CORRUPTED: "You claw back some measure of yourself from the warp.",
@@ -123,8 +123,13 @@ class CorruptionService:
         reason_code: str,
         metadata: Mapping[str, object] | str | None = None,
         location_id: str | None = None,
+        bypass_permanence_floor: bool = False,
     ) -> CorruptionUpdateResult:
-        """Apply a corruption delta, clamp it, log it, update the tier cache, notify on crossing."""
+        """Apply a corruption delta, clamp it, log it, update the tier cache, notify on crossing.
+
+        `bypass_permanence_floor=True` is reserved for admin setstat (#816) so GMs can wipe to 0
+        while still writing the ledger, tier cache, and tier-crossing notifications.
+        """
         player = await self._persistence.get_player_by_id(player_id)
         if player is None:
             log_and_raise_enhanced(
@@ -140,9 +145,9 @@ class CorruptionService:
         previous_value = coerce_int(stats.get("corruption", 0), default=0)
         # #815: once a soul has been touched at all, it can never fall back to 0 through this
         # service -- the floor is derived from the current value, not tracked separately, so a
-        # player who has never been corrupted is unaffected. `admin setstat` writes corruption
-        # directly and does not call this method, so an admin zero still wipes the scar (#816).
-        floor = 1 if previous_value > 0 else 0
+        # player who has never been corrupted is unaffected.
+        # #816: only admin setstat passes bypass_permanence_floor=True (sole caller of that flag).
+        floor = 0 if bypass_permanence_floor else (1 if previous_value > 0 else 0)
         new_value = max(floor, min(100, previous_value + delta))
         stats["corruption"] = new_value
         player.set_stats(stats)
