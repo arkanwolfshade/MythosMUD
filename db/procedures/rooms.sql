@@ -4,6 +4,8 @@
 -- These replace raw SQL in async_persistence and map APIs.
 
 -- get_rooms_with_exits: aggregate rooms and exits for cache warmup
+-- DROP required when RETURNS TABLE columns change (CREATE OR REPLACE cannot alter OUT row type).
+DROP FUNCTION IF EXISTS :schema_name.get_rooms_with_exits(); -- noqa: PRS
 CREATE OR REPLACE FUNCTION :schema_name.get_rooms_with_exits() -- noqa: PRS
 RETURNS TABLE (
     room_uuid uuid,
