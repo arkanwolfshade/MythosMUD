@@ -25,18 +25,15 @@ _OPPOSITE = {"north": "south", "south": "north", "east": "west", "west": "east",
 # Each is an administrative/instanced stub: an elevator, a secret entrance, or a single-room plane
 # anchor reached by a mechanic other than walking. This list may only shrink -- adding a room here
 # to silence a new orphan defeats the guard. (The Innsmouth Waterfront Pier was on this list until
-# #824 wired it into the map; it is intentionally absent now.)
+# #824 wired it into the map; it is intentionally absent now. #829 removed five more: four Arkham
+# intersections that the street-grid rebuild replaced outright, and derby_halsey, which the rebuild
+# finally connected. Only the four sanitarium stubs and two single-room plane anchors remain.)
 _KNOWN_ISOLATED_ROOMS = frozenset(
     {
-        "earth_arkhamcity_easttown_intersection_derby_federal",
-        "earth_arkhamcity_easttown_intersection_derby_mass",
-        "earth_arkhamcity_easttown_intersection_derby_noyes",
-        "earth_arkhamcity_northside_intersection_apple_high",
         "earth_arkhamcity_sanitarium_room_accessible_toilet_001",
         "earth_arkhamcity_sanitarium_room_elevator_001",
         "earth_arkhamcity_sanitarium_room_kitchen_001",
         "earth_arkhamcity_sanitarium_room_secret_entrance_001",
-        "earth_arkhamcity_uptown_intersection_derby_halsey",
         "limbo_death_void",
         "yeng_katmandu_palace_palace_ground_001",
     }

@@ -591,7 +591,7 @@ class CacheService:
 
         # Preload starting room (if it exists)
         try:
-            starting_room_id = "earth_arkhamcity_northside_intersection_derby_high"
+            starting_room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
             self.room_cache.get_room_sync(starting_room_id)
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Cache preload errors unpredictable, must not fail initialization
             logger.warning("Failed to preload starting room", error=str(e))

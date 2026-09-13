@@ -4,6 +4,12 @@
 -- These replace raw SQL in async_persistence and map APIs.
 
 -- get_rooms_with_exits: aggregate rooms and exits for cache warmup
+--
+-- DROP first: PostgreSQL refuses `CREATE OR REPLACE` when the return type changes
+-- ("cannot change return type of existing function"), and #829 added map_x/map_y to the
+-- RETURNS TABLE. The compiled DDL dumps already drop before creating; this incremental
+-- file has to as well, or re-applying it fails against a database built before the change.
+DROP FUNCTION IF EXISTS :schema_name.get_rooms_with_exits(); -- noqa: PRS
 CREATE OR REPLACE FUNCTION :schema_name.get_rooms_with_exits() -- noqa: PRS
 RETURNS TABLE (
     room_uuid uuid,
@@ -15,7 +21,12 @@ RETURNS TABLE (
     zone_stable_id text,
     plane text,
     zone text,
-    exits jsonb
+    exits jsonb,
+    -- #829: appended, never inserted mid-list. Other procedures in this file are read
+    -- positionally by CoordinateGenerator._room_dict_from_row and map_helpers.build_row_dict,
+    -- so new columns go on the end by convention even where the caller reads by name.
+    map_x numeric(10,2),
+    map_y numeric(10,2)
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -44,7 +55,9 @@ BEGIN
                 ) FILTER (WHERE rl.direction IS NOT NULL)
             )::jsonb,
             '[]'::jsonb
-        ) AS exits
+        ) AS exits,
+        r.map_x,
+        r.map_y
     FROM rooms r
     LEFT JOIN subzones sz ON r.subzone_id = sz.id
     LEFT JOIN zones z ON sz.zone_id = z.id
@@ -58,6 +71,8 @@ BEGIN
         r.name,
         r.description,
         r.attributes,
+        r.map_x,
+        r.map_y,
         sz.stable_id,
         z.stable_id
     ORDER BY z.stable_id, sz.stable_id, r.stable_id;

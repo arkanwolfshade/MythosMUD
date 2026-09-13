@@ -112,8 +112,12 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
             return default_start_room
         except (ImportError, AttributeError, ValueError) as e:
             logger.error("Error getting default start room config", error=str(e), error_type=type(e).__name__)
-            # Fallback to hardcoded default
-            return "earth_arkhamcity_northside_intersection_derby_high"
+            # Fallback to hardcoded default. This must agree with `default_player_room`
+            # in server/config/models/game.py and DEFAULT_RESPAWN_ROOM in
+            # server/constants/spawn_defaults.py -- it previously named a street
+            # intersection, so a config read failure dropped players somewhere config
+            # never intended (#829).
+            return "earth_arkhamcity_sanitarium_room_foyer_001"
 
     async def create_player_with_stats(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Player creation requires many parameters for stats and configuration
         self,

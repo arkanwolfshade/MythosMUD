@@ -564,11 +564,11 @@ and their current locations.</p>
 
 <h4>Sample Output:</h4>
 <pre>
-Online Players (3): alice [5] - Arkham: City: Northside Intersection Derby High,
+Online Players (3): alice [5] - Arkham: City: Northside Intersection Derby Garrison,
 bob [3] - Arkham: City: Northside Room Derby St 001,
 charlie [7] [ADMIN] - Arkham: City: Northside Room High Ln 002
 
-Players matching 'al' (1): alice [5] - Arkham: City: Northside Intersection Derby High
+Players matching 'al' (1): alice [5] - Arkham: City: Northside Intersection Derby Garrison
 
 No players found matching 'xyz'. Try 'who' to see all online players.
 </pre>

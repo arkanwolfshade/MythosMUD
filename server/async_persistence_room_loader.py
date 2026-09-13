@@ -184,7 +184,9 @@ class RoomCacheLoader:
                         zone_stable_id,
                         plane,
                         zone,
-                        exits
+                        exits,
+                        map_x,
+                        map_y
                     FROM get_rooms_with_exits()
                     """
                 )

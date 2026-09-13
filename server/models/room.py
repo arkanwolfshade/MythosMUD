@@ -11,6 +11,7 @@ that dimensional shifts are properly tracked.
 """
 
 import uuid
+from decimal import Decimal
 from typing import Any
 
 from ..events import EventBus
@@ -23,6 +24,25 @@ from ..events.event_types import (
     PlayerLeftRoom,
 )
 from ..structured_logging.enhanced_logging_config import get_logger
+
+
+def _as_float(value: object) -> float | None:
+    """Coerce a `numeric(10,2)` column to float.
+
+    The driver hands back `Decimal` for numeric columns, but the same field arrives as
+    a float from in-memory fixtures and as a string from JSON payloads, so all three
+    have to survive the trip into `Room.map_x` / `map_y`.
+    """
+    if value is None or isinstance(value, bool):
+        return None
+    if isinstance(value, int | float | Decimal):
+        return float(value)
+    if isinstance(value, str):
+        try:
+            return float(value)
+        except ValueError:
+            return None
+    return None
 
 
 class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requires many fields to capture complete room state
@@ -57,6 +77,11 @@ class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requ
         self.exits = room_data.get("exits", {})
         self.rest_location: bool = room_data.get("rest_location", False)
         self.attributes: dict[str, Any] = dict(room_data.get("attributes", {}) or {})
+        # #829: map coordinates travel with the room so GET /api/rooms/list can hand them
+        # to the React Flow map and editor. They were declared on RoomData all along but
+        # never populated, so every stored-coordinate branch in the client was dead code.
+        self.map_x: float | None = _as_float(room_data.get("map_x"))
+        self.map_y: float | None = _as_float(room_data.get("map_y"))
 
         # Containers in this room (loaded from PostgreSQL)
         self._containers: list[Any] = room_data.get("containers", [])
@@ -389,6 +414,8 @@ class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requ
             "sub_zone": self.sub_zone,
             "environment": self.environment,
             "exits": self.exits,
+            "map_x": self.map_x,
+            "map_y": self.map_y,
             "containers": self.get_containers(),
             "players": self.get_players(),
             "objects": self.get_objects(),

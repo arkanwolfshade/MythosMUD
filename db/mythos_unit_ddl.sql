@@ -2215,7 +2215,7 @@ $$;
 -- Name: get_rooms_with_exits(); Type: FUNCTION; Schema: mythos_unit; Owner: -
 --
 
-CREATE FUNCTION mythos_unit.get_rooms_with_exits() RETURNS TABLE(room_uuid uuid, stable_id text, name text, description text, attributes jsonb, subzone_stable_id text, zone_stable_id text, plane text, zone text, exits jsonb)
+CREATE FUNCTION mythos_unit.get_rooms_with_exits() RETURNS TABLE(room_uuid uuid, stable_id text, name text, description text, attributes jsonb, subzone_stable_id text, zone_stable_id text, plane text, zone text, exits jsonb, map_x numeric(10,2), map_y numeric(10,2))
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -2245,7 +2245,9 @@ BEGIN
                 ) FILTER (WHERE rl.direction IS NOT NULL)
             )::jsonb,
             '[]'::jsonb
-        ) AS exits
+        ) AS exits,
+        r.map_x,
+        r.map_y
     FROM rooms r
     LEFT JOIN subzones sz ON r.subzone_id = sz.id
     LEFT JOIN zones z ON sz.zone_id = z.id
@@ -2259,6 +2261,8 @@ BEGIN
         r.name,
         r.description,
         r.attributes,
+        r.map_x,
+        r.map_y,
         sz.stable_id,
         z.stable_id
     ORDER BY z.stable_id, sz.stable_id, r.stable_id;

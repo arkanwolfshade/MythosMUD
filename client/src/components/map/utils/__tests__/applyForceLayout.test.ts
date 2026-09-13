@@ -6,6 +6,8 @@ import type { Edge, Node } from 'reactflow';
 import { describe, expect, it } from 'vitest';
 import type { RoomNodeData } from '../../types';
 import { applyForceLayout, defaultForceLayoutConfig, type ForceLayoutConfig } from '../layout';
+import { MAX_FORCE_LAYOUT_NODES } from '../mapGeometry';
+import { vi } from 'vitest';
 
 describe('applyForceLayout', () => {
   it('should return empty array for empty nodes', () => {
@@ -457,5 +459,40 @@ describe('applyForceLayout', () => {
 
     expect(result).toHaveLength(1);
     expect(result[0].id).toBe('node1');
+  });
+
+  describe('size guard (#829)', () => {
+    const manyNodes = (count: number): Node<RoomNodeData>[] =>
+      Array.from({ length: count }, (_, i) => ({
+        id: `room${i}`,
+        type: 'room',
+        position: { x: 0, y: 0 },
+        data: { id: `room${i}`, name: `Room ${i}` } as RoomNodeData,
+      }));
+
+    it('falls back to grid layout above the node threshold', () => {
+      // The simulation is O(n^2 + E^2) x 800 iterations, synchronous inside a useMemo.
+      // Past the threshold it must bail loudly rather than freeze the tab.
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      const nodes = manyNodes(MAX_FORCE_LAYOUT_NODES + 1);
+
+      const result = applyForceLayout(nodes, []);
+
+      expect(result).toHaveLength(nodes.length);
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining('falling back to grid layout'));
+      // Grid layout puts every node on a lattice; the simulation would not.
+      const spacing = 120 + 50;
+      expect(result.every(n => n.position.x % spacing === 0 && n.position.y % spacing === 0)).toBe(true);
+      warn.mockRestore();
+    });
+
+    it('still runs the simulation at the threshold', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+      applyForceLayout(manyNodes(MAX_FORCE_LAYOUT_NODES), []);
+
+      expect(warn).not.toHaveBeenCalled();
+      warn.mockRestore();
+    });
   });
 });

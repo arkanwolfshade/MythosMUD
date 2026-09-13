@@ -11,6 +11,7 @@
 
 import { describe, expect, it } from 'vitest';
 import type { Room } from '../../../../stores/gameStore';
+import { GRID_PITCH } from '../mapGeometry';
 import { createEdgesFromRooms, roomToNode, roomsToNodes, transformRoomsToMapData } from '../mapUtils';
 
 describe('mapUtils', () => {
@@ -59,8 +60,13 @@ describe('mapUtils', () => {
 
       const node = roomToNode(room);
 
-      expect(node.position.x).toBe(150.5);
-      expect(node.position.y).toBe(200.3);
+      // map_x/map_y are GRID UNITS in the database; React Flow wants pixels (#829).
+      // Saving pixels straight back into those columns is what used to corrupt the
+      // ASCII minimap, which reads the same columns as grid cells.
+      expect(node.position.x).toBe(150.5 * GRID_PITCH);
+      expect(node.position.y).toBe(200.3 * GRID_PITCH);
+      expect(node.data.map_x).toBe(150.5);
+      expect(node.data.map_y).toBe(200.3);
     });
 
     it('should set node type to intersection for intersection environments', () => {

@@ -12,6 +12,10 @@
 
 import type { Edge, Node } from 'reactflow';
 import type { ExitEdgeData, RoomNodeData } from '../types';
+import { GRID_PITCH, MAX_FORCE_LAYOUT_NODES } from './mapGeometry';
+
+// Re-exported so existing importers of `./layout` keep working.
+export { GRID_PITCH, MAX_FORCE_LAYOUT_NODES } from './mapGeometry';
 
 /**
  * Grid layout configuration.
@@ -101,7 +105,8 @@ function getStoredMapPosition(node: Node<RoomNodeData>): Point2D | null {
   if (mapX == null || mapY == null) {
     return null;
   }
-  return { x: mapX, y: mapY };
+  // Stored coordinates are grid units; callers want a pixel position (#829).
+  return { x: mapX * GRID_PITCH, y: mapY * GRID_PITCH };
 }
 
 function gridPositionForIndex(
@@ -624,6 +629,15 @@ export const applyForceLayout = (
 ): Node<RoomNodeData>[] => {
   if (nodes.length === 0) {
     return nodes;
+  }
+
+  if (nodes.length > MAX_FORCE_LAYOUT_NODES) {
+    console.warn(
+      `[map] ${nodes.length} rooms need layout, above the ${MAX_FORCE_LAYOUT_NODES} limit; ` +
+        'falling back to grid layout. Run coordinate generation for this zone ' +
+        '(POST /api/maps/coordinates/recalculate) so rooms arrive already positioned.'
+    );
+    return applyGridLayout(nodes);
   }
 
   const positionedNodes = initializeNodePositions(nodes, config.minDistance);
