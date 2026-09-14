@@ -1,21 +1,22 @@
 #Requires -Version 5.1
 <#
 .SYNOPSIS
-  Snapshot Chaosium CoC pack graphify reports into the Obsidian LLM wiki vault.
+  Snapshot CoC source-pack graphify reports into the Obsidian LLM wiki vault.
 
 .DESCRIPTION
   Copies agent-generated GRAPH_REPORT.md (plus a thin MANIFEST.md) from each
-  Chaosium pack's graphify-out/ into data/MythosMUD-Obsidian/raw/chaosium/<slug>/.
+  source pack's graphify-out/ into data/MythosMUD-Obsidian/raw/source_packs/<slug>/.
   Does NOT copy PDFs, graph.html, chunks, or text_extracts/. Does NOT touch wiki/.
 
 .NOTES
-  Human: run after /graphify on Chaosium packs; content commits live in data/.
+  Human: run after /graphify on local source packs; content commits live in data/.
+  Set MYTHOS_SOURCE_PACK_ROOT to the local library root, or pass -PackPath.
   AI: parent-repo tooling only; durable content lands under the data submodule.
 #>
 
 [CmdletBinding()]
 param(
-    [string]$ChaosiumRoot = "",
+    [string]$SourcePackRoot = "",
     [string]$PackPath = "",
     [string]$RepoRoot = ""
 )
@@ -26,14 +27,14 @@ if (-not $RepoRoot) {
     $RepoRoot = Split-Path -Parent $PSScriptRoot
 }
 
-if (-not $ChaosiumRoot) {
-    $ChaosiumRoot = Join-Path $env:USERPROFILE "Proton Drive\arkanwolfshade\My files\Chaosium"
+if (-not $SourcePackRoot) {
+    $SourcePackRoot = $env:MYTHOS_SOURCE_PACK_ROOT
 }
 
-$destRoot = Join-Path $RepoRoot "data\MythosMUD-Obsidian\raw\chaosium"
+$destRoot = Join-Path $RepoRoot "data\MythosMUD-Obsidian\raw\source_packs"
 New-Item -ItemType Directory -Force -Path $destRoot | Out-Null
 
-function Get-ChaosiumSlug {
+function Get-SourcePackSlug {
     param([string]$Name)
     $slug = $Name.ToLowerInvariant()
     $slug = $slug -replace "[^\p{L}\p{Nd}]+", "-"
@@ -91,7 +92,7 @@ function Export-PackSnapshot {
         return $false
     }
 
-    $slug = Get-ChaosiumSlug -Name $PackDir.Name
+    $slug = Get-SourcePackSlug -Name $PackDir.Name
     $destDir = Join-Path $destRoot $slug
     New-Item -ItemType Directory -Force -Path $destDir | Out-Null
 
@@ -114,7 +115,7 @@ function Export-PackSnapshot {
     }
 
     $manifest = @"
-# Chaosium graphify snapshot - $($PackDir.Name)
+# Source pack graphify snapshot - $($PackDir.Name)
 
 - pack_title: $($PackDir.Name)
 - slug: $slug
@@ -146,10 +147,13 @@ if ($PackPath) {
     $packs = @(Get-Item -LiteralPath $PackPath)
 }
 else {
-    if (-not (Test-Path -LiteralPath $ChaosiumRoot)) {
-        throw "ChaosiumRoot not found: $ChaosiumRoot"
+    if (-not $SourcePackRoot) {
+        throw "Set MYTHOS_SOURCE_PACK_ROOT or pass -SourcePackRoot / -PackPath"
     }
-    $packs = @(Get-ChildItem -LiteralPath $ChaosiumRoot -Directory)
+    if (-not (Test-Path -LiteralPath $SourcePackRoot)) {
+        throw "SourcePackRoot not found: $SourcePackRoot"
+    }
+    $packs = @(Get-ChildItem -LiteralPath $SourcePackRoot -Directory)
 }
 
 $ok = 0

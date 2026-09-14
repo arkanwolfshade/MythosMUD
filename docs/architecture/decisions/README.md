@@ -68,6 +68,7 @@ Each ADR follows this structure:
 | [ADR-023](ADR-023-package-ownership-and-fan-out.md)               | Package Ownership (`game/` vs `services/` vs `npc/`) and Fan-Out Watch List | Accepted | 2026-08-30 |
 | [ADR-024](ADR-024-server-authoritative-perceived-reality.md)     | Server-Authoritative Perceived Reality for Hallucinations | Accepted | 2026-09-08 |
 | [ADR-025](ADR-025-corruption-perceptual-filter.md)                | Corruption as a Global Perceptual Filter, Not Per-Message Styling | Accepted | 2026-09-09 |
+| [ADR-026](ADR-026-item-catalog-metadata-contracts.md)             | Item Catalog Metadata Contracts | Accepted | 2026-09-13 |
 
 ## 4. Related Documentation
 
