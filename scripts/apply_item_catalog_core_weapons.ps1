@@ -1,20 +1,27 @@
 #!/usr/bin/env pwsh
 # Apply item catalog DML batches (ADR-026 Phase 2).
 # Idempotent ON CONFLICT upserts. Targets: mythos_unit, mythos_e2e, mythos_dev.
+# PSAvoidUsingWriteHost: Status messages use Write-Host for clarity.
 
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status messages use Write-Host for clarity')]
 param(
-    [string[]]$TargetDbs = @("mythos_unit", "mythos_e2e"),
-    [string[]]$Batches = @(
+    [string[]]$TargetDbs,
+    [string[]]$Batches,
+    [string]$Stamp = "20260914"
+)
+
+if (-not $PSBoundParameters.ContainsKey("TargetDbs")) {
+    $TargetDbs = @("mythos_unit", "mythos_e2e")
+}
+if (-not $PSBoundParameters.ContainsKey("Batches")) {
+    $Batches = @(
         "core_weapons",
         "core_tomes",
         "core_equipment",
         "pack_dark_turns",
         "pack_mansions_vol1",
         "retire_legacy_pack_ids"
-    ),
-    [string]$Stamp = "20260914"
-)
+    )
+}
 
 $ErrorActionPreference = "Stop"
 
@@ -73,28 +80,27 @@ $dbPassword = $matches[2]
 $dbHost = $matches[3]
 $dbPort = $matches[4]
 
-$psqlPath = Get-Command psql -ErrorAction SilentlyContinue
+$psqlPath = $null
+$psqlCmd = Get-Command psql -ErrorAction SilentlyContinue
+if ($null -ne $psqlCmd) {
+    $psqlPath = [string]$psqlCmd.Path
+}
 if (-not $psqlPath) {
-    $commonPaths = @(
+    $searchGlobs = @(
         "C:\Program Files\PostgreSQL\*\bin\psql.exe",
         "C:\Program Files (x86)\PostgreSQL\*\bin\psql.exe"
     )
-    $found = $false
-    foreach ($path in $commonPaths) {
-        $psqlFiles = Get-ChildItem -Path $path -ErrorAction SilentlyContinue
-        if ($psqlFiles) {
-            $psqlPath = $psqlFiles[0].FullName
-            $found = $true
+    foreach ($glob in $searchGlobs) {
+        $hit = Get-ChildItem -Path $glob -ErrorAction SilentlyContinue | Select-Object -First 1
+        if ($null -ne $hit) {
+            $psqlPath = [string]$hit.FullName
             break
         }
     }
-    if (-not $found) {
-        Write-Host "[ERROR] PostgreSQL client (psql) not found" -ForegroundColor Red
-        exit 1
-    }
 }
-else {
-    $psqlPath = $psqlPath.Path
+if (-not $psqlPath) {
+    Write-Host "[ERROR] PostgreSQL client (psql) not found" -ForegroundColor Red
+    exit 1
 }
 
 Write-Host "[INFO] Using psql: $psqlPath" -ForegroundColor Cyan
@@ -122,8 +128,13 @@ try {
                 exit 1
             }
             Write-Host "Applying $migrationFile to '$targetDb' ..." -ForegroundColor Yellow
-            $result = & { $ErrorActionPreference = "Continue"; & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $targetDb -v ON_ERROR_STOP=1 -f $migrationFile 2>&1 }
-            if ($LASTEXITCODE -ne 0) {
+            # Scope ErrorActionPreference so psql stderr NOTICEs do not become terminating errors.
+            $prevEap = $ErrorActionPreference
+            $ErrorActionPreference = "Continue"
+            $result = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $targetDb -v ON_ERROR_STOP=1 -f $migrationFile 2>&1
+            $exitCode = $LASTEXITCODE
+            $ErrorActionPreference = $prevEap
+            if ($exitCode -ne 0) {
                 Write-Host "[ERROR] Failed to apply migration to '$targetDb':" -ForegroundColor Red
                 Write-Host $result -ForegroundColor Red
                 exit 1
