@@ -1,6 +1,8 @@
 # Character Creation Revamp and CoC 7th Ed Skills Plan
 
-Align MythosMUD character creation with Call of Cthulhu 7th ed (Chaosium): roll stats first, then profession modifiers; CoC-style skill allocation; skills catalog, viewing, use tracking, and level-up improvement. Add level/level-up as part of this work.
+Align MythosMUD character creation with Call of Cthulhu 7th ed: roll stats first,
+then profession modifiers; CoC-style skill allocation; skills catalog, viewing,
+use tracking, and level-up improvement. Add level/level-up as part of this work.
 
 ---
 
