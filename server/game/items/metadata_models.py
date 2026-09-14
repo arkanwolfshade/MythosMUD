@@ -5,6 +5,8 @@ parent via ``extra=\"allow\"``. Legacy combat still reads ``WeaponStats`` intege
 on ``metadata.weapon`` until Phase 3.
 """
 
+# pylint: disable=too-few-public-methods  # Reason: Pydantic schema models; methods come from BaseModel
+
 from __future__ import annotations
 
 from typing import ClassVar
