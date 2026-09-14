@@ -5,7 +5,13 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status messages use Write-Host for clarity')]
 param(
     [string[]]$TargetDbs = @("mythos_unit", "mythos_e2e"),
-    [string[]]$Batches = @("core_weapons", "core_tomes", "core_equipment", "scenario_dark_turns"),
+    [string[]]$Batches = @(
+        "core_weapons",
+        "core_tomes",
+        "core_equipment",
+        "scenario_dark_turns",
+        "scenario_mansions_vol1"
+    ),
     [string]$Stamp = "20260914"
 )
 
