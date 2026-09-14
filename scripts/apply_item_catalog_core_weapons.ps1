@@ -9,8 +9,9 @@ param(
         "core_weapons",
         "core_tomes",
         "core_equipment",
-        "scenario_dark_turns",
-        "scenario_mansions_vol1"
+        "pack_dark_turns",
+        "pack_mansions_vol1",
+        "retire_legacy_pack_ids"
     ),
     [string]$Stamp = "20260914"
 )
