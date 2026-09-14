@@ -1,16 +1,18 @@
 #!/usr/bin/env pwsh
-# Apply item catalog core_weapons DML (ADR-026 Phase 2).
+# Apply item catalog DML batches (ADR-026 Phase 2).
 # Idempotent ON CONFLICT upserts. Targets: mythos_unit, mythos_e2e, mythos_dev.
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status messages use Write-Host for clarity')]
 param(
-    [string[]]$TargetDbs = @("mythos_unit", "mythos_e2e")
+    [string[]]$TargetDbs = @("mythos_unit", "mythos_e2e"),
+    [string[]]$Batches = @("core_weapons", "core_tomes", "core_equipment", "scenario_dark_turns"),
+    [string]$Stamp = "20260914"
 )
 
 $ErrorActionPreference = "Stop"
 
-Write-Host "Applying item catalog core_weapons migrations" -ForegroundColor Green
-Write-Host "==============================================" -ForegroundColor Green
+Write-Host "Applying item catalog migrations ($($Batches -join ', '))" -ForegroundColor Green
+Write-Host "=========================================================" -ForegroundColor Green
 Write-Host ""
 
 $ProjectRoot = Split-Path $PSScriptRoot -Parent
@@ -106,22 +108,24 @@ try {
             continue
         }
 
-        $migrationFile = Join-Path $ProjectRoot "data\db\migrations\20260914_item_catalog_core_weapons_${suffix}.sql"
-        if (-not (Test-Path $migrationFile)) {
-            Write-Host "[ERROR] Migration file not found: $migrationFile" -ForegroundColor Red
-            exit 1
+        foreach ($batch in $Batches) {
+            $migrationFile = Join-Path $ProjectRoot "data\db\migrations\${Stamp}_item_catalog_${batch}_${suffix}.sql"
+            if (-not (Test-Path $migrationFile)) {
+                Write-Host "[ERROR] Migration file not found: $migrationFile" -ForegroundColor Red
+                exit 1
+            }
+            Write-Host "Applying $migrationFile to '$targetDb' ..." -ForegroundColor Yellow
+            $result = & { $ErrorActionPreference = "Continue"; & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $targetDb -v ON_ERROR_STOP=1 -f $migrationFile 2>&1 }
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "[ERROR] Failed to apply migration to '$targetDb':" -ForegroundColor Red
+                Write-Host $result -ForegroundColor Red
+                exit 1
+            }
+            Write-Host "[OK] Applied $batch to '$targetDb'" -ForegroundColor Green
         }
-        Write-Host "Applying $migrationFile to '$targetDb' ..." -ForegroundColor Yellow
-        $result = & { $ErrorActionPreference = "Continue"; & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $targetDb -v ON_ERROR_STOP=1 -f $migrationFile 2>&1 }
-        if ($LASTEXITCODE -ne 0) {
-            Write-Host "[ERROR] Failed to apply migration to '$targetDb':" -ForegroundColor Red
-            Write-Host $result -ForegroundColor Red
-            exit 1
-        }
-        Write-Host "[OK] Applied to '$targetDb'" -ForegroundColor Green
         Write-Host ""
     }
-    Write-Host "Item catalog core_weapons migrations applied." -ForegroundColor Green
+    Write-Host "Item catalog migrations applied." -ForegroundColor Green
 }
 finally {
     Remove-Item Env:\PGPASSWORD -ErrorAction SilentlyContinue
