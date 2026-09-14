@@ -23,6 +23,9 @@ if (-not $PSBoundParameters.ContainsKey("Batches")) {
         "pack_gateways",
         "pack_nameless",
         "pack_berlin",
+        "pack_pulp",
+        "pack_dark_ages",
+        "pack_darker_trails",
         "retire_legacy_pack_ids"
     )
 }
