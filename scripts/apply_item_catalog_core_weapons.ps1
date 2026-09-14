@@ -19,6 +19,8 @@ if (-not $PSBoundParameters.ContainsKey("Batches")) {
         "core_equipment",
         "pack_dark_turns",
         "pack_mansions_vol1",
+        "pack_doors",
+        "pack_gateways",
         "retire_legacy_pack_ids"
     )
 }
