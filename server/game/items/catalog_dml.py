@@ -15,10 +15,36 @@ from server.game.items.damage_expr import damage_expr_to_min_max
 from server.game.items.metadata_models import ItemMetadata
 from server.game.items.models import ItemPrototypeModel
 
+# Columns upserted from catalog rows (created_at is insert-only).
+_DATA_COLUMNS: tuple[str, ...] = (
+    "prototype_id",
+    "name",
+    "short_description",
+    "long_description",
+    "item_type",
+    "weight",
+    "base_value",
+    "durability",
+    "flags",
+    "wear_slots",
+    "stacking_rules",
+    "usage_restrictions",
+    "effect_components",
+    "metadata",
+    "tags",
+)
+
 
 def sql_escape(value: str) -> str:
     """Escape a string for a single-quoted SQL literal."""
     return value.replace("'", "''")
+
+
+def _ensure_weapon_defaults(weapon: MutableMapping[str, object]) -> None:
+    """Fill legacy WeaponStats keys when dual-writing from damage_expr."""
+    _ = weapon.setdefault("modifier", 0)
+    _ = weapon.setdefault("damage_types", [])
+    _ = weapon.setdefault("magical", False)
 
 
 def apply_weapon_dual_write(metadata: MutableMapping[str, object]) -> None:
@@ -37,12 +63,7 @@ def apply_weapon_dual_write(metadata: MutableMapping[str, object]) -> None:
         weapon["min_damage"] = min_damage
     if weapon.get("max_damage") is None:
         weapon["max_damage"] = max_damage
-    if "modifier" not in weapon:
-        weapon["modifier"] = 0
-    if "damage_types" not in weapon:
-        weapon["damage_types"] = []
-    if "magical" not in weapon:
-        weapon["magical"] = False
+    _ensure_weapon_defaults(weapon)
 
 
 def _normalize_damage_expr(expr: str) -> str:
@@ -82,9 +103,9 @@ def _sql_literal(value: object, *, as_jsonb: bool) -> str:
     return f"'{sql_escape(str(value))}'"
 
 
-def render_prototype_insert(schema: str, model: ItemPrototypeModel) -> str:
-    """Render one idempotent INSERT for item_prototypes."""
-    values = [
+def _prototype_value_literals(model: ItemPrototypeModel) -> list[str]:
+    """SQL literals for _DATA_COLUMNS in order."""
+    return [
         _sql_literal(model.prototype_id, as_jsonb=False),
         _sql_literal(model.name, as_jsonb=False),
         _sql_literal(model.short_description, as_jsonb=False),
@@ -100,26 +121,14 @@ def render_prototype_insert(schema: str, model: ItemPrototypeModel) -> str:
         _sql_literal(model.effect_components, as_jsonb=True),
         _sql_literal(cast(object, model.metadata), as_jsonb=True),
         _sql_literal(model.tags, as_jsonb=True),
-        "NOW()",
     ]
-    columns = [
-        "prototype_id",
-        "name",
-        "short_description",
-        "long_description",
-        "item_type",
-        "weight",
-        "base_value",
-        "durability",
-        "flags",
-        "wear_slots",
-        "stacking_rules",
-        "usage_restrictions",
-        "effect_components",
-        "metadata",
-        "tags",
-        "created_at",
-    ]
+
+
+def render_prototype_insert(schema: str, model: ItemPrototypeModel) -> str:
+    """Render one idempotent INSERT for item_prototypes."""
+    columns = [*_DATA_COLUMNS, "created_at"]
+    values = [*_prototype_value_literals(model), "NOW()"]
+    updates = ",\n    ".join(f"{col} = EXCLUDED.{col}" for col in _DATA_COLUMNS[1:])
     col_sql = ",\n    ".join(columns)
     val_sql = ",\n    ".join(values)
     return (
@@ -129,20 +138,7 @@ def render_prototype_insert(schema: str, model: ItemPrototypeModel) -> str:
         f"    {val_sql}\n"
         ")\n"
         "ON CONFLICT (prototype_id) DO UPDATE SET\n"
-        "    name = EXCLUDED.name,\n"
-        "    short_description = EXCLUDED.short_description,\n"
-        "    long_description = EXCLUDED.long_description,\n"
-        "    item_type = EXCLUDED.item_type,\n"
-        "    weight = EXCLUDED.weight,\n"
-        "    base_value = EXCLUDED.base_value,\n"
-        "    durability = EXCLUDED.durability,\n"
-        "    flags = EXCLUDED.flags,\n"
-        "    wear_slots = EXCLUDED.wear_slots,\n"
-        "    stacking_rules = EXCLUDED.stacking_rules,\n"
-        "    usage_restrictions = EXCLUDED.usage_restrictions,\n"
-        "    effect_components = EXCLUDED.effect_components,\n"
-        "    metadata = EXCLUDED.metadata,\n"
-        "    tags = EXCLUDED.tags;\n"
+        f"    {updates};\n"
     )
 
 
