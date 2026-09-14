@@ -82,7 +82,7 @@ def project_admin_item(row: ItemPrototypeRow) -> ItemCatalogAdminItem:
     )
 
 
-class ItemCatalogService:
+class ItemCatalogService:  # pylint: disable=too-few-public-methods  # Reason: thin facade over repository list_page
     """List item prototypes with role-based projection."""
 
     _repository: ItemCatalogRepository

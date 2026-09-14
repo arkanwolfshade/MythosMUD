@@ -134,7 +134,7 @@ def _mappings_to_page(rows: list[Mapping[str, object]]) -> ItemCatalogPage:
     return ItemCatalogPage(rows=prototypes, total=total)
 
 
-class ItemCatalogRepository:
+class ItemCatalogRepository:  # pylint: disable=too-few-public-methods  # Reason: single procedure-backed list_page API
     """Persistence for item catalog listing via list_item_prototypes_page()."""
 
     _logger: BoundLogger
