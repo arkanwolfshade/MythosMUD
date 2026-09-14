@@ -82,6 +82,7 @@ from .command_player_state import (
 
 # Import utility commands
 from .command_utility import (
+    CatalogCommand,
     HelpCommand,
     JournalCommand,
     QuestCommand,
@@ -143,6 +144,7 @@ __all__ = [
     "TimeCommand",
     "WhoamiCommand",
     "SkillsCommand",
+    "CatalogCommand",
     "JournalCommand",
     "QuestsCommand",
     "QuestCommand",
@@ -212,6 +214,7 @@ Command = (
     | WhoCommand
     | StatusCommand
     | SkillsCommand
+    | CatalogCommand
     | JournalCommand
     | QuestsCommand
     | QuestCommand

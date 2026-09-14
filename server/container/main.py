@@ -65,6 +65,7 @@ class ApplicationContainer:
     container_service: Any
     level_service: Any
     skill_service: Any
+    item_catalog_service: Any
     room_cache_service: Any
     profession_cache_service: Any
     performance_monitor: Any
@@ -135,6 +136,7 @@ class ApplicationContainer:
         self.container_service = None
         self.level_service = None
         self.skill_service = None
+        self.item_catalog_service = None
         self.room_cache_service = None
         self.profession_cache_service = None
 

@@ -222,6 +222,10 @@ class CommandFactory:
         """Create SkillsCommand from arguments (plan 10.7 V4)."""
         return self._player_state.create_skills_command(args)
 
+    def create_catalog_command(self, args: list[str]) -> BaseCommand:
+        """Create CatalogCommand from arguments (item prototype list)."""
+        return self._player_state.create_catalog_command(args)
+
     def create_journal_command(self, args: list[str]) -> BaseCommand:
         """Create JournalCommand from arguments (quest log view)."""
         return self._player_state.create_journal_command(args)
