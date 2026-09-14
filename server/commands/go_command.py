@@ -319,12 +319,16 @@ async def handle_go_command(  # pylint: disable=too-many-arguments  # Reason: St
 
     app, persistence, player, room, room_id = setup_result
 
+    # Cancel /rest before posture check: /rest seats the player, and validating
+    # posture first returned "stand up" without ever cancelling — countdown then
+    # completed and intentional_disconnect sent clients to login (e2e rest flake).
+    rest_note = await _cancel_rest_if_moving(app, player, player_name, direction)
+
     valid_posture, posture_message = _validate_player_posture(player, player_name, room_id)
     if not valid_posture:
-        return {"result": posture_message}
-
-    # Cancel rest but continue into the move (early return left players stuck mid-rest).
-    rest_note = await _cancel_rest_if_moving(app, player, player_name, direction)
+        if rest_note is None:
+            return {"result": posture_message}
+        # cancel_rest stands in persistence; in-memory stats on this player may lag.
 
     target_room_id = _validate_exit(direction, room, persistence, player_name, room_id)
     if not target_room_id:
