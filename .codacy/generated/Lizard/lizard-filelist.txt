@@ -1,1 +1,1 @@
-C:\projects\MythosMUD\server\api\admin\npc_schemas.py
+C:\projects\MythosMUD\client\src\pages\CatalogPage.tsx

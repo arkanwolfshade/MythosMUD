@@ -71,6 +71,7 @@ class CommandType(StrEnum):
     CLEANSE = "cleanse"
     TIME = "time"
     SKILLS = "skills"
+    CATALOG = "catalog"
     # Communication commands
     WHISPER = "whisper"
     REPLY = "reply"

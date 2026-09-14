@@ -1,5 +1,6 @@
 """Unit tests for /catalog command helpers and handler."""
 
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -138,8 +139,8 @@ class _CatalogContainerStub:
 
 
 class _CatalogAppStateStub:
-    def __init__(self, container: _CatalogContainerStub) -> None:
-        self.container: _CatalogContainerStub = container
+    def __init__(self, container: object) -> None:
+        self.container: object = container
 
 
 class _CatalogAppStub:
@@ -200,6 +201,55 @@ async def test_handle_catalog_command_admin_from_user_flags() -> None:
     assert "Knife" in result["result"]
     assert list_catalog.await_args is not None
     assert list_catalog.await_args.kwargs["is_admin"] is True
+
+
+@pytest.mark.asyncio
+async def test_handle_catalog_command_player_object_user_without_get() -> None:
+    """Regression: websocket handlers may pass a Player, not a dict (e2e AttributeError)."""
+
+    @dataclass
+    class _PlayerUser:
+        name: str = "Alice"
+        is_admin: bool = True
+        is_superuser: bool = False
+
+    list_catalog: AsyncMock = AsyncMock(return_value=_player_response())
+
+    with patch.object(ItemCatalogService, "list_catalog", list_catalog):
+        result = await cmd.handle_catalog_command(
+            {"args": []},
+            _PlayerUser(),
+            None,
+            None,
+            "Alice",
+        )
+
+    assert "Item catalog: showing" in result["result"]
+    assert list_catalog.await_args is not None
+    assert list_catalog.await_args.kwargs["is_admin"] is True
+
+
+@pytest.mark.asyncio
+async def test_handle_catalog_command_container_without_service_attr() -> None:
+    """Regression: missing item_catalog_service must not AttributeError (e2e game log)."""
+
+    class _BareContainer:
+        async_persistence: object | None = None
+
+    request = _CatalogRequestStub(_CatalogAppStub(_CatalogAppStateStub(_BareContainer())))
+    list_catalog: AsyncMock = AsyncMock(return_value=_player_response())
+
+    with patch.object(ItemCatalogService, "list_catalog", list_catalog):
+        result = await cmd.handle_catalog_command(
+            {"args": []},
+            {"id": "u1"},
+            request,
+            None,
+            "Alice",
+        )
+
+    assert "Item catalog: showing" in result["result"]
+    assert list_catalog.await_count == 1
 
 
 @pytest.mark.asyncio

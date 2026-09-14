@@ -188,18 +188,23 @@ def _get_catalog_service(request: object) -> ItemCatalogService:
     container = catalog_request.app.state.container
     if container is None:
         return ItemCatalogService()
-    existing = container.item_catalog_service
+    # getattr: older containers / partial test doubles may lack the attribute.
+    existing = getattr(container, "item_catalog_service", None)
     if isinstance(existing, ItemCatalogService):
         return existing
     return ItemCatalogService()
 
 
-def _user_flag_true(current_user: Mapping[str, object], key: str) -> bool:
-    return bool(current_user.get(key))
+def _user_flag_true(current_user: object, key: str) -> bool:
+    """Read a boolean flag from a dict-shaped user or attribute-bearing object (Player/User)."""
+    if isinstance(current_user, Mapping):
+        mapping = cast(Mapping[str, object], current_user)
+        return bool(mapping.get(key))
+    return bool(getattr(current_user, key, False))
 
 
 async def _resolve_is_admin(
-    current_user: Mapping[str, object],
+    current_user: object,
     request: object,
     player_name: str,
 ) -> bool:
@@ -210,7 +215,7 @@ async def _resolve_is_admin(
         persistence = container.async_persistence if container is not None else None
         if persistence is not None:
             try:
-                username = get_username_from_user(dict(current_user))
+                username = get_username_from_user(current_user)
                 player = await persistence.get_player_by_name(username)
                 if player is not None and bool(player.is_admin):
                     return True
@@ -221,7 +226,7 @@ async def _resolve_is_admin(
 
 async def handle_catalog_command(
     command_data: dict[str, object],
-    current_user: dict[str, object],
+    current_user: object,
     request: object,
     _alias_storage: AliasStorage | None,
     player_name: str,
