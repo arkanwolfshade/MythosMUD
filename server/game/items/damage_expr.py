@@ -68,8 +68,6 @@ def damage_expr_to_min_max(expr: str) -> tuple[int, int]:
         min_total += flat
         max_total += flat
 
-    if min_total < 0:
-        min_total = 0
-    if max_total < min_total:
-        max_total = min_total
+    min_total = max(min_total, 0)
+    max_total = max(max_total, min_total)
     return min_total, max_total
