@@ -21,6 +21,8 @@ if (-not $PSBoundParameters.ContainsKey("Batches")) {
         "pack_mansions_vol1",
         "pack_doors",
         "pack_gateways",
+        "pack_nameless",
+        "pack_berlin",
         "retire_legacy_pack_ids"
     )
 }
