@@ -577,6 +577,43 @@ No players found matching 'xyz'. Try 'who' to see all online players.
 </div>
 """,
     },
+    "catalog": {
+        "category": "Utility",
+        "description": "Browse the item prototype catalog (paginated text table)",
+        "usage": "catalog [type=<t>] [namespace=<ns>] [search=<q>] [page=<n>]",
+        "examples": [
+            "catalog",
+            "catalog type=weapon",
+            "catalog namespace=core search=knife",
+            "catalog page=2",
+        ],
+        "detailed_help": """
+<div style="color: #8B4513;">
+<h3>CATALOG Command</h3>
+<p>List item prototypes from the archives. Prints a short paginated table in-game.
+Players see name, type, and short description; administrators see full prototype
+fields. For the rich HTML table, open ESC Main Menu and choose Catalog.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>catalog</strong> - First page of all prototypes (sorted by name)</li>
+<li><strong>catalog type=&lt;t&gt;</strong> - Filter by item_type</li>
+<li><strong>catalog namespace=&lt;ns&gt;</strong> - Filter by metadata namespace</li>
+<li><strong>catalog search=&lt;q&gt;</strong> - Search name, description, or id</li>
+<li><strong>catalog page=&lt;n&gt;</strong> - Jump to page n</li>
+<li>Bare words without key=value are treated as search text</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>catalog</li>
+<li>catalog type=weapon</li>
+<li>catalog namespace=core search=knife</li>
+<li>catalog page=2</li>
+</ul>
+</div>
+""",
+    },
     "cast": {
         "category": "Magic",
         "description": "Cast a learned spell",

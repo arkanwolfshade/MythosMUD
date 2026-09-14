@@ -13,6 +13,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 // Lazy load MapPage and SkillsPage for code splitting
 const MapPage = lazy(() => import('./pages/MapPage').then(m => ({ default: m.MapPage })));
 const SkillsPage = lazy(() => import('./pages/SkillsPage').then(m => ({ default: m.SkillsPage })));
+const CatalogPage = lazy(() => import('./pages/CatalogPage').then(m => ({ default: m.CatalogPage })));
 const DialogueEditorPage = lazy(() =>
   import('./pages/DialogueEditorPage').then(m => ({ default: m.DialogueEditorPage }))
 );
@@ -49,6 +50,14 @@ export function AppRouter() {
             element={
               <Suspense fallback={<LoadingFallback />}>
                 <SkillsPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/catalog"
+            element={
+              <Suspense fallback={<LoadingFallback />}>
+                <CatalogPage />
               </Suspense>
             }
           />
