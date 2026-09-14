@@ -485,3 +485,53 @@ async def test_handle_go_command_rest_interrupt_still_moves():
     assert result["room_id"] == "north_room"
     assert "rest is interrupted" in result["result"].lower()
     assert "you go north" in result["result"].lower()
+
+
+@pytest.mark.asyncio
+async def test_handle_go_command_sitting_while_resting_still_cancels_and_moves() -> None:
+    """Regression: /rest seats the player; go must cancel rest before posture block (e2e login flake)."""
+    command_data: dict[str, object] = {"direction": "west"}
+    player_id = uuid.uuid4()
+    mock_player: MagicMock = MagicMock()
+    mock_player.current_room_id = "hallway"
+    mock_player.player_id = player_id
+    mock_player.get_stats = MagicMock(return_value={"position": "sitting"})
+    mock_room: MagicMock = MagicMock()
+    mock_room.id = "hallway"
+    mock_room.exits = {"west": "foyer"}
+    mock_target_room: MagicMock = MagicMock()
+    mock_persistence: AsyncMock = AsyncMock()
+    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+
+    def _room_by_id(rid: object) -> MagicMock:
+        return mock_target_room if rid == "foyer" else mock_room
+
+    mock_persistence.get_room_by_id = MagicMock(side_effect=_room_by_id)
+
+    mock_movement_service: MagicMock = MagicMock()
+    mock_movement_service.move_player = AsyncMock(return_value=True)
+    mock_connection_manager: MagicMock = MagicMock()
+    mock_container: MagicMock = MagicMock()
+    mock_container.async_persistence = mock_persistence
+    mock_container.movement_service = mock_movement_service
+    mock_container.connection_manager = mock_connection_manager
+    mock_state: MagicMock = MagicMock()
+    mock_state.container = mock_container
+    mock_app: MagicMock = MagicMock()
+    mock_app.state = mock_state
+    mock_request: MagicMock = MagicMock()
+    mock_request.app = mock_app
+
+    with (
+        patch("server.commands.go_command.is_player_resting", return_value=True),
+        patch("server.commands.go_command.cancel_rest_countdown", new_callable=AsyncMock) as mock_cancel,
+    ):
+        result: dict[str, object] = await handle_go_command(
+            command_data, {"username": "testuser"}, mock_request, None, "testplayer"
+        )
+
+    mock_cancel.assert_awaited_once()
+    result_text = str(result.get("result", "")).lower()
+    assert "stand up" not in result_text
+    assert result["room_changed"] is True
+    assert "rest is interrupted" in result_text
