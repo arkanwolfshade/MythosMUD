@@ -315,6 +315,7 @@ test-playwright: setup-test-env ensure-e2e-database
 	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_e2e
 	$(POWERSHELL) scripts/apply_aggression_level_migration.ps1 -TargetDbs mythos_e2e
 	$(POWERSHELL) scripts/apply_dialogue_migration.ps1 -TargetDbs mythos_e2e
+	$(POWERSHELL) scripts/apply_item_catalog_core_weapons.ps1 -TargetDbs mythos_e2e
 	@echo "Running Playwright E2E then integration tests (fails fast on Playwright/bootstrap errors)..."
 	$(POWERSHELL) scripts/run_test_playwright.ps1 $(PYTEST_OPTS)
 
@@ -329,6 +330,7 @@ test-server: setup-test-env setup-postgresql-test-db
 	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_unit
 	$(POWERSHELL) scripts/apply_aggression_level_migration.ps1 -TargetDbs mythos_unit
 	$(POWERSHELL) scripts/apply_dialogue_migration.ps1 -TargetDbs mythos_unit
+	$(POWERSHELL) scripts/apply_item_catalog_core_weapons.ps1 -TargetDbs mythos_unit
 	$(UV) pytest server/tests/ -m "not integration" $(PYTEST_OPTS)
 
 test-server-coverage: setup-test-env setup-postgresql-test-db
@@ -338,6 +340,7 @@ test-server-coverage: setup-test-env setup-postgresql-test-db
 	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_unit
 	$(POWERSHELL) scripts/apply_aggression_level_migration.ps1 -TargetDbs mythos_unit
 	$(POWERSHELL) scripts/apply_dialogue_migration.ps1 -TargetDbs mythos_unit
+	$(POWERSHELL) scripts/apply_item_catalog_core_weapons.ps1 -TargetDbs mythos_unit
 	$(UV) pytest server/tests/ -m "not integration" $(PYTEST_OPTS) $(PYTEST_COV_OPTS)
 
 # Fail-fast multi-stage runners (loud banner + skip remaining stages on first failure).

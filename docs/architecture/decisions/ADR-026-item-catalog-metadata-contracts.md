@@ -66,13 +66,13 @@ and intermediate catalogs live in the private `data/` submodule.
 
 Documented optional `metadata` objects:
 
-| Key | Role |
-| --- | ---- |
-| `weapon` | Rich combat fields + legacy `WeaponStats` integers (dual-write) |
-| `armor` | Armor points / coverage |
-| `tome` | Sanity / Mythos-knowledge style numbers (Mythos-tuned) |
-| `equipment` | Skill or other mechanical bonuses |
-| `catalog` | Namespace, canonical/variant linkage, era, opaque `source_key` |
+| Key         | Role                                                            |
+| ----------- | --------------------------------------------------------------- |
+| `weapon`    | Rich combat fields + legacy `WeaponStats` integers (dual-write) |
+| `armor`     | Armor points / coverage                                         |
+| `tome`      | Sanity / Mythos-knowledge style numbers (Mythos-tuned)          |
+| `equipment` | Skill or other mechanical bonuses                               |
+| `catalog`   | Namespace, canonical/variant linkage, era, opaque `source_key`  |
 
 ### 3.4 Coexistence and dedupe
 
@@ -139,4 +139,6 @@ Until combat understands dice/skill/range/ammo/armor:
 - JSON Schema: `schemas/items/item_prototype.schema.json`
 - Pydantic metadata models: `server/game/items/metadata_models.py`
 - Bridge helper: `server/game/items/damage_expr.py`
+- Catalog DML emitter: `server/game/items/catalog_dml.py`
+- Private catalog pipeline: `data/item_catalog/` (see README)
 - Synthetic fixture: `schemas/items/fixtures/synthetic_rich_metadata_prototype.json`
