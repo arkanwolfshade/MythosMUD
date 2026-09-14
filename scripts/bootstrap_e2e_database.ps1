@@ -51,6 +51,7 @@ Invoke-Step "apply_coc_spells_migration.ps1" { & (Join-Path $PSScriptRoot "apply
 Invoke-Step "apply_arena_migration.ps1" { & (Join-Path $PSScriptRoot "apply_arena_migration.ps1") -TargetDbs mythos_e2e }
 Invoke-Step "apply_aggression_level_migration.ps1" { & (Join-Path $PSScriptRoot "apply_aggression_level_migration.ps1") -TargetDbs mythos_e2e }
 Invoke-Step "apply_dialogue_migration.ps1" { & (Join-Path $PSScriptRoot "apply_dialogue_migration.ps1") -TargetDbs mythos_e2e }
+Invoke-Step "apply_item_catalog_core_weapons.ps1" { & (Join-Path $PSScriptRoot "apply_item_catalog_core_weapons.ps1") -TargetDbs mythos_e2e }
 
 Write-Host ""
 Write-Host "[INFO] Seeding E2E users (uv run --no-sync python scripts/seed_e2e_users.py)" -ForegroundColor Yellow
