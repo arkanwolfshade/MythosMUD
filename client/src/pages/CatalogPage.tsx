@@ -232,6 +232,61 @@ function CatalogResults({ data, isLoading }: { data: CatalogResponse | null; isL
   return data ? <CatalogTable data={data} /> : null;
 }
 
+function catalogShowingLabel(data: CatalogResponse): string {
+  const start = data.total > 0 ? (data.page - 1) * data.page_size + 1 : 0;
+  const end = Math.min(data.page * data.page_size, data.total);
+  return `Showing ${start}-${end} of ${data.total}; refine with filters`;
+}
+
+function catalogTotalPages(data: CatalogResponse): number {
+  return Math.max(1, Math.ceil(data.total / data.page_size));
+}
+
+type CatalogPageState = ReturnType<typeof useCatalogPageState>;
+
+function CatalogLoadedView({ s }: { s: CatalogPageState }) {
+  const data = s.data;
+  if (!data) {
+    return (
+      <div className="min-h-screen bg-mythos-terminal-background text-mythos-terminal-text p-6">
+        <div className="max-w-6xl mx-auto">
+          <h1 className="text-2xl font-bold mb-2">Item Catalog</h1>
+          <p className="text-mythos-terminal-text/70 text-sm mb-4">Loading catalog...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-mythos-terminal-background text-mythos-terminal-text p-6">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-2xl font-bold mb-2">Item Catalog</h1>
+        <p className="text-mythos-terminal-text/70 text-sm mb-4">{catalogShowingLabel(data)}</p>
+        <CatalogFilterForm
+          itemType={s.itemType}
+          namespace={s.namespace}
+          search={s.search}
+          onItemTypeChange={s.setItemType}
+          onNamespaceChange={s.setNamespace}
+          onSearchChange={s.setSearch}
+          onSubmit={() => {
+            s.setPage(1);
+            if (s.authToken) void s.fetchCatalog(s.authToken, 1);
+          }}
+        />
+        <CatalogResults data={data} isLoading={s.isLoading} />
+        <CatalogPagination
+          page={s.page}
+          totalPages={catalogTotalPages(data)}
+          dataPage={data.page}
+          onPrev={() => s.setPage(p => Math.max(1, p - 1))}
+          onNext={() => s.setPage(p => p + 1)}
+        />
+      </div>
+    </div>
+  );
+}
+
 function useCatalogPageState() {
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [itemType, setItemType] = useState('');
@@ -301,44 +356,8 @@ function useCatalogPageState() {
  */
 export const CatalogPage: React.FC = () => {
   const s = useCatalogPageState();
-  const totalPages = s.data ? Math.max(1, Math.ceil(s.data.total / s.data.page_size)) : 1;
-  const start = s.data && s.data.total > 0 ? (s.data.page - 1) * s.data.page_size + 1 : 0;
-  const end = s.data ? Math.min(s.data.page * s.data.page_size, s.data.total) : 0;
-
   if (s.error && !s.data) {
     return <CatalogErrorView error={s.error} authToken={s.authToken} />;
   }
-
-  return (
-    <div className="min-h-screen bg-mythos-terminal-background text-mythos-terminal-text p-6">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-2xl font-bold mb-2">Item Catalog</h1>
-        <p className="text-mythos-terminal-text/70 text-sm mb-4">
-          {s.data ? `Showing ${start}-${end} of ${s.data.total}; refine with filters` : 'Loading catalog...'}
-        </p>
-        <CatalogFilterForm
-          itemType={s.itemType}
-          namespace={s.namespace}
-          search={s.search}
-          onItemTypeChange={s.setItemType}
-          onNamespaceChange={s.setNamespace}
-          onSearchChange={s.setSearch}
-          onSubmit={() => {
-            s.setPage(1);
-            if (s.authToken) void s.fetchCatalog(s.authToken, 1);
-          }}
-        />
-        <CatalogResults data={s.data} isLoading={s.isLoading} />
-        {s.data ? (
-          <CatalogPagination
-            page={s.page}
-            totalPages={totalPages}
-            dataPage={s.data.page}
-            onPrev={() => s.setPage(p => Math.max(1, p - 1))}
-            onNext={() => s.setPage(p => p + 1)}
-          />
-        ) : null}
-      </div>
-    </div>
-  );
+  return <CatalogLoadedView s={s} />;
 };
