@@ -1853,6 +1853,116 @@
         ]
       }
     },
+    "/v1/api/item-catalog/": {
+      "get": {
+        "tags": [
+          "item-catalog"
+        ],
+        "summary": "Get Item Catalog",
+        "description": "Return a paginated item prototype catalog with role-based columns.",
+        "operationId": "get_item_catalog_v1_api_item_catalog__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Type"
+            }
+          },
+          {
+            "name": "namespace",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Namespace"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Search"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 25,
+              "title": "Page Size"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemCatalogResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/game/status": {
       "get": {
         "tags": [
@@ -7715,6 +7825,190 @@
           "is_active": true
         }
       },
+      "ItemCatalogAdminItem": {
+        "properties": {
+          "prototype_id": {
+            "type": "string",
+            "title": "Prototype Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "short_description": {
+            "type": "string",
+            "title": "Short Description"
+          },
+          "long_description": {
+            "type": "string",
+            "title": "Long Description"
+          },
+          "item_type": {
+            "type": "string",
+            "title": "Item Type"
+          },
+          "weight": {
+            "type": "number",
+            "title": "Weight"
+          },
+          "base_value": {
+            "type": "integer",
+            "title": "Base Value"
+          },
+          "durability": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Durability"
+          },
+          "flags": {
+            "items": {},
+            "type": "array",
+            "title": "Flags"
+          },
+          "wear_slots": {
+            "items": {},
+            "type": "array",
+            "title": "Wear Slots"
+          },
+          "stacking_rules": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Stacking Rules"
+          },
+          "usage_restrictions": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Usage Restrictions"
+          },
+          "effect_components": {
+            "items": {},
+            "type": "array",
+            "title": "Effect Components"
+          },
+          "metadata": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Metadata"
+          },
+          "tags": {
+            "items": {},
+            "type": "array",
+            "title": "Tags"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "prototype_id",
+          "name",
+          "short_description",
+          "long_description",
+          "item_type",
+          "weight",
+          "base_value"
+        ],
+        "title": "ItemCatalogAdminItem",
+        "description": "Admin catalog row with all stored prototype columns (A3)."
+      },
+      "ItemCatalogPlayerItem": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "Display name"
+          },
+          "item_type": {
+            "type": "string",
+            "title": "Item Type",
+            "description": "Prototype item_type"
+          },
+          "short_description": {
+            "type": "string",
+            "title": "Short Description",
+            "description": "Short description"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "item_type",
+          "short_description"
+        ],
+        "title": "ItemCatalogPlayerItem",
+        "description": "Player-facing catalog row (P1 columns)."
+      },
+      "ItemCatalogResponse": {
+        "properties": {
+          "items": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ItemCatalogPlayerItem"
+                },
+                "type": "array"
+              },
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ItemCatalogAdminItem"
+                },
+                "type": "array"
+              }
+            ],
+            "title": "Items",
+            "description": "Catalog rows (player or admin projection)"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Page"
+          },
+          "page_size": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Page Size"
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Total"
+          },
+          "is_admin": {
+            "type": "boolean",
+            "title": "Is Admin",
+            "description": "True when admin/full columns were returned"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "items",
+          "page",
+          "page_size",
+          "total",
+          "is_admin"
+        ],
+        "title": "ItemCatalogResponse",
+        "description": "Paginated item catalog response."
+      },
       "LoginGracePeriodResponse": {
         "properties": {
           "success": {
@@ -12207,6 +12501,10 @@
     {
       "name": "containers",
       "description": "Unified container system: environmental, wearable, corpse storage."
+    },
+    {
+      "name": "item-catalog",
+      "description": "Paginated item prototype catalog for players and admins."
     },
     {
       "name": "rooms",
