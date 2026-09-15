@@ -116,6 +116,43 @@ def get_vertical_exit_char(
     return vertical_exit_char_between(room_exits.get("south"), next_exits.get("north"), next_y, x, y)
 
 
+def _room_id(room: Mapping[str, object]) -> str:
+    """Stable identifier for `room`, or "" when it has none."""
+    return str(room.get("id") or room.get("stable_id") or "")
+
+
+def _index_room_positions(
+    rooms: Sequence[Mapping[str, object]],
+) -> tuple[set[str], dict[str, tuple[int, int]]]:
+    """Room ids present in this view, and the map cell each positioned one occupies."""
+    known: set[str] = set()
+    positions: dict[str, tuple[int, int]] = {}
+    for room in rooms:
+        room_id = _room_id(room)
+        if not room_id:
+            continue
+        known.add(room_id)
+        map_x, map_y = room.get("map_x"), room.get("map_y")
+        if isinstance(map_x, int | float) and isinstance(map_y, int | float):
+            positions[room_id] = (int(map_x), int(map_y))
+    return known, positions
+
+
+def _departing_directions(room: Mapping[str, object], known: set[str]) -> set[str]:
+    """Directions of `room`'s exits whose target is not part of this view."""
+    exits = room.get("exits")
+    if not isinstance(exits, Mapping):
+        return set()
+    directions: set[str] = set()
+    for direction, target in cast(Mapping[str, object], exits).items():
+        if direction not in REVERSE_DIRECTIONS:
+            continue
+        target_id = str(target) if target else ""
+        if target_id and target_id not in known:
+            directions.add(direction)
+    return directions
+
+
 def build_departures(
     rooms: Sequence[Mapping[str, object]],
 ) -> dict[tuple[int, int], frozenset[str]]:
@@ -129,33 +166,32 @@ def build_departures(
     These are the exits worth marking: the target exists in the world, it is just not on
     this sheet of paper.
     """
-    known: set[str] = set()
-    positions: dict[str, tuple[int, int]] = {}
-    for room in rooms:
-        room_id = str(room.get("id") or room.get("stable_id") or "")
-        if not room_id:
-            continue
-        known.add(room_id)
-        map_x, map_y = room.get("map_x"), room.get("map_y")
-        if isinstance(map_x, int | float) and isinstance(map_y, int | float):
-            positions[room_id] = (int(map_x), int(map_y))
-
+    known, positions = _index_room_positions(rooms)
     departures: dict[tuple[int, int], set[str]] = {}
     for room in rooms:
-        room_id = str(room.get("id") or room.get("stable_id") or "")
-        cell = positions.get(room_id)
+        cell = positions.get(_room_id(room))
         if cell is None:
             continue
-        exits = room.get("exits")
-        if not isinstance(exits, Mapping):
-            continue
-        for direction, target in cast(Mapping[str, object], exits).items():
-            if direction not in REVERSE_DIRECTIONS:
-                continue
-            target_id = str(target) if target else ""
-            if target_id and target_id not in known:
-                departures.setdefault(cell, set()).add(direction)
+        directions = _departing_directions(room, known)
+        if directions:
+            departures.setdefault(cell, set()).update(directions)
     return {cell: frozenset(dirs) for cell, dirs in departures.items()}
+
+
+def _horizontal_bridge_cells(x: int, y: int, target_x: int, target_y: int) -> set[tuple[int, int]]:
+    """Cells strictly between (x, y) and an east/west target more than one column away."""
+    if target_y != y or abs(target_x - x) <= 1:
+        return set()
+    step = 1 if target_x > x else -1
+    return {(cx, y) for cx in range(x + step, target_x, step)}
+
+
+def _vertical_bridge_cells(x: int, y: int, target_x: int, target_y: int) -> set[tuple[int, int]]:
+    """Cells strictly between (x, y) and a north/south target more than one row away."""
+    if target_x != x or abs(target_y - y) <= 1:
+        return set()
+    step = 1 if target_y > y else -1
+    return {(x, cy) for cy in range(y + step, target_y, step)}
 
 
 def build_exit_bridges(
@@ -179,10 +215,8 @@ def build_exit_bridges(
             if not isinstance(target, tuple):
                 continue
             target_x, target_y = cast(tuple[int, int], target)
-            if direction in ("east", "west") and target_y == y and abs(target_x - x) > 1:
-                step = 1 if target_x > x else -1
-                horizontal.update((cx, y) for cx in range(x + step, target_x, step))
-            elif direction in ("north", "south") and target_x == x and abs(target_y - y) > 1:
-                step = 1 if target_y > y else -1
-                vertical.update((x, cy) for cy in range(y + step, target_y, step))
+            if direction in ("east", "west"):
+                horizontal.update(_horizontal_bridge_cells(x, y, target_x, target_y))
+            elif direction in ("north", "south"):
+                vertical.update(_vertical_bridge_cells(x, y, target_x, target_y))
     return horizontal, vertical
