@@ -43,6 +43,7 @@ GAME_ATTRS = (
     "container_service",
     "level_service",
     "skill_service",
+    "item_catalog_service",
     "room_cache_service",
     "profession_cache_service",
     "item_prototype_registry",
@@ -70,6 +71,10 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
     container_service: Any = None
     level_service: Any = None
     skill_service: Any = None
+    # Reason: DYNAMIC_DISPATCH:di-container - GameBundle flattens heterogeneous services onto ApplicationContainer.
+    # Appropriate because: sibling slots (skill_service, quest_service, ...) already use Any for the same
+    # DI flatten surface; call sites narrow with isinstance/cast rather than a shared Protocol here.
+    item_catalog_service: Any = None  # pyright: ignore[reportExplicitAny]
     room_cache_service: Any = None
     profession_cache_service: Any = None
     item_prototype_registry: Any = None
@@ -218,6 +223,10 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
             skill_use_log_repository=SkillUseLogRepository(),
             persistence=async_persistence,
         )
+        from server.game.item_catalog_service import ItemCatalogService
+        from server.persistence.repositories.item_catalog_repository import ItemCatalogRepository
+
+        self.item_catalog_service = ItemCatalogService(ItemCatalogRepository())
 
         async def _skill_improvement_on_level_up(player_id: Any, new_level: int) -> None:
             await self.skill_service.run_improvement_rolls(player_id, new_level)

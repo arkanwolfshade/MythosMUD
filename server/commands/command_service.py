@@ -34,6 +34,7 @@ from .alias_commands import (
     handle_aliases_command,
     handle_unalias_command,
 )
+from .catalog_commands import handle_catalog_command
 from .channel_commands import handle_channel_command
 from .cleanse_command import handle_cleanse_command
 from .combat import (
@@ -165,6 +166,7 @@ _COMMAND_HANDLERS: dict[str, CommandHandler] = {
     "status": handle_status_command,
     "time": handle_time_command,
     "skills": handle_skills_command,
+    "catalog": handle_catalog_command,
     "journal": handle_journal_command,
     "quests": handle_journal_command,
     "quest": handle_quest_command,

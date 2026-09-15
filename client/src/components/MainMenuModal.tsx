@@ -65,6 +65,11 @@ export const MainMenuModal: React.FC<MainMenuModalProps> = ({
     onClose();
   };
 
+  const handleCatalogClick = () => {
+    window.open('/catalog', '_blank');
+    onClose();
+  };
+
   const handleDialogueEditorClick = () => {
     window.open('/admin/content/dialogue', '_blank');
     onClose();
@@ -165,6 +170,15 @@ export const MainMenuModal: React.FC<MainMenuModalProps> = ({
             type="button"
           >
             Skills (New Tab)
+          </button>
+
+          <button
+            onClick={handleCatalogClick}
+            className="w-full px-4 py-3 bg-mythos-terminal-primary text-white rounded hover:bg-mythos-terminal-primary/80 transition-colors text-left font-medium"
+            style={{ pointerEvents: 'auto' }}
+            type="button"
+          >
+            Catalog (New Tab)
           </button>
 
           <button

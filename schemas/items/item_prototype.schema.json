@@ -19,6 +19,151 @@
     "metadata",
     "tags"
   ],
+  "definitions": {
+    "weaponMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Weapon stats: rich CoC-like fields plus legacy WeaponStats integers (dual-write).",
+      "properties": {
+        "min_damage": { "type": "integer", "minimum": 0 },
+        "max_damage": { "type": "integer", "minimum": 0 },
+        "modifier": { "type": "integer" },
+        "damage_types": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "magical": { "type": "boolean" },
+        "damage_expr": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "Dice expression, e.g. 1d8+1 (Mythos-tuned)."
+        },
+        "attacks": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Attacks per round or equivalent rate."
+        },
+        "range": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "Range band or distance expression."
+        },
+        "ammo": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Magazine or load capacity when applicable."
+        },
+        "skill": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "description": "Associated skill key (Mythos naming)."
+        },
+        "skill_bonus": {
+          "type": "integer",
+          "description": "Flat skill bonus when the item grants one."
+        }
+      }
+    },
+    "armorMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "armor_points": { "type": "integer", "minimum": 0 },
+        "coverage": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 512
+        }
+      }
+    },
+    "tomeMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sanity_loss_expr": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "mythos_gain": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "study_hours": {
+          "type": "number",
+          "minimum": 0
+        },
+        "spells": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "equipmentBonus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["skill", "bonus"],
+      "properties": {
+        "skill": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "bonus": { "type": "integer" }
+      }
+    },
+    "equipmentMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "skill_bonuses": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/equipmentBonus" }
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 512
+        }
+      }
+    },
+    "catalogMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["namespace"],
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "Catalog namespace, e.g. era_classic or legacy_mythos."
+        },
+        "canonical_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "variant_of": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "era": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "source_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "description": "Opaque private source key; not a published book title."
+        }
+      }
+    }
+  },
   "properties": {
     "prototype_id": {
       "type": "string",
@@ -118,7 +263,15 @@
     },
     "metadata": {
       "type": "object",
-      "additionalProperties": true
+      "description": "Open object; known mechanical keys validated when present (ADR-026).",
+      "additionalProperties": true,
+      "properties": {
+        "weapon": { "$ref": "#/definitions/weaponMetadata" },
+        "armor": { "$ref": "#/definitions/armorMetadata" },
+        "tome": { "$ref": "#/definitions/tomeMetadata" },
+        "equipment": { "$ref": "#/definitions/equipmentMetadata" },
+        "catalog": { "$ref": "#/definitions/catalogMetadata" }
+      }
     },
     "tags": {
       "type": "array",

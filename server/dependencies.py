@@ -1,21 +1,4 @@
-"""
-Dependency injection providers for MythosMUD server.
-
-This module provides dependency injection functions for services using the
-ApplicationContainer pattern, following clean architecture principles and
-ensuring proper separation of concerns.
-
-ARCHITECTURE MIGRATION:
-This file has been updated to use the ApplicationContainer for dependency injection
-instead of directly accessing app.state. This provides better testability and
-follows the dependency inversion principle.
-
-As noted in the Pnakotic Manuscripts, proper organization of arcane knowledge
-requires clear separation between the presentation layer and the underlying
-mysteries. This dependency injection system provides that separation.
-"""
-
-# pylint: disable=too-many-lines  # Reason: This file serves as the central dependency injection registry for all services. It contains 20+ getter functions and their corresponding Depends aliases, each following a consistent pattern with proper documentation. Splitting this file would fragment the DI system and reduce discoverability. The line count is justified by the architectural requirement to centralize all DI providers in one location.
+"""FastAPI dependency providers for MythosMUD (ApplicationContainer-backed)."""
 
 from typing import TYPE_CHECKING, Any, cast
 
@@ -23,6 +6,7 @@ from fastapi import Depends, Request
 
 from .container import ApplicationContainer
 from .game.chat_service import ChatService
+from .game.item_catalog_service import ItemCatalogService
 from .game.level_service import LevelService
 from .game.magic.mp_regeneration_service import MPRegenerationService
 from .game.player_service import PlayerService
@@ -34,6 +18,7 @@ from .game.stats_generator import StatsGenerator
 from .npc.lifecycle_manager import NPCLifecycleManager
 from .npc.population_control import NPCPopulationController
 from .npc.spawning_service import NPCSpawningService
+from .persistence.repositories.item_catalog_repository import ItemCatalogRepository
 from .persistence.repositories.skill_repository import SkillRepository
 from .services.catatonia_registry import CatatoniaRegistry
 from .services.combat_service import CombatService
@@ -58,20 +43,7 @@ logger = get_logger(__name__)
 
 
 def get_container(request: Request) -> ApplicationContainer:
-    """
-    Get the application container from request state.
-
-    This is the base dependency that all other dependencies use.
-
-    Args:
-        request: The FastAPI request object
-
-    Returns:
-        ApplicationContainer: The application container with all services
-
-    AI: This is the root of the dependency injection tree.
-        All other dependencies should use this to access services.
-    """
+    """Get the application container from request state."""
     if not hasattr(request.app.state, "container"):
         raise RuntimeError(
             "ApplicationContainer not found in app.state - ensure container is initialized in lifespan context"
@@ -80,21 +52,7 @@ def get_container(request: Request) -> ApplicationContainer:
 
 
 def get_player_service(request: Request) -> PlayerService:
-    """
-    Get a PlayerService instance with dependency injection.
-
-    This function provides a PlayerService instance from the container,
-    ensuring proper dependency injection and avoiding global state.
-
-    Args:
-        request: The FastAPI request object containing app state
-
-    Returns:
-        PlayerService: A configured PlayerService instance
-
-    AI: Migrated from app.state direct access to container-based injection.
-        This enables proper testing and follows clean architecture principles.
-    """
+    """Get a PlayerService instance with dependency injection."""
     logger.debug("Retrieving PlayerService from container")
     container = get_container(request)
 
@@ -105,12 +63,7 @@ def get_player_service(request: Request) -> PlayerService:
 
 
 def get_level_service(request: Request) -> LevelService:
-    """
-    Get a LevelService instance with dependency injection.
-
-    LevelService provides grant_xp and check_level_up; the level-up hook
-    is wired when skill improvement is implemented (character creation revamp 4.5).
-    """
+    """Get a LevelService instance with dependency injection."""
     logger.debug("Retrieving LevelService from container")
     container = get_container(request)
 
@@ -121,21 +74,7 @@ def get_level_service(request: Request) -> LevelService:
 
 
 def get_player_service_for_testing(player_service: PlayerService | None = None) -> PlayerService:
-    """
-    Get a PlayerService instance for testing purposes.
-
-    This function allows tests to provide their own PlayerService instance
-    or get a mock instance for testing.
-
-    Args:
-        player_service: Optional PlayerService instance (for test injection)
-
-    Returns:
-        PlayerService: A PlayerService instance for testing
-
-    AI: This provides a test seam without requiring full app context.
-        Tests can inject mock dependencies easily.
-    """
+    """Get a PlayerService instance for testing purposes."""
     if player_service is not None:
         return player_service
 
@@ -147,20 +86,7 @@ def get_player_service_for_testing(player_service: PlayerService | None = None) 
 
 
 def get_room_service(request: Request) -> RoomService:
-    """
-    Get a RoomService instance with dependency injection.
-
-    This function provides a RoomService instance from the container,
-    ensuring proper dependency injection and avoiding global state.
-
-    Args:
-        request: The FastAPI request object containing app state
-
-    Returns:
-        RoomService: A configured RoomService instance
-
-    AI: Migrated from app.state direct access to container-based injection.
-    """
+    """Get a RoomService instance with dependency injection."""
     logger.debug("Retrieving RoomService from container")
     container = get_container(request)
 
@@ -171,33 +97,12 @@ def get_room_service(request: Request) -> RoomService:
 
 
 def get_stats_generator() -> StatsGenerator:
-    """
-    Get a StatsGenerator instance via dependency injection.
-
-    StatsGenerator is stateless and can be safely reused across requests.
-
-    Returns:
-        StatsGenerator: A StatsGenerator instance
-    """
+    """Get a StatsGenerator instance via dependency injection."""
     return StatsGenerator()
 
 
 def get_connection_manager(request: Request) -> "ConnectionManager":
-    """
-    Get a ConnectionManager instance with dependency injection.
-
-    This function provides a ConnectionManager instance from the container,
-    ensuring proper dependency injection and avoiding global state.
-
-    Args:
-        request: The FastAPI request object containing app state
-
-    Returns:
-        ConnectionManager: A configured ConnectionManager instance
-
-    AI: Migrated from app.state direct access to container-based injection.
-        This enables proper testing and follows clean architecture principles.
-    """
+    """Get a ConnectionManager instance with dependency injection."""
     logger.debug("Retrieving ConnectionManager from container")
     container = get_container(request)
 
@@ -208,21 +113,7 @@ def get_connection_manager(request: Request) -> "ConnectionManager":
 
 
 def get_async_persistence(request: Request) -> "AsyncPersistenceLayer":
-    """
-    Get an AsyncPersistenceLayer instance with dependency injection.
-
-    This function provides an AsyncPersistenceLayer instance from the container,
-    ensuring proper dependency injection and avoiding global state.
-
-    Args:
-        request: The FastAPI request object containing app state
-
-    Returns:
-        AsyncPersistenceLayer: A configured AsyncPersistenceLayer instance
-
-    AI: Migrated from app.state direct access to container-based injection.
-        This enables proper testing and follows clean architecture principles.
-    """
+    """Get an AsyncPersistenceLayer instance with dependency injection."""
     logger.debug("Retrieving AsyncPersistenceLayer from container")
     container = get_container(request)
 
@@ -233,21 +124,7 @@ def get_async_persistence(request: Request) -> "AsyncPersistenceLayer":
 
 
 def get_exploration_service(request: Request) -> "ExplorationService":
-    """
-    Get an ExplorationService instance with dependency injection.
-
-    This function provides an ExplorationService instance from the container,
-    ensuring proper dependency injection and avoiding global state.
-
-    Args:
-        request: The FastAPI request object containing app state
-
-    Returns:
-        ExplorationService: A configured ExplorationService instance
-
-    AI: Migrated from app.state direct access to container-based injection.
-        This enables proper testing and follows clean architecture principles.
-    """
+    """Get an ExplorationService instance with dependency injection."""
     logger.debug("Retrieving ExplorationService from container")
     container = get_container(request)
 
@@ -258,21 +135,7 @@ def get_exploration_service(request: Request) -> "ExplorationService":
 
 
 def get_player_respawn_service(request: Request) -> "PlayerRespawnService":
-    """
-    Get a PlayerRespawnService instance with dependency injection.
-
-    This function provides a PlayerRespawnService instance from the container,
-    ensuring proper dependency injection and avoiding global state.
-
-    Args:
-        request: The FastAPI request object containing app state
-
-    Returns:
-        PlayerRespawnService: A configured PlayerRespawnService instance
-
-    AI: Migrated from app.state direct access to container-based injection.
-        This enables proper testing and follows clean architecture principles.
-    """
+    """Get a PlayerRespawnService instance with dependency injection."""
     logger.debug("Retrieving PlayerRespawnService from container")
     container = get_container(request)
 
@@ -295,18 +158,7 @@ PlayerRespawnServiceDep = Depends(get_player_respawn_service)  # pylint: disable
 
 
 def get_profession_service(request: Request) -> ProfessionService:
-    """
-    Get a ProfessionService instance with dependency injection.
-
-    This function provides a ProfessionService instance from the container,
-    ensuring proper dependency injection and avoiding global state.
-
-    Args:
-        request: The FastAPI request object containing app state
-
-    Returns:
-        ProfessionService: A configured ProfessionService instance
-    """
+    """Get a ProfessionService instance with dependency injection."""
     logger.debug("Retrieving ProfessionService from container")
     persistence = get_async_persistence(request)
     return ProfessionService(persistence)
@@ -316,15 +168,16 @@ ProfessionServiceDep = Depends(get_profession_service)  # pylint: disable=invali
 
 
 def get_skill_repository() -> SkillRepository:
-    """
-    Get a SkillRepository instance for skills catalog queries.
-
-    Used by GET /v1/skills (character creation revamp 4.2).
-    """
+    """Get a SkillRepository instance for skills catalog queries."""
     return SkillRepository()
 
 
 SkillRepositoryDep = Depends(get_skill_repository)  # pylint: disable=invalid-name  # Reason: FastAPI dependency name follows FastAPI conventions
+
+
+def get_item_catalog_service() -> ItemCatalogService:
+    """Get ItemCatalogService for /catalog and GET /api/item-catalog."""
+    return ItemCatalogService(ItemCatalogRepository())
 
 
 def get_skill_service(request: Request) -> SkillService:
@@ -353,15 +206,7 @@ QuestServiceDep = Depends(get_quest_service)  # pylint: disable=invalid-name  # 
 
 # Combat service dependency injection functions
 def get_player_combat_service(request: Request) -> "PlayerCombatService":
-    """
-    Get a PlayerCombatService instance with dependency injection.
-
-    Args:
-        request: The FastAPI request object containing app state
-
-    Returns:
-        PlayerCombatService: A configured PlayerCombatService instance
-    """
+    """Get a PlayerCombatService instance with dependency injection."""
     logger.debug("Retrieving PlayerCombatService from container")
     container = get_container(request)
 
@@ -372,15 +217,7 @@ def get_player_combat_service(request: Request) -> "PlayerCombatService":
 
 
 def get_player_death_service(request: Request) -> "PlayerDeathService":
-    """
-    Get a PlayerDeathService instance with dependency injection.
-
-    Args:
-        request: The FastAPI request object containing app state
-
-    Returns:
-        PlayerDeathService: A configured PlayerDeathService instance
-    """
+    """Get a PlayerDeathService instance with dependency injection."""
     logger.debug("Retrieving PlayerDeathService from container")
     container = get_container(request)
 
@@ -391,17 +228,7 @@ def get_player_death_service(request: Request) -> "PlayerDeathService":
 
 
 def get_combat_service(request: Request) -> "CombatService":
-    """
-    Get a CombatService instance with dependency injection.
-
-    Args:
-        request: The FastAPI request object containing app state
-
-    Returns:
-        CombatService: A configured CombatService instance
-
-    Note: CombatService may be None if NATS is not available in test environments.
-    """
+    """Get a CombatService instance with dependency injection."""
     logger.debug("Retrieving CombatService from container")
     container = get_container(request)
 
@@ -413,15 +240,7 @@ def get_combat_service(request: Request) -> "CombatService":
 
 # Magic service dependency injection functions
 def get_magic_service(request: Request) -> "MagicService":
-    """
-    Get a MagicService instance with dependency injection.
-
-    Args:
-        request: The FastAPI request object containing app state
-
-    Returns:
-        MagicService: A configured MagicService instance
-    """
+    """Get a MagicService instance with dependency injection."""
     logger.debug("Retrieving MagicService from container")
     container = get_container(request)
 
@@ -435,15 +254,7 @@ def get_magic_service(request: Request) -> "MagicService":
 
 
 def get_spell_registry(request: Request) -> "SpellRegistry":
-    """
-    Get a SpellRegistry instance with dependency injection.
-
-    Args:
-        request: The FastAPI request object containing app state
-
-    Returns:
-        SpellRegistry: A configured SpellRegistry instance
-    """
+    """Get a SpellRegistry instance with dependency injection."""
     logger.debug("Retrieving SpellRegistry from container")
     container = get_container(request)
 
@@ -457,15 +268,7 @@ def get_spell_registry(request: Request) -> "SpellRegistry":
 
 
 def get_spell_targeting_service(request: Request) -> "SpellTargetingService":
-    """
-    Get a SpellTargetingService instance with dependency injection.
-
-    Args:
-        request: The FastAPI request object containing app state
-
-    Returns:
-        SpellTargetingService: A configured SpellTargetingService instance
-    """
+    """Get a SpellTargetingService instance with dependency injection."""
     logger.debug("Retrieving SpellTargetingService from container")
     container = get_container(request)
 
@@ -479,15 +282,7 @@ def get_spell_targeting_service(request: Request) -> "SpellTargetingService":
 
 
 def get_spell_effects(request: Request) -> "SpellEffects":
-    """
-    Get a SpellEffects instance with dependency injection.
-
-    Args:
-        request: The FastAPI request object containing app state
-
-    Returns:
-        SpellEffects: A configured SpellEffects instance
-    """
+    """Get a SpellEffects instance with dependency injection."""
     logger.debug("Retrieving SpellEffects from container")
     container = get_container(request)
 
@@ -501,15 +296,7 @@ def get_spell_effects(request: Request) -> "SpellEffects":
 
 
 def get_spell_learning_service(request: Request) -> "SpellLearningService":
-    """
-    Get a SpellLearningService instance with dependency injection.
-
-    Args:
-        request: The FastAPI request object containing app state
-
-    Returns:
-        SpellLearningService: A configured SpellLearningService instance
-    """
+    """Get a SpellLearningService instance with dependency injection."""
     logger.debug("Retrieving SpellLearningService from container")
     container = get_container(request)
 
@@ -523,15 +310,7 @@ def get_spell_learning_service(request: Request) -> "SpellLearningService":
 
 
 def get_mp_regeneration_service(request: Request) -> "MPRegenerationService":
-    """
-    Get an MPRegenerationService instance with dependency injection.
-
-    Args:
-        request: The FastAPI request object containing app state
-
-    Returns:
-        MPRegenerationService: A configured MPRegenerationService instance
-    """
+    """Get an MPRegenerationService instance with dependency injection."""
     logger.debug("Retrieving MPRegenerationService from container")
     container = get_container(request)
 
@@ -543,15 +322,7 @@ def get_mp_regeneration_service(request: Request) -> "MPRegenerationService":
 
 # NPC service dependency injection functions
 def get_npc_lifecycle_manager(request: Request) -> "NPCLifecycleManager":
-    """
-    Get an NPCLifecycleManager instance with dependency injection.
-
-    Args:
-        request: The FastAPI request object containing app state
-
-    Returns:
-        NPCLifecycleManager: A configured NPCLifecycleManager instance
-    """
+    """Get an NPCLifecycleManager instance with dependency injection."""
     logger.debug("Retrieving NPCLifecycleManager from container")
     container = get_container(request)
 
@@ -562,15 +333,7 @@ def get_npc_lifecycle_manager(request: Request) -> "NPCLifecycleManager":
 
 
 def get_npc_spawning_service(request: Request) -> "NPCSpawningService":
-    """
-    Get an NPCSpawningService instance with dependency injection.
-
-    Args:
-        request: The FastAPI request object containing app state
-
-    Returns:
-        NPCSpawningService: A configured NPCSpawningService instance
-    """
+    """Get an NPCSpawningService instance with dependency injection."""
     logger.debug("Retrieving NPCSpawningService from container")
     container = get_container(request)
 
@@ -581,15 +344,7 @@ def get_npc_spawning_service(request: Request) -> "NPCSpawningService":
 
 
 def get_npc_population_controller(request: Request) -> "NPCPopulationController":
-    """
-    Get an NPCPopulationController instance with dependency injection.
-
-    Args:
-        request: The FastAPI request object containing app state
-
-    Returns:
-        NPCPopulationController: A configured NPCPopulationController instance
-    """
+    """Get an NPCPopulationController instance with dependency injection."""
     logger.debug("Retrieving NPCPopulationController from container")
     container = get_container(request)
 
@@ -601,15 +356,7 @@ def get_npc_population_controller(request: Request) -> "NPCPopulationController"
 
 # Other service dependency injection functions
 def get_catatonia_registry(request: Request) -> "CatatoniaRegistry":
-    """
-    Get a CatatoniaRegistry instance with dependency injection.
-
-    Args:
-        request: The FastAPI request object containing app state
-
-    Returns:
-        CatatoniaRegistry: A configured CatatoniaRegistry instance
-    """
+    """Get a CatatoniaRegistry instance with dependency injection."""
     logger.debug("Retrieving CatatoniaRegistry from container")
     container = get_container(request)
 
@@ -620,15 +367,7 @@ def get_catatonia_registry(request: Request) -> "CatatoniaRegistry":
 
 
 def get_passive_lucidity_flux_service(request: Request) -> "PassiveLucidityFluxService":
-    """
-    Get a PassiveLucidityFluxService instance with dependency injection.
-
-    Args:
-        request: The FastAPI request object containing app state
-
-    Returns:
-        PassiveLucidityFluxService: A configured PassiveLucidityFluxService instance
-    """
+    """Get a PassiveLucidityFluxService instance with dependency injection."""
     logger.debug("Retrieving PassiveLucidityFluxService from container")
     container = get_container(request)
 
@@ -639,17 +378,7 @@ def get_passive_lucidity_flux_service(request: Request) -> "PassiveLucidityFluxS
 
 
 def get_mythos_time_consumer(request: Request) -> "MythosTimeEventConsumer":
-    """
-    Get a MythosTimeEventConsumer instance with dependency injection.
-
-    Args:
-        request: The FastAPI request object containing app state
-
-    Returns:
-        MythosTimeEventConsumer: A configured MythosTimeEventConsumer instance
-
-    Note: MythosTimeEventConsumer may be None if dependencies are not available.
-    """
+    """Get a MythosTimeEventConsumer instance with dependency injection."""
     logger.debug("Retrieving MythosTimeEventConsumer from container")
     container = get_container(request)
 
@@ -660,15 +389,7 @@ def get_mythos_time_consumer(request: Request) -> "MythosTimeEventConsumer":
 
 
 def get_chat_service(request: Request) -> "ChatService":
-    """
-    Get a ChatService instance with dependency injection.
-
-    Args:
-        request: The FastAPI request object containing app state
-
-    Returns:
-        ChatService: A configured ChatService instance
-    """
+    """Get a ChatService instance with dependency injection."""
     logger.debug("Retrieving ChatService from container")
     container = get_container(request)
 
@@ -704,21 +425,7 @@ ChatServiceDep = Depends(get_chat_service)  # pylint: disable=invalid-name  # Re
 
 
 def get_nats_message_handler(request: Request) -> Any:
-    """
-    Get NATS message handler from container with dependency injection.
-
-    Args:
-        request: The FastAPI request object
-
-    Returns:
-        NATSMessageHandler: The NATS message handler instance (may be None if NATS is disabled)
-
-    Raises:
-        RuntimeError: If container is not initialized
-
-    AI: Migrated from app.state direct access to container-based injection.
-        This enables proper testing and follows clean architecture principles.
-    """
+    """Get NATS message handler from container with dependency injection."""
     container = get_container(request)
     return container.nats_message_handler
 

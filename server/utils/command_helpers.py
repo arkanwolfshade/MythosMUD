@@ -85,6 +85,7 @@ _COMMAND_HELP_TEXTS: dict[str, str] = {
     CommandType.WHO.value: "who [player] - List online players with optional filtering",
     CommandType.STATUS.value: "status - Show your character status",
     CommandType.SKILLS.value: "skills - Show your character's skills",
+    CommandType.CATALOG.value: "catalog [page=N] [type=T] [namespace=NS] [search=Q] - List item prototypes",
     CommandType.TIME.value: "time - Show the current Mythos time",
     CommandType.WHOAMI.value: "whoami - Show your personal status (alias of status)",
     CommandType.INVENTORY.value: "inventory - Show your inventory",

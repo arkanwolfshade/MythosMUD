@@ -56,6 +56,7 @@ _SYSTEM_COMMANDS = {
     "inv",
     "i",
     "skills",
+    "catalog",
     "examine",
     "ex",
     "get",

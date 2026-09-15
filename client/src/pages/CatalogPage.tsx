@@ -1,0 +1,429 @@
+/**
+ * Standalone Item Catalog page.
+ *
+ * Opened from ESC Main Menu "Catalog (New Tab)". Lists item_prototypes via
+ * GET /v1/api/item-catalog with type/namespace/search filters and pagination.
+ */
+
+import React, { useCallback, useEffect, useState } from 'react';
+import { API_V1_BASE } from '../utils/config.js';
+import { logger } from '../utils/logger.js';
+import { secureTokenStorage } from '../utils/security.js';
+
+interface CatalogPlayerItem {
+  name: string;
+  item_type: string;
+  short_description: string;
+}
+
+interface CatalogAdminItem extends CatalogPlayerItem {
+  prototype_id: string;
+  long_description: string;
+  weight: number;
+  base_value: number;
+  durability: number | null;
+  flags: unknown[];
+  wear_slots: unknown[];
+  stacking_rules: Record<string, unknown>;
+  usage_restrictions: Record<string, unknown>;
+  effect_components: unknown[];
+  metadata: Record<string, unknown>;
+  tags: unknown[];
+  created_at: string | null;
+}
+
+type CatalogItem = CatalogPlayerItem | CatalogAdminItem;
+
+interface CatalogResponse {
+  items: CatalogItem[];
+  page: number;
+  page_size: number;
+  total: number;
+  is_admin: boolean;
+}
+
+const INPUT_CLASS = 'mt-1 px-2 py-1 bg-mythos-terminal-background border border-mythos-terminal-border rounded';
+const BTN_CLASS = 'px-3 py-2 bg-mythos-terminal-primary text-white rounded disabled:opacity-40';
+
+function isAdminItem(item: CatalogItem, isAdmin: boolean): item is CatalogAdminItem {
+  return isAdmin && 'prototype_id' in item;
+}
+
+function formatScalar(value: unknown): string {
+  if (value == null) return '';
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+    return String(value);
+  }
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return String(value);
+  }
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+/** Nested JSON as key/value tables (and lists) instead of a raw stringify blob. */
+function JsonTable({ value }: { value: unknown }) {
+  if (value == null) return <span className="opacity-50">—</span>;
+
+  if (Array.isArray(value)) {
+    if (value.length === 0) return <span className="opacity-50">—</span>;
+    if (value.every(entry => entry == null || typeof entry !== 'object')) {
+      return <span>{value.map(formatScalar).join(', ')}</span>;
+    }
+    return (
+      <ul className="list-disc pl-4 space-y-1">
+        {value.map((entry, index) => (
+          <li key={index}>
+            <JsonTable value={entry} />
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  if (isPlainObject(value)) {
+    const entries = Object.entries(value);
+    if (entries.length === 0) return <span className="opacity-50">—</span>;
+    return (
+      <table className="text-xs border-collapse min-w-40">
+        <tbody>
+          {entries.map(([key, nested]) => (
+            <tr key={key} className="border-b border-mythos-terminal-border/30 align-top">
+              <th className="py-0.5 pr-2 text-left font-semibold whitespace-nowrap text-mythos-terminal-text/80">
+                {key}
+              </th>
+              <td className="py-0.5">
+                <JsonTable value={nested} />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  }
+
+  return <span>{formatScalar(value)}</span>;
+}
+
+function buildCatalogUrl(page: number, itemType: string, namespace: string, search: string): string {
+  const params = new URLSearchParams({ page: String(page), page_size: '25' });
+  if (itemType.trim()) params.set('type', itemType.trim());
+  if (namespace.trim()) params.set('namespace', namespace.trim());
+  if (search.trim()) params.set('search', search.trim());
+  return `${API_V1_BASE}/api/item-catalog/?${params.toString()}`;
+}
+
+function CatalogErrorView({ error, authToken }: { error: string; authToken: string | null }) {
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-mythos-terminal-background text-mythos-terminal-text">
+      <div className="text-center max-w-md p-6">
+        <h1 className="text-2xl font-bold mb-4 text-mythos-terminal-error">Error</h1>
+        <p className="mb-4">{error}</p>
+        <button
+          type="button"
+          onClick={() => {
+            window.location.href = '/';
+          }}
+          className="px-4 py-2 bg-mythos-terminal-primary text-white rounded hover:bg-mythos-terminal-primary/80"
+        >
+          {authToken ? 'Back to Game' : 'Go to Login'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function FilterField({
+  label,
+  value,
+  onChange,
+  placeholder,
+  grow,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+  grow?: boolean;
+}) {
+  return (
+    <label className={`flex flex-col text-sm${grow ? ' grow min-w-48' : ''}`}>
+      {label}
+      <input className={INPUT_CLASS} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} />
+    </label>
+  );
+}
+
+interface CatalogFilterFormProps {
+  itemType: string;
+  namespace: string;
+  search: string;
+  onItemTypeChange: (value: string) => void;
+  onNamespaceChange: (value: string) => void;
+  onSearchChange: (value: string) => void;
+  onSubmit: () => void;
+}
+
+function CatalogFilterForm(props: CatalogFilterFormProps) {
+  return (
+    <form
+      className="flex flex-wrap gap-2 mb-4 items-end"
+      onSubmit={event => {
+        event.preventDefault();
+        props.onSubmit();
+      }}
+    >
+      <FilterField label="Type" value={props.itemType} onChange={props.onItemTypeChange} placeholder="weapon" />
+      <FilterField label="Namespace" value={props.namespace} onChange={props.onNamespaceChange} placeholder="core" />
+      <FilterField label="Search" value={props.search} onChange={props.onSearchChange} placeholder="knife" grow />
+      <button type="submit" className={`${BTN_CLASS} hover:bg-mythos-terminal-primary/80`}>
+        Apply filters
+      </button>
+    </form>
+  );
+}
+
+function AdminCells({ item }: { item: CatalogAdminItem }) {
+  return (
+    <>
+      <td className="py-2 pr-3 align-top font-mono text-xs whitespace-nowrap">{item.prototype_id}</td>
+      <td className="py-2 pr-3 align-top whitespace-nowrap">{item.weight}</td>
+      <td className="py-2 pr-3 align-top whitespace-nowrap">{item.base_value}</td>
+      <td className="py-2 pr-3 align-top">
+        <JsonTable value={item.metadata} />
+      </td>
+      <td className="py-2 pr-3 align-top">
+        <JsonTable value={item.tags} />
+      </td>
+    </>
+  );
+}
+
+function CatalogTable({ data }: { data: CatalogResponse }) {
+  return (
+    <table className="min-w-max w-full text-left text-sm border-collapse">
+      <thead>
+        <tr className="border-b border-mythos-terminal-border">
+          <th className="py-2 pr-3 whitespace-nowrap">Name</th>
+          <th className="py-2 pr-3 whitespace-nowrap">Type</th>
+          <th className="py-2 pr-3 whitespace-nowrap">Short description</th>
+          {data.is_admin ? (
+            <>
+              <th className="py-2 pr-3 whitespace-nowrap">Prototype ID</th>
+              <th className="py-2 pr-3 whitespace-nowrap">Weight</th>
+              <th className="py-2 pr-3 whitespace-nowrap">Value</th>
+              <th className="py-2 pr-3 whitespace-nowrap">Metadata</th>
+              <th className="py-2 pr-3 whitespace-nowrap">Tags</th>
+            </>
+          ) : null}
+        </tr>
+      </thead>
+      <tbody>
+        {data.items.map((item, index) => (
+          <tr
+            key={isAdminItem(item, data.is_admin) ? item.prototype_id : `${item.name}-${item.item_type}-${index}`}
+            className="border-b border-mythos-terminal-border/40"
+          >
+            <td className="py-2 pr-3 align-top whitespace-nowrap">{item.name}</td>
+            <td className="py-2 pr-3 align-top whitespace-nowrap">{item.item_type}</td>
+            <td className="py-2 pr-3 align-top">{item.short_description}</td>
+            {isAdminItem(item, data.is_admin) ? <AdminCells item={item} /> : null}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function CatalogPagination({
+  page,
+  totalPages,
+  dataPage,
+  onPrev,
+  onNext,
+}: {
+  page: number;
+  totalPages: number;
+  dataPage: number;
+  onPrev: () => void;
+  onNext: () => void;
+}) {
+  return (
+    <div className="flex shrink-0 gap-3 items-center pt-4 mt-2 border-t border-mythos-terminal-border/40">
+      <button type="button" disabled={page <= 1} onClick={onPrev} className={BTN_CLASS}>
+        Previous
+      </button>
+      <span className="text-sm">
+        Page {dataPage} / {totalPages}
+      </span>
+      <button type="button" disabled={page >= totalPages} onClick={onNext} className={BTN_CLASS}>
+        Next
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          window.close();
+        }}
+        className={`ml-auto ${BTN_CLASS} hover:bg-mythos-terminal-primary/80`}
+      >
+        Close
+      </button>
+    </div>
+  );
+}
+
+function CatalogResults({ data, isLoading }: { data: CatalogResponse | null; isLoading: boolean }) {
+  if (isLoading && !data) return <p>Loading catalog...</p>;
+  if (data && data.items.length === 0) {
+    return <p className="text-mythos-terminal-text/70">No prototypes match.</p>;
+  }
+  return data ? <CatalogTable data={data} /> : null;
+}
+
+function catalogShowingLabel(data: CatalogResponse): string {
+  const start = data.total > 0 ? (data.page - 1) * data.page_size + 1 : 0;
+  const end = Math.min(data.page * data.page_size, data.total);
+  return `Showing ${start}-${end} of ${data.total}; refine with filters`;
+}
+
+function catalogTotalPages(data: CatalogResponse): number {
+  return Math.max(1, Math.ceil(data.total / data.page_size));
+}
+
+type CatalogPageState = ReturnType<typeof useCatalogPageState>;
+
+function CatalogPageShell({ children, footer }: { children: React.ReactNode; footer?: React.ReactNode }) {
+  return (
+    <div className="h-screen flex flex-col bg-mythos-terminal-background text-mythos-terminal-text p-4 sm:p-6 overflow-hidden">
+      <div className="flex flex-col flex-1 min-h-0 min-w-0 w-full">
+        {children}
+        {footer}
+      </div>
+    </div>
+  );
+}
+
+function CatalogLoadedView({ s }: { s: CatalogPageState }) {
+  const data = s.data;
+  if (!data) {
+    return (
+      <CatalogPageShell>
+        <h1 className="text-2xl font-bold mb-2 shrink-0">Item Catalog</h1>
+        <p className="text-mythos-terminal-text/70 text-sm mb-4 shrink-0">Loading catalog...</p>
+      </CatalogPageShell>
+    );
+  }
+
+  return (
+    <CatalogPageShell
+      footer={
+        <CatalogPagination
+          page={s.page}
+          totalPages={catalogTotalPages(data)}
+          dataPage={data.page}
+          onPrev={() => s.setPage(p => Math.max(1, p - 1))}
+          onNext={() => s.setPage(p => p + 1)}
+        />
+      }
+    >
+      <h1 className="text-2xl font-bold mb-2 shrink-0">Item Catalog</h1>
+      <p className="text-mythos-terminal-text/70 text-sm mb-4 shrink-0">{catalogShowingLabel(data)}</p>
+      <div className="shrink-0">
+        <CatalogFilterForm
+          itemType={s.itemType}
+          namespace={s.namespace}
+          search={s.search}
+          onItemTypeChange={s.setItemType}
+          onNamespaceChange={s.setNamespace}
+          onSearchChange={s.setSearch}
+          onSubmit={() => {
+            s.setPage(1);
+            if (s.authToken) void s.fetchCatalog(s.authToken, 1);
+          }}
+        />
+      </div>
+      <div role="region" aria-label="Catalog results" className="flex-1 min-h-0 min-w-0 overflow-auto mt-2">
+        <CatalogResults data={data} isLoading={s.isLoading} />
+      </div>
+    </CatalogPageShell>
+  );
+}
+
+function useCatalogPageState() {
+  const [authToken, setAuthToken] = useState<string | null>(null);
+  const [itemType, setItemType] = useState('');
+  const [namespace, setNamespace] = useState('');
+  const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const [data, setData] = useState<CatalogResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchCatalog = useCallback(
+    async (token: string, nextPage: number) => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(buildCatalogUrl(nextPage, itemType, namespace, search), {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!response.ok) {
+          setError(
+            response.status === 401 ? 'Not authenticated. Please log in first.' : 'Failed to load item catalog.'
+          );
+          return;
+        }
+        setData((await response.json()) as CatalogResponse);
+        setError(null);
+      } catch (err) {
+        logger.error('CatalogPage', 'Failed to fetch catalog', { error: err });
+        setError('Failed to connect to server.');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [itemType, namespace, search]
+  );
+
+  useEffect(() => {
+    const token = secureTokenStorage.getToken();
+    if (!token) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- auth gate before fetch
+      setError('Not authenticated. Please log in first.');
+      setIsLoading(false);
+      return;
+    }
+    setAuthToken(token);
+    void fetchCatalog(token, page);
+  }, [fetchCatalog, page]);
+
+  return {
+    authToken,
+    itemType,
+    setItemType,
+    namespace,
+    setNamespace,
+    search,
+    setSearch,
+    page,
+    setPage,
+    data,
+    isLoading,
+    error,
+    fetchCatalog,
+  };
+}
+
+/**
+ * Standalone catalog page: token from localStorage; filters in query UI.
+ */
+export const CatalogPage: React.FC = () => {
+  const s = useCatalogPageState();
+  if (s.error && !s.data) {
+    return <CatalogErrorView error={s.error} authToken={s.authToken} />;
+  }
+  return <CatalogLoadedView s={s} />;
+};

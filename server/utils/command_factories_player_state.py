@@ -7,6 +7,7 @@ status, time, whoami, who, quit, logout.
 
 from ..exceptions import ValidationError as MythosValidationError
 from ..models.command import (
+    CatalogCommand,
     CleanseCommand,
     JournalCommand,
     LogoutCommand,
@@ -105,6 +106,11 @@ class PlayerStateCommandFactory:
                 MythosValidationError, "Skills command takes no arguments", args=args, logger_name=__name__
             )
         return SkillsCommand()
+
+    @staticmethod
+    def create_catalog_command(args: list[str]) -> CatalogCommand:
+        """Create CatalogCommand from arguments (optional type/namespace/search/page filters)."""
+        return CatalogCommand(args=args or [])
 
     @staticmethod
     def create_journal_command(args: list[str]) -> JournalCommand:
