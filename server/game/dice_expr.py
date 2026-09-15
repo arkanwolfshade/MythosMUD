@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import random
 import re
+import secrets
 from collections.abc import Callable
 
 _DICE_TERM_RE = re.compile(r"^(\d+)\s*[dD]\s*(\d+)$")
@@ -103,8 +104,9 @@ def damage_expr_to_min_max(expr: str) -> tuple[int, int]:
     return min_total, max(max_total, min_total)
 
 
-def _stdlib_roll(lo: int, hi: int) -> int:
-    return random.randint(lo, hi)  # nosec B311  # game damage roll, not crypto
+def _secrets_roll(lo: int, hi: int) -> int:
+    """Inclusive lo..hi using secrets (avoids Bandit/Codacy B311 on random)."""
+    return lo + secrets.randbelow(hi - lo + 1)
 
 
 def roll_damage_expr(expr: str, *, rng: random.Random | None = None) -> int:
@@ -120,7 +122,7 @@ def roll_damage_expr(expr: str, *, rng: random.Random | None = None) -> int:
     Raises:
         ValueError: If ``expr`` is empty or yields no parseable terms.
     """
-    roll_int: _RollInt = rng.randint if rng is not None else _stdlib_roll
+    roll_int: _RollInt = rng.randint if rng is not None else _secrets_roll
 
     total = 0
     for term in _parse_terms(expr):
