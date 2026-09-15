@@ -77,6 +77,11 @@ class CombatParticipant:  # pylint: disable=too-many-instance-attributes  # Reas
     # None means "no data" -- aggro_threat.py treats that as 0 (pure), same fail-safe default as
     # corruption_tier_cache.
     corruption: int | None = None
+    # ADR-027: catalog armor; subtracted in apply_damage when > 0.
+    armor_points: int = 0
+    # ADR-027: snapshots for resolve_npc_attack_damage on auto-turns.
+    npc_base_stats: dict[str, object] | None = None
+    npc_behavior_config: dict[str, object] | None = None
 
     def is_alive(self) -> bool:
         """
@@ -137,12 +142,13 @@ class CombatParticipant:  # pylint: disable=too-many-instance-attributes  # Reas
             - target_mortally_wounded: True if this hit crossed from positive DP to 0 (players only)
         """
         old_dp = self.current_dp
+        effective = max(0, damage - self.armor_points)
         if self.participant_type == CombatParticipantType.PLAYER:
-            self.current_dp = max(-10, self.current_dp - damage)
+            self.current_dp = max(-10, self.current_dp - effective)
             target_died = self.is_dead()
             target_mortally_wounded = old_dp > 0 and not self.current_dp
         else:
-            self.current_dp = max(0, self.current_dp - damage)
+            self.current_dp = max(0, self.current_dp - effective)
             target_died = self.is_dead()
             target_mortally_wounded = False
         return old_dp, target_died, target_mortally_wounded

@@ -239,8 +239,14 @@ async def _execute_npc_attack(
     combat_service: CombatService, npc: CombatParticipant, target: CombatParticipant, current_tick: int
 ) -> None:
     """Perform NPC attack and update last_action_tick."""
+    from server.game.npcs.attack_damage import resolve_npc_attack_damage
+
     config = get_config()
-    damage = config.game.basic_unarmed_damage
+    damage = resolve_npc_attack_damage(
+        npc.npc_base_stats,
+        npc.npc_behavior_config,
+        fallback=config.game.basic_unarmed_damage,
+    )
     combat_result = await combat_service.process_attack(
         attacker_id=npc.participant_id, target_id=target.participant_id, damage=damage
     )
