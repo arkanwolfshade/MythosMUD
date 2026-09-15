@@ -40,6 +40,23 @@ def _roll_int_bounds(lo: int, hi: int, *, rng: random.Random | None) -> int:
     return rng.randint(low, high)
 
 
+def _damage_from_attack(attack: Mapping[str, object], *, rng: random.Random | None) -> int | None:
+    """Return damage from one attack entry, or None if it has no usable fields."""
+    expr = attack.get("damage_expr")
+    if isinstance(expr, str) and expr.strip():
+        try:
+            return max(0, roll_damage_expr(expr, rng=rng))
+        except ValueError:
+            pass
+    lo = attack.get("min_damage")
+    hi = attack.get("max_damage")
+    if isinstance(lo, int) and isinstance(hi, int):
+        return max(0, _roll_int_bounds(lo, hi, rng=rng))
+    if isinstance(lo, int):
+        return max(0, lo)
+    return None
+
+
 def resolve_npc_attack_damage(
     base_stats: Mapping[str, object] | None,
     behavior_config: Mapping[str, object] | None = None,
@@ -51,18 +68,9 @@ def resolve_npc_attack_damage(
     stats = base_stats or {}
     attack = _first_attack(stats)
     if attack is not None:
-        expr = attack.get("damage_expr")
-        if isinstance(expr, str) and expr.strip():
-            try:
-                return max(0, roll_damage_expr(expr, rng=rng))
-            except ValueError:
-                pass
-        lo = attack.get("min_damage")
-        hi = attack.get("max_damage")
-        if isinstance(lo, int) and isinstance(hi, int):
-            return max(0, _roll_int_bounds(lo, hi, rng=rng))
-        if isinstance(lo, int):
-            return max(0, lo)
+        rolled = _damage_from_attack(attack, rng=rng)
+        if rolled is not None:
+            return rolled
 
     legacy = _legacy_behavior_damage(behavior_config)
     if legacy is not None:
