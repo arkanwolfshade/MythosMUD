@@ -126,6 +126,42 @@ describe('CatalogPage', () => {
     expect(screen.queryByText(/\{"weapon"/)).not.toBeInTheDocument();
   });
 
+  it('keeps pagination visible and fetches the next page', async () => {
+    hoisted.getTokenMock.mockReturnValue('token');
+    const page1 = { ...adminCatalogBody, total: 50, page: 1, page_size: 25 };
+    const page2 = {
+      ...adminCatalogBody,
+      total: 50,
+      page: 2,
+      page_size: 25,
+      items: [
+        {
+          ...adminCatalogBody.items[0],
+          prototype_id: 'core.weapon.club',
+          name: 'Club',
+        },
+      ],
+    };
+    const fetchMock = vi
+      .spyOn(global, 'fetch')
+      .mockResolvedValueOnce(mockJsonResponse(page1))
+      .mockResolvedValueOnce(mockJsonResponse(page2));
+
+    render(<CatalogPage />);
+
+    expect(await screen.findByText('Page 1 / 2')).toBeInTheDocument();
+    const results = screen.getByRole('region', { name: 'Catalog results' });
+    expect(results.className).toContain('overflow-auto');
+    expect(screen.getByRole('button', { name: 'Next' })).toBeEnabled();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+
+    expect(await screen.findByText('Page 2 / 2')).toBeInTheDocument();
+    expect(screen.getByText('Club')).toBeInTheDocument();
+    const lastUrl = String(fetchMock.mock.calls.at(-1)?.[0] ?? '');
+    expect(lastUrl).toContain('page=2');
+  });
+
   it('shows load error when API returns non-ok', async () => {
     hoisted.getTokenMock.mockReturnValue('token');
     vi.spyOn(global, 'fetch').mockResolvedValueOnce(mockJsonResponse({}, false, 500));
