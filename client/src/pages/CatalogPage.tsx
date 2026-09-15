@@ -205,39 +205,37 @@ function AdminCells({ item }: { item: CatalogAdminItem }) {
 
 function CatalogTable({ data }: { data: CatalogResponse }) {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-left text-sm border-collapse">
-        <thead>
-          <tr className="border-b border-mythos-terminal-border">
-            <th className="py-2 pr-3 whitespace-nowrap">Name</th>
-            <th className="py-2 pr-3 whitespace-nowrap">Type</th>
-            <th className="py-2 pr-3 whitespace-nowrap">Short description</th>
-            {data.is_admin ? (
-              <>
-                <th className="py-2 pr-3 whitespace-nowrap">Prototype ID</th>
-                <th className="py-2 pr-3 whitespace-nowrap">Weight</th>
-                <th className="py-2 pr-3 whitespace-nowrap">Value</th>
-                <th className="py-2 pr-3 whitespace-nowrap">Metadata</th>
-                <th className="py-2 pr-3 whitespace-nowrap">Tags</th>
-              </>
-            ) : null}
+    <table className="min-w-max w-full text-left text-sm border-collapse">
+      <thead>
+        <tr className="border-b border-mythos-terminal-border">
+          <th className="py-2 pr-3 whitespace-nowrap">Name</th>
+          <th className="py-2 pr-3 whitespace-nowrap">Type</th>
+          <th className="py-2 pr-3 whitespace-nowrap">Short description</th>
+          {data.is_admin ? (
+            <>
+              <th className="py-2 pr-3 whitespace-nowrap">Prototype ID</th>
+              <th className="py-2 pr-3 whitespace-nowrap">Weight</th>
+              <th className="py-2 pr-3 whitespace-nowrap">Value</th>
+              <th className="py-2 pr-3 whitespace-nowrap">Metadata</th>
+              <th className="py-2 pr-3 whitespace-nowrap">Tags</th>
+            </>
+          ) : null}
+        </tr>
+      </thead>
+      <tbody>
+        {data.items.map((item, index) => (
+          <tr
+            key={isAdminItem(item, data.is_admin) ? item.prototype_id : `${item.name}-${item.item_type}-${index}`}
+            className="border-b border-mythos-terminal-border/40"
+          >
+            <td className="py-2 pr-3 align-top whitespace-nowrap">{item.name}</td>
+            <td className="py-2 pr-3 align-top whitespace-nowrap">{item.item_type}</td>
+            <td className="py-2 pr-3 align-top">{item.short_description}</td>
+            {isAdminItem(item, data.is_admin) ? <AdminCells item={item} /> : null}
           </tr>
-        </thead>
-        <tbody>
-          {data.items.map((item, index) => (
-            <tr
-              key={isAdminItem(item, data.is_admin) ? item.prototype_id : `${item.name}-${item.item_type}-${index}`}
-              className="border-b border-mythos-terminal-border/40"
-            >
-              <td className="py-2 pr-3 align-top">{item.name}</td>
-              <td className="py-2 pr-3 align-top">{item.item_type}</td>
-              <td className="py-2 pr-3 align-top">{item.short_description}</td>
-              {isAdminItem(item, data.is_admin) ? <AdminCells item={item} /> : null}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+        ))}
+      </tbody>
+    </table>
   );
 }
 
@@ -255,7 +253,7 @@ function CatalogPagination({
   onNext: () => void;
 }) {
   return (
-    <div className="flex gap-3 items-center mt-6">
+    <div className="flex shrink-0 gap-3 items-center pt-4 mt-2 border-t border-mythos-terminal-border/40">
       <button type="button" disabled={page <= 1} onClick={onPrev} className={BTN_CLASS}>
         Previous
       </button>
@@ -298,24 +296,43 @@ function catalogTotalPages(data: CatalogResponse): number {
 
 type CatalogPageState = ReturnType<typeof useCatalogPageState>;
 
+function CatalogPageShell({ children, footer }: { children: React.ReactNode; footer?: React.ReactNode }) {
+  return (
+    <div className="h-screen flex flex-col bg-mythos-terminal-background text-mythos-terminal-text p-4 sm:p-6 overflow-hidden">
+      <div className="flex flex-col flex-1 min-h-0 min-w-0 w-full">
+        {children}
+        {footer}
+      </div>
+    </div>
+  );
+}
+
 function CatalogLoadedView({ s }: { s: CatalogPageState }) {
   const data = s.data;
   if (!data) {
     return (
-      <div className="min-h-screen bg-mythos-terminal-background text-mythos-terminal-text p-6">
-        <div className="max-w-6xl mx-auto">
-          <h1 className="text-2xl font-bold mb-2">Item Catalog</h1>
-          <p className="text-mythos-terminal-text/70 text-sm mb-4">Loading catalog...</p>
-        </div>
-      </div>
+      <CatalogPageShell>
+        <h1 className="text-2xl font-bold mb-2 shrink-0">Item Catalog</h1>
+        <p className="text-mythos-terminal-text/70 text-sm mb-4 shrink-0">Loading catalog...</p>
+      </CatalogPageShell>
     );
   }
 
   return (
-    <div className="min-h-screen bg-mythos-terminal-background text-mythos-terminal-text p-6">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-2xl font-bold mb-2">Item Catalog</h1>
-        <p className="text-mythos-terminal-text/70 text-sm mb-4">{catalogShowingLabel(data)}</p>
+    <CatalogPageShell
+      footer={
+        <CatalogPagination
+          page={s.page}
+          totalPages={catalogTotalPages(data)}
+          dataPage={data.page}
+          onPrev={() => s.setPage(p => Math.max(1, p - 1))}
+          onNext={() => s.setPage(p => p + 1)}
+        />
+      }
+    >
+      <h1 className="text-2xl font-bold mb-2 shrink-0">Item Catalog</h1>
+      <p className="text-mythos-terminal-text/70 text-sm mb-4 shrink-0">{catalogShowingLabel(data)}</p>
+      <div className="shrink-0">
         <CatalogFilterForm
           itemType={s.itemType}
           namespace={s.namespace}
@@ -328,16 +345,11 @@ function CatalogLoadedView({ s }: { s: CatalogPageState }) {
             if (s.authToken) void s.fetchCatalog(s.authToken, 1);
           }}
         />
-        <CatalogResults data={data} isLoading={s.isLoading} />
-        <CatalogPagination
-          page={s.page}
-          totalPages={catalogTotalPages(data)}
-          dataPage={data.page}
-          onPrev={() => s.setPage(p => Math.max(1, p - 1))}
-          onNext={() => s.setPage(p => p + 1)}
-        />
       </div>
-    </div>
+      <div role="region" aria-label="Catalog results" className="flex-1 min-h-0 min-w-0 overflow-auto mt-2">
+        <CatalogResults data={data} isLoading={s.isLoading} />
+      </div>
+    </CatalogPageShell>
   );
 }
 
