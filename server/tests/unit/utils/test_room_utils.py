@@ -18,7 +18,7 @@ from server.utils.room_utils import (
 
 def test_extract_subzone_from_room_id():
     """Test extract_subzone_from_room_id() extracts subzone."""
-    room_id = "earth_arkhamcity_northside_intersection_derby_high"
+    room_id = "earth_arkhamcity_northside_intersection_derby_garrison"
     result = extract_subzone_from_room_id(room_id)
     assert result == "northside"
 
@@ -39,7 +39,7 @@ def test_extract_subzone_from_room_id_invalid():
 
 def test_get_zone_from_room_id():
     """Test get_zone_from_room_id() extracts zone."""
-    room_id = "earth_arkhamcity_northside_intersection_derby_high"
+    room_id = "earth_arkhamcity_northside_intersection_derby_garrison"
     result = get_zone_from_room_id(room_id)
     assert result == "arkhamcity"
 
@@ -59,7 +59,7 @@ def test_get_zone_from_room_id_invalid():
 
 def test_get_plane_from_room_id():
     """Test get_plane_from_room_id() extracts plane."""
-    room_id = "earth_arkhamcity_northside_intersection_derby_high"
+    room_id = "earth_arkhamcity_northside_intersection_derby_garrison"
     result = get_plane_from_room_id(room_id)
     assert result == "earth"
 
@@ -79,7 +79,7 @@ def test_get_plane_from_room_id_invalid():
 
 def test_is_valid_room_id_format():
     """Test is_valid_room_id_format() validates room ID format."""
-    assert is_valid_room_id_format("earth_arkhamcity_northside_intersection_derby_high") is True
+    assert is_valid_room_id_format("earth_arkhamcity_northside_intersection_derby_garrison") is True
     assert is_valid_room_id_format("earth_zone_subzone_room") is True
     assert is_valid_room_id_format("invalid_room_id") is False
     assert is_valid_room_id_format("") is False
@@ -89,8 +89,8 @@ def test_get_local_channel_subject():
     """Test get_local_channel_subject() generates subject (deprecated)."""
     with warnings.catch_warnings(record=True):
         warnings.simplefilter("always")
-        result = get_local_channel_subject("earth_arkhamcity_northside_intersection_derby_high")
-        assert result == "chat.local.earth_arkhamcity_northside_intersection_derby_high"
+        result = get_local_channel_subject("earth_arkhamcity_northside_intersection_derby_garrison")
+        assert result == "chat.local.earth_arkhamcity_northside_intersection_derby_garrison"
 
 
 def test_get_local_channel_subject_invalid():
@@ -102,7 +102,7 @@ def test_get_local_channel_subject_invalid():
 
 def test_get_subzone_local_channel_subject():
     """Test get_subzone_local_channel_subject() generates subject."""
-    room_id = "earth_arkhamcity_northside_intersection_derby_high"
+    room_id = "earth_arkhamcity_northside_intersection_derby_garrison"
     result = get_subzone_local_channel_subject(room_id)
     assert result == "chat.local.subzone.northside"
 

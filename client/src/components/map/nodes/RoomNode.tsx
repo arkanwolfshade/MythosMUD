@@ -12,6 +12,7 @@
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
 import type { RoomNodeData } from '../types';
+import { DepartureMarkers } from './DepartureMarkers';
 
 // Type alias for RoomNode props - extends NodeProps for type safety
 export type RoomNodeProps = NodeProps<RoomNodeData>;
@@ -29,7 +30,9 @@ const getNodeShape = (_environment?: string, _subZone?: string): 'circle' | 'squ
  * Get CSS classes for the node based on its state.
  */
 const getNodeClasses = (data: RoomNodeData): string => {
-  const baseClasses = 'flex items-center justify-center border-2 font-mono text-xs';
+  // `relative` is load-bearing: the departure marker is absolutely positioned, and
+  // without a positioned ancestor it escapes the node and lands somewhere in the canvas.
+  const baseClasses = 'relative flex items-center justify-center border-2 font-mono text-xs';
   const shapeClasses = {
     circle: 'rounded-full',
     square: '', // No rounding - true squares
@@ -103,6 +106,8 @@ export const RoomNode: React.FC<RoomNodeProps> = React.memo(
           position={Position.Left}
           className="w-2 h-2 bg-mythos-terminal-success"
         />
+        {/* Ways out of the loaded area; see DepartureMarkers. */}
+        <DepartureMarkers departures={data.departures} />
 
         {/* Node content */}
         <div className="text-center px-1 truncate max-w-full" title={data.name}>
@@ -119,7 +124,8 @@ export const RoomNode: React.FC<RoomNodeProps> = React.memo(
       prevProps.data.isCurrentLocation === nextProps.data.isCurrentLocation &&
       prevProps.data.hasUnsavedChanges === nextProps.data.hasUnsavedChanges &&
       prevProps.data.environment === nextProps.data.environment &&
-      prevProps.data.subZone === nextProps.data.subZone
+      prevProps.data.subZone === nextProps.data.subZone &&
+      (prevProps.data.departures?.join() ?? '') === (nextProps.data.departures?.join() ?? '')
     );
   }
 );

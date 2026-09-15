@@ -254,4 +254,55 @@ describe('IntersectionNode', () => {
     expect(container).toBeTruthy();
     // Name should be truncated
   });
+
+  describe('departure marker (#829)', () => {
+    // A map request covers one sub-zone, so an exit into another sub-zone has no node to
+    // connect to and no edge is drawn. Without a marker on the room itself, the only way
+    // into a building like the Sanitarium is invisible and the corner reads as a dead end.
+    it('shows a marker when the room has an exit leaving the area', () => {
+      render(<IntersectionNode {...defaultProps} data={{ ...defaultData, departures: ['north'] }} />);
+      expect(screen.getByLabelText('Exits to another area: north')).toBeInTheDocument();
+    });
+
+    it('names every departing direction in the label', () => {
+      render(<IntersectionNode {...defaultProps} data={{ ...defaultData, departures: ['north', 'down'] }} />);
+      // One marker per direction, each carrying the full list in its label.
+      expect(screen.getAllByLabelText('Exits to another area: north, down')).toHaveLength(2);
+    });
+
+    it('anchors the marker to the node itself', () => {
+      // The marker is absolutely positioned. Without `relative` on the node it resolves
+      // against some ancestor further up and renders somewhere else on the canvas
+      // entirely - present in the DOM, invisible on the map. Querying by label passes
+      // either way, so the positioning context has to be asserted directly.
+      const { container } = render(
+        <IntersectionNode {...defaultProps} data={{ ...defaultData, departures: ['north'] }} />
+      );
+      const marker = screen.getByLabelText('Exits to another area: north');
+      const anchor = marker.closest('.relative');
+      expect(anchor).not.toBeNull();
+      expect(container.contains(anchor)).toBe(true);
+    });
+
+    it('places the marker on the edge facing the way out', () => {
+      render(<IntersectionNode {...defaultProps} data={{ ...defaultData, departures: ['north', 'east'] }} />);
+      expect(screen.getByTestId('departure-north')).toBeInTheDocument();
+      expect(screen.getByTestId('departure-east')).toBeInTheDocument();
+    });
+
+    it('does not intercept clicks meant for the node', () => {
+      render(<IntersectionNode {...defaultProps} data={{ ...defaultData, departures: ['north'] }} />);
+      expect(screen.getByTestId('departure-north').className).toContain('pointer-events-none');
+    });
+
+    it('shows no marker when every exit stays inside the area', () => {
+      render(<IntersectionNode {...defaultProps} data={{ ...defaultData, departures: [] }} />);
+      expect(screen.queryByLabelText(/Exits to another area/)).not.toBeInTheDocument();
+    });
+
+    it('shows no marker when departures are absent entirely', () => {
+      render(<IntersectionNode {...defaultProps} data={defaultData} />);
+      expect(screen.queryByLabelText(/Exits to another area/)).not.toBeInTheDocument();
+    });
+  });
 });

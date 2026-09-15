@@ -16,6 +16,7 @@ import {
   applyGridLayout,
   defaultForceLayoutConfig,
   defaultGridLayoutConfig,
+  GRID_PITCH,
   type ForceLayoutConfig,
   type GridLayoutConfig,
 } from '../utils/layout';
@@ -177,7 +178,8 @@ export function useMapLayout(options: UseMapLayoutOptions): UseMapLayoutResult {
         ) {
           return {
             ...node,
-            position: { x: roomData.map_x, y: roomData.map_y },
+            // Stored coordinates are grid units; React Flow positions are pixels.
+            position: { x: roomData.map_x * GRID_PITCH, y: roomData.map_y * GRID_PITCH },
             data: {
               ...node.data,
               hasUnsavedChanges: false,

@@ -10,6 +10,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { useMapLayout } from '../useMapLayout';
 import type { Node } from 'reactflow';
 import type { RoomNodeData } from '../../types';
+import { GRID_PITCH } from '../../utils/mapGeometry';
 
 describe('useMapLayout', () => {
   const createMockNode = (id: string, position = { x: 0, y: 0 }): Node<RoomNodeData> => ({
@@ -46,7 +47,11 @@ describe('useMapLayout', () => {
       })
     );
 
-    expect(result.current.layoutNodes[0].position).toEqual({ x: 100, y: 200 });
+    // Stored coordinates are GRID UNITS; React Flow positions are pixels (#829).
+    expect(result.current.layoutNodes[0].position).toEqual({
+      x: 100 * GRID_PITCH,
+      y: 200 * GRID_PITCH,
+    });
     expect(result.current.hasUnsavedChanges).toBe(false);
   });
 

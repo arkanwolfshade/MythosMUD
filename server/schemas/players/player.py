@@ -51,7 +51,7 @@ class PlayerCreate(PlayerBase):
             "example": {
                 "user_id": "123e4567-e89b-12d3-a456-426614174000",
                 "name": "ProfessorWolfshade",
-                "current_room_id": "earth_arkhamcity_northside_intersection_derby_high",
+                "current_room_id": "earth_arkhamcity_sanitarium_room_foyer_001",
                 "experience_points": 0,
                 "level": 1,
                 "stats": {"health": 100, "lucidity": 100, "strength": 50},
@@ -98,7 +98,7 @@ class PlayerRead(PlayerBase):
                 "profession_name": "Tramp",
                 "profession_description": "A wandering soul with no particular skills or connections.",
                 "profession_flavor_text": "You have spent your days drifting from place to place, learning to survive on your wits alone.",
-                "current_room_id": "earth_arkhamcity_northside_intersection_derby_high",
+                "current_room_id": "earth_arkhamcity_sanitarium_room_foyer_001",
                 "experience_points": 150,
                 "level": 2,
                 "stats": {"health": 95, "lucidity": 88, "strength": 12},

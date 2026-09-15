@@ -2215,7 +2215,7 @@ $$;
 -- Name: get_rooms_with_exits(); Type: FUNCTION; Schema: mythos_dev; Owner: -
 --
 
-CREATE FUNCTION mythos_dev.get_rooms_with_exits() RETURNS TABLE(room_uuid uuid, stable_id text, name text, description text, attributes jsonb, subzone_stable_id text, zone_stable_id text, plane text, zone text, exits jsonb)
+CREATE FUNCTION mythos_dev.get_rooms_with_exits() RETURNS TABLE(room_uuid uuid, stable_id text, name text, description text, attributes jsonb, subzone_stable_id text, zone_stable_id text, plane text, zone text, exits jsonb, map_x numeric(10,2), map_y numeric(10,2))
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -2245,7 +2245,9 @@ BEGIN
                 ) FILTER (WHERE rl.direction IS NOT NULL)
             )::jsonb,
             '[]'::jsonb
-        ) AS exits
+        ) AS exits,
+        r.map_x,
+        r.map_y
     FROM rooms r
     LEFT JOIN subzones sz ON r.subzone_id = sz.id
     LEFT JOIN zones z ON sz.zone_id = z.id
@@ -2259,6 +2261,8 @@ BEGIN
         r.name,
         r.description,
         r.attributes,
+        r.map_x,
+        r.map_y,
         sz.stable_id,
         z.stable_id
     ORDER BY z.stable_id, sz.stable_id, r.stable_id;
@@ -3918,7 +3922,7 @@ CREATE TABLE mythos_dev.npc_definitions (
     description text,
     npc_type character varying(20) NOT NULL,
     sub_zone_id character varying(50) NOT NULL,
-    room_id character varying(50),
+    room_id character varying(255),
     required_npc boolean DEFAULT false NOT NULL,
     max_population integer DEFAULT 1 NOT NULL,
     spawn_probability real DEFAULT 1.0 NOT NULL,

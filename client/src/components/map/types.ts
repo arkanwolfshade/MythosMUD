@@ -36,6 +36,14 @@ export interface RoomNodeData {
   occupants?: string[];
   /** Occupant count */
   occupantCount?: number;
+  /**
+   * Directions whose exit leaves the loaded area (another sub-zone or zone).
+   *
+   * The map is fetched for one sub-zone, so the room on the far side is not in the
+   * response and no edge can be drawn to it. Without this the only way into a
+   * building like the Sanitarium is invisible and the corner looks like a dead end.
+   */
+  departures?: string[];
   /** Stored x position from layout (admin edit / persistence) */
   map_x?: number | null;
   /** Stored y position from layout (admin edit / persistence) */

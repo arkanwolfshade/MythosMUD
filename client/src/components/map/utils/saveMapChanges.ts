@@ -11,6 +11,7 @@ import type { Edge } from 'reactflow';
 import { getVersionedApiBaseUrl } from '../../../utils/config';
 import type { MapEditingChanges } from '../hooks/useMapEditing';
 import type { ExitEdgeData, RoomNodeData } from '../types';
+import { GRID_PITCH } from './mapGeometry';
 
 export interface SaveMapChangesOptions {
   /** Auth token for authenticated requests */
@@ -91,8 +92,10 @@ export async function saveNodePositions(
         ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
       },
       body: JSON.stringify({
-        map_x: position.x,
-        map_y: position.y,
+        // React Flow gives pixels; the column stores grid units. Saving raw pixels
+        // here is what used to corrupt the ASCII minimap after a single drag.
+        map_x: position.x / GRID_PITCH,
+        map_y: position.y / GRID_PITCH,
       }),
     });
 

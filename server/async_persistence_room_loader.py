@@ -8,6 +8,7 @@ Loads rooms from PostgreSQL via get_rooms_with_exits() and builds in-memory Room
 from __future__ import annotations
 
 import json
+from decimal import Decimal
 from typing import TYPE_CHECKING, TypedDict, cast
 
 from sqlalchemy import text
@@ -43,6 +44,8 @@ class ProcessedRoomData(TypedDict):
     plane: str
     zone: str
     sub_zone: str | None
+    map_x: float | None
+    map_y: float | None
 
 
 class RoomLoadResult(TypedDict):
@@ -64,11 +67,23 @@ class RoomInitPayload(TypedDict, total=False):
     rest_location: bool
     exits: dict[str, str]
     attributes: dict[str, object]
+    map_x: float | None
+    map_y: float | None
 
 
 def _row_optional_str(row: dict[str, object], key: str) -> str | None:
     value = row.get(key)
     return value if isinstance(value, str) else None
+
+
+def _row_optional_float(row: dict[str, object], key: str) -> float | None:
+    """Read a `numeric(10,2)` column, which the driver hands back as `Decimal`."""
+    value = row.get(key)
+    if value is None or isinstance(value, bool):
+        return None
+    if isinstance(value, int | float | Decimal):
+        return float(value)
+    return None
 
 
 def _attributes_from_row(row: dict[str, object]) -> dict[str, object]:
@@ -184,7 +199,9 @@ class RoomCacheLoader:
                         zone_stable_id,
                         plane,
                         zone,
-                        exits
+                        exits,
+                        map_x,
+                        map_y
                     FROM get_rooms_with_exits()
                     """
                 )
@@ -281,6 +298,8 @@ class RoomCacheLoader:
                     "plane": plane_name,
                     "zone": zone_name,
                     "sub_zone": subzone_stable_id,
+                    "map_x": _row_optional_float(row, "map_x"),
+                    "map_y": _row_optional_float(row, "map_y"),
                 }
             )
 
@@ -316,6 +335,8 @@ class RoomCacheLoader:
             "plane": plane_name,
             "zone": zone_name,
             "sub_zone": subzone_stable_id,
+            "map_x": _row_optional_float(row, "map_x"),
+            "map_y": _row_optional_float(row, "map_y"),
         }
 
     def _process_room_rows(self, rooms_rows: list[dict[str, object]]) -> list[ProcessedRoomData]:
@@ -478,6 +499,11 @@ class RoomCacheLoader:
                 "rest_location": rest_location,
                 "exits": exits,
                 "attributes": attributes_payload,
+                # #829: carried to Room so GET /api/rooms/list can hand coordinates to the
+                # React Flow map and editor. Selected by get_rooms_with_exits() but dropped
+                # here until now, which is why every zone laid itself out by force layout.
+                "map_x": room_data_item["map_x"],
+                "map_y": room_data_item["map_y"],
             }
 
             result_container["rooms"][room_id] = Room(dict(room_payload), self._event_bus)

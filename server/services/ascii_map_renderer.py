@@ -11,11 +11,29 @@ is essential for navigating the eldritch architecture of our world.
 
 # pylint: disable=too-few-public-methods,too-many-locals,too-many-arguments,too-many-positional-arguments  # Reason: Renderer class with focused responsibility, minimal public interface, and complex rendering logic requiring many parameters
 
+from collections.abc import Mapping
 from typing import Any, NamedTuple, cast
 
 from ..structured_logging.enhanced_logging_config import get_logger
+from . import ascii_map_exits, ascii_map_symbols
 
 logger = get_logger(__name__)
+
+# Characters used to continue an exit across cells that hold no room. These match
+# the bidirectional glyphs _horizontal_exit_char_between / _vertical_exit_char_between
+# already use, so a spanning exit is indistinguishable from an ordinary one.
+_BRIDGE_HORIZONTAL = "—"
+_BRIDGE_VERTICAL = "|"
+
+# Marks an exit leading out of the area currently drawn - into another sub-zone or zone.
+# A map request is scoped to one sub-zone, so the room on the far side is not loaded and
+# cannot be plotted; without this the only way into a building like the Sanitarium simply
+# does not appear, and the street corner looks like a dead end.
+_DEPARTURE = "*"
+_NO_DEPARTURES: dict[tuple[int, int], frozenset[str]] = {}
+
+# Hoisted so it is not a call inside a default-argument expression.
+_NO_BRIDGES: frozenset[tuple[int, int]] = frozenset()
 
 
 class _ExitRowContext(NamedTuple):
@@ -28,6 +46,10 @@ class _ExitRowContext(NamedTuple):
     viewport_width: int
     viewport_y: int
     viewport_height: int
+    # Cells between two rooms joined by one exit; see _build_exit_bridges.
+    vertical_bridges: frozenset[tuple[int, int]] = _NO_BRIDGES
+    # Rooms with an exit leaving the loaded area; see ascii_map_exits.build_departures.
+    departures: dict[tuple[int, int], frozenset[str]] = _NO_DEPARTURES
 
 
 class AsciiMapRenderer:
@@ -40,59 +62,10 @@ class AsciiMapRenderer:
 
     def __init__(self) -> None:
         """Initialize the ASCII map renderer."""
-        # Symbol sets for different environments
-        self.symbols = {
-            "world": {
-                "default": ".",
-                "room": ".",
-                "intersection": "+",
-                "building": "[",
-                "player": "@",
-            },
-            "city": {
-                "default": ".",
-                "room": ".",
-                "intersection": "+",
-                "building": "[",
-                "street": "-",
-                "player": "@",
-            },
-            "interior": {
-                "default": "#",
-                "room": "#",
-                "intersection": "+",
-                "corridor": "-",
-                "player": "@",
-            },
-        }
-
-        # Exit type symbols
-        self.exit_symbols = {
-            "door": "D",
-            "path": "-",
-            "road": "-",
-            "stairs": "/",
-            "portal": "O",
-        }
-
-        # CSS color classes for different styles
-        self.style_colors = {
-            "world": {
-                "room": "color: #8B7355;",  # Brown
-                "player": "color: #FFD700; font-weight: bold;",  # Gold
-                "exit": "color: #654321;",  # Dark brown
-            },
-            "city": {
-                "room": "color: #696969;",  # Dim gray
-                "player": "color: #FFD700; font-weight: bold;",  # Gold
-                "exit": "color: #808080;",  # Gray
-            },
-            "interior": {
-                "room": "color: #2F4F4F;",  # Dark slate gray
-                "player": "color: #FFD700; font-weight: bold;",  # Gold
-                "exit": "color: #708090;",  # Slate gray
-            },
-        }
+        # Tables live in ascii_map_symbols; bound here so `renderer.symbols` still resolves.
+        self.symbols = ascii_map_symbols.SYMBOLS
+        self.exit_symbols = ascii_map_symbols.EXIT_SYMBOLS
+        self.style_colors = ascii_map_symbols.STYLE_COLORS
 
     def _exit_is_bidirectional(
         self,
@@ -166,6 +139,12 @@ class AsciiMapRenderer:
                 }
         return exit_from
 
+    def _build_exit_bridges(
+        self, exit_from: Mapping[tuple[int, int], Mapping[str, Mapping[str, object]]]
+    ) -> tuple[set[tuple[int, int]], set[tuple[int, int]]]:
+        """Cells lying strictly between two rooms joined by a single exit."""
+        return ascii_map_exits.build_exit_bridges(exit_from)
+
     def _auto_center_viewport(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Viewport centering requires many parameters for context and viewport calculations
         self,
         current_room_id: str | None,
@@ -190,9 +169,14 @@ class AsciiMapRenderer:
         map_style: str,
         viewport_x: int,
         viewport_width: int,
+        horizontal_bridges: frozenset[tuple[int, int]] = _NO_BRIDGES,
+        vertical_bridges: frozenset[tuple[int, int]] = _NO_BRIDGES,
+        departures: dict[tuple[int, int], frozenset[str]] | None = None,
     ) -> str:
         """Render a single row of rooms with horizontal exits."""
-        line = []
+        line: list[str] = []
+        leaving = departures if departures is not None else _NO_DEPARTURES
+        exit_span = f'<span class="ascii-map-exit ascii-map-exit-{map_style}">'
         for x in range(viewport_x, viewport_x + viewport_width):
             cell = grid.get((x, y), " ")
             if isinstance(cell, dict):
@@ -204,10 +188,23 @@ class AsciiMapRenderer:
                 title_attr = f' title="{room_name}"' if room_name else ""
                 line.append(f'<span class="{room_class}"{title_attr}>{symbol}</span>')
                 exit_char = self._get_horizontal_exit_char(x, y, exit_from, grid, viewport_x, viewport_width)
+                if not exit_char and (x + 1, y) in horizontal_bridges:
+                    # The next cell is not a room but the exit continues through it.
+                    exit_char = _BRIDGE_HORIZONTAL
+                if not exit_char and "east" in leaving.get((x, y), frozenset()):
+                    exit_char = _DEPARTURE
                 if exit_char:
-                    line.append(f'<span class="ascii-map-exit ascii-map-exit-{map_style}">{exit_char}</span>')
+                    line.append(f"{exit_span}{exit_char}</span>")
                 else:
                     line.append(" ")
+            elif (x, y) in horizontal_bridges:
+                # Empty cell inside an east/west span: draw straight through it.
+                line.append(f"{exit_span}{_BRIDGE_HORIZONTAL}</span>{exit_span}{_BRIDGE_HORIZONTAL}</span>")
+            elif (x, y) in vertical_bridges:
+                line.append(f"{exit_span}{_BRIDGE_VERTICAL}</span> ")
+            elif "west" in leaving.get((x + 1, y), frozenset()):
+                # The room to the right leaves westward; mark the square beside it.
+                line.append(f" {exit_span}{_DEPARTURE}</span>")
             else:
                 line.append("  ")
         return "".join(line)
@@ -216,10 +213,16 @@ class AsciiMapRenderer:
         """Render a single row of vertical exits between room rows."""
         if y >= ctx.viewport_y + ctx.viewport_height - 1:
             return ""
-        exit_line = []
+        exit_line: list[str] = []
         for x in range(ctx.viewport_x, ctx.viewport_x + ctx.viewport_width):
             cell = ctx.grid.get((x, y), " ")
             next_cell = ctx.grid.get((x, y + 1), " ")
+            bridged = (x, y) in ctx.vertical_bridges or (x, y + 1) in ctx.vertical_bridges
+            # The room above leaving southward, or the room below leaving northward:
+            # either way the door sits on this line.
+            departing = "south" in ctx.departures.get((x, y), frozenset()) or "north" in ctx.departures.get(
+                (x, y + 1), frozenset()
+            )
             if isinstance(cell, dict) and isinstance(next_cell, dict):
                 exit_char = self._get_vertical_exit_char(
                     x, y, ctx.exit_from, ctx.grid, ctx.viewport_y, ctx.viewport_height
@@ -229,6 +232,15 @@ class AsciiMapRenderer:
                     exit_line.append(" ")
                 else:
                     exit_line.append("  ")
+            elif departing:
+                exit_line.append(f'<span class="ascii-map-exit ascii-map-exit-{ctx.map_style}">{_DEPARTURE}</span>')
+                exit_line.append(" ")
+            elif bridged:
+                # One side is an empty cell inside a north/south span - keep the line whole.
+                exit_line.append(
+                    f'<span class="ascii-map-exit ascii-map-exit-{ctx.map_style}">{_BRIDGE_VERTICAL}</span>'
+                )
+                exit_line.append(" ")
             else:
                 exit_line.append("  ")
         return "".join(exit_line)
@@ -265,15 +277,41 @@ class AsciiMapRenderer:
             current_room_id, room_positions, viewport_width, viewport_height, viewport_x, viewport_y
         )
         exit_from = self._build_exit_lookup(rooms)
+        h_bridges, v_bridges = self._build_exit_bridges(exit_from)
+        departures = ascii_map_exits.build_departures(rooms)
+        horizontal_bridges = frozenset(h_bridges)
+        vertical_bridges = frozenset(v_bridges)
 
         html_lines = []
         html_lines.append('<div class="ascii-map">')
 
         for y in range(viewport_y, viewport_y + viewport_height):
-            html_lines.append(self._render_room_row(y, grid, exit_from, map_style, viewport_x, viewport_width))
+            html_lines.append(
+                self._render_room_row(
+                    y,
+                    grid,
+                    exit_from,
+                    map_style,
+                    viewport_x,
+                    viewport_width,
+                    horizontal_bridges,
+                    vertical_bridges,
+                    departures,
+                )
+            )
             exit_row = self._render_exit_row(
                 y,
-                _ExitRowContext(grid, exit_from, map_style, viewport_x, viewport_width, viewport_y, viewport_height),
+                _ExitRowContext(
+                    grid,
+                    exit_from,
+                    map_style,
+                    viewport_x,
+                    viewport_width,
+                    viewport_y,
+                    viewport_height,
+                    vertical_bridges,
+                    departures,
+                ),
             )
             if exit_row:
                 html_lines.append(exit_row)
@@ -289,16 +327,10 @@ class AsciiMapRenderer:
         y: int,
         x: int,
     ) -> str | None:
-        """Return the horizontal exit character (—, >, or <) given east/west exit state, or None."""
-        if east_exit and east_exit.get("target") == (next_x, y):
-            if west_exit_back and west_exit_back.get("target") == (x, y):
-                return "—"  # em dash, bidirectional
-            return ">"
-        if west_exit_back and west_exit_back.get("target") == (x, y):
-            return "<"
-        return None
+        """Return the horizontal exit character (em dash, >, or <), or None."""
+        return ascii_map_exits.horizontal_exit_char_between(east_exit, west_exit_back, next_x, y, x)
 
-    def _get_horizontal_exit_char(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Exit character calculation requires many parameters for context and character selection
+    def _get_horizontal_exit_char(
         self,
         x: int,
         y: int,
@@ -307,28 +339,8 @@ class AsciiMapRenderer:
         viewport_x: int,
         viewport_width: int,
     ) -> str | None:
-        """
-        Get exit character to display after a room for horizontal (east/west) exits.
-
-        Args:
-            x, y: Current position
-            exit_from: Map of exits from each position
-            grid: Grid dictionary
-            viewport_x: Viewport X offset
-            viewport_width: Viewport width
-
-        Returns:
-            Exit character to display, or None
-        """
-        next_x = x + 1
-        if next_x >= viewport_x + viewport_width:
-            return None
-        next_cell = grid.get((next_x, y))
-        if not isinstance(next_cell, dict):
-            return None
-        room_exits = exit_from.get((x, y), {})
-        next_exits = exit_from.get((next_x, y), {})
-        return self._horizontal_exit_char_between(room_exits.get("east"), next_exits.get("west"), next_x, y, x)
+        """Exit character shown immediately after the room at (x, y), or None."""
+        return ascii_map_exits.get_horizontal_exit_char(x, y, exit_from, grid, viewport_x, viewport_width)
 
     def _vertical_exit_char_between(
         self,
@@ -338,16 +350,10 @@ class AsciiMapRenderer:
         x: int,
         y: int,
     ) -> str | None:
-        """Return the vertical exit character (|, v, or ^) given south/north exit state, or None."""
-        if south_exit and south_exit.get("target") == (x, next_y):
-            if north_exit_back and north_exit_back.get("target") == (x, y):
-                return "|"  # bidirectional
-            return "v"
-        if north_exit_back and north_exit_back.get("target") == (x, y):
-            return "^"
-        return None
+        """Return the vertical exit character (|, v, or ^), or None."""
+        return ascii_map_exits.vertical_exit_char_between(south_exit, north_exit_back, next_y, x, y)
 
-    def _get_vertical_exit_char(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Exit character calculation requires many parameters for context and character selection
+    def _get_vertical_exit_char(
         self,
         x: int,
         y: int,
@@ -356,28 +362,8 @@ class AsciiMapRenderer:
         viewport_y: int,
         viewport_height: int,
     ) -> str | None:
-        """
-        Get exit character to display between rows for vertical (north/south) exits.
-
-        Args:
-            x, y: Current position (upper room)
-            exit_from: Map of exits from each position
-            grid: Grid dictionary
-            viewport_y: Viewport Y offset
-            viewport_height: Viewport height
-
-        Returns:
-            Exit character to display, or None
-        """
-        next_y = y + 1
-        if next_y >= viewport_y + viewport_height:
-            return None
-        next_cell = grid.get((x, next_y), " ")
-        if not isinstance(next_cell, dict):
-            return None
-        room_exits = exit_from.get((x, y), {})
-        next_exits = exit_from.get((x, next_y), {})
-        return self._vertical_exit_char_between(room_exits.get("south"), next_exits.get("north"), next_y, x, y)
+        """Exit character shown on the row below the room at (x, y), or None."""
+        return ascii_map_exits.get_vertical_exit_char(x, y, exit_from, grid, viewport_y, viewport_height)
 
     def _determine_map_style(self, rooms: list[dict[str, Any]]) -> str:
         """
@@ -499,31 +485,8 @@ class AsciiMapRenderer:
         return self.symbols[map_style].get("default", ".")
 
     def _get_reverse_direction(self, direction: str) -> str:
-        """
-        Get reverse direction for checking bidirectional exits.
-
-        Args:
-            direction: Exit direction
-
-        Returns:
-            Reverse direction name
-        """
-        direction_lower = direction.lower()
-        reverse_map = {
-            "north": "south",
-            "south": "north",
-            "east": "west",
-            "west": "east",
-            "northeast": "southwest",
-            "northwest": "southeast",
-            "southeast": "northwest",
-            "southwest": "northeast",
-            "up": "down",
-            "down": "up",
-            "in": "out",
-            "out": "in",
-        }
-        return reverse_map.get(direction_lower, "")
+        """Reverse of `direction`, for checking bidirectional exits."""
+        return ascii_map_exits.reverse_direction(direction)
 
     def _render_empty_map(self, width: int, height: int) -> str:
         """

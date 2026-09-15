@@ -207,7 +207,7 @@ async def test_determine_spawn_room_with_sub_zone(npc_startup_service: NPCStartu
     npc_startup_service._async_persistence = mock_persistence  # #679: injected, not via container
     with patch("asyncio.to_thread", new_callable=AsyncMock, return_value=mock_room):
         result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
-        assert result == "earth_arkhamcity_northside_intersection_derby_high"
+        assert result == "earth_arkhamcity_northside_intersection_derby_garrison"
 
 
 @pytest.mark.asyncio
@@ -225,7 +225,7 @@ async def test_determine_spawn_room_fallback(npc_startup_service: NPCStartupServ
     npc_startup_service._async_persistence = mock_persistence  # #679: injected, not via container
     with patch("asyncio.to_thread", new_callable=AsyncMock, return_value=mock_room):
         result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
-        assert result == "earth_arkhamcity_northside_intersection_derby_high"
+        assert result == "earth_arkhamcity_sanitarium_room_foyer_001"
 
 
 @pytest.mark.asyncio
@@ -241,7 +241,7 @@ async def test_determine_spawn_room_no_persistence(npc_startup_service: NPCStart
 def test_get_default_room_for_sub_zone(npc_startup_service: NPCStartupService) -> None:
     """Test _get_default_room_for_sub_zone() returns correct room for known sub-zone."""
     result: str | None = npc_startup_service._get_default_room_for_sub_zone("northside")
-    assert result == "earth_arkhamcity_northside_intersection_derby_high"
+    assert result == "earth_arkhamcity_northside_intersection_derby_garrison"
 
 
 def test_get_default_room_for_sub_zone_unknown(npc_startup_service: NPCStartupService) -> None:
@@ -253,7 +253,7 @@ def test_get_default_room_for_sub_zone_unknown(npc_startup_service: NPCStartupSe
 def test_get_default_room_for_sub_zone_case_insensitive(npc_startup_service: NPCStartupService) -> None:
     """Test _get_default_room_for_sub_zone() is case insensitive."""
     result: str | None = npc_startup_service._get_default_room_for_sub_zone("NORTHSIDE")
-    assert result == "earth_arkhamcity_northside_intersection_derby_high"
+    assert result == "earth_arkhamcity_northside_intersection_derby_garrison"
 
 
 def test_npc_startup_service_accepts_injected_async_persistence() -> None:
@@ -349,7 +349,7 @@ async def test_determine_spawn_room_room_id_not_found(npc_startup_service: NPCSt
     npc_startup_service._async_persistence = mock_persistence  # #679: injected, not via container
     with patch("asyncio.to_thread", new_callable=AsyncMock, return_value=mock_room):
         result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
-        assert result == "earth_arkhamcity_northside_intersection_derby_high"
+        assert result == "earth_arkhamcity_northside_intersection_derby_garrison"
 
 
 @pytest.mark.asyncio
@@ -368,7 +368,7 @@ async def test_determine_spawn_room_sub_zone_room_not_found(npc_startup_service:
     npc_startup_service._async_persistence = mock_persistence  # #679: injected, not via container
     with patch("asyncio.to_thread", new_callable=AsyncMock, side_effect=[None, mock_room]):
         result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
-        assert result == "earth_arkhamcity_northside_intersection_derby_high"
+        assert result == "earth_arkhamcity_sanitarium_room_foyer_001"
 
 
 @pytest.mark.asyncio

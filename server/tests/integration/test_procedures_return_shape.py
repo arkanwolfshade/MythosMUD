@@ -28,6 +28,11 @@ GET_ROOMS_WITH_EXITS_COLUMNS = {
     "plane",
     "zone",
     "exits",
+    # #829: the map columns the editor and React Flow map need. They were declared on
+    # RoomData but never selected here, so GET /api/rooms/list returned null for both
+    # and every stored-coordinate branch in the client was unreachable.
+    "map_x",
+    "map_y",
 }
 
 GET_PLAYER_BY_ID_COLUMNS = {

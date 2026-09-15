@@ -11,6 +11,7 @@
 
 import { describe, expect, it } from 'vitest';
 import type { Room } from '../../../../stores/gameStore';
+import { GRID_PITCH } from '../mapGeometry';
 import { createEdgesFromRooms, roomToNode, roomsToNodes, transformRoomsToMapData } from '../mapUtils';
 
 describe('mapUtils', () => {
@@ -59,8 +60,13 @@ describe('mapUtils', () => {
 
       const node = roomToNode(room);
 
-      expect(node.position.x).toBe(150.5);
-      expect(node.position.y).toBe(200.3);
+      // map_x/map_y are GRID UNITS in the database; React Flow wants pixels (#829).
+      // Saving pixels straight back into those columns is what used to corrupt the
+      // ASCII minimap, which reads the same columns as grid cells.
+      expect(node.position.x).toBe(150.5 * GRID_PITCH);
+      expect(node.position.y).toBe(200.3 * GRID_PITCH);
+      expect(node.data.map_x).toBe(150.5);
+      expect(node.data.map_y).toBe(200.3);
     });
 
     it('should set node type to intersection for intersection environments', () => {
@@ -115,6 +121,39 @@ describe('mapUtils', () => {
       const node = roomToNode(room, 'current_room');
 
       expect(node.data.isCurrentLocation).toBe(true);
+    });
+  });
+
+  describe('departures', () => {
+    // The map is fetched one sub-zone at a time, so an exit into another sub-zone has no
+    // node to connect to and createEdgesFromRooms drops it. Without recording it, the
+    // Sanitarium door off Derby Street is invisible and the corner looks like a dead end.
+    const corner: Room = {
+      id: 'earth_arkhamcity_northside_intersection_derby_parsonage',
+      name: 'Derby and Parsonage',
+      description: 'A crossing.',
+      plane: 'earth',
+      zone: 'arkhamcity',
+      sub_zone: 'northside',
+      environment: 'intersection',
+      exits: { north: 'earth_arkhamcity_sanitarium_room_foyer_entrance_001', east: 'street' } as Record<string, string>,
+    };
+    const street: Room = { ...corner, id: 'street', name: 'Derby Street', exits: {} as Record<string, string> };
+
+    it('records an exit whose target is not loaded', () => {
+      const nodes = roomsToNodes([corner, street]);
+      const node = nodes.find(n => n.id === corner.id);
+      expect(node?.data.departures).toEqual(['north']);
+    });
+
+    it('does not record an exit to a room that is loaded', () => {
+      const nodes = roomsToNodes([corner, street]);
+      expect(nodes.find(n => n.id === corner.id)?.data.departures).not.toContain('east');
+    });
+
+    it('leaves rooms with no departing exits empty', () => {
+      const nodes = roomsToNodes([corner, street]);
+      expect(nodes.find(n => n.id === 'street')?.data.departures).toEqual([]);
     });
   });
 

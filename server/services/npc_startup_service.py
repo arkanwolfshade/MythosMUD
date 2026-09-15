@@ -454,7 +454,7 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
         return None
 
     async def _try_fallback_room(self, npc_def: "NPCDefinition", persistence: Any) -> str | None:
-        fallback_room_id = "earth_arkhamcity_northside_intersection_derby_high"
+        fallback_room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
         room = await asyncio.to_thread(persistence.get_room_by_id, fallback_room_id)
         if room:
             logger.debug("Using fallback room for NPC", npc_name=npc_def.name, room_id=fallback_room_id)
@@ -485,10 +485,17 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
         Returns:
             Default room ID for the sub-zone, or None if not found
         """
+        # One anchor per sub-zone that actually holds an NPC definition. Rebuilt for
+        # #829: Derby no longer crosses High, Derby & Garrison moved from downtown to
+        # northside, and "southside" was never a real sub-zone at all.
         default_rooms = {
             "sanitarium": "earth_arkhamcity_sanitarium_room_foyer_001",
-            "downtown": "earth_arkhamcity_downtown_intersection_derby_garrison",
-            "northside": "earth_arkhamcity_northside_intersection_derby_high",
-            "southside": "earth_arkhamcity_southside_intersection_derby_garrison",
+            "downtown": "earth_arkhamcity_downtown_intersection_church_garrison",
+            "northside": "earth_arkhamcity_northside_intersection_derby_garrison",
+            "campus": "earth_arkhamcity_campus_intersection_college_garrison",
+            "merchant": "earth_arkhamcity_merchant_intersection_peabody_pickman",
+            "frenchhill": "earth_arkhamcity_frenchhill_intersection_frenchhill_pickman",
+            "independence_square": "earth_arkhamcity_independence_square_room_square_001",
+            "hangmans_hill": "earth_arkhamcity_hangmans_hill_room_summit_001",
         }
         return default_rooms.get(sub_zone_id.lower())

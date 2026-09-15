@@ -115,7 +115,15 @@ function useRoomMapEditorData(props: RoomMapEditorProps) {
       edges: createEdgesFromRooms(filteredRooms),
     };
   }, [filteredRooms, currentRoomId]);
-  const { layoutNodes: initialLayoutNodes } = useMapLayout({ nodes: rawNodes, useStoredCoordinates: true });
+  // `edges` must be passed: useMapLayout only reaches applyForceLayout (and therefore
+  // the crossing-minimisation in layout.ts) when edges.length > 0. Omitting them forced
+  // every zone down the naive ceil(sqrt(n)) grid branch, which is why edges crossed
+  // nodes in the editor while the read-only viewer avoided it (#829).
+  const { layoutNodes: initialLayoutNodes } = useMapLayout({
+    nodes: rawNodes,
+    edges: rawEdges,
+    useStoredCoordinates: true,
+  });
 
   return {
     plane,
