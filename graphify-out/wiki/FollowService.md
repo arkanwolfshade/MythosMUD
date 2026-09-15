@@ -1,59 +1,65 @@
 # FollowService
 
-> 84 nodes
+> 197 nodes
 
 ## Key Concepts
 
 - **FollowService** (74 connections) — `server/game/follow_service.py`
 - **test_follow_service.py** (50 connections) — `server/tests/unit/game/test_follow_service.py`
+- **NPCEnteredRoom** (49 connections) — `server/events/event_types.py`
+- **follow_service.py** (31 connections) — `server/game/follow_service.py`
+- **follow_movement.py** (29 connections) — `server/game/follow_movement.py`
+- **_FollowMovementHost** (20 connections) — `server/game/follow_movement.py`
 - **asyncio** (20 connections)
-- **test_follow_request_event_envelope_shape()** (5 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_on_npc_entered_room_moves_followers()** (5 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_on_player_entered_room_move_failure_auto_unfollow()** (5 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_on_player_entered_room_moves_followers()** (5 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_on_player_entered_room_no_from_room_id_skips_propagation()** (5 connections) — `server/tests/unit/game/test_follow_service.py`
-- **fixture** (5 connections)
-- **follow_service()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_accept_follow_invalid_request_id()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_accept_follow_success()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_decline_follow_success()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_ensure_follower_standing_already_standing()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_ensure_follower_standing_fails_to_stand()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_ensure_follower_standing_sitting_stands()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_expire_pending_requests_removes_stale()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_get_following_display_following_npc()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_get_following_display_following_player_resolves_name()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_get_following_display_not_following()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_on_player_disconnect_cancels_pending_requests()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_request_follow_already_following_rejected()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_request_follow_npc_immediate()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_request_follow_player_creates_pending()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_request_follow_player_muted_auto_decline()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
-- *... and 59 more nodes in this community*
+- **FollowActionResult** (15 connections) — `server/game/follow_types.py`
+- **str_id()** (15 connections) — `server/game/follow_types.py`
+- **test_follow_movement.py** (14 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **FollowPersistence** (12 connections) — `server/game/follow_types.py`
+- **follow_types.py** (12 connections) — `server/game/follow_types.py`
+- **FollowStatePayload** (11 connections) — `server/game/follow_types.py`
+- **propagate_follower_move()** (11 connections) — `server/game/follow_movement.py`
+- **.request_follow()** (10 connections) — `server/game/follow_service.py`
+- **_host()** (9 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **UUID** (9 connections)
+- **FollowPlayerView** (8 connections) — `server/game/follow_types.py`
+- **.get_following_display()** (8 connections) — `server/game/follow_service.py`
+- **.__init__()** (8 connections) — `server/game/follow_service.py`
+- **is_npc_follow_value()** (8 connections) — `server/game/follow_types.py`
+- **asyncio** (8 connections)
+- **PendingFollowRequest** (7 connections) — `server/game/follow_types.py`
+- **ensure_follower_standing()** (7 connections) — `server/game/follow_movement.py`
+- **stand_follower_for_move()** (7 connections) — `server/game/follow_movement.py`
+- *... and 172 more nodes in this community*
 
 ## Relationships
 
-- [follow_service.py](follow_service.py.md) (33 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (6 shared connections)
-- [event_types.py](event_types.py.md) (5 shared connections)
-- [GameBundle](GameBundle.md) (3 shared connections)
-- [test_lifespan_event_subscriptions.py](test_lifespan_event_subscriptions.py.md) (3 shared connections)
-- [test_follow_flow.py](test_follow_flow.py.md) (2 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
-- [MovementService](MovementService.md) (1 shared connections)
-- [UserManager](UserManager.md) (1 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
-- [PlayerPositionService](PlayerPositionService.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (18 shared connections)
+- [EventBus](EventBus.md) (8 shared connections)
+- [PlayerPositionService](PlayerPositionService.md) (7 shared connections)
+- [test_movement_service.py](test_movement_service.py.md) (7 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (6 shared connections)
+- [NPCDefinition](NPCDefinition.md) (6 shared connections)
+- [test_npc_event_handlers.py](test_npc_event_handlers.py.md) (6 shared connections)
+- [event_handler.py](event_handler.py.md) (4 shared connections)
+- [ConnectionManager](ConnectionManager.md) (4 shared connections)
+- [send_game_event](send_game_event.md) (4 shared connections)
+- [test_follow_flow.py](test_follow_flow.py.md) (3 shared connections)
+- [PlayerDPUpdated](PlayerDPUpdated.md) (3 shared connections)
 
 ## Source Files
 
+- `server/events/event_types.py`
+- `server/game/follow_movement.py`
 - `server/game/follow_service.py`
+- `server/game/follow_types.py`
+- `server/npc/spawning_service.py`
+- `server/tests/unit/game/test_follow_movement.py`
 - `server/tests/unit/game/test_follow_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 147 (75%)
-- INFERRED: 48 (25%)
+- EXTRACTED: 414 (85%)
+- INFERRED: 72 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

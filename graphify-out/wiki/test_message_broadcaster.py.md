@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [connection_initialization.py](connection_initialization.py.md) (3 shared connections)
+- [MessageBroadcaster](MessageBroadcaster.md) (3 shared connections)
 
 ## Source Files
 

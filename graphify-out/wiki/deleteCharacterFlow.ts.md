@@ -1,6 +1,6 @@
 # deleteCharacterFlow.ts
 
-> 51 nodes
+> 49 nodes
 
 ## Key Concepts
 
@@ -25,25 +25,24 @@
 - **assertServerCharacterResponseArray()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
 - **loginFailureMessage.ts** (7 connections) — `client/src/mythosApp/loginFailureMessage.ts`
 - **messageFromCreationRefreshHttpError()** (6 connections) — `client/src/mythosApp/creationCompleteFlow.ts`
-- **refreshCharactersAfterCreation()** (6 connections) — `client/src/mythosApp/creationCompleteFlow.ts`
 - **loginFailureMessage()** (6 connections) — `client/src/mythosApp/loginFailureMessage.ts`
 - **formatErrorForDisplay()** (6 connections) — `client/src/utils/errorHandler.ts`
 - **parseRefreshFailure()** (5 connections) — `client/src/mythosApp/deleteCharacterFlow.ts`
-- *... and 26 more nodes in this community*
+- **ServerCharacterResponse** (4 connections) — `client/src/utils/apiTypeGuards.ts`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (26 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (26 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (30 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (17 shared connections)
 - [apiTypeGuards.ts](apiTypeGuards.ts.md) (11 shared connections)
+- [Profession](Profession.md) (10 shared connections)
 - [submitAuth.ts](submitAuth.ts.md) (8 shared connections)
 - [CharacterNameScreen.tsx](CharacterNameScreen.tsx.md) (5 shared connections)
-- [useStatsRollingActions.ts](useStatsRollingActions.ts.md) (5 shared connections)
 - [utils/config.ts](utils-config.ts.md) (4 shared connections)
 
 ## Source Files
 
-- `client/src/components/CharacterNameScreen.tsx`
 - `client/src/mythosApp/apiErrorMessage.ts`
 - `client/src/mythosApp/characterSessionApi.ts`
 - `client/src/mythosApp/creationCompleteFlow.ts`
@@ -58,7 +57,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 227 (100%)
+- EXTRACTED: 222 (100%)
 - INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 

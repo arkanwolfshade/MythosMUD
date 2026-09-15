@@ -1,6 +1,6 @@
 # test_quality_fragmentation_guard.py
 
-> 37 nodes
+> 36 nodes
 
 ## Key Concepts
 
@@ -18,7 +18,6 @@
 - **test_scan_changed_files_skips_single_use_for_test_file()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **test_scan_changed_files_skips_tiny_single_use_for_grouped_file()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **_QualityGuardModule** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **append_rule_b_failure()** (4 connections) — `scripts/ci/quality_fragmentation_trends.py`
 - **_load_trends_module()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **test_git_show_file_decodes_subprocess_output_as_utf8()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **test_run_cmd_decodes_subprocess_output_as_utf8()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
@@ -29,22 +28,22 @@
 - **test_append_fragmentation_failures_when_files_added_and_avg_function_length_drops()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **test_append_rule_b_failure_for_fragmentation_limit()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **test_is_safe_git_ref_accepts_sha_and_branch_like_ref()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- *... and 12 more nodes in this community*
+- **test_is_safe_git_ref_rejects_suspicious_values()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [quality_fragmentation_lizard.py](quality_fragmentation_lizard.py.md) (12 shared connections)
-- [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (6 shared connections)
+- [quality_fragmentation_lizard.py](quality_fragmentation_lizard.py.md) (11 shared connections)
+- [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (5 shared connections)
 
 ## Source Files
 
 - `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- `scripts/ci/quality_fragmentation_trends.py`
 - `server/tests/unit/test_quality_fragmentation_guard.py`
 
 ## Audit Trail
 
-- EXTRACTED: 78 (82%)
+- EXTRACTED: 75 (82%)
 - INFERRED: 17 (18%)
 - AMBIGUOUS: 0 (0%)
 

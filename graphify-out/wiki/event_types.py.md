@@ -1,78 +1,78 @@
 # event_types.py
 
-> 420 nodes
+> 234 nodes
 
 ## Key Concepts
 
 - **event_types.py** (99 connections) — `server/events/event_types.py`
-- **get_npc_instance_service()** (78 connections) — `server/services/npc_instance_service.py`
-- **NPCLifecycleManager** (71 connections) — `server/npc/lifecycle_manager.py`
-- **NPCPopulationController** (60 connections) — `server/npc/population_control.py`
-- **test_npc_instance_service.py** (53 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **lifecycle_manager.py** (50 connections) — `server/npc/lifecycle_manager.py`
-- **NPCEnteredRoom** (49 connections) — `server/events/event_types.py`
-- **threading.py** (45 connections) — `server/npc/threading.py`
-- **NPCLeftRoom** (43 connections) — `server/events/event_types.py`
-- **population_control.py** (42 connections) — `server/npc/population_control.py`
-- **event_handler.py** (42 connections) — `server/realtime/event_handler.py`
-- **player_event_handlers.py** (41 connections) — `server/realtime/player_event_handlers.py`
-- **test_event_handler.py** (41 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **event_bus.py** (40 connections) — `server/events/event_bus.py`
-- **npc_instance_service.py** (32 connections) — `server/services/npc_instance_service.py`
-- **PlayerDiedEvent** (31 connections) — `server/events/event_types.py`
-- **PlayerDPDecayEvent** (31 connections) — `server/events/event_types.py`
-- **NPCDied** (29 connections) — `server/events/event_types.py`
-- **test_lifecycle_manager.py** (29 connections) — `server/tests/unit/npc/test_lifecycle_manager.py`
-- **combat_integration.py** (27 connections) — `server/npc/combat_integration.py`
+- **PlayerEnteredRoom** (87 connections) — `server/events/event_types.py`
+- **PlayerLeftRoom** (51 connections) — `server/events/event_types.py`
+- **models/room.py** (39 connections) — `server/models/room.py`
+- **event_reaction_system.py** (36 connections) — `server/npc/event_reaction_system.py`
+- **test_player_event_handlers.py** (32 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
 - **server/events/__init__.py** (26 connections) — `server/events/__init__.py`
-- **NPCLifecycleState** (24 connections) — `server/npc/lifecycle_types.py`
-- **lifecycle_death.py** (24 connections) — `server/npc/lifecycle_death.py`
-- **NPCInstanceService** (23 connections) — `server/services/npc_instance_service.py`
-- **asyncio** (23 connections)
-- *... and 395 more nodes in this community*
+- **NPCEventReaction** (23 connections) — `server/npc/event_reaction_system.py`
+- **ShopkeeperNPC** (22 connections) — `server/npc/shopkeeper_npc.py`
+- **test_event_reaction_speech.py** (22 connections) — `server/tests/unit/npc/test_event_reaction_speech.py`
+- **register_default_reactions_for_npc()** (20 connections) — `server/npc/npc_default_reactions.py`
+- **movement_integration.py** (20 connections) — `server/npc/movement_integration.py`
+- **test_reaction_revival_integration.py** (17 connections) — `server/tests/unit/npc/test_reaction_revival_integration.py`
+- **test_quest_events.py** (16 connections) — `server/tests/unit/game/test_quest_events.py`
+- **subscribe_quest_events()** (15 connections) — `server/game/quest/quest_events.py`
+- **quest_events.py** (15 connections) — `server/game/quest/quest_events.py`
+- **asyncio** (15 connections)
+- **NPCAttacked** (14 connections) — `server/events/event_types.py`
+- **NPCSpoke** (14 connections) — `server/events/event_types.py`
+- **NPCEventReactionTemplates** (14 connections) — `server/npc/event_reaction_system.py`
+- **shopkeeper_npc.py** (14 connections) — `server/npc/shopkeeper_npc.py`
+- **test_event_serialization.py** (14 connections) — `server/tests/unit/events/test_event_serialization.py`
+- **instance_manager.py** (13 connections) — `server/game/instance_manager.py`
+- **communication_integration.py** (13 connections) — `server/npc/communication_integration.py`
+- **corruption_reactions.py** (13 connections) — `server/npc/corruption_reactions.py`
+- *... and 209 more nodes in this community*
 
 ## Relationships
 
-- [NPCDefinition](NPCDefinition.md) (65 shared connections)
-- [EventBus](EventBus.md) (55 shared connections)
-- [get_logger](get_logger.md) (55 shared connections)
-- [NPCBase](NPCBase.md) (46 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (34 shared connections)
-- [test_npc_utils.py](test_npc_utils.py.md) (22 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (20 shared connections)
-- [PlayerDPUpdated](PlayerDPUpdated.md) (20 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (20 shared connections)
-- [Room](Room.md) (18 shared connections)
-- [PlayerEventHandler](PlayerEventHandler.md) (18 shared connections)
-- [test_npc_admin_commands.py](test_npc_admin_commands.py.md) (16 shared connections)
+- [NPCDefinition](NPCDefinition.md) (63 shared connections)
+- [EventBus](EventBus.md) (44 shared connections)
+- [event_handler.py](event_handler.py.md) (30 shared connections)
+- [get_logger](get_logger.md) (24 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (20 shared connections)
+- [FollowService](FollowService.md) (18 shared connections)
+- [test_chat_npc_system.py](test_chat_npc_system.py.md) (9 shared connections)
+- [Room](Room.md) (9 shared connections)
+- [test_corruption_reactions.py](test_corruption_reactions.py.md) (9 shared connections)
+- [test_player_event_handlers_room.py](test_player_event_handlers_room.py.md) (9 shared connections)
+- [PlayerDPUpdated](PlayerDPUpdated.md) (9 shared connections)
+- [._bind_event_type](_bind_event_type.md) (8 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/npc.py`
 - `server/events/__init__.py`
-- `server/events/event_bus.py`
 - `server/events/event_types.py`
+- `server/game/follow_service.py`
+- `server/game/instance_manager.py`
+- `server/game/quest/quest_events.py`
 - `server/models/room.py`
-- `server/npc/__init__.py`
-- `server/npc/combat_integration.py`
-- `server/npc/lifecycle_death.py`
-- `server/npc/lifecycle_despawn.py`
-- `server/npc/lifecycle_manager.py`
-- `server/npc/lifecycle_types.py`
+- `server/npc/communication_integration.py`
+- `server/npc/corruption_reactions.py`
+- `server/npc/event_reaction_system.py`
 - `server/npc/movement_integration.py`
-- `server/npc/population_control.py`
-- `server/npc/threading.py`
-- `server/realtime/event_handler.py`
-- `server/realtime/message_builders.py`
-- `server/realtime/npc_event_handlers.py`
-- `server/realtime/player_event_handlers.py`
-- `server/realtime/player_name_utils.py`
-- `server/scripts/verify_npc_occupants.py`
+- `server/npc/npc_base.py`
+- `server/npc/npc_default_reactions.py`
+- `server/npc/shopkeeper_npc.py`
+- `server/npc/spawning_service.py`
+- `server/realtime/player_event_handlers_room.py`
+- `server/tests/unit/events/test_event_serialization.py`
+- `server/tests/unit/game/test_quest_events.py`
+- `server/tests/unit/npc/test_corruption_reactions.py`
+- `server/tests/unit/npc/test_event_reaction_speech.py`
+- `server/tests/unit/npc/test_npc_default_reactions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1444 (92%)
-- INFERRED: 123 (8%)
+- EXTRACTED: 739 (93%)
+- INFERRED: 58 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,6 +1,6 @@
 # NPCMovementIntegration
 
-> 60 nodes
+> 62 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **test_movement_integration.py** (29 connections) — `server/tests/unit/npc/test_movement_integration.py`
 - **.move_npc_to_room()** (7 connections) — `server/npc/movement_integration.py`
 - **.__init__()** (5 connections) — `server/npc/idle_movement.py`
+- **.__init__()** (5 connections) — `server/npc/movement_integration.py`
 - **._get_destination_subzone()** (4 connections) — `server/npc/movement_integration.py`
 - **._get_room_objects()** (4 connections) — `server/npc/movement_integration.py`
 - **._update_npc_instance_room_tracking()** (4 connections) — `server/npc/movement_integration.py`
@@ -28,19 +29,19 @@
 - **test_get_npc_room_returns_none()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
 - **test_get_room_npcs_and_exits()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
 - **test_get_room_npcs_empty_when_missing()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
-- **test_get_room_objects_missing_destination()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
-- *... and 35 more nodes in this community*
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [NPCBase](NPCBase.md) (3 shared connections)
+- [NPCDefinition](NPCDefinition.md) (4 shared connections)
 - [IdleMovementHandler](IdleMovementHandler.md) (3 shared connections)
-- [event_types.py](event_types.py.md) (3 shared connections)
-- [Room](Room.md) (2 shared connections)
-- [MovementService](MovementService.md) (1 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
-- [extract_subzone_from_room_id](extract_subzone_from_room_id.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (2 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
+- [EventBus](EventBus.md) (2 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
+- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (1 shared connections)
+- [test_movement_service.py](test_movement_service.py.md) (1 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,7 +51,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 104 (98%)
+- EXTRACTED: 108 (98%)
 - INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 

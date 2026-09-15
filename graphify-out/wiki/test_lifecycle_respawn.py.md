@@ -1,6 +1,6 @@
 # test_lifecycle_respawn.py
 
-> 32 nodes
+> 38 nodes
 
 ## Key Concepts
 
@@ -10,6 +10,7 @@
 - **_respawn_data()** (13 connections) — `server/tests/unit/npc/test_lifecycle_respawn.py`
 - **lifecycle_respawn.py** (12 connections) — `server/npc/lifecycle_respawn.py`
 - **_attempt_respawn_impl()** (11 connections) — `server/npc/lifecycle_respawn.py`
+- **spawn_npc_via_population_controller()** (11 connections) — `server/npc/npc_utils.py`
 - **_process_respawn_queue_entry()** (8 connections) — `server/npc/lifecycle_respawn.py`
 - **_cleanup_respawn_queue()** (6 connections) — `server/npc/lifecycle_respawn.py`
 - **test_attempt_respawn_routes_through_population_controller()** (5 connections) — `server/tests/unit/npc/test_lifecycle_respawn.py`
@@ -26,28 +27,31 @@
 - **test_process_respawn_queue_success()** (4 connections) — `server/tests/unit/npc/test_lifecycle_respawn.py`
 - **Any** (4 connections)
 - **.process_respawn_queue()** (3 connections) — `server/npc/lifecycle_manager.py`
-- **test_cleanup_respawn_queue()** (2 connections) — `server/tests/unit/npc/test_lifecycle_respawn.py`
-- **Process the respawn queue and spawn NPCs that are ready (delegates to…** (1 connections) — `server/npc/lifecycle_manager.py`
-- **Respawn queue processing for NPC lifecycle. Extracted from lifecycle_manager to…** (1 connections) — `server/npc/lifecycle_respawn.py`
-- *... and 7 more nodes in this community*
+- **test_spawn_npc_via_population_controller_falls_back_without_controller()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_spawn_npc_via_population_controller_routes_through_controller()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (3 shared connections)
-- [test_npc_utils.py](test_npc_utils.py.md) (3 shared connections)
+- [test_npc_utils.py](test_npc_utils.py.md) (6 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (3 shared connections)
+- [test_lifecycle_periodic.py](test_lifecycle_periodic.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [time.py](time.py.md) (2 shared connections)
+- [connection_manager.py](connection_manager.py.md) (2 shared connections)
+- [test_population_control.py](test_population_control.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/npc/lifecycle_manager.py`
 - `server/npc/lifecycle_respawn.py`
+- `server/npc/npc_utils.py`
 - `server/tests/unit/npc/test_lifecycle_respawn.py`
+- `server/tests/unit/npc/test_npc_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 88 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 100 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

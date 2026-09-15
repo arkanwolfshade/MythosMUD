@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [NPCStartupService](NPCStartupService.md) (33 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
+- [NPCStartupService](NPCStartupService.md) (34 shared connections)
 
 ## Source Files
 

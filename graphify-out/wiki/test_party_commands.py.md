@@ -33,13 +33,14 @@
 
 ## Relationships
 
-- [TargetResolutionService](TargetResolutionService.md) (6 shared connections)
+- [PlayerService](PlayerService.md) (4 shared connections)
 - [get_logger](get_logger.md) (4 shared connections)
 - [AliasStorage](AliasStorage.md) (2 shared connections)
 - [command_service.py](command_service.py.md) (2 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [.async_persistence](async_persistence.md) (1 shared connections)
-- [schemas/shared/__init__.py](schemas-shared-__init__.py.md) (1 shared connections)
+- [TargetType](TargetType.md) (2 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [TargetResolutionResult](TargetResolutionResult.md) (1 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,6 +1,6 @@
 # PYDANTIC_CODE_REVIEW.md
 
-> 8 nodes
+> 9 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **UVICORN_CODE_REVIEW.md** (5 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
 - **Parameterized Queries** (2 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
 - **jsonb_set Field Name f-string SQL** (2 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **time.sleep in Async Retry** (2 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
 - **Pydantic v2 ConfigDict** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
 - **Stats extra=allow Security Risk** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
 - **Deprecated asyncio.get_event_loop** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
@@ -17,8 +18,8 @@
 
 - [Pydantic Code Review - feature/sqlite-to-postgresql Branch](Pydantic_Code_Review_-_feature-sqlite-to-postgresql_Branch.md) (1 shared connections)
 - [Uvicorn/ASGI Code Review - feature/sqlite-to-postgresql Branch](Uvicorn-ASGI_Code_Review_-_feature-sqlite-to-postgresql_Branch.md) (1 shared connections)
-- [Async Persistence Migration Tracker](Async_Persistence_Migration_Tracker.md) (1 shared connections)
 - [POSTGRESQL_AUDIT_REPORT_2026.md](POSTGRESQL_AUDIT_REPORT_2026.md.md) (1 shared connections)
+- [Async Audit Executive Summary](Async_Audit_Executive_Summary.md) (1 shared connections)
 
 ## Source Files
 
@@ -28,8 +29,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 10 (91%)
-- INFERRED: 1 (9%)
+- EXTRACTED: 10 (83%)
+- INFERRED: 2 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

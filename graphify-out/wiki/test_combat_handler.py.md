@@ -33,10 +33,12 @@
 
 ## Relationships
 
-- [TargetResolutionService](TargetResolutionService.md) (8 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (6 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (6 shared connections)
+- [TargetResolutionResult](TargetResolutionResult.md) (6 shared connections)
 - [TargetMatch](TargetMatch.md) (5 shared connections)
-- [combat_taunt.py](combat_taunt.py.md) (3 shared connections)
+- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (3 shared connections)
+- [TargetType](TargetType.md) (1 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,11 +1,10 @@
 # test_command_processing.py
 
-> 41 nodes
+> 39 nodes
 
 ## Key Concepts
 
 - **test_command_processing.py** (15 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **process_command_with_validation()** (13 connections) — `server/command_handler/processing.py`
 - **.is_security_sensitive()** (9 connections) — `server/validators/command_validator.py`
 - **_dispatch_parsed_command()** (8 connections) — `server/command_handler/processing.py`
 - **_handle_processing_error()** (7 connections) — `server/command_handler/processing.py`
@@ -29,17 +28,17 @@
 - **test_log_security_sensitive_command_no_session()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
 - **test_parse_command_line_or_client_error_no_validated()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
 - **test_parse_command_line_or_client_error_success()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- *... and 16 more nodes in this community*
+- **test_parse_command_line_or_client_error_with_message()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (20 shared connections)
+- [get_logger](get_logger.md) (11 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (6 shared connections)
+- [CommandValidator](CommandValidator.md) (6 shared connections)
 - [test_command_validator.py](test_command_validator.py.md) (4 shared connections)
 - [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
-- [_validate_command_basics](_validate_command_basics.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
-- [test_alias_expansion.py](test_alias_expansion.py.md) (1 shared connections)
-- [TestHelperFunctions](TestHelperFunctions.md) (1 shared connections)
+- [.state](state.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 82 (93%)
+- EXTRACTED: 75 (93%)
 - INFERRED: 6 (7%)
 - AMBIGUOUS: 0 (0%)
 

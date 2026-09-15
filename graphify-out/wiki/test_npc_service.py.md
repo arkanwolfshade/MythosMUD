@@ -1,6 +1,6 @@
 # test_npc_service.py
 
-> 88 nodes
+> 92 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **asyncio** (35 connections)
 - **_mock_result_mappings_all()** (29 connections) — `server/tests/unit/services/test_npc_service.py`
 - **_def_row()** (18 connections) — `server/tests/unit/services/test_npc_service.py`
+- **NPCService** (14 connections) — `server/services/npc_service/__init__.py`
 - **_spawn_rule_row()** (6 connections) — `server/tests/unit/services/test_npc_service.py`
 - **test_create_spawn_rule_success()** (6 connections) — `server/tests/unit/services/test_npc_service.py`
 - **test_create_npc_definition_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
@@ -28,22 +29,26 @@
 - **test_update_npc_definition_invalid_probability()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
 - **test_update_npc_definition_invalid_type()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
 - **test_update_npc_definition_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **npc_service()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- *... and 63 more nodes in this community*
+- *... and 67 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
 - [NPCDefinition](NPCDefinition.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [server/services/__init__.py](server-services-__init__.py.md) (1 shared connections)
+- [NPCDefinitionCRUDMixin](NPCDefinitionCRUDMixin.md) (1 shared connections)
+- [NPCSpawnRuleCRUDMixin](NPCSpawnRuleCRUDMixin.md) (1 shared connections)
 
 ## Source Files
 
+- `server/services/npc_service/__init__.py`
 - `server/tests/unit/services/test_npc_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 179 (98%)
+- EXTRACTED: 191 (98%)
 - INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 

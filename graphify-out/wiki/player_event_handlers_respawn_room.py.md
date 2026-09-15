@@ -33,11 +33,13 @@
 
 ## Relationships
 
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (8 shared connections)
+- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (6 shared connections)
 - [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (4 shared connections)
 - [ConnectionManager](ConnectionManager.md) (2 shared connections)
-- [Room](Room.md) (2 shared connections)
+- [websocket_helpers.py](websocket_helpers.py.md) (2 shared connections)
+- [Room](Room.md) (1 shared connections)
 - [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
 
 ## Source Files
 

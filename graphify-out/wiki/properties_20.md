@@ -1,33 +1,41 @@
 # properties
 
-> 11 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **properties** (5 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **lucidity_drain_rate** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **combat_modifier** (3 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **exploration_bonus** (3 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **minimum** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **properties** (7 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **name** (4 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **skill** (4 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **skill_pct** (4 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **max_damage** (3 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **min_damage** (3 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **minimum** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **minimum** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **maxLength** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **minLength** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **maxLength** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **minLength** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **maximum** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **minimum** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
 
 ## Relationships
 
-- [special_rules](special_rules.md) (1 shared connections)
-- [npc_spawn_modifier](npc_spawn_modifier.md) (1 shared connections)
+- [catalogMetadata](catalogMetadata.md) (1 shared connections)
+- [damage_expr](damage_expr.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- `schemas/npcs/npc_base_stats.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

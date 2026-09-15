@@ -35,7 +35,7 @@
 
 - [PeriodicOrphanAuditor](PeriodicOrphanAuditor.md) (3 shared connections)
 - [TrackedTaskManager](TrackedTaskManager.md) (3 shared connections)
-- [time.py](time.py.md) (2 shared connections)
+- [connection_manager.py](connection_manager.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files

@@ -34,12 +34,14 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (10 shared connections)
-- [inventory_equip_command.py](inventory_equip_command.py.md) (6 shared connections)
-- [test_wearable_container_service.py](test_wearable_container_service.py.md) (4 shared connections)
+- [inventory_equip_command.py](inventory_equip_command.py.md) (3 shared connections)
+- [test_wearable_container_service.py](test_wearable_container_service.py.md) (3 shared connections)
+- [server/services/__init__.py](server-services-__init__.py.md) (3 shared connections)
 - [_get_enum_value](_get_enum_value.md) (3 shared connections)
 - [look_helpers.py](look_helpers.py.md) (2 shared connections)
 - [ContainerComponent](ContainerComponent.md) (2 shared connections)
 - [wearable_service](wearable_service.md) (1 shared connections)
+- [test_filter_container_data](test_filter_container_data.md) (1 shared connections)
 
 ## Source Files
 

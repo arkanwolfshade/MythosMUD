@@ -1,6 +1,6 @@
 # test_look_room.py
 
-> 110 nodes
+> 115 nodes
 
 ## Key Concepts
 
@@ -29,19 +29,17 @@
 - **test_format_containers_section_no_persistence()** (4 connections) — `server/tests/unit/commands/test_look_room.py`
 - **test_format_containers_section_no_room_id()** (4 connections) — `server/tests/unit/commands/test_look_room.py`
 - **test_format_containers_section_with_containers()** (4 connections) — `server/tests/unit/commands/test_look_room.py`
-- *... and 85 more nodes in this community*
+- *... and 90 more nodes in this community*
 
 ## Relationships
 
-- [look_command.py](look_command.py.md) (7 shared connections)
-- [PlayerOccupantProcessor](PlayerOccupantProcessor.md) (4 shared connections)
-- [test_room_renderer.py](test_room_renderer.py.md) (4 shared connections)
+- [look_command.py](look_command.py.md) (11 shared connections)
+- [test_look_player.py](test_look_player.py.md) (7 shared connections)
 - [CorruptionTier](CorruptionTier.md) (3 shared connections)
 - [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
-- [build_event](build_event.md) (3 shared connections)
-- [room_update_event_builder.py](room_update_event_builder.py.md) (3 shared connections)
-- [test_look_player.py](test_look_player.py.md) (3 shared connections)
-- [_get_lifecycle_manager](_get_lifecycle_manager.md) (2 shared connections)
+- [game_state_provider.py](game_state_provider.py.md) (3 shared connections)
+- [get_hallucinated_exits](get_hallucinated_exits.md) (3 shared connections)
+- [quest_commands.py](quest_commands.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [LucidityTierCache](LucidityTierCache.md) (1 shared connections)
 - [test_look_npc.py](test_look_npc.py.md) (1 shared connections)
@@ -51,10 +49,11 @@
 - `server/commands/look_room.py`
 - `server/tests/unit/commands/test_look_room.py`
 - `server/tests/unit/commands/test_look_room_helpers.py`
+- `server/tests/unit/realtime/test_visual_indicator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 238 (100%)
+- EXTRACTED: 244 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

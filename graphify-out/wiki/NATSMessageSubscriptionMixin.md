@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [NATSRetryHandler](NATSRetryHandler.md) (4 shared connections)
-- [extract_subzone_from_room_id](extract_subzone_from_room_id.md) (1 shared connections)
+- [DeadLetterQueue](DeadLetterQueue.md) (4 shared connections)
+- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (1 shared connections)
 
 ## Source Files
 

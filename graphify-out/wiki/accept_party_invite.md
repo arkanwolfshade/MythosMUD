@@ -22,7 +22,7 @@
 - [_str_id](_str_id.md) (13 shared connections)
 - [PartyService](PartyService.md) (6 shared connections)
 - [build_event](build_event.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [send_game_event](send_game_event.md) (1 shared connections)
 
 ## Source Files
 

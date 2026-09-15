@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [combat_service.py](combat_service.py.md) (7 shared connections)
+- [CombatService](CombatService.md) (6 shared connections)
+- [test_combat_service_modules.py](test_combat_service_modules.py.md) (3 shared connections)
 - [CombatInstance](CombatInstance.md) (2 shared connections)
 - [CombatParticipant](CombatParticipant.md) (2 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
 
 ## Source Files
 

@@ -1,25 +1,14 @@
 # coerce_int
 
-> 44 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **coerce_int()** (62 connections) — `server/utils/int_coercion.py`
-- **int_coercion.py** (22 connections) — `server/utils/int_coercion.py`
+- **coerce_int()** (67 connections) — `server/utils/int_coercion.py`
+- **int_coercion.py** (24 connections) — `server/utils/int_coercion.py`
 - **_stats_int()** (14 connections) — `server/models/player.py`
-- **.get_stats()** (13 connections) — `server/models/player.py`
 - **test_inventory_command_coercion.py** (12 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **.set_stats()** (6 connections) — `server/models/player.py`
 - **inventory_command_coercion.py** (6 connections) — `server/commands/inventory_command_coercion.py`
-- **.apply_dp_change()** (5 connections) — `server/models/player.py`
-- **.apply_dp_decay()** (5 connections) — `server/models/player.py`
-- **.restore_to_full_health()** (5 connections) — `server/models/player.py`
-- **.get_combat_stats()** (4 connections) — `server/models/player.py`
-- **.get_health_percentage()** (4 connections) — `server/models/player.py`
-- **.get_health_state()** (4 connections) — `server/models/player.py`
-- **.is_alive()** (4 connections) — `server/models/player.py`
-- **.is_dead()** (4 connections) — `server/models/player.py`
-- **.is_mortally_wounded()** (4 connections) — `server/models/player.py`
 - **test_coerce_int_string_parsing()** (3 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
 - **test_stats_int_delegates_to_coerce_int()** (3 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
 - **test_coerce_int_bool_before_int()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
@@ -29,22 +18,29 @@
 - **test_coerce_int_plain_int()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
 - **test_coerce_int_unknown_type()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
 - **_int_from_decimal_string()** (2 connections) — `server/utils/int_coercion.py`
-- *... and 19 more nodes in this community*
+- **_int_from_float_safe()** (2 connections) — `server/utils/int_coercion.py`
+- **parametrize** (1 connections)
+- **Parse numeric fields from object-typed JSON command payloads.** (1 connections) — `server/commands/inventory_command_coercion.py`
+- **Coerce a JSONB stat value to int for DP and combat helpers.** (1 connections) — `server/models/player.py`
+- **Unit tests for server.utils.int_coercion.coerce_int.** (1 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
+- **JSONB stats use the same coercion as inventory command payloads.** (1 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
+- **Coerce object-shaped JSON/JSONB values to int (commands, models, stats).** (1 connections) — `server/utils/int_coercion.py`
+- **Parse integer fields from object-typed JSON/JSONB payloads. Non-numeric strings…** (1 connections) — `server/utils/int_coercion.py`
 
 ## Relationships
 
-- [Player](Player.md) (23 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (7 shared connections)
+- [game_tick_processing.py](game_tick_processing.py.md) (10 shared connections)
+- [.get_stats](get_stats.md) (9 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (9 shared connections)
 - [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (6 shared connections)
-- [game_tick_death.py](game_tick_death.py.md) (5 shared connections)
-- [game_tick_status_effects.py](game_tick_status_effects.py.md) (5 shared connections)
-- [look_container.py](look_container.py.md) (4 shared connections)
-- [NPCCombatDataProvider](NPCCombatDataProvider.md) (4 shared connections)
-- [NPCBase](NPCBase.md) (3 shared connections)
-- [player_presence_tracker.py](player_presence_tracker.py.md) (3 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (3 shared connections)
-- [PlayerRespawnService](PlayerRespawnService.md) (3 shared connections)
-- [magic_service.py](magic_service.py.md) (2 shared connections)
+- [LucidityService](LucidityService.md) (6 shared connections)
+- [test_look_container.py](test_look_container.py.md) (5 shared connections)
+- [npc_combat_integration_service.py](npc_combat_integration_service.py.md) (4 shared connections)
+- [test_player_respawn_service.py](test_player_respawn_service.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [Player](Player.md) (3 shared connections)
+- [admin_setstat_command.py](admin_setstat_command.py.md) (3 shared connections)
+- [event_types.py](event_types.py.md) (3 shared connections)
 
 ## Source Files
 
@@ -55,8 +51,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 140 (95%)
-- INFERRED: 7 (5%)
+- EXTRACTED: 112 (95%)
+- INFERRED: 6 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

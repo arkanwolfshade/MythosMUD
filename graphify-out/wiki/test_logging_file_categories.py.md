@@ -23,8 +23,7 @@
 
 ## Relationships
 
-- [logging_file_setup.py](logging_file_setup.py.md) (6 shared connections)
-- [logging_file_categories.py](logging_file_categories.py.md) (1 shared connections)
+- [logging_file_setup.py](logging_file_setup.py.md) (7 shared connections)
 
 ## Source Files
 

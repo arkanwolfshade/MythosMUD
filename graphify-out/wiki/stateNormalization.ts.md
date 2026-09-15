@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [gameStore.ts](gameStore.ts.md) (4 shared connections)
+- [RoomMapViewer.tsx](RoomMapViewer.tsx.md) (4 shared connections)
 - [commandStore.ts](commandStore.ts.md) (2 shared connections)
 - [connectionStore.ts](connectionStore.ts.md) (2 shared connections)
 

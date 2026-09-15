@@ -1,6 +1,6 @@
 # mapPageRenderer.tsx
 
-> 22 nodes
+> 29 nodes
 
 ## Key Concepts
 
@@ -8,14 +8,20 @@
 - **mapPageState.ts** (11 connections) — `client/src/pages/mapPageState.ts`
 - **LucidityTier** (10 connections) — `client/src/types/lucidity.ts`
 - **MapPage.tsx** (10 connections) — `client/src/pages/MapPage.tsx`
+- **lucidityTierRelay.ts** (8 connections) — `client/src/utils/lucidityTierRelay.ts`
 - **renderMapPageState()** (6 connections) — `client/src/pages/mapPageRenderer.tsx`
 - **MapPage()** (5 connections) — `client/src/pages/MapPage.tsx`
 - **useMapPageState()** (5 connections) — `client/src/pages/mapPageState.ts`
+- **useCrossTabLucidityTier()** (5 connections) — `client/src/utils/lucidityTierRelay.ts`
 - **MapPage.test.tsx** (5 connections) — `client/src/pages/__tests__/MapPage.test.tsx`
+- **publishTier()** (4 connections) — `client/src/utils/lucidityTierRelay.ts`
 - **mapPageStatusViews.tsx** (4 connections) — `client/src/pages/mapPageStatusViews.tsx`
+- **lucidity.test.ts** (4 connections) — `client/src/types/__tests__/lucidity.test.ts`
 - **RoomMapViewerProps** (3 connections) — `client/src/components/map/RoomMapViewer.tsx`
+- **lucidityTierRelay.test.ts** (3 connections) — `client/src/utils/__tests__/lucidityTierRelay.test.ts`
 - **AuthenticatedMapProps** (2 connections) — `client/src/pages/mapPageRenderer.tsx`
 - **MapPageState** (2 connections) — `client/src/pages/mapPageState.ts`
+- **LucidityChangeMeta** (2 connections) — `client/src/types/lucidity.ts`
 - **renderAuthenticatedMapView()** (2 connections) — `client/src/pages/mapPageRenderer.tsx`
 - **renderStatusGate()** (2 connections) — `client/src/pages/mapPageRenderer.tsx`
 - **resolveMapViewProps()** (2 connections) — `client/src/pages/mapPageRenderer.tsx`
@@ -23,21 +29,18 @@
 - **parseMapRouteParams()** (2 connections) — `client/src/pages/mapPageState.ts`
 - **MapPageAuthRequiredView()** (2 connections) — `client/src/pages/mapPageStatusViews.tsx`
 - **MapPageErrorView()** (2 connections) — `client/src/pages/mapPageStatusViews.tsx`
-- **MapPageLoadingView()** (2 connections) — `client/src/pages/mapPageStatusViews.tsx`
-- **MapViewResolvedProps** (1 connections) — `client/src/pages/mapPageRenderer.tsx`
-- **RoomData** (1 connections) — `client/src/pages/mapPageState.ts`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [RoomMapViewer.tsx](RoomMapViewer.tsx.md) (5 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (4 shared connections)
-- [utils/config.ts](utils-config.ts.md) (4 shared connections)
-- [GameClientV2AuxiliaryPanels.tsx](GameClientV2AuxiliaryPanels.tsx.md) (3 shared connections)
-- [security.ts](security.ts.md) (3 shared connections)
-- [gameStore.ts](gameStore.ts.md) (2 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (11 shared connections)
+- [RoomMapViewer.tsx](RoomMapViewer.tsx.md) (7 shared connections)
+- [CatalogPage.tsx](CatalogPage.tsx.md) (2 shared connections)
 - [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (2 shared connections)
-- [logger.ts](logger.ts.md) (2 shared connections)
-- [systemHandlers.ts](systemHandlers.ts.md) (1 shared connections)
+- [utils/config.ts](utils-config.ts.md) (2 shared connections)
+- [security.ts](security.ts.md) (2 shared connections)
+- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (1 shared connections)
+- [logoutHandler.ts](logoutHandler.ts.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,11 +50,14 @@
 - `client/src/pages/mapPageRenderer.tsx`
 - `client/src/pages/mapPageState.ts`
 - `client/src/pages/mapPageStatusViews.tsx`
+- `client/src/types/__tests__/lucidity.test.ts`
 - `client/src/types/lucidity.ts`
+- `client/src/utils/__tests__/lucidityTierRelay.test.ts`
+- `client/src/utils/lucidityTierRelay.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 64 (100%)
+- EXTRACTED: 79 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

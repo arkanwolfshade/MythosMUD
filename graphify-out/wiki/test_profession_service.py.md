@@ -21,8 +21,8 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (2 shared connections)
 
 ## Source Files
 

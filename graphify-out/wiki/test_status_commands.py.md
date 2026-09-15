@@ -34,12 +34,12 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (4 shared connections)
-- [test_who_commands.py](test_who_commands.py.md) (3 shared connections)
+- [handle_logout_command](handle_logout_command.md) (3 shared connections)
 - [AliasStorage](AliasStorage.md) (3 shared connections)
 - [test_utility_commands_whoami.py](test_utility_commands_whoami.py.md) (3 shared connections)
 - [command_service.py](command_service.py.md) (2 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (2 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (2 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
 
 ## Source Files
 

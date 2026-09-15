@@ -1,50 +1,50 @@
 # test_movement_service.py
 
-> 107 nodes
+> 169 nodes
 
 ## Key Concepts
 
 - **test_movement_service.py** (54 connections) — `server/tests/unit/game/test_movement_service.py`
+- **MovementService** (51 connections) — `server/game/movement_service.py`
 - **movement_service.py** (38 connections) — `server/game/movement_service.py`
 - **asyncio** (23 connections)
+- **UUID** (19 connections)
 - **movement_helpers.py** (17 connections) — `server/game/movement_helpers.py`
+- **._execute_move_locked()** (14 connections) — `server/game/movement_service.py`
 - **validate_exit()** (11 connections) — `server/game/movement_helpers.py`
 - **validate_player_room_membership()** (11 connections) — `server/game/movement_helpers.py`
 - **check_combat_state()** (10 connections) — `server/game/movement_helpers.py`
 - **check_player_posture()** (8 connections) — `server/game/movement_helpers.py`
+- **.move_player()** (8 connections) — `server/game/movement_service.py`
+- **._validate_movement()** (8 connections) — `server/game/movement_service.py`
+- **._handle_movement_error()** (7 connections) — `server/game/movement_service.py`
+- **Any** (7 connections)
 - **extract_player_id()** (6 connections) — `server/game/movement_helpers.py`
-- **Any** (5 connections)
-- **UUID** (5 connections)
-- **movement_service()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_move_player_empty_player_id()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_move_player_invalid_from_room()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_move_player_invalid_to_room()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_move_player_skips_hallucination_check_for_non_uneasy_tier()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_move_player_survives_hallucination_check_error()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_move_player_triggers_uneasy_room_entry_hallucination()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_validate_player_room_membership_auto_add()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_validate_player_room_membership_db_mismatch()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
-- **mock_event_bus()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_add_player_to_room_player_not_found()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_add_player_to_room_room_not_found()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_add_player_to_room_success()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- *... and 82 more nodes in this community*
+- **.add_player_to_room()** (6 connections) — `server/game/movement_service.py`
+- **._get_rooms_for_movement()** (6 connections) — `server/game/movement_service.py`
+- **._maybe_trigger_room_entry_hallucination()** (6 connections) — `server/game/movement_service.py`
+- **._resolve_player_for_movement()** (6 connections) — `server/game/movement_service.py`
+- **._validate_movement_rooms()** (6 connections) — `server/game/movement_service.py`
+- **._execute_room_transfer()** (5 connections) — `server/game/movement_service.py`
+- **.__init__()** (5 connections) — `server/game/movement_service.py`
+- **.remove_player_from_room()** (5 connections) — `server/game/movement_service.py`
+- **._resolve_posture_player()** (5 connections) — `server/game/movement_service.py`
+- *... and 144 more nodes in this community*
 
 ## Relationships
 
-- [MovementService](MovementService.md) (14 shared connections)
-- [get_logger](get_logger.md) (14 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (5 shared connections)
-- [Room](Room.md) (5 shared connections)
+- [get_logger](get_logger.md) (28 shared connections)
+- [FollowService](FollowService.md) (7 shared connections)
+- [event_types.py](event_types.py.md) (5 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (5 shared connections)
 - [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (4 shared connections)
-- [RoomService](RoomService.md) (2 shared connections)
-- [event_types.py](event_types.py.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [time.py](time.py.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
-- [test_hallucination_services.py](test_hallucination_services.py.md) (1 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (4 shared connections)
+- [test_go_command.py](test_go_command.py.md) (3 shared connections)
+- [TargetMatch](TargetMatch.md) (3 shared connections)
+- [EventBus](EventBus.md) (2 shared connections)
+- [test_hallucination_services.py](test_hallucination_services.py.md) (2 shared connections)
+- [admin_hallucinate_command.py](admin_hallucinate_command.py.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
 
 ## Source Files
 
@@ -54,8 +54,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 208 (97%)
-- INFERRED: 7 (3%)
+- EXTRACTED: 339 (97%)
+- INFERRED: 12 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

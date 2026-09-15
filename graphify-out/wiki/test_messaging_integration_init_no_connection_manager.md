@@ -10,7 +10,7 @@
 ## Relationships
 
 - [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [build_event](build_event.md) (1 shared connections)
 
 ## Source Files
 

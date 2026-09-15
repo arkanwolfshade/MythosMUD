@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (10 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (2 shared connections)
-- [utils/config.ts](utils-config.ts.md) (2 shared connections)
+- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (8 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (4 shared connections)
+- [CatalogPage.tsx](CatalogPage.tsx.md) (2 shared connections)
 
 ## Source Files
 

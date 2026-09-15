@@ -1,25 +1,18 @@
 # MonitoringDashboard
 
-> 81 nodes
+> 62 nodes
 
 ## Key Concepts
 
 - **MonitoringDashboard** (35 connections) — `server/monitoring/monitoring_dashboard.py`
-- **monitoring_dashboard.py** (26 connections) — `server/monitoring/monitoring_dashboard.py`
-- **get_monitoring_dashboard()** (19 connections) — `server/monitoring/monitoring_dashboard.py`
 - **test_monitoring_dashboard.py** (17 connections) — `server/tests/unit/monitoring/test_monitoring_dashboard.py`
 - **Alert** (12 connections) — `server/monitoring/monitoring_dashboard.py`
 - **.get_system_health()** (11 connections) — `server/monitoring/monitoring_dashboard.py`
 - **_dashboard()** (11 connections) — `server/tests/unit/monitoring/test_monitoring_dashboard.py`
-- **server/monitoring/__init__.py** (11 connections) — `server/monitoring/__init__.py`
-- **ExceptionStats** (10 connections) — `server/monitoring/exception_tracker.py`
-- **PerformanceStats** (10 connections) — `server/monitoring/performance_monitor.py`
 - **LogAggregationStats** (10 connections) — `server/structured_logging/log_aggregator.py`
 - **.record_custom_alert()** (9 connections) — `server/monitoring/monitoring_dashboard.py`
-- **__getattr__()** (8 connections) — `server/monitoring/__init__.py`
 - **.check_alerts()** (7 connections) — `server/monitoring/monitoring_dashboard.py`
 - **._generate_recommendations()** (7 connections) — `server/monitoring/monitoring_dashboard.py`
-- **MonitoringSummary** (6 connections) — `server/monitoring/monitoring_dashboard.py`
 - **SystemHealth** (6 connections) — `server/monitoring/monitoring_dashboard.py`
 - **.get_monitoring_summary()** (6 connections) — `server/monitoring/monitoring_dashboard.py`
 - **Any** (6 connections)
@@ -29,36 +22,36 @@
 - **.record_summon_quantity_spike()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
 - **._calculate_performance_score()** (4 connections) — `server/monitoring/monitoring_dashboard.py`
 - **._get_memory_leak_metrics()** (4 connections) — `server/monitoring/monitoring_dashboard.py`
-- *... and 56 more nodes in this community*
+- **._determine_health_status()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
+- **._get_active_users()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
+- **.get_alert_history()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
+- **._get_disk_usage()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
+- **._get_memory_usage()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
+- **._get_system_load()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
+- **._make_performance_alert()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [PerformanceMonitor](PerformanceMonitor.md) (9 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (8 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (7 shared connections)
-- [get_logger](get_logger.md) (7 shared connections)
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (5 shared connections)
-- [LogAggregator](LogAggregator.md) (5 shared connections)
-- [lifespan.py](lifespan.py.md) (4 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [InventoryMutationGuard](InventoryMutationGuard.md) (2 shared connections)
-- [PrototypeRegistryError](PrototypeRegistryError.md) (2 shared connections)
-- [inventory_equip_command.py](inventory_equip_command.py.md) (2 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- [PerformanceMonitor](PerformanceMonitor.md) (12 shared connections)
+- [LogAggregator](LogAggregator.md) (4 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (2 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [system_monitoring.py](system_monitoring.py.md) (1 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (1 shared connections)
+- [InventoryMutationGuard](InventoryMutationGuard.md) (1 shared connections)
 
 ## Source Files
 
-- `server/monitoring/__init__.py`
-- `server/monitoring/exception_tracker.py`
 - `server/monitoring/monitoring_dashboard.py`
-- `server/monitoring/performance_monitor.py`
 - `server/structured_logging/log_aggregator.py`
 - `server/tests/unit/monitoring/test_monitoring_dashboard.py`
 
 ## Audit Trail
 
-- EXTRACTED: 184 (91%)
-- INFERRED: 18 (9%)
+- EXTRACTED: 122 (91%)
+- INFERRED: 12 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,6 +1,6 @@
 # User
 
-> God node · 307 connections · `server/models/user.py`
+> God node · 310 connections · `server/models/user.py`
 
 **Community:** [User](User.md)
 
@@ -29,23 +29,23 @@
 - models/player.py `EXTRACTED`
 - async_persistence.py `EXTRACTED`
 - server/models/__init__.py `EXTRACTED`
-- players.py `EXTRACTED`
+- [players.py](players.py.md) `EXTRACTED`
 - [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
-- maps.py `EXTRACTED`
+- [maps.py](maps.py.md) `EXTRACTED`
 - endpoints.py `EXTRACTED`
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) `EXTRACTED`
+- container_endpoints_basic.py `EXTRACTED`
 - [rooms.py](rooms.py.md) `EXTRACTED`
-- command_handler_unified.py `EXTRACTED`
+- [command_handler_unified.py](command_handler_unified.py.md) `EXTRACTED`
 - [test_admin_auth_service.py](test_admin_auth_service.py.md) `EXTRACTED`
 - test_maps.py `EXTRACTED`
-- test_users.py `EXTRACTED`
+- [test_users.py](test_users.py.md) `EXTRACTED`
 - users.py `EXTRACTED`
 - api/container_helpers.py `EXTRACTED`
 - test_container_helpers.py `EXTRACTED`
-- test_async_persistence_core.py `EXTRACTED`
+- [test_async_persistence_core.py](test_async_persistence_core.py.md) `EXTRACTED`
 - [test_metrics_endpoints.py](test_metrics_endpoints.py.md) `EXTRACTED`
 - api/player_effects.py `EXTRACTED`
-- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) `EXTRACTED`
+- test_npc_definitions_api.py `EXTRACTED`
 
 ### inherits
 - Base `EXTRACTED`
@@ -68,6 +68,7 @@
 - create_character_with_stats() `EXTRACTED`
 - close_container() `EXTRACTED`
 - handle_open_container_exceptions() `EXTRACTED`
+- get_item_catalog() `EXTRACTED`
 - handle_close_container_exceptions() `EXTRACTED`
 - handle_loot_all_exceptions() `EXTRACTED`
 - create_room_exit() `EXTRACTED`
@@ -79,7 +80,6 @@
 - get_player_quests() `EXTRACTED`
 - create_error_context() `EXTRACTED`
 - get_container_and_player_for_loot_all() `EXTRACTED`
-- _start_login_grace_period_body() `EXTRACTED`
 
 ### uses
 - [Player](Player.md) `INFERRED`

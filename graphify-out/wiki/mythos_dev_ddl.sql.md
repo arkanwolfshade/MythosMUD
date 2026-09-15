@@ -1,6 +1,6 @@
 # mythos_dev_ddl.sql
 
-> 107 nodes
+> 106 nodes
 
 ## Key Concepts
 
@@ -29,15 +29,15 @@
 - **mythos_dev.fetch_container_items()** (1 connections) — `db/mythos_dev_ddl.sql`
 - **mythos_dev.get_active_effects_for_player()** (1 connections) — `db/mythos_dev_ddl.sql`
 - **mythos_dev.get_active_players_by_user_id()** (1 connections) — `db/mythos_dev_ddl.sql`
-- *... and 82 more nodes in this community*
+- *... and 81 more nodes in this community*
 
 ## Relationships
 
-- [mythos_dev.players](mythos_dev.players.md) (19 shared connections)
+- [mythos_dev.players](mythos_dev.players.md) (21 shared connections)
 - [mythos_dev.rooms](mythos_dev.rooms.md) (12 shared connections)
 - [mythos_dev.item_instances](mythos_dev.item_instances.md) (8 shared connections)
 - [mythos_dev.npc_definitions](mythos_dev.npc_definitions.md) (5 shared connections)
-- [mythos_dev.users](mythos_dev.users.md) (4 shared connections)
+- [mythos_dev.quest_definitions](mythos_dev.quest_definitions.md) (3 shared connections)
 - [mythos_dev.emote_aliases](mythos_dev.emote_aliases.md) (2 shared connections)
 - [mythos_dev.get_user_id_by_username_ci](mythos_dev.get_user_id_by_username_ci.md) (1 shared connections)
 

@@ -1,74 +1,74 @@
 # LoggedHTTPException
 
-> 232 nodes
+> 215 nodes
 
 ## Key Concepts
 
-- **LoggedHTTPException** (370 connections) — `server/exceptions.py`
-- **api/monitoring.py** (60 connections) — `server/api/monitoring.py`
-- **test_monitoring_endpoints.py** (55 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
-- **subject_controller.py** (31 connections) — `server/api/admin/subject_controller.py`
-- **system_monitoring.py** (24 connections) — `server/api/system_monitoring.py`
-- **test_subject_controller.py** (24 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **monitoring_models.py** (22 connections) — `server/api/monitoring_models.py`
-- **get_cache_manager()** (21 connections) — `server/caching/lru_cache.py`
-- **Request** (20 connections)
-- **BaseModel** (19 connections)
-- **test_player_respawn_api.py** (17 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **respawn_player()** (15 connections) — `server/api/player_respawn.py`
-- **get_system_metrics()** (15 connections) — `server/api/system_monitoring.py`
-- **asyncio** (15 connections)
-- **_resolve_connection_manager_from_request()** (14 connections) — `server/api/monitoring.py`
-- **get_movement_monitor()** (14 connections) — `server/game/movement_monitor.py`
-- **get** (14 connections)
-- **test_player_respawn_handlers.py** (14 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **get_health_status()** (13 connections) — `server/api/monitoring.py`
-- **respawn_player_from_delirium()** (13 connections) — `server/api/player_respawn.py`
-- **_request_with_container()** (13 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
-- **test_main.py** (13 connections) — `server/tests/unit/test_main.py`
-- **_handle_delirium_respawn_validation_error()** (12 connections) — `server/api/player_respawn.py`
-- **movement_monitor.py** (12 connections) — `server/game/movement_monitor.py`
-- **register_pattern()** (11 connections) — `server/api/admin/subject_controller.py`
-- *... and 207 more nodes in this community*
+- **LoggedHTTPException** (374 connections) — `server/exceptions.py`
+- **endpoints.py** (66 connections) — `server/auth/endpoints.py`
+- **login_user()** (35 connections) — `server/auth/endpoints.py`
+- **UserCreate** (31 connections) — `server/auth/endpoints.py`
+- **register_user()** (31 connections) — `server/auth/endpoints.py`
+- **test_endpoints_register.py** (30 connections) — `server/tests/unit/auth/test_endpoints_register.py`
+- **LoginRequest** (22 connections) — `server/auth/endpoints.py`
+- **test_endpoints_login.py** (20 connections) — `server/tests/unit/auth/test_endpoints_login.py`
+- **asyncio** (18 connections)
+- **list_invites()** (14 connections) — `server/auth/endpoints.py`
+- **test_endpoints_invites.py** (14 connections) — `server/tests/unit/auth/test_endpoints_invites.py`
+- **RestartInvalidatingJWTStrategy** (13 connections) — `server/auth/jwt_strategy.py`
+- **get_current_superuser()** (12 connections) — `server/auth/dependencies.py`
+- **create_invite()** (12 connections) — `server/auth/endpoints.py`
+- **_persist_new_user()** (12 connections) — `server/auth/endpoints.py`
+- **asyncio** (11 connections)
+- **set_auth_epoch()** (10 connections) — `server/auth/token_epoch.py`
+- **_mock_invite_manager()** (10 connections) — `server/tests/unit/auth/test_endpoints_register.py`
+- **test_endpoints_login_profession.py** (10 connections) — `server/tests/unit/auth/test_endpoints_login_profession.py`
+- **get_current_user_info()** (9 connections) — `server/auth/endpoints.py`
+- **test_jwt_strategy.py** (9 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
+- **_authenticate_user_credentials()** (8 connections) — `server/auth/endpoints.py`
+- **_check_shutdown_status()** (8 connections) — `server/auth/endpoints.py`
+- **_generate_jwt_token()** (8 connections) — `server/auth/endpoints.py`
+- **get_auth_epoch()** (8 connections) — `server/auth/token_epoch.py`
+- *... and 190 more nodes in this community*
 
 ## Relationships
 
-- [PlayerService](PlayerService.md) (100 shared connections)
-- [get_logger](get_logger.md) (52 shared connections)
-- [User](User.md) (49 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (42 shared connections)
-- [RoomService](RoomService.md) (24 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (22 shared connections)
-- [HealthStatus](HealthStatus.md) (22 shared connections)
-- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) (18 shared connections)
-- [rooms.py](rooms.py.md) (16 shared connections)
-- [ContainerComponent](ContainerComponent.md) (15 shared connections)
+- [User](User.md) (90 shared connections)
+- [Invite](Invite.md) (40 shared connections)
+- [players.py](players.py.md) (39 shared connections)
+- [get_logger](get_logger.md) (29 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (27 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (19 shared connections)
+- [test_player_respawn_api.py](test_player_respawn_api.py.md) (18 shared connections)
+- [test_admin_auth_service.py](test_admin_auth_service.py.md) (17 shared connections)
+- [maps.py](maps.py.md) (16 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (15 shared connections)
 - [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (15 shared connections)
-- [real_time.py](real_time.py.md) (15 shared connections)
+- [rooms.py](rooms.py.md) (15 shared connections)
 
 ## Source Files
 
-- `server/api/admin/subject_controller.py`
-- `server/api/monitoring.py`
-- `server/api/monitoring_models.py`
-- `server/api/player_respawn.py`
-- `server/api/system_monitoring.py`
-- `server/caching/lru_cache.py`
+- `server/auth/dependencies.py`
+- `server/auth/endpoints.py`
+- `server/auth/invites.py`
+- `server/auth/jwt_strategy.py`
+- `server/auth/token_epoch.py`
+- `server/auth/users.py`
 - `server/exceptions.py`
-- `server/game/movement_monitor.py`
-- `server/tests/unit/api/admin/test_subject_controller.py`
-- `server/tests/unit/api/test_monitoring_endpoints.py`
-- `server/tests/unit/api/test_player_respawn_api.py`
-- `server/tests/unit/api/test_player_respawn_handlers.py`
-- `server/tests/unit/game/test_movement_monitor.py`
+- `server/tests/unit/auth/conftest.py`
+- `server/tests/unit/auth/test_auth_dependencies.py`
+- `server/tests/unit/auth/test_endpoints_invites.py`
+- `server/tests/unit/auth/test_endpoints_login.py`
+- `server/tests/unit/auth/test_endpoints_login_profession.py`
+- `server/tests/unit/auth/test_endpoints_register.py`
+- `server/tests/unit/auth/test_jwt_strategy.py`
 - `server/tests/unit/test_exceptions.py`
 - `server/tests/unit/test_exceptions_comprehensive.py`
-- `server/tests/unit/test_main.py`
 
 ## Audit Trail
 
-- EXTRACTED: 910 (85%)
-- INFERRED: 159 (15%)
+- EXTRACTED: 694 (76%)
+- INFERRED: 220 (24%)
 - AMBIGUOUS: 0 (0%)
 
 ---

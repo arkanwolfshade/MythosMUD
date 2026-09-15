@@ -1,6 +1,6 @@
 # messageHandlers.ts
 
-> 42 nodes
+> 43 nodes
 
 ## Key Concepts
 
@@ -19,6 +19,7 @@
 - **handleSystem.test.ts** (5 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/handleSystem.test.ts`
 - **handleRoomMessage()** (4 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
 - **resolveChatTypeFromChannel()** (4 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
+- **isChatContent()** (4 connections) — `client/src/utils/messageTypeUtils.ts`
 - **convertToPlayerInterface()** (4 connections) — `client/src/utils/statusParser.ts`
 - **parseStatusResponse()** (4 connections) — `client/src/utils/statusParser.ts`
 - **messageTypeUtils.test.ts** (4 connections) — `client/src/utils/__tests__/messageTypeUtils.test.ts`
@@ -28,18 +29,13 @@
 - **ParsedPlayerData** (2 connections) — `client/src/utils/statusParser.ts`
 - **handleSystem()** (2 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
 - **matchPatternList()** (2 connections) — `client/src/utils/messageTypeUtils.ts`
-- **MessagePattern** (1 connections) — `client/src/utils/messageTypeUtils.ts`
-- *... and 17 more nodes in this community*
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (6 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (15 shared connections)
 - [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (5 shared connections)
-- [GameClientV2AuxiliaryPanels.tsx](GameClientV2AuxiliaryPanels.tsx.md) (4 shared connections)
 - [projectorRoom.ts](projectorRoom.ts.md) (2 shared connections)
-- [logger.ts](logger.ts.md) (2 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (1 shared connections)
 
 ## Source Files
 
@@ -56,7 +52,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 96 (100%)
+- EXTRACTED: 98 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

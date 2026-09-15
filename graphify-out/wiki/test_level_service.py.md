@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [GameBundle](GameBundle.md) (5 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (5 shared connections)
 - [get_logger](get_logger.md) (4 shared connections)
 
 ## Source Files

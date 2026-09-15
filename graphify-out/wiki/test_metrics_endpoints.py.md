@@ -33,11 +33,12 @@
 
 ## Relationships
 
-- [User](User.md) (17 shared connections)
+- [User](User.md) (16 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (15 shared connections)
-- [PlayerService](PlayerService.md) (6 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (6 shared connections)
 - [get_logger](get_logger.md) (6 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
+- [factory.py](factory.py.md) (1 shared connections)
 
 ## Source Files
 

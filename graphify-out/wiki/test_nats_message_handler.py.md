@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [NATSError](NATSError.md) (12 shared connections)
+- [NATSError](NATSError.md) (15 shared connections)
 - [CircuitBreaker](CircuitBreaker.md) (4 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (4 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (2 shared connections)
-- [NATSService](NATSService.md) (2 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (2 shared connections)
+- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
+- [DeadLetterQueue](DeadLetterQueue.md) (1 shared connections)
 
 ## Source Files
 

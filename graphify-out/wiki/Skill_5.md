@@ -4,13 +4,13 @@
 
 ## Key Concepts
 
-- **MythosMUD Server Runbook** (6 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
-- **Commands** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
-- **Critical Rules** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
-- **ONE SERVER ONLY RULE** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
-- **Pre-Start Checklist** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
-- **Reference** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
-- **Server Runbook Skill** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **MythosMUD Logging Standards** (6 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Import** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Optional Helpers** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Reference** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Structured Logging** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Summary** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Logging Standards Skill** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
 
 ## Relationships
 
@@ -18,7 +18,7 @@
 
 ## Source Files
 
-- `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- `.claude/skills/mythosmud-logging-standards/SKILL.md`
 
 ## Audit Trail
 

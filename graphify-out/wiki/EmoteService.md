@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
-- [GameBundle](GameBundle.md) (4 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [bundles/game.py](bundles-game.py.md) (1 shared connections)
 
 ## Source Files
 

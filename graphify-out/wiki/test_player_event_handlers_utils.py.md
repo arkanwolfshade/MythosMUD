@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (3 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (3 shared connections)
 
 ## Source Files
 

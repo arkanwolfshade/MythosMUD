@@ -1,18 +1,19 @@
 # AsyncPersistenceLayer
 
-> 172 nodes
+> 188 nodes
 
 ## Key Concepts
 
-- **AsyncPersistenceLayer** (173 connections) — `server/async_persistence.py`
+- **AsyncPersistenceLayer** (174 connections) — `server/async_persistence.py`
 - **test_async_persistence_delegates.py** (34 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 - **asyncio** (22 connections)
 - **Player** (20 connections)
 - **UUID** (15 connections)
+- **InstanceRoomLookup** (7 connections) — `server/async_persistence_types.py`
+- **async_persistence_types.py** (7 connections) — `server/async_persistence_types.py`
 - **async_persistence_access.py** (7 connections) — `server/container/async_persistence_access.py`
 - **ContainerCreateKwargs** (6 connections) — `server/async_persistence_types.py`
 - **PlayerEffectOptions** (6 connections) — `server/async_persistence_types.py`
-- **_room_from_persistence()** (6 connections) — `server/npc/spawning_request_execution.py`
 - **_ContainerWithPersistence** (5 connections) — `server/container/async_persistence_access.py`
 - **.create_container()** (5 connections) — `server/async_persistence.py`
 - **test_apply_corruption_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
@@ -26,39 +27,38 @@
 - **test_gain_occult_knowledge_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 - **test_get_player_by_user_id_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 - **test_heal_player_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **infrastructure/conftest.py** (5 connections) — `server/tests/unit/infrastructure/conftest.py`
 - **_ApplicationContainerType** (4 connections) — `server/container/async_persistence_access.py`
-- **.add_player_effect()** (4 connections) — `server/async_persistence.py`
-- **.ensure_item_instance()** (4 connections) — `server/async_persistence.py`
-- *... and 147 more nodes in this community*
+- *... and 163 more nodes in this community*
 
 ## Relationships
 
-- [RoomService](RoomService.md) (13 shared connections)
-- [Player](Player.md) (13 shared connections)
-- [Room](Room.md) (9 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (8 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (5 shared connections)
-- [event_types.py](event_types.py.md) (5 shared connections)
-- [item_instance_persistence_async.py](item_instance_persistence_async.py.md) (5 shared connections)
+- [get_logger](get_logger.md) (22 shared connections)
+- [Player](Player.md) (12 shared connections)
+- [User](User.md) (6 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (6 shared connections)
+- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (5 shared connections)
 - [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (5 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
+- [container_events.py](container_events.py.md) (4 shared connections)
 - [test_movement_service.py](test_movement_service.py.md) (4 shared connections)
-- [ContainerComponent](ContainerComponent.md) (4 shared connections)
-- [time.py](time.py.md) (4 shared connections)
+- [NPCDefinition](NPCDefinition.md) (4 shared connections)
+- [HolidayService](HolidayService.md) (4 shared connections)
+- [test_async_persistence_core.py](test_async_persistence_core.py.md) (4 shared connections)
+- [ContainerRepository](ContainerRepository.md) (4 shared connections)
 
 ## Source Files
 
 - `server/async_persistence.py`
 - `server/async_persistence_types.py`
 - `server/container/async_persistence_access.py`
-- `server/npc/spawning_request_execution.py`
+- `server/tests/unit/infrastructure/conftest.py`
 - `server/tests/unit/infrastructure/test_async_persistence_core.py`
 - `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 
 ## Audit Trail
 
-- EXTRACTED: 334 (85%)
-- INFERRED: 58 (15%)
+- EXTRACTED: 353 (86%)
+- INFERRED: 57 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,13 +1,12 @@
 # ._build_player_attacked_event
 
-> 29 nodes
+> 27 nodes
 
 ## Key Concepts
 
 - **._build_player_attacked_event()** (8 connections) — `server/npc/combat_integration.py`
 - **._calculate_max_dp()** (6 connections) — `server/npc/combat_integration.py`
 - **._compute_dp_update_fields()** (6 connections) — `server/npc/combat_integration.py`
-- **._get_combat_event_publisher()** (6 connections) — `server/npc/combat_integration.py`
 - **._get_int_stat()** (5 connections) — `server/npc/combat_integration.py`
 - **._publish_npc_attack_to_nats()** (5 connections) — `server/npc/combat_integration.py`
 - **._publish_player_dp_updated_after_npc_damage()** (5 connections) — `server/npc/combat_integration.py`
@@ -23,25 +22,23 @@
 - **Compute old_dp, new_dp, and max_dp values for PlayerDPUpdated.** (1 connections) — `server/npc/combat_integration.py`
 - **Publish the PlayerDPUpdated event to the event bus.** (1 connections) — `server/npc/combat_integration.py`
 - **Publish NPC-on-player attack as player_attacked to NATS so the client receives…** (1 connections) — `server/npc/combat_integration.py`
-- **Resolve the combat event publisher used to send PlayerAttacked events to NATS.** (1 connections) — `server/npc/combat_integration.py`
 - **Resolve target UUID, player object, and stats needed for NATS attack event.** (1 connections) — `server/npc/combat_integration.py`
 - **Construct the PlayerAttackedEvent payload for NATS publication.** (1 connections) — `server/npc/combat_integration.py`
 - **Return an integer stat from stats[key], handling common primitive types.** (1 connections) — `server/npc/combat_integration.py`
 - **Calculate max_dp from stats with fallbacks.** (1 connections) — `server/npc/combat_integration.py`
 - **Get combat stats for a player.** (1 connections) — `server/npc/combat_integration.py`
-- *... and 4 more nodes in this community*
+- **Normalize NPC stats to include 'hp' for backward compatibility.** (1 connections) — `server/npc/combat_integration.py`
+- **Get combat-relevant stats for an entity. Args: entity_id: ID of the entity…** (1 connections) — `server/npc/combat_integration.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [NPCCombatIntegration](NPCCombatIntegration.md) (13 shared connections)
+- [NPCCombatIntegration](NPCCombatIntegration.md) (12 shared connections)
+- [NPCDefinition](NPCDefinition.md) (2 shared connections)
 - [._get_npc_display_name](_get_npc_display_name.md) (1 shared connections)
 - [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [CombatEventPublisherProtocol](CombatEventPublisherProtocol.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
+- [.state](state.md) (1 shared connections)
 - [PlayerDPUpdated](PlayerDPUpdated.md) (1 shared connections)
-- [NPCBase](NPCBase.md) (1 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 52 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 48 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

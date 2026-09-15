@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [PlayerService](PlayerService.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [Stats](Stats.md) (4 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (4 shared connections)
+- [PlayerService](PlayerService.md) (3 shared connections)
 
 ## Source Files
 

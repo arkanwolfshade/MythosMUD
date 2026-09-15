@@ -1,6 +1,6 @@
 # QuestService
 
-> 89 nodes
+> 94 nodes
 
 ## Key Concepts
 
@@ -29,33 +29,36 @@
 - **._check_prerequisites()** (7 connections) — `server/game/quest/quest_service.py`
 - **._turn_in_inventory_full_error()** (7 connections) — `server/game/quest/quest_service.py`
 - **_has_collect_n_goals()** (6 connections) — `server/game/quest/quest_service.py`
-- *... and 64 more nodes in this community*
+- *... and 69 more nodes in this community*
 
 ## Relationships
 
-- [test_quest_service.py](test_quest_service.py.md) (30 shared connections)
-- [get_session_maker](get_session_maker.md) (13 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (10 shared connections)
+- [test_quest_service.py](test_quest_service.py.md) (32 shared connections)
+- [test_quest_instance_repository.py](test_quest_instance_repository.py.md) (15 shared connections)
+- [test_chat_npc_system.py](test_chat_npc_system.py.md) (13 shared connections)
 - [collect_inventory.py](collect_inventory.py.md) (7 shared connections)
-- [PlayerService](PlayerService.md) (6 shared connections)
+- [players.py](players.py.md) (6 shared connections)
 - [test_quest_service_collect.py](test_quest_service_collect.py.md) (5 shared connections)
 - [quest_commands.py](quest_commands.py.md) (4 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (3 shared connections)
 - [test_lifespan_event_subscriptions.py](test_lifespan_event_subscriptions.py.md) (3 shared connections)
-- [should_notify_quest_progress](should_notify_quest_progress.md) (3 shared connections)
-- [test_quest_start_by_trigger_then_abandon](test_quest_start_by_trigger_then_abandon.md) (2 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [Player](Player.md) (2 shared connections)
+- [bundles/game.py](bundles-game.py.md) (1 shared connections)
 
 ## Source Files
 
+- `server/game/magic/spell_effect_types.py`
 - `server/game/quest/__init__.py`
 - `server/game/quest/quest_service.py`
 - `server/models/quest.py`
+- `server/npc/npc_base.py`
 - `server/schemas/quest/quest.py`
+- `server/tests/unit/game/test_quest_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 270 (88%)
+- EXTRACTED: 275 (88%)
 - INFERRED: 36 (12%)
 - AMBIGUOUS: 0 (0%)
 

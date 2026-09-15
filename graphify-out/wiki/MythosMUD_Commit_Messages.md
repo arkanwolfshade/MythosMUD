@@ -15,7 +15,7 @@
 
 ## Relationships
 
-- [Skill](Skill.md) (1 shared connections)
+- [Skill](Skill_2.md) (1 shared connections)
 - [gh-stack (MythosMUD)](gh-stack_MythosMUD.md) (1 shared connections)
 
 ## Source Files

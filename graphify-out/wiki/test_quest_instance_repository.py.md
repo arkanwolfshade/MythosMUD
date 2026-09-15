@@ -1,0 +1,67 @@
+# test_quest_instance_repository.py
+
+> 115 nodes
+
+## Key Concepts
+
+- **test_quest_instance_repository.py** (22 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
+- **QuestInstanceRepository** (20 connections) — `server/persistence/repositories/quest_instance_repository.py`
+- **test_quest_definition_repository.py** (20 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **QuestDefinitionRepository** (17 connections) — `server/persistence/repositories/quest_definition_repository.py`
+- **test_quest_flow.py** (15 connections) — `server/tests/integration/test_quest_flow.py`
+- **QuestDefinition** (13 connections) — `server/models/quest.py`
+- **_make_session_context()** (13 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
+- **models/quest.py** (13 connections) — `server/models/quest.py`
+- **_make_session_context()** (11 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **asyncio** (11 connections)
+- **.create()** (10 connections) — `server/persistence/repositories/quest_instance_repository.py`
+- **test_quest_start_by_trigger_then_abandon()** (9 connections) — `server/tests/integration/test_quest_flow.py`
+- **test_quest_start_log_abandon_flow()** (9 connections) — `server/tests/integration/test_quest_flow.py`
+- **asyncio** (9 connections)
+- **.get_by_player_and_quest()** (8 connections) — `server/persistence/repositories/quest_instance_repository.py`
+- **.list_active_by_player()** (8 connections) — `server/persistence/repositories/quest_instance_repository.py`
+- **.list_completed_by_player()** (8 connections) — `server/persistence/repositories/quest_instance_repository.py`
+- **_row_to_quest_instance()** (8 connections) — `server/persistence/repositories/quest_instance_repository.py`
+- **._init_quest_service()** (7 connections) — `server/container/bundles/game.py`
+- **.update_state_and_progress()** (7 connections) — `server/persistence/repositories/quest_instance_repository.py`
+- **_str_player_id()** (7 connections) — `server/persistence/repositories/quest_instance_repository.py`
+- **UUID** (7 connections)
+- **QuestOffer** (6 connections) — `server/models/quest.py`
+- **.get_by_id()** (6 connections) — `server/persistence/repositories/quest_definition_repository.py`
+- **.get_by_name()** (6 connections) — `server/persistence/repositories/quest_definition_repository.py`
+- *... and 90 more nodes in this community*
+
+## Relationships
+
+- [get_logger](get_logger.md) (38 shared connections)
+- [QuestService](QuestService.md) (15 shared connections)
+- [Player](Player.md) (8 shared connections)
+- [get_session_maker](get_session_maker.md) (8 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (3 shared connections)
+- [bundles/game.py](bundles-game.py.md) (2 shared connections)
+- [session_factory](session_factory.md) (2 shared connections)
+- [ItemCatalogService](ItemCatalogService.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
+- [User](User.md) (1 shared connections)
+- [quest_seed_data](quest_seed_data.md) (1 shared connections)
+
+## Source Files
+
+- `server/container/bundles/game.py`
+- `server/models/quest.py`
+- `server/persistence/repositories/quest_definition_repository.py`
+- `server/persistence/repositories/quest_instance_repository.py`
+- `server/tests/integration/test_quest_flow.py`
+- `server/tests/unit/persistence/test_quest_definition_repository.py`
+- `server/tests/unit/persistence/test_quest_instance_repository.py`
+
+## Audit Trail
+
+- EXTRACTED: 255 (91%)
+- INFERRED: 24 (9%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

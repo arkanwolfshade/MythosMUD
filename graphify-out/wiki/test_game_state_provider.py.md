@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [build_event](build_event.md) (3 shared connections)
+- [GameStateProvider](GameStateProvider.md) (2 shared connections)
+- [game_state_provider.py](game_state_provider.py.md) (1 shared connections)
 
 ## Source Files
 

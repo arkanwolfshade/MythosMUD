@@ -1,6 +1,6 @@
 # projectorRoom.ts
 
-> 51 nodes
+> 58 nodes
 
 ## Key Concepts
 
@@ -8,9 +8,11 @@
 - **projectorHandlersState.ts** (28 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
 - **projectorHandlersMessages.ts** (27 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
 - **projectorMessageUtils.ts** (12 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
+- **roomMergeUtils.ts** (10 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
 - **messageMapper.ts** (8 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
 - **attachOccupants()** (7 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
 - **coalesceCount()** (7 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **mergeRoomState()** (7 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
 - **messageMapper.test.ts** (7 connections) — `client/src/components/ui-v2/eventLog/__tests__/messageMapper.test.ts`
 - **deriveRoomFromRoomOccupants()** (6 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
 - **deriveRoomFromRoomUpdate()** (6 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
@@ -27,19 +29,13 @@
 - **appendMovementMessage()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
 - **createRoomUpdateWithPreservedOccupants()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
 - **deriveRoomFromOccupantsWithoutExisting()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **deriveRoomFromRoomState()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **normalizeOccupantArrays()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- *... and 26 more nodes in this community*
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (20 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (5 shared connections)
-- [systemHandlers.ts](systemHandlers.ts.md) (5 shared connections)
-- [Room](Room.md) (4 shared connections)
-- [logger.ts](logger.ts.md) (2 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (33 shared connections)
+- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (9 shared connections)
 - [messageHandlers.ts](messageHandlers.ts.md) (2 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,10 +45,12 @@
 - `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
 - `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
 - `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- `client/src/components/ui-v2/utils/__tests__/roomMergeUtils.test.ts`
+- `client/src/components/ui-v2/utils/roomMergeUtils.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 156 (100%)
+- EXTRACTED: 174 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -34,10 +34,10 @@
 ## Relationships
 
 - [waitForMessage](waitForMessage.md) (7 shared connections)
-- [fixtures/auth.ts](fixtures-auth.ts.md) (6 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (5 shared connections)
 - [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (4 shared connections)
+- [player.ts](player.ts.md) (3 shared connections)
 - [executeCommand](executeCommand.md) (2 shared connections)
-- [player.ts](player.ts.md) (2 shared connections)
 
 ## Source Files
 

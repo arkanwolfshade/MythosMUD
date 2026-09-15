@@ -1,12 +1,11 @@
 # test_inventory_equip_command.py
 
-> 39 nodes
+> 36 nodes
 
 ## Key Concepts
 
 - **test_inventory_equip_command.py** (36 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
 - **handle_equip_command()** (15 connections) — `server/commands/inventory_equip_command.py`
-- **_equip_build_work()** (13 connections) — `server/commands/inventory_equip_command.py`
 - **_sample_work()** (13 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
 - **_equip_run_mutation()** (12 connections) — `server/commands/inventory_equip_command.py`
 - **asyncio** (10 connections)
@@ -17,7 +16,6 @@
 - **_equip_try_inventory_swap()** (7 connections) — `server/commands/inventory_equip_command.py`
 - **CommandResponse** (7 connections)
 - **EquipCommandInventoryStep** (6 connections) — `server/commands/inventory_equip_command.py`
-- **EquipCommandRuntime** (6 connections) — `server/commands/inventory_equip_command.py`
 - **_equip_inventory_rollback_snapshot()** (6 connections) — `server/commands/inventory_equip_command.py`
 - **test_equip_run_mutation_swap_error()** (6 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
 - **test_equip_run_mutation_suppressed()** (5 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
@@ -29,16 +27,17 @@
 - **test_equip_persist_or_rollback_failure()** (4 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
 - **test_equip_persist_or_rollback_success()** (4 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
 - **test_equip_run_mutation_success()** (4 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
-- *... and 14 more nodes in this community*
+- **test_handle_equip_command_build_error()** (4 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
+- **.__init__()** (3 connections) — `server/commands/inventory_equip_command.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [inventory_equip_command.py](inventory_equip_command.py.md) (17 shared connections)
-- [command_result_text](command_result_text.md) (14 shared connections)
+- [inventory_equip_command.py](inventory_equip_command.py.md) (23 shared connections)
+- [command_result_text](command_result_text.md) (13 shared connections)
 - [Player](Player.md) (7 shared connections)
-- [equipment_helpers.py](equipment_helpers.py.md) (6 shared connections)
 - [inventory_command_helpers.py](inventory_command_helpers.py.md) (4 shared connections)
-- [test_inventory_helpers.py](test_inventory_helpers.py.md) (1 shared connections)
+- [server/services/__init__.py](server-services-__init__.py.md) (4 shared connections)
 - [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (1 shared connections)
 - [AliasStorage](AliasStorage.md) (1 shared connections)
 
@@ -49,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 139 (95%)
-- INFERRED: 8 (5%)
+- EXTRACTED: 130 (94%)
+- INFERRED: 8 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

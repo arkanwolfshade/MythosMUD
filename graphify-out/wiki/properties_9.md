@@ -1,44 +1,42 @@
 # properties
 
-> 23 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **properties** (11 connections) — `db/static/schemas/room.schema.json`
-- **null** (11 connections) — `db/static/schemas/room.schema.json`
-- **string** (11 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **down** (2 connections) — `db/static/schemas/room.schema.json`
-- **east** (2 connections) — `db/static/schemas/room.schema.json`
-- **north** (2 connections) — `db/static/schemas/room.schema.json`
-- **northeast** (2 connections) — `db/static/schemas/room.schema.json`
-- **northwest** (2 connections) — `db/static/schemas/room.schema.json`
-- **south** (2 connections) — `db/static/schemas/room.schema.json`
-- **southeast** (2 connections) — `db/static/schemas/room.schema.json`
-- **southwest** (2 connections) — `db/static/schemas/room.schema.json`
-- **up** (2 connections) — `db/static/schemas/room.schema.json`
-- **west** (2 connections) — `db/static/schemas/room.schema.json`
+- **properties** (7 connections) — `schemas/unified_room_schema.json`
+- **capacity_slots** (6 connections) — `schemas/unified_room_schema.json`
+- **allowed_roles** (4 connections) — `schemas/unified_room_schema.json`
+- **weight_limit** (4 connections) — `schemas/unified_room_schema.json`
+- **key_item_id** (3 connections) — `schemas/unified_room_schema.json`
+- **items** (2 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **default** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **maximum** (1 connections) — `schemas/unified_room_schema.json`
+- **minimum** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **minimum** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
 
 ## Relationships
 
-- [exits](exits.md) (3 shared connections)
+- [enabled](enabled.md) (1 shared connections)
+- [lock_state](lock_state.md) (1 shared connections)
+- [container](container.md) (1 shared connections)
 
 ## Source Files
 
-- `db/static/schemas/room.schema.json`
+- `schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

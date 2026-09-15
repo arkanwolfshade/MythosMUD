@@ -1,11 +1,11 @@
 # PlayerStateCommandFactory
 
-> 76 nodes
+> 82 nodes
 
 ## Key Concepts
 
-- **PlayerStateCommandFactory** (43 connections) — `server/utils/command_factories_player_state.py`
-- **test_command_factories_player_state.py** (29 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **PlayerStateCommandFactory** (46 connections) — `server/utils/command_factories_player_state.py`
+- **test_command_factories_player_state.py** (31 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
 - **.create_cleanse_command()** (6 connections) — `server/utils/command_factories_player_state.py`
 - **.create_journal_command()** (6 connections) — `server/utils/command_factories_player_state.py`
 - **.create_quests_command()** (6 connections) — `server/utils/command_factories_player_state.py`
@@ -24,20 +24,18 @@
 - **test_create_status_command_with_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
 - **test_create_time_command_with_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
 - **test_create_whoami_command_with_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **.create_catalog_command()** (5 connections) — `server/utils/command_factories_player_state.py`
 - **.create_logout_command()** (5 connections) — `server/utils/command_factories_player_state.py`
 - **.create_quest_command()** (5 connections) — `server/utils/command_factories_player_state.py`
 - **.create_who_command()** (5 connections) — `server/utils/command_factories_player_state.py`
-- **test_create_cleanse_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
-- **test_create_journal_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
-- *... and 51 more nodes in this community*
+- **test_create_catalog_command_empty_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
 - [get_logger](get_logger.md) (23 shared connections)
-- [command.py](command.py.md) (11 shared connections)
-- [test_command_player_state.py](test_command_player_state.py.md) (2 shared connections)
-- [CombatCommandFactory](CombatCommandFactory.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [BaseCommand](BaseCommand.md) (15 shared connections)
+- [test_command_combat.py](test_command_combat.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 127 (79%)
-- INFERRED: 34 (21%)
+- EXTRACTED: 136 (79%)
+- INFERRED: 36 (21%)
 - AMBIGUOUS: 0 (0%)
 
 ---

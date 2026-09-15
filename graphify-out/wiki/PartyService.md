@@ -31,17 +31,17 @@
 ## Relationships
 
 - [_str_id](_str_id.md) (17 shared connections)
-- [EventBus](EventBus.md) (7 shared connections)
+- [EventBus](EventBus.md) (9 shared connections)
 - [.accept_party_invite](accept_party_invite.md) (6 shared connections)
-- [event_types.py](event_types.py.md) (4 shared connections)
-- [GameBundle](GameBundle.md) (3 shared connections)
 - [test_party_service.py](test_party_service.py.md) (3 shared connections)
+- [event_types.py](event_types.py.md) (2 shared connections)
 - [Party](Party.md) (2 shared connections)
 - [ConnectionManager](ConnectionManager.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [._bind_event_type](_bind_event_type.md) (1 shared connections)
-- [asyncio](asyncio.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [InstanceManager](InstanceManager.md) (1 shared connections)
+- [bundles/game.py](bundles-game.py.md) (1 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
 
 ## Source Files
 

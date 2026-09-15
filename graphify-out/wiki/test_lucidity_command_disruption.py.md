@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **test_lucidity_command_disruption.py** (14 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
-- **lucidity_command_disruption.py** (10 connections) — `server/services/lucidity_command_disruption.py`
+- **lucidity_command_disruption.py** (9 connections) — `server/services/lucidity_command_disruption.py`
 - **should_involuntary_flee()** (7 connections) — `server/services/lucidity_command_disruption.py`
 - **should_misfire_command()** (7 connections) — `server/services/lucidity_command_disruption.py`
 - **can_perform_action()** (4 connections) — `server/services/lucidity_command_disruption.py`
@@ -30,7 +30,6 @@
 
 - [CombatInstance](CombatInstance.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
 
@@ -39,7 +38,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 40 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

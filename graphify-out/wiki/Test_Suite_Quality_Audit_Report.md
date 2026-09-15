@@ -1,28 +1,30 @@
 # Test Suite Quality Audit Report
 
-> 11 nodes
+> 13 nodes
 
 ## Key Concepts
 
 - **Test Suite Quality Audit Report** (9 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Conclusion** (5 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Specific Actionable Recommendations** (4 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **3.3 Value Distribution Calculation** (4 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Executive Summary** (4 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Phase 3: Test Value Scoring** (4 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 - **TEST_QUALITY_AUDIT_REPORT.md** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **~25-30% (1,250-1,500 tests) provide CRITICAL protection** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Answer to Your Question** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Phase A: Quick Wins (1-2 hours effort)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Phase B: Medium Effort (4-8 hours effort)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Phase C: Strategic Enhancements (8-16 hours effort)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Recommended Action** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **The remaining 70-75% provide** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **3.1 Scoring Criteria Matrix** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **3.2 Category Scores** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **🔴 CRITICAL VALUE TESTS (Score ≥75): **1,272 tests (25.6%)**** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **🟡 IMPORTANT (Medium-Value):**~2,500-3,000 tests (50-60%) —**~15-18 minutes** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **🟡 IMPORTANT VALUE TESTS (Score 50-74): **2,943 tests (59.3%)**** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Key Findings** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **🟢 LOW VALUE TESTS (Score <50): **750 tests (15.1%)**** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Test Value Distribution** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Relationships
 
-- [Executive Summary](Executive_Summary.md) (1 shared connections)
-- [Test Quality Audit Report](Test_Quality_Audit_Report.md) (1 shared connections)
 - [Phase 1: Quantitative Analysis Results](Phase_1-_Quantitative_Analysis_Results.md) (1 shared connections)
 - [Phase 4: Recommendations](Phase_4-_Recommendations.md) (1 shared connections)
 - [Summary: Test Quality Metrics](Summary-_Test_Quality_Metrics.md) (1 shared connections)
+- [Specific Actionable Recommendations](Specific_Actionable_Recommendations.md) (1 shared connections)
+- [Conclusion](Conclusion.md) (1 shared connections)
 - [Phase 2: Qualitative Analysis Results](Phase_2-_Qualitative_Analysis_Results.md) (1 shared connections)
 
 ## Source Files
@@ -31,7 +33,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

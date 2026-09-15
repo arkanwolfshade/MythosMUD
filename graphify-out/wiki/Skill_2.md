@@ -4,25 +4,25 @@
 
 ## Key Concepts
 
-- **Git Workflow** (6 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **git-workflow/SKILL.md** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **Branching** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **Commit messages** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **History hygiene** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **Never** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **Repository hygiene** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
+- **gh-stack (MythosMUD)** (7 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **Automatic decision tree** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **Forbidden (hangs non-interactive agents)** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **Full skill body** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **Integration with other skills** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **Mythos defaults** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **One-liner status check (PowerShell)** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [MythosMUD Commit Messages](MythosMUD_Commit_Messages.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/git-workflow/SKILL.md`
+- `.claude/skills/gh-stack/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -33,14 +33,13 @@
 
 ## Relationships
 
-- [NPCBase](NPCBase.md) (8 shared connections)
+- [NPCDefinition](NPCDefinition.md) (9 shared connections)
 - [IdleMovementHandler](IdleMovementHandler.md) (2 shared connections)
 - [NPCActionMessage](NPCActionMessage.md) (2 shared connections)
 - [EventBus](EventBus.md) (1 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [.async_persistence](async_persistence.md) (1 shared connections)
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [TargetResolutionResult](TargetResolutionResult.md) (1 shared connections)
 
 ## Source Files
 

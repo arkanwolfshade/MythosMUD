@@ -34,14 +34,11 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (32 shared connections)
-- [test_command_admin.py](test_command_admin.py.md) (5 shared connections)
-- [command.py](command.py.md) (4 shared connections)
-- [test_command_magic.py](test_command_magic.py.md) (4 shared connections)
-- [test_command_alias.py](test_command_alias.py.md) (2 shared connections)
+- [BaseCommand](BaseCommand.md) (9 shared connections)
+- [test_command_magic.py](test_command_magic.py.md) (5 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (3 shared connections)
 - [MythosTickScheduler](MythosTickScheduler.md) (2 shared connections)
-- [CombatCommandFactory](CombatCommandFactory.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
-- [rooms.py](rooms.py.md) (1 shared connections)
+- [test_command_combat.py](test_command_combat.py.md) (1 shared connections)
 
 ## Source Files
 

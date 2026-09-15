@@ -1,16 +1,18 @@
 # mcp.json
 
-> 12 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **mcp.json** (4 connections) — `.cursor/mcp.json`
+- **mcp.json** (5 connections) — `.cursor/mcp.json`
 - **jcodemunch** (4 connections) — `.cursor/mcp.json`
 - **codacy** (3 connections) — `.cursor/mcp.json`
 - **context7** (3 connections) — `.cursor/mcp.json`
 - **playwright** (3 connections) — `.cursor/mcp.json`
 - **npx** (3 connections) — `.cursor/mcp.json`
+- **graphify** (2 connections) — `.cursor/mcp.json`
 - **JCODEMUNCH_MAX_FOLDER_FILES** (1 connections) — `.cursor/mcp.json`
+- **graphify-mcp** (1 connections) — `.cursor/mcp.json`
 - **uvx** (1 connections) — `.cursor/mcp.json`
 - **@codacy/codacy-mcp** (1 connections) — `.cursor/mcp.json`
 - **jcodemunch-mcp** (1 connections) — `.cursor/mcp.json`
@@ -27,7 +29,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,6 +1,6 @@
 # test_container_persistence_async_helpers.py
 
-> 60 nodes
+> 62 nodes
 
 ## Key Concepts
 
@@ -19,6 +19,7 @@
 - **_call_create_container_procedure()** (9 connections) — `server/persistence/container_persistence_async.py`
 - **AsyncSession** (9 connections)
 - **_build_item_dict()** (8 connections) — `server/persistence/container_persistence_async.py`
+- **validate_lock_state()** (7 connections) — `server/persistence/container_helpers.py`
 - **_parse_jsonb()** (7 connections) — `server/persistence/container_persistence_async.py`
 - **_row_to_mapping()** (7 connections) — `server/persistence/container_persistence_async.py`
 - **_validate_container_create_params()** (7 connections) — `server/persistence/container_persistence_async.py`
@@ -28,27 +29,27 @@
 - **ContainerData** (5 connections)
 - **test_call_create_container_procedure_no_row()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
 - **test_delete_container_async_db_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
-- **test_populate_container_items_skips_invalid_and_failed()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
-- *... and 35 more nodes in this community*
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (29 shared connections)
-- [ContainerData](ContainerData.md) (13 shared connections)
-- [ContainerRepository](ContainerRepository.md) (4 shared connections)
-- [container_persistence.py](container_persistence.py.md) (2 shared connections)
-- [item_instance_persistence_async.py](item_instance_persistence_async.py.md) (2 shared connections)
-- [test_container_query_helpers_async.py](test_container_query_helpers_async.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (22 shared connections)
+- [ContainerData](ContainerData.md) (18 shared connections)
+- [ContainerRepository](ContainerRepository.md) (7 shared connections)
+- [container_persistence.py](container_persistence.py.md) (3 shared connections)
+- [CreateItemInstanceInput](CreateItemInstanceInput.md) (2 shared connections)
+- [update_container](update_container.md) (1 shared connections)
 
 ## Source Files
 
+- `server/persistence/container_helpers.py`
 - `server/persistence/container_persistence_async.py`
 - `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 192 (96%)
-- INFERRED: 7 (4%)
+- EXTRACTED: 197 (97%)
+- INFERRED: 7 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

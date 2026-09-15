@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [RoomService](RoomService.md) (4 shared connections)
+- [maps.py](maps.py.md) (4 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [deque](deque.md) (1 shared connections)
+- [test_message_queue.py](test_message_queue.py.md) (1 shared connections)
 
 ## Source Files
 

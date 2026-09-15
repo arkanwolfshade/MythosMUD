@@ -31,7 +31,7 @@
 
 - [Player](Player.md) (5 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
-- [test_player_repository.py](test_player_repository.py.md) (1 shared connections)
+- [get_session_maker](get_session_maker.md) (1 shared connections)
 
 ## Source Files
 

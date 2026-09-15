@@ -34,9 +34,9 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (3 shared connections)
-- [test_who_commands.py](test_who_commands.py.md) (2 shared connections)
+- [handle_logout_command](handle_logout_command.md) (2 shared connections)
 - [AliasStorage](AliasStorage.md) (2 shared connections)
-- [build_event](build_event.md) (1 shared connections)
+- [.state](state.md) (1 shared connections)
 - [command_service.py](command_service.py.md) (1 shared connections)
 
 ## Source Files

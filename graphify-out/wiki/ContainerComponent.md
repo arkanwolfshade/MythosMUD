@@ -1,77 +1,61 @@
 # ContainerComponent
 
-> 564 nodes
+> 107 nodes
 
 ## Key Concepts
 
 - **ContainerComponent** (147 connections) — `server/models/container.py`
-- **ContainerSourceType** (89 connections) — `server/models/container.py`
-- **test_corpse_lifecycle_service.py** (55 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **ContainerServiceError** (49 connections) — `server/services/container_service_helpers.py`
-- **ContainerLockState** (44 connections) — `server/models/container.py`
 - **test_container.py** (38 connections) — `server/tests/unit/models/test_container.py`
-- **InventoryStack** (37 connections) — `server/services/inventory_service.py`
-- **models/container.py** (33 connections) — `server/models/container.py`
-- **container_service.py** (33 connections) — `server/services/container_service.py`
-- **container_service_transfer_to.py** (33 connections) — `server/services/container_service_transfer_to.py`
-- **handle_transfer_items_exceptions()** (28 connections) — `server/api/container_exception_handlers.py`
-- **container_service_session.py** (28 connections) — `server/services/container_service_session.py`
-- **container_service_lock.py** (26 connections) — `server/services/container_service_lock.py`
-- **container_service_transfer_from.py** (26 connections) — `server/services/container_service_transfer_from.py`
-- **test_container_exception_handlers.py** (26 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
 - **CorpseLifecycleService** (24 connections) — `server/services/corpse_lifecycle_service.py`
-- **handle_open_container_exceptions()** (23 connections) — `server/api/container_exception_handlers.py`
-- **container_service_helpers.py** (23 connections) — `server/services/container_service_helpers.py`
-- **asyncio** (23 connections)
-- **handle_close_container_exceptions()** (21 connections) — `server/api/container_exception_handlers.py`
-- **container_exception_handlers.py** (21 connections) — `server/api/container_exception_handlers.py`
-- **ContainerNotFoundError** (20 connections) — `server/services/container_service_helpers.py`
-- **ContainerTransferToMixin** (20 connections) — `server/services/container_service_transfer_to.py`
-- **handle_loot_all_exceptions()** (20 connections) — `server/api/container_exception_handlers.py`
-- **ContainerAccessMixin** (19 connections) — `server/services/container_service_access.py`
-- *... and 539 more nodes in this community*
+- **corpse_lifecycle_service.py** (19 connections) — `server/services/corpse_lifecycle_service.py`
+- **._require_corpse_container()** (8 connections) — `server/services/corpse_lifecycle_service.py`
+- **_get_enum_value()** (8 connections) — `server/services/corpse_lifecycle_service.py`
+- **.cleanup_decayed_corpse()** (7 connections) — `server/services/corpse_lifecycle_service.py`
+- **.create_corpse_on_death()** (7 connections) — `server/services/corpse_lifecycle_service.py`
+- **UUID** (7 connections)
+- **.get_decayed_corpses_in_room()** (6 connections) — `server/services/corpse_lifecycle_service.py`
+- **._persist_corpse()** (6 connections) — `server/services/corpse_lifecycle_service.py`
+- **_filter_container_data()** (6 connections) — `server/services/corpse_lifecycle_service.py`
+- **._build_corpse_component()** (5 connections) — `server/services/corpse_lifecycle_service.py`
+- **.can_access_corpse()** (5 connections) — `server/services/corpse_lifecycle_service.py`
+- **.get_all_decayed_corpses()** (5 connections) — `server/services/corpse_lifecycle_service.py`
+- **test_container_component_default_lock_state()** (5 connections) — `server/tests/unit/models/test_container.py`
+- **test_container_component_get_available_slots()** (5 connections) — `server/tests/unit/models/test_container.py`
+- **test_container_component_get_available_slots_full()** (5 connections) — `server/tests/unit/models/test_container.py`
+- **test_container_component_get_used_slots()** (5 connections) — `server/tests/unit/models/test_container.py`
+- **test_container_component_has_capacity_when_full()** (5 connections) — `server/tests/unit/models/test_container.py`
+- **test_container_component_has_room_for_additional_items()** (5 connections) — `server/tests/unit/models/test_container.py`
+- **test_container_component_has_room_for_exceeds_capacity()** (5 connections) — `server/tests/unit/models/test_container.py`
+- **test_container_component_is_locked_when_locked()** (5 connections) — `server/tests/unit/models/test_container.py`
+- **test_container_component_is_locked_when_sealed()** (5 connections) — `server/tests/unit/models/test_container.py`
+- **test_container_component_is_locked_when_unlocked()** (5 connections) — `server/tests/unit/models/test_container.py`
+- *... and 82 more nodes in this community*
 
 ## Relationships
 
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (93 shared connections)
-- [get_logger](get_logger.md) (91 shared connections)
-- [ContainerService](ContainerService.md) (31 shared connections)
-- [inventory_equip_command.py](inventory_equip_command.py.md) (30 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (15 shared connections)
-- [Player](Player.md) (12 shared connections)
-- [User](User.md) (12 shared connections)
-- [test_container_websocket_events.py](test_container_websocket_events.py.md) (7 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (4 shared connections)
-- [RoomService](RoomService.md) (4 shared connections)
-- [InventoryMutationGuard](InventoryMutationGuard.md) (3 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (3 shared connections)
+- [ContainerService](ContainerService.md) (33 shared connections)
+- [get_logger](get_logger.md) (25 shared connections)
+- [ContainerLockState](ContainerLockState.md) (24 shared connections)
+- [test_corpse_lifecycle_service.py](test_corpse_lifecycle_service.py.md) (24 shared connections)
+- [container_events.py](container_events.py.md) (16 shared connections)
+- [server/services/__init__.py](server-services-__init__.py.md) (9 shared connections)
+- [.validate_entity_id](validate_entity_id.md) (8 shared connections)
+- [LootAllRequest](LootAllRequest.md) (7 shared connections)
+- [ContainerTransferFromMixin](ContainerTransferFromMixin.md) (5 shared connections)
+- [ContainerTransferToMixin](ContainerTransferToMixin.md) (5 shared connections)
+- [TestEmitLootAllEvent](TestEmitLootAllEvent.md) (5 shared connections)
+- [User](User.md) (4 shared connections)
 
 ## Source Files
 
-- `server/api/container_exception_handlers.py`
 - `server/models/container.py`
-- `server/services/container_service.py`
-- `server/services/container_service_access.py`
-- `server/services/container_service_helpers.py`
-- `server/services/container_service_lock.py`
-- `server/services/container_service_session.py`
-- `server/services/container_service_transfer_from.py`
-- `server/services/container_service_transfer_to.py`
 - `server/services/corpse_lifecycle_service.py`
-- `server/services/environmental_container_loader.py`
-- `server/services/inventory_service.py`
-- `server/tests/unit/api/conftest.py`
-- `server/tests/unit/api/test_container_endpoints_loot.py`
-- `server/tests/unit/api/test_container_exception_handlers.py`
 - `server/tests/unit/models/test_container.py`
-- `server/tests/unit/services/test_container_service.py`
-- `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- `server/tests/unit/services/test_environmental_container_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1245 (84%)
-- INFERRED: 238 (16%)
+- EXTRACTED: 287 (83%)
+- INFERRED: 59 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

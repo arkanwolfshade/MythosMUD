@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **apply_communication_dampening()** (15 connections) — `server/services/lucidity_communication_dampening.py`
-- **lucidity_communication_dampening.py** (12 connections) — `server/services/lucidity_communication_dampening.py`
+- **lucidity_communication_dampening.py** (11 connections) — `server/services/lucidity_communication_dampening.py`
 - **test_lucidity_communication_dampening.py** (11 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
 - **DampeningResult** (8 connections) — `server/services/lucidity_communication_dampening.py`
 - **_apply_receiver_effects()** (5 connections) — `server/services/lucidity_communication_dampening.py`
@@ -30,10 +30,8 @@
 
 ## Relationships
 
-- [NATSMessageBroadcastMixin](NATSMessageBroadcastMixin.md) (2 shared connections)
+- [DeadLetterQueue](DeadLetterQueue.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +40,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 49 (100%)
+- EXTRACTED: 48 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

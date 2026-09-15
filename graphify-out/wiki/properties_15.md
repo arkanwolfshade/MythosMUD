@@ -1,38 +1,49 @@
 # properties
 
-> 17 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **properties** (7 connections) — `schemas/intersection_schema.json`
-- **exits** (5 connections) — `schemas/intersection_schema.json`
-- **down** (2 connections) — `schemas/intersection_schema.json`
-- **east** (2 connections) — `schemas/intersection_schema.json`
-- **north** (2 connections) — `schemas/intersection_schema.json`
-- **south** (2 connections) — `schemas/intersection_schema.json`
-- **up** (2 connections) — `schemas/intersection_schema.json`
-- **west** (2 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
-- **additionalProperties** (1 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **type** (1 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
+- **properties** (12 connections) — `schemas/items/item_prototype.schema.json`
+- **damage_expr** (5 connections) — `schemas/items/item_prototype.schema.json`
+- **range** (5 connections) — `schemas/items/item_prototype.schema.json`
+- **ammo** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **attacks** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **max_damage** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **min_damage** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **skill_bonus** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **magical** (2 connections) — `schemas/items/item_prototype.schema.json`
+- **modifier** (2 connections) — `schemas/items/item_prototype.schema.json`
+- **description** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **description** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **description** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [item_prototype.schema.json](item_prototype.schema.json.md) (1 shared connections)
+- [type](type.md) (1 shared connections)
+- [skill](skill.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/intersection_schema.json`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 34 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

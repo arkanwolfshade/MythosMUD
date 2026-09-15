@@ -31,9 +31,9 @@
 
 ## Relationships
 
-- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (9 shared connections)
-- [test_connection_manager_methods.py](test_connection_manager_methods.py.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (7 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 

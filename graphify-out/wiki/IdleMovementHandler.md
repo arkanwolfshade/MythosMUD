@@ -6,7 +6,7 @@
 
 - **IdleMovementHandler** (56 connections) — `server/npc/idle_movement.py`
 - **test_idle_movement.py** (35 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **idle_movement.py** (19 connections) — `server/npc/idle_movement.py`
+- **idle_movement.py** (18 connections) — `server/npc/idle_movement.py`
 - **.execute_idle_movement()** (8 connections) — `server/npc/idle_movement.py`
 - **._should_idle_move_inner()** (8 connections) — `server/npc/idle_movement.py`
 - **patch** (8 connections)
@@ -34,17 +34,15 @@
 ## Relationships
 
 - [NPCMovementIntegration](NPCMovementIntegration.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [PassiveMobNPC](PassiveMobNPC.md) (2 shared connections)
 - [NPCThreadManager](NPCThreadManager.md) (2 shared connections)
-- [event_types.py](event_types.py.md) (2 shared connections)
+- [NPCDefinition](NPCDefinition.md) (2 shared connections)
 - [.__init__](__init__.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [NPCBase](NPCBase.md) (1 shared connections)
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
-- [time.py](time.py.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (2 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 - [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
 - [EventBus](EventBus.md) (1 shared connections)
-- [Room](Room.md) (1 shared connections)
 
 ## Source Files
 
@@ -53,7 +51,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 158 (84%)
+- EXTRACTED: 157 (84%)
 - INFERRED: 30 (16%)
 - AMBIGUOUS: 0 (0%)
 

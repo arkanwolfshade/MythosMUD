@@ -4,13 +4,13 @@
 
 ## Key Concepts
 
-- **MythosMUD Test Writing** (6 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
-- **Coverage** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
-- **How to Run Tests** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
-- **Reference** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
-- **Rules** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
-- **Where Tests Live** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
-- **MythosMUD Test Writing Skill** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
+- **MythosMUD Server Runbook** (6 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **Commands** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **Critical Rules** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **ONE SERVER ONLY RULE** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **Pre-Start Checklist** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **Reference** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **Server Runbook Skill** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
 
 ## Relationships
 
@@ -18,7 +18,7 @@
 
 ## Source Files
 
-- `.claude/skills/mythosmud-test-writing/SKILL.md`
+- `.claude/skills/mythosmud-server-runbook/SKILL.md`
 
 ## Audit Trail
 

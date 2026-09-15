@@ -1,12 +1,13 @@
 # PlayerNameExtractor
 
-> 162 nodes
+> 164 nodes
 
 ## Key Concepts
 
 - **PlayerNameExtractor** (104 connections) — `server/realtime/player_name_utils.py`
 - **TestPlayerNameExtractor** (62 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 - **Any** (14 connections)
+- **player_name_utils.py** (13 connections) — `server/realtime/player_name_utils.py`
 - **.extract_and_validate_player_name()** (8 connections) — `server/realtime/player_name_utils.py`
 - **._validate_name_not_uuid()** (8 connections) — `server/realtime/player_name_utils.py`
 - **UUID** (8 connections)
@@ -28,20 +29,17 @@
 - **test_player_name_utils.py** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 - **._check_uuid_pattern_match()** (3 connections) — `server/realtime/player_name_utils.py`
 - **.__init__()** (3 connections) — `server/realtime/player_name_utils.py`
-- **.test_check_uuid_pattern_match_invalid()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- *... and 137 more nodes in this community*
+- *... and 139 more nodes in this community*
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (5 shared connections)
-- [PlayerEventHandler](PlayerEventHandler.md) (5 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (5 shared connections)
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (3 shared connections)
-- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (3 shared connections)
-- [PlayerOccupantProcessor](PlayerOccupantProcessor.md) (3 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- [event_handler.py](event_handler.py.md) (8 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (8 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (6 shared connections)
+- [NPCOccupantProcessor](NPCOccupantProcessor.md) (4 shared connections)
+- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 272 (95%)
-- INFERRED: 13 (5%)
+- EXTRACTED: 282 (96%)
+- INFERRED: 13 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -12,7 +12,7 @@
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files

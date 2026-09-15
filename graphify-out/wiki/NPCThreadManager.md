@@ -1,6 +1,6 @@
 # NPCThreadManager
 
-> 81 nodes
+> 89 nodes
 
 ## Key Concepts
 
@@ -9,7 +9,11 @@
 - **asyncio** (17 connections)
 - **._execute_wander_movement()** (8 connections) — `server/npc/threading.py`
 - **._parse_behavior_config()** (7 connections) — `server/npc/threading.py`
+- **._npc_thread_worker()** (6 connections) — `server/npc/threading.py`
+- **._execute_npc_behavior()** (5 connections) — `server/npc/threading.py`
 - **._process_wander_action()** (5 connections) — `server/npc/threading.py`
+- **.restart_npc_thread()** (5 connections) — `server/npc/threading.py`
+- **.start_npc_thread()** (5 connections) — `server/npc/threading.py`
 - **._process_npc_message()** (4 connections) — `server/npc/threading.py`
 - **._resolve_wander_npc()** (4 connections) — `server/npc/threading.py`
 - **.stop_npc_thread()** (4 connections) — `server/npc/threading.py`
@@ -25,22 +29,20 @@
 - **test_parse_behavior_config_json_non_dict()** (4 connections) — `server/tests/unit/npc/test_npc_thread_manager_internals.py`
 - **test_parse_behavior_config_valid_json_string()** (4 connections) — `server/tests/unit/npc/test_npc_thread_manager_internals.py`
 - **test_process_wander_action_handles_unexpected_exception()** (4 connections) — `server/tests/unit/npc/test_npc_thread_manager_internals.py`
-- **test_process_wander_action_returns_early_when_unresolved()** (4 connections) — `server/tests/unit/npc/test_npc_thread_manager_internals.py`
-- **test_restart_npc_thread_swallows_unexpected_exception()** (4 connections) — `server/tests/unit/npc/test_npc_thread_manager_internals.py`
-- **test_start_swallows_unexpected_exception()** (4 connections) — `server/tests/unit/npc/test_npc_thread_manager_internals.py`
-- **test_stop_cancels_active_threads_via_gather()** (4 connections) — `server/tests/unit/npc/test_npc_thread_manager_internals.py`
-- *... and 56 more nodes in this community*
+- *... and 64 more nodes in this community*
 
 ## Relationships
 
 - [test_npc_threading_messages.py](test_npc_threading_messages.py.md) (11 shared connections)
-- [event_types.py](event_types.py.md) (7 shared connections)
-- [NPCDefinition](NPCDefinition.md) (7 shared connections)
+- [NPCDefinition](NPCDefinition.md) (8 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
 - [IdleMovementHandler](IdleMovementHandler.md) (2 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (2 shared connections)
+- [NPCPopulationController](NPCPopulationController.md) (1 shared connections)
 - [MetricsCollector](MetricsCollector.md) (1 shared connections)
 - [NPCActionMessage](NPCActionMessage.md) (1 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [.async_persistence](async_persistence.md) (1 shared connections)
+- [TargetResolutionResult](TargetResolutionResult.md) (1 shared connections)
 - [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
 
 ## Source Files
@@ -50,8 +52,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 131 (80%)
-- INFERRED: 33 (20%)
+- EXTRACTED: 143 (81%)
+- INFERRED: 33 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

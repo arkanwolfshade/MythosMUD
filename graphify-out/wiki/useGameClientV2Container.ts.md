@@ -1,11 +1,10 @@
 # useGameClientV2Container.ts
 
-> 69 nodes
+> 62 nodes
 
 ## Key Concepts
 
 - **useGameClientV2Container.ts** (22 connections) — `client/src/components/ui-v2/hooks/useGameClientV2Container.ts`
-- **useGameClientV2ContainerRefsAndBootstrap.ts** (22 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
 - **useGameClientV2ContainerNetworkPhase.ts** (21 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerNetworkPhase.ts`
 - **useGameClientV2ContainerLifecycle.ts** (20 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerLifecycle.ts`
 - **gameClientV2ContainerTypes.ts** (18 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerTypes.ts`
@@ -17,40 +16,36 @@
 - **emptyOccupantsDiagnostics.ts** (12 connections) — `client/src/components/ui-v2/hooks/emptyOccupantsDiagnostics.ts`
 - **gameClientV2ContainerReturnParts.ts** (11 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerReturnParts.ts`
 - **useGameClientV2ContainerConnectionEffects.ts** (11 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerConnectionEffects.ts`
-- **GameClientV2RefsBundle** (10 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
-- **useCommandHandlers.ts** (10 connections) — `client/src/components/ui-v2/hooks/useCommandHandlers.ts`
 - **useGameClientV2ContainerPlayerAndCommands.ts** (10 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerPlayerAndCommands.ts`
 - **GameClientV2NetworkPhase** (9 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerNetworkPhase.ts`
+- **ActiveEffectDisplay** (9 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
 - **GameClientV2Container.tsx** (9 connections) — `client/src/components/ui-v2/GameClientV2Container.tsx`
 - **GameClientV2ContainerProps** (8 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerTypes.ts`
 - **useGameClientV2ContainerLifecycle()** (8 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerLifecycle.ts`
 - **GameClientV2ContainerPublicApi** (7 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerBuildReturn.ts`
 - **clientErrorReporter.ts** (7 connections) — `client/src/utils/clientErrorReporter.ts`
 - **buildGameClientV2ContainerReturn()** (6 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerBuildReturn.ts`
+- **useEventProcessing()** (6 connections) — `client/src/components/ui-v2/hooks/useEventProcessing.ts`
 - **useGameClientV2ContainerNetworkPhase()** (6 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerNetworkPhase.ts`
 - **useGameClientV2ContainerRefsAndBootstrap()** (6 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
-- *... and 44 more nodes in this community*
+- **deriveHealthStatusFromPlayer()** (6 connections) — `client/src/types/health.ts`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (26 shared connections)
-- [GameClientV2AuxiliaryPanels.tsx](GameClientV2AuxiliaryPanels.tsx.md) (15 shared connections)
-- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (8 shared connections)
-- [Room](Room.md) (6 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (5 shared connections)
-- [logger.ts](logger.ts.md) (5 shared connections)
-- [systemHandlers.ts](systemHandlers.ts.md) (4 shared connections)
-- [MemoryMonitor](MemoryMonitor.md) (3 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (48 shared connections)
+- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (8 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (7 shared connections)
 - [security.ts](security.ts.md) (3 shared connections)
+- [MemoryMonitor](MemoryMonitor.md) (3 shared connections)
 - [CharacterNameScreen.tsx](CharacterNameScreen.tsx.md) (2 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (1 shared connections)
+- [playerHandlers.ts](playerHandlers.ts.md) (1 shared connections)
 
 ## Source Files
 
 - `client/src/components/ui-v2/GameClientV2Container.tsx`
 - `client/src/components/ui-v2/__tests__/GameClientV2Container.test.tsx`
-- `client/src/components/ui-v2/__tests__/useTabbedInterface.test.ts`
-- `client/src/components/ui-v2/hooks/__tests__/useCommandHandlers.test.ts`
 - `client/src/components/ui-v2/hooks/__tests__/useGameClientV2ContainerConnectionEffects.test.ts`
 - `client/src/components/ui-v2/hooks/emptyOccupantsDiagnostics.ts`
 - `client/src/components/ui-v2/hooks/gameClientLogout.ts`
@@ -58,7 +53,7 @@
 - `client/src/components/ui-v2/hooks/gameClientV2ContainerBuildReturn.ts`
 - `client/src/components/ui-v2/hooks/gameClientV2ContainerReturnParts.ts`
 - `client/src/components/ui-v2/hooks/gameClientV2ContainerTypes.ts`
-- `client/src/components/ui-v2/hooks/useCommandHandlers.ts`
+- `client/src/components/ui-v2/hooks/useEventProcessing.ts`
 - `client/src/components/ui-v2/hooks/useGameClientV2Container.ts`
 - `client/src/components/ui-v2/hooks/useGameClientV2ContainerConnectionEffects.ts`
 - `client/src/components/ui-v2/hooks/useGameClientV2ContainerEscapeMenuEffect.ts`
@@ -67,10 +62,12 @@
 - `client/src/components/ui-v2/hooks/useGameClientV2ContainerLogoutAndRespawn.ts`
 - `client/src/components/ui-v2/hooks/useGameClientV2ContainerNetworkPhase.ts`
 - `client/src/components/ui-v2/hooks/useGameClientV2ContainerPlayerAndCommands.ts`
+- `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
+- `client/src/components/ui-v2/hooks/useGameClientV2ContainerState.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 271 (100%)
+- EXTRACTED: 245 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

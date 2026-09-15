@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [PlayerCombatService](PlayerCombatService.md) (6 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (6 shared connections)
 - [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
 
 ## Source Files

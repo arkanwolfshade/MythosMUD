@@ -4,12 +4,12 @@
 
 ## Key Concepts
 
-- **test_passive_lucidity_flux_service.py** (32 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **_make_service()** (22 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **PassiveFluxContext** (13 connections) — `server/services/passive_lucidity_flux/models.py`
-- **FluxServiceConfig** (9 connections) — `server/services/passive_lucidity_flux/config.py`
+- **test_passive_lucidity_flux_service.py** (33 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **_make_service()** (23 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **PlayerFluxCtx** (8 connections) — `server/services/passive_lucidity_flux/service.py`
 - **PassiveLucidityFluxService** (8 connections)
-- **asyncio** (6 connections)
+- **asyncio** (7 connections)
+- **test_process_single_player_skips_missing_player_fk()** (6 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
 - **test_process_single_player_no_delta()** (5 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
 - **test_process_tick_applies_adjustment()** (5 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
 - **test_resolve_context_with_custom_resolver()** (4 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
@@ -33,23 +33,21 @@
 
 ## Relationships
 
-- [passive_lucidity_flux/service.py](passive_lucidity_flux-service.py.md) (11 shared connections)
-- [LucidityFluxService](LucidityFluxService.md) (4 shared connections)
-- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (1 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (1 shared connections)
-- [PlayerDeathService](PlayerDeathService.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [passive_lucidity_flux/service.py](passive_lucidity_flux-service.py.md) (13 shared connections)
+- [LucidityService](LucidityService.md) (2 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [CatatoniaRegistry](CatatoniaRegistry.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/passive_lucidity_flux/config.py`
-- `server/services/passive_lucidity_flux/models.py`
+- `server/services/passive_lucidity_flux/service.py`
 - `server/tests/unit/services/test_passive_lucidity_flux_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 80 (93%)
-- INFERRED: 6 (7%)
+- EXTRACTED: 79 (95%)
+- INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

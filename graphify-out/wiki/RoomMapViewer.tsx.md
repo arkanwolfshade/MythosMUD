@@ -1,14 +1,18 @@
 # RoomMapViewer.tsx
 
-> 34 nodes
+> 68 nodes
 
 ## Key Concepts
 
 - **RoomMapViewer.tsx** (31 connections) — `client/src/components/map/RoomMapViewer.tsx`
 - **mapUtils.ts** (27 connections) — `client/src/components/map/utils/mapUtils.ts`
+- **gameStore.ts** (24 connections) — `client/src/stores/gameStore.ts`
 - **useMapLayout.ts** (22 connections) — `client/src/components/map/hooks/useMapLayout.ts`
+- **useRoomMapData.ts** (22 connections) — `client/src/components/map/hooks/useRoomMapData.ts`
+- **Room** (17 connections) — `client/src/stores/gameStore.ts`
 - **RoomMapViewer.test-utils.tsx** (17 connections) — `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
 - **createEdgesFromRooms()** (16 connections) — `client/src/components/map/utils/mapUtils.ts`
+- **RoomDetailsPanel.tsx** (16 connections) — `client/src/components/map/RoomDetailsPanel.tsx`
 - **RoomMapViewer.map-controls.test.tsx** (16 connections) — `client/src/components/map/__tests__/RoomMapViewer.map-controls.test.tsx`
 - **useMapLayout()** (15 connections) — `client/src/components/map/hooks/useMapLayout.ts`
 - **roomsToNodes()** (15 connections) — `client/src/components/map/utils/mapUtils.ts`
@@ -22,51 +26,53 @@
 - **useRoomMapEditorData()** (8 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
 - **applyGridLayout()** (7 connections) — `client/src/components/map/utils/layout.ts`
 - **mapUtils.test.ts** (7 connections) — `client/src/components/map/utils/__tests__/mapUtils.test.ts`
+- **GridLayoutConfig** (6 connections) — `client/src/components/map/utils/layout.ts`
 - **MapControls()** (6 connections) — `client/src/components/map/MapControls.tsx`
-- **transformRoomsToMapData()** (4 connections) — `client/src/components/map/utils/mapUtils.ts`
-- **useMapLayout.test.ts** (4 connections) — `client/src/components/map/hooks/__tests__/useMapLayout.test.ts`
-- **MapControlsProps** (3 connections) — `client/src/components/map/MapControls.tsx`
-- **createMockNodes()** (3 connections) — `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
-- **roomToNode()** (3 connections) — `client/src/components/map/utils/mapUtils.ts`
-- **extractExitDescription()** (2 connections) — `client/src/components/map/utils/mapUtils.ts`
-- *... and 9 more nodes in this community*
+- **RoomDetailsPanel()** (6 connections) — `client/src/components/map/RoomDetailsPanel.tsx`
+- *... and 43 more nodes in this community*
 
 ## Relationships
 
-- [gameStore.ts](gameStore.ts.md) (22 shared connections)
-- [utils/layout.ts](utils-layout.ts.md) (13 shared connections)
-- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (12 shared connections)
-- [RoomNodeData](RoomNodeData.md) (8 shared connections)
-- [map/types.ts](map-types.ts.md) (7 shared connections)
-- [directionHallucination.ts](directionHallucination.ts.md) (5 shared connections)
-- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (5 shared connections)
+- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (21 shared connections)
+- [utils/layout.ts](utils-layout.ts.md) (15 shared connections)
+- [RoomNodeData](RoomNodeData.md) (11 shared connections)
+- [map/types.ts](map-types.ts.md) (9 shared connections)
+- [directionHallucination.ts](directionHallucination.ts.md) (8 shared connections)
+- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (7 shared connections)
+- [useRoomEditModal.ts](useRoomEditModal.ts.md) (5 shared connections)
+- [stateNormalization.ts](stateNormalization.ts.md) (4 shared connections)
 - [MapPerformanceMonitor](MapPerformanceMonitor.md) (3 shared connections)
-- [maps.ts](maps.ts.md) (2 shared connections)
-- [saveMapChanges.ts](saveMapChanges.ts.md) (1 shared connections)
-- [GameClientV2AuxiliaryPanels.tsx](GameClientV2AuxiliaryPanels.tsx.md) (1 shared connections)
+- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (2 shared connections)
+- [saveMapChanges.ts](saveMapChanges.ts.md) (2 shared connections)
+- [AsciiMapViewer.tsx](AsciiMapViewer.tsx.md) (2 shared connections)
 
 ## Source Files
 
 - `client/src/components/map/MapControls.tsx`
+- `client/src/components/map/RoomDetailsPanel.tsx`
 - `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
 - `client/src/components/map/RoomMapViewer.tsx`
 - `client/src/components/map/__tests__/MapControls.test.tsx`
+- `client/src/components/map/__tests__/RoomDetailsPanel.test.tsx`
 - `client/src/components/map/__tests__/RoomMapViewer.data-loading.test.tsx`
 - `client/src/components/map/__tests__/RoomMapViewer.interactions.test.tsx`
 - `client/src/components/map/__tests__/RoomMapViewer.map-controls.test.tsx`
 - `client/src/components/map/__tests__/RoomMapViewer.rendering.test.tsx`
 - `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
+- `client/src/components/map/__tests__/theme.test.tsx`
 - `client/src/components/map/hooks/__tests__/useMapLayout.test.ts`
+- `client/src/components/map/hooks/__tests__/useRoomMapData.test.ts`
 - `client/src/components/map/hooks/useMapLayout.ts`
 - `client/src/components/map/hooks/useRoomMapData.ts`
+- `client/src/components/map/utils/__tests__/applyGridLayout.test.ts`
+- `client/src/components/map/utils/__tests__/calculateGridPosition.test.ts`
 - `client/src/components/map/utils/__tests__/mapUtils.test.ts`
 - `client/src/components/map/utils/layout.ts`
-- `client/src/components/map/utils/mapUtils.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 185 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 277 (99%)
+- INFERRED: 4 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

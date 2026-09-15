@@ -25,7 +25,7 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (5 shared connections)
-- [TargetMatch](TargetMatch.md) (2 shared connections)
+- [PlayerService](PlayerService.md) (2 shared connections)
 - [get_session_maker](get_session_maker.md) (2 shared connections)
 
 ## Source Files

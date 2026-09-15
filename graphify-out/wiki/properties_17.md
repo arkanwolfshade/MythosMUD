@@ -1,38 +1,44 @@
 # properties
 
-> 17 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **properties** (7 connections) — `schemas/unified_room_schema.json`
-- **exits** (5 connections) — `schemas/unified_room_schema.json`
-- **down** (2 connections) — `schemas/unified_room_schema.json`
-- **east** (2 connections) — `schemas/unified_room_schema.json`
-- **north** (2 connections) — `schemas/unified_room_schema.json`
-- **south** (2 connections) — `schemas/unified_room_schema.json`
-- **up** (2 connections) — `schemas/unified_room_schema.json`
-- **west** (2 connections) — `schemas/unified_room_schema.json`
-- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
-- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
-- **additionalProperties** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
-- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
-- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
-- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
-- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
+- **properties** (6 connections) — `schemas/items/item_prototype.schema.json`
+- **namespace** (5 connections) — `schemas/items/item_prototype.schema.json`
+- **source_key** (5 connections) — `schemas/items/item_prototype.schema.json`
+- **canonical_id** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **era** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **variant_of** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **description** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **description** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [item_prototype.schema.json](item_prototype.schema.json.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

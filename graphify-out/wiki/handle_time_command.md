@@ -1,10 +1,11 @@
 # handle_time_command
 
-> 16 nodes
+> 18 nodes
 
 ## Key Concepts
 
 - **handle_time_command()** (14 connections) — `server/commands/time_commands.py`
+- **time_commands.py** (10 connections) — `server/commands/time_commands.py`
 - **test_time_commands.py** (8 connections) — `server/tests/unit/commands/test_time_commands.py`
 - **asyncio** (5 connections)
 - **test_handle_time_command_holiday_service_error()** (4 connections) — `server/tests/unit/commands/test_time_commands.py`
@@ -13,6 +14,7 @@
 - **test_handle_time_command_success()** (4 connections) — `server/tests/unit/commands/test_time_commands.py`
 - **test_handle_time_command_with_holidays()** (4 connections) — `server/tests/unit/commands/test_time_commands.py`
 - **Any** (1 connections)
+- **Time command handlers for MythosMUD. This module contains handlers for the time…** (1 connections) — `server/commands/time_commands.py`
 - **Handle the time command, exposing the current Mythos time and active holidays.** (1 connections) — `server/commands/time_commands.py`
 - **Unit tests for time command handlers. Tests the time command functionality.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
 - **Test handle_time_command() handles holiday service errors.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
@@ -23,12 +25,13 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
-- [MythosTickScheduler](MythosTickScheduler.md) (1 shared connections)
-- [test_who_commands.py](test_who_commands.py.md) (1 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [test_game_tick_death.py](test_game_tick_death.py.md) (2 shared connections)
+- [handle_logout_command](handle_logout_command.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
 - [command_service.py](command_service.py.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
+- [.state](state.md) (1 shared connections)
+- [HolidayService](HolidayService.md) (1 shared connections)
 
 ## Source Files
 
@@ -37,8 +40,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 29 (94%)
-- INFERRED: 2 (6%)
+- EXTRACTED: 37 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

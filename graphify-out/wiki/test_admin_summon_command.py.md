@@ -34,14 +34,16 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (14 shared connections)
-- [PrototypeRegistryError](PrototypeRegistryError.md) (4 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (3 shared connections)
-- [build_event](build_event.md) (2 shared connections)
+- [ItemFactory](ItemFactory.md) (4 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (2 shared connections)
 - [command_service.py](command_service.py.md) (2 shared connections)
+- [build_event](build_event.md) (1 shared connections)
 - [AliasStorage](AliasStorage.md) (1 shared connections)
+- [test_inventory_helpers_extended.py](test_inventory_helpers_extended.py.md) (1 shared connections)
 - [validate_admin_permission](validate_admin_permission.md) (1 shared connections)
 - [AdminActionsLogger](AdminActionsLogger.md) (1 shared connections)
-- [MonitoringDashboard](MonitoringDashboard.md) (1 shared connections)
+- [system_monitoring.py](system_monitoring.py.md) (1 shared connections)
+- [.state](state.md) (1 shared connections)
 
 ## Source Files
 

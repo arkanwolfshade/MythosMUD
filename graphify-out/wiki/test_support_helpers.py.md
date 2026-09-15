@@ -1,6 +1,6 @@
 # test_support_helpers.py
 
-> 20 nodes
+> 21 nodes
 
 ## Key Concepts
 
@@ -14,6 +14,7 @@
 - **test_calls_of_rejects_a_non_mock()** (4 connections) — `server/tests/unit/test_support_helpers.py`
 - **test_mock_of_answers_the_subject_interface()** (3 connections) — `server/tests/unit/test_support_helpers.py`
 - **test_mock_of_uses_spec_set_so_unknown_attributes_are_rejected()** (3 connections) — `server/tests/unit/test_support_helpers.py`
+- **.resolve()** (2 connections) — `server/tests/unit/test_support_helpers.py`
 - **T** (2 connections)
 - **asyncio** (1 connections)
 - **Typed mock helpers shared across the server test suite (#784).…** (1 connections) — `server/tests/support.py`
@@ -27,8 +28,8 @@
 
 ## Relationships
 
+- [get_cache_manager](get_cache_manager.md) (1 shared connections)
 - [_handle_admin_set_stat_command](_handle_admin_set_stat_command.md) (1 shared connections)
-- [_seed_players_cache](_seed_players_cache.md) (1 shared connections)
 
 ## Source Files
 
@@ -37,8 +38,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 32 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

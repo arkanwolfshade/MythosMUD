@@ -29,14 +29,13 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (7 shared connections)
-- [GameBundle](GameBundle.md) (3 shared connections)
-- [.async_persistence](async_persistence.md) (1 shared connections)
+- [get_logger](get_logger.md) (8 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (3 shared connections)
+- [TargetResolutionResult](TargetResolutionResult.md) (1 shared connections)
 - [fixture](fixture.md) (1 shared connections)
 - [AliasStorage](AliasStorage.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
 - [command_service.py](command_service.py.md) (1 shared connections)
-- [SkillRepository](SkillRepository.md) (1 shared connections)
 
 ## Source Files
 

@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [NATSRetryHandler](NATSRetryHandler.md) (10 shared connections)
+- [DeadLetterQueue](DeadLetterQueue.md) (10 shared connections)
 - [test_nats_message_handler.py](test_nats_message_handler.py.md) (4 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 

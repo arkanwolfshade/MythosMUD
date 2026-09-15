@@ -1,60 +1,62 @@
 # ConnectionManager
 
-> 95 nodes
+> 207 nodes
 
 ## Key Concepts
 
 - **ConnectionManager** (180 connections) — `server/realtime/connection_manager.py`
+- **UUID** (42 connections)
 - **test_connection_manager_class.py** (15 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
+- **test_connection_error_methods.py** (14 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
+- **connection_error_methods.py** (11 connections) — `server/realtime/connection_error_methods.py`
 - **ConnectionManager** (11 connections)
+- **detect_and_handle_error_state_impl()** (10 connections) — `server/realtime/connection_error_methods.py`
+- **handle_authentication_error_impl()** (9 connections) — `server/realtime/connection_error_methods.py`
+- **handle_security_violation_impl()** (9 connections) — `server/realtime/connection_error_methods.py`
+- **handle_websocket_error_impl()** (9 connections) — `server/realtime/connection_error_methods.py`
+- **recover_from_error_impl()** (9 connections) — `server/realtime/connection_error_methods.py`
+- **._track_player_disconnected()** (7 connections) — `server/realtime/connection_manager.py`
+- **UUID** (6 connections)
+- **asyncio** (6 connections)
+- **.broadcast_connection_message()** (5 connections) — `server/realtime/connection_manager.py`
 - **.connect_websocket()** (5 connections) — `server/realtime/connection_manager.py`
+- **.disconnect_websocket()** (5 connections) — `server/realtime/connection_manager.py`
+- **._get_player()** (5 connections) — `server/realtime/connection_manager.py`
+- **.track_player_connected()** (5 connections) — `server/realtime/connection_manager.py`
+- **Any** (5 connections)
+- **Player** (5 connections)
 - **.canonical_room_id()** (4 connections) — `server/realtime/connection_manager.py`
-- **._is_websocket_open()** (4 connections) — `server/realtime/connection_manager.py`
-- **._safe_close_websocket()** (4 connections) — `server/realtime/connection_manager.py`
-- **manager()** (4 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
-- **test_broadcast_and_health_delegates()** (4 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
-- **test_disconnect_and_session_delegates()** (4 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
-- **test_room_subscription_delegates()** (4 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
-- **test_safe_close_websocket()** (4 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
-- **WebSocket** (4 connections)
-- **asyncio** (4 connections)
-- **.get_connection_id_from_websocket()** (3 connections) — `server/realtime/connection_manager.py`
-- **._get_event_bus()** (3 connections) — `server/realtime/connection_manager.py`
-- **._reconcile_room_presence()** (3 connections) — `server/realtime/connection_manager.py`
-- **.set_event_bus()** (3 connections) — `server/realtime/connection_manager.py`
-- **test_connection_manager_init_sets_components()** (3 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
-- **test_player_connection_lookup_helpers()** (3 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
-- **test_presence_and_online_helpers()** (3 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
-- **test_set_async_persistence_and_services()** (3 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
-- **test_stats_and_rate_limit_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
-- **test_websocket_lifecycle_helpers()** (3 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
-- **.broadcast_global()** (2 connections) — `server/realtime/connection_manager.py`
-- *... and 70 more nodes in this community*
+- **._check_and_process_disconnect()** (4 connections) — `server/realtime/connection_manager.py`
+- **.check_connection_health()** (4 connections) — `server/realtime/connection_manager.py`
+- **.cleanup_dead_connections()** (4 connections) — `server/realtime/connection_manager.py`
+- *... and 182 more nodes in this community*
 
 ## Relationships
 
-- [UUID](UUID.md) (30 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (12 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (7 shared connections)
+- [connection_manager.py](connection_manager.py.md) (21 shared connections)
+- [container_events.py](container_events.py.md) (9 shared connections)
+- [test_connection_delegates.py](test_connection_delegates.py.md) (9 shared connections)
 - [PlayerDPUpdated](PlayerDPUpdated.md) (7 shared connections)
-- [build_event](build_event.md) (7 shared connections)
-- [test_connection_cleanup_methods.py](test_connection_cleanup_methods.py.md) (6 shared connections)
-- [.broadcast_connection_message](broadcast_connection_message.md) (5 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (4 shared connections)
-- [connection_manager.py](connection_manager.py.md) (4 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (3 shared connections)
-- [follow_movement.py](follow_movement.py.md) (2 shared connections)
+- [EventHandler](EventHandler.md) (6 shared connections)
+- [connection_cleanup_methods.py](connection_cleanup_methods.py.md) (6 shared connections)
+- [FollowService](FollowService.md) (4 shared connections)
+- [game_state_provider.py](game_state_provider.py.md) (4 shared connections)
+- [build_event](build_event.md) (4 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (3 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
+- [event_handler.py](event_handler.py.md) (3 shared connections)
 
 ## Source Files
 
+- `server/realtime/connection_error_methods.py`
 - `server/realtime/connection_manager.py`
+- `server/tests/unit/realtime/test_connection_error_methods.py`
 - `server/tests/unit/realtime/test_connection_manager_class.py`
 
 ## Audit Trail
 
-- EXTRACTED: 209 (80%)
-- INFERRED: 51 (20%)
+- EXTRACTED: 382 (88%)
+- INFERRED: 51 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

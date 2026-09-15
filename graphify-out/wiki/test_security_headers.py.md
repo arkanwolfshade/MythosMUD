@@ -1,50 +1,54 @@
 # test_security_headers.py
 
-> 26 nodes
+> 86 nodes
 
 ## Key Concepts
 
 - **test_security_headers.py** (20 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **middleware()** (17 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **CorrelationMiddleware** (13 connections) — `server/middleware/correlation_middleware.py`
+- **SecurityHeadersMiddleware** (12 connections) — `server/middleware/security_headers.py`
+- **test_correlation_middleware.py** (12 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **.__call__()** (8 connections) — `server/middleware/correlation_middleware.py`
+- **correlation_middleware.py** (8 connections) — `server/middleware/correlation_middleware.py`
+- **create_correlation_middleware()** (6 connections) — `server/middleware/correlation_middleware.py`
+- **_get_header()** (6 connections) — `server/middleware/correlation_middleware.py`
+- **MutableHeaders** (6 connections)
+- **security_headers.py** (6 connections) — `server/middleware/security_headers.py`
+- **.__call__()** (5 connections) — `server/middleware/security_headers.py`
+- **.dispatch()** (5 connections) — `server/middleware/security_headers.py`
 - **asyncio** (5 connections)
+- **asyncio** (5 connections)
+- **._add_security_headers_to_response()** (4 connections) — `server/middleware/security_headers.py`
+- **test_correlation_middleware_adds_response_header()** (4 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **test_correlation_middleware_generates_correlation_id()** (4 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **test_correlation_middleware_passes_non_http()** (4 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **test_correlation_middleware_reraises_exception()** (4 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **test_correlation_middleware_uses_existing_header()** (4 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
 - **test_security_headers_middleware_adds_headers()** (4 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_security_headers_middleware_error_handling()** (4 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_security_headers_middleware_non_http_scope()** (4 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **mock_app()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_dispatch_method()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_dispatch_method_error_handling()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_security_headers_middleware_init()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_security_headers_middleware_init_with_env_vars()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_add_security_headers_to_response()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_add_security_headers_to_response_hsts_with_subdomains()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_add_security_headers_to_response_hsts_without_subdomains()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **fixture** (2 connections)
-- **Unit tests for security headers middleware. Tests the SecurityHeadersMiddleware…** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Test middleware error handling.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Test _add_security_headers_to_response adds headers to Response.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Test _add_security_headers_to_response includes subdomains in HSTS.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Test _add_security_headers_to_response without subdomains in HSTS.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Create a mock ASGI app.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Test dispatch method (backward compatibility).** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Test dispatch method error handling.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Test SecurityHeadersMiddleware initialization.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Test SecurityHeadersMiddleware initialization with environment variables.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Test middleware passes through non-HTTP connections.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- *... and 1 more nodes in this community*
+- **.__init__()** (3 connections) — `server/middleware/correlation_middleware.py`
+- *... and 61 more nodes in this community*
 
 ## Relationships
 
-- [middleware](middleware.md) (5 shared connections)
-- [MutableHeaders](MutableHeaders.md) (5 shared connections)
+- [factory.py](factory.py.md) (7 shared connections)
 - [get_logger](get_logger.md) (4 shared connections)
+- [bind_request_context](bind_request_context.md) (3 shared connections)
+- [fastapi_integration.py](fastapi_integration.py.md) (1 shared connections)
 
 ## Source Files
 
+- `server/middleware/correlation_middleware.py`
+- `server/middleware/security_headers.py`
+- `server/tests/unit/middleware/test_correlation_middleware.py`
 - `server/tests/unit/middleware/test_security_headers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 119 (84%)
+- INFERRED: 22 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,16 +1,16 @@
 # CharacterNameScreen.tsx
 
-> 51 nodes
+> 42 nodes
 
 ## Key Concepts
 
 - **CharacterNameScreen.tsx** (27 connections) — `client/src/components/CharacterNameScreen.tsx`
 - **SkillAssignmentScreen.tsx** (24 connections) — `client/src/components/SkillAssignmentScreen.tsx`
 - **appLazyScreens.tsx** (17 connections) — `client/src/mythosApp/appLazyScreens.tsx`
-- **CharacterSelectionScreen.tsx** (14 connections) — `client/src/components/CharacterSelectionScreen.tsx`
 - **SkillAssignmentScreen.helpers.tsx** (14 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
 - **playerNameValidation.ts** (9 connections) — `client/src/utils/playerNameValidation.ts`
 - **CharacterNameScreen()** (5 connections) — `client/src/components/CharacterNameScreen.tsx`
+- **getCreateCharacterErrorMessage()** (4 connections) — `client/src/components/CharacterNameScreen.tsx`
 - **SkillAssignmentForm()** (4 connections) — `client/src/components/SkillAssignmentScreen.tsx`
 - **SkillAssignmentScreen()** (4 connections) — `client/src/components/SkillAssignmentScreen.tsx`
 - **useSkillAssignmentForm()** (4 connections) — `client/src/components/SkillAssignmentScreen.tsx`
@@ -27,25 +27,24 @@
 - **useSkillCatalog()** (3 connections) — `client/src/components/SkillAssignmentScreen.tsx`
 - **PLAYER_NAME_MAX_LENGTH** (3 connections) — `client/src/utils/playerNameValidation.ts`
 - **PLAYER_NAME_MIN_LENGTH** (3 connections) — `client/src/utils/playerNameValidation.ts`
-- **CreateCharacterPayload** (2 connections) — `client/src/components/CharacterNameScreen.tsx`
 - **OccupationSlotPayload** (2 connections) — `client/src/components/CharacterNameScreen.tsx`
-- *... and 26 more nodes in this community*
+- **PersonalInterestPayload** (2 connections) — `client/src/components/CharacterNameScreen.tsx`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [useMythosAppState.ts](useMythosAppState.ts.md) (12 shared connections)
-- [logger.ts](logger.ts.md) (6 shared connections)
+- [Profession](Profession.md) (10 shared connections)
 - [deleteCharacterFlow.ts](deleteCharacterFlow.ts.md) (5 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (4 shared connections)
 - [App.tsx](App.tsx.md) (2 shared connections)
-- [useStatsRollingActions.ts](useStatsRollingActions.ts.md) (2 shared connections)
 - [MotdInterstitialScreen.tsx](MotdInterstitialScreen.tsx.md) (2 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (2 shared connections)
 - [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (2 shared connections)
 - [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (2 shared connections)
 
 ## Source Files
 
 - `client/src/components/CharacterNameScreen.tsx`
-- `client/src/components/CharacterSelectionScreen.tsx`
 - `client/src/components/SkillAssignmentScreen.helpers.tsx`
 - `client/src/components/SkillAssignmentScreen.tsx`
 - `client/src/mythosApp/appLazyScreens.tsx`
@@ -54,7 +53,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 121 (100%)
+- EXTRACTED: 107 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

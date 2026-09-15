@@ -23,10 +23,9 @@
 
 ## Relationships
 
-- [Spell](Spell.md) (5 shared connections)
-- [PlayerService](PlayerService.md) (4 shared connections)
-- [magic_service.py](magic_service.py.md) (3 shared connections)
-- [_MagicServiceCore](_MagicServiceCore.md) (1 shared connections)
+- [PlayerService](PlayerService.md) (7 shared connections)
+- [TargetMatch](TargetMatch.md) (4 shared connections)
+- [SpellEffectType](SpellEffectType.md) (2 shared connections)
 
 ## Source Files
 
