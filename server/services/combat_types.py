@@ -27,3 +27,8 @@ class CombatParticipantData:
     is_non_damaging: bool = False  # #625: only set for PHANTOM participants
     phantom_id: str | None = None  # #625: PhantomHostileService's own id, not the synthetic UUID above
     corruption: int | None = None  # 0-100; #815 -- static NPC trait or the player's live value
+    # ADR-027: optional NPC armor points from base_stats.armor (0 = none / unmigrated).
+    armor_points: int = 0
+    # ADR-027: snapshot for turn damage rolls (attacks / dual-write ints).
+    npc_base_stats: dict[str, object] | None = None
+    npc_behavior_config: dict[str, object] | None = None

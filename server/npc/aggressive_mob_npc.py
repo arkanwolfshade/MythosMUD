@@ -176,15 +176,10 @@ class AggressiveMobNPC(NPCBase):
             return False
 
     def _get_attack_damage(self) -> int:
-        """Resolve attack_damage from behavior config with robust typing."""
-        raw_attack_damage = self._behavior_config.get("attack_damage", 1)
-        if isinstance(raw_attack_damage, bool):
-            return 1 if raw_attack_damage else 0
-        if isinstance(raw_attack_damage, int | float):
-            return int(raw_attack_damage)
-        if isinstance(raw_attack_damage, str):
-            return int(raw_attack_damage) if raw_attack_damage.isdigit() else 1
-        return 1
+        """Resolve attack damage from base_stats attacks, else behavior_config."""
+        from server.game.npcs.attack_damage import resolve_npc_attack_damage
+
+        return resolve_npc_attack_damage(self._stats, self._behavior_config, fallback=1)
 
     def _attack_via_combat_integration(self, target_id: str, attack_damage: int) -> bool | None:
         """
