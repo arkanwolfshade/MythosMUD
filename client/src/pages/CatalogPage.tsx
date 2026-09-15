@@ -49,14 +49,64 @@ function isAdminItem(item: CatalogItem, isAdmin: boolean): item is CatalogAdminI
   return isAdmin && 'prototype_id' in item;
 }
 
-function formatCell(value: unknown): string {
+function formatScalar(value: unknown): string {
   if (value == null) return '';
-  if (typeof value !== 'object') return String(value);
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+    return String(value);
+  }
   try {
     return JSON.stringify(value);
   } catch {
     return String(value);
   }
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+/** Nested JSON as key/value tables (and lists) instead of a raw stringify blob. */
+function JsonTable({ value }: { value: unknown }) {
+  if (value == null) return <span className="opacity-50">—</span>;
+
+  if (Array.isArray(value)) {
+    if (value.length === 0) return <span className="opacity-50">—</span>;
+    if (value.every(entry => entry == null || typeof entry !== 'object')) {
+      return <span>{value.map(formatScalar).join(', ')}</span>;
+    }
+    return (
+      <ul className="list-disc pl-4 space-y-1">
+        {value.map((entry, index) => (
+          <li key={index}>
+            <JsonTable value={entry} />
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  if (isPlainObject(value)) {
+    const entries = Object.entries(value);
+    if (entries.length === 0) return <span className="opacity-50">—</span>;
+    return (
+      <table className="text-xs border-collapse min-w-40">
+        <tbody>
+          {entries.map(([key, nested]) => (
+            <tr key={key} className="border-b border-mythos-terminal-border/30 align-top">
+              <th className="py-0.5 pr-2 text-left font-semibold whitespace-nowrap text-mythos-terminal-text/80">
+                {key}
+              </th>
+              <td className="py-0.5">
+                <JsonTable value={nested} />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  }
+
+  return <span>{formatScalar(value)}</span>;
 }
 
 function buildCatalogUrl(page: number, itemType: string, namespace: string, search: string): string {
@@ -140,11 +190,15 @@ function CatalogFilterForm(props: CatalogFilterFormProps) {
 function AdminCells({ item }: { item: CatalogAdminItem }) {
   return (
     <>
-      <td className="py-2 pr-3 align-top font-mono text-xs">{item.prototype_id}</td>
-      <td className="py-2 pr-3 align-top">{item.weight}</td>
-      <td className="py-2 pr-3 align-top">{item.base_value}</td>
-      <td className="py-2 pr-3 align-top font-mono text-xs max-w-xs break-all">{formatCell(item.metadata)}</td>
-      <td className="py-2 pr-3 align-top font-mono text-xs">{formatCell(item.tags)}</td>
+      <td className="py-2 pr-3 align-top font-mono text-xs whitespace-nowrap">{item.prototype_id}</td>
+      <td className="py-2 pr-3 align-top whitespace-nowrap">{item.weight}</td>
+      <td className="py-2 pr-3 align-top whitespace-nowrap">{item.base_value}</td>
+      <td className="py-2 pr-3 align-top">
+        <JsonTable value={item.metadata} />
+      </td>
+      <td className="py-2 pr-3 align-top">
+        <JsonTable value={item.tags} />
+      </td>
     </>
   );
 }
@@ -155,16 +209,16 @@ function CatalogTable({ data }: { data: CatalogResponse }) {
       <table className="w-full text-left text-sm border-collapse">
         <thead>
           <tr className="border-b border-mythos-terminal-border">
-            <th className="py-2 pr-3">Name</th>
-            <th className="py-2 pr-3">Type</th>
-            <th className="py-2 pr-3">Short description</th>
+            <th className="py-2 pr-3 whitespace-nowrap">Name</th>
+            <th className="py-2 pr-3 whitespace-nowrap">Type</th>
+            <th className="py-2 pr-3 whitespace-nowrap">Short description</th>
             {data.is_admin ? (
               <>
-                <th className="py-2 pr-3">Prototype ID</th>
-                <th className="py-2 pr-3">Weight</th>
-                <th className="py-2 pr-3">Value</th>
-                <th className="py-2 pr-3">Metadata</th>
-                <th className="py-2 pr-3">Tags</th>
+                <th className="py-2 pr-3 whitespace-nowrap">Prototype ID</th>
+                <th className="py-2 pr-3 whitespace-nowrap">Weight</th>
+                <th className="py-2 pr-3 whitespace-nowrap">Value</th>
+                <th className="py-2 pr-3 whitespace-nowrap">Metadata</th>
+                <th className="py-2 pr-3 whitespace-nowrap">Tags</th>
               </>
             ) : null}
           </tr>

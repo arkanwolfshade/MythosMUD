@@ -49,8 +49,11 @@ const adminCatalogBody = {
       short_description: 'A blade',
       weight: 0.5,
       base_value: 10,
-      metadata: { namespace: 'core' },
-      tags: ['melee'],
+      metadata: {
+        weapon: { min_damage: 1, max_damage: 4, skill: 'melee' },
+        catalog: { namespace: 'core' },
+      },
+      tags: ['melee', 'core'],
     },
   ],
   page: 1,
@@ -115,6 +118,12 @@ describe('CatalogPage', () => {
     expect(screen.getByText('core.weapon.knife')).toBeInTheDocument();
     expect(screen.getByText('0.5')).toBeInTheDocument();
     expect(screen.getByText('10')).toBeInTheDocument();
+    expect(screen.getByText('min_damage')).toBeInTheDocument();
+    expect(screen.getByText('max_damage')).toBeInTheDocument();
+    expect(screen.getByText('catalog')).toBeInTheDocument();
+    expect(screen.getByText('namespace')).toBeInTheDocument();
+    expect(screen.getByText('melee, core')).toBeInTheDocument();
+    expect(screen.queryByText(/\{"weapon"/)).not.toBeInTheDocument();
   });
 
   it('shows load error when API returns non-ok', async () => {
