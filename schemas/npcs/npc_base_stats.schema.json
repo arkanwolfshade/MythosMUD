@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "NpcBaseStats",
+  "description": "NPC definition base_stats: required combat DP keys plus optional catalog-rich objects (ADR-027).",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["determination_points", "max_dp", "xp_value"],
+  "definitions": {
+    "catalogMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["namespace"],
+      "properties": {
+        "namespace": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "canonical_id": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "variant_of": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "era": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "source_key": { "type": "string", "minLength": 1, "maxLength": 120 }
+      }
+    },
+    "npcAttack": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "damage_expr": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "Dice expression, e.g. 1d6+1 (Mythos-tuned)."
+        },
+        "min_damage": { "type": "integer", "minimum": 0 },
+        "max_damage": { "type": "integer", "minimum": 0 },
+        "skill": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "skill_pct": { "type": "integer", "minimum": 0, "maximum": 100 }
+      }
+    },
+    "npcArmor": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "armor_points": { "type": "integer", "minimum": 0 },
+        "coverage": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "notes": { "type": "string", "maxLength": 512 }
+      }
+    }
+  },
+  "properties": {
+    "determination_points": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Current determination points (DP)."
+    },
+    "max_dp": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Maximum determination points (DP)."
+    },
+    "xp_value": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Experience points awarded when NPC is defeated."
+    },
+    "magic_points": { "type": "integer", "minimum": 0 },
+    "max_magic_points": { "type": "integer", "minimum": 0 },
+    "strength": { "type": "integer", "minimum": 1 },
+    "constitution": { "type": "integer", "minimum": 1 },
+    "size": { "type": "integer", "minimum": 1 },
+    "dexterity": { "type": "integer", "minimum": 1 },
+    "intelligence": { "type": "integer", "minimum": 1 },
+    "power": { "type": "integer", "minimum": 1 },
+    "education": { "type": "integer", "minimum": 1 },
+    "charisma": { "type": "integer", "minimum": 1 },
+    "luck": { "type": "integer", "minimum": 1 },
+    "catalog": { "$ref": "#/definitions/catalogMetadata" },
+    "attacks": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/npcAttack" }
+    },
+    "armor": { "$ref": "#/definitions/npcArmor" }
+  }
+}

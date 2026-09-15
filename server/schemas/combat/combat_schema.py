@@ -92,6 +92,10 @@ BASE_STATS_COMBAT_SCHEMA = {
             "minimum": 1,
             "description": "NPC luck",
         },
+        # ADR-027 optional catalog-rich objects (validated fully in schemas/npcs/).
+        "catalog": {"type": "object"},
+        "attacks": {"type": "array"},
+        "armor": {"type": "object"},
     },
     "required": ["determination_points", "max_dp", "xp_value"],
     "additionalProperties": True,

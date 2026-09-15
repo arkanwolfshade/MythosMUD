@@ -1,0 +1,32 @@
+{
+  "determination_points": 12,
+  "max_dp": 12,
+  "xp_value": 25,
+  "strength": 60,
+  "constitution": 55,
+  "size": 50,
+  "dexterity": 65,
+  "intelligence": 40,
+  "power": 45,
+  "catalog": {
+    "namespace": "era_classic",
+    "canonical_id": "synthetic_archive_hound",
+    "era": "1920s",
+    "source_key": "synthetic_public_fixture"
+  },
+  "attacks": [
+    {
+      "name": "bite",
+      "damage_expr": "1d6+1",
+      "min_damage": 2,
+      "max_damage": 7,
+      "skill": "brawl",
+      "skill_pct": 45
+    }
+  ],
+  "armor": {
+    "armor_points": 1,
+    "coverage": "hide",
+    "notes": "Anonymized synthetic fixture for public schema validation only."
+  }
+}
