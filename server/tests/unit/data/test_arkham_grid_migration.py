@@ -19,7 +19,6 @@ Reads the SQL and the DML as text, so no database is needed.
 from __future__ import annotations
 
 import re
-from pathlib import Path
 
 import pytest
 
@@ -32,7 +31,13 @@ _ARKHAM = "earth_arkhamcity_"
 
 
 def _read(relative: str) -> str:
-    return (get_project_root() / relative).read_bytes().decode("utf-8")
+    """Read a seed or migration file, normalising line endings.
+
+    These files are stored LF in git, but `core.autocrlf` checks them out CRLF on Windows,
+    so a parser matching `stdin;` followed by a newline finds nothing after a fresh
+    checkout. `read_text` opens in universal-newline mode, which translates CRLF to LF.
+    """
+    return (get_project_root() / relative).read_text(encoding="utf-8")
 
 
 @pytest.fixture(scope="module")
@@ -55,7 +60,7 @@ class TestColumnWidths:
     def test_no_room_id_outgrows_a_column_that_stores_one(self, arkham_room_ids: list[str]) -> None:
         ddl = _read(_DDL)
         widths: dict[str, int] = {}
-        for m in re.finditer(r"CREATE TABLE mythos_dev\.(\w+) \((.*?)\r?\n\);", ddl, re.S):
+        for m in re.finditer(r"CREATE TABLE mythos_dev\.(\w+) \((.*?)\n\);", ddl, re.S):
             table, body = m.group(1), m.group(2)
             for line in body.splitlines():
                 col = re.match(
@@ -101,7 +106,7 @@ class TestOrdering:
 
 class TestEscaping:
     def test_apostrophes_in_prose_are_doubled(self, migration: str) -> None:
-        """Arkham's prose is full of them - "Hangman's Hill", "Ladies' Ward". A single
+        """Arkham's prose is full of them - Hangman's Hill, Ladies' Ward. A single
         unescaped apostrophe terminates the literal and corrupts everything after it."""
         assert "Hangman''s Hill" in migration, "apostrophes are not being escaped"
         assert "'Hangman's Hill'" not in migration
@@ -134,6 +139,6 @@ class TestCoverage:
 
     def test_all_three_environments_have_a_migration(self) -> None:
         for env in ("dev", "unit", "e2e"):
-            path = Path(get_project_root() / f"data/db/migrations/20260913_arkham_street_grid_{env}.sql")
-            assert path.exists(), f"missing migration for {env}"
-            assert f"SET search_path TO mythos_{env};" in path.read_bytes().decode("utf-8")
+            relative = f"data/db/migrations/20260913_arkham_street_grid_{env}.sql"
+            assert (get_project_root() / relative).exists(), f"missing migration for {env}"
+            assert f"SET search_path TO mythos_{env};" in _read(relative)

@@ -37,6 +37,25 @@ type RoomWithCoordinates = Room & {
 };
 
 /**
+ * Directions whose exit target is not among the loaded rooms.
+ *
+ * The map is fetched one sub-zone at a time, so an exit into another sub-zone (the
+ * Sanitarium door off Derby Street, say) has no node to connect to and no edge is drawn.
+ * Recording the direction lets the node itself show that the way out exists.
+ */
+const findDepartures = (room: RoomWithCoordinates, known: Set<string>): string[] => {
+  if (!room.exits) return [];
+  const departing: string[] = [];
+  for (const [direction, exitValue] of Object.entries(room.exits)) {
+    const target = extractExitTarget(exitValue as ExitValue);
+    if (target !== null && !known.has(target)) {
+      departing.push(direction);
+    }
+  }
+  return departing;
+};
+
+/**
  * Convert a single room to a React Flow node.
  */
 export const roomToNode = (
@@ -74,6 +93,7 @@ export const roomToNode = (
     // unreachable even once the API started returning coordinates.
     map_x: room.map_x,
     map_y: room.map_y,
+    departures: _allRooms.length ? findDepartures(room, new Set(_allRooms.map(r => r.id))) : undefined,
   };
 
   return {

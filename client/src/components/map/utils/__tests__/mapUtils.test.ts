@@ -124,6 +124,39 @@ describe('mapUtils', () => {
     });
   });
 
+  describe('departures', () => {
+    // The map is fetched one sub-zone at a time, so an exit into another sub-zone has no
+    // node to connect to and createEdgesFromRooms drops it. Without recording it, the
+    // Sanitarium door off Derby Street is invisible and the corner looks like a dead end.
+    const corner: Room = {
+      id: 'earth_arkhamcity_northside_intersection_derby_parsonage',
+      name: 'Derby and Parsonage',
+      description: 'A crossing.',
+      plane: 'earth',
+      zone: 'arkhamcity',
+      sub_zone: 'northside',
+      environment: 'intersection',
+      exits: { north: 'earth_arkhamcity_sanitarium_room_foyer_entrance_001', east: 'street' } as Record<string, string>,
+    };
+    const street: Room = { ...corner, id: 'street', name: 'Derby Street', exits: {} as Record<string, string> };
+
+    it('records an exit whose target is not loaded', () => {
+      const nodes = roomsToNodes([corner, street]);
+      const node = nodes.find(n => n.id === corner.id);
+      expect(node?.data.departures).toEqual(['north']);
+    });
+
+    it('does not record an exit to a room that is loaded', () => {
+      const nodes = roomsToNodes([corner, street]);
+      expect(nodes.find(n => n.id === corner.id)?.data.departures).not.toContain('east');
+    });
+
+    it('leaves rooms with no departing exits empty', () => {
+      const nodes = roomsToNodes([corner, street]);
+      expect(nodes.find(n => n.id === 'street')?.data.departures).toEqual([]);
+    });
+  });
+
   describe('roomsToNodes', () => {
     it('should convert multiple rooms to nodes', () => {
       const rooms: Room[] = [

@@ -55,6 +55,16 @@ class Room(NamedTuple):
     subzone: str
 
 
+def _read_dml(relative: str) -> str:
+    """Read a seed file with line endings normalised.
+
+    The DML is stored LF in git but `core.autocrlf` checks it out CRLF on Windows, so a
+    parser that matches `stdin;\\n` finds nothing after a fresh clone or checkout. Reading
+    bytes and normalising keeps these tests working on either.
+    """
+    return (get_project_root() / relative).read_bytes().decode("utf-8").replace("\r\n", "\n")
+
+
 def _copy_block(text: str, table: str) -> list[list[str]]:
     m = re.search(rf"^COPY [\w.]+\.{table} \([^)]*\) FROM stdin;\n", text, re.M)
     assert m, f"no COPY block for {table}"
@@ -64,7 +74,7 @@ def _copy_block(text: str, table: str) -> list[list[str]]:
 
 @pytest.fixture(scope="module")
 def world() -> World:
-    text = (get_project_root() / _DML).read_bytes().decode("utf-8")
+    text = _read_dml(_DML)
     rows = _copy_block(text, "rooms")
     by_uuid = {
         r[0]: Room(
@@ -148,7 +158,7 @@ class TestMinimapReach:
     def test_no_room_invents_a_map_symbol_it_does_not_need(self) -> None:
         """AsciiMapRenderer auto-assigns a symbol from the environment when none is
         stored. Stamping one on every room replaces that with identical marks."""
-        text = (get_project_root() / _DML).read_bytes().decode("utf-8")
+        text = _read_dml(_DML)
         rows = _copy_block(text, "rooms")
         stamped = [r[2] for r in rows if _SANITARIUM in r[2] and r[9] != "\\N"]
         assert not stamped, f"sanitarium rooms with a hard-coded map_symbol: {stamped[:5]}"

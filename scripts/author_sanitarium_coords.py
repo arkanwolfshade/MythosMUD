@@ -34,7 +34,7 @@ from collections import deque
 from pathlib import Path
 
 ENVS = ("dev", "unit", "e2e")
-DML = "data/db/mythos_{env}_dml.sql"
+DML_DIR = Path("data/db")
 
 SUBZONE = "_sanitarium_"
 ENTRANCE = "earth_arkhamcity_sanitarium_room_foyer_entrance_001"
@@ -69,6 +69,36 @@ DELTA = {
     "up": (0, -2 * STEP),
     "down": (0, 2 * STEP),
 }
+
+
+def dml_path(env: str) -> Path:
+    """Path to one environment's seed file.
+
+    Built with `/` and an f-string rather than `Path(TEMPLATE.format(...))`: a plain
+    `str.format()` result is inferred as `LiteralString`, which some type checkers then
+    refuse to match against `StrPath` in `Path.__new__`. Composing from a `Path` keeps
+    the argument unambiguously a path and is clearer anyway.
+    """
+    return DML_DIR / f"mythos_{env}_dml.sql"
+
+
+def _read_dml(path: Path) -> tuple[str, bool]:
+    """Read a seed file, returning its text with LF endings and whether it was CRLF.
+
+    These files are stored LF in git but core.autocrlf checks them out CRLF on Windows.
+    Splitting CRLF text on LF leaves a stray CR on the LAST column of every row, so any
+    script that rewrites that column silently produces mixed line endings.
+    """
+    text = path.read_bytes().decode('utf-8')
+    crlf = (chr(13) + chr(10)) in text
+    return (text.replace(chr(13) + chr(10), chr(10)) if crlf else text), crlf
+
+
+def _write_dml(path: Path, text: str, crlf: bool) -> None:
+    """Write back in whatever ending the file already used."""
+    out = text.replace(chr(10), chr(13) + chr(10)) if crlf else text
+    # write_bytes returns the byte count; discarded deliberately.
+    _ = path.write_bytes(out.encode("utf-8"))
 
 
 def parse_block(text: str, table: str) -> tuple[int, int, list[list[str]]]:
@@ -121,12 +151,16 @@ def assign(rooms: list[list[str]], links: list[list[str]]) -> dict[str, tuple[in
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--check", action="store_true")
+    # add_argument returns the Action it created; discarded deliberately.
+    _ = parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
+    # Namespace attribute access is typed Any, which this project forbids; read the flag
+    # once through a narrowing call so the rest of main() works with a real bool.
+    check_only = bool(getattr(args, "check", False))
 
     for env in ENVS:
-        path = Path(DML.format(env=env))
-        text = path.read_bytes().decode("utf-8")
+        path = dml_path(env)
+        text, crlf = _read_dml(path)
         start, end, rooms = parse_block(text, "rooms")
         _, _, links = parse_block(text, "room_links")
 
@@ -147,13 +181,13 @@ def main() -> int:
 
         nulls = [r[2] for r in rooms if r[6] == "\\N" and r[2].startswith("earth_arkhamcity_")]
         payload = "\n".join("\t".join(r) for r in rooms) + "\n"
-        if not args.check:
-            path.write_bytes((text[:start] + payload + text[end:]).encode("utf-8"))
+        if not check_only:
+            _write_dml(path, text[:start] + payload + text[end:], crlf)
         print(f"{env:<5} filled {filled} sanitarium rooms; arkham rooms still NULL: {len(nulls)}")
         if nulls:
             print("   ", nulls[:5])
 
-    print("(dry run)" if args.check else "written")
+    print("(dry run)" if check_only else "written")
     return 0
 
 
