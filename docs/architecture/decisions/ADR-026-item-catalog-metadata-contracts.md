@@ -138,7 +138,7 @@ Until combat understands dice/skill/range/ammo/armor:
 
 - JSON Schema: `schemas/items/item_prototype.schema.json`
 - Pydantic metadata models: `server/game/items/metadata_models.py`
-- Bridge helper: `server/game/items/damage_expr.py`
+- Bridge helper: `server/game/dice_expr.py` (item re-export: `server/game/items/damage_expr.py`)
 - Catalog DML emitter: `server/game/items/catalog_dml.py`
 - Private catalog pipeline: `data/item_catalog/` (see README)
 - Synthetic fixture: `schemas/items/fixtures/synthetic_rich_metadata_prototype.json`
