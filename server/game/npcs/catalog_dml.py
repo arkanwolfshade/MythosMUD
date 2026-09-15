@@ -47,25 +47,34 @@ def _normalize_damage_expr(expr: str) -> str:
     return cleaned.strip(" +").strip()
 
 
+def _as_str_object_dict(value: object) -> dict[str, object] | None:
+    if not isinstance(value, dict):
+        return None
+    return {str(k): v for k, v in cast(dict[object, object], value).items()}
+
+
+def _dual_write_one_attack(attack: MutableMapping[str, object]) -> None:
+    """Fill min/max on one attack from damage_expr when either bound is missing."""
+    expr = attack.get("damage_expr")
+    if not isinstance(expr, str) or not expr.strip():
+        return
+    if attack.get("min_damage") is not None and attack.get("max_damage") is not None:
+        return
+    min_damage, max_damage = damage_expr_to_min_max(_normalize_damage_expr(expr))
+    if attack.get("min_damage") is None:
+        attack["min_damage"] = min_damage
+    if attack.get("max_damage") is None:
+        attack["max_damage"] = max_damage
+
+
 def apply_attack_dual_write(base_stats: MutableMapping[str, object]) -> None:
     """Fill attack min/max from damage_expr when absent."""
     attacks_raw = base_stats.get("attacks")
     if not isinstance(attacks_raw, list):
         return
     for entry_obj in cast(list[object], attacks_raw):
-        if not isinstance(entry_obj, dict):
-            continue
-        attack = cast(MutableMapping[str, object], entry_obj)
-        expr = attack.get("damage_expr")
-        if not isinstance(expr, str) or not expr.strip():
-            continue
-        if attack.get("min_damage") is not None and attack.get("max_damage") is not None:
-            continue
-        min_damage, max_damage = damage_expr_to_min_max(_normalize_damage_expr(expr))
-        if attack.get("min_damage") is None:
-            attack["min_damage"] = min_damage
-        if attack.get("max_damage") is None:
-            attack["max_damage"] = max_damage
+        if isinstance(entry_obj, dict):
+            _dual_write_one_attack(cast(MutableMapping[str, object], entry_obj))
 
 
 def _hostility_to_npc_type(raw: Mapping[str, object]) -> str:
@@ -100,10 +109,7 @@ def _ensure_behavior_config(
     base_stats: Mapping[str, object],
     npc_type: str,
 ) -> dict[str, object]:
-    behavior_raw = raw.get("behavior_config")
-    behavior: dict[str, object] = {}
-    if isinstance(behavior_raw, dict):
-        behavior = {str(k): v for k, v in cast(dict[object, object], behavior_raw).items()}
+    behavior = _as_str_object_dict(raw.get("behavior_config")) or {}
     if "attack_damage" not in behavior:
         behavior["attack_damage"] = _first_attack_damage(base_stats)
     if "aggression_level" not in behavior:
@@ -111,32 +117,34 @@ def _ensure_behavior_config(
     return behavior
 
 
-def prepare_npc_definition(raw: Mapping[str, object]) -> dict[str, object]:
-    """Validate catalog row, dual-write attacks, force arena/inert placement."""
-    base_raw = raw.get("base_stats")
-    if not isinstance(base_raw, dict):
-        raise ValueError("catalog row requires base_stats object")
-    base_stats: dict[str, object] = {str(k): v for k, v in cast(dict[object, object], base_raw).items()}
-    apply_attack_dual_write(base_stats)
-    _ = NpcBaseStats.model_validate(base_stats)
-
+def _require_name(raw: Mapping[str, object]) -> str:
     name = raw.get("name")
     if not isinstance(name, str) or not name.strip():
         raise ValueError("catalog row requires non-empty name")
+    return name.strip()
+
+
+def _optional_description(raw: Mapping[str, object]) -> str | None:
     description = raw.get("description")
     if description is not None and not isinstance(description, str):
         raise ValueError("description must be a string when present")
+    if isinstance(description, str):
+        return description
+    return None
+
+
+def prepare_npc_definition(raw: Mapping[str, object]) -> dict[str, object]:
+    """Validate catalog row, dual-write attacks, force arena/inert placement."""
+    base_stats = _as_str_object_dict(raw.get("base_stats"))
+    if base_stats is None:
+        raise ValueError("catalog row requires base_stats object")
+    apply_attack_dual_write(base_stats)
+    _ = NpcBaseStats.model_validate(base_stats)
 
     npc_type = _hostility_to_npc_type(raw)
-    behavior = _ensure_behavior_config(raw, base_stats, npc_type)
-    ai_raw = raw.get("ai_integration_stub")
-    ai_stub: dict[str, object] = {}
-    if isinstance(ai_raw, dict):
-        ai_stub = {str(k): v for k, v in cast(dict[object, object], ai_raw).items()}
-
     return {
-        "name": name.strip(),
-        "description": description,
+        "name": _require_name(raw),
+        "description": _optional_description(raw),
         "npc_type": npc_type,
         "sub_zone_id": _ARENA_SUB_ZONE,
         "room_id": None,
@@ -144,8 +152,8 @@ def prepare_npc_definition(raw: Mapping[str, object]) -> dict[str, object]:
         "max_population": 0,
         "spawn_probability": 0.0,
         "base_stats": base_stats,
-        "behavior_config": behavior,
-        "ai_integration_stub": ai_stub,
+        "behavior_config": _ensure_behavior_config(raw, base_stats, npc_type),
+        "ai_integration_stub": _as_str_object_dict(raw.get("ai_integration_stub")) or {},
     }
 
 
