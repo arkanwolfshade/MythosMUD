@@ -104,8 +104,7 @@ def damage_expr_to_min_max(expr: str) -> tuple[int, int]:
 
 
 def _stdlib_roll(lo: int, hi: int) -> int:
-    # nosec B311: game damage roll, not cryptographic
-    return random.randint(lo, hi)
+    return random.randint(lo, hi)  # nosec B311  # game damage roll, not crypto
 
 
 def roll_damage_expr(expr: str, *, rng: random.Random | None = None) -> int:
