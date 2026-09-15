@@ -36,9 +36,24 @@ if (-not $EnvFile) {
     }
 }
 
-$PgHost = if ($env:POSTGRES_HOST) { $env:POSTGRES_HOST } else { "localhost" }
-$PgPort = if ($env:POSTGRES_PORT) { $env:POSTGRES_PORT } else { "5432" }
-$PgUser = if ($env:POSTGRES_USER) { $env:POSTGRES_USER } else { "postgres" }
+if (-not (Test-Path $EnvFile)) { throw "env file not found: $EnvFile" }
+
+# DATABASE_URL is where every other apply_*_migration.ps1 script gets its credentials
+# (see apply_arena_migration.ps1, apply_coc_spells_migration.ps1). This script instead
+# fell back to $env:POSTGRES_* / hardcoded defaults and never set $env:PGPASSWORD, so
+# psql had no password and blocked on an interactive prompt with no terminal to answer
+# it -- indistinguishable from a hang, since it never times out or errors on its own.
+$envContent = Get-Content $EnvFile -Raw
+if ($envContent -notmatch 'DATABASE_URL=(.+)') { throw "DATABASE_URL not found in $EnvFile" }
+$databaseUrl = $matches[1].Trim()
+if ($databaseUrl -notmatch 'postgresql\+?asyncpg?://([^:]+):([^@]+)@([^:]+):(\d+)/(.+)') {
+    throw "invalid PostgreSQL URL format: $databaseUrl"
+}
+$UrlUser, $UrlPassword, $UrlHost, $UrlPort = $matches[1], $matches[2], $matches[3], $matches[4]
+
+$PgHost = if ($env:POSTGRES_HOST) { $env:POSTGRES_HOST } else { $UrlHost }
+$PgPort = if ($env:POSTGRES_PORT) { $env:POSTGRES_PORT } else { $UrlPort }
+$PgUser = if ($env:POSTGRES_USER) { $env:POSTGRES_USER } else { $UrlUser }
 
 $Psql = (Get-Command psql -ErrorAction SilentlyContinue).Source
 if (-not $Psql) {
@@ -49,18 +64,25 @@ if (-not $Psql) { throw "psql not found on PATH or under C:\Program Files\Postgr
 
 Write-Host "Applying Arkham street-grid migration (#829)" -ForegroundColor Cyan
 Write-Host "  psql:    $Psql"
+Write-Host "  env:     $EnvFile"
 Write-Host "  targets: $($TargetDbs -join ', ')"
 
-foreach ($db in $TargetDbs) {
-    # Schema name matches the database name, as elsewhere in this repo.
-    $env_suffix = $db -replace "^mythos_", ""
-    $sql = Join-Path $ProjectRoot "data/db/migrations/20260913_arkham_street_grid_$env_suffix.sql"
-    if (-not (Test-Path $sql)) { throw "migration not found: $sql" }
+$env:PGPASSWORD = $UrlPassword
+try {
+    foreach ($db in $TargetDbs) {
+        # Schema name matches the database name, as elsewhere in this repo.
+        $env_suffix = $db -replace "^mythos_", ""
+        $sql = Join-Path $ProjectRoot "data/db/migrations/20260913_arkham_street_grid_$env_suffix.sql"
+        if (-not (Test-Path $sql)) { throw "migration not found: $sql" }
 
-    Write-Host "`nApplying to '$db' ..." -ForegroundColor Yellow
-    & $Psql -h $PgHost -p $PgPort -U $PgUser -d $db -v ON_ERROR_STOP=1 -q -f $sql
-    if ($LASTEXITCODE -ne 0) { throw "[ERROR] Failed to apply the Arkham grid migration to '$db'" }
-    Write-Host "[OK] $db" -ForegroundColor Green
+        Write-Host "`nApplying to '$db' ..." -ForegroundColor Yellow
+        & $Psql -h $PgHost -p $PgPort -U $PgUser -d $db -v ON_ERROR_STOP=1 -q -f $sql
+        if ($LASTEXITCODE -ne 0) { throw "[ERROR] Failed to apply the Arkham grid migration to '$db'" }
+        Write-Host "[OK] $db" -ForegroundColor Green
+    }
+}
+finally {
+    Remove-Item Env:\PGPASSWORD -ErrorAction SilentlyContinue
 }
 
 Write-Host "`nArkham street-grid migration complete." -ForegroundColor Cyan
