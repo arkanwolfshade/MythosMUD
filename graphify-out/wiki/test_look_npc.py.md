@@ -1,11 +1,13 @@
 # test_look_npc.py
 
-> 80 nodes
+> 134 nodes
 
 ## Key Concepts
 
 - **test_look_npc.py** (59 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_look_npc_helpers.py** (34 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
 - **look_npc.py** (25 connections) — `server/commands/look_npc.py`
+- **_parse_stat_datetime()** (16 connections) — `server/commands/look_npc.py`
 - **_format_npc_description()** (15 connections) — `server/commands/look_npc.py`
 - **_parse_npc_stats_dict()** (14 connections) — `server/commands/look_npc.py`
 - **Any** (14 connections)
@@ -25,33 +27,28 @@
 - **test_try_lookup_npc_implicit_multiple_matches()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
 - **test_try_lookup_npc_implicit_no_npcs()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
 - **test_try_lookup_npc_implicit_success()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_find_matching_npcs_no_lifecycle_manager()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_find_matching_npcs_no_match()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_find_matching_npcs_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_core_attributes_empty()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- *... and 55 more nodes in this community*
+- **test_format_core_attributes()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_format_core_attributes_empty()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- *... and 109 more nodes in this community*
 
 ## Relationships
 
-- [test_look_npc_helpers.py](test_look_npc_helpers.py.md) (28 shared connections)
-- [_get_lifecycle_manager](_get_lifecycle_manager.md) (7 shared connections)
-- [_get_npc_room_id](_get_npc_room_id.md) (6 shared connections)
-- [_should_include_npc](_should_include_npc.md) (6 shared connections)
-- [event_types.py](event_types.py.md) (4 shared connections)
-- [quest_commands.py](quest_commands.py.md) (3 shared connections)
+- [quest_commands.py](quest_commands.py.md) (30 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (3 shared connections)
 - [look_command.py](look_command.py.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [mock_lifecycle_manager](mock_lifecycle_manager.md) (2 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 - [test_look_room.py](test_look_room.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/look_npc.py`
 - `server/tests/unit/commands/test_look_npc.py`
+- `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 202 (100%)
+- EXTRACTED: 267 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

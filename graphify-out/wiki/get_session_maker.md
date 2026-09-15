@@ -1,78 +1,75 @@
 # get_session_maker
 
-> 231 nodes
+> 153 nodes
 
 ## Key Concepts
 
-- **get_session_maker()** (100 connections) — `server/database.py`
-- **DialogueDefinitionRepository** (30 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
-- **test_quest_instance_repository.py** (22 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **QuestInstanceRepository** (20 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **test_dialogue_definition_repository.py** (20 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **test_quest_definition_repository.py** (20 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **quest_instance_repository.py** (19 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **QuestDefinitionRepository** (17 connections) — `server/persistence/repositories/quest_definition_repository.py`
-- **quest_definition_repository.py** (16 connections) — `server/persistence/repositories/quest_definition_repository.py`
-- **SpellRepository** (15 connections) — `server/persistence/repositories/spell_repository.py`
-- **test_quest_flow.py** (15 connections) — `server/tests/integration/test_quest_flow.py`
+- **get_session_maker()** (102 connections) — `server/database.py`
+- **PlayerRepository** (32 connections) — `server/persistence/repositories/player_repository.py`
+- **PlayerSkillRepository** (24 connections) — `server/persistence/repositories/player_skill_repository.py`
+- **PlayerSpell** (19 connections) — `server/models/player_spells.py`
+- **row_to_player()** (18 connections) — `server/persistence/repositories/player_repository_mappers.py`
+- **retry_with_backoff()** (14 connections) — `server/utils/retry.py`
 - **test_spell_repository.py** (14 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
-- **QuestDefinition** (13 connections) — `server/models/quest.py`
-- **_make_session_context()** (13 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **models/quest.py** (13 connections) — `server/models/quest.py`
-- **_row_to_dialogue()** (11 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
+- **generate_invites_db.py** (14 connections) — `tools/invite_tools/generate_invites_db.py`
+- **._validate_and_fix_player_room_with_persistence()** (12 connections) — `server/persistence/repositories/player_repository.py`
+- **Player** (12 connections)
+- **test_player_skill_repository.py** (12 connections) — `server/tests/unit/persistence/repositories/test_player_skill_repository.py`
 - **_row_to_player_spell()** (11 connections) — `server/persistence/repositories/player_spell_repository.py`
-- **_make_session_context()** (11 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **asyncio** (11 connections)
-- **.create()** (10 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **asyncio** (9 connections)
-- **.get_by_player_and_quest()** (8 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **.list_active_by_player()** (8 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **.list_completed_by_player()** (8 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **_row_to_quest_instance()** (8 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- *... and 206 more nodes in this community*
+- **set_test_database_url()** (9 connections) — `server/database_config_helpers.py`
+- **.get_player_by_id()** (9 connections) — `server/persistence/repositories/player_repository.py`
+- **.get_active_players_by_user_id()** (8 connections) — `server/persistence/repositories/player_repository.py`
+- **.get_player_by_name()** (8 connections) — `server/persistence/repositories/player_repository.py`
+- **.get_players_batch()** (8 connections) — `server/persistence/repositories/player_repository.py`
+- **.get_players_by_user_id()** (7 connections) — `server/persistence/repositories/player_repository.py`
+- **.get_players_in_room()** (7 connections) — `server/persistence/repositories/player_repository.py`
+- **.list_players()** (7 connections) — `server/persistence/repositories/player_repository.py`
+- **.get_by_player_id()** (7 connections) — `server/persistence/repositories/player_skill_repository.py`
+- **.get_player_spell()** (7 connections) — `server/persistence/repositories/player_spell_repository.py`
+- **.get_player_spells()** (7 connections) — `server/persistence/repositories/player_spell_repository.py`
+- **.learn_spell()** (7 connections) — `server/persistence/repositories/player_spell_repository.py`
+- **.record_spell_cast()** (7 connections) — `server/persistence/repositories/player_spell_repository.py`
+- *... and 128 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (98 shared connections)
-- [Player](Player.md) (21 shared connections)
-- [QuestService](QuestService.md) (13 shared connections)
-- [test_player_repository.py](test_player_repository.py.md) (12 shared connections)
-- [item_instance_persistence_async.py](item_instance_persistence_async.py.md) (9 shared connections)
-- [GameBundle](GameBundle.md) (8 shared connections)
-- [SkillRepository](SkillRepository.md) (8 shared connections)
-- [test_quest_start_by_trigger_then_abandon](test_quest_start_by_trigger_then_abandon.md) (7 shared connections)
+- [get_logger](get_logger.md) (84 shared connections)
+- [Player](Player.md) (14 shared connections)
+- [DatabaseManager](DatabaseManager.md) (11 shared connections)
+- [PlayerService](PlayerService.md) (10 shared connections)
+- [test_quest_instance_repository.py](test_quest_instance_repository.py.md) (8 shared connections)
 - [ContainerRepository](ContainerRepository.md) (7 shared connections)
-- [PlayerService](PlayerService.md) (6 shared connections)
-- [TargetMatch](TargetMatch.md) (5 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (4 shared connections)
+- [retry.py](retry.py.md) (7 shared connections)
+- [DialogueDefinitionRepository](DialogueDefinitionRepository.md) (5 shared connections)
+- [PlayerEffectRepository](PlayerEffectRepository.md) (5 shared connections)
+- [Any](Any.md) (5 shared connections)
+- [test_player_repository.py](test_player_repository.py.md) (4 shared connections)
+- [SkillRepository](SkillRepository.md) (4 shared connections)
 
 ## Source Files
 
 - `e2e-tests/load-tests/get_invite_codes.py`
 - `server/database.py`
-- `server/game/dialogue/dialogue_service.py`
-- `server/models/quest.py`
-- `server/persistence/repositories/dialogue_definition_repository.py`
-- `server/persistence/repositories/emote_repository.py`
-- `server/persistence/repositories/experience_repository.py`
+- `server/database_config_helpers.py`
+- `server/models/player_spells.py`
+- `server/persistence/repositories/player_repository.py`
+- `server/persistence/repositories/player_repository_mappers.py`
+- `server/persistence/repositories/player_skill_repository.py`
 - `server/persistence/repositories/player_spell_repository.py`
-- `server/persistence/repositories/quest_definition_repository.py`
-- `server/persistence/repositories/quest_instance_repository.py`
-- `server/persistence/repositories/skill_use_log_repository.py`
 - `server/persistence/repositories/spell_repository.py`
 - `server/scripts/check_invite_status.py`
 - `server/scripts/list_active_invites.py`
-- `server/tests/integration/test_quest_flow.py`
-- `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
+- `server/tests/unit/models/test_player_spells.py`
+- `server/tests/unit/persistence/repositories/test_player_skill_repository.py`
 - `server/tests/unit/persistence/repositories/test_spell_repository.py`
-- `server/tests/unit/persistence/test_quest_definition_repository.py`
-- `server/tests/unit/persistence/test_quest_instance_repository.py`
+- `server/utils/retry.py`
 - `tools/invite_tools/check_invites.py`
+- `tools/invite_tools/generate_invites_db.py`
 
 ## Audit Trail
 
-- EXTRACTED: 589 (94%)
-- INFERRED: 38 (6%)
+- EXTRACTED: 430 (96%)
+- INFERRED: 20 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

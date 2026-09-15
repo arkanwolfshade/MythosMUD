@@ -1,0 +1,27 @@
+# test_occupant_formatter_separate_occupants_by_type_dict_npcs
+
+> 2 nodes
+
+## Key Concepts
+
+- **test_occupant_formatter_separate_occupants_by_type_dict_npcs()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter.separate_occupants_by_type() separates dict NPCs.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+
+## Relationships
+
+- [OccupantFormatter](OccupantFormatter.md) (1 shared connections)
+- [test_occupant_formatter.py](test_occupant_formatter.py.md) (1 shared connections)
+
+## Source Files
+
+- `server/tests/unit/realtime/test_occupant_formatter.py`
+
+## Audit Trail
+
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

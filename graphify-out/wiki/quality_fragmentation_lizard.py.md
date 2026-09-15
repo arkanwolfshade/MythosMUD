@@ -1,6 +1,6 @@
 # quality_fragmentation_lizard.py
 
-> 46 nodes
+> 47 nodes
 
 ## Key Concepts
 
@@ -29,13 +29,14 @@
 - **parse_args()** (5 connections) — `scripts/ci/quality_fragmentation_core.py`
 - **file_nloc_failures()** (5 connections) — `scripts/ci/quality_fragmentation_lizard.py`
 - **_map_function_node_to_row()** (5 connections) — `scripts/ci/quality_fragmentation_lizard.py`
-- *... and 21 more nodes in this community*
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
 - [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (14 shared connections)
-- [test_quality_fragmentation_guard.py](test_quality_fragmentation_guard.py.md) (12 shared connections)
+- [test_quality_fragmentation_guard.py](test_quality_fragmentation_guard.py.md) (11 shared connections)
 - [safe_run_static](safe_run_static.md) (4 shared connections)
+- [quality_fragmentation_graph.py](quality_fragmentation_graph.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 140 (88%)
-- INFERRED: 20 (12%)
+- EXTRACTED: 141 (87%)
+- INFERRED: 21 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

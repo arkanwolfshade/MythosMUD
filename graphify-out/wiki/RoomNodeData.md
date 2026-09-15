@@ -35,10 +35,10 @@
 
 - [map/types.ts](map-types.ts.md) (15 shared connections)
 - [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (14 shared connections)
-- [RoomMapViewer.tsx](RoomMapViewer.tsx.md) (8 shared connections)
+- [RoomMapViewer.tsx](RoomMapViewer.tsx.md) (11 shared connections)
 - [saveMapChanges.ts](saveMapChanges.ts.md) (7 shared connections)
-- [utils/layout.ts](utils-layout.ts.md) (6 shared connections)
 - [EdgeDetailsPanel.tsx](EdgeDetailsPanel.tsx.md) (4 shared connections)
+- [utils/layout.ts](utils-layout.ts.md) (3 shared connections)
 - [useRoomEditModal.ts](useRoomEditModal.ts.md) (2 shared connections)
 
 ## Source Files

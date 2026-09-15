@@ -16,7 +16,7 @@
 - [WearableContainerService](WearableContainerService.md) (3 shared connections)
 - [test_wearable_container_service.py](test_wearable_container_service.py.md) (3 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [ContainerService](ContainerService.md) (1 shared connections)
 
 ## Source Files
 

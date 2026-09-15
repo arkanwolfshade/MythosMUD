@@ -1,11 +1,12 @@
 # AliasGraph
 
-> 30 nodes
+> 32 nodes
 
 ## Key Concepts
 
 - **AliasGraph** (18 connections) — `server/utils/alias_graph.py`
 - **test_alias_graph.py** (9 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **alias_graph.py** (8 connections) — `server/utils/alias_graph.py`
 - **test_alias_graph_build_graph()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
 - **test_alias_graph_clear()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
 - **test_alias_graph_detect_cycle_no_cycle()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
@@ -26,16 +27,15 @@
 - **Test AliasGraph.is_safe_to_expand() returns True when safe.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
 - **Test AliasGraph.get_expansion_depth() returns depth.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
 - **Test AliasGraph.clear() clears the graph.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **Alias circular dependency detection using graph analysis. This module provides…** (1 connections) — `server/utils/alias_graph.py`
 - **Check if alias can be safely expanded without creating cycles. Args:…** (1 connections) — `server/utils/alias_graph.py`
-- **Calculate maximum expansion depth for an alias. Returns the length of the…** (1 connections) — `server/utils/alias_graph.py`
-- **Clear the dependency graph.** (1 connections) — `server/utils/alias_graph.py`
-- *... and 5 more nodes in this community*
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
+- [command_handler_unified.py](command_handler_unified.py.md) (3 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
-- [test_alias_expansion.py](test_alias_expansion.py.md) (1 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
 
 ## Source Files
 
@@ -44,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 42 (100%)
+- EXTRACTED: 48 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **test_lifecycle_periodic.py** (42 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
-- **lifecycle_periodic.py** (22 connections) — `server/npc/lifecycle_periodic.py`
+- **lifecycle_periodic.py** (21 connections) — `server/npc/lifecycle_periodic.py`
 - **check_optional_npc_spawns_impl()** (13 connections) — `server/npc/lifecycle_periodic.py`
 - **_attempt_optional_npc_spawn()** (11 connections) — `server/npc/lifecycle_periodic.py`
 - **run_periodic_maintenance_impl()** (11 connections) — `server/npc/lifecycle_periodic.py`
@@ -33,12 +33,13 @@
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (13 shared connections)
-- [NPCDefinition](NPCDefinition.md) (5 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (13 shared connections)
+- [NPCDefinition](NPCDefinition.md) (4 shared connections)
 - [game_tick_processing.py](game_tick_processing.py.md) (3 shared connections)
-- [test_npc_utils.py](test_npc_utils.py.md) (3 shared connections)
+- [test_lifecycle_respawn.py](test_lifecycle_respawn.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [time.py](time.py.md) (2 shared connections)
+- [connection_manager.py](connection_manager.py.md) (2 shared connections)
+- [test_npc_utils.py](test_npc_utils.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,7 +50,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 140 (97%)
+- EXTRACTED: 139 (97%)
 - INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 

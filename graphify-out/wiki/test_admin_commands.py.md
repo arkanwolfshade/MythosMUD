@@ -1,49 +1,50 @@
 # test_admin_commands.py
 
-> 74 nodes
+> 115 nodes
 
 ## Key Concepts
 
 - **test_admin_commands.py** (38 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **admin_commands.py** (35 connections) — `server/commands/admin_commands.py`
 - **asyncio** (31 connections)
+- **admin_mute_commands.py** (29 connections) — `server/commands/admin_mute_commands.py`
+- **handle_mute_command()** (18 connections) — `server/commands/admin_mute_commands.py`
+- **Any** (16 connections)
 - **handle_admin_command()** (15 connections) — `server/commands/admin_commands.py`
+- **handle_mutes_command()** (11 connections) — `server/commands/admin_mute_commands.py`
 - **handle_unmute_command()** (11 connections) — `server/commands/admin_mute_commands.py`
+- **handle_add_admin_command()** (10 connections) — `server/commands/admin_mute_commands.py`
+- **handle_mute_global_command()** (9 connections) — `server/commands/admin_mute_commands.py`
+- **handle_unmute_global_command()** (9 connections) — `server/commands/admin_mute_commands.py`
+- **_perform_mutes_list()** (7 connections) — `server/commands/admin_mute_commands.py`
 - **_handle_admin_status_command()** (6 connections) — `server/commands/admin_commands.py`
 - **_handle_admin_time_command()** (6 connections) — `server/commands/admin_commands.py`
+- **_perform_mute()** (6 connections) — `server/commands/admin_mute_commands.py`
+- **_collect_mute_display_lines()** (5 connections) — `server/commands/admin_mute_commands.py`
+- **_format_mute_line()** (5 connections) — `server/commands/admin_mute_commands.py`
+- **_mute_command_app()** (5 connections) — `server/commands/admin_mute_commands.py`
 - **test_handle_mute_command_exception()** (5 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_add_admin_command_no_target()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_add_admin_command_no_user_manager()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_add_admin_command_success()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_admin_command_hallucinate_dispatches_to_handler()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_admin_command_status()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_admin_command_time()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_admin_command_unknown()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_goto_command_no_app()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_goto_command_no_target()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_command_current_player_not_found()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_command_mute_failure()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_command_no_player_service()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_command_no_target()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_command_no_user_manager()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_command_success()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_command_target_player_not_found()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_global_command_no_user_manager()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_global_command_success()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- *... and 49 more nodes in this community*
+- **_extract_mute_target()** (4 connections) — `server/commands/admin_mute_commands.py`
+- **_mute_display_target()** (4 connections) — `server/commands/admin_mute_commands.py`
+- **_mute_success_result()** (4 connections) — `server/commands/admin_mute_commands.py`
+- **_parse_mute_duration_minutes()** (4 connections) — `server/commands/admin_mute_commands.py`
+- **_resolve_current_player_id_for_mutes()** (4 connections) — `server/commands/admin_mute_commands.py`
+- *... and 90 more nodes in this community*
 
 ## Relationships
 
-- [admin_commands.py](admin_commands.py.md) (25 shared connections)
-- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (6 shared connections)
-- [AliasStorage](AliasStorage.md) (4 shared connections)
-- [command_service.py](command_service.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (1 shared connections)
-- [_handle_admin_set_stat_command](_handle_admin_set_stat_command.md) (1 shared connections)
-- [admin_hallucinate_command.py](admin_hallucinate_command.py.md) (1 shared connections)
-- [AdminActionsLogger](AdminActionsLogger.md) (1 shared connections)
-- [MythosTickScheduler](MythosTickScheduler.md) (1 shared connections)
-- [admin_teleport_commands.py](admin_teleport_commands.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (13 shared connections)
+- [AliasStorage](AliasStorage.md) (11 shared connections)
+- [command_service.py](command_service.py.md) (10 shared connections)
+- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (8 shared connections)
+- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (3 shared connections)
+- [admin_hallucinate_command.py](admin_hallucinate_command.py.md) (3 shared connections)
+- [AdminActionsLogger](AdminActionsLogger.md) (3 shared connections)
+- [get_username_from_user](get_username_from_user.md) (3 shared connections)
+- [_handle_admin_set_stat_command](_handle_admin_set_stat_command.md) (2 shared connections)
+- [test_game_tick_death.py](test_game_tick_death.py.md) (2 shared connections)
+- [test_admin_commands_helpers.py](test_admin_commands_helpers.py.md) (2 shared connections)
+- [admin_teleport_commands.py](admin_teleport_commands.py.md) (2 shared connections)
 
 ## Source Files
 
@@ -53,8 +54,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 132 (84%)
-- INFERRED: 26 (16%)
+- EXTRACTED: 241 (88%)
+- INFERRED: 34 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

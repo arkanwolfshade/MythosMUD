@@ -1,12 +1,10 @@
 # JsonMap
 
-> 47 nodes
+> 32 nodes
 
 ## Key Concepts
 
 - **JsonMap** (9 connections)
-- **.disconnect()** (8 connections) — `server/services/nats_service.py`
-- **._verify_subscription_cleanup()** (6 connections) — `server/services/nats_service.py`
 - **_NatsListenerClient** (5 connections) — `server/services/nats_service.py`
 - **NatsMessageCallback** (5 connections) — `server/services/nats_service.py`
 - **_NatsSubscription** (4 connections) — `server/services/nats_service.py`
@@ -15,26 +13,28 @@
 - **._decode_message_data()** (4 connections) — `server/services/nats_service.py`
 - **.get_connection_stats()** (4 connections) — `server/services/nats_service.py`
 - **.publish()** (4 connections) — `server/services/nats_service.py`
+- **.request()** (4 connections) — `server/services/nats_service.py`
 - **.subscribe()** (4 connections) — `server/services/nats_service.py`
 - **Msg** (4 connections)
 - **Protocol** (4 connections)
 - **_NatsSubscribeFn** (3 connections) — `server/services/nats_service.py`
 - **_as_json_map()** (3 connections) — `server/services/nats_service.py`
-- **._cancel_background_tasks()** (3 connections) — `server/services/nats_service.py`
-- **._close_all_subscriptions()** (3 connections) — `server/services/nats_service.py`
-- **._close_nats_connection()** (3 connections) — `server/services/nats_service.py`
-- **._drain_subscriptions()** (3 connections) — `server/services/nats_service.py`
-- **.get_active_subscriptions()** (3 connections) — `server/services/nats_service.py`
 - **._negatively_acknowledge_message()** (3 connections) — `server/services/nats_service.py`
-- **._stop_health_monitoring()** (3 connections) — `server/services/nats_service.py`
 - **.__call__()** (3 connections) — `server/services/nats_service.py`
 - **.__call__()** (2 connections) — `server/services/nats_service.py`
-- *... and 22 more nodes in this community*
+- **.add_disconnect_listener()** (1 connections) — `server/services/nats_service.py`
+- **.add_error_listener()** (1 connections) — `server/services/nats_service.py`
+- **.add_reconnect_listener()** (1 connections) — `server/services/nats_service.py`
+- **.drain()** (1 connections) — `server/services/nats_service.py`
+- **.unsubscribe()** (1 connections) — `server/services/nats_service.py`
+- **Subscription** (1 connections)
+- **Get connection statistics from state machine. Returns: Dictionary with…** (1 connections) — `server/services/nats_service.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [NATSService](NATSService.md) (21 shared connections)
-- [NATSError](NATSError.md) (2 shared connections)
+- [NATSService](NATSService.md) (9 shared connections)
+- [NATSError](NATSError.md) (8 shared connections)
 
 ## Source Files
 
@@ -42,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 73 (100%)
+- EXTRACTED: 52 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

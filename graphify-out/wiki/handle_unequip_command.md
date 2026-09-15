@@ -24,10 +24,10 @@
 
 ## Relationships
 
-- [inventory_equip_command.py](inventory_equip_command.py.md) (11 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (4 shared connections)
-- [equipment_helpers.py](equipment_helpers.py.md) (4 shared connections)
-- [command_result_text](command_result_text.md) (3 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (10 shared connections)
+- [inventory_equip_command.py](inventory_equip_command.py.md) (5 shared connections)
+- [server/services/__init__.py](server-services-__init__.py.md) (5 shared connections)
+- [command_result_text](command_result_text.md) (2 shared connections)
 - [AliasStorage](AliasStorage.md) (1 shared connections)
 
 ## Source Files

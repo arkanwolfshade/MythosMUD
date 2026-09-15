@@ -1,6 +1,6 @@
 # test_combat_schema.py
 
-> 44 nodes
+> 49 nodes
 
 ## Key Concepts
 
@@ -11,8 +11,11 @@
 - **validate_base_stats_combat_data()** (11 connections) — `server/schemas/combat/combat_schema.py`
 - **validate_combat_messages()** (11 connections) — `server/schemas/combat/combat_schema.py`
 - **combat/__init__.py** (10 connections) — `server/schemas/combat/__init__.py`
+- **add_default_combat_data_to_stats()** (9 connections) — `server/schemas/combat/combat_schema.py`
 - **validate_behavior_config_combat_data()** (9 connections) — `server/schemas/combat/combat_schema.py`
+- **add_default_combat_data_to_config()** (8 connections) — `server/schemas/combat/combat_schema.py`
 - **get_combat_stats_summary()** (6 connections) — `server/schemas/combat/combat_schema.py`
+- **Any** (5 connections)
 - **validate_message_template_variables()** (4 connections) — `server/schemas/combat/combat_schema.py`
 - **Draft7Validator** (4 connections)
 - **test_add_default_combat_data_to_config()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
@@ -26,17 +29,15 @@
 - **test_validate_combat_messages_missing_required()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
 - **test_validate_combat_messages_valid()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
 - **test_validate_npc_combat_data()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **Exception** (1 connections)
-- **Combat system JSON schema validation. This module provides JSON schema…** (1 connections) — `server/schemas/combat/combat_schema.py`
-- **Raised when combat data fails schema validation.** (1 connections) — `server/schemas/combat/combat_schema.py`
-- *... and 19 more nodes in this community*
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [migrate_combat_data.py](migrate_combat_data.py.md) (16 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [migrate_combat_data.py](migrate_combat_data.py.md) (8 shared connections)
 - [NPCDefinition](NPCDefinition.md) (2 shared connections)
-- [schemas/shared/__init__.py](schemas-shared-__init__.py.md) (1 shared connections)
+- [TestCombatMessagingService](TestCombatMessagingService.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 91 (97%)
+- EXTRACTED: 99 (97%)
 - INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 

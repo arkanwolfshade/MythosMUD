@@ -35,9 +35,9 @@
 
 - [test_lru_cache.py](test_lru_cache.py.md) (4 shared connections)
 - [CacheManager](CacheManager.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [get_cache_manager](get_cache_manager.md) (3 shared connections)
 - [NPCCacheService](NPCCacheService.md) (1 shared connections)
-- [test_cache_service.py](test_cache_service.py.md) (1 shared connections)
+- [ProfessionCacheService](ProfessionCacheService.md) (1 shared connections)
 - [RoomCacheService](RoomCacheService.md) (1 shared connections)
 - [container_helpers_inventory_display.py](container_helpers_inventory_display.py.md) (1 shared connections)
 

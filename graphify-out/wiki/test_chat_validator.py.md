@@ -34,9 +34,9 @@
 ## Relationships
 
 - [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (5 shared connections)
-- [ChatMessage](ChatMessage.md) (5 shared connections)
+- [chat_service.py](chat_service.py.md) (5 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (1 shared connections)
 
 ## Source Files
 

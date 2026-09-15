@@ -20,7 +20,8 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (3 shared connections)
-- [Room](Room.md) (2 shared connections)
+- [RoomCacheLoader](RoomCacheLoader.md) (1 shared connections)
+- [async_persistence_room_loader.py](async_persistence_room_loader.py.md) (1 shared connections)
 
 ## Source Files
 

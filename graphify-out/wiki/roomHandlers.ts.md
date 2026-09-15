@@ -1,11 +1,10 @@
 # roomHandlers.ts
 
-> 34 nodes
+> 33 nodes
 
 ## Key Concepts
 
 - **roomHandlers.ts** (41 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **roomHandlers.test.ts** (12 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/roomHandlers.test.ts`
 - **handleGameState()** (7 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
 - **handleRoomUpdate()** (7 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
 - **handleRoomOccupants()** (5 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
@@ -29,23 +28,20 @@
 - **createMinimalRoomFromOccupantsEvent()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
 - **extractGraceAndFollowFields()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
 - **extractRoomMetadata()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- *... and 9 more nodes in this community*
+- **handleFollowState()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (6 shared connections)
-- [logger.ts](logger.ts.md) (4 shared connections)
-- [Room](Room.md) (2 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (14 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/eventHandlers/__tests__/roomHandlers.test.ts`
 - `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 82 (100%)
+- EXTRACTED: 76 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

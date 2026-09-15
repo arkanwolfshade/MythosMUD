@@ -34,8 +34,8 @@
 ## Relationships
 
 - [test_look_room.py](test_look_room.py.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
-- [room_update_event_builder.py](room_update_event_builder.py.md) (1 shared connections)
+- [game_state_provider.py](game_state_provider.py.md) (1 shared connections)
+- [look_command.py](look_command.py.md) (1 shared connections)
 - [passive_lucidity_flux/service.py](passive_lucidity_flux-service.py.md) (1 shared connections)
 
 ## Source Files

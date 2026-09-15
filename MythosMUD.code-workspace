@@ -13,14 +13,6 @@
       },
     },
     {
-      "name": "📁 Chaosium",
-      "path": "C:/Users/arkan/Proton Drive/arkanwolfshade/My files/Chaosium",
-      "settings": {
-        "python.defaultInterpreterPath": "F:/projects/MythosMUD/.venv/Scripts/python.exe",
-        "pylint.enabled": false,
-      },
-    },
-    {
       "name": "📁 Cursor Plans",
       "path": "C:/Users/arkan/.cursor/plans",
       "settings": {

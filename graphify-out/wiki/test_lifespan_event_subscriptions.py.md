@@ -30,13 +30,13 @@
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (7 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (6 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (5 shared connections)
+- [event_types.py](event_types.py.md) (4 shared connections)
 - [build_event](build_event.md) (4 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (4 shared connections)
 - [QuestService](QuestService.md) (3 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
 - [FollowService](FollowService.md) (3 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (2 shared connections)
+- [lifespan.py](lifespan.py.md) (2 shared connections)
 - [test_party_service.py](test_party_service.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [EventBus](EventBus.md) (1 shared connections)

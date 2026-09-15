@@ -1,6 +1,6 @@
 # TrackedTaskManager
 
-> 43 nodes
+> 39 nodes
 
 ## Key Concepts
 
@@ -8,10 +8,9 @@
 - **get_global_tracked_manager()** (19 connections) — `server/app/tracked_task_manager.py`
 - **test_tracked_task_manager.py** (19 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
 - **tracked_task_manager.py** (15 connections) — `server/app/tracked_task_manager.py`
+- **game_tick_service.py** (9 connections) — `server/services/game_tick_service.py`
 - **asyncio** (8 connections)
 - **memory_leak_prevention_channel_start_session()** (5 connections) — `server/app/tracked_task_manager.py`
-- **.create_supervised_task()** (5 connections) — `server/app/tracked_task_manager.py`
-- **.create_tracked_task()** (5 connections) — `server/app/tracked_task_manager.py`
 - **patch_asyncio_create_task_with_tracking()** (4 connections) — `server/app/tracked_task_manager.py`
 - **reset_global_tracked_manager()** (4 connections) — `server/app/tracked_task_manager.py`
 - **.__init__()** (3 connections) — `server/app/tracked_task_manager.py`
@@ -29,24 +28,28 @@
 - **.cleanup_orphaned_tasks()** (2 connections) — `server/app/tracked_task_manager.py`
 - **test_global_manager_singleton()** (2 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
 - **test_memory_leak_prevention_session_start()** (2 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
-- *... and 18 more nodes in this community*
+- **test_set_task_registry()** (2 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
 - [TaskRegistry](TaskRegistry.md) (5 shared connections)
 - [PeriodicOrphanAuditor](PeriodicOrphanAuditor.md) (5 shared connections)
+- [event_handler.py](event_handler.py.md) (4 shared connections)
 - [get_logger](get_logger.md) (4 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
 - [MemoryThresholdMonitor](MemoryThresholdMonitor.md) (3 shared connections)
-- [NPCEventHandler](NPCEventHandler.md) (2 shared connections)
-- [event_types.py](event_types.py.md) (2 shared connections)
-- [HealthMonitor](HealthMonitor.md) (1 shared connections)
-- [GameTickService](GameTickService.md) (1 shared connections)
+- [GameTickService](GameTickService.md) (3 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [.create_supervised_task](create_supervised_task.md) (2 shared connections)
+- [DatabaseManager](DatabaseManager.md) (1 shared connections)
+- [test_health_monitor.py](test_health_monitor.py.md) (1 shared connections)
 - [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [EventPublisher](EventPublisher.md) (1 shared connections)
 
 ## Source Files
 
 - `server/app/tracked_task_manager.py`
+- `server/services/game_tick_service.py`
 - `server/tests/unit/app/test_tracked_task_manager.py`
 
 ## Audit Trail

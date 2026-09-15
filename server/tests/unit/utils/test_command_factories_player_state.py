@@ -118,6 +118,20 @@ def test_create_skills_command_with_args():
         PlayerStateCommandFactory.create_skills_command(["list"])
 
 
+def test_create_catalog_command_empty_args():
+    """Test create_catalog_command() with no args."""
+    command = PlayerStateCommandFactory.create_catalog_command([])
+    assert command is not None
+    assert command.args == []
+
+
+def test_create_catalog_command_with_args():
+    """Test create_catalog_command() preserves filter tokens."""
+    command = PlayerStateCommandFactory.create_catalog_command(["type=weapon", "page=2"])
+    assert command is not None
+    assert command.args == ["type=weapon", "page=2"]
+
+
 def test_create_journal_command():
     """Test create_journal_command() creates JournalCommand."""
     command = PlayerStateCommandFactory.create_journal_command([])

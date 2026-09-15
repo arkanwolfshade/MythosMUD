@@ -34,10 +34,10 @@
 ## Relationships
 
 - [RoomNodeData](RoomNodeData.md) (15 shared connections)
-- [RoomMapViewer.tsx](RoomMapViewer.tsx.md) (7 shared connections)
+- [RoomMapViewer.tsx](RoomMapViewer.tsx.md) (9 shared connections)
 - [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (5 shared connections)
-- [utils/layout.ts](utils-layout.ts.md) (4 shared connections)
 - [EdgeDetailsPanel.tsx](EdgeDetailsPanel.tsx.md) (2 shared connections)
+- [utils/layout.ts](utils-layout.ts.md) (2 shared connections)
 - [saveMapChanges.ts](saveMapChanges.ts.md) (2 shared connections)
 - [useRoomEditModal.ts](useRoomEditModal.ts.md) (1 shared connections)
 

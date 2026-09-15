@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [test_player_repository.py](test_player_repository.py.md) (7 shared connections)
+- [get_session_maker](get_session_maker.md) (7 shared connections)
 - [get_logger](get_logger.md) (5 shared connections)
-- [_StubPlayerRepo](_StubPlayerRepo.md) (2 shared connections)
-- [time.py](time.py.md) (1 shared connections)
+- [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) (2 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 
 ## Source Files
 

@@ -13,7 +13,7 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Protocol, cast
 
 from sqlalchemy import Select, select
-from sqlalchemy.exc import DatabaseError, SQLAlchemyError
+from sqlalchemy.exc import DatabaseError, IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ...async_persistence import AsyncPersistenceLayer
@@ -161,27 +161,37 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
             )
         if not delta:
             return player_id_str, None
-        await handle_hallucination_triggers(
-            player_id_uuid,
-            player_id_str,
-            room_id,
-            cast(dict[str, object], cast(object, ctx.lucidity_records)),
-            ctx.session,
-        )
-        result = await ctx.lucidity_service.apply_lucidity_adjustment(
-            player_id_uuid,
-            delta,
-            reason_code="passive_flux",
-            metadata={
-                "context_tags": list(context.tags),
-                "source": context.source,
-                "base_flux": base_flux,
-                "companion_flux": companion_flux,
-                "total_flux": total_flux,
-                "tick_count": ctx.tick_count,
-                **context.metadata,
-            },
-        )
+        try:
+            # Savepoint: e2e (and logout/delete) can remove players between load and flush.
+            async with ctx.session.begin_nested():
+                await handle_hallucination_triggers(
+                    player_id_uuid,
+                    player_id_str,
+                    room_id,
+                    cast(dict[str, object], cast(object, ctx.lucidity_records)),
+                    ctx.session,
+                )
+                result = await ctx.lucidity_service.apply_lucidity_adjustment(
+                    player_id_uuid,
+                    delta,
+                    reason_code="passive_flux",
+                    metadata={
+                        "context_tags": list(context.tags),
+                        "source": context.source,
+                        "base_flux": base_flux,
+                        "companion_flux": companion_flux,
+                        "total_flux": total_flux,
+                        "tick_count": ctx.tick_count,
+                        **context.metadata,
+                    },
+                )
+        except IntegrityError:
+            logger.warning(
+                "Skipping passive LCD flux for missing player",
+                player_id=player_id_str,
+                room_id=room_id,
+            )
+            return player_id_str, None
         return player_id_str, result
 
     async def _commit_flux_adjustments(self, session: AsyncSession, adjustments: list[LucidityUpdateResult]) -> None:

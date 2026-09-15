@@ -28,11 +28,11 @@
 ## Relationships
 
 - [test_npc_threading_messages.py](test_npc_threading_messages.py.md) (4 shared connections)
-- [event_types.py](event_types.py.md) (3 shared connections)
+- [NPCDefinition](NPCDefinition.md) (3 shared connections)
 - [PassiveMobNPC](PassiveMobNPC.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [NPCThreadManager](NPCThreadManager.md) (1 shared connections)
-- [time.py](time.py.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 
 ## Source Files
 

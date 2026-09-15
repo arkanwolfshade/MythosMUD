@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [RoomService](RoomService.md) (12 shared connections)
+- [map_minimap.py](map_minimap.py.md) (6 shared connections)
+- [maps.py](maps.py.md) (6 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files

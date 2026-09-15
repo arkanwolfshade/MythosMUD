@@ -1,6 +1,6 @@
 # directionHallucination.ts
 
-> 24 nodes
+> 23 nodes
 
 ## Key Concepts
 
@@ -19,7 +19,6 @@
 - **ageBucket()** (3 connections) — `client/src/utils/corruptionDecay.ts`
 - **AsciiNoise.test.tsx** (3 connections) — `client/src/components/map/__tests__/AsciiNoise.test.tsx`
 - **prefersReducedMotion()** (2 connections) — `client/src/components/map/AsciiNoise.tsx`
-- **MinimapInlineBody()** (2 connections) — `client/src/components/ui-v2/GameClientV2MinimapSection.tsx`
 - **isProtectedToken()** (2 connections) — `client/src/utils/corruptionDecay.ts`
 - **shuffle()** (2 connections) — `client/src/utils/directionHallucination.ts`
 - **MYTHOS_GLYPHS** (2 connections) — `client/src/utils/corruptionDecay.ts`
@@ -31,18 +30,17 @@
 
 ## Relationships
 
-- [RoomMapViewer.tsx](RoomMapViewer.tsx.md) (5 shared connections)
-- [maps.ts](maps.ts.md) (4 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (3 shared connections)
+- [RoomMapViewer.tsx](RoomMapViewer.tsx.md) (8 shared connections)
 - [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (3 shared connections)
-- [gameStore.ts](gameStore.ts.md) (3 shared connections)
-- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (3 shared connections)
+- [saveMapChanges.ts](saveMapChanges.ts.md) (3 shared connections)
+- [PanelState](PanelState.md) (3 shared connections)
+- [AsciiMapViewer.tsx](AsciiMapViewer.tsx.md) (2 shared connections)
+- [maps.ts](maps.ts.md) (2 shared connections)
 
 ## Source Files
 
 - `client/src/components/map/AsciiNoise.tsx`
 - `client/src/components/map/__tests__/AsciiNoise.test.tsx`
-- `client/src/components/ui-v2/GameClientV2MinimapSection.tsx`
 - `client/src/utils/__tests__/corruptionDecay.test.ts`
 - `client/src/utils/__tests__/directionHallucination.test.ts`
 - `client/src/utils/corruptionDecay.ts`
@@ -50,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 68 (100%)
+- EXTRACTED: 67 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

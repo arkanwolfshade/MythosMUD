@@ -20,11 +20,12 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (4 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
-- [game_tick_death.py](game_tick_death.py.md) (1 shared connections)
-- [Room](Room.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [game_tick_processing.py](game_tick_processing.py.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
+- [npc_combat_integration_service.py](npc_combat_integration_service.py.md) (1 shared connections)
+- [test_player_respawn_service.py](test_player_respawn_service.py.md) (1 shared connections)
 - [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (1 shared connections)
+- [test_npc_combat_integration_service.py](test_npc_combat_integration_service.py.md) (1 shared connections)
 
 ## Source Files
 

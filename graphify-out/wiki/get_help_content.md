@@ -1,0 +1,55 @@
+# get_help_content
+
+> 25 nodes
+
+## Key Concepts
+
+- **get_help_content()** (15 connections) — `server/help/help_content.py`
+- **help_content.py** (12 connections) — `server/help/help_content.py`
+- **test_websocket_handler_help.py** (6 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
+- **get_commands_by_category()** (3 connections) — `server/help/help_content.py`
+- **_get_general_help()** (3 connections) — `server/help/help_content.py`
+- **test_get_help_content()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_get_help_content_with_command()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_get_help_content_general()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
+- **test_get_help_content_specific()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
+- **test_get_help_content_talk()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
+- **help/__init__.py** (3 connections) — `server/help/__init__.py`
+- **get_command_categories()** (2 connections) — `server/help/help_content.py`
+- **Any** (1 connections)
+- **Help content and command documentation for MythosMUD. This module contains the…** (1 connections) — `server/help/help_content.py`
+- **Get help content for commands. Args: command_name: Optional specific command…** (1 connections) — `server/help/help_content.py`
+- **Get general help content with command categories.** (1 connections) — `server/help/help_content.py`
+- **Get list of all command categories.** (1 connections) — `server/help/help_content.py`
+- **Get all commands in a specific category.** (1 connections) — `server/help/help_content.py`
+- **Help system for MythosMUD. This package provides help content and command…** (1 connections) — `server/help/__init__.py`
+- **Test get_help_content returns help content.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **Test get_help_content returns help for specific command.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **Unit tests for help content used in the realtime/WebSocket path. Uses the…** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
+- **Test get_help_content() returns general help when no command specified.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
+- **Test get_help_content() returns specific command help for look.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
+- **talk has in-game help for dialogue trees (#583).** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
+
+## Relationships
+
+- [SecureBaseModel](SecureBaseModel.md) (4 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (3 shared connections)
+- [command_service.py](command_service.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+
+## Source Files
+
+- `server/help/__init__.py`
+- `server/help/help_content.py`
+- `server/tests/unit/realtime/test_websocket_handler_core.py`
+- `server/tests/unit/realtime/test_websocket_handler_help.py`
+
+## Audit Trail
+
+- EXTRACTED: 42 (100%)
+- INFERRED: 0 (0%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

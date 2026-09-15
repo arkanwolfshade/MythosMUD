@@ -1,10 +1,11 @@
 # NPCStartupService
 
-> 34 nodes
+> 36 nodes
 
 ## Key Concepts
 
 - **NPCStartupService** (54 connections) — `server/services/npc_startup_service.py`
+- **npc_startup_service.py** (17 connections) — `server/services/npc_startup_service.py`
 - **Any** (17 connections)
 - **._determine_spawn_room()** (8 connections) — `server/services/npc_startup_service.py`
 - **._spawn_required_npcs()** (8 connections) — `server/services/npc_startup_service.py`
@@ -28,15 +29,18 @@
 - **._warmup_room_cache_for_arena()** (3 connections) — `server/services/npc_startup_service.py`
 - **test_npc_startup_service_accepts_injected_async_persistence()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 - **fixture** (1 connections)
-- **Spawn all required NPCs. Args: required_npcs: List of required NPC definitions…** (1 connections) — `server/services/npc_startup_service.py`
-- *... and 9 more nodes in this community*
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [test_npc_startup_service.py](test_npc_startup_service.py.md) (33 shared connections)
-- [event_types.py](event_types.py.md) (7 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [npc_database.py](npc_database.py.md) (1 shared connections)
+- [test_npc_startup_service.py](test_npc_startup_service.py.md) (34 shared connections)
+- [npc_database.py](npc_database.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [NPCDefinition](NPCDefinition.md) (3 shared connections)
+- [NPCPopulationController](NPCPopulationController.md) (2 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (2 shared connections)
+- [User](User.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 79 (72%)
-- INFERRED: 31 (28%)
+- EXTRACTED: 92 (75%)
+- INFERRED: 31 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

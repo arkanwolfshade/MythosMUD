@@ -109,6 +109,22 @@ def test_parse_command_spawn_alias(command_parser):
     assert result.args == ["1", "room_123"]
 
 
+def test_parse_command_catalog(command_parser):
+    """Regression: /catalog must be a known CommandType (e2e Unknown command)."""
+    result = command_parser.parse_command("/catalog")
+
+    assert result.command_type == CommandType.CATALOG
+    assert result.args == []
+
+
+def test_parse_command_catalog_with_filters(command_parser):
+    """Regression: /catalog filter args must survive parsing into CatalogCommand.args."""
+    result = command_parser.parse_command("/catalog type=weapon page=2")
+
+    assert result.command_type == CommandType.CATALOG
+    assert result.args == ["type=weapon", "page=2"]
+
+
 def test_parse_command_alias_l(command_parser):
     """Test parse_command handles 'l' alias for local."""
     result = command_parser.parse_command("l hello")

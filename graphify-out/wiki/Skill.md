@@ -1,28 +1,36 @@
-# Skill
+# skill
 
-> 7 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **gh-stack (MythosMUD)** (7 connections) — `.claude/skills/gh-stack/SKILL.md`
-- **Automatic decision tree** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
-- **Forbidden (hangs non-interactive agents)** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
-- **Full skill body** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
-- **Integration with other skills** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
-- **Mythos defaults** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
-- **One-liner status check (PowerShell)** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **skill** (6 connections) — `schemas/items/item_prototype.schema.json`
+- **equipmentBonus** (5 connections) — `schemas/items/item_prototype.schema.json`
+- **properties** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **required** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **bonus** (2 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **description** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **bonus** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **skill** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
-- [MythosMUD Commit Messages](MythosMUD_Commit_Messages.md) (1 shared connections)
+- [item_prototype.schema.json](item_prototype.schema.json.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/gh-stack/SKILL.md`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

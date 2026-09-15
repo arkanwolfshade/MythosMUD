@@ -24,8 +24,8 @@
 
 ## Relationships
 
-- [Async Persistence Migration Tracker](Async_Persistence_Migration_Tracker.md) (2 shared connections)
-- [Async Audit Executive Summary](Async_Audit_Executive_Summary.md) (1 shared connections)
+- [Async Audit Executive Summary](Async_Audit_Executive_Summary.md) (2 shared connections)
+- [Async Persistence Migration Tracker](Async_Persistence_Migration_Tracker.md) (1 shared connections)
 - [Async Remediation Final Report](Async_Remediation_Final_Report.md) (1 shared connections)
 
 ## Source Files

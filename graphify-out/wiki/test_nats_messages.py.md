@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
-- [test_message_handlers.py](test_message_handlers.py.md) (2 shared connections)
+- [DeadLetterQueue](DeadLetterQueue.md) (2 shared connections)
+- [SecureBaseModel](SecureBaseModel.md) (2 shared connections)
 
 ## Source Files
 

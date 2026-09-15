@@ -33,8 +33,10 @@
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (14 shared connections)
-- [NPCEventHandler](NPCEventHandler.md) (3 shared connections)
+- [FollowService](FollowService.md) (6 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (6 shared connections)
+- [event_handler.py](event_handler.py.md) (4 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
 
 ## Source Files
 

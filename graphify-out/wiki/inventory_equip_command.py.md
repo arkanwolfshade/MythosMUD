@@ -1,68 +1,66 @@
 # inventory_equip_command.py
 
-> 144 nodes
+> 162 nodes
 
 ## Key Concepts
 
 - **inventory_equip_command.py** (46 connections) — `server/commands/inventory_equip_command.py`
-- **server/services/__init__.py** (42 connections) — `server/services/__init__.py`
-- **InventoryService** (37 connections) — `server/services/inventory_service.py`
-- **inventory_unequip_command.py** (33 connections) — `server/commands/inventory_unequip_command.py`
-- **inventory_service.py** (33 connections) — `server/services/inventory_service.py`
-- **equipment_service.py** (23 connections) — `server/services/equipment_service.py`
-- **test_equipment_service.py** (22 connections) — `server/tests/unit/services/test_equipment_service.py`
-- **SlotValidationError** (21 connections) — `server/services/equipment_service.py`
+- **test_inventory_helpers.py** (38 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **equipment_helpers.py** (29 connections) — `server/commands/equipment_helpers.py`
+- **test_equipment_helpers.py** (25 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
+- **inventory_item_matching.py** (22 connections) — `server/commands/inventory_item_matching.py`
 - **get_shared_services()** (21 connections) — `server/commands/inventory_service_helpers.py`
-- **inventory_mutation_guard.py** (21 connections) — `server/services/inventory_mutation_guard.py`
-- **InventoryCapacityError** (20 connections) — `server/services/inventory_service.py`
-- **test_inventory_service.py** (20 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **EquipmentService** (18 connections) — `server/services/equipment_service.py`
+- **match_room_drop_by_name()** (19 connections) — `server/commands/inventory_item_matching.py`
+- **normalize_slot_name()** (19 connections) — `server/commands/inventory_item_matching.py`
+- **match_equipped_item_by_name()** (18 connections) — `server/commands/inventory_item_matching.py`
+- **match_inventory_item_by_name()** (16 connections) — `server/commands/inventory_item_matching.py`
 - **inventory_service_helpers.py** (16 connections) — `server/commands/inventory_service_helpers.py`
-- **EquipmentCapacityError** (11 connections) — `server/services/equipment_service.py`
-- **InventorySplitError** (11 connections) — `server/services/inventory_service.py`
-- **InventoryValidationError** (10 connections) — `server/services/inventory_service.py`
-- **.equip_from_inventory()** (10 connections) — `server/services/equipment_service.py`
-- **._clone_stack()** (9 connections) — `server/services/inventory_service.py`
+- **resolve_unequip_slot()** (14 connections) — `server/commands/equipment_helpers.py`
+- **resolve_equip_item_index()** (13 connections) — `server/commands/equipment_helpers.py`
+- **_equip_build_work()** (13 connections) — `server/commands/inventory_equip_command.py`
+- **test_inventory_commands_helpers.py** (13 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **handle_wearable_container_on_equip()** (10 connections) — `server/commands/equipment_helpers.py`
+- **normalize_equipped_items()** (10 connections) — `server/commands/equipment_helpers.py`
+- **normalize_inventory_slots()** (10 connections) — `server/commands/equipment_helpers.py`
+- **find_equipped_item_after_equip()** (9 connections) — `server/commands/equipment_helpers.py`
 - **_ensure_shared_services_initialized()** (8 connections) — `server/commands/inventory_service_helpers.py`
-- **.unequip_to_inventory()** (8 connections) — `server/services/equipment_service.py`
-- **.add_stack()** (8 connections) — `server/services/inventory_service.py`
-- **.split_stack()** (8 connections) — `server/services/inventory_service.py`
-- **InventoryServiceError** (7 connections) — `server/services/inventory_service.py`
-- **._clone_with_quantity()** (7 connections) — `server/services/inventory_service.py`
-- *... and 119 more nodes in this community*
+- **_player()** (8 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
+- **handle_wearable_container_on_unequip()** (7 connections) — `server/commands/equipment_helpers.py`
+- **EquipCommandRuntime** (6 connections) — `server/commands/inventory_equip_command.py`
+- **test_inventory_service_helpers.py** (6 connections) — `server/tests/unit/commands/test_inventory_service_helpers.py`
+- **build_equipped_candidates()** (5 connections) — `server/commands/inventory_item_matching.py`
+- *... and 137 more nodes in this community*
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (30 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (18 shared connections)
-- [test_inventory_equip_command.py](test_inventory_equip_command.py.md) (17 shared connections)
-- [equipment_helpers.py](equipment_helpers.py.md) (16 shared connections)
-- [get_logger](get_logger.md) (16 shared connections)
-- [handle_unequip_command](handle_unequip_command.md) (11 shared connections)
-- [ContainerService](ContainerService.md) (10 shared connections)
-- [InventoryMutationGuard](InventoryMutationGuard.md) (9 shared connections)
-- [command_result_text](command_result_text.md) (8 shared connections)
-- [WearableContainerService](WearableContainerService.md) (6 shared connections)
-- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (6 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (25 shared connections)
+- [test_inventory_equip_command.py](test_inventory_equip_command.py.md) (23 shared connections)
+- [server/services/__init__.py](server-services-__init__.py.md) (18 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [test_inventory_display_helpers.py](test_inventory_display_helpers.py.md) (6 shared connections)
+- [handle_unequip_command](handle_unequip_command.md) (5 shared connections)
+- [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (5 shared connections)
 - [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (5 shared connections)
+- [Player](Player.md) (4 shared connections)
+- [WearableContainerService](WearableContainerService.md) (3 shared connections)
+- [container_helpers_inventory_display.py](container_helpers_inventory_display.py.md) (3 shared connections)
+- [.state](state.md) (1 shared connections)
 
 ## Source Files
 
+- `server/commands/equipment_helpers.py`
 - `server/commands/inventory_equip_command.py`
+- `server/commands/inventory_item_matching.py`
 - `server/commands/inventory_service_helpers.py`
-- `server/commands/inventory_unequip_command.py`
-- `server/services/__init__.py`
-- `server/services/equipment_service.py`
-- `server/services/inventory_mutation_guard.py`
-- `server/services/inventory_service.py`
+- `server/tests/unit/commands/test_equipment_helpers.py`
+- `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- `server/tests/unit/commands/test_inventory_helpers.py`
 - `server/tests/unit/commands/test_inventory_service_helpers.py`
-- `server/tests/unit/services/test_equipment_service.py`
-- `server/tests/unit/services/test_inventory_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 415 (92%)
-- INFERRED: 37 (8%)
+- EXTRACTED: 389 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -25,11 +25,11 @@
 ## Relationships
 
 - [deleteCharacterFlow.ts](deleteCharacterFlow.ts.md) (8 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (6 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (7 shared connections)
 - [apiTypeGuards.ts](apiTypeGuards.ts.md) (4 shared connections)
-- [security.ts](security.ts.md) (4 shared connections)
+- [security.ts](security.ts.md) (3 shared connections)
 - [utils/config.ts](utils-config.ts.md) (2 shared connections)
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (1 shared connections)
+- [logoutHandler.ts](logoutHandler.ts.md) (1 shared connections)
 
 ## Source Files
 

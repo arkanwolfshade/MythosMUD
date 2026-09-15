@@ -34,12 +34,10 @@
 ## Relationships
 
 - [websocket_handler_commands.py](websocket_handler_commands.py.md) (11 shared connections)
-- [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (3 shared connections)
-- [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (3 shared connections)
-- [test_message_handlers.py](test_message_handlers.py.md) (2 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (2 shared connections)
+- [SecureBaseModel](SecureBaseModel.md) (4 shared connections)
+- [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (4 shared connections)
+- [websocket_handler.py](websocket_handler.py.md) (3 shared connections)
 - [build_event](build_event.md) (1 shared connections)
-- [ErrorType](ErrorType.md) (1 shared connections)
 
 ## Source Files
 

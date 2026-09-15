@@ -34,7 +34,7 @@
 ## Relationships
 
 - [NPCThreadManager](NPCThreadManager.md) (11 shared connections)
-- [event_types.py](event_types.py.md) (4 shared connections)
+- [NPCDefinition](NPCDefinition.md) (4 shared connections)
 - [NPCActionMessage](NPCActionMessage.md) (4 shared connections)
 - [MetricsCollector](MetricsCollector.md) (2 shared connections)
 

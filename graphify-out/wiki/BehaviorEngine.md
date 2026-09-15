@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [NPCBase](NPCBase.md) (7 shared connections)
+- [NPCDefinition](NPCDefinition.md) (6 shared connections)
+- [npc_config_parsing.py](npc_config_parsing.py.md) (1 shared connections)
 
 ## Source Files
 

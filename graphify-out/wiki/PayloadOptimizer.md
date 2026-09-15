@@ -34,8 +34,8 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (3 shared connections)
-- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (2 shared connections)
-- [PersonalMessageSender](PersonalMessageSender.md) (1 shared connections)
+- [PersonalMessageSender](PersonalMessageSender.md) (2 shared connections)
+- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (1 shared connections)
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
 
 ## Source Files

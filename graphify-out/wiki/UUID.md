@@ -1,56 +1,38 @@
 # UUID
 
-> 61 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **UUID** (42 connections)
-- **._track_player_disconnected()** (7 connections) — `server/realtime/connection_manager.py`
-- **.disconnect_websocket()** (5 connections) — `server/realtime/connection_manager.py`
-- **._check_and_process_disconnect()** (4 connections) — `server/realtime/connection_manager.py`
-- **.check_connection_health()** (4 connections) — `server/realtime/connection_manager.py`
-- **._cleanup_dead_websocket()** (4 connections) — `server/realtime/connection_manager.py`
-- **.force_disconnect_player()** (4 connections) — `server/realtime/connection_manager.py`
-- **.handle_authentication_error()** (4 connections) — `server/realtime/connection_manager.py`
-- **.handle_new_login()** (4 connections) — `server/realtime/connection_manager.py`
-- **.handle_websocket_error()** (4 connections) — `server/realtime/connection_manager.py`
-- **._prune_player_from_all_rooms()** (4 connections) — `server/realtime/connection_manager.py`
-- **.recover_from_error()** (4 connections) — `server/realtime/connection_manager.py`
-- **._validate_token()** (4 connections) — `server/realtime/connection_manager.py`
-- **.broadcast_to_room()** (3 connections) — `server/realtime/connection_manager.py`
-- **.check_rate_limit()** (3 connections) — `server/realtime/connection_manager.py`
-- **.disconnect_websocket_connection()** (3 connections) — `server/realtime/connection_manager.py`
-- **.get_connection_count()** (3 connections) — `server/realtime/connection_manager.py`
-- **.get_message_delivery_stats()** (3 connections) — `server/realtime/connection_manager.py`
-- **.get_pending_messages()** (3 connections) — `server/realtime/connection_manager.py`
-- **.get_player_presence_info()** (3 connections) — `server/realtime/connection_manager.py`
-- **.get_player_session()** (3 connections) — `server/realtime/connection_manager.py`
-- **.get_player_websocket_connection_id()** (3 connections) — `server/realtime/connection_manager.py`
-- **.get_rate_limit_info()** (3 connections) — `server/realtime/connection_manager.py`
-- **.has_websocket_connection()** (3 connections) — `server/realtime/connection_manager.py`
-- **.send_personal_message()** (3 connections) — `server/realtime/connection_manager.py`
-- *... and 36 more nodes in this community*
+- **UUID** (8 connections)
+- **Any** (7 connections)
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast party message to party members only, with dampening and mute checks.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Send whisper message to specific player with communication dampening.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast system/admin message; personal when target_player_id is set.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Handle unknown channel type.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast message according to channel strategy. Args: chat_event: WebSocket…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast room-based message with server-side filtering.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast global message to all connected players.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
 
 ## Relationships
 
-- [ConnectionManager](ConnectionManager.md) (30 shared connections)
-- [test_connection_error_methods.py](test_connection_error_methods.py.md) (5 shared connections)
-- [.broadcast_connection_message](broadcast_connection_message.md) (5 shared connections)
-- [connection_manager.py](connection_manager.py.md) (4 shared connections)
-- [test_connection_disconnection.py](test_connection_disconnection.py.md) (2 shared connections)
-- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (2 shared connections)
-- [player_presence_tracker.py](player_presence_tracker.py.md) (1 shared connections)
-- [test_connection_cleanup_methods.py](test_connection_cleanup_methods.py.md) (1 shared connections)
-- [NewGameSessionResult](NewGameSessionResult.md) (1 shared connections)
-- [mark_player_seen_impl](mark_player_seen_impl.md) (1 shared connections)
+- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (7 shared connections)
+- [UnknownChannelStrategy](UnknownChannelStrategy.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_manager.py`
+- `server/realtime/channel_broadcasting_strategies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 114 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

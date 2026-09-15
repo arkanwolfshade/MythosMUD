@@ -4,13 +4,13 @@
 
 ## Key Concepts
 
-- **MythosMUD Logging Standards** (6 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
-- **Import** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
-- **Optional Helpers** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
-- **Reference** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
-- **Structured Logging** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
-- **Summary** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
-- **Logging Standards Skill** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **MythosMUD ADR Authoring** (6 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
+- **Index Update** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
+- **Location** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
+- **Reference** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
+- **Structure** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
+- **Template** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
+- **ADR Authoring Skill** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
 
 ## Relationships
 
@@ -18,7 +18,7 @@
 
 ## Source Files
 
-- `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- `.claude/skills/mythosmud-adr-authoring/SKILL.md`
 
 ## Audit Trail
 

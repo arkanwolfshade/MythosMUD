@@ -1,6 +1,6 @@
 # ChatModeration
 
-> 82 nodes
+> 83 nodes
 
 ## Key Concepts
 
@@ -29,23 +29,24 @@
 - **.unmute_global()** (4 connections) — `server/game/chat_moderation.py`
 - **.unmute_player()** (4 connections) — `server/game/chat_moderation.py`
 - **.get_user_management_stats()** (3 connections) — `server/game/chat_moderation.py`
-- *... and 57 more nodes in this community*
+- *... and 58 more nodes in this community*
 
 ## Relationships
 
 - [test_chat_moderation.py](test_chat_moderation.py.md) (5 shared connections)
 - [chat_service.py](chat_service.py.md) (4 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [ChatPoseManager](ChatPoseManager.md) (1 shared connections)
+- [test_chat_logger.py](test_chat_logger.py.md) (1 shared connections)
 - [ChatService](ChatService.md) (1 shared connections)
 
 ## Source Files
 
 - `server/game/chat_moderation.py`
+- `server/tests/unit/game/test_chat_moderation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 133 (99%)
+- EXTRACTED: 134 (99%)
 - INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 

@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (13 shared connections)
-- [PlayerService](PlayerService.md) (6 shared connections)
+- [get_logger](get_logger.md) (14 shared connections)
+- [PlayerService](PlayerService.md) (5 shared connections)
 
 ## Source Files
 

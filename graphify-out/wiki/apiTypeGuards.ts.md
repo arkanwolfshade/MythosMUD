@@ -1,6 +1,6 @@
 # apiTypeGuards.ts
 
-> 46 nodes
+> 45 nodes
 
 ## Key Concepts
 
@@ -29,27 +29,26 @@
 - **hasServerCharacterIdentifierFields()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
 - **hasValidOptionalRollFields()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
 - **hasValidProfessionMechanicalEffects()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
-- *... and 21 more nodes in this community*
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
 - [deleteCharacterFlow.ts](deleteCharacterFlow.ts.md) (11 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (9 shared connections)
+- [Profession](Profession.md) (8 shared connections)
 - [maps.ts](maps.ts.md) (6 shared connections)
 - [submitAuth.ts](submitAuth.ts.md) (4 shared connections)
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (4 shared connections)
-- [useStatsRollingActions.ts](useStatsRollingActions.ts.md) (3 shared connections)
-- [gameStore.ts](gameStore.ts.md) (2 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (4 shared connections)
+- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (4 shared connections)
+- [RoomMapViewer.tsx](RoomMapViewer.tsx.md) (2 shared connections)
 
 ## Source Files
 
-- `client/src/types/auth.ts`
 - `client/src/utils/__tests__/apiTypeGuards.test.ts`
 - `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 160 (100%)
+- EXTRACTED: 159 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

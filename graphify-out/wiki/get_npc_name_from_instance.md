@@ -24,9 +24,9 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (2 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
 - [connection_manager.py](connection_manager.py.md) (1 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,6 +1,6 @@
 # test_shutdown_sequence.py
 
-> 52 nodes
+> 77 nodes
 
 ## Key Concepts
 
@@ -11,6 +11,7 @@
 - **_ShutdownAppState** (13 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
 - **shutdown_process_termination.py** (12 connections) — `server/commands/shutdown_process_termination.py`
 - **asyncio** (12 connections)
+- **test_shutdown_process_termination.py** (9 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
 - **_persist_all_players()** (8 connections) — `server/commands/shutdown_sequence.py`
 - **Any** (8 connections)
 - **schedule_process_termination()** (7 connections) — `server/commands/shutdown_process_termination.py`
@@ -28,27 +29,26 @@
 - **test_cleanup_connection_manager_missing()** (6 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
 - **test_despawn_all_npcs_no_services()** (6 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
 - **test_disconnect_all_players_string_uuid()** (6 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
-- **test_disconnect_nats_service_os_error()** (6 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
-- *... and 27 more nodes in this community*
+- *... and 52 more nodes in this community*
 
 ## Relationships
 
 - [get_logger](get_logger.md) (9 shared connections)
-- [test_shutdown_process_termination.py](test_shutdown_process_termination.py.md) (8 shared connections)
 - [admin_shutdown_command.py](admin_shutdown_command.py.md) (3 shared connections)
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (2 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
-- [time.py](time.py.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/shutdown_process_termination.py`
 - `server/commands/shutdown_sequence.py`
+- `server/tests/unit/commands/test_shutdown_process_termination.py`
 - `server/tests/unit/commands/test_shutdown_sequence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 143 (98%)
+- EXTRACTED: 168 (98%)
 - INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 

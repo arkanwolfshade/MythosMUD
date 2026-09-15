@@ -23,13 +23,12 @@
 
 ## Relationships
 
-- [admin_teleport_commands.py](admin_teleport_commands.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [test_teleport_helpers.py](test_teleport_helpers.py.md) (2 shared connections)
-- [AdminActionsLogger](AdminActionsLogger.md) (1 shared connections)
+- [admin_teleport_commands.py](admin_teleport_commands.py.md) (6 shared connections)
+- [AdminActionsLogger](AdminActionsLogger.md) (3 shared connections)
 - [test_admin_summon_command.py](test_admin_summon_command.py.md) (1 shared connections)
 - [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (1 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (1 shared connections)
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
 
 ## Source Files

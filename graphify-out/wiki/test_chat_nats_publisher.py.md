@@ -1,6 +1,6 @@
 # test_chat_nats_publisher.py
 
-> 57 nodes
+> 59 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **chat_nats_publisher.py** (32 connections) — `server/game/chat_nats_publisher.py`
 - **publish_chat_message_to_nats()** (30 connections) — `server/game/chat_nats_publisher.py`
 - **_message()** (24 connections) — `server/tests/unit/game/test_chat_nats_publisher.py`
+- **extract_subzone_from_room_id()** (15 connections) — `server/utils/room_utils.py`
 - **build_nats_subject()** (13 connections) — `server/game/chat_nats_publisher.py`
 - **_build_legacy_subject()** (11 connections) — `server/game/chat_nats_publisher.py`
 - **_build_standardized_subject()** (8 connections) — `server/game/chat_nats_publisher.py`
@@ -28,31 +29,32 @@
 - **test_publish_chat_message_to_nats_unexpected_error()** (4 connections) — `server/tests/unit/game/test_chat_nats_publisher.py`
 - **test_publish_chat_message_to_nats_validation_failure()** (4 connections) — `server/tests/unit/game/test_chat_nats_publisher.py`
 - **test_build_legacy_subject_global()** (3 connections) — `server/tests/unit/game/test_chat_nats_publisher.py`
-- **test_build_legacy_subject_local_uses_subzone()** (3 connections) — `server/tests/unit/game/test_chat_nats_publisher.py`
-- *... and 32 more nodes in this community*
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [ChatMessage](ChatMessage.md) (9 shared connections)
-- [chat_service.py](chat_service.py.md) (7 shared connections)
+- [chat_service.py](chat_service.py.md) (16 shared connections)
+- [NATSError](NATSError.md) (6 shared connections)
+- [test_room_utils.py](test_room_utils.py.md) (6 shared connections)
 - [test_chat_validator.py](test_chat_validator.py.md) (5 shared connections)
 - [test_chat_npc_system.py](test_chat_npc_system.py.md) (5 shared connections)
-- [NATSError](NATSError.md) (4 shared connections)
 - [test_chat_pose_helpers.py](test_chat_pose_helpers.py.md) (3 shared connections)
-- [extract_subzone_from_room_id](extract_subzone_from_room_id.md) (2 shared connections)
-- [NATSSubjectManager](NATSSubjectManager.md) (2 shared connections)
+- [ChatChannelLoggerMixin](ChatChannelLoggerMixin.md) (2 shared connections)
+- [SubjectValidator](SubjectValidator.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
 - [ChatService](ChatService.md) (1 shared connections)
+- [NPCMovementIntegration](NPCMovementIntegration.md) (1 shared connections)
+- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (1 shared connections)
 
 ## Source Files
 
 - `server/game/chat_nats_publisher.py`
 - `server/tests/unit/game/test_chat_nats_publisher.py`
+- `server/utils/room_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 171 (99%)
+- EXTRACTED: 184 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

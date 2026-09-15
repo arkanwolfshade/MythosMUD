@@ -34,7 +34,8 @@
 ## Relationships
 
 - [test_connection_state_machine.py](test_connection_state_machine.py.md) (13 shared connections)
-- [NATSService](NATSService.md) (4 shared connections)
+- [NATSService](NATSService.md) (2 shared connections)
+- [NATSError](NATSError.md) (2 shared connections)
 - [connection_state_machine.py](connection_state_machine.py.md) (2 shared connections)
 - [.on_enter_state](on_enter_state.md) (2 shared connections)
 - [test_can_attempt_connection_circuit_open](test_can_attempt_connection_circuit_open.md) (1 shared connections)
@@ -44,7 +45,6 @@
 - [test_connect_transition](test_connect_transition.md) (1 shared connections)
 - [test_connected_successfully_from_connecting](test_connected_successfully_from_connecting.md) (1 shared connections)
 - [test_connection_failed_from_connecting](test_connection_failed_from_connecting.md) (1 shared connections)
-- [test_degrade](test_degrade.md) (1 shared connections)
 
 ## Source Files
 

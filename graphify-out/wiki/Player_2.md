@@ -36,8 +36,8 @@
 - server/models/__init__.py `EXTRACTED`
 - models/user.py `EXTRACTED`
 - [look_command.py](look_command.py.md) `EXTRACTED`
-- test_player_respawn_service.py `EXTRACTED`
 - lucidity_service.py `EXTRACTED`
+- [test_player_respawn_service.py](test_player_respawn_service.py.md) `EXTRACTED`
 - [test_player_death_service.py](test_player_death_service.py.md) `EXTRACTED`
 - [real_time.py](real_time.py.md) `EXTRACTED`
 - [inventory_command_helpers.py](inventory_command_helpers.py.md) `EXTRACTED`
@@ -49,9 +49,9 @@
 - websocket_initial_state.py `EXTRACTED`
 - [websocket_helpers.py](websocket_helpers.py.md) `EXTRACTED`
 - player_respawn_service.py `EXTRACTED`
-- test_async_persistence_core.py `EXTRACTED`
+- [test_async_persistence_core.py](test_async_persistence_core.py.md) `EXTRACTED`
+- game_tick_death.py `EXTRACTED`
 - movement_service.py `EXTRACTED`
-- [passive_lucidity_flux/service.py](passive_lucidity_flux-service.py.md) `EXTRACTED`
 
 ### inherits
 - Base `EXTRACTED`
@@ -89,8 +89,8 @@
 - PlayerLucidity `INFERRED`
 - Base `INFERRED`
 - PlayerRepository `INFERRED`
-- [HealthRepository](HealthRepository.md) `INFERRED`
-- [SpellTargetingService](SpellTargetingService.md) `INFERRED`
+- HealthRepository `INFERRED`
+- SpellTargetingService `INFERRED`
 - [ExperienceRepository](ExperienceRepository.md) `INFERRED`
 - [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) `INFERRED`
 - [PlayerDeathService](PlayerDeathService.md) `INFERRED`

@@ -9,10 +9,10 @@
 - **lifespan()** (17 connections) — `server/app/lifespan.py`
 - **_startup_application()** (16 connections) — `server/app/lifespan.py`
 - **_shutdown_with_error_handling()** (12 connections) — `server/app/lifespan.py`
+- **setup_connection_manager()** (11 connections) — `server/app/lifespan_startup.py`
 - **_initialize_enhanced_systems()** (10 connections) — `server/app/lifespan.py`
 - **asyncio** (10 connections)
 - **_cleanup_container_on_error()** (8 connections) — `server/app/lifespan.py`
-- **get_log_aggregator()** (8 connections) — `server/structured_logging/log_aggregator.py`
 - **_calculate_metrics_delta()** (7 connections) — `server/app/lifespan.py`
 - **_cleanup_dead_letter_queue_periodically()** (7 connections) — `server/app/lifespan.py`
 - **_persist_mythos_state_on_error()** (7 connections) — `server/app/lifespan.py`
@@ -33,28 +33,28 @@
 
 ## Relationships
 
-- [lifespan_startup.py](lifespan_startup.py.md) (7 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
-- [MonitoringDashboard](MonitoringDashboard.md) (4 shared connections)
-- [MythosTickScheduler](MythosTickScheduler.md) (4 shared connections)
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (4 shared connections)
-- [lifespan_protocols.py](lifespan_protocols.py.md) (4 shared connections)
-- [LogAggregator](LogAggregator.md) (4 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (3 shared connections)
-- [PerformanceMonitor](PerformanceMonitor.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (11 shared connections)
+- [system_monitoring.py](system_monitoring.py.md) (7 shared connections)
+- [test_lifespan_startup.py](test_lifespan_startup.py.md) (5 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [PerformanceMonitor](PerformanceMonitor.md) (4 shared connections)
+- [DeadLetterQueue](DeadLetterQueue.md) (3 shared connections)
 - [ExceptionTracker](ExceptionTracker.md) (3 shared connections)
-- [TestMonitoringEndpoints](TestMonitoringEndpoints.md) (3 shared connections)
+- [LogAggregator](LogAggregator.md) (3 shared connections)
+- [factory.py](factory.py.md) (3 shared connections)
+- [lifespan_protocols.py](lifespan_protocols.py.md) (3 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (3 shared connections)
+- [game_tick_processing.py](game_tick_processing.py.md) (3 shared connections)
 
 ## Source Files
 
 - `server/app/lifespan.py`
-- `server/structured_logging/log_aggregator.py`
+- `server/app/lifespan_startup.py`
 - `server/tests/unit/app/test_lifespan_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 157 (98%)
+- EXTRACTED: 160 (98%)
 - INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 

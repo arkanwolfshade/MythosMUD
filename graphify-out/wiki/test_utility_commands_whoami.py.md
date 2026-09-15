@@ -17,7 +17,7 @@
 ## Relationships
 
 - [test_status_commands.py](test_status_commands.py.md) (3 shared connections)
-- [test_who_commands.py](test_who_commands.py.md) (1 shared connections)
+- [handle_logout_command](handle_logout_command.md) (1 shared connections)
 
 ## Source Files
 

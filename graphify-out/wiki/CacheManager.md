@@ -24,9 +24,8 @@
 
 ## Relationships
 
+- [get_cache_manager](get_cache_manager.md) (3 shared connections)
 - [LRUCache](LRUCache.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
 
 ## Source Files
 

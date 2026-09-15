@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **AliasStorage** (269 connections) — `server/alias_storage.py`
+- **AliasStorage** (271 connections) — `server/alias_storage.py`
 - **test_alias_storage.py** (67 connections) — `server/tests/unit/test_alias_storage.py`
 - **Path** (11 connections)
 - **.get_player_aliases()** (10 connections) — `server/alias_storage.py`
@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [Alias](Alias.md) (28 shared connections)
-- [test_npc_admin_commands.py](test_npc_admin_commands.py.md) (21 shared connections)
-- [get_logger](get_logger.md) (16 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (12 shared connections)
+- [Alias](Alias.md) (29 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (22 shared connections)
+- [command_service.py](command_service.py.md) (13 shared connections)
+- [get_logger](get_logger.md) (12 shared connections)
 - [test_magic_commands.py](test_magic_commands.py.md) (12 shared connections)
-- [TestHelperFunctions](TestHelperFunctions.md) (9 shared connections)
-- [command_service.py](command_service.py.md) (8 shared connections)
-- [admin_commands.py](admin_commands.py.md) (7 shared connections)
+- [test_admin_commands.py](test_admin_commands.py.md) (11 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (7 shared connections)
+- [combat_loader.py](combat_loader.py.md) (7 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (7 shared connections)
 - [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (7 shared connections)
 - [test_alias_commands.py](test_alias_commands.py.md) (6 shared connections)
-- [command_result_text](command_result_text.md) (5 shared connections)
-- [communication_commands.py](communication_commands.py.md) (4 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (5 shared connections)
 
 ## Source Files
 
@@ -54,8 +54,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 413 (81%)
-- INFERRED: 94 (19%)
+- EXTRACTED: 415 (82%)
+- INFERRED: 94 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

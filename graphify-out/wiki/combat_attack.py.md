@@ -33,16 +33,17 @@
 
 ## Relationships
 
-- [combat_service.py](combat_service.py.md) (5 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (4 shared connections)
+- [CombatService](CombatService.md) (6 shared connections)
 - [game_tick_processing.py](game_tick_processing.py.md) (3 shared connections)
-- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (3 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (3 shared connections)
-- [NPCCombatDataProvider](NPCCombatDataProvider.md) (2 shared connections)
-- [CombatParticipantData](CombatParticipantData.md) (2 shared connections)
+- [PrototypeRegistry](PrototypeRegistry.md) (3 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
+- [TargetType](TargetType.md) (3 shared connections)
+- [npc_combat_integration_service.py](npc_combat_integration_service.py.md) (2 shared connections)
+- [get_config](get_config.md) (2 shared connections)
 - [NPCCombatIntegration](NPCCombatIntegration.md) (2 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
+- [test_combat_service_modules.py](test_combat_service_modules.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
 

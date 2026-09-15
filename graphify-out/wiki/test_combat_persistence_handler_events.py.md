@@ -33,14 +33,12 @@
 
 ## Relationships
 
-- [CombatPersistenceHandler](CombatPersistenceHandler.md) (4 shared connections)
-- [NATSError](NATSError.md) (3 shared connections)
+- [CombatPersistenceHandler](CombatPersistenceHandler.md) (5 shared connections)
+- [NATSError](NATSError.md) (5 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
 - [PlayerDPUpdated](PlayerDPUpdated.md) (1 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [combat_service.py](combat_service.py.md) (1 shared connections)
-- [test_combat_persistence_handler.py](test_combat_persistence_handler.py.md) (1 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
 - [test_combat_persistence_handler_persistence.py](test_combat_persistence_handler_persistence.py.md) (1 shared connections)
 
 ## Source Files

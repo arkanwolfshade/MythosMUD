@@ -4,13 +4,13 @@
 
 ## Key Concepts
 
-- **MythosMUD ADR Authoring** (6 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
-- **Index Update** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
-- **Location** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
-- **Reference** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
-- **Structure** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
-- **Template** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
-- **ADR Authoring Skill** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
+- **Git Workflow** (6 connections) — `.claude/skills/git-workflow/SKILL.md`
+- **git-workflow/SKILL.md** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
+- **Branching** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
+- **Commit messages** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
+- **History hygiene** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
+- **Never** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
+- **Repository hygiene** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
 
 ## Relationships
 
@@ -18,7 +18,7 @@
 
 ## Source Files
 
-- `.claude/skills/mythosmud-adr-authoring/SKILL.md`
+- `.claude/skills/git-workflow/SKILL.md`
 
 ## Audit Trail
 

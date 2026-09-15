@@ -34,10 +34,11 @@
 ## Relationships
 
 - [Game Subsystem Design Documents Overview](Game_Subsystem_Design_Documents_Overview.md) (10 shared connections)
-- [Auth Package Design](Auth_Package_Design.md) (2 shared connections)
 - [DOCUMENTATION_AUDIT.md](DOCUMENTATION_AUDIT.md.md) (2 shared connections)
 - [App Package Design](App_Package_Design.md) (1 shared connections)
+- [Auth Package Design](Auth_Package_Design.md) (1 shared connections)
 - [Middleware Package Design](Middleware_Package_Design.md) (1 shared connections)
+- [Models Package Design](Models_Package_Design.md) (1 shared connections)
 - [Schemas Package Design](Schemas_Package_Design.md) (1 shared connections)
 - [Server & Client Package Documentation Coverage](Server_&_Client_Package_Documentation_Coverage.md) (1 shared connections)
 

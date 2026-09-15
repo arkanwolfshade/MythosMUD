@@ -34,11 +34,8 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (27 shared connections)
-- [command.py](command.py.md) (5 shared connections)
-- [test_command_player_state.py](test_command_player_state.py.md) (4 shared connections)
-- [rooms.py](rooms.py.md) (3 shared connections)
-- [CombatCommandFactory](CombatCommandFactory.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [BaseCommand](BaseCommand.md) (13 shared connections)
+- [test_command_combat.py](test_command_combat.py.md) (1 shared connections)
 
 ## Source Files
 

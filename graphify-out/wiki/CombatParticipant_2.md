@@ -1,6 +1,6 @@
 # CombatParticipant
 
-> God node · 217 connections · `server/models/combat.py`
+> God node · 219 connections · `server/models/combat.py`
 
 **Community:** [CombatParticipant](CombatParticipant.md)
 
@@ -32,14 +32,14 @@
 - models/combat.py `EXTRACTED`
 
 ### imports
-- [combat_service.py](combat_service.py.md) `EXTRACTED`
-- test_combat_service_modules.py `EXTRACTED`
+- combat_service.py `EXTRACTED`
+- [test_combat_service_modules.py](test_combat_service_modules.py.md) `EXTRACTED`
 - test_combat.py `EXTRACTED`
 - test_combat_turn_processor.py `EXTRACTED`
-- combat_turn_participant_actions.py `EXTRACTED`
+- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) `EXTRACTED`
 - test_combat_attack_handler.py `EXTRACTED`
 - [test_combat_service.py](test_combat_service.py.md) `EXTRACTED`
-- [combat_taunt.py](combat_taunt.py.md) `EXTRACTED`
+- combat_taunt.py `EXTRACTED`
 - [test_aggro_threat.py](test_aggro_threat.py.md) `EXTRACTED`
 - test_combat_flee_handler.py `EXTRACTED`
 - combat_service_npc.py `EXTRACTED`

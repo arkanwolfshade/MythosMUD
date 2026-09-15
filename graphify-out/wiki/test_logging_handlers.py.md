@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [logging_file_setup.py](logging_file_setup.py.md) (6 shared connections)
+- [logging_file_setup.py](logging_file_setup.py.md) (9 shared connections)
 - [test_logging_utilities.py](test_logging_utilities.py.md) (6 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
-- [logging_file_categories.py](logging_file_categories.py.md) (3 shared connections)
 - [test_windows_safe_rotation.py](test_windows_safe_rotation.py.md) (3 shared connections)
-- [LoggingConfig](LoggingConfig.md) (1 shared connections)
+- [test_enhanced_logging_config.py](test_enhanced_logging_config.py.md) (1 shared connections)
 - [PlayerGuidFormatter](PlayerGuidFormatter.md) (1 shared connections)
 
 ## Source Files

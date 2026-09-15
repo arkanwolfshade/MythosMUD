@@ -1,6 +1,6 @@
 # LoggedHTTPException
 
-> God node · 370 connections · `server/exceptions.py`
+> God node · 374 connections · `server/exceptions.py`
 
 **Community:** [LoggedHTTPException](LoggedHTTPException.md)
 
@@ -8,6 +8,7 @@
 
 ### calls
 - create_character_with_stats() `EXTRACTED`
+- get_item_catalog() `EXTRACTED`
 - create_room_exit() `EXTRACTED`
 - get_player_id_from_user() `EXTRACTED`
 - handle_container_service_error() `EXTRACTED`
@@ -26,17 +27,16 @@
 - validate_character_stats() `EXTRACTED`
 - delete_player() `EXTRACTED`
 - get_player() `EXTRACTED`
-- select_character() `EXTRACTED`
 
 ### contains
 - server/exceptions.py `EXTRACTED`
 
 ### imports
-- players.py `EXTRACTED`
+- [players.py](players.py.md) `EXTRACTED`
 - [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
-- maps.py `EXTRACTED`
+- [maps.py](maps.py.md) `EXTRACTED`
 - endpoints.py `EXTRACTED`
-- api/monitoring.py `EXTRACTED`
+- [api/monitoring.py](api-monitoring.py.md) `EXTRACTED`
 - [rooms.py](rooms.py.md) `EXTRACTED`
 - test_players_api_coverage.py `EXTRACTED`
 - test_monitoring_endpoints.py `EXTRACTED`
@@ -46,12 +46,12 @@
 - api/container_helpers.py `EXTRACTED`
 - test_container_helpers.py `EXTRACTED`
 - test_rooms_write_api.py `EXTRACTED`
-- test_real_time_helpers.py `EXTRACTED`
+- [test_real_time_helpers.py](test_real_time_helpers.py.md) `EXTRACTED`
+- [test_item_catalog.py](test_item_catalog.py.md) `EXTRACTED`
 - [test_metrics_endpoints.py](test_metrics_endpoints.py.md) `EXTRACTED`
 - api/player_effects.py `EXTRACTED`
-- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) `EXTRACTED`
+- test_npc_definitions_api.py `EXTRACTED`
 - test_exceptions_comprehensive.py `EXTRACTED`
-- standardized_responses.py `EXTRACTED`
 
 ### inherits
 - LoggedException `EXTRACTED`
@@ -69,7 +69,7 @@
 
 ### uses
 - TestLootAllItems `INFERRED`
-- [TestMonitoringEndpoints](TestMonitoringEndpoints.md) `INFERRED`
+- TestMonitoringEndpoints `INFERRED`
 - TestRegisterLootEndpoints `INFERRED`
 - TestRollCharacterStats `INFERRED`
 - TestHandleTransferItemsExceptions `INFERRED`

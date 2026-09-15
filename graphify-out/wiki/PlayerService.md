@@ -1,78 +1,75 @@
 # PlayerService
 
-> 772 nodes
+> 177 nodes
 
 ## Key Concepts
 
 - **PlayerService** (109 connections) — `server/game/player_service.py`
-- **SecureBaseModel** (92 connections) — `server/schemas/shared/base.py`
-- **players.py** (76 connections) — `server/api/players.py`
-- **server/schemas/__init__.py** (70 connections) — `server/schemas/__init__.py`
-- **test_players_api_coverage.py** (59 connections) — `server/tests/unit/api/test_players_api_coverage.py`
-- **get_admin_auth_service()** (54 connections) — `server/services/admin_auth_service.py`
-- **player_service.py** (50 connections) — `server/game/player_service.py`
-- **players/__init__.py** (48 connections) — `server/schemas/players/__init__.py`
-- **PlayerRead** (47 connections) — `server/schemas/players/player.py`
-- **validate_admin_permission()** (37 connections) — `server/api/admin/npc_router_core.py`
-- **AdminAction** (36 connections) — `server/services/admin_auth_service.py`
-- **test_player_requests.py** (36 connections) — `server/tests/unit/schemas/test_player_requests.py`
-- **api/player_effects.py** (35 connections) — `server/api/player_effects.py`
-- **_user()** (32 connections) — `server/tests/unit/api/test_players_api_coverage.py`
-- **test_player_effects_endpoints.py** (31 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
-- **asyncio** (30 connections)
-- **npc_instances_api.py** (28 connections) — `server/api/admin/npc_instances_api.py`
-- **api/player_respawn.py** (28 connections) — `server/api/player_respawn.py`
-- **dialogue_definitions_api.py** (27 connections) — `server/api/admin/dialogue_definitions_api.py`
-- **shared/base.py** (26 connections) — `server/schemas/shared/base.py`
-- **admin_auth_service.py** (26 connections) — `server/services/admin_auth_service.py`
-- **test_dialogue_definitions_api.py** (26 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
-- **npc_population_api.py** (24 connections) — `server/api/admin/npc_population_api.py`
-- **npc_spawn_rules_api.py** (24 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **test_npc_instances_api.py** (24 connections) — `server/tests/unit/api/test_npc_instances_api.py`
-- *... and 747 more nodes in this community*
+- **TargetResolutionService** (51 connections) — `server/services/target_resolution_service.py`
+- **magic_service.py** (48 connections) — `server/game/magic/magic_service.py`
+- **lifespan_magic.py** (36 connections) — `server/app/lifespan_magic.py`
+- **PlayerSpellRepository** (35 connections) — `server/persistence/repositories/player_spell_repository.py`
+- **SpellRegistry** (32 connections) — `server/game/magic/spell_registry.py`
+- **target_resolution_service.py** (28 connections) — `server/services/target_resolution_service.py`
+- **SpellTargetingService** (27 connections) — `server/game/magic/spell_targeting.py`
+- **spell_learning_service.py** (25 connections) — `server/game/magic/spell_learning_service.py`
+- **spell_targeting.py** (25 connections) — `server/game/magic/spell_targeting.py`
+- **magic.py** (21 connections) — `server/container/bundles/magic.py`
+- **SpellCostsService** (16 connections) — `server/game/magic/spell_costs.py`
+- **_create_registry_and_targeting()** (16 connections) — `server/container/bundles/magic.py`
+- **spell_costs.py** (16 connections) — `server/game/magic/spell_costs.py`
+- **spell_registry.py** (16 connections) — `server/game/magic/spell_registry.py`
+- **SpellRepository** (15 connections) — `server/persistence/repositories/spell_repository.py`
+- **initialize_magic_services()** (15 connections) — `server/app/lifespan_magic.py`
+- **UUID** (14 connections)
+- **MagicBundle** (13 connections) — `server/container/bundles/magic.py`
+- **_initialize_magic_service()** (11 connections) — `server/app/lifespan_magic.py`
+- **_create_learning_mp_regen_and_magic()** (11 connections) — `server/container/bundles/magic.py`
+- **.__init__()** (11 connections) — `server/game/magic/magic_service.py`
+- **spell_materials.py** (11 connections) — `server/game/magic/spell_materials.py`
+- **Any** (11 connections)
+- **MagicServiceOptionalDeps** (10 connections) — `server/game/magic/magic_service.py`
+- *... and 152 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (100 shared connections)
-- [get_logger](get_logger.md) (98 shared connections)
-- [User](User.md) (83 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (49 shared connections)
-- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) (47 shared connections)
-- [test_admin_auth_service.py](test_admin_auth_service.py.md) (29 shared connections)
-- [rooms.py](rooms.py.md) (23 shared connections)
-- [Player](Player.md) (19 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (16 shared connections)
-- [Stats](Stats.md) (15 shared connections)
-- [RoomService](RoomService.md) (15 shared connections)
-- [test_message_handlers.py](test_message_handlers.py.md) (15 shared connections)
+- [TargetMatch](TargetMatch.md) (53 shared connections)
+- [get_logger](get_logger.md) (41 shared connections)
+- [SpellEffectType](SpellEffectType.md) (26 shared connections)
+- [.resolve_target](resolve_target.md) (23 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (16 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (16 shared connections)
+- [players.py](players.py.md) (16 shared connections)
+- [test_target_resolution_service.py](test_target_resolution_service.py.md) (15 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (14 shared connections)
+- [SpellLearningService](SpellLearningService.md) (14 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (14 shared connections)
+- [test_magic_service.py](test_magic_service.py.md) (13 shared connections)
 
 ## Source Files
 
-- `server/api/__init__.py`
-- `server/api/admin/__init__.py`
-- `server/api/admin/dialogue_definitions_api.py`
-- `server/api/admin/dialogue_schemas.py`
-- `server/api/admin/npc.py`
-- `server/api/admin/npc_admin_mgmt_api.py`
-- `server/api/admin/npc_instances_api.py`
-- `server/api/admin/npc_population_api.py`
-- `server/api/admin/npc_router_core.py`
-- `server/api/admin/npc_schemas.py`
-- `server/api/admin/npc_spawn_rules_api.py`
-- `server/api/player_effects.py`
-- `server/api/player_respawn.py`
-- `server/api/player_router.py`
-- `server/api/players.py`
-- `server/commands/combat_handler.py`
-- `server/game/magic/mp_regeneration_service.py`
+- `server/app/lifespan_magic.py`
+- `server/commands/magic_commands.py`
+- `server/container/bundles/magic.py`
+- `server/game/magic/magic_service.py`
+- `server/game/magic/spell_costs.py`
+- `server/game/magic/spell_effects.py`
+- `server/game/magic/spell_learning_service.py`
 - `server/game/magic/spell_materials.py`
-- `server/game/player_creation_service.py`
-- `server/game/player_schema_converter.py`
+- `server/game/magic/spell_registry.py`
+- `server/game/magic/spell_targeting.py`
+- `server/game/player_service.py`
+- `server/persistence/repositories/player_spell_repository.py`
+- `server/persistence/repositories/spell_repository.py`
+- `server/services/target_resolution_service.py`
+- `server/tests/unit/container/test_container_bundles.py`
+- `server/tests/unit/game/magic/test_spell_targeting.py`
+- `server/tests/unit/persistence/repositories/test_spell_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2254 (95%)
-- INFERRED: 112 (5%)
+- EXTRACTED: 630 (88%)
+- INFERRED: 88 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

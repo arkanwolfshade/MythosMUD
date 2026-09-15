@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [PathValidator](PathValidator.md) (8 shared connections)
-- [temp_dir](temp_dir.md) (4 shared connections)
+- [PathValidator](PathValidator.md) (9 shared connections)
+- [TestValidatorComponents](TestValidatorComponents.md) (3 shared connections)
 
 ## Source Files
 

@@ -33,11 +33,11 @@
 
 ### imports
 - [connection_manager.py](connection_manager.py.md) `EXTRACTED`
-- [combat_service.py](combat_service.py.md) `EXTRACTED`
+- combat_service.py `EXTRACTED`
 - async_persistence.py `EXTRACTED`
 - [test_population_control.py](test_population_control.py.md) `EXTRACTED`
 - test_event_bus.py `EXTRACTED`
-- npc_combat_integration_service.py `EXTRACTED`
+- [npc_combat_integration_service.py](npc_combat_integration_service.py.md) `EXTRACTED`
 - test_npc_instance_service.py `EXTRACTED`
 - lifecycle_manager.py `EXTRACTED`
 - combat_handler.py `EXTRACTED`
@@ -45,7 +45,7 @@
 - test_npc_combat_integration_class.py `EXTRACTED`
 - npc_base.py `EXTRACTED`
 - population_control.py `EXTRACTED`
-- event_handler.py `EXTRACTED`
+- [event_handler.py](event_handler.py.md) `EXTRACTED`
 - spawning_service.py `EXTRACTED`
 - models/room.py `EXTRACTED`
 - movement_service.py `EXTRACTED`
@@ -54,7 +54,7 @@
 - event_reaction_system.py `EXTRACTED`
 
 ### inherits
-- DistributedEventBus `EXTRACTED`
+- [DistributedEventBus](DistributedEventBus.md) `EXTRACTED`
 - [EventBusLifecycleMixin](EventBusLifecycleMixin.md) `EXTRACTED`
 - EventBusProcessingMixin `EXTRACTED`
 
@@ -102,9 +102,9 @@
 - [CombatService](CombatService.md) `INFERRED`
 - BaseEvent `INFERRED`
 - [FollowService](FollowService.md) `INFERRED`
-- NPCLifecycleManager `INFERRED`
+- [NPCLifecycleManager](NPCLifecycleManager.md) `INFERRED`
 - NPCSpawningService `INFERRED`
-- NPCPopulationController `INFERRED`
+- [NPCPopulationController](NPCPopulationController.md) `INFERRED`
 - CombatCommandHandler `INFERRED`
 - [PartyService](PartyService.md) `INFERRED`
 - [MythosTickScheduler](MythosTickScheduler.md) `INFERRED`

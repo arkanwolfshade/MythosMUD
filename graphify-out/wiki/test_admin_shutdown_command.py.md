@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [_asyncio_mark](_asyncio_mark.md) (15 shared connections)
-- [admin_shutdown_command.py](admin_shutdown_command.py.md) (13 shared connections)
+- [_asyncio_mark](_asyncio_mark.md) (13 shared connections)
+- [admin_shutdown_command.py](admin_shutdown_command.py.md) (12 shared connections)
 - [api/character_creation.py](api-character_creation.py.md) (7 shared connections)
 - [parse_shutdown_parameters](parse_shutdown_parameters.md) (7 shared connections)
 - [calculate_notification_times](calculate_notification_times.md) (4 shared connections)
 - [validate_shutdown_admin_permission](validate_shutdown_admin_permission.md) (4 shared connections)
 - [test_initiate_shutdown_countdown_success](test_initiate_shutdown_countdown_success.md) (4 shared connections)
-- [User](User.md) (2 shared connections)
-- [test_websocket_helpers.py](test_websocket_helpers.py.md) (1 shared connections)
-- [websocket_helpers.py](websocket_helpers.py.md) (1 shared connections)
+- [broadcast_shutdown_notification](broadcast_shutdown_notification.md) (3 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
+- [websocket_helpers.py](websocket_helpers.py.md) (2 shared connections)
 - [AliasStorage](AliasStorage.md) (1 shared connections)
-- [time.py](time.py.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 
 ## Source Files
 

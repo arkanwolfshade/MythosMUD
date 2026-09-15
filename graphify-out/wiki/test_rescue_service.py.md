@@ -33,10 +33,11 @@
 
 ## Relationships
 
-- [Player](Player.md) (12 shared connections)
-- [LucidityService](LucidityService.md) (3 shared connections)
+- [LucidityService](LucidityService.md) (11 shared connections)
+- [rescue_commands.py](rescue_commands.py.md) (3 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
 - [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (2 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
 
 ## Source Files
 

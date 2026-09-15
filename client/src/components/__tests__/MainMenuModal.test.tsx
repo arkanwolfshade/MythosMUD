@@ -214,6 +214,18 @@ describe('MainMenuModal', () => {
     windowOpenSpy.mockRestore();
   });
 
+  it('should open catalog in new tab', () => {
+    const windowOpenSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+    render(<MainMenuModal {...defaultProps} />);
+
+    const catalogButton = screen.getByText('Catalog (New Tab)');
+    fireEvent.click(catalogButton);
+
+    expect(windowOpenSpy).toHaveBeenCalledWith('/catalog', '_blank');
+    expect(defaultProps.onClose).toHaveBeenCalled();
+    windowOpenSpy.mockRestore();
+  });
+
   it('should always open map in new tab regardless of deprecated props', () => {
     // Arrange
     // Note: onMapClick and openMapInNewTab are deprecated - map always opens in new tab

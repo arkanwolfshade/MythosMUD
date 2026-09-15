@@ -1,6 +1,6 @@
 # ChatService
 
-> 145 nodes
+> 157 nodes
 
 ## Key Concepts
 
@@ -29,21 +29,21 @@
 - **test_send_party_message_player_not_found()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
 - **test_send_party_message_rate_limited()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
 - **test_send_party_message_success()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- *... and 120 more nodes in this community*
+- *... and 132 more nodes in this community*
 
 ## Relationships
 
-- [ChatMessage](ChatMessage.md) (18 shared connections)
-- [chat_service.py](chat_service.py.md) (15 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
-- [ChatPoseManager](ChatPoseManager.md) (3 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (2 shared connections)
+- [chat_service.py](chat_service.py.md) (33 shared connections)
+- [test_chat_npc_system.py](test_chat_npc_system.py.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
 - [test_magic_commands.py](test_magic_commands.py.md) (2 shared connections)
-- [NPCCommunicationIntegration](NPCCommunicationIntegration.md) (2 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (2 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [PlayerService](PlayerService.md) (2 shared connections)
+- [test_chat_logger.py](test_chat_logger.py.md) (2 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (1 shared connections)
-- [PlayerService](PlayerService.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
+- [NPCCommunicationIntegration](NPCCommunicationIntegration.md) (1 shared connections)
+- [ChatPoseManager](ChatPoseManager.md) (1 shared connections)
 - [ChatModeration](ChatModeration.md) (1 shared connections)
 
 ## Source Files
@@ -53,7 +53,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 244 (87%)
+- EXTRACTED: 256 (87%)
 - INFERRED: 38 (13%)
 - AMBIGUOUS: 0 (0%)
 

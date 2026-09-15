@@ -26,7 +26,7 @@
 
 ## Relationships
 
-- [temp_dir](temp_dir.md) (1 shared connections)
+- [RoomLoader](RoomLoader.md) (1 shared connections)
 
 ## Source Files
 

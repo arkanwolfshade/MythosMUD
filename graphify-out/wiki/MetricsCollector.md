@@ -6,13 +6,13 @@
 
 - **MetricsCollector** (18 connections) — `server/middleware/metrics_collector.py`
 - **Lock** (8 connections)
+- **.__init__()** (7 connections) — `server/time/tick_scheduler.py`
 - **test_metrics_collector.py** (7 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
 - **.__init__()** (4 connections) — `server/npc/threading.py`
 - **.get_metrics()** (3 connections) — `server/middleware/metrics_collector.py`
 - **.get_summary()** (3 connections) — `server/middleware/metrics_collector.py`
 - **.__init__()** (3 connections) — `server/middleware/metrics_collector.py`
 - **.__init__()** (3 connections) — `server/npc/threading.py`
-- **.get_lock()** (3 connections) — `server/services/inventory_mutation_guard.py`
 - **.record_circuit_state_change()** (2 connections) — `server/middleware/metrics_collector.py`
 - **.record_message_dlq()** (2 connections) — `server/middleware/metrics_collector.py`
 - **.record_message_failed()** (2 connections) — `server/middleware/metrics_collector.py`
@@ -25,34 +25,36 @@
 - **test_record_and_get_metrics()** (2 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
 - **test_reset_metrics()** (2 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
 - **Any** (2 connections)
+- **HolidayResolver** (1 connections)
 - **Record a circuit breaker state change. Args: old_state: Previous circuit state…** (1 connections) — `server/middleware/metrics_collector.py`
 - **Record message processing time. Args: duration_ms: Processing duration in…** (1 connections) — `server/middleware/metrics_collector.py`
 - **Get current metrics snapshot. Returns: Dictionary containing all metrics AI:…** (1 connections) — `server/middleware/metrics_collector.py`
-- **Reset all metrics counters. Useful for clearing metrics after a deployment or…** (1 connections) — `server/middleware/metrics_collector.py`
 - *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [test_npc_threading_messages.py](test_npc_threading_messages.py.md) (2 shared connections)
+- [MythosTickScheduler](MythosTickScheduler.md) (2 shared connections)
 - [InventoryMutationGuard](InventoryMutationGuard.md) (2 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
+- [DeadLetterQueue](DeadLetterQueue.md) (1 shared connections)
 - [NPCThreadManager](NPCThreadManager.md) (1 shared connections)
+- [TaskRegistry](TaskRegistry.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [connection_initialization.py](connection_initialization.py.md) (1 shared connections)
-- [MythosTickScheduler](MythosTickScheduler.md) (1 shared connections)
+- [RoomEventHandler](RoomEventHandler.md) (1 shared connections)
 
 ## Source Files
 
 - `server/middleware/metrics_collector.py`
 - `server/npc/threading.py`
-- `server/services/inventory_mutation_guard.py`
 - `server/tests/unit/middleware/test_metrics_collector.py`
+- `server/time/tick_scheduler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (88%)
-- INFERRED: 6 (12%)
+- EXTRACTED: 49 (89%)
+- INFERRED: 6 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

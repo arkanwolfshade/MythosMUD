@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (3 shared connections)
+- [event_handler.py](event_handler.py.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (1 shared connections)
 
 ## Source Files
 

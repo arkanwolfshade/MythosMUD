@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (3 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
+- [event_handler.py](event_handler.py.md) (3 shared connections)
+- [npc_combat_integration_service.py](npc_combat_integration_service.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [NPCCombatLucidity](NPCCombatLucidity.md) (1 shared connections)
+- [_NPCCombatIntegrationValidationDeps](_NPCCombatIntegrationValidationDeps.md) (1 shared connections)
 
 ## Source Files
 

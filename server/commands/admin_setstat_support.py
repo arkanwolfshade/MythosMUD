@@ -152,6 +152,7 @@ class AdminSetStatNotifyContext:
     range_warning: str
     stat_key: str
     previous_position: str | None = None
+    include_player_update: bool = True
 
 
 STAT_NAME_MAPPING: dict[str, str] = {

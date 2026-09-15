@@ -1,20 +1,26 @@
 # RoomLoader
 
-> 83 nodes
+> 98 nodes
 
 ## Key Concepts
 
 - **RoomLoader** (58 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
 - **TestRoomLoader** (19 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
+- **temp_dir()** (12 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
 - **.load_room_data()** (11 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **TestValidatorEdgeCases** (8 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
 - **Path** (8 connections)
 - **._load_referenced_intersections()** (7 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
 - **.build_room_database()** (6 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
 - **.discover_room_files()** (5 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
 - **._validate_or_update_room_id()** (5 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **.test_room_with_nonexistent_exit_targets()** (5 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
 - **.discover_config_files()** (4 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
 - **.test_build_room_database_empty_directory()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
 - **.test_build_room_database_with_errors()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
+- **.test_empty_room_directory()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **.test_room_with_malformed_json()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **.test_room_with_missing_required_fields()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
 - **test_room_loader.py** (4 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
 - **._add_intersection_to_database()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
 - **._add_location_fields()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
@@ -23,28 +29,26 @@
 - **._extract_location_from_path()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
 - **.generate_room_id()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
 - **.__init__()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.load_config_file()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.parse_room_filename()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.validate_file_structure()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **._validate_required_fields()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **._validate_room_structure()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.test_build_room_database_success()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
-- *... and 58 more nodes in this community*
+- *... and 73 more nodes in this community*
 
 ## Relationships
 
-- [temp_dir](temp_dir.md) (12 shared connections)
-- [PathValidator](PathValidator.md) (9 shared connections)
+- [PathValidator](PathValidator.md) (13 shared connections)
+- [TestValidatorComponents](TestValidatorComponents.md) (3 shared connections)
+- [test_logging_utilities.py](test_logging_utilities.py.md) (2 shared connections)
+- [room_validator/tests/conftest.py](room_validator-tests-conftest.py.md) (1 shared connections)
 
 ## Source Files
 
+- `server/tests/unit/structured_logging/test_logging_utilities.py`
 - `tools/room_toolkit/room_validator/core/room_loader.py`
 - `tools/room_toolkit/room_validator/tests/test_room_loader.py`
+- `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 132 (94%)
-- INFERRED: 9 (6%)
+- EXTRACTED: 148 (90%)
+- INFERRED: 16 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

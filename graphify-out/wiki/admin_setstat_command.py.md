@@ -1,45 +1,50 @@
 # admin_setstat_command.py
 
-> 81 nodes
+> 91 nodes
 
 ## Key Concepts
 
-- **admin_setstat_command.py** (39 connections) — `server/commands/admin_setstat_command.py`
+- **admin_setstat_command.py** (58 connections) — `server/commands/admin_setstat_command.py`
 - **admin_setstat_support.py** (35 connections) — `server/commands/admin_setstat_support.py`
 - **SetStatTargetPlayer** (12 connections) — `server/commands/admin_setstat_support.py`
+- **_apply_lucidity_via_service()** (12 connections) — `server/commands/admin_setstat_command.py`
+- **_apply_stat_change_and_build_result()** (12 connections) — `server/commands/admin_setstat_command.py`
+- **_notify_player_stat_change()** (11 connections) — `server/commands/admin_setstat_command.py`
 - **test_admin_setstat_command_context.py** (11 connections) — `server/tests/unit/commands/test_admin_setstat_command_context.py`
-- **_apply_stat_change_and_build_result()** (10 connections) — `server/commands/admin_setstat_command.py`
-- **_notify_player_stat_change()** (10 connections) — `server/commands/admin_setstat_command.py`
+- **AdminSetStatApplyContext** (10 connections) — `server/commands/admin_setstat_support.py`
+- **_apply_corruption_via_service()** (10 connections) — `server/commands/admin_setstat_command.py`
+- **_finish_occult_stat_change()** (9 connections) — `server/commands/admin_setstat_command.py`
 - **Protocol** (9 connections)
 - **_execute_admin_set_stat()** (8 connections) — `server/commands/admin_setstat_command.py`
+- **calculate_stat_warnings()** (8 connections) — `server/commands/admin_setstat_support.py`
+- **log_admin_set_stat()** (8 connections) — `server/commands/admin_setstat_support.py`
 - **parse_set_stat_args()** (8 connections) — `server/commands/admin_setstat_support.py`
+- **AdminSetStatLogContext** (7 connections) — `server/commands/admin_setstat_support.py`
+- **AdminSetStatNotifyContext** (7 connections) — `server/commands/admin_setstat_support.py`
 - **SetStatApp** (7 connections) — `server/commands/admin_setstat_support.py`
 - **SetStatRequest** (7 connections) — `server/commands/admin_setstat_support.py`
 - **_maybe_attach_dp_posture_message()** (7 connections) — `server/commands/admin_setstat_command.py`
 - **build_set_stat_error_response()** (7 connections) — `server/commands/admin_setstat_support.py`
 - **get_app_or_error()** (7 connections) — `server/commands/admin_setstat_support.py`
-- **log_admin_set_stat()** (7 connections) — `server/commands/admin_setstat_support.py`
 - **resolve_admin_services_and_permissions()** (7 connections) — `server/commands/admin_setstat_support.py`
-- **AdminSetStatApplyContext** (6 connections) — `server/commands/admin_setstat_support.py`
-- **AdminSetStatLogContext** (6 connections) — `server/commands/admin_setstat_support.py`
-- **AdminSetStatNotifyContext** (6 connections) — `server/commands/admin_setstat_support.py`
+- **target_player_uuid()** (7 connections) — `server/commands/admin_setstat_support.py`
 - **SetStatConnectionManager** (6 connections) — `server/commands/admin_setstat_support.py`
-- **SetStatPersistence** (6 connections) — `server/commands/admin_setstat_support.py`
-- **calculate_stat_warnings()** (6 connections) — `server/commands/admin_setstat_support.py`
-- **test_notify_player_stat_change_dp_attaches_posture_message()** (6 connections) — `server/tests/unit/commands/test_admin_setstat_command_context.py`
-- **_mutate_player_stat()** (5 connections) — `server/commands/admin_setstat_command.py`
-- **target_player_uuid()** (5 connections) — `server/commands/admin_setstat_support.py`
-- *... and 56 more nodes in this community*
+- *... and 66 more nodes in this community*
 
 ## Relationships
 
 - [_handle_admin_set_stat_command](_handle_admin_set_stat_command.md) (16 shared connections)
-- [get_logger](get_logger.md) (8 shared connections)
-- [emit_posture_change](emit_posture_change.md) (6 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
+- [LucidityService](LucidityService.md) (6 shared connections)
+- [PlayerDPUpdated](PlayerDPUpdated.md) (6 shared connections)
+- [coerce_int](coerce_int.md) (3 shared connections)
+- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (3 shared connections)
 - [build_event](build_event.md) (3 shared connections)
-- [AdminActionsLogger](AdminActionsLogger.md) (2 shared connections)
+- [AdminActionsLogger](AdminActionsLogger.md) (3 shared connections)
+- [CorruptionService](CorruptionService.md) (2 shared connections)
+- [DatabaseManager](DatabaseManager.md) (2 shared connections)
+- [.state](state.md) (1 shared connections)
 - [AliasStorage](AliasStorage.md) (1 shared connections)
-- [admin_commands.py](admin_commands.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,8 +54,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 178 (95%)
-- INFERRED: 9 (5%)
+- EXTRACTED: 223 (94%)
+- INFERRED: 15 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [NATSError](NATSError.md) (7 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
+- [NATSError](NATSError.md) (8 shared connections)
 
 ## Source Files
 

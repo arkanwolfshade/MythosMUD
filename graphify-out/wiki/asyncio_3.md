@@ -1,45 +1,48 @@
 # asyncio
 
-> 17 nodes
+> 31 nodes
 
 ## Key Concepts
 
-- **asyncio** (12 connections)
-- **PartyChannelStrategy** (10 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **test_global_channel_strategy_broadcast()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_party_channel_strategy_broadcast_no_party_id()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_party_channel_strategy_broadcast_no_party_service_no_send()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_party_channel_strategy_broadcast_party_not_found_no_send()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_party_channel_strategy_broadcast_sends_only_to_party_members()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_whisper_channel_strategy_broadcast()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_whisper_channel_strategy_broadcast_no_target()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Strategy for party channel broadcasting. Delivers only to current party members.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **When party_service is missing on handler, no message is sent.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **When party does not exist, no message is sent.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test PartyChannelStrategy.broadcast() handles missing party_id.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test WhisperChannelStrategy.broadcast() sends personal message.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test WhisperChannelStrategy.broadcast() handles missing target_player_id.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test GlobalChannelStrategy.broadcast() broadcasts globally.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Party chat is delivered only to current party members (visibility).** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **asyncio** (15 connections)
+- **test_add_admin_no_container_duplicate()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_add_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_add_admin_player_not_found()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_add_admin_success()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_admin_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_admin_not_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_player_muted_async_false()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_player_muted_async_true()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_load_player_mutes_async_cache_valid()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_load_player_mutes_batch_all_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_load_player_mutes_batch_empty_list()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_remove_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_remove_admin_player_not_found()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_remove_admin_success()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test is_player_muted_async() returns True when player is muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test is_player_muted_async() returns False when player is not muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test add_admin() handles missing persistence (#679: injected, not via…** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test add_admin() handles player not found.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test remove_admin() handles missing persistence (#679: injected, not via…** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test remove_admin() handles player not found.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test is_admin() returns False when persistence not available (#679: injected).** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test load_player_mutes_async() uses cache when valid.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test load_player_mutes_batch() with empty list.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [test_channel_broadcasting_strategies.py](test_channel_broadcasting_strategies.py.md) (8 shared connections)
-- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (6 shared connections)
-- [RoomBasedChannelStrategy](RoomBasedChannelStrategy.md) (2 shared connections)
-- [SystemAdminChannelStrategy](SystemAdminChannelStrategy.md) (2 shared connections)
-- [UUID](UUID.md) (1 shared connections)
-- [UnknownChannelStrategy](UnknownChannelStrategy.md) (1 shared connections)
+- [test_user_manager.py](test_user_manager.py.md) (15 shared connections)
 
 ## Source Files
 
-- `server/realtime/channel_broadcasting_strategies.py`
-- `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (82%)
-- INFERRED: 7 (18%)
+- EXTRACTED: 45 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

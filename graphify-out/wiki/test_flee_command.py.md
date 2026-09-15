@@ -33,11 +33,12 @@
 
 ## Relationships
 
-- [PlayerCombatService](PlayerCombatService.md) (10 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (8 shared connections)
 - [CombatInstance](CombatInstance.md) (4 shared connections)
 - [CombatParticipant](CombatParticipant.md) (2 shared connections)
-- [combat_service.py](combat_service.py.md) (2 shared connections)
-- [Player](Player.md) (2 shared connections)
+- [combat_loader.py](combat_loader.py.md) (2 shared connections)
+- [CombatService](CombatService.md) (2 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (2 shared connections)
 
 ## Source Files
 

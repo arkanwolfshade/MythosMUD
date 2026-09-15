@@ -34,7 +34,7 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (14 shared connections)
-- [Stats](Stats.md) (5 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (5 shared connections)
 
 ## Source Files
 

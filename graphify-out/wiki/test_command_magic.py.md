@@ -1,6 +1,6 @@
 # test_command_magic.py
 
-> 59 nodes
+> 63 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,8 @@
 - **CastCommand** (20 connections) — `server/models/command_magic.py`
 - **LearnCommand** (13 connections) — `server/models/command_magic.py`
 - **SpellCommand** (13 connections) — `server/models/command_magic.py`
+- **command_magic.py** (10 connections) — `server/models/command_magic.py`
+- **SpellsCommand** (8 connections) — `server/models/command_magic.py`
 - **field_validator** (4 connections)
 - **.validate_spell_name()** (3 connections) — `server/models/command_magic.py`
 - **.validate_target()** (3 connections) — `server/models/command_magic.py`
@@ -27,15 +29,12 @@
 - **test_learn_command_spell_name_max_length()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
 - **test_learn_command_validate_spell_name_empty()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
 - **test_learn_command_validate_spell_name_valid()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_learn_command_validate_spell_name_whitespace_only()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_spell_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- *... and 34 more nodes in this community*
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [command.py](command.py.md) (12 shared connections)
-- [UtilityCommandFactory](UtilityCommandFactory.md) (4 shared connections)
-- [BaseCommand](BaseCommand.md) (3 shared connections)
+- [BaseCommand](BaseCommand.md) (16 shared connections)
+- [UtilityCommandFactory](UtilityCommandFactory.md) (5 shared connections)
 
 ## Source Files
 
@@ -44,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 97 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 107 (96%)
+- INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

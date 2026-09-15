@@ -1,78 +1,78 @@
 # User
 
-> 538 nodes
+> 510 nodes
 
 ## Key Concepts
 
-- **User** (307 connections) — `server/models/user.py`
-- **endpoints.py** (66 connections) — `server/auth/endpoints.py`
-- **models/user.py** (66 connections) — `server/models/user.py`
-- **test_users.py** (53 connections) — `server/tests/unit/auth/test_users.py`
-- **users.py** (47 connections) — `server/auth/users.py`
-- **UserManager** (41 connections) — `server/auth/users.py`
-- **login_user()** (35 connections) — `server/auth/endpoints.py`
-- **UserCreate** (31 connections) — `server/auth/endpoints.py`
-- **register_user()** (31 connections) — `server/auth/endpoints.py`
-- **test_endpoints_register.py** (30 connections) — `server/tests/unit/auth/test_endpoints_register.py`
-- **api/game.py** (28 connections) — `server/api/game.py`
-- **test_auth_dependencies.py** (24 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **LoginRequest** (22 connections) — `server/auth/endpoints.py`
-- **invites.py** (21 connections) — `server/auth/invites.py`
-- **test_game.py** (20 connections) — `server/tests/unit/api/test_game.py`
-- **test_endpoints_login.py** (20 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **auth/dependencies.py** (18 connections) — `server/auth/dependencies.py`
-- **asyncio** (18 connections)
-- **get_mythos_time()** (15 connections) — `server/api/game.py`
-- **broadcast_message()** (14 connections) — `server/api/game.py`
-- **list_invites()** (14 connections) — `server/auth/endpoints.py`
-- **asyncio** (14 connections)
-- **test_endpoints_invites.py** (14 connections) — `server/tests/unit/auth/test_endpoints_invites.py`
-- **RestartInvalidatingJWTStrategy** (13 connections) — `server/auth/jwt_strategy.py`
-- **get_user_manager()** (13 connections) — `server/auth/users.py`
-- *... and 513 more nodes in this community*
+- **User** (310 connections) — `server/models/user.py`
+- **models/user.py** (67 connections) — `server/models/user.py`
+- **container_endpoints_basic.py** (62 connections) — `server/api/container_endpoints_basic.py`
+- **ContainerServiceError** (49 connections) — `server/services/container_service_helpers.py`
+- **RateLimitError** (44 connections) — `server/exceptions.py`
+- **api/container_helpers.py** (42 connections) — `server/api/container_helpers.py`
+- **test_container_helpers.py** (42 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TransferContainerRequest** (41 connections) — `server/api/container_models.py`
+- **container_service.py** (33 connections) — `server/services/container_service.py`
+- **container_endpoints_loot.py** (31 connections) — `server/api/container_endpoints_loot.py`
+- **transfer_items()** (28 connections) — `server/api/container_endpoints_basic.py`
+- **handle_transfer_items_exceptions()** (28 connections) — `server/api/container_exception_handlers.py`
+- **open_container()** (27 connections) — `server/api/container_endpoints_basic.py`
+- **test_container_exception_handlers.py** (26 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **test_containers.py** (26 connections) — `server/tests/unit/api/test_containers.py`
+- **close_container()** (23 connections) — `server/api/container_endpoints_basic.py`
+- **handle_open_container_exceptions()** (23 connections) — `server/api/container_exception_handlers.py`
+- **test_container_helpers_loot.py** (22 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **handle_close_container_exceptions()** (21 connections) — `server/api/container_exception_handlers.py`
+- **container_exception_handlers.py** (21 connections) — `server/api/container_exception_handlers.py`
+- **ContainerNotFoundError** (20 connections) — `server/services/container_service_helpers.py`
+- **handle_loot_all_exceptions()** (20 connections) — `server/api/container_exception_handlers.py`
+- **get_player_id_from_user()** (19 connections) — `server/api/container_helpers.py`
+- **handle_container_service_error()** (19 connections) — `server/api/container_helpers.py`
+- **create_error_context()** (17 connections) — `server/api/container_helpers.py`
+- *... and 485 more nodes in this community*
 
 ## Relationships
 
-- [PlayerService](PlayerService.md) (83 shared connections)
-- [get_logger](get_logger.md) (60 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (49 shared connections)
-- [RoomService](RoomService.md) (35 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (32 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (30 shared connections)
-- [Player](Player.md) (19 shared connections)
-- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (17 shared connections)
-- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) (15 shared connections)
-- [InviteManager](InviteManager.md) (13 shared connections)
-- [ContainerComponent](ContainerComponent.md) (12 shared connections)
-- [rooms.py](rooms.py.md) (11 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (90 shared connections)
+- [get_logger](get_logger.md) (87 shared connections)
+- [LootAllRequest](LootAllRequest.md) (39 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (35 shared connections)
+- [players.py](players.py.md) (29 shared connections)
+- [maps.py](maps.py.md) (26 shared connections)
+- [container_events.py](container_events.py.md) (25 shared connections)
+- [test_admin_auth_service.py](test_admin_auth_service.py.md) (21 shared connections)
+- [test_users.py](test_users.py.md) (20 shared connections)
+- [Invite](Invite.md) (17 shared connections)
+- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (16 shared connections)
+- [ContainerService](ContainerService.md) (16 shared connections)
 
 ## Source Files
 
-- `server/api/game.py`
+- `docs/examples/logging/fastapi_integration.py`
+- `server/api/container_endpoints_basic.py`
+- `server/api/container_endpoints_loot.py`
+- `server/api/container_exception_handlers.py`
+- `server/api/container_helpers.py`
+- `server/api/container_models.py`
 - `server/async_persistence.py`
-- `server/auth/__init__.py`
-- `server/auth/dependencies.py`
-- `server/auth/email_utils.py`
-- `server/auth/endpoints.py`
-- `server/auth/invites.py`
-- `server/auth/jwt_strategy.py`
-- `server/auth/token_epoch.py`
 - `server/auth/users.py`
-- `server/command_handler_unified.py`
+- `server/exceptions.py`
 - `server/models/user.py`
-- `server/schemas/game/__init__.py`
-- `server/schemas/game/game.py`
+- `server/schemas/containers/__init__.py`
+- `server/schemas/containers/container.py`
+- `server/schemas/containers/container_data.py`
+- `server/services/container_service.py`
+- `server/services/container_service_helpers.py`
 - `server/tests/integration/test_db_connectivity.py`
-- `server/tests/unit/api/test_game.py`
-- `server/tests/unit/auth/conftest.py`
-- `server/tests/unit/auth/test_auth_dependencies.py`
-- `server/tests/unit/auth/test_endpoints_invites.py`
-- `server/tests/unit/auth/test_endpoints_login.py`
+- `server/tests/integration/test_procedures_return_shape.py`
+- `server/tests/unit/api/test_container_exception_handlers.py`
+- `server/tests/unit/api/test_container_helpers.py`
+- `server/tests/unit/api/test_container_helpers_loot.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1309 (88%)
-- INFERRED: 176 (12%)
+- EXTRACTED: 1380 (86%)
+- INFERRED: 222 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -35,7 +35,7 @@
 
 - [PerformanceMonitor](PerformanceMonitor.md) (4 shared connections)
 - [ExceptionTracker](ExceptionTracker.md) (3 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (2 shared connections)
+- [bind_request_context](bind_request_context.md) (2 shared connections)
 
 ## Source Files
 

@@ -11,6 +11,8 @@ from uuid import UUID
 from sqlalchemy.exc import SQLAlchemyError
 from structlog.stdlib import BoundLogger
 
+from server.game.npcs.attack_damage import armor_points_from_base_stats
+
 from ..models.combat import CombatParticipantType
 from ..npc.lifecycle_manager import NPCLifecycleManager
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -233,11 +235,18 @@ class NPCCombatDataProvider:
 
         npc_id = getattr(npc_instance, "id", getattr(npc_instance, "npc_id", "unknown"))
         npc_type = getattr(npc_instance, "npc_type", None)
+
+        npc_stats_snapshot: dict[str, object] | None = None
+        if isinstance(npc_stats_for_corruption, dict):
+            npc_stats_snapshot = {str(k): v for k, v in cast(dict[object, object], npc_stats_for_corruption).items()}
+
+        behavior_snapshot: dict[str, object] | None = None
         aggression_level: int | None = None
         if hasattr(npc_instance, "get_behavior_config"):
             try:
                 behavior_config = npc_instance.get_behavior_config()
                 if isinstance(behavior_config, dict):
+                    behavior_snapshot = {str(k): v for k, v in cast(dict[object, object], behavior_config).items()}
                     raw = behavior_config.get("aggression_level")
                     if raw is not None:
                         try:
@@ -264,4 +273,7 @@ class NPCCombatDataProvider:
             npc_type=npc_type,
             corruption=corruption,
             aggression_level=aggression_level,
+            armor_points=armor_points_from_base_stats(npc_stats_snapshot),
+            npc_base_stats=npc_stats_snapshot,
+            npc_behavior_config=behavior_snapshot,
         )

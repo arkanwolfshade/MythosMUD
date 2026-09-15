@@ -36,7 +36,7 @@
 - [get_logger](get_logger.md) (4 shared connections)
 - [command_service.py](command_service.py.md) (2 shared connections)
 - [AliasStorage](AliasStorage.md) (2 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
 
 ## Source Files
 
