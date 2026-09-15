@@ -38,7 +38,7 @@ sys.path.insert(0, str(_HERE))
 from generate_arkham_grid import BOARDING_HOUSE  # noqa: E402
 
 ENVS = ("dev", "unit", "e2e")
-DML = Path("data/db/mythos_{env}_dml.sql")
+DML_DIR = Path("data/db")
 
 # NPCs whose rooms are replaced. (npc id, new sub_zone_id, new room stable_id)
 NPC_REHOMING: dict[str, tuple[str, str]] = {
@@ -95,7 +95,10 @@ def load_generated(out: Path) -> tuple[list[list[str]], list[list[str]], list[li
 
 
 def splice(env: str, out: Path, check: bool) -> str:
-    path = Path(DML.as_posix().format(env=env))
+    # Composed with `/` and an f-string, not `Path(TEMPLATE.format(...))`: a
+    # `str.format()` result is inferred as `LiteralString`, which type checkers then
+    # refuse to match against `StrPath`. Same shape as author_sanitarium_coords.dml_path.
+    path = DML_DIR / f"mythos_{env}_dml.sql"
     # Bytes, not read_text: these files are LF-only and must stay that way on Windows.
     text = path.read_bytes().decode("utf-8")
     new_rooms, new_links, new_subzones, new_configs, preserved = load_generated(out)

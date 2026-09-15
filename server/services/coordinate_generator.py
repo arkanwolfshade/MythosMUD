@@ -212,7 +212,14 @@ class CoordinateGenerator:
     def _assign_coordinates_bfs(
         self, origin_id: str, adjacency: dict[str, list[tuple[str, str]]]
     ) -> dict[str, tuple[int, int]]:
-        """Assign coordinates using BFS starting from origin."""
+        """Assign coordinates using BFS starting from origin.
+
+        KNOWN DEFECT (#845): this reaches only the origin's connected component. Rooms in
+        any other component are never enqueued, keep `map_x`/`map_y` NULL, and are then
+        skipped by `AsciiMapRenderer` - invisible on the map with nothing in the logs.
+        `visited` is also set on first arrival and never revisited, which is what makes
+        the collisions below unresolvable.
+        """
         coords: dict[str, tuple[int, int]] = {}
         visited: set[str] = set()
         queue: deque[tuple[str, int, int]] = deque([(origin_id, 0, 0)])
@@ -234,7 +241,13 @@ class CoordinateGenerator:
         return coords
 
     def _detect_coordinate_conflicts(self, coords: dict[str, tuple[int, int]]) -> list[tuple[str, str, int, int]]:
-        """Detect conflicts (multiple rooms at same x,y coordinates)."""
+        """Detect conflicts (multiple rooms at same x,y coordinates).
+
+        KNOWN DEFECT (#845): this reports and does not repair. No caller acts on the
+        returned list, and it could not: `_assign_coordinates_bfs` has already committed
+        the layout. A cycle whose directions do not sum to zero stacks two rooms on one
+        cell, and the renderer then drops one by last-writer-wins.
+        """
         conflicts: list[tuple[str, str, int, int]] = []
         coord_to_rooms: dict[tuple[int, int], list[str]] = {}
         for room_id, (cx, cy) in coords.items():
