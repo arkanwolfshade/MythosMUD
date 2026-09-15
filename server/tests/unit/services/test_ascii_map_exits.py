@@ -166,3 +166,41 @@ class TestDepartures:
             {"id": "a", "stable_id": "a", "map_x": 0, "map_y": 0, "exits": {"north": None}}
         ]
         assert ascii_map_exits.build_departures(rooms) == {}
+
+    def test_a_room_with_neither_id_nor_stable_id_is_skipped(self) -> None:
+        """`_index_room_positions` can't place it on the grid, so it must not crash or
+        silently claim cell (0, 0) - the empty-string id both fields fall back to."""
+        rooms: list[dict[str, object]] = [{"map_x": 0, "map_y": 0, "exits": {"north": "elsewhere"}}]
+        assert ascii_map_exits.build_departures(rooms) == {}
+
+    def test_a_room_with_no_exits_key_is_not_a_departure_source(self) -> None:
+        """`room.get("exits")` is None here, not `{}` - the other branch that already
+        returns early. `_departing_directions` must reject both the same way."""
+        rooms: list[dict[str, object]] = [{"id": "a", "stable_id": "a", "map_x": 0, "map_y": 0}]
+        assert ascii_map_exits.build_departures(rooms) == {}
+
+    def test_an_unrecognized_direction_is_not_a_departure(self) -> None:
+        """A direction absent from `REVERSE_DIRECTIONS` (a data error, or a future exit
+        kind this module doesn't know yet) must be skipped, not treated as a departure."""
+        rooms = [self._room("a", 0, 0, {"teleport": "elsewhere"})]
+        assert ascii_map_exits.build_departures(rooms) == {}
+
+
+class TestExitBridges:
+    """Guard branches in `build_exit_bridges` and its per-axis helpers."""
+
+    def test_a_non_tuple_target_is_ignored(self) -> None:
+        """`exit_from` values normally carry a `(x, y)` target; malformed data (a bare
+        room id string, say) must be skipped rather than raise when bridging."""
+        exit_from: dict[tuple[int, int], dict[str, dict[str, object]]] = {
+            (0, 0): {"east": {"target": "not_a_tuple"}},
+        }
+        assert ascii_map_exits.build_exit_bridges(exit_from) == (set(), set())
+
+    def test_a_misaligned_vertical_target_is_ignored(self) -> None:
+        """A `south`/`north` exit is expected to keep x fixed; `_vertical_bridge_cells`
+        guards against a target whose x has drifted, rather than bridging the wrong row."""
+        exit_from: dict[tuple[int, int], dict[str, dict[str, object]]] = {
+            (0, 0): {"south": {"target": (1, 3)}},
+        }
+        assert ascii_map_exits.build_exit_bridges(exit_from) == (set(), set())
