@@ -72,7 +72,7 @@
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.67.0",
     "vite": "^8.2.2",
-    "vitest": "^4.1.11"
+    "vitest": "^5.0.0"
   },
   "optionalDependencies": {
     "argon2": "^0.45.1"
