@@ -48,8 +48,6 @@ result = subprocess.run(
         "--exclude",
         "*/docs/*",
         "--exclude",
-        "*/alembic/*",
-        "--exclude",
         "*graphify-out*",
         "--exclude",
         "*.venv*",

@@ -3,6 +3,7 @@
     "eslint": "^10.9.1"
   },
   "devDependencies": {
+    "dbmate": "^2.35.1",
     "markdownlint-cli": "^0.49.1"
   },
   "overrides": {

@@ -173,7 +173,7 @@ Ensure PostgreSQL is running. Create `mythos_dev` and apply environment DDL (use
 make apply-procedures
 ```
 
-DDL source: `db/mythos_dev_ddl.sql`. See
+DDL source: `db/schema.sql` (schema-agnostic, #811). See
 [POSTGRESQL_CONTRIBUTOR_GUIDE.md](POSTGRESQL_CONTRIBUTOR_GUIDE.md).
 
 ### e. Run the Server

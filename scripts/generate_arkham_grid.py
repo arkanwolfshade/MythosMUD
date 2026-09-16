@@ -2,23 +2,28 @@
 
 One-shot. Reads `arkham_grid_spec` (the map) and `arkham_street_voices` (the prose)
 and emits tab-separated rows for `rooms`, `room_links`, `subzones` and
-`zone_configurations`, ready to splice into all three DML files.
+`zone_configurations`, ready to splice into the seed.
 
-The DML files remain the source of truth after this runs -- this script is kept as
+The seed remains the source of truth after this runs -- this script is kept as
 a historical record of how the city was derived, beside the other one-shot
 migration scripts in this directory. It is not a maintained pipeline; hand-edit
-the DML afterwards like any other room.
+the seed afterwards like any other room.
 
-UUIDs are deterministic v5 and MUST be, because `test_dml_room_graph.py` requires
-the dev and e2e DML blocks to be byte-identical. Namespace and key formats are
-copied from `scripts/static_data/generate_sql.mjs` and verified against existing
-seed rows -- note that `subzones` uses a single colon and `zone_configurations` a
-double one.
+UUIDs are deterministic v5 so re-running this script reproduces the same ids for
+the same input, not because two files must stay byte-identical -- since #811 there
+is a single schema-agnostic seed (data/db/seed.sql), not one per environment.
+Namespace and key formats are copied from `scripts/static_data/generate_sql.mjs`
+and verified against existing seed rows -- note that `subzones` uses a single
+colon and `zone_configurations` a double one.
 
     python scripts/generate_arkham_grid.py --out build/arkham/
 
 Emits rooms.tsv, room_links.tsv, subzones.tsv, zone_configurations.tsv and a
 summary on stdout.
+
+group: id/name builders below are intentionally many small single-purpose
+functions (one per stable-id/UUID/name shape) rather than one large function --
+that decomposition is the point, not fragmentation.
 """
 
 from __future__ import annotations
@@ -34,8 +39,14 @@ from typing import NamedTuple
 _HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(_HERE))
 
-import arkham_grid_spec as S  # noqa: E402
-import arkham_street_voices as V  # noqa: E402
+
+# Reason: this file is a standalone script (`python scripts/generate_arkham_grid.py`, see the
+# module docstring), not a package member -- a relative import fails with no parent package,
+# and scripts/ has no __init__.py for a `scripts.arkham_grid_spec` absolute import to resolve.
+# sys.path.insert above already makes the bare name resolve correctly at runtime; this is the
+# same tradeoff `noqa: E402` documents for the same reason.
+import arkham_grid_spec as S  # noqa: E402  # pyright: ignore[reportImplicitRelativeImport]
+import arkham_street_voices as V  # noqa: E402  # pyright: ignore[reportImplicitRelativeImport]
 
 # --------------------------------------------------------------------------
 # Identity
@@ -80,9 +91,9 @@ INNSMOUTH_CAUSEWAY = "earth_innsmouth_waterfront_room_causeway_001"
 # The one Arkham room outside the Sanitarium that is a building interior rather than
 # a street: `indoors`, and one of only two `rest_location` rooms in the world. #829
 # replaces Arkham's STREETS, not its interiors, so this survives the rebuild and is
-# simply re-attached to the new Curwen Street. It is also the room that
-# mythos_unit_dml.sql deliberately omits, anchoring two unit-vs-dev invariants in
-# test_dml_room_graph.py - deleting it would quietly break both.
+# simply re-attached to the new Curwen Street. It's the MUD's inn (rest_location) -- present
+# in data/db/seed.sql for all three environments since #811 (a stale mythos_unit-only omission
+# from before the DML collapse was fixed alongside it).
 BOARDING_HOUSE = "earth_arkhamcity_downtown_room_curwen_boarding_house_001"
 # North of the Curwen Street block between Garrison and Parsonage - the commercial
 # heart, which suits "squeezed between two storefronts".

@@ -1,6 +1,6 @@
 # ADR-019: Player Effects System
 
-**Version 1.0.0** · MythosMUD · 2026-08-19
+**Version 1.1.0** · MythosMUD · 2026-09-15
 
 ---
 
@@ -38,8 +38,8 @@ therefore records the *decision* and its contract rather than re-describing the 
 **[SPEC]**
 Persistent, time-bounded player status effects are stored in PostgreSQL and expired by the game tick.
 
-1. **Storage**: table `player_effects`, one row per active effect, created by
-   `server/alembic/versions/2026_02_09_add_player_effects_table.py`. Columns: `player_id` (FK),
+1. **Storage**: table `player_effects`, one row per active effect (schema now part of the
+   baseline, `db/schema.sql`, #811). Columns: `player_id` (FK),
    `effect_type` (String 64), `category` (String 64), `duration` (Integer), `applied_at_tick` (Integer),
    `intensity` (Integer, default 1), `source` (String 128, nullable).
 
@@ -105,3 +105,4 @@ Persistent, time-bounded player status effects are stored in PostgreSQL and expi
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-08-19 | Initial ADR; closes the gap left by the unwritten `write-adr-009` todo |
+| 1.1.0 | 2026-09-15 | Correct §3.1: the cited Alembic revision was never wired up and was removed in #811; schema is now in the baseline |

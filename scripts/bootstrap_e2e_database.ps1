@@ -47,11 +47,7 @@ Invoke-Step "setup_postgresql_test_db.ps1" { & (Join-Path $PSScriptRoot "setup_p
 Write-Host ""
 Write-Host "[INFO] Applying procedures and migrations to mythos_e2e" -ForegroundColor Yellow
 Invoke-Step "apply_procedures.ps1" { & (Join-Path $PSScriptRoot "apply_procedures.ps1") -TargetDbs mythos_e2e }
-Invoke-Step "apply_coc_spells_migration.ps1" { & (Join-Path $PSScriptRoot "apply_coc_spells_migration.ps1") -TargetDbs mythos_e2e }
-Invoke-Step "apply_arena_migration.ps1" { & (Join-Path $PSScriptRoot "apply_arena_migration.ps1") -TargetDbs mythos_e2e }
-Invoke-Step "apply_aggression_level_migration.ps1" { & (Join-Path $PSScriptRoot "apply_aggression_level_migration.ps1") -TargetDbs mythos_e2e }
-Invoke-Step "apply_dialogue_migration.ps1" { & (Join-Path $PSScriptRoot "apply_dialogue_migration.ps1") -TargetDbs mythos_e2e }
-Invoke-Step "apply_item_catalog_core_weapons.ps1" { & (Join-Path $PSScriptRoot "apply_item_catalog_core_weapons.ps1") -TargetDbs mythos_e2e }
+Invoke-Step "migrate.ps1" { & (Join-Path $PSScriptRoot "migrate.ps1") -Environment e2e }
 
 Write-Host ""
 Write-Host "[INFO] Seeding E2E users (uv run --no-sync python scripts/seed_e2e_users.py)" -ForegroundColor Yellow

@@ -32,7 +32,7 @@ import pytest
 
 from server.utils.project_paths import get_project_root
 
-_DML = "data/db/mythos_dev_dml.sql"
+_DML = "data/db/seed.sql"
 _ARKHAM = "earth_arkhamcity_"
 _SANITARIUM = "_sanitarium_"
 
@@ -66,7 +66,7 @@ def _read_dml(relative: str) -> str:
 
 
 def _copy_block(text: str, table: str) -> list[list[str]]:
-    m = re.search(rf"^COPY [\w.]+\.{table} \([^)]*\) FROM stdin;\n", text, re.M)
+    m = re.search(rf"^COPY {table} \([^)]*\) FROM stdin;\n", text, re.M)
     assert m, f"no COPY block for {table}"
     end = text.index("\n\\.", m.end())
     return [line.split("\t") for line in text[m.end() : end + 1].rstrip("\n").split("\n")]

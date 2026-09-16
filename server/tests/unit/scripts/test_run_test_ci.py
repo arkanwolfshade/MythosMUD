@@ -130,3 +130,15 @@ def test_playwright_integration_runner_does_not_pass_xdist_worker_count() -> Non
     source = PLAYWRIGHT_INTEGRATION_RUNNER.read_text(encoding="utf-8")
     assert '"-n",' not in source
     assert "-n 1" not in source
+
+
+def test_run_test_ci_checks_for_the_single_schema_agnostic_seed_file() -> None:
+    """Since #811, data/db/seed.sql is the single seed source for all three environments --
+    the local-dev submodule-init guard must check for it, not a retired per-environment
+    mythos_unit_dml.sql (which no longer exists, so a stale check would always report missing
+    and needlessly re-init the submodule)."""
+    source = _script_source()
+    assert 'os.path.join(PROJECT_ROOT, "data", "db", "seed.sql")' in source
+    assert "mythos_unit_dml.sql" not in source
+    assert "mythos_dev_dml.sql" not in source
+    assert "mythos_e2e_dml.sql" not in source

@@ -1,72 +1,73 @@
 # Database Schema Management
 
-This directory contains environment-specific DDL and supporting scripts for MythosMUD.
+This directory contains the schema baseline, migrations, and supporting scripts for MythosMUD.
 
-## Environment DDL Files
+## The schema baseline
 
-Schema is maintained per environment using these DDL files (generated from the corresponding
-PostgreSQL database via `pg_dump`):
+**`db/schema.sql`** is the single, schema-agnostic DDL source for all three environments
+(`mythos_dev` / `mythos_unit` / `mythos_e2e`, #811). Before #811 this was three separate,
+per-environment `pg_dump` files that had quietly drifted from each other despite being intended
+to be identical — see the #811 investigation for what that drift looked like in practice.
 
-- **`mythos_dev_ddl.sql`** - Development database schema (source of truth for structure)
-- **`mythos_unit_ddl.sql`** - Unit test database schema
-- **`mythos_e2e_ddl.sql`** - E2E test database schema
+Object names in `db/schema.sql` are **unqualified**. The loader must `SET search_path TO
+<target_schema>;` (or connect with that search_path already set) before running it — the target
+schema itself, and the `pgcrypto` extension, are created once by `db/databases/databases.sql` and
+are not part of this file.
 
-Each file creates a PostgreSQL schema with the same name as the database (e.g. `mythos_dev`)
-and defines all tables in that schema (not `public`).
+### Regenerating the baseline
 
-### Regenerating DDL
-
-When you make schema changes to a database, regenerate the corresponding DDL file.
-
-**Windows (from project root):**
+When you make schema changes to `mythos_dev`, regenerate `db/schema.sql` from it:
 
 ```powershell
 .\scripts\generate_schema_from_dev.ps1
 ```
 
-The script connects to the configured database (e.g. `mythos_dev`), runs `pg_dump`, and writes
-the DDL to the appropriate `db/mythos_<env>_ddl.sql` file.
+The script connects to `mythos_dev`, runs `pg_dump`, and strips the schema qualification pg_dump
+always emits so the checked-in file stays schema-agnostic.
 
 ### Verification
 
-To verify that a DDL file matches the current database:
+To verify that `db/schema.sql` matches the current database:
 
 ```bash
 make verify-schema
 ```
 
 This uses `scripts/verify_schema_match.ps1`, which reads `DATABASE_URL` from `.env.local` (or
-`.env`) and compares `db/mythos_<dbname>_ddl.sql` with the live database.
+`.env`) and compares `db/schema.sql` against the live database (schema-qualification stripped
+from both sides before comparing).
 
-### Directory Structure
+### Directory structure
 
-**`mythos_dev_ddl.sql`**, **`mythos_unit_ddl.sql`**, **`mythos_e2e_ddl.sql`** - Authoritative
-environment DDL (committed to git).
+**`schema.sql`** - The single authoritative baseline DDL (committed to git).
+
+**`migrations/`** - dbmate migrations directory (`scripts/migrate.ps1`), for schema/seed changes
+made *after* the baseline. See `migrations/README.md`.
+
+**`procedures/`** - Stored procedures/functions, applied separately via
+`scripts/apply_procedures.ps1` (idempotent `CREATE OR REPLACE`, not part of the versioned
+ledger — see `procedures/README.md`).
 
 **`databases/`** - Database provisioning scripts (see `databases/README.md`).
 
 **`roles/`** - PostgreSQL role creation scripts (see `roles/README.md`).
 
-**Seed data (DML)** - Authoritative per-environment DML lives in **`data/db/`**:
-`mythos_dev_dml.sql`, `mythos_unit_dml.sql`, `mythos_e2e_dml.sql`. Load with
-`search_path` set to the schema name (e.g. `mythos_unit`).
+**Seed data** - The matching static-world seed lives in **`data/db/seed.sql`**. Load with
+`search_path` set to the schema name (e.g. `mythos_unit`). See `data/db/README.md`.
 
 See `LEGACY_FILES.md` for historical file status.
 
 ### Usage in CI/CD
 
-Environment DDL is used as follows:
+- **GitHub Actions CI** - Applies `db/schema.sql` to the `mythos_unit` database (search_path set
+  to `mythos_unit`), then `data/db/seed.sql`, then `db/procedures/*.sql`, then dbmate migrations.
+- **Dockerfile.github-runner** - Same sequence, self-contained in the image.
 
-- **GitHub Actions CI** - Applies `db/mythos_unit_ddl.sql` to the `mythos_unit` database, then
-  loads `data/db/mythos_unit_dml.sql` with `search_path` set to `mythos_unit`.
-- **Dockerfile.github-runner** - Applies `db/mythos_unit_ddl.sql` then
-  `data/db/mythos_unit_dml.sql` with `search_path` set to `mythos_unit`.
-
-For local or other environments, use the DDL that matches your database name (e.g. `mythos_dev`
--> `db/mythos_dev_ddl.sql`).
+For local or other environments, the same `db/schema.sql` and `data/db/seed.sql` apply — only the
+target database name and `search_path` change.
 
 ### Notes
 
-- DDL files are committed to git (not generated on-demand in CI).
-- Each DDL creates a named schema (e.g. `mythos_unit`) and sets `search_path`; applications
-  use `POSTGRES_SEARCH_PATH` in `.env` to target that schema.
+- `db/schema.sql` is committed to git (not generated on-demand in CI).
+- Each environment has its own named schema (e.g. `mythos_unit`); applications use
+  `POSTGRES_SEARCH_PATH` in `.env` to target it.

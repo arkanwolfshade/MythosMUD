@@ -1,18 +1,20 @@
 #!/usr/bin/env python3
 """Load world seed data (rooms, zones, zone configs, holidays, schedules, emotes) into PostgreSQL database.
 
-WARNING: This script applies the environment-specific DDL (db/mythos_<dbname>_ddl.sql) FIRST,
-which DROPS ALL TABLES (rooms, zones, players, users, etc.) and recreates an empty schema,
-then loads the environment DML (world, professions, items, NPCs, etc.). Running it against a
-database that has data you care about will DESTROY that data. Use a separate DB for seeding,
-or run only the DML file: psql -d your_db -f data/db/mythos_<env>_dml.sql
+WARNING: This script applies the schema-agnostic DDL (db/schema.sql) FIRST, which DROPS ALL
+TABLES (rooms, zones, players, users, etc.) and recreates an empty schema, then loads the
+schema-agnostic seed (data/db/seed.sql: world, professions, items, NPCs, etc.). Running it
+against a database that has data you care about will DESTROY that data. Use a separate DB for
+seeding, or run only the seed file: psql -d your_db -c "SET search_path TO your_schema;" -f
+data/db/seed.sql
 
-DDL and DML run via psql -f: DDL first kicks other backends then applies drops/creates; DML is
-pg_dump format (COPY ... FROM stdin) and cannot be executed reliably with asyncpg.execute.
+DDL and seed run via psql -f: DDL first kicks other backends then applies drops/creates; the
+seed is pg_dump format (COPY ... FROM stdin) and cannot be executed reliably with asyncpg.execute.
 
-The DDL and DML files are chosen from DATABASE_URL: mythos_dev -> db/mythos_dev_ddl.sql +
-data/db/mythos_dev_dml.sql, mythos_unit -> mythos_unit_ddl + mythos_unit_dml, mythos_e2e ->
-mythos_e2e_ddl + mythos_e2e_dml.
+db/schema.sql and data/db/seed.sql are the single, schema-agnostic source for all three
+environments (#811) -- object names are unqualified, so both are loaded with `search_path` set
+to the target schema, which is derived from DATABASE_URL's database name (mythos_dev /
+mythos_unit / mythos_e2e).
 
 asyncpg table counts use POSTGRES_SEARCH_PATH if set, else the database name as schema (see .env.e2e_test).
 """
@@ -59,17 +61,15 @@ def _validate_environment_and_files() -> tuple[str, Path, Path]:
         print("=" * 60)
         sys.exit(1)
 
-    schema_file = Path(f"db/{db_name}_ddl.sql")
-    dml_file = Path(f"data/db/{db_name}_dml.sql")
+    schema_file = Path("db/schema.sql")
+    dml_file = Path("data/db/seed.sql")
 
     if not schema_file.exists():
         print(f"ERROR: DDL file not found: {schema_file}")
-        print("       Use db/mythos_dev_ddl.sql, db/mythos_unit_ddl.sql, or db/mythos_e2e_ddl.sql")
         sys.exit(1)
 
     if not dml_file.exists():
-        print(f"ERROR: DML file not found: {dml_file}")
-        print("       Use data/db/mythos_dev_dml.sql, mythos_unit_dml.sql, or mythos_e2e_dml.sql")
+        print(f"ERROR: seed file not found: {dml_file}")
         sys.exit(1)
 
     return database_url, schema_file, dml_file
@@ -184,9 +184,15 @@ def _run_psql_file(
     heartbeat_phase: str,
     failure_label: str,
 ) -> None:
-    """Run a .sql file with psql (-q). Optionally kick competitors before -f (same session, no gap)."""
+    """Run a .sql file with psql (-q). Optionally kick competitors before -f (same session, no gap).
+
+    db/schema.sql and data/db/seed.sql (#811) are schema-agnostic -- object names are unqualified,
+    so search_path must be set to the target schema (POSTGRES_SEARCH_PATH, else the DB name) before
+    -f runs, in the same psql session.
+    """
     host, port, user, password, dbname = _parse_pg_url_for_psql(database_url)
     psql_exe = _resolve_psql_executable()
+    search_path = os.getenv("POSTGRES_SEARCH_PATH", dbname)
     env = os.environ.copy()
     if password:
         env["PGPASSWORD"] = password
@@ -210,6 +216,7 @@ def _run_psql_file(
     ]
     if kick_other_backends:
         cmd.extend(["-c", _PSQL_KICK_OTHER_BACKENDS])
+    cmd.extend(["-c", f"SET search_path TO {search_path};"])
     cmd.extend(["-f", sql_path])
     print(preamble, flush=True)
     proc: subprocess.Popen[str] = subprocess.Popen(

@@ -210,6 +210,12 @@ jobs:
           sudo rm -f /etc/apt/sources.list.d/google-chrome.list
           playwright install chromium
           playwright install-deps chromium
+      - name: Set up Node.js for dbmate
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+      - name: Install root npm dependencies (dbmate, #811)
+        run: npm ci
       - name: Install PostgreSQL 18
         if: ${{ !env.ACT }}
         run: |
@@ -244,20 +250,21 @@ jobs:
           (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -v ON_ERROR_STOP=1 -f db/roles/roles.sql)
           su postgres -c "psql -v ON_ERROR_STOP=1 -f $WORKSPACE_PATH/db/databases/databases.sql" || \
           (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -v ON_ERROR_STOP=1 -f db/databases/databases.sql)
-          # Apply environment-specific DDL for mythos_unit (schema mythos_unit, not public)
-          echo "Applying mythos_unit DDL..."
-          if ! su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -f $WORKSPACE_PATH/db/mythos_unit_ddl.sql" 2>&1; then
+          # Apply schema-agnostic DDL (db/schema.sql, #811) into the mythos_unit schema (not
+          # public) -- search_path must be set since object names are unqualified.
+          echo "Applying schema..."
+          if ! su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f $WORKSPACE_PATH/db/schema.sql" 2>&1; then
             if command -v sudo >/dev/null 2>&1; then
-              if ! sudo -u postgres psql -v ON_ERROR_STOP=1 -d mythos_unit -f db/mythos_unit_ddl.sql 2>&1; then
-                echo "ERROR: Failed to apply mythos_unit DDL"
+              if ! sudo -u postgres psql -v ON_ERROR_STOP=1 -d mythos_unit -c "SET search_path TO mythos_unit;" -f db/schema.sql 2>&1; then
+                echo "ERROR: Failed to apply schema"
                 exit 1
               fi
             else
-              echo "ERROR: Failed to apply mythos_unit DDL"
+              echo "ERROR: Failed to apply schema"
               exit 1
             fi
           fi
-          echo "✓ DDL applied successfully"
+          echo "✓ Schema applied successfully"
           # Verify schema was applied - check for container_item_instance_id in mythos_unit schema
           COLUMN_CHECK=$((command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -t -A -d mythos_unit -c "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'mythos_unit' AND table_name = 'containers' AND column_name = 'container_item_instance_id');" 2>&1) || \
             (su postgres -c "psql -t -A -d mythos_unit -c \"SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'mythos_unit' AND table_name = 'containers' AND column_name = 'container_item_instance_id');\"" 2>&1))
@@ -271,15 +278,22 @@ jobs:
             exit 1
           fi
           echo "✓ Verified container_item_instance_id column exists in mythos_unit.containers"
-          # Seed data: authoritative DML for mythos_unit
-          su postgres -c "psql -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f $WORKSPACE_PATH/data/db/mythos_unit_dml.sql" || \
-          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -d mythos_unit -c "SET search_path TO mythos_unit;" -f data/db/mythos_unit_dml.sql)
-          # Apply arena zone migration (arena removed from DML; applied via migration)
-          su postgres -c "psql -d mythos_unit -v ON_ERROR_STOP=1 -f $WORKSPACE_PATH/data/db/migrations/20260227_add_arena_zone_unit.sql" || \
-          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -d mythos_unit -v ON_ERROR_STOP=1 -f data/db/migrations/20260227_add_arena_zone_unit.sql)
-          # Apply aggression_level to npc_definitions (idempotent)
-          su postgres -c "psql -d mythos_unit -v ON_ERROR_STOP=1 -f $WORKSPACE_PATH/data/db/migrations/20260310_add_aggression_level_npc_definitions_unit.sql" || \
-          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -d mythos_unit -v ON_ERROR_STOP=1 -f data/db/migrations/20260310_add_aggression_level_npc_definitions_unit.sql)
+          # Seed data (data/db/seed.sql, #811): the single schema-agnostic seed source, includes
+          # everything the old per-environment DML plus the arena/aggression_level migrations did.
+          su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f $WORKSPACE_PATH/data/db/seed.sql" || \
+          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -v ON_ERROR_STOP=1 -d mythos_unit -c "SET search_path TO mythos_unit;" -f data/db/seed.sql)
+          # Stored procedures (#811 finding: CI previously installed none -- ADR-015 routes all
+          # data access through these, so tests ran against whatever the DDL dump happened to have).
+          echo "Applying procedures..."
+          for f in $WORKSPACE_PATH/db/procedures/*.sql; do
+            su postgres -c "psql -v ON_ERROR_STOP=1 -v schema_name=mythos_unit -d mythos_unit -f $f" || \
+            (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -v ON_ERROR_STOP=1 -v schema_name=mythos_unit -d mythos_unit -f "$f") || \
+            { echo "ERROR: Failed to apply procedure $f"; exit 1; }
+          done
+          echo "✓ Procedures applied successfully"
+          # dbmate migrations (#811): tracks db/migrations/*.sql beyond the baseline in schema.sql/seed.sql.
+          npx dbmate --url "postgres://postgres:Cthulhu1@localhost:5432/mythos_unit?sslmode=disable&search_path=mythos_unit" \
+            --migrations-dir "$WORKSPACE_PATH/db/migrations" --no-dump-schema up
       - name: Set up test environment file
         run: |
           # Create .env.unit_test at project root from example for CI

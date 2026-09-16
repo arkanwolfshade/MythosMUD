@@ -817,9 +817,10 @@ jobs:
   payloads omit the CSRF field the production client sends
 - E2E database bootstrap (`e2e.bat`, target DB `mythos_e2e`) requires repo-root `.env.e2e_test`; copy from `env.e2e_test.example`
   if missing
-- DML/seed migrations are SQL under `data/db/migrations/` (see that README).
-  `scripts/apply_migrations_to_e2e.ps1` is a legacy e2e bootstrap with a hardcoded subset — do not wire every new
-  migration through it; newer seeds use dedicated apply scripts and/or Makefile/CI `psql -f`, or base `mythos_*_dml.sql`
+- Schema and seed are `db/schema.sql` and `data/db/seed.sql` — the single, schema-agnostic baseline for all three
+  environments (#811), loaded with `search_path` set to the target schema. Post-baseline migrations are tracked by
+  **dbmate** (`db/migrations/`, run via `scripts/migrate.ps1 -Environment <dev|unit|e2e>`) — never edit a migration
+  that's already been applied; add a new one instead (`npx dbmate new <description> --migrations-dir db/migrations`)
 
 ## Cursor Cloud specific instructions
 

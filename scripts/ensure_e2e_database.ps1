@@ -1,5 +1,5 @@
 #!/usr/bin/env pwsh
-# Ensure mythos_e2e exists and has reference seed (professions from mythos_e2e_dml.sql).
+# Ensure mythos_e2e exists and has reference seed (professions from data/db/seed.sql, #811).
 # Used by make test-playwright before Playwright runs against the E2E server (.env.e2e_test).
 # Full recreate via bootstrap_e2e_database.ps1 when the DB is missing or professions count is 0.
 

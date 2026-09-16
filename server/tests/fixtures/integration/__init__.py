@@ -168,8 +168,15 @@ async def session_factory(request: pytest.FixtureRequest) -> AsyncGenerator[asyn
 
 
 def _should_preserve_table_on_cleanup(table_name: str) -> bool:
-    """Return True for alembic_version and reference/world seed tables."""
-    return table_name == "alembic_version" or table_name in _REFERENCE_SEED_TABLES
+    """Return True for the migration ledger and reference/world seed tables.
+
+    `schema_migrations` (dbmate, #811 -- alembic was never wired up and had no ledger table)
+    is never actually reached by this check in practice: `Base.metadata.sorted_tables`, the
+    only thing `_delete_mutable_integration_test_rows` iterates, contains SQLAlchemy-mapped
+    tables only, and migration-ledger tables are created directly by tooling, never ORM-mapped.
+    Named here anyway so the intent survives if that ever changes.
+    """
+    return table_name == "schema_migrations" or table_name in _REFERENCE_SEED_TABLES
 
 
 async def _delete_mutable_integration_test_rows(session: AsyncSession) -> None:

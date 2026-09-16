@@ -37,8 +37,7 @@ at call time), so alphabetical ordering is safe as long as no file's *table* dep
 The list below is the actual current directory contents (2026-09-11), documentation
 only:
 
-1. `account_sanctions.sql` - account_sanctions (table DDL in
-   `server/alembic/versions/2026_09_11_add_account_sanctions_table.py`)
+1. `account_sanctions.sql` - account_sanctions (table DDL now baselined in `db/schema.sql`, #811)
 2. `calendar.sql` - calendar_holidays, calendar_npc_schedules (reads only)
 3. `containers.sql` - containers, container_contents
 4. `dialogues.sql` - dialogue_definitions
@@ -85,7 +84,8 @@ multiple times safely.
 
 ## Moved from DDL
 
-The following functions were moved from `db/mythos_*_ddl.sql` into `containers.sql`:
+The following functions were moved from the environment DDL (now `db/schema.sql`, #811) into
+`containers.sql`:
 
 - `add_item_to_container`
 - `clear_container_contents`

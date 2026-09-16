@@ -281,7 +281,8 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
         if "does not exist" in str(exc).lower() or "UndefinedTableError" in type(exc).__name__:
             logger.warning(
                 "Ensure POSTGRES_SEARCH_PATH is set (e.g. mythos_dev in .env.local) and that "
-                "the schema DDL has been applied (e.g. psql -d mythos_dev -f db/mythos_dev_ddl.sql)",
+                + 'the schema DDL has been applied (e.g. psql -d mythos_dev -c "SET search_path '
+                + 'TO mythos_dev;" -f db/schema.sql)',
             )
         self.item_prototype_registry = None
         self.item_factory = None
