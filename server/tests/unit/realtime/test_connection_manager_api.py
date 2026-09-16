@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import uuid
+from collections.abc import Callable, Coroutine
 from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -104,3 +105,31 @@ async def test_send_room_description(mock_manager: MagicMock) -> None:
     with patch("server.realtime.connection_manager_api.send_game_event", new_callable=AsyncMock) as sge:
         await cm_api.send_room_description(uuid.uuid4(), {"name": "Foyer"})
     sge.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "call",
+    [
+        lambda: cm_api.send_game_event(uuid.uuid4(), "e", {}),
+        lambda: cm_api.broadcast_game_event("e", {}),
+        lambda: cm_api.send_room_event("room-1", "e", {}),
+    ],
+)
+async def test_missing_manager_is_logged_not_raised(
+    call: Callable[[], Coroutine[object, object, None]],
+) -> None:
+    """#781: _require_manager()'s RuntimeError escaped these wrappers, so fire-and-forget
+    callers in follow_service/party_service leaked 'Task exception was never retrieved'
+    at shutdown -- and every awaiting caller would have taken it inline."""
+    with (
+        patch("server.realtime.connection_manager_api.resolve_connection_manager", return_value=None),
+        patch.object(cm_api, "logger") as mock_logger,
+    ):
+        await call()  # must not raise
+    # cast for basedpyright: patch.object() types mock_logger as the real BoundLogger,
+    # whose .warning/.error attribute access basedpyright otherwise sees as Any.
+    warning: MagicMock = cast(MagicMock, cast(MagicMock, mock_logger).warning)
+    error: MagicMock = cast(MagicMock, cast(MagicMock, mock_logger).error)
+    warning.assert_called_once()
+    error.assert_not_called()

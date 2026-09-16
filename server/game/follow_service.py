@@ -116,7 +116,13 @@ class FollowService:
                 )
 
     def _schedule_coro(self, coro: Coroutine[object, object, object]) -> None:
-        """Fire-and-forget; close coro if no running event loop (e.g. sync unit tests)."""
+        """Fire-and-forget; close coro if no running event loop (e.g. sync unit tests).
+
+        ponytail: nothing observes the created task, so an exception raised inside coro
+        outside send_game_event's own except tuple still surfaces as "Task exception was
+        never retrieved" at GC time (#781). Add a done-callback (see
+        app/task_registry.py:149) or route through TaskRegistry if that recurs.
+        """
         try:
             _ = asyncio.create_task(coro)
         except RuntimeError:
