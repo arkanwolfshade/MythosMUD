@@ -35,7 +35,10 @@ make verify-schema
 
 This uses `scripts/verify_schema_match.ps1`, which reads `DATABASE_URL` from `.env.local` (or
 `.env`) and compares `db/schema.sql` against the live database (schema-qualification stripped
-from both sides before comparing).
+from both sides before comparing). It covers table/column DDL only, not stored-procedure bodies
+(`db/procedures/*.sql`, reapplied wholesale by `apply-procedures` regardless of drift) and not
+dbmate ledger currency (`schema_migrations` is excluded from the comparison; `mythos_dev`'s
+migration currency is enforced separately at server start -- see `migrations/README.md`).
 
 ### Directory structure
 

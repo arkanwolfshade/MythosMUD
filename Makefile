@@ -92,6 +92,7 @@ help:
 	@echo "  bootstrap-e2e-database   - Force-recreate mythos_e2e (DDL + DML + E2E users)"
 	@echo "  ensure-e2e-database      - Bootstrap mythos_e2e if missing or professions empty"
 	@echo "  verify-schema          - Verify db/schema.sql matches database"
+	@echo "  migrate-dev            - Apply dbmate migrations to mythos_dev (additive; up only)"
 	@echo ""
 	@echo "Documentation:"
 	@echo "  openapi-spec          - Generate OpenAPI spec to docs/openapi/openapi.json"
@@ -362,7 +363,7 @@ clean:
 install:
 	$(PYTHON) scripts/install.py
 
-build: apply-procedures
+build: apply-procedures migrate-dev
 	$(PYTHON) scripts/build.py
 
 apply-procedures:

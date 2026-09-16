@@ -403,6 +403,18 @@ try {
         $Port = $config.Port
     }
 
+    # Step 3.5: Bring mythos_dev current on dbmate migrations before the app binds to it.
+    # Local only -- unit/e2e reconverge in their own test targets (#811), production never
+    # auto-migrates. migrate.ps1 is up/status-only, so this is additive and can never drop or
+    # truncate PROTECTED mythos_dev (.claude/rules/database.md).
+    if ($Environment -eq "local") {
+        & (Join-Path $PSScriptRoot 'migrate.ps1') -Environment dev
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "mythos_dev migration failed (exit $LASTEXITCODE); not starting the server." -ForegroundColor Red
+            exit 1
+        }
+    }
+
     # Step 4: Stop existing processes
     Stop-ServerProcess
 

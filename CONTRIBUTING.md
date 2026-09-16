@@ -197,20 +197,23 @@ Before you begin your research, ensure you have the proper tools:
 
    **CRITICAL**: Edit `.env.local` and `.env.unit_test` to set your local configuration. Never commit these files!
 
-5. **Set up test environment and apply procedures:**
+5. **Set up test environment and provision mythos_dev:**
 
    ```powershell
    # Required before first test run
 
    make setup-test-env
 
-   # Create mythos_dev + apply DDL (from .env.local DATABASE_URL)
+   # Create mythos_dev + its schema + pgcrypto (idempotent; run once, as a superuser)
+   psql -U postgres -f db/roles/roles.sql
+   psql -U postgres -f db/databases/databases.sql
 
-   .\scripts\setup_postgresql_test_db.ps1 -EnvFile .env.local
+   # Apply db/schema.sql + data/db/seed.sql to mythos_dev.
+   # DESTRUCTIVE: drops and recreates every table. FRESH DATABASE ONLY.
+   $env:CONFIRM_LOAD_WORLD_SEED = "1"; uv run python scripts/load_world_seed.py
 
-   # Apply procedures to mythos_dev
-
-   make apply-procedures
+   make apply-procedures    # db/procedures/*.sql -> mythos_dev
+   make migrate-dev         # dbmate migrations (also automatic at server start)
    ```
 
 6. **Verify setup:**
