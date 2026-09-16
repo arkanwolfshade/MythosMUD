@@ -268,8 +268,8 @@ bootstrap-e2e-database:
 	$(POWERSHELL) scripts/bootstrap_e2e_database.ps1
 
 ensure-e2e-database:
-	@echo "Ensuring mythos_e2e has reference seed (professions)..."
-	$(POWERSHELL) scripts/ensure_e2e_database.ps1
+	@echo "Ensuring mythos_e2e is fully reconverged (schema/seed/procedures/migrations)..."
+	$(POWERSHELL) scripts/bootstrap_e2e_database.ps1 -SkipForce
 
 verify-schema:
 	@echo "Verifying environment DDL matches database (from .env.local or .env)..."

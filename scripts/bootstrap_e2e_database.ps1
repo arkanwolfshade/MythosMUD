@@ -1,10 +1,21 @@
 #!/usr/bin/env pwsh
-# Force-recreate mythos_e2e, apply DDL/migrations, procedures, and seed E2E users.
+# Reconverge mythos_e2e (schema, seed, procedures, migrations) and seed E2E users.
 # Loads .env.e2e_test from project root (same as E2E server). Run from repo root.
+#
+# By default, also DROP DATABASE/CREATE DATABASE mythos_e2e first, via
+# setup_postgresql_test_db.ps1 -Force. -SkipForce keeps the existing database instead --
+# schema/seed/migrations are still fully reconverged either way (setup_postgresql_test_db.ps1
+# no longer has an early-exit for "database already exists", #811 follow-up); -SkipForce just
+# skips the database-object-level drop. `make ensure-e2e-database` passes -SkipForce as its
+# fast, always-correct pre-test-run gate (replacing the old ensure_e2e_database.ps1 heuristic,
+# which could and did guess wrong).
 
 # Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
-param()
+param(
+    [switch]$SkipForce
+)
+$Force = -not $SkipForce
 
 $ErrorActionPreference = "Stop"
 
@@ -41,8 +52,8 @@ function Invoke-Step {
     }
 }
 
-Write-Host "[INFO] Recreating database from .env.e2e_test (Force)" -ForegroundColor Yellow
-Invoke-Step "setup_postgresql_test_db.ps1" { & (Join-Path $PSScriptRoot "setup_postgresql_test_db.ps1") -Force -EnvFile ".env.e2e_test" }
+Write-Host "[INFO] Reconverging database from .env.e2e_test (Force=$Force)" -ForegroundColor Yellow
+Invoke-Step "setup_postgresql_test_db.ps1" { & (Join-Path $PSScriptRoot "setup_postgresql_test_db.ps1") -Force:$Force -EnvFile ".env.e2e_test" }
 
 Write-Host ""
 Write-Host "[INFO] Applying procedures and migrations to mythos_e2e" -ForegroundColor Yellow

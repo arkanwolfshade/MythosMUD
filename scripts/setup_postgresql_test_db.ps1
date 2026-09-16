@@ -117,48 +117,51 @@ try {
     # Check if database exists
     Write-Host "Checking if database '$dbName' exists..." -ForegroundColor Yellow
     $dbCheck = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d postgres -t -c "SELECT 1 FROM pg_database WHERE datname = '$dbName';" 2>&1
+    $dbExists = ($LASTEXITCODE -eq 0 -and ($dbCheck -match '1'))
 
-    if ($LASTEXITCODE -eq 0 -and ($dbCheck -match '1')) {
-        if ($Force) {
-            Write-Host "[INFO] Database exists. Dropping (Force mode)..." -ForegroundColor Yellow
-            if ($dbName -in @("mythos_unit", "mythos_e2e")) {
-                Write-Host "[INFO] Terminating other sessions on '$dbName' before drop..." -ForegroundColor Yellow
-                $terminateSql = @"
+    # -Force additionally drops+recreates the database object itself -- for a database in a
+    # state db/schema.sql's own --clean/--if-exists can't self-heal (wrong owner, wrong
+    # encoding, a corrupted catalog). Without -Force, an existing database is kept and
+    # schema+seed are still reapplied below unconditionally (see next block) -- this script
+    # no longer exits early just because the database happens to already exist (#811 follow-up:
+    # that early-exit is what let mythos_unit drift silently for an extended period).
+    if ($dbExists -and $Force) {
+        Write-Host "[INFO] Database exists. Dropping (Force mode)..." -ForegroundColor Yellow
+        Write-Host "[INFO] Terminating other sessions on '$dbName' before drop..." -ForegroundColor Yellow
+        $terminateSql = @"
 SELECT pg_terminate_backend(pid)
 FROM pg_stat_activity
 WHERE datname = '$dbName' AND pid <> pg_backend_pid();
 "@
-                $null = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d postgres -c $terminateSql 2>&1
-                Start-Sleep -Seconds 1
-            }
-            $dropResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d postgres -c "DROP DATABASE $dbName;" 2>&1
-            if ($LASTEXITCODE -ne 0) {
-                Write-Host "[ERROR] Failed to drop database: $dropResult" -ForegroundColor Red
-                exit 1
-            }
-            Write-Host "[OK] Database dropped" -ForegroundColor Green
+        $null = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d postgres -c $terminateSql 2>&1
+        Start-Sleep -Seconds 1
+        $dropResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d postgres -c "DROP DATABASE $dbName;" 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "[ERROR] Failed to drop database: $dropResult" -ForegroundColor Red
+            exit 1
         }
-        else {
-            Write-Host "[OK] Database '$dbName' already exists" -ForegroundColor Green
-            Write-Host "[INFO] Use -Force to recreate the database" -ForegroundColor Cyan
-            exit 0
-        }
+        Write-Host "[OK] Database dropped" -ForegroundColor Green
+        $dbExists = $false
     }
 
-    # Create database
-    Write-Host "Creating database '$dbName'..." -ForegroundColor Yellow
-    $createResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d postgres -c "CREATE DATABASE $dbName;" 2>&1
-
-    if ($LASTEXITCODE -eq 0) {
-        Write-Host "[OK] Database '$dbName' created successfully" -ForegroundColor Green
+    if ($dbExists) {
+        Write-Host "[OK] Database '$dbName' already exists; reconverging schema/seed/migrations..." -ForegroundColor Green
     }
     else {
-        if ($createResult -match 'already exists') {
-            Write-Host "[WARNING] Database already exists (may have been created concurrently)" -ForegroundColor Yellow
+        Write-Host "Creating database '$dbName'..." -ForegroundColor Yellow
+        $createResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d postgres -c "CREATE DATABASE $dbName;" 2>&1
+
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "[OK] Database '$dbName' created successfully" -ForegroundColor Green
         }
         else {
-            Write-Host "[ERROR] Failed to create database: $createResult" -ForegroundColor Red
-            exit 1
+            if ($createResult -match 'already exists') {
+                Write-Host "[WARNING] Database already exists (may have been created concurrently)" -ForegroundColor Yellow
+            }
+            else {
+                Write-Host "[ERROR] Failed to create database: $createResult" -ForegroundColor Red
+                exit 1
+            }
         }
     }
 
@@ -206,6 +209,29 @@ WHERE datname = '$dbName' AND pid <> pg_backend_pid();
     else {
         Write-Host "[INFO] Seed file not found (skipping): $seedFile" -ForegroundColor Cyan
     }
+
+    # schema_migrations (dbmate's ledger) is deliberately excluded from db/schema.sql's
+    # DROP/CREATE list (see generate_schema_from_dev.ps1), so reapplying schema.sql above did
+    # NOT touch it -- it still claims every post-baseline migration is already applied, even
+    # though schema.sql just reset the tables those migrations changed back to baseline shape.
+    # Truncating it (not dropping the table) makes scripts/migrate.ps1's next `up` genuinely
+    # replay every migration, so this script's "always reconverge" guarantee stays honest end
+    # to end instead of silently regressing post-baseline schema changes on every second run.
+    Write-Host "Resetting migration ledger (schema_migrations) for a clean dbmate replay..." -ForegroundColor Yellow
+    $resetLedgerSql = @"
+DO `$`$
+BEGIN
+    EXECUTE format('TRUNCATE TABLE %I.schema_migrations', '$dbName');
+EXCEPTION WHEN undefined_table THEN
+    NULL; -- dbmate has never run against this database yet; nothing to reset
+END `$`$;
+"@
+    $resetResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -v ON_ERROR_STOP=1 -c $resetLedgerSql 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "[ERROR] Failed to reset migration ledger: $resetResult" -ForegroundColor Red
+        exit 1
+    }
+    Write-Host "[OK] Migration ledger reset" -ForegroundColor Green
 
     Write-Host ""
     Write-Host "Setup completed successfully!" -ForegroundColor Green

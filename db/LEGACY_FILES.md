@@ -21,6 +21,14 @@ instead of hand-copied per-environment triplets and one-off apply scripts. See
 Every "Authoritative" reference to the six retired files below is now historical — read it as
 "the six files #811 replaced with `db/schema.sql` / `data/db/seed.sql`."
 
+**#811 follow-up**: `scripts/setup_postgresql_test_db.ps1`'s "database already exists → skip
+DDL/DML" early-exit — the actual root cause of the `mythos_unit` drift #811 investigated — was
+removed; the script now unconditionally reconverges schema/seed/the dbmate ledger every run.
+`scripts/ensure_e2e_database.ps1` (a "professions > 0" heuristic gating a full recreate, which
+could and did guess wrong) and `data/db/e2e_professions_seed.sql` (its standalone repair file,
+now with no caller) were both removed as a result — every caller now invokes
+`scripts/bootstrap_e2e_database.ps1 -Force:$false` directly.
+
 ## Active Infrastructure Files
 
 These files are **actively used** and should **not** be removed:
@@ -180,7 +188,6 @@ db/
 data/
 ├── db/                         ✅ Authoritative seed - single schema-agnostic file (#811)
 │   ├── seed.sql
-│   ├── e2e_professions_seed.sql  (standalone mythos_e2e repair, see data/db/README.md)
 │   └── README.md
 └── static/
     └── generated_sql/          ⚠️ Legacy - Historical reference only

@@ -6,8 +6,8 @@
     "typeRoots": ["../../node_modules/@types"],
     "noEmit": false,
     "allowImportingTsExtensions": false,
-    "rootDir": "."
+    "rootDir": "../.."
   },
-  "include": ["./**/*.ts"],
+  "include": ["./**/*.ts", "../../src/test/e2e-bootstrap.ts", "../../src/utils/deathVoidLocation.ts"],
   "exclude": []
 }
