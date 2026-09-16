@@ -33,3 +33,7 @@ npx dbmate new <description> --migrations-dir db/migrations
 Then edit the generated file and run `scripts/migrate.ps1 -Environment <env>` to apply it. Only
 `up` and `status` are reachable through that wrapper — `drop`/`down` are never exposed, and
 `mythos_dev` (PROTECTED, see `.claude/rules/database.md`) can only ever be targeted by those two.
+
+`mythos_dev` also migrates automatically on the next `scripts/start_local.ps1` run (local
+environment only) — running `migrate.ps1` by hand is only needed to apply a new migration
+immediately, without restarting the server.

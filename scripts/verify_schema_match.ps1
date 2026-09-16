@@ -116,13 +116,13 @@ try {
 
     & $pgIsready -h $DbHost -U $DbUser -d $DbName 2>&1 | Out-Null
     if ($LASTEXITCODE -ne 0) {
-        Write-Output "Warning: Cannot verify database connectivity. Schema file exists but cannot verify against database."
-        exit 0
+        Write-Output "Error: Cannot connect to $DbName at ${DbHost}. Schema drift cannot be verified -- treating as failure, not a pass."
+        exit 1
     }
 }
 catch {
-    Write-Output "Warning: Cannot verify database connectivity. Schema file exists but cannot verify against database."
-    exit 0
+    Write-Output "Error: Cannot connect to $DbName at ${DbHost}. Schema drift cannot be verified -- treating as failure, not a pass."
+    exit 1
 }
 
 # Generate current schema from database
@@ -141,6 +141,8 @@ try {
         "--clean"
         "--if-exists"
         # dbmate-owned (#811), and excluded from the checked-in baseline -- see generate_schema_from_dev.ps1.
+        # Migration currency for mythos_dev is enforced separately, at server start
+        # (scripts/start_server.ps1's Step 3.5) -- this exclusion is not a coverage gap.
         "--exclude-table=${DbName}.schema_migrations"
         "--file=$TempSchema"
     )

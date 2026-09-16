@@ -165,12 +165,18 @@ Edit `.env.local` and set at least:
 
 **Security Note**: Never commit `.env.local` or other local env files. Templates are `env.*.example` in the repo root.
 
-Ensure PostgreSQL is running. Create `mythos_dev` and apply environment DDL (uses
-`DATABASE_URL` from `.env.local`), then apply procedures:
+Ensure PostgreSQL is running. Create `mythos_dev`, apply its schema, then apply procedures and
+migrations:
 
 ```powershell
-.\scripts\setup_postgresql_test_db.ps1 -EnvFile .env.local
+psql -U postgres -f db/roles/roles.sql
+psql -U postgres -f db/databases/databases.sql
+
+# DESTRUCTIVE: drops and recreates every table. FRESH DATABASE ONLY.
+$env:CONFIRM_LOAD_WORLD_SEED = "1"; uv run python scripts/load_world_seed.py
+
 make apply-procedures
+make migrate-dev    # also applied automatically on every start_local.ps1
 ```
 
 DDL source: `db/schema.sql` (schema-agnostic, #811). See
