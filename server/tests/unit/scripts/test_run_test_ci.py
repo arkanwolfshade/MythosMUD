@@ -26,6 +26,7 @@ SCRIPT = PROJECT_ROOT / "scripts" / "run_test_ci.py"
 CI_WORKFLOW = PROJECT_ROOT / ".github" / "workflows" / "ci.yml"
 INSTALL_CI_DEPENDENCIES = PROJECT_ROOT / "scripts" / "install_ci_dependencies.sh"
 PLAYWRIGHT_INTEGRATION_RUNNER = PROJECT_ROOT / "scripts" / "run_integration_tests_playwright.ps1"
+GITHUB_RUNNER_DOCKERFILE = PROJECT_ROOT / "Dockerfile.github-runner"
 
 
 def _script_source() -> str:
@@ -34,6 +35,10 @@ def _script_source() -> str:
 
 def _workflow_source() -> str:
     return CI_WORKFLOW.read_text(encoding="utf-8")
+
+
+def _dockerfile_source() -> str:
+    return GITHUB_RUNNER_DOCKERFILE.read_text(encoding="utf-8")
 
 
 def test_run_test_ci_never_passes_an_xdist_worker_count() -> None:
@@ -142,3 +147,29 @@ def test_run_test_ci_checks_for_the_single_schema_agnostic_seed_file() -> None:
     assert "mythos_unit_dml.sql" not in source
     assert "mythos_dev_dml.sql" not in source
     assert "mythos_e2e_dml.sql" not in source
+
+
+def test_ci_workflow_applies_procedures_via_stdin_not_dash_f() -> None:
+    """#811's stored-procedure apply loop failed in CI with 'psql: error:
+    .../db/procedures/account_sanctions.sql: Permission denied' -- postgres (via su/sudo)
+    could not open the checked-out file directly for -f, even though db/schema.sql and
+    data/db/seed.sql (loaded the same su/sudo way moments earlier) could. Piping the file's
+    content via stdin sidesteps the cross-user file-read: the runner user does the reading,
+    only the SQL text crosses the user boundary. Guards against reverting to `-f "$f"` here."""
+    workflow = _workflow_source()
+    procedures_start = workflow.index("Applying procedures...")
+    procedures_end = workflow.index("Procedures applied successfully", procedures_start)
+    step_body = workflow[procedures_start:procedures_end]
+    assert '-d mythos_unit" < "$f"' in step_body
+    assert "-f $f" not in step_body
+    assert '-f "$f"' not in step_body
+
+
+def test_dockerfile_applies_procedures_via_stdin_not_dash_f() -> None:
+    """Same fix, same guard, for the equivalent loop in Dockerfile.github-runner (#811)."""
+    source = _dockerfile_source()
+    procedures_start = source.index("for f in /workspace/db/procedures/*.sql")
+    procedures_end = source.index("done", procedures_start)
+    loop_body = source[procedures_start:procedures_end]
+    assert '-d mythos_unit" < "$f"' in loop_body
+    assert "-f $f" not in loop_body

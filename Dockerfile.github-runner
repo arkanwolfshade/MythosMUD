@@ -147,7 +147,7 @@ RUN service postgresql start && \
     su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f /workspace/db/schema.sql" && \
     ( [ -f /workspace/data/db/seed.sql ] && su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f /workspace/data/db/seed.sql" || true ) && \
     for f in /workspace/db/procedures/*.sql; do \
-      su postgres -c "psql -v ON_ERROR_STOP=1 -v schema_name=mythos_unit -d mythos_unit -f $f" || exit 1; \
+      su postgres -c "psql -v ON_ERROR_STOP=1 -v schema_name=mythos_unit -d mythos_unit" < "$f" || exit 1; \
     done && \
     npx --prefix /workspace dbmate --url "postgres://postgres:${POSTGRES_PASSWORD}@localhost:5432/mythos_unit?sslmode=disable&search_path=mythos_unit" --migrations-dir /workspace/db/migrations --no-dump-schema up && \
     su postgres -c "psql -t -c \"SELECT datname FROM pg_database WHERE datname = 'mythos_unit';\"" | grep -q "mythos_unit" && \
