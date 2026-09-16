@@ -37,7 +37,7 @@ PYTEST_OPTS := --maxfail=10 --tb=short
 PYTEST_COV_OPTS := --cov=server --cov-report=html --cov-report=term-missing --cov-report=xml
 
 # PHONY targets
-.PHONY: help clean install build run run-production apply-procedures
+.PHONY: help clean install build run run-production apply-procedures migrate-dev
 .PHONY: lint lint-sqlalchemy lint-imports format mypy basedpyright typecheck any-report
 .PHONY: bandit pylint ruff sqlfluff sqlint vulture
 .PHONY: hadolint shellcheck psscriptanalyzer
@@ -91,7 +91,7 @@ help:
 	@echo "  setup-postgresql-test-db - Create PostgreSQL test database (mythos_unit via .env.unit_test)"
 	@echo "  bootstrap-e2e-database   - Force-recreate mythos_e2e (DDL + DML + E2E users)"
 	@echo "  ensure-e2e-database      - Bootstrap mythos_e2e if missing or professions empty"
-	@echo "  verify-schema          - Verify db/mythos_<env>_ddl.sql matches database"
+	@echo "  verify-schema          - Verify db/schema.sql matches database"
 	@echo ""
 	@echo "Documentation:"
 	@echo "  openapi-spec          - Generate OpenAPI spec to docs/openapi/openapi.json"
@@ -311,11 +311,7 @@ test-client-e2e:
 # and belong in the same flow as Playwright (running server context). They are NOT run by make test-server.
 test-playwright: setup-test-env ensure-e2e-database
 	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_e2e
-	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_e2e
-	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_e2e
-	$(POWERSHELL) scripts/apply_aggression_level_migration.ps1 -TargetDbs mythos_e2e
-	$(POWERSHELL) scripts/apply_dialogue_migration.ps1 -TargetDbs mythos_e2e
-	$(POWERSHELL) scripts/apply_item_catalog_core_weapons.ps1 -TargetDbs mythos_e2e
+	$(POWERSHELL) scripts/migrate.ps1 -Environment e2e
 	@echo "Running Playwright E2E then integration tests (fails fast on Playwright/bootstrap errors)..."
 	$(POWERSHELL) scripts/run_test_playwright.ps1 $(PYTEST_OPTS)
 
@@ -326,21 +322,13 @@ test-client-coverage:
 test-server: setup-test-env setup-postgresql-test-db
 	@echo "Running server tests (no coverage)..."
 	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_unit
-	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_unit
-	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_unit
-	$(POWERSHELL) scripts/apply_aggression_level_migration.ps1 -TargetDbs mythos_unit
-	$(POWERSHELL) scripts/apply_dialogue_migration.ps1 -TargetDbs mythos_unit
-	$(POWERSHELL) scripts/apply_item_catalog_core_weapons.ps1 -TargetDbs mythos_unit
+	$(POWERSHELL) scripts/migrate.ps1 -Environment unit
 	$(UV) pytest server/tests/ -m "not integration" $(PYTEST_OPTS)
 
 test-server-coverage: setup-test-env setup-postgresql-test-db
 	@echo "Running server tests with coverage..."
 	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_unit
-	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_unit
-	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_unit
-	$(POWERSHELL) scripts/apply_aggression_level_migration.ps1 -TargetDbs mythos_unit
-	$(POWERSHELL) scripts/apply_dialogue_migration.ps1 -TargetDbs mythos_unit
-	$(POWERSHELL) scripts/apply_item_catalog_core_weapons.ps1 -TargetDbs mythos_unit
+	$(POWERSHELL) scripts/migrate.ps1 -Environment unit
 	$(UV) pytest server/tests/ -m "not integration" $(PYTEST_OPTS) $(PYTEST_COV_OPTS)
 
 # Fail-fast multi-stage runners (loud banner + skip remaining stages on first failure).
@@ -380,6 +368,10 @@ build: apply-procedures
 apply-procedures:
 	@echo "Applying PostgreSQL procedures to mythos_dev..."
 	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_dev
+
+migrate-dev:
+	@echo "Running dbmate migrations against mythos_dev..."
+	$(POWERSHELL) scripts/migrate.ps1 -Environment dev
 
 run:
 	$(PYTHON) scripts/run.py

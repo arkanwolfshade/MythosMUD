@@ -127,8 +127,7 @@ async def init_db() -> None:
     Initialize database connection and verify configuration.
 
     NOTE: DDL (table creation) is NOT managed by this function.
-    All database schema must be created via environment-specific DDL (db/mythos_dev_ddl.sql,
-    db/mythos_unit_ddl.sql, db/mythos_e2e_ddl.sql).
+    All database schema must be created via the schema-agnostic DDL baseline (db/schema.sql, #811)
     and applied using database management scripts (e.g., psql).
 
     This function only:
@@ -136,7 +135,7 @@ async def init_db() -> None:
     - Configures SQLAlchemy mappers for ORM relationships
     - Verifies database connectivity
 
-    To create tables, use the appropriate db/mythos_<env>_ddl.sql for your database.
+    To create tables, apply db/schema.sql with search_path set to your database's schema.
     """
     logger.info("Initializing database connection", operation="init_db")
 

@@ -919,7 +919,6 @@ class TestCombatSystem:
 
 - Type stubs and protocol definitions (`server/stubs/*`)
 - Test files (`server/tests/*`)
-- Database migrations (`server/alembic/*`)
 - Intentionally unreachable code (defensive programming)
 - Third-party integration code (test integration points)
 

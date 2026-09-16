@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-"""Apply the account_sanctions table (server/alembic/versions/2026_09_11_add_account_sanctions_table.py)
-to one or more databases. Idempotent (IF NOT EXISTS).
+"""Apply the account_sanctions table to one or more databases. Idempotent (IF NOT EXISTS).
+
+The table is now part of the baseline (db/schema.sql, #811); this script remains as a
+standalone repair tool for a database that predates that baseline.
 
 Usage: python scripts/apply_account_sanctions_migration.py mythos_dev mythos_e2e
 Reads connection details from .env.local / .env.unit_test / .env.e2e_test, matching the schema

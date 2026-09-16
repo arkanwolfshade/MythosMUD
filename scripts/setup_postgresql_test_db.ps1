@@ -55,7 +55,10 @@ $dbHost = $matches[3]
 $dbPort = $matches[4]
 $dbName = $matches[5]
 
-$allowedDbs = @("mythos_unit", "mythos_e2e", "mythos_dev")
+# mythos_dev is PROTECTED (see .claude/rules/database.md) and deliberately excluded: this
+# script's -Force path drops the database outright, and mythos_dev is provisioned separately
+# via scripts/load_world_seed.py, which has its own explicit CONFIRM_LOAD_WORLD_SEED=1 gate (#811).
+$allowedDbs = @("mythos_unit", "mythos_e2e")
 if ($dbName -notin $allowedDbs) {
     Write-Host "[ERROR] DATABASE_URL database name '$dbName' is not allowed; refusing to create or drop." -ForegroundColor Red
     Write-Host "[INFO] Allowed names: $($allowedDbs -join ', ')" -ForegroundColor Yellow
@@ -159,77 +162,49 @@ WHERE datname = '$dbName' AND pid <> pg_backend_pid();
         }
     }
 
-    # Apply environment-specific DDL (db/mythos_<dbname>_ddl.sql)
-    if ($dbName -in $allowedDbs) {
-        $schemaFile = Join-Path -Path (Join-Path -Path $ProjectRoot -ChildPath "db") -ChildPath "${dbName}_ddl.sql"
-        if (Test-Path $schemaFile) {
-            Write-Host "Applying environment DDL ($dbName)..." -ForegroundColor Yellow
-            $schemaResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -f $schemaFile 2>&1
-            if ($LASTEXITCODE -eq 0) {
-                Write-Host "[OK] DDL applied ($schemaFile)" -ForegroundColor Green
-            }
-            else {
-                Write-Host "[WARNING] Failed to apply DDL: $schemaResult" -ForegroundColor Yellow
-                Write-Host "[INFO] Schema may be initialized by test fixtures instead" -ForegroundColor Cyan
-            }
+    # The app schema (same name as the database, #811) and pgcrypto -- db/schema.sql no longer
+    # creates either (see db/databases/databases.sql, which does the same for a fresh install).
+    Write-Host "Ensuring schema '$dbName' and pgcrypto exist..." -ForegroundColor Yellow
+    $ensureSchemaSql = "CREATE SCHEMA IF NOT EXISTS $dbName; CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA $dbName;"
+    $ensureResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -v ON_ERROR_STOP=1 -c $ensureSchemaSql 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "[ERROR] Failed to ensure schema/pgcrypto: $ensureResult" -ForegroundColor Red
+        exit 1
+    }
+
+    # Schema-agnostic baseline (#811): db/schema.sql (DDL) and data/db/seed.sql (world, NPC
+    # definitions, items, etc.) are unqualified, so search_path must be set to $dbName first.
+    # Both are the single source for all three environments -- see db/schema.sql's own header.
+    $schemaFile = Join-Path -Path $ProjectRoot -ChildPath "db\schema.sql"
+    if (Test-Path $schemaFile) {
+        Write-Host "Applying schema ($dbName)..." -ForegroundColor Yellow
+        $schemaResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -v ON_ERROR_STOP=1 -c "SET search_path TO $dbName;" -f $schemaFile 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "[OK] Schema applied ($schemaFile)" -ForegroundColor Green
         }
         else {
-            Write-Host "[INFO] DDL file not found: $schemaFile" -ForegroundColor Cyan
+            Write-Host "[WARNING] Failed to apply schema: $schemaResult" -ForegroundColor Yellow
+            Write-Host "[INFO] Schema may be initialized by test fixtures instead" -ForegroundColor Cyan
         }
     }
     else {
-        Write-Host "[INFO] Database $dbName not in (mythos_unit, mythos_e2e, mythos_dev); skipping DDL" -ForegroundColor Cyan
+        Write-Host "[INFO] Schema file not found: $schemaFile" -ForegroundColor Cyan
     }
 
-    # Apply container table creation migration (must run before 011)
-    $migration012File = Join-Path -Path $PSScriptRoot -ChildPath ".." | Join-Path -ChildPath "db" | Join-Path -ChildPath "migrations" | Join-Path -ChildPath "012_create_containers_table.sql"
-    if (Test-Path $migration012File) {
-        Write-Host "Applying container table creation migration (012)..." -ForegroundColor Yellow
-        $migrationResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -v ON_ERROR_STOP=1 -f $migration012File 2>&1
+    $seedFile = Join-Path -Path $ProjectRoot -ChildPath "data\db\seed.sql"
+    if (Test-Path $seedFile) {
+        Write-Host "Loading seed ($dbName)..." -ForegroundColor Yellow
+        $seedResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -v ON_ERROR_STOP=1 -c "SET search_path TO $dbName;" -f $seedFile 2>&1
         if ($LASTEXITCODE -eq 0) {
-            Write-Host "[OK] Container table creation migration applied" -ForegroundColor Green
+            Write-Host "[OK] Seed applied ($seedFile)" -ForegroundColor Green
         }
         else {
-            Write-Host "[ERROR] Failed to apply container table creation migration: $migrationResult" -ForegroundColor Red
+            Write-Host "[ERROR] Failed to apply seed: $seedResult" -ForegroundColor Red
             exit 1
         }
     }
     else {
-        Write-Host "[WARNING] Container table creation migration file not found: $migration012File" -ForegroundColor Yellow
-    }
-
-    # Apply container schema normalization migration (adds container_item_instance_id column)
-    $migrationFile = Join-Path -Path $PSScriptRoot -ChildPath ".." | Join-Path -ChildPath "db" | Join-Path -ChildPath "migrations" | Join-Path -ChildPath "011_add_container_item_instance_id.sql"
-    if (Test-Path $migrationFile) {
-        Write-Host "Applying container schema normalization migration (011)..." -ForegroundColor Yellow
-        $migrationResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -v ON_ERROR_STOP=1 -f $migrationFile 2>&1
-        if ($LASTEXITCODE -eq 0) {
-            Write-Host "[OK] Container schema normalization migration applied" -ForegroundColor Green
-        }
-        else {
-            Write-Host "[ERROR] Failed to apply container schema normalization migration: $migrationResult" -ForegroundColor Red
-            exit 1
-        }
-    }
-    else {
-        Write-Host "[WARNING] Container schema normalization migration file not found: $migrationFile" -ForegroundColor Yellow
-    }
-
-    # Authoritative seed (world, NPC definitions, items, etc.) lives in data/db/<dbname>_dml.sql
-    $dmlFile = Join-Path -Path $ProjectRoot -ChildPath "data\db\${dbName}_dml.sql"
-    if (Test-Path $dmlFile) {
-        Write-Host "Loading environment DML ($dbName)..." -ForegroundColor Yellow
-        $dmlResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -v ON_ERROR_STOP=1 -f $dmlFile 2>&1
-        if ($LASTEXITCODE -eq 0) {
-            Write-Host "[OK] DML applied ($dmlFile)" -ForegroundColor Green
-        }
-        else {
-            Write-Host "[ERROR] Failed to apply DML: $dmlResult" -ForegroundColor Red
-            exit 1
-        }
-    }
-    else {
-        Write-Host "[INFO] DML file not found (skipping): $dmlFile" -ForegroundColor Cyan
+        Write-Host "[INFO] Seed file not found (skipping): $seedFile" -ForegroundColor Cyan
     }
 
     Write-Host ""

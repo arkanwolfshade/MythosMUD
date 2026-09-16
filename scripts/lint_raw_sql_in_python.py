@@ -29,8 +29,6 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 # Directories under server/ excluded entirely -- never scanned.
 EXCLUDED_DIR_PARTS = {
     "tests",
-    "alembic",  # schema DDL/migration tooling; ADR-015's procedure mandate is about
-    # application data access, not the tool whose entire job is schema migration.
     "scripts",  # one-off admin/migration CLI tools, not live request-serving paths.
     "graphify-out",  # vendored virtualenv checked into the tree by a different tool.
 }

@@ -24,6 +24,9 @@ Three wrinkles the street grid does not have:
   spacing between rooms directly reduces how much of the building fits on screen.
 
     python scripts/author_sanitarium_coords.py [--check]
+
+Since #811, `data/db/seed.sql` is the single schema-agnostic seed for all three environments
+(mythos_dev / mythos_unit / mythos_e2e) -- there is no longer a per-environment file to loop over.
 """
 
 from __future__ import annotations
@@ -33,8 +36,7 @@ import re
 from collections import deque
 from pathlib import Path
 
-ENVS = ("dev", "unit", "e2e")
-DML_DIR = Path("data/db")
+SEED_PATH = Path("data/db/seed.sql")
 
 SUBZONE = "_sanitarium_"
 ENTRANCE = "earth_arkhamcity_sanitarium_room_foyer_entrance_001"
@@ -71,17 +73,6 @@ DELTA = {
 }
 
 
-def dml_path(env: str) -> Path:
-    """Path to one environment's seed file.
-
-    Built with `/` and an f-string rather than `Path(TEMPLATE.format(...))`: a plain
-    `str.format()` result is inferred as `LiteralString`, which some type checkers then
-    refuse to match against `StrPath` in `Path.__new__`. Composing from a `Path` keeps
-    the argument unambiguously a path and is clearer anyway.
-    """
-    return DML_DIR / f"mythos_{env}_dml.sql"
-
-
 def _read_dml(path: Path) -> tuple[str, bool]:
     """Read a seed file, returning its text with LF endings and whether it was CRLF.
 
@@ -102,7 +93,7 @@ def _write_dml(path: Path, text: str, crlf: bool) -> None:
 
 
 def parse_block(text: str, table: str) -> tuple[int, int, list[list[str]]]:
-    m = re.search(rf"^COPY [\w.]+\.{table} \([^)]*\) FROM stdin;\n", text, re.M)
+    m = re.search(rf"^COPY {table} \([^)]*\) FROM stdin;\n", text, re.M)
     if not m:
         raise SystemExit(f"no COPY block for {table}")
     end = text.index("\n\\.", m.end())
@@ -158,34 +149,33 @@ def main() -> int:
     # once through a narrowing call so the rest of main() works with a real bool.
     check_only = bool(getattr(args, "check", False))
 
-    for env in ENVS:
-        path = dml_path(env)
-        text, crlf = _read_dml(path)
-        start, end, rooms = parse_block(text, "rooms")
-        _, _, links = parse_block(text, "room_links")
+    path = SEED_PATH
+    text, crlf = _read_dml(path)
+    start, end, rooms = parse_block(text, "rooms")
+    _, _, links = parse_block(text, "room_links")
 
-        coords = assign(rooms, links)
-        if len(set(coords.values())) != len(coords):
-            raise SystemExit("sanitarium coordinate collision")
+    coords = assign(rooms, links)
+    if len(set(coords.values())) != len(coords):
+        raise SystemExit("sanitarium coordinate collision")
 
-        filled = 0
-        for row in rooms:
-            if row[0] in coords:
-                x, y = coords[row[0]]
-                row[6], row[7] = f"{x}.00", f"{y}.00"
-                # map_symbol is left NULL on purpose: AsciiMapRenderer auto-assigns a
-                # symbol from the room's environment when none is stored, and an explicit
-                # '#' on every room overrides that with a wall of identical marks.
-                row[10] = "interior"
-                filled += 1
+    filled = 0
+    for row in rooms:
+        if row[0] in coords:
+            x, y = coords[row[0]]
+            row[6], row[7] = f"{x}.00", f"{y}.00"
+            # map_symbol is left NULL on purpose: AsciiMapRenderer auto-assigns a
+            # symbol from the room's environment when none is stored, and an explicit
+            # '#' on every room overrides that with a wall of identical marks.
+            row[10] = "interior"
+            filled += 1
 
-        nulls = [r[2] for r in rooms if r[6] == "\\N" and r[2].startswith("earth_arkhamcity_")]
-        payload = "\n".join("\t".join(r) for r in rooms) + "\n"
-        if not check_only:
-            _write_dml(path, text[:start] + payload + text[end:], crlf)
-        print(f"{env:<5} filled {filled} sanitarium rooms; arkham rooms still NULL: {len(nulls)}")
-        if nulls:
-            print("   ", nulls[:5])
+    nulls = [r[2] for r in rooms if r[6] == "\\N" and r[2].startswith("earth_arkhamcity_")]
+    payload = "\n".join("\t".join(r) for r in rooms) + "\n"
+    if not check_only:
+        _write_dml(path, text[:start] + payload + text[end:], crlf)
+    print(f"filled {filled} sanitarium rooms; arkham rooms still NULL: {len(nulls)}")
+    if nulls:
+        print("   ", nulls[:5])
 
     print("(dry run)" if check_only else "written")
     return 0

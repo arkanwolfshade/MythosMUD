@@ -28,7 +28,7 @@ def register_default_reactions_for_npc(
         reactions: list[NPCEventReaction] = []
 
         # #815: fallbacks for an NPC with no authored greeting/farewell of its own -- every one of
-        # the ten seeded NPCs (data/db/mythos_*_dml.sql) sets its own greeting_message/
+        # the ten seeded NPCs (data/db/seed.sql) sets its own greeting_message/
         # farewell_message, so these are rarely reached in practice. Kept in-tone regardless.
         if npc_type in ["shopkeeper", "passive_mob"]:
             greeting = str(behavior_config.get("greeting_message", "A wary nod is offered in greeting."))

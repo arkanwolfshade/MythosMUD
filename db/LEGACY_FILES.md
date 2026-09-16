@@ -2,6 +2,25 @@
 
 This document summarizes the status of legacy database files and directories.
 
+## #811: DDL/DML collapsed to two schema-agnostic files
+
+`db/mythos_dev_ddl.sql`, `db/mythos_unit_ddl.sql`, `db/mythos_e2e_ddl.sql` and
+`data/db/mythos_dev_dml.sql`, `data/db/mythos_unit_dml.sql`, `data/db/mythos_e2e_dml.sql` — the
+six per-environment files described as "authoritative" throughout the rest of this document —
+were themselves retired. They were ~1.4MB of duplicated SQL whose only real difference was the
+schema name, and they had drifted from each other (`mythos_unit_dml.sql` was missing a room and
+two links present in the other two).
+
+**Replacement**: `db/schema.sql` (DDL) and `data/db/seed.sql` (seed), unqualified object names,
+loaded with `search_path` set to the target schema. One file each, for all three environments.
+
+**Migrations going forward**: tracked by **dbmate** (`db/migrations/`, via `scripts/migrate.ps1`)
+instead of hand-copied per-environment triplets and one-off apply scripts. See
+`db/migrations/README.md`.
+
+Every "Authoritative" reference to the six retired files below is now historical — read it as
+"the six files #811 replaced with `db/schema.sql` / `data/db/seed.sql`."
+
 ## Active Infrastructure Files
 
 These files are **actively used** and should **not** be removed:
@@ -142,13 +161,15 @@ of authoritative `data/db/mythos_*_dml.sql`.
 
 ```
 db/
-├── mythos_dev_ddl.sql         ✅ Authoritative - Dev DDL
-├── mythos_unit_ddl.sql        ✅ Authoritative - Unit test DDL
-├── mythos_e2e_ddl.sql         ✅ Authoritative - E2E test DDL
-├── databases/                  ✅ Active - Database provisioning
+├── schema.sql                  ✅ Authoritative - single schema-agnostic DDL (#811)
+├── databases/                  ✅ Active - Database provisioning (creates schema + pgcrypto)
 │   ├── databases.sql
 │   └── README.md
-├── migrations/                 ❌ DDL migration .sql files removed (README only)
+├── migrations/                 ✅ Active - dbmate migrations (post-baseline, #811)
+│   ├── 20260915000000_baseline.sql
+│   └── README.md
+├── procedures/                 ✅ Active - stored procedures/functions (apply_procedures.ps1)
+│   ├── *.sql
 │   └── README.md
 ├── roles/                      ✅ Active - Role creation
 │   ├── roles.sql
@@ -157,10 +178,10 @@ db/
     └── README.md
 
 data/
-├── db/                         ✅ Authoritative DML only
-│   ├── mythos_dev_dml.sql
-│   ├── mythos_unit_dml.sql
-│   └── mythos_e2e_dml.sql
+├── db/                         ✅ Authoritative seed - single schema-agnostic file (#811)
+│   ├── seed.sql
+│   ├── e2e_professions_seed.sql  (standalone mythos_e2e repair, see data/db/README.md)
+│   └── README.md
 └── static/
     └── generated_sql/          ⚠️ Legacy - Historical reference only
         ├── static_seed.sql
@@ -174,6 +195,8 @@ When updating code that references legacy files:
 - [x] Replace `db/schema/*.sql` with environment DDL (`db/mythos_*_ddl.sql`) — done
 - [x] Use only authoritative DML (`data/db/mythos_*_dml.sql`) — done
 - [x] Remove DDL/DML migration files in favor of authoritative DDL/DML — done
+- [x] Collapse the six per-environment DDL/DML files into `db/schema.sql` / `data/db/seed.sql`,
+      adopt dbmate for post-baseline migrations (#811) — done
 - [ ] Update any remaining hardcoded paths in scripts
 - [ ] Update comments and documentation
 

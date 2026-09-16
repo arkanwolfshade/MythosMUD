@@ -115,3 +115,43 @@ def test_asyncpg_server_settings_respects_postgres_search_path(
     monkeypatch.setenv("POSTGRES_SEARCH_PATH", "custom_schema")
     url = "postgresql://localhost/mythos_unit"
     assert world_seed_api.asyncpg_server_settings(url) == {"search_path": "custom_schema"}
+
+
+@pytest.mark.regression
+@pytest.mark.parametrize("db_name", ["mythos_dev", "mythos_unit", "mythos_e2e"])
+def test_validate_environment_resolves_to_the_single_schema_agnostic_baseline(
+    monkeypatch: pytest.MonkeyPatch,
+    world_seed_api: LoadWorldSeedTestApi,
+    db_name: str,
+) -> None:
+    """Since #811, every allowlisted DB resolves to the SAME db/schema.sql and
+    data/db/seed.sql -- there is no longer a per-environment file to pick.
+
+    `_validate_environment_and_files` checks existence against the process cwd (it is a
+    script, run from the repo root), so this test anchors cwd explicitly rather than trusting
+    whatever an earlier test in the same pytest session left it as.
+    """
+    monkeypatch.chdir(PROJECT_ROOT)
+    monkeypatch.setenv("DATABASE_URL", f"postgresql://u:p@localhost:5432/{db_name}")
+    monkeypatch.setenv("CONFIRM_LOAD_WORLD_SEED", "1")
+    database_url, schema_file, dml_file = world_seed_api.validate_environment_and_files()
+    assert database_url.endswith(db_name)
+    assert schema_file == Path("db/schema.sql")
+    assert dml_file == Path("data/db/seed.sql")
+
+
+@pytest.mark.regression
+def test_validate_environment_errors_when_baseline_files_are_missing(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    world_seed_api: LoadWorldSeedTestApi,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """A missing db/schema.sql or data/db/seed.sql must fail loudly, not silently skip DDL/DML."""
+    monkeypatch.setenv("DATABASE_URL", "postgresql://u:p@localhost:5432/mythos_unit")
+    monkeypatch.setenv("CONFIRM_LOAD_WORLD_SEED", "1")
+    monkeypatch.chdir(tmp_path)  # a fresh empty dir: guaranteed no db/schema.sql beneath it
+    with pytest.raises(SystemExit) as exc_info:
+        _ = world_seed_api.validate_environment_and_files()
+    assert exc_info.value.code == 1
+    assert "not found" in capsys.readouterr().out

@@ -32,10 +32,8 @@ CRLF = CR + LF
 class _CoordsModule(Protocol):
     STEP: int
     DELTA: dict[str, tuple[int, int]]
-    ENVS: tuple[str, ...]
-    DML_DIR: Path
+    SEED_PATH: Path
 
-    def dml_path(self, env: str) -> Path: ...
     def _read_dml(self, path: Path) -> tuple[str, bool]: ...
     def _write_dml(self, path: Path, text: str, crlf: bool) -> None: ...
 
@@ -97,38 +95,26 @@ class TestLineEndingRoundTrip:
 
 
 class TestDmlPath:
-    """This picks which of three seed files gets rewritten in place, so a wrong path is
-    not a crash - it is silently editing the wrong environment."""
+    """A wrong path is not a crash - it is silently editing (or missing) the wrong file."""
 
-    def test_each_environment_resolves_to_its_own_seed_file(self, coords: _CoordsModule) -> None:
-        for env in ("dev", "unit", "e2e"):
-            assert coords.dml_path(env).name == f"mythos_{env}_dml.sql"
+    def test_seed_path_is_the_single_schema_agnostic_seed(self, coords: _CoordsModule) -> None:
+        assert coords.SEED_PATH == Path("data/db/seed.sql")
 
-    def test_paths_are_distinct_per_environment(self, coords: _CoordsModule) -> None:
-        resolved = {coords.dml_path(env) for env in coords.ENVS}
-        assert len(resolved) == len(coords.ENVS), "two environments resolve to the same file"
-
-    def test_the_files_it_names_actually_exist(self, coords: _CoordsModule) -> None:
-        """Catches a rename of the seed files, which would otherwise surface as the
+    def test_the_seed_file_actually_exists(self, coords: _CoordsModule) -> None:
+        """Catches a rename of the seed file, which would otherwise surface as the
         script reporting zero rooms filled rather than failing."""
-        for env in coords.ENVS:
-            assert (_REPO_ROOT / coords.dml_path(env)).exists(), f"{env} seed file missing"
-
-    def test_it_returns_a_path_not_a_string(self, coords: _CoordsModule) -> None:
-        """The reason this helper exists: `Path(TEMPLATE.format(...))` infers
-        `LiteralString`, which some checkers refuse to match against `StrPath`."""
-        assert isinstance(coords.dml_path("dev"), Path)
+        assert (_REPO_ROOT / coords.SEED_PATH).exists(), "seed file missing"
 
 
 class TestCheckFlag:
-    """`--check` is the only thing standing between a dry run and rewriting three seed
-    files in place. If the flag were inverted or mis-wired, running it to *inspect* the
-    result would silently modify the working tree instead."""
+    """`--check` is the only thing standing between a dry run and rewriting the seed file
+    in place. If the flag were inverted or mis-wired, running it to *inspect* the result
+    would silently modify the working tree instead."""
 
-    def test_check_leaves_every_seed_file_byte_identical(self) -> None:
+    def test_check_leaves_the_seed_file_byte_identical(self) -> None:
         script = _REPO_ROOT / "scripts" / "author_sanitarium_coords.py"
-        targets = [_REPO_ROOT / f"data/db/mythos_{env}_dml.sql" for env in ("dev", "unit", "e2e")]
-        before = {p: hashlib.sha256(p.read_bytes()).hexdigest() for p in targets}
+        target = _REPO_ROOT / "data/db/seed.sql"
+        before = hashlib.sha256(target.read_bytes()).hexdigest()
 
         result = subprocess.run(
             [sys.executable, str(script), "--check"],
@@ -140,9 +126,8 @@ class TestCheckFlag:
 
         assert result.returncode == 0, result.stderr
         assert "(dry run)" in result.stdout, result.stdout
-        after = {p: hashlib.sha256(p.read_bytes()).hexdigest() for p in targets}
-        changed = [p.name for p in targets if before[p] != after[p]]
-        assert not changed, f"--check modified seed files: {changed}"
+        after = hashlib.sha256(target.read_bytes()).hexdigest()
+        assert before == after, "--check modified the seed file"
 
 
 class TestLayoutInvariants:

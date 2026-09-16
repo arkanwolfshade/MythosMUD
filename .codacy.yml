@@ -4,7 +4,7 @@
 # These warnings are informational - package-lock.json locks exact versions
 #
 # --- Enforced coverage (authoritative; CI and local tooling) ---
-# Python: aggregate line coverage >= 63% on Cobertura from pytest --cov=server (omit tests, alembic, etc.);
+# Python: aggregate line coverage >= 63% on Cobertura from pytest --cov=server (omit tests, etc.);
 #   see .coveragerc, pyproject.toml [tool.coverage.report] fail_under, and
 #   scripts/validate_codacy_coverage_gate.py --min-python-line-rate (run from scripts/run_test_ci.py).
 # TypeScript/React: LCOV aggregate line rate >= 70% before Codacy upload (ci.yml);
@@ -45,7 +45,6 @@ exclude_paths:
   - "scripts/**"
   - "tools/**"
   - "server/tests/**"
-  - "server/alembic/**"
   # Coverage alignment: not in Vitest coverage include (client/src only); Playwright and config live here.
   - "client/tests/**"
   - "client/scripts/**"

@@ -376,18 +376,18 @@ async def _ensure_room_cache_before_npc_startup() -> None:
         logger.error(
             "Room cache is empty after warmup - rooms table has no data. "
             "Populate world data: run scripts/load_world_seed.py (with DATABASE_URL) or "
-            "psql -d your_db -f data/db/mythos_dev_dml.sql (or mythos_unit_dml.sql / mythos_e2e_dml.sql). See db/README.md.",
+            'psql -d your_db -c "SET search_path TO your_schema;" -f data/db/seed.sql. See db/README.md.',
             cache_size=cache_size,
             cache_loaded=container.async_persistence._room_cache_loaded,  # pylint: disable=protected-access  # Reason: Need to check cache load status
         )
         raise RuntimeError(
             "Room cache is empty in production. The rooms table must be populated with world seed data. "
-            "Run: scripts/load_world_seed.py (set DATABASE_URL) or psql -d your_db -f data/db/mythos_<env>_dml.sql. "
-            "See db/README.md."
+            'Run: scripts/load_world_seed.py (set DATABASE_URL) or psql -d your_db -c "SET search_path '
+            'TO your_schema;" -f data/db/seed.sql. See db/README.md.'
         )
     logger.warning(
         "Room cache is empty after warmup - NPC spawning may fail. "
-        "To populate: run scripts/load_world_seed.py or psql -d your_db -f data/db/mythos_<env>_dml.sql",
+        "To populate: run scripts/load_world_seed.py or psql -d your_db -f data/db/seed.sql (with search_path set)",
         cache_size=cache_size,
         cache_loaded=container.async_persistence._room_cache_loaded,  # pylint: disable=protected-access  # Reason: Need to check cache load status
     )

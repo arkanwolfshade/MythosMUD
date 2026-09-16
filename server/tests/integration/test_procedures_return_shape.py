@@ -126,7 +126,7 @@ async def test_get_rooms_with_exits_includes_arena_zone_rooms(
     assert not missing, (
         f"get_rooms_with_exits() must return all arena zone rooms (limbo/arena). "
         f"Missing {len(missing)} of {len(ARENA_ROOM_IDS)}: {missing[:5]!s}{'...' if len(missing) > 5 else ''}. "
-        "Ensure the test DB has arena migration applied (apply_arena_migration.ps1)."
+        "Ensure the test DB has the arena zone seeded (data/db/seed.sql, #811)."
     )
     assert "limbo_arena_arena_arena_5_5" in stable_ids, "Arena center room must be in room cache data source"
 

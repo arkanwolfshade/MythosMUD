@@ -1,7 +1,7 @@
 """
 Quest subsystem models: quest_definitions, quest_instances, quest_offers.
 
-Maps to Alembic migration 2026_02_19_add_quest_tables.
+Schema is part of the baseline (db/schema.sql, #811).
 """
 
 # pylint: disable=too-few-public-methods  # Reason: SQLAlchemy model data classes

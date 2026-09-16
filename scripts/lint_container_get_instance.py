@@ -42,11 +42,10 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 # Directories under server/ excluded entirely -- never scanned, never allowlisted. Same set as
-# lint_raw_sql_in_python.py, for the same reasons (tests, migration tooling, admin scripts, and a
-# vendored tree are not live request-serving application code).
+# lint_raw_sql_in_python.py, for the same reasons (tests, admin scripts, and a vendored tree are
+# not live request-serving application code).
 EXCLUDED_DIR_PARTS = {
     "tests",
-    "alembic",
     "scripts",
     "graphify-out",
 }

@@ -6,7 +6,7 @@ Warns on:
 - not in ( with a subquery (select) in the same file
 
 Scoped to developer-authored SQL only (db/schema, db/verification, db/migrations,
-server/scripts). Auto-generated environment DDL (db/mythos_*_ddl.sql) are excluded.
+server/scripts). Auto-generated DDL/seed (db/schema.sql, data/db/seed.sql) are excluded.
 
 Usage: python scripts/lint_sql_guardrails.py
 Exit: 0 if no issues, 1 if any warning (so CI can enforce).
@@ -20,17 +20,18 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 # Directories containing hand-maintained SQL (relative to project root)
+# data/db/migrations/ retired in #811 -- its 66 per-environment files are now baselined into
+# db/schema.sql / data/db/seed.sql; db/migrations/ is dbmate's directory going forward.
 SQL_DIRS = [
     "db/schema",
     "db/verification",
     "db/migrations",
-    "data/db/migrations",
     "server/scripts",
 ]
 
-# Files to skip (e.g. generated or legacy)
-# Skip generated/large environment DDL files (lint guardrails target hand-authored SQL)
-SKIP_FILES = {"mythos_dev_ddl.sql", "mythos_unit_ddl.sql", "mythos_e2e_ddl.sql"}
+# Files to skip (e.g. generated or legacy). db/schema.sql and data/db/seed.sql (#811) are
+# pg_dump output, not hand-authored -- same reason the old per-environment dumps were skipped.
+SKIP_FILES = {"schema.sql", "seed.sql"}
 
 
 def _collect_sql_files() -> list[Path]:

@@ -30,9 +30,7 @@ sql_dirs = ["db", "data/db"]
 sql_files = []
 exclude_patterns = [
     "db/databases/databases.sql",  # Contains psql meta-commands (\connect, \gexec)
-    "db/mythos_dev_ddl.sql",  # Large generated DDL, skipped by SQLFluff
-    "db/mythos_unit_ddl.sql",
-    "db/mythos_e2e_ddl.sql",
+    "db/schema.sql",  # Large generated DDL (#811), skipped by SQLFluff
     "data/db/",  # pg_dump DML (COPY ... FROM stdin); not parseable as SQL by sqlfluff
 ]
 for sql_dir in sql_dirs:

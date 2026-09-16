@@ -346,10 +346,10 @@ if IN_CI:
     )
 else:
     # Non-CI execution path (local development)
-    # Ensure data submodule is initialized so data/db/mythos_unit_dml.sql is available for Docker build
-    data_dml = os.path.join(PROJECT_ROOT, "data", "db", "mythos_unit_dml.sql")
+    # Ensure data submodule is initialized so data/db/seed.sql is available for Docker build (#811)
+    data_dml = os.path.join(PROJECT_ROOT, "data", "db", "seed.sql")
     if not os.path.isfile(data_dml):
-        print("Initializing data submodule (required for Docker build: data/db/mythos_unit_dml.sql)...")
+        print("Initializing data submodule (required for Docker build: data/db/seed.sql)...")
         submodule_result = safe_run_static(
             "git",
             "submodule",
@@ -365,14 +365,14 @@ else:
         if submodule_result.returncode != 0:
             print(
                 "WARNING: Could not initialize data submodule. "
-                + "Docker build may fail with 'mythos_unit_dml.sql: No such file or directory'."
+                + "Docker build may fail with 'seed.sql: No such file or directory'."
             )
             if submodule_result.stderr:
                 print(f"  git submodule error: {submodule_result.stderr.strip()}")
         elif not os.path.isfile(data_dml):
             print(
-                "WARNING: data/db/mythos_unit_dml.sql still missing after submodule init. "
-                + "Ensure the mythosmud_data repo contains data/db/mythos_unit_dml.sql."
+                "WARNING: data/db/seed.sql still missing after submodule init. "
+                + "Ensure the mythosmud_data repo contains data/db/seed.sql."
             )
 
     print("Building Docker runner image (this ensures dependencies are up-to-date)...")

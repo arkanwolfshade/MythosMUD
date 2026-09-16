@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Apply quest subsystem migrations to a database (e.g. mythos_dev).
 
-Runs the same DDL/DML as server/alembic/versions/2026_02_19_*.
+The quest tables and tutorial-quest seed are now part of the baseline (db/schema.sql /
+data/db/seed.sql, #811); this script remains as a standalone repair tool for a database that
+predates that baseline.
 Uses DATABASE_URL (default: mythos_dev). Safe to run multiple times (IF NOT EXISTS / ON CONFLICT DO NOTHING).
 """
 

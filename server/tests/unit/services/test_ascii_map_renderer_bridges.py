@@ -161,8 +161,12 @@ class TestDepartureMarkers:
         return "\n".join(
             _plain(
                 AsciiMapRenderer().render_map(
-                    rooms, current_room_id="a", viewport_width=width, viewport_height=height,
-                    viewport_x=0, viewport_y=0,
+                    rooms,
+                    current_room_id="a",
+                    viewport_width=width,
+                    viewport_height=height,
+                    viewport_x=0,
+                    viewport_y=0,
                 )
             )
         )

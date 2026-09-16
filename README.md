@@ -277,7 +277,7 @@ See [DEVELOPMENT.md](docs/DEVELOPMENT.md) or [CONTRIBUTING.md](CONTRIBUTING.md) 
    make apply-procedures
    ```
 
-   See `db/mythos_dev_ddl.sql` and [POSTGRESQL_CONTRIBUTOR_GUIDE.md](docs/POSTGRESQL_CONTRIBUTOR_GUIDE.md).
+   See `db/schema.sql` and [POSTGRESQL_CONTRIBUTOR_GUIDE.md](docs/POSTGRESQL_CONTRIBUTOR_GUIDE.md).
 
 6. **Start the development environment:**
 

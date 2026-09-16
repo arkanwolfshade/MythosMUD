@@ -1,6 +1,7 @@
 #!/usr/bin/env pwsh
 # MythosMUD Schema Verification Script
-# Verifies that the environment-specific DDL (db/mythos_<dbname>_ddl.sql) matches the current database structure
+# Verifies that the schema-agnostic baseline (db/schema.sql, #811) matches the current
+# database structure, for whichever of mythos_dev/mythos_unit/mythos_e2e DATABASE_URL points at.
 
 # Use Write-Output/Write-Error/Write-Warning instead of Write-Host for redirectability and Codacy compliance
 $ErrorActionPreference = "Stop"
@@ -58,13 +59,13 @@ if ($script:DatabaseUrl) {
     }
 }
 
-# Environment-specific DDL: db/mythos_dev_ddl.sql, db/mythos_unit_ddl.sql, db/mythos_e2e_ddl.sql
+# Single schema-agnostic baseline for all three environments (#811)
 $allowedDbs = @("mythos_dev", "mythos_unit", "mythos_e2e")
 if ($DbName -notin $allowedDbs) {
     Write-Output "Error: Database name must be one of: $($allowedDbs -join ', ')"
     exit 1
 }
-$SchemaFile = Join-Path (Join-Path $ProjectRoot "db") "${DbName}_ddl.sql"
+$SchemaFile = Join-Path $ProjectRoot "db\schema.sql"
 
 Write-Output "Verifying schema match between $SchemaFile and $DbName..."
 
@@ -97,7 +98,7 @@ if (-not $PgDump) {
 
 # Check if schema file exists
 if (-not (Test-Path $SchemaFile)) {
-    Write-Output "Error: DDL file not found: $SchemaFile. Use db/mythos_dev_ddl.sql, db/mythos_unit_ddl.sql, or db/mythos_e2e_ddl.sql"
+    Write-Output "Error: Schema file not found: $SchemaFile"
     exit 1
 }
 
@@ -139,6 +140,8 @@ try {
         "--no-privileges"
         "--clean"
         "--if-exists"
+        # dbmate-owned (#811), and excluded from the checked-in baseline -- see generate_schema_from_dev.ps1.
+        "--exclude-table=${DbName}.schema_migrations"
         "--file=$TempSchema"
     )
 
@@ -148,6 +151,11 @@ try {
         exit 1
     }
 
+    # db/schema.sql is schema-agnostic (#811): unqualified object names. Strip the qualification
+    # pg_dump always emits from the freshly-extracted copy before comparing, or every line would
+    # show as drift.
+    (Get-Content $TempSchema) -replace "\b$([regex]::Escape($DbName))\.", "" | Set-Content $TempSchema
+
     # Read and normalize both schema files for comparison
     # Remove comments, SET statements, pg_dump metadata commands, and empty lines, then sort
     $schemaContent = Get-Content $SchemaFile |
@@ -156,6 +164,8 @@ try {
         $_ -notmatch '^\s*SET\s+' -and
         $_ -notmatch '^\\restrict' -and
         $_ -notmatch '^\\unrestrict' -and
+        $_ -notmatch '^CREATE SCHEMA ' -and
+        $_ -notmatch '^CREATE EXTENSION IF NOT EXISTS pgcrypto' -and
         $_ -match '\S'
     } |
     Sort-Object
@@ -166,6 +176,11 @@ try {
         $_ -notmatch '^\s*SET\s+' -and
         $_ -notmatch '^\\restrict' -and
         $_ -notmatch '^\\unrestrict' -and
+        $_ -notmatch '^CREATE SCHEMA ' -and
+        $_ -notmatch '^CREATE EXTENSION IF NOT EXISTS pgcrypto' -and
+        $_ -notmatch '^DROP EXTENSION IF EXISTS pgcrypto;$' -and
+        $_ -notmatch '^DROP SCHEMA IF EXISTS ' -and
+        $_ -notmatch "^SELECT pg_catalog\.set_config\('search_path'" -and
         $_ -match '\S'
     } |
     Sort-Object
