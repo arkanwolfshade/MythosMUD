@@ -34,11 +34,21 @@ class _ConnectionManagerAPI(Protocol):
     ) -> Awaitable[object]: ...
 
 
+class ConnectionManagerUnavailable(RuntimeError):
+    """Raised when no connection manager can be resolved.
+
+    Deliberately a plain RuntimeError and NOT a MythosMUDError: that base class logs at
+    ERROR in its constructor (see MythosMUDError._log_error in ../exceptions.py), which
+    would defeat the point of handling this at warning level below. Do not reparent it
+    into the MythosMUDError tree.
+    """
+
+
 def _require_manager() -> _ConnectionManagerAPI:
     """Resolve manager without importing ConnectionManager (import cycle)."""
     manager = resolve_connection_manager()
     if manager is None:
-        raise RuntimeError("Connection manager not available")
+        raise ConnectionManagerUnavailable("Connection manager not available")
     return cast(_ConnectionManagerAPI, manager)
 
 
@@ -51,9 +61,9 @@ def remove_online_player(player_id: uuid.UUID) -> None:
     each attempted save is refused by the soft-delete guard (#777) -- one warning, with a full
     stack trace, per player per tick, forever (or until they happen to disconnect).
 
-    Unlike `_require_manager()`, a missing manager is not an error here: deletion can run in
-    contexts with no live connection manager (unit tests, offline tooling, startup), and it
-    must still succeed.
+    A missing manager is not an error here either (see the send/broadcast helpers below,
+    which now also treat it as non-fatal): deletion can run in contexts with no live
+    connection manager (unit tests, offline tooling, startup), and it must still succeed.
     """
     manager = resolve_connection_manager()
     if manager is None:
@@ -86,6 +96,12 @@ async def send_game_event(player_id: uuid.UUID | str, event_type: str, data: Map
         # Pass UUID object directly to build_event (it accepts UUID | str)
         _ = await manager.send_personal_message(player_id_uuid, build_event(event_type, data, player_id=player_id_uuid))
 
+    except ConnectionManagerUnavailable:
+        logger.warning(
+            "Skipping game event; connection manager unavailable",
+            player_id=player_id,
+            event_type=event_type,
+        )
     except (DatabaseError, AttributeError) as e:
         logger.error("Error sending game event", player_id=player_id, error=str(e))
 
@@ -105,6 +121,8 @@ async def broadcast_game_event(event_type: str, data: Mapping[str, object], excl
         manager = _require_manager()
         _ = await manager.broadcast_global(build_event(event_type, data), exclude_player)
 
+    except ConnectionManagerUnavailable:
+        logger.warning("Skipping game event broadcast; connection manager unavailable", event_type=event_type)
     except (DatabaseError, AttributeError) as e:
         logger.error("Error broadcasting game event", error=str(e))
 
@@ -131,6 +149,12 @@ async def send_room_event(
             exclude_player,
         )
 
+    except ConnectionManagerUnavailable:
+        logger.warning(
+            "Skipping room event; connection manager unavailable",
+            room_id=room_id,
+            event_type=event_type,
+        )
     except (DatabaseError, AttributeError) as e:
         logger.error("Error sending room event", room_id=room_id, error=str(e))
 
