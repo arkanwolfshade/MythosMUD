@@ -71,10 +71,8 @@ class TestDbDesignTableRoster:
         extra_in_doc = doc_tables - schema_tables
 
         assert not missing_from_doc, (
-            f"Table(s) in db/schema.sql but not documented in PACKAGE_DB_DESIGN.md §5: "
-            f"{sorted(missing_from_doc)}"
+            f"Table(s) in db/schema.sql but not documented in PACKAGE_DB_DESIGN.md §5: {sorted(missing_from_doc)}"
         )
         assert not extra_in_doc, (
-            f"Table(s) in PACKAGE_DB_DESIGN.md §5 that no longer exist in db/schema.sql: "
-            f"{sorted(extra_in_doc)}"
+            f"Table(s) in PACKAGE_DB_DESIGN.md §5 that no longer exist in db/schema.sql: {sorted(extra_in_doc)}"
         )
