@@ -7,12 +7,6 @@ if errorlevel 1 (
     pause
     exit /b 1
 )
-pwsh -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\ensure_e2e_database.ps1"
-if errorlevel 1 (
-    echo Error: E2E profession seed check failed
-    pause
-    exit /b 1
-)
 pwsh -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\start_e2e_test.ps1" -Environment local
 if errorlevel 1 (
     echo Error: Failed to start server

@@ -4,7 +4,9 @@
  * Global Setup for E2E Runtime Tests
  *
  * This file runs before all tests to:
- * - Ensure mythos_e2e has profession reference data (scripts/ensure_e2e_database.ps1)
+ * - Reconverge mythos_e2e's schema/seed/procedures/migrations (scripts/bootstrap_e2e_database.ps1
+ *   -SkipForce -- #811 follow-up: replaces the old ensure_e2e_database.ps1 "professions > 0"
+ *   heuristic, which could and did guess "looks fine" on a database that wasn't)
  * - Seed E2E users and default characters via scripts/seed_e2e_users.py
  * - Verify users exist in mythos_e2e (scripts/verify_e2e_users_seeded.py)
  * - Verify server health, username login (/v1/auth/login), and profession catalog
@@ -31,17 +33,22 @@ const E2E_TEST_USERNAME = 'Ithaqua';
 const E2E_TEST_PASSWORD = 'Cthulhu1';
 
 function runEnsureE2eDatabase(): void {
-  const ensureScript = `${E2E_PROJECT_ROOT}/scripts/ensure_e2e_database.ps1`;
-  const ensureResult = spawnSync('pwsh', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', ensureScript], {
-    cwd: E2E_PROJECT_ROOT,
-    stdio: 'pipe',
-    encoding: 'utf-8',
-  });
+  const bootstrapScript = `${E2E_PROJECT_ROOT}/scripts/bootstrap_e2e_database.ps1`;
+  const ensureResult = spawnSync(
+    'pwsh',
+    ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', bootstrapScript, '-SkipForce'],
+    {
+      cwd: E2E_PROJECT_ROOT,
+      stdio: 'pipe',
+      encoding: 'utf-8',
+    }
+  );
   if (ensureResult.status !== 0) {
-    failBootstrap('ensure_e2e_database', `ensure_e2e_database.ps1 failed (exit ${ensureResult.status}).`, [
-      spawnOutputDetail(ensureResult.stdout, ensureResult.stderr),
-      'Run: make ensure-e2e-database from repo root.',
-    ]);
+    failBootstrap(
+      'ensure_e2e_database',
+      `bootstrap_e2e_database.ps1 -SkipForce failed (exit ${ensureResult.status}).`,
+      [spawnOutputDetail(ensureResult.stdout, ensureResult.stderr), 'Run: make ensure-e2e-database from repo root.']
+    );
   }
 }
 
