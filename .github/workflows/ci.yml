@@ -286,8 +286,12 @@ jobs:
           # data access through these, so tests ran against whatever the DDL dump happened to have).
           echo "Applying procedures..."
           for f in $WORKSPACE_PATH/db/procedures/*.sql; do
-            su postgres -c "psql -v ON_ERROR_STOP=1 -v schema_name=mythos_unit -d mythos_unit -f $f" || \
-            (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -v ON_ERROR_STOP=1 -v schema_name=mythos_unit -d mythos_unit -f "$f") || \
+            # Pipe via stdin rather than -f: postgres (su/sudo) reading the checked-out file
+            # directly can hit a permission denied that schema.sql/seed.sql happen not to --
+            # piping means the runner user (who owns the checkout) does the reading, and only
+            # the SQL text crosses the user boundary.
+            su postgres -c "psql -v ON_ERROR_STOP=1 -v schema_name=mythos_unit -d mythos_unit" < "$f" || \
+            (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -v ON_ERROR_STOP=1 -v schema_name=mythos_unit -d mythos_unit < "$f") || \
             { echo "ERROR: Failed to apply procedure $f"; exit 1; }
           done
           echo "✓ Procedures applied successfully"
