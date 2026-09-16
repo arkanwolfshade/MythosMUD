@@ -1,6 +1,6 @@
 # ADR-005: Repository Pattern for Data Access
 
-**Version 1.1.0** · MythosMUD · 2026-08-28
+**Version 1.1.1** · MythosMUD · 2026-09-16
 
 ---
 
@@ -65,7 +65,7 @@ Services depend on AsyncPersistenceLayer or specific repositories via Applicatio
 
 **[SPEC]**
 
-- [Persistence Repository Architecture](../../PERSISTENCE_REPOSITORY_ARCHITECTURE.md)
+- [Database Architecture](../DATABASE_ARCHITECTURE.md) — repository layer (§3), formerly `PERSISTENCE_REPOSITORY_ARCHITECTURE.md`
 - [Container Item Repository Async Migration Plan](../../archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md)
 
 ## 8. Changelog
@@ -76,3 +76,4 @@ Services depend on AsyncPersistenceLayer or specific repositories via Applicatio
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
 | 1.1.0 | 2026-08-28 | Record provenance (post-hoc authorship); fix broken migration-plan link, now in `docs/archive/` (#721) |
+| 1.1.1 | 2026-09-16 | Repoint reference to `DATABASE_ARCHITECTURE.md`, which consolidates and replaces `PERSISTENCE_REPOSITORY_ARCHITECTURE.md` (#745) |

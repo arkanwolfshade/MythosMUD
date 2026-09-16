@@ -7,6 +7,7 @@ docs/APPLICATION_CONTAINER_ANALYSIS.md
 docs/architecture/aggro-threat-system.md
 docs/architecture/API_OPENAPI_SPECIFICATION.md
 docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md
+docs/architecture/DATABASE_ARCHITECTURE.md
 docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md
 docs/architecture/decisions/ADR-001-layered-architecture-event-driven.md
 docs/architecture/decisions/ADR-002-application-container-dependency-injection.md
@@ -54,8 +55,6 @@ docs/CURSOR_HOOKS.md
 docs/CURSOR_SETUP_GUIDE.md
 docs/CURSOR_SUBAGENTS.md
 docs/CURSOR_WORKFLOWS.md
-docs/DATABASE_ACCESS_PATTERNS.md
-docs/DATABASE_POOL_CONFIGURATION.md
 docs/dead-code.md
 docs/debugging-mid-run-drops.md
 docs/deployment.md
@@ -75,12 +74,11 @@ docs/MEMORY_LEAK_METRICS_USAGE_GUIDE.md
 docs/NATS_ERROR_HANDLING_STRATEGY.md
 docs/NATS_MANUAL_ACKNOWLEDGMENT_GUIDE.md
 docs/NATS_SUBJECT_PATTERNS.md
-docs/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md
-docs/PERSISTENCE_REPOSITORY_ARCHITECTURE.md
 docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md
 docs/POSTGRESQL_CONTRIBUTOR_GUIDE.md
 docs/packages/PACKAGE_APP_DESIGN.md
 docs/packages/PACKAGE_AUTH_DESIGN.md
+docs/packages/PACKAGE_DB_DESIGN.md
 docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md
 docs/packages/PACKAGE_MODELS_DESIGN.md
 docs/packages/PACKAGE_SCHEMAS_DESIGN.md
@@ -94,7 +92,6 @@ docs/REAL_TIME_ARCHITECTURE.md
 docs/realtime.md
 docs/runbooks/item_system_observability.md
 docs/SECURITY_ENVIRONMENT_VARIABLES.md
-docs/SQLALCHEMY_ASYNC_BEST_PRACTICES.md
 docs/STRUCTURED_CONCURRENCY_PATTERNS.md
 docs/SUBMODULE_SETUP.md
 docs/subsystems/README.md

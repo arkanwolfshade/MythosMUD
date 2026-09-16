@@ -1,6 +1,6 @@
 # ADR-006: PostgreSQL as Primary Datastore
 
-**Version 1.2.0** · MythosMUD · 2026-09-15
+**Version 1.2.1** · MythosMUD · 2026-09-16
 
 ---
 
@@ -69,8 +69,7 @@ Player data, room state, health, experience, inventory, and related entities res
 
 **[SPEC]**
 
-- [Database Access Patterns](../../DATABASE_ACCESS_PATTERNS.md)
-- [Database Pool Configuration](../../DATABASE_POOL_CONFIGURATION.md)
+- [Database Architecture](../DATABASE_ARCHITECTURE.md) — access patterns (§2) and connection pooling (§4), formerly `DATABASE_ACCESS_PATTERNS.md` and `DATABASE_POOL_CONFIGURATION.md`
 
 ## 8. Changelog
 
@@ -81,3 +80,4 @@ Player data, room state, health, experience, inventory, and related entities res
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
 | 1.1.0 | 2026-08-28 | Record provenance (post-hoc authorship) per the 2026-08 audit (#721) |
 | 1.2.0 | 2026-09-15 | Replace "Alembic for schema migrations" with dbmate + baseline (#811); Alembic was scaffolded but never wired up |
+| 1.2.1 | 2026-09-16 | Repoint references to `DATABASE_ARCHITECTURE.md`, which consolidates and replaces `DATABASE_ACCESS_PATTERNS.md` and `DATABASE_POOL_CONFIGURATION.md` (#745) |
