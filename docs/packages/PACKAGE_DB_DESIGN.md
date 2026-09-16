@@ -65,6 +65,7 @@ silently omitted, since its purpose relative to the `corruption_adjustment_log` 
 ## 4. Migration currency by environment
 
 **[SPEC]**
+
 | Database | Reconverges when | Mechanism |
 | --- | --- | --- |
 | `mythos_e2e` | Every E2E run | `bootstrap_e2e_database.ps1` → `migrate.ps1 -Environment e2e` |
