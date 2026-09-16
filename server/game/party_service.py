@@ -213,6 +213,9 @@ class PartyService:
         try:
             from server.realtime.connection_manager_api import send_game_event
 
+            # ponytail: fire-and-forget, nothing observes this task -- an exception outside
+            # send_game_event's own except tuple still leaks as "Task exception was never
+            # retrieved" (#781). Add a done-callback (see app/task_registry.py:149) if it recurs.
             asyncio.create_task(
                 send_game_event(
                     player_id,
