@@ -45,8 +45,8 @@ await health_repo.damage_player(player, 20, "combat")
 
 See:
 
-**Architecture**: `docs/PERSISTENCE_REPOSITORY_ARCHITECTURE.md`
+**Architecture**: `docs/architecture/DATABASE_ARCHITECTURE.md`
 
-**Migration Guide**: `docs/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
+**Migration Guide (archived, migration complete)**: `docs/archive/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
 
-**Migration Plan**: `docs/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+**Migration Plan**: `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`

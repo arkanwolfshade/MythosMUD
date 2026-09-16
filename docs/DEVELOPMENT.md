@@ -1,6 +1,6 @@
 # MythosMUD Development Environment Setup
 
-**Version 1.3.0** · MythosMUD · 2026-09-08
+**Version 1.3.1** · MythosMUD · 2026-09-16
 
 ---
 
@@ -52,7 +52,7 @@ For contributor workflow and pull requests, see [CONTRIBUTING.md](../CONTRIBUTIN
 - [ ] Security headers properly configured
 - [ ] XSS protection implemented
 - [ ] COPPA compliance verified for all features
-- [ ] SQLAlchemy async patterns follow best practices (see `SQLALCHEMY_ASYNC_BEST_PRACTICES.md`)
+- [ ] SQLAlchemy async patterns follow best practices (see `architecture/DATABASE_ARCHITECTURE.md` §2.4)
 - [ ] Enhanced logging system used correctly (see `LOGGING_BEST_PRACTICES.md`)
 
 ---
@@ -546,6 +546,7 @@ forces we seek to understand."_
 
 | Version | Date       | Change                                                                        |
 | ------- | ---------- | ----------------------------------------------------------------------------- |
+| 1.3.1   | 2026-09-16 | Repoint `SQLALCHEMY_ASYNC_BEST_PRACTICES.md` reference to `DATABASE_ARCHITECTURE.md` §2.4 (#745) |
 | 1.3.0   | 2026-09-08 | Point agents at AGENTS.md as SoT; DEVELOPMENT_AI.md is on-ramp router only    |
 | 1.2.0   | 2026-08-28 | Fix broken `PLANNING.md` link (wrong depth) (#722)                            |
 | 1.1.0   | 2026-08-03 | Fact-fix PostgreSQL/env/ports/Make; move agent rules to pointer; fix encoding |

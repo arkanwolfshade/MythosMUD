@@ -1,6 +1,6 @@
 # Container Injection Audit
 
-**Version 1.0.0** · MythosMUD · 2026-08-25
+**Version 1.0.1** · MythosMUD · 2026-09-16
 
 ---
 
@@ -104,8 +104,9 @@ All six were migrated in full; no site was left cycle-blocked by this audit.
 
 - Issue: #636
 - Prerequisite: #679 (module-level singleton removal)
-- `docs/DATABASE_ACCESS_PATTERNS.md` (corrected in the same change to stop teaching
-  `ApplicationContainer.get_instance()` as the default pattern)
+- `docs/architecture/DATABASE_ARCHITECTURE.md` (formerly `docs/DATABASE_ACCESS_PATTERNS.md`,
+  corrected in the same change to stop teaching `ApplicationContainer.get_instance()` as the
+  default pattern)
 
 ## 8. Changelog
 
@@ -114,3 +115,4 @@ All six were migrated in full; no site was left cycle-blocked by this audit.
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-08-25 | Initial audit, post-#679 |
+| 1.0.1 | 2026-09-16 | Repoint `DATABASE_ACCESS_PATTERNS.md` reference to `DATABASE_ARCHITECTURE.md` (#745) |
