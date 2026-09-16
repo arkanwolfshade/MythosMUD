@@ -5,10 +5,13 @@ server/services/exploration_service.py.
 """
 
 import uuid
+from typing import cast
 
 import pytest
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+
+from server.services.coordinate_validator import CoordinateValidator
 
 
 @pytest.fixture
@@ -175,6 +178,36 @@ async def test_get_coordinate_conflicts_pairs_same_coordinate_rooms(
         assert len(rows) == 1
         pair = {rows[0]["room1_id"], rows[0]["room2_id"]}
         assert pair == {source_stable_id, conflicting_stable_id}
+
+
+@pytest.mark.asyncio
+async def test_coordinate_validator_detects_conflict_via_stored_procedures(
+    session_factory: async_sessionmaker[AsyncSession],
+    room_pair: tuple[str, str, uuid.UUID, str, uuid.UUID, str],
+) -> None:
+    """CoordinateValidator's func()/table_valued() calls reach the same procedures as the raw SQL above."""
+    zone_stable_id, subzone_stable_id, source_id, source_stable_id, _target_id, _target_stable_id = room_pair
+    conflicting_stable_id = f"{zone_stable_id}_{subzone_stable_id}_room_conflict"
+    async with session_factory() as session:
+        subzone_id = (
+            await session.execute(text("SELECT subzone_id FROM rooms WHERE id = :id"), {"id": source_id})
+        ).scalar()
+        insert_conflict_room = (
+            "INSERT INTO rooms (id, subzone_id, stable_id, name, description, map_x, map_y) "
+            + "VALUES (:id, :subzone_id, :stable_id, 'Conflict', 'A room.', 0, 0)"
+        )
+        _ = await session.execute(
+            text(insert_conflict_room),
+            {"id": uuid.uuid4(), "subzone_id": subzone_id, "stable_id": conflicting_stable_id},
+        )
+        await session.commit()
+
+        suffix = zone_stable_id.removeprefix("test_zone_")
+        report = await CoordinateValidator(session).validate_coordinates(plane="test", zone=f"zone_{suffix}")
+        assert report["conflict_count"] == 1
+        conflict = cast("dict[str, str | float | None]", report["conflicts"][0])
+        assert {conflict["room1_id"], conflict["room2_id"]} == {source_stable_id, conflicting_stable_id}
+        assert report["total_rooms"] == 3
 
 
 @pytest.mark.asyncio
