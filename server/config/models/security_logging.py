@@ -41,7 +41,7 @@ class LoggingConfig(BaseSettings):
     format: str = Field(default="colored", description="Log format")
     log_base: str = Field(default="logs", description="Base log directory")
     rotation_max_size: str = Field(default="100MB", description="Log rotation max size")
-    rotation_backup_count: int = Field(default=5, description="Number of backup log files")
+    rotation_backup_count: int = Field(default=10, description="Number of backup log files")
     compression: bool = Field(default=True, description="Enable log compression")
     disable_logging: bool = Field(default=False, description="Disable all logging")
 

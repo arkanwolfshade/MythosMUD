@@ -10,6 +10,7 @@ import pytest
 from server.config.models import (
     DatabaseConfig,
     GameConfig,
+    LoggingConfig,
     ServerConfig,
     _default_cors_origins,
     _parse_env_list,
@@ -196,3 +197,20 @@ def test_database_config_validate_pool_config_invalid():
     """Test DatabaseConfig pool config validation with invalid value."""
     with pytest.raises(ValueError, match="Pool configuration values must be at least 1"):
         _ = DatabaseConfig(url=_POSTGRESQL_DATABASE_URL, npc_url=_POSTGRESQL_DATABASE_URL, pool_size=0)
+
+
+def test_logging_config_rotation_backup_count_default() -> None:
+    """Rotation keeps 10 backups per log file.
+
+    With e2e/unit capped at 10MB per file, the previous default of 3 left roughly three
+    minutes of history under load - short enough that investigating an intermittent failure
+    repeatedly found the relevant window already rotated away.
+    """
+    config = LoggingConfig(environment="unit_test")
+    assert config.rotation_backup_count == 10
+
+
+def test_logging_config_rotation_backup_count_override() -> None:
+    """An explicit LOGGING_ROTATION_BACKUP_COUNT still wins over the default."""
+    config = LoggingConfig(environment="unit_test", rotation_backup_count=3)
+    assert config.rotation_backup_count == 3
