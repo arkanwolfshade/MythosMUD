@@ -34,6 +34,7 @@ from server.app.game_tick_processing import (
     get_current_tick,
     get_tick_interval,
     process_casting_progress,
+    process_combat_cleanup,
     process_combat_tick,
     process_dp_decay_and_death,
     process_npc_maintenance,
@@ -290,6 +291,44 @@ async def test_process_casting_progress_calls_magic_service() -> None:
     app.state.container = container
     await process_casting_progress(app, tick_count=3)
     check_casting_progress.assert_awaited_once_with(3)
+
+
+@pytest.mark.asyncio
+async def test_process_combat_cleanup_runs_on_interval() -> None:
+    app = FastAPI()
+    app.state = MagicMock()
+    cleanup_stale_combats: AsyncMock = AsyncMock(return_value=2)
+    combat: MagicMock = MagicMock()
+    combat.cleanup_stale_combats = cleanup_stale_combats
+    container: MagicMock = MagicMock(combat_service=combat)
+    app.state.container = container
+    with patch("server.app.game_tick_processing.NPCMaintenanceConfig.should_run_maintenance", return_value=True):
+        await process_combat_cleanup(app, tick_count=600)
+    cleanup_stale_combats.assert_awaited_once_with()
+
+
+@pytest.mark.asyncio
+async def test_process_combat_cleanup_skips_off_interval() -> None:
+    app = FastAPI()
+    app.state = MagicMock()
+    cleanup_stale_combats: AsyncMock = AsyncMock(return_value=0)
+    combat: MagicMock = MagicMock()
+    combat.cleanup_stale_combats = cleanup_stale_combats
+    container: MagicMock = MagicMock(combat_service=combat)
+    app.state.container = container
+    with patch("server.app.game_tick_processing.NPCMaintenanceConfig.should_run_maintenance", return_value=False):
+        await process_combat_cleanup(app, tick_count=601)
+    cleanup_stale_combats.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_process_combat_cleanup_no_service() -> None:
+    app = FastAPI()
+    app.state = MagicMock()
+    container: MagicMock = MagicMock(combat_service=None)
+    app.state.container = container
+    # Must not raise when no combat service is configured.
+    await process_combat_cleanup(app, tick_count=600)
 
 
 @pytest.mark.asyncio
