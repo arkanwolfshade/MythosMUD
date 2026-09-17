@@ -83,7 +83,9 @@ async def test_get_rooms_with_exits_return_shape(
                     zone_stable_id,
                     plane,
                     zone,
-                    exits
+                    exits,
+                    map_x,
+                    map_y
                 FROM get_rooms_with_exits()
                 """
             )

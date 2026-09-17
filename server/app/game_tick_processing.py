@@ -14,6 +14,7 @@ from fastapi import FastAPI
 
 from ..config import get_config
 from ..config.npc_config import NPCMaintenanceConfig
+from ..monitoring.exception_tracker import track_exception
 from ..realtime.connection_manager_api import broadcast_game_event
 from ..realtime.envelope import build_event
 from ..realtime.login_grace_period import (
@@ -251,8 +252,17 @@ async def game_tick_loop(app: FastAPI) -> None:
         except asyncio.CancelledError:
             logger.info("Game tick loop cancelled")
             break
-        except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: this loop must never die -- register_task has no restart-on-crash supervision (task_registry.py), so any exception this narrower tuple didn't cover (e.g. DatabaseError, a plain Exception subclass) used to escape and permanently kill every tick-driven subsystem (DP decay, combat, corruption flux, login-grace expiration) for the life of the server process. Matches the established "must not crash lifespan" pattern in lifespan.py's periodic tasks.
             logger.error("Error in game tick loop", tick_count=tick_count, error=str(e), exc_info=True)
+            _ = track_exception(
+                e,
+                {
+                    "severity": "critical",
+                    "handled": True,
+                    "context": {"tick_count": tick_count},
+                    "metadata": {"component": "game_tick_loop"},
+                },
+            )
             try:
                 await sleep(tick_interval)
             except asyncio.CancelledError:

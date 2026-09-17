@@ -273,6 +273,47 @@ async def test_game_tick_loop_cancelled_on_sleep() -> None:
 
 
 @pytest.mark.asyncio
+async def test_game_tick_loop_survives_unanticipated_exception() -> None:
+    """Regression: a plain Exception (e.g. DatabaseError, not in the old narrower tuple)
+    raised by a tick sub-function must not kill the loop -- register_task has no
+    restart-on-crash supervision, so an uncaught exception here used to end the game
+    tick loop permanently for the life of the server process."""
+    app = FastAPI()
+    app.state = MagicMock()
+    app.state.container = MagicMock(
+        combat_service=None,
+        magic_service=None,
+        player_death_service=None,
+        npc_lifecycle_manager=None,
+    )
+    with (
+        patch("server.app.game_tick_processing.get_tick_interval", return_value=0.01),
+        patch("server.app.game_tick_processing.sleep", side_effect=[None, asyncio.CancelledError]),
+        patch("server.app.game_tick_processing.process_player_effects_expiration", new_callable=AsyncMock),
+        patch("server.app.game_tick_processing.process_status_effects", new_callable=AsyncMock),
+        patch(
+            "server.app.game_tick_processing.process_combat_tick",
+            new_callable=AsyncMock,
+            side_effect=[Exception("simulated database failure"), None],
+        ) as mock_combat_tick,
+        patch("server.app.game_tick_processing.process_casting_progress", new_callable=AsyncMock),
+        patch("server.app.game_tick_processing.process_dp_decay_and_death", new_callable=AsyncMock),
+        patch("server.app.game_tick_processing.process_npc_maintenance", new_callable=AsyncMock),
+        patch("server.app.game_tick_processing.cleanup_decayed_corpses", new_callable=AsyncMock),
+        patch("server.app.game_tick_processing.track_exception") as mock_track_exception,
+    ):
+        # Must not raise -- the loop should survive the first tick's exception and reach a
+        # second iteration before being cancelled via the second `sleep` call.
+        await game_tick_loop(app)
+
+    assert mock_combat_tick.await_count == 2
+    # The failure must still be loud: tracked at critical severity (feeds the existing
+    # monitoring-dashboard alert threshold), not just silently swallowed.
+    mock_track_exception.assert_called_once()
+    assert mock_track_exception.call_args.args[1]["severity"] == "critical"
+
+
+@pytest.mark.asyncio
 async def test_process_passive_lucidity_flux() -> None:
     process_tick: AsyncMock = AsyncMock()
     passive_lucidity_flux_service: MagicMock = MagicMock()

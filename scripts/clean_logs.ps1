@@ -62,8 +62,12 @@ if (-not (Test-Path $LogsPath)) {
 
 Write-Host "[INFO] Scanning logs directory: $LogsPath" -ForegroundColor Cyan
 
-# Find all .log files recursively
-$LogFiles = Get-ChildItem -Path $LogsPath -Filter "*.log" -Recurse -File
+# Find all log files recursively, including rotated/archived siblings.
+# "*.log" alone misses both rotation forms and leaves previous sessions' logs behind:
+#   - size rotation (RotatingFileHandler):  server.log.1, server.log.2, server.log.3
+#   - startup rotation (rotate_log_files):  errors.log.2026_09_17_212459
+# Those stale files then look like current-run evidence in a fresh run.
+$LogFiles = Get-ChildItem -Path $LogsPath -Filter "*.log*" -Recurse -File
 
 if ($LogFiles.Count -eq 0) {
     Write-Host "[SUCCESS] No .log files found in the logs directory" -ForegroundColor Green

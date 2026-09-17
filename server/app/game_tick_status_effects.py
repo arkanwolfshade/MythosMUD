@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 
 from fastapi import FastAPI
 
+from ..monitoring.exception_tracker import track_exception
 from ..realtime.login_grace_period import handle_login_grace_period_expiration, is_player_in_login_grace_period
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
@@ -264,11 +265,20 @@ async def process_player_effects_expiration(app: FastAPI, tick_count: int) -> No
     try:
         expired = await container.async_persistence.expire_player_effects_for_tick(tick_count)
         await _handle_login_warded_expirations(expired, container.connection_manager)
-    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: expire_player_effects_for_tick raises DatabaseError (a plain Exception subclass, not RuntimeError) on any query failure; this narrower tuple let it escape and kill the whole game_tick_loop permanently (confirmed in E2E: "get_effects_expiring_this_tick does not exist" propagated past this handler with nothing left to catch it).
         logger.warning(
             "Error processing player effects expiration",
             tick_count=tick_count,
             error=str(e),
+        )
+        _ = track_exception(
+            e,
+            {
+                "severity": "error",
+                "handled": True,
+                "context": {"tick_count": tick_count},
+                "metadata": {"component": "process_player_effects_expiration"},
+            },
         )
 
 

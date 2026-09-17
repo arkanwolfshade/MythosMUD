@@ -6,13 +6,16 @@
 # Suppress PSAvoidUsingWriteHost: This script uses Write-Host for status/output messages
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Status and output messages require Write-Host for proper display')]
 param(
-    [switch]$Help
+    [switch]$Help,
+    [switch]$SkipLogCleanup
 )
 
 if ($Help) {
     Write-Host "MythosMUD E2E Test Environment Startup Script"
     Write-Host ""
-    Write-Host "Usage: .\start_e2e_test.ps1 [-Help]"
+    Write-Host "Usage: .\start_e2e_test.ps1 [-Help] [-SkipLogCleanup]"
+    Write-Host ""
+    Write-Host "    -SkipLogCleanup  Do not delete existing logs first (e2e.bat already cleans)."
     Write-Host ""
     Write-Host "This script starts BOTH the backend server AND the Vite dev client"
     Write-Host "with the E2E TEST configuration."
@@ -43,6 +46,15 @@ if (-not (Test-Path "server") -or -not (Test-Path "client")) {
 if (-not (Get-Command npm -ErrorAction SilentlyContinue)) {
     Write-Error "npm is not installed or not in PATH. Please install Node.js and npm."
     exit 1
+}
+
+# Clean logs before startup. The server's own startup rotation (rotate_log_files) only RENAMES
+# existing logs to *.<timestamp> siblings, so without this a direct invocation of this script
+# leaves the previous session's logs sitting in logs/e2e_test/ looking like current-run evidence.
+# e2e.bat cleans before bootstrapping and passes -SkipLogCleanup so bootstrap output survives.
+if (-not $SkipLogCleanup) {
+    Write-Host "Cleaning logs from previous runs..." -ForegroundColor Yellow
+    & "$PSScriptRoot\clean_logs.ps1" -Force | Out-Null
 }
 
 # Load E2E test secrets if .env.e2e_test exists
