@@ -1,1 +1,0 @@
-C:\projects\MythosMUD\server\models\quest.py
