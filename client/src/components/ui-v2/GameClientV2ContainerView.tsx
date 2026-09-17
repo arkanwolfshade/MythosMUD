@@ -5,8 +5,8 @@ import { DeathInterstitial } from '../DeathInterstitial';
 import { DeliriumInterstitial } from '../DeliriumInterstitial';
 import { MainMenuModal } from '../MainMenuModal';
 import { MapView } from '../MapView';
-import { ModalContainer } from '../ui/ModalContainer';
 import { GameClientV2 } from './GameClientV2';
+import { ModalContainer } from './primitives';
 import { TabbedInterfaceOverlay } from './components/TabbedInterfaceOverlay';
 import type { useGameClientV2Container } from './hooks/useGameClientV2Container';
 

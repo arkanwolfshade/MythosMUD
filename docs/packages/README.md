@@ -1,6 +1,6 @@
 # Server & Client Package Documentation Coverage
 
-**Version 1.2.0** · MythosMUD · 2026-09-16
+**Version 1.3.0** · MythosMUD · 2026-09-16
 
 ---
 
@@ -36,7 +36,7 @@ consistently): **Documented** — the package is the primary subject of an ADR, 
 `docs/subsystems/*.md` doc (reverse-engineered from code — a record exists but is unverified,
 never certifiable as conformance). **Undocumented** — neither.
 
-### Documented (17)
+### Documented (18)
 
 | Package | Document(s) |
 | --- | --- |
@@ -49,6 +49,7 @@ never certifiable as conformance). **Undocumented** — neither.
 | `server/config/` | [`CONFIGURATION_FILES_REFERENCE.md`](../CONFIGURATION_FILES_REFERENCE.md), [`SECURITY_ENVIRONMENT_VARIABLES.md`](../SECURITY_ENVIRONMENT_VARIABLES.md), [ADR-013](../architecture/decisions/ADR-013-pydantic-configuration.md) |
 | `server/events/` | [`EVENT_OWNERSHIP_MATRIX.md`](../EVENT_OWNERSHIP_MATRIX.md), [`EVENT_SUBSCRIPTION_CLEANUP_PATTERNS.md`](../EVENT_SUBSCRIPTION_CLEANUP_PATTERNS.md), [ADR-001](../architecture/decisions/ADR-001-layered-architecture-event-driven.md), [ADR-003](../architecture/decisions/ADR-003-dual-event-systems-eventbus-nats.md) |
 | `client/src/components/ui-v2/` | [ADR-022](../architecture/decisions/ADR-022-ui-v2-client-transition.md) |
+| `client/src/components/ui-v2/primitives/` | [`PACKAGE_UI_PRIMITIVES_DESIGN.md`](PACKAGE_UI_PRIMITIVES_DESIGN.md) *(new, this pass)* |
 | `db/procedures/` | [ADR-015](../architecture/decisions/ADR-015-postgresql-procedures-migration.md) |
 | `server/middleware/` | [`PACKAGE_MIDDLEWARE_DESIGN.md`](PACKAGE_MIDDLEWARE_DESIGN.md) *(new, this pass)* |
 | `server/auth/` | [`PACKAGE_AUTH_DESIGN.md`](PACKAGE_AUTH_DESIGN.md) *(new, this pass)* |
@@ -65,7 +66,7 @@ never certifiable as conformance). **Undocumented** — neither.
 | `server/game/` | `docs/subsystems/*` coverage only |
 | `server/npc/` | `docs/subsystems/*` coverage only |
 
-### Undocumented (24)
+### Undocumented (23)
 
 Each cites the issue that owns writing its documentation. `server/domain/` (formerly one of
 `#746`'s 22 batched entries) is no longer listed: it was an empty, zero-reference hexagonal-
@@ -77,7 +78,6 @@ section for the record.
 | --- | --- |
 | `client/src/mythosApp/` | [`#742`](https://github.com/arkanwolfshade/MythosMUD/issues/742) |
 | `client/src/components/map/` | [`#743`](https://github.com/arkanwolfshade/MythosMUD/issues/743) |
-| `client/src/components/ui/` (legacy) | [`#744`](https://github.com/arkanwolfshade/MythosMUD/issues/744) |
 | `server/utils/` | [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746) |
 | `server/monitoring/` | [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746) |
 | `server/validators/` | [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746) |
@@ -100,12 +100,14 @@ section for the record.
 | `client/src/components/lucidity/` | [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746) |
 | `client/src/components/magic/` | [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746) |
 
-**Reconciliation:** 17 Documented + 2 Provisional + 24 Undocumented = 43, one below the `#648`
+**Reconciliation:** 18 Documented + 2 Provisional + 23 Undocumented = 43, one below the `#648`
 item 2 sweep's original 44-package inventory (10 Documented + 2 Provisional + 32 Undocumented at
 that time). Six of the 32 flipped to Documented in the `#736`–`#741` pass, one more (`db/` root
 DDL files) in the `#745` pass; one (`server/domain/`) was removed rather than documented in the
-`#757` remediation, so it drops out of the inventory entirely instead of flipping status — the
-count is intentionally 43, not 44.
+`#757` remediation, so it drops out of the inventory entirely instead of flipping status. The
+`#744` pass reclassifies `client/src/components/ui/` (legacy) — relocated into
+`client/src/components/ui-v2/primitives/` and documented — from Undocumented to Documented; the
+count stays 43, not 44.
 
 ## 3. Related documentation
 
@@ -124,3 +126,4 @@ count is intentionally 43, not 44.
 | 1.0.0 | 2026-08-29 | Initial version — promotes the `#648` item 2 sweep result to a maintained index; six `server/` packages flip to Documented, closing `#736`–`#741` |
 | 1.1.0 | 2026-08-30 | Remove `server/domain/` from the inventory (deleted, not documented, per `#757`); count drops from 44 to 43 |
 | 1.2.0 | 2026-09-16 | `db/` root DDL files flip Undocumented → Documented via `PACKAGE_DB_DESIGN.md`; `server/persistence/` row repointed to consolidated `DATABASE_ARCHITECTURE.md` (#745) |
+| 1.3.0 | 2026-09-16 | `client/src/components/ui/` (legacy) flips Undocumented → Documented as `client/src/components/ui-v2/primitives/` via `PACKAGE_UI_PRIMITIVES_DESIGN.md`, after relocation out of the standalone `ui/` directory (#744) |

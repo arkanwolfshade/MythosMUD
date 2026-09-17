@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { EldritchEffectsDemo } from './EldritchEffectsDemo';
 
 // Mock the child components
-vi.mock('./ui/EldritchIcon', () => ({
+vi.mock('./ui-v2/primitives/EldritchIcon', () => ({
   EldritchIcon: ({ name, className }: { name: string; _size: number; className?: string }) => (
     <div data-testid={`eldritch-icon-${name}`} className={className}>
       Icon: {name}
@@ -26,7 +26,7 @@ vi.mock('./ui/EldritchIcon', () => ({
   },
 }));
 
-vi.mock('./ui/MythosPanel', () => ({
+vi.mock('./ui-v2/primitives/MythosPanel', () => ({
   MythosPanel: ({
     title,
     subtitle,
@@ -50,7 +50,7 @@ vi.mock('./ui/MythosPanel', () => ({
   ),
 }));
 
-vi.mock('./ui/TerminalButton', () => ({
+vi.mock('./ui-v2/primitives/TerminalButton', () => ({
   TerminalButton: ({
     onClick,
     className,
@@ -68,7 +68,7 @@ vi.mock('./ui/TerminalButton', () => ({
   ),
 }));
 
-vi.mock('./ui/TerminalInput', () => ({
+vi.mock('./ui-v2/primitives/TerminalInput', () => ({
   TerminalInput: ({
     value,
     onChange,

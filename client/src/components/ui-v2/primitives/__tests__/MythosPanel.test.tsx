@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { MythosPanel } from './MythosPanel';
+import { MythosPanel } from '../MythosPanel';
 
 // Mock the EldritchIcon component
-vi.mock('./EldritchIcon', () => ({
+vi.mock('../EldritchIcon', () => ({
   EldritchIcon: ({ className }: { className?: string }) => (
     <div data-testid="eldritch-icon" className={className}>
       EldritchIcon

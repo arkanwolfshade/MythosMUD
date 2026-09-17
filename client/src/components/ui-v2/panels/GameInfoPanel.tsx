@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ansiToHtmlWithBreaks } from '../../../utils/ansiToHtml';
 import { SafeHtml } from '../../common/SafeHtml';
-import { EldritchIcon, MythosIcons } from '../../ui/EldritchIcon';
-import { TerminalButton } from '../../ui/TerminalButton';
+import { EldritchIcon, MythosIcons, TerminalButton } from '../primitives';
 import type { ChatMessage } from '../types';
 
 interface GameInfoPanelProps {

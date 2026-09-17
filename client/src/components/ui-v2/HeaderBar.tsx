@@ -1,8 +1,7 @@
 import React, { useCallback } from 'react';
 import type { MythosTimeState } from '../../types/mythosTime';
 import { formatMythosTime12Hour } from '../../utils/mythosTime';
-import { EldritchIcon, MythosIcons } from '../ui/EldritchIcon';
-import { LogoutButton } from '../ui/LogoutButton';
+import { EldritchIcon, LogoutButton, MythosIcons } from './primitives';
 import { hasFlavorRow, headerHeightClass } from './utils/headerHeight';
 import type { ActiveEffectDisplay } from './utils/stateUpdateUtils';
 

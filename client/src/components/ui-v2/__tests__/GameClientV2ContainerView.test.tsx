@@ -38,7 +38,7 @@ vi.mock('../DeliriumInterstitial', () => ({
   DeliriumInterstitial: () => null,
 }));
 
-vi.mock('../ui/ModalContainer', () => ({
+vi.mock('../primitives/ModalContainer', () => ({
   ModalContainer: ({ children }: { children: ReactNode }) => <div>{children}</div>,
 }));
 

@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { EldritchIcon, MythosIcons } from '../../ui/EldritchIcon';
-import { TerminalButton } from '../../ui/TerminalButton';
-import { TerminalInput } from '../../ui/TerminalInput';
+import { EldritchIcon, MythosIcons, TerminalButton, TerminalInput } from '../primitives';
 
 interface CommandInputPanelProps {
   onSendCommand: (command: string) => void;
