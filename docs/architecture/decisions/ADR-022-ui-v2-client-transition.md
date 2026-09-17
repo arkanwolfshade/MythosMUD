@@ -1,6 +1,6 @@
 # ADR-022: ui-v2 Client Transition and Legacy Retirement
 
-**Version 1.7.0** · MythosMUD · 2026-09-08
+**Version 1.8.0** · MythosMUD · 2026-09-16
 
 ---
 
@@ -273,6 +273,19 @@ several files, e.g. `RoomMapEditorProps` in 5 files). That is real triage work d
 this gate issue, filed separately as
 [#718](https://github.com/arkanwolfshade/MythosMUD/issues/718) rather than folded into `#694`.
 
+**[NOTE]**
+[#744](https://github.com/arkanwolfshade/MythosMUD/issues/744) found the 8 files that survived
+`#693`'s sweep of the old `ui/` directory (`ChannelSelector`, `EldritchIcon`, `LogoutButton`,
+`ModalContainer`, `MythosIcons`, `MythosPanel`, `TerminalButton`, `TerminalInput`) were live
+`ui-v2` dependencies, not retirement debris — the `(legacy)` label had gone stale the moment
+`#693` finished. They were relocated from `client/src/components/ui/` to
+`client/src/components/ui-v2/primitives/`, with a new `index.ts` barrel and every consumer import
+rewritten to go through it. `src/components/ui/README.md`, named earlier in this section as an
+edited-not-deleted artifact, no longer exists at that path — it moved and was rewritten as a
+pointer stub alongside the relocated files. See
+[`PACKAGE_UI_PRIMITIVES_DESIGN.md`](../../packages/PACKAGE_UI_PRIMITIVES_DESIGN.md) for the
+package's boundary contract.
+
 ## 7. Related ADRs
 
 **[SPEC]**
@@ -296,3 +309,4 @@ this gate issue, filed separately as
 | 1.5.1 | 2026-08-27 | Restructure the `[BUG]` block into HADS-required Symptom/Fix fields; registered in `docs/hads.manifest` for the first time (audit deferred register, #648). |
 | 1.6.0 | 2026-09-08 | #715 rebuilt `IncapacitatedBanner` in `ui-v2`, derived from the authoritative DP tier rather than the combat-only `player_mortally_wounded` event. Corrected the "pure missing-renderer gap" claim: the dead `isMortallyWounded` pipeline (a fourth producer-side-inertness instance) was found and deleted alongside its inert CSS class. |
 | 1.7.0 | 2026-09-08 | #714 resolved: `HallucinationTicker` was not rebuilt. ADR-024 made hallucinations server-authoritative end-to-end instead, reversing #626's client-side exit-hallucination placement along the way. |
+| 1.8.0 | 2026-09-16 | #744 found `ui/`'s 8 survivors were live `ui-v2` dependencies; relocated to `ui-v2/primitives/` with a new barrel, documented in `PACKAGE_UI_PRIMITIVES_DESIGN.md`. |

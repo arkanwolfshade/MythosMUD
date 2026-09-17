@@ -5,9 +5,7 @@ import { ansiToHtmlWithBreaks } from '../../../utils/ansiToHtml';
 import { decayMessageText } from '../../../utils/corruptionDecay';
 import { extractChannelFromMessage, isChatContent } from '../../../utils/messageTypeUtils';
 import { SafeHtml } from '../../common/SafeHtml';
-import { ChannelSelector } from '../../ui/ChannelSelector';
-import { EldritchIcon, MythosIcons } from '../../ui/EldritchIcon';
-import { TerminalButton } from '../../ui/TerminalButton';
+import { ChannelSelector, EldritchIcon, MythosIcons, TerminalButton } from '../primitives';
 import type { ChatMessage } from '../types';
 
 interface ChatHistoryPanelProps {

@@ -1,9 +1,6 @@
 import { useState } from 'react';
 import { ALWAYS_ACTIVE_EFFECTS, ELDRITCH_EFFECT_OPTIONS, hasEffect, pairClass } from './eldritchEffectsDemoData';
-import { EldritchIcon, MythosIcons } from './ui/EldritchIcon';
-import { MythosPanel } from './ui/MythosPanel';
-import { TerminalButton } from './ui/TerminalButton';
-import { TerminalInput } from './ui/TerminalInput';
+import { EldritchIcon, MythosIcons, MythosPanel, TerminalButton, TerminalInput } from './ui-v2/primitives';
 
 export type EldritchEffectsDemoProps = {
   readonly onExit?: () => void;
