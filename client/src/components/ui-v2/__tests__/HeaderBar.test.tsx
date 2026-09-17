@@ -4,7 +4,7 @@ import type { MythosTimeState } from '../../../types/mythosTime';
 import { HeaderBar } from '../HeaderBar';
 
 // Mock the dependencies
-vi.mock('../ui/EldritchIcon', () => ({
+vi.mock('../primitives/EldritchIcon', () => ({
   EldritchIcon: ({ name }: { name: string; size?: number }) => <div data-testid="eldritch-icon">{name}</div>,
   MythosIcons: {
     minimize: 'minimize',

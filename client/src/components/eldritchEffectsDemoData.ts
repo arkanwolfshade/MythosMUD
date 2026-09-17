@@ -1,4 +1,4 @@
-import { MythosIcons } from './ui/EldritchIcon';
+import { MythosIcons } from './ui-v2/primitives';
 
 export type EffectOption = {
   name: string;

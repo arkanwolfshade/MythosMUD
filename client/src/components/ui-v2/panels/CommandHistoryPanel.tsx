@@ -1,6 +1,5 @@
 import React from 'react';
-import { EldritchIcon, MythosIcons } from '../../ui/EldritchIcon';
-import { TerminalButton } from '../../ui/TerminalButton';
+import { EldritchIcon, MythosIcons, TerminalButton } from '../primitives';
 
 interface CommandHistoryPanelProps {
   commandHistory: string[];

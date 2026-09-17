@@ -6,7 +6,7 @@ import {
   useCompactModePreference,
   useDebugInfoPreference,
 } from '../../../contexts/hooks/useThemeContext';
-import { EldritchIcon, MythosIcons } from '../../ui/EldritchIcon';
+import { EldritchIcon, MythosIcons } from '../primitives';
 
 function SettingsToggleRow(props: {
   label: string;

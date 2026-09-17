@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { TerminalButton } from './TerminalButton';
+import { TerminalButton } from '../TerminalButton';
 
 describe('TerminalButton', () => {
   it('should render with default props', () => {
