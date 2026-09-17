@@ -402,6 +402,30 @@ async def test_process_player_effects_expiration_login_warded() -> None:
 
 
 @pytest.mark.asyncio
+async def test_process_player_effects_expiration_survives_database_error() -> None:
+    """A DatabaseError (plain Exception subclass, not RuntimeError) must not escape and
+    kill the caller's game_tick_loop -- regression for the tick loop dying permanently
+    when expire_player_effects_for_tick fails."""
+    app = FastAPI()
+    app.state = MagicMock()
+    expire_player_effects_for_tick: AsyncMock = AsyncMock(side_effect=Exception("get_effects_expiring_this_tick"))
+    async_persistence: AsyncMock = AsyncMock()
+    async_persistence.expire_player_effects_for_tick = expire_player_effects_for_tick
+    container: MagicMock = MagicMock()
+    container.async_persistence = async_persistence
+    container.connection_manager = MagicMock()
+    app.state.container = container
+
+    with patch("server.app.game_tick_status_effects.track_exception") as mock_track_exception:
+        # Must not raise.
+        await process_player_effects_expiration(app, tick_count=57)
+
+    # Loud, not silent: tracked (feeds the existing monitoring-dashboard alert threshold).
+    mock_track_exception.assert_called_once()
+    assert mock_track_exception.call_args.args[1]["severity"] == "error"
+
+
+@pytest.mark.asyncio
 async def test_process_status_effects_with_online_player() -> None:
     app = FastAPI()
     app.state = MagicMock()
