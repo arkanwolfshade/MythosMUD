@@ -238,8 +238,6 @@ class BehaviorEngine:
             bool: True if condition is met
         """
         try:
-            logger.debug("Evaluating behavior condition", condition=condition, context_keys=list(context.keys()))
-
             # Try comparison evaluators first
             result = self._try_evaluators(condition, context)
             if result is not None:

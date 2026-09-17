@@ -109,6 +109,30 @@ async def process_casting_progress(app: FastAPI, tick_count: int) -> None:
         logger.error("Error processing casting progress", tick_count=tick_count, error=str(e))
 
 
+async def process_combat_cleanup(app: FastAPI, tick_count: int) -> None:
+    """Reap stale combat instances (every 600 ticks = 1 minute).
+
+    `CombatService.cleanup_stale_combats()` (30-minute inactivity timeout) existed and was
+    unit-tested but was never wired into the tick loop -- a combat instance with no real
+    activity could live in `_active_combats` for the life of the server process, keeping
+    `_player_in_active_combat` (game_tick_death.py) True forever and permanently blocking
+    that participant's passive DP decay. Same cadence as `process_npc_maintenance`.
+    """
+    container = _app_container(app)
+    if container is None or container.combat_service is None:
+        return
+
+    if not NPCMaintenanceConfig.should_run_maintenance(tick_count):
+        return
+
+    try:
+        cleaned = await container.combat_service.cleanup_stale_combats()
+        if cleaned:
+            logger.info("Cleaned up stale combats", tick_count=tick_count, cleaned=cleaned)
+    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
+        logger.error("Error cleaning up stale combats", tick_count=tick_count, error=str(e))
+
+
 async def process_npc_maintenance(app: FastAPI, tick_count: int) -> None:
     """Process NPC lifecycle maintenance (every 60 ticks = 1 minute)."""
     container = _app_container(app)
@@ -214,6 +238,7 @@ async def game_tick_loop(app: FastAPI) -> None:
             await process_combat_tick(app, tick_count)
             await process_casting_progress(app, tick_count)
             await process_dp_decay_and_death(app, tick_count)
+            await process_combat_cleanup(app, tick_count)
             await process_npc_maintenance(app, tick_count)
             await cleanup_decayed_corpses(app, tick_count)
             # Broadcast tick event every 10 ticks (1 second at 100ms per tick)
