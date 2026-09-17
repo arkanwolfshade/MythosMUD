@@ -431,6 +431,37 @@ function Restart-NatsServer {
 }
 
 # Function to get NATS server status
+function Test-NatsClientPortOpen {
+    <#
+    .SYNOPSIS
+        Report whether the NATS client port is serving, without a bare TCP probe.
+
+    .DESCRIPTION
+        The client port requires TLS whenever certs exist in certs/nats (see Start-NatsServer).
+        Test-NetConnection opens a raw TCP socket and drops it without sending a TLS ClientHello,
+        which NATS correctly logs as:
+
+            [ERR] [::1]:... - TLS handshake error: ... forcibly closed by the remote host
+
+        Those lines are pure probe artifacts, but they sit in logs/nats/nats-server.log looking
+        exactly like real client failures. NATS's own monitoring endpoint answers the same
+        question with no side effects, so prefer it and fall back to the raw probe only when the
+        monitor is unreachable (monitor disabled, or server down).
+    #>
+    try {
+        $health = Invoke-WebRequest -Uri "http://localhost:$NatsHttpPort/healthz" -UseBasicParsing -TimeoutSec 2 -ErrorAction Stop
+        if ($health.StatusCode -eq 200) {
+            return $true
+        }
+    }
+    catch {
+        # Monitor unreachable - fall through to the raw probe.
+    }
+
+    $probe = Test-NetConnection -ComputerName localhost -Port $NatsPort -WarningAction SilentlyContinue
+    return [bool]$probe.TcpTestSucceeded
+}
+
 function Get-NatsServerStatus {
     [CmdletBinding()]
     param()
@@ -444,8 +475,9 @@ function Get-NatsServerStatus {
     # Check if running
     $running = Test-NatsServerRunning
 
-    # Check ports
-    $clientPort = Test-NetConnection -ComputerName localhost -Port $NatsPort -WarningAction SilentlyContinue
+    # Check ports. The client port is TLS-required, so it is probed via the monitoring endpoint
+    # rather than a bare TCP connect (which would log a spurious TLS handshake error).
+    $clientPortOpen = Test-NatsClientPortOpen
     $httpPort = Test-NetConnection -ComputerName localhost -Port $NatsHttpPort -WarningAction SilentlyContinue
 
     # Ensure log directory exists and check log file
@@ -455,14 +487,14 @@ function Get-NatsServerStatus {
     Write-Host ""
     Write-Host "Installation: $(if ($installed) { 'Installed' } else { 'Not Installed' })" -ForegroundColor $(if ($installed) { 'Green' } else { 'Red' })
     Write-Host "Status: $(if ($running) { 'Running' } else { 'Stopped' })" -ForegroundColor $(if ($running) { 'Green' } else { 'Yellow' })
-    Write-Host "Client Port ($NatsPort): $(if ($clientPort.TcpTestSucceeded) { 'Open' } else { 'Closed' })" -ForegroundColor $(if ($clientPort.TcpTestSucceeded) { 'Green' } else { 'Red' })
+    Write-Host "Client Port ($NatsPort): $(if ($clientPortOpen) { 'Open' } else { 'Closed' })" -ForegroundColor $(if ($clientPortOpen) { 'Green' } else { 'Red' })
     Write-Host "HTTP Port ($NatsHttpPort): $(if ($httpPort.TcpTestSucceeded) { 'Open' } else { 'Closed' })" -ForegroundColor $(if ($httpPort.TcpTestSucceeded) { 'Green' } else { 'Red' })
     Write-Host "Log File: $(if ($logExists) { 'Exists' } else { 'Missing' }) at $NatsLogPath" -ForegroundColor $(if ($logExists) { 'Green' } else { 'Yellow' })
 
     return @{
         Installed      = $installed
         Running        = $running
-        ClientPortOpen = $clientPort.TcpTestSucceeded
+        ClientPortOpen = $clientPortOpen
         HttpPortOpen   = $httpPort.TcpTestSucceeded
         LogFileExists  = $logExists
     }

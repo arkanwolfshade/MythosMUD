@@ -10,7 +10,8 @@ param(
     [string]$ClientPort = "5173",
     [switch]$ServerOnly,
     [switch]$ClientOnly,
-    [switch]$Help
+    [switch]$Help,
+    [switch]$SkipLogCleanup
 )
 
 if ($Help) {
@@ -24,6 +25,7 @@ if ($Help) {
     Write-Host "    -ServerOnly           Start only the server"
     Write-Host "    -ClientOnly           Start only the client"
     Write-Host "    -Help                 Show this help message"
+    Write-Host "    -SkipLogCleanup       Do not delete existing logs first (dev.bat already cleans)"
     Write-Host ""
     Write-Host "Examples:"
     Write-Host "    .\start_local.ps1                           # Start both server and client"
@@ -45,6 +47,15 @@ Write-Host "==========================================" -ForegroundColor Cyan
 if (-not (Test-Path "server") -or -not (Test-Path "client")) {
     Write-Error "Server or client directory not found. Please run this script from the project root."
     exit 1
+}
+
+# Clean logs before startup. The server's own startup rotation (rotate_log_files) only RENAMES
+# existing logs to *.<timestamp> siblings, so without this a direct invocation of this script
+# leaves the previous session's logs in place looking like current-run evidence.
+# dev.bat cleans first and passes -SkipLogCleanup.
+if (-not $SkipLogCleanup) {
+    Write-Host "Cleaning logs from previous runs..." -ForegroundColor Yellow
+    & "$PSScriptRoot\clean_logs.ps1" -Force | Out-Null
 }
 
 # Function to start server

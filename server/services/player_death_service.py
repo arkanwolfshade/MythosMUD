@@ -85,6 +85,12 @@ class PlayerDeathService:
             mortally_wounded = [p for p in all_players if p.is_mortally_wounded()]
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Player stats retrieval errors unpredictable, must return empty list
             logger.error("Error getting mortally wounded players", error=str(e), exc_info=True)
+            # This session is shared across the rest of this tick's DP-decay processing
+            # (get_dead_players, etc. all receive the same session). Without a rollback here,
+            # Postgres leaves the transaction aborted and every subsequent query on it fails
+            # with InFailedSQLTransactionError, cascading this one query's failure onto
+            # completely unrelated ones for the rest of the tick.
+            await session.rollback()
             return []
 
         logger.debug(
@@ -129,6 +135,10 @@ class PlayerDeathService:
                 exc=e,
                 exc_info=True,
             )
+            # See get_mortally_wounded_players: this session is shared for the rest of the
+            # tick, so a failed query here must be rolled back or every later query on it
+            # (this function included, on the next tick) inherits an aborted transaction.
+            await session.rollback()
             return []
 
     async def process_mortally_wounded_tick(self, player_id: uuid.UUID, session: AsyncSession) -> bool:

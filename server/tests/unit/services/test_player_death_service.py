@@ -4,6 +4,10 @@ Unit tests for player death service.
 Tests the PlayerDeathService class for managing player mortality and DP decay.
 """
 
+# pyright: reportUnknownMemberType=false
+# TEST_MOCK: AsyncMock attribute chains off the untyped `mock_session` fixture
+# (mock_session.rollback.assert_awaited_once, ...) resolve to Unknown throughout this file.
+
 import uuid
 from unittest.mock import AsyncMock, MagicMock
 
@@ -139,6 +143,10 @@ async def test_get_mortally_wounded_players_handles_error(player_death_service, 
     mock_session.execute = AsyncMock(side_effect=Exception("Database error"))
     result = await player_death_service.get_mortally_wounded_players(mock_session)
     assert result == []
+    # Regression: this session is shared with get_dead_players for the rest of the tick;
+    # without a rollback, Postgres leaves the transaction aborted and cascades this
+    # failure onto every later query on it.
+    mock_session.rollback.assert_awaited_once()
 
 
 @pytest.mark.asyncio
@@ -182,6 +190,8 @@ async def test_get_dead_players_handles_error(player_death_service, mock_session
     mock_session.execute = AsyncMock(side_effect=ValueError("Database error"))
     result = await player_death_service.get_dead_players(mock_session)
     assert result == []
+    # Regression: same cascading-transaction concern as get_mortally_wounded_players.
+    mock_session.rollback.assert_awaited_once()
 
 
 @pytest.mark.asyncio
