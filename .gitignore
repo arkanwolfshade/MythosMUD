@@ -436,3 +436,5 @@ client/.claude/hooks/state/edited-files.json
 .codacy/generated/Lizard/lizard-filelist.txt
 .codacy/tools-configs/eslint.config.mjs
 .codacy/tools-configs/ruleset.xml
+.basedpyright/baseline.json
+.codacy/tools-configs/ruleset.xml
