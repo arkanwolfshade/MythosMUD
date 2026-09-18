@@ -194,3 +194,10 @@ class TestDepartureMarkers:
     def test_a_room_with_no_exits_is_not_marked(self) -> None:
         rooms = [{**_room("a", 0, 0, {})}]
         assert "*" not in self._rendered(rooms)
+
+    def test_a_west_exit_out_of_the_area_marks_the_empty_cell_beside_it(self) -> None:
+        """A room's west-leaving exit is marked in the empty cell to its left, not on the
+        room's own glyph (issue #787: exercises _render_room_cell's non-room-cell branch,
+        which the other departure tests above don't reach since their rooms sit at x=0)."""
+        rooms = [{**_room("a", 1, 0, {"west": "somewhere_else"})}]
+        assert "*" in self._rendered(rooms)
