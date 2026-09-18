@@ -133,6 +133,12 @@ class EquipCommand(BaseCommand):
         return normalized
 
 
+class ReadCommand(BaseCommand):
+    """Command for reading an item (e.g. a spellbook) from inventory."""
+
+    command_type: Literal[CommandType.READ] = CommandType.READ
+
+
 class UnequipCommand(BaseCommand):
     """Command for unequipping an item back to inventory."""
 

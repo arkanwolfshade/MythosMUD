@@ -13,6 +13,7 @@ from ..models.command import (
     InventoryCommand,
     PickupCommand,
     PutCommand,
+    ReadCommand,
     UnequipCommand,
 )
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -210,6 +211,17 @@ class InventoryCommandFactory:
                 )
 
         return index, search_term
+
+    @staticmethod
+    def create_read_command(args: list[str]) -> ReadCommand:
+        """Create ReadCommand from arguments.
+
+        Item name/spell name parsing and the "usage" message for missing args
+        are handled by handle_read_command itself, so this takes any args
+        (including none) and builds a bare command.
+        """
+        del args  # Reason: handle_read_command parses args from command_data directly
+        return ReadCommand()
 
     @staticmethod
     def create_pickup_command(args: list[str]) -> PickupCommand:

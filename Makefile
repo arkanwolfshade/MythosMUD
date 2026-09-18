@@ -310,10 +310,14 @@ test-client-e2e:
 
 # Integration tests (server pytest -m integration) run here: they muck with runtime data
 # and belong in the same flow as Playwright (running server context). They are NOT run by make test-server.
-test-playwright: setup-test-env ensure-e2e-database
-	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_e2e
-	$(POWERSHELL) scripts/migrate.ps1 -Environment e2e
+#
+# Does NOT bootstrap mythos_e2e. e2e.bat (bootstrap_e2e_database.ps1 + start_e2e_test.ps1) owns
+# the database and the running server; re-reconverging schema/procedures/migrations here would
+# race the already-running server's live connections (db/schema.sql DROPs tables it depends on
+# mid-tick). Run e2e.bat first and leave it running, then run this target against it.
+test-playwright: setup-test-env
 	@echo "Running Playwright E2E then integration tests (fails fast on Playwright/bootstrap errors)..."
+	@echo "Requires: e2e.bat already run and its server/client still running on 54768/5173."
 	$(POWERSHELL) scripts/run_test_playwright.ps1 $(PYTEST_OPTS)
 
 test-client-coverage:
