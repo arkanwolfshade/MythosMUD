@@ -4,13 +4,18 @@
  * Global Setup for E2E Runtime Tests
  *
  * This file runs before all tests to:
- * - Reconverge mythos_e2e's schema/seed/procedures/migrations (scripts/bootstrap_e2e_database.ps1
- *   -SkipForce -- #811 follow-up: replaces the old ensure_e2e_database.ps1 "professions > 0"
- *   heuristic, which could and did guess "looks fine" on a database that wasn't)
  * - Seed E2E users and default characters via scripts/seed_e2e_users.py
+ * - Reset E2E player rooms via scripts/e2e_reset_players.py
  * - Verify users exist in mythos_e2e (scripts/verify_e2e_users_seeded.py)
  * - Verify server health, username login (/v1/auth/login), and profession catalog
  * - Verify client is accessible
+ *
+ * Does NOT reconverge mythos_e2e's schema/procedures/migrations. That is e2e.bat's job
+ * (scripts/bootstrap_e2e_database.ps1 + scripts/start_e2e_test.ps1), run once before this suite
+ * and left running: e2e.bat's server holds live connections to mythos_e2e, and re-running
+ * schema.sql's DROP/CREATE here would race that already-running server's background tick loop
+ * (see #813 session notes -- this used to call bootstrap_e2e_database.ps1 -SkipForce, which
+ * dropped and recreated tables out from under a server that was actively querying them).
  *
  * Any failure throws after writing logs/e2e_test/bootstrap-errors.log (non-zero Playwright exit).
  */
@@ -31,26 +36,6 @@ import {
 
 const E2E_TEST_USERNAME = 'Ithaqua';
 const E2E_TEST_PASSWORD = 'Cthulhu1';
-
-function runEnsureE2eDatabase(): void {
-  const bootstrapScript = `${E2E_PROJECT_ROOT}/scripts/bootstrap_e2e_database.ps1`;
-  const ensureResult = spawnSync(
-    'pwsh',
-    ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', bootstrapScript, '-SkipForce'],
-    {
-      cwd: E2E_PROJECT_ROOT,
-      stdio: 'pipe',
-      encoding: 'utf-8',
-    }
-  );
-  if (ensureResult.status !== 0) {
-    failBootstrap(
-      'ensure_e2e_database',
-      `bootstrap_e2e_database.ps1 -SkipForce failed (exit ${ensureResult.status}).`,
-      [spawnOutputDetail(ensureResult.stdout, ensureResult.stderr), 'Run: make ensure-e2e-database from repo root.']
-    );
-  }
-}
 
 function runE2ePlayerRoomReset(): void {
   const seedEnv = { ...process.env, ...loadE2eEnv() };
@@ -205,7 +190,6 @@ async function verifyClientAccessible(): Promise<void> {
 
 async function globalSetup(_config: FullConfig): Promise<void> {
   console.log('Starting global setup for E2E runtime tests...');
-  runEnsureE2eDatabase();
   runE2eSeed();
   runE2ePlayerRoomReset();
   verifyE2eUsersInDatabase();

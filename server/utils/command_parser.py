@@ -33,6 +33,7 @@ def _build_command_factory_part1(factory: CommandFactory) -> dict[str, object]:
         CommandType.GO.value: factory.create_go_command,
         CommandType.SAY.value: factory.create_say_command,
         CommandType.LOCAL.value: factory.create_local_command,
+        CommandType.GLOBAL.value: factory.create_global_command,
         CommandType.SYSTEM.value: factory.create_system_command,
         CommandType.EMOTE.value: factory.create_emote_command,
         CommandType.ME.value: factory.create_me_command,
@@ -64,6 +65,7 @@ def _build_command_factory_part1(factory: CommandFactory) -> dict[str, object]:
         CommandType.GET.value: factory.create_get_command,
         CommandType.EQUIP.value: factory.create_equip_command,
         CommandType.UNEQUIP.value: factory.create_unequip_command,
+        CommandType.READ.value: factory.create_read_command,
         CommandType.QUIT.value: factory.create_quit_command,
         CommandType.LOGOUT.value: factory.create_logout_command,
     }
@@ -102,6 +104,8 @@ def _build_command_factory_part2(factory: CommandFactory) -> dict[str, object]:
         CommandType.SPELL.value: factory.create_spell_command,
         CommandType.SPELLS.value: factory.create_spells_command,
         CommandType.LEARN.value: factory.create_learn_command,
+        CommandType.STOP.value: factory.create_stop_command,
+        CommandType.TEACH.value: factory.create_teach_command,
     }
 
 

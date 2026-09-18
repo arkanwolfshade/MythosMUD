@@ -58,6 +58,10 @@ class CommandFactory:
             args, raw_command=raw_command, original_command=original_command
         )
 
+    def create_global_command(self, args: list[str]) -> BaseCommand:
+        """Create GlobalCommand from arguments."""
+        return self._communication.create_global_command(args)
+
     def create_system_command(self, args: list[str]) -> BaseCommand:
         """Create SystemCommand from arguments."""
         return self._communication.create_system_command(args)
@@ -155,6 +159,10 @@ class CommandFactory:
     def create_unequip_command(self, args: list[str]) -> BaseCommand:
         """Create UnequipCommand from arguments."""
         return self._inventory.create_unequip_command(args)
+
+    def create_read_command(self, args: list[str]) -> BaseCommand:
+        """Create ReadCommand from arguments."""
+        return self._inventory.create_read_command(args)
 
     # Moderation commands
     def create_mute_command(self, args: list[str]) -> BaseCommand:
@@ -323,3 +331,11 @@ class CommandFactory:
     def create_learn_command(self, args: list[str]) -> BaseCommand:
         """Create LearnCommand from arguments."""
         return self._utility.create_learn_command(args)
+
+    def create_stop_command(self, args: list[str]) -> BaseCommand:
+        """Create StopCommand from arguments (no args needed)."""
+        return self._utility.create_stop_command(args)
+
+    def create_teach_command(self, args: list[str]) -> BaseCommand:
+        """Create TeachCommand from arguments."""
+        return self._utility.create_teach_command(args)

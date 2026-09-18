@@ -3,6 +3,16 @@ Debrief command for MythosMUD.
 
 After sanitarium failover (LCD -100), players must complete a debrief
 that provides narrative recap and optionally allows immediate therapy session.
+
+PARKED (#813): this handler is deliberately NOT registered in
+``_COMMAND_HANDLERS`` (server/commands/command_service.py). Registering it as
+a bare no-arg command would let a player self-administer their debrief with
+no NPC present. See #872 for the intended NPC-interaction design (likely via
+``/talk``, #583). #872 also tracks a latent bug: ``handle_debrief_command``
+reads ``command_data.get("args", "").lower()`` below, but the real pipeline
+(``CommandService._prepare_command_data``) always supplies ``args`` as a
+**list**, so this raises ``AttributeError`` on every real invocation. Fix
+that alongside the NPC gate before re-registering.
 """
 
 # pylint: disable=too-many-locals  # Reason: Debrief command requires many intermediate variables for narrative generation
