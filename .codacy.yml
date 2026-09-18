@@ -434,6 +434,16 @@ ignore_patterns:
     file_paths:
       - "server/realtime/message_filtering.py"
     reason: "Debug-log-dense, low-CCN mute-check functions; see file header note, issue #787."
+  # Lizard NLOC: admin_teleport_commands.py's confirm/goto handlers are a sequential chain of
+  # 5-6 independently-tested validation guard clauses (auth, missing args, target resolution,
+  # same-room check). Unifying them would mean merging validate_confirm_teleport_context /
+  # validate_confirm_goto_context and resolve_target_player_for_teleport /
+  # resolve_target_player_for_goto behind one abstraction for a single caller each -- the
+  # speculative API churn the guard's own fragmentation rules forbid. See issue #787 Wave 2.
+  - pattern_id: "Lizard_nloc-medium"
+    file_paths:
+      - "server/commands/admin_teleport_commands.py"
+    reason: "Sequential admin-command validation guard clauses; see file header note, issue #787."
   # Pylint R0801 duplicate-code: thin shared patterns across cohesive modules; extraction
   # would create speculative single-use helpers (ponytail / fragmentation rules).
   - pattern_id: "PyLintPython3_R0801"

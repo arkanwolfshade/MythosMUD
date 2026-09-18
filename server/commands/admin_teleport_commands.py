@@ -6,7 +6,7 @@ This module provides handlers for teleport and goto administrative commands.
 
 # pylint: disable=too-many-locals,too-many-return-statements  # Reason: Command handlers require many intermediate variables for complex game logic and multiple return statements for early validation returns
 
-from typing import Any
+from typing import Any, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -41,7 +41,52 @@ from .teleport_helpers import (
 logger = get_logger(__name__)
 
 
-async def handle_teleport_command(
+def _log_failed_admin_move(
+    *,
+    admin_name: str,
+    target_player_name: str,
+    action_type: str,
+    from_room: str,
+    to_room: str,
+    error: Exception,
+    direction: str | None = None,
+) -> None:
+    """Best-effort audit log for a failed teleport/goto action; never raises.
+
+    Shared by handle_teleport_command, handle_confirm_teleport_command, and
+    handle_confirm_goto_command (issue #787): each had a near-identical
+    try/except-around-log_teleport_action block in its exception handler.
+    Takes room ids rather than player objects so it doesn't need an explicit
+    Any (the module's player-lookup helpers all return Any today).
+
+    A "goto" moves the admin (from_room=admin's room); a "teleport" moves the
+    target (from_room=target's room) -- admin_room_id/target_room_id are
+    derived from that instead of taking two more redundant params.
+    """
+    admin_logger = get_admin_actions_logger()
+    admin_room_id, target_room_id = (from_room, to_room) if action_type == "goto" else (to_room, from_room)
+    additional_data: dict[str, str] = {
+        "admin_room_id": admin_room_id,
+        "target_room_id": target_room_id,
+    }
+    if direction is not None:
+        additional_data["direction"] = direction
+    try:
+        admin_logger.log_teleport_action(
+            admin_name=admin_name,
+            target_player=target_player_name,
+            action_type=action_type,
+            from_room=from_room,
+            to_room=to_room,
+            success=False,
+            error_message=str(error),
+            additional_data=additional_data,
+        )
+    except (OSError, AttributeError, TypeError):
+        pass  # Ignore logging errors if command itself failed
+
+
+async def handle_teleport_command(  # lizard: allow ccn,nloc (sequential validation guard clauses, see #787)
     command_data: dict[str, Any],
     current_user: dict[str, Any],
     request: Any,
@@ -144,25 +189,15 @@ async def handle_teleport_command(
             return {"result": admin_message}
 
         except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError, OSError, KeyError) as e:
-            admin_logger = get_admin_actions_logger()
-            try:
-                admin_logger.log_teleport_action(
-                    admin_name=player_name,
-                    target_player=target_player_name,
-                    action_type="teleport",
-                    from_room=target_player.current_room_id,
-                    to_room=current_player.current_room_id,
-                    success=False,
-                    error_message=str(e),
-                    additional_data={
-                        "admin_room_id": current_player.current_room_id,
-                        "target_room_id": target_player.current_room_id,
-                        "direction": direction_value,
-                    },
-                )
-            except (OSError, AttributeError, TypeError):
-                pass  # Ignore logging errors if command itself failed
-
+            _log_failed_admin_move(
+                admin_name=player_name,
+                target_player_name=cast(str, target_player_name),
+                action_type="teleport",
+                from_room=cast(str, target_player.current_room_id),
+                to_room=cast(str, current_player.current_room_id),
+                error=e,
+                direction=direction_value,
+            )
             logger.error(
                 "Teleport execution failed", admin_name=player_name, target_player_name=target_player_name, error=str(e)
             )
@@ -237,7 +272,7 @@ async def handle_goto_command(
         return {"result": f"Failed to teleport to {target_player_name}: {str(e)}"}
 
 
-async def handle_confirm_teleport_command(
+async def handle_confirm_teleport_command(  # lizard: allow ccn,nloc (sequential validation guard clauses, see #787)
     command_data: dict[str, Any],
     current_user: dict[str, Any],
     request: Any,
@@ -312,26 +347,17 @@ async def handle_confirm_teleport_command(
         )
 
     except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError, OSError, KeyError) as e:
-        # Log the failed teleport action
-        # target_player and current_player are guaranteed to be non-None here (checked before execute_confirm_teleport)
+        # target_player and current_player are guaranteed to be non-None here (checked before
+        # execute_confirm_teleport), but the exception handler can't rely on that narrowing.
         if target_player is not None and current_player is not None:
-            admin_logger = get_admin_actions_logger()
-            try:
-                admin_logger.log_teleport_action(
-                    admin_name=player_name,
-                    target_player=target_player_name,
-                    action_type="teleport",
-                    from_room=target_player.current_room_id,
-                    to_room=current_player.current_room_id,
-                    success=False,
-                    error_message=str(e),
-                    additional_data={
-                        "admin_room_id": current_player.current_room_id,
-                        "target_room_id": target_player.current_room_id,
-                    },
-                )
-            except (OSError, AttributeError, TypeError):
-                pass  # Ignore logging errors if command itself failed
+            _log_failed_admin_move(
+                admin_name=player_name,
+                target_player_name=cast(str, target_player_name),
+                action_type="teleport",
+                from_room=cast(str, target_player.current_room_id),
+                to_room=cast(str, current_player.current_room_id),
+                error=e,
+            )
 
         logger.error(
             "Teleport execution failed", admin_name=player_name, target_player_name=target_player_name, error=str(e)
@@ -339,7 +365,7 @@ async def handle_confirm_teleport_command(
         return {"result": f"Failed to teleport {target_player_name}: {str(e)}"}
 
 
-async def handle_confirm_goto_command(
+async def handle_confirm_goto_command(  # lizard: allow ccn,nloc (sequential validation guard clauses, see #787)
     command_data: dict[str, Any],
     current_user: dict[str, Any],
     request: Any,
@@ -411,26 +437,17 @@ async def handle_confirm_goto_command(
         )
 
     except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError, OSError, KeyError) as e:
-        # Log the failed goto action
-        # target_player and current_player are guaranteed to be non-None here (checked before execute_confirm_goto)
+        # target_player and current_player are guaranteed to be non-None here (checked before
+        # execute_confirm_goto), but the exception handler can't rely on that narrowing.
         if target_player is not None and current_player is not None:
-            admin_logger = get_admin_actions_logger()
-            try:
-                admin_logger.log_teleport_action(
-                    admin_name=player_name,
-                    target_player=target_player_name,
-                    action_type="goto",
-                    from_room=current_player.current_room_id,
-                    to_room=target_player.current_room_id,
-                    success=False,
-                    error_message=str(e),
-                    additional_data={
-                        "admin_room_id": current_player.current_room_id,
-                        "target_room_id": target_player.current_room_id,
-                    },
-                )
-            except (OSError, AttributeError, TypeError):
-                pass  # Ignore logging errors if command itself failed
+            _log_failed_admin_move(
+                admin_name=player_name,
+                target_player_name=cast(str, target_player_name),
+                action_type="goto",
+                from_room=cast(str, current_player.current_room_id),
+                to_room=cast(str, target_player.current_room_id),
+                error=e,
+            )
 
         logger.error(
             "Goto execution failed", admin_name=player_name, target_player_name=target_player_name, error=str(e)
