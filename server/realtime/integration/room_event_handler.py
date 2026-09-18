@@ -11,9 +11,9 @@ Room event handling is now a focused, independently testable component.
 # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Room event handling requires many parameters and intermediate variables for complex event processing logic
 
 import uuid
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from ...structured_logging.enhanced_logging_config import get_logger
 
@@ -97,49 +97,75 @@ class RoomEventHandler:
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Event unsubscription errors unpredictable, must handle gracefully
             logger.error("Error unsubscribing from room events", error=str(e), exc_info=True)
 
-    async def handle_player_entered_room(self, event_data: dict[str, Any]) -> None:
-        """Handle PlayerEnteredRoom events by broadcasting updated occupant count."""
+    @staticmethod
+    def _extract_valid_occupant_names(occ_infos: Sequence[object], room_id: str) -> list[str]:
+        """Collect occupant display names, dropping any that are actually raw UUIDs."""
+        names: list[str] = []
+        for occ in occ_infos:
+            name = cast("dict[str, object]", occ).get("player_name") if isinstance(occ, dict) else None
+            # CRITICAL: Validate name is not a UUID before adding
+            if name and isinstance(name, str):
+                # Skip if it looks like a UUID (36 chars, 4 dashes, hex)
+                is_uuid = len(name) == 36 and name.count("-") == 4 and all(c in "0123456789abcdefABCDEF-" for c in name)
+                if not is_uuid:
+                    names.append(name)
+                else:
+                    logger.warning(
+                        "Skipping UUID as player name in room_occupants event",
+                        name=name,
+                        room_id=room_id,
+                    )
+        return names
+
+    async def _publish_room_movement_nats_event(
+        self, publish_method_name: str, event_label: str, player_id: object, room_id: str
+    ) -> None:
+        """Best-effort NATS publish for a player entered/left event; never raises."""
+        event_publisher = cast(object, self.get_event_publisher())
+        if not (event_publisher and player_id):
+            return
         try:
-            room_id = event_data.get("room_id")
+            timestamp = datetime.now(UTC).isoformat()
+            # Reason: DYNAMIC_DISPATCH - publish_method_name selects which NATS publisher
+            # method to call at runtime (entered vs. left); the event_publisher itself is
+            # already untyped (get_event_publisher: Callable[[], Any]).
+            # Appropriate because: the two possible methods share a call signature but the
+            # publisher has no common typed interface to name here without inventing one.
+            publish = getattr(event_publisher, publish_method_name)  # pyright: ignore[reportAny]
+            await publish(player_id=player_id, room_id=room_id, timestamp=timestamp)
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NATS event publishing errors unpredictable, must handle gracefully
+            logger.error(f"Failed to publish {event_label} NATS event", error=str(e))
+
+    async def _broadcast_room_occupants_update(
+        self,
+        # Reason: SERIALIZATION_BOUNDARY - event_data is an EventBus payload dict (mirrors
+        # handle_player_entered_room/handle_player_left_room's own event_data: dict[str, Any]).
+        # Appropriate because: shape varies by event type; only room_id/player_id are read.
+        event_data: dict[str, Any],  # pyright: ignore[reportExplicitAny]
+        *,
+        event_label: str,
+        publish_method_name: str,
+    ) -> None:
+        """Shared core of handle_player_entered_room/handle_player_left_room (issue #787:
+        the two were identical apart from which event name/publisher method they used).
+        """
+        try:
+            room_id_raw = event_data.get("room_id")
             player_id = event_data.get("player_id")
 
-            if not room_id:
-                logger.warning("PlayerEnteredRoom event missing room_id")
+            if not room_id_raw:
+                logger.warning(f"{event_label} event missing room_id")
                 return
+            room_id = cast(str, room_id_raw)
 
-            # Publish NATS event if event_publisher is available
-            event_publisher = self.get_event_publisher()
-            if event_publisher and player_id:
-                try:
-                    timestamp = datetime.now(UTC).isoformat()
-                    await event_publisher.publish_player_entered_event(
-                        player_id=player_id, room_id=room_id, timestamp=timestamp
-                    )
-                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NATS event publishing errors unpredictable, must handle gracefully
-                    logger.error("Failed to publish player_entered NATS event", error=str(e))
+            await self._publish_room_movement_nats_event(publish_method_name, event_label, player_id, room_id)
 
             # Get current room occupants
             # CRITICAL: Convert UUID keys to strings for room_manager compatibility
             online_players = self.get_online_players()
             online_players_str = {str(k): v for k, v in online_players.items()}
             occ_infos = await self.room_manager.get_room_occupants(room_id, online_players_str)
-            names: list[str] = []
-            for occ in occ_infos:
-                name = occ.get("player_name") if isinstance(occ, dict) else None
-                # CRITICAL: Validate name is not a UUID before adding
-                if name and isinstance(name, str):
-                    # Skip if it looks like a UUID (36 chars, 4 dashes, hex)
-                    is_uuid = (
-                        len(name) == 36 and name.count("-") == 4 and all(c in "0123456789abcdefABCDEF-" for c in name)
-                    )
-                    if not is_uuid:
-                        names.append(name)
-                    else:
-                        logger.warning(
-                            "Skipping UUID as player name in room_occupants event",
-                            name=name,
-                            room_id=room_id,
-                        )
+            names = self._extract_valid_occupant_names(occ_infos, room_id)
 
             # Build and broadcast room_occupants event
             from ..envelope import build_event
@@ -149,69 +175,25 @@ class RoomEventHandler:
                 {"occupants": names, "count": len(names)},
                 room_id=room_id,
             )
-
             await self.broadcast_to_room(room_id, occ_event, None)
 
             logger.debug("Broadcasted room_occupants event for room", room_id=room_id, occupant_count=len(names))
 
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Player entered event handling errors unpredictable, must handle gracefully
-            logger.error("Error handling PlayerEnteredRoom event", error=str(e), exc_info=True)
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room movement event handling errors unpredictable, must handle gracefully
+            logger.error(f"Error handling {event_label} event", error=str(e), exc_info=True)
+
+    # Reason: SERIALIZATION_BOUNDARY - event_data is an EventBus payload dict; shape varies
+    # by event type, and only room_id/player_id are read (see _broadcast_room_occupants_update).
+    # Appropriate because: this mirrors the pre-existing dict[str, Any] contract EventBus
+    # subscribers use throughout this module; narrowing it here alone would be inconsistent.
+    async def handle_player_entered_room(self, event_data: dict[str, Any]) -> None:  # pyright: ignore[reportExplicitAny]
+        """Handle PlayerEnteredRoom events by broadcasting updated occupant count."""
+        await self._broadcast_room_occupants_update(
+            event_data, event_label="PlayerEnteredRoom", publish_method_name="publish_player_entered_event"
+        )
 
     async def handle_player_left_room(self, event_data: dict[str, Any]) -> None:
         """Handle PlayerLeftRoom events by broadcasting updated occupant count."""
-        try:
-            room_id = event_data.get("room_id")
-            player_id = event_data.get("player_id")
-
-            if not room_id:
-                logger.warning("PlayerLeftRoom event missing room_id")
-                return
-
-            # Publish NATS event if event_publisher is available
-            event_publisher = self.get_event_publisher()
-            if event_publisher and player_id:
-                try:
-                    timestamp = datetime.now(UTC).isoformat()
-                    await event_publisher.publish_player_left_event(
-                        player_id=player_id, room_id=room_id, timestamp=timestamp
-                    )
-                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NATS event publishing errors unpredictable, must handle gracefully
-                    logger.error("Failed to publish player_left NATS event", error=str(e))
-
-            # Get current room occupants
-            # CRITICAL: Convert UUID keys to strings for room_manager compatibility
-            online_players = self.get_online_players()
-            online_players_str = {str(k): v for k, v in online_players.items()}
-            occ_infos = await self.room_manager.get_room_occupants(room_id, online_players_str)
-            names: list[str] = []
-            for occ in occ_infos:
-                name = occ.get("player_name") if isinstance(occ, dict) else None
-                # CRITICAL: Validate name is not a UUID before adding
-                if name and isinstance(name, str):
-                    # Skip if it looks like a UUID (36 chars, 4 dashes, hex)
-                    is_uuid = (
-                        len(name) == 36 and name.count("-") == 4 and all(c in "0123456789abcdefABCDEF-" for c in name)
-                    )
-                    if not is_uuid:
-                        names.append(name)
-                    else:
-                        logger.warning(
-                            "Skipping UUID as player name in room_occupants event",
-                            name=name,
-                            room_id=room_id,
-                        )
-
-            # Build and broadcast room_occupants event
-            from ..envelope import build_event
-
-            occ_event = build_event(
-                "room_occupants",
-                {"occupants": names, "count": len(names)},
-                room_id=room_id,
-            )
-            await self.broadcast_to_room(room_id, occ_event, None)
-
-            logger.debug("Broadcasted room_occupants event for room", room_id=room_id, occupant_count=len(names))
-
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Player left event handling errors unpredictable, must handle gracefully
-            logger.error("Error handling PlayerLeftRoom event", error=str(e), exc_info=True)
+        await self._broadcast_room_occupants_update(
+            event_data, event_label="PlayerLeftRoom", publish_method_name="publish_player_left_event"
+        )
