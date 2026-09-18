@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Any
 
 from ..services.nats_exceptions import NATSError
 from ..structured_logging.enhanced_logging_config import get_logger
+from .message_filtering import BroadcastFilterContext
 from .message_formatters import format_message_content
 from .nats_message_handler_base import NATSMessageHandlerMixinBase
 
@@ -64,9 +65,16 @@ class NATSMessageBroadcastMixin(  # pylint: disable=too-few-public-methods  # Re
         chat_event_data: dict[str, Any],
     ) -> list[str]:
         """Filter target players based on room location and mute status."""
-        return await self._filtering_helper.filter_target_players(
-            targets, sender_id, room_id, channel, message_id, user_manager, chat_event_data, self
+        ctx = BroadcastFilterContext(
+            sender_id=sender_id,
+            room_id=room_id,
+            channel=channel,
+            message_id=message_id,
+            user_manager=user_manager,
+            chat_event_data=chat_event_data,
+            handler_instance=self,
         )
+        return await self._filtering_helper.filter_target_players(targets, ctx)
 
     async def _send_messages_to_players(
         self, filtered_targets: list[str], chat_event: dict[str, Any], room_id: str, sender_id: str, channel: str

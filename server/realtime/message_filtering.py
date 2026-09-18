@@ -8,6 +8,7 @@ for message broadcasting.
 # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-lines  # Reason: Message filtering requires many parameters for context and filtering logic. Message filtering requires extensive filtering logic for comprehensive message routing and validation.
 
 import uuid
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, cast
 from unittest.mock import Mock
 
@@ -22,6 +23,23 @@ logger = get_logger("communications.message_filtering")
 
 if TYPE_CHECKING:
     from ..services.user_manager import UserManager
+
+
+@dataclass(frozen=True, slots=True)
+class BroadcastFilterContext:
+    """Per-broadcast constants threaded through target filtering (issue #787: was 8 loose params)."""
+
+    sender_id: str
+    room_id: str
+    channel: str
+    message_id: str | None
+    user_manager: "UserManager"
+    # Reason: SERIALIZATION_BOUNDARY - chat_event_data is a loosely-shaped NATS event payload
+    # (mirrors check_player_mute_status's existing chat_event_data: dict[str, Any] param below).
+    # Appropriate because: keys/value types vary by event type; a TypedDict would need every
+    # event shape enumerated for a dict only ever read via .get() with per-key defaults.
+    chat_event_data: dict[str, Any]  # pyright: ignore[reportExplicitAny]
+    handler_instance: object  # NATSMessageHandler instance for patched methods; only getattr/isinstance-accessed
 
 
 class MessageFilteringHelper:
@@ -191,6 +209,14 @@ class MessageFilteringHelper:
         canonical_message_room = self.connection_manager.canonical_room_id(message_room_id) or message_room_id
         return canonical_player_room == canonical_message_room
 
+    @staticmethod
+    def _room_id_from_player_info(player_info: object) -> str | None:
+        """Extract a valid current_room_id from an online_players cache entry."""
+        if not isinstance(player_info, dict):
+            return None
+        room_id = cast("dict[str, object]", player_info).get("current_room_id")
+        return room_id if isinstance(room_id, str) and room_id else None
+
     def get_player_room_from_online_players(self, player_id: str) -> str | None:
         """
         Get player's current room ID from online players cache.
@@ -211,17 +237,15 @@ class MessageFilteringHelper:
 
             # Try UUID lookup first (most common case)
             if player_id_uuid in online_players:
-                player_info = online_players[player_id_uuid]
-                if isinstance(player_info, dict):
-                    player_room_id = player_info.get("current_room_id")
-                    if isinstance(player_room_id, str) and player_room_id:
-                        logger.info(
-                            "Player room found via UUID lookup",
-                            player_id=player_id,
-                            player_id_uuid=player_id_uuid,
-                            room_id=player_room_id,
-                        )
-                        return player_room_id
+                room_id = self._room_id_from_player_info(cast(object, online_players[player_id_uuid]))
+                if room_id:
+                    logger.info(
+                        "Player room found via UUID lookup",
+                        player_id=player_id,
+                        player_id_uuid=player_id_uuid,
+                        room_id=room_id,
+                    )
+                    return room_id
             else:
                 logger.info(
                     "Player ID not found in online_players via UUID lookup",
@@ -238,17 +262,14 @@ class MessageFilteringHelper:
             )
 
         # Fallback to string lookup (for backward compatibility if some entries use strings)
-        if player_id in online_players:
-            player_info = online_players[player_id]
-            if isinstance(player_info, dict):
-                player_room_id = player_info.get("current_room_id")
-                if isinstance(player_room_id, str) and player_room_id:
-                    logger.info(
-                        "Player room found via string lookup fallback",
-                        player_id=player_id,
-                        room_id=player_room_id,
-                    )
-                    return player_room_id
+        room_id = self._room_id_from_player_info(cast(object, online_players.get(player_id)))
+        if room_id:
+            logger.info(
+                "Player room found via string lookup fallback",
+                player_id=player_id,
+                room_id=room_id,
+            )
+            return room_id
 
         logger.warning(
             "Player room not found in online_players (UUID or string lookup failed)",
@@ -315,7 +336,67 @@ class MessageFilteringHelper:
             )
             return False
 
-    def is_player_muted_by_receiver(self, receiver_id: str, sender_id: str) -> bool:
+    def _debug_dump_receiver_mute_cache(
+        self,
+        user_manager: "UserManager",
+        lookup_key: uuid.UUID | str,
+        receiver_id: str,
+        sender_id: str,
+    ) -> None:
+        """Log the receiver's cached mute list, if the internal cache is accessible.
+
+        Shared by the sync and async mute-check paths below; diagnostic only, never
+        affects the mute decision itself.
+        """
+        try:
+            # UserManager._player_mutes is dict[uuid.UUID, dict[uuid.UUID, dict[str, object]]];
+            # getattr can't statically see through the attribute-name string, so name the real
+            # type explicitly instead of letting it infer Any.
+            player_mutes = cast(
+                "dict[uuid.UUID, dict[uuid.UUID, dict[str, object]]] | None",
+                getattr(user_manager, "_player_mutes", None),
+            )
+            if player_mutes is None:
+                logger.debug(
+                    "=== MUTE FILTERING DEBUG: No internal mute data available (using API methods) ===",
+                    receiver_id=receiver_id,
+                    sender_id=sender_id,
+                )
+                return
+
+            logger.debug(
+                "=== MUTE FILTERING DEBUG: Available mute data ===",
+                receiver_id=receiver_id,
+                sender_id=sender_id,
+                available_mute_data=list(player_mutes.keys()),
+            )
+            if lookup_key in player_mutes:
+                # player_mutes is keyed by uuid.UUID; `in` accepts any object, but the
+                # membership check above guarantees lookup_key matched a real UUID key.
+                muted_key = cast(uuid.UUID, lookup_key)
+                logger.debug(
+                    "=== MUTE FILTERING DEBUG: Receiver's muted players ===",
+                    receiver_id=receiver_id,
+                    sender_id=sender_id,
+                    receiver_mutes=list(player_mutes[muted_key].keys()),
+                )
+            else:
+                logger.debug(
+                    "=== MUTE FILTERING DEBUG: No mute data for receiver ===",
+                    receiver_id=receiver_id,
+                    sender_id=sender_id,
+                )
+        except (NATSError, RuntimeError) as debug_error:
+            logger.debug(
+                "=== MUTE FILTERING DEBUG: Could not access internal mute data ===",
+                receiver_id=receiver_id,
+                sender_id=sender_id,
+                debug_error=str(debug_error),
+            )
+
+    def is_player_muted_by_receiver(  # lizard: allow nloc (structured debug-log checkpoints, not branching; CCN 6, see #787)
+        self, receiver_id: str, sender_id: str
+    ) -> bool:
         """
         Check if a receiving player has muted the sender.
 
@@ -350,55 +431,14 @@ class MessageFilteringHelper:
                 mute_load_result=mute_load_result,
             )
 
-            # Check what mute data is available (only for debugging, not for logic)
+            # Check what mute data is available (only for debugging, not for logic).
+            # _player_mutes uses UUID keys; fall back to the raw string if receiver_id
+            # isn't a valid UUID so the lookup below simply misses, same as before.
             try:
-                player_mutes = getattr(user_manager, "_player_mutes", None)
-                if player_mutes is not None:
-                    available_mute_data = list(player_mutes.keys())
-                    logger.debug(
-                        "=== MUTE FILTERING DEBUG: Available mute data ===",
-                        receiver_id=receiver_id,
-                        sender_id=sender_id,
-                        available_mute_data=available_mute_data,
-                    )
-
-                    # Convert receiver_id to UUID if it's a valid UUID string
-                    # _player_mutes uses UUID keys, so we need to convert
-                    # receiver_id is typed as str in function parameter, so always convert
-                    receiver_id_uuid: uuid.UUID | None = None
-                    try:
-                        receiver_id_uuid = uuid.UUID(receiver_id)
-                    except (ValueError, AttributeError, TypeError):
-                        # If conversion fails, receiver_id is not a valid UUID, skip
-                        receiver_id_uuid = None
-
-                    if receiver_id_uuid and receiver_id_uuid in player_mutes:
-                        receiver_mutes = list(player_mutes[receiver_id_uuid].keys())
-                        logger.debug(
-                            "=== MUTE FILTERING DEBUG: Receiver's muted players ===",
-                            receiver_id=receiver_id,
-                            sender_id=sender_id,
-                            receiver_mutes=receiver_mutes,
-                        )
-                    else:
-                        logger.debug(
-                            "=== MUTE FILTERING DEBUG: No mute data for receiver ===",
-                            receiver_id=receiver_id,
-                            sender_id=sender_id,
-                        )
-                else:
-                    logger.debug(
-                        "=== MUTE FILTERING DEBUG: No internal mute data available (using API methods) ===",
-                        receiver_id=receiver_id,
-                        sender_id=sender_id,
-                    )
-            except (NATSError, RuntimeError) as debug_error:
-                logger.debug(
-                    "=== MUTE FILTERING DEBUG: Could not access internal mute data ===",
-                    receiver_id=receiver_id,
-                    sender_id=sender_id,
-                    debug_error=str(debug_error),
-                )
+                receiver_lookup_key: uuid.UUID | str = uuid.UUID(receiver_id)
+            except (ValueError, AttributeError, TypeError):
+                receiver_lookup_key = receiver_id
+            self._debug_dump_receiver_mute_cache(user_manager, receiver_lookup_key, receiver_id, sender_id)
 
             # Check if receiver has muted sender (personal mute)
             logger.info(
@@ -464,7 +504,7 @@ class MessageFilteringHelper:
             )
             return False
 
-    async def is_player_muted_by_receiver_with_user_manager(
+    async def is_player_muted_by_receiver_with_user_manager(  # lizard: allow nloc (structured debug-log checkpoints, not branching; CCN 5, see #787)
         self, user_manager: "UserManager", receiver_id: str, sender_id: str
     ) -> bool:
         """
@@ -494,45 +534,11 @@ class MessageFilteringHelper:
                 mute_load_result=mute_load_result,
             )
 
-            # Check what mute data is available (only for debugging, not for logic)
-            try:
-                player_mutes = getattr(user_manager, "_player_mutes", None)
-                if player_mutes is not None:
-                    available_mute_data = list(player_mutes.keys())
-                    logger.debug(
-                        "=== MUTE FILTERING DEBUG: Available mute data ===",
-                        receiver_id=receiver_id,
-                        sender_id=sender_id,
-                        available_mute_data=available_mute_data,
-                    )
-
-                    if receiver_id in player_mutes:
-                        receiver_mutes = list(player_mutes[receiver_id].keys())
-                        logger.debug(
-                            "=== MUTE FILTERING DEBUG: Receiver's muted players ===",
-                            receiver_id=receiver_id,
-                            sender_id=sender_id,
-                            receiver_mutes=receiver_mutes,
-                        )
-                    else:
-                        logger.debug(
-                            "=== MUTE FILTERING DEBUG: No mute data for receiver ===",
-                            receiver_id=receiver_id,
-                            sender_id=sender_id,
-                        )
-                else:
-                    logger.debug(
-                        "=== MUTE FILTERING DEBUG: No internal mute data available (using API methods) ===",
-                        receiver_id=receiver_id,
-                        sender_id=sender_id,
-                    )
-            except (NATSError, RuntimeError) as debug_error:
-                logger.debug(
-                    "=== MUTE FILTERING DEBUG: Could not access internal mute data ===",
-                    receiver_id=receiver_id,
-                    sender_id=sender_id,
-                    debug_error=str(debug_error),
-                )
+            # Check what mute data is available (only for debugging, not for logic).
+            # NOTE: receiver_id is passed as-is (str) here, matching prior behavior; it
+            # only matches player_mutes' UUID keys when receiver_id happens to already be
+            # UUID-typed at the call site.
+            self._debug_dump_receiver_mute_cache(user_manager, receiver_id, receiver_id, sender_id)
 
             # Check if receiver has muted sender (personal mute)
             is_personally_muted = user_manager.is_player_muted(receiver_id, sender_id)
@@ -657,127 +663,115 @@ class MessageFilteringHelper:
 
         return is_muted
 
-    async def filter_target_players(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Player filtering requires many parameters for context and filtering logic
-        self,
-        targets: set[str],
-        sender_id: str,
-        room_id: str,
-        channel: str,
-        message_id: str | None,
-        user_manager: "UserManager",
-        chat_event_data: dict[str, Any],
-        handler_instance: Any,  # NATSMessageHandler instance for patched methods
-    ) -> list[str]:
+    async def _should_include_target(  # lizard: allow nloc (structured debug-log checkpoints, not branching; CCN 5, see #787)
+        self, player_id: str, ctx: BroadcastFilterContext, should_apply_mute: bool
+    ) -> bool:
+        """Decide whether one target player should receive the broadcast."""
+        logger.debug(
+            "=== BROADCAST FILTERING DEBUG: Processing target player ===",
+            room_id=ctx.room_id,
+            sender_id=ctx.sender_id,
+            target_player_id=player_id,
+            channel=ctx.channel,
+        )
+
+        if player_id == ctx.sender_id:
+            logger.debug(
+                "=== BROADCAST FILTERING DEBUG: Skipping sender ===",
+                room_id=ctx.room_id,
+                sender_id=ctx.sender_id,
+                target_player_id=player_id,
+                channel=ctx.channel,
+            )
+            return False
+
+        is_in_room = await self.is_player_in_room(player_id, ctx.room_id)
+        logger.debug(
+            "=== BROADCAST FILTERING DEBUG: Player in room check ===",
+            room_id=ctx.room_id,
+            sender_id=ctx.sender_id,
+            target_player_id=player_id,
+            is_in_room=is_in_room,
+            channel=ctx.channel,
+        )
+        if not is_in_room:
+            logger.debug(
+                "Filtered out player not in room",
+                player_id=player_id,
+                message_room_id=ctx.room_id,
+                channel=ctx.channel,
+            )
+            return False
+
+        if should_apply_mute:
+            is_muted = await self.check_player_mute_status(
+                ctx.user_manager, player_id, ctx.sender_id, ctx.channel, ctx.chat_event_data, ctx.handler_instance
+            )
+            logger.debug(
+                "=== BROADCAST FILTERING DEBUG: Mute check result ===",
+                room_id=ctx.room_id,
+                sender_id=ctx.sender_id,
+                target_player_id=player_id,
+                is_muted=is_muted,
+                channel=ctx.channel,
+            )
+            if is_muted:
+                logger.info(
+                    "=== MUTE FILTERING: Message FILTERED OUT due to mute ===",
+                    receiver_id=player_id,
+                    sender_id=ctx.sender_id,
+                    channel=ctx.channel,
+                    room_id=ctx.room_id,
+                )
+                return False
+        else:
+            logger.debug(
+                "=== BROADCAST FILTERING DEBUG: Mute check skipped for channel ===",
+                room_id=ctx.room_id,
+                sender_id=ctx.sender_id,
+                target_player_id=player_id,
+                channel=ctx.channel,
+            )
+
+        logger.info(
+            "=== MUTE FILTERING: Message ALLOWED (not muted or mute check skipped) ===",
+            receiver_id=player_id,
+            sender_id=ctx.sender_id,
+            channel=ctx.channel,
+            should_apply_mute=should_apply_mute,
+        )
+        logger.debug(
+            "=== BROADCAST FILTERING DEBUG: Player passed all filters ===",
+            room_id=ctx.room_id,
+            sender_id=ctx.sender_id,
+            target_player_id=player_id,
+            channel=ctx.channel,
+        )
+        return True
+
+    async def filter_target_players(self, targets: set[str], ctx: BroadcastFilterContext) -> list[str]:
         """
         Filter target players based on room location and mute status.
 
         Args:
             targets: Set of all target player IDs
-            sender_id: Sender player ID
-            room_id: Room ID
-            channel: Channel type
-            message_id: Message ID
-            user_manager: UserManager instance
-            chat_event_data: Chat event data dictionary
-            handler_instance: NATSMessageHandler instance (for accessing patched methods in tests)
+            ctx: Per-broadcast context (sender, room, channel, mute lookup deps)
 
         Returns:
             List of filtered player IDs
         """
-        filtered_targets = []
-        should_apply_mute = self.should_apply_mute_check(channel, message_id)
+        should_apply_mute = self.should_apply_mute_check(ctx.channel, ctx.message_id)
 
+        filtered_targets: list[str] = []
         for player_id in targets:
-            logger.debug(
-                "=== BROADCAST FILTERING DEBUG: Processing target player ===",
-                room_id=room_id,
-                sender_id=sender_id,
-                target_player_id=player_id,
-                channel=channel,
-            )
-
-            if player_id == sender_id:
-                logger.debug(
-                    "=== BROADCAST FILTERING DEBUG: Skipping sender ===",
-                    room_id=room_id,
-                    sender_id=sender_id,
-                    target_player_id=player_id,
-                    channel=channel,
-                )
-                continue
-
-            is_in_room = await self.is_player_in_room(player_id, room_id)
-            logger.debug(
-                "=== BROADCAST FILTERING DEBUG: Player in room check ===",
-                room_id=room_id,
-                sender_id=sender_id,
-                target_player_id=player_id,
-                is_in_room=is_in_room,
-                channel=channel,
-            )
-
-            if not is_in_room:
-                logger.debug(
-                    "Filtered out player not in room",
-                    player_id=player_id,
-                    message_room_id=room_id,
-                    channel=channel,
-                )
-                continue
-
-            if should_apply_mute:
-                is_muted = await self.check_player_mute_status(
-                    user_manager, player_id, sender_id, channel, chat_event_data, handler_instance
-                )
-                logger.debug(
-                    "=== BROADCAST FILTERING DEBUG: Mute check result ===",
-                    room_id=room_id,
-                    sender_id=sender_id,
-                    target_player_id=player_id,
-                    is_muted=is_muted,
-                    channel=channel,
-                )
-
-                if is_muted:
-                    logger.info(
-                        "=== MUTE FILTERING: Message FILTERED OUT due to mute ===",
-                        receiver_id=player_id,
-                        sender_id=sender_id,
-                        channel=channel,
-                        room_id=room_id,
-                    )
-                    continue
-            else:
-                logger.debug(
-                    "=== BROADCAST FILTERING DEBUG: Mute check skipped for channel ===",
-                    room_id=room_id,
-                    sender_id=sender_id,
-                    target_player_id=player_id,
-                    channel=channel,
-                )
-
-            logger.info(
-                "=== MUTE FILTERING: Message ALLOWED (not muted or mute check skipped) ===",
-                receiver_id=player_id,
-                sender_id=sender_id,
-                channel=channel,
-                should_apply_mute=should_apply_mute,
-            )
-
-            logger.debug(
-                "=== BROADCAST FILTERING DEBUG: Player passed all filters ===",
-                room_id=room_id,
-                sender_id=sender_id,
-                target_player_id=player_id,
-                channel=channel,
-            )
-            filtered_targets.append(player_id)
+            if await self._should_include_target(player_id, ctx, should_apply_mute):
+                filtered_targets.append(player_id)
 
         logger.debug(
             "=== BROADCAST FILTERING DEBUG: Final filtered targets ===",
-            room_id=room_id,
-            sender_id=sender_id,
-            channel=channel,
+            room_id=ctx.room_id,
+            sender_id=ctx.sender_id,
+            channel=ctx.channel,
             filtered_targets=filtered_targets,
             filtered_count=len(filtered_targets),
         )
