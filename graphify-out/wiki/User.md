@@ -1,79 +1,106 @@
 # User
 
-> 510 nodes
+> God node · 287 connections · `server/models/user.py`
 
-## Key Concepts
+**Community:** [Character Creation & Auth Dependencies](Character_Creation_&_Auth_Dependencies.md)
 
-- **User** (310 connections) — `server/models/user.py`
-- **models/user.py** (67 connections) — `server/models/user.py`
-- **container_endpoints_basic.py** (62 connections) — `server/api/container_endpoints_basic.py`
-- **ContainerServiceError** (49 connections) — `server/services/container_service_helpers.py`
-- **RateLimitError** (44 connections) — `server/exceptions.py`
-- **api/container_helpers.py** (42 connections) — `server/api/container_helpers.py`
-- **test_container_helpers.py** (42 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **TransferContainerRequest** (41 connections) — `server/api/container_models.py`
-- **container_service.py** (33 connections) — `server/services/container_service.py`
-- **container_endpoints_loot.py** (31 connections) — `server/api/container_endpoints_loot.py`
-- **transfer_items()** (28 connections) — `server/api/container_endpoints_basic.py`
-- **handle_transfer_items_exceptions()** (28 connections) — `server/api/container_exception_handlers.py`
-- **open_container()** (27 connections) — `server/api/container_endpoints_basic.py`
-- **test_container_exception_handlers.py** (26 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- **test_containers.py** (26 connections) — `server/tests/unit/api/test_containers.py`
-- **close_container()** (23 connections) — `server/api/container_endpoints_basic.py`
-- **handle_open_container_exceptions()** (23 connections) — `server/api/container_exception_handlers.py`
-- **test_container_helpers_loot.py** (22 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **handle_close_container_exceptions()** (21 connections) — `server/api/container_exception_handlers.py`
-- **container_exception_handlers.py** (21 connections) — `server/api/container_exception_handlers.py`
-- **ContainerNotFoundError** (20 connections) — `server/services/container_service_helpers.py`
-- **handle_loot_all_exceptions()** (20 connections) — `server/api/container_exception_handlers.py`
-- **get_player_id_from_user()** (19 connections) — `server/api/container_helpers.py`
-- **handle_container_service_error()** (19 connections) — `server/api/container_helpers.py`
-- **create_error_context()** (17 connections) — `server/api/container_helpers.py`
-- *... and 485 more nodes in this community*
+## Connections by Relation
 
-## Relationships
+### calls
+- _admin_user() `EXTRACTED`
+- _create_user_object() `EXTRACTED`
+- test_user_get_display_name_all_empty() `EXTRACTED`
+- test_user_get_display_name_falls_back_to_id() `EXTRACTED`
+- test_user_get_display_name_with_display_name() `EXTRACTED`
+- test_user_get_display_name_with_empty_display_name() `EXTRACTED`
+- test_user_get_display_name_without_display_name() `EXTRACTED`
+- test_user_is_authenticated_when_active() `EXTRACTED`
+- test_user_is_authenticated_when_inactive() `EXTRACTED`
+- test_user_repr() `EXTRACTED`
+- .create_user() `INFERRED`
+- .verify_token() `INFERRED`
+- .verify_token() `INFERRED`
 
-- [LoggedHTTPException](LoggedHTTPException.md) (90 shared connections)
-- [get_logger](get_logger.md) (87 shared connections)
-- [LootAllRequest](LootAllRequest.md) (39 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (35 shared connections)
-- [players.py](players.py.md) (29 shared connections)
-- [maps.py](maps.py.md) (26 shared connections)
-- [container_events.py](container_events.py.md) (25 shared connections)
-- [test_admin_auth_service.py](test_admin_auth_service.py.md) (21 shared connections)
-- [test_users.py](test_users.py.md) (20 shared connections)
-- [Invite](Invite.md) (17 shared connections)
-- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (16 shared connections)
-- [ContainerService](ContainerService.md) (16 shared connections)
+### contains
+- models/user.py `EXTRACTED`
 
-## Source Files
+### imports
+- async_persistence.py `EXTRACTED`
+- players.py `EXTRACTED`
+- api/character_creation.py `EXTRACTED`
+- maps.py `EXTRACTED`
+- endpoints.py `EXTRACTED`
+- container_endpoints_basic.py `EXTRACTED`
+- rooms.py `EXTRACTED`
+- command_handler_unified.py `EXTRACTED`
+- test_admin_auth_service.py `EXTRACTED`
+- test_maps.py `EXTRACTED`
+- test_users.py `EXTRACTED`
+- api/container_helpers.py `EXTRACTED`
+- test_container_helpers.py `EXTRACTED`
+- test_async_persistence_core.py `EXTRACTED`
+- test_metrics_endpoints.py `EXTRACTED`
+- api/player_effects.py `EXTRACTED`
+- test_npc_definitions_api.py `EXTRACTED`
+- npc_definitions_api.py `EXTRACTED`
+- subject_controller.py `EXTRACTED`
+- container_endpoints_loot.py `EXTRACTED`
 
-- `docs/examples/logging/fastapi_integration.py`
-- `server/api/container_endpoints_basic.py`
-- `server/api/container_endpoints_loot.py`
-- `server/api/container_exception_handlers.py`
-- `server/api/container_helpers.py`
-- `server/api/container_models.py`
-- `server/async_persistence.py`
-- `server/auth/users.py`
-- `server/exceptions.py`
-- `server/models/user.py`
-- `server/schemas/containers/__init__.py`
-- `server/schemas/containers/container.py`
-- `server/schemas/containers/container_data.py`
-- `server/services/container_service.py`
-- `server/services/container_service_helpers.py`
-- `server/tests/integration/test_db_connectivity.py`
-- `server/tests/integration/test_procedures_return_shape.py`
-- `server/tests/unit/api/test_container_exception_handlers.py`
-- `server/tests/unit/api/test_container_helpers.py`
-- `server/tests/unit/api/test_container_helpers_loot.py`
+### inherits
+- Base `EXTRACTED`
+- SQLAlchemyBaseUserTableUUID `EXTRACTED`
 
-## Audit Trail
+### method
+- .is_authenticated() `EXTRACTED`
+- .get_display_name() `EXTRACTED`
+- .__repr__() `EXTRACTED`
 
-- EXTRACTED: 1380 (86%)
-- INFERRED: 222 (14%)
-- AMBIGUOUS: 0 (0%)
+### rationale_for
+- User model for FastAPI Users v14+ with SQLAlchemy 2.0 typing. Extends… `EXTRACTED`
+
+### references
+- validate_admin_permission() `EXTRACTED`
+- transfer_items() `EXTRACTED`
+- handle_transfer_items_exceptions() `EXTRACTED`
+- open_container() `EXTRACTED`
+- roll_character_stats() `EXTRACTED`
+- create_character_with_stats() `EXTRACTED`
+- close_container() `EXTRACTED`
+- handle_open_container_exceptions() `EXTRACTED`
+- handle_close_container_exceptions() `EXTRACTED`
+- handle_loot_all_exceptions() `EXTRACTED`
+- create_room_exit() `EXTRACTED`
+- get_player_id_from_user() `EXTRACTED`
+- handle_container_service_error() `EXTRACTED`
+- update_room() `EXTRACTED`
+- update_room_exit() `EXTRACTED`
+- _prepare_ascii_map_context() `EXTRACTED`
+- create_error_context() `EXTRACTED`
+- get_container_and_player_for_loot_all() `EXTRACTED`
+- _start_login_grace_period_body() `EXTRACTED`
+- delete_room_exit() `EXTRACTED`
+
+### uses
+- Base `INFERRED`
+- Invite `INFERRED`
+- _admin_user() `INFERRED`
+- test_register_user_duplicate_username() `INFERRED`
+- test_apply_exploration_filter_if_needed_calls_for_normal_user() `INFERRED`
+- test_apply_exploration_filter_if_needed_skips_for_superuser() `INFERRED`
+- test_login_user_authenticate_raises_exception() `INFERRED`
+- test_login_user_authenticate_returns_none() `INFERRED`
+- test_login_user_generic_exception() `INFERRED`
+- test_login_user_id_mismatch() `INFERRED`
+- test_login_user_invalid_credentials() `INFERRED`
+- test_login_user_no_email() `INFERRED`
+- test_get_ascii_minimap_success() `INFERRED`
+- test_get_current_superuser_failure() `INFERRED`
+- test_get_current_superuser_with_none_user() `INFERRED`
+- test_get_current_verified_user_failure() `INFERRED`
+- test_get_current_verified_user_with_none_user() `INFERRED`
+- test_login_user_player_no_profession_id() `INFERRED`
+- test_login_user_profession_lookup_error() `INFERRED`
+- test_login_user_profession_lookup_none() `INFERRED`
 
 ---
 

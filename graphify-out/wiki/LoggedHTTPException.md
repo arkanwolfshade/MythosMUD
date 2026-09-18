@@ -1,75 +1,93 @@
 # LoggedHTTPException
 
-> 215 nodes
+> God node · 355 connections · `server/exceptions.py`
 
-## Key Concepts
+**Community:** [User Manager & Character Info](User_Manager_&_Character_Info.md)
 
-- **LoggedHTTPException** (374 connections) — `server/exceptions.py`
-- **endpoints.py** (66 connections) — `server/auth/endpoints.py`
-- **login_user()** (35 connections) — `server/auth/endpoints.py`
-- **UserCreate** (31 connections) — `server/auth/endpoints.py`
-- **register_user()** (31 connections) — `server/auth/endpoints.py`
-- **test_endpoints_register.py** (30 connections) — `server/tests/unit/auth/test_endpoints_register.py`
-- **LoginRequest** (22 connections) — `server/auth/endpoints.py`
-- **test_endpoints_login.py** (20 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **asyncio** (18 connections)
-- **list_invites()** (14 connections) — `server/auth/endpoints.py`
-- **test_endpoints_invites.py** (14 connections) — `server/tests/unit/auth/test_endpoints_invites.py`
-- **RestartInvalidatingJWTStrategy** (13 connections) — `server/auth/jwt_strategy.py`
-- **get_current_superuser()** (12 connections) — `server/auth/dependencies.py`
-- **create_invite()** (12 connections) — `server/auth/endpoints.py`
-- **_persist_new_user()** (12 connections) — `server/auth/endpoints.py`
-- **asyncio** (11 connections)
-- **set_auth_epoch()** (10 connections) — `server/auth/token_epoch.py`
-- **_mock_invite_manager()** (10 connections) — `server/tests/unit/auth/test_endpoints_register.py`
-- **test_endpoints_login_profession.py** (10 connections) — `server/tests/unit/auth/test_endpoints_login_profession.py`
-- **get_current_user_info()** (9 connections) — `server/auth/endpoints.py`
-- **test_jwt_strategy.py** (9 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
-- **_authenticate_user_credentials()** (8 connections) — `server/auth/endpoints.py`
-- **_check_shutdown_status()** (8 connections) — `server/auth/endpoints.py`
-- **_generate_jwt_token()** (8 connections) — `server/auth/endpoints.py`
-- **get_auth_epoch()** (8 connections) — `server/auth/token_epoch.py`
-- *... and 190 more nodes in this community*
+## Connections by Relation
 
-## Relationships
+### calls
+- create_character_with_stats() `EXTRACTED`
+- create_room_exit() `EXTRACTED`
+- get_player_id_from_user() `EXTRACTED`
+- handle_container_service_error() `EXTRACTED`
+- update_room() `EXTRACTED`
+- update_room_exit() `EXTRACTED`
+- get_container_and_player_for_loot_all() `EXTRACTED`
+- _start_login_grace_period_body() `EXTRACTED`
+- delete_room_exit() `EXTRACTED`
+- _update_npc_definition_internal() `EXTRACTED`
+- update_room_position() `EXTRACTED`
+- get_npc_definitions() `EXTRACTED`
+- spawn_npc_instance() `EXTRACTED`
+- create_npc_spawn_rule() `EXTRACTED`
+- get_npc_spawn_rules() `EXTRACTED`
+- validate_character_stats() `EXTRACTED`
+- get_player_quests() `EXTRACTED`
+- get_system_metrics() `EXTRACTED`
+- create_dialogue_definition() `EXTRACTED`
+- list_dialogue_definitions() `EXTRACTED`
 
-- [User](User.md) (90 shared connections)
-- [Invite](Invite.md) (40 shared connections)
-- [players.py](players.py.md) (39 shared connections)
-- [get_logger](get_logger.md) (29 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (27 shared connections)
-- [api/monitoring.py](api-monitoring.py.md) (19 shared connections)
-- [test_player_respawn_api.py](test_player_respawn_api.py.md) (18 shared connections)
-- [test_admin_auth_service.py](test_admin_auth_service.py.md) (17 shared connections)
-- [maps.py](maps.py.md) (16 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (15 shared connections)
-- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (15 shared connections)
-- [rooms.py](rooms.py.md) (15 shared connections)
+### contains
+- server/exceptions.py `EXTRACTED`
 
-## Source Files
+### imports
+- players.py `EXTRACTED`
+- api/character_creation.py `EXTRACTED`
+- maps.py `EXTRACTED`
+- endpoints.py `EXTRACTED`
+- api/monitoring.py `EXTRACTED`
+- rooms.py `EXTRACTED`
+- test_monitoring_endpoints.py `EXTRACTED`
+- test_maps.py `EXTRACTED`
+- real_time.py `EXTRACTED`
+- test_exceptions.py `EXTRACTED`
+- api/container_helpers.py `EXTRACTED`
+- test_container_helpers.py `EXTRACTED`
+- test_rooms_write_api.py `EXTRACTED`
+- test_real_time_helpers.py `EXTRACTED`
+- test_metrics_endpoints.py `EXTRACTED`
+- api/player_effects.py `EXTRACTED`
+- test_npc_definitions_api.py `EXTRACTED`
+- test_exceptions_comprehensive.py `EXTRACTED`
+- standardized_responses.py `EXTRACTED`
+- npc_definitions_api.py `EXTRACTED`
 
-- `server/auth/dependencies.py`
-- `server/auth/endpoints.py`
-- `server/auth/invites.py`
-- `server/auth/jwt_strategy.py`
-- `server/auth/token_epoch.py`
-- `server/auth/users.py`
-- `server/exceptions.py`
-- `server/tests/unit/auth/conftest.py`
-- `server/tests/unit/auth/test_auth_dependencies.py`
-- `server/tests/unit/auth/test_endpoints_invites.py`
-- `server/tests/unit/auth/test_endpoints_login.py`
-- `server/tests/unit/auth/test_endpoints_login_profession.py`
-- `server/tests/unit/auth/test_endpoints_register.py`
-- `server/tests/unit/auth/test_jwt_strategy.py`
-- `server/tests/unit/test_exceptions.py`
-- `server/tests/unit/test_exceptions_comprehensive.py`
+### inherits
+- LoggedException `EXTRACTED`
+- HTTPException `EXTRACTED`
 
-## Audit Trail
+### method
+- .__init__() `EXTRACTED`
 
-- EXTRACTED: 694 (76%)
-- INFERRED: 220 (24%)
-- AMBIGUOUS: 0 (0%)
+### rationale_for
+- HTTPException with automatic logging. This class extends FastAPI's… `EXTRACTED`
+
+### references
+- ._handle_logged_http_exception() `EXTRACTED`
+- ._get_logged_http_user_friendly_message() `EXTRACTED`
+
+### uses
+- TestLootAllItems `INFERRED`
+- TestMonitoringEndpoints `INFERRED`
+- TestRegisterLootEndpoints `INFERRED`
+- TestRollCharacterStats `INFERRED`
+- TestHandleTransferItemsExceptions `INFERRED`
+- TestOpenContainer `INFERRED`
+- TestTransferItems `INFERRED`
+- TestGetContainerAndPlayerForLootAll `INFERRED`
+- TestHelperFunctions `INFERRED`
+- test_create_room_exit_duplicate_direction_409() `INFERRED`
+- TestHandleLootAllExceptions `INFERRED`
+- TestHandleOpenContainerExceptions `INFERRED`
+- test_apply_lucidity_loss_validation_maps_to_404() `INFERRED`
+- test_create_room_exit_source_room_missing_404() `INFERRED`
+- test_create_room_exit_target_room_missing_404() `INFERRED`
+- test_update_room_exit_not_found_404() `INFERRED`
+- TestCreateCharacterWithStats `INFERRED`
+- TestHandleContainerServiceErrorEdgeCases `INFERRED`
+- TestHandleContainerServiceError `INFERRED`
+- TestCloseContainer `INFERRED`
 
 ---
 

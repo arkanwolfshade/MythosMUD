@@ -1,63 +1,88 @@
 # ConnectionManager
 
-> 207 nodes
+> God node · 173 connections · `server/realtime/connection_manager.py`
 
-## Key Concepts
+**Community:** [Community 92](Community_92.md)
 
-- **ConnectionManager** (180 connections) — `server/realtime/connection_manager.py`
-- **UUID** (42 connections)
-- **test_connection_manager_class.py** (15 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
-- **test_connection_error_methods.py** (14 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **connection_error_methods.py** (11 connections) — `server/realtime/connection_error_methods.py`
-- **ConnectionManager** (11 connections)
-- **detect_and_handle_error_state_impl()** (10 connections) — `server/realtime/connection_error_methods.py`
-- **handle_authentication_error_impl()** (9 connections) — `server/realtime/connection_error_methods.py`
-- **handle_security_violation_impl()** (9 connections) — `server/realtime/connection_error_methods.py`
-- **handle_websocket_error_impl()** (9 connections) — `server/realtime/connection_error_methods.py`
-- **recover_from_error_impl()** (9 connections) — `server/realtime/connection_error_methods.py`
-- **._track_player_disconnected()** (7 connections) — `server/realtime/connection_manager.py`
-- **UUID** (6 connections)
-- **asyncio** (6 connections)
-- **.broadcast_connection_message()** (5 connections) — `server/realtime/connection_manager.py`
-- **.connect_websocket()** (5 connections) — `server/realtime/connection_manager.py`
-- **.disconnect_websocket()** (5 connections) — `server/realtime/connection_manager.py`
-- **._get_player()** (5 connections) — `server/realtime/connection_manager.py`
-- **.track_player_connected()** (5 connections) — `server/realtime/connection_manager.py`
-- **Any** (5 connections)
-- **Player** (5 connections)
-- **.canonical_room_id()** (4 connections) — `server/realtime/connection_manager.py`
-- **._check_and_process_disconnect()** (4 connections) — `server/realtime/connection_manager.py`
-- **.check_connection_health()** (4 connections) — `server/realtime/connection_manager.py`
-- **.cleanup_dead_connections()** (4 connections) — `server/realtime/connection_manager.py`
-- *... and 182 more nodes in this community*
+## Connections by Relation
 
-## Relationships
+### calls
+- .initialize() `EXTRACTED`
 
-- [connection_manager.py](connection_manager.py.md) (21 shared connections)
-- [container_events.py](container_events.py.md) (9 shared connections)
-- [test_connection_delegates.py](test_connection_delegates.py.md) (9 shared connections)
-- [PlayerDPUpdated](PlayerDPUpdated.md) (7 shared connections)
-- [EventHandler](EventHandler.md) (6 shared connections)
-- [connection_cleanup_methods.py](connection_cleanup_methods.py.md) (6 shared connections)
-- [FollowService](FollowService.md) (4 shared connections)
-- [game_state_provider.py](game_state_provider.py.md) (4 shared connections)
-- [build_event](build_event.md) (4 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (3 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
-- [event_handler.py](event_handler.py.md) (3 shared connections)
+### contains
+- connection_manager.py `EXTRACTED`
 
-## Source Files
+### imports
+- server/dependencies.py `EXTRACTED`
+- websocket_handler.py `EXTRACTED`
+- container_endpoints_basic.py `EXTRACTED`
+- npc_combat_integration_service.py `EXTRACTED`
+- inventory_command_helpers.py `EXTRACTED`
+- combat_handler.py `EXTRACTED`
+- test_websocket_initial_state.py `EXTRACTED`
+- websocket_initial_state.py `EXTRACTED`
+- player_event_handlers.py `EXTRACTED`
+- nats_message_handler.py `EXTRACTED`
+- websocket_handler_commands.py `EXTRACTED`
+- player_event_handlers_state.py `EXTRACTED`
+- lifespan_protocols.py `EXTRACTED`
+- player_event_handlers_respawn.py `EXTRACTED`
+- websocket_room_updates.py `EXTRACTED`
+- follow_movement.py `EXTRACTED`
+- websocket_handler_message_loop.py `EXTRACTED`
+- api/game.py `EXTRACTED`
+- player_disconnect_handlers.py `EXTRACTED`
+- test_envelope.py `EXTRACTED`
 
-- `server/realtime/connection_error_methods.py`
-- `server/realtime/connection_manager.py`
-- `server/tests/unit/realtime/test_connection_error_methods.py`
-- `server/tests/unit/realtime/test_connection_manager_class.py`
+### method
+- .event_bus() `EXTRACTED`
+- ._track_player_disconnected() `EXTRACTED`
+- .disconnect_websocket() `EXTRACTED`
+- ._get_player() `EXTRACTED`
+- .track_player_connected() `EXTRACTED`
+- .broadcast_connection_message() `EXTRACTED`
+- .connect_websocket() `EXTRACTED`
+- .force_disconnect_player() `EXTRACTED`
+- .handle_new_game_session() `EXTRACTED`
+- .check_connection_health() `EXTRACTED`
+- ._get_players_batch() `EXTRACTED`
+- ._check_and_process_disconnect() `EXTRACTED`
+- ._send_initial_game_state() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- ._is_websocket_open() `EXTRACTED`
+- ._safe_close_websocket() `EXTRACTED`
+- .get_player_websocket_connection_id() `EXTRACTED`
+- .has_websocket_connection() `EXTRACTED`
+- .get_connection_count() `EXTRACTED`
+- .subscribe_to_room() `EXTRACTED`
 
-## Audit Trail
+### rationale_for
+- Manages real-time connections for the game. This refactored version uses… `EXTRACTED`
 
-- EXTRACTED: 382 (88%)
-- INFERRED: 51 (12%)
-- AMBIGUOUS: 0 (0%)
+### references
+- resolve_connection_manager() `EXTRACTED`
+
+### uses
+- FollowService `INFERRED`
+- PlayerRespawnEventHandler `INFERRED`
+- CombatCommandHandler `INFERRED`
+- PlayerStateEventHandler `INFERRED`
+- PartyService `INFERRED`
+- EventHandler `INFERRED`
+- PlayerEventHandler `INFERRED`
+- RealtimeBundle `INFERRED`
+- _FollowMovementHost `INFERRED`
+- build_room_update_event() `INFERRED`
+- _dispatch_player_dp_updated_payload() `INFERRED`
+- TestEmitLootAllEvent `INFERRED`
+- TestEmitTransferEvent `INFERRED`
+- TestEmitCloseContainerEvent `INFERRED`
+- _send_combat_participant_updates() `INFERRED`
+- send_personalized_room_events() `INFERRED`
+- _RespawnRoomHost `INFERRED`
+- _dispatch_player_dp_decay_payload() `INFERRED`
+- TestEmitContainerOpenedEvents `INFERRED`
+- _npc_died_broadcast_and_bridge() `INFERRED`
 
 ---
 

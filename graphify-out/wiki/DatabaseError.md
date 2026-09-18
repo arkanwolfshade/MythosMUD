@@ -1,18 +1,15 @@
 # DatabaseError
 
-> God node · 253 connections · `server/exceptions.py`
+> God node · 214 connections · `server/exceptions.py`
 
-**Community:** [get_logger](get_logger.md)
+**Community:** [Aliases & Webhook/Schema Validation](Aliases_&_Webhook-Schema_Validation.md)
 
 ## Connections by Relation
 
 ### calls
-- ._execute_create_npc_definition() `EXTRACTED`
-- ._execute_npc_update() `EXTRACTED`
 - ._execute_create_spawn_rule() `EXTRACTED`
 - ._get_room_uuid_by_stable_id() `EXTRACTED`
 - .mark_room_as_explored() `EXTRACTED`
-- .get_npc_definitions() `EXTRACTED`
 - .is_room_explored() `EXTRACTED`
 - .get_spawn_rules() `EXTRACTED`
 - .get_explored_rooms() `EXTRACTED`
@@ -32,26 +29,26 @@
 - server/exceptions.py `EXTRACTED`
 
 ### imports
-- [connection_manager_methods.py](connection_manager_methods.py.md) `EXTRACTED`
 - database.py `EXTRACTED`
-- [players.py](players.py.md) `EXTRACTED`
-- [maps.py](maps.py.md) `EXTRACTED`
-- [test_combat_service_modules.py](test_combat_service_modules.py.md) `EXTRACTED`
-- [admin_setstat_command.py](admin_setstat_command.py.md) `EXTRACTED`
-- [test_player_respawn_service.py](test_player_respawn_service.py.md) `EXTRACTED`
-- [container_persistence.py](container_persistence.py.md) `EXTRACTED`
+- players.py `EXTRACTED`
+- maps.py `EXTRACTED`
+- test_combat_service_modules.py `EXTRACTED`
+- test_player_respawn_service.py `EXTRACTED`
+- container_persistence.py `EXTRACTED`
 - test_maps.py `EXTRACTED`
 - test_container_persistence_extended_row_helpers.py `EXTRACTED`
-- [test_connection_delegates.py](test_connection_delegates.py.md) `EXTRACTED`
-- player_service.py `EXTRACTED`
-- [player_presence_tracker.py](player_presence_tracker.py.md) `EXTRACTED`
-- [test_connection_session_management.py](test_connection_session_management.py.md) `EXTRACTED`
-- [test_npc_service.py](test_npc_service.py.md) `EXTRACTED`
-- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) `EXTRACTED`
-- [test_player_repository.py](test_player_repository.py.md) `EXTRACTED`
-- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) `EXTRACTED`
+- test_connection_delegates.py `EXTRACTED`
+- test_connection_session_management.py `EXTRACTED`
+- test_npc_service.py `EXTRACTED`
 - test_exploration_service.py `EXTRACTED`
 - test_exceptions.py `EXTRACTED`
+- connection_establishment.py `EXTRACTED`
+- test_database_error_handling.py `EXTRACTED`
+- test_container_persistence_extended_crud.py `EXTRACTED`
+- player_respawn_service.py `EXTRACTED`
+- test_async_persistence_core.py `EXTRACTED`
+- test_container_persistence_async_helpers.py `EXTRACTED`
+- admin_teleport_commands.py `EXTRACTED`
 
 ### inherits
 - MythosMUDError `EXTRACTED`
@@ -63,26 +60,26 @@
 - Database operation errors. `EXTRACTED`
 
 ### uses
-- PlayerSpellRepository `INFERRED`
-- PlayerRepository `INFERRED`
 - HealthRepository `INFERRED`
-- [DialogueDefinitionRepository](DialogueDefinitionRepository.md) `INFERRED`
-- [SkillRepository](SkillRepository.md) `INFERRED`
-- [ConnectionCleaner](ConnectionCleaner.md) `INFERRED`
-- [RoomCacheLoader](RoomCacheLoader.md) `INFERRED`
-- [ExperienceRepository](ExperienceRepository.md) `INFERRED`
+- DialogueDefinitionRepository `INFERRED`
+- ConnectionCleaner `INFERRED`
+- ExperienceRepository `INFERRED`
+- PlayerSpellRepository `INFERRED`
+- SkillRepository `INFERRED`
 - MythosTimeEventConsumer `INFERRED`
 - PlayerSkillRepository `INFERRED`
-- QuestInstanceRepository `INFERRED`
-- [PlayerEffectRepository](PlayerEffectRepository.md) `INFERRED`
-- QuestDefinitionRepository `INFERRED`
-- ItemCatalogRepository `INFERRED`
-- SkillUseLogRepository `INFERRED`
+- PlayerEffectRepository `INFERRED`
 - SpellRepository `INFERRED`
-- EmoteRepository `INFERRED`
+- QuestInstanceRepository `INFERRED`
 - ProfessionRepository `INFERRED`
+- SkillUseLogRepository `INFERRED`
+- QuestDefinitionRepository `INFERRED`
+- EmoteRepository `INFERRED`
 - fetch_user_by_username_case_insensitive() `INFERRED`
 - test_establish_websocket_connection_error() `INFERRED`
+- test_disconnect_connection_for_session_close_error() `INFERRED`
+- fetch_professions() `INFERRED`
+- _create_engine_or_raise() `INFERRED`
 
 ---
 

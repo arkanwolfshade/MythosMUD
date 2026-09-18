@@ -1,0 +1,54 @@
+# Community 564
+
+> 30 nodes
+
+## Key Concepts
+
+- **PlayerInventory** (15 connections) — `server/models/player.py`
+- **PlayerSavePreparer** (13 connections) — `server/persistence/repositories/player_repository_save.py`
+- **player_repository_save.py** (11 connections) — `server/persistence/repositories/player_repository_save.py`
+- **.prepare()** (10 connections) — `server/persistence/repositories/player_repository_save.py`
+- **._prepare_inventory_payload()** (7 connections) — `server/persistence/repositories/player_repository_save.py`
+- **Any** (7 connections)
+- **Player** (7 connections)
+- **_parse_equipped_raw()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
+- **_parse_inventory_raw()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
+- **._ensure_inventory_record()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
+- **._normalize_timestamps()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
+- **._upsert_numeric_defaults()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
+- **._upsert_string_defaults()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
+- **._normalize_is_admin()** (4 connections) — `server/persistence/repositories/player_repository_save.py`
+- **.execute()** (3 connections) — `server/persistence/repositories/player_repository_save.py`
+- **.__init__()** (2 connections) — `server/persistence/repositories/player_repository_save.py`
+- **datetime** (2 connections)
+- **Player inventory model for persistent storage of items. This matches the…** (1 connections) — `server/models/player.py`
+- **Player save/upsert helpers for PlayerRepository. Handles inventory validation,…** (1 connections) — `server/persistence/repositories/player_repository_save.py`
+- **Validate and serialize inventory payload. Returns (inventory_json,…** (1 connections) — `server/persistence/repositories/player_repository_save.py`
+- **Prepare player for upsert: normalize, validate inventory, build params.** (1 connections) — `server/persistence/repositories/player_repository_save.py`
+- **Execute upsert_player procedure with given params.** (1 connections) — `server/persistence/repositories/player_repository_save.py`
+- **Parse inventory from string or list. Raises InventorySchemaValidationError if…** (1 connections) — `server/persistence/repositories/player_repository_save.py`
+- **Parse equipped from string or dict. Raises InventorySchemaValidationError if…** (1 connections) — `server/persistence/repositories/player_repository_save.py`
+- **Prepares Player objects for upsert_player procedure calls. Handles…** (1 connections) — `server/persistence/repositories/player_repository_save.py`
+- *... and 5 more nodes in this community*
+
+## Relationships
+
+- [Community 498](Community_498.md) (7 shared connections)
+- [Community 579](Community_579.md) (5 shared connections)
+- [Player Creation Service](Player_Creation_Service.md) (4 shared connections)
+- [Aliases & Webhook/Schema Validation](Aliases_&_Webhook-Schema_Validation.md) (4 shared connections)
+
+## Source Files
+
+- `server/models/player.py`
+- `server/persistence/repositories/player_repository_save.py`
+
+## Audit Trail
+
+- EXTRACTED: 69 (96%)
+- INFERRED: 3 (4%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

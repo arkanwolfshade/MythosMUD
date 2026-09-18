@@ -1,0 +1,54 @@
+# Community 517
+
+> 33 nodes
+
+## Key Concepts
+
+- **MovementMonitor** (22 connections) — `server/game/movement_monitor.py`
+- **movement_monitor.py** (12 connections) — `server/game/movement_monitor.py`
+- **reset_movement_monitor()** (7 connections) — `server/game/movement_monitor.py`
+- **.get_alerts()** (6 connections) — `server/game/movement_monitor.py`
+- **.get_metrics()** (6 connections) — `server/game/movement_monitor.py`
+- **.get_performance_summary()** (5 connections) — `server/game/movement_monitor.py`
+- **.validate_room_integrity()** (5 connections) — `server/game/movement_monitor.py`
+- **._check_alerts()** (4 connections) — `server/game/movement_monitor.py`
+- **.log_performance_summary()** (4 connections) — `server/game/movement_monitor.py`
+- **.record_movement_attempt()** (4 connections) — `server/game/movement_monitor.py`
+- **test_reset_movement_monitor()** (4 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **Any** (4 connections)
+- **._collect_room_player_map()** (3 connections) — `server/game/movement_monitor.py`
+- **.__init__()** (3 connections) — `server/game/movement_monitor.py`
+- **.record_integrity_check()** (3 connections) — `server/game/movement_monitor.py`
+- **.record_concurrent_movement()** (2 connections) — `server/game/movement_monitor.py`
+- **.reset_metrics()** (2 connections) — `server/game/movement_monitor.py`
+- **UUID** (2 connections)
+- **Movement monitoring and validation system for MythosMUD. This module provides…** (1 connections) — `server/game/movement_monitor.py`
+- **Record concurrent movement count.** (1 connections) — `server/game/movement_monitor.py`
+- **Record an integrity check result.** (1 connections) — `server/game/movement_monitor.py`
+- **Validate players are not in multiple rooms.** (1 connections) — `server/game/movement_monitor.py`
+- **Get comprehensive movement metrics.** (1 connections) — `server/game/movement_monitor.py`
+- **Get current alerts based on thresholds.** (1 connections) — `server/game/movement_monitor.py`
+- **Comprehensive monitoring system for the movement system. This class provides: -…** (1 connections) — `server/game/movement_monitor.py`
+- *... and 8 more nodes in this community*
+
+## Relationships
+
+- [Community 178](Community_178.md) (9 shared connections)
+- [Community 285](Community_285.md) (5 shared connections)
+- [Aliases & Webhook/Schema Validation](Aliases_&_Webhook-Schema_Validation.md) (5 shared connections)
+- [Community 421](Community_421.md) (2 shared connections)
+
+## Source Files
+
+- `server/game/movement_monitor.py`
+- `server/tests/unit/game/test_movement_monitor.py`
+
+## Audit Trail
+
+- EXTRACTED: 63 (94%)
+- INFERRED: 4 (6%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*
