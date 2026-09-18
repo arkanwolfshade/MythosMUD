@@ -44,6 +44,9 @@ exclude_paths:
   # Coverage alignment: not in pytest-cov --cov=server (would show as 0% on Codacy otherwise).
   - "scripts/**"
   - "tools/**"
+  # One-shot DB migration/apply scripts (apply_migration bodies); not coverable product
+  # code, same rationale as scripts/** above. See issue #787 Wave 1.
+  - "server/scripts/**"
   - "server/tests/**"
   # Coverage alignment: not in Vitest coverage include (client/src only); Playwright and config live here.
   - "client/tests/**"
@@ -90,6 +93,8 @@ engines:
     exclude_paths:
       - "server/services/user_manager.py"
       - "scripts/ci/quality_fragmentation_guard.py"
+      # One-shot migration/apply scripts (see root exclude_paths note, issue #787 Wave 1).
+      - "server/scripts/**"
       # Lockfiles are not source; Lizard file-nloc is noise.
       - "uv.lock"
       - "**/uv.lock"
@@ -421,6 +426,14 @@ ignore_patterns:
       - "server/realtime/maintenance/connection_cleaner.py"
       - "server/realtime/monitoring/health_monitor.py"
     reason: "Constructors and audit signatures; bundling would be a speculative API churn."
+  # Lizard NLOC: message_filtering.py mute-check functions are low-CCN (5-6) but carry dense
+  # structured debug-log checkpoints (multi-line kwargs per log call) added for a specific
+  # mute-visibility bug (#2). Splitting further would fragment into single-log-call wrapper
+  # functions, which the anti-fragmentation guard forbids. See issue #787 Wave 2.
+  - pattern_id: "Lizard_nloc-medium"
+    file_paths:
+      - "server/realtime/message_filtering.py"
+    reason: "Debug-log-dense, low-CCN mute-check functions; see file header note, issue #787."
   # Pylint R0801 duplicate-code: thin shared patterns across cohesive modules; extraction
   # would create speculative single-use helpers (ponytail / fragmentation rules).
   - pattern_id: "PyLintPython3_R0801"
