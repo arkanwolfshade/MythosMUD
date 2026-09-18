@@ -12,7 +12,7 @@ Game state generation is now a focused, independently testable component.
 import json
 import uuid
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, Protocol, cast
 
 from ...models import Player
 from ...services.exit_hallucination import get_hallucinated_exits
@@ -33,6 +33,31 @@ if TYPE_CHECKING:
     from ..room_subscription_manager import RoomSubscriptionManager
 
 logger = get_logger(__name__)
+
+
+class _PlayerServiceLike(Protocol):
+    """Minimal duck-type for the app's PlayerService (issue #787: avoid Any at the boundary).
+
+    The concrete PlayerService is resolved dynamically (container or app.state), so this
+    names only the one method _build_client_player_data actually calls.
+    """
+
+    async def convert_player_to_schema(self, player: object) -> object: ...
+
+
+class _AsyncPersistenceLike(Protocol):
+    """Minimal duck-type for the async persistence layer's player lookup."""
+
+    async def get_player_by_id(self, player_id: uuid.UUID) -> object: ...
+
+
+def _call_dynamic_method(obj: object, method_name: str, **kwargs: object) -> dict[str, object]:
+    """Call a dict-returning method by name on an object-typed (duck-typed) value.
+
+    getattr is required (not direct attribute access): the caller only knows the method
+    exists via hasattr, not via any static type, and method_name is itself a variable.
+    """
+    return cast("dict[str, object]", getattr(obj, method_name)(**kwargs))
 
 
 class GameStateProvider:
@@ -165,45 +190,57 @@ class GameStateProvider:
         )
         return npc_names
 
-    def _get_player_name_with_grace_periods(self, player_id_uuid: uuid.UUID, player_obj: Any) -> str | None:
-        """Get player name and add grace period indicators if applicable."""
+    @staticmethod
+    def _resolve_raw_player_name(player_obj: object) -> str | None:
+        """Get player_obj.name, falling back to its related User's username/display_name."""
         player_name = getattr(player_obj, "name", None)
-        if not player_name or not isinstance(player_name, str) or not player_name.strip():
-            # Try to get name from related User object
-            if hasattr(player_obj, "user"):
-                try:
-                    user = getattr(player_obj, "user", None)
-                    if user:
-                        player_name = getattr(user, "username", None) or getattr(user, "display_name", None)
-                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: User attribute access errors unpredictable, graceful fallback if user attributes are unavailable, must continue processing
-                    # nosec B110 - Intentional silent handling: User attribute access errors are unpredictable,
-                    # and we must gracefully fallback if user attributes are unavailable
-                    logger.debug("Failed to access user attributes, using fallback", exc_info=e)
-
-        # Validate name is not UUID
         if player_name and isinstance(player_name, str) and player_name.strip():
-            is_uuid_string = (
-                len(player_name) == 36
-                and player_name.count("-") == 4
-                and all(c in "0123456789abcdefABCDEF-" for c in player_name)
-            )
-            if not is_uuid_string:
-                # Check if player is in disconnect grace period and add "(linkdead)" indicator
-                # Also check if player is in login grace period and add "(warded)" indicator
-                try:
-                    app = self.get_app()
-                    connection_manager = getattr(app.state, "connection_manager", None) if app else None
-                    if connection_manager:
-                        if is_player_in_grace_period(player_id_uuid, connection_manager):
-                            player_name = f"{player_name} (linkdead)"
-                        # Check login grace period (can have both indicators)
-                        if is_player_in_login_grace_period(player_id_uuid, connection_manager):
-                            player_name = f"{player_name} (warded)"
-                except (AttributeError, ImportError, TypeError, ValueError):
-                    # If we can't check grace period, use name as-is
-                    pass
-                return player_name
+            return player_name
+        if not hasattr(player_obj, "user"):
+            return None
+        try:
+            user: object = getattr(player_obj, "user", None)
+            if user:
+                fallback_name = getattr(user, "username", None) or getattr(user, "display_name", None)
+                return fallback_name if isinstance(fallback_name, str) else None
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: User attribute access errors unpredictable, graceful fallback if user attributes are unavailable, must continue processing
+            # nosec B110 - Intentional silent handling: User attribute access errors are unpredictable,
+            # and we must gracefully fallback if user attributes are unavailable
+            logger.debug("Failed to access user attributes, using fallback", exc_info=e)
         return None
+
+    @staticmethod
+    def _looks_like_uuid(candidate: str) -> bool:
+        """True if candidate has UUID shape (36 chars, 4 hyphens, hex digits) -- never a display name."""
+        return (
+            len(candidate) == 36
+            and candidate.count("-") == 4
+            and all(c in "0123456789abcdefABCDEF-" for c in candidate)
+        )
+
+    def _apply_grace_period_suffixes(self, player_id_uuid: uuid.UUID, player_name: str) -> str:
+        """Add "(linkdead)"/"(warded)" suffixes for disconnect/login grace periods, if checkable."""
+        try:
+            app = cast(object, self.get_app())
+            app_state: object = getattr(app, "state", None) if app else None
+            connection_manager: object = getattr(app_state, "connection_manager", None) if app_state else None
+            if connection_manager:
+                if is_player_in_grace_period(player_id_uuid, connection_manager):
+                    player_name = f"{player_name} (linkdead)"
+                # Check login grace period (can have both indicators)
+                if is_player_in_login_grace_period(player_id_uuid, connection_manager):
+                    player_name = f"{player_name} (warded)"
+        except (AttributeError, ImportError, TypeError, ValueError):
+            # If we can't check grace period, use name as-is
+            pass
+        return player_name
+
+    def _get_player_name_with_grace_periods(self, player_id_uuid: uuid.UUID, player_obj: object) -> str | None:
+        """Get player name and add grace period indicators if applicable."""
+        player_name = self._resolve_raw_player_name(player_obj)
+        if not player_name or self._looks_like_uuid(player_name):
+            return None
+        return self._apply_grace_period_suffixes(player_id_uuid, player_name)
 
     async def _convert_player_uuids_to_names(self, room_data: dict[str, Any]) -> None:
         """Convert player UUIDs to names in room_data."""
@@ -314,7 +351,13 @@ class GameStateProvider:
         return occupant_name
 
     async def _process_occupants_with_grace_periods(
-        self, room_id: str, player_id: uuid.UUID, online_players: dict[uuid.UUID, dict[str, Any]]
+        self,
+        room_id: str,
+        # Reason: SERIALIZATION_BOUNDARY - matches RoomSubscriptionManager.get_room_occupants'
+        # own online_players: dict[str, Any] parameter it's passed through to below.
+        # Appropriate because: per-player connection state is heterogeneous (room id, websocket
+        # refs, timestamps); this parameter only removed player_id, it didn't touch this type.
+        online_players: dict[uuid.UUID, dict[str, Any]],  # pyright: ignore[reportExplicitAny]
     ) -> tuple[list[str], list[str], list[str]]:
         """Process room occupants and separate into players and NPCs with grace period indicators."""
         occupants: list[str] = []
@@ -340,16 +383,9 @@ class GameStateProvider:
                 occ_player_id = occ_info.get("player_id")
                 if occ_player_id and connection_manager:
                     occupant_name = self._add_grace_period_indicators(occupant_name, occ_player_id, connection_manager)
+                player_names_list.append(occupant_name)
 
-                if occ_info.get("player_id") != player_id:
-                    player_names_list.append(occupant_name)
-                else:
-                    player_names_list.append(occupant_name)
-
-            if occ_info.get("player_id") != player_id or is_npc:
-                occupants.append(occupant_name)
-            else:
-                occupants.append(occupant_name)
+            occupants.append(occupant_name)
 
         return occupants, player_names_list, npc_names_list
 
@@ -377,41 +413,56 @@ class GameStateProvider:
             "stats": stats_data,
         }
 
+    def _resolve_player_service(self) -> "_PlayerServiceLike | None":
+        """Get the app's PlayerService, preferring the container over app.state (back-compat)."""
+        app = cast(object, self.get_app())
+        app_state: object = getattr(app, "state", None) if app else None
+        container: object = getattr(app_state, "container", None) if app_state else None
+        if container:
+            return cast("_PlayerServiceLike | None", getattr(container, "player_service", None))
+        if app_state:
+            return cast("_PlayerServiceLike | None", getattr(app_state, "player_service", None))
+        return None
+
+    async def _build_client_player_data(
+        self, player_service: "_PlayerServiceLike", player: Player, player_id: uuid.UUID
+    ) -> dict[str, object]:
+        """Convert a player to client-facing schema data via PlayerService (server-authoritative)."""
+        # Server authority: fetch player from persistence for authoritative stats (current_dp, etc.)
+        # The passed-in player may be a connection-cached copy with stale stats
+        async_persistence = cast(object, self.get_async_persistence())
+        fresh_player = (
+            await cast("_AsyncPersistenceLike", async_persistence).get_player_by_id(player_id)
+            if async_persistence
+            else None
+        )
+        player_to_convert = fresh_player if fresh_player else player
+        complete_player_data: object = await player_service.convert_player_to_schema(player_to_convert)
+        logger.debug(
+            "GameStateProvider: Retrieved complete player data with profession",
+            player_id=player_id,
+            has_profession=bool(getattr(complete_player_data, "profession_name", None)),
+            has_stats=bool(getattr(complete_player_data, "stats", None)),
+        )
+
+        # Duck-typed: convert_player_to_schema returns a Pydantic model (v2: model_dump, v1: dict);
+        # tests may also pass a plain mock, so this stays dynamic rather than importing PlayerRead.
+        # getattr (not direct access) is deliberate: complete_player_data is object-typed to
+        # avoid Any, and object has neither attribute statically.
+        if hasattr(complete_player_data, "model_dump"):
+            player_data_for_client = _call_dynamic_method(complete_player_data, "model_dump", mode="json")
+        else:
+            player_data_for_client = _call_dynamic_method(complete_player_data, "dict")
+        if "experience_points" in player_data_for_client:
+            player_data_for_client["xp"] = player_data_for_client["experience_points"]
+        return player_data_for_client
+
     async def _get_player_data_for_client(self, player: Player, player_id: uuid.UUID, room_id: str) -> dict[str, Any]:
         """Get complete player data using PlayerService or fallback."""
         try:
-            app = self.get_app()
-            app_state = getattr(app, "state", None) if app else None
-
-            # Prefer container, fallback to app.state for backward compatibility
-            player_service = None
-            if app_state and hasattr(app_state, "container") and app_state.container:
-                player_service = getattr(app_state.container, "player_service", None)
-            elif app_state:
-                player_service = getattr(app_state, "player_service", None)
-
+            player_service = self._resolve_player_service()
             if player_service:
-                # Server authority: fetch player from persistence for authoritative stats (current_dp, etc.)
-                # The passed-in player may be a connection-cached copy with stale stats
-                async_persistence = self.get_async_persistence()
-                fresh_player = await async_persistence.get_player_by_id(player_id) if async_persistence else None
-                player_to_convert = fresh_player if fresh_player else player
-                complete_player_data = await player_service.convert_player_to_schema(player_to_convert)
-                logger.debug(
-                    "GameStateProvider: Retrieved complete player data with profession",
-                    player_id=player_id,
-                    has_profession=bool(getattr(complete_player_data, "profession_name", None)),
-                    has_stats=bool(getattr(complete_player_data, "stats", None)),
-                )
-
-                player_data_for_client = (
-                    complete_player_data.model_dump(mode="json")
-                    if hasattr(complete_player_data, "model_dump")
-                    else complete_player_data.dict()
-                )
-                if "experience_points" in player_data_for_client:
-                    player_data_for_client["xp"] = player_data_for_client["experience_points"]
-                return cast(dict[str, Any], player_data_for_client)
+                return await self._build_client_player_data(player_service, player, player_id)
             logger.warning(
                 "PlayerService not available in game_state_provider, using basic player data",
                 player_id=player_id,
@@ -511,7 +562,7 @@ class GameStateProvider:
 
             # Get room occupants (players and NPCs) with grace period indicators
             occupants, player_names_list, npc_names_list = await self._process_occupants_with_grace_periods(
-                room_id, player_id, online_players
+                room_id, online_players
             )
             # This viewer's own phantom hostiles (#625, #714) -- player-specific, so merged in
             # per-recipient here rather than being part of the room's real occupant data.
