@@ -55,7 +55,6 @@ from .communication_commands import (
     handle_system_command,
     handle_whisper_command,
 )
-from .debrief_command import handle_debrief_command
 from .exploration_commands import handle_go_command, handle_look_command
 from .follow_commands import (
     handle_follow_command,
@@ -70,13 +69,6 @@ from .inventory_commands import (
     handle_pickup_command,
     handle_put_command,
     handle_unequip_command,
-)
-from .lucidity_recovery_commands import (
-    handle_folk_tonic_command,
-    handle_group_solace_command,
-    handle_meditate_command,
-    handle_pray_command,
-    handle_therapy_command,
 )
 from .magic_commands import (
     handle_cast_command,
@@ -199,16 +191,12 @@ _COMMAND_HANDLERS: dict[str, CommandHandler] = {
     "strike": handle_strike_command,
     "flee": handle_flee_command,
     "taunt": handle_taunt_command,
-    # lucidity recovery rites
-    "pray": handle_pray_command,
-    "meditate": handle_meditate_command,
-    "group_solace": handle_group_solace_command,
-    "therapy": handle_therapy_command,
-    "folk_tonic": handle_folk_tonic_command,
     # corruption recovery rite
     "cleanse": handle_cleanse_command,
-    "debrief": handle_debrief_command,
     "ground": handle_ground_command,
+    # NOTE: pray, meditate, group_solace, therapy, folk_tonic, debrief are
+    # intentionally NOT registered here. See lucidity_recovery_commands.py
+    # and debrief_command.py module docstrings (#813) for why.
 }
 
 

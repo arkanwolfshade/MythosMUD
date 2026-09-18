@@ -9,6 +9,7 @@ from ..exceptions import ValidationError as MythosValidationError
 from ..models.command import (
     ChannelCommand,
     EmoteCommand,
+    GlobalCommand,
     LocalCommand,
     MeCommand,
     PoseCommand,
@@ -65,6 +66,16 @@ class CommunicationCommandFactory:
                 logger_name=__name__,
             )
         return LocalCommand(message=message)
+
+    @staticmethod
+    def create_global_command(args: list[str]) -> GlobalCommand:
+        """Create GlobalCommand from arguments."""
+        if not args:
+            log_and_raise_enhanced(
+                MythosValidationError, "Global command requires a message", args=args, logger_name=__name__
+            )
+        message = " ".join(args)
+        return GlobalCommand(message=message)
 
     @staticmethod
     def create_system_command(args: list[str]) -> SystemCommand:

@@ -1,4 +1,16 @@
-"""Recovery rituals that steady a mind frayed by eldritch exposure."""
+"""Recovery rituals that steady a mind frayed by eldritch exposure.
+
+PARKED (#813): these handlers are deliberately NOT registered in
+``_COMMAND_HANDLERS`` (server/commands/command_service.py). Registering them
+as bare no-arg commands would ship ungated, spammable-on-cooldown sanity
+recovery -- ``_perform_recovery_action`` enforces only a cooldown, with no
+location, item, or skill gate. See #868 (pray/meditate: holy-site or
+holy/idol item gating), #869 (therapy: NPC/player Psychology or
+Psychoanalysis skill gate), #870 (folk tonic: should be a consumable item,
+not a command), and #871 (group solace: should be a spell, not a command)
+for the intended designs. Do not re-register these in ``_COMMAND_HANDLERS``
+without the corresponding gate implemented.
+"""
 
 # pylint: disable=too-many-locals,too-many-return-statements  # Reason: Recovery commands require many intermediate variables for complex lucidity logic and multiple return statements for early validation returns
 

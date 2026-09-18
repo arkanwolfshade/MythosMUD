@@ -312,3 +312,18 @@ def test_create_unequip_command_all_slots():
         result = InventoryCommandFactory.create_unequip_command([slot])
         assert result.slot == slot
         assert result.search_term is None
+
+
+# --- Tests for create_read_command (#813) ---
+
+
+def test_create_read_command_no_args():
+    """Test create_read_command() creates a bare ReadCommand with no args."""
+    command = InventoryCommandFactory.create_read_command([])
+    assert command.command_type == "read"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+
+
+def test_create_read_command_with_args():
+    """Test create_read_command() ignores args at the model level (handler parses command_data['args'])."""
+    command = InventoryCommandFactory.create_read_command(["spellbook", "fireball"])
+    assert command.command_type == "read"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime

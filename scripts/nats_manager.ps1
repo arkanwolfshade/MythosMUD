@@ -456,6 +456,7 @@ function Test-NatsClientPortOpen {
     }
     catch {
         # Monitor unreachable - fall through to the raw probe.
+        Write-Verbose "NATS monitor endpoint unreachable ($($_.Exception.Message)); falling back to raw TCP probe."
     }
 
     $probe = Test-NetConnection -ComputerName localhost -Port $NatsPort -WarningAction SilentlyContinue

@@ -92,6 +92,53 @@ def test_parse_command_valid_go(command_parser):
     assert result.command_type == CommandType.GO
 
 
+def test_parse_command_valid_read(command_parser):
+    """#813: parse_command must recognize 'read' -- registered in _COMMAND_HANDLERS but
+    missing from CommandType, so it was unreachable through real command input."""
+    result = command_parser.parse_command("read spellbook")
+
+    assert isinstance(result, Command)
+    assert result.command_type == CommandType.READ
+
+
+def test_parse_command_valid_stop(command_parser):
+    """#813: parse_command must recognize 'stop' -- registered in _COMMAND_HANDLERS but
+    missing from CommandType, so it was unreachable through real command input."""
+    result = command_parser.parse_command("stop")
+
+    assert isinstance(result, Command)
+    assert result.command_type == CommandType.STOP
+
+
+def test_parse_command_valid_teach(command_parser):
+    """#813: parse_command must recognize 'teach' -- registered in _COMMAND_HANDLERS but
+    missing from CommandType, so it was unreachable through real command input."""
+    result = command_parser.parse_command("teach professor cantrip")
+
+    assert isinstance(result, Command)
+    assert result.command_type == CommandType.TEACH
+
+
+def test_parse_command_valid_global(command_parser):
+    """#813: 'global' was in CommandType but had no factory entry, so it cleared the
+    valid_commands gate and then died with 'Unsupported command: global'."""
+    result = command_parser.parse_command("global hello everyone")
+
+    assert isinstance(result, Command)
+    assert result.command_type == CommandType.GLOBAL
+    assert result.message == "hello everyone"
+
+
+def test_parse_command_valid_global_alias_g(command_parser):
+    """#813: '/g' resolves to 'global' via _resolve_command_alias and hit the same
+    'Unsupported command' dead end as bare 'global' before create_global_command existed."""
+    result = command_parser.parse_command("g hello everyone")
+
+    assert isinstance(result, Command)
+    assert result.command_type == CommandType.GLOBAL
+    assert result.message == "hello everyone"
+
+
 def test_parse_command_with_slash_prefix(command_parser):
     """Test parse_command handles slash prefix."""
     result = command_parser.parse_command("/look")
@@ -134,18 +181,18 @@ def test_parse_command_alias_l(command_parser):
 
 
 def test_parse_command_alias_g(command_parser):
-    """Test parse_command handles 'g' alias for global/system."""
-    # 'g' maps to 'global', but 'global' is not in the factory mapping
-    # The factory only has 'system', so 'global' will raise an error
-    # Actually, let's check if 'global' should work - it seems like it should map to SYSTEM
-    # But the factory mapping doesn't include 'global', only CommandType.SYSTEM.value (which is 'system')
-    # So 'g' -> 'global' will fail because 'global' is not in the factory
-    # This test should expect an error, or we need to add 'global' to the factory mapping
-    # For now, let's test that it raises an error for unsupported command
-    with pytest.raises(MythosValidationError) as exc_info:
-        command_parser.parse_command("g hello")
+    """Test parse_command handles 'g' alias for 'global'.
 
-    assert "Unsupported command" in str(exc_info.value) or "Unknown command" in str(exc_info.value)
+    #813: 'global' was in CommandType but had no factory entry, so both 'global' and
+    its 'g' alias used to fail with 'Unsupported command: global' once
+    create_global_command was added. See test_parse_command_valid_global_alias_g for
+    the dedicated regression test.
+    """
+    result = command_parser.parse_command("g hello")
+
+    assert isinstance(result, Command)
+    assert result.command_type == CommandType.GLOBAL
+    assert result.message == "hello"
 
 
 def test_normalize_command_removes_slash(command_parser):
@@ -253,22 +300,25 @@ def test_create_command_object_handles_alias_l(command_parser):
 
 
 def test_create_command_object_handles_alias_g(command_parser):
-    """Test _create_command_object handles 'g' alias."""
-    # 'g' should be converted to 'global' before factory lookup
-    # But 'global' maps to SYSTEM command type, so we need to check the factory mapping
-    # Actually, looking at the code, 'global' should map to create_system_command
-    mock_command = MagicMock(spec=Command)
-    # The factory mapping uses CommandType.SYSTEM.value which is 'system', not 'global'
-    # But the alias 'g' -> 'global', and we need to check if 'global' is in the factory
-    # Let's check what the actual factory method is for 'global'
-    with patch.object(command_parser.factory, "create_system_command", return_value=mock_command):
-        # The code converts 'g' to 'global', but the factory might not have 'global'
-        # Let's patch the factory dict to include 'global' -> create_system_command
-        command_parser._command_factory["global"] = command_parser.factory.create_system_command
-        result = command_parser._create_command_object("g", ["message"])
+    """Test _create_command_object handles 'g' alias.
 
-        assert result == mock_command
-        command_parser.factory.create_system_command.assert_called_once_with(["message"])
+    #813: 'g' is converted to 'global' before the _command_factory dict lookup, then
+    routed to whatever create_global_command is registered under CommandType.GLOBAL.
+    The dict entry is a bound-method reference captured at CommandParser.__init__, so
+    (unlike the 'local' special case in _invoke_create_method) patching the factory
+    instance's method afterward would not affect it -- patch the dict entry directly.
+    """
+    mock_command = MagicMock(spec=Command)
+    mock_create = MagicMock(return_value=mock_command)
+    original = command_parser._command_factory["global"]
+    command_parser._command_factory["global"] = mock_create
+    try:
+        result = command_parser._create_command_object("g", ["message"])
+    finally:
+        command_parser._command_factory["global"] = original
+
+    assert result == mock_command
+    mock_create.assert_called_once_with(["message"])
 
 
 def test_create_command_object_unsupported_command(command_parser):

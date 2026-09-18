@@ -272,6 +272,30 @@ def test_create_punch_command(factory):
     assert command is not None
 
 
+def test_create_read_command(factory):
+    """Test create_read_command delegates to inventory factory (#813)."""
+    command = factory.create_read_command([])
+    assert command is not None
+
+
+def test_create_stop_command(factory):
+    """Test create_stop_command delegates to utility factory (#813)."""
+    command = factory.create_stop_command([])
+    assert command is not None
+
+
+def test_create_teach_command(factory):
+    """Test create_teach_command delegates to utility factory (#813)."""
+    command = factory.create_teach_command([])
+    assert command is not None
+
+
+def test_create_global_command(factory):
+    """Test create_global_command delegates to communication factory (#813)."""
+    command = factory.create_global_command(["hello"])
+    assert command is not None
+
+
 def test_create_kick_command(factory):
     """Test create_kick_command delegates to combat factory."""
     command = factory.create_kick_command(["target"])

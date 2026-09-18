@@ -25,6 +25,7 @@ from .command_combat import AttackCommand, FleeCommand, KickCommand, PunchComman
 # Import communication commands
 from .command_communication import (
     EmoteCommand,
+    GlobalCommand,
     LocalCommand,
     MeCommand,
     PoseCommand,
@@ -48,11 +49,12 @@ from .command_inventory import (
     InventoryCommand,
     PickupCommand,
     PutCommand,
+    ReadCommand,
     UnequipCommand,
 )
 
 # Import magic commands
-from .command_magic import CastCommand, LearnCommand, SpellCommand, SpellsCommand
+from .command_magic import CastCommand, LearnCommand, SpellCommand, SpellsCommand, StopCommand, TeachCommand
 
 # Import moderation commands
 from .command_moderation import (
@@ -106,6 +108,7 @@ __all__ = [
     # Communication commands
     "SayCommand",
     "LocalCommand",
+    "GlobalCommand",
     "SystemCommand",
     "EmoteCommand",
     "MeCommand",
@@ -158,6 +161,7 @@ __all__ = [
     "GetCommand",
     "EquipCommand",
     "UnequipCommand",
+    "ReadCommand",
     # Player state commands
     "QuitCommand",
     "LogoutCommand",
@@ -181,6 +185,8 @@ __all__ = [
     "SpellCommand",
     "SpellsCommand",
     "LearnCommand",
+    "StopCommand",
+    "TeachCommand",
     # Union type
     "Command",
 ]
@@ -195,6 +201,7 @@ Command = (
     | PartyCommand
     | SayCommand
     | LocalCommand
+    | GlobalCommand
     | SystemCommand
     | EmoteCommand
     | MeCommand
@@ -226,6 +233,7 @@ Command = (
     | GetCommand
     | EquipCommand
     | UnequipCommand
+    | ReadCommand
     | QuitCommand
     | LogoutCommand
     | SitCommand
@@ -247,6 +255,8 @@ Command = (
     | SpellCommand
     | SpellsCommand
     | LearnCommand
+    | StopCommand
+    | TeachCommand
     | AdminCommand
     | NPCCommand
     | SummonCommand

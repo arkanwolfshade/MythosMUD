@@ -71,3 +71,15 @@ class LearnCommand(BaseCommand):
         if not v or not v.strip():
             raise ValueError("Spell name cannot be empty")
         return v.strip()
+
+
+class StopCommand(BaseCommand):
+    """Command for cancelling an in-progress spellcast."""
+
+    command_type: Literal[CommandType.STOP] = CommandType.STOP
+
+
+class TeachCommand(BaseCommand):
+    """Command for learning a spell taught by an NPC teacher."""
+
+    command_type: Literal[CommandType.TEACH] = CommandType.TEACH

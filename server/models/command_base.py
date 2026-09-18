@@ -61,6 +61,7 @@ class CommandType(StrEnum):
     GET = "get"
     EQUIP = "equip"
     UNEQUIP = "unequip"
+    READ = "read"
     QUIT = "quit"
     LOGOUT = "logout"
     SIT = "sit"
@@ -94,6 +95,8 @@ class CommandType(StrEnum):
     SPELL = "spell"
     SPELLS = "spells"
     LEARN = "learn"
+    STOP = "stop"
+    TEACH = "teach"
     # Follow commands
     FOLLOW = "follow"
     UNFOLLOW = "unfollow"

@@ -14,6 +14,7 @@ from server.models.command_inventory import (
     InventoryCommand,
     PickupCommand,
     PutCommand,
+    ReadCommand,
     UnequipCommand,
 )
 
@@ -26,6 +27,17 @@ def test_inventory_command_no_fields():
 
     # Reason: Enum values (str enums) are comparable to strings at runtime
     assert command.command_type == "inventory"  # type: ignore[comparison-overlap]
+
+
+# --- Tests for ReadCommand (#813) ---
+
+
+def test_read_command_no_fields():
+    """Test ReadCommand has no required fields; item/spell name parsing lives in the handler."""
+    command = ReadCommand()
+
+    # Reason: Enum values (str enums) are comparable to strings at runtime
+    assert command.command_type == "read"  # type: ignore[comparison-overlap]
 
 
 # --- Tests for PickupCommand ---
