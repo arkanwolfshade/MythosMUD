@@ -351,8 +351,36 @@ class FollowService:
         if removed:
             self._logger.info("Player unfollowed", follower_id=fid, target_id=removed[0])
             self._send_follow_state_to_player(fid, None)
+            if removed[1] == "player":
+                self._notify_followee_of_unfollow(removed[0], fid)
             return {"success": True, "result": "You are no longer following anyone."}
         return {"success": True, "result": "You weren't following anyone."}
+
+    def _notify_followee_of_unfollow(self, followee_id: str, follower_id: str) -> None:
+        """Tell the followee their follower left. Fire-and-forget; mirrors accept_follow's notice."""
+        if not self._connection_manager:
+            return
+        try:
+            self._schedule_coro(self._send_unfollow_notice(followee_id, follower_id))
+        except (ValueError, TypeError, RuntimeError) as e:
+            self._logger.warning(
+                "Failed to notify followee of unfollow",
+                followee_id=followee_id,
+                follower_id=follower_id,
+                error=str(e),
+            )
+
+    async def _send_unfollow_notice(self, followee_id: str, follower_id: str) -> None:
+        """Resolve the follower's display name and send the followee a command_response."""
+        follower_name = follower_id
+        if self._async_persistence:
+            try:
+                follower = await self._async_persistence.get_player_by_id(uuid.UUID(follower_id))
+                if follower is not None and follower.name:
+                    follower_name = follower.name
+            except (ValueError, TypeError, AttributeError):
+                pass
+        self._send_result_to_player(followee_id, f"{follower_name} is no longer following you.")
 
     def get_followers(self, target_id: str) -> list[str]:
         """Return list of follower player IDs (for movement propagation)."""
