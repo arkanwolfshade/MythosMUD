@@ -62004,14 +62004,6 @@
         ],
         "./server/npc_database.py": [
             {
-                "code": "reportExplicitAny",
-                "range": {
-                    "startColumn": 27,
-                    "endColumn": 30,
-                    "lineCount": 1
-                }
-            },
-            {
                 "code": "reportUnusedImport",
                 "range": {
                     "startColumn": 12,
