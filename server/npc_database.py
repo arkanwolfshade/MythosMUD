@@ -12,7 +12,6 @@ import asyncio
 import os
 from collections.abc import AsyncGenerator
 from pathlib import Path
-from typing import Any
 
 from anyio import sleep
 from sqlalchemy import text
@@ -40,21 +39,15 @@ _npc_database_url: str | None = None  # pylint: disable=invalid-name  # Reason: 
 _npc_creation_loop_id: int | None = None  # pylint: disable=invalid-name  # Reason: Private module-level variable, intentionally uses _ prefix  # Track which loop created the NPC engine
 
 
-def _initialize_npc_database() -> None:
+def _resolve_npc_database_url() -> str:
     """
-    Initialize NPC database engine and session maker from configuration.
+    Resolve the NPC database URL from configuration, with an env-based test fallback.
 
     CRITICAL: This function FAILS LOUDLY if configuration is not properly set.
 
     Raises:
-        ValidationError: If configuration is missing or invalid
+        ValidationError: If configuration is missing or invalid, and no env fallback applies
     """
-    global _npc_engine, _npc_async_session_maker, _npc_database_url  # pylint: disable=global-statement  # Reason: Singleton pattern for database engine
-
-    # Avoid re-initialization
-    if _npc_engine is not None:
-        return
-
     # Import config here to avoid circular imports
     try:
         from .config import get_config
@@ -70,82 +63,117 @@ def _initialize_npc_database() -> None:
     # Load configuration. If primary DB URL is missing in tests, optionally fall back to env-based NPC URL.
     try:
         config = get_config()
-        npc_database_url = config.database.npc_url
+        return config.database.npc_url
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Configuration errors unpredictable, fallback needed for tests
         # Optional fallback for unit tests that provide only NPC DB URL
         allow_env_fallback = os.getenv("NPC_DB_ENV_FALLBACK", "").lower() in {"1", "true", "yes"}
         env_npc_url = os.getenv("DATABASE_NPC_URL") or os.getenv("NPC_DATABASE_URL") or os.getenv("DATABASE__NPC_URL")
         if allow_env_fallback and env_npc_url:
-            npc_database_url = env_npc_url
             logger.warning(
                 "Using NPC database URL from environment fallback",
                 error=str(e),
-                npc_database_url=npc_database_url,
+                npc_database_url=env_npc_url,
             )
-        else:
-            log_and_raise(
-                ValidationError,
-                f"Failed to load configuration: {e}",
-                operation="npc_database_initialization",
-                details={"config_error": str(e)},
-                user_friendly="NPC database cannot be initialized: configuration not loaded or invalid",
-            )
-
-    # Use NPC database URL from configuration
-    _npc_database_url = npc_database_url
-    logger.info("Using NPC database URL from configuration", npc_database_url=_npc_database_url)
-
-    # PostgreSQL connection args (schema via POSTGRES_SEARCH_PATH when set)
-    connect_args = dict(get_postgres_connect_args())
-    # Normalize search_path to database name for known env DBs (same as database.py)
-    _db_name = _npc_database_url.split("/")[-1].split("?")[0] if _npc_database_url else ""
-    if _db_name in ("mythos_dev", "mythos_unit", "mythos_e2e"):
-        _current = (connect_args.get("server_settings") or {}).get("search_path", "").strip()
-        if _current != _db_name:
-            connect_args = {"server_settings": {"search_path": _db_name}}
-            logger.info(
-                "NPC PostgreSQL search_path set to database name",
-                database=_db_name,
-                previous_search_path=_current or None,
-            )
-    if not _npc_database_url.startswith("postgresql"):
+            return env_npc_url
         log_and_raise(
             ValidationError,
-            f"Unsupported database URL: {_npc_database_url}. Only PostgreSQL is supported.",
+            f"Failed to load configuration: {e}",
             operation="npc_database_initialization",
-            database_url=_npc_database_url,
-            details={"database_url": _npc_database_url},
+            details={"config_error": str(e)},
+            user_friendly="NPC database cannot be initialized: configuration not loaded or invalid",
+        )
+
+
+def _build_npc_connect_args(npc_database_url: str) -> dict[str, dict[str, str]]:
+    """PostgreSQL connect_args for the NPC engine, with search_path normalized to db name."""
+    # PostgreSQL connection args (schema via POSTGRES_SEARCH_PATH when set)
+    connect_args: dict[str, dict[str, str]] = dict(get_postgres_connect_args())
+    # Normalize search_path to database name for known env DBs (same as database.py)
+    db_name = npc_database_url.split("/")[-1].split("?")[0]
+    if db_name not in ("mythos_dev", "mythos_unit", "mythos_e2e"):
+        return connect_args
+    current = connect_args.get("server_settings", {}).get("search_path", "").strip()
+    if current == db_name:
+        return connect_args
+    logger.info(
+        "NPC PostgreSQL search_path set to database name",
+        database=db_name,
+        previous_search_path=current or None,
+    )
+    return {"server_settings": {"search_path": db_name}}
+
+
+def _build_npc_pool_kwargs(npc_database_url: str) -> dict[str, object]:
+    """Pool settings for the NPC engine: NullPool for tests, configured pool for production."""
+    # Use NullPool for tests, default AsyncAdaptedQueuePool for production
+    # For async engines, AsyncAdaptedQueuePool is used automatically if poolclass not specified
+    if "test" in npc_database_url:
+        return {"poolclass": NullPool}
+    # For production, use default AsyncAdaptedQueuePool with configured pool size
+    # AsyncAdaptedQueuePool is automatically used by create_async_engine()
+    # Get pool configuration from config (NPC database uses same pool settings as main database)
+    from .config import get_config
+
+    config = get_config()
+    return {
+        "pool_size": config.database.pool_size,
+        "max_overflow": config.database.max_overflow,  # pylint: disable=no-member  # Pydantic FieldInfo dynamic attribute
+        "pool_timeout": config.database.pool_timeout,  # pylint: disable=no-member  # Pydantic FieldInfo dynamic attribute
+    }
+
+
+def _track_npc_engine_creation_loop() -> None:
+    """Record which event loop created the NPC engine, so callers can detect a loop change."""
+    global _npc_creation_loop_id  # pylint: disable=global-statement  # Reason: Singleton pattern for tracking creation loop
+    try:
+        loop = asyncio.get_running_loop()
+        _npc_creation_loop_id = id(loop)
+    except RuntimeError:
+        # No running loop - that's okay, we'll track it as None
+        _npc_creation_loop_id = None
+
+
+def _initialize_npc_database() -> None:
+    """
+    Initialize NPC database engine and session maker from configuration.
+
+    CRITICAL: This function FAILS LOUDLY if configuration is not properly set.
+
+    Raises:
+        ValidationError: If configuration is missing or invalid
+    """
+    global _npc_engine, _npc_async_session_maker, _npc_database_url  # pylint: disable=global-statement  # Reason: Singleton pattern for database engine
+
+    # Avoid re-initialization
+    if _npc_engine is not None:
+        return
+
+    npc_database_url = _resolve_npc_database_url()
+    _npc_database_url = npc_database_url
+    logger.info("Using NPC database URL from configuration", npc_database_url=npc_database_url)
+
+    if not npc_database_url.startswith("postgresql"):
+        log_and_raise(
+            ValidationError,
+            f"Unsupported database URL: {npc_database_url}. Only PostgreSQL is supported.",
+            operation="npc_database_initialization",
+            database_url=npc_database_url,
+            details={"database_url": npc_database_url},
             user_friendly="NPC database configuration error - PostgreSQL required",
         )
 
-    # Configure pool settings based on database URL
-    # Use NullPool for tests, default AsyncAdaptedQueuePool for production
-    # For async engines, AsyncAdaptedQueuePool is used automatically if poolclass not specified
-    pool_kwargs: dict[str, Any] = {}
-    if "test" in _npc_database_url:
-        pool_kwargs["poolclass"] = NullPool
-    else:
-        # For production, use default AsyncAdaptedQueuePool with configured pool size
-        # AsyncAdaptedQueuePool is automatically used by create_async_engine()
-        # Get pool configuration from config (NPC database uses same pool settings as main database)
-        config = get_config()
-        pool_kwargs.update(
-            {
-                "pool_size": config.database.pool_size,
-                "max_overflow": config.database.max_overflow,  # pylint: disable=no-member  # Pydantic FieldInfo dynamic attribute
-                "pool_timeout": config.database.pool_timeout,  # pylint: disable=no-member  # Pydantic FieldInfo dynamic attribute
-            }
-        )
+    connect_args = _build_npc_connect_args(npc_database_url)
+    pool_kwargs = _build_npc_pool_kwargs(npc_database_url)
 
     _npc_engine = create_async_engine(
-        _npc_database_url,
+        npc_database_url,
         echo=False,
         pool_pre_ping=True,
         connect_args=connect_args,
         **pool_kwargs,
     )
 
-    pool_type = "NullPool" if "test" in _npc_database_url else "AsyncAdaptedQueuePool"
+    pool_type = "NullPool" if "test" in npc_database_url else "AsyncAdaptedQueuePool"
     logger.info("NPC Database engine created", pool_type=pool_type)
 
     # Create async session maker for NPC database
@@ -158,14 +186,7 @@ def _initialize_npc_database() -> None:
     )
 
     logger.info("NPC Database session maker created")
-    # Track the event loop that created this engine
-    try:
-        loop = asyncio.get_running_loop()
-        global _npc_creation_loop_id  # pylint: disable=global-statement  # Reason: Singleton pattern for tracking creation loop
-        _npc_creation_loop_id = id(loop)
-    except RuntimeError:
-        # No running loop - that's okay, we'll track it as None
-        _npc_creation_loop_id = None
+    _track_npc_engine_creation_loop()
 
 
 def get_npc_engine() -> AsyncEngine | None:
