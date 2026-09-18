@@ -211,6 +211,56 @@ def test_unfollow_was_not_following(follow_service: FollowService) -> None:
     assert "weren't following" in result["result"].lower()
 
 
+def test_unfollow_notifies_followee_for_player_target(follow_service: FollowService) -> None:
+    """Unfollowing a player target notifies the followee (mirrors accept_follow's mutual notice)."""
+    fid = str(uuid.uuid4())
+    target_id = str(uuid.uuid4())
+    follow_service._follow_target[fid] = (target_id, "player")
+    with patch.object(follow_service, "_notify_followee_of_unfollow") as mock_notify:
+        _ = follow_service.unfollow(fid)
+    mock_notify.assert_called_once_with(target_id, fid)
+
+
+def test_unfollow_does_not_notify_for_npc_target(follow_service: FollowService) -> None:
+    """Unfollowing an NPC has no followee to notify."""
+    fid = str(uuid.uuid4())
+    follow_service._follow_target[fid] = ("npc_1", "npc")
+    with patch.object(follow_service, "_notify_followee_of_unfollow") as mock_notify:
+        _ = follow_service.unfollow(fid)
+    mock_notify.assert_not_called()
+
+
+def test_notify_followee_of_unfollow_noop_without_connection_manager(follow_service: FollowService) -> None:
+    """No connection manager means no send is scheduled."""
+    with patch.object(follow_service, "_schedule_coro") as mock_schedule:
+        follow_service._notify_followee_of_unfollow(str(uuid.uuid4()), str(uuid.uuid4()))
+    mock_schedule.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_send_unfollow_notice_resolves_follower_name(follow_service: FollowService) -> None:
+    """The followee's notice uses the follower's resolved display name."""
+    followee_id = str(uuid.uuid4())
+    follower_id = str(uuid.uuid4())
+    mock_player = MagicMock()
+    mock_player.name = "Ithaqua"
+    follow_service._async_persistence = MagicMock()
+    follow_service._async_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
+    with patch.object(follow_service, "_send_result_to_player") as mock_send:
+        await follow_service._send_unfollow_notice(followee_id, follower_id)
+    mock_send.assert_called_once_with(followee_id, "Ithaqua is no longer following you.")
+
+
+@pytest.mark.asyncio
+async def test_send_unfollow_notice_falls_back_to_id_without_persistence(follow_service: FollowService) -> None:
+    """No async_persistence means the raw follower id is used in the notice."""
+    followee_id = str(uuid.uuid4())
+    follower_id = str(uuid.uuid4())
+    with patch.object(follow_service, "_send_result_to_player") as mock_send:
+        await follow_service._send_unfollow_notice(followee_id, follower_id)
+    mock_send.assert_called_once_with(followee_id, f"{follower_id} is no longer following you.")
+
+
 # ---- get_followers / get_following ----
 def test_get_followers_empty(follow_service: FollowService) -> None:
     """get_followers returns empty list when no followers."""
