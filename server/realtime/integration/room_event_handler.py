@@ -98,23 +98,30 @@ class RoomEventHandler:
             logger.error("Error unsubscribing from room events", error=str(e), exc_info=True)
 
     @staticmethod
+    def _looks_like_uuid(candidate: str) -> bool:
+        """True if candidate has UUID shape (36 chars, 4 hyphens, hex digits) -- never a display name."""
+        return (
+            len(candidate) == 36
+            and candidate.count("-") == 4
+            and all(c in "0123456789abcdefABCDEF-" for c in candidate)
+        )
+
+    @staticmethod
     def _extract_valid_occupant_names(occ_infos: Sequence[object], room_id: str) -> list[str]:
         """Collect occupant display names, dropping any that are actually raw UUIDs."""
         names: list[str] = []
         for occ in occ_infos:
             name = cast("dict[str, object]", occ).get("player_name") if isinstance(occ, dict) else None
-            # CRITICAL: Validate name is not a UUID before adding
-            if name and isinstance(name, str):
-                # Skip if it looks like a UUID (36 chars, 4 dashes, hex)
-                is_uuid = len(name) == 36 and name.count("-") == 4 and all(c in "0123456789abcdefABCDEF-" for c in name)
-                if not is_uuid:
-                    names.append(name)
-                else:
-                    logger.warning(
-                        "Skipping UUID as player name in room_occupants event",
-                        name=name,
-                        room_id=room_id,
-                    )
+            if not name or not isinstance(name, str):
+                continue
+            if RoomEventHandler._looks_like_uuid(name):
+                logger.warning(
+                    "Skipping UUID as player name in room_occupants event",
+                    name=name,
+                    room_id=room_id,
+                )
+                continue
+            names.append(name)
         return names
 
     async def _publish_room_movement_nats_event(

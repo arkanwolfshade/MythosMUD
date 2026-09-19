@@ -92,6 +92,13 @@ engines:
     # (ignore_patterns alone does not suppress Lizard locally; see note above engines.*).
     exclude_paths:
       - "server/services/user_manager.py"
+      # NLOC-only debt (CCN is fine): Query-param-heavy/log-dense endpoints and debug-log-dense
+      # mute-check functions, per the matching ignore_patterns reason below. Moved from
+      # ignore_patterns to exclude_paths because Codacy Cloud does not honor Lizard
+      # ignore_patterns (see note above engines.* -- confirmed by issue #787's PR checks still
+      # flagging these exact functions despite matching ignore_patterns entries).
+      - "server/api/rooms.py"
+      - "server/realtime/message_filtering.py"
       - "scripts/ci/quality_fragmentation_guard.py"
       # One-shot migration/apply scripts (see root exclude_paths note, issue #787 Wave 1).
       - "server/scripts/**"
@@ -135,6 +142,9 @@ engines:
       - "**/Makefile"
       - "server/schemas/**"
       - "server/models/**"
+      # _PlayerServiceLike/_AsyncPersistenceLike are single-method Protocol duck-types (issue #787);
+      # R0903 is expected for a Protocol naming one method.
+      - "server/realtime/integration/game_state_provider.py"
       - "graphify-out/**"
       - "**/graphify-out/**"
       - "**/.venv/**"
@@ -426,32 +436,11 @@ ignore_patterns:
       - "server/realtime/maintenance/connection_cleaner.py"
       - "server/realtime/monitoring/health_monitor.py"
     reason: "Constructors and audit signatures; bundling would be a speculative API churn."
-  # Lizard NLOC: message_filtering.py mute-check functions are low-CCN (5-6) but carry dense
-  # structured debug-log checkpoints (multi-line kwargs per log call) added for a specific
-  # mute-visibility bug (#2). Splitting further would fragment into single-log-call wrapper
-  # functions, which the anti-fragmentation guard forbids. See issue #787 Wave 2.
-  - pattern_id: "Lizard_nloc-medium"
-    file_paths:
-      - "server/realtime/message_filtering.py"
-    reason: "Debug-log-dense, low-CCN mute-check functions; see file header note, issue #787."
-  # Lizard NLOC: admin_teleport_commands.py's confirm/goto handlers are a sequential chain of
-  # 5-6 independently-tested validation guard clauses (auth, missing args, target resolution,
-  # same-room check). Unifying them would mean merging validate_confirm_teleport_context /
-  # validate_confirm_goto_context and resolve_target_player_for_teleport /
-  # resolve_target_player_for_goto behind one abstraction for a single caller each -- the
-  # speculative API churn the guard's own fragmentation rules forbid. See issue #787 Wave 2.
-  - pattern_id: "Lizard_nloc-medium"
-    file_paths:
-      - "server/commands/admin_teleport_commands.py"
-    reason: "Sequential admin-command validation guard clauses; see file header note, issue #787."
-  # Lizard NLOC: rooms.py's list_rooms and update_room_position are low-CCN (4) FastAPI
-  # endpoints whose length comes from a multi-line Query()/Depends() signature and structured
-  # log checkpoints wrapped around already-extracted DB/cache helper calls. Splitting further
-  # would fragment into single-call wrapper functions. See issue #787 Wave 2.
-  - pattern_id: "Lizard_nloc-medium"
-    file_paths:
-      - "server/api/rooms.py"
-    reason: "Query-param-heavy, log-dense FastAPI endpoints; see file header note, issue #787."
+  # Lizard NLOC: message_filtering.py and rooms.py NLOC-only debt is excluded via
+  # engines.lizard.exclude_paths above (Codacy Cloud does not honor ignore_patterns for Lizard).
+  # admin_teleport_commands.py's confirm/goto handlers were refactored to share the
+  # validate/resolve-target/execute-move stages across the teleport and goto pairs, bringing
+  # them under both CCN and NLOC limits -- no override needed. See issue #787 Wave 2 follow-up.
   # Lizard NLOC: broadcast_room_update is a sequential broadcast pipeline (resolve manager,
   # load room with fallback, gather occupants, build event, broadcast) already documented via
   # its own pylint too-many-statements override as intentionally not split further, since doing
