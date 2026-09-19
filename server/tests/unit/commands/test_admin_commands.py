@@ -4,12 +4,17 @@ Unit tests for admin command handlers.
 Tests the admin command handler functions.
 """
 
+# pyright: reportPrivateUsage=false
+
 import uuid
 from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 import pytest
 
 from server.commands.admin_commands import (
+    _build_admin_status_message,
+    _compute_admin_status,
+    _resolve_admin_status_player,
     handle_add_admin_command,
     handle_admin_command,
     handle_mute_command,
@@ -646,3 +651,109 @@ async def test_handle_mutes_command_with_mutes():
     result = await handle_mutes_command({}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
     assert "result" in result
     assert "Player1" in result["result"] or "Player2" in result["result"] or "mute" in result["result"].lower()
+
+
+class TestComputeAdminStatus:
+    """_compute_admin_status: extracted from _handle_admin_status_command in issue #787.
+
+    The single end-to-end test_handle_admin_command_status above only exercises the
+    both-true path; these cover the branches that leaves untested.
+    """
+
+    def test_database_admin_with_no_user_manager(self):
+        """No user_manager means runtime status can't be checked; effective follows database."""
+        player = MagicMock(id=uuid.uuid4(), is_admin=True)
+        is_db, is_runtime, is_effective = _compute_admin_status(player, None, "TestPlayer")
+        assert (is_db, is_runtime, is_effective) == (True, None, True)
+
+    def test_not_admin_in_either_source(self):
+        player = MagicMock(id=uuid.uuid4(), is_admin=False)
+        user_manager = MagicMock(is_admin=MagicMock(return_value=False))
+        is_db, is_runtime, is_effective = _compute_admin_status(player, user_manager, "TestPlayer")
+        assert (is_db, is_runtime, is_effective) == (False, False, False)
+
+    def test_runtime_admin_overrides_database_false(self):
+        """Effective status is true if EITHER source says so (session cache can grant it)."""
+        player = MagicMock(id=uuid.uuid4(), is_admin=False)
+        user_manager = MagicMock(is_admin=MagicMock(return_value=True))
+        is_db, is_runtime, is_effective = _compute_admin_status(player, user_manager, "TestPlayer")
+        assert (is_db, is_runtime, is_effective) == (False, True, True)
+
+    def test_user_manager_lookup_error_falls_back_to_database_only(self):
+        """A cache lookup failure must not crash the status command."""
+        player = MagicMock(id=uuid.uuid4(), is_admin=True)
+        user_manager = MagicMock(is_admin=MagicMock(side_effect=AttributeError("cache miss")))
+        is_db, is_runtime, is_effective = _compute_admin_status(player, user_manager, "TestPlayer")
+        assert (is_db, is_runtime, is_effective) == (True, None, True)
+
+    def test_falls_back_to_player_id_when_id_is_missing(self):
+        """Some player records expose player_id instead of id (see the getattr fallback)."""
+        player_id = uuid.uuid4()
+        player = MagicMock(spec=["player_id", "is_admin"], player_id=player_id, is_admin=False)
+        is_admin_mock: MagicMock = MagicMock(return_value=True)
+        user_manager = MagicMock(is_admin=is_admin_mock)
+        _, is_runtime, _ = _compute_admin_status(player, user_manager, "TestPlayer")
+        assert is_runtime is True
+        is_admin_mock.assert_called_once_with(player_id)
+
+
+class TestBuildAdminStatusMessage:
+    """_build_admin_status_message: extracted from _handle_admin_status_command in issue #787."""
+
+    def test_effective_admin_message_includes_privileged_guidance(self):
+        # Mock's `name` constructor kwarg sets the mock's repr, not a `.name` attribute --
+        # must assign it post-construction.
+        player = MagicMock()
+        player.name = "Armitage"
+        text = _build_admin_status_message(player, True, True, True)
+        assert "ADMIN STATUS FOR ARMITAGE" in text
+        assert "Admin privileges: Active" in text
+        assert "administrative utilities" in text
+
+    def test_non_admin_message_includes_non_privileged_guidance(self):
+        player = MagicMock()
+        player.name = "Wilbur"
+        text = _build_admin_status_message(player, False, None, False)
+        assert "Admin privileges: Inactive" in text
+        assert "- Session cache: Unavailable" in text
+        assert "do not currently have administrative privileges" in text
+
+
+class TestResolveAdminStatusPlayer:
+    """_resolve_admin_status_player: extracted from _handle_admin_status_command in issue #787."""
+
+    @pytest.mark.asyncio
+    async def test_no_app_context_returns_error(self):
+        result = await _resolve_admin_status_player(None, "TestPlayer")
+        assert result == {"result": "Admin status information is not available."}
+
+    @pytest.mark.asyncio
+    async def test_no_player_service_returns_error(self):
+        request = MagicMock(app=MagicMock(state=MagicMock(spec=[])))
+        result = await _resolve_admin_status_player(request, "TestPlayer")
+        assert result == {"result": "Admin status information is not available."}
+
+    @pytest.mark.asyncio
+    async def test_database_error_resolving_player_returns_error(self):
+        from sqlalchemy.exc import SQLAlchemyError
+
+        player_service = MagicMock(resolve_player_name=AsyncMock(side_effect=SQLAlchemyError("db down")))
+        request = MagicMock(app=MagicMock(state=MagicMock(player_service=player_service)))
+        result = await _resolve_admin_status_player(request, "TestPlayer")
+        assert result == {"result": "Unable to resolve player 'TestPlayer': db down"}
+
+    @pytest.mark.asyncio
+    async def test_player_not_found_returns_error(self):
+        player_service = MagicMock(resolve_player_name=AsyncMock(return_value=None))
+        request = MagicMock(app=MagicMock(state=MagicMock(player_service=player_service)))
+        result = await _resolve_admin_status_player(request, "TestPlayer")
+        assert result == {"result": "Player 'TestPlayer' not found."}
+
+    @pytest.mark.asyncio
+    async def test_success_returns_player_record_and_user_manager(self):
+        player = MagicMock()
+        user_manager = MagicMock()
+        player_service = MagicMock(resolve_player_name=AsyncMock(return_value=player))
+        request = MagicMock(app=MagicMock(state=MagicMock(player_service=player_service, user_manager=user_manager)))
+        result = await _resolve_admin_status_player(request, "TestPlayer")
+        assert result == (player, user_manager)
