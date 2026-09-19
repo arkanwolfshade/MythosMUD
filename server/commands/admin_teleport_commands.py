@@ -548,7 +548,10 @@ async def handle_confirm_teleport_command(
     )
     if error_result:
         return error_result
-    assert current_player is not None  # narrowed by _resolve_confirm_teleport_targets' own None-check above
+    if current_player is None:
+        # Unreachable: _resolve_confirm_teleport_targets returns an error_result whenever
+        # current_player is None, so this narrows the type without using assert (Bandit B101).
+        raise RuntimeError("current_player unexpectedly None after successful target resolution")
 
     if target_player.current_room_id == current_player.current_room_id:
         return {"result": f"{target_player_name} is already in your location."}
@@ -702,7 +705,10 @@ async def handle_confirm_goto_command(
     )
     if error_result:
         return error_result
-    assert current_player is not None  # narrowed by _resolve_confirm_goto_target's own None-check above
+    if current_player is None:
+        # Unreachable: _resolve_confirm_goto_target returns an error_result whenever
+        # current_player is None, so this narrows the type without using assert (Bandit B101).
+        raise RuntimeError("current_player unexpectedly None after successful target resolution")
 
     if current_player.current_room_id == target_player.current_room_id:
         return {"result": f"You are already in the same location as {target_player_name}."}

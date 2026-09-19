@@ -177,7 +177,10 @@ class PartyService:
         party_id, error_result = self._resolve_disband_target(party_id, pid)
         if error_result:
             return error_result
-        assert party_id is not None
+        if party_id is None:
+            # Unreachable: _resolve_disband_target returns an error_result whenever party_id is
+            # None, so this narrows the type without using assert (Bandit B101).
+            raise RuntimeError("party_id unexpectedly None after successful target resolution")
         party = self._parties[party_id]
         if by_player_id is not None and party.leader_id != pid:
             return {"success": False, "result": "Only the party leader can disband the party."}
