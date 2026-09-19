@@ -84,6 +84,19 @@ class PlayerFluxCtx:  # pylint: disable=too-few-public-methods  # Reason: datacl
     session: AsyncSession
 
 
+@dataclass
+class _PlayerFluxComputation:  # pylint: disable=too-few-public-methods  # Reason: dataclass bundle for lizard PARAM
+    """Bundle for _apply_player_flux_adjustment (lizard PARAM)."""
+
+    player_id_uuid: uuid.UUID
+    player_id_str: str
+    room_id: str
+    delta: int
+    base_flux: float
+    companion_flux: float
+    total_flux: float
+
+
 class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Reason: Lucidity flux service requires many state tracking and configuration attributes
     """Applies passive LCD flux each in-game minute with structured telemetry."""
 
@@ -135,6 +148,42 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
                     room_cache[room_id] = room
         return room_cache
 
+    async def _apply_player_flux_adjustment(
+        self, ctx: PlayerFluxCtx, computation: _PlayerFluxComputation, flux_context: PassiveFluxContext
+    ) -> LucidityUpdateResult | None:
+        """Apply the lucidity adjustment inside a savepoint, tolerating a since-removed player."""
+        try:
+            # Savepoint: e2e (and logout/delete) can remove players between load and flush.
+            async with ctx.session.begin_nested():
+                await handle_hallucination_triggers(
+                    computation.player_id_uuid,
+                    computation.player_id_str,
+                    computation.room_id,
+                    cast(dict[str, object], cast(object, ctx.lucidity_records)),
+                    ctx.session,
+                )
+                return await ctx.lucidity_service.apply_lucidity_adjustment(
+                    computation.player_id_uuid,
+                    computation.delta,
+                    reason_code="passive_flux",
+                    metadata={
+                        "context_tags": list(flux_context.tags),
+                        "source": flux_context.source,
+                        "base_flux": computation.base_flux,
+                        "companion_flux": computation.companion_flux,
+                        "total_flux": computation.total_flux,
+                        "tick_count": ctx.tick_count,
+                        **flux_context.metadata,
+                    },
+                )
+        except IntegrityError:
+            logger.warning(
+                "Skipping passive LCD flux for missing player",
+                player_id=computation.player_id_str,
+                room_id=computation.room_id,
+            )
+            return None
+
     async def _process_single_player(self, ctx: PlayerFluxCtx) -> tuple[str, LucidityUpdateResult | None]:
         """Process a single player's passive flux."""
         player = ctx.player
@@ -161,37 +210,19 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
             )
         if not delta:
             return player_id_str, None
-        try:
-            # Savepoint: e2e (and logout/delete) can remove players between load and flush.
-            async with ctx.session.begin_nested():
-                await handle_hallucination_triggers(
-                    player_id_uuid,
-                    player_id_str,
-                    room_id,
-                    cast(dict[str, object], cast(object, ctx.lucidity_records)),
-                    ctx.session,
-                )
-                result = await ctx.lucidity_service.apply_lucidity_adjustment(
-                    player_id_uuid,
-                    delta,
-                    reason_code="passive_flux",
-                    metadata={
-                        "context_tags": list(context.tags),
-                        "source": context.source,
-                        "base_flux": base_flux,
-                        "companion_flux": companion_flux,
-                        "total_flux": total_flux,
-                        "tick_count": ctx.tick_count,
-                        **context.metadata,
-                    },
-                )
-        except IntegrityError:
-            logger.warning(
-                "Skipping passive LCD flux for missing player",
-                player_id=player_id_str,
+        result = await self._apply_player_flux_adjustment(
+            ctx,
+            _PlayerFluxComputation(
+                player_id_uuid=player_id_uuid,
+                player_id_str=player_id_str,
                 room_id=room_id,
-            )
-            return player_id_str, None
+                delta=delta,
+                base_flux=base_flux,
+                companion_flux=companion_flux,
+                total_flux=total_flux,
+            ),
+            context,
+        )
         return player_id_str, result
 
     async def _commit_flux_adjustments(self, session: AsyncSession, adjustments: list[LucidityUpdateResult]) -> None:

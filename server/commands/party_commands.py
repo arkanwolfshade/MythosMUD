@@ -7,9 +7,11 @@ Uses TargetResolutionService for same-room player resolution on invite/kick.
 
 from __future__ import annotations
 
-from typing import Any
+from collections.abc import Awaitable, Callable
+from typing import Any, cast
 
 from ..alias_storage import AliasStorage
+from ..schemas.shared import TargetResolutionResult
 from ..schemas.shared import TargetType as SchemaTargetType
 from ..services.target_resolution_service import TargetResolutionService
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -90,6 +92,18 @@ async def _handle_party_chat(
     return {"result": "Sent."}
 
 
+# Reason: SERIALIZATION_BOUNDARY - command_data mirrors handle_party_command's own
+# command_data: dict[str, Any] parameter (the parsed slash-command payload).
+# Appropriate because: every handler in this module takes the same loosely-shaped dict;
+# narrowing it here alone, without the others, would be inconsistent for no real gain.
+def _parse_party_subcommand_args(command_data: dict[str, Any]) -> tuple[str, str | None, str | None]:  # pyright: ignore[reportExplicitAny]
+    """Extract (subcommand, target_name, party_message) from party command_data."""
+    subcommand = cast(str, command_data.get("subcommand") or "").strip().lower()
+    target = cast("str | None", command_data.get("target"))
+    message = cast("str | None", command_data.get("message"))
+    return subcommand, (target.strip() if target else None), (message.strip() if message else None)
+
+
 async def handle_party_command(
     command_data: dict[str, Any],
     current_user: dict[str, Any],
@@ -105,27 +119,84 @@ async def handle_party_command(
     if isinstance(context, dict):
         return context
     container, party_service, async_persistence, player_id, player_id_str, display_name = context
-
-    subcommand = (command_data.get("subcommand") or "").strip().lower()
-    target_name = (command_data.get("target") or "").strip() if command_data.get("target") else None
-    party_message = (command_data.get("message") or "").strip() if command_data.get("message") else None
+    subcommand, target_name, party_message = _parse_party_subcommand_args(command_data)
 
     if not subcommand and party_message:
         return await _handle_party_chat(container, party_service, player_id, player_id_str, party_message)
-    if subcommand == "invite":
-        return await _handle_party_invite(
+
+    # issue #787: dispatch table instead of an if/elif chain (was CCN 14).
+    # Reason: SERIALIZATION_BOUNDARY - matches every party handler's own dict[str, Any]
+    # return type (the command-result payload); a type alias, not a new Any surface.
+    # Appropriate because: _handle_party_list etc. already return dict[str, Any] unsuppressed
+    # throughout this module.
+    def list_handler() -> Awaitable[dict[str, Any]]:  # pyright: ignore[reportExplicitAny]
+        return _handle_party_list(party_service, async_persistence, player_id, player_id_str, display_name)
+
+    # Reason: SERIALIZATION_BOUNDARY - matches every party handler's own dict[str, Any]
+    # return type (the command-result payload).
+    # Appropriate because: this is a type alias for that existing return shape, not a new one.
+    subcommand_handlers: dict[str, Callable[[], Awaitable[dict[str, Any]]]] = {  # pyright: ignore[reportExplicitAny]
+        "invite": lambda: _handle_party_invite(
             party_service, container, async_persistence, player_id, player_id_str, display_name, target_name
-        )
-    if subcommand == "leave":
-        return _handle_party_leave(party_service, player_id)
-    if subcommand == "kick":
-        return await _handle_party_kick(
+        ),
+        "leave": lambda: _handle_party_leave(party_service, player_id),
+        "kick": lambda: _handle_party_kick(
             party_service, container, async_persistence, player_id, player_id_str, target_name
+        ),
+        "list": list_handler,
+        "": list_handler,
+    }
+    handler = subcommand_handlers.get(subcommand)
+    if handler is None:
+        logger.debug("Party command unknown subcommand", subcommand=subcommand or "(empty)")
+        return {"result": "Usage: party [invite|leave|kick|list] [target]"}
+    return await handler()
+
+
+async def _resolve_target_for_party_action(
+    # Reason: SERIALIZATION_BOUNDARY - container matches every other handler in this module
+    # (_handle_party_chat, _handle_party_invite, etc.), all typed Any for the same duck-typed
+    # app container.
+    # Appropriate because: narrowing only this one function would be inconsistent with its
+    # siblings; a real fix means Protocol-typing the whole module, out of scope here.
+    container: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+    # Reason: SERIALIZATION_BOUNDARY - async_persistence matches every other handler in this
+    # module, all typed Any for the same duck-typed persistence layer.
+    # Appropriate because: same as container above -- a module-wide convention, not new debt.
+    async_persistence: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+    player_id_str: str,
+    target_name: str,
+    # Reason: SERIALIZATION_BOUNDARY - the error half of this tuple is one of the
+    # dict[str, Any] command-result payloads every handler in this module returns.
+    # Appropriate because: matches the established, unsuppressed return-type convention.
+) -> tuple[TargetResolutionResult | None, dict[str, Any] | None]:  # pyright: ignore[reportExplicitAny]
+    """Run TargetResolutionService for a party invite/kick target.
+
+    Shared by _handle_party_invite and _handle_party_kick (issue #787): both ran the exact
+    same player_service lookup + target resolve, differing only after this point (each
+    validates/reports an invalid match in its own words). Returns (target_result, None) on
+    success -- the caller still calls .get_single_match() and checks its type -- or
+    (None, error_result) if the lookup itself failed.
+    """
+    # Reason: SERIALIZATION_BOUNDARY - player_service is resolved dynamically off container
+    # (an Any per above); every handler in this module does the same getattr lookup.
+    # Appropriate because: consistent with the module's existing, unsuppressed convention.
+    player_svc = getattr(container, "player_service", None)  # pyright: ignore[reportAny]
+    if not player_svc:
+        logger.warning("Party command rejected: player service not available")
+        return None, {"result": "Party is not available."}
+    # Reason: SERIALIZATION_BOUNDARY - async_persistence/player_svc are the same Any-typed
+    # values accepted above; TargetResolutionService's own params are properly typed, this
+    # call site just supplies Any into them like every other caller in this module does.
+    # Appropriate because: same as container/async_persistence above.
+    target_resolution = TargetResolutionService(async_persistence, player_svc)  # pyright: ignore[reportAny]
+    target_result = await target_resolution.resolve_target(player_id_str, target_name)
+    if not target_result.success:
+        logger.debug(
+            "Party command rejected: target resolve failed", target=target_name, error=target_result.error_message
         )
-    if subcommand in ("list", ""):
-        return await _handle_party_list(party_service, async_persistence, player_id, player_id_str, display_name)
-    logger.debug("Party command unknown subcommand", subcommand=subcommand or "(empty)")
-    return {"result": "Usage: party [invite|leave|kick|list] [target]"}
+        return None, {"result": target_result.error_message or "No such player here."}
+    return target_result, None
 
 
 async def _handle_party_invite(
@@ -150,17 +221,15 @@ async def _handle_party_invite(
     if not party or not party_service.is_leader(player_id):
         logger.debug("Party invite rejected: not leader or no party")
         return {"result": "Only the party leader can invite members."}
-    player_svc = getattr(container, "player_service", None)
-    if not player_svc:
-        logger.warning("Party invite rejected: player service not available")
-        return {"result": "Party is not available."}
-    target_resolution = TargetResolutionService(async_persistence, player_svc)
-    target_result = await target_resolution.resolve_target(player_id_str, target_name)
-    if not target_result.success:
-        logger.debug(
-            "Party invite rejected: target resolve failed", target=target_name, error=target_result.error_message
-        )
-        return {"result": target_result.error_message or "No such player here."}
+    target_result, error = await _resolve_target_for_party_action(
+        container, async_persistence, player_id_str, target_name
+    )
+    if target_result is None:
+        # error is always set here by _resolve_target_for_party_action's contract.
+        # Reason: SERIALIZATION_BOUNDARY - error is one of this module's dict[str, Any]
+        # command-result payloads.
+        # Appropriate because: matches the established, unsuppressed return-type convention.
+        return cast("dict[str, Any]", error)  # pyright: ignore[reportExplicitAny]
     match = target_result.get_single_match()
     if not match or match.target_type != SchemaTargetType.PLAYER:
         logger.debug("Party invite rejected: target not a player", target=target_name)
@@ -177,7 +246,11 @@ async def _handle_party_invite(
     return {"result": result.get("result", "Party invite sent. Waiting for them to accept.")}
 
 
-def _handle_party_leave(party_service: Any, player_id: Any) -> dict[str, Any]:
+# Reason: SERIALIZATION_BOUNDARY - party_service/player_id/dict[str, Any] all match every
+# other handler in this module's identical, unsuppressed signature convention.
+# Appropriate because: consistent with the module-wide pattern; this was a plain `def` until
+# issue #787 made it async for dispatch-dict uniformity, which is what moved this line.
+async def _handle_party_leave(party_service: Any, player_id: Any) -> dict[str, Any]:  # pyright: ignore[reportAny, reportExplicitAny]
     """Handle party leave."""
     party = party_service.get_party_for_player(player_id)
     if not party:
@@ -189,10 +262,20 @@ def _handle_party_leave(party_service: Any, player_id: Any) -> dict[str, Any]:
 
 
 async def _handle_party_kick(
-    party_service: Any,
-    container: Any,
-    async_persistence: Any,
-    player_id: Any,
+    # Reason: SERIALIZATION_BOUNDARY - matches _handle_party_invite's identical signature
+    # just above (and every other handler in this module), typed Any for the same
+    # duck-typed service objects.
+    # Appropriate because: consistent with the module's established, unsuppressed convention.
+    party_service: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+    # Reason: SERIALIZATION_BOUNDARY - see party_service above.
+    # Appropriate because: same duck-typed app container this whole module already accepts.
+    container: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+    # Reason: SERIALIZATION_BOUNDARY - see party_service above.
+    # Appropriate because: same duck-typed persistence layer this whole module accepts.
+    async_persistence: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+    # Reason: SERIALIZATION_BOUNDARY - see party_service above.
+    # Appropriate because: player_id is a UUID | str union used identically module-wide.
+    player_id: Any,  # pyright: ignore[reportAny, reportExplicitAny]
     player_id_str: str,
     target_name: str | None,
 ) -> dict[str, Any]:
@@ -204,17 +287,15 @@ async def _handle_party_kick(
     if not party or not party_service.is_leader(player_id):
         logger.debug("Party kick rejected: not leader or no party")
         return {"result": "Only the party leader can kick members."}
-    player_svc = getattr(container, "player_service", None)
-    if not player_svc:
-        logger.warning("Party kick rejected: player service not available")
-        return {"result": "Party is not available."}
-    target_resolution = TargetResolutionService(async_persistence, player_svc)
-    target_result = await target_resolution.resolve_target(player_id_str, target_name)
-    if not target_result.success:
-        logger.debug(
-            "Party kick rejected: target resolve failed", target=target_name, error=target_result.error_message
-        )
-        return {"result": target_result.error_message or "No such player here."}
+    target_result, error = await _resolve_target_for_party_action(
+        container, async_persistence, player_id_str, target_name
+    )
+    if target_result is None:
+        # error is always set here by _resolve_target_for_party_action's contract.
+        # Reason: SERIALIZATION_BOUNDARY - error is one of this module's dict[str, Any]
+        # command-result payloads.
+        # Appropriate because: matches the established, unsuppressed return-type convention.
+        return cast("dict[str, Any]", error)  # pyright: ignore[reportExplicitAny]
     match = target_result.get_single_match()
     if not match or match.target_type != SchemaTargetType.PLAYER:
         return {"result": "No such player in your party."}

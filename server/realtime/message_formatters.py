@@ -4,10 +4,27 @@ Message formatting utilities for NATS message handler.
 
 # pylint: disable=too-many-return-statements  # Reason: Message formatting requires multiple return statements for different channel types and formatting logic
 
+from typing import TYPE_CHECKING
+
 from ..services.nats_exceptions import NATSError
 from ..structured_logging.enhanced_logging_config import get_logger
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
 logger = get_logger("communications.message_formatters")
+
+# Channel -> formatter(sender_name, content). Whisper is handled separately since its format
+# also depends on `for_recipient`.
+_CHANNEL_FORMATTERS: dict[str, "Callable[[str, str], str]"] = {
+    "say": lambda sender_name, content: f"{sender_name} says: {content}",
+    "local": lambda sender_name, content: f"{sender_name} (local): {content}",
+    "global": lambda sender_name, content: f"{sender_name} (global): {content}",
+    "emote": lambda sender_name, content: f"{sender_name} {content}",
+    "pose": lambda sender_name, content: f"{sender_name} {content}",
+    "system": lambda _sender_name, content: f"[SYSTEM] {content}",
+    "admin": lambda sender_name, content: f"[ADMIN] {sender_name}: {content}",
+}
 
 
 def format_message_content(channel: str, sender_name: str, content: str, *, for_recipient: bool = False) -> str:
@@ -25,24 +42,13 @@ def format_message_content(channel: str, sender_name: str, content: str, *, for_
         Formatted message content with sender name
     """
     try:
-        if channel == "say":
-            return f"{sender_name} says: {content}"
-        if channel == "local":
-            return f"{sender_name} (local): {content}"
-        if channel == "global":
-            return f"{sender_name} (global): {content}"
-        if channel == "emote":
-            return f"{sender_name} {content}"
-        if channel == "pose":
-            return f"{sender_name} {content}"
         if channel == "whisper":
             if for_recipient:
                 return f"{sender_name} whispers to you: {content}"
             return f"{sender_name} whispers: {content}"
-        if channel == "system":
-            return f"[SYSTEM] {content}"
-        if channel == "admin":
-            return f"[ADMIN] {sender_name}: {content}"
+        formatter = _CHANNEL_FORMATTERS.get(channel)
+        if formatter is not None:
+            return formatter(sender_name, content)
         # Default format for unknown channels
         return f"{sender_name} ({channel}): {content}"
 

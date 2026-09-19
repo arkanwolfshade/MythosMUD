@@ -221,6 +221,61 @@ class NPCEventHandler:
             )
             return None
 
+    # Reason: DYNAMIC_DISPATCH - NPC instances are duck-typed objects looked up via hasattr/getattr
+    # elsewhere in this class; matches this module's established, unsuppressed convention.
+    # Appropriate because: a Protocol for NPC instances is out of scope for this complexity-only
+    # extraction.
+    def _resolve_active_npc_instance(self, npc_id: str) -> Any | None:  # pyright: ignore[reportExplicitAny]
+        """Look up the live NPC instance from the NPC lifecycle manager, or None if unavailable."""
+        from ..services.npc_instance_service import get_npc_instance_service
+
+        npc_instance_service = get_npc_instance_service()
+        if not npc_instance_service or not hasattr(npc_instance_service, "lifecycle_manager"):
+            return None
+
+        lifecycle_manager = npc_instance_service.lifecycle_manager
+        if not lifecycle_manager or npc_id not in lifecycle_manager.active_npcs:
+            return None
+
+        return lifecycle_manager.active_npcs[npc_id]
+
+    # Reason: DYNAMIC_DISPATCH - npc_instance is a duck-typed object per this module's own
+    # established convention (see _resolve_active_npc_instance above).
+    # Appropriate because: same unsuppressed convention as this class's other NPC-instance access.
+    def _resolve_npc_behavior_config(
+        self,
+        # Reason: DYNAMIC_DISPATCH - npc_instance is a duck-typed object per this module's own
+        # established convention (see _resolve_active_npc_instance above).
+        # Appropriate because: same unsuppressed convention as this class's other NPC access.
+        npc_instance: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+        # Reason: DYNAMIC_DISPATCH - same duck-typed-object convention as npc_instance above.
+        # Appropriate because: same unsuppressed convention as this function's own parameter.
+    ) -> Any | None:  # pyright: ignore[reportExplicitAny]
+        """Get the NPC's behavior_config, parsing it from JSON if it's stored as a string."""
+        # Reason: DYNAMIC_DISPATCH - npc_instance is Any per this function's own parameter above.
+        # Appropriate because: same unsuppressed convention as this function's own signature.
+        behavior_config = getattr(npc_instance, "_behavior_config", None)  # pyright: ignore[reportAny]
+        if not behavior_config:
+            # Reason: DYNAMIC_DISPATCH - npc_instance is Any per this function's own parameter.
+            # Appropriate because: same unsuppressed convention as this function's own signature.
+            # Try alternative attribute name
+            behavior_config = getattr(npc_instance, "behavior_config", None)  # pyright: ignore[reportAny]
+        if not behavior_config:
+            return None
+
+        if isinstance(behavior_config, str):
+            import json
+
+            try:
+                # Reason: DYNAMIC_DISPATCH - json.loads() on an untyped string returns Any.
+                # Appropriate because: same unsuppressed convention as this function's own signature.
+                return json.loads(behavior_config)  # pyright: ignore[reportAny]
+            except (json.JSONDecodeError, ValueError):
+                return None
+        # Reason: DYNAMIC_DISPATCH - behavior_config is Any per this function's own return type.
+        # Appropriate because: same unsuppressed convention as this function's own signature.
+        return behavior_config  # pyright: ignore[reportAny]
+
     def _get_npc_departure_message(self, npc_id: str) -> str | None:
         """
         Get the departure message for an NPC from its behavior_config.
@@ -234,40 +289,16 @@ class NPCEventHandler:
             Departure message (custom or default), or None if NPC not found
         """
         try:
-            # Get the NPC instance from the lifecycle manager
-            from ..services.npc_instance_service import get_npc_instance_service
-
-            npc_instance_service = get_npc_instance_service()
-            if not npc_instance_service or not hasattr(npc_instance_service, "lifecycle_manager"):
+            npc_instance = self._resolve_active_npc_instance(npc_id)
+            if npc_instance is None:
                 return None
 
-            lifecycle_manager = npc_instance_service.lifecycle_manager
-            if not lifecycle_manager or npc_id not in lifecycle_manager.active_npcs:
-                return None
-
-            npc_instance = lifecycle_manager.active_npcs[npc_id]
-
-            # Get the NPC name for the default message
-            npc_name = getattr(npc_instance, "name", "An NPC")
-
-            # Get the behavior_config from the NPC instance
-            behavior_config = getattr(npc_instance, "_behavior_config", None)
-            if not behavior_config:
-                # Try alternative attribute name
-                behavior_config = getattr(npc_instance, "behavior_config", None)
+            # Reason: DYNAMIC_DISPATCH - npc_instance is Any per _resolve_active_npc_instance above.
+            # Appropriate because: same unsuppressed convention as this class's other NPC access.
+            npc_name = getattr(npc_instance, "name", "An NPC")  # pyright: ignore[reportAny]
+            behavior_config = self._resolve_npc_behavior_config(npc_instance)
 
             if behavior_config:
-                # Parse the behavior_config if it's a JSON string
-                import json
-
-                if isinstance(behavior_config, str):
-                    try:
-                        behavior_config = json.loads(behavior_config)
-                    except (json.JSONDecodeError, ValueError):
-                        # If parsing fails, use default message
-                        return f"{npc_name} leaves."
-
-                # Get the departure_message from the behavior_config
                 departure_message = behavior_config.get("departure_message")
                 if departure_message:
                     return cast(str, departure_message)

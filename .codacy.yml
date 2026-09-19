@@ -44,6 +44,9 @@ exclude_paths:
   # Coverage alignment: not in pytest-cov --cov=server (would show as 0% on Codacy otherwise).
   - "scripts/**"
   - "tools/**"
+  # One-shot DB migration/apply scripts (apply_migration bodies); not coverable product
+  # code, same rationale as scripts/** above. See issue #787 Wave 1.
+  - "server/scripts/**"
   - "server/tests/**"
   # Coverage alignment: not in Vitest coverage include (client/src only); Playwright and config live here.
   - "client/tests/**"
@@ -89,7 +92,16 @@ engines:
     # (ignore_patterns alone does not suppress Lizard locally; see note above engines.*).
     exclude_paths:
       - "server/services/user_manager.py"
+      # NLOC-only debt (CCN is fine): Query-param-heavy/log-dense endpoints and debug-log-dense
+      # mute-check functions, per the matching ignore_patterns reason below. Moved from
+      # ignore_patterns to exclude_paths because Codacy Cloud does not honor Lizard
+      # ignore_patterns (see note above engines.* -- confirmed by issue #787's PR checks still
+      # flagging these exact functions despite matching ignore_patterns entries).
+      - "server/api/rooms.py"
+      - "server/realtime/message_filtering.py"
       - "scripts/ci/quality_fragmentation_guard.py"
+      # One-shot migration/apply scripts (see root exclude_paths note, issue #787 Wave 1).
+      - "server/scripts/**"
       # Lockfiles are not source; Lizard file-nloc is noise.
       - "uv.lock"
       - "**/uv.lock"
@@ -130,6 +142,9 @@ engines:
       - "**/Makefile"
       - "server/schemas/**"
       - "server/models/**"
+      # _PlayerServiceLike/_AsyncPersistenceLike are single-method Protocol duck-types (issue #787);
+      # R0903 is expected for a Protocol naming one method.
+      - "server/realtime/integration/game_state_provider.py"
       - "graphify-out/**"
       - "**/graphify-out/**"
       - "**/.venv/**"
@@ -421,6 +436,53 @@ ignore_patterns:
       - "server/realtime/maintenance/connection_cleaner.py"
       - "server/realtime/monitoring/health_monitor.py"
     reason: "Constructors and audit signatures; bundling would be a speculative API churn."
+  # Lizard NLOC: message_filtering.py and rooms.py NLOC-only debt is excluded via
+  # engines.lizard.exclude_paths above (Codacy Cloud does not honor ignore_patterns for Lizard).
+  # admin_teleport_commands.py's confirm/goto handlers were refactored to share the
+  # validate/resolve-target/execute-move stages across the teleport and goto pairs, bringing
+  # them under both CCN and NLOC limits -- no override needed. See issue #787 Wave 2 follow-up.
+  # Lizard NLOC: broadcast_room_update is a sequential broadcast pipeline (resolve manager,
+  # load room with fallback, gather occupants, build event, broadcast) already documented via
+  # its own pylint too-many-statements override as intentionally not split further, since doing
+  # so would obscure the control flow across stages. See issue #787 Wave 3.
+  - pattern_id: "Lizard_nloc-medium"
+    file_paths:
+      - "server/realtime/websocket_room_updates.py"
+    reason: "Sequential room-update broadcast pipeline; see file header note, issue #787."
+  # Lizard NLOC: user_manager.py's is_player_muted is a low-CCN (8) mute-check function carrying
+  # dense structured debug-log checkpoints, the same shape as message_filtering.py's mute-check
+  # functions above. See issue #787 Wave 3.
+  - pattern_id: "Lizard_nloc-medium"
+    file_paths:
+      - "server/services/user_manager.py"
+    reason: "Debug-log-dense, low-CCN mute-check function; see file header note, issue #787."
+  # Lizard NLOC: createDefaultPanelLayout is a pure data literal (CCN 1) building the default
+  # three-column panel layout; splitting it would fragment one cohesive literal into speculative
+  # single-caller helpers. See issue #787 Wave 4.
+  - pattern_id: "Lizard_nloc-medium"
+    file_paths:
+      - "client/src/components/ui-v2/utils/panelLayout.ts"
+    reason: "Pure data literal (CCN 1); see file header note, issue #787."
+  # Lizard NLOC: MainMenuModal is a low-CCN (2) modal shell; length comes from static JSX
+  # (menu buttons), not branching. See issue #787 Wave 4.
+  - pattern_id: "Lizard_nloc-medium"
+    file_paths:
+      - "client/src/components/MainMenuModal.tsx"
+    reason: "JSX-heavy modal shell, low CCN; see file header note, issue #787."
+  # Lizard NLOC: MinimapPanelSection is a low-CCN (1) backdrop + draggable panel shell, extracted
+  # from GameClientV2 specifically to keep that file under its own per-method limits; further
+  # splitting would fragment one cohesive panel section. See issue #787 Wave 4.
+  - pattern_id: "Lizard_nloc-medium"
+    file_paths:
+      - "client/src/components/ui-v2/GameClientV2MinimapSection.tsx"
+    reason: "JSX-heavy panel shell, CCN 1; see file header note, issue #787."
+  # Lizard NLOC: RoomMapEditor is a low-CCN (6) editor shell, JSX-heavy. Lizard's TSX reader also
+  # misattributes its start line to the closing brace of the preceding RoomMapEditorLoadedView
+  # (same class of parser quirk as EldritchEffectsDemo.tsx above). See issue #787 Wave 4.
+  - pattern_id: "Lizard_nloc-medium"
+    file_paths:
+      - "client/src/components/map/RoomMapEditorRuntime.tsx"
+    reason: "JSX-heavy editor shell, low CCN; see file header note, issue #787."
   # Pylint R0801 duplicate-code: thin shared patterns across cohesive modules; extraction
   # would create speculative single-use helpers (ponytail / fragmentation rules).
   - pattern_id: "PyLintPython3_R0801"

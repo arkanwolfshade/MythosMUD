@@ -367,6 +367,32 @@ async def execute_confirm_teleport(  # pylint: disable=too-many-arguments,too-ma
         persistence,
     )
 
+    await _announce_confirm_teleport(
+        connection_manager, target_player_info, target_player_name, player_name, original_room_id, target_room_id
+    )
+
+    return {"result": f"Successfully teleported {target_player_name} to your location."}
+
+
+# Reason: DYNAMIC_DISPATCH - connection_manager/room ids are Any per this module's established,
+# unsuppressed convention (matches execute_confirm_teleport's own identical parameter shape above).
+# Appropriate because: introducing Protocols for these objects is out of scope for this
+# complexity-only extraction.
+async def _announce_confirm_teleport(
+    connection_manager: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+    # Reason: DYNAMIC_DISPATCH - matches execute_confirm_teleport's own identical parameter.
+    # Appropriate because: same unsuppressed convention as this module's teleport helpers.
+    target_player_info: dict[str, Any],  # pyright: ignore[reportExplicitAny]
+    target_player_name: str,
+    player_name: str,
+    # Reason: DYNAMIC_DISPATCH - room ids come from Any-typed player objects (.current_room_id).
+    # Appropriate because: same unsuppressed convention as execute_confirm_teleport above.
+    original_room_id: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+    # Reason: DYNAMIC_DISPATCH - same untyped room-id convention as above.
+    # Appropriate because: same unsuppressed convention as execute_confirm_teleport above.
+    target_room_id: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+) -> None:
+    """Broadcast teleport effects, notify the teleported player, and log the admin action."""
     await broadcast_teleport_effects(
         connection_manager,
         target_player_name,
@@ -403,5 +429,3 @@ async def execute_confirm_teleport(  # pylint: disable=too-many-arguments,too-ma
         from_room=original_room_id,
         to_room=target_room_id,
     )
-
-    return {"result": f"Successfully teleported {target_player_name} to your location."}

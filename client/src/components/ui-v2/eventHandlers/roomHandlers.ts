@@ -253,6 +253,23 @@ function getRoomDataFromEvent(event: { data: Record<string, unknown> }): Room | 
   return mergeTopLevelOccupants(raw, event);
 }
 
+function logInitialRoomOccupantDebug(room: Room, payloadOccupantCount: number): void {
+  if (!_occupantDebug) return;
+  logger.info('roomHandlers', 'OCCUPANT_DEBUG: room_update branch=initial (no existingRoom)', {
+    payload_occupants: payloadOccupantCount,
+    result_occupants: room.occupants?.length ?? 0,
+  });
+}
+
+function logMergedRoomOccupantDebug(room: Room, payloadOccupantCount: number, payloadHasOccupants: boolean): void {
+  if (!_occupantDebug) return;
+  logger.info('roomHandlers', 'OCCUPANT_DEBUG: room_update branch=merge (had existingRoom)', {
+    payload_occupants: payloadOccupantCount,
+    payload_has_occupants: payloadHasOccupants,
+    result_occupants: room.occupants?.length ?? 0,
+  });
+}
+
 export const handleRoomUpdate: EventHandler = (event, context) => {
   const roomData = getRoomDataFromEvent(event);
   if (!roomData) {
@@ -262,28 +279,16 @@ export const handleRoomUpdate: EventHandler = (event, context) => {
   const roomMetadata = extractRoomMetadata(roomData);
   const existingRoom = context.currentRoomRef.current;
   const payloadOccupantCount = (roomData.occupants?.length ?? 0) || (roomData.occupant_count ?? 0);
-  const payloadHasOccupants = hasOccupantData(roomData);
 
   if (!existingRoom) {
     const room = createInitialRoomState(roomMetadata, roomData);
-    if (_occupantDebug) {
-      logger.info('roomHandlers', 'OCCUPANT_DEBUG: room_update branch=initial (no existingRoom)', {
-        payload_occupants: payloadOccupantCount,
-        result_occupants: room.occupants?.length ?? 0,
-      });
-    }
+    logInitialRoomOccupantDebug(room, payloadOccupantCount);
     return { room };
   }
 
   const roomIdChanged = roomData.id !== existingRoom.id;
   const room = createRoomUpdateWithPreservedOccupants(existingRoom, roomMetadata, roomIdChanged, roomData);
-  if (_occupantDebug) {
-    logger.info('roomHandlers', 'OCCUPANT_DEBUG: room_update branch=merge (had existingRoom)', {
-      payload_occupants: payloadOccupantCount,
-      payload_has_occupants: payloadHasOccupants,
-      result_occupants: room.occupants?.length ?? 0,
-    });
-  }
+  logMergedRoomOccupantDebug(room, payloadOccupantCount, hasOccupantData(roomData));
   return { room };
 };
 

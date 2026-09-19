@@ -1,7 +1,7 @@
 """Display and rendering helpers for inventory commands."""
 
 from collections.abc import Mapping
-from typing import Any
+from typing import Any, cast
 
 DEFAULT_SLOT_CAPACITY = 20
 
@@ -111,6 +111,72 @@ def build_container_metadata(
     return format_metadata(item_metadata)
 
 
+def _build_container_item_lines(
+    # Reason: SERIALIZATION_BOUNDARY - container items are loosely-shaped item dicts, matching
+    # this module's established, unsuppressed dict[str, Any] convention.
+    # Appropriate because: item payloads come from inventory/container JSON-like data with no
+    # fixed schema here; a TypedDict is out of scope for this complexity-only extraction.
+    container_items: list[dict[str, Any]],  # pyright: ignore[reportExplicitAny]
+) -> list[str]:
+    """Build indented display lines for a single equipped container's contents."""
+    lines: list[str] = []
+    for container_item in container_items:
+        # Reason: SERIALIZATION_BOUNDARY - container_item is a loosely-shaped item dict
+        # (dict[str, Any]), matching this module's established, unsuppressed convention.
+        # Appropriate because: item payloads come from inventory/container JSON-like data with
+        # no fixed schema here; a TypedDict is out of scope for this complexity-only extraction.
+        container_item_name = container_item.get("item_name") or container_item.get(  # pyright: ignore[reportAny]
+            "name", "Unknown Item"
+        )
+        # Reason: SERIALIZATION_BOUNDARY - same loosely-shaped item dict as above.
+        # Appropriate because: same unsuppressed convention as this module's item-dict access.
+        container_item_quantity = container_item.get("quantity", 1)  # pyright: ignore[reportAny]
+        if container_item_quantity > 1:
+            lines.append(f"    - {container_item_name} x{container_item_quantity}")
+        else:
+            lines.append(f"    - {container_item_name}")
+    return lines
+
+
+def _build_equipped_slot_lines(
+    slot_name: str,
+    # Reason: SERIALIZATION_BOUNDARY - item is a loosely-shaped equipped-item dict, matching
+    # this module's established, unsuppressed dict[str, Any] convention (see build_equipped_lines).
+    # Appropriate because: item payloads come from inventory/equipment JSON-like data with no
+    # fixed schema here; a TypedDict is out of scope for this complexity-only extraction.
+    item: dict[str, Any],  # pyright: ignore[reportExplicitAny]
+    # Reason: SERIALIZATION_BOUNDARY - matches build_container_metadata's own identically-typed
+    # dict[str, list[dict[str, Any]]] parameter.
+    # Appropriate because: same unsuppressed convention as this module's item-dict access.
+    container_contents: dict[str, list[dict[str, Any]]] | None,  # pyright: ignore[reportExplicitAny]
+    container_capacities: dict[str, int] | None,
+    container_lock_states: dict[str, str] | None,
+) -> list[str]:
+    """Build the display lines for one equipped slot, including any container contents."""
+    # Reason: SERIALIZATION_BOUNDARY - same loosely-shaped item dict as the parameter above.
+    # Appropriate because: same unsuppressed convention as this module's item-dict access.
+    item_name = item.get("item_name") or item.get("item_id", "Unknown Item")  # pyright: ignore[reportAny]
+    # Reason: SERIALIZATION_BOUNDARY - same loosely-shaped item dict as above.
+    # Appropriate because: same unsuppressed convention as this module's item-dict access.
+    quantity = item.get("quantity", 0)  # pyright: ignore[reportAny]
+    # Reason: SERIALIZATION_BOUNDARY - item_metadata is Any from the same loosely-shaped item dict.
+    # Appropriate because: matches build_container_metadata's own dict[str, Any] parameter type.
+    item_metadata: dict[str, Any] = item.get("metadata") or {}  # pyright: ignore[reportExplicitAny]
+
+    metadata_suffix = build_container_metadata(
+        slot_name, item_metadata, container_contents, container_capacities, container_lock_states
+    )
+
+    lines = [f"- {slot_name}: {item_name} x{quantity}{metadata_suffix}"]
+
+    if container_contents is not None and slot_name in container_contents:
+        container_items = container_contents[slot_name]
+        if container_items:
+            lines.extend(_build_container_item_lines(container_items))
+
+    return lines
+
+
 def build_equipped_lines(
     equipped: dict[str, Any],
     container_contents: dict[str, list[dict[str, Any]]] | None,
@@ -118,40 +184,24 @@ def build_equipped_lines(
     container_lock_states: dict[str, str] | None,
 ) -> list[str]:
     """Build equipped items display lines."""
-    lines = []
-    if equipped:  # pylint: disable=too-many-nested-blocks  # Reason: Inventory display requires complex nested logic for item formatting, metadata handling, and display generation
-        for slot_name in sorted(equipped.keys()):
-            item = equipped[slot_name]
-            item_name = item.get("item_name") or item.get("item_id", "Unknown Item")
-            quantity = item.get("quantity", 0)
-            item_metadata = item.get("metadata") or {}
+    if not equipped:
+        return ["- Nothing equipped."]
 
-            metadata_suffix = build_container_metadata(
-                slot_name, item_metadata, container_contents, container_capacities, container_lock_states
-            )
-
-            lines.append(f"- {slot_name}: {item_name} x{quantity}{metadata_suffix}")
-
-            if container_contents is not None and slot_name in container_contents:
-                container_items = container_contents[slot_name]
-                if container_items:
-                    for container_item in container_items:
-                        container_item_name = container_item.get("item_name") or container_item.get(
-                            "name", "Unknown Item"
-                        )
-                        container_item_quantity = container_item.get("quantity", 1)
-                        if container_item_quantity > 1:
-                            lines.append(f"    - {container_item_name} x{container_item_quantity}")
-                        else:
-                            lines.append(f"    - {container_item_name}")
-    else:
-        lines.append("- Nothing equipped.")
-
+    lines: list[str] = []
+    for slot_name in sorted(equipped.keys()):
+        item = cast(dict[str, Any], equipped[slot_name])
+        lines.extend(
+            _build_equipped_slot_lines(slot_name, item, container_contents, container_capacities, container_lock_states)
+        )
     return lines
 
 
 def render_inventory(
-    inventory: list[dict[str, Any]],
+    # Reason: SERIALIZATION_BOUNDARY - inventory items are loosely-shaped dicts, matching this
+    # module's established, unsuppressed dict[str, Any] convention used throughout this file.
+    # Appropriate because: item payloads come from inventory JSON-like data with no fixed schema
+    # here; a TypedDict is out of scope for this complexity-only extraction.
+    inventory: list[dict[str, Any]],  # pyright: ignore[reportExplicitAny]
     equipped: dict[str, Any],
     container_contents: dict[str, list[dict[str, Any]]] | None = None,
     container_capacities: dict[str, int] | None = None,

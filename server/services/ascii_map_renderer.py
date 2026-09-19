@@ -36,6 +36,29 @@ _NO_DEPARTURES: dict[tuple[int, int], frozenset[str]] = {}
 _NO_BRIDGES: frozenset[tuple[int, int]] = frozenset()
 
 
+class _RoomRowContext(NamedTuple):
+    """Viewport and style context for horizontal room row rendering."""
+
+    # Reason: SERIALIZATION_BOUNDARY - grid mirrors _ExitRowContext's identical, unsuppressed
+    # field just below (both hold the same grid-cell shape used throughout this module).
+    # Appropriate because: a cell is a dict of ad hoc rendering fields (symbol, is_player,
+    # room_name), not a schema; matches the module's existing rooms: list[dict[str, Any]].
+    grid: dict[tuple[int, int], dict[str, Any] | str]  # pyright: ignore[reportExplicitAny]
+    # Reason: SERIALIZATION_BOUNDARY - exit_from mirrors _ExitRowContext's identical,
+    # unsuppressed field just below (the same exit-lookup shape used throughout this module).
+    # Appropriate because: an exit entry is an ad hoc dict (target coords, bidirectional
+    # flag), not a schema; matches the module's existing rooms: list[dict[str, Any]].
+    exit_from: dict[tuple[int, int], dict[str, dict[str, Any]]]  # pyright: ignore[reportExplicitAny]
+    map_style: str
+    viewport_x: int
+    viewport_width: int
+    # Cells between two rooms joined by one exit; see _build_exit_bridges.
+    horizontal_bridges: frozenset[tuple[int, int]] = _NO_BRIDGES
+    vertical_bridges: frozenset[tuple[int, int]] = _NO_BRIDGES
+    # Rooms with an exit leaving the loaded area; see ascii_map_exits.build_departures.
+    departures: dict[tuple[int, int], frozenset[str]] = _NO_DEPARTURES
+
+
 class _ExitRowContext(NamedTuple):
     """Viewport and style context for vertical exit row rendering."""
 
@@ -161,53 +184,49 @@ class AsciiMapRenderer:
             return player_x - viewport_width // 2, player_y - viewport_height // 2
         return viewport_x, viewport_y
 
-    def _render_room_row(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Room row rendering requires many parameters for context and rendering logic
-        self,
-        y: int,
-        grid: dict[tuple[int, int], dict[str, Any] | str],
-        exit_from: dict[tuple[int, int], dict[str, dict[str, Any]]],
-        map_style: str,
-        viewport_x: int,
-        viewport_width: int,
-        horizontal_bridges: frozenset[tuple[int, int]] = _NO_BRIDGES,
-        vertical_bridges: frozenset[tuple[int, int]] = _NO_BRIDGES,
-        departures: dict[tuple[int, int], frozenset[str]] | None = None,
+    def _render_room_cell_with_room(
+        self, x: int, y: int, cell: dict[str, Any], ctx: _RoomRowContext, exit_span: str
     ) -> str:
+        """Render one grid cell that holds a room, plus its east-facing exit marker."""
+        # cell is built by _build_grid with these exact keys/types (str, bool, str).
+        symbol = cast(str, cell.get("symbol", " "))
+        is_player = cast(bool, cell.get("is_player", False))
+        room_name = cast(str, cell.get("room_name", ""))
+        # Use class so client SafeHtml (ALLOWED_ATTR: ['class']) preserves styling
+        room_class = "ascii-map-player" if is_player else f"ascii-map-room ascii-map-room-{ctx.map_style}"
+        title_attr = f' title="{room_name}"' if room_name else ""
+        cell_html = f'<span class="{room_class}"{title_attr}>{symbol}</span>'
+
+        exit_char = self._get_horizontal_exit_char(x, y, ctx.exit_from, ctx.grid, ctx.viewport_x, ctx.viewport_width)
+        if not exit_char and (x + 1, y) in ctx.horizontal_bridges:
+            # The next cell is not a room but the exit continues through it.
+            exit_char = _BRIDGE_HORIZONTAL
+        if not exit_char and "east" in ctx.departures.get((x, y), frozenset()):
+            exit_char = _DEPARTURE
+        exit_html = f"{exit_span}{exit_char}</span>" if exit_char else " "
+        return cell_html + exit_html
+
+    def _render_room_cell(self, x: int, y: int, ctx: _RoomRowContext) -> str:
+        """Render one cell of a room row: a room, a bridge span, a departure marker, or blank."""
+        cell = ctx.grid.get((x, y), " ")
+        exit_span = f'<span class="ascii-map-exit ascii-map-exit-{ctx.map_style}">'
+        if isinstance(cell, dict):
+            return self._render_room_cell_with_room(x, y, cell, ctx, exit_span)
+        if (x, y) in ctx.horizontal_bridges:
+            # Empty cell inside an east/west span: draw straight through it.
+            return f"{exit_span}{_BRIDGE_HORIZONTAL}</span>{exit_span}{_BRIDGE_HORIZONTAL}</span>"
+        if (x, y) in ctx.vertical_bridges:
+            return f"{exit_span}{_BRIDGE_VERTICAL}</span> "
+        if "west" in ctx.departures.get((x + 1, y), frozenset()):
+            # The room to the right leaves westward; mark the square beside it.
+            return f" {exit_span}{_DEPARTURE}</span>"
+        return "  "
+
+    def _render_room_row(self, y: int, ctx: _RoomRowContext) -> str:
         """Render a single row of rooms with horizontal exits."""
-        line: list[str] = []
-        leaving = departures if departures is not None else _NO_DEPARTURES
-        exit_span = f'<span class="ascii-map-exit ascii-map-exit-{map_style}">'
-        for x in range(viewport_x, viewport_x + viewport_width):
-            cell = grid.get((x, y), " ")
-            if isinstance(cell, dict):
-                symbol = cell.get("symbol", " ")
-                is_player = cell.get("is_player", False)
-                room_name = cell.get("room_name", "")
-                # Use class so client SafeHtml (ALLOWED_ATTR: ['class']) preserves styling
-                room_class = "ascii-map-player" if is_player else f"ascii-map-room ascii-map-room-{map_style}"
-                title_attr = f' title="{room_name}"' if room_name else ""
-                line.append(f'<span class="{room_class}"{title_attr}>{symbol}</span>')
-                exit_char = self._get_horizontal_exit_char(x, y, exit_from, grid, viewport_x, viewport_width)
-                if not exit_char and (x + 1, y) in horizontal_bridges:
-                    # The next cell is not a room but the exit continues through it.
-                    exit_char = _BRIDGE_HORIZONTAL
-                if not exit_char and "east" in leaving.get((x, y), frozenset()):
-                    exit_char = _DEPARTURE
-                if exit_char:
-                    line.append(f"{exit_span}{exit_char}</span>")
-                else:
-                    line.append(" ")
-            elif (x, y) in horizontal_bridges:
-                # Empty cell inside an east/west span: draw straight through it.
-                line.append(f"{exit_span}{_BRIDGE_HORIZONTAL}</span>{exit_span}{_BRIDGE_HORIZONTAL}</span>")
-            elif (x, y) in vertical_bridges:
-                line.append(f"{exit_span}{_BRIDGE_VERTICAL}</span> ")
-            elif "west" in leaving.get((x + 1, y), frozenset()):
-                # The room to the right leaves westward; mark the square beside it.
-                line.append(f" {exit_span}{_DEPARTURE}</span>")
-            else:
-                line.append("  ")
-        return "".join(line)
+        return "".join(
+            self._render_room_cell(x, y, ctx) for x in range(ctx.viewport_x, ctx.viewport_x + ctx.viewport_width)
+        )
 
     def _render_exit_row(self, y: int, ctx: _ExitRowContext) -> str:
         """Render a single row of vertical exits between room rows."""
@@ -284,21 +303,12 @@ class AsciiMapRenderer:
 
         html_lines = []
         html_lines.append('<div class="ascii-map">')
+        room_row_ctx = _RoomRowContext(
+            grid, exit_from, map_style, viewport_x, viewport_width, horizontal_bridges, vertical_bridges, departures
+        )
 
         for y in range(viewport_y, viewport_y + viewport_height):
-            html_lines.append(
-                self._render_room_row(
-                    y,
-                    grid,
-                    exit_from,
-                    map_style,
-                    viewport_x,
-                    viewport_width,
-                    horizontal_bridges,
-                    vertical_bridges,
-                    departures,
-                )
-            )
+            html_lines.append(self._render_room_row(y, room_row_ctx))
             exit_row = self._render_exit_row(
                 y,
                 _ExitRowContext(

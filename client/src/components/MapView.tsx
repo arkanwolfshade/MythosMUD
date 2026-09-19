@@ -72,21 +72,36 @@ function MapViewHeader({ onClose }: { onClose: () => void }) {
   );
 }
 
-function MapViewBody({ currentRoom, baseUrl, authToken, hideHeader, onClose, hallucinate, playerId }: MapViewProps) {
-  const plane = currentRoom?.plane || 'earth';
-  const zone = currentRoom?.zone || 'arkhamcity';
-  const opaqueStyle = hideHeader
-    ? { backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)', opacity: 1 }
-    : {
-        backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)',
-        opacity: 1,
-        zIndex: Z_INDEX_OVERLAY_TOP,
-      };
+function mapViewOverlayStyle(hideHeader: boolean | undefined): React.CSSProperties {
+  const backgroundColor = 'var(--color-mythos-terminal-background, #0a0a0a)';
+  if (hideHeader) {
+    return { backgroundColor, opacity: 1 };
+  }
+  return { backgroundColor, opacity: 1, zIndex: Z_INDEX_OVERLAY_TOP };
+}
 
+function NoRoomDataMessage({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="flex items-center justify-center h-full">
+      <div className="text-mythos-terminal-text text-center">
+        <p className="mb-4">Unable to load map: No room data available.</p>
+        <p className="mb-4 text-sm text-mythos-terminal-text/70">You must be in a room to view the map.</p>
+        <button
+          onClick={onClose}
+          className="px-4 py-2 bg-mythos-terminal-primary text-white rounded hover:bg-mythos-terminal-primary/80"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function MapViewBody({ currentRoom, baseUrl, authToken, hideHeader, onClose, hallucinate, playerId }: MapViewProps) {
   return (
     <div
       className={`${hideHeader ? 'h-full w-full' : 'fixed inset-0'} bg-mythos-terminal-background flex flex-col`}
-      style={opaqueStyle}
+      style={mapViewOverlayStyle(hideHeader)}
     >
       {!hideHeader && <MapViewHeader onClose={onClose} />}
       <div
@@ -95,8 +110,8 @@ function MapViewBody({ currentRoom, baseUrl, authToken, hideHeader, onClose, hal
       >
         {currentRoom ? (
           <AsciiMapViewer
-            plane={plane}
-            zone={zone}
+            plane={currentRoom.plane || 'earth'}
+            zone={currentRoom.zone || 'arkhamcity'}
             subZone={currentRoom.sub_zone}
             currentRoomId={currentRoom.id}
             baseUrl={baseUrl || getVersionedApiBaseUrl()}
@@ -105,18 +120,7 @@ function MapViewBody({ currentRoom, baseUrl, authToken, hideHeader, onClose, hal
             seed={playerId ? seedFrom(currentRoom.id, playerId) : 0}
           />
         ) : (
-          <div className="flex items-center justify-center h-full">
-            <div className="text-mythos-terminal-text text-center">
-              <p className="mb-4">Unable to load map: No room data available.</p>
-              <p className="mb-4 text-sm text-mythos-terminal-text/70">You must be in a room to view the map.</p>
-              <button
-                onClick={onClose}
-                className="px-4 py-2 bg-mythos-terminal-primary text-white rounded hover:bg-mythos-terminal-primary/80"
-              >
-                Close
-              </button>
-            </div>
-          </div>
+          <NoRoomDataMessage onClose={onClose} />
         )}
       </div>
     </div>

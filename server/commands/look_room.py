@@ -27,20 +27,15 @@ def _format_items_section(room_drops: list[dict[str, Any]]) -> list[str]:
     return [str(line) for line in drop_lines] + [""]
 
 
-async def _format_containers_section(room_id: str | None, persistence: Any) -> list[str]:
-    """Format the containers/corpses section of room look."""
-    if not room_id or not persistence:
-        return []
-    try:
-        containers_data = await persistence.get_containers_by_room_id(room_id)
-    except (AttributeError, TypeError) as exc:  # pragma: no cover - defensive logging path
-        logger.debug("Failed to get containers by room id", room_id=room_id, error=str(exc))
-        return []
-    if not containers_data:
-        return []
-    # Separate containers and corpses
-    containers = []
-    corpses = []
+# Reason: SERIALIZATION_BOUNDARY - containers_data/persistence are duck-typed values from the
+# untyped persistence layer, matching this module's existing, unsuppressed Any conventions
+# (see _try_lookup_phantom_implicit below).
+# Appropriate because: room/container records here are loosely-shaped dicts with no fixed schema
+# in this module; a TypedDict/Protocol is out of scope for this complexity-only extraction.
+def _classify_containers_and_corpses(containers_data: Any) -> tuple[list[str], list[str]]:  # pyright: ignore[reportAny, reportExplicitAny]
+    """Split room container records into (environment container names, corpse descriptions)."""
+    containers: list[str] = []
+    corpses: list[str] = []
     for container in containers_data:
         source_type = container.get("source_type", "")
         if source_type == "corpse":
@@ -49,6 +44,26 @@ async def _format_containers_section(room_id: str | None, persistence: Any) -> l
         elif source_type == "environment":
             container_name = container.get("metadata", {}).get("name", "Unknown Container")
             containers.append(container_name)
+    return containers, corpses
+
+
+# Reason: SERIALIZATION_BOUNDARY - persistence is Any per this module's established convention.
+# Appropriate because: same unsuppressed convention as _classify_containers_and_corpses above.
+async def _format_containers_section(room_id: str | None, persistence: Any) -> list[str]:  # pyright: ignore[reportAny, reportExplicitAny]
+    """Format the containers/corpses section of room look."""
+    if not room_id or not persistence:
+        return []
+    try:
+        # Reason: SERIALIZATION_BOUNDARY - persistence is Any per this function's own parameter.
+        # Appropriate because: same unsuppressed convention as this function's own signature.
+        containers_data = await persistence.get_containers_by_room_id(room_id)  # pyright: ignore[reportAny]
+    except (AttributeError, TypeError) as exc:  # pragma: no cover - defensive logging path
+        logger.debug("Failed to get containers by room id", room_id=room_id, error=str(exc))
+        return []
+    if not containers_data:
+        return []
+
+    containers, corpses = _classify_containers_and_corpses(containers_data)
     lines = []
     if containers:
         container_list = ", ".join(containers)

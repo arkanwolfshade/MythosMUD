@@ -5,22 +5,24 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from server.realtime.errors.error_handler import ConnectionErrorHandler
+from server.realtime.errors.error_handler import ConnectionErrorHandler, ConnectionErrorHandlerCallbacks
 
 
 @pytest.fixture
 def handler() -> ConnectionErrorHandler:
     player_id = uuid.uuid4()
     return ConnectionErrorHandler(
-        force_disconnect_callback=AsyncMock(),
-        disconnect_connection_callback=AsyncMock(return_value=True),
-        cleanup_dead_connections_callback=AsyncMock(return_value={"connections_cleaned": 1}),
-        get_player_session_callback=MagicMock(return_value="session-1"),
-        get_session_connections_callback=MagicMock(return_value=["conn-1"]),
-        get_player_websockets=MagicMock(return_value=["conn-1"]),
-        get_online_players=MagicMock(return_value={player_id: {"name": "Armitage"}}),
-        get_session_connections=MagicMock(return_value={"session-1": ["conn-1"]}),
-        get_player_sessions=MagicMock(return_value={player_id: "session-1"}),
+        ConnectionErrorHandlerCallbacks(
+            force_disconnect_callback=AsyncMock(),
+            disconnect_connection_callback=AsyncMock(return_value=True),
+            cleanup_dead_connections_callback=AsyncMock(return_value={"connections_cleaned": 1}),
+            get_player_session_callback=MagicMock(return_value="session-1"),
+            get_session_connections_callback=MagicMock(return_value=["conn-1"]),
+            get_player_websockets=MagicMock(return_value=["conn-1"]),
+            get_online_players=MagicMock(return_value={player_id: {"name": "Armitage"}}),
+            get_session_connections=MagicMock(return_value={"session-1": ["conn-1"]}),
+            get_player_sessions=MagicMock(return_value={player_id: "session-1"}),
+        )
     )
 
 

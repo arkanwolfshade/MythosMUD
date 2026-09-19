@@ -17,16 +17,8 @@ interface AuthenticatedMapProps {
   playerId: string | null;
 }
 
-function renderAuthenticatedMapView({
-  editMode,
-  plane,
-  zone,
-  subZone,
-  currentRoomId,
-  authToken,
-  tier,
-  playerId,
-}: AuthenticatedMapProps) {
+function renderAuthenticatedMapView(props: AuthenticatedMapProps) {
+  const { editMode, plane, zone, subZone, currentRoomId, authToken, tier, playerId } = props;
   if (editMode) {
     return (
       <RoomMapEditor

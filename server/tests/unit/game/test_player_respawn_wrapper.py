@@ -67,6 +67,27 @@ async def test_respawn_player_by_user_id_success() -> None:
 
 
 @pytest.mark.asyncio
+async def test_respawn_player_by_user_id_multiple_dead_picks_most_recent() -> None:
+    wrapper = PlayerRespawnWrapper(MagicMock())
+    older = _dead_player("Older")
+    older.last_active = datetime.datetime(2020, 1, 1, tzinfo=datetime.UTC)
+    newer = _dead_player("Newer")
+    newer.last_active = datetime.datetime(2025, 1, 1, tzinfo=datetime.UTC)
+    session = MagicMock()
+    session.execute = AsyncMock(
+        return_value=MagicMock(scalars=MagicMock(return_value=MagicMock(all=MagicMock(return_value=[older, newer]))))
+    )
+    respawn_service = MagicMock()
+    respawn_service.respawn_player = AsyncMock(return_value=True)
+    persistence = MagicMock()
+    # Reason: TEST_MOCK - persistence is a MagicMock; attribute access is inherently Any.
+    # Appropriate because: same unsuppressed mock convention as the other tests in this file.
+    persistence.get_room_by_id.return_value = None  # pyright: ignore[reportAny]
+    result = await wrapper.respawn_player_by_user_id("user-1", session, respawn_service, persistence)
+    assert result["player"]["name"] == "Newer"
+
+
+@pytest.mark.asyncio
 async def test_respawn_from_delirium_player_not_found() -> None:
     wrapper = PlayerRespawnWrapper(MagicMock())
     session = MagicMock()

@@ -181,6 +181,54 @@ async function updateExit(
   }
 }
 
+/** Step 1: delete edges the user explicitly removed. */
+async function deleteRemovedEdges(apiBaseUrl: string, deletedEdgeIds: string[], headers: HeadersInit): Promise<void> {
+  for (const edgeId of deletedEdgeIds) {
+    const parsed = parseEdgeId(edgeId);
+    if (!parsed) {
+      throw new Error(`Cannot resolve deleted exit "${edgeId}" to a room and direction; save aborted.`);
+    }
+    await deleteExit(apiBaseUrl, parsed.sourceRoomId, parsed.direction, headers);
+  }
+}
+
+type InPlaceEdgeUpdate = { sourceRoomId: string; direction: string; update: Partial<ExitEdgeData> };
+
+/**
+ * Step 2: split edge updates into re-pointed exits (direction changed -- deleted here so the
+ * delete-before-create ordering holds, then re-added as a create) and true in-place updates.
+ */
+async function splitEdgeUpdates(
+  apiBaseUrl: string,
+  edgeUpdates: Map<string, Partial<ExitEdgeData>>,
+  headers: HeadersInit
+): Promise<{ repointedCreates: ExitEdgeData[]; inPlaceUpdates: InPlaceEdgeUpdate[] }> {
+  const repointedCreates: ExitEdgeData[] = [];
+  const inPlaceUpdates: InPlaceEdgeUpdate[] = [];
+
+  for (const [edgeId, update] of edgeUpdates) {
+    const parsed = parseEdgeId(edgeId);
+    if (!parsed) {
+      throw new Error(`Cannot resolve updated exit "${edgeId}" to a room and direction; save aborted.`);
+    }
+    const newDirection = update.direction ?? parsed.direction;
+    if (newDirection !== parsed.direction) {
+      await deleteExit(apiBaseUrl, parsed.sourceRoomId, parsed.direction, headers);
+      repointedCreates.push({
+        direction: newDirection,
+        sourceRoomId: parsed.sourceRoomId,
+        targetRoomId: update.targetRoomId ?? parsed.targetRoomId,
+        flags: update.flags,
+        description: update.description,
+      });
+    } else {
+      inPlaceUpdates.push({ sourceRoomId: parsed.sourceRoomId, direction: parsed.direction, update });
+    }
+  }
+
+  return { repointedCreates, inPlaceUpdates };
+}
+
 /**
  * Save edge (room exit) changes to the server.
  *
@@ -210,43 +258,17 @@ export async function saveEdgeChanges(
   const headers = buildJsonHeaders(authToken);
 
   // 1. Explicit deletes.
-  for (const edgeId of deletedEdgeIds) {
-    const parsed = parseEdgeId(edgeId);
-    if (!parsed) {
-      throw new Error(`Cannot resolve deleted exit "${edgeId}" to a room and direction; save aborted.`);
-    }
-    await deleteExit(apiBaseUrl, parsed.sourceRoomId, parsed.direction, headers);
-  }
+  await deleteRemovedEdges(apiBaseUrl, deletedEdgeIds, headers);
 
   // 2. Re-pointed exits (direction changed) also delete here, before any create runs, so the
   // global delete-before-create ordering holds even for exits that are conceptually "updated".
-  const effectiveCreates: ExitEdgeData[] = newEdges
+  const explicitCreates: ExitEdgeData[] = newEdges
     .map(edge => edge.data)
     .filter((data): data is ExitEdgeData => !!data);
-  const inPlaceUpdates: Array<{ sourceRoomId: string; direction: string; update: Partial<ExitEdgeData> }> = [];
-
-  for (const [edgeId, update] of edgeUpdates) {
-    const parsed = parseEdgeId(edgeId);
-    if (!parsed) {
-      throw new Error(`Cannot resolve updated exit "${edgeId}" to a room and direction; save aborted.`);
-    }
-    const newDirection = update.direction ?? parsed.direction;
-    if (newDirection !== parsed.direction) {
-      await deleteExit(apiBaseUrl, parsed.sourceRoomId, parsed.direction, headers);
-      effectiveCreates.push({
-        direction: newDirection,
-        sourceRoomId: parsed.sourceRoomId,
-        targetRoomId: update.targetRoomId ?? parsed.targetRoomId,
-        flags: update.flags,
-        description: update.description,
-      });
-    } else {
-      inPlaceUpdates.push({ sourceRoomId: parsed.sourceRoomId, direction: parsed.direction, update });
-    }
-  }
+  const { repointedCreates, inPlaceUpdates } = await splitEdgeUpdates(apiBaseUrl, edgeUpdates, headers);
 
   // 3. Creates (explicit new edges, plus re-pointed exits demoted from "update" above).
-  for (const edgeData of effectiveCreates) {
+  for (const edgeData of [...explicitCreates, ...repointedCreates]) {
     await createExit(apiBaseUrl, edgeData, headers);
   }
 
@@ -335,33 +357,35 @@ export async function recalculateCoordinates(
 /**
  * Save all map changes to the server.
  */
-export async function saveMapChanges(changes: MapEditingChanges, options: SaveMapChangesOptions): Promise<void> {
-  const { authToken, baseUrl } = options;
-
-  // Check if there are any changes to save
-  const hasChanges =
+function hasAnyMapChanges(changes: MapEditingChanges): boolean {
+  return (
     changes.nodePositions.size > 0 ||
     changes.newEdges.length > 0 ||
     changes.deletedEdgeIds.length > 0 ||
     changes.edgeUpdates.size > 0 ||
-    changes.roomUpdates.size > 0;
+    changes.roomUpdates.size > 0
+  );
+}
 
-  // Early return if no changes
-  if (!hasChanges) {
+function hasAnyEdgeChanges(changes: MapEditingChanges): boolean {
+  return changes.newEdges.length > 0 || changes.deletedEdgeIds.length > 0 || changes.edgeUpdates.size > 0;
+}
+
+export async function saveMapChanges(changes: MapEditingChanges, options: SaveMapChangesOptions): Promise<void> {
+  const { authToken, baseUrl } = options;
+
+  if (!hasAnyMapChanges(changes)) {
     return;
   }
 
-  // Save node positions
   if (changes.nodePositions.size > 0) {
     await saveNodePositions(changes.nodePositions, { authToken, baseUrl });
   }
 
-  // Save edge changes
-  if (changes.newEdges.length > 0 || changes.deletedEdgeIds.length > 0 || changes.edgeUpdates.size > 0) {
+  if (hasAnyEdgeChanges(changes)) {
     await saveEdgeChanges(changes.newEdges, changes.deletedEdgeIds, changes.edgeUpdates, { authToken, baseUrl });
   }
 
-  // Save room property updates
   if (changes.roomUpdates.size > 0) {
     await saveRoomUpdates(changes.roomUpdates, { authToken, baseUrl });
   }

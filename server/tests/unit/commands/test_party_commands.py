@@ -107,7 +107,7 @@ async def test_handle_party_leave_not_in_party():
     """_handle_party_leave returns error when player has no party."""
     party_service = MagicMock()
     party_service.get_party_for_player.return_value = None
-    result = _handle_party_leave(party_service, uuid.uuid4())
+    result = await _handle_party_leave(party_service, uuid.uuid4())
     assert "not in a party" in result["result"]
 
 
@@ -217,3 +217,88 @@ async def test_get_member_display_invalid_uuid():
     async_persistence = AsyncMock()
     result = await _get_member_display("not-a-uuid", async_persistence)
     assert result == "not-a-uuid"
+
+
+@pytest.mark.asyncio
+async def test_handle_party_command_kick_success():
+    """Party kick resolves target, verifies party membership, and kicks.
+
+    Issue #787: _handle_party_invite and _handle_party_kick share
+    _resolve_target_for_party_action; this exercises that shared helper's success path via
+    kick specifically (invite's success path is covered separately above).
+    """
+    player_id = uuid.uuid4()
+    target_id = uuid.uuid4()
+    request, container = _party_request(player_id)
+    kick_member_mock = MagicMock(return_value={"result": "Kicked Ally."})
+    container.party_service = MagicMock(
+        get_party_for_player=MagicMock(return_value=MagicMock(party_id="p1", member_ids=[target_id])),
+        is_leader=MagicMock(return_value=True),
+        kick_member=kick_member_mock,
+    )
+    container.player_service = MagicMock()
+
+    match = MagicMock(target_type=SchemaTargetType.PLAYER, target_id=target_id)
+    target_result = MagicMock(success=True, get_single_match=MagicMock(return_value=match))
+    resolver_instance = MagicMock(resolve_target=AsyncMock(return_value=target_result))
+
+    with patch("server.commands.party_commands.TargetResolutionService", return_value=resolver_instance):
+        result = await handle_party_command(
+            {"subcommand": "kick", "target": "Ally"},
+            {"username": "Leader"},
+            request,
+            None,
+            "Leader",
+        )
+
+    assert "Kicked Ally" in result["result"]
+    kick_member_mock.assert_called_once_with("p1", target_id, player_id)
+
+
+@pytest.mark.asyncio
+async def test_handle_party_command_invite_no_player_service():
+    """_resolve_target_for_party_action's 'player service unavailable' branch, via invite."""
+    request, container = _party_request()
+    container.party_service = MagicMock(
+        get_party_for_player=MagicMock(return_value=MagicMock(party_id="p1")),
+        is_leader=MagicMock(return_value=True),
+    )
+    del container.player_service  # getattr(container, "player_service", None) -> None
+
+    result = await handle_party_command(
+        {"subcommand": "invite", "target": "Ally"},
+        {"username": "Leader"},
+        request,
+        None,
+        "Leader",
+    )
+    assert result["result"] == "Party is not available."
+
+
+@pytest.mark.asyncio
+async def test_handle_party_command_kick_target_resolve_failed():
+    """_resolve_target_for_party_action's 'target resolve failed' branch, via kick.
+
+    Covers the shared helper's error path with kick's own caller context (invite's is
+    covered implicitly by its no-target-name test above using a different branch).
+    """
+    request, container = _party_request()
+    container.party_service = MagicMock(
+        get_party_for_player=MagicMock(return_value=MagicMock(party_id="p1")),
+        is_leader=MagicMock(return_value=True),
+    )
+    container.player_service = MagicMock()
+
+    target_result = MagicMock(success=False, error_message="No one by that name here.")
+    resolver_instance = MagicMock(resolve_target=AsyncMock(return_value=target_result))
+
+    with patch("server.commands.party_commands.TargetResolutionService", return_value=resolver_instance):
+        result = await handle_party_command(
+            {"subcommand": "kick", "target": "Ghost"},
+            {"username": "Leader"},
+            request,
+            None,
+            "Leader",
+        )
+
+    assert result["result"] == "No one by that name here."

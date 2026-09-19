@@ -119,6 +119,19 @@ def _validate_room_position_update(current_user: User | None, room_id: str, requ
     _validate_admin_room_action(current_user, room_id, request, AdminAction.UPDATE_ROOM_POSITION)
 
 
+def _validate_room_update_environment(update_data: RoomUpdateRequest, room_id: str) -> tuple[bool, str | None]:
+    """Resolve the requested environment change and reject an unknown environment value."""
+    set_environment = update_data.environment_is_set()
+    environment = update_data.environment if update_data.environment else None
+    if set_environment and environment is not None and environment not in ROOM_ENVIRONMENTS:
+        raise LoggedHTTPException(
+            status_code=422,
+            detail=f"Invalid environment: {environment}",
+            requested_room_id=room_id,
+        )
+    return set_environment, environment
+
+
 async def _update_room_position_in_db(
     session: AsyncSession, room_id: str, map_x: int, map_y: int, _request: Request
 ) -> None:
@@ -291,7 +304,7 @@ async def _delete_room_link_in_db(session: AsyncSession, from_room_id: str, dire
 # IMPORTANT: /list route must come BEFORE /{room_id} route
 # FastAPI matches routes in order, and /{room_id} would match /list otherwise
 @room_router.get("/list", response_model=RoomListResponse)
-async def list_rooms(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: API endpoint requires many query parameters and intermediate variables for room listing
+async def list_rooms(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: API endpoint requires many query parameters and intermediate variables for room listing  # lizard: allow nloc (multi-line Query() signature plus structured-log checkpoints, not branching; CCN 4, see #787)
     _request: Request,
     plane: str = Query(..., description="Plane name (required)"),
     zone: str = Query(..., description="Zone name (required)"),
@@ -376,7 +389,7 @@ class RoomPositionUpdate(SecureBaseModel):
 
 
 @room_router.post("/{room_id}/position", response_model=RoomPositionUpdateResponse)
-async def update_room_position(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: API endpoint requires many parameters for room position updates
+async def update_room_position(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: API endpoint requires many parameters for room position updates  # lizard: allow nloc (structured-log checkpoints around already-extracted DB/cache helpers, not branching; CCN 4, see #787)
     room_id: str,
     position_data: RoomPositionUpdate,
     _request: Request,
@@ -504,14 +517,7 @@ async def update_room(
                 requested_room_id=room_id,
             )
 
-        set_environment = update_data.environment_is_set()
-        environment = update_data.environment if update_data.environment else None
-        if set_environment and environment is not None and environment not in ROOM_ENVIRONMENTS:
-            raise LoggedHTTPException(
-                status_code=422,
-                detail=f"Invalid environment: {environment}",
-                requested_room_id=room_id,
-            )
+        set_environment, environment = _validate_room_update_environment(update_data, room_id)
 
         updated = await _update_room_properties_in_db(
             session, room_id, update_data.name, update_data.description, environment, set_environment

@@ -132,7 +132,41 @@ class PartyService:
         self._logger.info("Party created", party_id=party_id, leader_id=lid)
         return {"success": True, "result": "You have formed a new party.", "party_id": party_id}
 
-    def disband_party(self, party_id: str | None, by_player_id: uuid.UUID | str | None = None) -> dict[str, Any]:
+    def _notify_party_disbanded(self, member_ids: list[str], disbanded_by: str | None, leader_id: str) -> None:
+        """Schedule a removal notification for each member except the one who disbanded."""
+        for mid in member_ids:
+            if mid != disbanded_by:  # Don't notify the person who disbanded
+                self._schedule_notification(
+                    cast(
+                        Callable[[], Coroutine[Any, Any, None]],
+                        lambda m=mid, lid=leader_id: self._notify_player_removed_from_party(m, lid),
+                    )
+                )
+
+    def _resolve_disband_target(
+        self,
+        party_id: str | None,
+        pid: str | None,
+        # Reason: SERIALIZATION_BOUNDARY - matches disband_party's own command-result dict shape.
+        # Appropriate because: same unsuppressed dict[str, Any] convention used file-wide for
+        # these command-result payloads; a TypedDict is out of scope for this complexity extraction.
+    ) -> tuple[str | None, dict[str, Any] | None]:  # pyright: ignore[reportExplicitAny]
+        """Resolve the party id to disband, or an early-exit 'no such party' error result."""
+        if party_id is None and pid:
+            party_id = self._player_to_party.get(pid)
+        if not party_id or party_id not in self._parties:
+            return None, {"success": False, "result": "No such party."}
+        return party_id, None
+
+    def disband_party(
+        self,
+        party_id: str | None,
+        by_player_id: uuid.UUID | str | None = None,
+        # Reason: SERIALIZATION_BOUNDARY - this module's command-result dicts are shaped ad hoc
+        # (success/result/party_id keys vary by outcome), matching every sibling method's return.
+        # Appropriate because: same unsuppressed dict[str, Any] convention used file-wide for
+        # these command-result payloads; a TypedDict is out of scope for this complexity extraction.
+    ) -> dict[str, Any]:  # pyright: ignore[reportExplicitAny]
         """
         Disband a party. If by_player_id is given, only the leader may disband.
 
@@ -140,24 +174,16 @@ class PartyService:
         Returns success and result message.
         """
         pid = _str_id(by_player_id) if by_player_id else None
-        if party_id is None and pid:
-            party_id = self._player_to_party.get(pid)
-        if not party_id or party_id not in self._parties:
-            return {"success": False, "result": "No such party."}
+        party_id, error_result = self._resolve_disband_target(party_id, pid)
+        if error_result:
+            return error_result
+        assert party_id is not None
         party = self._parties[party_id]
         if by_player_id is not None and party.leader_id != pid:
             return {"success": False, "result": "Only the party leader can disband the party."}
         member_ids_snapshot = list(party.member_ids)
         leader_id = party.leader_id
-        # Notify all members except the one who disbanded (if any)
-        for mid in member_ids_snapshot:
-            if mid != pid:  # Don't notify the person who disbanded
-                self._schedule_notification(
-                    cast(
-                        Callable[[], Coroutine[Any, Any, None]],
-                        lambda m=mid, lid=leader_id: self._notify_player_removed_from_party(m, lid),
-                    )
-                )
+        self._notify_party_disbanded(member_ids_snapshot, pid, leader_id)
         for mid in party.member_ids:
             self._player_to_party.pop(mid, None)
         del self._parties[party_id]
@@ -514,13 +540,8 @@ class PartyService:
         pid_b = _str_id(player_id_b)
         return pid_b in party_a.member_ids
 
-    def on_player_disconnect(self, player_id: uuid.UUID | str) -> None:
-        """
-        Remove player from any party and disband if they were leader.
-        Cancel any pending invites where this player is inviter or target.
-        Call on session disconnect.
-        """
-        pid = _str_id(player_id)
+    def _cancel_pending_invites_for(self, pid: str) -> None:
+        """Cancel any pending invites where pid is the inviter or the target."""
         for invite_id, data in list(self._pending_invites.items()):
             if data.get("inviter_id") == pid or data.get("target_id") == pid:
                 self._pending_invites.pop(invite_id, None)
@@ -535,9 +556,9 @@ class PartyService:
                     invite_id=invite_id,
                     disconnected_id=pid,
                 )
-        party_id = self._player_to_party.pop(pid, None)
-        if party_id is None:
-            return
+
+    def _leave_party_on_disconnect(self, pid: str, party_id: str) -> None:
+        """Remove pid from their party, disbanding/cleaning up as needed."""
         party = self._parties.get(party_id)
         if not party:
             return
@@ -554,4 +575,16 @@ class PartyService:
             self._logger.debug("Party removed (empty after disconnect)", party_id=party_id)
         else:
             self._emit_party_updated(party_id, party.leader_id, list(party.member_ids), "member_left")
+
+    def on_player_disconnect(self, player_id: uuid.UUID | str) -> None:
+        """
+        Remove player from any party and disband if they were leader.
+        Cancel any pending invites where this player is inviter or target.
+        Call on session disconnect.
+        """
+        pid = _str_id(player_id)
+        self._cancel_pending_invites_for(pid)
+        party_id = self._player_to_party.pop(pid, None)
+        if party_id is not None:
+            self._leave_party_on_disconnect(pid, party_id)
         self._logger.debug("Cleaned up party state for disconnected player", player_id=pid)

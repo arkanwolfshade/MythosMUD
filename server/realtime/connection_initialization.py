@@ -11,7 +11,7 @@ from typing import Any
 
 from anyio import Lock
 
-from .errors.error_handler import ConnectionErrorHandler
+from .errors.error_handler import ConnectionErrorHandler, ConnectionErrorHandlerCallbacks
 from .integration.game_state_provider import GameStateProvider
 from .integration.room_event_handler import RoomEventHandler
 from .maintenance.connection_cleaner import ConnectionCleaner
@@ -127,18 +127,43 @@ def initialize_health_monitor(manager: Any) -> None:
     )
 
 
-def initialize_error_handler(manager: Any) -> None:
+# Reason: DYNAMIC_DISPATCH - manager is Any (this module's established, unsuppressed
+# convention for the ConnectionManager being initialized); every attribute pulled off it below
+# is therefore Any too.
+# Appropriate because: this file wires up ConnectionManager's sub-components before the manager
+# itself is fully typed here; a Protocol for it is out of scope for this complexity-only change.
+def initialize_error_handler(manager: Any) -> None:  # pyright: ignore[reportExplicitAny]
     """Initialize the error handler with required callbacks."""
     manager.error_handler = ConnectionErrorHandler(
-        force_disconnect_callback=manager.force_disconnect_player,
-        disconnect_connection_callback=manager.disconnect_connection_by_id,
-        cleanup_dead_connections_callback=manager.cleanup_dead_connections,
-        get_player_session_callback=manager.get_player_session,
-        get_session_connections_callback=manager.get_session_connections,
-        get_player_websockets=lambda pid: manager.player_websockets.get(pid, []),
-        get_online_players=lambda: manager.online_players,
-        get_session_connections=lambda: manager.session_connections,
-        get_player_sessions=lambda: manager.player_sessions,
+        ConnectionErrorHandlerCallbacks(
+            # Reason: DYNAMIC_DISPATCH - manager is Any per this function's own parameter above.
+            # Appropriate because: same unsuppressed convention as this function's own signature.
+            force_disconnect_callback=manager.force_disconnect_player,  # pyright: ignore[reportAny]
+            # Reason: DYNAMIC_DISPATCH - manager is Any per this function's own parameter above.
+            # Appropriate because: same unsuppressed convention as this function's own signature.
+            disconnect_connection_callback=manager.disconnect_connection_by_id,  # pyright: ignore[reportAny]
+            # Reason: DYNAMIC_DISPATCH - manager is Any per this function's own parameter above.
+            # Appropriate because: same unsuppressed convention as this function's own signature.
+            cleanup_dead_connections_callback=manager.cleanup_dead_connections,  # pyright: ignore[reportAny]
+            # Reason: DYNAMIC_DISPATCH - manager is Any per this function's own parameter above.
+            # Appropriate because: same unsuppressed convention as this function's own signature.
+            get_player_session_callback=manager.get_player_session,  # pyright: ignore[reportAny]
+            # Reason: DYNAMIC_DISPATCH - manager is Any per this function's own parameter above.
+            # Appropriate because: same unsuppressed convention as this function's own signature.
+            get_session_connections_callback=manager.get_session_connections,  # pyright: ignore[reportAny]
+            # Reason: DYNAMIC_DISPATCH - manager is Any per this function's own parameter above.
+            # Appropriate because: same unsuppressed convention as this function's own signature.
+            get_player_websockets=lambda pid: manager.player_websockets.get(pid, []),  # pyright: ignore[reportAny]
+            # Reason: DYNAMIC_DISPATCH - manager is Any per this function's own parameter above.
+            # Appropriate because: same unsuppressed convention as this function's own signature.
+            get_online_players=lambda: manager.online_players,  # pyright: ignore[reportAny]
+            # Reason: DYNAMIC_DISPATCH - manager is Any per this function's own parameter above.
+            # Appropriate because: same unsuppressed convention as this function's own signature.
+            get_session_connections=lambda: manager.session_connections,  # pyright: ignore[reportAny]
+            # Reason: DYNAMIC_DISPATCH - manager is Any per this function's own parameter above.
+            # Appropriate because: same unsuppressed convention as this function's own signature.
+            get_player_sessions=lambda: manager.player_sessions,  # pyright: ignore[reportAny]
+        )
     )
 
 

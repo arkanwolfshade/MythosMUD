@@ -1,11 +1,14 @@
 """Unit tests for admin teleport/goto command handlers."""
 
+# pyright: reportPrivateUsage=false
+
 from unittest.mock import AsyncMock, MagicMock, patch
 from uuid import UUID
 
 import pytest
 
 from server.commands.admin_teleport_commands import (
+    _log_failed_admin_move,
     handle_confirm_goto_command,
     handle_confirm_teleport_command,
     handle_goto_command,
@@ -707,3 +710,68 @@ async def test_handle_confirm_goto_context_error():
             "Admin",
         )
     assert result["result"] == "denied"
+
+
+def test_log_failed_admin_move_teleport_room_mapping():
+    """A 'teleport' moves the target: admin_room_id=to_room, target_room_id=from_room.
+
+    Issue #787: _log_failed_admin_move derives admin_room_id/target_room_id from
+    (action_type, from_room, to_room) instead of taking them as separate params
+    (which would have pushed its param count to 9, over the guard's limit of 8).
+    This is the logic the handler-level exception tests above mock past, so it
+    has no other direct coverage.
+    """
+    mock_log_action = MagicMock()
+    mock_admin_logger = MagicMock(log_teleport_action=mock_log_action)
+    with patch("server.commands.admin_teleport_commands.get_admin_actions_logger", return_value=mock_admin_logger):
+        _log_failed_admin_move(
+            admin_name="Admin",
+            target_player_name="Bob",
+            action_type="teleport",
+            from_room="room-bob",
+            to_room="room-admin",
+            error=ValueError("boom"),
+            direction="north",
+        )
+    mock_log_action.assert_called_once()
+    kwargs = mock_log_action.call_args.kwargs
+    assert kwargs["additional_data"] == {
+        "admin_room_id": "room-admin",
+        "target_room_id": "room-bob",
+        "direction": "north",
+    }
+
+
+def test_log_failed_admin_move_goto_room_mapping():
+    """A 'goto' moves the admin: admin_room_id=from_room, target_room_id=to_room."""
+    mock_log_action = MagicMock()
+    mock_admin_logger = MagicMock(log_teleport_action=mock_log_action)
+    with patch("server.commands.admin_teleport_commands.get_admin_actions_logger", return_value=mock_admin_logger):
+        _log_failed_admin_move(
+            admin_name="Admin",
+            target_player_name="Bob",
+            action_type="goto",
+            from_room="room-admin",
+            to_room="room-bob",
+            error=ValueError("boom"),
+        )
+    mock_log_action.assert_called_once()
+    kwargs = mock_log_action.call_args.kwargs
+    assert kwargs["additional_data"] == {
+        "admin_room_id": "room-admin",
+        "target_room_id": "room-bob",
+    }
+
+
+def test_log_failed_admin_move_swallows_logging_errors():
+    """A broken admin_logger must never surface as an exception to the caller."""
+    mock_admin_logger = MagicMock(log_teleport_action=MagicMock(side_effect=OSError("disk full")))
+    with patch("server.commands.admin_teleport_commands.get_admin_actions_logger", return_value=mock_admin_logger):
+        _log_failed_admin_move(
+            admin_name="Admin",
+            target_player_name="Bob",
+            action_type="teleport",
+            from_room="room-bob",
+            to_room="room-admin",
+            error=ValueError("boom"),
+        )  # no raise

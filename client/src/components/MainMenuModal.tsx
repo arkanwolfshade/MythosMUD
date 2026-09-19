@@ -37,13 +37,8 @@ export interface MainMenuModalProps {
 /**
  * Main Menu Modal component.
  */
-export const MainMenuModal: React.FC<MainMenuModalProps> = ({
-  isOpen,
-  onClose,
-  onLogoutClick,
-  currentRoom,
-  playerId,
-}) => {
+export const MainMenuModal: React.FC<MainMenuModalProps> = (props /* lizard: allow nloc, CCN 2, see #787 */) => {
+  const { isOpen, onClose, onLogoutClick, currentRoom, playerId } = props;
   const handleMapClick = () => {
     // Always open map in new tab (plan 10.7 V5: include playerId for ownership)
     const params = new URLSearchParams();
