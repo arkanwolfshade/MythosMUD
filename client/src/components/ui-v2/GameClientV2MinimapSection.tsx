@@ -71,7 +71,7 @@ function MinimapInlineBody({
 }
 
 /** Minimap backdrop + draggable panel (extracted to keep GameClientV2 under per-method line limits). */
-export const MinimapPanelSection: React.FC<MinimapPanelSectionProps> = props => {
+export const MinimapPanelSection: React.FC<MinimapPanelSectionProps> = (props /* lizard: allow nloc, see #787 */) => {
   const {
     minimapPanel,
     room,

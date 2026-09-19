@@ -4,7 +4,7 @@ import type { PanelState } from '../types';
 // Based on findings from "Spatial Organization in Non-Euclidean Interfaces" - Dr. Armitage, 1928
 // Hierarchy: chat + command are primary; auxiliary panels start minimized.
 
-export const createDefaultPanelLayout = (viewportWidth: number, viewportHeight: number): Record<string, PanelState> => {
+export const createDefaultPanelLayout = (viewportWidth: number, viewportHeight: number /* lizard: allow nloc */) => {
   const headerHeight = 48;
   const padding = 20;
   const columnWidth = (viewportWidth - padding * 4) / 3;
@@ -165,5 +165,5 @@ export const createDefaultPanelLayout = (viewportWidth: number, viewportHeight: 
       zIndex: 1008,
       minSize: { width: 220, height: 150 },
     },
-  };
+  } satisfies Record<string, PanelState>;
 };

@@ -14,7 +14,7 @@ from ..exceptions import ValidationError
 from ..models.container import ContainerComponent
 from ..models.player import Player
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.audit_logger import audit_logger
+from ..utils.audit_logger import ContainerInteractionEvent, audit_logger
 from ..utils.error_logging import log_and_raise
 from .container_service_access import ContainerAccessMixin
 from .container_service_helpers import (
@@ -104,16 +104,18 @@ class ContainerTransferToMixin(ContainerAccessMixin):  # pylint: disable=too-few
                 container.source_type.value if hasattr(container.source_type, "value") else str(container.source_type)
             )
             audit_logger.log_container_interaction(
-                player_id=str(player_id),
-                player_name=str(player.name),
-                container_id=str(container_id),
-                event_type="container_transfer",
-                source_type=source_type_value,
-                room_id=container.room_id,
-                direction="to_container",
-                item_id=item.get("item_id"),
-                item_name=item.get("item_name"),
-                success=True,
+                ContainerInteractionEvent(
+                    player_id=str(player_id),
+                    player_name=str(player.name),
+                    container_id=str(container_id),
+                    event_type="container_transfer",
+                    source_type=source_type_value,
+                    room_id=container.room_id,
+                    direction="to_container",
+                    item_id=item.get("item_id"),
+                    item_name=item.get("item_name"),
+                    success=True,
+                )
             )
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Audit logging errors unpredictable, must not fail container operation
             logger.warning("Failed to log container transfer to audit log", error=str(e))

@@ -10,7 +10,7 @@ for maintaining control over the eldritch entities that inhabit our world.
 
 # pylint: disable=too-many-lines  # Reason: NPC instance service requires extensive instance management logic for comprehensive NPC instance operations
 
-from typing import Any, cast
+from typing import Any
 
 from structlog.stdlib import BoundLogger
 
@@ -205,6 +205,45 @@ class NPCInstanceService:
             )
             raise
 
+    # Reason: SERIALIZATION_BOUNDARY - matches move_npc_instance's own established, unsuppressed
+    # dict[str, Any] return type below.
+    # Appropriate because: this is an ad hoc result dict with no fixed schema in this module.
+    def _check_npc_move_blocked_by_combat(self, npc_id: str, new_room_id: str) -> dict[str, Any] | None:  # pyright: ignore[reportExplicitAny]
+        """Return a failure result dict if the NPC is in combat, else None to allow the move."""
+        try:
+            from server.services.combat_service import get_combat_service
+
+            combat_service = get_combat_service()
+            if not (combat_service and combat_service.is_npc_in_combat_sync(npc_id)):
+                return None
+        except (ImportError, AttributeError, RuntimeError):
+            return None
+
+        npc_name = getattr(self.lifecycle_manager.active_npcs[npc_id], "name", "Unknown")
+        logger.info("NPC move blocked - NPC in combat", npc_id=npc_id, npc_name=npc_name, new_room_id=new_room_id)
+        return {"success": False, "npc_id": npc_id, "message": f"Cannot move {npc_name} while in combat."}
+
+    def _apply_npc_room_move(
+        self,
+        # Reason: DYNAMIC_DISPATCH - npc_instance is a duck-typed NPC object (this method predates
+        # a concrete NPC instance Protocol in this module).
+        # Appropriate because: matches this module's other getattr/hasattr-based NPC instance access.
+        npc_instance: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+        new_room_id: str,
+    ) -> None:
+        """Move the NPC to new_room_id via move_to_room(), or set current_room_id directly."""
+        # Note: This would need to be implemented in the NPC instance class
+        # For now, we'll simulate the move
+        # Reason: DYNAMIC_DISPATCH - npc_instance is Any per this function's own parameter above.
+        # Appropriate because: same unsuppressed convention as this function's own signature.
+        if hasattr(npc_instance, "move_to_room"):  # pyright: ignore[reportAny]
+            # Reason: DYNAMIC_DISPATCH - same untyped npc_instance convention as above.
+            # Appropriate because: same unsuppressed convention as this function's own signature.
+            _ = npc_instance.move_to_room(new_room_id)  # pyright: ignore[reportAny]
+        else:
+            # Update the room ID directly if move_to_room method doesn't exist
+            npc_instance.current_room_id = new_room_id
+
     async def move_npc_instance(
         self,
         npc_id: str,
@@ -231,40 +270,16 @@ class NPCInstanceService:
             if npc_id not in self.lifecycle_manager.active_npcs:
                 raise ValueError(f"NPC instance {npc_id} not found")
 
-            # Block movement while NPC is in combat (normal move equivalent)
-            try:
-                from server.services.combat_service import get_combat_service
-
-                combat_service = get_combat_service()
-                if combat_service and combat_service.is_npc_in_combat_sync(npc_id):
-                    npc_name = getattr(self.lifecycle_manager.active_npcs[npc_id], "name", "Unknown")
-                    logger.info(
-                        "NPC move blocked - NPC in combat",
-                        npc_id=npc_id,
-                        npc_name=npc_name,
-                        new_room_id=new_room_id,
-                    )
-                    return {
-                        "success": False,
-                        "npc_id": npc_id,
-                        "message": f"Cannot move {npc_name} while in combat.",
-                    }
-            except (ImportError, AttributeError, RuntimeError):
-                pass
+            combat_block_result = self._check_npc_move_blocked_by_combat(npc_id, new_room_id)
+            if combat_block_result is not None:
+                return combat_block_result
 
             # Get NPC info
             npc_instance = self.lifecycle_manager.active_npcs[npc_id]
             npc_name = getattr(npc_instance, "name", "Unknown")
             old_room_id = getattr(npc_instance, "current_room_id", "Unknown")
 
-            # Move the NPC
-            # Note: This would need to be implemented in the NPC instance class
-            # For now, we'll simulate the move
-            if hasattr(npc_instance, "move_to_room"):
-                _ = npc_instance.move_to_room(new_room_id)
-            else:
-                # Update the room ID directly if move_to_room method doesn't exist
-                cast(Any, npc_instance).current_room_id = new_room_id
+            self._apply_npc_room_move(npc_instance, new_room_id)
 
             logger.info(
                 "Moved NPC instance",

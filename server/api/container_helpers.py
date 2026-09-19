@@ -162,6 +162,25 @@ async def execute_transfer(
     )
 
 
+# (keywords to match in the lowercased error message, status code, detail message)
+_TRANSFER_SERVICE_ERROR_RULES: tuple[tuple[tuple[str, ...], int, str], ...] = (
+    (
+        ("stale", "token", "mutation"),
+        status.HTTP_412_PRECONDITION_FAILED,
+        "Stale mutation token. Please reopen the container.",
+    ),
+    (("invalid", "stack"), status.HTTP_400_BAD_REQUEST, "Invalid item stack"),
+)
+
+
+def _classify_transfer_service_error(error_str: str) -> tuple[int, str]:
+    """Map a ContainerServiceError message to (status_code, detail) for transfer_items."""
+    for keywords, status_code, detail in _TRANSFER_SERVICE_ERROR_RULES:
+        if any(keyword in error_str for keyword in keywords):
+            return status_code, detail
+    return status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to transfer items"
+
+
 def handle_container_service_error(
     e: ContainerServiceError,
     _request: Request,
@@ -185,26 +204,10 @@ def handle_container_service_error(
     container_id_str = (
         str(request_data.container_id) if request_data else (str(container_id) if container_id else "unknown")
     )
-    error_str = str(e).lower()
-    if "stale" in error_str or "token" in error_str or "mutation" in error_str:
-        raise LoggedHTTPException(
-            status_code=status.HTTP_412_PRECONDITION_FAILED,
-            detail="Stale mutation token. Please reopen the container.",
-            user_id=str(current_user.id) if current_user else None,
-            container_id=container_id_str,
-            operation="transfer_items",
-        ) from e
-    if "invalid" in error_str or "stack" in error_str:
-        raise LoggedHTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid item stack",
-            user_id=str(current_user.id) if current_user else None,
-            container_id=container_id_str,
-            operation="transfer_items",
-        ) from e
+    status_code, detail = _classify_transfer_service_error(str(e).lower())
     raise LoggedHTTPException(
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        detail="Failed to transfer items",
+        status_code=status_code,
+        detail=detail,
         user_id=str(current_user.id) if current_user else None,
         container_id=container_id_str,
         operation="transfer_items",

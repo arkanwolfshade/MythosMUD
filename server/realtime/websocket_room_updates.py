@@ -177,7 +177,7 @@ async def update_player_room_subscription(
     player.current_room_id = room_id
 
 
-async def broadcast_room_update(  # pylint: disable=too-many-locals,too-many-statements  # Reason: Broadcast flow needs room/fallback/connection state; splitting would obscure control flow. Many sequential steps (resolve manager, load room, occupants, build event, broadcast) exceed statement limit.
+async def broadcast_room_update(  # pylint: disable=too-many-locals,too-many-statements  # Reason: Broadcast flow needs room/fallback/connection state; splitting would obscure control flow. Many sequential steps (resolve manager, load room, occupants, build event, broadcast) exceed statement limit.  # lizard: allow ccn,nloc (sequential broadcast pipeline already reasoned about above; further splitting would obscure control flow across resolve/fallback/occupants/broadcast stages, see #787)
     player_id: str, room_id: str, connection_manager: "ConnectionManager | None" = None
 ) -> None:
     """

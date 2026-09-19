@@ -58,6 +58,91 @@ class CombatEventHandler:
             return str(npc_instance.name)
         return participant.name
 
+    async def _publish_player_attacked_event(
+        self,
+        # Reason: DYNAMIC_DISPATCH - combat_event_publisher is Any (getattr'd off
+        # self._combat_service, which is Any per this class's own established convention).
+        # Appropriate because: a Protocol for it is out of scope for this complexity-only extraction.
+        combat_event_publisher: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+        current_participant: CombatParticipant,
+        target: CombatParticipant,
+        attacker_name: str,
+        target_name: str,
+        damage: int,
+        combat: CombatInstance,
+    ) -> None:
+        """Publish player_attacked so the victim sees "X attacks you"."""
+        attack_event = PlayerAttackedEvent(
+            combat_id=combat.combat_id,
+            room_id=combat.room_id,
+            attacker_id=current_participant.participant_id,
+            attacker_name=attacker_name,
+            target_id=target.participant_id,
+            target_name=target_name,
+            damage=damage,
+            action_type="auto_attack",
+            target_current_dp=target.current_dp,  # Event field name kept for backward compatibility
+            target_max_dp=target.max_dp,  # Event field name kept for backward compatibility
+        )
+        # Reason: DYNAMIC_DISPATCH - combat_event_publisher is Any per this function's own parameter.
+        # Appropriate because: same unsuppressed convention as this function's own signature.
+        await combat_event_publisher.publish_player_attacked(attack_event)  # pyright: ignore[reportAny]
+
+    async def _publish_npc_attacked_event(
+        self,
+        # Reason: DYNAMIC_DISPATCH - combat_event_publisher is Any per this class's established
+        # convention (see _publish_player_attacked_event above).
+        # Appropriate because: same unsuppressed convention as this class's other publisher access.
+        combat_event_publisher: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+        current_participant: CombatParticipant,
+        target: CombatParticipant,
+        attacker_name: str,
+        target_name: str,
+        damage: int,
+        combat: CombatInstance,
+    ) -> None:
+        """Publish npc_attacked for the room when a player attacks an NPC."""
+        npc_attack_event = NPCAttackedEvent(
+            combat_id=combat.combat_id,
+            room_id=combat.room_id,
+            attacker_id=current_participant.participant_id,
+            attacker_name=attacker_name,
+            npc_id=target.participant_id,
+            npc_name=target_name,
+            damage=damage,
+            action_type="auto_attack",
+            target_current_dp=target.current_dp,  # Event field name kept for backward compatibility
+            target_max_dp=target.max_dp,  # Event field name kept for backward compatibility
+        )
+        # Reason: DYNAMIC_DISPATCH - combat_event_publisher is Any per this function's own parameter.
+        # Appropriate because: same unsuppressed convention as this function's own signature.
+        await combat_event_publisher.publish_npc_attacked(npc_attack_event)  # pyright: ignore[reportAny]
+
+    async def _publish_npc_took_damage_event(
+        self,
+        # Reason: DYNAMIC_DISPATCH - combat_event_publisher is Any per this class's established
+        # convention (see _publish_player_attacked_event above).
+        # Appropriate because: same unsuppressed convention as this class's other publisher access.
+        combat_event_publisher: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+        target: CombatParticipant,
+        target_name: str,
+        damage: int,
+        combat: CombatInstance,
+    ) -> None:
+        """Publish npc_took_damage for the room's NPC health display."""
+        damage_event = NPCTookDamageEvent(
+            combat_id=combat.combat_id,
+            room_id=combat.room_id,
+            npc_id=target.participant_id,
+            npc_name=target_name,
+            damage=damage,
+            current_dp=target.current_dp,  # Event field name kept for backward compatibility
+            max_dp=target.max_dp,  # Event field name kept for backward compatibility
+        )
+        # Reason: DYNAMIC_DISPATCH - combat_event_publisher is Any per this function's own parameter.
+        # Appropriate because: same unsuppressed convention as this function's own signature.
+        await combat_event_publisher.publish_npc_took_damage(damage_event)  # pyright: ignore[reportAny]
+
     async def _publish_attack_events(
         self,
         current_participant: CombatParticipant,
@@ -82,49 +167,20 @@ class CombatEventHandler:
 
         # When the target is a player, always publish player_attacked so the victim sees "X attacks you"
         if target.participant_type == CombatParticipantType.PLAYER:
-            attack_event = PlayerAttackedEvent(
-                combat_id=combat.combat_id,
-                room_id=combat.room_id,
-                attacker_id=current_participant.participant_id,
-                attacker_name=attacker_name,
-                target_id=target.participant_id,
-                target_name=target_name,
-                damage=damage,
-                action_type="auto_attack",
-                target_current_dp=target.current_dp,  # Event field name kept for backward compatibility
-                target_max_dp=target.max_dp,  # Event field name kept for backward compatibility
+            await self._publish_player_attacked_event(
+                combat_event_publisher, current_participant, target, attacker_name, target_name, damage, combat
             )
-            await combat_event_publisher.publish_player_attacked(attack_event)
         elif (
             current_participant.participant_type == CombatParticipantType.PLAYER
             and target.participant_type == CombatParticipantType.NPC
         ):
             # Player attacked NPC - publish npc_attacked for room
-            npc_attack_event = NPCAttackedEvent(
-                combat_id=combat.combat_id,
-                room_id=combat.room_id,
-                attacker_id=current_participant.participant_id,
-                attacker_name=attacker_name,
-                npc_id=target.participant_id,
-                npc_name=target_name,
-                damage=damage,
-                action_type="auto_attack",
-                target_current_dp=target.current_dp,  # Event field name kept for backward compatibility
-                target_max_dp=target.max_dp,  # Event field name kept for backward compatibility
+            await self._publish_npc_attacked_event(
+                combat_event_publisher, current_participant, target, attacker_name, target_name, damage, combat
             )
-            await combat_event_publisher.publish_npc_attacked(npc_attack_event)
 
         if target.participant_type == CombatParticipantType.NPC:
-            damage_event = NPCTookDamageEvent(
-                combat_id=combat.combat_id,
-                room_id=combat.room_id,
-                npc_id=target.participant_id,
-                npc_name=target_name,
-                damage=damage,
-                current_dp=target.current_dp,  # Event field name kept for backward compatibility
-                max_dp=target.max_dp,  # Event field name kept for backward compatibility
-            )
-            await combat_event_publisher.publish_npc_took_damage(damage_event)
+            await self._publish_npc_took_damage_event(combat_event_publisher, target, target_name, damage, combat)
 
     async def handle_attack_events_and_xp(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Attack event handling requires many parameters for context and event processing
         self,

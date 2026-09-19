@@ -144,56 +144,31 @@ class PlayerCreationService:
         # Convert to schema format
         return cast(PlayerRead, await self._schema_converter.convert_player_to_schema(player))
 
-    async def create_player_with_stats(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Player creation requires many parameters for stats and configuration
-        self,
-        name: str,
-        stats: Stats,
-        profession_id: int = 0,
-        starting_room_id: str = "earth_arkhamcity_sanitarium_room_foyer_001",
-        user_id: uuid.UUID | None = None,
-        start_in_tutorial: bool = True,
-    ) -> PlayerRead:
-        """
-        Create a new player character with specific stats.
-
-        Args:
-            name: The player's name
-            stats: The player's stats
-            profession_id: The profession ID for the character (default: 0 for Tramp)
-            starting_room_id: The room ID where the player starts
-            user_id: Optional user ID (will be generated if not provided)
-
-        Returns:
-            PlayerRead: The created player data
-
-        Raises:
-            ValueError: If player name already exists
-        """
-        logger.info(
-            "Creating new player with stats",
-            name=name,
-            profession_id=profession_id,
-            starting_room_id=starting_room_id,
-            user_id=user_id,
+    async def _check_character_limit(self, user_id: uuid.UUID) -> None:
+        """Reject character creation once a user has 3 active characters."""
+        # Reason: SERIALIZATION_BOUNDARY - self.persistence is Any per this class's own
+        # established, unsuppressed convention.
+        # Appropriate because: same unsuppressed convention as this class's other persistence
+        # calls; a Protocol for it is out of scope for this complexity-only extraction.
+        raw_active_characters = await self.persistence.get_active_players_by_user_id(  # pyright: ignore[reportAny]
+            str(user_id)
         )
+        active_characters = cast(list[object], raw_active_characters)
+        if len(active_characters) >= 3:
+            logger.warning("Character creation failed - character limit reached", user_id=user_id)
+            log_and_raise_enhanced(
+                ValidationError,
+                "Character limit reached",
+                user_id=str(user_id),
+                operation="create_player_with_stats",
+                active_character_count=len(active_characters),
+                details={"user_id": str(user_id), "active_character_count": len(active_characters)},
+                user_friendly="You have reached the maximum number of characters (3). Please delete a character to create a new one.",
+            )
 
-        # MULTI-CHARACTER: Check character limit if user_id is provided
-        if user_id is not None:
-            active_characters = await self.persistence.get_active_players_by_user_id(str(user_id))
-            if len(active_characters) >= 3:
-                logger.warning("Character creation failed - character limit reached", user_id=user_id)
-                log_and_raise_enhanced(
-                    ValidationError,
-                    "Character limit reached",
-                    user_id=str(user_id),
-                    operation="create_player_with_stats",
-                    active_character_count=len(active_characters),
-                    details={"user_id": str(user_id), "active_character_count": len(active_characters)},
-                    user_friendly="You have reached the maximum number of characters (3). Please delete a character to create a new one.",
-                )
-
-        # MULTI-CHARACTER: Check if character name already exists (case-insensitive, active characters only)
-        # get_player_by_name now excludes deleted characters and uses case-insensitive comparison
+    async def _check_name_available(self, name: str) -> None:
+        """Reject character creation if the (case-insensitive) name is already taken."""
+        # get_player_by_name excludes deleted characters and uses case-insensitive comparison
         existing_player = await self.persistence.get_player_by_name(name)
         if existing_player:
             logger.warning("Character creation failed - name already exists", name=name)
@@ -206,11 +181,17 @@ class PlayerCreationService:
                 user_friendly="A character with this name already exists (names are case-insensitive)",
             )
 
-        # Generate user_id if not provided
-        if user_id is None:
-            user_id = uuid.uuid4()
-            logger.debug("Generated user_id for new player")
-
+    def _build_new_player(
+        self,
+        *,
+        name: str,
+        stats: Stats,
+        profession_id: int,
+        starting_room_id: str,
+        user_id: uuid.UUID,
+        start_in_tutorial: bool,
+    ) -> Player:
+        """Construct a new Player row (stats, tutorial placement, JSONB defaults) ready to save."""
         # Use naive UTC datetime for PostgreSQL TIMESTAMP WITHOUT TIME ZONE compatibility
         from datetime import UTC
 
@@ -250,6 +231,62 @@ class PlayerCreationService:
             player.set_inventory([])
         if not getattr(player, "status_effects", None):
             player.set_status_effects([])
+
+        return player
+
+    async def create_player_with_stats(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Player creation requires many parameters for stats and configuration
+        self,
+        name: str,
+        stats: Stats,
+        profession_id: int = 0,
+        starting_room_id: str = "earth_arkhamcity_sanitarium_room_foyer_001",
+        user_id: uuid.UUID | None = None,
+        start_in_tutorial: bool = True,
+    ) -> PlayerRead:
+        """
+        Create a new player character with specific stats.
+
+        Args:
+            name: The player's name
+            stats: The player's stats
+            profession_id: The profession ID for the character (default: 0 for Tramp)
+            starting_room_id: The room ID where the player starts
+            user_id: Optional user ID (will be generated if not provided)
+
+        Returns:
+            PlayerRead: The created player data
+
+        Raises:
+            ValueError: If player name already exists
+        """
+        logger.info(
+            "Creating new player with stats",
+            name=name,
+            profession_id=profession_id,
+            starting_room_id=starting_room_id,
+            user_id=user_id,
+        )
+
+        # MULTI-CHARACTER: Check character limit if user_id is provided
+        if user_id is not None:
+            await self._check_character_limit(user_id)
+
+        # MULTI-CHARACTER: Check if character name already exists (case-insensitive, active characters only)
+        await self._check_name_available(name)
+
+        # Generate user_id if not provided
+        if user_id is None:
+            user_id = uuid.uuid4()
+            logger.debug("Generated user_id for new player")
+
+        player = self._build_new_player(
+            name=name,
+            stats=stats,
+            profession_id=profession_id,
+            starting_room_id=starting_room_id,
+            user_id=user_id,
+            start_in_tutorial=start_in_tutorial,
+        )
 
         # Save player to persistence
         await self.persistence.save_player(player)

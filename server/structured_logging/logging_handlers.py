@@ -187,6 +187,58 @@ def _aggregator_handler_class_for_windows(win_base: type[RotatingFileHandler]) -
     return cast(type[RotatingFileHandler], created)
 
 
+def _resolve_aggregator_handler_class() -> type[RotatingFileHandler]:
+    """Pick the Windows-safe, directory-safe handler class when available, else a safe fallback."""
+    # Use Windows-safe rotation handlers when available
+    _WinSafeHandler: type[RotatingFileHandler] = RotatingFileHandler
+    try:
+        from server.structured_logging.windows_safe_rotation import (
+            WindowsSafeRotatingFileHandler as _ImportedWinSafeHandler,
+        )
+
+        _WinSafeHandler = _ImportedWinSafeHandler
+    except ImportError:  # Optional enhancement - fallback to standard handler if not available
+        _WinSafeHandler = RotatingFileHandler
+
+    # Use SafeRotatingFileHandler as base for all handlers
+    _BaseHandler = SafeRotatingFileHandler
+
+    try:
+        if sys.platform == "win32":
+            # Windows-safe handler also needs directory safety
+            return _aggregator_handler_class_for_windows(_WinSafeHandler)
+    except ImportError:
+        pass  # Fallback to safe handler on any detection error
+    return _BaseHandler
+
+
+def _instantiate_aggregator_handler(
+    handler_class: type[RotatingFileHandler], log_path: Path, max_bytes: int, backup_count: int
+) -> RotatingFileHandler:
+    """Create the handler, recreating the log directory and retrying once if it's missing."""
+    # Ensure directory exists right before creating handler to prevent race conditions
+    ensure_log_directory(log_path)
+    try:
+        return handler_class(log_path, maxBytes=max_bytes, backupCount=backup_count, encoding="utf-8")
+    except (FileNotFoundError, OSError):
+        # If directory doesn't exist or was deleted, recreate it and try again
+        ensure_log_directory(log_path)
+        return handler_class(log_path, maxBytes=max_bytes, backupCount=backup_count, encoding="utf-8")
+
+
+def _build_aggregator_formatter(player_service: object | None) -> logging.Formatter:
+    """Build the aggregator log formatter, using PlayerGuidFormatter when a player_service is given.
+
+    Note: Using %(message)s only since structlog already includes all metadata (timestamp,
+    logger name, level) in the rendered message. Adding %(asctime)s - %(name)s - %(levelname)s
+    would cause duplication.
+    """
+    if player_service is None:
+        return logging.Formatter("%(message)s", datefmt=None)
+    PlayerGuidFormatter = load_player_guid_formatter_class()
+    return PlayerGuidFormatter(player_service=player_service, fmt="%(message)s", datefmt=None)
+
+
 def create_aggregator_handler(
     log_path: Path,
     log_level: int,
@@ -211,49 +263,8 @@ def create_aggregator_handler(
     Returns:
         Configured RotatingFileHandler instance
     """
-    # Use Windows-safe rotation handlers when available
-    _WinSafeHandler: type[RotatingFileHandler] = RotatingFileHandler
-    try:
-        from server.structured_logging.windows_safe_rotation import (
-            WindowsSafeRotatingFileHandler as _ImportedWinSafeHandler,
-        )
-
-        _WinSafeHandler = _ImportedWinSafeHandler
-    except ImportError:  # Optional enhancement - fallback to standard handler if not available
-        _WinSafeHandler = RotatingFileHandler
-
-    # Use SafeRotatingFileHandler as base for all handlers
-    _BaseHandler = SafeRotatingFileHandler
-
-    # Determine handler class with Windows safety
-    handler_class: type[RotatingFileHandler] = _BaseHandler
-    try:
-        if sys.platform == "win32":
-            # Windows-safe handler also needs directory safety
-            handler_class = _aggregator_handler_class_for_windows(_WinSafeHandler)
-    except ImportError:
-        # Fallback to safe handler on any detection error
-        handler_class = _BaseHandler
-
-    # Ensure directory exists right before creating handler to prevent race conditions
-    ensure_log_directory(log_path)
-    try:
-        handler = handler_class(
-            log_path,
-            maxBytes=max_bytes,
-            backupCount=backup_count,
-            encoding="utf-8",
-        )
-    except (FileNotFoundError, OSError):
-        # If directory doesn't exist or was deleted, recreate it and try again
-        ensure_log_directory(log_path)
-        handler = handler_class(
-            log_path,
-            maxBytes=max_bytes,
-            backupCount=backup_count,
-            encoding="utf-8",
-        )
-
+    handler_class = _resolve_aggregator_handler_class()
+    handler = _instantiate_aggregator_handler(handler_class, log_path, max_bytes, backup_count)
     handler.setLevel(log_level)
 
     # Add filter for warnings handler to exclude ERROR and CRITICAL
@@ -262,22 +273,5 @@ def create_aggregator_handler(
         handler.addFilter(WarningOnlyFilter())
         handler.addFilter(AsyncioConnLostWriteFilter())
 
-    # Create formatter - use PlayerGuidFormatter if player_service is available
-    # Note: Using %(message)s only since structlog already includes all metadata (timestamp, logger name, level)
-    # in the rendered message. Adding %(asctime)s - %(name)s - %(levelname)s would cause duplication.
-    formatter: logging.Formatter
-    if player_service is not None:
-        PlayerGuidFormatter = load_player_guid_formatter_class()
-        formatter = PlayerGuidFormatter(
-            player_service=player_service,
-            fmt="%(message)s",
-            datefmt=None,
-        )
-    else:
-        formatter = logging.Formatter(
-            "%(message)s",
-            datefmt=None,
-        )
-    handler.setFormatter(formatter)
-
+    handler.setFormatter(_build_aggregator_formatter(player_service))
     return handler

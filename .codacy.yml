@@ -444,6 +444,56 @@ ignore_patterns:
     file_paths:
       - "server/commands/admin_teleport_commands.py"
     reason: "Sequential admin-command validation guard clauses; see file header note, issue #787."
+  # Lizard NLOC: rooms.py's list_rooms and update_room_position are low-CCN (4) FastAPI
+  # endpoints whose length comes from a multi-line Query()/Depends() signature and structured
+  # log checkpoints wrapped around already-extracted DB/cache helper calls. Splitting further
+  # would fragment into single-call wrapper functions. See issue #787 Wave 2.
+  - pattern_id: "Lizard_nloc-medium"
+    file_paths:
+      - "server/api/rooms.py"
+    reason: "Query-param-heavy, log-dense FastAPI endpoints; see file header note, issue #787."
+  # Lizard NLOC: broadcast_room_update is a sequential broadcast pipeline (resolve manager,
+  # load room with fallback, gather occupants, build event, broadcast) already documented via
+  # its own pylint too-many-statements override as intentionally not split further, since doing
+  # so would obscure the control flow across stages. See issue #787 Wave 3.
+  - pattern_id: "Lizard_nloc-medium"
+    file_paths:
+      - "server/realtime/websocket_room_updates.py"
+    reason: "Sequential room-update broadcast pipeline; see file header note, issue #787."
+  # Lizard NLOC: user_manager.py's is_player_muted is a low-CCN (8) mute-check function carrying
+  # dense structured debug-log checkpoints, the same shape as message_filtering.py's mute-check
+  # functions above. See issue #787 Wave 3.
+  - pattern_id: "Lizard_nloc-medium"
+    file_paths:
+      - "server/services/user_manager.py"
+    reason: "Debug-log-dense, low-CCN mute-check function; see file header note, issue #787."
+  # Lizard NLOC: createDefaultPanelLayout is a pure data literal (CCN 1) building the default
+  # three-column panel layout; splitting it would fragment one cohesive literal into speculative
+  # single-caller helpers. See issue #787 Wave 4.
+  - pattern_id: "Lizard_nloc-medium"
+    file_paths:
+      - "client/src/components/ui-v2/utils/panelLayout.ts"
+    reason: "Pure data literal (CCN 1); see file header note, issue #787."
+  # Lizard NLOC: MainMenuModal is a low-CCN (2) modal shell; length comes from static JSX
+  # (menu buttons), not branching. See issue #787 Wave 4.
+  - pattern_id: "Lizard_nloc-medium"
+    file_paths:
+      - "client/src/components/MainMenuModal.tsx"
+    reason: "JSX-heavy modal shell, low CCN; see file header note, issue #787."
+  # Lizard NLOC: MinimapPanelSection is a low-CCN (1) backdrop + draggable panel shell, extracted
+  # from GameClientV2 specifically to keep that file under its own per-method limits; further
+  # splitting would fragment one cohesive panel section. See issue #787 Wave 4.
+  - pattern_id: "Lizard_nloc-medium"
+    file_paths:
+      - "client/src/components/ui-v2/GameClientV2MinimapSection.tsx"
+    reason: "JSX-heavy panel shell, CCN 1; see file header note, issue #787."
+  # Lizard NLOC: RoomMapEditor is a low-CCN (6) editor shell, JSX-heavy. Lizard's TSX reader also
+  # misattributes its start line to the closing brace of the preceding RoomMapEditorLoadedView
+  # (same class of parser quirk as EldritchEffectsDemo.tsx above). See issue #787 Wave 4.
+  - pattern_id: "Lizard_nloc-medium"
+    file_paths:
+      - "client/src/components/map/RoomMapEditorRuntime.tsx"
+    reason: "JSX-heavy editor shell, low CCN; see file header note, issue #787."
   # Pylint R0801 duplicate-code: thin shared patterns across cohesive modules; extraction
   # would create speculative single-use helpers (ponytail / fragmentation rules).
   - pattern_id: "PyLintPython3_R0801"

@@ -124,7 +124,7 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
         mastery_modifier = 1.0 + (mastery / 100.0)
         return await self._dispatch_effect(spell, target, caster_id, mastery_modifier)
 
-    async def _dispatch_effect(
+    async def _dispatch_effect(  # lizard: allow ccn (exhaustive match/case over SpellEffectType, one delegating line per case; assert_never enforces exhaustiveness, see #787)
         self,
         spell: Spell,
         target: TargetMatch,

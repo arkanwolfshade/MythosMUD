@@ -10,6 +10,7 @@ permissions, and user state tracking for the chat system.
 import asyncio
 import json
 import uuid
+from collections.abc import Sequence
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Literal, cast
@@ -260,6 +261,60 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
 
         return False
 
+    @staticmethod
+    def _build_mute_info(
+        muter_id_uuid: uuid.UUID,
+        muter_name: str,
+        target_id_uuid: uuid.UUID,
+        target_name: str,
+        duration_minutes: int | None,
+        reason: str,
+    ) -> dict[str, object]:
+        """Build the stored mute record (UUID objects; converted to str only for JSON)."""
+        expiry_time = None
+        if duration_minutes:
+            expiry_time = datetime.now(UTC) + timedelta(minutes=duration_minutes)
+        return {
+            "target_id": target_id_uuid,  # Store as UUID object
+            "target_name": target_name,
+            "muted_by": muter_id_uuid,  # Store as UUID object
+            "muted_by_name": muter_name,
+            "muted_at": datetime.now(UTC),
+            "expires_at": expiry_time,
+            "reason": reason,
+            "is_permanent": duration_minutes is None,
+        }
+
+    def _log_mute_applied(
+        self,
+        muter_id_uuid: uuid.UUID,
+        muter_name: str,
+        target_id_uuid: uuid.UUID,
+        target_name: str,
+        duration_minutes: int | None,
+        reason: str,
+    ) -> None:
+        """Log the applied mute to the chat log and structured logger."""
+        # Log the mute for AI processing (chat_logger may expect strings)
+        self.chat_logger.log_player_muted(
+            muter_id=str(muter_id_uuid),  # chat_logger may expect strings
+            target_id=str(target_id_uuid),  # chat_logger may expect strings
+            target_name=target_name,
+            mute_type="player",
+            duration_minutes=duration_minutes,
+            reason=reason,
+        )
+        logger.info(
+            "Player muted another player",
+            # Structlog handles UUID objects automatically, no need to convert to string
+            muter_id=muter_id_uuid,
+            muter_name=muter_name,
+            target_id=target_id_uuid,
+            target_name=target_name,
+            duration_minutes=duration_minutes,
+            reason=reason,
+        )
+
     def mute_player(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Player muting requires many parameters for context and mute operations
         self,
         muter_id: uuid.UUID | str,
@@ -297,45 +352,11 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             if muter_id_uuid not in self._player_mutes:
                 self._player_mutes[muter_id_uuid] = {}
 
-            # Calculate mute expiry
-            expiry_time = None
-            if duration_minutes:
-                expiry_time = datetime.now(UTC) + timedelta(minutes=duration_minutes)
-
-            # Store mute information (use UUID objects - convert to string only for JSON serialization)
-            mute_info: dict[str, object] = {
-                "target_id": target_id_uuid,  # Store as UUID object
-                "target_name": target_name,
-                "muted_by": muter_id_uuid,  # Store as UUID object
-                "muted_by_name": muter_name,
-                "muted_at": datetime.now(UTC),
-                "expires_at": expiry_time,
-                "reason": reason,
-                "is_permanent": duration_minutes is None,
-            }
-
-            self._player_mutes[muter_id_uuid][target_id_uuid] = mute_info
-
-            # Log the mute for AI processing (chat_logger may expect strings)
-            self.chat_logger.log_player_muted(
-                muter_id=str(muter_id_uuid),  # chat_logger may expect strings
-                target_id=str(target_id_uuid),  # chat_logger may expect strings
-                target_name=target_name,
-                mute_type="player",
-                duration_minutes=duration_minutes,
-                reason=reason,
+            self._player_mutes[muter_id_uuid][target_id_uuid] = self._build_mute_info(
+                muter_id_uuid, muter_name, target_id_uuid, target_name, duration_minutes, reason
             )
 
-            logger.info(
-                "Player muted another player",
-                # Structlog handles UUID objects automatically, no need to convert to string
-                muter_id=muter_id_uuid,
-                muter_name=muter_name,
-                target_id=target_id_uuid,
-                target_name=target_name,
-                duration_minutes=duration_minutes,
-                reason=reason,
-            )
+            self._log_mute_applied(muter_id_uuid, muter_name, target_id_uuid, target_name, duration_minutes, reason)
 
             # Save mute data for both players
             _ = self.save_player_mutes(muter_id_uuid)
@@ -723,7 +744,9 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             return "expired"
         return "active"
 
-    def is_player_muted(self, player_id: uuid.UUID | str, target_id: uuid.UUID | str) -> bool:
+    def is_player_muted(  # lizard: allow nloc (structured debug-log checkpoints, not branching; CCN 8, see #787)
+        self, player_id: uuid.UUID | str, target_id: uuid.UUID | str
+    ) -> bool:
         """
         Check if a player has muted another player.
 
@@ -1428,6 +1451,37 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             logger.error("Error in async mute loading", player_id=player_id, error=str(e))
             return False
 
+    def _filter_players_needing_mute_load(self, player_ids: list[uuid.UUID | str]) -> list[uuid.UUID | str]:
+        """Return the subset of player_ids whose cached mute data is missing or stale."""
+        players_to_load: list[uuid.UUID | str] = []
+        for pid in player_ids:
+            try:
+                pid_uuid = self._normalize_to_uuid(pid)
+                if not self._is_cache_valid(pid_uuid):
+                    players_to_load.append(pid)
+            except (ValueError, TypeError):
+                # Invalid UUID, include in load list to handle error
+                players_to_load.append(pid)
+        return players_to_load
+
+    @staticmethod
+    def _build_mute_batch_result(players_to_load: list[uuid.UUID | str], results: Sequence[object]) -> dict[str, bool]:
+        """Build {player_id_str: success} from asyncio.gather(..., return_exceptions=True) results."""
+        result_dict: dict[str, bool] = {}
+        for i, player_id in enumerate(players_to_load):
+            player_id_str = str(player_id)  # Convert to string for dictionary key
+            if isinstance(results[i], Exception):
+                logger.error(
+                    "Error loading mute data in batch",
+                    # Structlog handles UUID objects automatically, no need to convert to string
+                    player_id=player_id,
+                    error=str(results[i]),
+                )
+                result_dict[player_id_str] = False
+            else:
+                result_dict[player_id_str] = bool(results[i])
+        return result_dict
+
     async def load_player_mutes_batch(self, player_ids: list[uuid.UUID | str]) -> dict[str, bool]:
         """
         Batch load mute data for multiple players concurrently.
@@ -1441,16 +1495,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
         AI: Loads mute data for all players concurrently using asyncio.gather,
             significantly improving performance when loading multiple players.
         """
-        # Filter out players with valid cache (normalize to UUID first)
-        players_to_load: list[uuid.UUID | str] = []
-        for pid in player_ids:
-            try:
-                pid_uuid = self._normalize_to_uuid(pid)
-                if not self._is_cache_valid(pid_uuid):
-                    players_to_load.append(pid)
-            except (ValueError, TypeError):
-                # Invalid UUID, include in load list to handle error
-                players_to_load.append(pid)
+        players_to_load = self._filter_players_needing_mute_load(player_ids)
 
         if not players_to_load:
             logger.debug("All players have valid cached mute data", total_players=len(player_ids))
@@ -1471,20 +1516,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             return_exceptions=True,
         )
 
-        # Build result dictionary (convert UUIDs to strings for dictionary keys)
-        result_dict: dict[str, bool] = {}
-        for i, player_id in enumerate(players_to_load):
-            player_id_str = str(player_id)  # Convert to string for dictionary key
-            if isinstance(results[i], Exception):
-                logger.error(
-                    "Error loading mute data in batch",
-                    # Structlog handles UUID objects automatically, no need to convert to string
-                    player_id=player_id,
-                    error=str(results[i]),
-                )
-                result_dict[player_id_str] = False
-            else:
-                result_dict[player_id_str] = bool(results[i])
+        result_dict = self._build_mute_batch_result(players_to_load, results)
 
         # Add cached players (convert UUIDs to strings for dictionary keys)
         for player_id in player_ids:

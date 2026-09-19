@@ -295,7 +295,7 @@ function RoomMapEditorLoadedView({ data, editing, selection, modals, onRecalcula
       />
     </div>
   );
-}
+} // lizard: allow nloc (RoomMapEditor below; lizard's TSX reader attributes its start to this line, see #787)
 
 export function RoomMapEditor(props: RoomMapEditorProps) {
   const data = useRoomMapEditorData(props);

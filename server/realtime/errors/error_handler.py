@@ -14,6 +14,7 @@ Error handling is now a focused, independently testable component.
 import json
 import uuid
 from collections.abc import Callable
+from dataclasses import dataclass
 from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
@@ -24,6 +25,27 @@ if TYPE_CHECKING:
     from collections.abc import Awaitable
 
 logger = get_logger(__name__)
+
+
+@dataclass(frozen=True)
+class ConnectionErrorHandlerCallbacks:
+    """Bundles the connection-manager callbacks a ConnectionErrorHandler needs."""
+
+    force_disconnect_callback: Callable[[uuid.UUID], "Awaitable[None]"]
+    disconnect_connection_callback: Callable[[str], "Awaitable[bool]"]
+    # Reason: SERIALIZATION_BOUNDARY - matches this class's own pre-existing, unsuppressed
+    # dict[str, Any] callback-return-type convention (moved here from __init__'s own signature).
+    # Appropriate because: cleanup results are ad hoc dicts with no fixed schema in this module.
+    cleanup_dead_connections_callback: Callable[[uuid.UUID], "Awaitable[dict[str, Any]]"]  # pyright: ignore[reportExplicitAny]
+    get_player_session_callback: Callable[[uuid.UUID], str | None]
+    get_session_connections_callback: Callable[[str], list[str]]
+    get_player_websockets: Callable[[uuid.UUID], list[str]]
+    # Reason: SERIALIZATION_BOUNDARY - same pre-existing dict[str, Any] convention as above.
+    # Appropriate because: same unsuppressed convention, moved verbatim from __init__'s signature.
+    get_online_players: Callable[[], dict[uuid.UUID, dict[str, Any]]]  # pyright: ignore[reportExplicitAny]
+    get_session_connections: Callable[[], dict[str, list[str]]]
+    get_player_sessions: Callable[[], dict[uuid.UUID, str]]
+
 
 # Fatal error types that require immediate disconnection
 FATAL_ERROR_TYPES = [
@@ -57,41 +79,98 @@ class ConnectionErrorHandler:
     AI Agent: Single Responsibility - Error handling and recovery only.
     """
 
-    def __init__(
-        self,
-        force_disconnect_callback: Callable[[uuid.UUID], "Awaitable[None]"],
-        disconnect_connection_callback: Callable[[str], "Awaitable[bool]"],
-        cleanup_dead_connections_callback: Callable[[uuid.UUID], "Awaitable[dict[str, Any]]"],
-        get_player_session_callback: Callable[[uuid.UUID], str | None],
-        get_session_connections_callback: Callable[[str], list[str]],
-        get_player_websockets: Callable[[uuid.UUID], list[str]],
-        get_online_players: Callable[[], dict[uuid.UUID, dict[str, Any]]],
-        get_session_connections: Callable[[], dict[str, list[str]]],
-        get_player_sessions: Callable[[], dict[uuid.UUID, str]],
-    ) -> None:
+    def __init__(self, callbacks: ConnectionErrorHandlerCallbacks) -> None:
         """
         Initialize the error handler.
 
         Args:
-            force_disconnect_callback: Callback to force disconnect a player
-            disconnect_connection_callback: Callback to disconnect a specific connection
-            cleanup_dead_connections_callback: Callback to clean up dead connections
-            get_player_session_callback: Callback to get player's current session
-            get_session_connections_callback: Callback to get connections for a session
-            get_player_websockets: Callback to get WebSocket connections for a player
-            get_online_players: Callback to get online players dictionary
-            get_session_connections: Callback to get session connections dictionary
-            get_player_sessions: Callback to get player sessions dictionary
+            callbacks: Bundled connection-manager callbacks this handler needs (disconnect,
+                cleanup, and session/connection lookups).
         """
-        self.force_disconnect = force_disconnect_callback
-        self.disconnect_connection = disconnect_connection_callback
-        self.cleanup_dead_connections = cleanup_dead_connections_callback
-        self.get_player_session = get_player_session_callback
-        self.get_session_connections = get_session_connections_callback
-        self.get_player_websockets = get_player_websockets
-        self.get_online_players = get_online_players
-        self.get_session_connections_dict = get_session_connections
-        self.get_player_sessions = get_player_sessions
+        self.force_disconnect = callbacks.force_disconnect_callback
+        self.disconnect_connection = callbacks.disconnect_connection_callback
+        self.cleanup_dead_connections = callbacks.cleanup_dead_connections_callback
+        self.get_player_session = callbacks.get_player_session_callback
+        self.get_session_connections = callbacks.get_session_connections_callback
+        self.get_player_websockets = callbacks.get_player_websockets
+        self.get_online_players = callbacks.get_online_players
+        self.get_session_connections_dict = callbacks.get_session_connections
+        self.get_player_sessions = callbacks.get_player_sessions
+
+    def _write_error_log_entry(
+        self,
+        player_id: uuid.UUID,
+        error_type: str,
+        error_details: str,
+        connection_id: str | None,
+        websocket_connections: int,
+        current_session: str | None,
+        session_connections: list[str],
+    ) -> None:
+        """Append one JSON error record to the dedicated connection_errors.log file."""
+        error_log_entry = {
+            "timestamp": datetime.now().isoformat(),
+            "player_id": str(player_id),
+            "error_type": error_type,
+            "error_details": error_details,
+            "connection_id": connection_id,
+            "connections": {
+                "websocket_count": websocket_connections,
+                "total_connections": websocket_connections,
+                "online": player_id in self.get_online_players(),
+                "current_session": current_session,
+                "session_connections": len(session_connections),
+            },
+        }
+
+        config = get_config()
+        # pylint: disable=no-member  # Pydantic FieldInfo dynamic attributes
+        log_base = config.logging.log_base
+        environment = config.logging.environment
+
+        resolved_log_base = _resolve_log_base(log_base)
+        error_log_path = resolved_log_base / environment / "connection_errors.log"
+        error_log_path.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(error_log_path, "a", encoding="utf-8") as f:  # pylint: disable=unspecified-encoding  # Reason: Explicit UTF-8 encoding for log file
+            _ = f.write(json.dumps(error_log_entry) + "\n")
+
+    async def _terminate_connections_for_error(
+        self,
+        # Reason: SERIALIZATION_BOUNDARY - error_results is dict[str, Any], matching this class's
+        # own established, unsuppressed convention (see detect_and_handle_error_state below).
+        # Appropriate because: this is an ad hoc results dict with no fixed schema in this module.
+        error_results: dict[str, Any],  # pyright: ignore[reportExplicitAny]
+        player_id: uuid.UUID,
+        connection_id: str | None,
+        total_connections: int,
+    ) -> None:
+        """Fatal errors disconnect the whole player; connection-specific errors drop just that
+        connection; anything else keeps all connections alive. Mutates error_results in place."""
+        if error_results["fatal_error"]:
+            logger.error("FATAL ERROR: Terminating all connections for player", player_id=player_id)
+            await self.force_disconnect(player_id)
+            error_results["connections_terminated"] = total_connections
+            error_results["connections_kept"] = 0
+        elif connection_id:
+            logger.warning(
+                "Connection-specific error: Terminating connection",
+                connection_id=connection_id,
+                player_id=player_id,
+            )
+            if await self.disconnect_connection(connection_id):
+                error_results["connections_terminated"] = 1
+                error_results["connections_kept"] = total_connections - 1
+            else:
+                # Reason: SERIALIZATION_BOUNDARY - error_results["errors"] is Any per this dict's
+                # dict[str, Any] convention.
+                # Appropriate because: same unsuppressed convention as this function's parameter.
+                error_results["errors"].append(f"Failed to disconnect connection {connection_id}")  # pyright: ignore[reportAny]
+                error_results["connections_kept"] = total_connections
+        else:
+            logger.warning("Non-critical error: Keeping all connections alive for player", player_id=player_id)
+            error_results["connections_terminated"] = 0
+            error_results["connections_kept"] = total_connections
 
     async def detect_and_handle_error_state(
         self, player_id: uuid.UUID, error_type: str, error_details: str, connection_id: str | None = None
@@ -128,75 +207,22 @@ class ConnectionErrorHandler:
                 error_details=error_details,
             )
 
-            # Get detailed connection information
-            websocket_connections = len(self.get_player_websockets(player_id))
-            total_connections = websocket_connections
-
-            # Get session information
+            total_connections = len(self.get_player_websockets(player_id))
             current_session = self.get_player_session(player_id)
             session_connections = self.get_session_connections(current_session) if current_session else []
 
-            # Log the error state to a dedicated error log file
-            error_log_entry = {
-                "timestamp": datetime.now().isoformat(),
-                "player_id": str(player_id),
-                "error_type": error_type,
-                "error_details": error_details,
-                "connection_id": connection_id,
-                "connections": {
-                    "websocket_count": websocket_connections,
-                    "total_connections": total_connections,
-                    "online": player_id in self.get_online_players(),
-                    "current_session": current_session,
-                    "session_connections": len(session_connections),
-                },
-            }
+            self._write_error_log_entry(
+                player_id,
+                error_type,
+                error_details,
+                connection_id,
+                total_connections,
+                current_session,
+                session_connections,
+            )
 
-            # Write to error log file using proper logging configuration
-            config = get_config()
-            # pylint: disable=no-member  # Pydantic FieldInfo dynamic attributes
-            log_base = config.logging.log_base
-            environment = config.logging.environment
-
-            resolved_log_base = _resolve_log_base(log_base)
-            error_log_path = resolved_log_base / environment / "connection_errors.log"
-            error_log_path.parent.mkdir(parents=True, exist_ok=True)
-
-            with open(error_log_path, "a", encoding="utf-8") as f:  # pylint: disable=unspecified-encoding  # Reason: Explicit UTF-8 encoding for log file
-                f.write(json.dumps(error_log_entry) + "\n")
-
-            # Determine if this is a fatal error
             error_results["fatal_error"] = error_type in FATAL_ERROR_TYPES
-
-            if error_results["fatal_error"]:
-                logger.error("FATAL ERROR: Terminating all connections for player", player_id=player_id)
-
-                # Terminate all connections for the player
-                await self.force_disconnect(player_id)
-                error_results["connections_terminated"] = total_connections
-                error_results["connections_kept"] = 0
-
-            elif connection_id:
-                # Handle connection-specific error (non-fatal)
-                logger.warning(
-                    "Connection-specific error: Terminating connection",
-                    connection_id=connection_id,
-                    player_id=player_id,
-                )
-
-                # Try to disconnect the specific connection
-                if await self.disconnect_connection(connection_id):
-                    error_results["connections_terminated"] = 1
-                    error_results["connections_kept"] = total_connections - 1
-                else:
-                    error_results["errors"].append(f"Failed to disconnect connection {connection_id}")
-                    error_results["connections_kept"] = total_connections
-
-            else:
-                # Non-fatal error, keep all connections alive
-                logger.warning("Non-critical error: Keeping all connections alive for player", player_id=player_id)
-                error_results["connections_terminated"] = 0
-                error_results["connections_kept"] = total_connections
+            await self._terminate_connections_for_error(error_results, player_id, connection_id, total_connections)
 
             error_results["success"] = True
             logger.info("Error handling completed for player", player_id=player_id, error_results=error_results)

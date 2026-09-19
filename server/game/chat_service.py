@@ -280,17 +280,7 @@ class ChatService:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
         Returns:
             Dictionary with success status and message details
         """
-        return await send_local_message_helper(
-            player_id,
-            message,
-            cast(ChatPlayerService, cast(object, self.player_service)),
-            self.user_manager,
-            cast(ChatRateLimiter, cast(object, self.rate_limiter)),
-            self._room_messages,
-            self._max_messages_per_room,
-            self.nats_service,
-            self.subject_manager,
-        )
+        return await send_local_message_helper(player_id, message, self._chat_send_services())
 
     async def send_global_message(self, player_id: uuid.UUID | str, message: str) -> dict[str, object]:
         """
@@ -503,12 +493,7 @@ class ChatService:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
         return await send_predefined_emote_helper(
             player_id,
             emote_command,
-            cast(ChatPlayerService, cast(object, self.player_service)),
-            self.user_manager,
-            cast(ChatRateLimiter, cast(object, self.rate_limiter)),
-            cast(ChatLogger, cast(object, self.chat_logger)),
-            self.nats_service,
-            self.subject_manager,
+            self._chat_send_services(),
             cast(ChatEmoteService | None, self.emote_service),
         )
 

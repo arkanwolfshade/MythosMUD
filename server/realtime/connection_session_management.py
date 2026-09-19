@@ -180,6 +180,28 @@ def _cleanup_player_data_for_session(player_id: uuid.UUID, manager: _SessionConn
     _ = manager.room_manager.remove_player_from_all_rooms(str(player_id))
 
 
+async def _migrate_player_to_new_session(
+    player_id: uuid.UUID,
+    new_session_id: str,
+    manager: _SessionConnectionManager,
+    session_results: NewGameSessionResult,
+) -> None:
+    """Disconnect the player's existing connections and rebind session tracking to the new session."""
+    if player_id in manager.player_websockets:
+        connection_ids = manager.player_websockets[player_id].copy()
+        session_results["websocket_connections"] = len(connection_ids)
+        session_results["connections_disconnected"] = await _disconnect_all_connections_for_session(
+            connection_ids, player_id, manager
+        )
+
+    _cleanup_old_session_tracking(player_id, manager)
+
+    manager.player_sessions[player_id] = new_session_id
+    manager.session_connections[new_session_id] = []
+
+    _cleanup_player_data_for_session(player_id, manager)
+
+
 async def handle_new_game_session_impl(
     player_id: uuid.UUID,
     new_session_id: str,
@@ -230,19 +252,7 @@ async def handle_new_game_session_impl(
         if current_session is not None:
             session_results["previous_session_id"] = current_session
 
-        if player_id in manager.player_websockets:
-            connection_ids = manager.player_websockets[player_id].copy()
-            session_results["websocket_connections"] = len(connection_ids)
-            session_results["connections_disconnected"] = await _disconnect_all_connections_for_session(
-                connection_ids, player_id, manager
-            )
-
-        _cleanup_old_session_tracking(player_id, manager)
-
-        manager.player_sessions[player_id] = new_session_id
-        manager.session_connections[new_session_id] = []
-
-        _cleanup_player_data_for_session(player_id, manager)
+        await _migrate_player_to_new_session(player_id, new_session_id, manager, session_results)
 
         session_results["success"] = True
         logger.info(

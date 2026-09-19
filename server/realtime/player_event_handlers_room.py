@@ -269,6 +269,29 @@ class PlayerRoomEventHandler:
                     del room_data[key]
         return room_data
 
+    def _resolve_room_for_update(self, room_id: str) -> _NamedRoom | None:
+        """Look up a room via async_persistence, returning None if unavailable or not found."""
+        if not self.connection_manager or not self.connection_manager.async_persistence:
+            return None
+        return self.connection_manager.async_persistence.get_room_by_id(room_id)
+
+    async def _build_room_update_data(
+        self, player_id: uuid.UUID | str, room: _NamedRoom, room_id: str, include_occupants: bool
+    ) -> tuple[JsonMap, list[str]]:
+        """Prepare room_data (with occupants merged in if requested) and the occupant name list."""
+        occupants_info = await self.occupant_manager.get_room_occupants(
+            room_id, ensure_player_included=player_id if include_occupants else None
+        )
+        occupants_snap, occupants_data = _snapshot_payload(self.utils, occupants_info)
+        occupant_names = [str(name) for name in self.utils.extract_occupant_names(occupants_snap)]
+        room_data = await self._prepare_room_data(room, room_id)
+        if include_occupants:
+            room_data["players"] = occupants_data.get("players", [])
+            room_data["npcs"] = occupants_data.get("npcs", [])
+            room_data["occupants"] = occupants_data.get("occupants", [])
+            room_data["occupant_count"] = occupants_data.get("count", 0)
+        return room_data, occupant_names
+
     async def send_room_update_to_player(
         self, player_id: uuid.UUID | str, room_id: str, include_occupants: bool = False
     ) -> None:
@@ -288,25 +311,11 @@ class PlayerRoomEventHandler:
 
         player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
         try:
-            room = (
-                self.connection_manager.async_persistence.get_room_by_id(room_id)
-                if self.connection_manager.async_persistence
-                else None
-            )
+            room = self._resolve_room_for_update(room_id)
             if not room:
                 return
 
-            occupants_info = await self.occupant_manager.get_room_occupants(
-                room_id, ensure_player_included=player_id if include_occupants else None
-            )
-            occupants_snap, occupants_data = _snapshot_payload(self.utils, occupants_info)
-            occupant_names = [str(name) for name in self.utils.extract_occupant_names(occupants_snap)]
-            room_data = await self._prepare_room_data(room, room_id)
-            if include_occupants:
-                room_data["players"] = occupants_data.get("players", [])
-                room_data["npcs"] = occupants_data.get("npcs", [])
-                room_data["occupants"] = occupants_data.get("occupants", [])
-                room_data["occupant_count"] = occupants_data.get("count", 0)
+            room_data, occupant_names = await self._build_room_update_data(player_id, room, room_id, include_occupants)
             room_update_event = _as_map(self.message_builder.build_room_update_message(room_id, room_data))
             await self.connection_manager.send_personal_message(player_id_uuid, room_update_event)
             if include_occupants:

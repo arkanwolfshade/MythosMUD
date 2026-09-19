@@ -15,7 +15,7 @@ import asyncio
 import time
 import uuid
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from anyio import sleep
 
@@ -80,6 +80,54 @@ class HealthMonitor:
 
         self._health_check_task: Any | None = None
 
+    async def _check_single_websocket_health(
+        self,
+        player_id: uuid.UUID,
+        connection_id: str,
+        websocket: "WebSocket | None",
+        # Reason: SERIALIZATION_BOUNDARY - health_status is dict[str, Any], matching this class's
+        # own established, unsuppressed convention (see check_player_connection_health below).
+        # Appropriate because: this is an ad hoc status dict with no fixed schema in this module.
+        health_status: dict[str, Any],  # pyright: ignore[reportExplicitAny]
+    ) -> None:
+        """Check one WebSocket's health, updating health_status in place and cleaning up if dead."""
+        # Guard against None websocket (can happen during cleanup/race conditions).
+        if websocket is None:
+            return
+        try:
+            # Check WebSocket health by checking its state
+            if websocket.client_state.name == "CONNECTED":
+                health_status["websocket_healthy"] += 1
+            else:
+                raise ConnectionError("WebSocket not connected")
+        except (RuntimeError, ConnectionError, AttributeError) as e:
+            logger.error(
+                "WebSocket health check failed",
+                player_id=player_id,
+                connection_id=connection_id,
+                error=str(e),
+                error_type=type(e).__name__,
+            )
+            health_status["websocket_unhealthy"] += 1
+            # Clean up unhealthy connection
+            await self.cleanup_dead_websocket(player_id, connection_id)
+
+    # Reason: SERIALIZATION_BOUNDARY - health_status is dict[str, Any], matching this class's own
+    # established, unsuppressed convention (see check_player_connection_health below).
+    # Appropriate because: same unsuppressed convention as _check_single_websocket_health above.
+    def _determine_overall_health(self, health_status: dict[str, Any]) -> str:  # pyright: ignore[reportExplicitAny]
+        """Classify overall connection health from healthy/unhealthy websocket counts."""
+        total_healthy = cast(int, health_status["websocket_healthy"])
+        total_connections = total_healthy + cast(int, health_status["websocket_unhealthy"])
+
+        if not total_connections:
+            return "no_connections"
+        if not health_status["websocket_unhealthy"]:
+            return "healthy"
+        if total_healthy > 0:
+            return "degraded"
+        return "unhealthy"
+
     async def check_player_connection_health(
         self,
         player_id: uuid.UUID,
@@ -104,49 +152,16 @@ class HealthMonitor:
             "overall_health": "unknown",
         }
 
-        try:  # pylint: disable=too-many-nested-blocks  # Reason: Health monitoring requires complex nested logic for connection validation, health status checks, and metrics collection
-            # Check WebSocket connections
+        try:
             if player_id in player_websockets:
                 connection_ids = player_websockets[player_id].copy()
                 for connection_id in connection_ids:
                     if connection_id in active_websockets:
-                        websocket = active_websockets[connection_id]
-                        # Guard against None websocket (can happen during cleanup)
-                        # Type annotation says dict[str, WebSocket], but runtime can have None
-                        # values during cleanup/race conditions. This is defensive programming.
-                        if websocket is None:
-                            continue  # type: ignore[unreachable]  # Reason: Type annotation says dict[str, WebSocket], but runtime can have None values during cleanup/race conditions, mypy cannot verify this defensive check
-                        try:
-                            # Check WebSocket health by checking its state
-                            if websocket.client_state.name == "CONNECTED":
-                                health_status["websocket_healthy"] += 1
-                            else:
-                                raise ConnectionError("WebSocket not connected")
-                        except (RuntimeError, ConnectionError, AttributeError) as e:
-                            logger.error(
-                                "WebSocket health check failed",
-                                player_id=player_id,
-                                connection_id=connection_id,
-                                error=str(e),
-                                error_type=type(e).__name__,
-                            )
-                            health_status["websocket_unhealthy"] += 1
-                            # Clean up unhealthy connection
-                            await self.cleanup_dead_websocket(player_id, connection_id)
+                        await self._check_single_websocket_health(
+                            player_id, connection_id, active_websockets[connection_id], health_status
+                        )
 
-            # Determine overall health
-            total_healthy = health_status["websocket_healthy"]
-            total_connections = total_healthy + health_status["websocket_unhealthy"]
-
-            if not total_connections:
-                health_status["overall_health"] = "no_connections"
-            elif not health_status["websocket_unhealthy"]:
-                health_status["overall_health"] = "healthy"
-            elif total_healthy > 0:
-                health_status["overall_health"] = "degraded"
-            else:
-                health_status["overall_health"] = "unhealthy"
-
+            health_status["overall_health"] = self._determine_overall_health(health_status)
             return health_status
 
         except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors in health monitoring

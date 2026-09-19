@@ -83,16 +83,8 @@ function getCreateCharacterErrorMessage(rawData: unknown): string | null {
   return null;
 }
 
-export const CharacterNameScreen: React.FC<CharacterNameScreenProps> = ({
-  stats,
-  profession,
-  skillsPayload,
-  baseUrl,
-  authToken,
-  onComplete,
-  onError,
-  onBack,
-}) => {
+export const CharacterNameScreen: React.FC<CharacterNameScreenProps> = props => {
+  const { stats, profession, skillsPayload, baseUrl, authToken, onComplete, onError, onBack } = props;
   const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);

@@ -419,6 +419,17 @@ class NATSService(NATSServicePoolMixin):  # pylint: disable=too-many-instance-at
         )
         logger.info("Health monitoring started", interval_seconds=health_check_interval)
 
+    async def _force_cancel_pending_tasks(self, pending: set[asyncio.Task[None]]) -> None:
+        """Force-cancel stragglers left after the initial cancellation wait, best-effort."""
+        for task in pending:
+            if not task.done():
+                _ = task.cancel()
+        # Give them a brief moment to cancel
+        try:
+            _ = await asyncio.wait_for(asyncio.gather(*pending, return_exceptions=True), timeout=0.5)
+        except (TimeoutError, Exception):  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Task cancellation errors unpredictable, must abandon remaining tasks on any error during shutdown
+            pass  # Abandon remaining tasks
+
     async def _cancel_background_tasks(self) -> None:
         """
         Cancel all tracked background tasks for proper cleanup.
@@ -442,17 +453,8 @@ class NATSService(NATSServicePoolMixin):  # pylint: disable=too-many-instance-at
                 _done, pending = await asyncio.wait(
                     self._background_tasks, timeout=2.0, return_when=asyncio.ALL_COMPLETED
                 )
-
-                # Force cancel any remaining tasks
                 if pending:
-                    for task in pending:
-                        if not task.done():
-                            _ = task.cancel()
-                    # Give them a brief moment to cancel
-                    try:
-                        _ = await asyncio.wait_for(asyncio.gather(*pending, return_exceptions=True), timeout=0.5)
-                    except (TimeoutError, Exception):  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Task cancellation errors unpredictable, must abandon remaining tasks on any error during shutdown
-                        pass  # Abandon remaining tasks
+                    await self._force_cancel_pending_tasks(pending)
 
             except (RuntimeError, asyncio.CancelledError) as e:
                 logger.debug("Error during background task cancellation", error=str(e))

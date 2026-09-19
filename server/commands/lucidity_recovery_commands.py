@@ -117,17 +117,56 @@ def _format_recovery_success_message(action_code: str, delta: int, new_total: in
     return {"result": f"{narrative}{mp_message}\n{lore_note}"}
 
 
+# Reason: DYNAMIC_DISPATCH - app/app.state.container are untyped FastAPI app-state objects,
+# matching this module's established, unsuppressed Any convention (see _run_recovery_session,
+# _restore_mp_for_action below).
+# Appropriate because: app.state is a loosely-shaped dependency-injection container throughout
+# this codebase; a Protocol for it is out of scope for this complexity-only extraction.
+def _resolve_catatonia_observer(app: Any) -> Any | None:  # pyright: ignore[reportAny, reportExplicitAny]
+    """Resolve the catatonia observer from the app's container, falling back to app.state."""
+    if not app:
+        return None
+    # Reason: DYNAMIC_DISPATCH - app.state is Any per this function's own parameter above.
+    # Appropriate because: same unsuppressed convention as this function's own signature.
+    if hasattr(app.state, "container") and app.state.container:  # pyright: ignore[reportAny]
+        # Reason: DYNAMIC_DISPATCH - app.state.container is Any per this function's own parameter.
+        # Appropriate because: same unsuppressed convention as this function's own signature.
+        return app.state.container.catatonia_registry  # pyright: ignore[reportAny]
+    # Reason: DYNAMIC_DISPATCH - app.state is Any per this function's own parameter above.
+    # Appropriate because: same unsuppressed convention as this function's own signature.
+    return getattr(app.state, "catatonia_registry", None)  # pyright: ignore[reportAny]
+
+
+# Reason: DYNAMIC_DISPATCH - service/player are untyped domain objects, matching this module's
+# established, unsuppressed Any convention.
+# Appropriate because: same unsuppressed convention as _run_recovery_session's own parameters.
+async def _handle_recovery_cooldown_error(
+    service: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+    # Reason: DYNAMIC_DISPATCH - same untyped domain-object convention as service above.
+    # Appropriate because: same unsuppressed convention as this function's own service parameter.
+    player: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+    action_code: str,
+) -> dict[str, str]:
+    """Build the player-facing message for a recovery action still on cooldown."""
+    # Reason: DYNAMIC_DISPATCH - service/player are Any per this function's own parameters above.
+    # Appropriate because: same unsuppressed convention as this function's own signature.
+    cooldown = await service.get_action_cooldown(player.player_id, action_code)  # pyright: ignore[reportAny]
+    # Reason: DYNAMIC_DISPATCH - cooldown is Any from the untyped service call above.
+    # Appropriate because: same unsuppressed convention as this function's own signature.
+    if cooldown and cooldown.cooldown_expires_at:  # pyright: ignore[reportAny]
+        # Reason: DYNAMIC_DISPATCH - cooldown.cooldown_expires_at is Any per the same lookup.
+        # Appropriate because: same unsuppressed convention as this function's own signature.
+        return _format_cooldown_message(cooldown.cooldown_expires_at)  # pyright: ignore[reportAny]
+    return {"result": "The ritual pathways are still resonating; patience is required."}
+
+
 async def _run_recovery_session(
     app: Any,
     player: Any,
     room_id: str,
     action_code: str,
 ) -> dict[str, str]:
-    catatonia_observer = None
-    if app and hasattr(app.state, "container") and app.state.container:
-        catatonia_observer = app.state.container.catatonia_registry
-    elif app:
-        catatonia_observer = getattr(app.state, "catatonia_registry", None)
+    catatonia_observer = _resolve_catatonia_observer(app)
 
     async for session in get_async_session():
         service = ActiveLucidityService(session, catatonia_observer=catatonia_observer)
@@ -140,10 +179,7 @@ async def _run_recovery_session(
             await session.commit()
         except LucidityActionOnCooldownError:
             await session.rollback()
-            cooldown = await service.get_action_cooldown(player.player_id, action_code)
-            if cooldown and cooldown.cooldown_expires_at:
-                return _format_cooldown_message(cooldown.cooldown_expires_at)
-            return {"result": "The ritual pathways are still resonating; patience is required."}
+            return await _handle_recovery_cooldown_error(service, player, action_code)
         except UnknownLucidityActionError:
             await session.rollback()
             return {"result": "That rite is uncharted in the Pnakotic addenda. Choose a known discipline."}
