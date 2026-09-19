@@ -42,13 +42,17 @@ class _PlayerServiceLike(Protocol):
     names only the one method _build_client_player_data actually calls.
     """
 
-    async def convert_player_to_schema(self, player: object) -> object: ...
+    async def convert_player_to_schema(self, player: object) -> object:
+        """Convert a Player model to its client-facing schema representation."""
+        ...
 
 
 class _AsyncPersistenceLike(Protocol):
     """Minimal duck-type for the async persistence layer's player lookup."""
 
-    async def get_player_by_id(self, player_id: uuid.UUID) -> object: ...
+    async def get_player_by_id(self, player_id: uuid.UUID) -> object:
+        """Look up a player by UUID, returning None if not found."""
+        ...
 
 
 def _call_dynamic_method(obj: object, method_name: str, **kwargs: object) -> dict[str, object]:
@@ -191,13 +195,8 @@ class GameStateProvider:
         return npc_names
 
     @staticmethod
-    def _resolve_raw_player_name(player_obj: object) -> str | None:
-        """Get player_obj.name, falling back to its related User's username/display_name."""
-        player_name = getattr(player_obj, "name", None)
-        if player_name and isinstance(player_name, str) and player_name.strip():
-            return player_name
-        if not hasattr(player_obj, "user"):
-            return None
+    def _resolve_user_fallback_name(player_obj: object) -> str | None:
+        """Get the related User's username/display_name, tolerating missing/broken user attrs."""
         try:
             user: object = getattr(player_obj, "user", None)
             if user:
@@ -208,6 +207,16 @@ class GameStateProvider:
             # and we must gracefully fallback if user attributes are unavailable
             logger.debug("Failed to access user attributes, using fallback", exc_info=e)
         return None
+
+    @staticmethod
+    def _resolve_raw_player_name(player_obj: object) -> str | None:
+        """Get player_obj.name, falling back to its related User's username/display_name."""
+        player_name = getattr(player_obj, "name", None)
+        if player_name and isinstance(player_name, str) and player_name.strip():
+            return player_name
+        if not hasattr(player_obj, "user"):
+            return None
+        return GameStateProvider._resolve_user_fallback_name(player_obj)
 
     @staticmethod
     def _looks_like_uuid(candidate: str) -> bool:

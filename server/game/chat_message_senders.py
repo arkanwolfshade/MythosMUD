@@ -264,7 +264,7 @@ async def send_predefined_emote(
         return {"success": False, "error": f"Unknown emote: {emote_command}"}
 
     player, room_id, auth_error = await _authorize_emote_sender(player_id, ctx)
-    if auth_error or player is None or room_id is None:
+    if player is None or room_id is None:
         return auth_error or {"success": False, "error": "Player not found"}
 
     built = _build_and_log_emote_message(player, player_id, room_id, emote_command, emote_service, ctx)

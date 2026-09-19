@@ -143,6 +143,21 @@ class PartyService:
                     )
                 )
 
+    def _resolve_disband_target(
+        self,
+        party_id: str | None,
+        pid: str | None,
+        # Reason: SERIALIZATION_BOUNDARY - matches disband_party's own command-result dict shape.
+        # Appropriate because: same unsuppressed dict[str, Any] convention used file-wide for
+        # these command-result payloads; a TypedDict is out of scope for this complexity extraction.
+    ) -> tuple[str | None, dict[str, Any] | None]:  # pyright: ignore[reportExplicitAny]
+        """Resolve the party id to disband, or an early-exit 'no such party' error result."""
+        if party_id is None and pid:
+            party_id = self._player_to_party.get(pid)
+        if not party_id or party_id not in self._parties:
+            return None, {"success": False, "result": "No such party."}
+        return party_id, None
+
     def disband_party(
         self,
         party_id: str | None,
@@ -159,10 +174,10 @@ class PartyService:
         Returns success and result message.
         """
         pid = _str_id(by_player_id) if by_player_id else None
-        if party_id is None and pid:
-            party_id = self._player_to_party.get(pid)
-        if not party_id or party_id not in self._parties:
-            return {"success": False, "result": "No such party."}
+        party_id, error_result = self._resolve_disband_target(party_id, pid)
+        if error_result:
+            return error_result
+        assert party_id is not None
         party = self._parties[party_id]
         if by_player_id is not None and party.leader_id != pid:
             return {"success": False, "result": "Only the party leader can disband the party."}
