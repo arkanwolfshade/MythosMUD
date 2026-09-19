@@ -77,13 +77,56 @@ async def execute_goto_teleport(  # pylint: disable=too-many-arguments,too-many-
     original_room_id = current_player.current_room_id
     target_room_id = target_player.current_room_id
 
-    # Update admin player's location
+    success, admin_player_info = await _relocate_admin_player_for_goto(
+        player_service, connection_manager, player_name, original_room_id, target_room_id, persistence
+    )
+    if not success:
+        return {"result": f"Failed to teleport to {target_player_name}: database update failed."}
+
+    await _announce_goto_teleport(
+        connection_manager, admin_player_info, player_name, target_player_name, original_room_id, target_room_id
+    )
+
+    logger.info(
+        "Goto executed successfully",
+        player_name=player_name,
+        target_player_name=target_player_name,
+        target_room_id=target_room_id,
+    )
+    return {"result": f"You teleport to {target_player_name}'s location."}
+
+
+async def _relocate_admin_player_for_goto(
+    # Reason: DYNAMIC_DISPATCH - player_service/connection_manager/room ids are Any throughout
+    # this module's existing, unsuppressed goto helpers (validate_goto_context, resolve_goto_target).
+    # Appropriate because: mirrors execute_goto_teleport's own identical, unsuppressed parameter
+    # shape above; introducing Protocols for these objects is out of scope for this extraction.
+    player_service: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+    # Reason: DYNAMIC_DISPATCH - same untyped connection_manager convention as above.
+    # Appropriate because: same unsuppressed convention as this module's existing helpers.
+    connection_manager: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+    player_name: str,
+    # Reason: DYNAMIC_DISPATCH - room ids come from Any-typed player objects (.current_room_id).
+    # Appropriate because: same unsuppressed convention as execute_goto_teleport above.
+    original_room_id: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+    # Reason: DYNAMIC_DISPATCH - same untyped room-id convention as above.
+    # Appropriate because: same unsuppressed convention as execute_goto_teleport above.
+    target_room_id: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+    # Reason: DYNAMIC_DISPATCH - persistence is Any per this module's existing convention.
+    # Appropriate because: same unsuppressed convention as execute_goto_teleport above.
+    persistence: Any | None,  # pyright: ignore[reportExplicitAny]
+    # Reason: DYNAMIC_DISPATCH - admin_player_info is a dict of Any-typed connection-manager data.
+    # Appropriate because: same unsuppressed convention as this module's existing helpers.
+) -> tuple[bool, dict[str, Any] | None]:  # pyright: ignore[reportExplicitAny]
+    """Update the admin's DB location and connection-manager info.
+
+    Returns (success, admin_player_info); success is False when the DB update failed.
+    """
     success = await player_service.update_player_location(player_name, target_room_id)
     if not success:
         logger.error("Failed to update admin player location", player_name=player_name)
-        return {"result": f"Failed to teleport to {target_player_name}: database update failed."}
+        return False, None
 
-    # Update connection manager's online player info for admin
     admin_player_info = connection_manager.get_online_player_by_display_name(player_name)
     if admin_player_info:
         admin_player_info["room_id"] = target_room_id
@@ -94,8 +137,26 @@ async def execute_goto_teleport(  # pylint: disable=too-many-arguments,too-many-
             target_room_id,
             persistence,
         )
+    return True, admin_player_info
 
-    # Broadcast visual effects
+
+async def _announce_goto_teleport(
+    # Reason: DYNAMIC_DISPATCH - connection_manager is Any per this module's existing convention.
+    # Appropriate because: same unsuppressed convention as execute_goto_teleport above.
+    connection_manager: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+    # Reason: DYNAMIC_DISPATCH - admin_player_info is a dict of Any-typed connection-manager data.
+    # Appropriate because: same unsuppressed convention as this module's existing helpers.
+    admin_player_info: dict[str, Any] | None,  # pyright: ignore[reportExplicitAny]
+    player_name: str,
+    target_player_name: str,
+    # Reason: DYNAMIC_DISPATCH - room ids come from Any-typed player objects (.current_room_id).
+    # Appropriate because: same unsuppressed convention as execute_goto_teleport above.
+    original_room_id: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+    # Reason: DYNAMIC_DISPATCH - same untyped room-id convention as above.
+    # Appropriate because: same unsuppressed convention as execute_goto_teleport above.
+    target_room_id: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+) -> None:
+    """Broadcast teleport effects, notify the target player, and log the admin action."""
     await broadcast_teleport_effects(
         connection_manager,
         player_name,
@@ -107,7 +168,6 @@ async def execute_goto_teleport(  # pylint: disable=too-many-arguments,too-many-
         target_player_id=str(admin_player_info.get("player_id")) if admin_player_info else None,
     )
 
-    # Notify target player
     await notify_player_of_teleport(
         connection_manager,
         target_player_name,
@@ -116,7 +176,6 @@ async def execute_goto_teleport(  # pylint: disable=too-many-arguments,too-many-
         message=f"{player_name} appears at your location.",
     )
 
-    # Log the successful goto action
     admin_logger = get_admin_actions_logger()
     admin_logger.log_teleport_action(
         admin_name=player_name,
@@ -125,19 +184,8 @@ async def execute_goto_teleport(  # pylint: disable=too-many-arguments,too-many-
         from_room=original_room_id,
         to_room=target_room_id,
         success=True,
-        additional_data={
-            "admin_room_id": current_player.current_room_id,
-            "target_room_id": target_player.current_room_id,
-        },
+        additional_data={"admin_room_id": original_room_id, "target_room_id": target_room_id},
     )
-
-    logger.info(
-        "Goto executed successfully",
-        player_name=player_name,
-        target_player_name=target_player_name,
-        target_room_id=target_room_id,
-    )
-    return {"result": f"You teleport to {target_player_name}'s location."}
 
 
 def log_goto_failure(

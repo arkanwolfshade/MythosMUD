@@ -203,17 +203,7 @@ async def test_send_predefined_emote_unknown():
     player_service: MagicMock = MagicMock()
     emote_service: MagicMock = MagicMock()
     _attr(emote_service, "is_emote_alias").return_value = False
-    result = await send_predefined_emote(
-        uuid.uuid4(),
-        "not_an_emote",
-        player_service,
-        MagicMock(),
-        MagicMock(),
-        MagicMock(),
-        MagicMock(),
-        None,
-        emote_service,
-    )
+    result = await send_predefined_emote(uuid.uuid4(), "not_an_emote", _ctx(player_service), emote_service)
     assert result["success"] is False
 
 
@@ -325,12 +315,7 @@ async def test_send_predefined_emote_success():
         result = await send_predefined_emote(
             uuid.uuid4(),
             "twibble",
-            player_service,
-            user_manager,
-            rate_limiter,
-            chat_logger,
-            MagicMock(),
-            None,
+            _ctx(player_service, user_manager, rate_limiter, chat_logger),
             emote_service,
         )
     assert result["success"] is True
@@ -360,13 +345,7 @@ async def test_send_local_message_success_with_echo_suppression():
                     result = await send_local_message(
                         uuid.uuid4(),
                         "hi",
-                        player_service,
-                        user_manager,
-                        rate_limiter,
-                        room_messages,
-                        10,
-                        MagicMock(),
-                        None,
+                        _ctx(player_service, user_manager, rate_limiter, room_messages=room_messages),
                     )
     assert result["success"] is True
     message = result.get("message")
@@ -384,7 +363,107 @@ async def test_send_local_message_player_not_in_room():
     rate_limiter: MagicMock = MagicMock()
     _attr(rate_limiter, "check_rate_limit").return_value = True
     with patch("server.game.chat_message_senders.validate_say_message", return_value=None):
-        result = await send_local_message(
-            uuid.uuid4(), "hi", player_service, user_manager, rate_limiter, {}, 10, MagicMock(), None
+        result = await send_local_message(uuid.uuid4(), "hi", _ctx(player_service, user_manager, rate_limiter))
+    assert result["success"] is False
+
+
+@pytest.mark.asyncio
+async def test_send_local_message_permission_denied():
+    """_authorize_local_sender's check_channel_permissions branch (issue #787 extraction)."""
+    player_service: MagicMock = MagicMock()
+    player_service.get_player_by_id = AsyncMock(return_value=_player())
+    rate_limiter: MagicMock = MagicMock()
+    _attr(rate_limiter, "check_rate_limit").return_value = True
+    with patch("server.game.chat_message_senders.validate_say_message", return_value=None):
+        with patch(
+            "server.game.chat_message_senders.check_channel_permissions",
+            return_value={"success": False, "error": "You are muted in the local channel"},
+        ):
+            result = await send_local_message(uuid.uuid4(), "hi", _ctx(player_service, rate_limiter=rate_limiter))
+    assert result["success"] is False
+    assert "muted" in str(result["error"])
+
+
+@pytest.mark.asyncio
+async def test_send_local_message_nats_failure():
+    """_publish_chat_or_unavailable's failure branch, via send_local_message."""
+    player_service: MagicMock = MagicMock()
+    player_service.get_player_by_id = AsyncMock(return_value=_player())
+    rate_limiter: MagicMock = MagicMock()
+    _attr(rate_limiter, "check_rate_limit").return_value = True
+    with patch("server.game.chat_message_senders.validate_say_message", return_value=None):
+        with patch("server.game.chat_message_senders.check_channel_permissions", return_value=None):
+            with patch(
+                "server.game.chat_message_senders.publish_chat_message_to_nats",
+                new_callable=AsyncMock,
+                return_value=False,
+            ):
+                result = await send_local_message(uuid.uuid4(), "hi", _ctx(player_service, rate_limiter=rate_limiter))
+    assert result["success"] is False
+    assert "unavailable" in str(result["error"])
+
+
+@pytest.mark.asyncio
+async def test_send_predefined_emote_player_muted_in_say():
+    """_check_emote_permissions' say-mute branch, via send_predefined_emote (emotes share
+    the say channel's mute state; issue #787 extraction)."""
+    player_service: MagicMock = MagicMock()
+    player_service.get_player_by_id = AsyncMock(return_value=_player())
+    user_manager: MagicMock = MagicMock()
+    _attr(user_manager, "is_channel_muted").return_value = True
+    rate_limiter: MagicMock = MagicMock()
+    _attr(rate_limiter, "check_rate_limit").return_value = True
+    emote_service: MagicMock = MagicMock()
+    _attr(emote_service, "is_emote_alias").return_value = True
+    result = await send_predefined_emote(
+        uuid.uuid4(), "twibble", _ctx(player_service, user_manager, rate_limiter), emote_service
+    )
+    assert result["success"] is False
+    assert "muted" in str(result["error"])
+
+
+@pytest.mark.asyncio
+async def test_send_predefined_emote_format_error():
+    """_build_and_log_emote_message's ValueError branch (issue #787 extraction)."""
+    player_service: MagicMock = MagicMock()
+    player_service.get_player_by_id = AsyncMock(return_value=_player())
+    user_manager: MagicMock = MagicMock()
+    _attr(user_manager, "is_channel_muted").return_value = False
+    _attr(user_manager, "is_globally_muted").return_value = False
+    _attr(user_manager, "can_send_message").return_value = True
+    rate_limiter: MagicMock = MagicMock()
+    _attr(rate_limiter, "check_rate_limit").return_value = True
+    emote_service: MagicMock = MagicMock()
+    _attr(emote_service, "is_emote_alias").return_value = True
+    _attr(emote_service, "format_emote_messages").side_effect = ValueError("no target in room")
+    result = await send_predefined_emote(
+        uuid.uuid4(), "twibble", _ctx(player_service, user_manager, rate_limiter), emote_service
+    )
+    assert result["success"] is False
+    assert result["error"] == "no target in room"
+
+
+@pytest.mark.asyncio
+async def test_send_predefined_emote_nats_failure():
+    """_publish_chat_or_unavailable's failure branch, via send_predefined_emote."""
+    player_service: MagicMock = MagicMock()
+    player_service.get_player_by_id = AsyncMock(return_value=_player())
+    user_manager: MagicMock = MagicMock()
+    _attr(user_manager, "is_channel_muted").return_value = False
+    _attr(user_manager, "is_globally_muted").return_value = False
+    _attr(user_manager, "can_send_message").return_value = True
+    rate_limiter: MagicMock = MagicMock()
+    _attr(rate_limiter, "check_rate_limit").return_value = True
+    emote_service: MagicMock = MagicMock()
+    _attr(emote_service, "is_emote_alias").return_value = True
+    _attr(emote_service, "format_emote_messages").return_value = ("You twibble.", "Armitage twibbles.")
+    with patch(
+        "server.game.chat_message_senders.publish_chat_message_to_nats",
+        new_callable=AsyncMock,
+        return_value=False,
+    ):
+        result = await send_predefined_emote(
+            uuid.uuid4(), "twibble", _ctx(player_service, user_manager, rate_limiter), emote_service
         )
     assert result["success"] is False
+    assert "unavailable" in str(result["error"])

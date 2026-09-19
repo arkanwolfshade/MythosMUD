@@ -11,7 +11,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from unittest.mock import mock_open, patch
 
-from server.utils.audit_logger import AuditLogger
+from server.utils.audit_logger import AuditLogger, ContainerInteractionEvent
 
 
 def _logger() -> AuditLogger:
@@ -70,11 +70,13 @@ def test_audit_logger_log_container_interaction():
     with patch("builtins.open", mock_open()) as mock_file:
         logger = _logger()
         logger.log_container_interaction(
-            player_id="pid",
-            player_name="p1",
-            container_id="cid",
-            event_type="container_open",
-            room_id="r1",
+            ContainerInteractionEvent(
+                player_id="pid",
+                player_name="p1",
+                container_id="cid",
+                event_type="container_open",
+                room_id="r1",
+            )
         )
         mock_file.assert_called()
 

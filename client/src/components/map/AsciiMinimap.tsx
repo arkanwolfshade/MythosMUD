@@ -125,6 +125,66 @@ interface MinimapDisplayProps {
   size: number;
 }
 
+function minimapButtonClassName(isInline: boolean, position: NonNullable<AsciiMinimapProps['position']>): string {
+  return isInline
+    ? 'w-full h-full min-h-[80px] bg-mythos-terminal-background border border-mythos-terminal-border rounded p-2 ' +
+        'cursor-pointer hover:border-mythos-terminal-primary transition-colors flex flex-col'
+    : `fixed ${POSITION_CLASSES[position]} z-[9998] bg-mythos-terminal-background ` +
+        `border border-mythos-terminal-border rounded p-2 shadow-lg cursor-pointer ` +
+        `hover:border-mythos-terminal-primary transition-colors`;
+}
+
+function MinimapContent(props: {
+  isInline: boolean;
+  isLoading: boolean;
+  error: string | null;
+  mapHtml: string;
+  hallucinate: boolean;
+  seed: number;
+  size: number;
+}): React.ReactElement | null {
+  const { isInline, isLoading, error, mapHtml, hallucinate, seed, size } = props;
+
+  if (hallucinate) {
+    return (
+      <AsciiNoise
+        rows={size}
+        cols={size * 3}
+        seed={seed}
+        className={
+          isInline
+            ? 'minimap-container flex-1 min-h-0 overflow-auto text-mythos-terminal-text font-mono text-xs'
+            : 'minimap-container'
+        }
+      />
+    );
+  }
+  if (isLoading) {
+    return <div className="text-xs text-mythos-terminal-text p-2">Loading...</div>;
+  }
+  if (error) {
+    return (
+      <div className="text-xs text-mythos-terminal-error p-2" title={error}>
+        Map Error
+      </div>
+    );
+  }
+  if (!mapHtml) {
+    return null;
+  }
+  return (
+    <SafeHtml
+      html={mapHtml}
+      className={
+        isInline
+          ? 'minimap-container flex-1 min-h-0 overflow-auto flex justify-center items-center text-mythos-terminal-text font-mono text-xs whitespace-pre'
+          : 'minimap-container'
+      }
+      tag="div"
+    />
+  );
+}
+
 function MinimapDisplay(props: MinimapDisplayProps): React.ReactElement {
   const {
     isInline,
@@ -138,50 +198,24 @@ function MinimapDisplay(props: MinimapDisplayProps): React.ReactElement {
     seed,
     size,
   } = props;
-  const className = isInline
-    ? 'w-full h-full min-h-[80px] bg-mythos-terminal-background border border-mythos-terminal-border rounded p-2 ' +
-      'cursor-pointer hover:border-mythos-terminal-primary transition-colors flex flex-col'
-    : `fixed ${POSITION_CLASSES[position]} z-[9998] bg-mythos-terminal-background ` +
-      `border border-mythos-terminal-border rounded p-2 shadow-lg cursor-pointer ` +
-      `hover:border-mythos-terminal-primary transition-colors`;
 
   return (
     <button
       type="button"
       ref={containerRef}
-      className={`appearance-none text-left ${className}`}
+      className={`appearance-none text-left ${minimapButtonClassName(isInline, position)}`}
       onClick={onClick}
       title="Click to open full map"
     >
-      {hallucinate && (
-        <AsciiNoise
-          rows={size}
-          cols={size * 3}
-          seed={seed}
-          className={
-            isInline
-              ? 'minimap-container flex-1 min-h-0 overflow-auto text-mythos-terminal-text font-mono text-xs'
-              : 'minimap-container'
-          }
-        />
-      )}
-      {!hallucinate && isLoading && <div className="text-xs text-mythos-terminal-text p-2">Loading...</div>}
-      {!hallucinate && error && (
-        <div className="text-xs text-mythos-terminal-error p-2" title={error}>
-          Map Error
-        </div>
-      )}
-      {!hallucinate && !isLoading && !error && mapHtml && (
-        <SafeHtml
-          html={mapHtml}
-          className={
-            isInline
-              ? 'minimap-container flex-1 min-h-0 overflow-auto flex justify-center items-center text-mythos-terminal-text font-mono text-xs whitespace-pre'
-              : 'minimap-container'
-          }
-          tag="div"
-        />
-      )}
+      <MinimapContent
+        isInline={isInline}
+        isLoading={isLoading}
+        error={error}
+        mapHtml={mapHtml}
+        hallucinate={hallucinate}
+        seed={seed}
+        size={size}
+      />
     </button>
   );
 }

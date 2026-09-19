@@ -55,21 +55,176 @@ function daypartAccent(mythosTime: MythosTimeState): string {
   return mythosTime.is_daytime ? 'text-amber-200' : 'text-sky-200';
 }
 
-export const HeaderBar: React.FC<HeaderBarProps> = props => {
+function connectionStatusLabel(isConnected: boolean, isConnecting: boolean, reconnectAttempts: number): string {
+  if (isConnected) return 'Connected';
+  if (!isConnecting) return 'Disconnected';
+  return reconnectAttempts > 0 ? 'Reconnecting...' : 'Connecting...';
+}
+
+interface CollapsedHeaderBarProps {
+  headerClass: string;
+  borderClass: string;
+  playerName: string;
+  followingTarget: FollowingTarget | null;
+  connectionStatus: string;
+  connectionColor: string;
+  onToggleCollapse: () => void;
+}
+
+function CollapsedHeaderBar(props: CollapsedHeaderBarProps): React.ReactElement {
+  const { headerClass, borderClass, playerName, followingTarget, connectionStatus, connectionColor, onToggleCollapse } =
+    props;
+  return (
+    <div
+      className={`fixed top-0 left-0 right-0 ${headerClass} bg-mythos-terminal-surface border-b ${borderClass} flex items-center justify-between px-4 z-50`}
+    >
+      <button
+        onClick={onToggleCollapse}
+        className="flex items-center gap-2 text-mythos-terminal-text-secondary hover:text-mythos-terminal-primary transition-colors"
+        aria-label="Expand header"
+      >
+        <EldritchIcon name={MythosIcons.maximize} size={14} variant="primary" />
+        <span className="text-xs">{playerName}</span>
+        {followingTarget && <span className="text-xs opacity-80">| Following: {followingTarget.target_name}</span>}
+      </button>
+      <div className="flex items-center gap-2">
+        <span className={`text-xs ${connectionColor}`}>{connectionStatus}</span>
+      </div>
+    </div>
+  );
+}
+
+function ActiveEffectsRow({ activeEffects }: { activeEffects: ActiveEffectDisplay[] }): React.ReactElement | null {
+  if (activeEffects.length === 0) return null;
+  return (
+    <div className="flex items-center gap-2 flex-wrap">
+      {activeEffects.map((eff, idx) => (
+        <span
+          key={eff.effect_type + (eff.remaining_seconds ?? 0) + idx}
+          className="px-2 py-0.5 rounded text-xs bg-mythos-terminal-surface border border-mythos-terminal-border text-mythos-terminal-text-secondary"
+          title={
+            eff.remaining_seconds != null
+              ? `${eff.label ?? eff.effect_type}: ${formatRemaining(eff.remaining_seconds)} left`
+              : undefined
+          }
+        >
+          {eff.label ?? eff.effect_type}
+          {eff.remaining_seconds != null && eff.remaining_seconds > 0 && (
+            <span className="ml-1 opacity-80">({formatRemaining(eff.remaining_seconds)})</span>
+          )}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function HolidayBadge({ holiday }: { holiday: MythosTimeState['active_holidays'][number] }): React.ReactElement {
+  const palette = TRADITION_COLORS[holiday.tradition] ?? 'from-slate-500/30 to-slate-700/30 text-slate-100';
+  return (
+    <span title={holiday.notes ?? undefined} className={`rounded-full bg-linear-to-br ${palette} px-3 py-0.5`}>
+      {holiday.name}
+      {holiday.bonus_tags.length > 0 && (
+        <span className="ml-1 opacity-80 text-xs-2 uppercase">
+          ({holiday.bonus_tags.map(tag => tag.replace(/_/g, ' ')).join(', ')})
+        </span>
+      )}
+    </span>
+  );
+}
+
+function FlavorRow({ mythosTime }: { mythosTime: MythosTimeState }): React.ReactElement {
+  return (
+    <div className="flex flex-wrap items-center gap-3 text-xs text-mythos-terminal-text-secondary">
+      <span className={`font-semibold uppercase tracking-wide ${daypartAccent(mythosTime)}`}>{mythosTime.daypart}</span>
+      <span>{mythosTime.season}</span>
+      {mythosTime.is_witching_hour && <span className="text-purple-300">The Veil Thins</span>}
+      {mythosTime.active_holidays.map(holiday => (
+        <HolidayBadge key={holiday.id} holiday={holiday} />
+      ))}
+    </div>
+  );
+}
+
+interface ExpandedHeaderTitleRowProps {
+  playerName: string;
+  followingTarget: FollowingTarget | null;
+  isConnected: boolean;
+  connectionStatus: string;
+  error: string | null;
+  reconnectAttempts: number;
+  activeEffects: ActiveEffectDisplay[];
+  onToggleCollapse: () => void;
+}
+
+function ExpandedHeaderTitleRow(props: ExpandedHeaderTitleRowProps): React.ReactElement {
   const {
     playerName,
+    followingTarget,
     isConnected,
-    isConnecting,
+    connectionStatus,
     error,
     reconnectAttempts,
-    mythosTime,
-    onLogout,
-    isLoggingOut = false,
-    activeEffects = [],
-    followingTarget = null,
-    isCollapsed,
+    activeEffects,
     onToggleCollapse,
   } = props;
+  return (
+    <div className="flex items-center gap-4">
+      <button
+        onClick={onToggleCollapse}
+        className="flex items-center gap-1 text-mythos-terminal-text-secondary hover:text-mythos-terminal-primary transition-colors"
+        aria-label="Collapse header"
+      >
+        <EldritchIcon name={MythosIcons.minimize} size={14} variant="primary" />
+      </button>
+      <span className="text-base text-mythos-terminal-text-secondary">Player: {playerName}</span>
+      {followingTarget && (
+        <span
+          className="text-sm text-mythos-terminal-text-secondary"
+          title={`Following: ${followingTarget.target_name}`}
+        >
+          Following: {followingTarget.target_name}
+        </span>
+      )}
+      <span
+        className={`px-2 py-1 rounded text-sm ${isConnected ? 'bg-mythos-terminal-success text-black' : 'bg-mythos-terminal-error text-white'}`}
+      >
+        {connectionStatus}
+      </span>
+      {error && <span className="text-mythos-terminal-error text-sm">{error}</span>}
+      {reconnectAttempts > 0 && (
+        <span className="text-mythos-terminal-warning text-sm">Reconnect: {reconnectAttempts}</span>
+      )}
+      <ActiveEffectsRow activeEffects={activeEffects} />
+    </div>
+  );
+}
+
+function HeaderTimeAndLogout({
+  timeDisplay,
+  onLogout,
+  isConnected,
+  isLoggingOut,
+}: {
+  timeDisplay: string;
+  onLogout: () => void;
+  isConnected: boolean;
+  isLoggingOut: boolean;
+}): React.ReactElement {
+  return (
+    <div className="flex items-center gap-4">
+      <div className="flex flex-col items-end text-xs text-mythos-terminal-text-secondary">
+        <span className="text-xs-2 uppercase tracking-wide">Mythos Time</span>
+        <span className="text-sm text-mythos-terminal-primary">{timeDisplay}</span>
+      </div>
+      <div className="w-32">
+        <LogoutButton onLogout={onLogout} disabled={!isConnected || isLoggingOut} isLoggingOut={isLoggingOut} />
+      </div>
+    </div>
+  );
+}
+
+function useHeaderBarDisplay(props: HeaderBarProps) {
+  const { isConnected, isConnecting, reconnectAttempts, mythosTime, isCollapsed, onToggleCollapse } = props;
 
   const toggleCollapse = useCallback(() => {
     onToggleCollapse();
@@ -80,13 +235,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = props => {
     ? `${formatMythosTime12Hour(mythosTime.mythos_clock)} - ${mythosTime.formatted_date}`
     : 'Calibrating chronicle...';
 
-  const connectionStatus = isConnected
-    ? 'Connected'
-    : isConnecting
-      ? reconnectAttempts > 0
-        ? 'Reconnecting...'
-        : 'Connecting...'
-      : 'Disconnected';
+  const connectionStatus = connectionStatusLabel(isConnected, isConnecting, reconnectAttempts);
   const connectionColor = isConnected ? 'text-mythos-terminal-success' : 'text-mythos-terminal-error';
 
   const isWitching = Boolean(mythosTime?.is_witching_hour);
@@ -94,24 +243,35 @@ export const HeaderBar: React.FC<HeaderBarProps> = props => {
   const showFlavorRow = hasFlavorRow(mythosTime);
   const { header: headerClass } = headerHeightClass(isCollapsed, mythosTime);
 
-  if (isCollapsed) {
+  return { toggleCollapse, timeDisplay, connectionStatus, connectionColor, borderClass, showFlavorRow, headerClass };
+}
+
+export const HeaderBar: React.FC<HeaderBarProps> = props => {
+  const {
+    playerName,
+    isConnected,
+    error,
+    reconnectAttempts,
+    mythosTime,
+    onLogout,
+    isLoggingOut = false,
+    activeEffects = [],
+    followingTarget = null,
+  } = props;
+  const { toggleCollapse, timeDisplay, connectionStatus, connectionColor, borderClass, showFlavorRow, headerClass } =
+    useHeaderBarDisplay(props);
+
+  if (props.isCollapsed) {
     return (
-      <div
-        className={`fixed top-0 left-0 right-0 ${headerClass} bg-mythos-terminal-surface border-b ${borderClass} flex items-center justify-between px-4 z-50`}
-      >
-        <button
-          onClick={toggleCollapse}
-          className="flex items-center gap-2 text-mythos-terminal-text-secondary hover:text-mythos-terminal-primary transition-colors"
-          aria-label="Expand header"
-        >
-          <EldritchIcon name={MythosIcons.maximize} size={14} variant="primary" />
-          <span className="text-xs">{playerName}</span>
-          {followingTarget && <span className="text-xs opacity-80">| Following: {followingTarget.target_name}</span>}
-        </button>
-        <div className="flex items-center gap-2">
-          <span className={`text-xs ${connectionColor}`}>{connectionStatus}</span>
-        </div>
-      </div>
+      <CollapsedHeaderBar
+        headerClass={headerClass}
+        borderClass={borderClass}
+        playerName={playerName}
+        followingTarget={followingTarget}
+        connectionStatus={connectionStatus}
+        connectionColor={connectionColor}
+        onToggleCollapse={toggleCollapse}
+      />
     );
   }
 
@@ -120,91 +280,25 @@ export const HeaderBar: React.FC<HeaderBarProps> = props => {
       className={`fixed top-0 left-0 right-0 ${headerClass} bg-mythos-terminal-surface border-b ${borderClass} flex flex-col justify-center gap-1 px-4 z-50 transition-[height] duration-300`}
     >
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={toggleCollapse}
-            className="flex items-center gap-1 text-mythos-terminal-text-secondary hover:text-mythos-terminal-primary transition-colors"
-            aria-label="Collapse header"
-          >
-            <EldritchIcon name={MythosIcons.minimize} size={14} variant="primary" />
-          </button>
-          <span className="text-base text-mythos-terminal-text-secondary">Player: {playerName}</span>
-          {followingTarget && (
-            <span
-              className="text-sm text-mythos-terminal-text-secondary"
-              title={`Following: ${followingTarget.target_name}`}
-            >
-              Following: {followingTarget.target_name}
-            </span>
-          )}
-          <span
-            className={`px-2 py-1 rounded text-sm ${isConnected ? 'bg-mythos-terminal-success text-black' : 'bg-mythos-terminal-error text-white'}`}
-          >
-            {connectionStatus}
-          </span>
-          {error && <span className="text-mythos-terminal-error text-sm">{error}</span>}
-          {reconnectAttempts > 0 && (
-            <span className="text-mythos-terminal-warning text-sm">Reconnect: {reconnectAttempts}</span>
-          )}
-          {activeEffects.length > 0 && (
-            <div className="flex items-center gap-2 flex-wrap">
-              {activeEffects.map((eff, idx) => (
-                <span
-                  key={eff.effect_type + (eff.remaining_seconds ?? 0) + idx}
-                  className="px-2 py-0.5 rounded text-xs bg-mythos-terminal-surface border border-mythos-terminal-border text-mythos-terminal-text-secondary"
-                  title={
-                    eff.remaining_seconds != null
-                      ? `${eff.label ?? eff.effect_type}: ${formatRemaining(eff.remaining_seconds)} left`
-                      : undefined
-                  }
-                >
-                  {eff.label ?? eff.effect_type}
-                  {eff.remaining_seconds != null && eff.remaining_seconds > 0 && (
-                    <span className="ml-1 opacity-80">({formatRemaining(eff.remaining_seconds)})</span>
-                  )}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="flex items-center gap-4">
-          <div className="flex flex-col items-end text-xs text-mythos-terminal-text-secondary">
-            <span className="text-xs-2 uppercase tracking-wide">Mythos Time</span>
-            <span className="text-sm text-mythos-terminal-primary">{timeDisplay}</span>
-          </div>
-          <div className="w-32">
-            <LogoutButton onLogout={onLogout} disabled={!isConnected || isLoggingOut} isLoggingOut={isLoggingOut} />
-          </div>
-        </div>
+        <ExpandedHeaderTitleRow
+          playerName={playerName}
+          followingTarget={followingTarget}
+          isConnected={isConnected}
+          connectionStatus={connectionStatus}
+          error={error}
+          reconnectAttempts={reconnectAttempts}
+          activeEffects={activeEffects}
+          onToggleCollapse={toggleCollapse}
+        />
+        <HeaderTimeAndLogout
+          timeDisplay={timeDisplay}
+          onLogout={onLogout}
+          isConnected={isConnected}
+          isLoggingOut={isLoggingOut}
+        />
       </div>
 
-      {showFlavorRow && mythosTime && (
-        <div className="flex flex-wrap items-center gap-3 text-xs text-mythos-terminal-text-secondary">
-          <span className={`font-semibold uppercase tracking-wide ${daypartAccent(mythosTime)}`}>
-            {mythosTime.daypart}
-          </span>
-          <span>{mythosTime.season}</span>
-          {mythosTime.is_witching_hour && <span className="text-purple-300">The Veil Thins</span>}
-          {mythosTime.active_holidays.map(holiday => {
-            const palette = TRADITION_COLORS[holiday.tradition] ?? 'from-slate-500/30 to-slate-700/30 text-slate-100';
-            return (
-              <span
-                key={holiday.id}
-                title={holiday.notes ?? undefined}
-                className={`rounded-full bg-linear-to-br ${palette} px-3 py-0.5`}
-              >
-                {holiday.name}
-                {holiday.bonus_tags.length > 0 && (
-                  <span className="ml-1 opacity-80 text-xs-2 uppercase">
-                    ({holiday.bonus_tags.map(tag => tag.replace(/_/g, ' ')).join(', ')})
-                  </span>
-                )}
-              </span>
-            );
-          })}
-        </div>
-      )}
+      {showFlavorRow && mythosTime && <FlavorRow mythosTime={mythosTime} />}
     </div>
   );
 };

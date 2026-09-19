@@ -11,6 +11,7 @@ AI: Audit logs are critical for incident response and compliance.
 
 import json
 from collections.abc import Mapping
+from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import cast
@@ -29,6 +30,25 @@ def _json_map_from_line(line: str) -> JsonMap:
         raise ValueError("audit entry is not an object")
     typed = cast(dict[object, object], raw)
     return {str(k): v for k, v in typed.items()}
+
+
+@dataclass(frozen=True)
+class ContainerInteractionEvent:
+    """A container interaction to record via AuditLogger.log_container_interaction."""
+
+    player_id: str
+    player_name: str
+    container_id: str
+    event_type: str  # 'container_open', 'container_close', 'container_transfer', 'container_loot_all'
+    source_type: str | None = None
+    room_id: str | None = None
+    direction: str | None = None  # 'to_container' or 'from_container' for transfers
+    item_id: str | None = None
+    item_name: str | None = None
+    items_count: int | None = None
+    success: bool = True
+    session_id: str | None = None
+    metadata: Mapping[str, object] | None = None
 
 
 class AuditLogger:
@@ -178,39 +198,12 @@ class AuditLogger:
             "Permission change logged", admin=admin_name, target=target_player, permission=permission, action=action
         )
 
-    def log_container_interaction(
-        self,
-        player_id: str,
-        player_name: str,
-        container_id: str,
-        event_type: str,  # 'container_open', 'container_close', 'container_transfer', 'container_loot_all'
-        source_type: str | None = None,
-        room_id: str | None = None,
-        direction: str | None = None,  # 'to_container' or 'from_container' for transfers
-        item_id: str | None = None,
-        item_name: str | None = None,
-        items_count: int | None = None,
-        success: bool = True,
-        session_id: str | None = None,
-        metadata: Mapping[str, object] | None = None,
-    ) -> None:
+    def log_container_interaction(self, event: "ContainerInteractionEvent") -> None:
         """
         Log container interaction events for security and compliance.
 
         Args:
-            player_id: UUID of the player interacting with the container
-            player_name: Name of the player
-            container_id: UUID of the container
-            event_type: Type of container interaction
-            source_type: Type of container (environment, equipment, corpse)
-            room_id: Room ID where container is located
-            direction: Transfer direction for container_transfer events
-            item_id: Item ID for transfer events
-            item_name: Item name for transfer events
-            items_count: Number of items for loot_all events
-            success: Whether the operation succeeded
-            session_id: Session identifier
-            metadata: Additional context-specific data
+            event: The container interaction to log (see ContainerInteractionEvent).
 
         AI: Container interactions are security-sensitive and must be audited
         for compliance and forensic analysis.
@@ -218,31 +211,31 @@ class AuditLogger:
         """
         entry: JsonMap = {
             "timestamp": datetime.now(UTC).isoformat(),
-            "event_type": event_type,
-            "player_id": player_id,
-            "player_name": player_name,
-            "container_id": container_id,
-            "source_type": source_type,
-            "room_id": room_id,
-            "direction": direction,
-            "item_id": item_id,
-            "item_name": item_name,
-            "items_count": items_count,
-            "success": success,
-            "session_id": session_id,
+            "event_type": event.event_type,
+            "player_id": event.player_id,
+            "player_name": event.player_name,
+            "container_id": event.container_id,
+            "source_type": event.source_type,
+            "room_id": event.room_id,
+            "direction": event.direction,
+            "item_id": event.item_id,
+            "item_name": event.item_name,
+            "items_count": event.items_count,
+            "success": event.success,
+            "session_id": event.session_id,
             "security_level": "medium",
             "compliance_required": True,
-            "metadata": metadata or {},
+            "metadata": event.metadata or {},
         }
 
         self._write_entry(entry)
 
         logger.info(
             "Container interaction logged",
-            player_id=player_id,
-            player_name=player_name,
-            container_id=container_id,
-            event_type=event_type,
+            player_id=event.player_id,
+            player_name=event.player_name,
+            container_id=event.container_id,
+            event_type=event.event_type,
         )
 
     def log_player_action(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Player action logging requires many parameters for complete audit context
@@ -380,6 +373,47 @@ class AuditLogger:
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: File write errors unpredictable, must log but not fail
             logger.error("Failed to write audit log entry", error=str(e), entry_type=entry.get("event_type"))
 
+    @staticmethod
+    def _matching_entry_from_line(
+        line: str, cutoff_time: datetime, event_type: str | None, player_name: str | None
+    ) -> JsonMap | None:
+        """Parse one audit log line and apply the time/event_type/player_name filters."""
+        entry = _json_map_from_line(line)
+        raw_ts = entry.get("timestamp")
+        if not isinstance(raw_ts, str):
+            return None
+        entry_time = datetime.fromisoformat(raw_ts)
+
+        if entry_time < cutoff_time:
+            return None
+        if event_type and entry.get("event_type") != event_type:
+            return None
+        if player_name and entry.get("player") != player_name:
+            return None
+        return entry
+
+    def _entries_from_log_file(
+        self, log_file: Path, cutoff_time: datetime, event_type: str | None, player_name: str | None
+    ) -> list[JsonMap]:
+        """Read one audit log file, returning entries that pass the given filters."""
+        entries: list[JsonMap] = []
+        try:
+            with open(log_file, encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        entry = self._matching_entry_from_line(line, cutoff_time, event_type, player_name)
+                        if entry is not None:
+                            entries.append(entry)
+                    except (json.JSONDecodeError, KeyError, ValueError) as e:
+                        logger.warning("Failed to parse audit log entry", file=str(log_file), error=str(e))
+                        continue
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: File read errors unpredictable, must log but continue
+            logger.error("Failed to read audit log file", file=str(log_file), error=str(e))
+        return entries
+
     def get_recent_entries(
         self, hours: int = 24, event_type: str | None = None, player_name: str | None = None
     ) -> list[JsonMap]:
@@ -405,40 +439,7 @@ class AuditLogger:
         log_files = sorted(self.log_directory.glob("audit_*.jsonl"), reverse=True)
 
         for log_file in log_files:
-            try:
-                with open(log_file, encoding="utf-8") as f:
-                    for line in f:
-                        line = line.strip()
-                        if not line:
-                            continue
-
-                        try:
-                            entry = _json_map_from_line(line)
-                            raw_ts = entry.get("timestamp")
-                            if not isinstance(raw_ts, str):
-                                continue
-                            entry_time = datetime.fromisoformat(raw_ts)
-
-                            # Check if within time range
-                            if entry_time < cutoff_time:
-                                continue
-
-                            # Apply filters
-                            if event_type and entry.get("event_type") != event_type:
-                                continue
-
-                            if player_name and entry.get("player") != player_name:
-                                continue
-
-                            entries.append(entry)
-
-                        except (json.JSONDecodeError, KeyError, ValueError) as e:
-                            logger.warning("Failed to parse audit log entry", file=str(log_file), error=str(e))
-                            continue
-
-            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: File read errors unpredictable, must log but continue
-                logger.error("Failed to read audit log file", file=str(log_file), error=str(e))
-                continue
+            entries.extend(self._entries_from_log_file(log_file, cutoff_time, event_type, player_name))
 
         return entries
 

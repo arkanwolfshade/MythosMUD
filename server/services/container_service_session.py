@@ -15,7 +15,7 @@ from ..exceptions import ValidationError
 from ..models.container import ContainerComponent, ContainerLockState
 from ..models.player import Player
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.audit_logger import audit_logger
+from ..utils.audit_logger import ContainerInteractionEvent, audit_logger
 from ..utils.error_logging import log_and_raise
 from .container_service_access import ContainerAccessMixin
 from .container_service_helpers import (
@@ -97,13 +97,15 @@ class ContainerSessionMixin(ContainerAccessMixin):
                 container.source_type.value if hasattr(container.source_type, "value") else str(container.source_type)
             )
             audit_logger.log_container_interaction(
-                player_id=str(player_id),
-                player_name=str(player.name),
-                container_id=str(container_id),
-                event_type="container_open",
-                source_type=source_type_value,
-                room_id=container.room_id,
-                success=True,
+                ContainerInteractionEvent(
+                    player_id=str(player_id),
+                    player_name=str(player.name),
+                    container_id=str(container_id),
+                    event_type="container_open",
+                    source_type=source_type_value,
+                    room_id=container.room_id,
+                    success=True,
+                )
             )
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Audit logging errors unpredictable, must not fail container operation
             logger.warning("Failed to log container open to audit log", error=str(e))
@@ -207,13 +209,15 @@ class ContainerSessionMixin(ContainerAccessMixin):
                 container = ContainerComponent.model_validate(filter_container_data(as_object_dict(raw_container)))
                 source_type_value = get_enum_value(container.source_type)
                 audit_logger.log_container_interaction(
-                    player_id=str(player_id),
-                    player_name=str(player.name),
-                    container_id=str(container_id),
-                    event_type="container_close",
-                    source_type=source_type_value,
-                    room_id=container.room_id,
-                    success=True,
+                    ContainerInteractionEvent(
+                        player_id=str(player_id),
+                        player_name=str(player.name),
+                        container_id=str(container_id),
+                        event_type="container_close",
+                        source_type=source_type_value,
+                        room_id=container.room_id,
+                        success=True,
+                    )
                 )
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Audit logging errors unpredictable, must not fail container operation
             logger.warning("Failed to log container close to audit log", error=str(e))

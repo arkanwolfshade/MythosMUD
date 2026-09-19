@@ -214,44 +214,32 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
     [occupantsTitle, player]
   );
 
-  const renderMainDockSlotContent = (id: MainDockPanelId): React.ReactNode => {
-    switch (id) {
-      case 'chatHistory':
-        return (
-          <ChatHistoryPanel
-            messages={messages}
-            onSendChatMessage={onSendChatMessage}
-            onClearMessages={onClearMessages}
-            onDownloadLogs={onDownloadLogs}
-            isConnected={isConnected}
-            corruption={player?.stats?.corruption ?? 0}
-          />
-        );
-      case 'location':
-        return <LocationPanel room={room} />;
-      case 'roomDescription':
-        return <RoomDescriptionPanel room={room} />;
-      case 'occupants':
-        return <OccupantsPanel room={room} />;
-      case 'gameInfo':
-        return (
-          <GameInfoPanel
-            messages={messages}
-            onClearMessages={onClearMessages}
-            onDownloadLogs={onDownloadLogs}
-            inCombat={Boolean(player?.in_combat)}
-          />
-        );
-      case 'questLog':
-        return <QuestLogPanel questLog={questLog} />;
-      case 'settings':
-        return <SettingsPanel />;
-      default: {
-        const _exhaustive: never = id;
-        return _exhaustive;
-      }
-    }
+  const mainDockSlotContent: Record<MainDockPanelId, React.ReactNode> = {
+    chatHistory: (
+      <ChatHistoryPanel
+        messages={messages}
+        onSendChatMessage={onSendChatMessage}
+        onClearMessages={onClearMessages}
+        onDownloadLogs={onDownloadLogs}
+        isConnected={isConnected}
+        corruption={player?.stats?.corruption ?? 0}
+      />
+    ),
+    location: <LocationPanel room={room} />,
+    roomDescription: <RoomDescriptionPanel room={room} />,
+    occupants: <OccupantsPanel room={room} />,
+    gameInfo: (
+      <GameInfoPanel
+        messages={messages}
+        onClearMessages={onClearMessages}
+        onDownloadLogs={onDownloadLogs}
+        inCombat={Boolean(player?.in_combat)}
+      />
+    ),
+    questLog: <QuestLogPanel questLog={questLog} />,
+    settings: <SettingsPanel />,
   };
+  const renderMainDockSlotContent = (id: MainDockPanelId): React.ReactNode => mainDockSlotContent[id];
 
   const characterInfoPanel = panelManager.getPanel('characterInfo');
   const commandHistoryPanel = panelManager.getPanel('commandHistory');

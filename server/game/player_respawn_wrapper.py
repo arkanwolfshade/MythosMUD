@@ -18,9 +18,54 @@ from ..utils.enhanced_error_logging import log_and_raise_enhanced
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
 
+    from ..async_persistence import AsyncPersistenceLayer
+    from ..models.lucidity import PlayerLucidity
     from ..services.player_respawn_service import PlayerRespawnService
 
 logger = get_logger(__name__)
+
+
+def _is_eligible_for_respawn(p: Player) -> bool:
+    """A player is eligible for respawn if dead, or stranded in limbo."""
+    if p.is_dead():
+        return True
+    return str(p.current_room_id or "") == LIMBO_ROOM_ID
+
+
+def _select_dead_player_for_respawn(all_players: list[Player], user_id: str) -> Player:
+    """Pick the most-recently-active eligible (dead/limbo) character for this user."""
+    dead_players = [p for p in all_players if _is_eligible_for_respawn(p)]
+    if not dead_players:
+        player_dp = all_players[0].get_stats().get("current_dp", 0) if all_players else None
+        log_and_raise_enhanced(
+            ValidationError,
+            "Player must be dead to respawn (DP must be -10 or below)",
+            operation="respawn_player_by_user_id",
+            user_id=user_id,
+            player_dp=player_dp,
+            details={"user_id": user_id, "player_dp": player_dp},
+            user_friendly="Player must be dead to respawn",
+        )
+    if len(dead_players) > 1:
+        # Sort by last_active descending (most recent first) and take the first
+        dead_players.sort(key=lambda p: p.last_active if p.last_active else datetime.datetime.min, reverse=True)
+    return dead_players[0]
+
+
+def _resolve_respawn_room_data(
+    persistence: "AsyncPersistenceLayer",
+    respawn_room_id: str,
+    # Reason: SERIALIZATION_BOUNDARY - mirrors Room.to_dict()'s own established, unsuppressed
+    # dict[str, Any] return type; a placeholder dict is returned on the not-found branch too.
+    # Appropriate because: this is the same ad hoc response-shape convention as Room.to_dict()
+    # and the other command-result dicts in this module; a TypedDict is out of scope here.
+) -> dict[str, Any]:  # pyright: ignore[reportExplicitAny]
+    """Look up the respawn room, falling back to a placeholder if it's missing."""
+    room = persistence.get_room_by_id(respawn_room_id)
+    if not room:
+        logger.warning("Respawn room not found", respawn_room_id=respawn_room_id)
+        return {"id": respawn_room_id, "name": "Unknown Room"}
+    return room.to_dict()
 
 
 class PlayerRespawnWrapper:
@@ -30,7 +75,31 @@ class PlayerRespawnWrapper:
         """Initialize with a persistence layer."""
         self.persistence = persistence
 
-    async def respawn_player_by_user_id(  # pylint: disable=too-many-locals  # Reason: Respawn requires many intermediate variables for complex respawn logic
+    async def _load_active_players(self, session: "AsyncSession", user_id: str) -> list[Player]:
+        """Load all non-deleted characters for a user (multi-character support)."""
+        from sqlalchemy import select
+        from sqlalchemy.orm import selectinload
+
+        stmt = (
+            select(Player)
+            .options(selectinload(Player.user))
+            .where(Player.user_id == user_id)
+            .where(Player.is_deleted.is_(False))  # Use is_() for SQLAlchemy boolean comparison
+        )
+        result = await session.execute(stmt)
+        all_players = list(result.scalars().all())
+        if not all_players:
+            log_and_raise_enhanced(
+                ValidationError,
+                "Player not found for respawn",
+                operation="respawn_player_by_user_id",
+                user_id=user_id,
+                details={"user_id": user_id},
+                user_friendly="Player not found",
+            )
+        return all_players
+
+    async def respawn_player_by_user_id(
         self,
         user_id: str,
         session: "AsyncSession",
@@ -59,71 +128,10 @@ class PlayerRespawnWrapper:
         Raises:
             ValidationError: If player not found or not dead
         """
-        from sqlalchemy import select
-        from sqlalchemy.orm import selectinload
+        all_players = await self._load_active_players(session, user_id)
+        player = _select_dead_player_for_respawn(all_players, user_id)
 
-        # MULTI-CHARACTER: Get all active players for user, then find the dead one
-        # Look up all active players by user_id (not primary key player_id)
-        # Eagerly load user relationship to prevent N+1 queries
-        stmt = (
-            select(Player)
-            .options(selectinload(Player.user))
-            .where(Player.user_id == user_id)
-            .where(Player.is_deleted.is_(False))  # Use is_() for SQLAlchemy boolean comparison
-        )
-        result = await session.execute(stmt)
-        all_players = list(result.scalars().all())
-
-        if not all_players:
-            log_and_raise_enhanced(
-                ValidationError,
-                "Player not found for respawn",
-                operation="respawn_player_by_user_id",
-                user_id=user_id,
-                details={"user_id": user_id},
-                user_friendly="Player not found",
-            )
-
-        # MULTI-CHARACTER: Find the dead player(s) among active characters.
-        # Treat as dead: (1) DP <= -10, or (2) in limbo (handles persistence race or restart).
-        def _is_eligible_for_respawn(p: Player) -> bool:
-            if p.is_dead():
-                return True
-            if str(p.current_room_id or "") == LIMBO_ROOM_ID:
-                return True
-            return False
-
-        dead_players = [p for p in all_players if _is_eligible_for_respawn(p)]
-
-        if not dead_players:
-            # No dead players found - check if any players exist to give better error message
-            player_dp = all_players[0].get_stats().get("current_dp", 0) if all_players else None
-            log_and_raise_enhanced(
-                ValidationError,
-                "Player must be dead to respawn (DP must be -10 or below)",
-                operation="respawn_player_by_user_id",
-                user_id=user_id,
-                player_dp=player_dp,
-                details={
-                    "user_id": user_id,
-                    "player_dp": player_dp,
-                },
-                user_friendly="Player must be dead to respawn",
-            )
-
-        # MULTI-CHARACTER: If multiple dead players, select the most recently active one
-        if len(dead_players) > 1:
-            # Sort by last_active descending (most recent first) and take the first
-            dead_players.sort(key=lambda p: p.last_active if p.last_active else datetime.datetime.min, reverse=True)
-
-        player = dead_players[0]
-
-        # Respawn the player
-        # Convert player.player_id to UUID (handles SQLAlchemy Column[str])
-        # SQLAlchemy Column[str] returns UUID at runtime, but mypy sees it as Column[str]
-        # Always convert to string first, then to UUID
-        player_id_value = player.player_id
-        player_id_uuid = uuid.UUID(str(player_id_value))
+        player_id_uuid = uuid.UUID(str(player.player_id))
         success = await respawn_service.respawn_player(player_id_uuid, session)
         if not success:
             logger.error("Respawn failed", player_id=player.player_id)
@@ -137,16 +145,12 @@ class PlayerRespawnWrapper:
                 user_friendly="Respawn failed",
             )
 
-        # Get respawn room data
         respawn_room_id = player.current_room_id  # Updated by respawn_player
-        room = persistence.get_room_by_id(str(respawn_room_id))
-        if not room:
-            logger.warning("Respawn room not found", respawn_room_id=respawn_room_id)
-            room_data = {"id": respawn_room_id, "name": "Unknown Room"}
-        else:
-            room_data = room.to_dict()
-
-        # Get updated player state
+        # Reason: SERIALIZATION_BOUNDARY - persistence is Any per this class's own established,
+        # unsuppressed __init__(persistence: Any) convention.
+        # Appropriate because: consistent with the rest of this class; narrowing the constructor
+        # parameter is out of scope for this complexity-only extraction.
+        room_data = _resolve_respawn_room_data(persistence, respawn_room_id)  # pyright: ignore[reportAny]
         updated_stats = player.get_stats()
 
         logger.info("Player respawned successfully", player_id=player.player_id, respawn_room=respawn_room_id)
@@ -164,7 +168,43 @@ class PlayerRespawnWrapper:
             "message": "You have been resurrected and returned to the waking world",
         }
 
-    async def respawn_player_from_delirium_by_user_id(  # pylint: disable=too-many-locals  # Reason: Delirium respawn requires many intermediate variables for complex respawn logic
+    async def _load_player_for_delirium_respawn(
+        self, session: "AsyncSession", user_id: str
+    ) -> tuple[Player, "PlayerLucidity"]:
+        """Load the user's character and validate delirium eligibility (lucidity <= -10)."""
+        from sqlalchemy import select
+        from sqlalchemy.orm import selectinload
+
+        from ..models.lucidity import PlayerLucidity
+
+        stmt = select(Player).options(selectinload(Player.user)).where(Player.user_id == user_id)
+        result = await session.execute(stmt)
+        player = result.scalar_one_or_none()
+        if not player:
+            log_and_raise_enhanced(
+                ValidationError,
+                "Player not found for delirium respawn",
+                operation="respawn_player_from_delirium_by_user_id",
+                user_id=user_id,
+                details={"user_id": user_id},
+                user_friendly="Player not found",
+            )
+
+        lucidity_record = await session.get(PlayerLucidity, player.player_id)
+        if not lucidity_record or lucidity_record.current_lcd > -10:
+            current_lucidity = lucidity_record.current_lcd if lucidity_record else None
+            log_and_raise_enhanced(
+                ValidationError,
+                "Player must be delirious to respawn (lucidity must be -10 or below)",
+                operation="respawn_player_from_delirium_by_user_id",
+                user_id=user_id,
+                player_lucidity=current_lucidity,
+                details={"user_id": user_id, "player_lucidity": current_lucidity},
+                user_friendly="Player must be delirious to respawn",
+            )
+        return player, lucidity_record
+
+    async def respawn_player_from_delirium_by_user_id(
         self,
         user_id: str,
         session: "AsyncSession",
@@ -193,44 +233,9 @@ class PlayerRespawnWrapper:
         Raises:
             ValidationError: If player not found or not delirious
         """
-        from sqlalchemy import select
-        from sqlalchemy.orm import selectinload
+        player, lucidity_record = await self._load_player_for_delirium_respawn(session, user_id)
 
-        from ..models.lucidity import PlayerLucidity
-
-        # Look up player by user_id (not primary key player_id)
-        # Eagerly load user relationship to prevent N+1 queries
-        stmt = select(Player).options(selectinload(Player.user)).where(Player.user_id == user_id)
-        result = await session.execute(stmt)
-        player = result.scalar_one_or_none()
-        if not player:
-            log_and_raise_enhanced(
-                ValidationError,
-                "Player not found for delirium respawn",
-                operation="respawn_player_from_delirium_by_user_id",
-                user_id=user_id,
-                details={"user_id": user_id},
-                user_friendly="Player not found",
-            )
-
-        # Verify player is delirious (lucidity <= -10)
-        lucidity_record = await session.get(PlayerLucidity, player.player_id)
-        if not lucidity_record or lucidity_record.current_lcd > -10:
-            current_lucidity = lucidity_record.current_lcd if lucidity_record else None
-            log_and_raise_enhanced(
-                ValidationError,
-                "Player must be delirious to respawn (lucidity must be -10 or below)",
-                operation="respawn_player_from_delirium_by_user_id",
-                user_id=user_id,
-                player_lucidity=current_lucidity,
-                details={"user_id": user_id, "player_lucidity": current_lucidity},
-                user_friendly="Player must be delirious to respawn",
-            )
-
-        # Respawn the player from delirium
-        # Convert player.player_id to UUID (handles SQLAlchemy Column[str])
-        player_id_value = player.player_id
-        player_id_uuid = uuid.UUID(str(player_id_value))
+        player_id_uuid = uuid.UUID(str(player.player_id))
         success = await respawn_service.respawn_player_from_delirium(player_id_uuid, session)
         if not success:
             logger.error("Delirium respawn failed", player_id=player.player_id)
@@ -244,20 +249,14 @@ class PlayerRespawnWrapper:
                 user_friendly="Delirium respawn failed",
             )
 
-        # Get respawn room data
         respawn_room_id = player.current_room_id  # Updated by respawn_player_from_delirium
-        room = persistence.get_room_by_id(str(respawn_room_id))
-
-        if not room:
-            logger.warning("Respawn room not found", respawn_room_id=respawn_room_id)
-            room_data = {"id": respawn_room_id, "name": "Unknown Room"}
-        else:
-            room_data = room.to_dict()
-
-        # Get updated player state
+        # Reason: SERIALIZATION_BOUNDARY - persistence is Any per this class's own established,
+        # unsuppressed __init__(persistence: Any) convention.
+        # Appropriate because: consistent with the rest of this class; narrowing the constructor
+        # parameter is out of scope for this complexity-only extraction.
+        room_data = _resolve_respawn_room_data(persistence, respawn_room_id)  # pyright: ignore[reportAny]
         updated_stats = player.get_stats()
 
-        # Get updated lucidity
         await session.refresh(lucidity_record)
         updated_lucidity = lucidity_record.current_lcd
 

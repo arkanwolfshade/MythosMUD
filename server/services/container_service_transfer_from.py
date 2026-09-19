@@ -12,7 +12,7 @@ from uuid import UUID
 from ..models.container import ContainerComponent
 from ..models.player import Player
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.audit_logger import audit_logger
+from ..utils.audit_logger import ContainerInteractionEvent, audit_logger
 from ..utils.error_logging import log_and_raise
 from .container_service_helpers import (
     UNKNOWN_STACK,
@@ -151,16 +151,18 @@ class ContainerTransferFromMixin(ContainerTransferToMixin):
 
         try:
             audit_logger.log_container_interaction(
-                player_id=str(player.player_id),
-                player_name=str(player.name),
-                container_id=str(container_id),
-                event_type="container_transfer",
-                source_type=get_enum_value(container.source_type),
-                room_id=container.room_id,
-                direction="from_container",
-                item_id=item.get("item_id"),
-                item_name=item.get("item_name"),
-                success=True,
+                ContainerInteractionEvent(
+                    player_id=str(player.player_id),
+                    player_name=str(player.name),
+                    container_id=str(container_id),
+                    event_type="container_transfer",
+                    source_type=get_enum_value(container.source_type),
+                    room_id=container.room_id,
+                    direction="from_container",
+                    item_id=item.get("item_id"),
+                    item_name=item.get("item_name"),
+                    success=True,
+                )
             )
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Audit logging errors unpredictable, must not fail container operation
             logger.warning("Failed to log container transfer to audit log", error=str(e))
@@ -299,13 +301,15 @@ class ContainerTransferFromMixin(ContainerTransferToMixin):
             else container
         )
         audit_logger.log_container_interaction(
-            player_id=str(player_id),
-            player_name=str(player.name),
-            container_id=str(container_id),
-            event_type="container_loot_all",
-            source_type=get_enum_value(final_container.source_type),
-            room_id=final_container.room_id,
-            items_count=initial_items_count,
+            ContainerInteractionEvent(
+                player_id=str(player_id),
+                player_name=str(player.name),
+                container_id=str(container_id),
+                event_type="container_loot_all",
+                source_type=get_enum_value(final_container.source_type),
+                room_id=final_container.room_id,
+                items_count=initial_items_count,
+            )
         )
         return {
             "container": final_container.to_dict(),
