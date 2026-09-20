@@ -174,13 +174,12 @@ in progress, and each has a tracking issue rather than being described elsewhere
 if planned or underway:
 
 - **Party-safe combat/spell targeting**: `is_in_same_party` exists but nothing calls it (see §1
-  [BUG]). Deferred until the magic system matures enough to warrant wiring it in. Tracked in
-  GitHub issue: party members unprotected from hostile spells.
+  [BUG]). Deferred until the magic system matures enough to warrant wiring it in. Tracked in #880.
 - **Shared experience**: No XP pool or split on the `Party` dataclass; XP is awarded to a single
   killer only (`server/services/combat_event_handler.py`). Tracked in #20.
 - **Shared loot**: No mob loot/drop system exists at all yet (NPC death produces no corpse or
-  items); party loot rules are blocked on that being built first. Tracked in two GitHub issues
-  (mob loot/drop system; party loot rules, blocked on the former).
+  items); party loot rules are blocked on that being built first. Tracked in #877 (mob loot/drop
+  system) and #878 (party loot rules, blocked on #877).
 - **Party-based quests**: `QuestInstance` is keyed to a single `player_id`; no party awareness in
   `server/game/quest/`. Tracked in #20.
 - **Party size limits, leader transfer/promote**: Not built, not currently tracked in a separate

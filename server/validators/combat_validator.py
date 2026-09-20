@@ -139,9 +139,9 @@ class CombatValidator:
     # rejects every non-NPC target), so this guard is currently unreachable outside
     # its own unit tests. The one live friendly-fire gap is hostile spells
     # (spell_effects.py targeting a player), tracked separately pending the magic
-    # system maturing enough to warrant the guard. See GitHub issue: party members
-    # unprotected from hostile spells. Wire this method into that path (or its
-    # is_in_same_party check) when that issue is picked up.
+    # system maturing enough to warrant the guard. See #880. Wire this method into
+    # that path (or its
+    # is_in_same_party check) when #880 is picked up.
     def validate_can_attack_target(self, attacker_id: str, target_id: str) -> tuple[bool, str | None]:
         """
         Validate that attacker is allowed to attack target (e.g. not same party).
