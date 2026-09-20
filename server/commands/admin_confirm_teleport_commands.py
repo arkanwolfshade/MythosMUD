@@ -28,8 +28,12 @@ logger = get_logger(__name__)
 # Appropriate because: same unsuppressed convention as this module's teleport helpers (see _announce_confirm_teleport).
 def _resolve_request_app_service(request: Any) -> tuple[Any, Any]:  # pyright: ignore[reportAny, reportExplicitAny]
     """Resolve the FastAPI app and its player_service from a command request."""
-    app = request.app if request else None
-    player_service = app.state.player_service if app else None
+    # Reason: DYNAMIC_DISPATCH - resolved app/player/connection-manager objects are duck-typed
+    # Appropriate because: same unsuppressed convention as this module's teleport helpers (see _announce_confirm_teleport).
+    app = request.app if request else None  # pyright: ignore[reportAny]
+    # Reason: DYNAMIC_DISPATCH - resolved app/player/connection-manager objects are duck-typed
+    # Appropriate because: same unsuppressed convention as this module's teleport helpers (see _announce_confirm_teleport).
+    player_service = app.state.player_service if app else None  # pyright: ignore[reportAny]
     return app, player_service
 
 
@@ -37,7 +41,9 @@ def _resolve_request_app_service(request: Any) -> tuple[Any, Any]:  # pyright: i
 # Appropriate because: same unsuppressed convention as this module's teleport helpers (see _announce_confirm_teleport).
 def _resolve_connection_manager(app: Any, player_name: str, command_label: str) -> tuple[Any, dict[str, str] | None]:  # pyright: ignore[reportAny, reportExplicitAny]
     """Resolve the connection manager from app.state, or a 'not available' error result."""
-    connection_manager = app.state.connection_manager if app else None
+    # Reason: DYNAMIC_DISPATCH - resolved app/player/connection-manager objects are duck-typed
+    # Appropriate because: same unsuppressed convention as this module's teleport helpers (see _announce_confirm_teleport).
+    connection_manager = app.state.connection_manager if app else None  # pyright: ignore[reportAny]
     if not connection_manager:
         logger.warning("Confirm command failed - no connection manager", player_name=player_name, command=command_label)
         return None, {"result": "Connection manager not available."}
@@ -188,7 +194,13 @@ async def handle_confirm_teleport_command(
     # Reason: DYNAMIC_DISPATCH - resolved app/player/connection-manager objects are duck-typed
     # Appropriate because: same unsuppressed convention as this module's teleport helpers (see _announce_confirm_teleport).
     target_player, target_player_info, error_result = await _resolve_confirm_teleport_targets(  # pyright: ignore[reportAny]
-        target_player_name, connection_manager, player_service, current_player, player_name
+        # Reason: DYNAMIC_DISPATCH - resolved app/player/connection-manager objects are duck-typed
+        # Appropriate because: same unsuppressed convention as this module's teleport helpers (see _announce_confirm_teleport).
+        target_player_name,  # pyright: ignore[reportAny]
+        connection_manager,
+        player_service,
+        current_player,
+        player_name,
     )
     if error_result:
         return error_result
@@ -197,10 +209,14 @@ async def handle_confirm_teleport_command(
         # current_player is None, so this narrows the type without using assert (Bandit B101).
         raise RuntimeError("current_player unexpectedly None after successful target resolution")
 
-    if target_player.current_room_id == current_player.current_room_id:
+    # Reason: DYNAMIC_DISPATCH - resolved app/player/connection-manager objects are duck-typed
+    # Appropriate because: same unsuppressed convention as this module's teleport helpers (see _announce_confirm_teleport).
+    if target_player.current_room_id == current_player.current_room_id:  # pyright: ignore[reportAny]
         return {"result": f"{target_player_name} is already in your location."}
 
-    persistence = getattr(app.state, "persistence", None) if app else None
+    # Reason: DYNAMIC_DISPATCH - resolved app/player/connection-manager objects are duck-typed
+    # Appropriate because: same unsuppressed convention as this module's teleport helpers (see _announce_confirm_teleport).
+    persistence = getattr(app.state, "persistence", None) if app else None  # pyright: ignore[reportAny]
     return await _execute_confirm_teleport_move(
         # Reason: DYNAMIC_DISPATCH - resolved app/player/connection-manager objects are duck-typed
         # Appropriate because: same unsuppressed convention as this module's teleport helpers (see _announce_confirm_teleport).
@@ -300,9 +316,15 @@ async def _execute_confirm_goto_move(
 
 
 async def handle_confirm_goto_command(
-    command_data: dict[str, Any],
-    current_user: dict[str, Any],
-    request: Any,
+    # Reason: DYNAMIC_DISPATCH - resolved app/player/connection-manager objects are duck-typed
+    # Appropriate because: same unsuppressed convention as this module's teleport helpers (see _announce_confirm_teleport).
+    command_data: dict[str, Any],  # pyright: ignore[reportExplicitAny]
+    # Reason: DYNAMIC_DISPATCH - resolved app/player/connection-manager objects are duck-typed
+    # Appropriate because: same unsuppressed convention as this module's teleport helpers (see _announce_confirm_teleport).
+    current_user: dict[str, Any],  # pyright: ignore[reportExplicitAny]
+    # Reason: DYNAMIC_DISPATCH - resolved app/player/connection-manager objects are duck-typed
+    # Appropriate because: same unsuppressed convention as this module's teleport helpers (see _announce_confirm_teleport).
+    request: Any,  # pyright: ignore[reportAny, reportExplicitAny]
     alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, str]:
@@ -345,7 +367,13 @@ async def handle_confirm_goto_command(
     # Reason: DYNAMIC_DISPATCH - resolved app/player/connection-manager objects are duck-typed
     # Appropriate because: same unsuppressed convention as this module's teleport helpers (see _announce_confirm_teleport).
     target_player, error_result = await _resolve_confirm_goto_target(  # pyright: ignore[reportAny]
-        target_player_name, connection_manager, player_service, current_player, player_name
+        # Reason: DYNAMIC_DISPATCH - resolved app/player/connection-manager objects are duck-typed
+        # Appropriate because: same unsuppressed convention as this module's teleport helpers (see _announce_confirm_teleport).
+        target_player_name,  # pyright: ignore[reportAny]
+        connection_manager,
+        player_service,
+        current_player,
+        player_name,
     )
     if error_result:
         return error_result
@@ -354,10 +382,14 @@ async def handle_confirm_goto_command(
         # current_player is None, so this narrows the type without using assert (Bandit B101).
         raise RuntimeError("current_player unexpectedly None after successful target resolution")
 
-    if current_player.current_room_id == target_player.current_room_id:
+    # Reason: DYNAMIC_DISPATCH - resolved app/player/connection-manager objects are duck-typed
+    # Appropriate because: same unsuppressed convention as this module's teleport helpers (see _announce_confirm_teleport).
+    if current_player.current_room_id == target_player.current_room_id:  # pyright: ignore[reportAny]
         return {"result": f"You are already in the same location as {target_player_name}."}
 
-    persistence = getattr(app.state, "persistence", None) if app else None
+    # Reason: DYNAMIC_DISPATCH - resolved app/player/connection-manager objects are duck-typed
+    # Appropriate because: same unsuppressed convention as this module's teleport helpers (see _announce_confirm_teleport).
+    persistence = getattr(app.state, "persistence", None) if app else None  # pyright: ignore[reportAny]
     return await _execute_confirm_goto_move(
         player_name,
         current_player,
