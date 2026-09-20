@@ -1,6 +1,6 @@
 # Party Subsystem Design
 
-**Version 1.1.0** · MythosMUD · 2026-08-28
+**Version 1.2.0** · MythosMUD · 2026-09-20
 
 ---
 
@@ -18,8 +18,15 @@ Read `[NOTE]` only if additional context is needed.
 The party subsystem provides in-memory, ephemeral groups: a leader can form a party, invite
 (same-room players, with accept/decline), kick, and disband; members can leave. State is not
 persisted; disconnect removes the player from their party and disbands the party if they were
-leader. Party invites use a 60-second TTL and party_invite event to the target; combat uses
-is_in_same_party to block attacking party members. PartyUpdated events are emitted for client sync.
+leader. Party invites use a 60-second TTL and party_invite event to the target. PartyUpdated
+events are emitted for client sync.
+
+**[BUG]** `CombatValidator.is_in_same_party` (`server/validators/combat_validator.py`) exists as
+a same-party check but has no production caller — melee player-vs-player combat does not exist
+(non-NPC targets are rejected outright), so nothing ever calls it outside its own unit tests.
+Friendly fire between party members is **not currently blocked** anywhere. The one live gap is
+hostile spells targeting a player (`server/game/magic/spell_effects.py`), which has no party
+check either. See §9 "Not implemented" for tracking.
 
 ## 2. Architecture
 
@@ -75,8 +82,8 @@ flowchart LR
   request_party_invite (sends party_invite event), accept_party_invite, decline_party_invite,
   get_party_for_player, get_party_members, is_in_same_party. Emits PartyUpdated; on_player_
   disconnect cleans state and notifies.
-- **Combat**: CombatValidator uses party_service.is_in_same_party to block attacking a party
-  member (when party-friendly rules apply).
+- **Combat**: CombatValidator accepts a party_service and exposes is_in_same_party for a
+  same-party attack check, but nothing calls it in production — see §1 [BUG] and §9.
 - **ChatService**: send_party_message for party chat (NATS/room-scoped to party).
 
 ## 3. Key design decisions
@@ -117,8 +124,8 @@ flowchart LR
 4. **party list** – get_party_for_player; list members with (leader) suffix; return formatted.
 5. **party &lt;message&gt;** – get_party_for_player; chat_service.send_party_message(player_id,
    message, party_id).
-6. **Combat** – Before applying attack, CombatValidator checks is_in_same_party(attacker, target);
-   if true, block with "cannot attack party member" (or equivalent).
+6. **Combat (not wired)** – CombatValidator.is_in_same_party(attacker, target) exists to block
+   attacking a party member, but no combat or spell path calls it. See §1 [BUG] and §9.
 
 ## 6. Developer guide
 
@@ -142,8 +149,10 @@ flowchart LR
   kicked first.
 - **Invite not received**: Check party*invite event is sent via connection_manager.send_personal*
   message; client must handle event type.
-- **Combat allowing party attack**: Ensure CombatValidator receives party_service and calls
-  is_in_same_party; check party_service is same instance as command layer.
+- **Party members can attack each other**: This is current behavior, not a bug to fix locally.
+  `is_in_same_party` is never called (no melee PvP, spell path unguarded) — see §1 [BUG]. Do not
+  "fix" this by re-wiring the validator without also confirming the target issue in §9 is being
+  worked; wiring it half-done for one call site but not others creates an inconsistent rule.
 
 See also [SUBSYSTEM_COMBAT_DESIGN.md](SUBSYSTEM_COMBAT_DESIGN.md) and
 [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc). Archived:
@@ -156,7 +165,30 @@ See also [SUBSYSTEM_COMBAT_DESIGN.md](SUBSYSTEM_COMBAT_DESIGN.md) and
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md)
 - [EVENT_OWNERSHIP_MATRIX.md](../EVENT_OWNERSHIP_MATRIX.md)
 
-## 9. Changelog
+## 9. Not implemented
+
+**[SPEC]**
+
+The party subsystem is formation, management, and chat only. The following are not built, are not
+in progress, and each has a tracking issue rather than being described elsewhere in this doc as
+if planned or underway:
+
+- **Party-safe combat/spell targeting**: `is_in_same_party` exists but nothing calls it (see §1
+  [BUG]). Deferred until the magic system matures enough to warrant wiring it in. Tracked in
+  GitHub issue: party members unprotected from hostile spells.
+- **Shared experience**: No XP pool or split on the `Party` dataclass; XP is awarded to a single
+  killer only (`server/services/combat_event_handler.py`). Tracked in #20.
+- **Shared loot**: No mob loot/drop system exists at all yet (NPC death produces no corpse or
+  items); party loot rules are blocked on that being built first. Tracked in two GitHub issues
+  (mob loot/drop system; party loot rules, blocked on the former).
+- **Party-based quests**: `QuestInstance` is keyed to a single `player_id`; no party awareness in
+  `server/game/quest/`. Tracked in #20.
+- **Party size limits, leader transfer/promote**: Not built, not currently tracked in a separate
+  issue.
+- **Persistence across restart**: By design, not planned. Parties are intentionally ephemeral
+  (§3); this is not a gap to fill.
+
+## 10. Changelog
 
 **[SPEC]**
 
@@ -164,3 +196,4 @@ See also [SUBSYSTEM_COMBAT_DESIGN.md](SUBSYSTEM_COMBAT_DESIGN.md) and
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
 | 1.1.0 | 2026-08-28 | Fix 2 broken component links (wrong depth) (#695) |
+| 1.2.0 | 2026-09-20 | Correct false claim that combat/spells enforce is_in_same_party (they don't — no caller exists); add §9 Not implemented (#17 audit close) |
