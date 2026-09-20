@@ -50,6 +50,7 @@ test.describe('Catalog visibility', () => {
         .or(popup.getByText('Loading catalog...'))
         .or(popup.getByText('Not authenticated', { exact: false }))
         .or(popup.getByRole('heading', { name: 'Error' }))
+        .first()
     ).toBeVisible({ timeout: 15000 });
 
     await expect(popup.getByRole('heading', { name: 'Item Catalog' })).toBeVisible({
