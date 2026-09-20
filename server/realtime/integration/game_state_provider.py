@@ -44,7 +44,6 @@ class _PlayerServiceLike(Protocol):
 
     async def convert_player_to_schema(self, player: object) -> object:
         """Convert a Player model to its client-facing schema representation."""
-        ...
 
 
 class _AsyncPersistenceLike(Protocol):
@@ -52,7 +51,6 @@ class _AsyncPersistenceLike(Protocol):
 
     async def get_player_by_id(self, player_id: uuid.UUID) -> object:
         """Look up a player by UUID, returning None if not found."""
-        ...
 
 
 def _call_dynamic_method(obj: object, method_name: str, **kwargs: object) -> dict[str, object]:
