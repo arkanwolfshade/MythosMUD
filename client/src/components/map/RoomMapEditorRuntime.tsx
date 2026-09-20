@@ -295,7 +295,30 @@ function RoomMapEditorLoadedView({ data, editing, selection, modals, onRecalcula
       />
     </div>
   );
-} // lizard: allow nloc (RoomMapEditor below; lizard's TSX reader attributes its start to this line, see #787)
+}
+
+interface RoomMapEditorPlaceholderProps {
+  className: string;
+  messageClassName: string;
+  message: React.ReactNode;
+  action?: { label: string; onClick: () => void };
+}
+
+function RoomMapEditorPlaceholder({ className, messageClassName, message, action }: RoomMapEditorPlaceholderProps) {
+  return (
+    <div className={className}>
+      <div className={messageClassName}>{message}</div>
+      {action && (
+        <button
+          onClick={action.onClick}
+          className="px-4 py-2 bg-mythos-terminal-primary text-white rounded hover:bg-mythos-terminal-primary/80"
+        >
+          {action.label}
+        </button>
+      )}
+    </div>
+  );
+}
 
 export function RoomMapEditor(props: RoomMapEditorProps) {
   const data = useRoomMapEditorData(props);
@@ -324,41 +347,31 @@ export function RoomMapEditor(props: RoomMapEditorProps) {
 
   if (data.isLoading) {
     return (
-      <div className="flex items-center justify-center h-full w-full bg-mythos-terminal-background">
-        <div className="text-mythos-terminal-text">Loading map...</div>
-      </div>
+      <RoomMapEditorPlaceholder
+        className="flex items-center justify-center h-full w-full bg-mythos-terminal-background"
+        messageClassName="text-mythos-terminal-text"
+        message="Loading map..."
+      />
     );
   }
   if (data.error) {
     return (
-      <div className="flex flex-col items-center justify-center h-full w-full bg-mythos-terminal-background p-4">
-        <div className="text-mythos-terminal-error mb-4">Error: {data.error}</div>
-        <button
-          onClick={() => data.refetch()}
-          className="px-4 py-2 bg-mythos-terminal-primary text-white rounded hover:bg-mythos-terminal-primary/80"
-        >
-          Retry
-        </button>
-      </div>
+      <RoomMapEditorPlaceholder
+        className="flex flex-col items-center justify-center h-full w-full bg-mythos-terminal-background p-4"
+        messageClassName="text-mythos-terminal-error mb-4"
+        message={`Error: ${data.error}`}
+        action={{ label: 'Retry', onClick: () => data.refetch() }}
+      />
     );
   }
   if (data.filteredRooms.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-full w-full bg-mythos-terminal-background p-4">
-        <div className="text-mythos-terminal-text mb-4">
-          {data.searchQuery ? 'No rooms found matching your search.' : 'No rooms available in this area.'}
-        </div>
-        {data.searchQuery && (
-          <button
-            onClick={() => {
-              data.setSearchQuery('');
-            }}
-            className="px-4 py-2 bg-mythos-terminal-primary text-white rounded hover:bg-mythos-terminal-primary/80"
-          >
-            Clear Search
-          </button>
-        )}
-      </div>
+      <RoomMapEditorPlaceholder
+        className="flex flex-col items-center justify-center h-full w-full bg-mythos-terminal-background p-4"
+        messageClassName="text-mythos-terminal-text mb-4"
+        message={data.searchQuery ? 'No rooms found matching your search.' : 'No rooms available in this area.'}
+        action={data.searchQuery ? { label: 'Clear Search', onClick: () => data.setSearchQuery('') } : undefined}
+      />
     );
   }
 
