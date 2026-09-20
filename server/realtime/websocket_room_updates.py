@@ -177,7 +177,71 @@ async def update_player_room_subscription(
     player.current_room_id = room_id
 
 
-async def broadcast_room_update(  # pylint: disable=too-many-locals,too-many-statements  # Reason: Broadcast flow needs room/fallback/connection state; splitting would obscure control flow. Many sequential steps (resolve manager, load room, occupants, build event, broadcast) exceed statement limit.  # lizard: allow ccn,nloc (sequential broadcast pipeline already reasoned about above; further splitting would obscure control flow across resolve/fallback/occupants/broadcast stages, see #787)
+def _resolve_broadcast_connection_manager(
+    connection_manager: "ConnectionManager | None",
+) -> "tuple[ConnectionManager, object] | None":
+    """Resolve the connection manager and its async persistence layer, or None if unavailable."""
+    if connection_manager is None:
+        resolved = connection_manager_from_running_app()
+        if resolved is None:
+            logger.warning("Connection manager not available for room update")
+            return None
+        connection_manager = cast("ConnectionManager", resolved)
+
+    async_persistence: object = getattr(connection_manager, "async_persistence", None)
+    if not async_persistence:
+        logger.warning("Async persistence layer not available for room update")
+        return None
+
+    return connection_manager, async_persistence
+
+
+async def _broadcast_occupants_event(
+    connection_manager: "ConnectionManager",
+    broadcast_room_id: str,
+    occ_payload: RoomOccupancyPayload,
+    event_room_id: str | None = None,
+) -> None:
+    """Build and broadcast a room_occupants event for the given room."""
+    occ_event = build_event(
+        "room_occupants",
+        occ_payload,
+        room_id=event_room_id or broadcast_room_id,
+    )
+    _ = await connection_manager.broadcast_to_room(broadcast_room_id, occ_event)
+
+
+async def _broadcast_full_room_update(
+    connection_manager: "ConnectionManager",
+    room: "Room",
+    room_id: str,
+    player_id: str,
+    occupant_names: list[str],
+    player_occupant_names: list[str],
+    npc_occupants: list[str],
+    occ_payload: RoomOccupancyPayload,
+) -> None:
+    """Build and broadcast the room-update event, then the room_occupants event."""
+    update_event = await build_room_update_event(
+        room,
+        room_id,
+        player_id,
+        occupant_names,
+        connection_manager,
+        players=player_occupant_names,
+        npcs=npc_occupants,
+    )
+
+    logger.debug("Broadcasting room update to room", room_id=room_id)
+    _ = await connection_manager.broadcast_to_room(room_id, update_event)
+    logger.debug("Room update broadcast completed for room", room_id=room_id)
+
+    event_room_id = getattr(room, "id", None) or room_id
+    await _broadcast_occupants_event(connection_manager, room_id, occ_payload, event_room_id=event_room_id)
+    logger.debug("Room occupants broadcast completed for room", room_id=room_id)
+
+
+async def broadcast_room_update(
     player_id: str, room_id: str, connection_manager: "ConnectionManager | None" = None
 ) -> None:
     """
@@ -190,17 +254,10 @@ async def broadcast_room_update(  # pylint: disable=too-many-locals,too-many-sta
     """
     logger.debug("broadcast_room_update called", player_id=player_id, room_id=room_id)
     try:
-        if connection_manager is None:
-            resolved = connection_manager_from_running_app()
-            if resolved is None:
-                logger.warning("Connection manager not available for room update")
-                return
-            connection_manager = cast("ConnectionManager", resolved)
-
-        async_persistence = getattr(connection_manager, "async_persistence", None) if connection_manager else None
-        if not async_persistence:
-            logger.warning("Async persistence layer not available for room update")
+        resolved_context = _resolve_broadcast_connection_manager(connection_manager)
+        if resolved_context is None:
             return
+        connection_manager, async_persistence = resolved_context
 
         # async_persistence is Any (pre-existing, untyped persistence-facade boundary), so
         # _resolve_room_with_fallback's return is too; cast it here, once, rather than letting
@@ -225,12 +282,7 @@ async def broadcast_room_update(  # pylint: disable=too-many-locals,too-many-sta
         }
         if not room:
             logger.warning("Room not found for update - sending room_occupants only", room_id=effective_room_id)
-            occ_event = build_event(
-                "room_occupants",
-                occ_payload,
-                room_id=effective_room_id,
-            )
-            await connection_manager.broadcast_to_room(effective_room_id, occ_event)
+            await _broadcast_occupants_event(connection_manager, effective_room_id, occ_payload)
             logger.debug("Room occupants broadcast (no room cache) completed", room_id=effective_room_id)
             return
 
@@ -261,28 +313,16 @@ async def broadcast_room_update(  # pylint: disable=too-many-locals,too-many-sta
             )
             return
 
-        update_event = await build_room_update_event(
+        await _broadcast_full_room_update(
+            connection_manager,
             room,
             room_id,
             player_id,
             occupant_names,
-            connection_manager,
-            players=player_occupant_names,
-            npcs=npc_occupants,
-        )
-
-        logger.debug("Broadcasting room update to room", room_id=room_id)
-        await connection_manager.broadcast_to_room(room_id, update_event)
-        logger.debug("Room update broadcast completed for room", room_id=room_id)
-
-        event_room_id = getattr(room, "id", None) or room_id
-        occ_event = build_event(
-            "room_occupants",
+            player_occupant_names,
+            npc_occupants,
             occ_payload,
-            room_id=event_room_id,
         )
-        await connection_manager.broadcast_to_room(room_id, occ_event)
-        logger.debug("Room occupants broadcast completed for room", room_id=room_id)
 
     except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
         logger.error("Error broadcasting room update for room", room_id=room_id, error=str(e))

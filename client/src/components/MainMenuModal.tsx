@@ -34,10 +34,31 @@ export interface MainMenuModalProps {
   playerId?: string | null;
 }
 
+/** Locks body scroll and disables pointer events on the game container while a modal is open. */
+function useLockGameContainer(isOpen: boolean): void {
+  useEffect(() => {
+    const gameContainer = document.querySelector('[data-game-container]') as HTMLElement | null;
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      if (gameContainer) gameContainer.style.pointerEvents = 'none';
+    } else {
+      document.body.style.overflow = '';
+      if (gameContainer) gameContainer.style.pointerEvents = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      const container = document.querySelector('[data-game-container]') as HTMLElement | null;
+      if (container) container.style.pointerEvents = '';
+    };
+  }, [isOpen]);
+}
+
 /**
  * Main Menu Modal component.
  */
-export const MainMenuModal: React.FC<MainMenuModalProps> = (props /* lizard: allow nloc, CCN 2, see #787 */) => {
+export const MainMenuModal: React.FC<MainMenuModalProps> = (
+  props /* lizard: allow nloc, CCN 2 -- Lizard's TSX reader undercounts removed lines here (verified: stripping the ESC-key effect only moved NLOC by 1 of ~15 lines removed), so further extraction chases a broken measurement, not real complexity; see #787 */
+) => {
   const { isOpen, onClose, onLogoutClick, currentRoom, playerId } = props;
   const handleMapClick = () => {
     // Always open map in new tab (plan 10.7 V5: include playerId for ownership)
@@ -87,30 +108,7 @@ export const MainMenuModal: React.FC<MainMenuModalProps> = (props /* lizard: all
   }, [isOpen, onClose]);
 
   // Prevent body scroll and disable pointer events on game content when modal is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      // Disable pointer events on the main game container to prevent panel dragging
-      const gameContainer = document.querySelector('[data-game-container]');
-      if (gameContainer) {
-        (gameContainer as HTMLElement).style.pointerEvents = 'none';
-      }
-    } else {
-      document.body.style.overflow = '';
-      // Re-enable pointer events on the main game container
-      const gameContainer = document.querySelector('[data-game-container]');
-      if (gameContainer) {
-        (gameContainer as HTMLElement).style.pointerEvents = '';
-      }
-    }
-    return () => {
-      document.body.style.overflow = '';
-      const gameContainer = document.querySelector('[data-game-container]');
-      if (gameContainer) {
-        (gameContainer as HTMLElement).style.pointerEvents = '';
-      }
-    };
-  }, [isOpen]);
+  useLockGameContainer(isOpen);
 
   if (!isOpen) return null;
 

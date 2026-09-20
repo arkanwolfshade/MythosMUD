@@ -13,7 +13,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.config.models import NATSConfig
-from server.services.nats_service import JsonMap, NATSService
+from server.services.nats_service import NATSService
+from server.services.nats_service_subscriptions import JsonMap
 
 
 @pytest.fixture
