@@ -135,20 +135,18 @@ class CombatValidator:
         self.attack_aliases = _ATTACK_ALIASES
         self.error_messages = _ERROR_MESSAGES
 
+    # ponytail: no production caller — melee PvP does not exist (combat_handler.py
+    # rejects every non-NPC target), so this guard is currently unreachable outside
+    # its own unit tests. The one live friendly-fire gap is hostile spells
+    # (spell_effects.py targeting a player), tracked separately pending the magic
+    # system maturing enough to warrant the guard. See GitHub issue: party members
+    # unprotected from hostile spells. Wire this method into that path (or its
+    # is_in_same_party check) when that issue is picked up.
     def validate_can_attack_target(self, attacker_id: str, target_id: str) -> tuple[bool, str | None]:
         """
         Validate that attacker is allowed to attack target (e.g. not same party).
         Hook for party-friendly rules: when party_service is set and both players
         are in the same party, returns (False, thematic_message).
-
-        # ponytail: no production caller — melee PvP does not exist
-        # (combat_handler.py rejects every non-NPC target), so this guard is
-        # currently unreachable outside its own unit tests. The one live
-        # friendly-fire gap is hostile spells (spell_effects.py targeting a
-        # player), tracked separately pending the magic system maturing enough
-        # to warrant the guard. See GitHub issue: party members unprotected
-        # from hostile spells. Wire this method into that path (or its
-        # is_in_same_party check) when that issue is picked up.
 
         Args:
             attacker_id: Attacker player ID (str or UUID string)
