@@ -168,17 +168,6 @@ engines:
       # _PlayerServiceLike/_AsyncPersistenceLike are single-method Protocol duck-types (issue #787);
       # R0903 is expected for a Protocol naming one method.
       - "server/realtime/integration/game_state_provider.py"
-      # PyLintPython3_R0801 "Similar lines in 2 files" on the module docstring (lines 1-6), no
-      # twin block reproducible locally (min-similarity-lines=4 pylint scans of these files,
-      # their same-named test modules, and the whole server tree found no match) -- same class of
-      # false positive as container_service_access.py's existing R0801 ignore below. exclude_paths
-      # (not ignore_patterns, which Cloud does not honor for Pylint either) since the twin can't be
-      # isolated to suppress only R0801. See issue #787.
-      - "server/app/task_registry.py"
-      - "server/realtime/monitoring/__init__.py"
-      - "server/api/admin/subject_controller.py"
-      - "server/game/magic/magic_healing_events.py"
-      - "server/game/player_creation_service.py"
       - "graphify-out/**"
       - "**/graphify-out/**"
       - "**/.venv/**"
@@ -208,6 +197,26 @@ ignore_patterns:
   - pattern_id: "PyLintPython3_R0801"
     file_paths:
       - "server/services/container_service_access.py"
+  # "Similar lines in 2 files" on the module docstring (lines 1-6); no twin block reproducible
+  # locally (min-similarity-lines=4 pylint scans of these files, their same-named test modules,
+  # and the whole server tree found no match). Confirmed ignore_patterns IS honored for
+  # PyLintPython3_R0801 on Codacy Cloud (container_service_access.py above is not in the live
+  # issue list) -- unlike Lizard patterns, where exclude_paths is required instead. See #787.
+  - pattern_id: "PyLintPython3_R0801"
+    file_paths:
+      - "server/app/task_registry.py"
+      - "server/realtime/monitoring/__init__.py"
+      - "server/api/admin/subject_controller.py"
+      - "server/game/magic/magic_healing_events.py"
+      - "server/game/player_creation_service.py"
+  # Mixin extracted from nats_service (NATSServiceSubscriptionMixin); shares the same
+  # instance-attribute type-annotation block as NATSService's own class body -- the standard
+  # PEP 544 mixin idiom (identical to nats_service_pool.py's NATSServicePoolMixin, same shape).
+  # Not a real duplication to eliminate; a shared base Protocol just to dedupe 6 lines of type
+  # annotations would be over-engineering for this. See #787.
+  - pattern_id: "PyLintPython3_R0801"
+    file_paths:
+      - "server/services/nats_service_subscriptions.py"
   # Bandit B101: Use of assert detected (acceptable in pytest - assert is the test API)
   # NOTE: Also configured in bandit.yml - see bandit.yml for native Bandit runs.
   # Multiple pattern_id variants for Codacy/Prospector (Bandit_B101, bandit.B101, etc.)
