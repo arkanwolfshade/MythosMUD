@@ -32,12 +32,29 @@ if [[ -f "${TAR_PATH}" ]]; then
 fi
 
 if [[ "${need_download}" -eq 1 ]]; then
-  curl -fsSL "${BASE_URL}/${ASSET}" -o "${TAR_PATH}"
-  ACTUAL=$(sha256sum "${TAR_PATH}" | awk '{print $1}')
+  # ponytail: curl retries for transient CDN/gateway failures (e.g. HTTP 504); bump counts if CI still flakes.
+  tmp_file="${TAR_PATH}.tmp.$$"
+  trap 'rm -f "${tmp_file}"' EXIT
+  curl \
+    --fail \
+    --silent \
+    --show-error \
+    --location \
+    --retry 5 \
+    --retry-delay 5 \
+    --retry-max-time 180 \
+    --retry-all-errors \
+    --connect-timeout 20 \
+    --max-time 180 \
+    --output "${tmp_file}" \
+    "${BASE_URL}/${ASSET}"
+  ACTUAL=$(sha256sum "${tmp_file}" | awk '{print $1}')
   if [[ "${ACTUAL}" != "${EXPECTED_SHA256}" ]]; then
     echo "::error::SHA256 mismatch for uv tarball (expected ${EXPECTED_SHA256}, got ${ACTUAL})" >&2
     exit 1
   fi
+  mv "${tmp_file}" "${TAR_PATH}"
+  trap - EXIT
 fi
 
 rm -rf "${CACHE_DIR:?}/${UV_EXTRACT_SUBDIR:?}"
