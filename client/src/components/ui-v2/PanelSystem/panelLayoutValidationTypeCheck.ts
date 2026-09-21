@@ -1,24 +1,15 @@
 /**
  * Type checks for panel layout validation. In a separate module so Lizard attributes
  * cyclomatic complexity here rather than panelLayoutValidation.ts (limit 8).
+ *
+ * Position/size guards live in panelLayoutValidationTypeCheckGuards.ts: Codacy lizard
+ * 1.17.x merges consecutive non-exported TS functions and was reporting isPanelPosition
+ * at CCN 13.
  */
 
-import type { PanelPosition, PanelSize, PanelState } from '../types';
+import type { PanelState } from '../types';
+import { isPanelPosition, isPanelSize, isRecord } from './panelLayoutValidationTypeCheckGuards';
 import { hasRequiredPanelStateTypes } from './panelLayoutValidationTypeCheckImpl';
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null;
-}
-
-function isPanelPosition(value: unknown): value is PanelPosition {
-  if (!isRecord(value)) return false;
-  return typeof value.x === 'number' && typeof value.y === 'number';
-}
-
-function isPanelSize(value: unknown): value is PanelSize {
-  if (!isRecord(value)) return false;
-  return typeof value.width === 'number' && typeof value.height === 'number';
-}
 
 function isPanelState(value: unknown): value is PanelState {
   if (!isRecord(value)) return false;

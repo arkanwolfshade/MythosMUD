@@ -21,6 +21,7 @@
     "test:e2e:runtime:headed": "playwright test --config=tests/e2e/playwright.runtime.config.ts --headed",
     "test:e2e:runtime:debug": "playwright test --config=tests/e2e/playwright.runtime.config.ts --debug",
     "test:e2e:runtime:ui": "playwright test --config=tests/e2e/playwright.runtime.config.ts --ui",
+    "typecheck": "tsc -b",
     "knip": "knip",
     "dead-code": "knip"
   },
