@@ -37,7 +37,7 @@
 - [ValidationRule](ValidationRule.md) (7 shared connections)
 - [TestValidatorComponents](TestValidatorComponents.md) (4 shared connections)
 - [TestHierarchicalSchema](TestHierarchicalSchema.md) (3 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

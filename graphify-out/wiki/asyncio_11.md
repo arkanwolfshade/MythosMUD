@@ -1,43 +1,57 @@
 # asyncio
 
-> 13 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **asyncio** (15 connections)
-- **test_broadcast_combat_attack()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_attack_logs_error_on_failed_deliveries()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_attack_no_attacker_id()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_attack_personal_message_error()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_player_died()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_send_dp_decay_message_error()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_player_died broadcasts death message.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_combat_attack without attacker_id.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test send_dp_decay_message handles errors gracefully.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **broadcast_combat_attack surfaces a partial room-broadcast failure at error…** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_combat_attack broadcasts attack event.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_combat_attack handles personal message errors gracefully.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **asyncio** (38 connections)
+- **test_get_adjacent_rooms_target_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_local_chat_scope()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_local_chat_scope_source_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_info_success()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_occupants_with_cache_dict()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_occupants_without_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_persistence_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_with_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_lookup_explored_stable_ids_calls_procedure_and_binds_uuid_list()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_validate_player_in_room_cache_dict()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_validate_player_in_room_with_cache_false()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room() returns None when room not found in persistence.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_adjacent_rooms() handles target room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_local_chat_scope() returns current room and adjacent rooms.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_local_chat_scope() returns empty list when source room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room_occupants() handles room dict.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room_occupants() falls back to persistence.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test validate_player_in_room() returns False when player not in room.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test validate_player_in_room() handles room dict.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room_info() returns comprehensive room information.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test _lookup_explored_stable_ids() calls get_room_stable_ids_by_uuids with the…** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room() uses cache when available.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room() returns None when room not in cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (6 shared connections)
-- [test_broadcast_combat_attack_with_attacker_id](test_broadcast_combat_attack_with_attacker_id.md) (1 shared connections)
-- [test_broadcast_combat_target_switch](test_broadcast_combat_target_switch.md) (1 shared connections)
-- [test_broadcast_player_death_personal_message_error](test_broadcast_player_death_personal_message_error.md) (1 shared connections)
-- [test_broadcast_player_mortally_wounded](test_broadcast_player_mortally_wounded.md) (1 shared connections)
-- [test_broadcast_player_mortally_wounded_no_attacker](test_broadcast_player_mortally_wounded_no_attacker.md) (1 shared connections)
-- [test_broadcast_player_mortally_wounded_personal_message_error](test_broadcast_player_mortally_wounded_personal_message_error.md) (1 shared connections)
-- [test_broadcast_player_mortally_wounded_with_attacker](test_broadcast_player_mortally_wounded_with_attacker.md) (1 shared connections)
-- [test_connection_manager_lazy_load_called](test_connection_manager_lazy_load_called.md) (1 shared connections)
-- [test_send_dp_decay_message](test_send_dp_decay_message.md) (1 shared connections)
+- [test_room_service.py](test_room_service.py.md) (12 shared connections)
+- [test_get_adjacent_rooms_no_exits](test_get_adjacent_rooms_no_exits.md) (1 shared connections)
+- [test_get_adjacent_rooms_null_exit](test_get_adjacent_rooms_null_exit.md) (1 shared connections)
+- [test_get_adjacent_rooms_source_not_found](test_get_adjacent_rooms_source_not_found.md) (1 shared connections)
+- [test_get_adjacent_rooms_success](test_get_adjacent_rooms_success.md) (1 shared connections)
+- [test_get_room_exits_no_exits](test_get_room_exits_no_exits.md) (1 shared connections)
+- [test_get_room_exits_room_not_found](test_get_room_exits_room_not_found.md) (1 shared connections)
+- [test_get_room_exits_success](test_get_room_exits_success.md) (1 shared connections)
+- [test_get_room_info_not_found](test_get_room_info_not_found.md) (1 shared connections)
+- [test_get_room_occupants_cache_not_found](test_get_room_occupants_cache_not_found.md) (1 shared connections)
+- [test_get_room_occupants_with_cache_room_object](test_get_room_occupants_with_cache_room_object.md) (1 shared connections)
+- [test_get_room_persistence_returns_dict](test_get_room_persistence_returns_dict.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
+- EXTRACTED: 62 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

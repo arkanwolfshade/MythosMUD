@@ -33,8 +33,12 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (7 shared connections)
-- [test_npc_utils.py](test_npc_utils.py.md) (3 shared connections)
+- [spawn_npc_via_population_controller](spawn_npc_via_population_controller.md) (2 shared connections)
+- [event_types.py](event_types.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [connection_manager.py](connection_manager.py.md) (2 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [test_npc_utils.py](test_npc_utils.py.md) (1 shared connections)
 
 ## Source Files
 

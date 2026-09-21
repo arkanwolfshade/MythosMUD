@@ -36,12 +36,10 @@
 - [ItemCatalogService](ItemCatalogService.md) (23 shared connections)
 - [test_item_catalog.py](test_item_catalog.py.md) (14 shared connections)
 - [item_catalog_repository.py](item_catalog_repository.py.md) (11 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [coerce_int](coerce_int.md) (2 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [Player](Player.md) (2 shared connections)
 - [get_username_from_user](get_username_from_user.md) (1 shared connections)
 - [AliasStorage](AliasStorage.md) (1 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
 - [command_service.py](command_service.py.md) (1 shared connections)
 
 ## Source Files

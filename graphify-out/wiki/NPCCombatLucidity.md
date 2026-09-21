@@ -1,23 +1,18 @@
 # NPCCombatLucidity
 
-> 71 nodes
+> 55 nodes
 
 ## Key Concepts
 
 - **NPCCombatLucidity** (33 connections) — `server/services/npc_combat_lucidity.py`
 - **ActiveLucidityService** (23 connections) — `server/services/active_lucidity_service.py`
-- **active_lucidity_service.py** (23 connections) — `server/services/active_lucidity_service.py`
 - **TestNPCCombatLucidity** (17 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **npc_combat_lucidity.py** (13 connections) — `server/services/npc_combat_lucidity.py`
-- **UnknownEncounterCategoryError** (9 connections) — `server/services/active_lucidity_service.py`
 - **.apply_encounter_lucidity_effect()** (9 connections) — `server/services/npc_combat_lucidity.py`
 - **._apply_loss_with_fallback()** (8 connections) — `server/services/npc_combat_lucidity.py`
 - **_EncounterCtx** (7 connections) — `server/services/npc_combat_lucidity.py`
 - **._apply_disturbing_fallback()** (7 connections) — `server/services/npc_combat_lucidity.py`
 - **._commit_loss()** (7 connections) — `server/services/npc_combat_lucidity.py`
-- **LucidityActionError** (6 connections) — `server/services/active_lucidity_service.py`
 - **Any** (6 connections)
-- **.__init__()** (5 connections) — `server/services/active_lucidity_service.py`
 - **._archetype_from_definition()** (4 connections) — `server/services/npc_combat_lucidity.py`
 - **._resolve_lucidity_category()** (4 connections) — `server/services/npc_combat_lucidity.py`
 - **.test_apply_encounter_lucidity_effect_success()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
@@ -29,21 +24,26 @@
 - **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
 - **.test_resolve_lucidity_category_aggressive_mob()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
 - **.test_resolve_lucidity_category_default()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- *... and 46 more nodes in this community*
+- **.test_resolve_lucidity_category_from_base_stats()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_from_behavior_config()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_from_mythos_tier()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_get_base_stats_exception()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_non_dict_stats()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (9 shared connections)
-- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (8 shared connections)
-- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (8 shared connections)
-- [.perform_recovery_action](perform_recovery_action.md) (5 shared connections)
-- [LucidityService](LucidityService.md) (5 shared connections)
-- [debrief_command.py](debrief_command.py.md) (4 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [DatabaseManager](DatabaseManager.md) (3 shared connections)
-- [PlayerLucidity](PlayerLucidity.md) (2 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [active_lucidity_service.py](active_lucidity_service.py.md) (6 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (5 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (4 shared connections)
+- [debrief_command.py](debrief_command.py.md) (2 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (2 shared connections)
+- [RoomDataValidator](RoomDataValidator.md) (2 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [LucidityService](LucidityService.md) (1 shared connections)
+- [get_async_session](get_async_session.md) (1 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -54,8 +54,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 154 (93%)
-- INFERRED: 12 (7%)
+- EXTRACTED: 108 (91%)
+- INFERRED: 11 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

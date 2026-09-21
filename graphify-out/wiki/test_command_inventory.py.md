@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [command.py](command.py.md) (18 shared connections)
+- [command.py](command.py.md) (19 shared connections)
 - [BaseCommand](BaseCommand.md) (9 shared connections)
 - [ValidationError](ValidationError.md) (8 shared connections)
-- [RoomService](RoomService.md) (1 shared connections)
 
 ## Source Files
 

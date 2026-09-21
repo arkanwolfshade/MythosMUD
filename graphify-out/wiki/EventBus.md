@@ -1,6 +1,6 @@
 # EventBus
 
-> 306 nodes
+> 130 nodes
 
 ## Key Concepts
 
@@ -8,63 +8,57 @@
 - **BaseEvent** (99 connections) — `server/events/event_types.py`
 - **test_event_bus.py** (59 connections) — `server/tests/unit/events/test_event_bus.py`
 - **asyncio** (28 connections)
-- **test_event_bus_lifecycle.py** (24 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **DistributedEventBus** (21 connections) — `server/events/distributed_event_bus.py`
 - **MockEventClass** (19 connections) — `server/tests/unit/events/test_event_bus.py`
-- **event_serialization.py** (19 connections) — `server/events/event_serialization.py`
-- **EventBusProcessingMixin** (18 connections) — `server/events/event_bus_processing.py`
-- **NATSEventBusBridge** (18 connections) — `server/events/nats_event_bridge.py`
-- **test_distributed_event_bus.py** (15 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **deserialize_event()** (14 connections) — `server/events/event_serialization.py`
-- **test_event_serialization.py** (14 connections) — `server/tests/unit/events/test_event_serialization.py`
-- **serialize_event()** (13 connections) — `server/events/event_serialization.py`
-- **nats_event_bridge.py** (13 connections) — `server/events/nats_event_bridge.py`
-- **distributed_event_bus.py** (11 connections) — `server/events/distributed_event_bus.py`
-- **asyncio** (11 connections)
-- **._handle_event_async()** (8 connections) — `server/events/event_bus_processing.py`
-- **.__init__()** (7 connections) — `server/time/tick_scheduler.py`
-- **_ExperienceEventBus** (6 connections) — `server/persistence/repositories/experience_repository.py`
 - **test_handle_event_async_async_subscriber_error()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
 - **test_handle_event_async_sync_subscriber_error()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
 - **test_handle_task_result_async_no_error()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
 - **test_handle_task_result_async_with_error()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
 - **test_inject_queue_full_and_invalid()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
-- *... and 281 more nodes in this community*
+- **test_queue_depth_grows_when_consumer_blocked()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
+- **._publish_in_test_mode()** (5 connections) — `server/events/event_bus_processing.py`
+- **test_async_subscriber_error_isolation()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_inject_dispatches_to_subscribers()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_publish()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_publish_multiple_subscribers()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_publish_no_subscribers()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_handle_event_async_no_subscribers()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_multiple_services_subscribe_same_events_integration()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_service_shutdown_removes_subscribers()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_shutdown_cleans_up_service_subscriptions()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
+- **._invoke_test_mode_subscriber()** (4 connections) — `server/events/event_bus_processing.py`
+- **.publish()** (4 connections) — `server/events/event_bus_processing.py`
+- **event_bus()** (4 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_get_all_subscriber_counts_multiple_types()** (4 connections) — `server/tests/unit/events/test_event_bus.py`
+- *... and 105 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (67 shared connections)
-- [NPCSpawningService](NPCSpawningService.md) (24 shared connections)
-- [NPCBase](NPCBase.md) (22 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (15 shared connections)
-- [combat_service.py](combat_service.py.md) (15 shared connections)
-- [PartyService](PartyService.md) (7 shared connections)
-- [NPCDied](NPCDied.md) (4 shared connections)
-- [ExperienceRepository](ExperienceRepository.md) (4 shared connections)
-- [test_room_sync_service.py](test_room_sync_service.py.md) (3 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
-- [async_persistence.py](async_persistence.py.md) (3 shared connections)
-- [CombatCommandHandler](CombatCommandHandler.md) (3 shared connections)
+- [event_types.py](event_types.py.md) (37 shared connections)
+- [NPCSpawningService](NPCSpawningService.md) (26 shared connections)
+- [get_logger](get_logger.md) (23 shared connections)
+- [test_event_bus_lifecycle.py](test_event_bus_lifecycle.py.md) (21 shared connections)
+- [NPCDefinition](NPCDefinition.md) (15 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (14 shared connections)
+- [event_serialization.py](event_serialization.py.md) (11 shared connections)
+- [CombatService](CombatService.md) (10 shared connections)
+- [PartyService](PartyService.md) (8 shared connections)
+- [DistributedEventBus](DistributedEventBus.md) (5 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (4 shared connections)
+- [NPCCombatIntegration](NPCCombatIntegration.md) (4 shared connections)
 
 ## Source Files
 
-- `server/events/distributed_event_bus.py`
 - `server/events/event_bus.py`
 - `server/events/event_bus_processing.py`
-- `server/events/event_serialization.py`
 - `server/events/event_types.py`
-- `server/events/nats_event_bridge.py`
-- `server/persistence/repositories/experience_repository.py`
-- `server/tests/unit/events/test_distributed_event_bus.py`
+- `server/realtime/connection_manager.py`
+- `server/services/player_respawn_service.py`
 - `server/tests/unit/events/test_event_bus.py`
-- `server/tests/unit/events/test_event_bus_lifecycle.py`
-- `server/tests/unit/events/test_event_serialization.py`
-- `server/time/tick_scheduler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 635 (82%)
-- INFERRED: 136 (18%)
+- EXTRACTED: 367 (75%)
+- INFERRED: 123 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

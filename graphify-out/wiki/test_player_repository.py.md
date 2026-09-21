@@ -1,40 +1,44 @@
 # test_player_repository.py
 
-> 16 nodes
+> 84 nodes
 
 ## Key Concepts
 
 - **test_player_repository.py** (47 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **asyncio** (26 connections)
+- **_make_mock_row()** (10 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **_ScalarResult** (6 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **_SessionCM** (6 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_save_player_allows_new_player()** (6 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_save_player_refuses_deleted_player()** (6 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **player_repository()** (5 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **_session_maker_double()** (5 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_name_success()** (5 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **mock_player()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_active_players_by_user_id_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_id_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_name_database_error()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_user_id_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_players_batch_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_players_by_user_id_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_players_in_room_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_list_players_database_error()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_list_players_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **test_player_repository_initialization_with_cache()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_get_player_by_name_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_player_repository_initialization()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_player_repository_initialization_with_event_bus()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_soft_delete_player_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_validate_and_fix_player_room_invalid()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_validate_and_fix_player_room_valid()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Unit tests for player repository. Tests the PlayerRepository class which…** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test PlayerRepository initializes correctly.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test PlayerRepository initializes with room cache.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test PlayerRepository initializes with event bus.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test validate_and_fix_player_room returns False for valid room.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test validate_and_fix_player_room fixes invalid room.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test get_player_by_name returns None when player not found.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test soft_delete_player successfully soft deletes player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_save_player_database_error()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_save_players_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_delete_player_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_delete_player_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
-- [asyncio](asyncio.md) (12 shared connections)
-- [_make_mock_row](_make_mock_row.md) (9 shared connections)
-- [get_session_maker](get_session_maker.md) (5 shared connections)
-- [_ScalarResult](_ScalarResult.md) (4 shared connections)
-- [Room](Room.md) (2 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [player_repository](player_repository.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (12 shared connections)
+- [Player](Player.md) (5 shared connections)
+- [Room](Room.md) (3 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
-- [test_save_player_with_bool_is_admin](test_save_player_with_bool_is_admin.md) (1 shared connections)
-- [test_list_players_empty](test_list_players_empty.md) (1 shared connections)
+- [models/player.py](models-player.py.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 60 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 135 (93%)
+- INFERRED: 10 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

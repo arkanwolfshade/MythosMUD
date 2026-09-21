@@ -1,50 +1,44 @@
 # MemoryMonitor
 
-> 98 nodes
+> 21 nodes
 
 ## Key Concepts
 
 - **MemoryMonitor** (39 connections) — `server/realtime/memory_monitor.py`
-- **memory_monitor.py** (37 connections) — `server/realtime/memory_monitor.py`
 - **test_memory_monitor.py** (35 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
-- **collect_idle_memory_sample()** (15 connections) — `server/realtime/memory_monitor.py`
-- **._run_idle_sampler()** (8 connections) — `server/realtime/memory_monitor.py`
-- **idle_sampler_path()** (7 connections) — `server/realtime/memory_monitor.py`
-- **_max_connection_age_seconds()** (7 connections) — `server/realtime/memory_monitor.py`
-- **.start_idle_sampler()** (7 connections) — `server/realtime/memory_monitor.py`
-- **_container_instance()** (6 connections) — `server/realtime/memory_monitor.py`
-- **idle_sampler_interval_seconds()** (6 connections) — `server/realtime/memory_monitor.py`
-- **_task_qualname()** (6 connections) — `server/realtime/memory_monitor.py`
-- **ConnectionStatsSnapshot** (5 connections) — `server/realtime/memory_monitor.py`
-- **IdleMemorySample** (5 connections) — `server/realtime/memory_monitor.py`
-- **_append_sample_jsonl()** (5 connections) — `server/realtime/memory_monitor.py`
-- **idle_sampler_enabled()** (5 connections) — `server/realtime/memory_monitor.py`
-- **.get_memory_alerts()** (5 connections) — `server/realtime/memory_monitor.py`
-- **test_idle_sampler_interval_and_path()** (5 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
-- **test_idle_sampler_writes_jsonl_and_stops()** (5 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
-- **AllocSiteSample** (4 connections) — `server/realtime/memory_monitor.py`
-- **MemoryStatsSnapshot** (4 connections) — `server/realtime/memory_monitor.py`
-- **_FakeTask** (4 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
-- **_as_int()** (4 connections) — `server/realtime/memory_monitor.py`
-- **_event_bus_queue_depth()** (4 connections) — `server/realtime/memory_monitor.py`
-- **_log_hour_key_count()** (4 connections) — `server/realtime/memory_monitor.py`
-- **.get_memory_usage()** (4 connections) — `server/realtime/memory_monitor.py`
-- *... and 73 more nodes in this community*
+- **.get_memory_stats()** (3 connections) — `server/realtime/memory_monitor.py`
+- **.force_garbage_collection()** (2 connections) — `server/realtime/memory_monitor.py`
+- **test_force_garbage_collection_runtime_error()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_get_memory_alerts()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_get_memory_alerts_error_path()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_get_memory_alerts_warning_and_info_levels()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_get_memory_stats()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_get_memory_stats_error_returns_empty()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_get_memory_usage_error_returns_zero()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_get_memory_usage_invalid_type()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_get_memory_usage_success()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_should_cleanup_memory_threshold()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_should_cleanup_returns_false()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_should_cleanup_time_based()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_update_cleanup_time_and_gc()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **Monitor memory usage and trigger cleanup when needed. This class provides…** (1 connections) — `server/realtime/memory_monitor.py`
+- **Get detailed memory statistics. Returns: dict: Memory statistics including RSS,…** (1 connections) — `server/realtime/memory_monitor.py`
+- **Force garbage collection to free memory.** (1 connections) — `server/realtime/memory_monitor.py`
+- **Unit tests for MemoryMonitor.** (1 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
 
 ## Relationships
 
-- [connection_manager.py](connection_manager.py.md) (12 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
-- [lifespan_protocols.py](lifespan_protocols.py.md) (2 shared connections)
+- [connection_manager.py](connection_manager.py.md) (10 shared connections)
+- [idle_sampler_enabled](idle_sampler_enabled.md) (9 shared connections)
+- [._run_idle_sampler](_run_idle_sampler.md) (6 shared connections)
+- [_max_connection_age_seconds](_max_connection_age_seconds.md) (5 shared connections)
+- [.get_memory_alerts](get_memory_alerts.md) (3 shared connections)
+- [_task_qualname](_task_qualname.md) (3 shared connections)
 - [ConnectionManager](ConnectionManager.md) (2 shared connections)
-- [LogAggregator](LogAggregator.md) (2 shared connections)
-- [PerformanceMonitor](PerformanceMonitor.md) (2 shared connections)
-- [DatabaseManager](DatabaseManager.md) (2 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
-- [MythosChronicle](MythosChronicle.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
+- [collect_idle_memory_sample](collect_idle_memory_sample.md) (2 shared connections)
+- [lifespan_protocols.py](lifespan_protocols.py.md) (1 shared connections)
+- [.update_cleanup_time](update_cleanup_time.md) (1 shared connections)
+- [.stop_idle_sampler](stop_idle_sampler.md) (1 shared connections)
 
 ## Source Files
 
@@ -53,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 198 (98%)
-- INFERRED: 5 (2%)
+- EXTRACTED: 72 (95%)
+- INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

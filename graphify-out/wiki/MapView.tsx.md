@@ -1,6 +1,6 @@
 # MapView.tsx
 
-> 36 nodes
+> 34 nodes
 
 ## Key Concepts
 
@@ -19,8 +19,6 @@
 - **MapViewBody()** (4 connections) — `client/src/components/MapView.tsx`
 - **generateAsciiNoise()** (4 connections) — `client/src/utils/directionHallucination.ts`
 - **hashString()** (4 connections) — `client/src/utils/directionHallucination.ts`
-- **constants/layout.ts** (4 connections) — `client/src/constants/layout.ts`
-- **Z_INDEX_OVERLAY_TOP** (4 connections) — `client/src/constants/layout.ts`
 - **ageBucket()** (3 connections) — `client/src/utils/corruptionDecay.ts`
 - **AsciiNoise.test.tsx** (3 connections) — `client/src/components/map/__tests__/AsciiNoise.test.tsx`
 - **prefersReducedMotion()** (2 connections) — `client/src/components/map/AsciiNoise.tsx`
@@ -29,14 +27,15 @@
 - **MinimapInlineBody()** (2 connections) — `client/src/components/ui-v2/GameClientV2MinimapSection.tsx`
 - **isProtectedToken()** (2 connections) — `client/src/utils/corruptionDecay.ts`
 - **shuffle()** (2 connections) — `client/src/utils/directionHallucination.ts`
-- *... and 11 more nodes in this community*
+- **MapView.test.tsx** (2 connections) — `client/src/components/map/__tests__/MapView.test.tsx`
+- **MYTHOS_GLYPHS** (2 connections) — `client/src/utils/corruptionDecay.ts`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
 - [mapUtils.ts](mapUtils.ts.md) (8 shared connections)
-- [GameClientV2MinimapSection.tsx](GameClientV2MinimapSection.tsx.md) (5 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (7 shared connections)
 - [AsciiMapViewer.tsx](AsciiMapViewer.tsx.md) (4 shared connections)
-- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (4 shared connections)
 - [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (3 shared connections)
 - [maps.ts](maps.ts.md) (2 shared connections)
 - [saveMapChanges.ts](saveMapChanges.ts.md) (2 shared connections)
@@ -49,7 +48,6 @@
 - `client/src/components/map/__tests__/AsciiNoise.test.tsx`
 - `client/src/components/map/__tests__/MapView.test.tsx`
 - `client/src/components/ui-v2/GameClientV2MinimapSection.tsx`
-- `client/src/constants/layout.ts`
 - `client/src/utils/__tests__/corruptionDecay.test.ts`
 - `client/src/utils/__tests__/directionHallucination.test.ts`
 - `client/src/utils/corruptionDecay.ts`
@@ -57,7 +55,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 94 (100%)
+- EXTRACTED: 89 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

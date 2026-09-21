@@ -1,11 +1,12 @@
 # CombatEventHandler
 
-> 43 nodes
+> 45 nodes
 
 ## Key Concepts
 
 - **CombatEventHandler** (33 connections) — `server/services/combat_event_handler.py`
 - **test_combat_event_handler.py** (19 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **combat_event_handler.py** (18 connections) — `server/services/combat_event_handler.py`
 - **_participant()** (13 connections) — `server/tests/unit/services/test_combat_event_handler.py`
 - **._publish_attack_events()** (9 connections) — `server/services/combat_event_handler.py`
 - **asyncio** (9 connections)
@@ -28,18 +29,16 @@
 - **UUID** (4 connections)
 - **.__init__()** (3 connections) — `server/services/combat_event_handler.py`
 - **test_calculate_xp_reward_default()** (3 connections) — `server/tests/unit/services/test_combat_event_handler.py`
-- **test_publish_combat_ended_event()** (3 connections) — `server/tests/unit/services/test_combat_event_handler.py`
-- *... and 18 more nodes in this community*
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [combat_service.py](combat_service.py.md) (12 shared connections)
-- [CombatParticipant](CombatParticipant.md) (9 shared connections)
-- [CombatInstance](CombatInstance.md) (6 shared connections)
-- [get_config](get_config.md) (3 shared connections)
+- [CombatService](CombatService.md) (14 shared connections)
+- [CombatParticipant](CombatParticipant.md) (10 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
+- [CombatInstance](CombatInstance.md) (7 shared connections)
+- [NATSError](NATSError.md) (3 shared connections)
 - [test_combat_cleanup_handler.py](test_combat_cleanup_handler.py.md) (1 shared connections)
-- [NATSError](NATSError.md) (1 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 101 (87%)
-- INFERRED: 15 (13%)
+- EXTRACTED: 116 (89%)
+- INFERRED: 15 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

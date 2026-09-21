@@ -1,12 +1,11 @@
 # TestRunner
 
-> 25 nodes
+> 23 nodes
 
 ## Key Concepts
 
 - **TestRunner** (13 connections) — `scripts/test_runner.py`
 - **.run_tests()** (11 connections) — `scripts/test_runner.py`
-- **test_runner.py** (6 connections) — `scripts/test_runner.py`
 - **main()** (3 connections) — `scripts/test_runner.py`
 - **.clean_test_databases()** (3 connections) — `scripts/test_runner.py`
 - **.get_pytest_command()** (3 connections) — `scripts/test_runner.py`
@@ -20,7 +19,6 @@
 - **Path** (1 connections)
 - **Verify test database configuration. Note: For PostgreSQL databases, schema is…** (1 connections) — `scripts/test_runner.py`
 - **Build the pytest command with proper configuration. Args: test_paths: List of…** (1 connections) — `scripts/test_runner.py`
-- **# NOTE: Test runner uses minimal structlog configuration for console output** (1 connections) — `scripts/test_runner.py`
 - **Run the test suite with proper configuration. Args: test_paths: List of test…** (1 connections) — `scripts/test_runner.py`
 - **Run integration tests only.** (1 connections) — `scripts/test_runner.py`
 - **Run all tests (unit, integration, but not E2E by default).** (1 connections) — `scripts/test_runner.py`
@@ -33,7 +31,6 @@
 ## Relationships
 
 - [safe_run_static](safe_run_static.md) (3 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,7 +38,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 37 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

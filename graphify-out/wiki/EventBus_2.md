@@ -33,8 +33,8 @@
 
 ### imports
 - [connection_manager.py](connection_manager.py.md) `EXTRACTED`
-- [combat_service.py](combat_service.py.md) `EXTRACTED`
-- [async_persistence.py](async_persistence.py.md) `EXTRACTED`
+- combat_service.py `EXTRACTED`
+- async_persistence.py `EXTRACTED`
 - test_population_control.py `EXTRACTED`
 - test_event_bus.py `EXTRACTED`
 - npc_combat_integration_service.py `EXTRACTED`
@@ -54,7 +54,7 @@
 - event_reaction_system.py `EXTRACTED`
 
 ### inherits
-- DistributedEventBus `EXTRACTED`
+- [DistributedEventBus](DistributedEventBus.md) `EXTRACTED`
 - [EventBusLifecycleMixin](EventBusLifecycleMixin.md) `EXTRACTED`
 - EventBusProcessingMixin `EXTRACTED`
 
@@ -101,7 +101,7 @@
 ### uses
 - [CombatService](CombatService.md) `INFERRED`
 - BaseEvent `INFERRED`
-- FollowService `INFERRED`
+- [FollowService](FollowService.md) `INFERRED`
 - NPCLifecycleManager `INFERRED`
 - [NPCSpawningService](NPCSpawningService.md) `INFERRED`
 - NPCPopulationController `INFERRED`
@@ -109,7 +109,7 @@
 - [PartyService](PartyService.md) `INFERRED`
 - [MythosTickScheduler](MythosTickScheduler.md) `INFERRED`
 - NPCInstanceService `INFERRED`
-- MythosTimeEventConsumer `INFERRED`
+- [MythosTimeEventConsumer](MythosTimeEventConsumer.md) `INFERRED`
 - create_npc_instance() `INFERRED`
 - initialize_npc_instance_service() `INFERRED`
 - _LifecycleManagerForDeath `INFERRED`

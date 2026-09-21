@@ -34,7 +34,7 @@
 ## Relationships
 
 - [PerformanceMonitor](PerformanceMonitor.md) (1 shared connections)
-- [bind_request_context](bind_request_context.md) (1 shared connections)
+- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
 - [Result](Result.md) (1 shared connections)
 
 ## Source Files

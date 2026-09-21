@@ -29,13 +29,13 @@
 - get_player() `EXTRACTED`
 
 ### contains
-- [server/exceptions.py](server-exceptions.py.md) `EXTRACTED`
+- server/exceptions.py `EXTRACTED`
 
 ### imports
 - players.py `EXTRACTED`
-- [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
+- api/character_creation.py `EXTRACTED`
 - maps.py `EXTRACTED`
-- endpoints.py `EXTRACTED`
+- [endpoints.py](endpoints.py.md) `EXTRACTED`
 - rooms.py `EXTRACTED`
 - [api/monitoring.py](api-monitoring.py.md) `EXTRACTED`
 - test_players_api_coverage.py `EXTRACTED`
@@ -46,11 +46,11 @@
 - test_exceptions.py `EXTRACTED`
 - test_container_helpers.py `EXTRACTED`
 - test_rooms_write_api.py `EXTRACTED`
-- [test_real_time_helpers.py](test_real_time_helpers.py.md) `EXTRACTED`
+- test_real_time_helpers.py `EXTRACTED`
 - [test_item_catalog.py](test_item_catalog.py.md) `EXTRACTED`
 - [test_metrics_endpoints.py](test_metrics_endpoints.py.md) `EXTRACTED`
 - api/player_effects.py `EXTRACTED`
-- test_npc_definitions_api.py `EXTRACTED`
+- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) `EXTRACTED`
 - test_exceptions_comprehensive.py `EXTRACTED`
 
 ### inherits
@@ -69,14 +69,14 @@
 
 ### uses
 - TestLootAllItems `INFERRED`
-- TestMonitoringEndpoints `INFERRED`
+- [TestMonitoringEndpoints](TestMonitoringEndpoints.md) `INFERRED`
 - TestRegisterLootEndpoints `INFERRED`
 - TestRollCharacterStats `INFERRED`
 - TestHandleTransferItemsExceptions `INFERRED`
 - TestOpenContainer `INFERRED`
 - TestTransferItems `INFERRED`
 - TestGetContainerAndPlayerForLootAll `INFERRED`
-- [TestHelperFunctions](TestHelperFunctions.md) `INFERRED`
+- TestHelperFunctions `INFERRED`
 - test_create_room_exit_duplicate_direction_409() `INFERRED`
 - TestHandleLootAllExceptions `INFERRED`
 - TestHandleOpenContainerExceptions `INFERRED`

@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
-- [AppConfig](AppConfig.md) (2 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
 
 ## Source Files
 

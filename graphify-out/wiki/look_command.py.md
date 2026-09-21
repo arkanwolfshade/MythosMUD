@@ -1,18 +1,18 @@
 # look_command.py
 
-> 83 nodes
+> 85 nodes
 
 ## Key Concepts
 
 - **look_command.py** (58 connections) — `server/commands/look_command.py`
 - **test_look_command.py** (25 connections) — `server/tests/unit/commands/test_look_command.py`
 - **handle_look_command()** (18 connections) — `server/commands/look_command.py`
+- **LookRequest** (15 connections) — `server/commands/look_helpers.py`
 - **_handle_implicit_target_lookup()** (14 connections) — `server/commands/look_command.py`
 - **_setup_look_command()** (13 connections) — `server/commands/look_command.py`
 - **_route_look_command()** (12 connections) — `server/commands/look_command.py`
 - **_get_app_and_persistence()** (11 connections) — `server/commands/look_command.py`
 - **_validate_look_prerequisites()** (11 connections) — `server/commands/look_command.py`
-- **_is_direction()** (11 connections) — `server/commands/look_helpers.py`
 - **_get_room_drops()** (10 connections) — `server/commands/look_command.py`
 - **_try_direction_look()** (10 connections) — `server/commands/look_command.py`
 - **_try_explicit_player_look()** (10 connections) — `server/commands/look_command.py`
@@ -29,22 +29,22 @@
 - **_connection_manager_from_app()** (6 connections) — `server/commands/look_command.py`
 - **_prototype_registry_from_app()** (6 connections) — `server/commands/look_command.py`
 - **_try_implicit_target_lookup()** (6 connections) — `server/commands/look_command.py`
-- *... and 58 more nodes in this community*
+- *... and 60 more nodes in this community*
 
 ## Relationships
 
-- [look_helpers.py](look_helpers.py.md) (15 shared connections)
-- [test_look_room.py](test_look_room.py.md) (8 shared connections)
-- [test_look_player.py](test_look_player.py.md) (5 shared connections)
+- [test_look_container.py](test_look_container.py.md) (11 shared connections)
+- [test_look_player.py](test_look_player.py.md) (11 shared connections)
+- [test_look_room.py](test_look_room.py.md) (7 shared connections)
 - [_find_item_in_equipped](_find_item_in_equipped.md) (5 shared connections)
-- [test_look_container.py](test_look_container.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [test_room_renderer.py](test_room_renderer.py.md) (3 shared connections)
 - [test_look_npc.py](test_look_npc.py.md) (3 shared connections)
-- [look_container.py](look_container.py.md) (3 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (3 shared connections)
-- [test_room_renderer.py](test_room_renderer.py.md) (2 shared connections)
-- [test_go_command.py](test_go_command.py.md) (2 shared connections)
+- [command_service.py](command_service.py.md) (3 shared connections)
 - [AliasStorage](AliasStorage.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [websocket_handler_commands.py](websocket_handler_commands.py.md) (2 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
 
 ## Source Files
 
@@ -54,8 +54,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 237 (97%)
-- INFERRED: 7 (3%)
+- EXTRACTED: 235 (96%)
+- INFERRED: 10 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

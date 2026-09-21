@@ -17,7 +17,7 @@
 - test_alias_storage_init_without_env_var() `EXTRACTED`
 
 ### contains
-- [alias_storage.py](alias_storage.py.md) `EXTRACTED`
+- alias_storage.py `EXTRACTED`
 
 ### imports
 - [command_service.py](command_service.py.md) `EXTRACTED`
@@ -35,11 +35,11 @@
 - [catalog_commands.py](catalog_commands.py.md) `EXTRACTED`
 - [admin_shutdown_command.py](admin_shutdown_command.py.md) `EXTRACTED`
 - [admin_summon_command.py](admin_summon_command.py.md) `EXTRACTED`
-- [admin_teleport_commands.py](admin_teleport_commands.py.md) `EXTRACTED`
+- admin_teleport_commands.py `EXTRACTED`
 - [inventory_pickup_command.py](inventory_pickup_command.py.md) `EXTRACTED`
 - logout_commands.py `EXTRACTED`
 - combat_taunt.py `EXTRACTED`
-- websocket_handler_commands.py `EXTRACTED`
+- [websocket_handler_commands.py](websocket_handler_commands.py.md) `EXTRACTED`
 
 ### method
 - .get_player_aliases() `EXTRACTED`
@@ -89,7 +89,7 @@
 
 ### uses
 - [CombatCommandHandler](CombatCommandHandler.md) `INFERRED`
-- [TestHelperFunctions](TestHelperFunctions.md) `INFERRED`
+- TestHelperFunctions `INFERRED`
 - MagicCommandHandler `INFERRED`
 - handle_read_command() `INFERRED`
 - _prepare_command_for_processing() `INFERRED`

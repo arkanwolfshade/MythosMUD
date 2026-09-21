@@ -1,38 +1,32 @@
 # UUID
 
-> 15 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **UUID** (10 connections)
-- **.prune_stale_players()** (7 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **.cleanup_dead_connections()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._cleanup_dead_connections_for_player()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._remove_stale_player_data()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._get_players_to_check()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._identify_stale_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._is_websocket_dead()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Identify players whose last_seen timestamp exceeds the max age. Args:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Remove all data for a stale player. Args: pid: Player ID to remove…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Remove players whose presence is stale beyond the threshold. Args: last_seen:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Return True if websocket appears dead (should be cleaned up).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Return list of player IDs to check (single player or all).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Clean up dead connections for a single player.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Clean up dead connections for a specific player or all players. Args:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._memory_connections_section()** (6 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **UUID** (6 connections)
+- **._memory_sessions_section()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._safe_ratio()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._count_orphaned_connections()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Count active connections not tied to any online player.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Build the connections subsection of memory stats.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Build the sessions subsection of memory stats.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Return numerator/denominator, or 0 when denominator is empty.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
 
 ## Relationships
 
-- [ConnectionCleaner](ConnectionCleaner.md) (14 shared connections)
-- [.check_and_cleanup](check_and_cleanup.md) (1 shared connections)
+- [StatisticsAggregator](StatisticsAggregator.md) (7 shared connections)
+- [._compose_memory_stats](_compose_memory_stats.md) (2 shared connections)
 - [connection_manager.py](connection_manager.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/maintenance/connection_cleaner.py`
+- `server/realtime/monitoring/statistics_aggregator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

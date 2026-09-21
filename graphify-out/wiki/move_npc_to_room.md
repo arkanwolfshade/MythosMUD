@@ -21,7 +21,7 @@
 ## Relationships
 
 - [NPCMovementIntegration](NPCMovementIntegration.md) (6 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
 

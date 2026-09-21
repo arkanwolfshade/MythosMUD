@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [NATSError](NATSError.md) (4 shared connections)
 - [NATSService](NATSService.md) (2 shared connections)
-- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (2 shared connections)
+- [NATSPublishError](NATSPublishError.md) (2 shared connections)
+- [NATSError](NATSError.md) (2 shared connections)
+- [.state](state.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files

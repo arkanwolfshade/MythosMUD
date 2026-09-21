@@ -1,6 +1,6 @@
 # test_logout_commands.py
 
-> 75 nodes
+> 123 nodes
 
 ## Key Concepts
 
@@ -9,7 +9,11 @@
 - **handle_logout_command()** (26 connections) — `server/commands/logout_commands.py`
 - **asyncio** (18 connections)
 - **_get_player_for_logout()** (17 connections) — `server/commands/logout_commands.py`
+- **test_logout_commands_helpers.py** (15 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
+- **_get_player_position_from_connection_manager()** (14 connections) — `server/commands/logout_commands.py`
 - **handle_quit_command()** (14 connections) — `server/commands/logout_commands.py`
+- **_clear_corrupted_cache_entry()** (12 connections) — `server/commands/logout_commands.py`
+- **_sync_player_position()** (12 connections) — `server/commands/logout_commands.py`
 - **Any** (12 connections)
 - **_disconnect_player_connections()** (9 connections) — `server/commands/logout_commands.py`
 - **_is_player_in_combat_for_logout()** (8 connections) — `server/commands/logout_commands.py`
@@ -25,36 +29,32 @@
 - **test_get_player_for_logout_corrupted_cache()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
 - **test_get_player_for_logout_from_cache()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
 - **test_get_player_for_logout_from_persistence()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_get_player_for_logout_persistence_error()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_get_player_for_logout_persistence_returns_coroutine()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_handle_logout_command_error_handling()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_handle_logout_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- *... and 50 more nodes in this community*
+- *... and 98 more nodes in this community*
 
 ## Relationships
 
-- [test_logout_commands_helpers.py](test_logout_commands_helpers.py.md) (23 shared connections)
 - [TestLogoutCommand](TestLogoutCommand.md) (8 shared connections)
 - [get_cached_player](get_cached_player.md) (5 shared connections)
-- [test_who_commands.py](test_who_commands.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [utility_commands.py](utility_commands.py.md) (3 shared connections)
 - [AliasStorage](AliasStorage.md) (3 shared connections)
+- [get_username_from_user](get_username_from_user.md) (3 shared connections)
 - [test_rest_command.py](test_rest_command.py.md) (3 shared connections)
-- [Player](Player.md) (3 shared connections)
 - [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [command_service.py](command_service.py.md) (1 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
+- [models/player.py](models-player.py.md) (1 shared connections)
+- [protocols.py](protocols.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/logout_commands.py`
 - `server/tests/unit/commands/test_logout_commands.py`
+- `server/tests/unit/commands/test_logout_commands_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 191 (95%)
-- INFERRED: 11 (5%)
+- EXTRACTED: 248 (96%)
+- INFERRED: 11 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

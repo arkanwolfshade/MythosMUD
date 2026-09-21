@@ -25,7 +25,7 @@
 ## Relationships
 
 - [LRUCache](LRUCache.md) (3 shared connections)
-- [NPCCacheService](NPCCacheService.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [RoomCacheService](RoomCacheService.md) (1 shared connections)
 
 ## Source Files

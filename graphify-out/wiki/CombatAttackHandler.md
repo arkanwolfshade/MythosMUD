@@ -8,6 +8,7 @@
 - **test_combat_attack_handler.py** (39 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
 - **.validate_and_get_combat_participants()** (8 connections) — `server/services/combat_attack_handler.py`
 - **_bind_get_combat_by_participant()** (8 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **._apply_damage()** (7 connections) — `server/services/combat_attack_handler.py`
 - **test_apply_attack_damage()** (7 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
 - **test_validate_and_get_combat_participants_attacker_not_found()** (7 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
 - **test_validate_and_get_combat_participants_success()** (7 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
@@ -23,7 +24,6 @@
 - **.apply_attack_damage()** (5 connections) — `server/services/combat_attack_handler.py`
 - **._find_combat_target()** (5 connections) — `server/services/combat_attack_handler.py`
 - **test_validate_and_get_combat_participants_not_in_combat()** (5 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_apply_damage_blocked_during_grace_period()** (5 connections) — `server/tests/unit/services/test_damage_grace_period.py`
 - **._room_has_no_death()** (4 connections) — `server/services/combat_attack_handler.py`
 - **._validate_attack()** (4 connections) — `server/services/combat_attack_handler.py`
 - **attack_handler()** (4 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
@@ -33,15 +33,13 @@
 
 ## Relationships
 
-- [CombatParticipant](CombatParticipant.md) (27 shared connections)
-- [CombatInstance](CombatInstance.md) (19 shared connections)
-- [get_config](get_config.md) (15 shared connections)
+- [CombatParticipant](CombatParticipant.md) (28 shared connections)
+- [CombatInstance](CombatInstance.md) (20 shared connections)
+- [get_logger](get_logger.md) (13 shared connections)
 - [test_combat_cleanup_handler.py](test_combat_cleanup_handler.py.md) (1 shared connections)
-- [combat_service.py](combat_service.py.md) (1 shared connections)
 - [CombatService](CombatService.md) (1 shared connections)
-- [player_event_handlers_respawn_room.py](player_event_handlers_respawn_room.py.md) (1 shared connections)
 - [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (1 shared connections)
-- [TargetMatch](TargetMatch.md) (1 shared connections)
+- [websocket_helpers.py](websocket_helpers.py.md) (1 shared connections)
 
 ## Source Files
 

@@ -91,7 +91,7 @@ dev = [
 include = ["server*"]
 
 [tool.vulture]
-paths = ["server", "vulture_allowlist.py"]
+paths = ["server"]
 # graphify-out/.venv under server/ is a local tool dump, not app code (matches ruff extend-exclude).
 exclude = [
     "server/tests",

@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [NPCCombatLucidity](NPCCombatLucidity.md) (8 shared connections)
+- [NPCCombatLucidity](NPCCombatLucidity.md) (5 shared connections)
 - [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (4 shared connections)
+- [active_lucidity_service.py](active_lucidity_service.py.md) (3 shared connections)
 
 ## Source Files
 

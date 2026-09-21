@@ -1,40 +1,39 @@
 # .__init__
 
-> 13 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **_PopulationLifecycleManager** (7 connections) — `server/npc/population_control.py`
-- **.__init__()** (7 connections) — `server/npc/population_control.py`
-- **._load_zone_configurations()** (4 connections) — `server/npc/population_control.py`
-- **.clear_population_stats()** (3 connections) — `server/npc/population_control.py`
-- **._subscribe_to_events()** (3 connections) — `server/npc/population_control.py`
-- **.spawn_npc()** (3 connections) — `server/npc/population_control.py`
-- **Protocol** (1 connections)
-- **Initialize the NPC population controller. Args: event_bus: Event bus for…** (1 connections) — `server/npc/population_control.py`
-- **Load zone and sub-zone configurations from PostgreSQL database.** (1 connections) — `server/npc/population_control.py`
-- **Subscribe to relevant game events.** (1 connections) — `server/npc/population_control.py`
-- **Lifecycle manager surface used by NPCPopulationController (avoids import cycle…** (1 connections) — `server/npc/population_control.py`
-- **Clear all population statistics. This ensures a clean state when the server…** (1 connections) — `server/npc/population_control.py`
-- **Spawn an NPC instance; returns (npc_id, None) or (None, failure_reason).** (1 connections) — `server/npc/population_control.py`
+- **.__init__()** (5 connections) — `server/models/invite.py`
+- **.is_alive()** (5 connections) — `server/npc/npc_base.py`
+- **.is_active()** (4 connections) — `server/models/game.py`
+- **_npc_alive_and_active()** (4 connections) — `server/npc/idle_movement.py`
+- **Any** (1 connections)
+- **setter** (1 connections)
+- **Check if the status effect is still active.** (1 connections) — `server/models/game.py`
+- **Initialize Invite with defaults.** (1 connections) — `server/models/invite.py`
+- **Return True if NPC is alive (determination_points > 0).** (1 connections) — `server/npc/npc_base.py`
+- **Allow backward-compatible assignment (npc.is_alive = False).** (1 connections) — `server/npc/npc_base.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (1 shared connections)
-- [NPCBase](NPCBase.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
-- [ZoneConfiguration](ZoneConfiguration.md) (1 shared connections)
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (2 shared connections)
+- [Stats](Stats.md) (1 shared connections)
+- [Invite](Invite.md) (1 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
+- [IdleMovementHandler](IdleMovementHandler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/population_control.py`
+- `server/models/game.py`
+- `server/models/invite.py`
+- `server/npc/idle_movement.py`
+- `server/npc/npc_base.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (95%)
-- INFERRED: 1 (5%)
+- EXTRACTED: 11 (73%)
+- INFERRED: 4 (27%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,13 +1,12 @@
 # PlayerNameExtractor
 
-> 164 nodes
+> 162 nodes
 
 ## Key Concepts
 
 - **PlayerNameExtractor** (104 connections) — `server/realtime/player_name_utils.py`
 - **TestPlayerNameExtractor** (62 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 - **Any** (14 connections)
-- **player_name_utils.py** (13 connections) — `server/realtime/player_name_utils.py`
 - **.extract_and_validate_player_name()** (8 connections) — `server/realtime/player_name_utils.py`
 - **._validate_name_not_uuid()** (8 connections) — `server/realtime/player_name_utils.py`
 - **UUID** (8 connections)
@@ -29,17 +28,17 @@
 - **test_player_name_utils.py** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 - **._check_uuid_pattern_match()** (3 connections) — `server/realtime/player_name_utils.py`
 - **.__init__()** (3 connections) — `server/realtime/player_name_utils.py`
-- *... and 139 more nodes in this community*
+- **.test_check_uuid_pattern_match_invalid()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- *... and 137 more nodes in this community*
 
 ## Relationships
 
-- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (11 shared connections)
-- [test_login_grace_period_visual_indicator.py](test_login_grace_period_visual_indicator.py.md) (10 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (4 shared connections)
-- [MessageBuilder](MessageBuilder.md) (2 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (16 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (8 shared connections)
+- [NPCOccupantProcessor](NPCOccupantProcessor.md) (1 shared connections)
+- [test_event_handler.py](test_event_handler.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 282 (96%)
-- INFERRED: 13 (4%)
+- EXTRACTED: 272 (95%)
+- INFERRED: 13 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

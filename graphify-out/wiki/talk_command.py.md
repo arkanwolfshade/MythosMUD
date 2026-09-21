@@ -1,6 +1,6 @@
 # talk_command.py
 
-> 84 nodes
+> 75 nodes
 
 ## Key Concepts
 
@@ -8,7 +8,6 @@
 - **DialogueService** (18 connections) — `server/game/dialogue/dialogue_service.py`
 - **dialogue_service.py** (17 connections) — `server/game/dialogue/dialogue_service.py`
 - **test_talk_command.py** (14 connections) — `server/tests/unit/commands/test_talk_command.py`
-- **DialogueTree** (13 connections) — `server/schemas/dialogue/dialogue_tree.py`
 - **handle_talk_command()** (13 connections) — `server/commands/talk_command.py`
 - **DialoguePrompt** (12 connections) — `server/game/dialogue/dialogue_service.py`
 - **test_dialogue_service.py** (12 connections) — `server/tests/unit/game/test_dialogue_service.py`
@@ -19,7 +18,6 @@
 - **get_dialogue_service()** (9 connections) — `server/game/dialogue/dialogue_service.py`
 - **game/dialogue/__init__.py** (9 connections) — `server/game/dialogue/__init__.py`
 - **UUID** (8 connections)
-- **DialogueNode** (7 connections) — `server/schemas/dialogue/dialogue_tree.py`
 - **_resolve_player_id()** (7 connections) — `server/commands/talk_command.py`
 - **_talk_by_option_index()** (7 connections) — `server/commands/talk_command.py`
 - **.clear_cursor()** (7 connections) — `server/game/dialogue/dialogue_service.py`
@@ -27,39 +25,38 @@
 - **.get_cursor()** (6 connections) — `server/game/dialogue/dialogue_service.py`
 - **._load_tree_or_fade()** (6 connections) — `server/game/dialogue/dialogue_service.py`
 - **reset_dialogue_service_for_tests()** (6 connections) — `server/game/dialogue/dialogue_service.py`
-- **schemas/dialogue/__init__.py** (6 connections) — `server/schemas/dialogue/__init__.py`
 - **_remainder_from_command_data()** (5 connections) — `server/commands/talk_command.py`
-- *... and 59 more nodes in this community*
+- **._player_key()** (5 connections) — `server/game/dialogue/dialogue_service.py`
+- **.start_with_npc()** (5 connections) — `server/game/dialogue/dialogue_service.py`
+- **test_dialogue_service_start_and_choose()** (5 connections) — `server/tests/unit/game/test_dialogue_service.py`
+- *... and 50 more nodes in this community*
 
 ## Relationships
 
-- [SecureBaseModel](SecureBaseModel.md) (9 shared connections)
 - [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (7 shared connections)
+- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (6 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
 - [quest_commands.py](quest_commands.py.md) (5 shared connections)
-- [DialogueDefinitionRepository](DialogueDefinitionRepository.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (3 shared connections)
+- [DialogueDefinitionRepository](DialogueDefinitionRepository.md) (3 shared connections)
 - [test_chat_npc_system.py](test_chat_npc_system.py.md) (3 shared connections)
 - [test_go_command.py](test_go_command.py.md) (3 shared connections)
 - [AliasStorage](AliasStorage.md) (2 shared connections)
 - [command_service.py](command_service.py.md) (2 shared connections)
 - [get_username_from_user](get_username_from_user.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/talk_command.py`
 - `server/game/dialogue/__init__.py`
 - `server/game/dialogue/dialogue_service.py`
-- `server/schemas/dialogue/__init__.py`
-- `server/schemas/dialogue/dialogue_tree.py`
 - `server/tests/unit/commands/test_talk_command.py`
 - `server/tests/unit/game/test_dialogue_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 199 (97%)
-- INFERRED: 7 (3%)
+- EXTRACTED: 180 (97%)
+- INFERRED: 6 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

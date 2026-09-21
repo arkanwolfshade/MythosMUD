@@ -1,68 +1,70 @@
 # PlayerEnteredRoom
 
-> 241 nodes
+> 145 nodes
 
 ## Key Concepts
 
 - **PlayerEnteredRoom** (87 connections) — `server/events/event_types.py`
-- **FollowService** (81 connections) — `server/game/follow_service.py`
-- **test_follow_service.py** (55 connections) — `server/tests/unit/game/test_follow_service.py`
-- **follow_service.py** (31 connections) — `server/game/follow_service.py`
-- **follow_movement.py** (29 connections) — `server/game/follow_movement.py`
-- **asyncio** (22 connections)
-- **_FollowMovementHost** (20 connections) — `server/game/follow_movement.py`
+- **PlayerLeftRoom** (51 connections) — `server/events/event_types.py`
+- **NPCEventReactionSystem** (47 connections) — `server/npc/event_reaction_system.py`
+- **NPCEventReaction** (23 connections) — `server/npc/event_reaction_system.py`
+- **test_event_reaction_speech.py** (22 connections) — `server/tests/unit/npc/test_event_reaction_speech.py`
+- **register_default_reactions_for_npc()** (20 connections) — `server/npc/npc_default_reactions.py`
 - **test_reaction_revival_integration.py** (17 connections) — `server/tests/unit/npc/test_reaction_revival_integration.py`
-- **FollowActionResult** (15 connections) — `server/game/follow_types.py`
-- **str_id()** (15 connections) — `server/game/follow_types.py`
-- **test_follow_flow.py** (14 connections) — `server/tests/integration/test_follow_flow.py`
-- **test_follow_movement.py** (14 connections) — `server/tests/unit/game/test_follow_movement.py`
-- **FollowPersistence** (12 connections) — `server/game/follow_types.py`
-- **follow_types.py** (12 connections) — `server/game/follow_types.py`
-- **FollowStatePayload** (11 connections) — `server/game/follow_types.py`
-- **propagate_follower_move()** (11 connections) — `server/game/follow_movement.py`
-- **.request_follow()** (10 connections) — `server/game/follow_service.py`
-- **_host()** (9 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **test_quest_events.py** (16 connections) — `server/tests/unit/game/test_quest_events.py`
+- **subscribe_quest_events()** (15 connections) — `server/game/quest/quest_events.py`
+- **quest_events.py** (15 connections) — `server/game/quest/quest_events.py`
+- **NPCEventReactionTemplates** (14 connections) — `server/npc/event_reaction_system.py`
+- **npc_default_reactions.py** (13 connections) — `server/npc/npc_default_reactions.py`
+- **test_npc_default_reactions.py** (11 connections) — `server/tests/unit/npc/test_npc_default_reactions.py`
+- **connection_event_helpers.py** (10 connections) — `server/realtime/connection_event_helpers.py`
 - **_shopkeeper()** (9 connections) — `server/tests/unit/npc/test_reaction_revival_integration.py`
-- **UUID** (9 connections)
-- **FollowPlayerView** (8 connections) — `server/game/follow_types.py`
-- **.get_following_display()** (8 connections) — `server/game/follow_service.py`
-- **.__init__()** (8 connections) — `server/game/follow_service.py`
-- **._send_result_to_player()** (8 connections) — `server/game/follow_service.py`
-- **is_npc_follow_value()** (8 connections) — `server/game/follow_types.py`
-- *... and 216 more nodes in this community*
+- **_make_on_player_entered()** (8 connections) — `server/game/quest/quest_events.py`
+- **_make_on_npc_died()** (7 connections) — `server/game/quest/quest_events.py`
+- **test_farewell_and_spoke_reactions_schedule_speech()** (7 connections) — `server/tests/unit/npc/test_event_reaction_speech.py`
+- **_make_on_player_left()** (6 connections) — `server/game/quest/quest_events.py`
+- **test_greeting_respects_the_per_npc_per_event_cooldown()** (6 connections) — `server/tests/unit/npc/test_reaction_revival_integration.py`
+- **test_no_reactions_registered_without_a_reaction_system()** (6 connections) — `server/tests/unit/npc/test_reaction_revival_integration.py`
+- **Any** (6 connections)
+- **.npc_attacked_retaliation()** (5 connections) — `server/npc/event_reaction_system.py`
+- **.player_entered_room_greeting()** (5 connections) — `server/npc/event_reaction_system.py`
+- **.player_left_room_farewell()** (5 connections) — `server/npc/event_reaction_system.py`
+- *... and 120 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (38 shared connections)
-- [NPCBase](NPCBase.md) (22 shared connections)
-- [EventBus](EventBus.md) (15 shared connections)
-- [NPCSpawningService](NPCSpawningService.md) (9 shared connections)
-- [PlayerPositionService](PlayerPositionService.md) (8 shared connections)
-- [NPCDied](NPCDied.md) (7 shared connections)
-- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (6 shared connections)
-- [CorruptionTier](CorruptionTier.md) (5 shared connections)
-- [MovementService](MovementService.md) (5 shared connections)
-- [test_player_event_handlers.py](test_player_event_handlers.py.md) (4 shared connections)
-- [._bind_event_type](_bind_event_type.md) (4 shared connections)
-- [ConnectionManager](ConnectionManager.md) (4 shared connections)
+- [event_types.py](event_types.py.md) (47 shared connections)
+- [NPCDefinition](NPCDefinition.md) (19 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (16 shared connections)
+- [EventBus](EventBus.md) (14 shared connections)
+- [NPCSpawningService](NPCSpawningService.md) (12 shared connections)
+- [test_event_handler.py](test_event_handler.py.md) (10 shared connections)
+- [CorruptionTier](CorruptionTier.md) (9 shared connections)
+- [test_player_event_handlers_room.py](test_player_event_handlers_room.py.md) (8 shared connections)
+- [get_logger](get_logger.md) (8 shared connections)
+- [test_player_event_handlers.py](test_player_event_handlers.py.md) (7 shared connections)
+- [FollowService](FollowService.md) (6 shared connections)
+- [test_player_event_handlers_room_left.py](test_player_event_handlers_room_left.py.md) (6 shared connections)
 
 ## Source Files
 
 - `server/events/event_types.py`
-- `server/game/follow_movement.py`
 - `server/game/follow_service.py`
-- `server/game/follow_types.py`
-- `server/tests/integration/test_follow_flow.py`
-- `server/tests/unit/game/test_follow_movement.py`
-- `server/tests/unit/game/test_follow_service.py`
+- `server/game/quest/quest_events.py`
+- `server/npc/event_reaction_system.py`
+- `server/npc/npc_default_reactions.py`
+- `server/realtime/connection_event_helpers.py`
+- `server/realtime/player_event_handlers_room.py`
+- `server/tests/unit/game/test_quest_events.py`
+- `server/tests/unit/npc/test_event_reaction_speech.py`
+- `server/tests/unit/npc/test_npc_default_reactions.py`
 - `server/tests/unit/npc/test_population_control.py`
 - `server/tests/unit/npc/test_reaction_revival_integration.py`
-- `server/tests/unit/realtime/test_event_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 527 (86%)
-- INFERRED: 89 (14%)
+- EXTRACTED: 387 (86%)
+- INFERRED: 63 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

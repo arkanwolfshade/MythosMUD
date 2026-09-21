@@ -1,44 +1,54 @@
 # asyncio
 
-> 11 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **asyncio** (34 connections)
-- **test_handle_player_entered_success()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_build_room_occupants_message()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_log_player_movement_no_room()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_send_room_name_message()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_send_room_updates_to_entering_player_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test _send_room_name_message() sends room name.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test build_room_occupants_message() builds correct message.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test send_room_updates_to_entering_player() handles errors.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test handle_player_entered() successfully handles event.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test log_player_movement() handles room not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **asyncio** (25 connections)
+- **test_convert_room_uuids_to_names()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_convert_room_uuids_to_names_invalid_uuid()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_convert_room_uuids_to_names_player_not_found()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_following_for_client()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_player_data_for_client_with_service()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_players_batch_empty()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_room_occupants()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_room_occupants_with_online_players()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_process_occupants_with_grace_periods()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_send_initial_game_state()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test convert_room_uuids_to_names() converts UUIDs to names.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test get_room_occupants() returns room occupants.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test send_initial_game_state() sends initial state.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test convert_room_uuids_to_names() handles invalid UUID strings.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test convert_room_uuids_to_names() when player not found.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test get_room_occupants() with online players.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test _process_occupants_with_grace_periods() splits players and NPCs. Issue…** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test _get_following_for_client() returns target name for player follow.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test _get_player_data_for_client() uses PlayerService when available.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test get_players_batch() returns empty dict for empty input.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [test_player_event_handlers_room.py](test_player_event_handlers_room.py.md) (9 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (1 shared connections)
-- [test_broadcast_player_entered_message](test_broadcast_player_entered_message.md) (1 shared connections)
-- [test_broadcast_player_entered_message_no_room_id](test_broadcast_player_entered_message_no_room_id.md) (1 shared connections)
-- [test_handle_player_entered_error_handling](test_handle_player_entered_error_handling.md) (1 shared connections)
-- [test_handle_player_entered_no_connection_manager](test_handle_player_entered_no_connection_manager.md) (1 shared connections)
-- [test_handle_player_entered_no_player_info](test_handle_player_entered_no_player_info.md) (1 shared connections)
-- [test_log_player_movement_error_handling](test_log_player_movement_error_handling.md) (1 shared connections)
-- [test_log_player_movement_joined](test_log_player_movement_joined.md) (1 shared connections)
-- [test_log_player_movement_no_connection_manager](test_log_player_movement_no_connection_manager.md) (1 shared connections)
-- [test_prepare_room_data_with_to_dict](test_prepare_room_data_with_to_dict.md) (1 shared connections)
-- [test_prepare_room_data_without_to_dict](test_prepare_room_data_without_to_dict.md) (1 shared connections)
+- [test_game_state_provider.py](test_game_state_provider.py.md) (10 shared connections)
+- [test_convert_room_uuids_to_names_empty_room_data](test_convert_room_uuids_to_names_empty_room_data.md) (1 shared connections)
+- [test_convert_room_uuids_to_names_no_player_ids](test_convert_room_uuids_to_names_no_player_ids.md) (1 shared connections)
+- [test_convert_room_uuids_with_npcs](test_convert_room_uuids_with_npcs.md) (1 shared connections)
+- [test_get_player](test_get_player.md) (1 shared connections)
+- [test_get_player_data_for_client_app_state_fallback](test_get_player_data_for_client_app_state_fallback.md) (1 shared connections)
+- [test_get_player_data_for_client_dict_fallback](test_get_player_data_for_client_dict_fallback.md) (1 shared connections)
+- [test_get_player_not_found](test_get_player_not_found.md) (1 shared connections)
+- [test_get_players_batch](test_get_players_batch.md) (1 shared connections)
+- [test_get_players_batch_no_persistence](test_get_players_batch_no_persistence.md) (1 shared connections)
+- [test_get_players_batch_player_not_found](test_get_players_batch_player_not_found.md) (1 shared connections)
+- [test_get_quest_log_for_client](test_get_quest_log_for_client.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 45 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

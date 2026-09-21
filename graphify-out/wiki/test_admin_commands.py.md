@@ -35,15 +35,15 @@
 
 - [AliasStorage](AliasStorage.md) (11 shared connections)
 - [command_service.py](command_service.py.md) (10 shared connections)
-- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (8 shared connections)
+- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (10 shared connections)
+- [get_logger](get_logger.md) (10 shared connections)
 - [DatabaseError](DatabaseError.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
 - [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (3 shared connections)
 - [admin_hallucinate_command.py](admin_hallucinate_command.py.md) (3 shared connections)
-- [MythosChronicle](MythosChronicle.md) (3 shared connections)
 - [AdminActionsLogger](AdminActionsLogger.md) (3 shared connections)
 - [get_username_from_user](get_username_from_user.md) (3 shared connections)
 - [_handle_admin_set_stat_command](_handle_admin_set_stat_command.md) (2 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (2 shared connections)
 - [admin_teleport_utils.py](admin_teleport_utils.py.md) (2 shared connections)
 
 ## Source Files

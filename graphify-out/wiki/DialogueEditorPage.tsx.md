@@ -32,10 +32,10 @@
 ## Relationships
 
 - [saveMapChanges.ts](saveMapChanges.ts.md) (2 shared connections)
-- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (2 shared connections)
-- [logger.ts](logger.ts.md) (2 shared connections)
-- [security.ts](security.ts.md) (2 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (1 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (2 shared connections)
+- [CatalogPage.tsx](CatalogPage.tsx.md) (2 shared connections)
+- [roomHandlers.ts](roomHandlers.ts.md) (2 shared connections)
+- [security.ts](security.ts.md) (1 shared connections)
 
 ## Source Files
 

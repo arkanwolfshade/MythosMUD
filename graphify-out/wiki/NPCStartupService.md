@@ -35,7 +35,7 @@
 
 - [asyncio](asyncio.md) (12 shared connections)
 - [test_npc_startup_service.py](test_npc_startup_service.py.md) (11 shared connections)
-- [get_logger](get_logger.md) (7 shared connections)
+- [NPCDefinition](NPCDefinition.md) (7 shared connections)
 - [_errors_len](_errors_len.md) (5 shared connections)
 - [npc_startup_service](npc_startup_service.md) (1 shared connections)
 - [test_determine_spawn_room_with_sub_zone](test_determine_spawn_room_with_sub_zone.md) (1 shared connections)

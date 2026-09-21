@@ -1,47 +1,34 @@
 # Any
 
-> 28 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **Any** (10 connections)
-- **._setup_task_tracking()** (9 connections) — `server/app/task_registry.py`
-- **Task** (8 connections)
-- **TaskMetadata** (7 connections) — `server/app/task_registry.py`
-- **.register_task()** (7 connections) — `server/app/task_registry.py`
-- **._create_task_completion_callback()** (5 connections) — `server/app/task_registry.py`
-- **.__init__()** (4 connections) — `server/app/task_registry.py`
-- **.cancel_task()** (4 connections) — `server/app/task_registry.py`
-- **.unregister_task()** (4 connections) — `server/app/task_registry.py`
-- **._ensure_unique_task_name()** (3 connections) — `server/app/task_registry.py`
-- **._extract_service_name()** (3 connections) — `server/app/task_registry.py`
-- **.get_registry_info()** (3 connections) — `server/app/task_registry.py`
-- **.list_active_tasks()** (3 connections) — `server/app/task_registry.py`
-- **._track_task_creation_metrics()** (3 connections) — `server/app/task_registry.py`
-- **.__repr__()** (2 connections) — `server/app/task_registry.py`
-- **Create callback function for task completion cleanup.** (1 connections) — `server/app/task_registry.py`
-- **Set up tracking for a newly created task.** (1 connections) — `server/app/task_registry.py`
-- **Register and create a tracked asyncio.Task. Args: coro: The coroutine to wrap…** (1 connections) — `server/app/task_registry.py`
-- **Unregister task from tracking, optionally force-cancelling. Args: task: Task…** (1 connections) — `server/app/task_registry.py`
-- **Cancel specific task with logical timeout boundaries. Args: task: Task…** (1 connections) — `server/app/task_registry.py`
-- **Metadata for tracked asyncio.Tasks.** (1 connections) — `server/app/task_registry.py`
-- **Initialize task metadata. Args: task: The asyncio.Task instance to track…** (1 connections) — `server/app/task_registry.py`
-- **Return list of currently registered TaskMetadata.** (1 connections) — `server/app/task_registry.py`
-- **Return comprehensive registry state information.** (1 connections) — `server/app/task_registry.py`
-- **String representation of task metadata for logging.** (1 connections) — `server/app/task_registry.py`
-- *... and 3 more nodes in this community*
+- **Any** (6 connections)
+- **._is_newer_data()** (4 connections) — `server/services/room_data_cache.py`
+- **.merge_room_data()** (4 connections) — `server/services/room_data_cache.py`
+- **.get_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **.get_cache_stats()** (3 connections) — `server/services/room_data_cache.py`
+- **.is_room_data_fresh()** (3 connections) — `server/services/room_data_cache.py`
+- **.set_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **Get statistics about the room data cache. Args: is_room_data_fresh_func:…** (1 connections) — `server/services/room_data_cache.py`
+- **Merge room data with proper conflict resolution. Args: old_data: Existing room…** (1 connections) — `server/services/room_data_cache.py`
+- **Check if new data is newer than old data for a specific key. Args: old_data:…** (1 connections) — `server/services/room_data_cache.py`
+- **Check if room data is fresh enough to use. Args: room_data: Room data to check…** (1 connections) — `server/services/room_data_cache.py`
+- **Get room data from cache. Args: room_id: Room ID to retrieve Returns: Dict[str,…** (1 connections) — `server/services/room_data_cache.py`
+- **Store room data in cache. Args: room_id: Room ID to store room_data: Room data…** (1 connections) — `server/services/room_data_cache.py`
 
 ## Relationships
 
-- [TaskRegistry](TaskRegistry.md) (16 shared connections)
+- [RoomDataCache](RoomDataCache.md) (6 shared connections)
 
 ## Source Files
 
-- `server/app/task_registry.py`
+- `server/services/room_data_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

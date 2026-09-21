@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (11 shared connections)
-- [MessageBuilder](MessageBuilder.md) (3 shared connections)
-- [test_npc_event_handlers.py](test_npc_event_handlers.py.md) (3 shared connections)
-- [TrackedTaskManager](TrackedTaskManager.md) (2 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (9 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (4 shared connections)
+- [NPCDefinition](NPCDefinition.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [test_event_handler.py](test_event_handler.py.md) (1 shared connections)
 - [build_event](build_event.md) (1 shared connections)
 
 ## Source Files

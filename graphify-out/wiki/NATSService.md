@@ -1,6 +1,6 @@
 # NATSService
 
-> 199 nodes
+> 176 nodes
 
 ## Key Concepts
 
@@ -9,9 +9,7 @@
 - **NATSConfig** (34 connections) — `server/config/models/nats.py`
 - **asyncio** (26 connections)
 - **test_nats_service_health.py** (23 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- **test_nats_service_pool.py** (23 connections) — `server/tests/unit/services/test_nats_service_pool.py`
 - **asyncio** (15 connections)
-- **asyncio** (11 connections)
 - **._create_tracked_task()** (7 connections) — `server/services/nats_service.py`
 - **_mock_create_tracked_task()** (7 connections) — `server/tests/unit/services/test_nats_service_helpers.py`
 - **.connect()** (6 connections) — `server/services/nats_service.py`
@@ -25,26 +23,28 @@
 - **nats_service()** (5 connections) — `server/tests/unit/services/test_nats_service_health.py`
 - **nats_service()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
 - **nats_service()** (5 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **test_flush_batch_records_partial_success_and_cancels_batch_task()** (5 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **test_publish_batch_returns_false_on_subject_validation_failure()** (5 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **test_publish_with_pool_wraps_unexpected_exception()** (5 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **test_recover_failed_batches_requeues_on_repeated_failure()** (5 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- *... and 174 more nodes in this community*
+- **test_nats_service_init_with_subject_manager()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **.validate_tls_files()** (4 connections) — `server/config/models/nats.py`
+- **._cancel_background_tasks()** (4 connections) — `server/services/nats_service.py`
+- **._force_cancel_pending_tasks()** (4 connections) — `server/services/nats_service.py`
+- **._handle_error_async()** (4 connections) — `server/services/nats_service.py`
+- **._health_check_loop()** (4 connections) — `server/services/nats_service.py`
+- *... and 151 more nodes in this community*
 
 ## Relationships
 
-- [NATSError](NATSError.md) (56 shared connections)
-- [get_logger](get_logger.md) (10 shared connections)
-- [NATSSubjectManager](NATSSubjectManager.md) (5 shared connections)
-- [NatsSubscription](NatsSubscription.md) (4 shared connections)
+- [NATSError](NATSError.md) (45 shared connections)
+- [NATSPublishError](NATSPublishError.md) (29 shared connections)
+- [test_config_models.py](test_config_models.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [test_container_bundles.py](test_container_bundles.py.md) (3 shared connections)
-- [EventBus](EventBus.md) (2 shared connections)
-- [combat_service.py](combat_service.py.md) (2 shared connections)
+- [CombatService](CombatService.md) (2 shared connections)
 - [NATSConnectionStateMachine](NATSConnectionStateMachine.md) (2 shared connections)
-- [SubjectValidator](SubjectValidator.md) (2 shared connections)
-- [test_config_models.py](test_config_models.py.md) (1 shared connections)
-- [AppConfig](AppConfig.md) (1 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (2 shared connections)
+- [test_message_filtering.py](test_message_filtering.py.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
+- [test_combat_cleanup_handler.py](test_combat_cleanup_handler.py.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -57,8 +57,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 353 (76%)
-- INFERRED: 113 (24%)
+- EXTRACTED: 313 (75%)
+- INFERRED: 107 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,40 +1,30 @@
 # .__init__
 
-> 10 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **.__init__()** (5 connections) — `server/models/invite.py`
-- **.is_alive()** (5 connections) — `server/npc/npc_base.py`
-- **.is_active()** (4 connections) — `server/models/game.py`
-- **_npc_alive_and_active()** (4 connections) — `server/npc/idle_movement.py`
-- **Any** (1 connections)
-- **setter** (1 connections)
-- **Check if the status effect is still active.** (1 connections) — `server/models/game.py`
-- **Initialize Invite with defaults.** (1 connections) — `server/models/invite.py`
-- **Return True if NPC is alive (determination_points > 0).** (1 connections) — `server/npc/npc_base.py`
-- **Allow backward-compatible assignment (npc.is_alive = False).** (1 connections) — `server/npc/npc_base.py`
+- **.__init__()** (6 connections) — `server/models/lucidity.py`
+- **.__init__()** (5 connections) — `server/models/lucidity.py`
+- **.__init__()** (5 connections) — `server/models/lucidity.py`
+- **Any** (3 connections)
+- **Initialize LucidityAdjustmentLog with defaults.** (1 connections) — `server/models/lucidity.py`
+- **Initialize LucidityExposureState with defaults.** (1 connections) — `server/models/lucidity.py`
+- **Initialize PlayerLucidity with defaults.** (1 connections) — `server/models/lucidity.py`
 
 ## Relationships
 
-- [server/models/game.py](server-models-game.py.md) (1 shared connections)
-- [Invite](Invite.md) (1 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
-- [IdleMovementHandler](IdleMovementHandler.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [NPCBase](NPCBase.md) (1 shared connections)
+- [models/player.py](models-player.py.md) (3 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (3 shared connections)
 
 ## Source Files
 
-- `server/models/game.py`
-- `server/models/invite.py`
-- `server/npc/idle_movement.py`
-- `server/npc/npc_base.py`
+- `server/models/lucidity.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (73%)
-- INFERRED: 4 (27%)
+- EXTRACTED: 11 (79%)
+- INFERRED: 3 (21%)
 - AMBIGUOUS: 0 (0%)
 
 ---

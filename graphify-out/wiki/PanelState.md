@@ -1,6 +1,6 @@
 # PanelState
 
-> 83 nodes
+> 82 nodes
 
 ## Key Concepts
 
@@ -8,7 +8,7 @@
 - **panelReducerHandlers.ts** (24 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
 - **panelManagerReducer.ts** (20 connections) — `client/src/components/ui-v2/PanelSystem/panelManagerReducer.ts`
 - **panelReducerHandlers.test.ts** (19 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts`
-- **panelMinimizeDock.ts** (17 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
+- **panelMinimizeDock.ts** (16 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
 - **savePanelLayout()** (13 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
 - **usePanelManagerProviderState.ts** (13 connections) — `client/src/components/ui-v2/PanelSystem/usePanelManagerProviderState.ts`
 - **panelLayoutBootstrap.ts** (12 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutBootstrap.ts`
@@ -16,11 +16,11 @@
 - **PanelManagerContext.tsx** (12 connections) — `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
 - **panelMinimizeDock.test.ts** (12 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelMinimizeDock.test.ts`
 - **panelLayoutClamp.ts** (11 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutClamp.ts`
-- **panelLayoutValidation.ts** (11 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
 - **PanelSystem/__tests__/PanelManager.test.tsx** (11 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/PanelManager.test.tsx`
 - **PanelManagerContextValue** (10 connections) — `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
 - **PanelSystem/PanelManager.tsx** (10 connections) — `client/src/components/ui-v2/PanelSystem/PanelManager.tsx`
 - **resolveInitialPanelLayout()** (9 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutBootstrap.ts`
+- **panelLayoutValidation.ts** (9 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
 - **relayoutMinimizedDock()** (8 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
 - **handleToggleMinimize()** (8 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
 - **handleToggleMaximize()** (7 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
@@ -29,13 +29,15 @@
 - **usePanelManagerProviderState.test.ts** (7 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/usePanelManagerProviderState.test.ts`
 - **usePanelManager.ts** (7 connections) — `client/src/components/ui-v2/PanelSystem/usePanelManager.ts`
 - **isPanelState()** (6 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheck.ts`
-- *... and 58 more nodes in this community*
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [ui-v2/types.ts](ui-v2-types.ts.md) (20 shared connections)
-- [GameClientV2MinimapSection.tsx](GameClientV2MinimapSection.tsx.md) (18 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (19 shared connections)
+- [PanelPosition](PanelPosition.md) (14 shared connections)
 - [GameClientV2.tsx](GameClientV2.tsx.md) (9 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (4 shared connections)
+- [GameClientV2Dock.test.tsx](GameClientV2Dock.test.tsx.md) (1 shared connections)
 
 ## Source Files
 
@@ -62,7 +64,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 255 (99%)
+- EXTRACTED: 252 (99%)
 - INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 

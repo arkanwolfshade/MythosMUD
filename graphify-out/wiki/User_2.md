@@ -26,14 +26,14 @@
 - models/user.py `EXTRACTED`
 
 ### imports
-- models/player.py `EXTRACTED`
-- [async_persistence.py](async_persistence.py.md) `EXTRACTED`
-- [server/models/__init__.py](server-models-__init__.py.md) `EXTRACTED`
+- [models/player.py](models-player.py.md) `EXTRACTED`
+- async_persistence.py `EXTRACTED`
+- server/models/__init__.py `EXTRACTED`
 - players.py `EXTRACTED`
-- [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
+- api/character_creation.py `EXTRACTED`
 - maps.py `EXTRACTED`
-- endpoints.py `EXTRACTED`
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) `EXTRACTED`
+- [endpoints.py](endpoints.py.md) `EXTRACTED`
+- container_endpoints_basic.py `EXTRACTED`
 - rooms.py `EXTRACTED`
 - [command_handler_unified.py](command_handler_unified.py.md) `EXTRACTED`
 - [test_admin_auth_service.py](test_admin_auth_service.py.md) `EXTRACTED`
@@ -42,10 +42,10 @@
 - users.py `EXTRACTED`
 - api/container_helpers.py `EXTRACTED`
 - test_container_helpers.py `EXTRACTED`
-- [test_async_persistence_core.py](test_async_persistence_core.py.md) `EXTRACTED`
+- test_async_persistence_core.py `EXTRACTED`
 - [test_metrics_endpoints.py](test_metrics_endpoints.py.md) `EXTRACTED`
 - api/player_effects.py `EXTRACTED`
-- test_npc_definitions_api.py `EXTRACTED`
+- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) `EXTRACTED`
 
 ### inherits
 - Base `EXTRACTED`

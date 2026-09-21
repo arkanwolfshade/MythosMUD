@@ -1,53 +1,63 @@
 # Profession
 
-> 84 nodes
+> 56 nodes
 
 ## Key Concepts
 
-- **Profession** (53 connections) — `server/models/profession.py`
-- **test_profession.py** (30 connections) — `server/tests/unit/models/test_profession.py`
-- **Any** (8 connections)
-- **.get_stat_requirements()** (5 connections) — `server/models/profession.py`
-- **.get_mechanical_effects()** (3 connections) — `server/models/profession.py`
-- **.get_requirement_display_text()** (3 connections) — `server/models/profession.py`
-- **.get_skill_modifiers()** (3 connections) — `server/models/profession.py`
-- **.get_stat_modifiers()** (3 connections) — `server/models/profession.py`
-- **.meets_stat_requirements()** (3 connections) — `server/models/profession.py`
-- **.set_mechanical_effects()** (3 connections) — `server/models/profession.py`
-- **.set_skill_modifiers()** (3 connections) — `server/models/profession.py`
-- **.set_stat_modifiers()** (3 connections) — `server/models/profession.py`
-- **.set_stat_requirements()** (3 connections) — `server/models/profession.py`
-- **test_profession_get_mechanical_effects_empty_string()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_mechanical_effects_invalid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_mechanical_effects_none()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_mechanical_effects_valid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_requirement_display_text_capitalizes_stat_names()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_requirement_display_text_multiple_requirements()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_requirement_display_text_no_requirements()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_requirement_display_text_single_requirement()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_stat_requirements_empty_string()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_stat_requirements_invalid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_stat_requirements_none()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_stat_requirements_valid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- *... and 59 more nodes in this community*
+- **Profession** (25 connections) — `client/src/components/ProfessionCard.tsx`
+- **useStatsRollingActions.ts** (22 connections) — `client/src/hooks/useStatsRollingActions.ts`
+- **useProfessions.ts** (21 connections) — `client/src/hooks/useProfessions.ts`
+- **ProfessionCard.tsx** (18 connections) — `client/src/components/ProfessionCard.tsx`
+- **StatsRollingScreen.tsx** (16 connections) — `client/src/components/StatsRollingScreen.tsx`
+- **Stats** (15 connections) — `client/src/hooks/useStatsRolling.ts`
+- **useStatsRolling.ts** (15 connections) — `client/src/hooks/useStatsRolling.ts`
+- **ProfessionSelectionScreen.tsx** (14 connections) — `client/src/components/ProfessionSelectionScreen.tsx`
+- **StatsRollingScreen.test.tsx** (8 connections) — `client/src/components/StatsRollingScreen.test.tsx`
+- **loadProfessions()** (5 connections) — `client/src/hooks/useProfessions.ts`
+- **parseProfessionsErrorResponse()** (5 connections) — `client/src/hooks/useProfessions.ts`
+- **useStatsRolling()** (5 connections) — `client/src/hooks/useStatsRolling.ts`
+- **parseErrorMessage()** (5 connections) — `client/src/hooks/useStatsRollingActions.ts`
+- **performStatsRoll()** (5 connections) — `client/src/hooks/useStatsRollingActions.ts`
+- **useProfessions()** (4 connections) — `client/src/hooks/useProfessions.ts`
+- **applyFailedStatsRoll()** (4 connections) — `client/src/hooks/useStatsRollingActions.ts`
+- **handleStatsRollResponse()** (4 connections) — `client/src/hooks/useStatsRollingActions.ts`
+- **ProfessionSelectionScreen.test.tsx** (4 connections) — `client/src/components/ProfessionSelectionScreen.test.tsx`
+- **CharacterNameScreenProps** (3 connections) — `client/src/components/CharacterNameScreen.tsx`
+- **StatsRollingScreenProps** (3 connections) — `client/src/components/StatsRollingScreen.tsx`
+- **PerformStatsRollParams** (3 connections) — `client/src/hooks/useStatsRollingActions.ts`
+- **ProfessionCard()** (3 connections) — `client/src/components/ProfessionCard.tsx`
+- **ProfessionSelectionScreen()** (3 connections) — `client/src/components/ProfessionSelectionScreen.tsx`
+- **StatsRollingScreen()** (3 connections) — `client/src/components/StatsRollingScreen.tsx`
+- **parseProfessionsBody()** (3 connections) — `client/src/hooks/useProfessions.ts`
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
-- [async_persistence.py](async_persistence.py.md) (4 shared connections)
-- [profession_repository.py](profession_repository.py.md) (3 shared connections)
-- [test_async_persistence_core.py](test_async_persistence_core.py.md) (3 shared connections)
-- [DatabaseManager](DatabaseManager.md) (1 shared connections)
-- [server/models/__init__.py](server-models-__init__.py.md) (1 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (21 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (15 shared connections)
+- [CharacterNameScreen.tsx](CharacterNameScreen.tsx.md) (10 shared connections)
+- [apiTypeGuards.ts](apiTypeGuards.ts.md) (8 shared connections)
+- [roomHandlers.ts](roomHandlers.ts.md) (8 shared connections)
+- [GameClientV2Dock.test.tsx](GameClientV2Dock.test.tsx.md) (2 shared connections)
+- [security.ts](security.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/profession.py`
-- `server/tests/unit/models/test_profession.py`
+- `client/src/components/CharacterNameScreen.tsx`
+- `client/src/components/ProfessionCard.test.tsx`
+- `client/src/components/ProfessionCard.tsx`
+- `client/src/components/ProfessionSelectionScreen.test.tsx`
+- `client/src/components/ProfessionSelectionScreen.tsx`
+- `client/src/components/StatsRollingScreen.test.tsx`
+- `client/src/components/StatsRollingScreen.tsx`
+- `client/src/hooks/useProfessions.ts`
+- `client/src/hooks/useStatsRolling.ts`
+- `client/src/hooks/useStatsRollingActions.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 127 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 164 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

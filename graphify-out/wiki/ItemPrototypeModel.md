@@ -1,6 +1,6 @@
 # ItemPrototypeModel
 
-> 33 nodes
+> 31 nodes
 
 ## Key Concepts
 
@@ -15,7 +15,6 @@
 - **.validate_tags()** (3 connections) — `server/game/items/models.py`
 - **.validate_wear_slots()** (3 connections) — `server/game/items/models.py`
 - **.all()** (3 connections) — `server/game/items/prototype_registry.py`
-- **.find_by_tag()** (3 connections) — `server/game/items/prototype_registry.py`
 - **test_item_prototype_accepts_valid_flags()** (3 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
 - **test_item_prototype_accepts_valid_wear_slots()** (3 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
 - **test_item_prototype_normalizes_effect_components_and_tags()** (3 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
@@ -29,7 +28,8 @@
 - **Constants supporting item prototype validation. These enumerations anchor the…** (1 connections) — `server/game/items/constants.py`
 - **Pydantic models for item prototype validation. This module defines the…** (1 connections) — `server/game/items/models.py`
 - **Validate and normalize effect components. Args: value: The list of effect…** (1 connections) — `server/game/items/models.py`
-- *... and 8 more nodes in this community*
+- **Validate and normalize tags. Args: value: The list of tags to validate Returns:…** (1 connections) — `server/game/items/models.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
@@ -37,9 +37,8 @@
 - [PrototypeRegistry](PrototypeRegistry.md) (8 shared connections)
 - [items/catalog_dml.py](items-catalog_dml.py.md) (5 shared connections)
 - [PrototypeRegistryError](PrototypeRegistryError.md) (4 shared connections)
-- [bundles/game.py](bundles-game.py.md) (1 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
 - [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (1 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 66 (76%)
-- INFERRED: 21 (24%)
+- EXTRACTED: 64 (75%)
+- INFERRED: 21 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

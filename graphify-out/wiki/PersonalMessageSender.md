@@ -1,11 +1,10 @@
 # PersonalMessageSender
 
-> 35 nodes
+> 33 nodes
 
 ## Key Concepts
 
 - **PersonalMessageSender** (22 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **personal_message_sender.py** (15 connections) — `server/realtime/messaging/personal_message_sender.py`
 - **test_personal_message_sender.py** (15 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
 - **asyncio** (8 connections)
 - **.send_message()** (7 connections) — `server/realtime/messaging/personal_message_sender.py`
@@ -28,20 +27,18 @@
 - **test_send_to_websocket_disconnect()** (3 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
 - **LogCaptureFixture** (2 connections)
 - **fixture** (1 connections)
-- **Personal message delivery for connection management. This module provides…** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
-- *... and 10 more nodes in this community*
+- **Send message to a single WebSocket connection. Returns True if successful.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Queue message if no active connections.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [connection_manager.py](connection_manager.py.md) (5 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
-- [test_message_broadcaster.py](test_message_broadcaster.py.md) (2 shared connections)
-- [PayloadOptimizer](PayloadOptimizer.md) (2 shared connections)
-- [test_message_queue.py](test_message_queue.py.md) (2 shared connections)
-- [test_websocket_helpers.py](test_websocket_helpers.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
-- [websocket_helpers.py](websocket_helpers.py.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (7 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
+- [MessageBroadcaster](MessageBroadcaster.md) (1 shared connections)
+- [PayloadOptimizer](PayloadOptimizer.md) (1 shared connections)
+- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 76 (86%)
-- INFERRED: 12 (14%)
+- EXTRACTED: 64 (84%)
+- INFERRED: 12 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

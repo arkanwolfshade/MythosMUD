@@ -30,7 +30,7 @@
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 
 ## Source Files
 

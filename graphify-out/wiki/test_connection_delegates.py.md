@@ -1,6 +1,6 @@
 # test_connection_delegates.py
 
-> 124 nodes
+> 105 nodes
 
 ## Key Concepts
 
@@ -9,8 +9,8 @@
 - **asyncio** (27 connections)
 - **cleanup_dead_websocket_impl()** (14 connections) — `server/realtime/connection_delegates.py`
 - **validate_token_impl()** (13 connections) — `server/realtime/connection_delegates.py`
-- **delegate_game_state_provider()** (12 connections) — `server/realtime/connection_delegates.py`
 - **delegate_message_broadcaster()** (12 connections) — `server/realtime/connection_delegates.py`
+- **delegate_connection_cleaner()** (11 connections) — `server/realtime/connection_delegates.py`
 - **delegate_health_monitor()** (11 connections) — `server/realtime/connection_delegates.py`
 - **delegate_personal_message_sender()** (11 connections) — `server/realtime/connection_delegates.py`
 - **delegate_health_monitor_sync()** (10 connections) — `server/realtime/connection_delegates.py`
@@ -26,30 +26,31 @@
 - **_sync_callable()** (5 connections) — `server/realtime/connection_delegates.py`
 - **test_validate_token_impl_database_error()** (5 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
 - **WebSocket** (5 connections)
-- **_PlayerIdCarrier** (4 connections) — `server/realtime/connection_delegates.py`
-- **_TokenPersistence** (4 connections) — `server/realtime/connection_delegates.py`
 - **_TokenValidateManager** (4 connections) — `server/realtime/connection_delegates.py`
-- *... and 99 more nodes in this community*
+- **_websocket_client_connected()** (4 connections) — `server/realtime/connection_delegates.py`
+- **test_cleanup_dead_websocket_impl_close_timeout()** (4 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
+- *... and 80 more nodes in this community*
 
 ## Relationships
 
-- [ConnectionManager](ConnectionManager.md) (23 shared connections)
-- [connection_manager.py](connection_manager.py.md) (19 shared connections)
-- [connection_cleanup_methods.py](connection_cleanup_methods.py.md) (9 shared connections)
+- [connection_manager.py](connection_manager.py.md) (25 shared connections)
+- [test_connection_error_methods.py](test_connection_error_methods.py.md) (8 shared connections)
+- [delegate_game_state_provider](delegate_game_state_provider.md) (7 shared connections)
+- [ConnectionManager](ConnectionManager.md) (6 shared connections)
+- [asyncio](asyncio.md) (6 shared connections)
+- [_PlayerIdCarrier](_PlayerIdCarrier.md) (4 shared connections)
 - [DatabaseError](DatabaseError.md) (3 shared connections)
-- [create_access_token](create_access_token.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (2 shared connections)
 
 ## Source Files
 
 - `server/realtime/connection_delegates.py`
-- `server/realtime/connection_manager_methods.py`
 - `server/tests/unit/realtime/test_connection_delegates.py`
 
 ## Audit Trail
 
-- EXTRACTED: 280 (99%)
+- EXTRACTED: 258 (99%)
 - INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 

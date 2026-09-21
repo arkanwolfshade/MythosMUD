@@ -21,8 +21,7 @@
 
 ## Relationships
 
-- [packages/README.md](packages-README.md.md) (1 shared connections)
-- [Game Subsystem Design Documents Overview](Game_Subsystem_Design_Documents_Overview.md) (1 shared connections)
+- [packages/README.md](packages-README.md.md) (2 shared connections)
 
 ## Source Files
 

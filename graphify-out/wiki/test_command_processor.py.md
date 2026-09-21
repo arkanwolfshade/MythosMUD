@@ -1,45 +1,44 @@
 # test_command_processor.py
 
-> 56 nodes
+> 20 nodes
 
 ## Key Concepts
 
 - **test_command_processor.py** (39 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_process_command_string_pydantic_validation_error()** (3 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **test_command_processor_initialization()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_extract_attributes_basic()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_extract_attributes_missing_attribute()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_extract_command_data_basic()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_extract_command_data_combat_target()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_extract_command_data_multiple_attributes()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **test_extract_command_data_player_name()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_extract_command_data_with_target()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_get_command_help_key_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_get_command_help_none()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **test_get_command_help_runtime_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_get_command_help_success()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **test_get_command_help_type_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **test_get_command_help_value_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_is_combat_command_attack()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **test_is_combat_command_kick()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_is_combat_command_non_combat()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **test_is_combat_command_punch()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_is_combat_command_strike()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_process_command_string_key_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_process_command_string_runtime_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_process_command_string_success()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_process_command_string_type_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- *... and 31 more nodes in this community*
+- **test_process_command_string_value_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_validate_command_safety_unsafe()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **Unit tests for command processor. Tests the CommandProcessor class which…** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **Test _is_combat_command returns True for punch command.** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **Test _is_combat_command returns True for kick command.** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **Test extract_command_data handles player_name attribute.** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **Test CommandProcessor initializes correctly.** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **Test validate_command_safety returns False for unsafe command.** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **Test get_command_help handles ValueError.** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **Test get_command_help handles TypeError.** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **Test get_command_help handles RuntimeError.** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **Test process_command_string handles ValueError.** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
 
 ## Relationships
 
-- [CommandProcessor](CommandProcessor.md) (5 shared connections)
-- [AttributeError](AttributeError.md) (2 shared connections)
+- [CommandProcessor](CommandProcessor.md) (4 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [ValidationError](ValidationError.md) (1 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 - [command.py](command.py.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
-- [test_command_service.py](test_command_service.py.md) (1 shared connections)
+- [test_process_command_string_key_error](test_process_command_string_key_error.md) (1 shared connections)
+- [test_process_command_string_runtime_error](test_process_command_string_runtime_error.md) (1 shared connections)
+- [test_extract_attributes_basic](test_extract_attributes_basic.md) (1 shared connections)
+- [test_extract_attributes_missing_attribute](test_extract_attributes_missing_attribute.md) (1 shared connections)
+- [test_is_combat_command_attack](test_is_combat_command_attack.md) (1 shared connections)
+- [test_is_combat_command_strike](test_is_combat_command_strike.md) (1 shared connections)
+- [test_is_combat_command_non_combat](test_is_combat_command_non_combat.md) (1 shared connections)
+- [test_extract_command_data_basic](test_extract_command_data_basic.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 66 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 48 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

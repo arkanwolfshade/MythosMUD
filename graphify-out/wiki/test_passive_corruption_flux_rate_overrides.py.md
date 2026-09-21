@@ -1,11 +1,10 @@
 # test_passive_corruption_flux_rate_overrides.py
 
-> 48 nodes
+> 46 nodes
 
 ## Key Concepts
 
 - **test_passive_corruption_flux_rate_overrides.py** (34 connections) — `server/tests/unit/services/test_passive_corruption_flux_rate_overrides.py`
-- **CorruptionOverride** (24 connections) — `server/services/passive_corruption_flux/config.py`
 - **passive_corruption_flux/rate_overrides.py** (20 connections) — `server/services/passive_corruption_flux/rate_overrides.py`
 - **_process_override_row()** (13 connections) — `server/services/passive_corruption_flux/rate_overrides.py`
 - **_extract_corruption_override()** (10 connections) — `server/services/passive_corruption_flux/rate_overrides.py`
@@ -29,27 +28,25 @@
 - **test_load_corruption_overrides_returns_empty_on_error()** (3 connections) — `server/tests/unit/services/test_passive_corruption_flux_rate_overrides.py`
 - **MonkeyPatch** (3 connections)
 - **test_extract_corruption_override_neither_returns_none()** (2 connections) — `server/tests/unit/services/test_passive_corruption_flux_rate_overrides.py`
-- *... and 23 more nodes in this community*
+- **test_extract_corruption_override_non_numeric_ignored()** (2 connections) — `server/tests/unit/services/test_passive_corruption_flux_rate_overrides.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [passive_corruption_flux/service.py](passive_corruption_flux-service.py.md) (9 shared connections)
-- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (7 shared connections)
-- [test_rate_overrides.py](test_rate_overrides.py.md) (4 shared connections)
+- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (15 shared connections)
+- [test_rate_overrides.py](test_rate_overrides.py.md) (7 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
-- [get_asyncpg_server_settings_for_database_url](get_asyncpg_server_settings_for_database_url.md) (2 shared connections)
-- [DatabaseManager](DatabaseManager.md) (1 shared connections)
+- [passive_lucidity_flux/service.py](passive_lucidity_flux-service.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/passive_corruption_flux/config.py`
 - `server/services/passive_corruption_flux/rate_overrides.py`
 - `server/tests/unit/services/test_passive_corruption_flux_rate_overrides.py`
 
 ## Audit Trail
 
-- EXTRACTED: 127 (96%)
-- INFERRED: 5 (4%)
+- EXTRACTED: 117 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

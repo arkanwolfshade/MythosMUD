@@ -1,13 +1,12 @@
 # test_chat_logger.py
 
-> 41 nodes
+> 39 nodes
 
 ## Key Concepts
 
 - **test_chat_logger.py** (20 connections) — `server/tests/unit/services/test_chat_logger.py`
 - **chat_logger()** (8 connections) — `server/tests/unit/services/test_chat_logger.py`
 - **.__init__()** (5 connections) — `server/services/user_manager.py`
-- **.__init__()** (4 connections) — `server/services/rate_limiter.py`
 - **temp_log_dir()** (3 connections) — `server/tests/unit/services/test_chat_logger.py`
 - **test_chat_logger_initialization_with_directory()** (3 connections) — `server/tests/unit/services/test_chat_logger.py`
 - **test_channel_log_stats_and_cleanup()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
@@ -26,31 +25,30 @@
 - **Path** (2 connections)
 - **fixture** (2 connections)
 - **test_log_message_flagged_and_player_left()** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **Initialize the rate limiter with configuration-based limits.** (1 connections) — `server/services/rate_limiter.py`
 - **Initialize the user manager. Args: data_dir: Directory for player-specific mute…** (1 connections) — `server/services/user_manager.py`
 - **Unit tests for chat logger service. Tests the ChatLogger class for structured…** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
-- *... and 16 more nodes in this community*
+- **Test log_player_muted writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Test log_player_unmuted writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
 - [ChatLogger](ChatLogger.md) (3 shared connections)
 - [UserManager](UserManager.md) (2 shared connections)
-- [get_config](get_config.md) (1 shared connections)
-- [test_rate_limiter.py](test_rate_limiter.py.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
 - [ChatPoseManager](ChatPoseManager.md) (1 shared connections)
-- [test_room_sync_service.py](test_room_sync_service.py.md) (1 shared connections)
+- [test_event_handler.py](test_event_handler.py.md) (1 shared connections)
+- [test_rate_limiter.py](test_rate_limiter.py.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/rate_limiter.py`
 - `server/services/user_manager.py`
 - `server/tests/unit/services/test_chat_logger.py`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (90%)
+- EXTRACTED: 44 (90%)
 - INFERRED: 5 (10%)
 - AMBIGUOUS: 0 (0%)
 

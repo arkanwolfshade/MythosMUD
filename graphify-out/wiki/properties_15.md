@@ -1,17 +1,21 @@
 # properties
 
-> 23 nodes
+> 28 nodes
 
 ## Key Concepts
 
 - **properties** (6 connections) — `schemas/items/item_prototype.schema.json`
+- **catalogMetadata** (5 connections) — `schemas/items/item_prototype.schema.json`
 - **namespace** (5 connections) — `schemas/items/item_prototype.schema.json`
 - **source_key** (5 connections) — `schemas/items/item_prototype.schema.json`
 - **canonical_id** (4 connections) — `schemas/items/item_prototype.schema.json`
 - **era** (4 connections) — `schemas/items/item_prototype.schema.json`
 - **variant_of** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **required** (2 connections) — `schemas/items/item_prototype.schema.json`
 - **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
 - **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
 - **type** (1 connections) — `schemas/items/item_prototype.schema.json`
 - **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
 - **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
@@ -25,8 +29,7 @@
 - **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
 - **type** (1 connections) — `schemas/items/item_prototype.schema.json`
 - **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
@@ -38,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 28 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

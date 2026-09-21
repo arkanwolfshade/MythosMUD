@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [bind_request_context](bind_request_context.md) (3 shared connections)
+- [websocket_handler.py](websocket_handler.py.md) (3 shared connections)
 - [ExceptionTracker](ExceptionTracker.md) (3 shared connections)
 - [PerformanceMonitor](PerformanceMonitor.md) (3 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 - [Result](Result.md) (1 shared connections)
 
 ## Source Files

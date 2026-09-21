@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (2 shared connections)
+- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (1 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,17 +1,16 @@
 # MapPerformanceMonitor
 
-> 12 nodes
+> 11 nodes
 
 ## Key Concepts
 
 - **MapPerformanceMonitor** (8 connections) — `client/src/components/map/utils/performance.ts`
-- **performance.ts** (6 connections) — `client/src/components/map/utils/performance.ts`
+- **performance.ts** (5 connections) — `client/src/components/map/utils/performance.ts`
 - **debounce()** (4 connections) — `client/src/components/map/utils/performance.ts`
 - **performance.test.ts** (4 connections) — `client/src/components/map/__tests__/performance.test.ts`
 - **.getAverageRenderTime()** (2 connections) — `client/src/components/map/utils/performance.ts`
 - **.getStats()** (2 connections) — `client/src/components/map/utils/performance.ts`
 - **throttle()** (2 connections) — `client/src/components/map/utils/performance.ts`
-- **isInViewport()** (1 connections) — `client/src/components/map/utils/performance.ts`
 - **.endRender()** (1 connections) — `client/src/components/map/utils/performance.ts`
 - **.getFps()** (1 connections) — `client/src/components/map/utils/performance.ts`
 - **.reset()** (1 connections) — `client/src/components/map/utils/performance.ts`
@@ -19,7 +18,8 @@
 
 ## Relationships
 
-- [mapUtils.ts](mapUtils.ts.md) (3 shared connections)
+- [utils/layout.ts](utils-layout.ts.md) (2 shared connections)
+- [mapUtils.ts](mapUtils.ts.md) (1 shared connections)
 
 ## Source Files
 
@@ -28,7 +28,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

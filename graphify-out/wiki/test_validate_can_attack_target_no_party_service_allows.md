@@ -9,7 +9,7 @@
 
 ## Relationships
 
-- [CombatCommandHandler](CombatCommandHandler.md) (1 shared connections)
+- [CombatValidator](CombatValidator.md) (1 shared connections)
 - [test_combat_validator.py](test_combat_validator.py.md) (1 shared connections)
 
 ## Source Files

@@ -33,18 +33,18 @@
 
 ## Relationships
 
+- [get_logger](get_logger.md) (10 shared connections)
 - [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (9 shared connections)
 - [test_go_command.py](test_go_command.py.md) (5 shared connections)
-- [test_magic_commands.py](test_magic_commands.py.md) (5 shared connections)
+- [SpellRegistry](SpellRegistry.md) (5 shared connections)
 - [rest_countdown_task.py](rest_countdown_task.py.md) (5 shared connections)
-- [CombatCommandHandler](CombatCommandHandler.md) (4 shared connections)
-- [PlayerPositionService](PlayerPositionService.md) (4 shared connections)
-- [PlayerDPUpdated](PlayerDPUpdated.md) (4 shared connections)
 - [AliasStorage](AliasStorage.md) (4 shared connections)
 - [player_presence_tracker.py](player_presence_tracker.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [CombatParticipantData](CombatParticipantData.md) (4 shared connections)
+- [PlayerPositionService](PlayerPositionService.md) (3 shared connections)
+- [emit_posture_change](emit_posture_change.md) (3 shared connections)
 - [test_logout_commands.py](test_logout_commands.py.md) (3 shared connections)
-- [command_service.py](command_service.py.md) (3 shared connections)
+- [CombatCommandHandler](CombatCommandHandler.md) (2 shared connections)
 
 ## Source Files
 

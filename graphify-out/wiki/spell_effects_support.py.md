@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (10 shared connections)
-- [Spell](Spell.md) (9 shared connections)
+- [TargetMatch](TargetMatch.md) (16 shared connections)
+- [Stats](Stats.md) (4 shared connections)
 - [get_logger](get_logger.md) (4 shared connections)
-- [server/models/game.py](server-models-game.py.md) (3 shared connections)
-- [CombatCommandHandler](CombatCommandHandler.md) (2 shared connections)
-- [spell_effects_status.py](spell_effects_status.py.md) (1 shared connections)
+- [spell_effects.py](spell_effects.py.md) (3 shared connections)
+- [TargetType](TargetType.md) (2 shared connections)
 - [SpellEffectType](SpellEffectType.md) (1 shared connections)
 
 ## Source Files

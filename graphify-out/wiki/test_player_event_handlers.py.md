@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (4 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (7 shared connections)
+- [PlayerDPUpdated](PlayerDPUpdated.md) (5 shared connections)
 - [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (3 shared connections)
-- [PlayerDPUpdated](PlayerDPUpdated.md) (3 shared connections)
-- [PlayerStateEventHandler](PlayerStateEventHandler.md) (2 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

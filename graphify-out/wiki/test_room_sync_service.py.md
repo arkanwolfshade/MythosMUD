@@ -1,13 +1,12 @@
 # test_room_sync_service.py
 
-> 96 nodes
+> 94 nodes
 
 ## Key Concepts
 
 - **test_room_sync_service.py** (40 connections) — `server/tests/unit/services/test_room_sync_service.py`
 - **RoomSyncService** (22 connections) — `server/services/room_sync_service.py`
 - **asyncio** (14 connections)
-- **.__init__()** (9 connections) — `server/realtime/event_handler.py`
 - **get_room_sync_service()** (8 connections) — `server/services/room_sync_service.py`
 - **Any** (7 connections)
 - **._handle_stale_room_data()** (6 connections) — `server/services/room_sync_service.py`
@@ -29,32 +28,31 @@
 - **test_fetch_fresh_room_data_no_room_service()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
 - **test_fetch_fresh_room_data_not_found()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
 - **test_fetch_fresh_room_data_success()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- *... and 71 more nodes in this community*
+- **test_get_room_sync_service_returns_singleton()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- *... and 69 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
-- [EventBus](EventBus.md) (3 shared connections)
-- [AttributeError](AttributeError.md) (3 shared connections)
-- [MessageBuilder](MessageBuilder.md) (2 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (4 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (3 shared connections)
 - [RoomDataCache](RoomDataCache.md) (2 shared connections)
 - [RoomDataValidator](RoomDataValidator.md) (2 shared connections)
 - [TestRoomDataFixer](TestRoomDataFixer.md) (2 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (2 shared connections)
-- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (1 shared connections)
-- [TaskRegistry](TaskRegistry.md) (1 shared connections)
-- [test_chat_logger.py](test_chat_logger.py.md) (1 shared connections)
+- [EventBus](EventBus.md) (2 shared connections)
+- [test_event_handler.py](test_event_handler.py.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/event_handler.py`
 - `server/services/room_sync_service.py`
 - `server/tests/unit/services/test_room_sync_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 142 (93%)
-- INFERRED: 10 (7%)
+- EXTRACTED: 135 (94%)
+- INFERRED: 9 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

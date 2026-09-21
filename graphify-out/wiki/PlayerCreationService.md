@@ -27,9 +27,8 @@
 
 ## Relationships
 
-- [api/character_creation.py](api-character_creation.py.md) (5 shared connections)
-- [ValidationError](ValidationError.md) (3 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [PlayerService](PlayerService.md) (3 shared connections)
 
 ## Source Files
 

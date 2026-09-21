@@ -31,11 +31,11 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (3 shared connections)
 - [DatabaseError](DatabaseError.md) (3 shared connections)
-- [ConnectionManager](ConnectionManager.md) (2 shared connections)
+- [asyncio](asyncio.md) (2 shared connections)
 - [connection_manager.py](connection_manager.py.md) (2 shared connections)
-- [AttributeError](AttributeError.md) (2 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (2 shared connections)
 
 ## Source Files
 

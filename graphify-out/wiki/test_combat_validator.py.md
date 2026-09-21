@@ -19,9 +19,8 @@
 
 ## Relationships
 
-- [CombatCommandHandler](CombatCommandHandler.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [CombatValidator](CombatValidator.md) (1 shared connections)
 - [test_validate_combat_command_target_too_long](test_validate_combat_command_target_too_long.md) (1 shared connections)
 - [test_validate_combat_command_rate_limited](test_validate_combat_command_rate_limited.md) (1 shared connections)
 - [test_validate_combat_command_exception_handling](test_validate_combat_command_exception_handling.md) (1 shared connections)
@@ -31,6 +30,7 @@
 - [test_validate_target_exists_no_match](test_validate_target_exists_no_match.md) (1 shared connections)
 - [test_validate_target_exists_no_target_name](test_validate_target_exists_no_target_name.md) (1 shared connections)
 - [combat_validator](combat_validator.md) (1 shared connections)
+- [test_validate_target_alive_alive](test_validate_target_alive_alive.md) (1 shared connections)
 
 ## Source Files
 

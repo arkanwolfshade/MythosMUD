@@ -1,15 +1,18 @@
 # MemoryLeakMetricsCollector
 
-> 78 nodes
+> 84 nodes
 
 ## Key Concepts
 
 - **MemoryLeakMetricsCollector** (28 connections) — `server/monitoring/memory_leak_metrics.py`
 - **test_memory_leak_metrics.py** (25 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **.event_bus()** (14 connections) — `server/realtime/connection_manager.py`
+- **.initialize()** (11 connections) — `server/container/bundles/monitoring.py`
 - **Any** (11 connections)
 - **.check_alerts()** (9 connections) — `server/monitoring/memory_leak_metrics.py`
 - **.collect_all_metrics()** (9 connections) — `server/monitoring/memory_leak_metrics.py`
 - **.collect_event_metrics()** (6 connections) — `server/monitoring/memory_leak_metrics.py`
+- **._get_integration_dependencies()** (6 connections) — `server/npc/npc_base.py`
 - **.collect_cache_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
 - **.collect_connection_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
 - **.collect_nats_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
@@ -26,34 +29,35 @@
 - **test_collect_nats_metrics_uses_injected_nats_service()** (3 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
 - **test_calculate_growth_rates()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
 - **test_calculate_growth_rates_insufficient_history()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_check_alerts_cache_capacity()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_check_alerts_closed_websockets_threshold()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_check_alerts_no_alerts()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- *... and 53 more nodes in this community*
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
-- [WebSocketRequestContext](WebSocketRequestContext.md) (2 shared connections)
-- [MonitoringDashboard](MonitoringDashboard.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (3 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [lifespan.py](lifespan.py.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (1 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (2 shared connections)
+- [event_types.py](event_types.py.md) (2 shared connections)
+- [PerformanceMonitor](PerformanceMonitor.md) (1 shared connections)
+- [LogAggregator](LogAggregator.md) (1 shared connections)
+- [HealthStatus](HealthStatus.md) (1 shared connections)
+- [fixture](fixture.md) (1 shared connections)
 - [RoomCacheService](RoomCacheService.md) (1 shared connections)
-- [api/monitoring.py](api-monitoring.py.md) (1 shared connections)
-- [TaskRegistry](TaskRegistry.md) (1 shared connections)
-- [test_message_queue.py](test_message_queue.py.md) (1 shared connections)
 
 ## Source Files
 
+- `server/container/bundles/monitoring.py`
 - `server/monitoring/memory_leak_metrics.py`
+- `server/npc/npc_base.py`
+- `server/realtime/connection_manager.py`
 - `server/tests/unit/monitoring/test_memory_leak_metrics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 114 (96%)
-- INFERRED: 5 (4%)
+- EXTRACTED: 129 (88%)
+- INFERRED: 17 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

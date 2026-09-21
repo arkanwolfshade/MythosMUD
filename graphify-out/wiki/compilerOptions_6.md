@@ -1,35 +1,35 @@
 # compilerOptions
 
-> 46 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **compilerOptions** (17 connections) — `client/tsconfig.json`
-- **paths** (8 connections) — `client/tsconfig.json`
-- **exclude** (8 connections) — `client/tsconfig.json`
-- **client/tsconfig.json** (4 connections) — `client/tsconfig.json`
-- **lib** (4 connections) — `client/tsconfig.json`
-- **include** (2 connections) — `client/tsconfig.json`
-- **@api/*** (2 connections) — `client/tsconfig.json`
-- **@components/*** (2 connections) — `client/tsconfig.json`
-- **@hooks/*** (2 connections) — `client/tsconfig.json`
-- **@lib/*** (2 connections) — `client/tsconfig.json`
-- **@stores/*** (2 connections) — `client/tsconfig.json`
-- **@styles/*** (2 connections) — `client/tsconfig.json`
-- **@utils/*** (2 connections) — `client/tsconfig.json`
-- **allowImportingTsExtensions** (1 connections) — `client/tsconfig.json`
-- **isolatedModules** (1 connections) — `client/tsconfig.json`
-- **jsx** (1 connections) — `client/tsconfig.json`
-- **module** (1 connections) — `client/tsconfig.json`
-- **moduleResolution** (1 connections) — `client/tsconfig.json`
-- **noEmit** (1 connections) — `client/tsconfig.json`
-- **noFallthroughCasesInSwitch** (1 connections) — `client/tsconfig.json`
-- **noUnusedLocals** (1 connections) — `client/tsconfig.json`
-- **noUnusedParameters** (1 connections) — `client/tsconfig.json`
-- **resolveJsonModule** (1 connections) — `client/tsconfig.json`
-- **skipLibCheck** (1 connections) — `client/tsconfig.json`
-- **strict** (1 connections) — `client/tsconfig.json`
-- *... and 21 more nodes in this community*
+- **compilerOptions** (17 connections) — `client/tsconfig.node.json`
+- **include** (8 connections) — `client/tsconfig.node.json`
+- **tsconfig.node.json** (3 connections) — `client/tsconfig.node.json`
+- **lib** (2 connections) — `client/tsconfig.node.json`
+- **types** (2 connections) — `client/tsconfig.node.json`
+- **allowImportingTsExtensions** (1 connections) — `client/tsconfig.node.json`
+- **composite** (1 connections) — `client/tsconfig.node.json`
+- **emitDeclarationOnly** (1 connections) — `client/tsconfig.node.json`
+- **module** (1 connections) — `client/tsconfig.node.json`
+- **moduleDetection** (1 connections) — `client/tsconfig.node.json`
+- **moduleResolution** (1 connections) — `client/tsconfig.node.json`
+- **noFallthroughCasesInSwitch** (1 connections) — `client/tsconfig.node.json`
+- **noUnusedLocals** (1 connections) — `client/tsconfig.node.json`
+- **noUnusedParameters** (1 connections) — `client/tsconfig.node.json`
+- **skipLibCheck** (1 connections) — `client/tsconfig.node.json`
+- **strict** (1 connections) — `client/tsconfig.node.json`
+- **target** (1 connections) — `client/tsconfig.node.json`
+- **tsBuildInfoFile** (1 connections) — `client/tsconfig.node.json`
+- **verbatimModuleSyntax** (1 connections) — `client/tsconfig.node.json`
+- **exclude** (1 connections) — `client/tsconfig.node.json`
+- **ES2020** (1 connections) — `client/tsconfig.node.json`
+- **node** (1 connections) — `client/tsconfig.node.json`
+- **playwright.config.ts** (1 connections) — `client/tsconfig.node.json`
+- **vite.userConfig.ts** (1 connections) — `client/tsconfig.node.json`
+- **tests/e2e/playwright.runtime.config.ts** (1 connections) — `client/tsconfig.node.json`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
@@ -37,11 +37,11 @@
 
 ## Source Files
 
-- `client/tsconfig.json`
+- `client/tsconfig.node.json`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (100%)
+- EXTRACTED: 28 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

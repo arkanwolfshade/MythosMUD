@@ -1,11 +1,10 @@
 # player_event_handlers_respawn_room.py
 
-> 53 nodes
+> 47 nodes
 
 ## Key Concepts
 
 - **player_event_handlers_respawn_room.py** (24 connections) — `server/realtime/player_event_handlers_respawn_room.py`
-- **get_container_async_persistence()** (18 connections) — `server/container/async_persistence_access.py`
 - **test_player_event_handlers_respawn_room.py** (13 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn_room.py`
 - **prepare_room_data_for_respawn()** (11 connections) — `server/realtime/player_event_handlers_respawn_room.py`
 - **extract_occupant_names()** (10 connections) — `server/realtime/player_event_handlers_respawn_room.py`
@@ -28,37 +27,33 @@
 - **test_prepare_room_data_for_respawn_logs_on_error()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn_room.py`
 - **test_prepare_room_data_for_respawn_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn_room.py`
 - **test_prepare_room_data_for_respawn_with_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn_room.py`
-- **test_get_container_async_persistence_raises_when_not_initialized()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- *... and 28 more nodes in this community*
+- **test_get_npc_name_from_lifecycle_manager_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn_room.py`
+- **test_get_npc_name_from_lifecycle_manager_returns_name()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn_room.py`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (7 shared connections)
-- [Player](Player.md) (6 shared connections)
-- [real_time.py](real_time.py.md) (3 shared connections)
+- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (4 shared connections)
+- [event_types.py](event_types.py.md) (3 shared connections)
 - [ConnectionManager](ConnectionManager.md) (2 shared connections)
-- [websocket_helpers.py](websocket_helpers.py.md) (2 shared connections)
 - [test_websocket_helpers.py](test_websocket_helpers.py.md) (2 shared connections)
+- [websocket_helpers.py](websocket_helpers.py.md) (2 shared connections)
 - [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (2 shared connections)
-- [CombatAttackHandler](CombatAttackHandler.md) (1 shared connections)
-- [get_config](get_config.md) (1 shared connections)
-- [async_persistence.py](async_persistence.py.md) (1 shared connections)
 - [Protocol](Protocol.md) (1 shared connections)
 - [Room](Room.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/async_persistence_access.py`
 - `server/realtime/player_event_handlers_respawn_room.py`
 - `server/realtime/player_event_handlers_respawn_types.py`
 - `server/realtime/websocket_initial_state.py`
-- `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 - `server/tests/unit/realtime/test_player_event_handlers_respawn_room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 124 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 105 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

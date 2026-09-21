@@ -32,26 +32,26 @@
 - enhanced_logging_config.py `EXTRACTED`
 
 ### imports
-- [server/exceptions.py](server-exceptions.py.md) `EXTRACTED`
+- server/exceptions.py `EXTRACTED`
 - [connection_manager.py](connection_manager.py.md) `EXTRACTED`
 - [server/dependencies.py](server-dependencies.py.md) `EXTRACTED`
 - time.py `EXTRACTED`
-- [combat_service.py](combat_service.py.md) `EXTRACTED`
+- combat_service.py `EXTRACTED`
 - [command_service.py](command_service.py.md) `EXTRACTED`
-- [async_persistence.py](async_persistence.py.md) `EXTRACTED`
+- async_persistence.py `EXTRACTED`
 - connection_manager_methods.py `EXTRACTED`
 - database.py `EXTRACTED`
-- [alias_storage.py](alias_storage.py.md) `EXTRACTED`
+- alias_storage.py `EXTRACTED`
 - players.py `EXTRACTED`
 - [websocket_handler.py](websocket_handler.py.md) `EXTRACTED`
-- [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
+- api/character_creation.py `EXTRACTED`
 - maps.py `EXTRACTED`
-- endpoints.py `EXTRACTED`
+- [endpoints.py](endpoints.py.md) `EXTRACTED`
 - [lifespan_startup.py](lifespan_startup.py.md) `EXTRACTED`
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) `EXTRACTED`
+- container_endpoints_basic.py `EXTRACTED`
 - rooms.py `EXTRACTED`
-- [chat_service.py](chat_service.py.md) `EXTRACTED`
 - models/combat.py `EXTRACTED`
+- [api/monitoring.py](api-monitoring.py.md) `EXTRACTED`
 
 ### rationale_for
 - Get a Structlog logger with the specified name. This ensures all loggers are… `EXTRACTED`

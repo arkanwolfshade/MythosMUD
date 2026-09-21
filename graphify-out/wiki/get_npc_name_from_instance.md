@@ -23,9 +23,10 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 - [connection_manager.py](connection_manager.py.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (1 shared connections)
 
 ## Source Files
 

@@ -28,7 +28,7 @@
 
 ## Relationships
 
-- [Game Subsystem Design Documents Overview](Game_Subsystem_Design_Documents_Overview.md) (1 shared connections)
+- [packages/README.md](packages-README.md.md) (1 shared connections)
 - [ADR-024: Server-Authoritative Perceived Reality for Hallucinations](ADR-024-_Server-Authoritative_Perceived_Reality_for_Hallucinations.md) (1 shared connections)
 
 ## Source Files

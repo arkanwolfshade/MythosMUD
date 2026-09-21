@@ -1,18 +1,15 @@
 # GameMechanicsService
 
-> 41 nodes
+> 38 nodes
 
 ## Key Concepts
 
 - **GameMechanicsService** (26 connections) — `server/game/mechanics.py`
-- **mechanics.py** (17 connections) — `server/game/mechanics.py`
 - **test_mechanics.py** (17 connections) — `server/tests/unit/game/test_mechanics.py`
-- **npc_combat_rewards.py** (10 connections) — `server/services/npc_combat_rewards.py`
 - **_player()** (8 connections) — `server/tests/unit/game/test_mechanics.py`
 - **asyncio** (8 connections)
-- **.__init__()** (5 connections) — `server/npc/combat_integration_base.py`
 - **test_apply_corruption_success()** (5 connections) — `server/tests/unit/game/test_mechanics.py`
-- **.apply_corruption()** (4 connections) — `server/game/mechanics.py`
+- **.__init__()** (4 connections) — `server/services/npc_combat_rewards.py`
 - **test_apply_fear_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
 - **test_apply_lucidity_loss_player_not_found()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
 - **test_apply_lucidity_loss_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
@@ -27,36 +24,34 @@
 - **.gain_occult_knowledge()** (3 connections) — `server/game/mechanics.py`
 - **.heal_player()** (3 connections) — `server/game/mechanics.py`
 - **.__init__()** (3 connections) — `server/game/mechanics.py`
+- **.calculate_xp_reward()** (3 connections) — `server/services/npc_combat_rewards.py`
 - **_async_session_gen()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
 - **service()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
-- *... and 16 more nodes in this community*
+- **persistence()** (2 connections) — `server/tests/unit/game/test_mechanics.py`
+- **Any** (2 connections)
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (8 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (7 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (3 shared connections)
-- [Player](Player.md) (3 shared connections)
-- [ValidationError](ValidationError.md) (3 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (3 shared connections)
-- [CorruptionService](CorruptionService.md) (2 shared connections)
-- [corruption_service.py](corruption_service.py.md) (2 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
-- [async_persistence.py](async_persistence.py.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (6 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (5 shared connections)
+- [event_types.py](event_types.py.md) (3 shared connections)
+- [ValidationError](ValidationError.md) (2 shared connections)
+- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (1 shared connections)
+- [CorruptionTier](CorruptionTier.md) (1 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
 - `server/game/mechanics.py`
-- `server/npc/combat_integration_base.py`
 - `server/services/npc_combat_rewards.py`
 - `server/tests/unit/game/test_mechanics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 97 (92%)
-- INFERRED: 9 (8%)
+- EXTRACTED: 73 (89%)
+- INFERRED: 9 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

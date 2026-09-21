@@ -1,17 +1,13 @@
 # InventoryMutationGuard
 
-> 94 nodes
+> 36 nodes
 
 ## Key Concepts
 
 - **InventoryMutationGuard** (33 connections) — `server/services/inventory_mutation_guard.py`
-- **test_inventory_mutation_guard.py** (17 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **test_inventory_mutation_guard_async.py** (10 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **test_inventory_mutation_guard_error_handling.py** (10 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
 - **.acquire()** (8 connections) — `server/services/inventory_mutation_guard.py`
 - **.acquire_async()** (8 connections) — `server/services/inventory_mutation_guard.py`
 - **_AsyncPlayerGuardState** (6 connections) — `server/services/inventory_mutation_guard.py`
-- **asyncio** (6 connections)
 - **_PlayerGuardState** (5 connections) — `server/services/inventory_mutation_guard.py`
 - **._emit_duplicate_mutation_alert()** (5 connections) — `server/services/inventory_mutation_guard.py`
 - **._get_async_global_lock()** (5 connections) — `server/services/inventory_mutation_guard.py`
@@ -22,38 +18,44 @@
 - **._get_state()** (4 connections) — `server/services/inventory_mutation_guard.py`
 - **._prune_tokens()** (4 connections) — `server/services/inventory_mutation_guard.py`
 - **._prune_tokens_async()** (4 connections) — `server/services/inventory_mutation_guard.py`
-- **guard()** (4 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **guard()** (4 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **guard()** (4 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **asyncio** (4 connections)
-- **asyncio** (4 connections)
+- **guard()** (4 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **guard()** (4 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
 - **._cleanup_state()** (3 connections) — `server/services/inventory_mutation_guard.py`
-- **test_acquire_async_cleanup_empty_state()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- *... and 69 more nodes in this community*
+- **.__init__()** (1 connections) — `server/services/inventory_mutation_guard.py`
+- **fixture** (1 connections)
+- **fixture** (1 connections)
+- **Acquire sync mutation guard.** (1 connections) — `server/services/inventory_mutation_guard.py`
+- **Acquire async mutation guard.** (1 connections) — `server/services/inventory_mutation_guard.py`
+- **Get or create per-player guard state for sync contexts. Uses thread-safe…** (1 connections) — `server/services/inventory_mutation_guard.py`
+- **Get or create per-player guard state for async contexts. Uses async lock to…** (1 connections) — `server/services/inventory_mutation_guard.py`
+- **Clean up per-player guard state when no longer needed (sync context). Removes…** (1 connections) — `server/services/inventory_mutation_guard.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
-- [ContainerService](ContainerService.md) (6 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (4 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [test_inventory_mutation_guard.py](test_inventory_mutation_guard.py.md) (3 shared connections)
+- [ContainerServiceError](ContainerServiceError.md) (3 shared connections)
+- [ContainerService](ContainerService.md) (3 shared connections)
 - [Lock](Lock.md) (2 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (2 shared connections)
+- [InventoryService](InventoryService.md) (2 shared connections)
+- [test_inventory_mutation_guard_async.py](test_inventory_mutation_guard_async.py.md) (2 shared connections)
+- [test_inventory_mutation_guard_error_handling.py](test_inventory_mutation_guard_error_handling.py.md) (2 shared connections)
 - [test_inventory_mutation_guard_internal.py](test_inventory_mutation_guard_internal.py.md) (2 shared connections)
 - [test_inventory_mutation_guard_sync.py](test_inventory_mutation_guard_sync.py.md) (2 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 - [system_monitoring.py](system_monitoring.py.md) (1 shared connections)
-- [MonitoringDashboard](MonitoringDashboard.md) (1 shared connections)
 
 ## Source Files
 
 - `server/services/inventory_mutation_guard.py`
-- `server/tests/unit/services/test_inventory_mutation_guard.py`
-- `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
 
 ## Audit Trail
 
-- EXTRACTED: 141 (94%)
-- INFERRED: 9 (6%)
+- EXTRACTED: 69 (88%)
+- INFERRED: 9 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

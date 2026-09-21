@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
-- [LoggingConfig](LoggingConfig.md) (4 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [test_enhanced_logging_config.py](test_enhanced_logging_config.py.md) (4 shared connections)
+- [lifespan.py](lifespan.py.md) (1 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (1 shared connections)
 
 ## Source Files
 

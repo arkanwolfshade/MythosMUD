@@ -36,12 +36,11 @@
 - [catalog_commands.py](catalog_commands.py.md) (23 shared connections)
 - [test_item_catalog.py](test_item_catalog.py.md) (11 shared connections)
 - [item_catalog_repository.py](item_catalog_repository.py.md) (8 shared connections)
-- [bundles/game.py](bundles-game.py.md) (1 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
 - [AliasStorage](AliasStorage.md) (1 shared connections)
 - [command_service.py](command_service.py.md) (1 shared connections)
-- [coerce_int](coerce_int.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
 
 ## Source Files
 

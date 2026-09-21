@@ -1,6 +1,6 @@
 # apiTypeGuards.ts
 
-> 46 nodes
+> 47 nodes
 
 ## Key Concepts
 
@@ -10,6 +10,7 @@
 - **isString()** (13 connections) — `client/src/utils/apiTypeGuards.ts`
 - **isNumber()** (9 connections) — `client/src/utils/apiTypeGuards.ts`
 - **isServerCharacterResponse()** (8 connections) — `client/src/utils/apiTypeGuards.ts`
+- **assertServerCharacterResponseArray()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
 - **isArray()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
 - **isCharacterInfo()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
 - **isLoginResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
@@ -28,28 +29,25 @@
 - **hasServerCharacterCoreFields()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
 - **hasServerCharacterIdentifierFields()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
 - **hasValidOptionalRollFields()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
-- **hasValidProfessionMechanicalEffects()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
-- *... and 21 more nodes in this community*
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (14 shared connections)
-- [CharacterNameScreen.tsx](CharacterNameScreen.tsx.md) (8 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (15 shared connections)
+- [Profession](Profession.md) (8 shared connections)
 - [maps.ts](maps.ts.md) (6 shared connections)
-- [submitAuth.ts](submitAuth.ts.md) (4 shared connections)
-- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (4 shared connections)
-- [mapUtils.ts](mapUtils.ts.md) (2 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (1 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (5 shared connections)
+- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (3 shared connections)
+- [mapUtils.ts](mapUtils.ts.md) (3 shared connections)
 
 ## Source Files
 
-- `client/src/types/auth.ts`
 - `client/src/utils/__tests__/apiTypeGuards.test.ts`
 - `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 160 (100%)
+- EXTRACTED: 164 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

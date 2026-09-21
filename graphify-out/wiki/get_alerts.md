@@ -1,26 +1,41 @@
-# get_alerts
+# .get_alerts
 
-> 5 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **get_alerts()** (3 connections) — `monitoring/webhook-receiver.py`
-- **health()** (3 connections) — `monitoring/webhook-receiver.py`
-- **get** (2 connections)
-- **Health check endpoint** (1 connections) — `monitoring/webhook-receiver.py`
-- **Get recent alerts (for testing)** (1 connections) — `monitoring/webhook-receiver.py`
+- **.get_alerts()** (6 connections) — `server/game/movement_monitor.py`
+- **.get_metrics()** (6 connections) — `server/game/movement_monitor.py`
+- **.get_performance_summary()** (5 connections) — `server/game/movement_monitor.py`
+- **.validate_room_integrity()** (5 connections) — `server/game/movement_monitor.py`
+- **._check_alerts()** (4 connections) — `server/game/movement_monitor.py`
+- **.log_performance_summary()** (4 connections) — `server/game/movement_monitor.py`
+- **.record_movement_attempt()** (4 connections) — `server/game/movement_monitor.py`
+- **Any** (4 connections)
+- **._collect_room_player_map()** (3 connections) — `server/game/movement_monitor.py`
+- **.record_integrity_check()** (3 connections) — `server/game/movement_monitor.py`
+- **UUID** (2 connections)
+- **Record an integrity check result.** (1 connections) — `server/game/movement_monitor.py`
+- **Validate players are not in multiple rooms.** (1 connections) — `server/game/movement_monitor.py`
+- **Get comprehensive movement metrics.** (1 connections) — `server/game/movement_monitor.py`
+- **Get current alerts based on thresholds.** (1 connections) — `server/game/movement_monitor.py`
+- **Check for alerts and log them.** (1 connections) — `server/game/movement_monitor.py`
+- **Get a formatted performance summary for API responses. This method encapsulates…** (1 connections) — `server/game/movement_monitor.py`
+- **Log a comprehensive performance summary.** (1 connections) — `server/game/movement_monitor.py`
+- **Record a movement attempt with metrics.** (1 connections) — `server/game/movement_monitor.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (9 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `monitoring/webhook-receiver.py`
+- `server/game/movement_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 32 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [Spell](Spell.md) (14 shared connections)
-- [SpellEffectType](SpellEffectType.md) (12 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (11 shared connections)
-- [_MagicServiceCore](_MagicServiceCore.md) (10 shared connections)
-- [TargetMatch](TargetMatch.md) (9 shared connections)
-- [test_magic_commands.py](test_magic_commands.py.md) (8 shared connections)
-- [magic_service_completion.py](magic_service_completion.py.md) (5 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [CombatCommandHandler](CombatCommandHandler.md) (3 shared connections)
+- [TargetMatch](TargetMatch.md) (20 shared connections)
+- [SpellEffectType](SpellEffectType.md) (13 shared connections)
+- [SpellRegistry](SpellRegistry.md) (11 shared connections)
+- [_MagicServiceCore](_MagicServiceCore.md) (9 shared connections)
+- [SpellCostsService](SpellCostsService.md) (7 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (6 shared connections)
+- [TargetType](TargetType.md) (5 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (2 shared connections)
-- [combat_service.py](combat_service.py.md) (2 shared connections)
-- [test_magic_healing_events.py](test_magic_healing_events.py.md) (2 shared connections)
+- [NPCCombatDataProvider](NPCCombatDataProvider.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
 
 ## Source Files
 

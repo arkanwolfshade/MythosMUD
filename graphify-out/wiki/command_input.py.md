@@ -33,15 +33,13 @@
 
 ## Relationships
 
+- [get_logger](get_logger.md) (8 shared connections)
 - [command_handler_unified.py](command_handler_unified.py.md) (7 shared connections)
-- [alias_expansion.py](alias_expansion.py.md) (4 shared connections)
-- [command_guards.py](command_guards.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [test_command_validator.py](test_command_validator.py.md) (2 shared connections)
+- [test_alias_expansion.py](test_alias_expansion.py.md) (3 shared connections)
+- [command_guards.py](command_guards.py.md) (2 shared connections)
 - [catatonia_check.py](catatonia_check.py.md) (2 shared connections)
-- [processing.py](processing.py.md) (2 shared connections)
-- [get_config](get_config.md) (1 shared connections)
-- [AppConfig](AppConfig.md) (1 shared connections)
+- [test_command_validator.py](test_command_validator.py.md) (1 shared connections)
+- [test_command_processing.py](test_command_processing.py.md) (1 shared connections)
 
 ## Source Files
 

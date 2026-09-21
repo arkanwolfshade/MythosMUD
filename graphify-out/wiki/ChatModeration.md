@@ -35,7 +35,7 @@
 
 - [get_logger](get_logger.md) (6 shared connections)
 - [test_chat_moderation.py](test_chat_moderation.py.md) (4 shared connections)
-- [chat_service.py](chat_service.py.md) (3 shared connections)
+- [ChatMessage](ChatMessage.md) (3 shared connections)
 - [ChatPoseManager](ChatPoseManager.md) (1 shared connections)
 - [ChatService](ChatService.md) (1 shared connections)
 

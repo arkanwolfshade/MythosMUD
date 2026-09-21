@@ -1,14 +1,16 @@
 # Lock
 
-> 9 nodes
+> 11 nodes
 
 ## Key Concepts
 
 - **Lock** (8 connections)
+- **.__init__()** (7 connections) — `server/time/tick_scheduler.py`
 - **.__init__()** (4 connections) — `server/npc/threading.py`
 - **.__init__()** (3 connections) — `server/middleware/metrics_collector.py`
 - **.__init__()** (3 connections) — `server/npc/threading.py`
 - **.get_lock()** (3 connections) — `server/services/inventory_mutation_guard.py`
+- **HolidayResolver** (1 connections)
 - **Initialize metrics collector. AI: Uses Lock for thread-safety in async context.** (1 connections) — `server/middleware/metrics_collector.py`
 - **Initialize the communication bridge.** (1 connections) — `server/npc/threading.py`
 - **Initialize the NPC thread manager.** (1 connections) — `server/npc/threading.py`
@@ -20,20 +22,25 @@
 - [InventoryMutationGuard](InventoryMutationGuard.md) (2 shared connections)
 - [MetricsCollector](MetricsCollector.md) (1 shared connections)
 - [NPCThreadManager](NPCThreadManager.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [TaskRegistry](TaskRegistry.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
+- [MythosChronicle](MythosChronicle.md) (1 shared connections)
+- [MythosTickScheduler](MythosTickScheduler.md) (1 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 - [connection_manager.py](connection_manager.py.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
 
 ## Source Files
 
 - `server/middleware/metrics_collector.py`
 - `server/npc/threading.py`
 - `server/services/inventory_mutation_guard.py`
+- `server/time/tick_scheduler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (65%)
-- INFERRED: 6 (35%)
+- EXTRACTED: 17 (74%)
+- INFERRED: 6 (26%)
 - AMBIGUOUS: 0 (0%)
 
 ---

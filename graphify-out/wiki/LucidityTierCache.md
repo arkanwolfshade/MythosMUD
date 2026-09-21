@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
+- [websocket_room_updates.py](websocket_room_updates.py.md) (3 shared connections)
 
 ## Source Files
 

@@ -1,26 +1,35 @@
 # compilerOptions
 
-> 17 nodes
+> 37 nodes
 
 ## Key Concepts
 
-- **compilerOptions** (7 connections) — `client/tests/e2e/tsconfig.json`
-- **e2e/tsconfig.json** (5 connections) — `client/tests/e2e/tsconfig.json`
-- **include** (4 connections) — `client/tests/e2e/tsconfig.json`
-- **typeRoots** (2 connections) — `client/tests/e2e/tsconfig.json`
-- **types** (2 connections) — `client/tests/e2e/tsconfig.json`
-- **allowImportingTsExtensions** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **composite** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **noEmit** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **rootDir** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **exclude** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **extends** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **node** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **../../tsconfig.json** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **../../node_modules/@types** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **../../src/test/e2e-bootstrap.ts** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **../../src/utils/deathVoidLocation.ts** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **./**/*.ts** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **compilerOptions** (21 connections) — `client/tsconfig.app.json`
+- **exclude** (8 connections) — `client/tsconfig.app.json`
+- **lib** (4 connections) — `client/tsconfig.app.json`
+- **tsconfig.app.json** (3 connections) — `client/tsconfig.app.json`
+- **types** (3 connections) — `client/tsconfig.app.json`
+- **include** (2 connections) — `client/tsconfig.app.json`
+- **allowImportingTsExtensions** (1 connections) — `client/tsconfig.app.json`
+- **composite** (1 connections) — `client/tsconfig.app.json`
+- **emitDeclarationOnly** (1 connections) — `client/tsconfig.app.json`
+- **erasableSyntaxOnly** (1 connections) — `client/tsconfig.app.json`
+- **jsx** (1 connections) — `client/tsconfig.app.json`
+- **module** (1 connections) — `client/tsconfig.app.json`
+- **moduleDetection** (1 connections) — `client/tsconfig.app.json`
+- **moduleResolution** (1 connections) — `client/tsconfig.app.json`
+- **noFallthroughCasesInSwitch** (1 connections) — `client/tsconfig.app.json`
+- **noUncheckedSideEffectImports** (1 connections) — `client/tsconfig.app.json`
+- **noUnusedLocals** (1 connections) — `client/tsconfig.app.json`
+- **noUnusedParameters** (1 connections) — `client/tsconfig.app.json`
+- **skipLibCheck** (1 connections) — `client/tsconfig.app.json`
+- **strict** (1 connections) — `client/tsconfig.app.json`
+- **target** (1 connections) — `client/tsconfig.app.json`
+- **tsBuildInfoFile** (1 connections) — `client/tsconfig.app.json`
+- **useDefineForClassFields** (1 connections) — `client/tsconfig.app.json`
+- **verbatimModuleSyntax** (1 connections) — `client/tsconfig.app.json`
+- **DOM** (1 connections) — `client/tsconfig.app.json`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
@@ -28,11 +37,11 @@
 
 ## Source Files
 
-- `client/tests/e2e/tsconfig.json`
+- `client/tsconfig.app.json`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 36 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

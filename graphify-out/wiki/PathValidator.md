@@ -1,6 +1,6 @@
 # PathValidator
 
-> 86 nodes
+> 92 nodes
 
 ## Key Concepts
 
@@ -22,25 +22,25 @@
 - **_generate_minimap()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
 - **_load_and_filter_rooms()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
 - **_report_results()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **._fix_missing_fields()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
 - **.build_graph()** (5 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
 - **._get_exit_target()** (5 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
 - **_collect_parsing_errors()** (5 connections) — `tools/room_toolkit/room_validator/validator.py`
 - **reporter.py** (5 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
 - **room_loader.py** (5 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
 - **fixer.py** (4 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **path_validator.py** (4 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- *... and 61 more nodes in this community*
+- *... and 67 more nodes in this community*
 
 ## Relationships
 
-- [Path](Path.md) (13 shared connections)
 - [RoomLoader](RoomLoader.md) (13 shared connections)
+- [Path](Path.md) (11 shared connections)
 - [._create_grid_map](_create_grid_map.md) (11 shared connections)
 - [Reporter](Reporter.md) (9 shared connections)
 - [SchemaValidator](SchemaValidator.md) (8 shared connections)
 - [TestValidatorComponents](TestValidatorComponents.md) (4 shared connections)
 - [TestPathValidator](TestPathValidator.md) (3 shared connections)
-- [ValidationError](ValidationError.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [properties](properties.md) (1 shared connections)
 - [TestHierarchicalSchema](TestHierarchicalSchema.md) (1 shared connections)
 
@@ -58,8 +58,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 175 (89%)
-- INFERRED: 21 (11%)
+- EXTRACTED: 181 (90%)
+- INFERRED: 21 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

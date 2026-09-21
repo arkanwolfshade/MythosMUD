@@ -33,16 +33,16 @@
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (33 shared connections)
+- [ValidationError](ValidationError.md) (19 shared connections)
+- [get_logger](get_logger.md) (15 shared connections)
 - [test_command_magic.py](test_command_magic.py.md) (7 shared connections)
 - [test_command_admin.py](test_command_admin.py.md) (5 shared connections)
 - [test_command_alias.py](test_command_alias.py.md) (3 shared connections)
 - [command.py](command.py.md) (2 shared connections)
 - [MythosChronicle](MythosChronicle.md) (2 shared connections)
-- [CombatCommandFactory](CombatCommandFactory.md) (1 shared connections)
+- [test_command_combat.py](test_command_combat.py.md) (1 shared connections)
 - [BaseCommand](BaseCommand.md) (1 shared connections)
 - [RoomService](RoomService.md) (1 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 
 ## Source Files
 

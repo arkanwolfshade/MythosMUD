@@ -36,9 +36,8 @@
 - [PrototypeRegistry](PrototypeRegistry.md) (14 shared connections)
 - [ItemPrototypeModel](ItemPrototypeModel.md) (13 shared connections)
 - [PrototypeRegistryError](PrototypeRegistryError.md) (7 shared connections)
-- [CombatCommandHandler](CombatCommandHandler.md) (3 shared connections)
-- [get_config](get_config.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [NPCCombatDataProvider](NPCCombatDataProvider.md) (3 shared connections)
 
 ## Source Files
 

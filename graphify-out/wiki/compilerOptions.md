@@ -1,33 +1,34 @@
 # compilerOptions
 
-> 16 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **compilerOptions** (6 connections) — `client/tsconfig.test.json`
-- **tsconfig.test.json** (5 connections) — `client/tsconfig.test.json`
-- **types** (5 connections) — `client/tsconfig.test.json`
-- **include** (3 connections) — `client/tsconfig.test.json`
-- **composite** (1 connections) — `client/tsconfig.test.json`
-- **emitDeclarationOnly** (1 connections) — `client/tsconfig.test.json`
-- **noEmit** (1 connections) — `client/tsconfig.test.json`
-- **tsBuildInfoFile** (1 connections) — `client/tsconfig.test.json`
-- **exclude** (1 connections) — `client/tsconfig.test.json`
-- **extends** (1 connections) — `client/tsconfig.test.json`
-- **node** (1 connections) — `client/tsconfig.test.json`
-- **src** (1 connections) — `client/tsconfig.test.json`
-- **./tsconfig.json** (1 connections) — `client/tsconfig.test.json`
-- **vite/client** (1 connections) — `client/tsconfig.test.json`
-- **tests/e2e/runtime/fixtures/message-match.ts** (1 connections) — `client/tsconfig.test.json`
-- **vitest/globals** (1 connections) — `client/tsconfig.test.json`
+- **compilerOptions** (7 connections) — `client/tests/e2e/tsconfig.json`
+- **e2e/tsconfig.json** (5 connections) — `client/tests/e2e/tsconfig.json`
+- **include** (4 connections) — `client/tests/e2e/tsconfig.json`
+- **typeRoots** (2 connections) — `client/tests/e2e/tsconfig.json`
+- **types** (2 connections) — `client/tests/e2e/tsconfig.json`
+- **allowImportingTsExtensions** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **composite** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **noEmit** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **rootDir** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **exclude** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **extends** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **node** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **../../tsconfig.json** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **../../node_modules/@types** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **../../src/test/e2e-bootstrap.ts** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **../../src/utils/deathVoidLocation.ts** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **./**/*.ts** (1 connections) — `client/tests/e2e/tsconfig.json`
 
 ## Relationships
 
-- [ui-v2/types.ts](ui-v2-types.ts.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/tsconfig.test.json`
+- `client/tests/e2e/tsconfig.json`
 
 ## Audit Trail
 

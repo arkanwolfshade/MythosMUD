@@ -1,6 +1,6 @@
 # catatonia_check.py
 
-> 94 nodes
+> 90 nodes
 
 ## Key Concepts
 
@@ -9,8 +9,6 @@
 - **test_command_validation.py** (23 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **TestCatatoniaChecks** (21 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **check_catatonia_block()** (16 connections) — `server/command_handler/catatonia_check.py`
-- **_check_all_command_blocks()** (16 connections) — `server/command_handler_unified.py`
-- **check_casting_state()** (12 connections) — `server/command_handler/command_guards.py`
 - **_is_catatonic()** (10 connections) — `server/command_handler/catatonia_check.py`
 - **_load_player_for_catatonia_check()** (10 connections) — `server/command_handler/catatonia_check.py`
 - **_check_catatonia_database()** (9 connections) — `server/command_handler/catatonia_check.py`
@@ -29,34 +27,33 @@
 - **.test_check_catatonia_database_catatonic()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **.test_check_catatonia_database_not_catatonic()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **.test_check_catatonia_registry_catatonic()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
-- *... and 69 more nodes in this community*
+- **.test_check_catatonia_registry_not_catatonic()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_fetch_lucidity_record()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- *... and 65 more nodes in this community*
 
 ## Relationships
 
-- [command_handler_unified.py](command_handler_unified.py.md) (9 shared connections)
-- [check_grace_period_block](check_grace_period_block.md) (9 shared connections)
-- [command_guards.py](command_guards.py.md) (7 shared connections)
-- [PlayerLucidity](PlayerLucidity.md) (5 shared connections)
+- [command_guards.py](command_guards.py.md) (15 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (10 shared connections)
+- [models/player.py](models-player.py.md) (5 shared connections)
 - [get_cached_player](get_cached_player.md) (5 shared connections)
-- [DatabaseManager](DatabaseManager.md) (3 shared connections)
-- [TestHelperFunctions](TestHelperFunctions.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [command_input.py](command_input.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [get_async_session](get_async_session.md) (2 shared connections)
 - [CatatoniaRegistry](CatatoniaRegistry.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 - [TestCheckRateLimit](TestCheckRateLimit.md) (1 shared connections)
 - [TestValidateCommandBasics](TestValidateCommandBasics.md) (1 shared connections)
 
 ## Source Files
 
 - `server/command_handler/catatonia_check.py`
-- `server/command_handler/command_guards.py`
-- `server/command_handler_unified.py`
 - `server/tests/unit/commands/test_command_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 211 (100%)
-- INFERRED: 1 (0%)
+- EXTRACTED: 195 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

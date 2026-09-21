@@ -1,6 +1,6 @@
 # test_error_handling_middleware.py
 
-> 60 nodes
+> 64 nodes
 
 ## Key Concepts
 
@@ -29,17 +29,18 @@
 - **test_handle_exception_fallback_when_handler_fails()** (4 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
 - **test_request_id_from_scope()** (4 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
 - **FastAPI** (4 connections)
-- *... and 35 more nodes in this community*
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [server/exceptions.py](server-exceptions.py.md) (11 shared connections)
+- [StandardizedErrorResponse](StandardizedErrorResponse.md) (4 shared connections)
+- [MythosMUDError](MythosMUDError.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 - [factory.py](factory.py.md) (3 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (1 shared connections)
+- [fastapi_integration.py](fastapi_integration.py.md) (1 shared connections)
 - [MythosChronicle](MythosChronicle.md) (1 shared connections)
-- [_UserWithGet](_UserWithGet.md) (1 shared connections)
+- [ErrorType](ErrorType.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,8 +50,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 129 (93%)
-- INFERRED: 9 (7%)
+- EXTRACTED: 132 (94%)
+- INFERRED: 9 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

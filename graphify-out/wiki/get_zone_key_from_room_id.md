@@ -30,9 +30,7 @@
 ## Relationships
 
 - [test_npc_utils.py](test_npc_utils.py.md) (12 shared connections)
-- [ZoneConfiguration](ZoneConfiguration.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (5 shared connections)
 
 ## Source Files
 

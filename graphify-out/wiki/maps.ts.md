@@ -36,7 +36,7 @@
 - [apiTypeGuards.ts](apiTypeGuards.ts.md) (6 shared connections)
 - [AsciiMapViewer.tsx](AsciiMapViewer.tsx.md) (4 shared connections)
 - [saveMapChanges.ts](saveMapChanges.ts.md) (2 shared connections)
-- [GameClientV2MinimapSection.tsx](GameClientV2MinimapSection.tsx.md) (2 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (2 shared connections)
 - [security.ts](security.ts.md) (2 shared connections)
 - [MapView.tsx](MapView.tsx.md) (2 shared connections)
 - [useMythosAppState.ts](useMythosAppState.ts.md) (1 shared connections)

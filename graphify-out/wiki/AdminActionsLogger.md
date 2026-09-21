@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [admin_teleport_commands.py](admin_teleport_commands.py.md) (7 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
 - [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (4 shared connections)
 - [test_goto_helpers.py](test_goto_helpers.py.md) (4 shared connections)
 - [test_admin_commands.py](test_admin_commands.py.md) (3 shared connections)
 - [admin_hallucinate_command.py](admin_hallucinate_command.py.md) (3 shared connections)
-- [admin_setstat_command.py](admin_setstat_command.py.md) (3 shared connections)
 - [admin_summon_command.py](admin_summon_command.py.md) (3 shared connections)
 - [admin_teleport_utils.py](admin_teleport_utils.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [test_teleport_helpers.py](test_teleport_helpers.py.md) (3 shared connections)
 - [admin_shutdown_command.py](admin_shutdown_command.py.md) (2 shared connections)
-- [get_config](get_config.md) (2 shared connections)
-- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (1 shared connections)
+- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (2 shared connections)
+- [admin_setstat_support.py](admin_setstat_support.py.md) (2 shared connections)
+- [validate_admin_permission](validate_admin_permission.md) (1 shared connections)
 
 ## Source Files
 

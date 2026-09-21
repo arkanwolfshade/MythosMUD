@@ -26,13 +26,14 @@
 
 ## Relationships
 
-- [get_config](get_config.md) (4 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
 - [damage_expr_to_min_max](damage_expr_to_min_max.md) (3 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
-- [NPCBase](NPCBase.md) (2 shared connections)
-- [CombatInstance](CombatInstance.md) (2 shared connections)
+- [test_combat_flee_handler.py](test_combat_flee_handler.py.md) (2 shared connections)
 - [CombatParticipant](CombatParticipant.md) (2 shared connections)
 - [NPCCombatDataProvider](NPCCombatDataProvider.md) (1 shared connections)
+- [._attack_target_impl](_attack_target_impl.md) (1 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
 
 ## Source Files
 

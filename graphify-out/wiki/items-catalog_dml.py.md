@@ -1,6 +1,6 @@
 # items/catalog_dml.py
 
-> 53 nodes
+> 47 nodes
 
 ## Key Concepts
 
@@ -12,10 +12,8 @@
 - **apply_weapon_dual_write()** (9 connections) — `server/game/items/catalog_dml.py`
 - **render_migration()** (8 connections) — `server/game/items/catalog_dml.py`
 - **BaseModel** (7 connections)
-- **item_catalog/generate_dml.py** (6 connections) — `data/item_catalog/generate_dml.py`
 - **test_metadata_models.py** (6 connections) — `server/tests/unit/game/items/test_metadata_models.py`
 - **WeaponMetadata** (5 connections) — `server/game/items/metadata_models.py`
-- **_load_catalog()** (5 connections) — `data/item_catalog/generate_dml.py`
 - **_prototype_value_literals()** (5 connections) — `server/game/items/catalog_dml.py`
 - **render_prototype_insert()** (5 connections) — `server/game/items/catalog_dml.py`
 - **ArmorMetadata** (3 connections) — `server/game/items/metadata_models.py`
@@ -23,22 +21,24 @@
 - **EquipmentBonus** (3 connections) — `server/game/items/metadata_models.py`
 - **EquipmentMetadata** (3 connections) — `server/game/items/metadata_models.py`
 - **TomeMetadata** (3 connections) — `server/game/items/metadata_models.py`
-- **_load_json()** (3 connections) — `data/item_catalog/generate_dml.py`
-- **main()** (3 connections) — `data/item_catalog/generate_dml.py`
 - **_ensure_weapon_defaults()** (3 connections) — `server/game/items/catalog_dml.py`
 - **_normalize_damage_expr()** (3 connections) — `server/game/items/catalog_dml.py`
 - **sql_escape()** (3 connections) — `server/game/items/catalog_dml.py`
 - **_sql_literal()** (3 connections) — `server/game/items/catalog_dml.py`
-- *... and 28 more nodes in this community*
+- **test_prepare_prototype_accepts_equipment_skill_bonuses()** (3 connections) — `server/tests/unit/game/items/test_catalog_dml.py`
+- **test_prepare_prototype_accepts_tome_metadata()** (3 connections) — `server/tests/unit/game/items/test_catalog_dml.py`
+- **test_render_migration_includes_on_conflict_and_dual_write()** (3 connections) — `server/tests/unit/game/items/test_catalog_dml.py`
+- **test_item_metadata_accepts_rich_dual_write_weapon()** (3 connections) — `server/tests/unit/game/items/test_metadata_models.py`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
 - [ItemPrototypeModel](ItemPrototypeModel.md) (5 shared connections)
+- [item_catalog/generate_dml.py](item_catalog-generate_dml.py.md) (3 shared connections)
 - [damage_expr_to_min_max](damage_expr_to_min_max.md) (2 shared connections)
 
 ## Source Files
 
-- `data/item_catalog/generate_dml.py`
 - `server/game/items/catalog_dml.py`
 - `server/game/items/metadata_models.py`
 - `server/tests/unit/game/items/test_catalog_dml.py`
@@ -46,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 89 (90%)
-- INFERRED: 10 (10%)
+- EXTRACTED: 80 (89%)
+- INFERRED: 10 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,61 +1,62 @@
 # MovementService
 
-> 60 nodes
+> 26 nodes
 
 ## Key Concepts
 
 - **MovementService** (51 connections) — `server/game/movement_service.py`
-- **UUID** (19 connections)
-- **._execute_move_locked()** (14 connections) — `server/game/movement_service.py`
-- **.move_player()** (8 connections) — `server/game/movement_service.py`
-- **._handle_movement_error()** (7 connections) — `server/game/movement_service.py`
-- **Any** (7 connections)
-- **.add_player_to_room()** (6 connections) — `server/game/movement_service.py`
-- **._get_rooms_for_movement()** (6 connections) — `server/game/movement_service.py`
-- **._maybe_trigger_room_entry_hallucination()** (6 connections) — `server/game/movement_service.py`
-- **._resolve_player_for_movement()** (6 connections) — `server/game/movement_service.py`
-- **._execute_room_transfer()** (5 connections) — `server/game/movement_service.py`
-- **.__init__()** (5 connections) — `server/game/movement_service.py`
+- **._validate_movement()** (8 connections) — `server/game/movement_service.py`
+- **._validate_movement_rooms()** (6 connections) — `server/game/movement_service.py`
 - **.remove_player_from_room()** (5 connections) — `server/game/movement_service.py`
 - **._resolve_posture_player()** (5 connections) — `server/game/movement_service.py`
-- **._validate_add_player_ids()** (5 connections) — `server/game/movement_service.py`
-- **._validate_move_params()** (5 connections) — `server/game/movement_service.py`
 - **._validate_remove_player_params()** (5 connections) — `server/game/movement_service.py`
+- **.__init__()** (5 connections) — `server/npc/movement_integration.py`
 - **.movement_service()** (4 connections) — `server/game/magic/spell_effects.py`
-- **.get_player_room()** (4 connections) — `server/game/movement_service.py`
-- **._handle_tutorial_exit_if_applicable()** (4 connections) — `server/game/movement_service.py`
-- **._log_successful_move_timing()** (4 connections) — `server/game/movement_service.py`
-- **._mark_room_explored()** (4 connections) — `server/game/movement_service.py`
-- **._persist_added_player_room()** (4 connections) — `server/game/movement_service.py`
-- **._persist_player_location()** (4 connections) — `server/game/movement_service.py`
-- **._record_move_validation_failure()** (4 connections) — `server/game/movement_service.py`
-- *... and 35 more nodes in this community*
+- **.get_room_players()** (3 connections) — `server/game/movement_service.py`
+- **.validate_player_location()** (3 connections) — `server/game/movement_service.py`
+- **test_movement_service_init()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_movement_service_init_no_persistence()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **.set_player_combat_service()** (2 connections) — `server/game/movement_service.py`
+- **Movement service for flee effect.** (1 connections) — `server/game/magic/spell_effects.py`
+- **Service for handling atomic player movement operations. This class provides…** (1 connections) — `server/game/movement_service.py`
+- **Load fresh player from persistence for posture check when available.** (1 connections) — `server/game/movement_service.py`
+- **Validate rooms, membership, and exit for movement.** (1 connections) — `server/game/movement_service.py`
+- **Validate that a movement operation is allowed. Args: player_obj: The player…** (1 connections) — `server/game/movement_service.py`
+- **Validate parameters for remove_player_from_room operation.** (1 connections) — `server/game/movement_service.py`
+- **Remove a player from a room (for logout, teleportation, etc.). Args: player_id:…** (1 connections) — `server/game/movement_service.py`
+- **Get all players currently in a room. Args: room_id: The ID of the room to check…** (1 connections) — `server/game/movement_service.py`
+- **Validate that a player is in the specified room. Args: player_id: The ID of the…** (1 connections) — `server/game/movement_service.py`
+- **Set the player combat service after initialization. This allows the combat…** (1 connections) — `server/game/movement_service.py`
+- **Initialize NPC movement integration. Args: event_bus: Optional EventBus…** (1 connections) — `server/npc/movement_integration.py`
+- **Test MovementService initialization without persistence raises error.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (9 shared connections)
-- [test_movement_service.py](test_movement_service.py.md) (6 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (5 shared connections)
-- [movement_helpers.py](movement_helpers.py.md) (5 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [TargetMatch](TargetMatch.md) (3 shared connections)
+- [UUID](UUID.md) (14 shared connections)
+- [test_movement_service.py](test_movement_service.py.md) (13 shared connections)
+- [._execute_move_locked](_execute_move_locked.md) (10 shared connections)
+- [follow_service.py](follow_service.py.md) (4 shared connections)
+- [DatabaseError](DatabaseError.md) (4 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (3 shared connections)
 - [test_go_command.py](test_go_command.py.md) (2 shared connections)
-- [ValidationError](ValidationError.md) (2 shared connections)
-- [api/monitoring.py](api-monitoring.py.md) (2 shared connections)
-- [PlayerPositionService](PlayerPositionService.md) (1 shared connections)
-- [NPCMovementIntegration](NPCMovementIntegration.md) (1 shared connections)
-- [movement_service](movement_service.md) (1 shared connections)
+- [TargetMatch](TargetMatch.md) (2 shared connections)
+- [spell_effects.py](spell_effects.py.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
+- [FollowService](FollowService.md) (1 shared connections)
+- [test_spell_effects.py](test_spell_effects.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/game/magic/spell_effects.py`
 - `server/game/movement_service.py`
+- `server/npc/movement_integration.py`
 - `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 136 (94%)
-- INFERRED: 9 (6%)
+- EXTRACTED: 79 (90%)
+- INFERRED: 9 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

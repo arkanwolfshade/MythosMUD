@@ -1,6 +1,6 @@
 # test_npc_utils.py
 
-> 60 nodes
+> 56 nodes
 
 ## Key Concepts
 
@@ -9,9 +9,9 @@
 - **npc_utils.py** (14 connections) — `server/npc/npc_utils.py`
 - **extract_definition_id_from_npc()** (12 connections) — `server/npc/npc_utils.py`
 - **extract_npc_metadata()** (12 connections) — `server/npc/npc_utils.py`
-- **spawn_npc_via_population_controller()** (11 connections) — `server/npc/npc_utils.py`
 - **extract_room_id_from_lifecycle_record()** (8 connections) — `server/npc/npc_utils.py`
 - **.despawn_npc()** (8 connections) — `server/npc/population_control.py`
+- **_resolve_despawn_room_id()** (6 connections) — `server/npc/lifecycle_despawn.py`
 - **Any** (6 connections)
 - **_room_id_from_lifecycle_event()** (4 connections) — `server/npc/npc_utils.py`
 - **test_extract_definition_id_from_npc_from_lifecycle_manager()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
@@ -29,26 +29,27 @@
 - **test_extract_room_id_from_npc_current_room_id()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
 - **test_extract_room_id_from_npc_non_string()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
 - **test_extract_room_id_from_npc_not_found()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- *... and 35 more nodes in this community*
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
 - [get_zone_key_from_room_id](get_zone_key_from_room_id.md) (12 shared connections)
-- [get_logger](get_logger.md) (11 shared connections)
-- [._get_active_npcs_from_lifecycle_manager](_get_active_npcs_from_lifecycle_manager.md) (3 shared connections)
-- [test_lifecycle_periodic.py](test_lifecycle_periodic.py.md) (3 shared connections)
-- [test_lifecycle_respawn.py](test_lifecycle_respawn.py.md) (3 shared connections)
+- [NPCDefinition](NPCDefinition.md) (8 shared connections)
+- [event_types.py](event_types.py.md) (7 shared connections)
+- [spawn_npc_via_population_controller](spawn_npc_via_population_controller.md) (5 shared connections)
+- [test_lifecycle_respawn.py](test_lifecycle_respawn.py.md) (1 shared connections)
 
 ## Source Files
 
+- `server/npc/lifecycle_despawn.py`
 - `server/npc/npc_utils.py`
 - `server/npc/population_control.py`
 - `server/tests/unit/npc/test_npc_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 123 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 118 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,32 +1,35 @@
 # compilerOptions
 
-> 23 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **compilerOptions** (15 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **load-tests/tsconfig.json** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **lib** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **paths** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **typeRoots** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **types** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **include** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **@playwright/test** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **baseUrl** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **module** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **moduleResolution** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **noEmit** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **noFallthroughCasesInSwitch** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **noUnusedLocals** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **noUnusedParameters** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **skipLibCheck** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **strict** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **target** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **ES2020** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **node** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **../../client/node_modules/@playwright/test** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **../../client/node_modules/@types** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- ***.spec.ts** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **compilerOptions** (19 connections) — `client/tsconfig.build.json`
+- **exclude** (8 connections) — `client/tsconfig.build.json`
+- **lib** (4 connections) — `client/tsconfig.build.json`
+- **tsconfig.build.json** (3 connections) — `client/tsconfig.build.json`
+- **include** (2 connections) — `client/tsconfig.build.json`
+- **allowImportingTsExtensions** (1 connections) — `client/tsconfig.build.json`
+- **erasableSyntaxOnly** (1 connections) — `client/tsconfig.build.json`
+- **jsx** (1 connections) — `client/tsconfig.build.json`
+- **module** (1 connections) — `client/tsconfig.build.json`
+- **moduleDetection** (1 connections) — `client/tsconfig.build.json`
+- **moduleResolution** (1 connections) — `client/tsconfig.build.json`
+- **noEmit** (1 connections) — `client/tsconfig.build.json`
+- **noFallthroughCasesInSwitch** (1 connections) — `client/tsconfig.build.json`
+- **noUncheckedSideEffectImports** (1 connections) — `client/tsconfig.build.json`
+- **noUnusedLocals** (1 connections) — `client/tsconfig.build.json`
+- **noUnusedParameters** (1 connections) — `client/tsconfig.build.json`
+- **skipLibCheck** (1 connections) — `client/tsconfig.build.json`
+- **strict** (1 connections) — `client/tsconfig.build.json`
+- **target** (1 connections) — `client/tsconfig.build.json`
+- **tsBuildInfoFile** (1 connections) — `client/tsconfig.build.json`
+- **useDefineForClassFields** (1 connections) — `client/tsconfig.build.json`
+- **verbatimModuleSyntax** (1 connections) — `client/tsconfig.build.json`
+- **DOM** (1 connections) — `client/tsconfig.build.json`
+- **DOM.Iterable** (1 connections) — `client/tsconfig.build.json`
+- **ES2022** (1 connections) — `client/tsconfig.build.json`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
@@ -34,11 +37,11 @@
 
 ## Source Files
 
-- `e2e-tests/load-tests/tsconfig.json`
+- `client/tsconfig.build.json`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 32 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

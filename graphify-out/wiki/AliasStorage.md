@@ -1,11 +1,13 @@
 # AliasStorage
 
-> 173 nodes
+> 251 nodes
 
 ## Key Concepts
 
 - **AliasStorage** (272 connections) — `server/alias_storage.py`
+- **Alias** (72 connections) — `server/models/alias.py`
 - **test_alias_storage.py** (67 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_alias.py** (29 connections) — `server/tests/unit/models/test_alias.py`
 - **Path** (11 connections)
 - **.get_player_aliases()** (10 connections) — `server/alias_storage.py`
 - **.get_alias_file_path()** (9 connections) — `server/alias_storage.py`
@@ -15,6 +17,7 @@
 - **.save_player_aliases()** (7 connections) — `server/alias_storage.py`
 - **._validate_alias_payload()** (7 connections) — `server/alias_storage.py`
 - **alias_storage()** (7 connections) — `server/tests/unit/test_alias_storage.py`
+- **alias.py** (7 connections) — `server/models/alias.py`
 - **.add_alias()** (6 connections) — `server/alias_storage.py`
 - **Path** (6 connections)
 - **test_alias_storage_init_with_env_var()** (5 connections) — `server/tests/unit/test_alias_storage.py`
@@ -26,35 +29,35 @@
 - **.backup_aliases()** (4 connections) — `server/alias_storage.py`
 - **.get_alias()** (4 connections) — `server/alias_storage.py`
 - **.get_alias_count()** (4 connections) — `server/alias_storage.py`
-- **.remove_alias()** (4 connections) — `server/alias_storage.py`
-- **_as_alias_payload()** (4 connections) — `server/alias_storage.py`
-- **sample_alias()** (4 connections) — `server/tests/unit/test_alias_storage.py`
-- *... and 148 more nodes in this community*
+- *... and 226 more nodes in this community*
 
 ## Relationships
 
-- [Alias](Alias.md) (29 shared connections)
-- [test_npc_admin_commands.py](test_npc_admin_commands.py.md) (20 shared connections)
-- [test_magic_commands.py](test_magic_commands.py.md) (12 shared connections)
+- [get_logger](get_logger.md) (21 shared connections)
+- [test_npc_admin_commands.py](test_npc_admin_commands.py.md) (18 shared connections)
+- [command_service.py](command_service.py.md) (16 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (13 shared connections)
+- [SpellRegistry](SpellRegistry.md) (12 shared connections)
 - [test_admin_commands.py](test_admin_commands.py.md) (11 shared connections)
-- [command_service.py](command_service.py.md) (11 shared connections)
-- [command_handler_unified.py](command_handler_unified.py.md) (9 shared connections)
-- [communication_commands.py](communication_commands.py.md) (9 shared connections)
-- [alias_storage.py](alias_storage.py.md) (8 shared connections)
-- [CombatCommandHandler](CombatCommandHandler.md) (7 shared connections)
 - [combat_loader.py](combat_loader.py.md) (7 shared connections)
 - [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (7 shared connections)
-- [test_alias_commands.py](test_alias_commands.py.md) (6 shared connections)
+- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (6 shared connections)
+- [inventory_pickup_command.py](inventory_pickup_command.py.md) (5 shared connections)
+- [request_with_app_container](request_with_app_container.md) (5 shared connections)
+- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (4 shared connections)
 
 ## Source Files
 
 - `server/alias_storage.py`
+- `server/models/alias.py`
+- `server/realtime/request_context.py`
+- `server/tests/unit/models/test_alias.py`
 - `server/tests/unit/test_alias_storage.py`
 
 ## Audit Trail
 
-- EXTRACTED: 413 (81%)
-- INFERRED: 94 (19%)
+- EXTRACTED: 526 (85%)
+- INFERRED: 96 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

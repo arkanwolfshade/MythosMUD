@@ -35,16 +35,16 @@
 
 - [test_item_catalog.py](test_item_catalog.py.md) (19 shared connections)
 - [catalog_commands.py](catalog_commands.py.md) (11 shared connections)
+- [DatabaseError](DatabaseError.md) (11 shared connections)
 - [ItemCatalogService](ItemCatalogService.md) (8 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (4 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (4 shared connections)
-- [DatabaseError](DatabaseError.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [bundles/game.py](bundles-game.py.md) (2 shared connections)
-- [PlayerSkillRepository](PlayerSkillRepository.md) (2 shared connections)
-- [get_session_maker](get_session_maker.md) (2 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (5 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (3 shared connections)
+- [PlayerService](PlayerService.md) (2 shared connections)
+- [RoomService](RoomService.md) (1 shared connections)
+- [world](world.md) (1 shared connections)
+- [UserManager](UserManager.md) (1 shared connections)
+- [ContainerService](ContainerService.md) (1 shared connections)
 
 ## Source Files
 

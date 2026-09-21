@@ -1,17 +1,15 @@
 # test_rate_limiter_utils.py
 
-> 48 nodes
+> 43 nodes
 
 ## Key Concepts
 
 - **test_rate_limiter_utils.py** (26 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
 - **utils/rate_limiter.py** (13 connections) — `server/utils/rate_limiter.py`
 - **auth_login_rate_limit_settings()** (7 connections) — `server/utils/rate_limiter.py`
-- **rate_limiter()** (5 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
 - **test_enforce_rate_limit_includes_retry_after()** (3 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
 - **test_enforce_rate_limit_raises_when_exceeded()** (3 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
 - **_positive_int_env()** (3 connections) — `server/utils/rate_limiter.py`
-- **server/utils/__init__.py** (3 connections) — `server/utils/__init__.py`
 - **test_auth_login_limiter_matches_settings()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
 - **test_auth_login_rate_limit_settings_defaults()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
 - **test_auth_login_rate_limit_settings_from_env()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
@@ -29,27 +27,29 @@
 - **test_get_rate_limit_info_with_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
 - **test_rate_limiter_initialization()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
 - **test_stats_roll_limiter_initialized()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- *... and 23 more nodes in this community*
+- **Unit tests for rate limiting utilities. Tests the simple in-memory rate limiter…** (1 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **Test get_rate_limit_info returns correct info with requests.** (1 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [test_auth_rate_limit.py](test_auth_rate_limit.py.md) (6 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (5 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
+- [User](User.md) (5 shared connections)
+- [RateLimiter](RateLimiter.md) (4 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [connection_manager.py](connection_manager.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (1 shared connections)
+- [PlayerService](PlayerService.md) (1 shared connections)
+- [auth_rate_limit.py](auth_rate_limit.py.md) (1 shared connections)
+- [test_auth_rate_limit.py](test_auth_rate_limit.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/tests/unit/utils/test_rate_limiter_utils.py`
-- `server/utils/__init__.py`
 - `server/utils/rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 60 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -25,7 +25,7 @@
 
 ## Relationships
 
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (3 shared connections)
+- [primitives/index.ts](primitives-index.ts.md) (3 shared connections)
 
 ## Source Files
 

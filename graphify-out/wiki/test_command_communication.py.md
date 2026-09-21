@@ -1,6 +1,6 @@
 # test_command_communication.py
 
-> 117 nodes
+> 119 nodes
 
 ## Key Concepts
 
@@ -20,6 +20,7 @@
 - **.validate_message()** (4 connections) — `server/models/command_communication.py`
 - **.validate_message()** (4 connections) — `server/models/command_communication.py`
 - **.validate_action()** (4 connections) — `server/models/command_communication.py`
+- **.validate_pose()** (4 connections) — `server/models/command_communication.py`
 - **.validate_message()** (4 connections) — `server/models/command_communication.py`
 - **.validate_message()** (4 connections) — `server/models/command_communication.py`
 - **.validate_message()** (4 connections) — `server/models/command_communication.py`
@@ -28,16 +29,15 @@
 - **test_emote_command_action_min_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
 - **test_emote_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
 - **test_emote_command_validate_action_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
-- **test_global_command_message_max_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
-- *... and 92 more nodes in this community*
+- *... and 94 more nodes in this community*
 
 ## Relationships
 
-- [command.py](command.py.md) (20 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (17 shared connections)
+- [command.py](command.py.md) (21 shared connections)
 - [BaseCommand](BaseCommand.md) (10 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (10 shared connections)
 - [CommunicationCommandFactory](CommunicationCommandFactory.md) (9 shared connections)
-- [RoomService](RoomService.md) (1 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
 
 ## Source Files
 
@@ -46,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 219 (96%)
+- EXTRACTED: 221 (96%)
 - INFERRED: 9 (4%)
 - AMBIGUOUS: 0 (0%)
 

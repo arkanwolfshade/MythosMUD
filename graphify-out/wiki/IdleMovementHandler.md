@@ -1,6 +1,6 @@
 # IdleMovementHandler
 
-> 84 nodes
+> 91 nodes
 
 ## Key Concepts
 
@@ -15,6 +15,7 @@
 - **._npc_registered_in_combat()** (4 connections) — `server/npc/idle_movement.py`
 - **._try_idle_room_change()** (4 connections) — `server/npc/idle_movement.py`
 - **_passes_movement_probability()** (4 connections) — `server/npc/idle_movement.py`
+- **idle_movement_handler()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
 - **test_is_npc_in_combat_true()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
 - **test_should_idle_move_false_when_registered_in_combat()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
 - **test_should_idle_move_not_active()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
@@ -27,19 +28,18 @@
 - **._check_npc_combat_via_uuid()** (3 connections) — `server/npc/idle_movement.py`
 - **.get_valid_exits()** (3 connections) — `server/npc/idle_movement.py`
 - **._log_idle_move_outcome()** (3 connections) — `server/npc/idle_movement.py`
-- **test_calculate_distance_to_room_different_rooms()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_calculate_distance_to_room_different_subzone()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- *... and 59 more nodes in this community*
+- **mock_event_bus()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- *... and 66 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (7 shared connections)
+- [event_types.py](event_types.py.md) (7 shared connections)
 - [.select_exit](select_exit.md) (7 shared connections)
-- [idle_movement_handler](idle_movement_handler.md) (4 shared connections)
-- [PassiveMobNPC](PassiveMobNPC.md) (2 shared connections)
 - [NPCThreadManager](NPCThreadManager.md) (2 shared connections)
 - [NPCMovementIntegration](NPCMovementIntegration.md) (2 shared connections)
-- [NPCBase](NPCBase.md) (1 shared connections)
+- [NPCActionMessage](NPCActionMessage.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [PassiveMobNPC](PassiveMobNPC.md) (1 shared connections)
 - [.__init__](__init__.md) (1 shared connections)
 
 ## Source Files
@@ -49,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 129 (81%)
-- INFERRED: 30 (19%)
+- EXTRACTED: 135 (82%)
+- INFERRED: 30 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

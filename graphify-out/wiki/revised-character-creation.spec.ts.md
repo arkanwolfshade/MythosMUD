@@ -1,14 +1,12 @@
 # revised-character-creation.spec.ts
 
-> 39 nodes
+> 34 nodes
 
 ## Key Concepts
 
 - **revised-character-creation.spec.ts** (20 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
-- **character-cleanup.ts** (19 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
-- **pages/index.ts** (10 connections) — `client/tests/e2e/runtime/pages/index.ts`
+- **character-cleanup.ts** (18 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
 - **LoginPage** (8 connections) — `client/tests/e2e/runtime/pages/LoginPage.ts`
-- **MotdPage** (7 connections) — `client/tests/e2e/runtime/pages/MotdPage.ts`
 - **tryDeleteOneTestCharacter()** (5 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
 - **.login()** (5 connections) — `client/tests/e2e/runtime/pages/LoginPage.ts`
 - **pollUntilCharacterListed()** (4 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
@@ -29,11 +27,13 @@
 - **getCharacterNameFromCard()** (2 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
 - **isProtected()** (2 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
 - **isTestCharacter()** (2 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
-- *... and 14 more nodes in this community*
+- **isLoginPost()** (2 connections) — `client/tests/e2e/runtime/pages/LoginPage.ts`
+- **CharacterCardLocator** (1 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [fixtures/auth.ts](fixtures-auth.ts.md) (13 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (9 shared connections)
 - [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (4 shared connections)
 
 ## Source Files
@@ -41,13 +41,11 @@
 - `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
 - `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
 - `client/tests/e2e/runtime/pages/LoginPage.ts`
-- `client/tests/e2e/runtime/pages/MotdPage.ts`
-- `client/tests/e2e/runtime/pages/index.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 75 (94%)
-- INFERRED: 5 (6%)
+- EXTRACTED: 62 (93%)
+- INFERRED: 5 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

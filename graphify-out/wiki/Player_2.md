@@ -29,15 +29,15 @@
 - test_player_get_health_state() `EXTRACTED`
 
 ### contains
-- models/player.py `EXTRACTED`
+- [models/player.py](models-player.py.md) `EXTRACTED`
 
 ### imports
-- [async_persistence.py](async_persistence.py.md) `EXTRACTED`
-- [server/models/__init__.py](server-models-__init__.py.md) `EXTRACTED`
+- async_persistence.py `EXTRACTED`
+- server/models/__init__.py `EXTRACTED`
 - models/user.py `EXTRACTED`
 - [look_command.py](look_command.py.md) `EXTRACTED`
 - lucidity_service.py `EXTRACTED`
-- [test_player_respawn_service.py](test_player_respawn_service.py.md) `EXTRACTED`
+- test_player_respawn_service.py `EXTRACTED`
 - [test_player_death_service.py](test_player_death_service.py.md) `EXTRACTED`
 - [real_time.py](real_time.py.md) `EXTRACTED`
 - [inventory_command_helpers.py](inventory_command_helpers.py.md) `EXTRACTED`
@@ -49,8 +49,8 @@
 - websocket_initial_state.py `EXTRACTED`
 - [websocket_helpers.py](websocket_helpers.py.md) `EXTRACTED`
 - player_respawn_service.py `EXTRACTED`
-- [test_async_persistence_core.py](test_async_persistence_core.py.md) `EXTRACTED`
-- game_tick_death.py `EXTRACTED`
+- test_async_persistence_core.py `EXTRACTED`
+- [game_tick_death.py](game_tick_death.py.md) `EXTRACTED`
 - movement_service.py `EXTRACTED`
 
 ### inherits
@@ -86,11 +86,11 @@
 
 ### uses
 - [User](User.md) `INFERRED`
-- [PlayerLucidity](PlayerLucidity.md) `INFERRED`
+- PlayerLucidity `INFERRED`
 - Base `INFERRED`
 - PlayerRepository `INFERRED`
 - HealthRepository `INFERRED`
-- [SpellTargetingService](SpellTargetingService.md) `INFERRED`
+- SpellTargetingService `INFERRED`
 - [ExperienceRepository](ExperienceRepository.md) `INFERRED`
 - [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) `INFERRED`
 - PlayerDeathService `INFERRED`

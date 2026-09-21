@@ -30,7 +30,7 @@
 
 ## Relationships
 
-- [map/types.ts](map-types.ts.md) (6 shared connections)
+- [RoomNodeData](RoomNodeData.md) (6 shared connections)
 - [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (2 shared connections)
 
 ## Source Files

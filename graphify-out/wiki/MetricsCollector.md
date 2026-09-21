@@ -34,7 +34,7 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (2 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
+- [test_message_filtering.py](test_message_filtering.py.md) (1 shared connections)
 - [Lock](Lock.md) (1 shared connections)
 
 ## Source Files

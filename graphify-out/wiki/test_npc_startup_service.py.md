@@ -34,7 +34,7 @@
 - [asyncio](asyncio.md) (17 shared connections)
 - [NPCStartupService](NPCStartupService.md) (11 shared connections)
 - [_errors_len](_errors_len.md) (6 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 - [test_spawn_required_npcs_spawn_failure](test_spawn_required_npcs_spawn_failure.md) (1 shared connections)
 - [test_determine_spawn_room_with_sub_zone](test_determine_spawn_room_with_sub_zone.md) (1 shared connections)
 - [npc_startup_service](npc_startup_service.md) (1 shared connections)

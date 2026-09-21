@@ -1,58 +1,50 @@
 # test_combat_persistence_handler_events.py
 
-> 99 nodes
+> 44 nodes
 
 ## Key Concepts
 
 - **test_combat_persistence_handler_events.py** (25 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **CombatPersistenceHandler** (24 connections) — `server/services/combat_persistence_handler.py`
 - **asyncio** (18 connections)
-- **combat_persistence_handler.py** (16 connections) — `server/services/combat_persistence_handler.py`
-- **test_combat_persistence_handler.py** (14 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **UUID** (9 connections)
-- **._publish_player_dp_update_event_impl()** (7 connections) — `server/services/combat_persistence_handler.py`
-- **._get_persistence_layer()** (6 connections) — `server/services/combat_persistence_handler.py`
-- **._persist_player_dp_sync()** (6 connections) — `server/services/combat_persistence_handler.py`
-- **._publish_dp_event_to_bus()** (5 connections) — `server/services/combat_persistence_handler.py`
-- **._publish_player_dp_correction_event()** (5 connections) — `server/services/combat_persistence_handler.py`
-- **._verify_player_save()** (5 connections) — `server/services/combat_persistence_handler.py`
-- **._log_death_state_changes()** (4 connections) — `server/services/combat_persistence_handler.py`
-- **._persist_player_dp_background()** (4 connections) — `server/services/combat_persistence_handler.py`
-- **.publish_player_dp_update_event()** (4 connections) — `server/services/combat_persistence_handler.py`
 - **persistence_handler()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
 - **test_publish_player_dp_update_event_impl_event_bus_publish_error()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **persistence_handler()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **.__init__()** (3 connections) — `server/services/combat_persistence_handler.py`
-- **._publish_dp_update_to_nats()** (3 connections) — `server/services/combat_persistence_handler.py`
 - **mock_combat_service()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
 - **test_publish_player_dp_correction_event()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
 - **test_publish_player_dp_correction_event_all_parameters()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
 - **test_publish_player_dp_correction_event_all_parameters_new()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
 - **test_publish_player_dp_correction_event_error()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- *... and 74 more nodes in this community*
+- **test_publish_player_dp_correction_event_no_event_bus()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_outer_exception()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_publish_error_new()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_success_new()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_all_parameters()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_error()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_legacy_subject()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_nats_error()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_no_event_bus()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_no_nats()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_with_nats()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **fixture** (2 connections)
+- **Unit tests for combat persistence handler - event publishing. Tests DP update…** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **Test _publish_player_dp_update_event_impl handles NATS errors gracefully.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [NATSError](NATSError.md) (6 shared connections)
-- [PlayerDPUpdated](PlayerDPUpdated.md) (4 shared connections)
-- [AttributeError](AttributeError.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [combat_service.py](combat_service.py.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [test_combat_cleanup_handler.py](test_combat_cleanup_handler.py.md) (1 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
-- [command_service.py](command_service.py.md) (1 shared connections)
+- [NATSError](NATSError.md) (3 shared connections)
+- [CombatPersistenceHandler](CombatPersistenceHandler.md) (2 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_persistence_handler.py`
-- `server/tests/unit/services/test_combat_persistence_handler.py`
 - `server/tests/unit/services/test_combat_persistence_handler_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 154 (95%)
-- INFERRED: 8 (5%)
+- EXTRACTED: 65 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

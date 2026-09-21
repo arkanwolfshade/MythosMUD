@@ -34,9 +34,10 @@
 ## Relationships
 
 - [quest_commands.py](quest_commands.py.md) (9 shared connections)
-- [get_logger](get_logger.md) (7 shared connections)
+- [NPCDefinition](NPCDefinition.md) (5 shared connections)
 - [test_look_room.py](test_look_room.py.md) (3 shared connections)
 - [look_command.py](look_command.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 

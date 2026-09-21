@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [NPCCombatLucidity](NPCCombatLucidity.md) (8 shared connections)
+- [active_lucidity_service.py](active_lucidity_service.py.md) (8 shared connections)
 - [AliasStorage](AliasStorage.md) (7 shared connections)
 - [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 - [debrief_command.py](debrief_command.py.md) (3 shared connections)
-- [DatabaseManager](DatabaseManager.md) (3 shared connections)
 - [mock_persistence](mock_persistence.md) (3 shared connections)
-- [.perform_recovery_action](perform_recovery_action.md) (2 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [NPCDefinition](NPCDefinition.md) (2 shared connections)
+- [get_async_session](get_async_session.md) (2 shared connections)
+- [NPCCombatLucidity](NPCCombatLucidity.md) (2 shared connections)
 - [test_mp_regeneration_service.py](test_mp_regeneration_service.py.md) (1 shared connections)
 - [get_username_from_user](get_username_from_user.md) (1 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 

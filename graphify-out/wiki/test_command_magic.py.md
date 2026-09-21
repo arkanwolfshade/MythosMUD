@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [command.py](command.py.md) (14 shared connections)
+- [command.py](command.py.md) (15 shared connections)
 - [UtilityCommandFactory](UtilityCommandFactory.md) (7 shared connections)
 - [BaseCommand](BaseCommand.md) (7 shared connections)
-- [RoomService](RoomService.md) (1 shared connections)
 
 ## Source Files
 

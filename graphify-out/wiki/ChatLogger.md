@@ -34,12 +34,10 @@
 ## Relationships
 
 - [test_chat_logger.py](test_chat_logger.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (1 shared connections)
-- [user_manager.py](user_manager.py.md) (1 shared connections)
-- [ChatChannelLoggerMixin](ChatChannelLoggerMixin.md) (1 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (2 shared connections)
+- [test_room_utils.py](test_room_utils.py.md) (1 shared connections)
 - [UserManager](UserManager.md) (1 shared connections)
-- [get_config](get_config.md) (1 shared connections)
 
 ## Source Files
 

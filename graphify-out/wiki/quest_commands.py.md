@@ -1,6 +1,6 @@
 # quest_commands.py
 
-> 77 nodes
+> 85 nodes
 
 ## Key Concepts
 
@@ -15,45 +15,47 @@
 - **resolve_npc_in_player_room()** (9 connections) — `server/commands/quest_commands.py`
 - **_get_quest_service()** (7 connections) — `server/commands/quest_commands.py`
 - **npc_definition_id()** (7 connections) — `server/commands/quest_commands.py`
+- **emit_quest_npc_say()** (7 connections) — `server/game/quest/quest_chat_notify.py`
 - **_enter_quest_command_patches()** (7 connections) — `server/tests/unit/commands/test_quest_commands.py`
 - **_active_npc_ids_in_room()** (6 connections) — `server/commands/quest_commands.py`
 - **_emit_npc_lines_for_results()** (6 connections) — `server/commands/quest_commands.py`
 - **_get_container_and_persistence()** (6 connections) — `server/commands/quest_commands.py`
 - **_quest_command_ready()** (6 connections) — `server/commands/quest_commands.py`
 - **_resolve_player_id()** (6 connections) — `server/commands/quest_commands.py`
+- **quest_ask_npc_line()** (6 connections) — `server/game/quest/quest_chat_notify.py`
+- **quest_turnin_npc_line()** (6 connections) — `server/game/quest/quest_chat_notify.py`
 - **test_quest_ask_npc_not_in_room()** (6 connections) — `server/tests/unit/commands/test_quest_commands.py`
 - **test_quest_ask_success()** (6 connections) — `server/tests/unit/commands/test_quest_commands.py`
 - **test_quest_turnin_npc_not_in_room()** (6 connections) — `server/tests/unit/commands/test_quest_commands.py`
 - **test_quest_turnin_success()** (6 connections) — `server/tests/unit/commands/test_quest_commands.py`
 - **UUID** (6 connections)
-- **_format_one_quest_entry()** (5 connections) — `server/commands/quest_commands.py`
-- **_format_quest_log()** (5 connections) — `server/commands/quest_commands.py`
-- **_handle_quest_abandon()** (5 connections) — `server/commands/quest_commands.py`
-- *... and 52 more nodes in this community*
+- *... and 60 more nodes in this community*
 
 ## Relationships
 
+- [test_chat_npc_system.py](test_chat_npc_system.py.md) (11 shared connections)
 - [test_look_npc.py](test_look_npc.py.md) (9 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (9 shared connections)
-- [QuestService](QuestService.md) (5 shared connections)
 - [talk_command.py](talk_command.py.md) (5 shared connections)
-- [command_service.py](command_service.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [get_username_from_user](get_username_from_user.md) (3 shared connections)
+- [QuestService](QuestService.md) (3 shared connections)
 - [AliasStorage](AliasStorage.md) (3 shared connections)
-- [get_username_from_user](get_username_from_user.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [command_service.py](command_service.py.md) (3 shared connections)
+- [quest_service](quest_service.md) (1 shared connections)
 - [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (1 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [quest_service.py](quest_service.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/quest_commands.py`
+- `server/game/quest/quest_chat_notify.py`
 - `server/tests/unit/commands/test_quest_commands.py`
+- `server/tests/unit/game/test_chat_npc_system.py`
 
 ## Audit Trail
 
-- EXTRACTED: 186 (95%)
-- INFERRED: 9 (5%)
+- EXTRACTED: 201 (96%)
+- INFERRED: 9 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

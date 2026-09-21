@@ -29,8 +29,9 @@
 
 ## Relationships
 
-- [Player](Player.md) (5 shared connections)
-- [get_session_maker](get_session_maker.md) (4 shared connections)
+- [Player](Player.md) (4 shared connections)
+- [DatabaseError](DatabaseError.md) (4 shared connections)
+- [models/player.py](models-player.py.md) (1 shared connections)
 
 ## Source Files
 

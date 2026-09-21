@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [chat_service.py](chat_service.py.md) (8 shared connections)
+- [ChatMessage](ChatMessage.md) (8 shared connections)
 - [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 

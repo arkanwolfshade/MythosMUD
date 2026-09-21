@@ -1,6 +1,6 @@
 # Path
 
-> 27 nodes
+> 21 nodes
 
 ## Key Concepts
 
@@ -11,29 +11,24 @@
 - **.save_room_file()** (6 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
 - **._create_backup_if_requested()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
 - **.fix_bidirectional_connections()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **._fix_missing_fields()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
 - **.fix_self_references()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
 - **._save_fixed_room()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
 - **._find_room_file()** (4 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **._fix_missing_exits()** (3 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **._fix_missing_optional_fields()** (3 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
 - **.__init__()** (3 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
 - **Fix self-references by adding proper flags. Args: room_database: Complete room…** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
 - **Find the file for a room. Returns None if file doesn't exist.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
 - **Create backup if requested.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **Fix missing exits field. Returns True if fixed.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **Fix missing optional fields. Returns True if any fixed.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
 - **Initialize the room fixer. Args: base_path: Base directory for room files** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **Fix missing fields based on errors. Returns True if any fixed.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
 - **Save fixed room if changes were made.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
 - **Fix basic schema issues. Args: room_database: Complete room database…** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
 - **Create a backup of a room file. Args: file_path: Path to the file to backup…** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
 - **Load a room file safely. Args: file_path: Path to the room file Returns: Room…** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- *... and 2 more nodes in this community*
+- **Save a room file safely. Args: file_path: Path to the room file room_data: Room…** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Fix missing bidirectional connections. Args: room_database: Complete room…** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
 
 ## Relationships
 
-- [PathValidator](PathValidator.md) (13 shared connections)
+- [PathValidator](PathValidator.md) (11 shared connections)
 
 ## Source Files
 
@@ -41,7 +36,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 48 (100%)
+- EXTRACTED: 40 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

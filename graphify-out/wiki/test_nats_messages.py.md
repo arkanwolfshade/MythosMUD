@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
+- [nats_message_handler_processing.py](nats_message_handler_processing.py.md) (2 shared connections)
 - [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (2 shared connections)
 
 ## Source Files

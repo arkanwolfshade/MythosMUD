@@ -35,7 +35,7 @@
 
 - [get_logger](get_logger.md) (3 shared connections)
 - [test_room_sync_service.py](test_room_sync_service.py.md) (2 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (1 shared connections)
 
 ## Source Files
 

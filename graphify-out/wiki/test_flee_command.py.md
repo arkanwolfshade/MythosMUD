@@ -1,11 +1,10 @@
 # test_flee_command.py
 
-> 41 nodes
+> 39 nodes
 
 ## Key Concepts
 
 - **test_flee_command.py** (28 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **PositionState** (17 connections) — `server/models/game.py`
 - **FleeHandlerDeps** (10 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **_request_with_persistence()** (10 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **test_flee_no_exits_returns_no_escape()** (9 connections) — `server/tests/unit/commands/test_flee_command.py`
@@ -29,32 +28,26 @@
 - **_GetCombatHandlerLoaderApp** (2 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **_GetCombatHandlerLoaderAppState** (2 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **TypedDict** (1 connections)
-- *... and 16 more nodes in this community*
+- **Unit tests for /flee command (handle_flee_command).** (1 connections) — `server/tests/unit/commands/test_flee_command.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
 - [CombatCommandHandler](CombatCommandHandler.md) (6 shared connections)
 - [CombatInstance](CombatInstance.md) (4 shared connections)
-- [Player](Player.md) (3 shared connections)
 - [combat_loader.py](combat_loader.py.md) (3 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (2 shared connections)
-- [test_player_respawn_service.py](test_player_respawn_service.py.md) (2 shared connections)
-- [server/models/game.py](server-models-game.py.md) (2 shared connections)
 - [CombatParticipant](CombatParticipant.md) (2 shared connections)
-- [get_config](get_config.md) (2 shared connections)
-- [PlayerSchemaConverter](PlayerSchemaConverter.md) (1 shared connections)
-- [PrototypeRegistryError](PrototypeRegistryError.md) (1 shared connections)
-- [combat_service.py](combat_service.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [Stats](Stats.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/game.py`
 - `server/tests/unit/commands/test_flee_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 102 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 87 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

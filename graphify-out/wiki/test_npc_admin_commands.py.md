@@ -1,6 +1,6 @@
 # test_npc_admin_commands.py
 
-> 157 nodes
+> 153 nodes
 
 ## Key Concepts
 
@@ -16,7 +16,6 @@
 - **handle_npc_create_command()** (14 connections) — `server/commands/npc_admin/definition.py`
 - **handle_npc_spawn_command()** (14 connections) — `server/commands/npc_admin/instance.py`
 - **handle_npc_edit_command()** (13 connections) — `server/commands/npc_admin/definition.py`
-- **handle_npc_test_occupants_command()** (13 connections) — `server/commands/npc_admin/test_occupants.py`
 - **handle_npc_react_command()** (12 connections) — `server/commands/npc_admin/behavior.py`
 - **handle_npc_stop_command()** (12 connections) — `server/commands/npc_admin/behavior.py`
 - **NPCDefinitionType** (11 connections) — `server/models/npc.py`
@@ -27,22 +26,22 @@
 - **handle_npc_population_command()** (11 connections) — `server/commands/npc_admin/monitoring.py`
 - **handle_npc_status_command()** (11 connections) — `server/commands/npc_admin/monitoring.py`
 - **handle_npc_zone_command()** (11 connections) — `server/commands/npc_admin/monitoring.py`
-- **behavior.py** (11 connections) — `server/commands/npc_admin/behavior.py`
 - **handle_npc_stats_command()** (10 connections) — `server/commands/npc_admin/instance.py`
-- *... and 132 more nodes in this community*
+- **validate_npc_admin_permission()** (9 connections) — `server/commands/npc_admin/router.py`
+- **_resolve_spawn_params()** (7 connections) — `server/commands/npc_admin/instance.py`
+- *... and 128 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (35 shared connections)
-- [AliasStorage](AliasStorage.md) (20 shared connections)
-- [alias_storage.py](alias_storage.py.md) (9 shared connections)
+- [NPCDefinition](NPCDefinition.md) (29 shared connections)
+- [AliasStorage](AliasStorage.md) (18 shared connections)
+- [get_logger](get_logger.md) (10 shared connections)
+- [test_occupants.py](test_occupants.py.md) (7 shared connections)
 - [command_service.py](command_service.py.md) (3 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (2 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [server/models/__init__.py](server-models-__init__.py.md) (1 shared connections)
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) (2 shared connections)
+- [models/player.py](models-player.py.md) (2 shared connections)
 - [npc_database.py](npc_database.py.md) (1 shared connections)
-- [_parse_npc_spawn_args](_parse_npc_spawn_args.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
 
 ## Source Files
 
@@ -52,14 +51,13 @@
 - `server/commands/npc_admin/instance.py`
 - `server/commands/npc_admin/monitoring.py`
 - `server/commands/npc_admin/router.py`
-- `server/commands/npc_admin/test_occupants.py`
 - `server/commands/npc_admin_commands.py`
 - `server/models/npc.py`
 - `server/tests/unit/commands/test_npc_admin_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 374 (91%)
+- EXTRACTED: 360 (91%)
 - INFERRED: 36 (9%)
 - AMBIGUOUS: 0 (0%)
 

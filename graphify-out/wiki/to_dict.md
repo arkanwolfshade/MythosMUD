@@ -10,7 +10,7 @@
 
 ## Relationships
 
-- [chat_service.py](chat_service.py.md) (1 shared connections)
+- [ChatMessage](ChatMessage.md) (1 shared connections)
 
 ## Source Files
 

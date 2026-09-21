@@ -33,13 +33,13 @@
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (27 shared connections)
+- [ValidationError](ValidationError.md) (15 shared connections)
+- [get_logger](get_logger.md) (13 shared connections)
 - [test_command_communication.py](test_command_communication.py.md) (9 shared connections)
-- [CombatCommandFactory](CombatCommandFactory.md) (1 shared connections)
+- [test_command_combat.py](test_command_combat.py.md) (1 shared connections)
 - [BaseCommand](BaseCommand.md) (1 shared connections)
 - [command.py](command.py.md) (1 shared connections)
 - [test_command_service.py](test_command_service.py.md) (1 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 
 ## Source Files
 

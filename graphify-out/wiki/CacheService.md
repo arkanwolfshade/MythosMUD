@@ -19,10 +19,10 @@
 
 ## Relationships
 
-- [NPCCacheService](NPCCacheService.md) (4 shared connections)
+- [test_cache_service.py](test_cache_service.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [RoomCacheService](RoomCacheService.md) (1 shared connections)
 - [Any](Any.md) (1 shared connections)
-- [ProfessionCacheService](ProfessionCacheService.md) (1 shared connections)
 
 ## Source Files
 

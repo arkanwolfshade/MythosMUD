@@ -24,9 +24,7 @@
 
 - [test_rest_command.py](test_rest_command.py.md) (5 shared connections)
 - [build_event](build_event.md) (4 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [get_config](get_config.md) (1 shared connections)
-- [AppConfig](AppConfig.md) (1 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 
 ## Source Files
 

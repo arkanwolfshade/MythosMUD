@@ -1,6 +1,6 @@
 # test_connection_disconnection.py
 
-> 144 nodes
+> 143 nodes
 
 ## Key Concepts
 
@@ -29,15 +29,15 @@
 - **_is_non_intentional_force_disconnect()** (6 connections) — `server/realtime/connection_disconnection.py`
 - **_CloseableWebSocketManager** (5 connections) — `server/realtime/connection_websocket_close.py`
 - **_session_cleanup_manager()** (5 connections) — `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
-- *... and 119 more nodes in this community*
+- *... and 118 more nodes in this community*
 
 ## Relationships
 
 - [connection_manager.py](connection_manager.py.md) (35 shared connections)
-- [ConnectionManager](ConnectionManager.md) (8 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [ConnectionManager](ConnectionManager.md) (7 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
 - [DatabaseError](DatabaseError.md) (1 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,11 +45,10 @@
 - `server/realtime/connection_websocket_close.py`
 - `server/tests/unit/realtime/test_connection_disconnection.py`
 - `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
-- `server/tests/unit/realtime/test_connection_manager_methods.py`
 
 ## Audit Trail
 
-- EXTRACTED: 304 (97%)
+- EXTRACTED: 303 (97%)
 - INFERRED: 8 (3%)
 - AMBIGUOUS: 0 (0%)
 

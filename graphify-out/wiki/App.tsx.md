@@ -1,12 +1,12 @@
 # App.tsx
 
-> 48 nodes
+> 45 nodes
 
 ## Key Concepts
 
 - **App.tsx** (22 connections) — `client/src/App.tsx`
 - **App()** (21 connections) — `client/src/App.tsx`
-- **app.test.helpers.ts** (19 connections) — `client/src/__tests__/app.test.helpers.ts`
+- **app.test.helpers.ts** (15 connections) — `client/src/__tests__/app.test.helpers.ts`
 - **ProfessionSystemErrorHandling.test.tsx** (14 connections) — `client/src/__tests__/ProfessionSystemErrorHandling.test.tsx`
 - **professionSystemErrorHandling.test.helpers.ts** (13 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
 - **createMockLoginResponse()** (12 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
@@ -22,22 +22,23 @@
 - **App.registration.test.tsx** (7 connections) — `client/src/__tests__/App.registration.test.tsx`
 - **App.statsRolling.test.tsx** (7 connections) — `client/src/__tests__/App.statsRolling.test.tsx`
 - **App.tokenValidation.test.tsx** (7 connections) — `client/src/__tests__/App.tokenValidation.test.tsx`
-- **createMockProfessions()** (5 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
 - **setupBasicMocks()** (5 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
 - **App.demo.test.tsx** (5 connections) — `client/src/__tests__/App.demo.test.tsx`
 - **App.formState.test.tsx** (5 connections) — `client/src/__tests__/App.formState.test.tsx`
 - **StatRollingWithProfessionRequirements.test.tsx** (5 connections) — `client/src/__tests__/StatRollingWithProfessionRequirements.test.tsx`
-- **createMockProfessionsFetchResponse()** (4 connections) — `client/src/__tests__/app.test.helpers.ts`
-- **createMockJsonResponse()** (3 connections) — `client/src/__tests__/app.test.helpers.ts`
-- *... and 23 more nodes in this community*
+- **createDefaultRollStatsFetchResponse()** (3 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
+- **createDefaultRollStatsResponseBody()** (3 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
+- **createMockProfessions()** (3 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [security.ts](security.ts.md) (7 shared connections)
-- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (2 shared connections)
+- [logoutHandler.ts](logoutHandler.ts.md) (6 shared connections)
+- [CatalogPage.tsx](CatalogPage.tsx.md) (2 shared connections)
 - [CharacterNameScreen.tsx](CharacterNameScreen.tsx.md) (2 shared connections)
 - [useMythosAppState.ts](useMythosAppState.ts.md) (1 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (1 shared connections)
+- [security.ts](security.ts.md) (1 shared connections)
+- [GameClientV2Dock.test.tsx](GameClientV2Dock.test.tsx.md) (1 shared connections)
 
 ## Source Files
 
@@ -64,7 +65,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 142 (100%)
+- EXTRACTED: 134 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

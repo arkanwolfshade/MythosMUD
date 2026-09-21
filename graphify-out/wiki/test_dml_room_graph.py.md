@@ -24,7 +24,7 @@
 
 ## Relationships
 
-- [bundles/game.py](bundles-game.py.md) (3 shared connections)
+- [world](world.md) (3 shared connections)
 
 ## Source Files
 

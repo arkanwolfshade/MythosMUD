@@ -1,6 +1,6 @@
 # MonitoringDashboard
 
-> 64 nodes
+> 62 nodes
 
 ## Key Concepts
 
@@ -29,16 +29,15 @@
 - **._get_disk_usage()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
 - **._get_memory_usage()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
 - **._get_system_load()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
-- *... and 39 more nodes in this community*
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
 - [ExceptionTracker](ExceptionTracker.md) (13 shared connections)
 - [LogAggregator](LogAggregator.md) (5 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (3 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (3 shared connections)
+- [test_enhanced_error_logging.py](test_enhanced_error_logging.py.md) (3 shared connections)
 - [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (2 shared connections)
-- [WebSocketRequestContext](WebSocketRequestContext.md) (1 shared connections)
 - [system_monitoring.py](system_monitoring.py.md) (1 shared connections)
 - [PerformanceMonitor](PerformanceMonitor.md) (1 shared connections)
 - [InventoryMutationGuard](InventoryMutationGuard.md) (1 shared connections)
@@ -51,8 +50,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 127 (91%)
-- INFERRED: 12 (9%)
+- EXTRACTED: 126 (92%)
+- INFERRED: 11 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

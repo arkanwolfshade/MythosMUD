@@ -34,7 +34,7 @@
 ## Relationships
 
 - [player_presence_tracker.py](player_presence_tracker.py.md) (7 shared connections)
-- [disconnect_grace_period.py](disconnect_grace_period.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [start_grace_period](start_grace_period.md) (3 shared connections)
 
 ## Source Files

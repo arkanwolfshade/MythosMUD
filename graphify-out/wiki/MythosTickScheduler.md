@@ -1,12 +1,11 @@
 # MythosTickScheduler
 
-> 37 nodes
+> 35 nodes
 
 ## Key Concepts
 
 - **MythosTickScheduler** (32 connections) — `server/time/tick_scheduler.py`
 - **test_tick_scheduler.py** (18 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **tick_scheduler.py** (16 connections) — `server/time/tick_scheduler.py`
 - **asyncio** (9 connections)
 - **._emit_pending_ticks()** (5 connections) — `server/time/tick_scheduler.py`
 - **._publish_tick()** (5 connections) — `server/time/tick_scheduler.py`
@@ -29,18 +28,21 @@
 - **mock_chronicle()** (2 connections) — `server/tests/unit/time/test_tick_scheduler.py`
 - **mock_event_bus()** (2 connections) — `server/tests/unit/time/test_tick_scheduler.py`
 - **mock_task_registry()** (2 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- *... and 12 more nodes in this community*
+- **test_publish_tick_with_holidays()** (2 connections) — `server/tests/unit/time/test_tick_scheduler.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [MythosChronicle](MythosChronicle.md) (5 shared connections)
-- [lifespan_protocols.py](lifespan_protocols.py.md) (3 shared connections)
-- [EventBus](EventBus.md) (3 shared connections)
-- [MythosHourTickEvent](MythosHourTickEvent.md) (3 shared connections)
-- [TaskRegistry](TaskRegistry.md) (3 shared connections)
-- [HolidayService](HolidayService.md) (1 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [lifespan_protocols.py](lifespan_protocols.py.md) (2 shared connections)
+- [MythosChronicle](MythosChronicle.md) (2 shared connections)
+- [MythosTimeEventConsumer](MythosTimeEventConsumer.md) (2 shared connections)
+- [world](world.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [Lock](Lock.md) (1 shared connections)
 - [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
+- [TaskRegistry](TaskRegistry.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,8 +51,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 76 (84%)
-- INFERRED: 15 (16%)
+- EXTRACTED: 63 (81%)
+- INFERRED: 15 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

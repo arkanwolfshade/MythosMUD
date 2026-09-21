@@ -1,21 +1,16 @@
 # PassiveMobNPC
 
-> 71 nodes
+> 61 nodes
 
 ## Key Concepts
 
 - **PassiveMobNPC** (57 connections) — `server/npc/passive_mob_npc.py`
 - **test_npc_base.py** (24 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_passive_mob_npc.py** (19 connections) — `server/tests/unit/npc/test_passive_mob_npc.py`
-- **.wander()** (7 connections) — `server/npc/passive_mob_npc.py`
-- **.schedule_idle_movement()** (6 connections) — `server/npc/passive_mob_npc.py`
 - **.__init__()** (5 connections) — `server/npc/passive_mob_npc.py`
-- **._create_wander_action()** (4 connections) — `server/npc/passive_mob_npc.py`
 - **._handle_respond_to_greeting()** (3 connections) — `server/npc/passive_mob_npc.py`
-- **._handle_wander()** (3 connections) — `server/npc/passive_mob_npc.py`
 - **.respond_to_player()** (3 connections) — `server/npc/passive_mob_npc.py`
 - **._setup_passive_mob_behavior_rules()** (3 connections) — `server/npc/passive_mob_npc.py`
-- **._should_schedule_movement()** (3 connections) — `server/npc/passive_mob_npc.py`
 - **test_npc_base_execute_behavior()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_npc_base_get_combat_stats()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_npc_base_get_combat_stats_defaults()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
@@ -29,16 +24,20 @@
 - **test_npc_base_from_dict()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_npc_base_get_behavior_and_ai_config()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_npc_base_handle_die_and_idle()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
-- *... and 46 more nodes in this community*
+- **test_npc_base_heal_when_dead_returns_false()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_inventory_operations()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_move_simple()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_move_with_event_reaction_system()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_remove_missing_item()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- *... and 36 more nodes in this community*
 
 ## Relationships
 
-- [NPCBase](NPCBase.md) (8 shared connections)
-- [NPCActionMessage](NPCActionMessage.md) (3 shared connections)
-- [IdleMovementHandler](IdleMovementHandler.md) (2 shared connections)
+- [event_types.py](event_types.py.md) (6 shared connections)
+- [NPCActionMessage](NPCActionMessage.md) (6 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (2 shared connections)
+- [IdleMovementHandler](IdleMovementHandler.md) (1 shared connections)
 - [EventBus](EventBus.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [command_service.py](command_service.py.md) (1 shared connections)
 - [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
@@ -49,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 108 (84%)
-- INFERRED: 21 (16%)
+- EXTRACTED: 95 (83%)
+- INFERRED: 20 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

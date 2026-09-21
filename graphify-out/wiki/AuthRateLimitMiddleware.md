@@ -15,8 +15,9 @@
 
 ## Relationships
 
-- [test_auth_rate_limit.py](test_auth_rate_limit.py.md) (2 shared connections)
 - [factory.py](factory.py.md) (1 shared connections)
+- [auth_rate_limit.py](auth_rate_limit.py.md) (1 shared connections)
+- [test_auth_rate_limit.py](test_auth_rate_limit.py.md) (1 shared connections)
 
 ## Source Files
 

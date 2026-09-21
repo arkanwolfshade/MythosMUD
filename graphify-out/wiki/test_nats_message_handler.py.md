@@ -35,8 +35,9 @@
 
 - [NATSError](NATSError.md) (15 shared connections)
 - [CircuitBreaker](CircuitBreaker.md) (4 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (3 shared connections)
-- [AttributeError](AttributeError.md) (2 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (2 shared connections)
+- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
+- [test_message_filtering.py](test_message_filtering.py.md) (1 shared connections)
 
 ## Source Files
 

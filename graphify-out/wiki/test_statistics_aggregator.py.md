@@ -32,7 +32,8 @@
 
 ## Relationships
 
-- [connection_manager.py](connection_manager.py.md) (3 shared connections)
+- [StatisticsAggregator](StatisticsAggregator.md) (2 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 
 ## Source Files
 

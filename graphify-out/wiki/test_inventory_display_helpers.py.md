@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (6 shared connections)
+- [test_inventory_helpers.py](test_inventory_helpers.py.md) (6 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [inventory_equip_command.py](inventory_equip_command.py.md) (2 shared connections)
-- [command_service.py](command_service.py.md) (1 shared connections)
+- [inventory_pickup_command.py](inventory_pickup_command.py.md) (2 shared connections)
+- [command_result_text](command_result_text.md) (1 shared connections)
 
 ## Source Files
 

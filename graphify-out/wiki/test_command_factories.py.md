@@ -5,9 +5,9 @@
 ## Key Concepts
 
 - **test_command_factories.py** (64 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_command_factory_create_existing_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
 - **test_create_cleanse_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
 - **test_create_ground_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_learn_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
 - **test_create_status_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
 - **test_create_strike_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
 - **test_create_unmute_global_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
@@ -19,12 +19,12 @@
 - **Test create_who_command delegates to player_state factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 - **Test create_cleanse_command delegates to player_state factory (#804).** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 - **Test create_strike_command delegates to combat factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_learn_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test CommandFactory.create_*() returns command for existing command.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
 - [BaseCommand](BaseCommand.md) (1 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [test_create_reply_command](test_create_reply_command.md) (1 shared connections)
 - [test_create_channel_command](test_create_channel_command.md) (1 shared connections)
 - [test_create_go_command](test_create_go_command.md) (1 shared connections)

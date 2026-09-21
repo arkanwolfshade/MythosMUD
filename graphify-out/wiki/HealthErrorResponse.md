@@ -17,7 +17,7 @@
 
 - [HealthStatus](HealthStatus.md) (6 shared connections)
 - [api/monitoring.py](api-monitoring.py.md) (2 shared connections)
-- [server/models/__init__.py](server-models-__init__.py.md) (1 shared connections)
+- [models/player.py](models-player.py.md) (1 shared connections)
 
 ## Source Files
 

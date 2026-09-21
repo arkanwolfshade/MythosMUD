@@ -1,6 +1,6 @@
 # useMythosAppActions.ts
 
-> 97 nodes
+> 104 nodes
 
 ## Key Concepts
 
@@ -18,10 +18,10 @@
 - **types/auth.ts** (16 connections) — `client/src/types/auth.ts`
 - **deleteCharacterActions.ts** (15 connections) — `client/src/mythosApp/deleteCharacterActions.ts`
 - **serverAvailability.ts** (15 connections) — `client/src/mythosApp/serverAvailability.ts`
+- **CharacterSelectionScreen.tsx** (14 connections) — `client/src/components/CharacterSelectionScreen.tsx`
 - **motdContinueFlow.ts** (14 connections) — `client/src/mythosApp/motdContinueFlow.ts`
 - **errorHandler.test.ts** (14 connections) — `client/src/utils/errorHandler.test.ts`
 - **selectCharacterFlow.ts** (13 connections) — `client/src/mythosApp/selectCharacterFlow.ts`
-- **CreationStep** (11 connections) — `client/src/mythosApp/creationTypes.ts`
 - **tryStartLoginGracePeriod()** (11 connections) — `client/src/mythosApp/motdContinueFlow.ts`
 - **useMythosSessionChrome.ts** (11 connections) — `client/src/mythosApp/useMythosSessionChrome.ts`
 - **useMythosAppActions()** (10 connections) — `client/src/mythosApp/useMythosAppActions.ts`
@@ -29,19 +29,21 @@
 - **registerFailureMessage.ts** (10 connections) — `client/src/mythosApp/registerFailureMessage.ts`
 - **runDeleteCharacterFlow()** (9 connections) — `client/src/mythosApp/deleteCharacterFlow.ts`
 - **guards.ts** (9 connections) — `client/src/mythosApp/guards.ts`
-- *... and 72 more nodes in this community*
+- *... and 79 more nodes in this community*
 
 ## Relationships
 
-- [useMythosAppState.ts](useMythosAppState.ts.md) (33 shared connections)
-- [CharacterNameScreen.tsx](CharacterNameScreen.tsx.md) (29 shared connections)
-- [apiTypeGuards.ts](apiTypeGuards.ts.md) (14 shared connections)
-- [submitAuth.ts](submitAuth.ts.md) (12 shared connections)
-- [security.ts](security.ts.md) (10 shared connections)
-- [CharacterSelectionScreen.tsx](CharacterSelectionScreen.tsx.md) (4 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (46 shared connections)
+- [Profession](Profession.md) (21 shared connections)
+- [apiTypeGuards.ts](apiTypeGuards.ts.md) (15 shared connections)
+- [CharacterNameScreen.tsx](CharacterNameScreen.tsx.md) (7 shared connections)
+- [logoutHandler.ts](logoutHandler.ts.md) (6 shared connections)
+- [roomHandlers.ts](roomHandlers.ts.md) (2 shared connections)
+- [security.ts](security.ts.md) (2 shared connections)
 
 ## Source Files
 
+- `client/src/components/CharacterSelectionScreen.tsx`
 - `client/src/mythosApp/__tests__/deleteCharacterActions.test.ts`
 - `client/src/mythosApp/__tests__/deleteCharacterFlow.test.ts`
 - `client/src/mythosApp/__tests__/useMythosSessionChrome.test.ts`
@@ -49,7 +51,6 @@
 - `client/src/mythosApp/characterSessionApi.ts`
 - `client/src/mythosApp/creationCompleteActions.ts`
 - `client/src/mythosApp/creationCompleteFlow.ts`
-- `client/src/mythosApp/creationTypes.ts`
 - `client/src/mythosApp/deleteCharacterActions.ts`
 - `client/src/mythosApp/deleteCharacterFlow.ts`
 - `client/src/mythosApp/guards.ts`
@@ -65,8 +66,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 397 (100%)
-- INFERRED: 1 (0%)
+- EXTRACTED: 395 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

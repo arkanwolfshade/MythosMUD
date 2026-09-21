@@ -38,8 +38,9 @@
 - [lifespan.py](lifespan.py.md) (3 shared connections)
 - [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
 - [ExceptionTracker](ExceptionTracker.md) (2 shared connections)
-- [MemoryMonitor](MemoryMonitor.md) (2 shared connections)
-- [WebSocketRequestContext](WebSocketRequestContext.md) (1 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
+- [collect_idle_memory_sample](collect_idle_memory_sample.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 - [logging_file_setup.py](logging_file_setup.py.md) (1 shared connections)
 
 ## Source Files

@@ -15,11 +15,11 @@
 
 ## Relationships
 
-- [test_channel_broadcasting_strategies.py](test_channel_broadcasting_strategies.py.md) (4 shared connections)
+- [test_channel_broadcasting_strategies.py](test_channel_broadcasting_strategies.py.md) (3 shared connections)
 - [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (3 shared connections)
-- [User](User.md) (2 shared connections)
+- [ChannelBroadcastingStrategyFactory](ChannelBroadcastingStrategyFactory.md) (2 shared connections)
+- [endpoints.py](endpoints.py.md) (2 shared connections)
 - [UUID](UUID.md) (1 shared connections)
-- [asyncio](asyncio.md) (1 shared connections)
 
 ## Source Files
 

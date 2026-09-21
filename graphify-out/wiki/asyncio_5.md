@@ -1,54 +1,53 @@
 # asyncio
 
-> 21 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **asyncio** (25 connections)
-- **test_convert_room_uuids_to_names()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_convert_room_uuids_to_names_invalid_uuid()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_following_for_client()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_player_data_for_client_with_service()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_players_batch_empty()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_quest_log_for_client()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_room_occupants()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_room_occupants_with_online_players()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_process_occupants_with_grace_periods()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_send_initial_game_state()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test convert_room_uuids_to_names() converts UUIDs to names.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test get_room_occupants() returns room occupants.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test send_initial_game_state() sends initial state.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test convert_room_uuids_to_names() handles invalid UUID strings.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test get_room_occupants() with online players.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test _process_occupants_with_grace_periods() splits players and NPCs. Issue…** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test _get_following_for_client() returns target name for player follow.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test _get_quest_log_for_client() returns quest entries from service.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test _get_player_data_for_client() uses PlayerService when available.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test get_players_batch() returns empty dict for empty input.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **asyncio** (26 connections)
+- **test_determine_spawn_room_exception()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_fallback()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_fallback_not_found()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_no_container()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_room_id_not_found()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_sub_zone_room_not_found()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_arena_npcs_spawns_each_spawned_definition()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_npcs_on_startup()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_npcs_on_startup_with_required_npcs()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_optional_npcs_no_probability_attribute()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_optional_npcs_no_spawn_room()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_optional_npcs_skips_low_probability()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_optional_npcs() skips NPCs with low probability.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _determine_spawn_room() uses fallback room when no other option.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_optional_npcs() handles missing spawn room.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_optional_npcs() handles NPCs without spawn_probability attribute.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _determine_spawn_room() handles room_id not found in database.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _determine_spawn_room() handles sub-zone default room not found.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _determine_spawn_room() returns None when fallback room not found.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _determine_spawn_room() handles exceptions gracefully.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _determine_spawn_room() handles no async_persistence available.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **One arena instance per definition_id present in required/optional spawned_npcs.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test spawn_npcs_on_startup() processes startup spawning.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test spawn_npcs_on_startup() spawns required NPCs.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 
 ## Relationships
 
-- [test_game_state_provider.py](test_game_state_provider.py.md) (10 shared connections)
-- [test_convert_room_uuids_to_names_empty_room_data](test_convert_room_uuids_to_names_empty_room_data.md) (1 shared connections)
-- [test_convert_room_uuids_to_names_no_player_ids](test_convert_room_uuids_to_names_no_player_ids.md) (1 shared connections)
-- [test_convert_room_uuids_to_names_player_not_found](test_convert_room_uuids_to_names_player_not_found.md) (1 shared connections)
-- [test_convert_room_uuids_with_npcs](test_convert_room_uuids_with_npcs.md) (1 shared connections)
-- [test_get_player](test_get_player.md) (1 shared connections)
-- [test_get_player_data_for_client_app_state_fallback](test_get_player_data_for_client_app_state_fallback.md) (1 shared connections)
-- [test_get_player_data_for_client_dict_fallback](test_get_player_data_for_client_dict_fallback.md) (1 shared connections)
-- [test_get_player_not_found](test_get_player_not_found.md) (1 shared connections)
-- [test_get_players_batch](test_get_players_batch.md) (1 shared connections)
-- [test_get_players_batch_no_persistence](test_get_players_batch_no_persistence.md) (1 shared connections)
-- [test_get_players_batch_player_not_found](test_get_players_batch_player_not_found.md) (1 shared connections)
+- [test_npc_startup_service.py](test_npc_startup_service.py.md) (17 shared connections)
+- [NPCStartupService](NPCStartupService.md) (12 shared connections)
+- [_errors_len](_errors_len.md) (5 shared connections)
+- [test_determine_spawn_room_with_sub_zone](test_determine_spawn_room_with_sub_zone.md) (1 shared connections)
+- [test_spawn_arena_npcs_no_prior_spawns_returns_empty](test_spawn_arena_npcs_no_prior_spawns_returns_empty.md) (1 shared connections)
+- [test_spawn_arena_npcs_skips_unknown_definition_id](test_spawn_arena_npcs_skips_unknown_definition_id.md) (1 shared connections)
+- [test_spawn_required_npcs_spawn_failure](test_spawn_required_npcs_spawn_failure.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `server/tests/unit/services/test_npc_startup_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 50 (81%)
+- INFERRED: 12 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

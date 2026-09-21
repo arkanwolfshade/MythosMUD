@@ -1,65 +1,62 @@
 # PlayerDPUpdated
 
-> 81 nodes
+> 104 nodes
 
 ## Key Concepts
 
 - **PlayerDPUpdated** (39 connections) — `server/events/event_types.py`
+- **PlayerStateEventHandler** (36 connections) — `server/realtime/player_event_handlers_state.py`
+- **test_player_event_handlers_state.py** (34 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
 - **player_event_handlers_state.py** (31 connections) — `server/realtime/player_event_handlers_state.py`
-- **emit_posture_change()** (27 connections) — `server/realtime/posture_notify.py`
-- **posture_notify.py** (22 connections) — `server/realtime/posture_notify.py`
+- **PlayerXPAwardEvent** (25 connections) — `server/events/event_types.py`
+- **asyncio** (21 connections)
 - **_dispatch_player_dp_updated_payload()** (13 connections) — `server/realtime/player_event_handlers_state.py`
-- **format_room_posture_message()** (13 connections) — `server/realtime/posture_notify.py`
-- **normalize_posture()** (12 connections) — `server/realtime/posture_notify.py`
-- **test_posture_notify.py** (11 connections) — `server/tests/unit/realtime/test_posture_notify.py`
 - **_dispatch_player_dp_decay_payload()** (9 connections) — `server/realtime/player_event_handlers_state.py`
-- **test_position_commands_helpers.py** (9 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
 - **_maybe_attach_decay_posture_cross()** (8 connections) — `server/realtime/player_event_handlers_state.py`
 - **_send_player_death_notification()** (8 connections) — `server/realtime/player_event_handlers_state.py`
-- **_PostureConnectionManager** (7 connections) — `server/realtime/posture_notify.py`
 - **_attach_dp_updated_posture_fields()** (7 connections) — `server/realtime/player_event_handlers_state.py`
 - **_player_snapshot_for_dp()** (6 connections) — `server/realtime/player_event_handlers_state.py`
 - **ConnectionManager** (6 connections)
 - **.__init__()** (5 connections) — `server/realtime/player_event_handlers_state.py`
-- **_send_personal_posture_message()** (5 connections) — `server/realtime/posture_notify.py`
-- **BoundLogger** (5 connections)
-- **_StatsPlayer** (4 connections) — `server/realtime/player_event_handlers_state.py`
-- **_decay_previous_position_before_lying()** (4 connections) — `server/realtime/player_event_handlers_state.py`
-- **_dp_player_update_payload()** (4 connections) — `server/realtime/player_event_handlers_state.py`
-- **.handle_player_dp_updated()** (4 connections) — `server/realtime/player_event_handlers_state.py`
-- **_broadcast_room_posture_change()** (4 connections) — `server/realtime/posture_notify.py`
-- **UUID** (4 connections)
-- *... and 56 more nodes in this community*
+- **player_state_event_handler()** (5 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_dp_updated_error_handling()** (5 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_dp_updated_includes_posture_message_on_posture_change()** (5 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_dp_updated_no_connection_manager()** (5 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_dp_updated_player_no_get_stats()** (5 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_dp_updated_player_not_found()** (5 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_dp_updated_success()** (5 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_xp_awarded_error_handling()** (5 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_xp_awarded_no_connection_manager()** (5 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_xp_awarded_player_no_current_room_id()** (5 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_xp_awarded_player_not_found()** (5 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- *... and 79 more nodes in this community*
 
 ## Relationships
 
-- [PlayerStateEventHandler](PlayerStateEventHandler.md) (14 shared connections)
-- [build_event](build_event.md) (9 shared connections)
-- [get_logger](get_logger.md) (8 shared connections)
-- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (6 shared connections)
-- [ConnectionManager](ConnectionManager.md) (6 shared connections)
-- [admin_setstat_command.py](admin_setstat_command.py.md) (6 shared connections)
-- [combat_service.py](combat_service.py.md) (5 shared connections)
-- [test_combat_persistence_handler_events.py](test_combat_persistence_handler_events.py.md) (4 shared connections)
-- [test_rest_command.py](test_rest_command.py.md) (4 shared connections)
-- [Player](Player.md) (4 shared connections)
-- [test_magic_healing_events.py](test_magic_healing_events.py.md) (3 shared connections)
-- [test_player_event_handlers.py](test_player_event_handlers.py.md) (3 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (19 shared connections)
+- [ConnectionManager](ConnectionManager.md) (7 shared connections)
+- [test_player_death_service.py](test_player_death_service.py.md) (7 shared connections)
+- [emit_posture_change](emit_posture_change.md) (6 shared connections)
+- [build_event](build_event.md) (6 shared connections)
+- [event_types.py](event_types.py.md) (5 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [test_player_event_handlers.py](test_player_event_handlers.py.md) (5 shared connections)
+- [test_event_handler.py](test_event_handler.py.md) (4 shared connections)
+- [CombatPersistenceHandler](CombatPersistenceHandler.md) (3 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
+- [game_tick_death.py](game_tick_death.py.md) (2 shared connections)
 
 ## Source Files
 
 - `server/events/event_types.py`
 - `server/realtime/player_event_handlers.py`
 - `server/realtime/player_event_handlers_state.py`
-- `server/realtime/posture_notify.py`
-- `server/services/position_messages.py`
-- `server/tests/unit/commands/test_position_commands_helpers.py`
-- `server/tests/unit/realtime/test_posture_notify.py`
+- `server/tests/unit/realtime/test_player_event_handlers_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 209 (93%)
-- INFERRED: 16 (7%)
+- EXTRACTED: 229 (83%)
+- INFERRED: 46 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

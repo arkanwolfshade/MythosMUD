@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [command.py](command.py.md) (8 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (6 shared connections)
+- [command.py](command.py.md) (9 shared connections)
 - [BaseCommand](BaseCommand.md) (4 shared connections)
 - [UtilityCommandFactory](UtilityCommandFactory.md) (3 shared connections)
-- [RoomService](RoomService.md) (1 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 
 ## Source Files
 

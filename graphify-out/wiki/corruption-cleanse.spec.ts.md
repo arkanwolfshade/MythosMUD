@@ -1,6 +1,6 @@
 # corruption-cleanse.spec.ts
 
-> 41 nodes
+> 39 nodes
 
 ## Key Concepts
 
@@ -20,7 +20,6 @@
 - **runE2eSeed()** (5 connections) — `client/tests/e2e/runtime/global-setup.ts`
 - **verifyE2eUsersInDatabase()** (5 connections) — `client/tests/e2e/runtime/global-setup.ts`
 - **e2e-bootstrap.test.ts** (5 connections) — `client/src/test/e2e-bootstrap.test.ts`
-- **EASTERN_HALLWAY_LOOK_CUE** (5 connections) — `client/tests/e2e/runtime/fixtures/test-data.ts`
 - **redactDatabaseUrl()** (4 connections) — `client/src/test/e2e-bootstrap.ts`
 - **seedCorruption()** (4 connections) — `client/tests/e2e/runtime/corruption/corruption-cleanse.spec.ts`
 - **spawnMorgan()** (4 connections) — `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
@@ -29,15 +28,17 @@
 - **verifyClientAccessible()** (3 connections) — `client/tests/e2e/runtime/global-setup.ts`
 - **appendBootstrapFailureLog()** (2 connections) — `client/src/test/e2e-bootstrap.ts`
 - **assertLookVisible()** (2 connections) — `client/tests/e2e/runtime/corruption/corruption-cleanse.spec.ts`
-- *... and 16 more nodes in this community*
+- **resetCorruptionCooldowns()** (2 connections) — `client/tests/e2e/runtime/corruption/corruption-cleanse.spec.ts`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [executeCommand](executeCommand.md) (15 shared connections)
-- [waitForMessage](waitForMessage.md) (11 shared connections)
+- [executeCommand](executeCommand.md) (17 shared connections)
 - [fixtures/auth.ts](fixtures-auth.ts.md) (10 shared connections)
-- [ensurePlayerInGame](ensurePlayerInGame.md) (8 shared connections)
+- [player.ts](player.ts.md) (8 shared connections)
+- [ensurePlayableConnection](ensurePlayableConnection.md) (5 shared connections)
 - [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (4 shared connections)
+- [whisper-movement.spec.ts](whisper-movement.spec.ts.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,14 +46,12 @@
 - `client/src/test/e2e-bootstrap.test.ts`
 - `client/src/test/e2e-bootstrap.ts`
 - `client/tests/e2e/runtime/corruption/corruption-cleanse.spec.ts`
-- `client/tests/e2e/runtime/fixtures/test-data.ts`
 - `client/tests/e2e/runtime/global-setup.ts`
 - `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
-- `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 133 (100%)
+- EXTRACTED: 128 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

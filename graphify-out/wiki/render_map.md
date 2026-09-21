@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [AsciiMapRenderer](AsciiMapRenderer.md) (20 shared connections)
-- [ascii_map_renderer.py](ascii_map_renderer.py.md) (2 shared connections)
+- [AsciiMapRenderer](AsciiMapRenderer.md) (22 shared connections)
 
 ## Source Files
 

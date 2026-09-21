@@ -34,8 +34,8 @@
 ## Relationships
 
 - [ValidationError](ValidationError.md) (6 shared connections)
-- [BaseCommand](BaseCommand.md) (3 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
+- [test_command_parser.py](test_command_parser.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 

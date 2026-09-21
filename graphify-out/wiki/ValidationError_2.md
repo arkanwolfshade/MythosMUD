@@ -29,32 +29,32 @@
 - test_handle_validation_error_security_sensitive() `EXTRACTED`
 
 ### contains
-- [server/exceptions.py](server-exceptions.py.md) `EXTRACTED`
+- server/exceptions.py `EXTRACTED`
 
 ### imports
 - [command_service.py](command_service.py.md) `EXTRACTED`
 - database.py `EXTRACTED`
 - players.py `EXTRACTED`
 - test_container_service.py `EXTRACTED`
-- [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
+- api/character_creation.py `EXTRACTED`
 - test_players_api_coverage.py `EXTRACTED`
 - test_command_factories_utility.py `EXTRACTED`
 - [test_movement_service.py](test_movement_service.py.md) `EXTRACTED`
-- spell_effects.py `EXTRACTED`
-- container_persistence.py `EXTRACTED`
+- [spell_effects.py](spell_effects.py.md) `EXTRACTED`
+- [container_persistence.py](container_persistence.py.md) `EXTRACTED`
 - test_container_persistence_extended_row_helpers.py `EXTRACTED`
-- test_command_parser.py `EXTRACTED`
+- [test_command_parser.py](test_command_parser.py.md) `EXTRACTED`
 - [inventory_command_helpers.py](inventory_command_helpers.py.md) `EXTRACTED`
 - player_service.py `EXTRACTED`
 - test_command_factories_inventory.py `EXTRACTED`
 - command_parser.py `EXTRACTED`
 - test_command_factories_exploration.py `EXTRACTED`
-- [test_database_helpers.py](test_database_helpers.py.md) `EXTRACTED`
-- test_database_extended.py `EXTRACTED`
+- test_database_helpers.py `EXTRACTED`
+- [test_database_extended.py](test_database_extended.py.md) `EXTRACTED`
 - test_exceptions.py `EXTRACTED`
 
 ### inherits
-- MythosMUDError `EXTRACTED`
+- [MythosMUDError](MythosMUDError.md) `EXTRACTED`
 
 ### method
 - .__init__() `EXTRACTED`

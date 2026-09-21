@@ -1,21 +1,17 @@
 # ExplorationService
 
-> 231 nodes
+> 109 nodes
 
 ## Key Concepts
 
 - **ExplorationService** (76 connections) — `server/services/exploration_service.py`
 - **maps.py** (66 connections) — `server/api/maps.py`
 - **test_maps.py** (53 connections) — `server/tests/unit/api/test_maps.py`
-- **test_exploration_service.py** (44 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **asyncio** (27 connections)
 - **MapZoneContext** (18 connections) — `server/api/map_helpers.py`
 - **_prepare_ascii_map_context()** (18 connections) — `server/api/maps.py`
 - **asyncio** (18 connections)
 - **get_ascii_map()** (16 connections) — `server/api/maps.py`
 - **get_ascii_minimap()** (16 connections) — `server/api/maps.py`
-- **exploration_service.py** (16 connections) — `server/services/exploration_service.py`
-- **CoordinateValidator** (13 connections) — `server/services/coordinate_validator.py`
 - **_apply_exploration_filter_if_needed()** (13 connections) — `server/api/maps.py`
 - **_run_set_map_origin()** (13 connections) — `server/api/maps.py`
 - **set_map_origin()** (13 connections) — `server/api/maps.py`
@@ -29,22 +25,26 @@
 - **SetOriginRequest** (9 connections) — `server/api/maps.py`
 - **_build_ascii_map_response()** (9 connections) — `server/api/maps.py`
 - **_build_ascii_minimap_response()** (9 connections) — `server/api/maps.py`
-- *... and 206 more nodes in this community*
+- **_get_current_room_id()** (9 connections) — `server/api/maps.py`
+- **_get_player_and_exploration_service()** (9 connections) — `server/api/maps.py`
+- **test_prepare_ascii_map_context_applies_exploration_filter()** (9 connections) — `server/tests/unit/api/test_maps.py`
+- **Request** (9 connections)
+- *... and 84 more nodes in this community*
 
 ## Relationships
 
-- [RoomService](RoomService.md) (29 shared connections)
-- [User](User.md) (25 shared connections)
+- [test_exploration_service.py](test_exploration_service.py.md) (35 shared connections)
+- [User](User.md) (26 shared connections)
+- [RoomService](RoomService.md) (23 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (16 shared connections)
-- [DatabaseError](DatabaseError.md) (15 shared connections)
-- [map_minimap.py](map_minimap.py.md) (11 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (8 shared connections)
-- [get_logger](get_logger.md) (7 shared connections)
+- [get_logger](get_logger.md) (11 shared connections)
+- [map_minimap.py](map_minimap.py.md) (10 shared connections)
+- [._get_room_uuid_by_stable_id](_get_room_uuid_by_stable_id.md) (7 shared connections)
 - [test_map_helpers.py](test_map_helpers.py.md) (6 shared connections)
+- [PlayerService](PlayerService.md) (5 shared connections)
+- [test_admin_auth_service.py](test_admin_auth_service.py.md) (5 shared connections)
 - [CoordinateGenerator](CoordinateGenerator.md) (4 shared connections)
-- [DatabaseManager](DatabaseManager.md) (4 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (4 shared connections)
-- [SecureBaseModel](SecureBaseModel.md) (3 shared connections)
+- [CoordinateValidator](CoordinateValidator.md) (4 shared connections)
 
 ## Source Files
 
@@ -52,16 +52,13 @@
 - `server/api/maps.py`
 - `server/schemas/maps/__init__.py`
 - `server/schemas/maps/map.py`
-- `server/services/coordinate_validator.py`
 - `server/services/exploration_service.py`
 - `server/tests/unit/api/test_maps.py`
-- `server/tests/unit/services/test_coordinate_validator.py`
-- `server/tests/unit/services/test_exploration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 571 (86%)
-- INFERRED: 91 (14%)
+- EXTRACTED: 372 (82%)
+- INFERRED: 84 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

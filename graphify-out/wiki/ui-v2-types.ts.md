@@ -1,10 +1,10 @@
 # ui-v2/types.ts
 
-> 102 nodes
+> 113 nodes
 
 ## Key Concepts
 
-- **ui-v2/types.ts** (85 connections) — `client/src/components/ui-v2/types.ts`
+- **ui-v2/types.ts** (84 connections) — `client/src/components/ui-v2/types.ts`
 - **eventHandlers/types.ts** (43 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
 - **stateUpdateUtils.ts** (43 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
 - **Room** (35 connections) — `client/src/components/ui-v2/types.ts`
@@ -17,42 +17,48 @@
 - **projector.ts** (22 connections) — `client/src/components/ui-v2/eventLog/projector.ts`
 - **useGameClientV2ContainerRefsAndBootstrap.ts** (22 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
 - **GameEvent** (21 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
-- **MythosTimeState** (20 connections) — `client/src/types/mythosTime.ts`
+- **messageHandlers.ts** (21 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
 - **eventHandlers/index.ts** (17 connections) — `client/src/components/ui-v2/eventHandlers/index.ts`
 - **useEventProcessing.test.ts** (15 connections) — `client/src/components/ui-v2/hooks/__tests__/useEventProcessing.test.ts`
 - **useGameConnectionManagement.ts** (15 connections) — `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
 - **EventHandlerContext** (14 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
+- **messageHandlers.test-utils.ts** (14 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts`
 - **stateUpdateUtils.test.ts** (14 connections) — `client/src/components/ui-v2/utils/__tests__/stateUpdateUtils.test.ts`
 - **useEventProcessing.ts** (13 connections) — `client/src/components/ui-v2/hooks/useEventProcessing.ts`
 - **useRefSynchronization.ts** (13 connections) — `client/src/components/ui-v2/hooks/useRefSynchronization.ts`
-- **eventLog/index.ts** (12 connections) — `client/src/components/ui-v2/eventLog/index.ts`
 - **projector.projectEvent.test.ts** (12 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.projectEvent.test.ts`
 - **GameStateUpdates** (10 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
 - **GameClientV2RefsBundle** (10 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
-- *... and 77 more nodes in this community*
+- *... and 88 more nodes in this community*
 
 ## Relationships
 
-- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (44 shared connections)
+- [useGameClientV2ContainerNetworkPhase.ts](useGameClientV2ContainerNetworkPhase.ts.md) (39 shared connections)
 - [GameClientV2.tsx](GameClientV2.tsx.md) (39 shared connections)
-- [projectorRoom.ts](projectorRoom.ts.md) (31 shared connections)
-- [HeaderBar.tsx](HeaderBar.tsx.md) (28 shared connections)
-- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (24 shared connections)
-- [health.ts](health.ts.md) (20 shared connections)
-- [PanelState](PanelState.md) (20 shared connections)
+- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (34 shared connections)
+- [projectorRoom.ts](projectorRoom.ts.md) (26 shared connections)
+- [roomHandlers.ts](roomHandlers.ts.md) (22 shared connections)
+- [health.ts](health.ts.md) (21 shared connections)
+- [PanelState](PanelState.md) (19 shared connections)
+- [HeaderBar.tsx](HeaderBar.tsx.md) (17 shared connections)
+- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (14 shared connections)
 - [CharacterInfoPanel.tsx](CharacterInfoPanel.tsx.md) (13 shared connections)
-- [messageHandlers.ts](messageHandlers.ts.md) (12 shared connections)
-- [GameClientV2MinimapSection.tsx](GameClientV2MinimapSection.tsx.md) (11 shared connections)
-- [roomHandlers.ts](roomHandlers.ts.md) (10 shared connections)
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (10 shared connections)
+- [PanelPosition](PanelPosition.md) (7 shared connections)
+- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (6 shared connections)
 
 ## Source Files
 
 - `client/src/components/ui-v2/GameClientV2.tsx`
 - `client/src/components/ui-v2/GameClientV2AuxiliaryPanels.tsx`
 - `client/src/components/ui-v2/__tests__/GameClientV2.test.tsx`
+- `client/src/components/ui-v2/eventHandlers/__tests__/handleChatMessage.test.ts`
+- `client/src/components/ui-v2/eventHandlers/__tests__/handleCommandResponse.test.ts`
+- `client/src/components/ui-v2/eventHandlers/__tests__/handleRoomMessage.test.ts`
+- `client/src/components/ui-v2/eventHandlers/__tests__/handleSystem.test.ts`
 - `client/src/components/ui-v2/eventHandlers/__tests__/index.test.ts`
+- `client/src/components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts`
 - `client/src/components/ui-v2/eventHandlers/index.ts`
+- `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
 - `client/src/components/ui-v2/eventHandlers/types.ts`
 - `client/src/components/ui-v2/eventLog/__tests__/eventStore.test.ts`
 - `client/src/components/ui-v2/eventLog/__tests__/projector.messages.test.ts`
@@ -62,16 +68,10 @@
 - `client/src/components/ui-v2/eventLog/index.ts`
 - `client/src/components/ui-v2/eventLog/projector.ts`
 - `client/src/components/ui-v2/eventLog/projectorConstants.ts`
-- `client/src/components/ui-v2/eventLog/types.ts`
-- `client/src/components/ui-v2/hooks/__tests__/useEventProcessing.test.ts`
-- `client/src/components/ui-v2/hooks/useEventProcessing.ts`
-- `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
-- `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
-- `client/src/components/ui-v2/hooks/usePlayerStatusEffects.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 598 (100%)
+- EXTRACTED: 623 (100%)
 - INFERRED: 2 (0%)
 - AMBIGUOUS: 0 (0%)
 

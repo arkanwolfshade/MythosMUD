@@ -33,8 +33,10 @@
 
 ## Relationships
 
-- [NATSRetryHandler](NATSRetryHandler.md) (10 shared connections)
+- [test_message_filtering.py](test_message_filtering.py.md) (5 shared connections)
 - [test_nats_message_handler.py](test_nats_message_handler.py.md) (4 shared connections)
+- [nats_message_handler_processing.py](nats_message_handler_processing.py.md) (3 shared connections)
+- [NATSMessageHandler](NATSMessageHandler.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [send_game_event](send_game_event.md) (1 shared connections)
 

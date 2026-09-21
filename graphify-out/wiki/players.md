@@ -1,19 +1,16 @@
 # players
 
-> 22 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **players** (22 connections) — `db/schema.sql`
+- **players** (20 connections) — `db/schema.sql`
 - **player_skills** (3 connections) — `db/schema.sql`
 - **player_spells** (3 connections) — `db/schema.sql`
 - **quest_definitions** (3 connections) — `db/schema.sql`
 - **quest_instances** (3 connections) — `db/schema.sql`
 - **skill_use_log** (3 connections) — `db/schema.sql`
 - **skills** (3 connections) — `db/schema.sql`
-- **corruption_adjustment_log.sql** (2 connections) — `db/corruption_adjustment_log.sql`
-- **corruption_adjustment_log** (2 connections) — `db/corruption_adjustment_log.sql`
-- **corruption_cooldowns** (2 connections) — `db/corruption_adjustment_log.sql`
 - **corruption_adjustment_log** (2 connections) — `db/schema.sql`
 - **corruption_cooldowns** (2 connections) — `db/schema.sql`
 - **lucidity_adjustment_log** (2 connections) — `db/schema.sql`
@@ -37,12 +34,11 @@
 
 ## Source Files
 
-- `db/corruption_adjustment_log.sql`
 - `db/schema.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (100%)
+- EXTRACTED: 43 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

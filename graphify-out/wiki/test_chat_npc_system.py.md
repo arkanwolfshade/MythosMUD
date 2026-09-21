@@ -1,6 +1,6 @@
 # test_chat_npc_system.py
 
-> 113 nodes
+> 101 nodes
 
 ## Key Concepts
 
@@ -27,24 +27,24 @@
 - **notify_quest_started()** (8 connections) — `server/game/quest/quest_chat_notify.py`
 - **.initialize()** (7 connections) — `server/container/bundles/chat.py`
 - **npc_sender_id()** (7 connections) — `server/game/chat_npc_system.py`
-- **emit_quest_npc_say()** (7 connections) — `server/game/quest/quest_chat_notify.py`
 - **title_from_quest_result()** (7 connections) — `server/game/quest/quest_chat_notify.py`
-- *... and 88 more nodes in this community*
+- **test_deliver_npc_room_speech_uses_registered_name()** (7 connections) — `server/tests/unit/game/test_chat_npc_system.py`
+- *... and 76 more nodes in this community*
 
 ## Relationships
 
-- [chat_service.py](chat_service.py.md) (18 shared connections)
-- [QuestService](QuestService.md) (13 shared connections)
-- [quest_commands.py](quest_commands.py.md) (9 shared connections)
-- [NPCBase](NPCBase.md) (8 shared connections)
-- [admin_hallucinate_command.py](admin_hallucinate_command.py.md) (7 shared connections)
+- [ChatMessage](ChatMessage.md) (18 shared connections)
+- [event_types.py](event_types.py.md) (12 shared connections)
+- [quest_commands.py](quest_commands.py.md) (11 shared connections)
+- [QuestService](QuestService.md) (7 shared connections)
+- [hallucinations.py](hallucinations.py.md) (6 shared connections)
+- [quest_service.py](quest_service.py.md) (6 shared connections)
+- [CorruptionTier](CorruptionTier.md) (5 shared connections)
 - [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (5 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
 - [ChatService](ChatService.md) (3 shared connections)
 - [test_container_bundles.py](test_container_bundles.py.md) (3 shared connections)
-- [corruption_service.py](corruption_service.py.md) (3 shared connections)
 - [talk_command.py](talk_command.py.md) (3 shared connections)
-- [CorruptionTier](CorruptionTier.md) (2 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 
 ## Source Files
 
@@ -56,8 +56,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 296 (97%)
-- INFERRED: 8 (3%)
+- EXTRACTED: 279 (98%)
+- INFERRED: 6 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

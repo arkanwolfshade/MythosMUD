@@ -1,11 +1,12 @@
 # lifespan_startup.py
 
-> 98 nodes
+> 100 nodes
 
 ## Key Concepts
 
 - **lifespan_startup.py** (65 connections) — `server/app/lifespan_startup.py`
 - **test_lifespan_startup.py** (42 connections) — `server/tests/unit/app/test_lifespan_startup.py`
+- **get_mythos_chronicle()** (26 connections) — `server/time/time_service.py`
 - **asyncio** (18 connections)
 - **FastAPI** (16 connections)
 - **initialize_container_and_legacy_services()** (15 connections) — `server/app/lifespan_startup.py`
@@ -28,33 +29,33 @@
 - **nats_is_connected()** (5 connections) — `server/app/lifespan_protocols.py`
 - **_ensure_room_cache_before_npc_startup()** (5 connections) — `server/app/lifespan_startup.py`
 - **_log_npc_startup_errors()** (5 connections) — `server/app/lifespan_startup.py`
-- **_start_nats_message_handler()** (5 connections) — `server/app/lifespan_startup.py`
-- *... and 73 more nodes in this community*
+- *... and 75 more nodes in this community*
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (16 shared connections)
-- [get_logger](get_logger.md) (14 shared connections)
-- [lifespan.py](lifespan.py.md) (7 shared connections)
-- [._bind_event_type](_bind_event_type.md) (4 shared connections)
-- [lifespan_protocols.py](lifespan_protocols.py.md) (3 shared connections)
-- [CombatService](CombatService.md) (3 shared connections)
-- [NPCSpawningService](NPCSpawningService.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (17 shared connections)
+- [NPCDefinition](NPCDefinition.md) (14 shared connections)
+- [get_logger](get_logger.md) (11 shared connections)
+- [lifespan.py](lifespan.py.md) (9 shared connections)
+- [MythosChronicle](MythosChronicle.md) (5 shared connections)
+- [lifespan_protocols.py](lifespan_protocols.py.md) (4 shared connections)
+- [test_lifespan_event_subscriptions.py](test_lifespan_event_subscriptions.py.md) (4 shared connections)
+- [test_player_death_service.py](test_player_death_service.py.md) (3 shared connections)
 - [LucidityService](LucidityService.md) (3 shared connections)
-- [HolidayService](HolidayService.md) (3 shared connections)
-- [MythosChronicle](MythosChronicle.md) (3 shared connections)
+- [MythosTimeEventConsumer](MythosTimeEventConsumer.md) (3 shared connections)
 - [npc_database.py](npc_database.py.md) (3 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (3 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (3 shared connections)
 
 ## Source Files
 
 - `server/app/lifespan_protocols.py`
 - `server/app/lifespan_startup.py`
 - `server/tests/unit/app/test_lifespan_startup.py`
+- `server/time/time_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 278 (98%)
+- EXTRACTED: 302 (98%)
 - INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 

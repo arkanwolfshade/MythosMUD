@@ -1,6 +1,6 @@
 # command_result_text
 
-> 94 nodes
+> 97 nodes
 
 ## Key Concepts
 
@@ -12,6 +12,7 @@
 - **test_inventory_commands_pickup.py** (17 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
 - **handle_put_command()** (16 connections) — `server/commands/inventory_put_command.py`
 - **asyncio** (14 connections)
+- **handle_inventory_command()** (13 connections) — `server/commands/inventory_commands.py`
 - **_put_resolve_container_id()** (13 connections) — `server/commands/inventory_put_command.py`
 - **_put_transfer_finish()** (13 connections) — `server/commands/inventory_put_command.py`
 - **asyncio** (12 connections)
@@ -28,27 +29,27 @@
 - **sample_floor_item_stack()** (6 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
 - **_pickup_with_persist_patch()** (6 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
 - **test_handle_pickup_command_invalid_index()** (6 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
-- **test_handle_pickup_command_no_room_manager()** (6 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
-- *... and 69 more nodes in this community*
+- *... and 72 more nodes in this community*
 
 ## Relationships
 
-- [inventory_equip_command.py](inventory_equip_command.py.md) (22 shared connections)
-- [inventory_pickup_command.py](inventory_pickup_command.py.md) (17 shared connections)
-- [Player](Player.md) (15 shared connections)
-- [persist_player](persist_player.md) (3 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (3 shared connections)
-- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (3 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (3 shared connections)
-- [command_service.py](command_service.py.md) (3 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
+- [Player](Player.md) (21 shared connections)
+- [inventory_pickup_command.py](inventory_pickup_command.py.md) (18 shared connections)
+- [inventory_equip_command.py](inventory_equip_command.py.md) (13 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (5 shared connections)
+- [InventoryService](InventoryService.md) (4 shared connections)
+- [AliasStorage](AliasStorage.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [command_service.py](command_service.py.md) (2 shared connections)
+- [container_helpers_inventory_display.py](container_helpers_inventory_display.py.md) (2 shared connections)
+- [container_helpers_inventory_ops.py](container_helpers_inventory_ops.py.md) (2 shared connections)
+- [container_helpers_inventory_find.py](container_helpers_inventory_find.py.md) (2 shared connections)
+- [inventory_unequip_command.py](inventory_unequip_command.py.md) (2 shared connections)
 
 ## Source Files
 
 - `server/commands/inventory_command_helpers.py`
+- `server/commands/inventory_commands.py`
 - `server/commands/inventory_put_command.py`
 - `server/tests/unit/commands/inventory_commands_test_support.py`
 - `server/tests/unit/commands/test_inventory_commands.py`
@@ -57,8 +58,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 243 (85%)
-- INFERRED: 42 (15%)
+- EXTRACTED: 251 (85%)
+- INFERRED: 44 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

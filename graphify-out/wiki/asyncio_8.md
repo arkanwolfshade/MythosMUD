@@ -1,51 +1,34 @@
 # asyncio
 
-> 21 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **asyncio** (26 connections)
-- **test_get_player_by_name_database_error()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_list_players_database_error()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_save_player_database_error()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_delete_player_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_delete_player_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_get_player_by_id_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_get_player_by_user_id_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_save_player_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_soft_delete_player_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_update_player_last_active_with_timestamp()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test get_player_by_name handles database errors.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test save_player successfully saves player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test save_player handles database errors.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test list_players handles database errors.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test get_player_by_id returns None when player not found.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test get_player_by_user_id returns None when no players.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test soft_delete_player returns False when player not found.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test delete_player successfully deletes player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test delete_player returns False when player not found.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test update_player_last_active with provided timestamp.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **asyncio** (6 connections)
+- **test_ensure_room_cache_loaded_database_error()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_already_loaded()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_concurrent_load()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_os_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded returns early when cache is already loaded.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles concurrent load scenario (double-check…** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles DatabaseError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles OSError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles RuntimeError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- [test_player_repository.py](test_player_repository.py.md) (12 shared connections)
-- [_make_mock_row](_make_mock_row.md) (7 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
-- [_ScalarResult](_ScalarResult.md) (2 shared connections)
-- [test_get_player_by_user_id_success](test_get_player_by_user_id_success.md) (1 shared connections)
-- [test_list_players_empty](test_list_players_empty.md) (1 shared connections)
-- [test_save_player_with_bool_is_admin](test_save_player_with_bool_is_admin.md) (1 shared connections)
-- [test_save_players_success](test_save_players_success.md) (1 shared connections)
-- [test_update_player_last_active_success](test_update_player_last_active_success.md) (1 shared connections)
+- [test_async_persistence_room_loading.py](test_async_persistence_room_loading.py.md) (6 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (94%)
-- INFERRED: 3 (6%)
+- EXTRACTED: 16 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

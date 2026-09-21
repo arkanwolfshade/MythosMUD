@@ -1,6 +1,6 @@
 # combat_loader.py
 
-> 59 nodes
+> 61 nodes
 
 ## Key Concepts
 
@@ -17,34 +17,34 @@
 - **handle_flee_command()** (8 connections) — `server/commands/combat_loader.py`
 - **handle_taunt_command()** (8 connections) — `server/commands/combat_loader.py`
 - **_mock_app_with_container()** (8 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **player_combat_service()** (7 connections) — `server/tests/unit/services/test_player_combat_service.py`
 - **format_combat_status()** (6 connections) — `server/commands/combat_helpers.py`
 - **get_combat_target()** (6 connections) — `server/commands/combat_helpers.py`
 - **test_combat_helpers.py** (6 connections) — `server/tests/unit/commands/test_combat_helpers.py`
 - **asyncio** (6 connections)
+- **.item_prototype_registry()** (5 connections) — `server/commands/combat_handler.py`
+- **.combat_service()** (4 connections) — `server/commands/combat_handler.py`
 - **test_handle_attack_command_delegates()** (4 connections) — `server/tests/unit/commands/test_combat_loader.py`
 - **test_handle_flee_command_delegates()** (4 connections) — `server/tests/unit/commands/test_combat_loader.py`
 - **test_handle_kick_command_sets_type()** (4 connections) — `server/tests/unit/commands/test_combat_loader.py`
 - **test_handle_punch_command_sets_type()** (4 connections) — `server/tests/unit/commands/test_combat_loader.py`
 - **test_handle_strike_command_sets_type()** (4 connections) — `server/tests/unit/commands/test_combat_loader.py`
 - **test_handle_taunt_command_delegates()** (4 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **.movement_service()** (3 connections) — `server/commands/combat_handler.py`
-- *... and 34 more nodes in this community*
+- *... and 36 more nodes in this community*
 
 ## Relationships
 
-- [CombatCommandHandler](CombatCommandHandler.md) (12 shared connections)
+- [CombatCommandHandler](CombatCommandHandler.md) (9 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
 - [AliasStorage](AliasStorage.md) (7 shared connections)
-- [command_service.py](command_service.py.md) (5 shared connections)
 - [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (4 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (4 shared connections)
+- [command_service.py](command_service.py.md) (4 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
 - [test_flee_command.py](test_flee_command.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (1 shared connections)
-- [WebSocketRequestContext](WebSocketRequestContext.md) (1 shared connections)
-- [PlayerSchemaConverter](PlayerSchemaConverter.md) (1 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (1 shared connections)
-- [test_go_command.py](test_go_command.py.md) (1 shared connections)
+- [CombatService](CombatService.md) (2 shared connections)
+- [test_player_schema_converter_weapon.py](test_player_schema_converter_weapon.py.md) (2 shared connections)
+- [.state](state.md) (1 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
 
 ## Source Files
 
@@ -54,11 +54,10 @@
 - `server/commands/combat_loader.py`
 - `server/tests/unit/commands/test_combat_helpers.py`
 - `server/tests/unit/commands/test_combat_loader.py`
-- `server/tests/unit/services/test_player_combat_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 139 (85%)
+- EXTRACTED: 140 (85%)
 - INFERRED: 25 (15%)
 - AMBIGUOUS: 0 (0%)
 

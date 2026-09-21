@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **properties** (4 connections) — `schemas/items/item_prototype.schema.json`
-- **equipmentMetadata** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **armorMetadata** (4 connections) — `schemas/items/item_prototype.schema.json`
 - **coverage** (4 connections) — `schemas/items/item_prototype.schema.json`
 - **notes** (4 connections) — `schemas/items/item_prototype.schema.json`
 - **properties** (3 connections) — `schemas/items/item_prototype.schema.json`
@@ -14,10 +14,10 @@
 - **items** (2 connections) — `schemas/items/item_prototype.schema.json`
 - **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
 - **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
 - **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
 - **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
 - **type** (1 connections) — `schemas/items/item_prototype.schema.json`
 - **$ref** (1 connections) — `schemas/items/item_prototype.schema.json`
 - **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`

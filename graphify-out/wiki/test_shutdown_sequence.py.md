@@ -33,12 +33,11 @@
 
 ## Relationships
 
+- [get_logger](get_logger.md) (5 shared connections)
 - [admin_shutdown_command.py](admin_shutdown_command.py.md) (3 shared connections)
 - [DatabaseError](DatabaseError.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
 - [test_shutdown_process_termination.py](test_shutdown_process_termination.py.md) (2 shared connections)
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (2 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
 
 ## Source Files
 

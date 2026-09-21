@@ -1,6 +1,6 @@
 # SecureBaseModel
 
-> 191 nodes
+> 182 nodes
 
 ## Key Concepts
 
@@ -29,22 +29,22 @@
 - **InviteBase** (10 connections) — `server/schemas/auth/invite.py`
 - **SelectCharacterRequest** (10 connections) — `server/schemas/players/player_requests.py`
 - **InviteUpdate** (9 connections) — `server/schemas/auth/invite.py`
-- *... and 166 more nodes in this community*
+- *... and 157 more nodes in this community*
 
 ## Relationships
 
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (31 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (27 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (22 shared connections)
-- [User](User.md) (18 shared connections)
+- [PlayerService](PlayerService.md) (41 shared connections)
+- [User](User.md) (17 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (15 shared connections)
+- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (15 shared connections)
 - [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (14 shared connections)
+- [test_admin_auth_service.py](test_admin_auth_service.py.md) (14 shared connections)
+- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) (12 shared connections)
 - [RoomService](RoomService.md) (11 shared connections)
-- [talk_command.py](talk_command.py.md) (9 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (8 shared connections)
-- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (7 shared connections)
 - [subject_controller.py](subject_controller.py.md) (7 shared connections)
-- [ErrorType](ErrorType.md) (5 shared connections)
-- [ExplorationService](ExplorationService.md) (3 shared connections)
+- [list_invites](list_invites.md) (6 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [endpoints.py](endpoints.py.md) (5 shared connections)
 
 ## Source Files
 
@@ -52,22 +52,22 @@
 - `server/schemas/auth/__init__.py`
 - `server/schemas/auth/invite.py`
 - `server/schemas/auth/user.py`
-- `server/schemas/dialogue/dialogue_tree.py`
 - `server/schemas/players/player_effects.py`
 - `server/schemas/players/player_requests.py`
 - `server/schemas/shared/base.py`
-- `server/tests/unit/api/test_npc_definitions_api.py`
+- `server/tests/unit/api/admin/test_subject_controller.py`
+- `server/tests/unit/api/test_container_models.py`
 - `server/tests/unit/api/test_npc_instances_api.py`
 - `server/tests/unit/api/test_player_effects_endpoints.py`
-- `server/tests/unit/schemas/test_dialogue_tree.py`
 - `server/tests/unit/schemas/test_invite_schemas.py`
 - `server/tests/unit/schemas/test_player_requests.py`
+- `server/tests/unit/schemas/test_room_write.py`
 - `server/tests/unit/schemas/test_user_schemas.py`
 
 ## Audit Trail
 
-- EXTRACTED: 519 (97%)
-- INFERRED: 18 (3%)
+- EXTRACTED: 504 (97%)
+- INFERRED: 17 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

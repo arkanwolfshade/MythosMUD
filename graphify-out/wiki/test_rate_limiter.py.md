@@ -1,6 +1,6 @@
 # test_rate_limiter.py
 
-> 88 nodes
+> 90 nodes
 
 ## Key Concepts
 
@@ -12,6 +12,7 @@
 - **.get_player_stats()** (5 connections) — `server/services/rate_limiter.py`
 - **rate_limiter()** (5 connections) — `server/tests/unit/services/test_rate_limiter.py`
 - **.get_remaining_messages()** (4 connections) — `server/services/rate_limiter.py`
+- **.__init__()** (4 connections) — `server/services/rate_limiter.py`
 - **.record_message()** (4 connections) — `server/services/rate_limiter.py`
 - **test_rate_limiter_initialization()** (4 connections) — `server/tests/unit/services/test_rate_limiter.py`
 - **test_rate_limiter_legacy_config()** (4 connections) — `server/tests/unit/services/test_rate_limiter.py`
@@ -28,13 +29,12 @@
 - **test_cleanup_old_entries()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
 - **test_get_limit_default()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
 - **test_get_limit_existing()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_player_stats()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- *... and 63 more nodes in this community*
+- *... and 65 more nodes in this community*
 
 ## Relationships
 
+- [connection_manager.py](connection_manager.py.md) (4 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
-- [connection_manager.py](connection_manager.py.md) (3 shared connections)
 - [test_chat_logger.py](test_chat_logger.py.md) (1 shared connections)
 
 ## Source Files
@@ -44,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 105 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 107 (96%)
+- INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

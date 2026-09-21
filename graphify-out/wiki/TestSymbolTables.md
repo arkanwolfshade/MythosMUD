@@ -19,7 +19,7 @@
 
 ## Relationships
 
-- [ascii_map_renderer.py](ascii_map_renderer.py.md) (1 shared connections)
+- [AsciiMapRenderer](AsciiMapRenderer.md) (1 shared connections)
 
 ## Source Files
 

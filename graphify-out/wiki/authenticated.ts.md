@@ -1,14 +1,14 @@
 # authenticated.ts
 
-> 36 nodes
+> 35 nodes
 
 ## Key Concepts
 
 - **authenticated.ts** (21 connections) — `client/tests/e2e/di-migration/fixtures/authenticated.ts`
 - **commands.ts** (12 connections) — `client/tests/e2e/di-migration/fixtures/commands.ts`
 - **safeWait()** (11 connections) — `client/tests/e2e/di-migration/fixtures/wait.ts`
-- **constants.ts** (10 connections) — `client/tests/e2e/di-migration/constants.ts`
 - **executeCommand()** (9 connections) — `client/tests/e2e/di-migration/fixtures/commands.ts`
+- **constants.ts** (9 connections) — `client/tests/e2e/di-migration/constants.ts`
 - **wait.ts** (9 connections) — `client/tests/e2e/di-migration/fixtures/wait.ts`
 - **suite-01-core-services.spec.ts** (8 connections) — `client/tests/e2e/di-migration/suite-01-core-services.spec.ts`
 - **authenticatedTest** (7 connections) — `client/tests/e2e/di-migration/fixtures/authenticated.ts`
@@ -29,7 +29,7 @@
 - **waitForAnyResponse()** (2 connections) — `client/tests/e2e/di-migration/fixtures/commands.ts`
 - **waitForSpecificResponse()** (2 connections) — `client/tests/e2e/di-migration/fixtures/commands.ts`
 - **detectStatusOutput()** (2 connections) — `client/tests/e2e/di-migration/fixtures/status-output.ts`
-- *... and 11 more nodes in this community*
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
@@ -52,7 +52,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 88 (100%)
+- EXTRACTED: 87 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

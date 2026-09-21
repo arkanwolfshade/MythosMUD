@@ -1,43 +1,56 @@
 # test_connection_helpers_impl.py
 
-> 13 nodes
+> 89 nodes
 
 ## Key Concepts
 
 - **test_connection_helpers_impl.py** (37 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **convert_uuids_to_strings()** (18 connections) — `server/realtime/connection_helpers.py`
+- **send_personal_message_old_impl()** (12 connections) — `server/realtime/connection_helpers.py`
+- **asyncio** (12 connections)
+- **_send_to_websockets()** (11 connections) — `server/realtime/connection_helpers.py`
+- **_optimize_payload()** (10 connections) — `server/realtime/connection_helpers.py`
+- **Any** (10 connections)
+- **test_connection_helpers.py** (9 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
 - **_update_delivery_status()** (8 connections) — `server/realtime/connection_helpers.py`
-- **mock_manager()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_update_delivery_status_failed()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_update_delivery_status_no_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_update_delivery_status_success()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **fixture** (1 connections)
-- **Update final delivery status based on connection results. Args:…** (1 connections) — `server/realtime/connection_helpers.py`
-- **Unit tests for connection helpers implementation functions. Tests the…** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **Test _update_delivery_status() when no connection attempts.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **Test _update_delivery_status() updates status for success.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **Test _update_delivery_status() updates status for failure.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **mark_player_seen_impl()** (7 connections) — `server/realtime/connection_helpers.py`
+- **broadcast_global_event_impl()** (6 connections) — `server/realtime/connection_helpers.py`
+- **broadcast_room_event_impl()** (6 connections) — `server/realtime/connection_helpers.py`
+- **_queue_message_if_needed()** (6 connections) — `server/realtime/connection_helpers.py`
+- **test_send_to_websockets_websocket_error()** (5 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **.mark_player_seen()** (4 connections) — `server/realtime/connection_manager.py`
+- **test_broadcast_global_event_impl()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_broadcast_room_event_impl()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_handle_new_login_impl()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_handle_new_login_impl_cancels_orphan_rest_countdown()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_optimize_payload_optimization_failure()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_send_personal_message_old_impl()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_send_personal_message_old_impl_no_connections()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_send_to_websockets()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_send_to_websockets_inactive_connection()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_send_to_websockets_no_connections()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- *... and 64 more nodes in this community*
 
 ## Relationships
 
-- [asyncio](asyncio.md) (8 shared connections)
-- [send_personal_message_old_impl](send_personal_message_old_impl.md) (6 shared connections)
-- [convert_uuids_to_strings](convert_uuids_to_strings.md) (5 shared connections)
-- [Any](Any.md) (4 shared connections)
-- [_optimize_payload](_optimize_payload.md) (4 shared connections)
-- [handle_new_login_impl](handle_new_login_impl.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [mark_player_seen_impl](mark_player_seen_impl.md) (2 shared connections)
+- [get_logger](get_logger.md) (15 shared connections)
+- [ConnectionManager](ConnectionManager.md) (4 shared connections)
+- [connection_manager.py](connection_manager.py.md) (3 shared connections)
+- [build_event](build_event.md) (2 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (2 shared connections)
+- [PayloadOptimizer](PayloadOptimizer.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/connection_helpers.py`
+- `server/realtime/connection_manager.py`
+- `server/tests/unit/realtime/test_connection_helpers.py`
 - `server/tests/unit/realtime/test_connection_helpers_impl.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 165 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

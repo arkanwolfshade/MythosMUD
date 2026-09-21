@@ -1,6 +1,6 @@
 # test_mp_regeneration_service.py
 
-> 64 nodes
+> 60 nodes
 
 ## Key Concepts
 
@@ -11,8 +11,6 @@
 - **mock_player()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 - **mock_player_service()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 - **sample_player_id()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_mp_regeneration_service_init()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_mp_regeneration_service_init_custom_rate()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 - **test_process_tick_regeneration_at_max()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 - **test_process_tick_regeneration_calculates_max_from_power()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 - **test_process_tick_regeneration_fractional_accumulation()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
@@ -29,13 +27,14 @@
 - **test_restore_mp_from_meditation_higher_than_rest()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 - **test_restore_mp_from_meditation_player_not_found()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 - **test_restore_mp_from_meditation_restores_mp()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- *... and 39 more nodes in this community*
+- **test_restore_mp_from_rest_at_max()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_restore_mp_from_rest_calculates_max_from_power()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [lifespan_magic.py](lifespan_magic.py.md) (4 shared connections)
+- [MPRegenerationService](MPRegenerationService.md) (5 shared connections)
 - [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 89 (98%)
+- EXTRACTED: 85 (98%)
 - INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 

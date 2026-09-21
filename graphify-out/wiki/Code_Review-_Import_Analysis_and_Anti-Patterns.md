@@ -12,9 +12,9 @@
 - **Critical Issues Found** (3 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
 - **Import Pattern Analysis** (3 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
 - **get_logger** (3 connections) — `docs/LOGGING_BEST_PRACTICES.md`
+- **Logging Best Practices Pointer** (3 connections) — `docs/LOGGING_BEST_PRACTICES.md`
 - **Best Practices Analysis** (2 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
 - **F-String Logging Anti-Pattern** (2 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Relative vs Absolute Import Policy** (2 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
 - **Structured Key-Value Logging** (2 connections) — `docs/LOGGING_BEST_PRACTICES.md`
 - **1. **Import Inconsistency in `server/persistence.py`**** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
 - **2. **Import Organization Pattern**** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
@@ -33,7 +33,9 @@
 
 ## Relationships
 
-- [Async Audit Executive Summary](Async_Audit_Executive_Summary.md) (2 shared connections)
+- [Async Audit Executive Summary](Async_Audit_Executive_Summary.md) (1 shared connections)
+- [Async Persistence Migration Tracker](Async_Persistence_Migration_Tracker.md) (1 shared connections)
+- [packages/README.md](packages-README.md.md) (1 shared connections)
 - [DOCUMENTATION_AUDIT.md](DOCUMENTATION_AUDIT.md.md) (1 shared connections)
 
 ## Source Files
@@ -44,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 30 (97%)
+- EXTRACTED: 31 (97%)
 - INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 

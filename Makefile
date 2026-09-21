@@ -64,7 +64,7 @@ help:
 	@echo "  basedpyright    - Run the no-Any gate against .basedpyright/baseline.json (#784)"
 	@echo "  typecheck       - Run both type checkers (mypy + basedpyright)"
 	@echo "  any-report      - Show remaining Any debt by directory and suppressions by category"
-	@echo "  vulture         - Dead code check (server + vulture_allowlist; same as CI)"
+	@echo "  vulture         - Dead code check (server; same as CI)"
 	@echo ""
 	@echo "Codacy Tools (Python):"
 	@echo "  bandit          - Python security linter"
@@ -231,7 +231,7 @@ quality-fragmentation-guard:
 	$(PYTHON) scripts/run_quality_fragmentation_guard.py
 
 # CRITICAL: CI runs the same command (.github/workflows/ci.yml "Dead code check (vulture)")
-# Config: pyproject.toml [tool.vulture], allowlist: vulture_allowlist.py
+# Config: pyproject.toml [tool.vulture]
 vulture:
 	$(UV) vulture
 

@@ -26,9 +26,9 @@
 
 ## Relationships
 
-- [User](User.md) (4 shared connections)
+- [endpoints.py](endpoints.py.md) (3 shared connections)
+- [User](User.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [Player](Player.md) (1 shared connections)
 
 ## Source Files
 

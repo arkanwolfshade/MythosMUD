@@ -1,6 +1,6 @@
 # test_command_moderation.py
 
-> 91 nodes
+> 101 nodes
 
 ## Key Concepts
 
@@ -12,10 +12,12 @@
 - **AddAdminCommand** (10 connections) — `server/models/command_moderation.py`
 - **UnmuteCommand** (10 connections) — `server/models/command_moderation.py`
 - **UnmuteGlobalCommand** (10 connections) — `server/models/command_moderation.py`
+- **validate_reason_content()** (10 connections) — `server/validators/security_validator.py`
 - **MutesCommand** (8 connections) — `server/models/command_moderation.py`
 - **field_validator** (8 connections)
 - **.validate_player_name_field()** (4 connections) — `server/models/command_moderation.py`
 - **.validate_player_name_field()** (4 connections) — `server/models/command_moderation.py`
+- **.validate_reason()** (4 connections) — `server/models/command_moderation.py`
 - **.validate_player_name_field()** (4 connections) — `server/models/command_moderation.py`
 - **.validate_reason()** (4 connections) — `server/models/command_moderation.py`
 - **.validate_player_name_field()** (4 connections) — `server/models/command_moderation.py`
@@ -27,26 +29,26 @@
 - **test_admin_command_subcommand_max_length()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
 - **test_admin_command_subcommand_min_length()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
 - **test_admin_command_validate_subcommand_case_insensitive()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
-- **test_admin_command_validate_subcommand_invalid()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
-- **test_admin_command_validate_subcommand_valid()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
-- *... and 66 more nodes in this community*
+- *... and 76 more nodes in this community*
 
 ## Relationships
 
-- [command.py](command.py.md) (16 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (11 shared connections)
+- [command.py](command.py.md) (17 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (10 shared connections)
 - [BaseCommand](BaseCommand.md) (8 shared connections)
 - [ModerationCommandFactory](ModerationCommandFactory.md) (7 shared connections)
-- [RoomService](RoomService.md) (1 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 
 ## Source Files
 
 - `server/models/command_moderation.py`
 - `server/tests/unit/models/test_command_moderation.py`
+- `server/tests/unit/validators/test_security_validator.py`
+- `server/validators/security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 168 (96%)
+- EXTRACTED: 183 (96%)
 - INFERRED: 7 (4%)
 - AMBIGUOUS: 0 (0%)
 

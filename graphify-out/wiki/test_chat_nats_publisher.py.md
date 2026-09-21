@@ -33,14 +33,15 @@
 
 ## Relationships
 
-- [chat_service.py](chat_service.py.md) (15 shared connections)
-- [NATSError](NATSError.md) (6 shared connections)
+- [ChatMessage](ChatMessage.md) (15 shared connections)
 - [test_chat_validator.py](test_chat_validator.py.md) (5 shared connections)
 - [test_chat_npc_system.py](test_chat_npc_system.py.md) (5 shared connections)
+- [NATSPublishError](NATSPublishError.md) (4 shared connections)
 - [test_chat_pose_helpers.py](test_chat_pose_helpers.py.md) (3 shared connections)
 - [test_room_utils.py](test_room_utils.py.md) (2 shared connections)
-- [SubjectValidator](SubjectValidator.md) (2 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [NATSError](NATSError.md) (2 shared connections)
 - [ChatService](ChatService.md) (1 shared connections)
 
 ## Source Files

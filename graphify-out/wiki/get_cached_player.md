@@ -34,7 +34,7 @@
 
 - [catatonia_check.py](catatonia_check.py.md) (5 shared connections)
 - [test_logout_commands.py](test_logout_commands.py.md) (5 shared connections)
-- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (1 shared connections)
+- [.state](state.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,62 +1,59 @@
 # multiplayer-colocated.ts
 
-> 41 nodes
+> 30 nodes
 
 ## Key Concepts
 
 - **multiplayer-colocated.ts** (42 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- **multiplayer-ready.ts** (29 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
-- **multiplayer-contexts.ts** (24 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
-- **ensurePlayersInSameRoom()** (20 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- **reopenPlayerPageIfClosed()** (18 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
-- **reopenClosedPage()** (11 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
 - **resyncE2ePlayersAfterDatabaseReset()** (11 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
 - **executeCommandTrusted()** (10 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **pages/index.ts** (10 connections) — `client/tests/e2e/runtime/pages/index.ts`
 - **runCoLocateTeleportAttempt()** (8 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- **createInstrumentedContext()** (7 connections) — `client/tests/e2e/runtime/fixtures/e2e-browser-helpers.ts`
+- **CharacterSelectionPage** (7 connections) — `client/tests/e2e/runtime/pages/CharacterSelectionPage.ts`
+- **MotdPage** (7 connections) — `client/tests/e2e/runtime/pages/MotdPage.ts`
 - **ensureMultiplayerReadyForCoLocate()** (7 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
 - **resetE2ePlayerRoomsInDatabase()** (7 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- **assertPlayerAlive()** (7 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **e2e-browser-helpers.ts** (7 connections) — `client/tests/e2e/runtime/fixtures/e2e-browser-helpers.ts`
-- **assertNoRestDisconnectPollution()** (6 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **isPageConnected()** (6 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **multiplayer-browser-window.d.ts** (6 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-window.d.ts`
-- **rememberPageSession()** (5 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **CharacterSelectionPage.ts** (6 connections) — `client/tests/e2e/runtime/pages/CharacterSelectionPage.ts`
 - **throwOtherPlayersNotSeen()** (5 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- **ensureForegroundPlayerPlayable()** (5 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
+- **.selectCharacterByName()** (5 connections) — `client/tests/e2e/runtime/pages/CharacterSelectionPage.ts`
 - **retryCoLocateUntilSameRoom()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
 - **throwOccupantsWaitTimeout()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
 - **.enterRealm()** (4 connections) — `client/tests/e2e/runtime/pages/MotdPage.ts`
 - **.waitForGameReady()** (4 connections) — `client/tests/e2e/runtime/pages/MotdPage.ts`
 - **assertNotStuckOnLogin()** (3 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- *... and 16 more nodes in this community*
+- **captureOccupantsSnapshot()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
+- **formatOccupantsSnapshotForError()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
+- **forceLogoutPlayer()** (2 connections) — `client/tests/e2e/runtime/connection/basic-connection.spec.ts`
+- **capturePresenceEvents()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
+- **resolveOtherCharacterName()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
+- **.isVisible()** (2 connections) — `client/tests/e2e/runtime/pages/CharacterSelectionPage.ts`
+- **.selectFirstCharacter()** (2 connections) — `client/tests/e2e/runtime/pages/CharacterSelectionPage.ts`
+- **escapeRegExp()** (2 connections) — `client/tests/e2e/runtime/pages/CharacterSelectionPage.ts`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [ensurePlayerInGame](ensurePlayerInGame.md) (57 shared connections)
-- [fixtures/auth.ts](fixtures-auth.ts.md) (38 shared connections)
-- [executeCommand](executeCommand.md) (21 shared connections)
-- [waitForMessage](waitForMessage.md) (9 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (27 shared connections)
+- [executeCommand](executeCommand.md) (27 shared connections)
+- [ensurePlayableConnection](ensurePlayableConnection.md) (4 shared connections)
 - [corruption-cleanse.spec.ts](corruption-cleanse.spec.ts.md) (4 shared connections)
+- [player.ts](player.ts.md) (4 shared connections)
 - [revised-character-creation.spec.ts](revised-character-creation.spec.ts.md) (4 shared connections)
-- [multiplayer-browser-helpers.js](multiplayer-browser-helpers.js.md) (2 shared connections)
+- [multiplayer-browser-helpers.js](multiplayer-browser-helpers.js.md) (1 shared connections)
 
 ## Source Files
 
 - `client/tests/e2e/runtime/connection/basic-connection.spec.ts`
 - `client/tests/e2e/runtime/fixtures/auth.ts`
-- `client/tests/e2e/runtime/fixtures/e2e-browser-helpers.ts`
-- `client/tests/e2e/runtime/fixtures/multiplayer-browser-window.d.ts`
 - `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
-- `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
-- `client/tests/e2e/runtime/fixtures/player.ts`
+- `client/tests/e2e/runtime/pages/CharacterSelectionPage.ts`
 - `client/tests/e2e/runtime/pages/MotdPage.ts`
+- `client/tests/e2e/runtime/pages/index.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 207 (97%)
-- INFERRED: 6 (3%)
+- EXTRACTED: 112 (93%)
+- INFERRED: 8 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
