@@ -140,6 +140,38 @@ body {
   .animate-fade-in {
     animation: none !important;
   }
+
+  /* Design showcase only: preview effects even when OS reduced-motion is on. */
+  .eldritch-demo-force-motion .animate-eldritch-glow {
+    animation: eldritch-glow 1.5s ease-in-out infinite alternate !important;
+  }
+  .eldritch-demo-force-motion .animate-eldritch-pulse {
+    animation: eldritch-pulse 1s ease-in-out infinite !important;
+  }
+  .eldritch-demo-force-motion .animate-eldritch-shimmer {
+    animation: eldritch-shimmer 2s linear infinite !important;
+  }
+  .eldritch-demo-force-motion .animate-eldritch-fade {
+    animation: eldritch-fade 1.5s ease-in-out infinite alternate !important;
+  }
+  .eldritch-demo-force-motion .animate-eldritch-slide {
+    animation: eldritch-slide 1s ease-in-out infinite !important;
+  }
+  .eldritch-demo-force-motion .animate-eldritch-scale {
+    animation: eldritch-scale 1s ease-in-out infinite alternate !important;
+  }
+  .eldritch-demo-force-motion .animate-eldritch-rotate {
+    animation: eldritch-rotate 3s linear infinite !important;
+  }
+  .eldritch-demo-force-motion .animate-eldritch-blur {
+    animation: eldritch-blur 1.5s ease-in-out infinite alternate !important;
+  }
+  .eldritch-demo-force-motion .animate-eldritch-shadow {
+    animation: eldritch-shadow 2s ease-in-out infinite !important;
+  }
+  .eldritch-demo-force-motion .animate-eldritch-border {
+    animation: eldritch-border 2s linear infinite !important;
+  }
 }
 
 /* Server-rendered ASCII map/minimap: styling via class only (no inline style to avoid XSS) */
