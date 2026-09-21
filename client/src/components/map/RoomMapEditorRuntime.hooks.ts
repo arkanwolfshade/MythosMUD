@@ -188,7 +188,7 @@ function useRoomMapEditorEditing(
   return { ...editing, onNodesChange, onEdgesChange };
 }
 
-export interface RoomMapEditorEditingApi {
+interface RoomMapEditorEditingApi {
   createEdge: ReturnType<typeof useMapEditing>['createEdge'];
   deleteEdge: ReturnType<typeof useMapEditing>['deleteEdge'];
   updateEdge: ReturnType<typeof useMapEditing>['updateEdge'];

@@ -3,12 +3,12 @@
 import type { ReactNode } from 'react';
 import React, { createContext, useCallback, useState } from 'react';
 
-export interface PanelPosition {
+interface PanelPosition {
   x: number;
   y: number;
 }
 
-export interface PanelSize {
+interface PanelSize {
   width: number;
   height: number;
 }
@@ -24,7 +24,7 @@ export interface PanelState {
   zIndex: number;
 }
 
-export interface PanelLayout {
+interface PanelLayout {
   [panelId: string]: PanelState;
 }
 

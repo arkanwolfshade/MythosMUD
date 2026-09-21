@@ -163,5 +163,3 @@ export function getClientMetricsCollector(): ClientMetricsCollector {
   }
   return collectorInstance;
 }
-
-export type { ClientMetrics, ComponentLifecycleMetrics, StoreSubscriptionMetrics };

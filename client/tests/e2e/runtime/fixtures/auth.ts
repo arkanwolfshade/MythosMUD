@@ -313,7 +313,7 @@ export interface EnsurePlayableConnectionOptions {
   timeoutMs?: number;
 }
 
-export async function assertCommandChannelReady(page: Page, budgetMs: number): Promise<boolean> {
+async function assertCommandChannelReady(page: Page, budgetMs: number): Promise<boolean> {
   try {
     await waitForPlayableSession(page, Math.min(budgetMs, 30000));
     const commandInput = page.getByTestId('command-input');
@@ -471,7 +471,7 @@ export async function recoverPlayableSession(
  * Reload the game tab when Send Command is disabled but the game UI is still mounted.
  * Prefer this over full relogin in multiplayer tests to avoid kicking the other browser session.
  */
-export async function refreshPlayableSession(page: Page, timeoutMs: number = 45000): Promise<void> {
+async function refreshPlayableSession(page: Page, timeoutMs: number = 45000): Promise<void> {
   if (!isPageUsable(page)) {
     return;
   }
@@ -504,17 +504,6 @@ export async function refreshPlayableSession(page: Page, timeoutMs: number = 450
 
   await page.waitForFunction(() => window.__mythosE2eIsGameUiLoaded?.() === true, undefined, { timeout: timeoutMs });
   await waitForPlayableSession(page, timeoutMs);
-}
-
-/**
- * Focus the command input without Playwright click stability (Firefox eldritch-border animation).
- */
-export async function focusCommandInput(page: Page): Promise<void> {
-  const commandInput = page.getByTestId('command-input');
-  await expect(commandInput).toBeVisible({ timeout: TEST_TIMEOUTS.COMMAND });
-  await commandInput.evaluate((el: HTMLElement) => {
-    el.focus();
-  });
 }
 
 /**

@@ -38,8 +38,6 @@ import {
   type RoomMapEditorProps,
 } from './RoomMapEditorRuntime.hooks';
 
-export type { RoomMapEditorProps };
-
 function RoomMapEditorFlow({
   flow,
 }: {

@@ -11,12 +11,12 @@ import { LoginPage } from '../pages';
 import { TEST_TIMEOUTS } from './test-data';
 
 /** Character names that must never be deleted by E2E cleanup. */
-export const PROTECTED_CHARACTER_NAMES = ['ArkanWolfshade', 'Ithaqua'] as const;
+const PROTECTED_CHARACTER_NAMES = ['ArkanWolfshade', 'Ithaqua'] as const;
 
 const PROTECTED_CHARACTER_NAME_SET = new Set<string>(PROTECTED_CHARACTER_NAMES);
 
 /** Regex for character names created by E2E tests (revised creation, skills tests). */
-export const TEST_CHARACTER_NAME_PATTERN = /^(E2ER_|E4Sk_|E2ERevised_|E4Skills_)/;
+const TEST_CHARACTER_NAME_PATTERN = /^(E2ER_|E4Sk_|E2ERevised_|E4Skills_)/;
 
 const MAX_CLEANUP_ITERATIONS = 10;
 

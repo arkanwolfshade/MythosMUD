@@ -1,18 +1,18 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
-export interface CommandHistoryEntry {
+interface CommandHistoryEntry {
   command: string;
   timestamp: number;
   success: boolean;
   result?: string;
 }
 
-export interface CommandAlias {
+interface CommandAlias {
   [alias: string]: string;
 }
 
-export interface CommandTrigger {
+interface CommandTrigger {
   id: string;
   pattern: string;
   action: string;
@@ -21,7 +21,7 @@ export interface CommandTrigger {
   regex?: boolean;
 }
 
-export interface CommandState {
+interface CommandState {
   // Command input
   currentCommand: string;
   commandIndex: number;
@@ -41,7 +41,7 @@ export interface CommandState {
   triggers: CommandTrigger[];
 }
 
-export interface CommandActions {
+interface CommandActions {
   // Command input management
   setCurrentCommand: (command: string) => void;
   clearCurrentCommand: () => void;
@@ -81,7 +81,7 @@ export interface CommandActions {
   reset: () => void;
 }
 
-export interface CommandSelectors {
+interface CommandSelectors {
   // Computed properties
   getRecentCommands: (count: number) => CommandHistoryEntry[];
   getSuccessfulCommands: () => CommandHistoryEntry[];

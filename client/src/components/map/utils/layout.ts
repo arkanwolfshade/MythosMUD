@@ -15,7 +15,7 @@ import type { ExitEdgeData, RoomNodeData } from '../types';
 import { GRID_PITCH, MAX_FORCE_LAYOUT_NODES } from './mapGeometry';
 
 // Re-exported so existing importers of `./layout` keep working.
-export { GRID_PITCH, MAX_FORCE_LAYOUT_NODES } from './mapGeometry';
+export { GRID_PITCH } from './mapGeometry';
 
 /**
  * Grid layout configuration.

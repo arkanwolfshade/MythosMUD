@@ -3,7 +3,7 @@
  * Provides controlled logging based on environment and configuration
  */
 
-export type LogLevel = 'DEBUG' | 'INFO' | 'WARN' | 'ERROR';
+type LogLevel = 'DEBUG' | 'INFO' | 'WARN' | 'ERROR';
 
 interface LogConfig {
   level: LogLevel;
@@ -218,4 +218,4 @@ export function debugLogger(component: string, config?: Partial<LogConfig>): Deb
 
 // Export types for external use
 export { DebugLogger };
-export type { LogConfig, LogEntry };
+export type { LogConfig };

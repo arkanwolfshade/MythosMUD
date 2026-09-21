@@ -4,11 +4,9 @@
  */
 
 import type { PanelState } from '../types';
-import { isPanelPosition, isPanelSize, isPanelStateRecord } from './panelLayoutValidationTypeCheck';
+import { isPanelStateRecord } from './panelLayoutValidationTypeCheck';
 
 const STORAGE_KEY = 'mythosmud-ui-v2-panel-layout';
-
-export { isPanelPosition, isPanelSize };
 
 export function loadPanelLayout(): Record<string, PanelState> | null {
   try {

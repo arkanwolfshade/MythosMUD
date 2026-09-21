@@ -221,36 +221,6 @@ export async function ensurePlayerInGame(playerContext: PlayerContext, timeoutMs
 }
 
 /**
- * After switching which browser tab is foreground, restore command input when Send stayed disabled.
- * Reload only when already in the game UI; re-login if reload returns to the login screen.
- */
-export async function ensureForegroundPlayerPlayable(
-  playerContext: PlayerContext,
-  timeoutMs: number = 45000
-): Promise<void> {
-  const { page, player } = playerContext;
-  await page.bringToFront().catch(() => {});
-
-  const onLogin = await page
-    .getByTestId('username-input')
-    .isVisible({ timeout: 2000 })
-    .catch(() => false);
-  if (onLogin) {
-    await loginPlayer(page, player.username, player.password);
-    return;
-  }
-
-  await ensurePlayerInGame(playerContext, timeoutMs);
-
-  playerContext.page = await ensurePlayableConnection(playerContext.page, {
-    username: player.username,
-    password: player.password,
-    timeoutMs,
-  });
-  playerContext.context = playerContext.page.context();
-}
-
-/**
  * Foreground the receiver and restore command input so Game Info renders inbound WS events.
  * Background Firefox tabs often show ticks but miss chat/combat lines until focused.
  */

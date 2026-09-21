@@ -103,7 +103,7 @@ export interface GameState {
   lastUpdate: number | null;
 }
 
-export interface GameActions {
+interface GameActions {
   // Player management
   setPlayer: (player: Player | null) => void;
   updatePlayerStats: (stats: Partial<Player['stats']>) => void;
@@ -130,7 +130,7 @@ export interface GameActions {
   reset: () => void;
 }
 
-export interface GameSelectors {
+interface GameSelectors {
   // Computed properties
   getPlayerStats: () => Player['stats'] | null;
   getRoomOccupantsCount: () => number;

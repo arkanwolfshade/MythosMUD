@@ -4,12 +4,12 @@
 
 import { getVersionedApiBaseUrl } from '../utils/config';
 
-export interface DialogueOptionDto {
+interface DialogueOptionDto {
   label: string;
   next?: string | null;
 }
 
-export interface DialogueNodeDto {
+interface DialogueNodeDto {
   text: string;
   options: DialogueOptionDto[];
 }

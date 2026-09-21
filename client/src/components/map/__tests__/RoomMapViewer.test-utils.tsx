@@ -68,15 +68,3 @@ export const createMockNodes = (count = 1, overrides = {}) => {
     data: { id: `room${i + 1}`, name: `Room ${i + 1}`, description: `Room ${i + 1} description`, ...overrides },
   }));
 };
-
-/**
- * Create mock edges for testing.
- */
-export const createMockEdges = (count = 1) => {
-  return Array.from({ length: count }, (_, i) => ({
-    id: `edge${i + 1}`,
-    source: `node${i + 1}`,
-    target: `node${i + 2}`,
-    data: { direction: 'north' },
-  }));
-};

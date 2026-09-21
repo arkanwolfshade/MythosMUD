@@ -80,7 +80,7 @@ export function createMockSkills() {
   }));
 }
 
-export function createDefaultRollStatsResponseBody() {
+function createDefaultRollStatsResponseBody() {
   return {
     stats: { ...DEFAULT_ROLLED_STATS },
     stat_summary: { total: 73, average: 12.17, highest: 16, lowest: 8 },

@@ -42,7 +42,7 @@ export interface ConnectionState {
   connectionMetadata: ConnectionMetadata;
 }
 
-export interface ConnectionActions {
+interface ConnectionActions {
   // Connection management
   setConnecting: (connecting: boolean) => void;
   setWebsocketConnected: (connected: boolean) => void;
@@ -69,7 +69,7 @@ export interface ConnectionActions {
   reset: () => void;
 }
 
-export interface ConnectionSelectors {
+interface ConnectionSelectors {
   // Computed properties
   isFullyConnected: () => boolean;
   hasAnyConnection: () => boolean;

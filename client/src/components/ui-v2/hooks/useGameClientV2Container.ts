@@ -12,7 +12,6 @@ import {
 } from './useGameClientV2ContainerState';
 import { useGameClientV2MemoryMonitorEffect } from './useGameClientV2MemoryMonitorEffect';
 
-export type { GameClientV2ContainerPublicApi } from './gameClientV2ContainerBuildReturn';
 export type { GameClientV2ContainerProps } from './gameClientV2ContainerTypes';
 
 export function useGameClientV2Container(props: GameClientV2ContainerProps) {
