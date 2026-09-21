@@ -586,5 +586,11 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
             "npc_combats": len(self._npc_combats),
         }
 
+    async def execute_flee_failed_free_hits(self, combat_id: UUID, fleeing_participant_id: UUID) -> None:
+        """Give each acting opponent one free hit after a failed voluntary flee (#820)."""
+        from server.services.combat_flee_handler import execute_flee_failed_free_hits as impl
+
+        await impl(self, combat_id, fleeing_participant_id)
+
 
 __all__ = ["COMBAT_SERVICE", "CombatService", "PlayerLifecycleServices", "get_combat_service", "set_combat_service"]

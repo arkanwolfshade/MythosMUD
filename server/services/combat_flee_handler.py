@@ -11,14 +11,48 @@ import random
 import secrets
 from collections.abc import Callable
 from datetime import UTC, datetime, timedelta
-from typing import Any
+from typing import TYPE_CHECKING, Any, Protocol, cast
 from uuid import UUID
 
 from server.database import get_async_session
-from server.models.combat import CombatAction, CombatInstance, CombatParticipant
+from server.models.combat import (
+    CombatAction,
+    CombatInstance,
+    CombatParticipant,
+    CombatParticipantType,
+    CombatResult,
+    CombatStatus,
+)
 from server.services.lucidity_command_disruption import should_involuntary_flee
 from server.services.lucidity_service import LucidityService
 from server.structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from server.services.combat_service import CombatService
+
+# pylint: disable=unnecessary-ellipsis  # Reason: Protocol stubs need ... for basedpyright reportReturnType
+
+
+class _FleeFreeHitsCombatService(Protocol):
+    """CombatService surface needed for failed-flee free hits (#820)."""
+
+    def get_combat(self, combat_id: UUID) -> CombatInstance | None:
+        """Return active combat or None."""
+        ...
+
+    async def process_attack(
+        self,
+        attacker_id: UUID,
+        target_id: UUID,
+        damage: int = 10,
+        is_initial_attack: bool = False,
+        damage_type: str = "physical",
+    ) -> CombatResult:
+        """Apply one attack; returns result including death/combat-end flags."""
+        ...
+
+
+# pylint: enable=unnecessary-ellipsis
 
 logger = get_logger(__name__)
 
@@ -61,6 +95,109 @@ def try_voluntary_flee_roll(combat: CombatInstance, fleeing_participant_id: UUID
     chance = max(VOLUNTARY_FLEE_MIN_CHANCE, min(VOLUNTARY_FLEE_MAX_CHANCE, chance))
     roll = random.random()  # nosec B311: Game mechanics probability, not cryptographic
     return roll < chance
+
+
+def _acting_opponents(combat: CombatInstance, fleeing_participant_id: UUID) -> list[CombatParticipant]:
+    """Opponents who can act and are not dead (same filter as try_voluntary_flee_roll)."""
+    return [
+        p
+        for p in combat.participants.values()
+        if p.participant_id != fleeing_participant_id and p.can_act_in_combat() and not p.is_dead()
+    ]
+
+
+def _ordered_free_hit_attackers(combat: CombatInstance, fleeing_participant_id: UUID) -> list[CombatParticipant]:
+    """Opponents in turn_order first, then any remaining sorted by participant_id."""
+    opponents = _acting_opponents(combat, fleeing_participant_id)
+    by_id = {p.participant_id: p for p in opponents}
+    ordered: list[CombatParticipant] = []
+    seen: set[UUID] = set()
+    for pid in combat.turn_order:
+        participant = by_id.get(pid)
+        if participant is not None:
+            ordered.append(participant)
+            seen.add(pid)
+    remaining = sorted(
+        (p for p in opponents if p.participant_id not in seen),
+        key=lambda p: p.participant_id,
+    )
+    ordered.extend(remaining)
+    return ordered
+
+
+async def _resolve_free_hit_damage(
+    combat_service: _FleeFreeHitsCombatService,
+    attacker: CombatParticipant,
+    fleer: CombatParticipant,
+) -> tuple[int, str]:
+    """Resolve damage for one free hit (NPC vs player resolvers)."""
+    from server.config import get_config
+    from server.game.npcs.attack_damage import resolve_npc_attack_damage
+    from server.services.combat_turn_participant_actions import resolve_player_attack_damage
+
+    config = get_config()
+    if attacker.participant_type == CombatParticipantType.PLAYER:
+        damage, damage_type = await resolve_player_attack_damage(
+            cast("CombatService", combat_service),
+            attacker,
+            fleer,
+            config,
+        )
+        return damage, damage_type
+    damage = resolve_npc_attack_damage(
+        attacker.npc_base_stats,
+        attacker.npc_behavior_config,
+        fallback=config.game.basic_unarmed_damage,
+    )
+    return damage, "physical"
+
+
+async def _deliver_one_flee_free_hit(
+    combat_service: _FleeFreeHitsCombatService,
+    combat_id: UUID,
+    fleeing_participant_id: UUID,
+    attacker_id: UUID,
+) -> bool:
+    """Apply one free hit. Returns False when the free-hit loop should stop."""
+    combat = combat_service.get_combat(combat_id)
+    if combat is None or combat.status != CombatStatus.ACTIVE:
+        return False
+    fleer = combat.participants.get(fleeing_participant_id)
+    if fleer is None or fleer.is_dead():
+        return False
+    attacker = combat.participants.get(attacker_id)
+    if attacker is None or not attacker.can_act_in_combat() or attacker.is_dead():
+        return True
+
+    damage, damage_type = await _resolve_free_hit_damage(combat_service, attacker, fleer)
+    result = await combat_service.process_attack(
+        attacker_id=attacker.participant_id,
+        target_id=fleeing_participant_id,
+        damage=damage,
+        damage_type=damage_type,
+    )
+    return not (result.combat_ended or result.target_died)
+
+
+async def execute_flee_failed_free_hits(
+    combat_service: _FleeFreeHitsCombatService,
+    combat_id: UUID,
+    fleeing_participant_id: UUID,
+) -> None:
+    """
+    On failed voluntary flee, each acting opponent gets one free attack on the fleer.
+
+    Stops early if the fleer dies or combat ends. Order follows turn_order, then
+    remaining opponents by participant_id (#820).
+    """
+    combat = combat_service.get_combat(combat_id)
+    if combat is None:
+        return
+
+    attacker_ids = [p.participant_id for p in _ordered_free_hit_attackers(combat, fleeing_participant_id)]
+    for attacker_id in attacker_ids:
+        if not await _deliver_one_flee_free_hit(combat_service, combat_id, fleeing_participant_id, attacker_id):
+            return
 
 
 async def _handle_failed_voluntary_flee(

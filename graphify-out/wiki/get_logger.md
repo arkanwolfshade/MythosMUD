@@ -1,63 +1,79 @@
-# get_logger()
+# get_logger
 
-> God node · 542 connections · `server/structured_logging/enhanced_logging_config.py`
+> 613 nodes
 
-**Community:** [Aliases & Webhook/Schema Validation](Aliases_&_Webhook-Schema_Validation.md)
+## Key Concepts
 
-## Connections by Relation
+- **get_logger()** (544 connections) — `server/structured_logging/enhanced_logging_config.py`
+- **enhanced_logging_config.py** (519 connections) — `server/structured_logging/enhanced_logging_config.py`
+- **time.py** (107 connections) — `server/container/bundles/time.py`
+- **event_types.py** (100 connections) — `server/events/event_types.py`
+- **get_npc_instance_service()** (78 connections) — `server/services/npc_instance_service.py`
+- **NPCLifecycleManager** (71 connections) — `server/npc/lifecycle_manager.py`
+- **test_population_control.py** (65 connections) — `server/tests/unit/npc/test_population_control.py`
+- **NPCPopulationController** (60 connections) — `server/npc/population_control.py`
+- **test_npc_instance_service.py** (53 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **PlayerLeftRoom** (51 connections) — `server/events/event_types.py`
+- **NPCEnteredRoom** (49 connections) — `server/events/event_types.py`
+- **lifecycle_manager.py** (49 connections) — `server/npc/lifecycle_manager.py`
+- **threading.py** (45 connections) — `server/npc/threading.py`
+- **NPCLeftRoom** (43 connections) — `server/events/event_types.py`
+- **population_control.py** (42 connections) — `server/npc/population_control.py`
+- **event_handler.py** (42 connections) — `server/realtime/event_handler.py`
+- **models/room.py** (41 connections) — `server/models/room.py`
+- **test_event_handler.py** (41 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **event_bus.py** (40 connections) — `server/events/event_bus.py`
+- **movement_service.py** (38 connections) — `server/game/movement_service.py`
+- **models/npc.py** (38 connections) — `server/models/npc.py`
+- **npc_instance_service.py** (32 connections) — `server/services/npc_instance_service.py`
+- **player_combat_service.py** (32 connections) — `server/services/player_combat_service.py`
+- **game_state_provider.py** (31 connections) — `server/realtime/integration/game_state_provider.py`
+- **config/models/__init__.py** (28 connections) — `server/config/models/__init__.py`
+- *... and 588 more nodes in this community*
 
-### calls
-- log_and_raise_enhanced() `EXTRACTED`
-- format_metadata() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- handle_new_game_session() `EXTRACTED`
-- wrap_third_party_exception_enhanced() `EXTRACTED`
-- setup_enhanced_logging() `EXTRACTED`
-- db_cleanup() `EXTRACTED`
-- log_structured_error() `EXTRACTED`
-- get_player_connections() `EXTRACTED`
-- websocket_endpoint() `EXTRACTED`
-- websocket_endpoint_route() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- get_connection_statistics() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- _log_http_error() `EXTRACTED`
-- .read_token() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- update_logging_with_player_service() `EXTRACTED`
+## Relationships
 
-### contains
-- enhanced_logging_config.py `EXTRACTED`
+- [NPCBase](NPCBase.md) (75 shared connections)
+- [EventBus](EventBus.md) (67 shared connections)
+- [NPCDefinition](NPCDefinition.md) (67 shared connections)
+- [NPCDied](NPCDied.md) (44 shared connections)
+- [connection_manager.py](connection_manager.py.md) (40 shared connections)
+- [NPCSpawningService](NPCSpawningService.md) (39 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (38 shared connections)
+- [test_npc_admin_commands.py](test_npc_admin_commands.py.md) (35 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (31 shared connections)
+- [combat_service.py](combat_service.py.md) (30 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (28 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (27 shared connections)
 
-### imports
-- server/exceptions.py `EXTRACTED`
-- time.py `EXTRACTED`
-- combat_service.py `EXTRACTED`
-- async_persistence.py `EXTRACTED`
-- server/dependencies.py `EXTRACTED`
-- database.py `EXTRACTED`
-- connection_manager.py `EXTRACTED`
-- alias_storage.py `EXTRACTED`
-- players.py `EXTRACTED`
-- websocket_handler.py `EXTRACTED`
-- connection_manager_methods.py `EXTRACTED`
-- api/character_creation.py `EXTRACTED`
-- maps.py `EXTRACTED`
-- endpoints.py `EXTRACTED`
-- container_endpoints_basic.py `EXTRACTED`
-- chat_service.py `EXTRACTED`
-- api/monitoring.py `EXTRACTED`
-- rooms.py `EXTRACTED`
-- models/combat.py `EXTRACTED`
-- look_command.py `EXTRACTED`
+## Source Files
 
-### rationale_for
-- Get a Structlog logger with the specified name. This ensures all loggers are… `EXTRACTED`
+- `monitoring/webhook-receiver.py`
+- `server/api/containers.py`
+- `server/commands/container_helpers_inventory_logging.py`
+- `server/commands/npc_admin/instance.py`
+- `server/commands/npc_admin/monitoring.py`
+- `server/commands/shutdown_process_termination.py`
+- `server/config/models/__init__.py`
+- `server/config/models/_helpers.py`
+- `server/config/models/app.py`
+- `server/config/models/chat_time.py`
+- `server/config/models/cors.py`
+- `server/config/models/game.py`
+- `server/config/models/nats.py`
+- `server/config/models/player_stats.py`
+- `server/config/models/server_db.py`
+- `server/container/bundles/npc.py`
+- `server/container/bundles/time.py`
+- `server/container/utils.py`
+- `server/events/__init__.py`
+- `server/events/event_bus.py`
 
-### references
-- BoundLogger `EXTRACTED`
+## Audit Trail
+
+- EXTRACTED: 3253 (96%)
+- INFERRED: 123 (4%)
+- AMBIGUOUS: 0 (0%)
 
 ---
 
