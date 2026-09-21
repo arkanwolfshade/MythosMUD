@@ -38,17 +38,17 @@ for the historical record of that cluster and its `[NOTE]` recording this reloca
 
 **[SPEC]**
 
-| File | Exports | Purpose |
-| --- | --- | --- |
-| `EldritchIcon.tsx` | `EldritchIcon`, `MythosIcons` (re-export) | Maps a `MythosIcons` name to a `lucide-react` icon component, themed via one of five `variant` classes (`primary`/`secondary`/`warning`/`error`/`success`). |
-| `MythosIcons.ts` | `MythosIcons` | A `Record<string, string>` of icon-name string literals (self-mapped, e.g. `chat: 'chat'`) that `EldritchIcon.iconMap` and `ChannelSelector`/`config/channels.ts` key off of. |
-| `TerminalButton.tsx` | `TerminalButton` | `forwardRef` button with `variant`/`size` props, terminal styling. |
-| `TerminalInput.tsx` | `TerminalInput` | `forwardRef` text input with terminal styling. |
-| `ChannelSelector.tsx` | `ChannelSelector`, `Channel` (type) | Dropdown for chat-channel selection; the `Channel` interface is also the shape `config/channels.ts` builds its channel list against. |
-| `LogoutButton.tsx` | `LogoutButton` | Logout control with a global `Ctrl+Q` keyboard shortcut, wraps `EldritchIcon`. |
-| `ModalContainer.tsx` | `ModalContainer` | Modal shell with three layout modes (`center`, `center-no-backdrop`, `bottom-right`), Escape-to-close, optional close button and title. |
-| `MythosPanel.tsx` | `MythosPanel` | Base bordered/titled panel shell. |
-| `index.ts` | re-exports all of the above | The only barrel in this directory; every consumer imports from `'./primitives'` / `'../primitives'`, never a component's own file path. |
+| File                  | Exports                                   | Purpose                                                                                                                                                                       |
+| --------------------- | ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EldritchIcon.tsx`    | `EldritchIcon`, `MythosIcons` (re-export) | Maps a `MythosIcons` name to a `lucide-react` icon component, themed via one of five `variant` classes (`primary`/`secondary`/`warning`/`error`/`success`).                   |
+| `MythosIcons.ts`      | `MythosIcons`                             | A `Record<string, string>` of icon-name string literals (self-mapped, e.g. `chat: 'chat'`) that `EldritchIcon.iconMap` and `ChannelSelector`/`config/channels.ts` key off of. |
+| `TerminalButton.tsx`  | `TerminalButton`                          | `forwardRef` button with `variant`/`size` props, terminal styling.                                                                                                            |
+| `TerminalInput.tsx`   | `TerminalInput`                           | `forwardRef` text input with terminal styling.                                                                                                                                |
+| `ChannelSelector.tsx` | `ChannelSelector`, `Channel` (type)       | Dropdown for chat-channel selection; the `Channel` interface is also the shape `config/channels.ts` builds its channel list against.                                          |
+| `LogoutButton.tsx`    | `LogoutButton`                            | Logout control with a global `Ctrl+Q` keyboard shortcut, wraps `EldritchIcon`.                                                                                                |
+| `ModalContainer.tsx`  | `ModalContainer`                          | Modal shell with three layout modes (`center`, `center-no-backdrop`, `bottom-right`), Escape-to-close, optional close button and title.                                       |
+| `MythosPanel.tsx`     | `MythosPanel`                             | Base bordered/titled panel shell.                                                                                                                                             |
+| `index.ts`            | re-exports all of the above               | The only barrel in this directory; every consumer imports from `'./primitives'` / `'../primitives'`, never a component's own file path.                                       |
 
 ## 3. Boundary contract
 
@@ -66,8 +66,8 @@ code outside this directory (tests are the one exception — see §6).
 - `ui-v2/panels/{ChatHistoryPanel,CommandHistoryPanel,CommandInputPanel,GameInfoPanel,SettingsPanel}.tsx` — `EldritchIcon`, `MythosIcons`, `TerminalButton`, `TerminalInput`, `ChannelSelector`
 - `ui-v2/PanelSystem/{ExpandedPanelHeader,MinimizedPanelHeader}.tsx` — `EldritchIcon`, `MythosIcons`, `TerminalButton`
 - `config/channels.ts` — `MythosIcons`, the `Channel` type (channel configuration, outside `ui-v2`)
-- `components/EldritchEffectsDemo.tsx`, `components/eldritchEffectsDemoData.ts` — all seven
-  runtime exports; the only consumer of `MythosPanel` (§4)
+- `ui-v2/demos/EldritchEffectsDemo.tsx`, `ui-v2/demos/eldritchEffectsDemoData.ts` — all seven
+  runtime exports; the only consumer of `MythosPanel` (§4); design showcase, not GameClientV2
 
 **Invariants a caller must not violate:**
 
@@ -93,14 +93,12 @@ code outside this directory (tests are the one exception — see §6).
   place.** The `#744` investigation found all 8 files were live `ui-v2` imports — the `(legacy)`
   label predated `#693`'s cleanup and had gone stale. Moving the directory inside `ui-v2/` makes
   the dependency direction match the label ADR-022 already uses for the package.
-- **`MythosPanel` has zero `ui-v2` consumers** — its only caller is
-  `components/EldritchEffectsDemo.tsx`, reached from the login screen's demo button
+- **`MythosPanel`'s intentional consumer is the design showcase** —
+  `ui-v2/demos/EldritchEffectsDemo.tsx`, reached from the login screen's demo button
   (`MythosLoginForm.tsx` → `showDemo` → `AppRootViews` → `AppDemoView`, lazy-loaded via
-  `appLazyScreens.tsx`). It moved with the other seven rather than being split out separately —
-  one directory, one diff, and the demo is real player-reachable code, not dead weight knip would
-  flag. A follow-up issue tracks retiring the demo screen itself (this package doc does not own
-  that call); if it is retired, `MythosPanel` becomes an orphan this package's `index.ts` barrel
-  should then drop.
+  `appLazyScreens.tsx`). The demo lives under `ui-v2/demos/` (not `GameClientV2`, not the
+  primitives barrel). Keep `MythosPanel` in the barrel while this showcase remains; do not
+  treat the panel as an orphan to drop solely because production panels do not import it.
 - **Barrel added on relocation.** The predecessor directory had no `index.ts` despite its old
   README instructing contributors to "update the index.ts file" — that file never existed. The
   barrel is new, and every consumer import was rewritten to go through it rather than a component's
@@ -174,6 +172,6 @@ code outside this directory (tests are the one exception — see §6).
 
 **[SPEC]**
 
-| Version | Date | Change |
-| --- | --- | --- |
-| 1.0.0 | 2026-09-16 | Initial version; relocated from `client/src/components/ui/` to `client/src/components/ui-v2/primitives/`, closes #744 |
+| Version | Date       | Change                                                                                                                |
+| ------- | ---------- | --------------------------------------------------------------------------------------------------------------------- |
+| 1.0.0   | 2026-09-16 | Initial version; relocated from `client/src/components/ui/` to `client/src/components/ui-v2/primitives/`, closes #744 |

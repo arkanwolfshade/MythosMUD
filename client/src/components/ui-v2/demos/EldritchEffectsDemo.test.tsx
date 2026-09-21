@@ -3,8 +3,7 @@ import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { EldritchEffectsDemo } from './EldritchEffectsDemo';
 
-// Mock the child components
-vi.mock('./ui-v2/primitives/EldritchIcon', () => ({
+vi.mock('../primitives/EldritchIcon', () => ({
   EldritchIcon: ({ name, className }: { name: string; _size: number; className?: string }) => (
     <div data-testid={`eldritch-icon-${name}`} className={className}>
       Icon: {name}
@@ -26,7 +25,7 @@ vi.mock('./ui-v2/primitives/EldritchIcon', () => ({
   },
 }));
 
-vi.mock('./ui-v2/primitives/MythosPanel', () => ({
+vi.mock('../primitives/MythosPanel', () => ({
   MythosPanel: ({
     title,
     subtitle,
@@ -50,7 +49,7 @@ vi.mock('./ui-v2/primitives/MythosPanel', () => ({
   ),
 }));
 
-vi.mock('./ui-v2/primitives/TerminalButton', () => ({
+vi.mock('../primitives/TerminalButton', () => ({
   TerminalButton: ({
     onClick,
     className,
@@ -68,7 +67,7 @@ vi.mock('./ui-v2/primitives/TerminalButton', () => ({
   ),
 }));
 
-vi.mock('./ui-v2/primitives/TerminalInput', () => ({
+vi.mock('../primitives/TerminalInput', () => ({
   TerminalInput: ({
     value,
     onChange,
@@ -90,10 +89,6 @@ vi.mock('./ui-v2/primitives/TerminalInput', () => ({
   ),
 }));
 
-// Mock window.alert
-const mockAlert = vi.fn();
-global.alert = mockAlert;
-
 describe('EldritchEffectsDemo', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -103,9 +98,31 @@ describe('EldritchEffectsDemo', () => {
     it('should render the demo component', () => {
       render(<EldritchEffectsDemo />);
 
+      const root = screen.getByRole('region', { name: 'Eldritch Effects Demo' });
+      expect(root).toBeInTheDocument();
+      expect(root).toHaveClass('eldritch-demo-force-motion');
       expect(screen.getByText('Always Active Effects Test')).toBeInTheDocument();
-      expect(screen.getByText('Eldritch Effects Demo')).toBeInTheDocument();
+      expect(screen.getAllByText('Eldritch Effects Demo').length).toBeGreaterThanOrEqual(1);
       expect(screen.getByText('Phase 4.1 Visuals')).toBeInTheDocument();
+    });
+
+    it('should notice when OS reduced-motion is enabled', () => {
+      const previous = window.matchMedia;
+      Object.defineProperty(window, 'matchMedia', {
+        writable: true,
+        configurable: true,
+        value: (query: string) => ({
+          matches: query.includes('prefers-reduced-motion'),
+          media: query,
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+        }),
+      });
+
+      render(<EldritchEffectsDemo />);
+
+      expect(screen.getByTestId('reduced-motion-notice')).toBeInTheDocument();
+      Object.defineProperty(window, 'matchMedia', { writable: true, configurable: true, value: previous });
     });
 
     it('should render all effect buttons', () => {
@@ -141,15 +158,12 @@ describe('EldritchEffectsDemo', () => {
       const glowButton = screen.getByText('Eldritch Glow');
       const pulseButton = screen.getByText('Eldritch Pulse');
 
-      // Initially buttons should be rendered
       expect(glowButton).toBeInTheDocument();
       expect(pulseButton).toBeInTheDocument();
 
-      // Click buttons to test they respond to clicks
       fireEvent.click(glowButton);
       fireEvent.click(pulseButton);
 
-      // Verify buttons are still present after clicking
       expect(glowButton).toBeInTheDocument();
       expect(pulseButton).toBeInTheDocument();
     });
@@ -165,13 +179,13 @@ describe('EldritchEffectsDemo', () => {
       expect(input).toHaveValue('test incantation');
     });
 
-    it('should handle button click with alert', () => {
+    it('should show ritual status when Invoke Ritual is clicked', () => {
       render(<EldritchEffectsDemo />);
 
       const invokeButton = screen.getByText('Invoke Ritual');
       fireEvent.click(invokeButton);
 
-      expect(mockAlert).toHaveBeenCalledWith('Button clicked!');
+      expect(screen.getByTestId('ritual-status')).toHaveTextContent('Ritual invoked.');
     });
   });
 
@@ -179,7 +193,6 @@ describe('EldritchEffectsDemo', () => {
     it('should display effect descriptions', () => {
       render(<EldritchEffectsDemo />);
 
-      // Test that the component renders with the expected structure
       expect(
         screen.getByText(
           'Explore various eldritch-themed visual effects and animations. Click the buttons to toggle effects on the elements below.'
