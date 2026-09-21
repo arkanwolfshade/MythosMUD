@@ -59,6 +59,14 @@ These files are **actively used** and should **not** be removed:
 
 ## Removed DDL/DML (Authoritative Files Only)
 
+### ❌ `db/corruption_adjustment_log.sql` (removed)
+
+**Status**: Removed (#854)
+
+**Reason**: One-off apply script for `corruption_adjustment_log` / `corruption_cooldowns`
+(#804). Tables already live in `db/schema.sql` after #811; file was never part of composition
+and had no callers. Rollback: git history (`d2f02bd0a`).
+
 All non-authoritative DDL and DML migration files have been **removed**. Only these are used:
 
 - **DDL**: `db/mythos_dev_ddl.sql`, `db/mythos_unit_ddl.sql`, `db/mythos_e2e_ddl.sql`
