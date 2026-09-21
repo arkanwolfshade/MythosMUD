@@ -97,7 +97,9 @@ _COMMAND_HELP_TEXTS: dict[str, str] = {
     CommandType.SIT.value: "sit - Sit down and adopt a seated posture",
     CommandType.STAND.value: "stand - Return to a standing posture",
     CommandType.LIE.value: "lie [down] - Lie down on the ground",
-    CommandType.FLEE.value: "flee - Attempt to flee from combat (random adjacent room)",
+    CommandType.FLEE.value: (
+        "flee - Attempt to flee from combat (random adjacent room); failure costs your round and draws free hits"
+    ),
 }
 
 _GENERAL_COMMAND_HELP = """
@@ -132,7 +134,7 @@ Available Commands:
 - sit - Sit down and adopt a seated posture
 - stand - Return to a standing posture
 - lie [down] - Lie down on the ground
-- flee - Attempt to flee from combat (random adjacent room)
+- flee - Attempt to flee from combat (random adjacent room); failure costs your round and draws free hits
 
 Directions: north, south, east, west
 Use 'help <command>' for detailed information about a specific command.

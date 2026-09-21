@@ -218,5 +218,5 @@ async def run_handle_flee_command(
         player_id,
     )
     if not success:
-        return {"result": "You try to flee but fail, losing your attack for this round."}
+        return {"result": ("You try to flee but fail! Your opponents strike, and you lose your attack for this round.")}
     return {"result": "You flee to safety!"}

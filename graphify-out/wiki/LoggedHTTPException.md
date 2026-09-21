@@ -1,93 +1,69 @@
 # LoggedHTTPException
 
-> God node · 355 connections · `server/exceptions.py`
+> 190 nodes
 
-**Community:** [User Manager & Character Info](User_Manager_&_Character_Info.md)
+## Key Concepts
 
-## Connections by Relation
+- **LoggedHTTPException** (375 connections) — `server/exceptions.py`
+- **PlayerService** (109 connections) — `server/game/player_service.py`
+- **players.py** (76 connections) — `server/api/players.py`
+- **test_players_api_coverage.py** (59 connections) — `server/tests/unit/api/test_players_api_coverage.py`
+- **_user()** (32 connections) — `server/tests/unit/api/test_players_api_coverage.py`
+- **asyncio** (30 connections)
+- **get_player_quests()** (18 connections) — `server/api/players.py`
+- **_start_login_grace_period_body()** (17 connections) — `server/api/players.py`
+- **FastAPIRequest** (16 connections)
+- **delete_player()** (15 connections) — `server/api/players.py`
+- **get_player()** (15 connections) — `server/api/players.py`
+- **select_character()** (15 connections) — `server/api/players.py`
+- **UUID** (14 connections)
+- **create_player()** (13 connections) — `server/api/players.py`
+- **delete_character()** (13 connections) — `server/api/players.py`
+- **get_player_skills()** (13 connections) — `server/api/players.py`
+- **_validate_character_access()** (13 connections) — `server/api/players.py`
+- **UUID** (13 connections)
+- **test_players_quests.py** (13 connections) — `server/tests/unit/api/test_players_quests.py`
+- **PlayerStateService** (12 connections) — `server/game/player_state_service.py`
+- **_disconnect_other_characters()** (11 connections) — `server/api/players.py`
+- **get_player_by_name()** (11 connections) — `server/api/players.py`
+- **list_players()** (11 connections) — `server/api/players.py`
+- **_validate_player_for_grace_period()** (11 connections) — `server/api/players.py`
+- **Any** (11 connections)
+- *... and 165 more nodes in this community*
 
-### calls
-- create_character_with_stats() `EXTRACTED`
-- create_room_exit() `EXTRACTED`
-- get_player_id_from_user() `EXTRACTED`
-- handle_container_service_error() `EXTRACTED`
-- update_room() `EXTRACTED`
-- update_room_exit() `EXTRACTED`
-- get_container_and_player_for_loot_all() `EXTRACTED`
-- _start_login_grace_period_body() `EXTRACTED`
-- delete_room_exit() `EXTRACTED`
-- _update_npc_definition_internal() `EXTRACTED`
-- update_room_position() `EXTRACTED`
-- get_npc_definitions() `EXTRACTED`
-- spawn_npc_instance() `EXTRACTED`
-- create_npc_spawn_rule() `EXTRACTED`
-- get_npc_spawn_rules() `EXTRACTED`
-- validate_character_stats() `EXTRACTED`
-- get_player_quests() `EXTRACTED`
-- get_system_metrics() `EXTRACTED`
-- create_dialogue_definition() `EXTRACTED`
-- list_dialogue_definitions() `EXTRACTED`
+## Relationships
 
-### contains
-- server/exceptions.py `EXTRACTED`
+- [api/character_creation.py](api-character_creation.py.md) (65 shared connections)
+- [User](User.md) (50 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (48 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (25 shared connections)
+- [api/player_respawn.py](api-player_respawn.py.md) (24 shared connections)
+- [RoomService](RoomService.md) (24 shared connections)
+- [SecureBaseModel](SecureBaseModel.md) (22 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (19 shared connections)
+- [LootAllRequest](LootAllRequest.md) (17 shared connections)
+- [ExplorationService](ExplorationService.md) (16 shared connections)
+- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (15 shared connections)
+- [ValidationError](ValidationError.md) (15 shared connections)
 
-### imports
-- players.py `EXTRACTED`
-- api/character_creation.py `EXTRACTED`
-- maps.py `EXTRACTED`
-- endpoints.py `EXTRACTED`
-- api/monitoring.py `EXTRACTED`
-- rooms.py `EXTRACTED`
-- test_monitoring_endpoints.py `EXTRACTED`
-- test_maps.py `EXTRACTED`
-- real_time.py `EXTRACTED`
-- test_exceptions.py `EXTRACTED`
-- api/container_helpers.py `EXTRACTED`
-- test_container_helpers.py `EXTRACTED`
-- test_rooms_write_api.py `EXTRACTED`
-- test_real_time_helpers.py `EXTRACTED`
-- test_metrics_endpoints.py `EXTRACTED`
-- api/player_effects.py `EXTRACTED`
-- test_npc_definitions_api.py `EXTRACTED`
-- test_exceptions_comprehensive.py `EXTRACTED`
-- standardized_responses.py `EXTRACTED`
-- npc_definitions_api.py `EXTRACTED`
+## Source Files
 
-### inherits
-- LoggedException `EXTRACTED`
-- HTTPException `EXTRACTED`
+- `server/api/players.py`
+- `server/exceptions.py`
+- `server/game/player_service.py`
+- `server/game/player_state_service.py`
+- `server/schemas/players/player.py`
+- `server/schemas/players/skill.py`
+- `server/schemas/quest/__init__.py`
+- `server/schemas/quest/quest.py`
+- `server/tests/unit/api/test_players_api_coverage.py`
+- `server/tests/unit/api/test_players_quests.py`
 
-### method
-- .__init__() `EXTRACTED`
+## Audit Trail
 
-### rationale_for
-- HTTPException with automatic logging. This class extends FastAPI's… `EXTRACTED`
-
-### references
-- ._handle_logged_http_exception() `EXTRACTED`
-- ._get_logged_http_user_friendly_message() `EXTRACTED`
-
-### uses
-- TestLootAllItems `INFERRED`
-- TestMonitoringEndpoints `INFERRED`
-- TestRegisterLootEndpoints `INFERRED`
-- TestRollCharacterStats `INFERRED`
-- TestHandleTransferItemsExceptions `INFERRED`
-- TestOpenContainer `INFERRED`
-- TestTransferItems `INFERRED`
-- TestGetContainerAndPlayerForLootAll `INFERRED`
-- TestHelperFunctions `INFERRED`
-- test_create_room_exit_duplicate_direction_409() `INFERRED`
-- TestHandleLootAllExceptions `INFERRED`
-- TestHandleOpenContainerExceptions `INFERRED`
-- test_apply_lucidity_loss_validation_maps_to_404() `INFERRED`
-- test_create_room_exit_source_room_missing_404() `INFERRED`
-- test_create_room_exit_target_room_missing_404() `INFERRED`
-- test_update_room_exit_not_found_404() `INFERRED`
-- TestCreateCharacterWithStats `INFERRED`
-- TestHandleContainerServiceErrorEdgeCases `INFERRED`
-- TestHandleContainerServiceError `INFERRED`
-- TestCloseContainer `INFERRED`
+- EXTRACTED: 822 (83%)
+- INFERRED: 174 (17%)
+- AMBIGUOUS: 0 (0%)
 
 ---
 

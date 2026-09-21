@@ -7,7 +7,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType
+from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType, CombatResult
 from server.services.combat_flee_handler import try_voluntary_flee_roll
 
 # pylint: disable=protected-access  # Reason: Test file - accessing for test setup
@@ -361,3 +361,206 @@ async def test_check_involuntary_flee_session_path():
             result = await check_involuntary_flee(participant, 20)
     assert result is True
     mock_check.assert_awaited_once()
+
+
+def _make_npc_participant(participant_id: uuid.UUID, name: str = "Npc", dp: int = 100) -> CombatParticipant:
+    """Create an NPC combat participant that can act."""
+    return CombatParticipant(
+        participant_id=participant_id,
+        participant_type=CombatParticipantType.NPC,
+        name=name,
+        current_dp=dp,
+        max_dp=100,
+        dexterity=10,
+        is_active=True,
+    )
+
+
+def _alive_result(
+    *,
+    target_died: bool = False,
+    combat_ended: bool = False,
+    damage: int = 5,
+) -> CombatResult:
+    """CombatResult where the fleer survives and combat continues (unless overridden)."""
+    return CombatResult(
+        success=True,
+        damage=damage,
+        target_died=target_died,
+        combat_ended=combat_ended,
+        message="hit",
+    )
+
+
+@pytest.mark.asyncio
+async def test_execute_flee_failed_free_hits_one_opponent():
+    """One acting opponent yields a single process_attack targeting the fleer."""
+    from server.services.combat_flee_handler import execute_flee_failed_free_hits
+
+    combat_id = uuid.uuid4()
+    fleeing_id = uuid.uuid4()
+    opp_id = uuid.uuid4()
+    combat = CombatInstance(
+        combat_id=combat_id,
+        room_id="room_1",
+        participants={
+            fleeing_id: _make_participant(fleeing_id, "Fleer"),
+            opp_id: _make_npc_participant(opp_id, "Opp"),
+        },
+        turn_order=[fleeing_id, opp_id],
+    )
+    process_attack: AsyncMock = AsyncMock(return_value=_alive_result())
+    combat_service = MagicMock()
+    combat_service.get_combat = MagicMock(return_value=combat)
+    combat_service.process_attack = process_attack
+
+    with patch(
+        "server.game.npcs.attack_damage.resolve_npc_attack_damage",
+        return_value=7,
+    ):
+        await execute_flee_failed_free_hits(combat_service, combat_id, fleeing_id)
+
+    process_attack.assert_awaited_once_with(attacker_id=opp_id, target_id=fleeing_id, damage=7, damage_type="physical")
+
+
+@pytest.mark.asyncio
+async def test_execute_flee_failed_free_hits_two_opponents_turn_order():
+    """Two opponents attack in turn_order, then remaining by participant_id."""
+    from server.services.combat_flee_handler import execute_flee_failed_free_hits
+
+    combat_id = uuid.uuid4()
+    fleeing_id = uuid.uuid4()
+    # Lexicographically opp_a < opp_b; turn_order puts opp_b first.
+    opp_a = uuid.UUID("00000000-0000-0000-0000-00000000000a")
+    opp_b = uuid.UUID("00000000-0000-0000-0000-00000000000b")
+    combat = CombatInstance(
+        combat_id=combat_id,
+        room_id="room_1",
+        participants={
+            fleeing_id: _make_participant(fleeing_id, "Fleer"),
+            opp_a: _make_npc_participant(opp_a, "A"),
+            opp_b: _make_npc_participant(opp_b, "B"),
+        },
+        turn_order=[opp_b, fleeing_id],
+    )
+    process_attack: AsyncMock = AsyncMock(return_value=_alive_result())
+    combat_service = MagicMock()
+    combat_service.get_combat = MagicMock(return_value=combat)
+    combat_service.process_attack = process_attack
+
+    with patch("server.game.npcs.attack_damage.resolve_npc_attack_damage", return_value=3):
+        await execute_flee_failed_free_hits(combat_service, combat_id, fleeing_id)
+
+    assert process_attack.await_count == 2
+    first = process_attack.await_args_list[0]
+    second = process_attack.await_args_list[1]
+    assert first.kwargs["attacker_id"] == opp_b
+    assert second.kwargs["attacker_id"] == opp_a
+    assert first.kwargs["target_id"] == fleeing_id
+    assert second.kwargs["target_id"] == fleeing_id
+
+
+@pytest.mark.asyncio
+async def test_execute_flee_failed_free_hits_stops_on_target_died():
+    """When fleer dies mid-loop, remaining opponents do not get free hits."""
+    from server.services.combat_flee_handler import execute_flee_failed_free_hits
+
+    combat_id = uuid.uuid4()
+    fleeing_id = uuid.uuid4()
+    opp_a = uuid.UUID("00000000-0000-0000-0000-000000000001")
+    opp_b = uuid.UUID("00000000-0000-0000-0000-000000000002")
+    combat = CombatInstance(
+        combat_id=combat_id,
+        room_id="room_1",
+        participants={
+            fleeing_id: _make_participant(fleeing_id, "Fleer"),
+            opp_a: _make_npc_participant(opp_a, "A"),
+            opp_b: _make_npc_participant(opp_b, "B"),
+        },
+        turn_order=[opp_a, opp_b],
+    )
+    process_attack: AsyncMock = AsyncMock(side_effect=[_alive_result(target_died=True), _alive_result()])
+    combat_service = MagicMock()
+    combat_service.get_combat = MagicMock(return_value=combat)
+    combat_service.process_attack = process_attack
+
+    with patch("server.game.npcs.attack_damage.resolve_npc_attack_damage", return_value=9):
+        await execute_flee_failed_free_hits(combat_service, combat_id, fleeing_id)
+
+    process_attack.assert_awaited_once()
+    assert process_attack.await_args is not None
+    assert process_attack.await_args.kwargs["attacker_id"] == opp_a
+
+
+@pytest.mark.asyncio
+async def test_execute_flee_failed_free_hits_stops_on_combat_ended():
+    """combat_ended stops the free-hit loop before later opponents."""
+    from server.services.combat_flee_handler import execute_flee_failed_free_hits
+
+    combat_id = uuid.uuid4()
+    fleeing_id = uuid.uuid4()
+    opp_a = uuid.UUID("00000000-0000-0000-0000-000000000001")
+    opp_b = uuid.UUID("00000000-0000-0000-0000-000000000002")
+    combat = CombatInstance(
+        combat_id=combat_id,
+        room_id="room_1",
+        participants={
+            fleeing_id: _make_participant(fleeing_id, "Fleer"),
+            opp_a: _make_npc_participant(opp_a, "A"),
+            opp_b: _make_npc_participant(opp_b, "B"),
+        },
+        turn_order=[opp_a, opp_b],
+    )
+    process_attack: AsyncMock = AsyncMock(side_effect=[_alive_result(combat_ended=True), _alive_result()])
+    combat_service = MagicMock()
+    combat_service.get_combat = MagicMock(return_value=combat)
+    combat_service.process_attack = process_attack
+
+    with patch("server.game.npcs.attack_damage.resolve_npc_attack_damage", return_value=4):
+        await execute_flee_failed_free_hits(combat_service, combat_id, fleeing_id)
+
+    process_attack.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_execute_flee_failed_free_hits_missing_combat_noop():
+    """Missing combat is a no-op (no process_attack)."""
+    from server.services.combat_flee_handler import execute_flee_failed_free_hits
+
+    process_attack: AsyncMock = AsyncMock()
+    combat_service = MagicMock()
+    combat_service.get_combat = MagicMock(return_value=None)
+    combat_service.process_attack = process_attack
+
+    await execute_flee_failed_free_hits(combat_service, uuid.uuid4(), uuid.uuid4())
+
+    process_attack.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_execute_flee_failed_free_hits_no_opponents_noop():
+    """No acting opponents means no process_attack calls."""
+    from server.services.combat_flee_handler import execute_flee_failed_free_hits
+
+    combat_id = uuid.uuid4()
+    fleeing_id = uuid.uuid4()
+    dead_id = uuid.uuid4()
+    dead = _make_npc_participant(dead_id, "Dead", dp=0)
+    dead.is_active = False
+    combat = CombatInstance(
+        combat_id=combat_id,
+        room_id="room_1",
+        participants={
+            fleeing_id: _make_participant(fleeing_id, "Fleer"),
+            dead_id: dead,
+        },
+        turn_order=[fleeing_id, dead_id],
+    )
+    process_attack: AsyncMock = AsyncMock()
+    combat_service = MagicMock()
+    combat_service.get_combat = MagicMock(return_value=combat)
+    combat_service.process_attack = process_attack
+
+    await execute_flee_failed_free_hits(combat_service, combat_id, fleeing_id)
+
+    process_attack.assert_not_awaited()
