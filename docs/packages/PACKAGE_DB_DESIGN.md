@@ -36,7 +36,6 @@ per-environment DDL files (`mythos_dev_ddl.sql` etc.) retired by #811 — see
 | `db/databases/databases.sql` | Creates the three databases, `pgcrypto`, UTC timezone, access grants | Run once per environment, idempotent |
 | `db/roles/roles.sql` | Creates the PostgreSQL roles/owners per environment | Run once per environment, idempotent |
 | `data/db/seed.sql` (data submodule) | Static world seed — loaded with `search_path` set, alongside `schema.sql` | Reapplied wholesale by `scripts/load_world_seed.py`, **destructive** (drops all tables first) |
-| `db/corruption_adjustment_log.sql` | Loose file at `db/` root — see §3 note | Unclear; not part of the composition order below |
 
 ## 3. Composition — how a database gets built
 
@@ -56,11 +55,6 @@ Steps 1–2 are idempotent and safe to re-run. Steps 3–4 are **not** — `load
 banner states it drops every table; it is gated on `CONFIRM_LOAD_WORLD_SEED=1` and its allow-list
 covers all three environments. Step 5 is idempotent (`CREATE OR REPLACE`). Step 6 is additive-only —
 see §4.
-
-**[NOTE]** `db/corruption_adjustment_log.sql` at `db/` root does not appear in this composition order
-and is not a schema/migration/procedure file in the sense of the rows above — flagged here rather than
-silently omitted, since its purpose relative to the `corruption_adjustment_log` table
-(`db/schema.sql:3562`) was not established during this pass.
 
 ## 4. Migration currency by environment
 
