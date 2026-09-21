@@ -2,12 +2,17 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "composite": true,
+    "tsBuildInfoFile": "../../node_modules/.tmp/tsconfig.e2e.tsbuildinfo",
+    "declarationDir": "../../node_modules/.tmp/types/e2e",
     "types": ["node"],
     "typeRoots": ["../../node_modules/@types"],
     "noEmit": false,
+    "emitDeclarationOnly": true,
     "allowImportingTsExtensions": false,
-    "rootDir": "../.."
+    "rootDir": "../..",
+    "noUnusedLocals": false
   },
-  "include": ["./**/*.ts", "../../src/test/e2e-bootstrap.ts", "../../src/utils/deathVoidLocation.ts"],
-  "exclude": []
+  "include": ["./**/*.ts", "./**/*.d.ts", "../../src/test/e2e-bootstrap.ts"],
+  "exclude": ["./runtime/fixtures/message-match.ts"],
+  "references": [{ "path": "../../tsconfig.app.json" }]
 }

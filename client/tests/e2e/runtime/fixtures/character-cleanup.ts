@@ -26,6 +26,10 @@ function isProtected(name: string): boolean {
   return PROTECTED_CHARACTER_NAME_SET.has(name.trim());
 }
 
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 function isTestCharacter(name: string): boolean {
   return TEST_CHARACTER_NAME_PATTERN.test(name?.trim() ?? '');
 }
@@ -83,7 +87,7 @@ async function confirmCharacterDeletion(page: Page, charName: string): Promise<v
   // not a signal to silently re-loop over a stale reference.
   await page
     .locator('.character-card')
-    .filter({ has: page.locator('h3.character-name', { hasText: charName, exact: true }) })
+    .filter({ has: page.locator('h3.character-name', { hasText: new RegExp(`^${escapeRegExp(charName)}$`) }) })
     .waitFor({ state: 'detached', timeout: TEST_TIMEOUTS.LOGIN });
 }
 

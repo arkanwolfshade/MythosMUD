@@ -36,15 +36,19 @@ describe('IntersectionNode', () => {
     data: defaultData,
     selected: false,
     dragging: false,
+    zIndex: 0,
+    isConnectable: false,
+    xPos: 0,
+    yPos: 0,
   };
 
   it('should render intersection node', () => {
-    render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...defaultProps} />);
+    render(<IntersectionNode {...defaultProps} />);
     expect(screen.getByText('Intersection')).toBeInTheDocument();
   });
 
   it('should render all handles', () => {
-    render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...defaultProps} />);
+    render(<IntersectionNode {...defaultProps} />);
     expect(screen.getByTestId('handle-target-top')).toBeInTheDocument();
     expect(screen.getByTestId('handle-target-right')).toBeInTheDocument();
     expect(screen.getByTestId('handle-target-bottom')).toBeInTheDocument();
@@ -63,7 +67,7 @@ describe('IntersectionNode', () => {
         isCurrentLocation: true,
       },
     };
-    render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props} />);
+    render(<IntersectionNode {...props} />);
     expect(screen.getByText('Intersection')).toBeInTheDocument();
   });
 
@@ -75,7 +79,7 @@ describe('IntersectionNode', () => {
         hasUnsavedChanges: true,
       },
     };
-    render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props} />);
+    render(<IntersectionNode {...props} />);
     expect(screen.getByText('Intersection')).toBeInTheDocument();
   });
 
@@ -87,7 +91,7 @@ describe('IntersectionNode', () => {
         environment: 'indoors',
       },
     };
-    render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props} />);
+    render(<IntersectionNode {...props} />);
     expect(screen.getByText('Intersection')).toBeInTheDocument();
   });
 
@@ -99,7 +103,7 @@ describe('IntersectionNode', () => {
         subZone: 'campus',
       },
     };
-    render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props} />);
+    render(<IntersectionNode {...props} />);
     expect(screen.getByText('Intersection')).toBeInTheDocument();
   });
 
@@ -122,10 +126,10 @@ describe('IntersectionNode', () => {
       // Same props - should not re-render
     };
 
-    const { rerender } = render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props1} />);
+    const { rerender } = render(<IntersectionNode {...props1} />);
     const initialRender = screen.getByText('Intersection');
 
-    rerender(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props2} />);
+    rerender(<IntersectionNode {...props2} />);
     const afterRerender = screen.getByText('Intersection');
 
     expect(initialRender).toBe(afterRerender);
@@ -148,8 +152,8 @@ describe('IntersectionNode', () => {
       },
     };
 
-    const { rerender } = render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props1} />);
-    rerender(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props2} />);
+    const { rerender } = render(<IntersectionNode {...props1} />);
+    rerender(<IntersectionNode {...props2} />);
     // Component should re-render when isCurrentLocation changes
   });
 
@@ -170,9 +174,9 @@ describe('IntersectionNode', () => {
       },
     };
 
-    const { rerender } = render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props1} />);
+    const { rerender } = render(<IntersectionNode {...props1} />);
     expect(screen.getByText('Intersection 1')).toBeInTheDocument();
-    rerender(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props2} />);
+    rerender(<IntersectionNode {...props2} />);
     expect(screen.getByText('Intersection 2')).toBeInTheDocument();
   });
 
@@ -193,8 +197,8 @@ describe('IntersectionNode', () => {
       },
     };
 
-    const { rerender } = render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props1} />);
-    rerender(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props2} />);
+    const { rerender } = render(<IntersectionNode {...props1} />);
+    rerender(<IntersectionNode {...props2} />);
     // Component should re-render when hasUnsavedChanges changes
   });
 
@@ -215,8 +219,8 @@ describe('IntersectionNode', () => {
       },
     };
 
-    const { rerender } = render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props1} />);
-    rerender(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props2} />);
+    const { rerender } = render(<IntersectionNode {...props1} />);
+    rerender(<IntersectionNode {...props2} />);
     // Component should re-render when environment changes
   });
 
@@ -237,8 +241,8 @@ describe('IntersectionNode', () => {
       },
     };
 
-    const { rerender } = render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props1} />);
-    rerender(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props2} />);
+    const { rerender } = render(<IntersectionNode {...props1} />);
+    rerender(<IntersectionNode {...props2} />);
     // Component should re-render when subZone changes
   });
 
@@ -250,7 +254,7 @@ describe('IntersectionNode', () => {
         name: 'A Very Long Intersection Name That Should Be Truncated',
       },
     };
-    const { container } = render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props} />);
+    const { container } = render(<IntersectionNode {...props} />);
     expect(container).toBeTruthy();
     // Name should be truncated
   });

@@ -10,6 +10,8 @@
         "pylint.enabled": true,
         "pylint.importStrategy": "fromEnvironment",
         "pylint.args": ["--rcfile=${workspaceFolder}/.pylintrc"],
+        "typescript.tsdk": "${workspaceFolder}/client/node_modules/typescript/lib",
+        "typescript.enablePromptUseWorkspaceTsdk": true,
       },
     },
     {
@@ -43,6 +45,8 @@
     "eslint.validate": ["javascript", "typescript"],
     "prettier.requireConfig": true,
     "prettier.printWidth": 120,
+    "typescript.tsdk": "client/node_modules/typescript/lib",
+    "typescript.enablePromptUseWorkspaceTsdk": true,
     "typescript.preferences.includePackageJsonAutoImports": "on",
     "typescript.suggest.autoImports": true,
     "makefile.configureOnOpen": false,

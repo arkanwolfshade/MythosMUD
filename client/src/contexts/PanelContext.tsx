@@ -25,7 +25,7 @@ export interface PanelState {
   zIndex: number;
 }
 
-interface PanelLayout {
+export interface PanelLayout {
   [panelId: string]: PanelState;
 }
 
