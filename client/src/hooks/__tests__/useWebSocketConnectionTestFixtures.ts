@@ -9,7 +9,7 @@ import { vi } from 'vitest';
 
 declare const global: typeof globalThis;
 
-const { mockResourceManager, fetchSpy, mockedSetInterval, mockedClearInterval } = vi.hoisted(() => {
+const { mockResourceManager, fetchSpy } = vi.hoisted(() => {
   const mockResourceManager = {
     registerEventSource: vi.fn(),
     registerWebSocket: vi.fn(),
@@ -79,7 +79,7 @@ const { mockResourceManager, fetchSpy, mockedSetInterval, mockedClearInterval } 
     window.clearInterval = mockedClearInterval;
   }
 
-  return { mockResourceManager, fetchSpy, mockedSetInterval, mockedClearInterval };
+  return { mockResourceManager, fetchSpy };
 });
 
 vi.mock('../../utils/logger', () => ({
@@ -185,7 +185,7 @@ export const defaultOptions = {
   sessionId: 'test-session-id',
 };
 
-export { fetchSpy, mockResourceManager, mockedClearInterval, mockedSetInterval };
+export { fetchSpy, mockResourceManager };
 
 export function wsConnectionBeforeEach(): void {
   vi.clearAllMocks();

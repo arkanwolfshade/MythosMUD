@@ -30,7 +30,7 @@ export interface WebSocketConnectionOptions {
  * graceful server-initiated replacement retried indefinitely against whichever session currently
  * held the connection (#297/#610).
  */
-export interface WebSocketCloseInfo {
+interface WebSocketCloseInfo {
   code: number;
   reason: string;
 }

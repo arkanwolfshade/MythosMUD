@@ -52,7 +52,7 @@ export function hasEffect(active: string[], name: string): boolean {
   return active.includes(name);
 }
 
-export function effectClass(active: string[], name: string, animation: string): string {
+function effectClass(active: string[], name: string, animation: string): string {
   return hasEffect(active, name) ? animation : '';
 }
 

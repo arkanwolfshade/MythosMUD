@@ -7,7 +7,7 @@ export const PLAYER_NAME_MIN_LENGTH = 3;
 export const PLAYER_NAME_MAX_LENGTH = 20;
 
 /** Must start with a letter; only letters, digits, underscore, hyphen. */
-export const PLAYER_NAME_PATTERN = /^[a-zA-Z][a-zA-Z0-9_-]*$/;
+const PLAYER_NAME_PATTERN = /^[a-zA-Z][a-zA-Z0-9_-]*$/;
 
 export const PLAYER_NAME_RULES_HINT =
   '3-20 characters. Start with a letter. Letters, numbers, underscores, and hyphens only. No spaces.';

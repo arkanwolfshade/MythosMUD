@@ -1,6 +1,6 @@
 # ADR-022: ui-v2 Client Transition and Legacy Retirement
 
-**Version 1.8.0** · MythosMUD · 2026-09-16
+**Version 1.9.0** · MythosMUD · 2026-09-21
 
 ---
 
@@ -73,10 +73,9 @@ file by file rather than trusting the audit's number.
   owners (§6); as of #694, a real CI gate (§6) prevents silent re-accumulation — `npm run knip`
   failing the build is no longer advisory.
 - Negative: the 82-of-155 orphan count this ADR opened with is fully retired (#690-#693), and the
-  gate enforces (#694). What remains is backlog, not retirement work: nine open decide-then-port
-  product decisions (#699, #706-#709, #711, #713-#715) for capabilities the retirement found had no
-  live client, and #718 to triage the 94 unused-export/unused-type findings knip's `exports`/`types`
-  rules would surface if enabled (still `"off"` — see §6's gate-condition close-out).
+  gate enforces (#694). #718 flipped knip `exports`/`types` to `"error"` after triage (see §6).
+  Remaining backlog is the open decide-then-port product decisions for capabilities the retirement
+  found had no live client (see issue tracker; several of #699/#706-#715 may already be closed).
 - Neutral: no runtime behavior changes in the PR that introduces this ADR.
 
 ## 6. Retirement Plan
@@ -264,14 +263,12 @@ companion — suppressed by name in `knip.json`'s new `ignore` list rather than 
 `@testing-library/user-event` devDependency was removed, same "own the cascade" precedent as `#693`'s
 `react-resizable`.
 
-`exports`/`types` remain `"off"`. A planning-time non-destructive check (`npx knip --exports`)
-suggested flipping them was free, but that check couldn't actually override rules the config sets
-`"off"` — CLI `--include` only adds issue types on top of what's already enabled, it doesn't force
-one on. Flipping the config for real surfaced **94 findings** (44 unused exports, 50 unused exported
-types — mostly the classic knip `types`-rule noise pattern: the same type name re-exported from
-several files, e.g. `RoomMapEditorProps` in 5 files). That is real triage work distinct in kind from
-this gate issue, filed separately as
-[#718](https://github.com/arkanwolfshade/MythosMUD/issues/718) rather than folded into `#694`.
+`exports`/`types` were left `"off"` after `#694` because flipping them for real (not the flawed
+`npx knip --exports` planning check — CLI `--include` cannot override a rule set `"off"`) surfaced
+~94 findings. That triage landed in
+[#718](https://github.com/arkanwolfshade/MythosMUD/issues/718): unused value exports deleted or
+unexported; unused exported types unexported / re-exports collapsed; both rules are now `"error"`
+in `client/knip.json`, and `npm run knip` is clean under the stricter gate.
 
 **[NOTE]**
 [#744](https://github.com/arkanwolfshade/MythosMUD/issues/744) found the 8 files that survived
@@ -310,3 +307,4 @@ package's boundary contract.
 | 1.6.0 | 2026-09-08 | #715 rebuilt `IncapacitatedBanner` in `ui-v2`, derived from the authoritative DP tier rather than the combat-only `player_mortally_wounded` event. Corrected the "pure missing-renderer gap" claim: the dead `isMortallyWounded` pipeline (a fourth producer-side-inertness instance) was found and deleted alongside its inert CSS class. |
 | 1.7.0 | 2026-09-08 | #714 resolved: `HallucinationTicker` was not rebuilt. ADR-024 made hallucinations server-authoritative end-to-end instead, reversing #626's client-side exit-hallucination placement along the way. |
 | 1.8.0 | 2026-09-16 | #744 found `ui/`'s 8 survivors were live `ui-v2` dependencies; relocated to `ui-v2/primitives/` with a new barrel, documented in `PACKAGE_UI_PRIMITIVES_DESIGN.md`. |
+| 1.9.0 | 2026-09-21 | #718 triaged unused knip exports/types; set both rules to `"error"` in `client/knip.json`. |

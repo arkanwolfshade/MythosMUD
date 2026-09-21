@@ -2,7 +2,7 @@ import { type Dispatch, type SetStateAction, useEffect, useState } from 'react';
 import { logger } from '../utils/logger.js';
 import { secureTokenStorage } from '../utils/security.js';
 
-export interface RoomData {
+interface RoomData {
   id: string;
   plane: string;
   zone: string;

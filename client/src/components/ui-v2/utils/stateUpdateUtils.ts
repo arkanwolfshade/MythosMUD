@@ -115,7 +115,7 @@ export const applyRoomUpdate = (
 
 // Helper function to apply message updates
 // Uses immutable patterns: creates new arrays instead of mutating existing ones
-export const applyMessageUpdates = (
+const applyMessageUpdates = (
   eventUpdates: GameStateUpdates,
   updates: Partial<GameState>,
   currentMessages: ChatMessage[]
@@ -130,7 +130,7 @@ export const applyMessageUpdates = (
 };
 
 // Helper function to apply grace period updates
-export const applyGracePeriodUpdate = (eventUpdates: GameStateUpdates, updates: Partial<GameState>): void => {
+const applyGracePeriodUpdate = (eventUpdates: GameStateUpdates, updates: Partial<GameState>): void => {
   if (eventUpdates.loginGracePeriodActive !== undefined) {
     updates.loginGracePeriodActive = eventUpdates.loginGracePeriodActive;
   }

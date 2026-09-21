@@ -9,7 +9,7 @@ export type ColorScheme = 'default' | 'high-contrast' | 'eldritch';
 export type FontSize = 'small' | 'medium' | 'large';
 
 // UI preferences
-export interface UIPreferences {
+interface UIPreferences {
   theme: Theme;
   colorScheme: ColorScheme;
   fontSize: FontSize;

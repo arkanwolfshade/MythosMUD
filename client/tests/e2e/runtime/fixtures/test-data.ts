@@ -12,7 +12,7 @@
  */
 
 /** Matches server.constants.spawn_defaults.DEFAULT_RESPAWN_ROOM (sanitarium foyer / Morgan). */
-export const DEFAULT_RESPAWN_ROOM = 'earth_arkhamcity_sanitarium_room_foyer_001' as const;
+const DEFAULT_RESPAWN_ROOM = 'earth_arkhamcity_sanitarium_room_foyer_001' as const;
 
 /**
  * After `look`, foyer prose shows in Location / Room Description (not always Game Info).
@@ -63,12 +63,6 @@ export const TEST_PLAYERS: TestPlayer[] = [
     startingRoom: DEFAULT_RESPAWN_ROOM,
   },
 ];
-
-export const TEST_ROOMS = {
-  /** Sanitarium hub used by movement specs after navigation from spawn */
-  MAIN_FOYER: 'earth_arkhamcity_sanitarium_room_foyer_001',
-  DEFAULT_RESPAWN_ROOM,
-} as const;
 
 export const TEST_TIMEOUTS = {
   DEFAULT: 30000, // 30 seconds

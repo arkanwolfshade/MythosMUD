@@ -123,10 +123,6 @@ export interface PanelState {
   preMinimizeSize?: PanelSize;
 }
 
-export interface PanelLayout {
-  panels: Record<string, PanelState>;
-}
-
 export type PanelVariant = 'default' | 'eldritch' | 'elevated';
 
 // Import MythosTimeState from the types directory

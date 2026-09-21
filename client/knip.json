@@ -7,8 +7,8 @@
   "ignoreBinaries": ["uv", "pwsh"],
   "treatConfigHintsAsErrors": false,
   "rules": {
-    "exports": "off",
-    "types": "off",
+    "exports": "error",
+    "types": "error",
     "files": "error",
     "devDependencies": "error",
     "dependencies": "error",

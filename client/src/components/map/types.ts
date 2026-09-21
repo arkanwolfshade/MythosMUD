@@ -8,8 +8,6 @@
  * essential for maintaining the integrity of our dimensional mappings.
  */
 
-import type { Edge, Node } from 'reactflow';
-
 /**
  * Room node data structure for React Flow.
  */
@@ -65,37 +63,3 @@ export interface ExitEdgeData {
   /** Custom exit description */
   description?: string;
 }
-
-/**
- * Custom room node type for React Flow.
- */
-export type RoomNode = Node<RoomNodeData, 'room'>;
-
-/**
- * Custom intersection node type for React Flow.
- */
-export type IntersectionNode = Node<RoomNodeData, 'intersection'>;
-
-/**
- * Custom exit edge type for React Flow.
- */
-export type ExitEdge = Edge<ExitEdgeData>;
-
-/**
- * Map layout configuration.
- */
-export interface MapLayoutConfig {
-  /** Layout algorithm type */
-  algorithm: 'grid';
-  /** Grid spacing for nodes */
-  gridSpacing?: number;
-  /** Zone-based grouping */
-  groupByZone?: boolean;
-  /** Sub-zone-based grouping */
-  groupBySubZone?: boolean;
-}
-
-/**
- * Map view mode.
- */
-export type MapViewMode = 'view' | 'edit';

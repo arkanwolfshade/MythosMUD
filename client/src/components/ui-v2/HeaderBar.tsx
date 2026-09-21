@@ -15,7 +15,7 @@ const TRADITION_COLORS: Record<string, string> = {
 };
 
 /** Who the player is currently following (for title panel). */
-export interface FollowingTarget {
+interface FollowingTarget {
   target_name: string;
   target_type: 'player' | 'npc';
 }

@@ -13,7 +13,6 @@ export {
 export type { PlayerContext } from './multiplayer-contexts';
 
 export {
-  ensureForegroundPlayerPlayable,
   ensureFreshMultiPlayerContexts,
   ensurePlayerInGame,
   getPlayerMessages,
@@ -28,4 +27,3 @@ export {
   resetE2ePlayerRoomsInDatabase,
   waitForLookReflectedInUi,
 } from './multiplayer-colocated';
-export type { EnsureMultiplayerCoLocatedOptions } from './multiplayer-colocated';
