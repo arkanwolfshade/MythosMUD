@@ -18,7 +18,7 @@ from server.structured_logging.logging_utilities import (
 
 DEFAULT_LOG_CATEGORIES: dict[str, list[str]] = {
     "server": ["server", "uvicorn", "server.app.factory"],
-    "persistence": ["persistence", "server.persistence", "PersistenceLayer", "asyncpg", "database"],
+    "persistence": ["persistence", "server.persistence", "asyncpg", "database"],
     "authentication": ["auth"],
     "inventory": [
         "inventory",
