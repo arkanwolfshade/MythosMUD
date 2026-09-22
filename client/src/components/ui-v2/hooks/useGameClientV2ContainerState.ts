@@ -45,7 +45,7 @@ export function useGameClientV2GameModelState() {
 
 export function useGameClientV2SurvivalAndTimeState() {
   const [isDead, setIsDead] = useState(false);
-  const [deathLocation] = useState<string>('Unknown Location');
+  const [deathLocation, setDeathLocation] = useState<string>('Unknown Location');
   const [isRespawning, setIsRespawning] = useState(false);
   const [isDelirious, setIsDelirious] = useState(false);
   const [deliriumLocation, setDeliriumLocation] = useState<string>('Unknown Location');
@@ -59,6 +59,7 @@ export function useGameClientV2SurvivalAndTimeState() {
     isDead,
     setIsDead,
     deathLocation,
+    setDeathLocation,
     isRespawning,
     setIsRespawning,
     isDelirious,

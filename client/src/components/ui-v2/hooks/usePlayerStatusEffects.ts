@@ -1,7 +1,7 @@
 // Player status effects hook (death/delirium detection)
 // Extracted from GameClientV2Container to reduce complexity
 
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import type { LucidityStatus } from '../../../types/lucidity';
 import { logger } from '../../../utils/logger';
 import type { Player, Room } from '../types';
@@ -10,6 +10,7 @@ interface PlayerStatusSetters {
   setIsDead: (dead: boolean) => void;
   setIsDelirious: (delirious: boolean) => void;
   setDeliriumLocation: (location: string) => void;
+  setDeathLocation: (location: string) => void;
   setHasRespawned: (hasRespawned: boolean) => void;
 }
 
@@ -21,10 +22,25 @@ interface UsePlayerStatusEffectsParams {
   isDelirious: boolean;
   hasRespawned: boolean;
   setters: PlayerStatusSetters;
+  /** Shared with event processing so player_died can fall back when server sends limbo. */
+  lastNonLimboRoomNameRef?: React.MutableRefObject<string | null>;
 }
 
-const LIMBO_ROOM_ID = 'limbo_death_void_limbo_death_void';
+export const LIMBO_ROOM_ID = 'limbo_death_void_limbo_death_void';
+/** Foyer id — only used to skip re-marking dead right after a successful respawn. */
 const RESPAWN_ROOM_ID = 'earth_arkhamcity_sanitarium_room_foyer_001';
+
+export function isUnusableDeathLocation(loc: string): boolean {
+  const trimmed = loc.trim();
+  if (!trimmed || trimmed === 'Unknown Location') {
+    return true;
+  }
+  if (trimmed === LIMBO_ROOM_ID || trimmed.startsWith('limbo_')) {
+    return true;
+  }
+  // Limbo display name from room data
+  return /spaces between/i.test(trimmed);
+}
 
 function getCurrentLucidity(player: Player | null, lucidityStatus: LucidityStatus | null): number {
   if (lucidityStatus?.current !== undefined) {
@@ -44,9 +60,22 @@ function skipDeadInRespawnRoom(roomId: string | undefined, isDead: boolean, hasR
   return roomId === RESPAWN_ROOM_ID && !isDead && hasRespawned;
 }
 
-function markPlayerDead(setters: PlayerStatusSetters, currentDpNum: number, roomId: string | undefined): void {
+function markPlayerDead(
+  setters: PlayerStatusSetters,
+  currentDpNum: number,
+  room: Room | null,
+  lastNonLimboRoomName: string | null
+): void {
+  const roomId = room?.id;
   setters.setIsDead(true);
   setters.setHasRespawned(false);
+  // Only limbo is unusable as place-of-death; foyer is a real combat room.
+  const canUseRoom = !!roomId && roomId !== LIMBO_ROOM_ID && !!(room?.name || roomId);
+  const fromRoom = canUseRoom ? room?.name || roomId || null : null;
+  const chosen = fromRoom && !isUnusableDeathLocation(fromRoom) ? fromRoom : lastNonLimboRoomName;
+  if (chosen && !isUnusableDeathLocation(chosen)) {
+    setters.setDeathLocation(chosen);
+  }
   logger.info('GameClientV2Container', 'Player detected as dead', {
     currentDp: currentDpNum,
     roomId,
@@ -59,12 +88,13 @@ function syncDeathState(
   room: Room | null,
   isDead: boolean,
   hasRespawned: boolean,
-  setters: PlayerStatusSetters
+  setters: PlayerStatusSetters,
+  lastNonLimboRoomName: string | null
 ): void {
   const currentDpNum = currentDpOf(player);
   const roomId = room?.id;
   if (currentDpNum <= -10 && !skipDeadInRespawnRoom(roomId, isDead, hasRespawned)) {
-    if (!isDead) markPlayerDead(setters, currentDpNum, roomId);
+    if (!isDead) markPlayerDead(setters, currentDpNum, room, lastNonLimboRoomName);
     return;
   }
   if (isDead && (currentDpNum > -10 || roomId !== LIMBO_ROOM_ID)) {
@@ -98,18 +128,34 @@ function syncDeliriumState(
 }
 
 export const usePlayerStatusEffects = (params: UsePlayerStatusEffectsParams) => {
-  const { player, room, lucidityStatus, isDead, isDelirious, hasRespawned, setters } = params;
-  const { setIsDead, setIsDelirious, setDeliriumLocation, setHasRespawned } = setters;
+  const { player, room, lucidityStatus, isDead, isDelirious, hasRespawned, setters, lastNonLimboRoomNameRef } = params;
+  const { setIsDead, setIsDelirious, setDeliriumLocation, setDeathLocation, setHasRespawned } = setters;
+
+  const internalLastRoomRef = useRef<string | null>(null);
+  const lastRoomRef = lastNonLimboRoomNameRef ?? internalLastRoomRef;
+
+  useEffect(() => {
+    // Track any non-limbo room, including foyer (valid place of death).
+    if (room?.id && room.id !== LIMBO_ROOM_ID && room.name) {
+      lastRoomRef.current = room.name;
+    }
+  }, [room, lastRoomRef]);
 
   const statusSetters = useCallback(
-    (): PlayerStatusSetters => ({ setIsDead, setIsDelirious, setDeliriumLocation, setHasRespawned }),
-    [setIsDead, setIsDelirious, setDeliriumLocation, setHasRespawned]
+    (): PlayerStatusSetters => ({
+      setIsDead,
+      setIsDelirious,
+      setDeliriumLocation,
+      setDeathLocation,
+      setHasRespawned,
+    }),
+    [setIsDead, setIsDelirious, setDeliriumLocation, setDeathLocation, setHasRespawned]
   );
 
   useEffect(() => {
     if (!player) return;
-    syncDeathState(player, room, isDead, hasRespawned, statusSetters());
-  }, [player, room, isDead, hasRespawned, statusSetters]);
+    syncDeathState(player, room, isDead, hasRespawned, statusSetters(), lastRoomRef.current);
+  }, [player, room, isDead, hasRespawned, statusSetters, lastRoomRef]);
 
   useEffect(() => {
     if (!player) return;

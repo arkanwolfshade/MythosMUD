@@ -16,6 +16,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from server.constants.spawn_defaults import LIMBO_ROOM_ID
 from server.events.event_types import PlayerDiedEvent, PlayerDPDecayEvent
 from server.models.game import PositionState
 from server.models.player import Player
@@ -23,6 +24,9 @@ from server.structured_logging.enhanced_logging_config import get_logger, log_ex
 
 logger = get_logger(__name__)
 
+# Mirrored in player_respawn_service — room of death for interstitial / login UI.
+DEATH_ROOM_ID_STAT = "death_room_id"
+DEATH_LOCATION_STAT = "death_location"
 
 class PlayerDeathService:
     """
@@ -267,8 +271,8 @@ class PlayerDeathService:
         Returns:
             Room name if available, otherwise the room ID or "Unknown"
         """
-        if not death_location:
-            return "Unknown"
+        if not death_location or death_location == LIMBO_ROOM_ID:
+            return "Unknown Location"
 
         if self._async_persistence:
             try:
@@ -283,6 +287,15 @@ class PlayerDeathService:
                 return death_location
 
         return death_location
+
+    def _persist_death_location_stats(self, player: Player, death_location: str, room_name: str) -> None:
+        """Store death room id/name on player stats so login can show the place of death."""
+        if not death_location or death_location == LIMBO_ROOM_ID:
+            return
+        stats = player.get_stats()
+        stats[DEATH_ROOM_ID_STAT] = death_location
+        stats[DEATH_LOCATION_STAT] = room_name if room_name and room_name != LIMBO_ROOM_ID else death_location
+        player.set_stats(stats)
 
     def _publish_death_event(
         self, player_id: uuid.UUID, player_name: str, death_location: str, killer_info: dict[str, Any] | None
@@ -337,6 +350,9 @@ class PlayerDeathService:
 
             # Ensure player posture is set to lying when dead
             await self._ensure_player_posture_lying(player, player_id)
+
+            room_name = self._get_room_name_for_death(death_location)
+            self._persist_death_location_stats(player, death_location, room_name)
 
             # Log death event
             logger.info(

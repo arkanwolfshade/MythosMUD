@@ -195,6 +195,35 @@ def _get_death_location_name(room: Room | dict[str, object]) -> str:
     return "Unknown Location"
 
 
+def _resolve_stored_death_location(player: "Player", canonical_room_id: str, room: "Room | dict[str, object]") -> str:
+    """Prefer persisted death room over current room (which is often limbo)."""
+    from ..constants.spawn_defaults import LIMBO_ROOM_ID
+
+    stats = player.get_stats() if hasattr(player, "get_stats") else {}
+    stored_name = stats.get("death_location")
+    stored_id = stats.get("death_room_id")
+    if isinstance(stored_name, str) and stored_name.strip() and stored_name != "The Spaces Between":
+        if stored_id != LIMBO_ROOM_ID and stored_name != LIMBO_ROOM_ID:
+            return stored_name
+    if isinstance(stored_id, str) and stored_id.strip() and stored_id != LIMBO_ROOM_ID:
+        # Resolve id to name when we only stored the id (limbo move path).
+        from ..container.async_persistence_access import get_container_async_persistence
+
+        try:
+            persistence = get_container_async_persistence()
+            looked_up = persistence.get_room_by_id(stored_id) if persistence else None
+            if looked_up is not None and not hasattr(looked_up, "__await__"):
+                name = getattr(looked_up, "name", None)
+                if isinstance(name, str) and name.strip():
+                    return name
+        except (AttributeError, TypeError, RuntimeError, ValueError):
+            pass
+        return stored_id
+    if str(canonical_room_id) == LIMBO_ROOM_ID:
+        return "Unknown Location"
+    return _get_death_location_name(room)
+
+
 async def _get_player_for_death_check(
     player_id: uuid.UUID, connection_manager: "ConnectionManager"
 ) -> tuple["Player", str | None] | None:
@@ -238,7 +267,7 @@ async def check_and_send_death_notification(  # pylint: disable=too-many-argumen
     # Do not send based on limbo alone: player must only be in limbo at -10 DP, so if they are
     # in limbo with DP > -10 that is an invalid state; avoid showing respawn modal at 0 DP.
     if current_dp <= -10:
-        death_location_name = _get_death_location_name(room)
+        death_location_name = _resolve_stored_death_location(player, canonical_room_id, room)
         death_event = build_event(
             "player_died",
             {
@@ -250,13 +279,15 @@ async def check_and_send_death_notification(  # pylint: disable=too-many-argumen
             },
             player_id=player_id_str,
         )
-        if await send_game_state_event_safely(websocket, death_event, player_id_str):
+        sent = await send_game_state_event_safely(websocket, death_event, player_id_str)
+        if sent:
             return
         logger.info(
             "Sent death notification to player on login",
             player_id=player_id_str,
             current_dp=current_dp,
             in_limbo=str(canonical_room_id) == LIMBO_ROOM_ID,
+            death_location=death_location_name,
         )
 
 
