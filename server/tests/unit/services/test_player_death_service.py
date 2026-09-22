@@ -347,9 +347,9 @@ def test_get_room_name_for_death_no_room(player_death_service):
 
 
 def test_get_room_name_for_death_empty_location(player_death_service):
-    """Test _get_room_name_for_death() returns 'Unknown' for empty location."""
+    """Test _get_room_name_for_death() returns 'Unknown Location' for empty location."""
     result = player_death_service._get_room_name_for_death("")
-    assert result == "Unknown"
+    assert result == "Unknown Location"
 
 
 def test_get_room_name_for_death_no_container(player_death_service):

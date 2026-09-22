@@ -28,6 +28,7 @@ logger = get_logger(__name__)
 DEATH_ROOM_ID_STAT = "death_room_id"
 DEATH_LOCATION_STAT = "death_location"
 
+
 class PlayerDeathService:
     """
     Service for managing player death, mortally wounded state, and DP decay.
@@ -269,7 +270,7 @@ class PlayerDeathService:
             death_location: Room ID where the player died
 
         Returns:
-            Room name if available, otherwise the room ID or "Unknown"
+            Room name if available, otherwise the room ID or "Unknown Location"
         """
         if not death_location or death_location == LIMBO_ROOM_ID:
             return "Unknown Location"

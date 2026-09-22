@@ -14,6 +14,20 @@ interface UseEventProcessingParams {
   lastNonLimboRoomNameRef?: React.MutableRefObject<string | null>;
 }
 
+function resolvePlayerDiedLocation(data: Record<string, unknown>, fallback: string | null): string | null {
+  const extracted =
+    (typeof data.death_location === 'string' && data.death_location) ||
+    (typeof data.room_id === 'string' && data.room_id) ||
+    'Unknown Location';
+  if (!isUnusableDeathLocation(extracted)) {
+    return extracted;
+  }
+  if (fallback && !isUnusableDeathLocation(fallback)) {
+    return fallback;
+  }
+  return null;
+}
+
 export const useEventProcessing = ({
   setGameState,
   setDeathLocation,
@@ -66,16 +80,7 @@ export const useEventProcessing = ({
       if (eventType === 'player_died' || eventType === 'playerdied') {
         const d = (event.data ?? {}) as Record<string, unknown>;
         const currentDpNum = typeof d.current_dp === 'number' ? d.current_dp : NaN;
-        const extracted =
-          (typeof d.death_location === 'string' && d.death_location) ||
-          (typeof d.room_id === 'string' && d.room_id) ||
-          'Unknown Location';
-        const fallback = lastNonLimboRoomNameRef?.current ?? null;
-        const resolved = !isUnusableDeathLocation(extracted)
-          ? extracted
-          : fallback && !isUnusableDeathLocation(fallback)
-            ? fallback
-            : null;
+        const resolved = resolvePlayerDiedLocation(d, lastNonLimboRoomNameRef?.current ?? null);
         if (Number.isFinite(currentDpNum) && currentDpNum <= -10 && resolved) {
           setDeathLocation?.(resolved);
         }
