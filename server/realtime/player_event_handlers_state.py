@@ -166,14 +166,27 @@ async def _send_player_death_notification(
     event: PlayerDiedEvent,
 ) -> None:
     """Send player_died envelope to the deceased player's WebSocket session."""
+    from ..constants.spawn_defaults import LIMBO_ROOM_ID
+
     player_id_str = str(event.player_id)
     death_location_value = event.death_location or event.room_id
+    # Prefer a real death room over limbo; if we only have limbo/void, show limbo (not "Unknown").
+    if (
+        death_location_value == LIMBO_ROOM_ID
+        or death_location_value == "The Spaces Between"
+        or death_location_value.startswith("limbo_")
+    ):
+        if event.room_id and event.room_id != LIMBO_ROOM_ID and not str(event.room_id).startswith("limbo_"):
+            death_location_value = event.room_id
+        else:
+            death_location_value = "The Spaces Between"
     death_event = build_event(
         "player_died",
         {
             "player_id": player_id_str,
             "player_name": event.player_name,
             "death_location": death_location_value,
+            "room_id": event.room_id,
             "current_dp": -10,
             "killer_id": event.killer_id,
             "killer_name": event.killer_name,
@@ -186,6 +199,7 @@ async def _send_player_death_notification(
         "Sent death notification to player",
         player_id=player_id_str,
         room_id=event.room_id,
+        death_location=death_location_value,
         delivery_status=delivery_status,
     )
 

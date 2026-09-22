@@ -6,12 +6,19 @@ import { logger } from '../../../utils/logger';
 import type { GameEvent } from '../eventHandlers/types';
 import { EventStore, projectState } from '../eventLog';
 import type { GameState } from '../utils/stateUpdateUtils';
+import { isUnusableDeathLocation } from './usePlayerStatusEffects';
 
 interface UseEventProcessingParams {
   setGameState: React.Dispatch<React.SetStateAction<GameState>>;
+  setDeathLocation?: (location: string) => void;
+  lastNonLimboRoomNameRef?: React.MutableRefObject<string | null>;
 }
 
-export const useEventProcessing = ({ setGameState }: UseEventProcessingParams) => {
+export const useEventProcessing = ({
+  setGameState,
+  setDeathLocation,
+  lastNonLimboRoomNameRef,
+}: UseEventProcessingParams) => {
   const isProcessingEvent = useRef(false);
   const eventQueue = useRef<GameEvent[]>([]);
   const processingTimeout = useRef<number | null>(null);
@@ -55,6 +62,24 @@ export const useEventProcessing = ({ setGameState }: UseEventProcessingParams) =
           data_keys: event.data ? Object.keys(event.data) : [],
         });
       }
+      // Side-effect: death interstitial location (projector path does not call handlePlayerDied).
+      if (eventType === 'player_died' || eventType === 'playerdied') {
+        const d = (event.data ?? {}) as Record<string, unknown>;
+        const currentDpNum = typeof d.current_dp === 'number' ? d.current_dp : NaN;
+        const extracted =
+          (typeof d.death_location === 'string' && d.death_location) ||
+          (typeof d.room_id === 'string' && d.room_id) ||
+          'Unknown Location';
+        const fallback = lastNonLimboRoomNameRef?.current ?? null;
+        const resolved = !isUnusableDeathLocation(extracted)
+          ? extracted
+          : fallback && !isUnusableDeathLocation(fallback)
+            ? fallback
+            : null;
+        if (Number.isFinite(currentDpNum) && currentDpNum <= -10 && resolved) {
+          setDeathLocation?.(resolved);
+        }
+      }
       eventQueue.current.push(event);
       if (!isProcessingEvent.current && !processingTimeout.current) {
         processingTimeout.current = window.setTimeout(() => {
@@ -63,7 +88,7 @@ export const useEventProcessing = ({ setGameState }: UseEventProcessingParams) =
         }, 10);
       }
     },
-    [processEventQueue]
+    [processEventQueue, setDeathLocation, lastNonLimboRoomNameRef]
   );
 
   const clearEventLog = useCallback(() => {

@@ -29,6 +29,10 @@ from ..utils.int_coercion import coerce_int
 from ..utils.liability_types import DecodeLiabilitiesFn, EncodeLiabilitiesFn
 from .lucidity_service import LucidityService
 
+# Stats key for room id where the player last died (survives limbo move for login UI).
+DEATH_ROOM_ID_STAT = "death_room_id"
+DEATH_LOCATION_STAT = "death_location"
+
 
 def _utc_now() -> datetime:
     """Return naive UTC timestamp suitable for PostgreSQL TIMESTAMP WITHOUT TIME ZONE."""
@@ -104,6 +108,27 @@ class PlayerRespawnService:
         if isinstance(current_dp, int | float):
             return int(current_dp)
         return 0
+
+    @staticmethod
+    def _record_death_room_on_player(player: Player, death_location: str) -> None:
+        """Persist pre-limbo death room on player stats for death interstitial / login."""
+        if not death_location or death_location in (LIMBO_ROOM_ID, "catatonia_failover"):
+            return
+        stats = player.get_stats()
+        stats[DEATH_ROOM_ID_STAT] = death_location
+        # Display name filled by death service when available; keep id as fallback.
+        existing = stats.get(DEATH_LOCATION_STAT)
+        if not isinstance(existing, str) or not existing.strip():
+            stats[DEATH_LOCATION_STAT] = death_location
+        player.set_stats(stats)
+
+    @staticmethod
+    def _clear_death_room_on_player(player: Player) -> None:
+        """Clear persisted death room after successful respawn."""
+        stats = player.get_stats()
+        _ = stats.pop(DEATH_ROOM_ID_STAT, None)
+        _ = stats.pop(DEATH_LOCATION_STAT, None)
+        player.set_stats(stats)
 
     def _can_move_to_limbo(self, player: Player, death_location: str) -> tuple[bool, int]:
         """Return (allowed, current_dp_int) for limbo movement gate checks."""
@@ -208,6 +233,7 @@ class PlayerRespawnService:
         max_dp = coerce_int(stats.get("max_dp", 100), default=100)
         old_room = player.current_room_id
         player.current_room_id = respawn_room
+        PlayerRespawnService._clear_death_room_on_player(player)
         return old_dp, max_dp, old_room
 
     @staticmethod
@@ -234,7 +260,8 @@ class PlayerRespawnService:
         player.set_stats(stats)
         old_room = player.current_room_id
         player.current_room_id = respawn_room
-        return stats, old_room
+        PlayerRespawnService._clear_death_room_on_player(player)
+        return player.get_stats(), old_room
 
     @staticmethod
     def _log_sanitarium_respawn(
@@ -364,6 +391,8 @@ class PlayerRespawnService:
 
             # Move player to limbo room
             old_room = player.current_room_id
+            # Record where they died before overwriting current_room_id with limbo.
+            self._record_death_room_on_player(player, death_location if death_location else str(old_room))
             player.current_room_id = LIMBO_ROOM_ID
 
             # Commit changes using async API

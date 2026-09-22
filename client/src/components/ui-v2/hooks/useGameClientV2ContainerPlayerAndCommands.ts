@@ -20,8 +20,10 @@ export function useGameClientV2ContainerPlayerAndCommands(
       setIsDead: slice.setIsDead,
       setIsDelirious: slice.setIsDelirious,
       setDeliriumLocation: slice.setDeliriumLocation,
+      setDeathLocation: slice.setDeathLocation,
       setHasRespawned: slice.setHasRespawned,
     },
+    lastNonLimboRoomNameRef: net.lastNonLimboRoomNameRef,
   });
 
   return useCommandHandlers({

@@ -1,5 +1,6 @@
 // WebSocket / connection wiring for GameClientV2Container.
 
+import { useRef } from 'react';
 import type { SendMessageFn } from '../../../utils/clientErrorReporter';
 import type { GameClientV2ContainerProps, GameClientV2MergedSlice } from './gameClientV2ContainerTypes';
 import { useEventProcessing } from './useEventProcessing';
@@ -17,6 +18,7 @@ export interface GameClientV2NetworkPhase {
   sendCommand: (command: string, args?: string[]) => Promise<boolean>;
   sendMessage: SendMessageFn;
   disconnect: () => void;
+  lastNonLimboRoomNameRef: React.MutableRefObject<string | null>;
 }
 
 export function useGameClientV2ContainerNetworkPhase(
@@ -24,7 +26,13 @@ export function useGameClientV2ContainerNetworkPhase(
   slice: GameClientV2MergedSlice,
   refs: GameClientV2RefsBundle
 ): GameClientV2NetworkPhase {
-  const { handleGameEvent, clearPendingFollowRequest } = useEventProcessing({ setGameState: slice.setGameState });
+  const lastNonLimboRoomNameRef = useRef<string | null>(null);
+
+  const { handleGameEvent, clearPendingFollowRequest } = useEventProcessing({
+    setGameState: slice.setGameState,
+    setDeathLocation: slice.setDeathLocation,
+    lastNonLimboRoomNameRef,
+  });
 
   const { isConnected, isConnecting, error, reconnectAttempts, sendCommand, sendMessage, disconnect } =
     useGameConnectionManagement({
@@ -49,5 +57,6 @@ export function useGameClientV2ContainerNetworkPhase(
     sendCommand,
     sendMessage,
     disconnect,
+    lastNonLimboRoomNameRef,
   };
 }

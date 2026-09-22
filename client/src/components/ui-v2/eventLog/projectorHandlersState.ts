@@ -175,7 +175,11 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
   },
 
   player_died(prevState, event) {
-    const deathData = event.data as { current_dp?: number };
+    const deathData = event.data as {
+      current_dp?: number;
+      death_location?: string;
+      room_id?: string;
+    };
     const deathCurrentDp = deathData.current_dp;
     if (!prevState.player?.stats || typeof deathCurrentDp !== 'number' || deathCurrentDp > -10) {
       return prevState;

@@ -93,6 +93,19 @@ class CombatDeathHandler:
             from ..events.event_types import PlayerDiedEvent
             from ..services.combat_messaging_integration import combat_messaging_integration
 
+            death_location_display = combat.room_id
+            try:
+                from ..container.async_persistence_access import get_container_async_persistence
+
+                persistence = get_container_async_persistence()
+                room = persistence.get_room_by_id(combat.room_id) if persistence else None
+                if room is not None and not hasattr(room, "__await__"):
+                    name = getattr(room, "name", None)
+                    if isinstance(name, str) and name.strip():
+                        death_location_display = name
+            except (AttributeError, TypeError, RuntimeError, ValueError):
+                pass
+
             # CRITICAL: Always send current_dp=-10 for death events, never use target.current_dp
             # Players can be at 0 DP (mortally wounded) but death events should only fire at -10 DP
             # The client gates the respawn modal on current_dp <= -10, so we must send -10
@@ -100,7 +113,7 @@ class CombatDeathHandler:
                 player_id=str(target.participant_id),
                 player_name=target.name,
                 room_id=combat.room_id,
-                death_location=combat.room_id,
+                death_location=death_location_display,
                 current_dp=-10,  # Always -10 for death events (client gates modal on current_dp <= -10)
             )
             # NATS-consumable in addition to the direct room broadcast above (#634)
@@ -110,7 +123,7 @@ class CombatDeathHandler:
                     player_name=target.name,
                     room_id=combat.room_id,
                     combat_id=str(combat.combat_id),
-                    death_location=combat.room_id,
+                    death_location=death_location_display,
                 )
             )
             logger.info("Player death event published", player_id=target.participant_id, player_name=target.name)
