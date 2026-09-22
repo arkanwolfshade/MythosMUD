@@ -26,7 +26,7 @@ interface UsePlayerStatusEffectsParams {
   lastNonLimboRoomNameRef?: React.MutableRefObject<string | null>;
 }
 
-export const LIMBO_ROOM_ID = 'limbo_death_void_limbo_death_void';
+const LIMBO_ROOM_ID = 'limbo_death_void_limbo_death_void';
 /** Foyer id — only used to skip re-marking dead right after a successful respawn. */
 const RESPAWN_ROOM_ID = 'earth_arkhamcity_sanitarium_room_foyer_001';
 
@@ -60,6 +60,21 @@ function skipDeadInRespawnRoom(roomId: string | undefined, isDead: boolean, hasR
   return roomId === RESPAWN_ROOM_ID && !isDead && hasRespawned;
 }
 
+/** Prefer current room name; fall back to last non-limbo room. */
+function resolveDeathLocationDisplay(room: Room | null, lastNonLimboRoomName: string | null): string | null {
+  const roomId = room?.id;
+  if (roomId && roomId !== LIMBO_ROOM_ID) {
+    const fromRoom = room?.name || roomId;
+    if (!isUnusableDeathLocation(fromRoom)) {
+      return fromRoom;
+    }
+  }
+  if (lastNonLimboRoomName && !isUnusableDeathLocation(lastNonLimboRoomName)) {
+    return lastNonLimboRoomName;
+  }
+  return null;
+}
+
 function markPlayerDead(
   setters: PlayerStatusSetters,
   currentDpNum: number,
@@ -69,11 +84,8 @@ function markPlayerDead(
   const roomId = room?.id;
   setters.setIsDead(true);
   setters.setHasRespawned(false);
-  // Only limbo is unusable as place-of-death; foyer is a real combat room.
-  const canUseRoom = !!roomId && roomId !== LIMBO_ROOM_ID && !!(room?.name || roomId);
-  const fromRoom = canUseRoom ? room?.name || roomId || null : null;
-  const chosen = fromRoom && !isUnusableDeathLocation(fromRoom) ? fromRoom : lastNonLimboRoomName;
-  if (chosen && !isUnusableDeathLocation(chosen)) {
+  const chosen = resolveDeathLocationDisplay(room, lastNonLimboRoomName);
+  if (chosen) {
     setters.setDeathLocation(chosen);
   }
   logger.info('GameClientV2Container', 'Player detected as dead', {

@@ -188,11 +188,52 @@ def _get_death_location_name(room: Room | dict[str, object]) -> str:
     """Extract death location name from room object or dict."""
     if isinstance(room, dict):
         name = room.get("name")
-        return str(name) if name is not None else "Unknown Location"
+        return str(name) if name is not None else "The Spaces Between"
     room_name = cast(object, room.name)
     if isinstance(room_name, str):
         return room_name
-    return "Unknown Location"
+    return "The Spaces Between"
+
+
+def _usable_persisted_death_name(stored_name: object, stored_id: object, limbo_id: str) -> str | None:
+    """Return persisted display name when it is not limbo/void."""
+    if not isinstance(stored_name, str) or not stored_name.strip():
+        return None
+    if stored_name == "The Spaces Between" or limbo_id in (stored_id, stored_name):
+        return None
+    return stored_name
+
+
+def _non_limbo_room_id(stored_id: object, limbo_id: str) -> str | None:
+    """Return death_room_id when it is a non-empty, non-limbo string."""
+    if not isinstance(stored_id, str) or not stored_id.strip() or stored_id == limbo_id:
+        return None
+    return stored_id
+
+
+def _room_name_from_lookup(looked_up: object) -> str | None:
+    """Extract a non-empty room name from a sync room lookup result."""
+    if looked_up is None or hasattr(looked_up, "__await__"):
+        return None
+    name = getattr(looked_up, "name", None)
+    if isinstance(name, str) and name.strip():
+        return name
+    return None
+
+
+def _lookup_death_room_display_name(stored_id: str) -> str:
+    """Resolve a death_room_id to a room name; fall back to the id."""
+    from ..container.async_persistence_access import get_container_async_persistence
+
+    try:
+        persistence = get_container_async_persistence()
+        looked_up = persistence.get_room_by_id(stored_id) if persistence else None
+        name = _room_name_from_lookup(looked_up)
+        if name is not None:
+            return name
+    except (AttributeError, TypeError, RuntimeError, ValueError):
+        pass
+    return stored_id
 
 
 def _resolve_stored_death_location(player: "Player", canonical_room_id: str, room: "Room | dict[str, object]") -> str:
@@ -200,27 +241,14 @@ def _resolve_stored_death_location(player: "Player", canonical_room_id: str, roo
     from ..constants.spawn_defaults import LIMBO_ROOM_ID
 
     stats = player.get_stats() if hasattr(player, "get_stats") else {}
-    stored_name = stats.get("death_location")
-    stored_id = stats.get("death_room_id")
-    if isinstance(stored_name, str) and stored_name.strip() and stored_name != "The Spaces Between":
-        if stored_id != LIMBO_ROOM_ID and stored_name != LIMBO_ROOM_ID:
-            return stored_name
-    if isinstance(stored_id, str) and stored_id.strip() and stored_id != LIMBO_ROOM_ID:
-        # Resolve id to name when we only stored the id (limbo move path).
-        from ..container.async_persistence_access import get_container_async_persistence
-
-        try:
-            persistence = get_container_async_persistence()
-            looked_up = persistence.get_room_by_id(stored_id) if persistence else None
-            if looked_up is not None and not hasattr(looked_up, "__await__"):
-                name = getattr(looked_up, "name", None)
-                if isinstance(name, str) and name.strip():
-                    return name
-        except (AttributeError, TypeError, RuntimeError, ValueError):
-            pass
-        return stored_id
+    usable_name = _usable_persisted_death_name(stats.get("death_location"), stats.get("death_room_id"), LIMBO_ROOM_ID)
+    if usable_name is not None:
+        return usable_name
+    stored_id = _non_limbo_room_id(stats.get("death_room_id"), LIMBO_ROOM_ID)
+    if stored_id is not None:
+        return _lookup_death_room_display_name(stored_id)
     if str(canonical_room_id) == LIMBO_ROOM_ID:
-        return "Unknown Location"
+        return "The Spaces Between"
     return _get_death_location_name(room)
 
 
