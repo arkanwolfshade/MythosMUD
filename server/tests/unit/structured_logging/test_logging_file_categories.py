@@ -29,6 +29,14 @@ def test_no_category_still_references_infrastructure_module() -> None:
         )
 
 
+def test_persistence_category_does_not_reference_deleted_persistence_layer_class() -> None:
+    """#60 audit: the sync `PersistenceLayer` class was deleted 2025-12-08 (32839025b); all
+    code uses AsyncPersistenceLayer now. The "persistence" category's logger-name list must not
+    carry a bare "PersistenceLayer" entry -- that name matches no logger emitted by the current
+    codebase, so it was dead routing left behind by the class removal."""
+    assert "PersistenceLayer" not in DEFAULT_LOG_CATEGORIES["persistence"]
+
+
 def test_realtime_module_loggers_match_communications_category() -> None:
     """#297: get_logger(__name__) in server/realtime/*.py produces "server.realtime.<module>",
     not bare "realtime.<module>" -- the "communications" category's prefix list must include
