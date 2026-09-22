@@ -974,4 +974,136 @@ describe('useEventProcessing', () => {
     const finalState = appliedStates[0] as { commandHistory: string[] };
     expect(finalState.commandHistory).toBe(preservedHistory);
   });
+
+  describe('player_died death location side-effect', () => {
+    it('sets death location from death_location when current_dp <= -10', () => {
+      const setDeathLocation = vi.fn();
+      const { result } = renderHook(() =>
+        useEventProcessing({
+          setGameState: mockSetGameState,
+          setDeathLocation,
+        })
+      );
+
+      act(() => {
+        result.current.handleGameEvent({
+          event_type: 'player_died',
+          timestamp: new Date().toISOString(),
+          sequence_number: 1,
+          data: { death_location: 'Main Foyer', current_dp: -10 },
+        });
+      });
+
+      expect(setDeathLocation).toHaveBeenCalledWith('Main Foyer');
+    });
+
+    it('sets death location from room_id when death_location is missing', () => {
+      const setDeathLocation = vi.fn();
+      const { result } = renderHook(() =>
+        useEventProcessing({
+          setGameState: mockSetGameState,
+          setDeathLocation,
+        })
+      );
+
+      act(() => {
+        result.current.handleGameEvent({
+          event_type: 'player_died',
+          timestamp: new Date().toISOString(),
+          sequence_number: 1,
+          data: { room_id: 'earth_arkhamcity_sanitarium_room_foyer_001', current_dp: -12 },
+        });
+      });
+
+      expect(setDeathLocation).toHaveBeenCalledWith('earth_arkhamcity_sanitarium_room_foyer_001');
+    });
+
+    it('uses lastNonLimboRoomNameRef when death_location is limbo', () => {
+      const setDeathLocation = vi.fn();
+      const lastNonLimboRoomNameRef = { current: 'Patient Bedroom' as string | null };
+      const { result } = renderHook(() =>
+        useEventProcessing({
+          setGameState: mockSetGameState,
+          setDeathLocation,
+          lastNonLimboRoomNameRef,
+        })
+      );
+
+      act(() => {
+        result.current.handleGameEvent({
+          event_type: 'player_died',
+          timestamp: new Date().toISOString(),
+          sequence_number: 1,
+          data: { death_location: 'The Spaces Between', current_dp: -10 },
+        });
+      });
+
+      expect(setDeathLocation).toHaveBeenCalledWith('Patient Bedroom');
+    });
+
+    it('does not set death location when current_dp is above death threshold', () => {
+      const setDeathLocation = vi.fn();
+      const { result } = renderHook(() =>
+        useEventProcessing({
+          setGameState: mockSetGameState,
+          setDeathLocation,
+        })
+      );
+
+      act(() => {
+        result.current.handleGameEvent({
+          event_type: 'player_died',
+          timestamp: new Date().toISOString(),
+          sequence_number: 1,
+          data: { death_location: 'Main Foyer', current_dp: 0 },
+        });
+      });
+
+      expect(setDeathLocation).not.toHaveBeenCalled();
+    });
+
+    it('handles playerdied alias the same as player_died', () => {
+      const setDeathLocation = vi.fn();
+      const { result } = renderHook(() =>
+        useEventProcessing({
+          setGameState: mockSetGameState,
+          setDeathLocation,
+        })
+      );
+
+      act(() => {
+        result.current.handleGameEvent({
+          event_type: 'playerdied',
+          timestamp: new Date().toISOString(),
+          sequence_number: 1,
+          data: { death_location: 'Dark Alley', current_dp: -10 },
+        });
+      });
+
+      expect(setDeathLocation).toHaveBeenCalledWith('Dark Alley');
+    });
+
+    it('does not set death location when limbo has no usable fallback', () => {
+      const setDeathLocation = vi.fn();
+      const lastNonLimboRoomNameRef = { current: null as string | null };
+      const { result } = renderHook(() =>
+        useEventProcessing({
+          setGameState: mockSetGameState,
+          setDeathLocation,
+          lastNonLimboRoomNameRef,
+        })
+      );
+
+      act(() => {
+        result.current.handleGameEvent({
+          event_type: 'player_died',
+          timestamp: new Date().toISOString(),
+          sequence_number: 1,
+          data: { death_location: 'Unknown Location', current_dp: -10 },
+        });
+      });
+
+      expect(setDeathLocation).not.toHaveBeenCalled();
+    });
+  });
 });
