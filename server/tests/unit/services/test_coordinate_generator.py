@@ -87,6 +87,50 @@ async def test_generate_for_subzone_positions_linked_rooms(generator):
     assert conflicts == []
 
 
+def test_assign_coordinates_bfs_reaches_disconnected_components(generator: CoordinateGenerator) -> None:
+    """Rooms with no path from the origin must still get coordinates (#845)."""
+    adjacency: dict[str, list[tuple[str, str]]] = {
+        "a": [("b", "east")],
+        "b": [("a", "west")],
+        "c": [],  # isolated room, no exits to/from the a-b component
+    }
+    coords = generator._assign_coordinates_bfs(  # noqa: SLF001  # pyright: ignore[reportPrivateUsage] -- testing the BFS placement/collision logic directly
+        "a", adjacency
+    )
+    assert set(coords) == {"a", "b", "c"}
+    assert len(set(coords.values())) == 3  # all cells unique
+
+
+def test_assign_coordinates_bfs_resolves_collisions(generator: CoordinateGenerator) -> None:
+    """A cycle whose direction vectors don't sum to zero must not stack rooms (#845)."""
+    adjacency: dict[str, list[tuple[str, str]]] = {
+        "o": [("a", "east")],
+        "a": [("b", "north")],
+        "b": [("c", "west")],
+        "c": [("x", "south")],  # lands back on o's (0, 0) without displacement
+        "x": [],
+    }
+    coords = generator._assign_coordinates_bfs(  # noqa: SLF001  # pyright: ignore[reportPrivateUsage] -- testing the BFS placement/collision logic directly
+        "o", adjacency
+    )
+    assert len(set(coords.values())) == len(coords)  # all cells unique
+    assert coords["x"] != coords["o"]
+    conflicts = generator._detect_coordinate_conflicts(  # noqa: SLF001  # pyright: ignore[reportPrivateUsage] -- verifying the safety-net check stays empty
+        coords
+    )
+    assert conflicts == []
+
+
+def test_assign_coordinates_bfs_displaces_up_down_exits(generator: CoordinateGenerator) -> None:
+    """up/down exits don't move x/y, so the target must be displaced off the origin (#845)."""
+    adjacency: dict[str, list[tuple[str, str]]] = {"o": [("u", "up")], "u": [("o", "down")]}
+    coords = generator._assign_coordinates_bfs(  # noqa: SLF001  # pyright: ignore[reportPrivateUsage] -- testing the BFS placement/collision logic directly
+        "o", adjacency
+    )
+    assert coords["o"] == (0, 0)
+    assert coords["u"] != (0, 0)
+
+
 def test_build_adjacency_list_adds_reverse_edges(generator):
     rooms = [
         {"id": "a", "exits": {"north": "b"}},
