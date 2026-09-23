@@ -19,7 +19,7 @@ logger = get_logger(__name__)
 LevelUpHook = Callable[[uuid.UUID, int], Awaitable[None]]
 
 
-class _XpAwardingPersistence(Protocol):
+class _XpAwardingPersistence(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """Persistence surface LevelService actually calls (narrows the Any-typed constructor arg)."""
 
     async def award_player_xp(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> tuple[int, int, int]:
@@ -27,7 +27,7 @@ class _XpAwardingPersistence(Protocol):
         raise NotImplementedError
 
 
-class LevelService:
+class LevelService:  # pylint: disable=too-few-public-methods  # Reason: Focused service, minimal public interface
     """
     Service for character level and XP: grant XP, recompute level from curve, run level-up hook.
 

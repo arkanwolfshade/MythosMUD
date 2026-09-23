@@ -34,7 +34,7 @@ class NPCCombatIntegrationReadApi(Protocol):
         raise NotImplementedError
 
 
-class LevelServiceLike(Protocol):
+class LevelServiceLike(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """XP/level authority surface used by player combat service (#879)."""
 
     async def grant_xp(self, player_id: UUID, amount: int) -> None:
