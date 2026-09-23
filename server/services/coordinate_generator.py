@@ -32,10 +32,12 @@ class CoordinateGenerator:
     1. Group rooms by zone and sub_zone
     2. For each zone/subzone group:
        - Find origin room (map_origin_zone=true or first room)
-       - Use BFS from origin
+       - Use BFS from origin; any room left unreached (a separate connected component)
+         seeds a fresh BFS at a new origin, offset clear of rooms already placed
        - Apply directional grid: north=-y, south=+y, east=+x, west=-x
+       - Resolve collisions by displacing a room to the nearest free cell
     3. Store coordinates in map_x/map_y
-    4. Detect conflicts and warn (don't auto-resolve)
+    4. Verify no conflicts remain (should always be empty; kept as a safety net)
     """
 
     def __init__(self, session: AsyncSession) -> None:
@@ -209,44 +211,80 @@ class CoordinateGenerator:
                     adjacency[target_id].append((room_id, reverse_dir))
         return adjacency
 
+    def _nearest_free_cell(self, x: int, y: int, occupied: dict[tuple[int, int], str]) -> tuple[int, int]:
+        """Find the nearest unoccupied cell to (x, y), preferring (x, y) itself.
+
+        # ponytail: greedy nearest-free-cell search, not a real layout algorithm -- fine
+        # for the occasional collision a cycle produces; swap for a force-directed/
+        # constraint layout if large exits-authored zones end up looking scrambled.
+        """
+        if (x, y) not in occupied:
+            return (x, y)
+        visited: set[tuple[int, int]] = {(x, y)}
+        queue: deque[tuple[int, int]] = deque([(x, y)])
+        while queue:
+            cx, cy = queue.popleft()
+            for dx, dy in ((0, -1), (0, 1), (1, 0), (-1, 0)):  # north, south, east, west
+                candidate = (cx + dx, cy + dy)
+                if candidate in visited:
+                    continue
+                visited.add(candidate)
+                if candidate not in occupied:
+                    return candidate
+                queue.append(candidate)
+        raise AssertionError("Unreachable: an infinite grid always has a free cell")
+
     def _assign_coordinates_bfs(
         self, origin_id: str, adjacency: dict[str, list[tuple[str, str]]]
     ) -> dict[str, tuple[int, int]]:
         """Assign coordinates using BFS starting from origin.
 
-        KNOWN DEFECT (#845): this reaches only the origin's connected component. Rooms in
-        any other component are never enqueued, keep `map_x`/`map_y` NULL, and are then
-        skipped by `AsciiMapRenderer` - invisible on the map with nothing in the logs.
-        `visited` is also set on first arrival and never revisited, which is what makes
-        the collisions below unresolvable.
+        Every room in `adjacency` gets a cell, not just the origin's connected component:
+        once a BFS from a seed is exhausted, the next unplaced room seeds a fresh BFS at a
+        new origin offset clear of everything already placed. Collisions (a cycle whose
+        direction vectors don't sum to zero, or an up/down exit that doesn't move x/y) are
+        resolved on the spot by displacing to the nearest free cell, so every returned
+        coordinate is unique.
         """
         coords: dict[str, tuple[int, int]] = {}
+        occupied: dict[tuple[int, int], str] = {}
         visited: set[str] = set()
-        queue: deque[tuple[str, int, int]] = deque([(origin_id, 0, 0)])
 
-        coords[origin_id] = (0, 0)
-        visited.add(origin_id)
+        def place(room_id: str, x: int, y: int) -> tuple[int, int]:
+            cell = self._nearest_free_cell(x, y, occupied)
+            coords[room_id] = cell
+            occupied[cell] = room_id
+            visited.add(room_id)
+            return cell
 
-        while queue:
-            room_id, x, y = queue.popleft()
+        seeds = [origin_id, *(room_id for room_id in adjacency if room_id != origin_id)]
+        for seed_id in seeds:
+            if seed_id in visited:
+                continue
+            if coords:
+                seed_x = max(cx for cx, _cy in coords.values()) + 2
+                seed_y = 0
+            else:
+                seed_x, seed_y = 0, 0
+            sx, sy = place(seed_id, seed_x, seed_y)
+            queue: deque[tuple[str, int, int]] = deque([(seed_id, sx, sy)])
 
-            if room_id in adjacency:
-                for next_room_id, direction in adjacency[room_id]:
+            while queue:
+                room_id, x, y = queue.popleft()
+                for next_room_id, direction in adjacency.get(room_id, []):
                     if next_room_id not in visited:
                         new_x, new_y = self._get_next_coordinates(x, y, direction)
-                        coords[next_room_id] = (new_x, new_y)
-                        visited.add(next_room_id)
-                        queue.append((next_room_id, new_x, new_y))
+                        nx, ny = place(next_room_id, new_x, new_y)
+                        queue.append((next_room_id, nx, ny))
 
         return coords
 
     def _detect_coordinate_conflicts(self, coords: dict[str, tuple[int, int]]) -> list[tuple[str, str, int, int]]:
         """Detect conflicts (multiple rooms at same x,y coordinates).
 
-        KNOWN DEFECT (#845): this reports and does not repair. No caller acts on the
-        returned list, and it could not: `_assign_coordinates_bfs` has already committed
-        the layout. A cycle whose directions do not sum to zero stacks two rooms on one
-        cell, and the renderer then drops one by last-writer-wins.
+        `_assign_coordinates_bfs` resolves collisions as it places rooms, so this should
+        always return an empty list; kept as a safety net and to power the admin-facing
+        conflict report (`CoordinateValidator`, backed by `get_coordinate_conflicts`).
         """
         conflicts: list[tuple[str, str, int, int]] = []
         coord_to_rooms: dict[tuple[int, int], list[str]] = {}
