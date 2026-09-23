@@ -1,5 +1,9 @@
 """Unit tests for ExperienceRepository."""
 
+# pyright: reportAny=false, reportUnusedCallResult=false
+# TEST_MOCK: mock_result.one_or_none()/session.commit() are untyped AsyncMock/MagicMock
+# results; award_player_xp's return tuple is asserted, not assigned to `_`.
+
 import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -15,73 +19,47 @@ def repo() -> ExperienceRepository:
     return ExperienceRepository(event_bus=None)
 
 
+def _row(new_xp: int, old_level: int, new_level: int) -> MagicMock:
+    """A SQLAlchemy Row-like mock exposing named columns as attributes."""
+    row = MagicMock()
+    row.new_xp = new_xp
+    row.old_level = old_level
+    row.new_level = new_level
+    return row
+
+
 @pytest.mark.asyncio
-async def test_gain_experience_negative_amount(repo: ExperienceRepository) -> None:
-    player = MagicMock()
+async def test_award_player_xp_negative_delta(repo: ExperienceRepository) -> None:
     with pytest.raises(ValueError, match="non-negative"):
-        await repo.gain_experience(player, -1)
+        await repo.award_player_xp(uuid.uuid4(), -1)
 
 
 @pytest.mark.asyncio
-async def test_gain_experience_success(repo: ExperienceRepository) -> None:
-    player = MagicMock()
-    player.player_id = uuid.uuid4()
-    player.name = "Tester"
-    player.experience_points = 10
-    player.level = 1
-
-    with patch.object(repo, "update_player_xp", new_callable=AsyncMock) as mock_update:
-        await repo.gain_experience(player, 5, source="combat")
-
-    assert player.experience_points == 15
-    mock_update.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_gain_experience_publishes_event() -> None:
-    event_bus = MagicMock()
-    repo = ExperienceRepository(event_bus=event_bus)
-    player = MagicMock()
-    player.player_id = uuid.uuid4()
-    player.name = "Tester"
-    player.experience_points = 0
-    player.level = 1
-
-    with patch.object(repo, "update_player_xp", new_callable=AsyncMock):
-        await repo.gain_experience(player, 10, source="quest")
-
-    event_bus.publish.assert_called_once()
-
-
-@pytest.mark.asyncio
-async def test_update_player_xp_negative_delta(repo: ExperienceRepository) -> None:
-    with pytest.raises(ValueError, match="non-negative"):
-        await repo.update_player_xp(uuid.uuid4(), -5)
-
-
-@pytest.mark.asyncio
-async def test_update_player_xp_success(repo: ExperienceRepository) -> None:
+async def test_award_player_xp_success(repo: ExperienceRepository) -> None:
     player_id = uuid.uuid4()
     mock_session = AsyncMock()
     mock_result = MagicMock()
-    mock_result.scalar.return_value = 1
+    mock_result.one_or_none.return_value = _row(15, 1, 1)
     mock_session.execute = AsyncMock(return_value=mock_result)
     mock_session.__aenter__ = AsyncMock(return_value=mock_session)
     mock_session.__aexit__ = AsyncMock(return_value=None)
     mock_maker = MagicMock(return_value=mock_session)
 
     with patch("server.persistence.repositories.experience_repository.get_session_maker", return_value=mock_maker):
-        await repo.update_player_xp(player_id, 10, reason="test")
+        new_xp, old_level, new_level = await repo.award_player_xp(player_id, 5, reason="combat")
 
+    assert (new_xp, old_level, new_level) == (15, 1, 1)
     mock_session.commit.assert_awaited_once()
 
 
 @pytest.mark.asyncio
-async def test_update_player_xp_player_not_found(repo: ExperienceRepository) -> None:
+async def test_award_player_xp_publishes_event() -> None:
+    event_bus = MagicMock()
+    repo = ExperienceRepository(event_bus=event_bus)
     player_id = uuid.uuid4()
     mock_session = AsyncMock()
     mock_result = MagicMock()
-    mock_result.scalar.return_value = 0
+    mock_result.one_or_none.return_value = _row(10, 1, 2)
     mock_session.execute = AsyncMock(return_value=mock_result)
     mock_session.__aenter__ = AsyncMock(return_value=mock_session)
     mock_session.__aexit__ = AsyncMock(return_value=None)
@@ -90,8 +68,43 @@ async def test_update_player_xp_player_not_found(repo: ExperienceRepository) -> 
         "server.persistence.repositories.experience_repository.get_session_maker",
         return_value=MagicMock(return_value=mock_session),
     ):
+        await repo.award_player_xp(player_id, 10, reason="quest")
+
+    event_bus.publish.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_award_player_xp_player_not_found(repo: ExperienceRepository) -> None:
+    player_id = uuid.uuid4()
+    mock_session = AsyncMock()
+    mock_result = MagicMock()
+    mock_result.one_or_none.return_value = None
+    mock_session.execute = AsyncMock(return_value=mock_result)
+    mock_session.__aenter__ = AsyncMock(return_value=mock_session)
+    mock_session.__aexit__ = AsyncMock(return_value=None)
+
+    with patch(
+        "server.persistence.repositories.experience_repository.get_session_maker",
+        return_value=MagicMock(return_value=mock_session),
+    ):
+        with pytest.raises(ValueError, match="not found"):
+            await repo.award_player_xp(player_id, 5)
+
+
+@pytest.mark.asyncio
+async def test_award_player_xp_db_error(repo: ExperienceRepository) -> None:
+    player_id = uuid.uuid4()
+    mock_session = AsyncMock()
+    mock_session.execute = AsyncMock(side_effect=SQLAlchemyError("fail"))
+    mock_session.__aenter__ = AsyncMock(return_value=mock_session)
+    mock_session.__aexit__ = AsyncMock(return_value=None)
+
+    with patch(
+        "server.persistence.repositories.experience_repository.get_session_maker",
+        return_value=MagicMock(return_value=mock_session),
+    ):
         with pytest.raises(DatabaseError):
-            await repo.update_player_xp(player_id, 5)
+            await repo.award_player_xp(player_id, 5)
 
 
 @pytest.mark.asyncio

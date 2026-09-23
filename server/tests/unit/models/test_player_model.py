@@ -216,36 +216,11 @@ def test_player_set_equipped_items() -> None:
     assert player.get_equipped_items() == new_equipped
 
 
-def test_player_add_experience() -> None:
-    """Test Player.add_experience() increases experience points."""
-    player_id = str(uuid4())
-    user_id = str(uuid4())
-    player = Player(
-        player_id=player_id,
-        user_id=user_id,
-        name="TestPlayer",
-        experience_points=100,
-    )
-
-    player.add_experience(50)
-
-    assert player.experience_points == 150
-
-
-def test_player_add_experience_zero() -> None:
-    """Test Player.add_experience() handles zero experience."""
-    player_id = str(uuid4())
-    user_id = str(uuid4())
-    player = Player(
-        player_id=player_id,
-        user_id=user_id,
-        name="TestPlayer",
-        experience_points=100,
-    )
-
-    player.add_experience(0)
-
-    assert player.experience_points == 100
+def test_player_has_no_add_experience_method() -> None:
+    """#879: XP awards go through LevelService.grant_xp (SQL-side curve); Player has no
+    add_experience method (it computed level with a naive, since-inverted formula)."""
+    player = Player(player_id=str(uuid4()), user_id=str(uuid4()), name="TestPlayer")
+    assert not hasattr(player, "add_experience")
 
 
 def test_player_is_alive() -> None:

@@ -323,9 +323,9 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
             player_id, "occult_knowledge", amount, f"{source}: occult knowledge gain"
         )
 
-    async def gain_experience(self, player: Player, amount: int, source: str = "unknown") -> None:
-        """Award experience to a player atomically. Delegates to ExperienceRepository."""
-        await self._experience_repo.gain_experience(player, amount, source)
+    async def award_player_xp(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> tuple[int, int, int]:
+        """Award XP and recompute level atomically. Delegates to ExperienceRepository. Returns (new_xp, old_level, new_level)."""
+        return await self._experience_repo.award_player_xp(player_id, amount, source)
 
     async def heal_player(self, player: Player, amount: int) -> None:
         """Heal a player. Delegates to HealthRepository."""

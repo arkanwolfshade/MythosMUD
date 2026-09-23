@@ -9,9 +9,8 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from server.events.event_types import PlayerDPUpdated, PlayerEnteredRoom, PlayerLeftRoom
+from server.events.event_types import PlayerDPUpdated, PlayerEnteredRoom, PlayerLeftRoom, PlayerXPAwardEvent
 from server.realtime.player_event_handlers import PlayerEventHandler
-from server.services.player_combat_service import PlayerXPAwardEvent
 
 
 @pytest.fixture

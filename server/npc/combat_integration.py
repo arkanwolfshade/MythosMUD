@@ -313,14 +313,9 @@ class NPCCombatIntegration(NPCCombatIntegrationBase):
             bool: True if death was handled successfully
         """
         try:
-            # Calculate XP reward for the killer
-            xp_reward = 0
-
             if killer_id is not None:
-                # Use default XP reward for NPC kills
-                # Future enhancement: Calculate XP based on NPC definition data (level, type, etc.)
-                # This would require access to NPC definition service or lifecycle manager
-                xp_reward = 10  # Default XP reward for aggressive mobs
+                # XP is awarded via LevelService (process_attack path, #879) -- not here.
+                # This method only applies the non-XP kill effects below.
 
                 # Apply effects to killer if it's a player
                 killer_id_uuid = uuid.UUID(killer_id)
@@ -343,7 +338,6 @@ class NPCCombatIntegration(NPCCombatIntegrationBase):
                 room_id=room_id,
                 cause=cause,
                 killer_id=killer_id,
-                xp_reward=xp_reward,
             )
             return True
 

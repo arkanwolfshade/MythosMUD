@@ -6,7 +6,7 @@ using PostgreSQL stored procedures.
 """
 
 import uuid
-from typing import Protocol
+from typing import Protocol, cast
 
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
@@ -15,7 +15,6 @@ from structlog.stdlib import BoundLogger
 from server.database import get_session_maker
 from server.events.event_types import BaseEvent, PlayerXPAwardEvent
 from server.exceptions import DatabaseError
-from server.models.player import Player
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.error_logging import log_and_raise
 
@@ -62,70 +61,17 @@ class ExperienceRepository:
         self._event_bus: _ExperienceEventBus | None = event_bus
         self._logger: BoundLogger = get_logger(__name__)
 
-    async def gain_experience(self, player: Player, amount: int, source: str = "unknown") -> None:
+    async def award_player_xp(self, player_id: uuid.UUID | str, delta: int, reason: str = "") -> tuple[int, int, int]:
         """
-        Award experience points to a player atomically.
-
-        Args:
-            player: Player to award XP to
-            amount: XP amount (must be non-negative)
-            source: Source of XP for logging
-
-        Raises:
-            ValueError: If XP amount is invalid
-            DatabaseError: If database operation fails
-        """
-        if amount < 0:
-            raise ValueError(f"XP amount must be non-negative, got {amount}")
-
-        try:
-            # Update in-memory player object
-            player.experience_points += amount
-
-            # Atomic database update
-            await self.update_player_xp(player.player_id, amount, source)
-
-            self._logger.info(
-                "Player gained experience atomically",
-                player_id=str(player.player_id),
-                player_name=player.name,
-                amount=amount,
-                source=source,
-                new_total=int(player.experience_points),
-            )
-
-            # Publish event if event bus available
-            if self._event_bus:
-                event = PlayerXPAwardEvent(
-                    player_id=uuid.UUID(str(player.player_id)),
-                    xp_amount=amount,
-                    new_level=int(player.level),
-                )
-                self._event_bus.publish(event)
-
-        except ValueError:
-            raise
-        except Exception as e:
-            self._logger.critical(
-                "CRITICAL: Failed to persist player XP",
-                player_id=str(player.player_id),
-                player_name=player.name,
-                amount=amount,
-                source=source,
-                error=str(e),
-                error_type=type(e).__name__,
-                exc_info=True,
-            )
-            raise
-
-    async def update_player_xp(self, player_id: uuid.UUID | str, delta: int, reason: str = "") -> None:
-        """
-        Update player experience points atomically.
+        Award XP and recompute level atomically via the award_player_xp stored function.
 
         Args:
             player_id: Player UUID or string
-            delta: XP change amount (must be non-negative)
-            reason: Reason for XP change
+            delta: XP amount (must be non-negative)
+            reason: Source of XP, for logging
+
+        Returns:
+            (new_xp, old_level, new_level)
 
         Raises:
             ValueError: If delta is negative or player not found
@@ -138,26 +84,45 @@ class ExperienceRepository:
             session_maker = get_session_maker()
             async with session_maker() as session:
                 result = await session.execute(
-                    text("SELECT update_player_xp(:player_id, :delta)"),
+                    text("SELECT new_xp, old_level, new_level FROM award_player_xp(:player_id, :delta)"),
                     {"player_id": str(player_id), "delta": delta},
                 )
-                rows_updated = result.scalar()
-                if not rows_updated:
+                row = result.one_or_none()
+                if row is None:
                     raise ValueError(f"Player {player_id} not found")
 
                 await session.commit()
 
+                # Raw text() query -> SQLAlchemy Row has no static column typing; cast (not int())
+                # keeps the Any confined to a single, explicit conversion point.
+                new_xp = cast(int, row.new_xp)
+                old_level = cast(int, row.old_level)
+                new_level = cast(int, row.new_level)
+
                 self._logger.info(
-                    "Player XP updated atomically",
+                    "Player XP awarded atomically",
                     player_id=str(player_id),
                     delta=delta,
                     reason=reason,
+                    new_xp=new_xp,
+                    old_level=old_level,
+                    new_level=new_level,
                 )
-        except (SQLAlchemyError, OSError, ValueError) as e:
+
+                if self._event_bus:
+                    event = PlayerXPAwardEvent(
+                        player_id=uuid.UUID(str(player_id)),
+                        xp_amount=delta,
+                        new_level=new_level,
+                    )
+                    self._event_bus.publish(event)
+
+                return new_xp, old_level, new_level
+        except (SQLAlchemyError, OSError) as e:
             log_and_raise(
                 DatabaseError,
-                f"Database error updating XP for player '{player_id}': {e}",
-                operation="update_player_xp",
+                f"Database error awarding XP for player '{player_id}': {e}",
+                operation="award_player_xp",
                 player_id=str(player_id),
                 details={"player_id": str(player_id), "delta": delta, "reason": reason, "error": str(e)},
                 user_friendly="Failed to update player experience",

@@ -258,7 +258,11 @@ async def initialize_combat_services(app: FastAPI, container: ApplicationContain
     in ApplicationContainer.initialize() via _initialize_combat_services().
     This function is kept for backward compatibility but should not be used.
     """
-    app.state.player_combat_service = PlayerCombatService(container.persistence, container.event_bus)
+    app.state.player_combat_service = PlayerCombatService(
+        cast(object, container.persistence),
+        cast(object, container.event_bus),
+        level_service=cast(object, container.level_service),
+    )
     if container.connection_manager is not None:
         container.connection_manager.set_player_combat_service(app.state.player_combat_service)
     # Update MovementService with combat service if it exists

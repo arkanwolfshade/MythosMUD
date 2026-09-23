@@ -110,7 +110,11 @@ class CombatBundle:
         from server.services.player_death_service import PlayerDeathService
         from server.services.player_respawn_service import PlayerRespawnService
 
-        self.player_combat_service = PlayerCombatService(container.persistence, container.event_bus)
+        self.player_combat_service = PlayerCombatService(
+            cast(object, container.persistence),
+            cast(object, container.event_bus),
+            level_service=cast(object, container.level_service),
+        )
         if container.connection_manager is not None:
             container.connection_manager.set_player_combat_service(self.player_combat_service)
         if container.movement_service is not None:

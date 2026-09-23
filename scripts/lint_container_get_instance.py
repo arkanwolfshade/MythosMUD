@@ -96,9 +96,6 @@ CONTAINER_GET_INSTANCE_ALLOWLIST: tuple[AllowlistEntry, ...] = (
     AllowlistEntry(
         "server/services/npc_combat_handlers.py", 1, "constructed by NPCCombatIntegrationService, not a bundle"
     ),
-    AllowlistEntry(
-        "server/services/npc_combat_rewards.py", 1, "constructed by NPCCombatIntegrationService, not a bundle"
-    ),
     AllowlistEntry("server/game/magic/magic_healing_events.py", 1, "mixin, never instantiated directly"),
     AllowlistEntry("server/realtime/connection_manager_utils.py", 1, "free function"),
 )

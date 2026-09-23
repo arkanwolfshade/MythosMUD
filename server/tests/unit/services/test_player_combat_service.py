@@ -4,12 +4,12 @@ Unit tests for player combat service.
 Tests the PlayerCombatService class for managing player combat state and XP rewards.
 """
 
-# pyright: reportPrivateUsage=false
+# pyright: reportPrivateUsage=false, reportAny=false
 # Reason: Assertions on internal state are intentional in these unit tests.
+# TEST_MOCK: mock_level_service.grant_xp (a MagicMock attribute) resolves to Any.
 
 import uuid
 from datetime import UTC, datetime
-from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -36,13 +36,20 @@ def mock_event_bus() -> MagicMock:
 
 @pytest.fixture
 def mock_npc_service() -> MagicMock:
-    """Create mock NPC combat integration service (no _rewards so XP uses fallback path)."""
+    """Create mock NPC combat integration service (for calculate_xp_reward's UUID mapping)."""
     service = MagicMock()
     service.get_original_string_id = MagicMock(return_value=None)
-    service.get_rewards_service = MagicMock(return_value=None)
     mock_uuid_mapping = MagicMock()
     mock_uuid_mapping.get_xp_value = MagicMock(return_value=None)
     service.get_uuid_mapping = MagicMock(return_value=mock_uuid_mapping)
+    return service
+
+
+@pytest.fixture
+def mock_level_service() -> MagicMock:
+    """Create mock LevelService -- the XP/level authority (#879)."""
+    service = MagicMock()
+    service.grant_xp = AsyncMock()
     return service
 
 
@@ -51,9 +58,10 @@ def player_combat_service(
     mock_persistence: MagicMock,
     mock_event_bus: MagicMock,
     mock_npc_service: MagicMock,
+    mock_level_service: MagicMock,
 ) -> PlayerCombatService:
     """Create PlayerCombatService instance."""
-    return PlayerCombatService(mock_persistence, mock_event_bus, mock_npc_service)
+    return PlayerCombatService(mock_persistence, mock_event_bus, mock_npc_service, mock_level_service)
 
 
 def test_player_combat_service_init(
@@ -171,47 +179,45 @@ async def test_handle_combat_end(player_combat_service: PlayerCombatService) -> 
 @pytest.mark.asyncio
 async def test_award_xp_on_npc_death_success(
     player_combat_service: PlayerCombatService,
-    mock_persistence: MagicMock,
-    mock_event_bus: MagicMock,
+    mock_level_service: MagicMock,
 ) -> None:
-    """Test award_xp_on_npc_death awards XP successfully."""
+    """Test award_xp_on_npc_death delegates to LevelService.grant_xp (#879 single authority)."""
     player_id = uuid.uuid4()
     npc_id = uuid.uuid4()
-    mock_player: MagicMock = MagicMock()
-    mock_player.name = "TestPlayer"
-    mock_player.level = 5
-    mock_player.add_experience = MagicMock()
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    save_player: AsyncMock = AsyncMock()
-    mock_persistence.save_player = save_player
     await player_combat_service.award_xp_on_npc_death(player_id, npc_id, 100)
-    add_xp: MagicMock = cast(MagicMock, mock_player.add_experience)
-    add_xp.assert_called_once_with(100)
-    save_player.assert_awaited_once()
-    publish_ev: MagicMock = cast(MagicMock, mock_event_bus.publish)
-    publish_ev.assert_called_once()
+    mock_level_service.grant_xp.assert_awaited_once_with(player_id, 100)
 
 
 @pytest.mark.asyncio
-async def test_award_xp_on_npc_death_player_not_found(
-    player_combat_service: PlayerCombatService, mock_persistence: MagicMock
+async def test_award_xp_on_npc_death_zero_xp_does_not_call_level_service(
+    player_combat_service: PlayerCombatService,
+    mock_level_service: MagicMock,
 ) -> None:
-    """Test award_xp_on_npc_death handles player not found."""
+    """Zero (or negative) XP is a no-op -- must not call LevelService at all."""
+    await player_combat_service.award_xp_on_npc_death(uuid.uuid4(), uuid.uuid4(), 0)
+    mock_level_service.grant_xp.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_award_xp_on_npc_death_no_level_service(
+    player_combat_service: PlayerCombatService,
+) -> None:
+    """Test award_xp_on_npc_death handles a missing LevelService gracefully (test-only construction)."""
     player_id = uuid.uuid4()
     npc_id = uuid.uuid4()
-    mock_persistence.get_player_by_id = AsyncMock(return_value=None)
+    player_combat_service.set_level_service(None)
     # Should not raise, just log warning
     await player_combat_service.award_xp_on_npc_death(player_id, npc_id, 100)
 
 
 @pytest.mark.asyncio
 async def test_award_xp_on_npc_death_error(
-    player_combat_service: PlayerCombatService, mock_persistence: MagicMock
+    player_combat_service: PlayerCombatService, mock_level_service: MagicMock
 ) -> None:
     """Test award_xp_on_npc_death handles errors gracefully."""
     player_id = uuid.uuid4()
     npc_id = uuid.uuid4()
-    mock_persistence.get_player_by_id = AsyncMock(side_effect=ValueError("Database error"))
+    mock_level_service.grant_xp = AsyncMock(side_effect=ValueError("Database error"))
     # Should not raise, just log error
     await player_combat_service.award_xp_on_npc_death(player_id, npc_id, 100)
 
@@ -314,46 +320,18 @@ async def test_get_combat_stats_multiple_combats(player_combat_service: PlayerCo
 
 
 @pytest.mark.asyncio
-async def test_handle_npc_death_error(player_combat_service: PlayerCombatService, mock_persistence: MagicMock) -> None:
+async def test_handle_npc_death_error(
+    player_combat_service: PlayerCombatService, mock_level_service: MagicMock
+) -> None:
     """Test handle_npc_death handles errors gracefully."""
     player_id = uuid.uuid4()
     npc_id = uuid.uuid4()
     xp_amount = 100
-    # Mock persistence to raise an error - award_xp_on_npc_death has error handling
-    get_player_by_id: AsyncMock = AsyncMock(side_effect=ValueError("Error"))
-    mock_persistence.get_player_by_id = get_player_by_id
+    grant_xp: AsyncMock = AsyncMock(side_effect=ValueError("Error"))
+    mock_level_service.grant_xp = grant_xp
     # Should not raise, error is caught in award_xp_on_npc_death
     await player_combat_service.handle_npc_death(player_id, npc_id, xp_amount)
-    get_player_by_id.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_award_xp_on_npc_death_delegates_to_rewards_when_available(
-    player_combat_service: PlayerCombatService, mock_npc_service: MagicMock
-) -> None:
-    """Test award_xp_on_npc_death delegates to NPCCombatRewards.award_xp_to_killer when rewards service exists."""
-    player_id = uuid.uuid4()
-    npc_id = uuid.uuid4()
-    xp_amount = 100
-    mock_rewards = MagicMock()
-    award_fn: AsyncMock = AsyncMock()
-    mock_rewards.award_xp_to_killer = award_fn
-    mock_npc_service.get_rewards_service = MagicMock(return_value=mock_rewards)
-    await player_combat_service.award_xp_on_npc_death(player_id, npc_id, xp_amount)
-    award_fn.assert_awaited_once_with(str(player_id), str(npc_id), xp_amount)
-
-
-@pytest.mark.asyncio
-async def test_award_xp_on_npc_death_no_player_combat_service(
-    player_combat_service: PlayerCombatService, mock_persistence: MagicMock
-) -> None:
-    """Test award_xp_on_npc_death when no NPC combat integration service uses fallback path."""
-    player_id = uuid.uuid4()
-    npc_id = uuid.uuid4()
-    player_combat_service.set_npc_combat_integration_service(None)
-    mock_persistence.get_player_by_id = AsyncMock(return_value=None)
-    # Should not raise, just return without awarding (player not found)
-    await player_combat_service.award_xp_on_npc_death(player_id, npc_id, 100)
+    grant_xp.assert_awaited_once()
 
 
 @pytest.mark.asyncio
@@ -405,7 +383,7 @@ def test_player_combat_state_post_init_with_activity() -> None:
 
 def test_player_xp_award_event_init() -> None:
     """Test PlayerXPAwardEvent initialization."""
-    from server.services.player_combat_service import PlayerXPAwardEvent
+    from server.events.event_types import PlayerXPAwardEvent
 
     player_id = uuid.uuid4()
     event = PlayerXPAwardEvent(player_id, 100, 5)

@@ -292,12 +292,6 @@ class Player(Base):
         """Assign equipped items mapping."""
         self._equipped_items = dict(equipped)
 
-    def add_experience(self, amount: int) -> None:
-        """Add experience points to the player."""
-        self.experience_points += amount
-        # Simple level calculation (can be enhanced)
-        self.level = (self.experience_points // 100) + 1
-
     def is_alive(self) -> bool:
         """Check if player is alive (DP > 0)."""
         stats = self.get_stats()

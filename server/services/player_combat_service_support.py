@@ -18,22 +18,6 @@ from server.structured_logging.enhanced_logging_config import get_logger
 logger: BoundLogger = get_logger(__name__)
 
 
-class EventBusPublish(Protocol):
-    """Minimal event bus surface used by player combat service."""
-
-    def publish(self, event: object) -> None:
-        """Publish a domain event."""
-        raise NotImplementedError
-
-
-class NPCCombatRewardsLike(Protocol):
-    """NPC combat rewards helper."""
-
-    async def award_xp_to_killer(self, killer_id: str, npc_id: str, _xp: int) -> None:
-        """Award XP to the killer for an NPC defeat."""
-        raise NotImplementedError
-
-
 class UUIDMappingXP(Protocol):
     """UUID mapping helper with XP lookup (NPCCombatUUIDMapping)."""
 
@@ -45,23 +29,16 @@ class UUIDMappingXP(Protocol):
 class NPCCombatIntegrationReadApi(Protocol):
     """Public read API from NPC combat integration."""
 
-    def get_rewards_service(self) -> NPCCombatRewardsLike | None:
-        """Return rewards helper service."""
-        raise NotImplementedError
-
     def get_uuid_mapping(self) -> UUIDMappingXP:
         """Return UUID mapping helper."""
         raise NotImplementedError
 
 
-class PlayerXpLike(Protocol):
-    """Minimal player surface for XP persistence fallback."""
+class LevelServiceLike(Protocol):
+    """XP/level authority surface used by player combat service (#879)."""
 
-    name: object
-    level: int
-
-    def add_experience(self, amount: int) -> None:
-        """Apply XP gain."""
+    async def grant_xp(self, player_id: UUID, amount: int) -> None:
+        """Award XP and level up (and run the level-up hook) if the curve says so."""
         raise NotImplementedError
 
 

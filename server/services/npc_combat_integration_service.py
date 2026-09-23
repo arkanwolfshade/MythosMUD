@@ -24,7 +24,6 @@ from structlog.stdlib import BoundLogger
 
 from ..config import get_config
 from ..events.event_bus import EventBus
-from ..game.mechanics import GameMechanicsService
 from ..models.combat import CombatResult
 from ..structured_logging.enhanced_logging_config import get_logger
 from .combat_event_publisher import CombatEventPublisher
@@ -65,7 +64,6 @@ class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombat
 
     event_bus: EventBus
     _persistence: AsyncPersistenceLayer
-    _game_mechanics: GameMechanicsService
     _player_combat_service: PlayerCombatService
     _combat_memory: NPCCombatMemory
     _uuid_mapping: NPCCombatUUIDMapping
@@ -124,7 +122,6 @@ class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombat
             "NPCCombatIntegrationService constructor",
             persistence_type=type(self._persistence).__name__,
         )
-        self._game_mechanics = GameMechanicsService(async_persistence)
 
     def _init_player_combat_service(self, player_combat_service: PlayerCombatService | None) -> None:
         if player_combat_service is not None:
@@ -145,7 +142,7 @@ class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombat
         self._combat_memory = NPCCombatMemory()
         self._uuid_mapping = NPCCombatUUIDMapping()
         self._data_provider = NPCCombatDataProvider(async_persistence)
-        self._rewards = NPCCombatRewards(async_persistence, self._game_mechanics)
+        self._rewards = NPCCombatRewards()
         self._lucidity = NPCCombatLucidity()
         self._lifecycle = NPCCombatLifecycle(async_persistence)
 
