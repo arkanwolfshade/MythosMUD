@@ -19,10 +19,9 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from sqlalchemy.exc import SQLAlchemyError
 
-from server.events.event_types import PlayerDPUpdated
+from server.events.event_types import PlayerDPUpdated, PlayerXPAwardEvent
 from server.realtime.player_event_handlers_state import PlayerStateEventHandler
 from server.realtime.player_event_handlers_utils import PlayerEventHandlerUtils
-from server.services.player_combat_service import PlayerXPAwardEvent
 
 
 @pytest.fixture

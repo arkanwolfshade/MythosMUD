@@ -174,9 +174,10 @@ class NPCCombatHandlers:
             logger.warning("Attempted to handle death for non-existent NPC", npc_id=npc_id)
             return False
         npc_definition = await self._data_provider.get_npc_definition(npc_id)
+        # XP is awarded in process_attack (combat_service_attack.py) on the killing blow --
+        # not here, or every command-driven kill would pay it twice (#879). This calc is kept
+        # only for the death-handled log line below.
         xp_reward = await self._rewards.calculate_xp_reward(npc_definition)
-        if killer_id:
-            await self._rewards.award_xp_to_killer(killer_id, npc_id, xp_reward)
         self._combat_memory.clear_memory(npc_id)
         await self._lifecycle.despawn_npc_safely(npc_id, room_id)
         logger.info(

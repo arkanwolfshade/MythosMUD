@@ -29,7 +29,6 @@ def persistence() -> MagicMock:
     p.gain_occult_knowledge = AsyncMock()
     p.heal_player = AsyncMock()
     p.damage_player = AsyncMock()
-    p.gain_experience = AsyncMock()
     return p
 
 
@@ -119,10 +118,6 @@ async def test_damage_player_success(service: GameMechanicsService, persistence:
     assert "psychic" in msg
 
 
-@pytest.mark.asyncio
-async def test_gain_experience_success(service: GameMechanicsService, persistence: MagicMock) -> None:
-    player = _player()
-    persistence.get_player_by_id.return_value = player
-    ok, msg = await service.gain_experience(str(player.player_id), 100, "quest")
-    assert ok is True
-    assert "XP" in msg
+def test_gain_experience_removed(service: GameMechanicsService) -> None:
+    """#879: XP awards go through LevelService.grant_xp; GameMechanicsService has no such method."""
+    assert not hasattr(service, "gain_experience")

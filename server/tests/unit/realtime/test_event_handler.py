@@ -19,9 +19,9 @@ from server.events.event_types import (
     PlayerEnteredRoom,
     PlayerLeftRoom,
     PlayerRespawnedEvent,
+    PlayerXPAwardEvent,
 )
 from server.realtime.event_handler import RealTimeEventHandler
-from server.services.player_combat_service import PlayerXPAwardEvent
 
 
 @pytest.fixture

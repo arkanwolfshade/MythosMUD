@@ -1,21 +1,30 @@
 """
-Level service for MythosMUD: grant XP, check level-up, and invoke level-up hook.
+Level service for MythosMUD: grant XP and invoke the level-up hook.
 
-Used by the character creation revamp (level/XP) and will be wired to skill
-improvement on level-up when skill use tracking is implemented.
+The single XP/level authority for both combat and quest rewards (#879) -- level is
+always derived from the SQL-side curve (award_player_xp / level_for_xp), never
+computed in Python. Used by the character creation revamp (level/XP) and will be
+wired to skill improvement on level-up when skill use tracking is implemented.
 """
 
 import uuid
 from collections.abc import Awaitable, Callable
-from typing import Any
+from typing import Any, Protocol, cast
 
 from ..structured_logging.enhanced_logging_config import get_logger
-from .level_curve import level_from_total_xp
 
 logger = get_logger(__name__)
 
 # Type for level-up hook: (player_id, new_level) -> await None. Stub until skill improvement exists.
 LevelUpHook = Callable[[uuid.UUID, int], Awaitable[None]]
+
+
+class _XpAwardingPersistence(Protocol):
+    """Persistence surface LevelService actually calls (narrows the Any-typed constructor arg)."""
+
+    async def award_player_xp(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> tuple[int, int, int]:
+        """Atomically add XP and recompute level. Returns (new_xp, old_level, new_level)."""
+        raise NotImplementedError
 
 
 class LevelService:
@@ -46,9 +55,11 @@ class LevelService:
         """
         Grant experience points to a character and check for level-up.
 
-        Adds amount to the character's experience_points, recomputes level from
-        the XP curve, and if level increased persists the new level and invokes
-        the level-up hook (e.g. for skill improvement).
+        Delegates to persistence.award_player_xp, which atomically adds the XP and
+        recomputes level from the SQL-side curve (level_for_xp) in a single row-locked
+        update -- no read-modify-write of the player row, so this can't clobber
+        concurrent stat changes (e.g. combat damage). If level increased, invokes the
+        level-up hook (e.g. for skill improvement).
 
         Args:
             player_id: Character to award XP to.
@@ -62,64 +73,16 @@ class LevelService:
         if not amount:
             return
 
-        player = await self._persistence.get_player_by_id(player_id)
-        if not player:
-            raise ValueError(f"Player {player_id} not found")
+        persistence = cast(_XpAwardingPersistence, self._persistence)
+        _new_xp, old_level, new_level = await persistence.award_player_xp(player_id, amount, "grant_xp")
 
-        player.experience_points += amount
-        new_level = level_from_total_xp(player.experience_points)
-
-        if new_level > player.level:
-            old_level = player.level
-            player.level = new_level
-            await self._persistence.save_player(player)
+        if new_level > old_level:
             logger.info(
                 "Character leveled up",
                 player_id=str(player_id),
                 old_level=old_level,
                 new_level=new_level,
-                total_xp=player.experience_points,
+                total_xp=_new_xp,
             )
             if self._level_up_hook:
                 await self._level_up_hook(player_id, new_level)
-        else:
-            # Persist XP increase (level unchanged)
-            await self._persistence.save_player(player)
-
-    async def check_level_up(self, player_id: uuid.UUID) -> bool:
-        """
-        Recompute level from current total XP and persist if level increased.
-
-        Use when XP may have been changed elsewhere (e.g. direct DB update) or
-        to sync level with the curve. If level increases, the level-up hook is
-        invoked.
-
-        Args:
-            player_id: Character to check.
-
-        Returns:
-            True if level increased and was persisted, False otherwise.
-
-        Raises:
-            ValueError: If player not found.
-        """
-        player = await self._persistence.get_player_by_id(player_id)
-        if not player:
-            raise ValueError(f"Player {player_id} not found")
-
-        new_level = level_from_total_xp(player.experience_points)
-        if new_level <= player.level:
-            return False
-
-        old_level = player.level
-        player.level = new_level
-        await self._persistence.save_player(player)
-        logger.info(
-            "Character level synced (level-up)",
-            player_id=str(player_id),
-            old_level=old_level,
-            new_level=new_level,
-        )
-        if self._level_up_hook:
-            await self._level_up_hook(player_id, new_level)
-        return True

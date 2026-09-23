@@ -4,6 +4,11 @@ Unit tests for NPC combat handlers.
 Tests the NPCCombatHandlers class for combat result processing and NPC death handling.
 """
 
+# pyright: reportUnknownMemberType=false
+# TEST_MOCK: MagicMock attribute access (e.g. mock_rewards.award_xp_to_killer) resolves to
+# Unknown; the attribute no longer exists on the real class post-#879 but the mock still
+# accepts it, which is exactly what the regression assertion needs.
+
 import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -179,7 +184,6 @@ async def test_handle_npc_death(npc_combat_handlers, mock_data_provider, mock_re
     mock_data_provider.get_npc_instance = MagicMock(return_value=mock_npc_instance)
     mock_data_provider.get_npc_definition = AsyncMock(return_value=None)
     mock_rewards.calculate_xp_reward = AsyncMock(return_value=100)
-    mock_rewards.award_xp_to_killer = AsyncMock()
     mock_lifecycle.despawn_npc_safely = AsyncMock()
     npc_combat_handlers._data_provider = mock_data_provider
     npc_combat_handlers._rewards = mock_rewards
@@ -187,6 +191,9 @@ async def test_handle_npc_death(npc_combat_handlers, mock_data_provider, mock_re
     npc_combat_handlers._combat_memory = MagicMock()
     result = await npc_combat_handlers.handle_npc_death("npc_001", "room_001", "player_001", "combat_001")
     assert isinstance(result, bool)
+    # #879: XP is awarded in process_attack (combat_service_attack.py), not here -- the death
+    # handler must not award it a second time.
+    mock_rewards.award_xp_to_killer.assert_not_called()
 
 
 @pytest.mark.asyncio
