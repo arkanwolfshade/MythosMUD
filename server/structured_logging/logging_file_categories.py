@@ -23,11 +23,26 @@ DEFAULT_LOG_CATEGORIES: dict[str, list[str]] = {
     "inventory": [
         "inventory",
         "server.services.inventory",
+        "server.services.inventory_service",
         "server.services.inventory_mutation_guard",
         "server.services.container",
         "server.services.container_service",
         "server.services.wearable_container_service",
         "server.services.equipment_service",
+        "server.services.container_service_access",
+        "server.services.container_service_helpers",
+        "server.services.container_service_lock",
+        "server.services.container_service_session",
+        "server.services.container_service_transfer_from",
+        "server.services.container_service_transfer_to",
+        "server.services.container_websocket_events",
+        # These command modules already log "Item equipped"/"Item unequipped" (etc.) with full
+        # player/slot/item context at INFO level; listing them here dual-routes that existing
+        # logging into inventory.log alongside commands.log, rather than duplicating the calls
+        # in the service layer (#688 -- inventory.log had no equip/unequip visibility because
+        # commands.log was the only category their logger name matched).
+        "server.commands.inventory_equip_command",
+        "server.commands.inventory_unequip_command",
         "services.inventory",
         "services.inventory_mutation_guard",
         "services.container",

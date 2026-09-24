@@ -8,7 +8,9 @@ infrastructure.log on every server startup.
 """
 
 import logging
+from pathlib import Path
 
+import server
 from server.structured_logging.logging_file_categories import (
     DEFAULT_LOG_CATEGORIES,
     LoggerNameFilter,
@@ -53,6 +55,62 @@ def test_realtime_module_loggers_match_communications_category() -> None:
         exc_info=None,
     )
     assert logger_filter.filter(record) is True
+
+
+def test_inventory_category_covers_every_container_and_inventory_service_module() -> None:
+    """#688: DEFAULT_LOG_CATEGORIES["inventory"] must list every server/services/ module whose
+    logs belong in inventory.log, by prefix (container*, inventory*, wearable_container*,
+    equipment*). LoggerNameFilter only matches a listed prefix or "<prefix>.", so a module that
+    get_logger(__name__)s under a name absent from this list silently reaches no inventory log
+    file (the container_service_* split modules regressed exactly this way -- see #688 PR). This
+    globs the actual files instead of hardcoding names so the next split is caught automatically."""
+    services_dir = Path(server.__file__).parent / "services"
+    patterns = ("container*.py", "inventory*.py", "wearable_container*.py", "equipment*.py")
+    module_names = sorted(
+        {f"server.services.{path.stem}" for pattern in patterns for path in services_dir.glob(pattern)}
+    )
+    assert module_names, "expected to find inventory-related modules under server/services/"
+
+    logger_filter = LoggerNameFilter(DEFAULT_LOG_CATEGORIES["inventory"])
+    for module_name in module_names:
+        record = logging.LogRecord(
+            name=module_name,
+            level=logging.INFO,
+            pathname=__file__,
+            lineno=1,
+            msg="probe",
+            args=(),
+            exc_info=None,
+        )
+        assert logger_filter.filter(record) is True, (
+            f"{module_name!r} is not covered by DEFAULT_LOG_CATEGORIES['inventory'] -- "
+            "its logs would silently miss inventory.log"
+        )
+
+
+def test_inventory_category_also_catches_equip_unequip_command_logs() -> None:
+    """#688: server/commands/inventory_equip_command.py and inventory_unequip_command.py already
+    log "Item equipped"/"Item unequipped" at INFO with full player/slot/item context -- their
+    logger name only matched the "commands" category, so that visibility never reached
+    inventory.log. Listing these two modules in the "inventory" category too dual-routes that
+    existing logging into inventory.log alongside commands.log, without duplicating log calls."""
+    logger_filter = LoggerNameFilter(DEFAULT_LOG_CATEGORIES["inventory"])
+    for module_name, event in (
+        ("server.commands.inventory_equip_command", "Item equipped"),
+        ("server.commands.inventory_unequip_command", "Item unequipped"),
+    ):
+        record = logging.LogRecord(
+            name=module_name,
+            level=logging.INFO,
+            pathname=__file__,
+            lineno=1,
+            msg=event,
+            args=(),
+            exc_info=None,
+        )
+        assert logger_filter.filter(record) is True, (
+            f"{module_name!r} is not covered by DEFAULT_LOG_CATEGORIES['inventory']"
+        )
 
 
 def _reset_logger(prefix: str) -> None:
