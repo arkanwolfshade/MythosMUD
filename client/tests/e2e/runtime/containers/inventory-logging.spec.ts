@@ -14,11 +14,12 @@
 
 import { expect, test } from '@playwright/test';
 import { executeCommand, waitForMessage } from '../fixtures/auth';
+import { escapeRegExpLiteral } from '../fixtures/message-match';
 import { createMultiPlayerContexts, cleanupMultiPlayerContexts, ensurePlayerInGame } from '../fixtures/multiplayer';
 import { logOffset, waitForLogLine } from '../fixtures/server-logs';
 
 const SLING_ITEM_ID = 'pack_dark_ages.weapon.sling';
-const SLING_ITEM_ID_ESCAPED = SLING_ITEM_ID.replace(/\./g, '\\.');
+const SLING_ITEM_ID_ESCAPED = escapeRegExpLiteral(SLING_ITEM_ID);
 
 /** Match a structured log line containing both `event='<event>'` and `item_id='<SLING_ITEM_ID>'`,
  * in either order -- structlog's key ordering follows call-site kwarg order, not a fixed schema. */
