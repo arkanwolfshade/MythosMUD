@@ -33,6 +33,10 @@ GET_ROOMS_WITH_EXITS_COLUMNS = {
     # and every stored-coordinate branch in the client was unreachable.
     "map_x",
     "map_y",
+    # #663: room's own (possibly NULL) rooms.environment column, and the room -> subzone ->
+    # zone -> 'outdoors' cascade resolved in SQL.
+    "room_environment",
+    "resolved_environment",
 }
 
 GET_PLAYER_BY_ID_COLUMNS = {
@@ -85,7 +89,9 @@ async def test_get_rooms_with_exits_return_shape(
                     zone,
                     exits,
                     map_x,
-                    map_y
+                    map_y,
+                    room_environment,
+                    resolved_environment
                 FROM get_rooms_with_exits()
                 """
             )

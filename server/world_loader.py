@@ -50,51 +50,6 @@ def generate_room_id(plane: str, zone: str, sub_zone: str, room_file: str) -> st
     return "_".join(components)
 
 
-def get_room_environment(
-    room_data: dict[str, Any], subzone_config: dict[str, Any] | None, zone_config: dict[str, Any] | None
-) -> str:
-    """
-    Determine room environment using inheritance chain.
-
-    Priority order:
-    1. Room-specific environment
-    2. Sub-zone environment
-    3. Zone environment
-    4. Default to 'outdoors'
-
-    Args:
-        room_data: Room data dictionary
-        subzone_config: Sub-zone configuration or None
-        zone_config: Zone configuration or None
-
-    Returns:
-        Environment string ('indoors', 'outdoors', 'underwater')
-    """
-    # Check room-specific environment first
-    if room_data.get("environment"):
-        result = room_data["environment"]
-        if not isinstance(result, str):
-            raise TypeError("room environment must be a string")
-        return result
-
-    # Check sub-zone environment
-    if subzone_config and subzone_config.get("environment"):
-        result = subzone_config["environment"]
-        if not isinstance(result, str):
-            raise TypeError("subzone environment must be a string")
-        return result
-
-    # Check zone environment
-    if zone_config and zone_config.get("environment"):
-        result = zone_config["environment"]
-        if not isinstance(result, str):
-            raise TypeError("zone environment must be a string")
-        return result
-
-    # Default fallback
-    return "outdoors"
-
-
 def validate_room_data(
     room_data: dict[str, Any], file_path: str, validator: SchemaValidator | None = None, strict_validation: bool = False
 ) -> list[str]:

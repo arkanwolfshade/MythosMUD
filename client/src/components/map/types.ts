@@ -19,7 +19,10 @@ export interface Room {
   plane?: string;
   zone?: string;
   sub_zone?: string;
+  /** Resolved environment: this room's own value, else its subzone's, else its zone's, else 'outdoors'. */
   environment?: string;
+  /** This room's own environment override (#663); null/undefined means it inherits -- the editor's "Not Set". */
+  room_environment?: string | null;
   exits: Record<string, string>;
   occupants?: string[];
   players?: string[];

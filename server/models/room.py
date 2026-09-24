@@ -74,6 +74,10 @@ class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requ
         self.zone = room_data.get("zone", "")
         self.sub_zone = room_data.get("sub_zone", "")
         self.environment = room_data.get("resolved_environment", "outdoors")
+        # #663: the room's own (possibly None) rooms.environment column value, distinct from the
+        # resolved cascade above. None means "inherits from subzone/zone" -- the map editor's
+        # "Not Set" state.
+        self.room_environment: str | None = room_data.get("room_environment")
         self.exits = room_data.get("exits", {})
         self.rest_location: bool = room_data.get("rest_location", False)
         self.attributes: dict[str, Any] = dict(room_data.get("attributes", {}) or {})
@@ -413,6 +417,7 @@ class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requ
             "zone": self.zone,
             "sub_zone": self.sub_zone,
             "environment": self.environment,
+            "room_environment": self.room_environment,
             "exits": self.exits,
             "map_x": self.map_x,
             "map_y": self.map_y,

@@ -3,14 +3,21 @@
 # Script helpers are underscore-prefixed on the real module; we cast importlib output to this
 # Protocol once, then expose a small public API dataclass for tests.
 # pylint: disable=protected-access
+#
+# Dynamic module + patch.object(module, "asyncpg"/"shutil"/"subprocess") mocking (see
+# test_run_quality_fragmentation_guard.py for the same convention): ModuleType attribute access
+# and Mock call-arg introspection are untyped by nature, not a real Any leak.
+# pyright: reportAny=false
 
 from __future__ import annotations
 
 import importlib.util
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from pathlib import Path
+from types import ModuleType
 from typing import Protocol, cast
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -25,16 +32,21 @@ class _LoadWorldSeedScriptInternals(Protocol):
     _parse_pg_url_for_psql: Callable[[str], tuple[str, int, str, str, str]]
     _validate_environment_and_files: Callable[[], tuple[str, Path, Path]]
     _asyncpg_server_settings: Callable[[str], dict[str, str]]
+    _reset_migration_ledger: Callable[[str, str], Awaitable[None]]
+    _replay_migrations: Callable[[str, str], None]
 
 
 @dataclass(frozen=True, slots=True)
 class LoadWorldSeedTestApi:
     """Typed facade over scripts/load_world_seed.py helpers (dynamic import)."""
 
+    module: ModuleType
     database_url_for_cli: Callable[[str], str]
     parse_pg_url_for_psql: Callable[[str], tuple[str, int, str, str, str]]
     validate_environment_and_files: Callable[[], tuple[str, Path, Path]]
     asyncpg_server_settings: Callable[[str], dict[str, str]]
+    reset_migration_ledger: Callable[[str, str], Awaitable[None]]
+    replay_migrations: Callable[[str, str], None]
 
 
 def _load_script_module() -> LoadWorldSeedTestApi:
@@ -44,10 +56,13 @@ def _load_script_module() -> LoadWorldSeedTestApi:
     spec.loader.exec_module(mod)
     loaded = cast(_LoadWorldSeedScriptInternals, cast(object, mod))
     return LoadWorldSeedTestApi(
+        module=mod,
         database_url_for_cli=loaded._database_url_for_cli,  # pyright: ignore[reportPrivateUsage] -- script module API
         parse_pg_url_for_psql=loaded._parse_pg_url_for_psql,  # pyright: ignore[reportPrivateUsage] -- script module API
         validate_environment_and_files=loaded._validate_environment_and_files,  # pyright: ignore[reportPrivateUsage]
         asyncpg_server_settings=loaded._asyncpg_server_settings,  # pyright: ignore[reportPrivateUsage]
+        reset_migration_ledger=loaded._reset_migration_ledger,  # pyright: ignore[reportPrivateUsage]
+        replay_migrations=loaded._replay_migrations,  # pyright: ignore[reportPrivateUsage]
     )
 
 
@@ -155,3 +170,78 @@ def test_validate_environment_errors_when_baseline_files_are_missing(
         _ = world_seed_api.validate_environment_and_files()
     assert exc_info.value.code == 1
     assert "not found" in capsys.readouterr().out
+
+
+# -- _reset_migration_ledger / _replay_migrations (#663) -----------------------------------
+
+
+@pytest.mark.asyncio
+@pytest.mark.regression
+async def test_reset_migration_ledger_truncates_the_ledger_table(world_seed_api: LoadWorldSeedTestApi) -> None:
+    """_reset_migration_ledger truncates schema_migrations in the target search_path's schema."""
+    mock_conn = AsyncMock()
+    with patch.object(world_seed_api.module, "asyncpg") as mock_asyncpg:
+        mock_asyncpg.connect = AsyncMock(return_value=mock_conn)
+        await world_seed_api.reset_migration_ledger("postgresql+asyncpg://u:p@localhost/mythos_unit", "mythos_unit")
+
+    mock_asyncpg.connect.assert_awaited_once_with(
+        "postgresql://u:p@localhost/mythos_unit", server_settings={"search_path": "mythos_unit"}
+    )
+    mock_conn.execute.assert_awaited_once_with('TRUNCATE TABLE "mythos_unit".schema_migrations')
+    mock_conn.close.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+@pytest.mark.regression
+async def test_reset_migration_ledger_swallows_undefined_table(world_seed_api: LoadWorldSeedTestApi) -> None:
+    """dbmate having never run against this database (no schema_migrations table yet) is not
+    an error -- there is nothing to reset."""
+    mock_conn = AsyncMock()
+    with patch.object(world_seed_api.module, "asyncpg") as mock_asyncpg:
+        mock_asyncpg.UndefinedTableError = Exception
+        mock_asyncpg.connect = AsyncMock(return_value=mock_conn)
+        mock_conn.execute = AsyncMock(side_effect=mock_asyncpg.UndefinedTableError())
+        await world_seed_api.reset_migration_ledger("postgresql+asyncpg://u:p@localhost/mythos_unit", "mythos_unit")
+
+    mock_conn.close.assert_awaited_once()
+
+
+@pytest.mark.regression
+def test_replay_migrations_raises_when_npx_missing(world_seed_api: LoadWorldSeedTestApi) -> None:
+    """Missing npx on PATH must fail loudly, not silently skip replaying migrations."""
+    with patch.object(world_seed_api.module.shutil, "which", return_value=None):
+        with pytest.raises(FileNotFoundError, match="npx"):
+            world_seed_api.replay_migrations("postgresql://u:p@localhost/mythos_unit", "mythos_unit")
+
+
+@pytest.mark.regression
+def test_replay_migrations_raises_on_nonzero_exit(world_seed_api: LoadWorldSeedTestApi) -> None:
+    """A failed `dbmate up` must surface as an exception, not a silently-ignored return code."""
+    with (
+        patch.object(world_seed_api.module.shutil, "which", return_value="C:/npx.cmd"),
+        patch.object(world_seed_api.module.subprocess, "run", return_value=MagicMock(returncode=1)) as mock_run,
+    ):
+        with pytest.raises(RuntimeError, match="dbmate up failed"):
+            world_seed_api.replay_migrations("postgresql://u:p@localhost/mythos_unit", "mythos_unit")
+    mock_run.assert_called_once()
+
+
+@pytest.mark.regression
+def test_replay_migrations_passes_url_via_env_not_argv(world_seed_api: LoadWorldSeedTestApi) -> None:
+    """DATABASE_URL travels via the subprocess env block, not a --url argv entry -- a bare '&'
+    in the query string (sslmode=disable&search_path=...) would otherwise be reinterpreted by
+    cmd.exe when Windows launches npx's .cmd wrapper, even with shell=False."""
+    with (
+        patch.object(world_seed_api.module.shutil, "which", return_value="C:/npx.cmd"),
+        patch.object(world_seed_api.module.subprocess, "run", return_value=MagicMock(returncode=0)) as mock_run,
+    ):
+        world_seed_api.replay_migrations("postgresql+asyncpg://u:p@localhost/mythos_unit", "mythos_unit")
+
+    _args, kwargs = mock_run.call_args
+    passed_cmd = _args[0]
+    assert not any("--url" in str(part) for part in passed_cmd)
+    assert "&" not in " ".join(str(part) for part in passed_cmd)
+    assert (
+        kwargs["env"]["DATABASE_URL"]
+        == "postgresql://u:p@localhost/mythos_unit?sslmode=disable&search_path=mythos_unit"
+    )

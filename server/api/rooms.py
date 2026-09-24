@@ -9,7 +9,7 @@ room information retrieval and room state management.
 
 import json
 import uuid
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from fastapi import APIRouter, Depends, Query, Request, status
 from pydantic import Field
@@ -171,6 +171,7 @@ def _apply_room_properties_to_memory(  # pylint: disable=too-many-arguments,too-
     description: str | None,
     environment: str | None,
     set_environment: bool,
+    resolved_environment: str | None,
 ) -> None:
     """Mutate RoomRepository memory so list_rooms sees property edits (LRU invalidate alone is not enough)."""
     persistence = getattr(room_service, "persistence", None)
@@ -185,16 +186,11 @@ def _apply_room_properties_to_memory(  # pylint: disable=too-many-arguments,too-
         memory_room.description = description
     if not set_environment:
         return
-    attrs = getattr(memory_room, "attributes", None)
-    if environment is None:
-        if isinstance(attrs, dict):
-            attrs.pop("environment", None)
-        # Match Room.__init__ fallback when attributes.environment is cleared.
-        memory_room.environment = "outdoors"
-        return
-    if isinstance(attrs, dict):
-        attrs["environment"] = environment
-    memory_room.environment = environment
+    # #663: environment lives in rooms.environment now, not attributes. room_environment is the
+    # room's own raw value (None = inherit); environment is the DB-resolved cascade, so the
+    # inheritance rule stays defined once, in SQL.
+    memory_room.room_environment = environment
+    memory_room.environment = resolved_environment or "outdoors"
 
 
 def _apply_room_exit_to_memory(
@@ -229,9 +225,19 @@ async def _update_room_properties_in_db(  # pylint: disable=too-many-arguments,t
     description: str | None,
     environment: str | None,
     set_environment: bool,
-) -> bool:
-    """Update room name/description/environment via update_room_properties(). Returns False if the room doesn't exist."""
-    query = text("SELECT update_room_properties(:room_id, :name, :description, :environment, :set_environment)")
+) -> tuple[bool, str | None]:
+    """
+    Update room name/description/environment via update_room_properties().
+
+    Returns (updated, resolved_environment) -- resolved_environment is the room's environment
+    after the room -> subzone -> zone -> 'outdoors' cascade (#663), computed in SQL so the
+    in-memory Room stays in sync with the database's inheritance rule. (False, None) if the room
+    doesn't exist.
+    """
+    query = text(
+        "SELECT updated, resolved_environment FROM update_room_properties("
+        + ":room_id, :name, :description, :environment, :set_environment)"
+    )
     result = await session.execute(
         query,
         {
@@ -242,10 +248,11 @@ async def _update_room_properties_in_db(  # pylint: disable=too-many-arguments,t
             "set_environment": set_environment,
         },
     )
-    updated = bool(result.scalar())
+    updated, resolved_environment = cast(tuple[bool, str | None], cast(object, result.one()))
+    updated = bool(updated)
     if updated:
         await session.commit()
-    return updated
+    return updated, resolved_environment
 
 
 def _build_exit_attributes(flags: list[str] | None, description: str | None) -> str:
@@ -519,7 +526,7 @@ async def update_room(
 
         set_environment, environment = _validate_room_update_environment(update_data, room_id)
 
-        updated = await _update_room_properties_in_db(
+        updated, resolved_environment = await _update_room_properties_in_db(
             session, room_id, update_data.name, update_data.description, environment, set_environment
         )
         if not updated:
@@ -533,7 +540,13 @@ async def update_room(
         logger.info("Room properties updated successfully", room_id=room_id)
 
         _apply_room_properties_to_memory(
-            room_service, room_id, update_data.name, update_data.description, environment, set_environment
+            room_service,
+            room_id,
+            update_data.name,
+            update_data.description,
+            environment,
+            set_environment,
+            resolved_environment,
         )
         await _invalidate_room_cache(room_service, room_id)
 

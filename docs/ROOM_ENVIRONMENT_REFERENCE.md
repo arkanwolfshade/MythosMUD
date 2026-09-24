@@ -20,8 +20,10 @@ constraints, JSON schema `enum`s, and the map editor's dropdown, all derived fro
 
 ## Inheritance
 
-A room's effective environment is resolved by `server/world_loader.py::get_room_environment()` via a
-priority chain:
+A room's effective environment is resolved in SQL, by the `COALESCE(r.environment, sz.environment,
+z.environment, 'outdoors')` cascade in `get_rooms_with_exits()` / `get_rooms_by_zone_pattern()` /
+`get_room_by_stable_id()` / `get_rooms_for_coordinate_generation()` / `update_room_properties()`
+(`db/procedures/rooms.sql`, `db/procedures/exploration.sql`, #663):
 
 1. Room-specific `environment` (if set)
 2. Sub-zone `environment` (if set)
@@ -29,15 +31,20 @@ priority chain:
 4. Default: `outdoors`
 
 Because all three levels share the same enum, the chain is always valid — a fallback from any level to
-any other level can never produce a value one level doesn't recognize.
+any other level can never produce a value one level doesn't recognize. The resolved cascade result
+travels through the Python layer as `environment` (`Room.environment`, `room["environment"]`); the
+room's own unresolved column value travels alongside it as `room_environment` (`Room.room_environment`,
+`room["room_environment"]`) — `None` there means "inherits from subzone/zone", which is the map editor's
+"Not Set" state. Resolving in SQL (rather than in Python) keeps the inheritance rule defined once.
 
 ## Where `environment` is stored
 
-- **Zones and subzones**: typed `text` columns (`zones.environment`, `subzones.environment`), each with
-  a `CHECK` constraint.
-- **Rooms**: a key inside the `attributes` JSONB column (`attributes->>'environment'`), enforced by an
-  expression `CHECK` constraint (`chk_rooms_environment`) rather than a column constraint. See the
-  follow-up issue tracking promoting this to a typed column, matching zones/subzones.
+- **Zones, subzones, and rooms**: typed `text` columns (`zones.environment`, `subzones.environment`,
+  `rooms.environment`), each with its own `CHECK` constraint (`chk_zones_environment`,
+  `chk_subzones_environment`, `chk_rooms_environment`). Before #663, `rooms.environment` lived inside
+  the `attributes` JSONB column (`attributes->>'environment'`), enforced by an expression `CHECK`
+  rather than a column constraint -- structurally inconsistent with zones/subzones. The `db/migrations/
+  *_rooms_environment_column.sql` migration backfilled the column from the JSONB key and dropped the key.
 
 ## Adding a new environment value
 
