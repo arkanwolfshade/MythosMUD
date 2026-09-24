@@ -235,8 +235,7 @@ async def _update_room_properties_in_db(  # pylint: disable=too-many-arguments,t
     doesn't exist.
     """
     query = text(
-        "SELECT updated, resolved_environment FROM update_room_properties("
-        + ":room_id, :name, :description, :environment, :set_environment)"
+        "SELECT updated, resolved_environment FROM update_room_properties(:room_id, :name, :description, :environment, :set_environment)"
     )
     result = await session.execute(
         query,
