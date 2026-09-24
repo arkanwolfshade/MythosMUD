@@ -9,6 +9,10 @@
 -- get_rooms_for_coordinate_generation: rooms in a zone/subzone (matched by stable_id prefix),
 -- joined to their zone/subzone stable_ids. Column order matches
 -- CoordinateGenerator._room_dict_from_row's positional row access -- do not reorder.
+--
+-- DROP first: #663 appended room_environment/resolved_environment (return type change) -- see
+-- db/procedures/rooms.sql's get_rooms_with_exits comment for why this is required.
+DROP FUNCTION IF EXISTS :schema_name.get_rooms_for_coordinate_generation(text); -- noqa: PRS
 CREATE OR REPLACE FUNCTION :schema_name.get_rooms_for_coordinate_generation(p_pattern text) -- noqa: PRS
 RETURNS TABLE (
     id uuid,
@@ -21,7 +25,10 @@ RETURNS TABLE (
     map_symbol text,
     map_style text,
     zone_stable_id text,
-    subzone_stable_id text
+    subzone_stable_id text,
+    -- #663: appended, see rooms.sql's get_rooms_with_exits.
+    room_environment text,
+    resolved_environment text
 )
 LANGUAGE plpgsql
 AS $$
@@ -38,7 +45,9 @@ BEGIN
         r.map_symbol,
         r.map_style,
         z.stable_id,
-        sz.stable_id
+        sz.stable_id,
+        r.environment,
+        COALESCE(r.environment, sz.environment, z.environment, 'outdoors')
     FROM rooms r
     JOIN subzones sz ON r.subzone_id = sz.id
     JOIN zones z ON sz.zone_id = z.id

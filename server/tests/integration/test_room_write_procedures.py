@@ -10,11 +10,40 @@ including the one that shipped before this issue (update_room_map_position).
 
 import json
 import uuid
+from typing import cast
 
 import pytest
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+
+_UPDATE_ROOM_PROPERTIES_SQL = text(
+    "SELECT updated, resolved_environment FROM update_room_properties"
+    + "(:room_id, :name, :description, :environment, :set_environment)"
+)
+
+
+async def _call_update_room_properties(
+    session: AsyncSession,
+    room_id: str,
+    name: str | None,
+    description: str | None,
+    environment: str | None,
+    set_environment: bool,
+) -> tuple[bool, str | None]:
+    """Call update_room_properties() and return (updated, resolved_environment) with real types
+    (the raw Row's attribute access is untyped -- see #663's RETURNS TABLE change)."""
+    result = await session.execute(
+        _UPDATE_ROOM_PROPERTIES_SQL,
+        {
+            "room_id": room_id,
+            "name": name,
+            "description": description,
+            "environment": environment,
+            "set_environment": set_environment,
+        },
+    )
+    return cast(tuple[bool, str | None], cast(object, result.one()))
 
 
 @pytest.fixture
@@ -97,19 +126,17 @@ async def test_update_room_properties_writes_and_reads_back(
     """update_room_properties() updates name/description/environment and can be read back."""
     source_id, _target_id = room_pair
     async with session_factory() as session:
-        result = await session.execute(
-            text("SELECT update_room_properties(:room_id, :name, :description, :environment, TRUE)"),
-            {"room_id": source_id, "name": "Renamed Room", "description": "New description.", "environment": "arena"},
+        updated, resolved_environment = await _call_update_room_properties(
+            session, source_id, "Renamed Room", "New description.", "arena", True
         )
-        assert bool(result.scalar()) is True
+        assert updated is True
+        assert resolved_environment == "arena"
         await session.commit()
 
         row = (
             (
                 await session.execute(
-                    text(
-                        "SELECT name, description, attributes ->> 'environment' AS environment FROM rooms WHERE stable_id = :id"
-                    ),
+                    text("SELECT name, description, environment FROM rooms WHERE stable_id = :id"),
                     {"id": source_id},
                 )
             )
@@ -120,31 +147,38 @@ async def test_update_room_properties_writes_and_reads_back(
         assert row["description"] == "New description."
         assert row["environment"] == "arena"
 
+        # #663: environment lives in the column now, never in the JSONB blob.
+        has_jsonb_key = (
+            await session.execute(
+                text("SELECT attributes ? 'environment' FROM rooms WHERE stable_id = :id"),
+                {"id": source_id},
+            )
+        ).scalar()
+        assert has_jsonb_key is False
+
 
 @pytest.mark.asyncio
 @pytest.mark.integration
 async def test_update_room_properties_clears_environment_to_null(
     session_factory: async_sessionmaker[AsyncSession], room_pair: tuple[str, str]
 ) -> None:
-    """update_room_properties() with p_set_environment=TRUE and NULL clears the environment."""
+    """update_room_properties() with p_set_environment=TRUE and NULL clears the environment
+    (reverting the room to inheriting from its subzone/zone -- #663)."""
     source_id, _target_id = room_pair
     async with session_factory() as session:
-        await session.execute(
-            text("SELECT update_room_properties(:room_id, NULL, NULL, :environment, TRUE)"),
-            {"room_id": source_id, "environment": "arena"},
-        )
+        _ = await _call_update_room_properties(session, source_id, None, None, "arena", True)
         await session.commit()
 
-        result = await session.execute(
-            text("SELECT update_room_properties(:room_id, NULL, NULL, NULL, TRUE)"),
-            {"room_id": source_id},
-        )
-        assert bool(result.scalar()) is True
+        updated, resolved_environment = await _call_update_room_properties(session, source_id, None, None, None, True)
+        assert updated is True
+        # room_pair's rooms have no subzone/zone environment set, so clearing the room's own
+        # value falls all the way through the cascade to the 'outdoors' default.
+        assert resolved_environment == "outdoors"
         await session.commit()
 
         environment = (
             await session.execute(
-                text("SELECT attributes ->> 'environment' AS environment FROM rooms WHERE stable_id = :id"),
+                text("SELECT environment FROM rooms WHERE stable_id = :id"),
                 {"id": source_id},
             )
         ).scalar()
@@ -156,25 +190,19 @@ async def test_update_room_properties_clears_environment_to_null(
 async def test_update_room_properties_leaves_environment_alone_when_not_set(
     session_factory: async_sessionmaker[AsyncSession], room_pair: tuple[str, str]
 ) -> None:
-    """p_set_environment=FALSE leaves attributes.environment untouched, regardless of p_environment."""
+    """p_set_environment=FALSE leaves rooms.environment untouched, regardless of p_environment."""
     source_id, _target_id = room_pair
     async with session_factory() as session:
-        await session.execute(
-            text("SELECT update_room_properties(:room_id, NULL, NULL, :environment, TRUE)"),
-            {"room_id": source_id, "environment": "arena"},
-        )
+        _ = await _call_update_room_properties(session, source_id, None, None, "arena", True)
         await session.commit()
 
-        await session.execute(
-            text("SELECT update_room_properties(:room_id, :name, NULL, NULL, FALSE)"),
-            {"room_id": source_id, "name": "Only Name Changed"},
-        )
+        _ = await _call_update_room_properties(session, source_id, "Only Name Changed", None, None, False)
         await session.commit()
 
         row = (
             (
                 await session.execute(
-                    text("SELECT name, attributes ->> 'environment' AS environment FROM rooms WHERE stable_id = :id"),
+                    text("SELECT name, environment FROM rooms WHERE stable_id = :id"),
                     {"id": source_id},
                 )
             )
@@ -192,11 +220,11 @@ async def test_update_room_properties_unknown_room_returns_false(
 ) -> None:
     """update_room_properties() on a nonexistent stable_id returns FALSE, no exception."""
     async with session_factory() as session:
-        result = await session.execute(
-            text("SELECT update_room_properties(:room_id, :name, NULL, NULL, FALSE)"),
-            {"room_id": "does_not_exist", "name": "x"},
+        updated, resolved_environment = await _call_update_room_properties(
+            session, "does_not_exist", "x", None, None, False
         )
-        assert bool(result.scalar()) is False
+        assert updated is False
+        assert resolved_environment is None
 
 
 @pytest.mark.asyncio

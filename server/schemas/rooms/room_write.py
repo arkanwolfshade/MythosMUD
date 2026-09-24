@@ -15,9 +15,9 @@ class RoomUpdateRequest(SecureBaseModel):
     """Request model for updating room properties (name, description, environment).
 
     All fields are optional; omitted fields are left unchanged. `environment: ""` clears the
-    environment to unset (the client's "Not Set" option) -- the CHECK constraint on
-    rooms.attributes->>'environment' permits NULL but not an empty string, so the API layer
-    is responsible for that translation.
+    environment to unset (the client's "Not Set" option, meaning it inherits from its subzone/
+    zone) -- the CHECK constraint on rooms.environment permits NULL but not an empty string, so
+    the API layer is responsible for that translation.
     """
 
     name: str | None = Field(default=None, description="New room name")

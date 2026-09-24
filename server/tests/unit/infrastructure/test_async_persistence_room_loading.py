@@ -13,6 +13,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from server.async_persistence_room_loader import ProcessedRoomData
 from server.exceptions import DatabaseError
 
 
@@ -183,6 +184,8 @@ def test_build_room_objects_success(async_persistence_layer):
             "sub_zone": "subzone",
             "map_x": None,
             "map_y": None,
+            "room_environment": "indoors",
+            "resolved_environment": "indoors",
         }
     ]
     exits_by_room: dict[str, dict[str, str]] = {
@@ -200,7 +203,8 @@ def test_build_room_objects_success(async_persistence_layer):
 
 
 def test_build_room_objects_with_non_dict_attributes(async_persistence_layer):
-    """Test _build_room_objects handles non-dict attributes."""
+    """Test _build_room_objects handles non-dict attributes (falls back to an empty attributes payload;
+    resolved_environment/room_environment come from the row, not attributes -- see #663)."""
     room_data_list = [
         {
             "room_id": "earth_arkhamcity_subzone_room_001",
@@ -213,6 +217,8 @@ def test_build_room_objects_with_non_dict_attributes(async_persistence_layer):
             "sub_zone": "subzone",
             "map_x": None,
             "map_y": None,
+            "room_environment": None,
+            "resolved_environment": "outdoors",
         }
     ]
     exits_by_room: dict[str, dict[str, str]] = {}
@@ -224,6 +230,7 @@ def test_build_room_objects_with_non_dict_attributes(async_persistence_layer):
         async_persistence_layer._build_room_objects(room_data_list, exits_by_room, result_container)
 
     call_args = mock_room_class.call_args[0][0]
+    assert call_args["attributes"] == {}
     assert call_args["resolved_environment"] == "outdoors"
 
 
@@ -241,6 +248,8 @@ def test_build_room_objects_debug_logging(async_persistence_layer):
             "sub_zone": "sanitarium",
             "map_x": None,
             "map_y": None,
+            "room_environment": None,
+            "resolved_environment": "outdoors",
         }
     ]
     exits_by_room: dict[str, dict[str, str]] = {}
@@ -397,6 +406,8 @@ def test_build_room_objects_with_exits(async_persistence_layer):
             "sub_zone": "subzone",
             "map_x": None,
             "map_y": None,
+            "room_environment": None,
+            "resolved_environment": "outdoors",
         }
     ]
     exits_by_room: dict[str, dict[str, str]] = {
@@ -417,19 +428,22 @@ def test_build_room_objects_with_exits(async_persistence_layer):
 
 
 def test_build_room_objects_with_dict_attributes(async_persistence_layer):
-    """Test _build_room_objects uses environment from attributes dict."""
-    room_data_list = [
+    """Test _build_room_objects passes resolved_environment/room_environment straight through
+    from the row (#663: no longer derived from attributes -- that JSONB key is gone)."""
+    room_data_list: list[ProcessedRoomData] = [
         {
             "room_id": "earth_arkhamcity_subzone_room_001",
             "stable_id": "room_001",
             "name": "Test Room",
             "description": "A test room",
-            "attributes": {"environment": "indoors"},
+            "attributes": {},
             "plane": "earth",
             "zone": "arkhamcity",
             "sub_zone": "subzone",
             "map_x": None,
             "map_y": None,
+            "room_environment": "indoors",
+            "resolved_environment": "indoors",
         }
     ]
     exits_by_room: dict[str, dict[str, str]] = {}
@@ -442,22 +456,26 @@ def test_build_room_objects_with_dict_attributes(async_persistence_layer):
 
     call_args = mock_room_class.call_args[0][0]
     assert call_args["resolved_environment"] == "indoors"
+    assert call_args["room_environment"] == "indoors"
 
 
 def test_build_room_objects_without_environment_in_attributes(async_persistence_layer):
-    """Test _build_room_objects defaults to outdoors when environment not in attributes."""
-    room_data_list = [
+    """Test _build_room_objects passes through a NULL room_environment (inherited) with its
+    SQL-resolved cascade value (#663)."""
+    room_data_list: list[ProcessedRoomData] = [
         {
             "room_id": "earth_arkhamcity_subzone_room_001",
             "stable_id": "room_001",
             "name": "Test Room",
             "description": "A test room",
-            "attributes": {"other_key": "value"},
+            "attributes": {},
             "plane": "earth",
             "zone": "arkhamcity",
             "sub_zone": "subzone",
             "map_x": None,
             "map_y": None,
+            "room_environment": None,
+            "resolved_environment": "outdoors",
         }
     ]
     exits_by_room: dict[str, dict[str, str]] = {}
@@ -470,6 +488,7 @@ def test_build_room_objects_without_environment_in_attributes(async_persistence_
 
     call_args = mock_room_class.call_args[0][0]
     assert call_args["resolved_environment"] == "outdoors"
+    assert call_args["room_environment"] is None
 
 
 @pytest.mark.asyncio

@@ -52,33 +52,38 @@ class TestBuildZonePattern:
 class TestBuildRoomDict:
     """Tests for build_room_dict from database row.
 
-    Row tuple: (id, stable_id, name, attributes, map_x, map_y, map_origin_zone, map_symbol, map_style).
+    Row tuple: (id, stable_id, name, attributes, map_x, map_y, map_origin_zone, map_symbol,
+    map_style, room_environment, resolved_environment) -- the last two appended by #663.
     """
 
     def test_full_row(self) -> None:
         """Full database row is mapped to a complete room dict."""
-        row = (
+        row: tuple[object, ...] = (
             "uuid-123",
             "material_arkham_room_1",
             "Main Foyer",
-            {"environment": "interior"},
+            {},
             1.0,
             2.0,
             False,
             "#",
             "interior",
+            "indoors",
+            "indoors",
         )
         out = build_room_dict(row)
         assert out["uuid"] == "uuid-123"
         assert out["id"] == "material_arkham_room_1"
         assert out["stable_id"] == "material_arkham_room_1"
         assert out["name"] == "Main Foyer"
-        assert out["attributes"] == {"environment": "interior"}
+        assert out["attributes"] == {}
         assert out["map_x"] == 1.0
         assert out["map_y"] == 2.0
         assert out["map_origin_zone"] is False
         assert out["map_symbol"] == "#"
         assert out["map_style"] == "interior"
+        assert out["room_environment"] == "indoors"
+        assert out["environment"] == "indoors"
         assert not out["exits"]
 
     def test_null_map_coords(self) -> None:
@@ -93,11 +98,15 @@ class TestBuildRoomDict:
             None,
             None,
             None,
+            None,
+            "outdoors",
         )
         out = build_room_dict(row)
         assert out["map_x"] is None
         assert out["map_y"] is None
         assert out["attributes"] == {}
+        assert out["room_environment"] is None
+        assert out["environment"] == "outdoors"
 
 
 @pytest.mark.asyncio
@@ -126,7 +135,7 @@ async def test_load_room_exits_attaches_exits_by_stable_id() -> None:
 async def test_load_rooms_with_coordinates_executes_zone_query_and_exits() -> None:
     """Zone query builds rooms then load_room_exits runs second query."""
     session: AsyncMock = AsyncMock(spec=AsyncSession)
-    room_row: tuple[object, ...] = ("uuid-1", "stable_a", "Name", {}, 1.0, 2.0, True, ".", "style")
+    room_row: tuple[object, ...] = ("uuid-1", "stable_a", "Name", {}, 1.0, 2.0, True, ".", "style", None, "outdoors")
     rooms_result = _MockResultRows([room_row])
     exits_result = _MockResultRows([])
 
@@ -156,7 +165,7 @@ async def test_load_single_room_with_coordinates_none_when_missing() -> None:
 async def test_load_single_room_with_coordinates_loads_exits() -> None:
     """Single room row is built and exits query is run."""
     session: AsyncMock = AsyncMock(spec=AsyncSession)
-    room_row: tuple[object, ...] = ("uuid-1", "stable_b", "R", None, 0.0, 0.0, False, "x", "s")
+    room_row: tuple[object, ...] = ("uuid-1", "stable_b", "R", None, 0.0, 0.0, False, "x", "s", None, "outdoors")
     first = MagicMock()
     first.fetchone = MagicMock(return_value=room_row)
     exits_result = _MockResultRows([])

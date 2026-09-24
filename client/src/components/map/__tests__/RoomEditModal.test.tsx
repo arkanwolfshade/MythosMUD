@@ -16,6 +16,7 @@ describe('RoomEditModal', () => {
     zone: 'arkhamcity',
     sub_zone: 'campus',
     environment: 'indoors',
+    room_environment: 'indoors',
     exits: {},
   };
 
@@ -126,6 +127,19 @@ describe('RoomEditModal', () => {
     // Disabled inputs ignore fireEvent.change in jsdom -- assert the value never moves.
     fireEvent.change(zoneInput, { target: { value: 'somewhere_else' } });
     expect(zoneInput.value).toBe('arkhamcity');
+  });
+
+  it('should pre-fill "Not Set" for a room that inherits its environment (#663)', () => {
+    // room_environment is the room's own (raw) column value; null means it inherits from its
+    // subzone/zone. environment (resolved) can differ -- the form must show the raw value, not
+    // the inherited one, or saving without touching the field would pin the inherited value.
+    const inheritedRoom: Room = { ...mockRoom, environment: 'underwater', room_environment: null };
+    render(<RoomEditModal {...defaultProps} room={inheritedRoom} />);
+    const propertiesTab = screen.getByText(/properties/i);
+    fireEvent.click(propertiesTab);
+
+    const environmentSelect = screen.getByLabelText(/environment/i) as HTMLSelectElement;
+    expect(environmentSelect.value).toBe('');
   });
 
   it('should send an explicit empty string, not undefined, when environment is cleared to "Not Set" (#627)', async () => {

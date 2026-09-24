@@ -20,7 +20,10 @@ const buildInitialFormData = (room: Room): RoomEditFormData => ({
   plane: toFormValue(room.plane),
   zone: toFormValue(room.zone),
   sub_zone: toFormValue(room.sub_zone),
-  environment: toFormValue(room.environment),
+  // #663: pre-fill from the room's own (raw) value, not the resolved `environment` -- otherwise
+  // a room that inherits from its subzone/zone would show that inherited value instead of "Not
+  // Set", and saving without touching the field would pin it, silently cutting off inheritance.
+  environment: toFormValue(room.room_environment),
 });
 
 const validateName = (value: string): string => {

@@ -57,6 +57,53 @@ def test_detect_coordinate_conflicts(generator):
     assert conflicts[0][:2] == ("room_a", "room_b")
 
 
+def test_room_dict_from_row_carries_environment_columns(generator: CoordinateGenerator) -> None:
+    """#663: row[11]/row[12] (room_environment, resolved_environment) must survive the hop from
+    get_rooms_for_coordinate_generation()'s appended columns into the room dict, distinct from
+    the (unrelated) attributes JSONB blob."""
+    row: tuple[object, ...] = (
+        "uuid-1",
+        "stable_a",
+        "Room A",
+        {"rest_location": True},
+        1.0,
+        2.0,
+        True,
+        "#",
+        "style",
+        "earth/arkham",
+        "downtown",
+        "indoors",
+        "indoors",
+    )
+    room_dict = generator._room_dict_from_row(row)  # pyright: ignore[reportPrivateUsage]
+    assert room_dict["room_environment"] == "indoors"
+    assert room_dict["environment"] == "indoors"
+
+
+def test_room_dict_from_row_inherited_environment_is_none(generator: CoordinateGenerator) -> None:
+    """A room with no environment of its own (room_environment None) still carries the
+    SQL-resolved cascade value in `environment`."""
+    row: tuple[object, ...] = (
+        "uuid-2",
+        "stable_b",
+        "Room B",
+        {},
+        None,
+        None,
+        False,
+        None,
+        None,
+        "earth/arkham",
+        "downtown",
+        None,
+        "outdoors",
+    )
+    room_dict = generator._room_dict_from_row(row)  # pyright: ignore[reportPrivateUsage]
+    assert room_dict["room_environment"] is None
+    assert room_dict["environment"] == "outdoors"
+
+
 @pytest.mark.asyncio
 async def test_generate_coordinates_for_zone_empty_data(generator):
     generator._load_rooms_data = AsyncMock(return_value=[])

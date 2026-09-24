@@ -62,10 +62,16 @@ def test_build_exit_attributes_includes_flags_and_description() -> None:
 async def test_update_room_properties_in_db_success() -> None:
     session = AsyncMock(spec=AsyncSession)
     result = MagicMock()
-    result.scalar.return_value = True
+    # _update_room_properties_in_db unpacks result.one() as a 2-tuple (see #663).
+    # Reason: TEST_MOCK - MagicMock attribute access has no static type.
+    # Appropriate because: same unsuppressed mock convention as the other tests in this file.
+    result.one.return_value = (True, "arena")  # pyright: ignore[reportAny]
     session.execute = AsyncMock(return_value=result)
-    updated = await _update_room_properties_in_db(session, "room_1", "New Name", None, "arena", True)
+    updated, resolved_environment = await _update_room_properties_in_db(
+        session, "room_1", "New Name", None, "arena", True
+    )
     assert updated is True
+    assert resolved_environment == "arena"
     session.commit.assert_awaited_once()
 
 
@@ -73,10 +79,14 @@ async def test_update_room_properties_in_db_success() -> None:
 async def test_update_room_properties_in_db_not_found_does_not_commit() -> None:
     session = AsyncMock(spec=AsyncSession)
     result = MagicMock()
-    result.scalar.return_value = False
+    # _update_room_properties_in_db unpacks result.one() as a 2-tuple (see #663).
+    # Reason: TEST_MOCK - MagicMock attribute access has no static type.
+    # Appropriate because: same unsuppressed mock convention as the other tests in this file.
+    result.one.return_value = (False, None)  # pyright: ignore[reportAny]
     session.execute = AsyncMock(return_value=result)
-    updated = await _update_room_properties_in_db(session, "missing", None, None, None, False)
+    updated, resolved_environment = await _update_room_properties_in_db(session, "missing", None, None, None, False)
     assert updated is False
+    assert resolved_environment is None
     session.commit.assert_not_awaited()
 
 
@@ -162,7 +172,9 @@ async def test_update_room_empty_string_environment_clears_to_none() -> None:
     with (
         _bypass_admin_auth(),
         patch(
-            "server.api.rooms._update_room_properties_in_db", new_callable=AsyncMock, return_value=True
+            "server.api.rooms._update_room_properties_in_db",
+            new_callable=AsyncMock,
+            return_value=(True, "outdoors"),
         ) as mock_update,
     ):
         response = await update_room(
@@ -185,7 +197,11 @@ async def test_update_room_success_returns_updated_fields() -> None:
     room_service.room_cache = None
     with (
         _bypass_admin_auth(),
-        patch("server.api.rooms._update_room_properties_in_db", new_callable=AsyncMock, return_value=True),
+        patch(
+            "server.api.rooms._update_room_properties_in_db",
+            new_callable=AsyncMock,
+            return_value=(True, "arena"),
+        ),
     ):
         response = await update_room(
             "room_1",
@@ -200,22 +216,29 @@ async def test_update_room_success_returns_updated_fields() -> None:
 
 
 def test_apply_room_properties_to_memory_updates_environment() -> None:
-    """Regression: list_rooms reads RoomRepository memory; PUT must mutate it (#627)."""
+    """Regression: list_rooms reads RoomRepository memory; PUT must mutate it (#627).
+
+    #663: environment lives in rooms.environment now, not attributes -- resolved_environment
+    (the room -> subzone -> zone -> 'outdoors' cascade, computed in SQL) is what memory_room.
+    environment gets, while room_environment gets the raw requested value.
+    """
     memory_room = MagicMock()
     memory_room.name = "Archives"
     memory_room.description = "Dusty stacks"
     memory_room.environment = "indoors"
-    memory_room.attributes = {"environment": "indoors"}
+    memory_room.room_environment = "indoors"
     room_service = MagicMock(spec=RoomService)
     persistence: MagicMock = MagicMock()
     persistence.get_room_by_id.return_value = memory_room
     room_service.persistence = persistence
 
-    _apply_room_properties_to_memory(room_service, "room_1", "Patient Archives", None, "outdoors", True)
+    _apply_room_properties_to_memory(room_service, "room_1", "Patient Archives", None, "outdoors", True, "outdoors")
 
     assert memory_room.name == "Patient Archives"
     assert memory_room.environment == "outdoors"
-    assert memory_room.attributes["environment"] == "outdoors"
+    # Reason: TEST_MOCK - MagicMock attribute access has no static type.
+    # Appropriate because: same unsuppressed mock convention as the other tests in this file.
+    assert memory_room.room_environment == "outdoors"  # pyright: ignore[reportAny]
 
 
 def test_apply_room_exit_to_memory_sets_and_deletes() -> None:

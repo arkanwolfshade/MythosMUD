@@ -26,12 +26,14 @@ def test_build_room_objects_promotes_rest_location_from_attributes(async_persist
             "stable_id": "room_foyer_001",
             "name": "Main Foyer",
             "description": "A grand entrance hall.",
-            "attributes": {"environment": "indoors", "rest_location": True},
+            "attributes": {"rest_location": True},
             "plane": "earth",
             "zone": "arkhamcity",
             "sub_zone": "sanitarium",
             "map_x": 100.0,
             "map_y": -1.0,
+            "room_environment": "indoors",
+            "resolved_environment": "indoors",
         }
     ]
     exits_by_room: dict[str, dict[str, str]] = {}
@@ -53,12 +55,14 @@ def test_build_room_objects_defaults_rest_location_false(async_persistence_layer
             "stable_id": "room_001",
             "name": "Test Room",
             "description": "A test room",
-            "attributes": {"environment": "outdoors"},
+            "attributes": {},
             "plane": "earth",
             "zone": "arkhamcity",
             "sub_zone": "subzone",
             "map_x": None,
             "map_y": None,
+            "room_environment": "outdoors",
+            "resolved_environment": "outdoors",
         }
     ]
     exits_by_room: dict[str, dict[str, str]] = {}
@@ -86,12 +90,14 @@ def test_build_room_objects_carries_map_coordinates(async_persistence_layer: Asy
             "stable_id": "intersection_derby_parsonage",
             "name": "Derby Street and Parsonage Street Intersection",
             "description": "A crossing.",
-            "attributes": {"environment": "intersection"},
+            "attributes": {},
             "plane": "earth",
             "zone": "arkhamcity",
             "sub_zone": "northside",
             "map_x": 14.0,
             "map_y": 2.0,
+            "room_environment": "intersection",
+            "resolved_environment": "intersection",
         }
     ]
     exits_by_room: dict[str, dict[str, str]] = {}
@@ -114,12 +120,14 @@ def test_build_room_objects_tolerates_missing_coordinates(async_persistence_laye
             "stable_id": "room_001",
             "name": "Test Room",
             "description": "A test room",
-            "attributes": {"environment": "outdoors"},
+            "attributes": {},
             "plane": "earth",
             "zone": "arkhamcity",
             "sub_zone": "subzone",
             "map_x": None,
             "map_y": None,
+            "room_environment": "outdoors",
+            "resolved_environment": "outdoors",
         }
     ]
     result_container: RoomLoadResult = {"rooms": {}}

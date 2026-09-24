@@ -122,6 +122,8 @@ class CoordinateGenerator:
             "map_style",
             "zone_stable_id",
             "subzone_stable_id",
+            "room_environment",
+            "resolved_environment",
         )
         return select(rooms), {"pattern": pattern}
 
@@ -142,8 +144,11 @@ class CoordinateGenerator:
             "map_style": row[8],
             "zone": row[9].split("_", 1)[1] if "_" in str(row[9]) else str(row[9]),
             "sub_zone": row[10] if row[10] else None,
+            # #663: row[11] is the room's own column value; row[12] is the resolved
+            # room -> subzone -> zone -> 'outdoors' cascade computed in SQL.
+            "room_environment": row[11],
+            "environment": row[12],
         }
-        room_dict["environment"] = attrs.get("environment") or "outdoors"
         return room_dict
 
     async def _attach_room_exits(self, rooms: list[dict[str, Any]]) -> None:

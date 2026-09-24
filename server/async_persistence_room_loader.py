@@ -46,6 +46,11 @@ class ProcessedRoomData(TypedDict):
     sub_zone: str | None
     map_x: float | None
     map_y: float | None
+    # #663: room_environment is the room's own (possibly NULL) rooms.environment column;
+    # resolved_environment is the room -> subzone -> zone -> 'outdoors' cascade, computed in SQL
+    # by get_rooms_with_exits().
+    room_environment: str | None
+    resolved_environment: str
 
 
 class RoomLoadResult(TypedDict):
@@ -64,6 +69,7 @@ class RoomInitPayload(TypedDict, total=False):
     zone: str
     sub_zone: str | None
     resolved_environment: str
+    room_environment: str | None
     rest_location: bool
     exits: dict[str, str]
     attributes: dict[str, object]
@@ -201,7 +207,9 @@ class RoomCacheLoader:
                         zone,
                         exits,
                         map_x,
-                        map_y
+                        map_y,
+                        room_environment,
+                        resolved_environment
                     FROM get_rooms_with_exits()
                     """
                 )
@@ -300,6 +308,8 @@ class RoomCacheLoader:
                     "sub_zone": subzone_stable_id,
                     "map_x": _row_optional_float(row, "map_x"),
                     "map_y": _row_optional_float(row, "map_y"),
+                    "room_environment": _row_optional_str(row, "room_environment"),
+                    "resolved_environment": _row_optional_str(row, "resolved_environment") or "outdoors",
                 }
             )
 
@@ -337,6 +347,8 @@ class RoomCacheLoader:
             "sub_zone": subzone_stable_id,
             "map_x": _row_optional_float(row, "map_x"),
             "map_y": _row_optional_float(row, "map_y"),
+            "room_environment": _row_optional_str(row, "room_environment"),
+            "resolved_environment": _row_optional_str(row, "resolved_environment") or "outdoors",
         }
 
     def _process_room_rows(self, rooms_rows: list[dict[str, object]]) -> list[ProcessedRoomData]:
@@ -479,14 +491,16 @@ class RoomCacheLoader:
 
             if isinstance(attributes_raw, dict):
                 attributes = cast(dict[str, object], attributes_raw)
-                environment = attributes.get("environment", "outdoors")
-                resolved_environment = environment if isinstance(environment, str) else "outdoors"
                 rest_location = attributes.get("rest_location", False) is True
                 attributes_payload = attributes
             else:
-                resolved_environment = "outdoors"
                 rest_location = False
                 attributes_payload = {}
+            # #663: environment now comes straight off the rooms.environment column
+            # (room_environment) / the SQL-resolved cascade (resolved_environment) --
+            # no longer read out of the attributes JSONB blob.
+            resolved_environment = room_data_item["resolved_environment"]
+            room_environment = room_data_item["room_environment"]
 
             room_payload: RoomInitPayload = {
                 "id": room_id,
@@ -496,6 +510,7 @@ class RoomCacheLoader:
                 "zone": zone_name,
                 "sub_zone": subzone_stable_id,
                 "resolved_environment": resolved_environment,
+                "room_environment": room_environment,
                 "rest_location": rest_location,
                 "exits": exits,
                 "attributes": attributes_payload,

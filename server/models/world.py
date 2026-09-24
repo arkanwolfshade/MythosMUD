@@ -12,9 +12,9 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
 
-# Canonical environment values, shared by zones, subzones, and rooms so the inheritance
-# chain in world_loader.get_room_environment() is valid at every level. See
-# docs/ROOM_ENVIRONMENT_REFERENCE.md for what each value means and how to add a new one.
+# Canonical environment values, shared by zones, subzones, and rooms so the room -> subzone ->
+# zone -> 'outdoors' inheritance cascade (get_rooms_with_exits(), #663) is valid at every level.
+# See docs/ROOM_ENVIRONMENT_REFERENCE.md for what each value means and how to add a new one.
 ROOM_ENVIRONMENTS: tuple[str, ...] = (
     "indoors",
     "outdoors",
@@ -104,6 +104,12 @@ class RoomModel(Base):
     """
 
     __tablename__ = "rooms"
+    __table_args__: tuple[CheckConstraint, ...] = (
+        CheckConstraint(
+            _ENVIRONMENT_CHECK_SQL,
+            name="chk_rooms_environment",
+        ),
+    )
 
     id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True)
     subzone_id: Mapped[str] = mapped_column(
@@ -113,6 +119,8 @@ class RoomModel(Base):
     name: Mapped[str] = mapped_column(Text, nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=False)
     attributes: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False, default=dict)
+    # #663: room-specific override; NULL inherits from subzone, then zone, then 'outdoors'.
+    environment: Mapped[str | None] = mapped_column(Text, nullable=True)
     map_x: Mapped[float | None] = mapped_column(Numeric(10, 2), nullable=True)
     map_y: Mapped[float | None] = mapped_column(Numeric(10, 2), nullable=True)
     map_origin_zone: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
