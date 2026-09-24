@@ -24,7 +24,7 @@ from server.models.world import ROOM_ENVIRONMENTS
 ENVIRONMENT_CHECK_CONSTRAINTS = ("chk_zones_environment", "chk_subzones_environment", "chk_rooms_environment")
 
 _UPDATE_ROOM_PROPERTIES_SQL = text(
-    "SELECT updated, resolved_environment FROM update_room_properties" + "(:room_id, NULL, NULL, NULL, FALSE)"
+    "SELECT updated, resolved_environment FROM update_room_properties(:room_id, NULL, NULL, NULL, FALSE)"
 )
 
 
@@ -54,8 +54,7 @@ async def cascade_room(session_factory: async_sessionmaker[AsyncSession]):
         )
         _ = await session.execute(
             text(
-                "INSERT INTO subzones (id, zone_id, stable_id, name, environment) "
-                + "VALUES (:id, :zone_id, :stable_id, :name, :env)"
+                "INSERT INTO subzones (id, zone_id, stable_id, name, environment) VALUES (:id, :zone_id, :stable_id, :name, :env)"
             ),
             {
                 "id": subzone_id,
@@ -67,8 +66,7 @@ async def cascade_room(session_factory: async_sessionmaker[AsyncSession]):
         )
         _ = await session.execute(
             text(
-                "INSERT INTO rooms (id, subzone_id, stable_id, name, description) "
-                + "VALUES (:id, :subzone_id, :stable_id, :name, :description)"
+                "INSERT INTO rooms (id, subzone_id, stable_id, name, description) VALUES (:id, :subzone_id, :stable_id, :name, :description)"
             ),
             {
                 "id": room_id,
@@ -97,10 +95,7 @@ async def test_get_rooms_with_exits_resolves_from_subzone_when_room_unset(
         row = (
             (
                 await session.execute(
-                    text(
-                        "SELECT room_environment, resolved_environment FROM get_rooms_with_exits() "
-                        + "WHERE stable_id = :id"
-                    ),
+                    text("SELECT room_environment, resolved_environment FROM get_rooms_with_exits() WHERE stable_id = :id"),
                     {"id": cascade_room},
                 )
             )
@@ -119,10 +114,7 @@ async def test_update_room_properties_resolves_from_zone_when_room_and_subzone_u
     """Clearing a subzone's environment falls through to its zone's."""
     async with session_factory() as session:
         _ = await session.execute(
-            text(
-                "UPDATE subzones SET environment = NULL WHERE id = ("
-                + "SELECT subzone_id FROM rooms WHERE stable_id = :id)"
-            ),
+            text("UPDATE subzones SET environment = NULL WHERE id = (SELECT subzone_id FROM rooms WHERE stable_id = :id)"),
             {"id": cascade_room},
         )
         await session.commit()
@@ -144,9 +136,7 @@ async def test_environment_check_constraints_share_the_same_enum(
     cascade could accept a room-level value the zone/subzone levels reject, or vice versa."""
     async with session_factory() as session:
         result = await session.execute(
-            text(
-                "SELECT conname, pg_get_constraintdef(oid) AS def FROM pg_constraint " + "WHERE conname = ANY(:names)"
-            ),
+            text("SELECT conname, pg_get_constraintdef(oid) AS def FROM pg_constraint WHERE conname = ANY(:names)"),
             {"names": list(ENVIRONMENT_CHECK_CONSTRAINTS)},
         )
         rows = result.mappings().all()

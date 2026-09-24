@@ -18,8 +18,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 _UPDATE_ROOM_PROPERTIES_SQL = text(
-    "SELECT updated, resolved_environment FROM update_room_properties"
-    + "(:room_id, :name, :description, :environment, :set_environment)"
+    "SELECT updated, resolved_environment FROM update_room_properties(:room_id, :name, :description, :environment, :set_environment)"
 )
 
 
