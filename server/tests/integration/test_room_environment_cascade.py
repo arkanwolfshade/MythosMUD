@@ -95,7 +95,9 @@ async def test_get_rooms_with_exits_resolves_from_subzone_when_room_unset(
         row = (
             (
                 await session.execute(
-                    text("SELECT room_environment, resolved_environment FROM get_rooms_with_exits() WHERE stable_id = :id"),
+                    text(
+                        "SELECT room_environment, resolved_environment FROM get_rooms_with_exits() WHERE stable_id = :id"
+                    ),
                     {"id": cascade_room},
                 )
             )
@@ -114,7 +116,9 @@ async def test_update_room_properties_resolves_from_zone_when_room_and_subzone_u
     """Clearing a subzone's environment falls through to its zone's."""
     async with session_factory() as session:
         _ = await session.execute(
-            text("UPDATE subzones SET environment = NULL WHERE id = (SELECT subzone_id FROM rooms WHERE stable_id = :id)"),
+            text(
+                "UPDATE subzones SET environment = NULL WHERE id = (SELECT subzone_id FROM rooms WHERE stable_id = :id)"
+            ),
             {"id": cascade_room},
         )
         await session.commit()

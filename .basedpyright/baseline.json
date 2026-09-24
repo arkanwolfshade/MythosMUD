@@ -6212,70 +6212,6 @@
                 }
             },
             {
-                "code": "reportExplicitAny",
-                "range": {
-                    "startColumn": 26,
-                    "endColumn": 29,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportExplicitAny",
-                "range": {
-                    "startColumn": 20,
-                    "endColumn": 23,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 4,
-                    "endColumn": 15,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 18,
-                    "endColumn": 44,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 4,
-                    "endColumn": 15,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 18,
-                    "endColumn": 44,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 20,
-                    "endColumn": 31,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportUnknownMemberType",
-                "range": {
-                    "startColumn": 8,
-                    "endColumn": 17,
-                    "lineCount": 1
-                }
-            },
-            {
                 "code": "reportCallInDefaultInitializer",
                 "range": {
                     "startColumn": 17,
@@ -6424,6 +6360,72 @@
                 "range": {
                     "startColumn": 28,
                     "endColumn": 54,
+                    "lineCount": 1
+                }
+            }
+        ],
+        "./server/api/rooms_helpers.py": [
+            {
+                "code": "reportExplicitAny",
+                "range": {
+                    "startColumn": 26,
+                    "endColumn": 29,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportExplicitAny",
+                "range": {
+                    "startColumn": 20,
+                    "endColumn": 23,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 4,
+                    "endColumn": 15,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 18,
+                    "endColumn": 44,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 4,
+                    "endColumn": 15,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 18,
+                    "endColumn": 44,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 20,
+                    "endColumn": 31,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportUnknownMemberType",
+                "range": {
+                    "startColumn": 8,
+                    "endColumn": 17,
                     "lineCount": 1
                 }
             }
@@ -109284,30 +109286,6 @@
         ],
         "./server/tests/unit/api/test_rooms_api.py": [
             {
-                "code": "reportPrivateUsage",
-                "range": {
-                    "startColumn": 4,
-                    "endColumn": 26,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportPrivateUsage",
-                "range": {
-                    "startColumn": 4,
-                    "endColumn": 31,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportPrivateUsage",
-                "range": {
-                    "startColumn": 4,
-                    "endColumn": 34,
-                    "lineCount": 1
-                }
-            },
-            {
                 "code": "reportAny",
                 "range": {
                     "startColumn": 4,
@@ -109442,62 +109420,6 @@
                 "range": {
                     "startColumn": 4,
                     "endColumn": 21,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportPrivateUsage",
-                "range": {
-                    "startColumn": 4,
-                    "endColumn": 30,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportPrivateUsage",
-                "range": {
-                    "startColumn": 4,
-                    "endColumn": 36,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportPrivateUsage",
-                "range": {
-                    "startColumn": 4,
-                    "endColumn": 26,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportPrivateUsage",
-                "range": {
-                    "startColumn": 4,
-                    "endColumn": 27,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportPrivateUsage",
-                "range": {
-                    "startColumn": 4,
-                    "endColumn": 27,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportPrivateUsage",
-                "range": {
-                    "startColumn": 4,
-                    "endColumn": 27,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportPrivateUsage",
-                "range": {
-                    "startColumn": 4,
-                    "endColumn": 33,
                     "lineCount": 1
                 }
             },

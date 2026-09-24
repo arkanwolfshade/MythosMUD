@@ -13,9 +13,12 @@ or required, so the generated spec looks identical either way. This guard is the
 Recognized guards, in order of how #734's fixes actually look in this codebase: a direct
 `current_user is None` / `not current_user` check in the handler body; a call to
 `validate_permission` or `validate_admin_permission` (the admin-auth-service pattern used across
-`server/api/admin/*` and this issue's own fixes); or delegation to a same-module helper function
-whose own body contains one of those markers (the `_require_current_user` / `_validate_admin_room_action`
-/ `_run_set_map_origin` shape used in `character_creation.py`, `rooms.py`, `maps.py`).
+`server/api/admin/*` and this issue's own fixes); or delegation to a helper function -- defined in
+the same module, or imported from a same-directory sibling module via a relative import (e.g.
+`rooms.py`'s `from .rooms_helpers import validate_admin_room_action`) -- whose own body contains
+one of those markers (the `_require_current_user` / `validate_admin_room_action` /
+`_run_set_map_origin` shape used in `character_creation.py`, `rooms.py`/`rooms_helpers.py`,
+`maps.py`).
 
 New unguarded routes fail the build immediately. Existing, already-adjudicated exceptions (routes
 where #734 confirmed no auth is intentional, e.g. a public GET) are grandfathered via
@@ -185,10 +188,37 @@ def _route_decorators(fn: ast.AsyncFunctionDef | ast.FunctionDef) -> bool:
     return False
 
 
-def _find_unguarded(tree: ast.Module) -> int:
+def _sibling_module_funcs(tree: ast.Module, path: Path) -> dict[str, ast.AST]:
+    """Function defs imported from same-directory sibling modules via a relative import, e.g.
+    `rooms.py`'s `from .rooms_helpers import validate_admin_room_action` -- so a guard extracted
+    into a `*_helpers.py` module (to keep file-nloc under the Lizard limit, #787) stays visible to
+    the two-hop delegation search below instead of silently reading as unguarded."""
+    funcs: dict[str, ast.AST] = {}
+    for node in ast.walk(tree):
+        if not (isinstance(node, ast.ImportFrom) and node.level == 1 and node.module):
+            continue
+        sibling_path = path.parent / f"{node.module}.py"
+        if not sibling_path.exists():
+            continue
+        try:
+            sibling_tree = ast.parse(sibling_path.read_text(encoding="utf-8", errors="replace"))
+        except SyntaxError:
+            continue
+        sibling_funcs = {
+            n.name: n for n in ast.walk(sibling_tree) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+        }
+        for alias in node.names:
+            imported_name = alias.asname or alias.name
+            if alias.name in sibling_funcs:
+                funcs[imported_name] = sibling_funcs[alias.name]
+    return funcs
+
+
+def _find_unguarded(tree: ast.Module, path: Path) -> int:
     module_funcs: dict[str, ast.AST] = {
         node.name: node for node in ast.walk(tree) if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
     }
+    module_funcs.update(_sibling_module_funcs(tree, path))
     count = 0
     for node in ast.walk(tree):
         if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
@@ -215,7 +245,7 @@ def scan() -> tuple[list[str], int]:
             violations.append(f"{rel}: parse error: {e}")
             continue
 
-        found = _find_unguarded(tree)
+        found = _find_unguarded(tree, path)
         entry = _ALLOWLIST_BY_FILE.get(rel)
         expected = entry.count if entry is not None else 0
 

@@ -15,6 +15,8 @@ import sys
 from pathlib import Path
 from typing import Protocol, cast
 
+import pytest
+
 PROJECT_ROOT = Path(__file__).resolve().parents[4]
 SCRIPT_PATH = PROJECT_ROOT / "scripts" / "lint_optional_auth_no_guard.py"
 
@@ -180,6 +182,73 @@ def test_recognizes_two_hop_delegation(tmp_path, monkeypatch) -> None:
     violations, _allowlisted = mod.scan()
 
     assert violations == []
+
+
+def test_recognizes_guard_delegated_to_sibling_module(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Mirrors rooms.py's real shape post-#787 split: handler -> a helper imported from a
+    same-directory sibling module (`from .sample_helpers import ...`) -> validate_permission.
+    Regression test for the split that moved rooms.py's admin-auth helper into rooms_helpers.py
+    and made it briefly invisible to this scanner's same-file-only delegation search."""
+    mod = _load_script()
+    api_dir: Path = tmp_path / "server" / "api"
+    api_dir.mkdir(parents=True)
+    _ = (api_dir / "sample_helpers.py").write_text(
+        """def validate_admin_action(current_user, request):
+    auth_service.validate_permission(current_user, AdminAction.X, request)
+""",
+        encoding="utf-8",
+    )
+    _ = (api_dir / "sample_api.py").write_text(
+        """from fastapi import Depends
+from .sample_helpers import validate_admin_action
+@router.post('/x')
+async def handler(current_user=Depends(get_current_user)):
+    validate_admin_action(current_user, None)
+    return current_user.id
+""",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(mod, "PROJECT_ROOT", tmp_path)
+    monkeypatch.setattr(mod, "OPTIONAL_AUTH_ALLOWLIST", ())
+    monkeypatch.setattr(mod, "_ALLOWLIST_BY_FILE", {})
+
+    violations, _allowlisted = mod.scan()
+
+    assert violations == []
+
+
+def test_sibling_module_import_that_does_not_guard_is_still_flagged(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A relative import from a sibling module must not blanket-clear a handler -- only an
+    imported helper whose own body actually guards should count."""
+    mod = _load_script()
+    api_dir: Path = tmp_path / "server" / "api"
+    api_dir.mkdir(parents=True)
+    _ = (api_dir / "sample_helpers.py").write_text(
+        """def format_room_name(name):
+    return name.strip()
+""",
+        encoding="utf-8",
+    )
+    _ = (api_dir / "sample_api.py").write_text(
+        """from fastapi import Depends
+from .sample_helpers import format_room_name
+@router.post('/x')
+async def handler(current_user=Depends(get_current_user)):
+    format_room_name('foo')
+    return current_user.id
+""",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(mod, "PROJECT_ROOT", tmp_path)
+    monkeypatch.setattr(mod, "OPTIONAL_AUTH_ALLOWLIST", ())
+    monkeypatch.setattr(mod, "_ALLOWLIST_BY_FILE", {})
+
+    violations, _allowlisted = mod.scan()
+
+    assert len(violations) == 1
+    assert "1 unguarded" in violations[0]
 
 
 def test_allowlist_entry_is_suppressed_and_counted(tmp_path, monkeypatch) -> None:

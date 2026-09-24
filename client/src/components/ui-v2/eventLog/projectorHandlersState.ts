@@ -55,51 +55,63 @@ function mergeRespawnedPlayer(prevPlayer: Player | null, incoming: Player): Play
   } as Player;
 }
 
+/** Narrow the untyped `event.data.player` blob down to a real Player, or null if it isn't one. */
+function asPlayer(playerData: unknown): Player | null {
+  return playerData &&
+    typeof playerData === 'object' &&
+    'name' in playerData &&
+    typeof (playerData as Player).name === 'string'
+    ? (playerData as Player)
+    : null;
+}
+
+/** lucidity_tier/current_lcd are top-level fields (server: PlayerLucidity, not the stats blob). */
+function deriveLucidityStatus(prevState: GameState, event: GameEvent, player: Player | null) {
+  const lucidityTier = event.data.lucidity_tier as string | undefined;
+  if (lucidityTier === undefined) return prevState.lucidityStatus;
+  return buildLucidityStatus(
+    prevState.lucidityStatus ?? null,
+    { current_lcd: event.data.current_lcd, tier: lucidityTier },
+    event.timestamp,
+    (player ?? prevState.player)?.stats?.max_lucidity
+  ).status;
+}
+
+/** Grace-period fields shared by game_state and effects_update; spread only when present. */
+function gracePeriodFields(event: GameEvent) {
+  const loginGracePeriodActive = event.data.login_grace_period_active as boolean | undefined;
+  const loginGracePeriodRemaining = event.data.login_grace_period_remaining as number | undefined;
+  return {
+    ...(loginGracePeriodActive !== undefined && { loginGracePeriodActive }),
+    ...(loginGracePeriodRemaining !== undefined && { loginGracePeriodRemaining }),
+  };
+}
+
+/** questLog field shared by game_state and quest_log_updated; spread only when present. */
+function questLogField(event: GameEvent) {
+  const questLog = event.data.quest_log as unknown[] | undefined;
+  return Array.isArray(questLog) ? { questLog: questLog as QuestLogEntry[] } : {};
+}
+
 export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
   game_state(prevState, event) {
-    const playerData = event.data.player as unknown;
     const room = deriveRoomFromGameState(event);
-    const loginGracePeriodActive = event.data.login_grace_period_active as boolean | undefined;
-    const loginGracePeriodRemaining = event.data.login_grace_period_remaining as number | undefined;
     const following = event.data.following as { target_name: string; target_type: 'player' | 'npc' } | null | undefined;
-    const questLog = event.data.quest_log as unknown[] | undefined;
-    const player =
-      playerData &&
-      typeof playerData === 'object' &&
-      playerData !== null &&
-      'name' in playerData &&
-      typeof (playerData as Player).name === 'string'
-        ? (playerData as Player)
-        : null;
-    // lucidity_tier/current_lcd are top-level fields (server: PlayerLucidity, not the stats blob).
-    const lucidityTier = event.data.lucidity_tier as string | undefined;
-    const lucidityStatus =
-      lucidityTier !== undefined
-        ? buildLucidityStatus(
-            prevState.lucidityStatus ?? null,
-            { current_lcd: event.data.current_lcd, tier: lucidityTier },
-            event.timestamp,
-            (player ?? prevState.player)?.stats?.max_lucidity
-          ).status
-        : prevState.lucidityStatus;
+    const player = asPlayer(event.data.player);
+    const lucidityStatus = deriveLucidityStatus(prevState, event, player);
     return {
       ...prevState,
       player: player ?? prevState.player,
       room: room ?? prevState.room,
-      ...(loginGracePeriodActive !== undefined && { loginGracePeriodActive }),
-      ...(loginGracePeriodRemaining !== undefined && { loginGracePeriodRemaining }),
+      ...gracePeriodFields(event),
       ...(following !== undefined && { followingTarget: following ?? null }),
-      ...(Array.isArray(questLog) && { questLog: questLog as QuestLogEntry[] }),
+      ...questLogField(event),
       lucidityStatus,
     };
   },
 
   quest_log_updated(prevState, event) {
-    const questLog = event.data.quest_log as unknown[] | undefined;
-    return {
-      ...prevState,
-      ...(Array.isArray(questLog) && { questLog: questLog as QuestLogEntry[] }),
-    };
+    return { ...prevState, ...questLogField(event) };
   },
 
   follow_state(prevState, event) {
@@ -108,13 +120,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
   },
 
   effects_update(prevState, event) {
-    const loginGracePeriodActive = event.data.login_grace_period_active as boolean | undefined;
-    const loginGracePeriodRemaining = event.data.login_grace_period_remaining as number | undefined;
-    return {
-      ...prevState,
-      ...(loginGracePeriodActive !== undefined && { loginGracePeriodActive }),
-      ...(loginGracePeriodRemaining !== undefined && { loginGracePeriodRemaining }),
-    };
+    return { ...prevState, ...gracePeriodFields(event) };
   },
 
   room_state(prevState, event) {

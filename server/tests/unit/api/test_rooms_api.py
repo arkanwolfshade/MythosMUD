@@ -11,12 +11,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.api.rooms import (
     RoomPositionUpdate,
-    _invalidate_room_cache,
-    _update_room_position_in_db,
-    _validate_room_position_update,
     get_room,
+    invalidate_room_cache,
     list_rooms,
     update_room_position,
+    update_room_position_in_db,
+    validate_room_position_update,
 )
 from server.exceptions import LoggedHTTPException
 from server.game.room_service import RoomService
@@ -25,7 +25,7 @@ from server.game.room_service import RoomService
 @pytest.mark.asyncio
 async def test_validate_room_position_update_requires_auth() -> None:
     with pytest.raises(LoggedHTTPException) as ei:
-        _validate_room_position_update(None, "room_1", MagicMock(spec=Request))
+        validate_room_position_update(None, "room_1", MagicMock(spec=Request))
     assert ei.value.status_code == 401
 
 
@@ -33,8 +33,8 @@ def test_validate_room_position_update_delegates_to_auth_service() -> None:
     user = MagicMock()
     req = MagicMock(spec=Request)
     auth = MagicMock()
-    with patch("server.api.rooms.get_admin_auth_service", return_value=auth):
-        _validate_room_position_update(user, "room_1", req)
+    with patch("server.api.rooms_helpers.get_admin_auth_service", return_value=auth):
+        validate_room_position_update(user, "room_1", req)
     auth.validate_permission.assert_called_once()
 
 
@@ -44,7 +44,7 @@ async def test_update_room_position_in_db_success() -> None:
     result = MagicMock()
     result.scalar.return_value = True
     session.execute = AsyncMock(return_value=result)
-    await _update_room_position_in_db(session, "room_1", 3, 4, MagicMock(spec=Request))
+    await update_room_position_in_db(session, "room_1", 3, 4, MagicMock(spec=Request))
     session.commit.assert_awaited_once()
 
 
@@ -55,7 +55,7 @@ async def test_update_room_position_in_db_not_found() -> None:
     result.scalar.return_value = False
     session.execute = AsyncMock(return_value=result)
     with pytest.raises(LoggedHTTPException) as ei:
-        await _update_room_position_in_db(session, "missing", 1, 1, MagicMock(spec=Request))
+        await update_room_position_in_db(session, "missing", 1, 1, MagicMock(spec=Request))
     assert ei.value.status_code == 404
 
 
@@ -63,7 +63,7 @@ async def test_update_room_position_in_db_not_found() -> None:
 async def test_invalidate_room_cache() -> None:
     room_service = MagicMock(spec=RoomService)
     room_service.room_cache = MagicMock()
-    await _invalidate_room_cache(room_service, "room_1")
+    await invalidate_room_cache(room_service, "room_1")
     room_service.room_cache.invalidate_room.assert_called_once_with("room_1")
 
 
@@ -72,7 +72,7 @@ async def test_list_rooms_success() -> None:
     rooms = [{"id": "r1", "stable_id": "r1", "name": "One", "description": "A room"}]
     room_service = MagicMock(spec=RoomService)
     room_service.list_rooms = AsyncMock(return_value=rooms)
-    with patch("server.api.rooms._apply_exploration_filter_if_needed", new_callable=AsyncMock, return_value=rooms):
+    with patch("server.api.rooms.apply_exploration_filter_if_needed", new_callable=AsyncMock, return_value=rooms):
         response = await list_rooms(
             MagicMock(spec=Request),
             plane="earth",
@@ -116,7 +116,7 @@ async def test_update_room_position_room_missing() -> None:
     room_service = MagicMock(spec=RoomService)
     room_service.get_room = AsyncMock(return_value=None)
     with (
-        patch("server.api.rooms._validate_room_position_update"),
+        patch("server.api.rooms.validate_room_position_update"),
         patch("server.api.rooms.get_admin_auth_service", return_value=MagicMock(get_username=lambda _u: "admin")),
     ):
         with pytest.raises(LoggedHTTPException) as ei:
