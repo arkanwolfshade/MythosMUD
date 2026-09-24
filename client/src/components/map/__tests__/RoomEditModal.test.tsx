@@ -4,7 +4,7 @@
 
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import type { Room } from '../../../stores/gameStore';
+import type { Room } from '../types';
 import { RoomEditModal } from '../RoomEditModal';
 
 describe('RoomEditModal', () => {

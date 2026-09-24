@@ -544,6 +544,18 @@ class GameStateProvider:
             )
         return []
 
+    async def _get_lucidity_for_client(self, player_id: uuid.UUID) -> tuple[str | None, int | None]:
+        """Get authoritative (tier, current_lcd) for game_state, or (None, None) if no row yet."""
+        from ...database import get_async_session
+        from ...models.lucidity import PlayerLucidity
+
+        async for session in get_async_session():
+            record = await session.get(PlayerLucidity, player_id)
+            if record:
+                return record.current_tier, record.current_lcd
+            break
+        return None, None
+
     async def send_initial_game_state(
         self, player_id: uuid.UUID, player: Player, room_id: str, online_players: dict[uuid.UUID, dict[str, Any]]
     ) -> None:
@@ -593,6 +605,8 @@ class GameStateProvider:
             following_for_client = await self._get_following_for_client(player_id)
             # Quest log (same shape as GET /api/players/{player_id}/quests); client can also refresh via that API
             quest_log = await self._get_quest_log_for_client(player_id)
+            # Authoritative lucidity tier (#752): client relies on this, not client-inferred state
+            lucidity_tier, current_lcd = await self._get_lucidity_for_client(player_id)
             game_state_data = {
                 "player": player_data_for_client,
                 "room": room_data,
@@ -601,6 +615,8 @@ class GameStateProvider:
                 "login_grace_period_remaining": login_grace_period_remaining,
                 "following": following_for_client,
                 "quest_log": quest_log,
+                "lucidity_tier": lucidity_tier,
+                "current_lcd": current_lcd,
             }
 
             # BUGFIX: Populate room_data with structured player/NPC arrays for new UI

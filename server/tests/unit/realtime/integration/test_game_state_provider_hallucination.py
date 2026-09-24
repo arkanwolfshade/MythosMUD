@@ -6,12 +6,28 @@ too-many-lines limit -- mirrors the existing split for test_websocket_room_updat
 """
 
 import uuid
+from collections.abc import AsyncIterator
 from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from server.realtime.integration.game_state_provider import GameStateProvider
+
+
+def _no_lucidity_row_session() -> AsyncIterator[MagicMock]:
+    """Fake get_async_session() yielding a session whose PlayerLucidity lookup misses.
+
+    Keeps these hallucination-focused tests from opening a real DB session (#752's
+    lucidity_tier/current_lcd lookup runs on every send_initial_game_state call now).
+    """
+    mock_session = MagicMock()
+    mock_session.get = AsyncMock(return_value=None)
+
+    async def async_gen() -> AsyncIterator[MagicMock]:
+        yield mock_session
+
+    return async_gen()
 
 
 @pytest.fixture
@@ -76,9 +92,12 @@ async def test_send_initial_game_state_includes_viewer_phantom(
     online_players: dict[uuid.UUID, dict[str, object]] = {}
     _wire_room(mock_get_async_persistence, mock_room_manager, room_id)
 
-    with patch(
-        "server.realtime.integration.game_state_provider.get_viewer_phantom_names",
-        return_value=["Shambling Horror"],
+    with (
+        patch(
+            "server.realtime.integration.game_state_provider.get_viewer_phantom_names",
+            return_value=["Shambling Horror"],
+        ),
+        patch("server.database.get_async_session", return_value=_no_lucidity_row_session()),
     ):
         await game_state_provider.send_initial_game_state(player_id, mock_player, room_id, online_players)
 
@@ -113,6 +132,7 @@ async def test_send_initial_game_state_hallucinates_exits_for_deranged_viewer(
             "server.realtime.integration.game_state_provider.get_hallucinated_exits",
             return_value=["east", "up"],
         ) as mock_get_hallucinated,
+        patch("server.database.get_async_session", return_value=_no_lucidity_row_session()),
     ):
         await game_state_provider.send_initial_game_state(player_id, mock_player, room_id, online_players)
 

@@ -100,15 +100,12 @@ function resolvePayloadNpcs(existingRoom: Room, payloadRoom?: Room): string[] {
   return [];
 }
 
-function roomAfterIdChange(existingRoom: Room, roomMetadata: RoomMeta): Room {
-  return {
-    ...existingRoom,
-    ...roomMetadata,
-    players: [],
-    npcs: undefined,
-    occupants: [],
-    occupant_count: 0,
-  };
+/**
+ * On a room change, use the payload's own occupants (which the server always populates,
+ * including self) instead of zeroing -- zeroing would discard real data the server just sent.
+ */
+function roomAfterIdChange(roomMetadata: RoomMeta, payloadRoom?: Room): Room {
+  return createInitialRoomState(roomMetadata, payloadRoom);
 }
 
 function resolvePreservedOccupantArrays(
@@ -151,7 +148,7 @@ function createRoomUpdateWithPreservedOccupants(
   payloadRoom?: Room
 ): Room {
   if (roomIdChanged) {
-    return roomAfterIdChange(existingRoom, roomMetadata);
+    return roomAfterIdChange(roomMetadata, payloadRoom);
   }
   return roomWithPreservedOccupants(existingRoom, roomMetadata, payloadRoom);
 }
@@ -218,12 +215,15 @@ function deriveRoomFromOccupantsWithoutExisting(
   return createMinimalRoomFromOccupantsEvent(eventRoomId, players, npcs, occupantCount);
 }
 
-/** Derive room from game_state event */
+/** Derive room from game_state event. Top-level occupant_count (websocket_initial_state.py) wins
+ *  over a length-derived count, since the server's count may include entities not listed. */
 export function deriveRoomFromGameState(event: GameEvent): RoomOrNull {
   if (!event.data.room) {
     return null;
   }
-  return roomWithOccupantsFromArrays(event.data.room as Room);
+  const base = roomWithOccupantsFromArrays(event.data.room as Room);
+  const occupantCount = typeof event.data.occupant_count === 'number' ? event.data.occupant_count : undefined;
+  return occupantCount === undefined ? base : { ...base, occupant_count: occupantCount };
 }
 
 /** Derive room from room_update event (pure; uses existingRoom) */

@@ -110,6 +110,7 @@ async def setup_initial_connection_state(
                         cast(Room | dict[str, object], room),
                         connection_manager,
                     )
+                    await ws_handler.check_and_send_delirium_notification(player_id, player_id_str)
                     await ws_handler.send_initial_room_state(
                         websocket, player_id, player_id_str, canonical_room_id, connection_manager
                     )

@@ -85,7 +85,6 @@ function makeProps(): GameClientV2ContainerViewProps {
     clearedPartyInviteId: null,
     setClearedPartyInviteId: vi.fn(),
     setGameState: vi.fn(),
-    clearPendingFollowRequest: vi.fn(),
     sendMessage: vi.fn(),
     isConnected: true,
     isConnecting: false,

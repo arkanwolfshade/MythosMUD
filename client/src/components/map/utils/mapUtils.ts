@@ -11,7 +11,7 @@
  */
 
 import type { Edge, Node } from 'reactflow';
-import type { Room } from '../../../stores/gameStore';
+import type { Room } from '../types';
 import type { ExitEdgeData, RoomNodeData } from '../types';
 import { applyGridLayout, type GridLayoutConfig } from './layout';
 import { GRID_PITCH } from './mapGeometry';

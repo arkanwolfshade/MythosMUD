@@ -1,18 +1,11 @@
 /**
  * Client-side metrics collector for development logging.
  *
- * Tracks resource usage, store subscriptions, and component lifecycle
- * to help identify memory leaks in the client application.
+ * Tracks resource usage and component lifecycle to help identify memory leaks in the client
+ * application.
  */
 
 import { ResourceManager } from './resourceCleanup.js';
-
-interface StoreSubscriptionMetrics {
-  storeName: string;
-  subscriptionCount: number;
-  lastSubscriptionTime: number;
-  lastUnsubscriptionTime: number;
-}
 
 interface ComponentLifecycleMetrics {
   componentName: string;
@@ -31,13 +24,11 @@ interface ClientMetrics {
     customResources: number;
     total: number;
   };
-  storeSubscriptions: StoreSubscriptionMetrics[];
   componentLifecycle: ComponentLifecycleMetrics[];
   timestamp: number;
 }
 
 class ClientMetricsCollector {
-  private storeSubscriptions: Map<string, StoreSubscriptionMetrics> = new Map();
   private componentLifecycle: Map<string, ComponentLifecycleMetrics> = new Map();
   private resourceManager: ResourceManager | null = null;
 
@@ -46,48 +37,6 @@ class ClientMetricsCollector {
    */
   setResourceManager(resourceManager: ResourceManager): void {
     this.resourceManager = resourceManager;
-  }
-
-  /**
-   * Track store subscription
-   */
-  trackStoreSubscription(storeName: string): void {
-    const existing = this.storeSubscriptions.get(storeName) || {
-      storeName,
-      subscriptionCount: 0,
-      lastSubscriptionTime: 0,
-      lastUnsubscriptionTime: 0,
-    };
-    existing.subscriptionCount += 1;
-    existing.lastSubscriptionTime = Date.now();
-    this.storeSubscriptions.set(storeName, existing);
-
-    if (import.meta.env.DEV) {
-      // Internal development logging with store name from internal state, not user input
-      // nosemgrep: javascript.lang.security.audit.unsafe-formatstring.unsafe-formatstring
-      console.log(`[Metrics] Store subscription: ${storeName}`, {
-        subscriptionCount: existing.subscriptionCount,
-      });
-    }
-  }
-
-  /**
-   * Track store unsubscription
-   */
-  trackStoreUnsubscription(storeName: string): void {
-    const existing = this.storeSubscriptions.get(storeName);
-    if (existing) {
-      existing.lastUnsubscriptionTime = Date.now();
-      this.storeSubscriptions.set(storeName, existing);
-
-      if (import.meta.env.DEV) {
-        // Internal development logging with store name from internal state, not user input
-        // nosemgrep: javascript.lang.security.audit.unsafe-formatstring.unsafe-formatstring
-        console.log(`[Metrics] Store unsubscription: ${storeName}`, {
-          subscriptionCount: existing.subscriptionCount,
-        });
-      }
-    }
   }
 
   /**
@@ -137,7 +86,6 @@ class ClientMetricsCollector {
 
     return {
       resourceStats,
-      storeSubscriptions: Array.from(this.storeSubscriptions.values()),
       componentLifecycle: Array.from(this.componentLifecycle.values()),
       timestamp: Date.now(),
     };

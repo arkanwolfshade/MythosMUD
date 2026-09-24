@@ -8,6 +8,7 @@ Tests the websocket_initial_state module functions.
 # Reason: Pytest fixtures are injected as function parameters, which pylint incorrectly flags as redefining names from outer scope, this is standard pytest usage and cannot be avoided
 
 import uuid
+from collections.abc import AsyncIterator
 from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -22,6 +23,7 @@ from server.realtime.connection_manager import ConnectionManager
 from server.realtime.websocket_initial_state import (
     add_npc_occupants_to_list,
     check_and_send_death_notification,
+    check_and_send_delirium_notification,
     get_event_handler_for_initial_state,
     prepare_initial_room_data,
     prepare_room_data_with_occupants,
@@ -275,6 +277,144 @@ async def test_check_and_send_death_notification_in_limbo(
 
         send_json_mock: AsyncMock = cast(AsyncMock, mock_websocket.send_json)
         send_json_mock.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_send_initial_game_state_includes_lucidity_tier(
+    mock_websocket: AsyncMock, mock_connection_manager: AsyncMock, mock_room: MagicMock
+):
+    """Test send_initial_game_state() includes authoritative lucidity_tier/current_lcd fields."""
+    player_id = uuid.uuid4()
+    player_id_str = str(player_id)
+    room_id = "room_123"
+
+    mock_player = MagicMock(spec=Player)
+    mock_player.current_room_id = room_id
+    mock_player.name = "TestPlayer"
+    mock_player.get_stats = MagicMock(return_value={"hp": 100})
+
+    mock_record = MagicMock()
+    mock_record.current_tier = "deranged"
+    mock_record.current_lcd = -30
+    mock_session = MagicMock()
+    mock_session.get = AsyncMock(return_value=mock_record)
+
+    async def async_gen() -> AsyncIterator[MagicMock]:
+        yield mock_session
+
+    with (
+        patch("server.realtime.websocket_initial_state.get_player_and_room") as mock_get_player_room,
+        patch("server.realtime.websocket_initial_state.prepare_player_data") as mock_prepare_player,
+        patch("server.database.get_async_session", return_value=async_gen()),
+    ):
+        mock_get_player_room.return_value = (mock_player, mock_room, room_id)
+        mock_prepare_player.return_value = {"name": "TestPlayer", "stats": {"hp": 100}}
+        mock_websocket.application_state = WebSocketState.CONNECTED
+
+        _ = await send_initial_game_state(mock_websocket, player_id, player_id_str, mock_connection_manager)
+
+        send_json_mock: AsyncMock = cast(AsyncMock, mock_websocket.send_json)
+        send_json_mock.assert_called_once()
+        sent_event: dict[str, object] = cast(dict[str, object], send_json_mock.call_args[0][0])
+        data = cast(dict[str, object], sent_event["data"])
+        assert data["lucidity_tier"] == "deranged"
+        assert data["current_lcd"] == -30
+
+
+@pytest.mark.asyncio
+async def test_send_initial_game_state_no_lucidity_row(
+    mock_websocket: AsyncMock, mock_connection_manager: AsyncMock, mock_room: MagicMock
+):
+    """Test send_initial_game_state() omits (None) lucidity fields for a new character."""
+    player_id = uuid.uuid4()
+    player_id_str = str(player_id)
+    room_id = "room_123"
+
+    mock_player = MagicMock(spec=Player)
+    mock_player.current_room_id = room_id
+    mock_player.name = "TestPlayer"
+    mock_player.get_stats = MagicMock(return_value={"hp": 100})
+
+    mock_session = MagicMock()
+    mock_session.get = AsyncMock(return_value=None)
+
+    async def async_gen() -> AsyncIterator[MagicMock]:
+        yield mock_session
+
+    with (
+        patch("server.realtime.websocket_initial_state.get_player_and_room") as mock_get_player_room,
+        patch("server.realtime.websocket_initial_state.prepare_player_data") as mock_prepare_player,
+        patch("server.database.get_async_session", return_value=async_gen()),
+    ):
+        mock_get_player_room.return_value = (mock_player, mock_room, room_id)
+        mock_prepare_player.return_value = {"name": "TestPlayer", "stats": {"hp": 100}}
+        mock_websocket.application_state = WebSocketState.CONNECTED
+
+        _ = await send_initial_game_state(mock_websocket, player_id, player_id_str, mock_connection_manager)
+
+        send_json_mock: AsyncMock = cast(AsyncMock, mock_websocket.send_json)
+        sent_event: dict[str, object] = cast(dict[str, object], send_json_mock.call_args[0][0])
+        data = cast(dict[str, object], sent_event["data"])
+        assert data["lucidity_tier"] is None
+        assert data["current_lcd"] is None
+
+
+@pytest.mark.asyncio
+async def test_check_and_send_delirium_notification_sends_when_in_delirium():
+    """Test check_and_send_delirium_notification() re-sends rescue_update(delirium) when LCD <= -10."""
+    player_id = uuid.uuid4()
+    player_id_str = str(player_id)
+
+    mock_record = MagicMock()
+    mock_record.current_tier = "deranged"
+    mock_record.current_lcd = -15
+    mock_session = MagicMock()
+    mock_session.get = AsyncMock(return_value=mock_record)
+
+    async def async_gen() -> AsyncIterator[MagicMock]:
+        yield mock_session
+
+    with (
+        patch("server.database.get_async_session", return_value=async_gen()),
+        patch(
+            "server.services.lucidity_event_dispatcher.send_rescue_update_event", new_callable=AsyncMock
+        ) as mock_send_rescue_raw,
+    ):
+        mock_send_rescue: AsyncMock = mock_send_rescue_raw
+        _ = await check_and_send_delirium_notification(player_id, player_id_str)
+
+        mock_send_rescue.assert_awaited_once()
+        assert mock_send_rescue.call_args is not None
+        kwargs = cast(dict[str, object], mock_send_rescue.call_args.kwargs)
+        assert kwargs["player_id"] == player_id_str
+        assert kwargs["status"] == "delirium"
+        assert kwargs["current_lcd"] == -15
+
+
+@pytest.mark.asyncio
+async def test_check_and_send_delirium_notification_skips_when_not_delirious():
+    """Test check_and_send_delirium_notification() does not send when LCD > -10."""
+    player_id = uuid.uuid4()
+    player_id_str = str(player_id)
+
+    mock_record = MagicMock()
+    mock_record.current_tier = "lucid"
+    mock_record.current_lcd = 40
+    mock_session = MagicMock()
+    mock_session.get = AsyncMock(return_value=mock_record)
+
+    async def async_gen() -> AsyncIterator[MagicMock]:
+        yield mock_session
+
+    with (
+        patch("server.database.get_async_session", return_value=async_gen()),
+        patch(
+            "server.services.lucidity_event_dispatcher.send_rescue_update_event", new_callable=AsyncMock
+        ) as mock_send_rescue_raw,
+    ):
+        mock_send_rescue: AsyncMock = mock_send_rescue_raw
+        _ = await check_and_send_delirium_notification(player_id, player_id_str)
+        mock_send_rescue.assert_not_awaited()
 
 
 @pytest.mark.asyncio

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { Room } from '../../stores/gameStore';
+import type { Room } from './types';
 import type { RoomNodeData } from './types';
 import type { RoomEditFormData } from './RoomEditModalForm';
 

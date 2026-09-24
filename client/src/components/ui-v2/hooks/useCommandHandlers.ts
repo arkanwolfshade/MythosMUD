@@ -4,15 +4,24 @@
 import { useCallback } from 'react';
 import { logger } from '../../../utils/logger';
 import { inputSanitizer } from '../../../utils/security';
+import type { GameEvent } from '../eventHandlers/types';
+import { buildLocalClearMessagesEvent } from '../eventLog/projectorMessageUtils';
 import type { GameState } from '../utils/stateUpdateUtils';
 
 interface UseCommandHandlersParams {
   isConnected: boolean;
   sendCommand: (command: string, args?: string[]) => Promise<boolean>;
   setGameState: React.Dispatch<React.SetStateAction<GameState>>;
+  /** Routes local (non-server) events through the event log so they survive the next replay. */
+  handleGameEvent: (event: GameEvent) => void;
 }
 
-export const useCommandHandlers = ({ isConnected, sendCommand, setGameState }: UseCommandHandlersParams) => {
+export const useCommandHandlers = ({
+  isConnected,
+  sendCommand,
+  setGameState,
+  handleGameEvent,
+}: UseCommandHandlersParams) => {
   const handleCommandSubmit = useCallback(
     async (command: string) => {
       if (!command.trim() || !isConnected) return;
@@ -82,8 +91,8 @@ export const useCommandHandlers = ({ isConnected, sendCommand, setGameState }: U
   );
 
   const handleClearMessages = useCallback(() => {
-    setGameState(prev => ({ ...prev, messages: [] }));
-  }, [setGameState]);
+    handleGameEvent(buildLocalClearMessagesEvent());
+  }, [handleGameEvent]);
 
   const handleClearHistory = useCallback(() => {
     setGameState(prev => ({ ...prev, commandHistory: [] }));

@@ -5,7 +5,8 @@ import { useEffect } from 'react';
 import type { GameClientV2MergedSlice } from './gameClientV2ContainerTypes';
 
 export function useGameClientV2ContainerEscapeMenuEffect(slice: GameClientV2MergedSlice): void {
-  const { isDead, showMap, setIsMainMenuOpen } = slice;
+  const { showMap, setIsMainMenuOpen } = slice;
+  const isDead = slice.gameState.isDead ?? false;
 
   useEffect(() => {
     if (isDead || showMap) return;

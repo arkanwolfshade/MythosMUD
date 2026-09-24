@@ -139,6 +139,19 @@ async def send_game_state_event_safely(
         raise
 
 
+async def _get_lucidity_for_client(player_id: uuid.UUID) -> tuple[str | None, int | None]:
+    """Get authoritative (tier, current_lcd) for game_state, or (None, None) if no row yet."""
+    from ..database import get_async_session
+    from ..models.lucidity import PlayerLucidity
+
+    async for session in get_async_session():
+        record = await session.get(PlayerLucidity, player_id)
+        if record:
+            return record.current_tier, record.current_lcd
+        break
+    return None, None
+
+
 async def send_initial_game_state(
     websocket: WebSocket, player_id: uuid.UUID, player_id_str: str, connection_manager: "ConnectionManager"
 ) -> tuple[str | None, bool]:
@@ -163,6 +176,7 @@ async def send_initial_game_state(
             occupant_names.append(player_name)
 
         player_data_for_client = await prepare_player_data(player, player_id, connection_manager)
+        lucidity_tier, current_lcd = await _get_lucidity_for_client(player_id)
 
         game_state_event = build_event(
             "game_state",
@@ -171,6 +185,8 @@ async def send_initial_game_state(
                 "room": room_data,
                 "occupants": occupant_names,
                 "occupant_count": len(occupant_names),
+                "lucidity_tier": lucidity_tier,
+                "current_lcd": current_lcd,
             },
             player_id=player_id_str,
             room_id=str(canonical_room_id),
@@ -316,6 +332,26 @@ async def check_and_send_death_notification(  # pylint: disable=too-many-argumen
             current_dp=current_dp,
             in_limbo=str(canonical_room_id) == LIMBO_ROOM_ID,
             death_location=death_location_name,
+        )
+
+
+async def check_and_send_delirium_notification(player_id: uuid.UUID, player_id_str: str) -> None:
+    """Re-send rescue_update(delirium) to a reconnecting player whose LCD is still <= -10.
+
+    Mirrors check_and_send_death_notification: a player who disconnected mid-delirium (before
+    respawn_player_from_delirium ran) would otherwise never see the client-side delirium modal
+    again on reconnect. Targets only this player (send_rescue_update_event -> _dispatch_player_event
+    delivers to a single player_id), never a room/broadcast.
+    """
+    _tier, current_lcd = await _get_lucidity_for_client(player_id)
+    if current_lcd is not None and current_lcd <= -10:
+        from ..services.lucidity_event_dispatcher import send_rescue_update_event
+
+        await send_rescue_update_event(
+            player_id=player_id_str,
+            status="delirium",
+            current_lcd=current_lcd,
+            message="Your mind fractures completely. The sanitarium calls you back from the edge of madness...",
         )
 
 

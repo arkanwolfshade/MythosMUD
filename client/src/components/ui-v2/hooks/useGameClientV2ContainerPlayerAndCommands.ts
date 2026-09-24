@@ -1,34 +1,18 @@
-// Player status side-effects and command handlers for GameClientV2Container.
+// Command handlers for GameClientV2Container. Death/delirium status is server-authoritative and
+// lives directly in gameState (see stateUpdateUtils.GameState) -- no client-side derivation here.
 
 import type { GameClientV2MergedSlice } from './gameClientV2ContainerTypes';
 import { useCommandHandlers } from './useCommandHandlers';
 import type { GameClientV2NetworkPhase } from './useGameClientV2ContainerNetworkPhase';
-import { usePlayerStatusEffects } from './usePlayerStatusEffects';
 
 export function useGameClientV2ContainerPlayerAndCommands(
   slice: GameClientV2MergedSlice,
   net: GameClientV2NetworkPhase
 ) {
-  usePlayerStatusEffects({
-    player: slice.gameState.player,
-    room: slice.gameState.room,
-    lucidityStatus: slice.lucidityStatus,
-    isDead: slice.isDead,
-    isDelirious: slice.isDelirious,
-    hasRespawned: slice.hasRespawned,
-    setters: {
-      setIsDead: slice.setIsDead,
-      setIsDelirious: slice.setIsDelirious,
-      setDeliriumLocation: slice.setDeliriumLocation,
-      setDeathLocation: slice.setDeathLocation,
-      setHasRespawned: slice.setHasRespawned,
-    },
-    lastNonLimboRoomNameRef: net.lastNonLimboRoomNameRef,
-  });
-
   return useCommandHandlers({
     isConnected: net.isConnected,
     sendCommand: net.sendCommand,
     setGameState: slice.setGameState,
+    handleGameEvent: net.handleGameEvent,
   });
 }

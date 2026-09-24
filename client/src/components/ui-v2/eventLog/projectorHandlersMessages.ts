@@ -5,6 +5,7 @@ import { logger } from '../../../utils/logger';
 import { determineMessageType } from '../../../utils/messageTypeUtils';
 import { buildMythosTimeState, formatMythosTime12Hour } from '../../../utils/mythosTime';
 import type { GameEvent } from '../eventHandlers/types';
+import type { GameState } from '../utils/stateUpdateUtils';
 import {
   formatNpcAttackedLine,
   formatNpcTookDamageLine,
@@ -15,7 +16,115 @@ import type { ProjectorHandler } from './projectorHandlersState';
 import { GAME_LOG_CHANNEL, appendMessage, appendMovementMessage, buildChatMessage } from './projectorMessageUtils';
 import { deriveRoomFromRoomState } from './projectorRoom';
 
+/** Daypart flavor text (ported from legacy eventHandlers/systemHandlers.ts DAYPART_MESSAGES). */
+const DAYPART_MESSAGES: Record<string, string> = {
+  'pre-dawn': 'A faint, eerie glow precedes dawn and the wards feel brittle.',
+  morning: 'The morning light barely pierces Arkham’s gloom.',
+  midday: 'Midday brings a thin warmth, but shadows cling to every corner.',
+  afternoon: 'Afternoon winds stir old papers and whispered rumors.',
+  dusk: 'Dusk settles in, stretching every shadow toward the horizon.',
+  night: 'Night swallows the alleyways, and the lamps flicker nervously.',
+  witching: 'The witching hour hums; geometry bends and whispers grow bold.',
+};
+
+function appendDaypartMessage(prevState: GameState, event: GameEvent, daypart: string): GameState {
+  const previousDaypart = prevState.mythosTime?.daypart ?? null;
+  if (!previousDaypart || previousDaypart === daypart) return prevState;
+  const description = DAYPART_MESSAGES[daypart] ?? `The Mythos clock shifts into the ${daypart} watch.`;
+  const msg = buildChatMessage(`[Time] ${description}`, event.timestamp, { messageType: 'system', channel: 'system' });
+  return { ...prevState, messages: appendMessage(prevState.messages, msg) };
+}
+
+function appendHolidayMessages(
+  prevState: GameState,
+  event: GameEvent,
+  activeHolidays: { id: string; name: string }[]
+): GameState {
+  // No prior mythosTime means this is the first tick this session; nothing to diff against.
+  if (!prevState.mythosTime) return prevState;
+  const previous = prevState.mythosTime.active_holidays ?? [];
+  const previousIds = new Set(previous.map(h => h.id));
+  const nextIds = new Set(activeHolidays.map(h => h.id));
+  const started = activeHolidays.filter(h => !previousIds.has(h.id));
+  const ended = previous.filter(h => !nextIds.has(h.id));
+  let messages = prevState.messages;
+  for (const holiday of started) {
+    messages = appendMessage(
+      messages,
+      buildChatMessage(`[Time] The observance of ${holiday.name} begins.`, event.timestamp, {
+        messageType: 'system',
+        channel: 'system',
+      })
+    );
+  }
+  for (const holiday of ended) {
+    messages = appendMessage(
+      messages,
+      buildChatMessage(`[Time] The observance of ${holiday.name} has passed.`, event.timestamp, {
+        messageType: 'system',
+        channel: 'system',
+      })
+    );
+  }
+  return { ...prevState, messages };
+}
+
 export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
+  client_message(prevState, event) {
+    const text = typeof event.data.text === 'string' ? event.data.text : '';
+    if (!text) return prevState;
+    const messageType = typeof event.data.messageType === 'string' ? event.data.messageType : 'system';
+    const msg = buildChatMessage(text, event.timestamp, { messageType, channel: 'game' });
+    return { ...prevState, messages: appendMessage(prevState.messages, msg) };
+  },
+
+  client_messages_cleared(prevState) {
+    return { ...prevState, messages: [] };
+  },
+
+  rescue_update(prevState, event) {
+    const status = typeof event.data.status === 'string' ? event.data.status : undefined;
+    const messageText = typeof event.data.message === 'string' ? event.data.message.trim() : '';
+    let nextState = prevState;
+    if (messageText) {
+      const msg = buildChatMessage(messageText, event.timestamp, { messageType: 'system', channel: 'system' });
+      nextState = { ...nextState, messages: appendMessage(nextState.messages, msg) };
+    }
+    if (status === 'delirium') {
+      nextState = { ...nextState, isDelirious: true, deliriumLocation: nextState.room?.name ?? null };
+    }
+    return nextState;
+  },
+
+  mythos_time_update(prevState, event) {
+    const data = event.data as Record<string, unknown>;
+    if (!data.mythos_clock) return prevState;
+    const mythosPayload: MythosTimePayload = {
+      mythos_datetime: (data.mythos_datetime as string) || '',
+      mythos_clock: data.mythos_clock as string,
+      month_name: (data.month_name as string) || '',
+      day_of_month: (data.day_of_month as number) || 1,
+      day_name: (data.day_name as string) || '',
+      week_of_month: (data.week_of_month as number) || 1,
+      season: (data.season as string) || '',
+      daypart: (data.daypart as string) || '',
+      is_daytime: typeof data.is_daytime === 'boolean' ? data.is_daytime : true,
+      is_witching_hour: typeof data.is_witching_hour === 'boolean' ? data.is_witching_hour : false,
+      server_timestamp: (data.timestamp as string) || event.timestamp,
+      active_holidays: Array.isArray(data.active_holidays)
+        ? (data.active_holidays as MythosTimePayload['active_holidays'])
+        : [],
+      upcoming_holidays: Array.isArray(data.upcoming_holidays)
+        ? (data.upcoming_holidays as MythosTimePayload['upcoming_holidays'])
+        : [],
+    };
+    const daypart = mythosPayload.daypart;
+    const activeHolidays = (mythosPayload.active_holidays ?? []).map(h => ({ id: h.id, name: h.name }));
+    let nextState = appendHolidayMessages(prevState, event, activeHolidays);
+    nextState = appendDaypartMessage(nextState, event, daypart);
+    return { ...nextState, mythosTime: buildMythosTimeState(mythosPayload) };
+  },
+
   command_response(prevState, event) {
     const suppressChat = Boolean(event.data.suppress_chat);
     const message = typeof event.data.result === 'string' ? (event.data.result as string) : '';
