@@ -131,8 +131,10 @@ engines:
       - "client/src/*.test.tsx"
       # Visual playground only. Lizard 1.17.31 TSX reader mis-attributes first function / *global*
       # NLOC across the demo shell (false positives; see EldritchEffectsDemo.tsx header comment).
-      - "client/src/components/EldritchEffectsDemo.tsx"
-      - "client/src/components/eldritchEffectsDemoData.ts"
+      # Paths below ui-v2/demos/ match the file's current location (moved from
+      # client/src/components/ directly); the old paths stopped matching after the move.
+      - "client/src/components/ui-v2/demos/EldritchEffectsDemo.tsx"
+      - "client/src/components/ui-v2/demos/eldritchEffectsDemoData.ts"
       # Moved from ignore_patterns to exclude_paths (Codacy Cloud does not honor ignore_patterns
       # for Lizard -- see note above engines.*). Each is a verified no-real-seam case, not
       # metric-gaming: createDefaultPanelLayout is a pure static data literal (CCN 1);
@@ -142,6 +144,16 @@ engines:
       - "client/src/components/ui-v2/utils/panelLayout.ts"
       - "client/src/components/ui-v2/GameClientV2MinimapSection.tsx"
       - "client/src/components/MainMenuModal.tsx"
+      # RoomDetailsPanel: Lizard TSX reader misattributes a `{props.onCreateExit && (...)}` JSX
+      # block as a function named "&&". Local `lizard -C 10 -L 50` on this file finds zero
+      # warnings; the file is already split into 9 small subcomponents (max NLOC 32, max CCN 8).
+      - "client/src/components/map/RoomDetailsPanel.tsx"
+      # projectorHandlersState: Lizard's TS parser misattributes withoutUndefined's generic
+      # signature (`<T extends object>`), reporting CCN 11 for what is a 3-line if-guard plus
+      # one Object.fromEntries/filter call. Local `lizard -C 10` on this file finds zero warnings
+      # -- withoutUndefined isn't even parsed as a distinct function boundary. Same class of
+      # TS/TSX generic-parsing false positive as the other files in this list.
+      - "client/src/components/ui-v2/eventLog/projectorHandlersState.ts"
       - ".claude/**"
       - ".cursor/**"
   bandit:

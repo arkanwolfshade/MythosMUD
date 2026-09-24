@@ -623,4 +623,51 @@ describe('projector', () => {
       expect(next.room?.occupant_count).toBe(1);
     });
   });
+
+  describe('quest_log_updated', () => {
+    it('replaces questLog when the event carries an array', () => {
+      const prev = { ...getInitialGameState(), questLog: [{ id: 'old' }] as unknown as GameState['questLog'] };
+      const next = projectEvent(prev, {
+        event_type: 'quest_log_updated',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { quest_log: [{ id: 'new' }] },
+      });
+      expect(next.questLog).toEqual([{ id: 'new' }]);
+    });
+
+    it('leaves questLog untouched when quest_log is missing or not an array', () => {
+      const prev = { ...getInitialGameState(), questLog: [{ id: 'kept' }] as unknown as GameState['questLog'] };
+      const next = projectEvent(prev, {
+        event_type: 'quest_log_updated',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {},
+      });
+      expect(next.questLog).toEqual([{ id: 'kept' }]);
+    });
+  });
+
+  describe('effects_update', () => {
+    it('sets grace period fields only when present on the event', () => {
+      const prev = getInitialGameState();
+      const next = projectEvent(prev, {
+        event_type: 'effects_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { login_grace_period_active: true, login_grace_period_remaining: 42 },
+      });
+      expect(next.loginGracePeriodActive).toBe(true);
+      expect(next.loginGracePeriodRemaining).toBe(42);
+
+      const unchanged = projectEvent(next, {
+        event_type: 'effects_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 2,
+        data: {},
+      });
+      expect(unchanged.loginGracePeriodActive).toBe(true);
+      expect(unchanged.loginGracePeriodRemaining).toBe(42);
+    });
+  });
 });
