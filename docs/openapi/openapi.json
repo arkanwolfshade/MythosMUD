@@ -10721,7 +10721,19 @@
               }
             ],
             "title": "Environment",
-            "description": "Environment type"
+            "description": "Resolved environment (room's own value, else subzone's, else zone's, else 'outdoors')"
+          },
+          "room_environment": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Room Environment",
+            "description": "Room's own environment override; None means it inherits from its subzone/zone"
           },
           "exits": {
             "additionalProperties": {
@@ -11016,7 +11028,7 @@
         "additionalProperties": false,
         "type": "object",
         "title": "RoomUpdateRequest",
-        "description": "Request model for updating room properties (name, description, environment).\n\nAll fields are optional; omitted fields are left unchanged. `environment: \"\"` clears the\nenvironment to unset (the client's \"Not Set\" option) -- the CHECK constraint on\nrooms.attributes->>'environment' permits NULL but not an empty string, so the API layer\nis responsible for that translation."
+        "description": "Request model for updating room properties (name, description, environment).\n\nAll fields are optional; omitted fields are left unchanged. `environment: \"\"` clears the\nenvironment to unset (the client's \"Not Set\" option, meaning it inherits from its subzone/\nzone) -- the CHECK constraint on rooms.environment permits NULL but not an empty string, so\nthe API layer is responsible for that translation."
       },
       "RoomUpdateResponse": {
         "properties": {
