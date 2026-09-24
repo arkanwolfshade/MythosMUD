@@ -10,7 +10,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import type { Room } from '../../../../stores/gameStore';
+import type { Room } from '../../types';
 import { GRID_PITCH } from '../mapGeometry';
 import { createEdgesFromRooms, roomToNode, roomsToNodes, transformRoomsToMapData } from '../mapUtils';
 

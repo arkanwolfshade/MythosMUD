@@ -16,9 +16,7 @@ function openMapTab(
   room: NonNullable<GameClientV2ContainerViewProps['gameState']['room']>,
   authToken: string,
   addTab: GameClientV2ContainerViewProps['addTab'],
-  closeTab: GameClientV2ContainerViewProps['closeTab'],
-  hallucinate: boolean,
-  playerId: string | undefined
+  closeTab: GameClientV2ContainerViewProps['closeTab']
 ) {
   addTab({
     id: `map-${room.id}`,
@@ -30,8 +28,6 @@ function openMapTab(
         currentRoom={room}
         authToken={authToken}
         hideHeader={true}
-        hallucinate={hallucinate}
-        playerId={playerId}
       />
     ),
     closable: true,
@@ -111,8 +107,6 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
     setClearedFollowRequestId,
     clearedPartyInviteId,
     setClearedPartyInviteId,
-    setGameState,
-    clearPendingFollowRequest,
     sendMessage,
     isConnected,
     isConnecting,
@@ -128,12 +122,9 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
     activeEffects,
   } = props;
 
-  const isHallucinatingMap = lucidityStatus?.tier === 'deranged';
-  const mapPlayerId = gameState.player?.id ?? gameState.player?.name;
-
   const handleMapClickFromGame = () => {
     if (tabs.length > 0 && gameState.room?.id) {
-      openMapTab(gameState.room, authToken, addTab, closeTab, isHallucinatingMap, mapPlayerId);
+      openMapTab(gameState.room, authToken, addTab, closeTab);
       setActiveTab(`map-${gameState.room.id}`);
       return;
     }
@@ -141,21 +132,22 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
   };
 
   const handleMainMenuMapClick = () => {
-    if (gameState.room) openMapTab(gameState.room, authToken, addTab, closeTab, isHallucinatingMap, mapPlayerId);
+    if (gameState.room) openMapTab(gameState.room, authToken, addTab, closeTab);
   };
 
+  // clearedFollowRequestId/clearedPartyInviteId are UX-only local dismissal: the server never sends
+  // a follow_request_cleared/party_invite_cleared event, so this state is not persisted across
+  // reconnect (a stale pending request/invite will show its modal again after reconnect, which is
+  // correct -- the server still considers it pending).
   const respondToFollow = (accept: boolean) => {
     const reqId = gameState.pendingFollowRequest!.request_id;
     setClearedFollowRequestId(reqId);
-    setGameState(prev => ({ ...prev, pendingFollowRequest: null }));
-    clearPendingFollowRequest(reqId);
     sendMessage('follow_response', { request_id: reqId, accept });
   };
 
   const respondToParty = (accept: boolean) => {
     const inviteId = gameState.pendingPartyInvite!.invite_id;
     setClearedPartyInviteId(inviteId);
-    setGameState(prev => ({ ...prev, pendingPartyInvite: null }));
     sendMessage('party_invite_response', { invite_id: inviteId, accept });
   };
 
@@ -255,8 +247,6 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
         onClose={() => setShowMap(false)}
         currentRoom={gameState.room}
         authToken={authToken}
-        hallucinate={isHallucinatingMap}
-        playerId={mapPlayerId}
       />
     </div>
   );

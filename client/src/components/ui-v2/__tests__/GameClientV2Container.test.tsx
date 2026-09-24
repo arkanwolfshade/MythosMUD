@@ -102,14 +102,6 @@ vi.mock('./hooks/useMythosTimeBootstrap', () => ({
   useMythosTimeBootstrap: () => {},
 }));
 
-vi.mock('./hooks/usePlayerStatusEffects', () => ({
-  usePlayerStatusEffects: () => {},
-}));
-
-vi.mock('./hooks/useRefSynchronization', () => ({
-  useRefSynchronization: () => {},
-}));
-
 vi.mock('./hooks/useRespawnHandlers', () => ({
   useRespawnHandlers: () => ({
     handleRespawn: vi.fn(),

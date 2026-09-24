@@ -17,51 +17,18 @@ export { getInitialGameState };
 
 /**
  * Project a single event onto previous state. Pure function; no refs or side effects.
+ * The server's occupant lists always include the connected player (see
+ * player_event_handlers_room.py's get_room_occupants(ensure_player_included=...) and
+ * websocket_initial_state.py), so the projector trusts the payload rather than injecting self --
+ * see .cursor/rules/server-authority.mdc and the CLIENT_SERVER_AUTHORITY_REGISTER_2026-09.
  */
-/**
- * Server appends these to a display name (server/realtime/occupant_display.py): grace-period
- * badges (linkdead/warded) and, since #815, an ambient corruption badge (marked/defiled/warped,
- * shown from the `marked` tier up) -- strip all of them before matching self.
- */
-const NAME_BADGE_SUFFIX = /\s*\((?:linkdead|warded|marked|defiled|warped)\)/gi;
-
-function stripNameBadges(displayName: string): string {
-  return displayName.replace(NAME_BADGE_SUFFIX, '').trim();
-}
-
-/** Keep connected self in room.players so Occupants never looks empty after settle. */
-function ensureSelfListedInRoomPlayers(state: GameState): GameState {
-  const name = state.player?.name?.trim();
-  const room = state.room;
-  if (!name || !room?.id) {
-    return state;
-  }
-  const players = room.players ?? [];
-  if (players.some(p => stripNameBadges(p).toLowerCase() === name.toLowerCase())) {
-    return state;
-  }
-  const nextPlayers = [...players, name];
-  const npcs = room.npcs ?? [];
-  // Do not recompute occupant_count: server value is authoritative and may include
-  // hidden/other entities not present in players/npcs lists.
-  return {
-    ...state,
-    room: {
-      ...room,
-      players: nextPlayers,
-      occupants: [...nextPlayers, ...npcs],
-    },
-  };
-}
-
 export function projectEvent(prevState: GameState, event: GameEvent): GameState {
   const eventType = (event.event_type ?? '').toString().trim().toLowerCase();
   if (!PROJECTED_EVENT_TYPES.has(eventType)) {
     return prevState;
   }
   const handler = HANDLERS[eventType];
-  const next = handler ? handler(prevState, event) : prevState;
-  return ensureSelfListedInRoomPlayers(next);
+  return handler ? handler(prevState, event) : prevState;
 }
 
 /**

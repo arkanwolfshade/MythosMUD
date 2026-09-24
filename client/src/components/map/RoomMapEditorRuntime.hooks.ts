@@ -4,7 +4,7 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import type { Edge, EdgeChange, Node, NodeChange } from 'reactflow';
-import type { Room } from '../../stores/gameStore';
+import type { Room } from './types';
 import { getVersionedApiBaseUrl } from '../../utils/config';
 import type { EdgeCreationData, EdgeValidationResult } from './hooks/useMapEditing';
 import { useMapEditing } from './hooks/useMapEditing';

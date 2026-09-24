@@ -10,13 +10,15 @@ export interface LucidityChangeMeta {
 export interface LucidityStatus {
   current: number;
   max: number;
-  tier: LucidityTier;
+  /** Server-authoritative (PlayerLucidity.current_tier); absent until game_state/lucidity_change supplies it. */
+  tier?: LucidityTier;
   liabilities: string[];
   lastChange?: LucidityChangeMeta;
 }
 
 /**
- * Pure UI projection for lucidity meter when only `player.stats` is available.
+ * Pure UI projection for lucidity meter when only `player.stats` is available (no server tier yet).
+ * Does not invent a tier -- the server is authoritative for that (server-authority.mdc).
  */
 export function deriveLucidityStatusFromPlayer(
   player: { stats?: { lucidity?: number; max_lucidity?: number } } | null | undefined,
@@ -26,7 +28,6 @@ export function deriveLucidityStatusFromPlayer(
   return {
     current: player.stats.lucidity,
     max: player.stats.max_lucidity ?? 100,
-    tier: 'lucid',
     liabilities: [],
     lastChange: previousLastChange,
   };

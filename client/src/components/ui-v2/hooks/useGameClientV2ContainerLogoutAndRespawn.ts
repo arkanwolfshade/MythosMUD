@@ -19,13 +19,9 @@ export function useGameClientV2ContainerLogoutAndRespawn(
 
   const { handleRespawn, handleDeliriumRespawn } = useRespawnHandlers({
     authToken: props.authToken,
-    setGameState: slice.setGameState,
-    setIsDead: slice.setIsDead,
     setIsRespawning: slice.setIsRespawning,
-    setIsDelirious: slice.setIsDelirious,
     setIsDeliriumRespawning: slice.setIsDeliriumRespawning,
-    setHasRespawned: slice.setHasRespawned,
-    appendRespawnEvent: net.handleGameEvent,
+    appendLocalEvent: net.handleGameEvent,
   });
 
   return { handleLogout, handleRespawn, handleDeliriumRespawn };

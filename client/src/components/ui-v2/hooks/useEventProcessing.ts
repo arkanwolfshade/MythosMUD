@@ -6,33 +6,12 @@ import { logger } from '../../../utils/logger';
 import type { GameEvent } from '../eventHandlers/types';
 import { EventStore, projectState } from '../eventLog';
 import type { GameState } from '../utils/stateUpdateUtils';
-import { isUnusableDeathLocation } from './usePlayerStatusEffects';
 
 interface UseEventProcessingParams {
   setGameState: React.Dispatch<React.SetStateAction<GameState>>;
-  setDeathLocation?: (location: string) => void;
-  lastNonLimboRoomNameRef?: React.MutableRefObject<string | null>;
 }
 
-function resolvePlayerDiedLocation(data: Record<string, unknown>, fallback: string | null): string | null {
-  const extracted =
-    (typeof data.death_location === 'string' && data.death_location) ||
-    (typeof data.room_id === 'string' && data.room_id) ||
-    'Unknown Location';
-  if (!isUnusableDeathLocation(extracted)) {
-    return extracted;
-  }
-  if (fallback && !isUnusableDeathLocation(fallback)) {
-    return fallback;
-  }
-  return null;
-}
-
-export const useEventProcessing = ({
-  setGameState,
-  setDeathLocation,
-  lastNonLimboRoomNameRef,
-}: UseEventProcessingParams) => {
+export const useEventProcessing = ({ setGameState }: UseEventProcessingParams) => {
   const isProcessingEvent = useRef(false);
   const eventQueue = useRef<GameEvent[]>([]);
   const processingTimeout = useRef<number | null>(null);
@@ -76,15 +55,6 @@ export const useEventProcessing = ({
           data_keys: event.data ? Object.keys(event.data) : [],
         });
       }
-      // Side-effect: death interstitial location (projector path does not call handlePlayerDied).
-      if (eventType === 'player_died' || eventType === 'playerdied') {
-        const d = (event.data ?? {}) as Record<string, unknown>;
-        const currentDpNum = typeof d.current_dp === 'number' ? d.current_dp : NaN;
-        const resolved = resolvePlayerDiedLocation(d, lastNonLimboRoomNameRef?.current ?? null);
-        if (Number.isFinite(currentDpNum) && currentDpNum <= -10 && resolved) {
-          setDeathLocation?.(resolved);
-        }
-      }
       eventQueue.current.push(event);
       if (!isProcessingEvent.current && !processingTimeout.current) {
         processingTimeout.current = window.setTimeout(() => {
@@ -93,28 +63,12 @@ export const useEventProcessing = ({
         }, 10);
       }
     },
-    [processEventQueue, setDeathLocation, lastNonLimboRoomNameRef]
+    [processEventQueue]
   );
 
   const clearEventLog = useCallback(() => {
     eventStoreRef.current.clear();
   }, []);
 
-  /** Clear pending follow request in the event log so the dialog stays closed after accept/decline. */
-  const clearPendingFollowRequest = useCallback(
-    (requestId: string) => {
-      const store = eventStoreRef.current;
-      store.append({
-        event_type: 'follow_request_cleared',
-        timestamp: new Date().toISOString(),
-        sequence_number: 0,
-        data: { request_id: requestId },
-      });
-      const derivedState = projectState(store.getLog());
-      setGameState(prev => ({ ...derivedState, commandHistory: prev.commandHistory }));
-    },
-    [setGameState]
-  );
-
-  return { handleGameEvent, clearEventLog, clearPendingFollowRequest };
+  return { handleGameEvent, clearEventLog };
 };

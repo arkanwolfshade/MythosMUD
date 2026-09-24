@@ -12,12 +12,12 @@ export function buildSliceAndPropsPublicFields(props: GameClientV2ContainerProps
     gameState: slice.gameState,
     mythosTime: slice.mythosTime,
     healthStatus: slice.healthStatus,
-    lucidityStatus: slice.lucidityStatus,
-    isDead: slice.isDead,
-    deathLocation: slice.deathLocation,
+    lucidityStatus: slice.gameState.lucidityStatus ?? null,
+    isDead: slice.gameState.isDead ?? false,
+    deathLocation: slice.gameState.deathLocation ?? 'Unknown Location',
     isRespawning: slice.isRespawning,
-    isDelirious: slice.isDelirious,
-    deliriumLocation: slice.deliriumLocation,
+    isDelirious: slice.gameState.isDelirious ?? false,
+    deliriumLocation: slice.gameState.deliriumLocation ?? 'Unknown Location',
     isDeliriumRespawning: slice.isDeliriumRespawning,
     isMainMenuOpen: slice.isMainMenuOpen,
     setIsMainMenuOpen: slice.setIsMainMenuOpen,
@@ -38,7 +38,6 @@ export function buildSliceAndPropsPublicFields(props: GameClientV2ContainerProps
 
 export function buildNetPublicFields(net: GameClientV2NetworkPhase) {
   return {
-    clearPendingFollowRequest: net.clearPendingFollowRequest,
     sendMessage: net.sendMessage,
     isConnected: net.isConnected,
     isConnecting: net.isConnecting,

@@ -2,33 +2,19 @@
 // Extracted from GameClientV2Container to reduce complexity
 
 import { useCallback } from 'react';
-import { isApiErrorWithDetail, isRespawnApiResponse, type RespawnApiResponse } from '../../../utils/apiTypeGuards';
+import { isApiErrorWithDetail, isRespawnApiResponse } from '../../../utils/apiTypeGuards';
 import { API_V1_BASE } from '../../../utils/config';
 import { logger } from '../../../utils/logger';
 import type { GameEvent } from '../eventHandlers/types';
-import type { ChatMessage, Player } from '../types';
-import { sanitizeChatMessageForState } from '../utils/messageUtils';
-import type { GameState } from '../utils/stateUpdateUtils';
+import { buildLocalMessageEvent } from '../eventLog/projectorMessageUtils';
 
 interface UseRespawnHandlersParams {
   authToken: string;
-  setGameState: React.Dispatch<React.SetStateAction<GameState>>;
-  setIsDead: (dead: boolean) => void;
   setIsRespawning: (respawning: boolean) => void;
-  setIsDelirious: (delirious: boolean) => void;
   setIsDeliriumRespawning: (respawning: boolean) => void;
-  setHasRespawned: (hasRespawned: boolean) => void;
-  appendRespawnEvent: (event: GameEvent) => void;
-}
-
-function appendChatError(setGameState: React.Dispatch<React.SetStateAction<GameState>>, text: string): void {
-  const errorMessage: ChatMessage = sanitizeChatMessageForState({
-    text,
-    timestamp: new Date().toISOString(),
-    messageType: 'error',
-    isHtml: false,
-  });
-  setGameState(prev => ({ ...prev, messages: [...prev.messages, errorMessage] }));
+  /** Routes local error messages through the event log; the server pushes player_respawned /
+   *  player_delirium_respawned itself on success -- see .cursor/rules/server-authority.mdc. */
+  appendLocalEvent: (event: GameEvent) => void;
 }
 
 async function postRespawn(
@@ -53,64 +39,8 @@ function apiErrorDetail(raw: unknown): string {
   return isApiErrorWithDetail(raw) && raw.detail ? raw.detail : 'Unknown error';
 }
 
-function applyDeliriumRespawnSuccess(
-  appendRespawnEvent: (event: GameEvent) => void,
-  raw: RespawnApiResponse,
-  setIsDelirious: (v: boolean) => void,
-  setIsDeliriumRespawning: (v: boolean) => void
-): void {
-  setIsDeliriumRespawning(false);
-  setIsDelirious(false);
-  const playerData = raw.player as Record<string, unknown>;
-  const normalizedPlayer = {
-    ...(raw.player as object),
-    stats: {
-      ...(playerData?.stats as object),
-      lucidity: playerData?.lucidity,
-      current_dp: playerData?.dp,
-    },
-  } as Player;
-
-  appendRespawnEvent({
-    event_type: 'player_delirium_respawned',
-    timestamp: new Date().toISOString(),
-    sequence_number: 0,
-    data: {
-      player: normalizedPlayer,
-      room: raw.room,
-      message: raw.message ?? 'You have been restored to lucidity and returned to the Sanitarium',
-    },
-  });
-}
-
-function applyDeathRespawnSuccess(params: UseRespawnHandlersParams, raw: RespawnApiResponse): void {
-  const playerObj = raw.player as Record<string, unknown> | undefined;
-  const normalizedPlayer = {
-    ...(raw.player as object),
-    stats: {
-      ...(playerObj?.stats as object),
-      current_dp: playerObj?.dp ?? (playerObj?.stats as Record<string, unknown>)?.current_dp,
-    },
-  } as Player;
-
-  params.appendRespawnEvent({
-    event_type: 'player_respawned',
-    timestamp: new Date().toISOString(),
-    sequence_number: 0,
-    data: {
-      player: normalizedPlayer,
-      room: raw.room,
-      message: 'You feel a chilling wind as your form reconstitutes in Arkham General Hospital...',
-    },
-  });
-
-  params.setIsDead(false);
-  params.setIsRespawning(false);
-  params.setHasRespawned(true);
-}
-
 async function runDeliriumRespawn(params: UseRespawnHandlersParams): Promise<void> {
-  const { authToken, setGameState, setIsDelirious, setIsDeliriumRespawning, appendRespawnEvent } = params;
+  const { authToken, appendLocalEvent, setIsDeliriumRespawning } = params;
   logger.info('GameClientV2Container', 'Delirium respawn requested');
   setIsDeliriumRespawning(true);
 
@@ -121,7 +51,7 @@ async function runDeliriumRespawn(params: UseRespawnHandlersParams): Promise<voi
         status: result.status,
         error: result.raw,
       });
-      appendChatError(setGameState, `Delirium respawn failed: ${apiErrorDetail(result.raw)}`);
+      appendLocalEvent(buildLocalMessageEvent(`Delirium respawn failed: ${apiErrorDetail(result.raw)}`, 'error'));
       setIsDeliriumRespawning(false);
       return;
     }
@@ -129,20 +59,24 @@ async function runDeliriumRespawn(params: UseRespawnHandlersParams): Promise<voi
       setIsDeliriumRespawning(false);
       return;
     }
+    // Success: the server pushes player_delirium_respawned over the websocket (player, room,
+    // message). No client-side event fabrication -- see the projector's player_respawned handler.
     logger.info('GameClientV2Container', 'Delirium respawn successful', {
       room: result.raw.room,
       player: result.raw.player,
     });
-    applyDeliriumRespawnSuccess(appendRespawnEvent, result.raw, setIsDelirious, setIsDeliriumRespawning);
+    setIsDeliriumRespawning(false);
   } catch (error) {
     logger.error('GameClientV2Container', 'Error calling delirium respawn API', { error });
-    appendChatError(setGameState, 'Failed to respawn from delirium due to network error. Please try again.');
+    appendLocalEvent(
+      buildLocalMessageEvent('Failed to respawn from delirium due to network error. Please try again.', 'error')
+    );
     setIsDeliriumRespawning(false);
   }
 }
 
 async function runDeathRespawn(params: UseRespawnHandlersParams): Promise<void> {
-  const { authToken, setGameState, setIsRespawning } = params;
+  const { authToken, appendLocalEvent, setIsRespawning } = params;
   logger.info('GameClientV2Container', 'Respawn requested');
   setIsRespawning(true);
 
@@ -150,7 +84,7 @@ async function runDeathRespawn(params: UseRespawnHandlersParams): Promise<void> 
     const result = await postRespawn(authToken, '/api/players/respawn');
     if (!result.ok) {
       logger.error('GameClientV2Container', 'Respawn failed', { status: result.status, error: result.raw });
-      appendChatError(setGameState, `Respawn failed: ${apiErrorDetail(result.raw)}`);
+      appendLocalEvent(buildLocalMessageEvent(`Respawn failed: ${apiErrorDetail(result.raw)}`, 'error'));
       setIsRespawning(false);
       return;
     }
@@ -158,11 +92,12 @@ async function runDeathRespawn(params: UseRespawnHandlersParams): Promise<void> 
       setIsRespawning(false);
       return;
     }
+    // Success: the server pushes player_respawned over the websocket. No client-side fabrication.
     logger.info('GameClientV2Container', 'Respawn successful', { room: result.raw.room, player: result.raw.player });
-    applyDeathRespawnSuccess(params, result.raw);
+    setIsRespawning(false);
   } catch (error) {
     logger.error('GameClientV2Container', 'Error calling respawn API', { error });
-    appendChatError(setGameState, 'Failed to respawn due to network error. Please try again.');
+    appendLocalEvent(buildLocalMessageEvent('Failed to respawn due to network error. Please try again.', 'error'));
     setIsRespawning(false);
   }
 }

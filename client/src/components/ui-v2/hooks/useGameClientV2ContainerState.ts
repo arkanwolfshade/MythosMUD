@@ -3,7 +3,6 @@
 import { useState } from 'react';
 
 import type { HealthStatus } from '../../../types/health';
-import type { LucidityStatus } from '../../../types/lucidity';
 import type { MythosTimeState } from '../../../types/mythosTime';
 import { useTabbedInterface } from '../useTabbedInterface';
 import type { GameState } from '../utils/stateUpdateUtils';
@@ -43,37 +42,25 @@ export function useGameClientV2GameModelState() {
   return { gameState, setGameState };
 }
 
+/**
+ * Only "is the respawn HTTP call in flight" is real local UI state; death/delirium/lucidity are
+ * server-authoritative and live in GameState (set by the projector from player_died, rescue_update,
+ * player_respawned, game_state, lucidity_change -- see .cursor/rules/server-authority.mdc).
+ */
 export function useGameClientV2SurvivalAndTimeState() {
-  const [isDead, setIsDead] = useState(false);
-  const [deathLocation, setDeathLocation] = useState<string>('Unknown Location');
   const [isRespawning, setIsRespawning] = useState(false);
-  const [isDelirious, setIsDelirious] = useState(false);
-  const [deliriumLocation, setDeliriumLocation] = useState<string>('Unknown Location');
   const [isDeliriumRespawning, setIsDeliriumRespawning] = useState(false);
-  const [lucidityStatus] = useState<LucidityStatus | null>(null);
   const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null);
   const [mythosTime, setMythosTime] = useState<MythosTimeState | null>(null);
-  const [hasRespawned, setHasRespawned] = useState(false);
 
   return {
-    isDead,
-    setIsDead,
-    deathLocation,
-    setDeathLocation,
     isRespawning,
     setIsRespawning,
-    isDelirious,
-    setIsDelirious,
-    deliriumLocation,
-    setDeliriumLocation,
     isDeliriumRespawning,
     setIsDeliriumRespawning,
-    lucidityStatus,
     healthStatus,
     setHealthStatus,
     mythosTime,
     setMythosTime,
-    hasRespawned,
-    setHasRespawned,
   };
 }

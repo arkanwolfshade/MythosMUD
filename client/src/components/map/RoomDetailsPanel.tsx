@@ -5,7 +5,7 @@
 import React from 'react';
 import type { LucidityTier } from '../../types/lucidity';
 import { getHallucinatedExits } from '../../utils/directionHallucination';
-import type { Room } from '../../stores/gameStore';
+import type { Room } from './types';
 
 export interface RoomDetailsPanelProps {
   room: Room;
@@ -81,6 +81,19 @@ function RoomLocationFields(props: { room: Room }): React.ReactElement {
   );
 }
 
+function RoomOccupantsBlock(props: { occupants: string[]; occupantCount?: number }): React.ReactElement | null {
+  const { occupants, occupantCount } = props;
+  if (occupants.length === 0) {
+    return null;
+  }
+  return (
+    <div className="mb-4">
+      <span className="text-xs text-mythos-terminal-text/70">Occupants ({occupantCount || occupants.length}):</span>
+      <div className="text-sm text-mythos-terminal-text mt-1">{occupants.join(', ')}</div>
+    </div>
+  );
+}
+
 function RoomExitsList(props: {
   exits: Record<string, string>;
   hallucinatedDirections?: string[];
@@ -141,14 +154,7 @@ export const RoomDetailsPanel: React.FC<RoomDetailsPanelProps> = props => {
 
       <RoomLocationFields room={room} />
 
-      {room.occupants && room.occupants.length > 0 && (
-        <div className="mb-4">
-          <span className="text-xs text-mythos-terminal-text/70">
-            Occupants ({room.occupant_count || room.occupants.length}):
-          </span>
-          <div className="text-sm text-mythos-terminal-text mt-1">{room.occupants.join(', ')}</div>
-        </div>
-      )}
+      {room.occupants && <RoomOccupantsBlock occupants={room.occupants} occupantCount={room.occupant_count} />}
 
       {room.exits && Object.keys(room.exits).length > 0 && (
         <RoomExitsList exits={room.exits} hallucinatedDirections={hallucinatedDirections} />

@@ -533,6 +533,11 @@ class PlayerRespawnEventHandler:
             # Get updated player data to include in event payload
             player_data, _ = await self.get_player_data_for_delirium_respawn(player_id_str, event.new_lucidity)
 
+            # Room data (client needs it to re-render on delirium respawn, same as player_respawned)
+            room_data, _npc_names, _player_names, _occupant_names = await self._prepare_room_data_for_respawn(
+                event.respawn_room_id, event.player_name
+            )
+
             # Send personal message to the player
             from .envelope import build_event
 
@@ -546,6 +551,7 @@ class PlayerRespawnEventHandler:
                     "new_lucidity": event.new_lucidity,
                     "message": "You have been restored to lucidity and returned to the Sanitarium.",
                     "player": player_data,
+                    "room": room_data,
                 },
                 player_id=player_id_str,
             )

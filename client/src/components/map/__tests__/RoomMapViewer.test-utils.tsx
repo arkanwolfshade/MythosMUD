@@ -3,7 +3,7 @@
  */
 
 import { vi } from 'vitest';
-import type { Room } from '../../../stores/gameStore';
+import type { Room } from '../types';
 import { useMapLayout } from '../hooks/useMapLayout';
 import { useRoomMapData } from '../hooks/useRoomMapData';
 import { createEdgesFromRooms, roomsToNodes } from '../utils/mapUtils';

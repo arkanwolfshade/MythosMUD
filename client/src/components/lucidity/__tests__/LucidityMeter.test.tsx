@@ -49,4 +49,15 @@ describe('LucidityMeter', () => {
     const { container } = render(<LucidityMeter status={null} />);
     expect(container.firstChild).toBeNull();
   });
+
+  it('renders a neutral placeholder when no server tier has arrived yet', () => {
+    // tier is optional: the server is authoritative for it (game_state/lucidity_change), and the
+    // client must not invent one (see server-authority.mdc / CLIENT_SERVER_AUTHORITY_REGISTER_2026-09).
+    const status = buildStatus({ tier: undefined });
+    render(<LucidityMeter status={status} />);
+
+    expect(screen.getByText(/82/)).toBeInTheDocument();
+    expect(screen.getByText('—')).toBeInTheDocument();
+    expect(screen.queryByText(/^(Uneasy|Lucid|Fractured|Deranged|Catatonic)$/i)).not.toBeInTheDocument();
+  });
 });

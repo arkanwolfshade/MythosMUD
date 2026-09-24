@@ -1,5 +1,6 @@
 // Message-building helpers for the projector (split from projector.ts for file-nloc)
 
+import type { GameEvent } from '../eventHandlers/types';
 import type { ChatMessage } from '../types';
 import { sanitizeChatMessageForState } from '../utils/messageUtils';
 
@@ -43,4 +44,28 @@ export function appendMovementMessage(prevMessages: ChatMessage[], message: Chat
     }
   }
   return [...prevMessages, sanitized];
+}
+
+/**
+ * Build a client-local event for UI-only messages (connection lost, respawn errors, etc). The
+ * `client_` prefix marks it as never coming from the server -- see .cursor/rules/server-authority.mdc.
+ * `sequence_number: 0` matches how the event log already treats other locally-appended events.
+ */
+export function buildLocalMessageEvent(text: string, messageType: string = 'system'): GameEvent {
+  return {
+    event_type: 'client_message',
+    timestamp: new Date().toISOString(),
+    sequence_number: 0,
+    data: { text, messageType },
+  };
+}
+
+/** Build the client-local event that clears the message log (e.g. the user clicked "Clear"). */
+export function buildLocalClearMessagesEvent(): GameEvent {
+  return {
+    event_type: 'client_messages_cleared',
+    timestamp: new Date().toISOString(),
+    sequence_number: 0,
+    data: {},
+  };
 }

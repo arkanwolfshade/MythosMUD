@@ -9,7 +9,7 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
-import type { Room } from '../../../stores/gameStore';
+import type { Room } from '../types';
 import { isApiErrorWithDetail, isRoomsListApiResponse } from '../../../utils/apiTypeGuards';
 import { getVersionedApiBaseUrl } from '../../../utils/config';
 

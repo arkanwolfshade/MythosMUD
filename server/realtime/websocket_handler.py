@@ -55,6 +55,7 @@ from .websocket_helpers import (
 )
 from .websocket_initial_state import (
     check_and_send_death_notification,
+    check_and_send_delirium_notification,
     send_initial_game_state,
     send_initial_room_state,
 )
@@ -78,6 +79,7 @@ __all__ = [
     "broadcast_room_update",  # Re-exported from websocket_room_updates
     "send_initial_game_state",
     "check_and_send_death_notification",
+    "check_and_send_delirium_notification",
     "send_initial_room_state",
 ]
 

@@ -8,7 +8,6 @@
 import React, { useEffect } from 'react';
 import { Z_INDEX_OVERLAY_TOP } from '../constants/layout';
 import { getVersionedApiBaseUrl } from '../utils/config';
-import { seedFrom } from '../utils/directionHallucination';
 import { AsciiMapViewer } from './map/AsciiMapViewer';
 
 interface Room {
@@ -33,10 +32,6 @@ export interface MapViewProps {
   baseUrl?: string;
   authToken?: string;
   hideHeader?: boolean;
-  /** #626: when true, the map viewer shows churning ASCII noise instead of the real map. */
-  hallucinate?: boolean;
-  /** Player id used, with the room id, to seed the noise. */
-  playerId?: string;
 }
 
 function useMapViewEffects(isOpen: boolean, onClose: () => void) {
@@ -97,7 +92,7 @@ function NoRoomDataMessage({ onClose }: { onClose: () => void }) {
   );
 }
 
-function MapViewBody({ currentRoom, baseUrl, authToken, hideHeader, onClose, hallucinate, playerId }: MapViewProps) {
+function MapViewBody({ currentRoom, baseUrl, authToken, hideHeader, onClose }: MapViewProps) {
   return (
     <div
       className={`${hideHeader ? 'h-full w-full' : 'fixed inset-0'} bg-mythos-terminal-background flex flex-col`}
@@ -116,8 +111,6 @@ function MapViewBody({ currentRoom, baseUrl, authToken, hideHeader, onClose, hal
             currentRoomId={currentRoom.id}
             baseUrl={baseUrl || getVersionedApiBaseUrl()}
             authToken={authToken}
-            hallucinate={Boolean(hallucinate && playerId)}
-            seed={playerId ? seedFrom(currentRoom.id, playerId) : 0}
           />
         ) : (
           <NoRoomDataMessage onClose={onClose} />

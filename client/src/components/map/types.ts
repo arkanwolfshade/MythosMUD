@@ -9,6 +9,35 @@
  */
 
 /**
+ * Room domain type used by the map editor/viewer (fetched via the map API, not the live
+ * game-state Room in ui-v2/types.ts -- this one carries map_x/map_y and entities).
+ */
+export interface Room {
+  id: string;
+  name: string;
+  description: string;
+  plane?: string;
+  zone?: string;
+  sub_zone?: string;
+  environment?: string;
+  exits: Record<string, string>;
+  occupants?: string[];
+  players?: string[];
+  npcs?: string[];
+  occupant_count?: number;
+  entities?: Array<{
+    id: string;
+    name: string;
+    type: string;
+    [key: string]: unknown;
+  }>;
+  /** Map X coordinate (admin-set position) */
+  map_x?: number | null;
+  /** Map Y coordinate (admin-set position) */
+  map_y?: number | null;
+}
+
+/**
  * Room node data structure for React Flow.
  */
 export interface RoomNodeData {

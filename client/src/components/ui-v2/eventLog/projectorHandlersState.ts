@@ -1,5 +1,6 @@
 // State/room/player/combat event handlers for the projector (split from projector.ts for file-nloc)
 
+import { buildLucidityStatus } from '../../../utils/lucidityEventUtils';
 import type { GameEvent } from '../eventHandlers/types';
 import type { Player, QuestLogEntry, Room } from '../types';
 import { mergeRoomState } from '../utils/roomMergeUtils';
@@ -70,6 +71,17 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
       typeof (playerData as Player).name === 'string'
         ? (playerData as Player)
         : null;
+    // lucidity_tier/current_lcd are top-level fields (server: PlayerLucidity, not the stats blob).
+    const lucidityTier = event.data.lucidity_tier as string | undefined;
+    const lucidityStatus =
+      lucidityTier !== undefined
+        ? buildLucidityStatus(
+            prevState.lucidityStatus ?? null,
+            { current_lcd: event.data.current_lcd, tier: lucidityTier },
+            event.timestamp,
+            (player ?? prevState.player)?.stats?.max_lucidity
+          ).status
+        : prevState.lucidityStatus;
     return {
       ...prevState,
       player: player ?? prevState.player,
@@ -78,6 +90,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
       ...(loginGracePeriodRemaining !== undefined && { loginGracePeriodRemaining }),
       ...(following !== undefined && { followingTarget: following ?? null }),
       ...(Array.isArray(questLog) && { questLog: questLog as QuestLogEntry[] }),
+      lucidityStatus,
     };
   },
 
@@ -181,19 +194,17 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
       room_id?: string;
     };
     const deathCurrentDp = deathData.current_dp;
-    if (!prevState.player?.stats || typeof deathCurrentDp !== 'number' || deathCurrentDp > -10) {
-      return prevState;
-    }
-    return {
-      ...prevState,
-      player: {
-        ...prevState.player,
-        stats: {
-          ...prevState.player.stats,
-          current_dp: deathCurrentDp,
+    let next = { ...prevState, isDead: true, deathLocation: deathData.death_location ?? deathData.room_id ?? null };
+    if (prevState.player?.stats && typeof deathCurrentDp === 'number') {
+      next = {
+        ...next,
+        player: {
+          ...prevState.player,
+          stats: { ...prevState.player.stats, current_dp: deathCurrentDp },
         },
-      },
-    };
+      };
+    }
+    return next;
   },
   playerdied(prevState, event) {
     return stateHandlers.player_died!(prevState, event);
@@ -203,7 +214,13 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
     const player = event.data.player as Player | undefined;
     const room = event.data.room as Room | undefined;
     const messageText = typeof event.data.message === 'string' ? event.data.message.trim() : '';
-    let next = prevState;
+    let next: GameState = {
+      ...prevState,
+      isDead: false,
+      deathLocation: null,
+      isDelirious: false,
+      deliriumLocation: null,
+    };
     if (player) next = { ...next, player: mergeRespawnedPlayer(next.player, player) };
     if (room) next = { ...next, room };
     if (messageText) {
@@ -276,9 +293,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
     const newDp = data.new_dp ?? data.player?.stats?.current_dp;
     const maxDp = data.max_dp ?? data.player?.stats?.max_dp;
     const position = data.posture ?? data.player?.stats?.position;
-    const oldDp = prevState.player?.stats?.current_dp ?? 0;
     if (!prevState.player?.stats || newDp === undefined) return prevState;
-    if (oldDp <= -10 && newDp > oldDp) return prevState;
     return mergePostureMessageIntoState(
       {
         ...prevState,
@@ -310,15 +325,24 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
   },
 
   lucidity_change(prevState, event) {
-    const currentDp = event.data.current_dp as number | undefined;
-    if (!prevState.player?.stats || currentDp === undefined) return prevState;
-    return {
-      ...prevState,
-      player: {
-        ...prevState.player,
-        stats: { ...prevState.player.stats, current_dp: currentDp },
-      },
-    };
+    const playerMaxLucidity = prevState.player?.stats?.max_lucidity;
+    const { status } = buildLucidityStatus(
+      prevState.lucidityStatus ?? null,
+      event.data,
+      event.timestamp,
+      playerMaxLucidity
+    );
+    let next: GameState = { ...prevState, lucidityStatus: status };
+    if (prevState.player?.stats) {
+      next = {
+        ...next,
+        player: {
+          ...prevState.player,
+          stats: { ...prevState.player.stats, lucidity: status.current, max_lucidity: status.max },
+        },
+      };
+    }
+    return next;
   },
   luciditychange(prevState, event) {
     return stateHandlers.lucidity_change!(prevState, event);
@@ -334,10 +358,6 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
     };
   },
 
-  follow_request_cleared(prevState) {
-    return { ...prevState, pendingFollowRequest: null };
-  },
-
   party_invite(prevState, event) {
     const inviteId = typeof event.data.invite_id === 'string' ? event.data.invite_id : '';
     const inviterName = typeof event.data.inviter_name === 'string' ? event.data.inviter_name : 'Someone';
@@ -346,9 +366,5 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
       ...prevState,
       pendingPartyInvite: { invite_id: inviteId, inviter_name: inviterName },
     };
-  },
-
-  party_invite_cleared(prevState) {
-    return { ...prevState, pendingPartyInvite: null };
   },
 };

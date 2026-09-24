@@ -4,7 +4,7 @@
 
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import type { Room } from '../../../stores/gameStore';
+import type { Room } from '../types';
 import { RoomDetailsPanel } from '../RoomDetailsPanel';
 
 describe('RoomDetailsPanel', () => {
