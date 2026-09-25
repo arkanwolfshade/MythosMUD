@@ -32,6 +32,13 @@ def auth_login_rate_limit_settings() -> tuple[int, int]:
     return max_requests, window_seconds
 
 
+def character_creation_rate_limit_settings() -> tuple[int, int]:
+    """Character creation limiter settings (CHARACTER_CREATION_RATE_LIMIT_* env vars)."""
+    max_requests = _positive_int_env("CHARACTER_CREATION_RATE_LIMIT_MAX", 5)
+    window_seconds = _positive_int_env("CHARACTER_CREATION_RATE_LIMIT_WINDOW", 300)
+    return max_requests, window_seconds
+
+
 class RateLimiter:
     """
     Simple in-memory rate limiter for API endpoints.
@@ -131,6 +138,9 @@ class RateLimiter:
 
 # Global rate limiters for different endpoints
 stats_roll_limiter = RateLimiter(max_requests=10, window_seconds=60)  # 10 rolls per minute
-character_creation_limiter = RateLimiter(max_requests=5, window_seconds=300)  # 5 creations per 5 minutes
+# 5 creations per 5 minutes; E2E raises the limit via CHARACTER_CREATION_RATE_LIMIT_* env vars
+# (Playwright's revised-character-creation suite creates more than 5 characters per run).
+_char_creation_max, _char_creation_window = character_creation_rate_limit_settings()
+character_creation_limiter = RateLimiter(max_requests=_char_creation_max, window_seconds=_char_creation_window)
 _auth_login_max, _auth_login_window = auth_login_rate_limit_settings()
 auth_login_limiter = RateLimiter(max_requests=_auth_login_max, window_seconds=_auth_login_window)
