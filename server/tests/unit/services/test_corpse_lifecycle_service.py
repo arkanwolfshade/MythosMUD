@@ -7,6 +7,7 @@ Tests the CorpseLifecycleService class.
 
 import uuid
 from datetime import UTC, datetime, timedelta
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -40,7 +41,7 @@ def test_get_enum_value_string():
 
 
 @pytest.fixture
-def mock_persistence():
+def mock_persistence() -> MagicMock:
     """Create a mock persistence layer."""
     return MagicMock()
 
@@ -92,6 +93,69 @@ async def test_create_corpse_on_death_success(corpse_service, mock_persistence):
     assert result.room_id == room_id
     mock_persistence.get_player_by_id.assert_awaited_once_with(player_id)
     mock_persistence.create_container.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_create_corpse_on_death_emits_container_created(mock_persistence: MagicMock) -> None:
+    """create_corpse_on_death must broadcast container.created so room occupants see the corpse."""
+    player_id = uuid.uuid4()
+    room_id = "room_001"
+    mock_player = MagicMock()
+    mock_player.get_inventory = MagicMock(return_value=[{"item_id": "item_001", "quantity": 1}])
+    mock_player.name = "TestPlayer"
+    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
+    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4()), "room_id": room_id})
+    connection_manager = MagicMock()
+    connection_manager.broadcast_room_event = AsyncMock(return_value={"sent": 1})
+    service = CorpseLifecycleService(persistence=mock_persistence, connection_manager=connection_manager)
+
+    corpse = await service.create_corpse_on_death(player_id, room_id)
+
+    broadcast: AsyncMock = cast(AsyncMock, connection_manager.broadcast_room_event)
+    broadcast.assert_awaited_once()
+    call_args = broadcast.call_args
+    assert call_args is not None
+    assert call_args.kwargs["event_type"] == "container.created"
+    assert call_args.kwargs["room_id"] == room_id
+    data = cast(dict[str, object], call_args.kwargs["data"])
+    container_payload = cast(dict[str, object], data["container"])
+    assert container_payload["container_id"] == corpse.container_id
+
+
+@pytest.mark.asyncio
+async def test_create_corpse_on_death_no_connection_manager_skips_emit(mock_persistence: MagicMock) -> None:
+    """No connection_manager configured must not raise; corpse creation still succeeds."""
+    player_id = uuid.uuid4()
+    room_id = "room_001"
+    mock_player = MagicMock()
+    mock_player.get_inventory = MagicMock(return_value=[])
+    mock_player.name = "TestPlayer"
+    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
+    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4()), "room_id": room_id})
+    service = CorpseLifecycleService(persistence=mock_persistence, connection_manager=None)
+
+    result = await service.create_corpse_on_death(player_id, room_id)
+
+    assert isinstance(result, ContainerComponent)
+
+
+@pytest.mark.asyncio
+async def test_create_corpse_on_death_emit_error_does_not_fail_creation(mock_persistence: MagicMock) -> None:
+    """A broken connection_manager must not stop the corpse from being created."""
+    player_id = uuid.uuid4()
+    room_id = "room_001"
+    mock_player = MagicMock()
+    mock_player.get_inventory = MagicMock(return_value=[])
+    mock_player.name = "TestPlayer"
+    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
+    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4()), "room_id": room_id})
+    connection_manager = MagicMock()
+    connection_manager.broadcast_room_event = AsyncMock(side_effect=RuntimeError("boom"))
+    service = CorpseLifecycleService(persistence=mock_persistence, connection_manager=connection_manager)
+
+    result = await service.create_corpse_on_death(player_id, room_id)
+
+    assert isinstance(result, ContainerComponent)
 
 
 @pytest.mark.asyncio

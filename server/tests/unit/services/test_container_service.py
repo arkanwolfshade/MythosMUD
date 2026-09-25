@@ -16,6 +16,7 @@ from server.services.container_service import (
     ContainerCapacityError,
     ContainerLockedError,
     ContainerNotFoundError,
+    ContainerOpenByAnotherPlayerError,
     ContainerService,
     ContainerServiceError,
     filter_container_data,
@@ -351,7 +352,9 @@ async def test_open_container_locked_without_key(service: ContainerService):
 
 
 @pytest.mark.asyncio
-async def test_open_container_already_open(service: ContainerService):
+async def test_open_container_already_open_is_idempotent(service: ContainerService):
+    """Reopening a container the player already has open returns their existing token
+    instead of raising, so a text command's stale session never 409s a later GUI open."""
     container_id = uuid.uuid4()
     player_id = uuid.uuid4()
     _ = service.register_open_session(container_id, player_id, "existing")
@@ -363,8 +366,42 @@ async def test_open_container_already_open(service: ContainerService):
     service.persistence.get_container = AsyncMock(return_value=container_data)
     service.persistence.get_player_by_id = AsyncMock(return_value=player)
 
-    with pytest.raises(ContainerServiceError):
-        _ = await service.open_container(container_id, player_id)
+    result = await service.open_container(container_id, player_id)
+
+    assert result["mutation_token"] == "existing"
+
+
+@pytest.mark.asyncio
+async def test_open_container_rejects_second_player_naming_holder(service: ContainerService):
+    """Any number of players may look into a container, but opening it for interaction
+    is exclusive: a second player's open is rejected, naming whoever already holds it."""
+    container_id = uuid.uuid4()
+    holder_id = uuid.uuid4()
+    second_player_id = uuid.uuid4()
+    _ = service.register_open_session(container_id, holder_id, "holder-token")
+    container_data = _container_data(container_id)
+
+    holder = MagicMock(spec=["name", "current_room_id", "is_admin"])
+    holder.name = "ArkanWolfshade"
+
+    second_player = MagicMock(spec=["name", "current_room_id", "is_admin"])
+    second_player.name = "Ithaqua"
+    second_player.current_room_id = "earth_arkham_downtown_001"
+    second_player.is_admin = False
+
+    service.persistence.get_container = AsyncMock(return_value=container_data)
+
+    async def _get_player_by_id(pid: uuid.UUID) -> MagicMock:
+        return holder if pid == holder_id else second_player
+
+    service.persistence.get_player_by_id = AsyncMock(side_effect=_get_player_by_id)
+
+    with pytest.raises(ContainerOpenByAnotherPlayerError, match="ArkanWolfshade"):
+        _ = await service.open_container(container_id, second_player_id)
+
+    # The holder's own session is untouched; the second player never registered.
+    assert service.get_container_token(container_id, holder_id) == "holder-token"
+    assert service.get_container_token(container_id, second_player_id) is None
 
 
 @pytest.mark.asyncio

@@ -24,6 +24,7 @@ from server.services.container_service import (
     ContainerCapacityError,
     ContainerLockedError,
     ContainerNotFoundError,
+    ContainerOpenByAnotherPlayerError,
     ContainerServiceError,
 )
 
@@ -78,6 +79,16 @@ class TestHandleOpenContainerExceptions:
             handle_open_container_exceptions(error, mock_request, mock_user, container_id)
         assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
         assert "denied" in exc_info.value.detail.lower()
+
+    def test_handle_open_container_exceptions_open_by_another_player(
+        self, mock_request: Mock, mock_user: MagicMock, container_id: uuid.UUID
+    ) -> None:
+        """409, and the detail names the current holder (not the generic 403 'Access denied')."""
+        error = ContainerOpenByAnotherPlayerError("Ithaqua already has this container open.")
+        with pytest.raises(LoggedHTTPException) as exc_info:
+            handle_open_container_exceptions(error, mock_request, mock_user, container_id)
+        assert exc_info.value.status_code == status.HTTP_409_CONFLICT
+        assert exc_info.value.detail == "Ithaqua already has this container open."
 
     def test_handle_open_container_exceptions_already_open(self, mock_request, mock_user, container_id):
         """Test handle_open_container_exceptions returns 409 for already open error."""

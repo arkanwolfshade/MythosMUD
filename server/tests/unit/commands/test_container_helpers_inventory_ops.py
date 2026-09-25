@@ -373,6 +373,88 @@ async def test_transfer_item_to_container_open_container_when_no_token() -> None
 
 
 @pytest.mark.asyncio
+async def test_transfer_item_to_container_closes_session_it_opened() -> None:
+    """A text 'put' that opens a fresh session must close it afterward, so it doesn't
+    leave a stale session blocking a later HTTP /api/containers/open for the same player."""
+    cid = uuid.uuid4()
+    pid = uuid.uuid4()
+    player = _player_with_inventory(pid)
+    token = "fresh-token"
+
+    async def open_container(_cid: object, _pid: object) -> dict[str, object]:
+        return {"mutation_token": token}
+
+    close_container = AsyncMock(return_value=None)
+    container_service = MagicMock()
+    container_service.get_container_token = MagicMock(return_value=None)
+    container_service.open_container = open_container
+    container_service.transfer_to_container = AsyncMock(return_value=None)
+    container_service.close_container = close_container
+
+    item_found: dict[str, object] = {
+        "item_instance_id": uuid.uuid4(),
+        "item_id": uuid.uuid4(),
+    }
+    result = await transfer_item_to_container(container_service, MagicMock(), player, cid, item_found, None)
+
+    assert result["success"] is True
+    close_container.assert_awaited_once_with(cid, pid, token)
+
+
+@pytest.mark.asyncio
+async def test_transfer_item_to_container_reused_session_stays_open() -> None:
+    """A text 'put' that reuses an already-open session (e.g. the player has a GUI
+    panel open) must not close it out from under the other consumer."""
+    cid = uuid.uuid4()
+    pid = uuid.uuid4()
+    player = _player_with_inventory(pid)
+    close_container = AsyncMock(return_value=None)
+    container_service = MagicMock()
+    container_service.get_container_token = MagicMock(return_value="existing-token")
+    container_service.transfer_to_container = AsyncMock(return_value=None)
+    container_service.close_container = close_container
+
+    item_found: dict[str, object] = {
+        "item_instance_id": uuid.uuid4(),
+        "item_id": uuid.uuid4(),
+    }
+    result = await transfer_item_to_container(container_service, MagicMock(), player, cid, item_found, None)
+
+    assert result["success"] is True
+    close_container.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_transfer_item_from_container_closes_session_it_opened() -> None:
+    """A text 'get' that opens a fresh session must close it afterward."""
+    cid = uuid.uuid4()
+    pid = uuid.uuid4()
+    player = _player_with_inventory(pid)
+    token = "fresh-token"
+
+    async def open_container(_cid: object, _pid: object) -> dict[str, object]:
+        return {"mutation_token": token}
+
+    close_container = AsyncMock(return_value=None)
+    container_service = MagicMock()
+    container_service.get_container_token = MagicMock(return_value=None)
+    container_service.open_container = open_container
+    container_service.transfer_from_container = AsyncMock(return_value={"player_inventory": []})
+    container_service.close_container = close_container
+
+    with patch(
+        "server.commands.inventory_command_helpers.persist_player",
+        new_callable=AsyncMock,
+    ) as mock_persist:
+        mock_persist.return_value = None
+        item_found: dict[str, object] = {"item_instance_id": uuid.uuid4(), "item_id": uuid.uuid4()}
+        result = await transfer_item_from_container(container_service, MagicMock(), player, cid, item_found, None)
+
+    assert result["success"] is True
+    close_container.assert_awaited_once_with(cid, pid, token)
+
+
+@pytest.mark.asyncio
 async def test_transfer_item_to_container_service_unavailable_no_open() -> None:
     cid = uuid.uuid4()
     player = _player_with_inventory(uuid.uuid4())

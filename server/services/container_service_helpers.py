@@ -114,3 +114,12 @@ class ContainerCapacityError(ContainerServiceError):
 
 class ContainerAccessDeniedError(ContainerServiceError):
     """Raised when access to container is denied."""
+
+
+class ContainerOpenByAnotherPlayerError(ContainerAccessDeniedError):
+    """Raised when a container's mutation session is already held by another player.
+
+    Any number of players may 'look' into a container (read-only), but opening it
+    for interaction (get/put/transfer/loot-all) is exclusive to one player at a
+    time; a second player's open attempt is rejected naming the current holder.
+    """

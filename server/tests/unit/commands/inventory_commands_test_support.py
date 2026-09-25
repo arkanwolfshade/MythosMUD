@@ -56,7 +56,8 @@ class PickupTestWiring:
 
         self.set_inventory: MagicMock = MagicMock()
         self.player.name = "TestPlayer"
-        self.player.player_id = uuid.uuid4()
+        self.player_id: uuid.UUID = uuid.uuid4()
+        self.player.player_id = self.player_id
         self.player.current_room_id = "room_001"
         self.player.get_inventory = MagicMock(return_value=[])
         self.player.set_inventory = self.set_inventory

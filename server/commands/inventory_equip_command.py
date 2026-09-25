@@ -14,6 +14,7 @@ from ..alias_storage import AliasStorage
 from ..models.player import Player
 from ..services.equipment_service import EquipmentCapacityError, EquipmentService, SlotValidationError
 from ..services.inventory_service import InventoryCapacityError, InventoryService, InventoryStack
+from ..services.inventory_websocket_events import emit_inventory_updated
 from ..structured_logging.enhanced_logging_config import get_logger
 from .equipment_helpers import (
     find_equipped_item_after_equip,
@@ -214,6 +215,7 @@ async def _equip_success_payload(
 
     item_name = str(item_payload.get("item_name") or item_payload.get("item_id", "item"))
 
+    await emit_inventory_updated(connection_manager, uuid.UUID(str(player.player_id)), player)
     await build_and_broadcast_inventory_event(
         connection_manager,
         player,

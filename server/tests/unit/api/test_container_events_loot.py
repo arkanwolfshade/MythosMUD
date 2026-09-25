@@ -25,12 +25,14 @@ def _assert_warning_once(logger_mock: object) -> None:
     warning.assert_called_once()
 
 
-def _diff_items_from_emit(mock_emit: AsyncMock) -> dict[str, object]:
-    """Extract diff['items'] from emit_container_updated await kwargs."""
-    call_args = mock_emit.await_args
+def _items_removed_from_log(logger_mock: object) -> object:
+    """Extract the items_removed kwarg from the logger.info call emit_loot_all_event makes."""
+    info: MagicMock = cast(MagicMock, cast(MagicMock, logger_mock).info)
+    info.assert_called_once()
+    call_args = info.call_args
     assert call_args is not None
-    diff = cast(dict[str, object], call_args.kwargs["diff"])
-    return cast(dict[str, object], diff["items"])
+    kwargs = cast(dict[str, object], call_args.kwargs)
+    return kwargs["items_removed"]
 
 
 @pytest.fixture
@@ -95,7 +97,7 @@ class TestEmitLootAllEvent:
 
     @pytest.mark.asyncio
     async def test_emit_loot_all_event_no_room_id(self, mock_connection_manager: ConnectionManager) -> None:
-        """Test emit_loot_all_event handles container without room_id."""
+        """Test emit_loot_all_event still emits personally for a container without room_id (wearables)."""
         player_id = uuid.uuid4()
         container_id = uuid.uuid4()
         request_data = LootAllRequest(container_id=container_id, mutation_token="token")
@@ -126,7 +128,7 @@ class TestEmitLootAllEvent:
             await emit_loot_all_event(
                 mock_connection_manager, request_data, final_container, player_id, original_container
             )
-            mock_emit.assert_not_awaited()
+            mock_emit.assert_awaited_once()
 
     @pytest.mark.asyncio
     async def test_emit_loot_all_event_emission_error(
@@ -190,14 +192,16 @@ class TestEmitLootAllEvent:
             }
         )
 
-        with patch("server.api.container_events.emit_container_updated", new_callable=AsyncMock) as mock_emit:
+        with (
+            patch("server.api.container_events.emit_container_updated", new_callable=AsyncMock) as mock_emit,
+            patch("server.api.container_events.logger") as mock_logger,
+        ):
             await emit_loot_all_event(
                 mock_connection_manager, request_data, final_container, player_id, original_container
             )
             mock_emit.assert_awaited_once()
-            # Verify diff contains correct items_removed count
-            items_diff = _diff_items_from_emit(mock_emit)
-            assert items_diff["items_removed"] == 3  # 5 - 2 = 3
+            # Verify the logged items_removed count
+            assert _items_removed_from_log(mock_logger) == 3  # 5 - 2 = 3
 
     @pytest.mark.asyncio
     async def test_emit_loot_all_event_all_items_removed(self, mock_connection_manager: ConnectionManager) -> None:
@@ -232,13 +236,15 @@ class TestEmitLootAllEvent:
             }
         )
 
-        with patch("server.api.container_events.emit_container_updated", new_callable=AsyncMock) as mock_emit:
+        with (
+            patch("server.api.container_events.emit_container_updated", new_callable=AsyncMock) as mock_emit,
+            patch("server.api.container_events.logger") as mock_logger,
+        ):
             await emit_loot_all_event(
                 mock_connection_manager, request_data, final_container, player_id, original_container
             )
             mock_emit.assert_awaited_once()
-            items_diff = _diff_items_from_emit(mock_emit)
-            assert items_diff["items_removed"] == 3  # All 3 items removed
+            assert _items_removed_from_log(mock_logger) == 3  # All 3 items removed
 
     @pytest.mark.asyncio
     async def test_emit_loot_all_event_zero_items_removed(self, mock_connection_manager: ConnectionManager) -> None:
@@ -274,10 +280,12 @@ class TestEmitLootAllEvent:
             }
         )
 
-        with patch("server.api.container_events.emit_container_updated", new_callable=AsyncMock) as mock_emit:
+        with (
+            patch("server.api.container_events.emit_container_updated", new_callable=AsyncMock) as mock_emit,
+            patch("server.api.container_events.logger") as mock_logger,
+        ):
             await emit_loot_all_event(
                 mock_connection_manager, request_data, final_container, player_id, original_container
             )
             mock_emit.assert_awaited_once()
-            items_diff = _diff_items_from_emit(mock_emit)
-            assert items_diff["items_removed"] == 0  # No items removed
+            assert _items_removed_from_log(mock_logger) == 0  # No items removed

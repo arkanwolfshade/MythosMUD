@@ -18,26 +18,56 @@ from .container_helpers_inventory_logging import logger
 
 async def _ensure_mutation_token(
     container_service: object, container_id: UUID, player_id_uuid: UUID
-) -> tuple[object | None, dict[str, object] | None]:
-    """Return (mutation_token, error_response). error_response is set only on hard failure."""
+) -> tuple[object | None, dict[str, object] | None, bool]:
+    """Return (mutation_token, error_response, opened_here).
+
+    opened_here is True only when this call opened a fresh session (as opposed to
+    reusing one the player already held, e.g. from a GUI panel). Callers use it to
+    decide whether they are responsible for closing the session afterward, so a
+    text command doesn't leave an orphaned session that later blocks the HTTP
+    /api/containers/open endpoint.
+    """
     get_token = getattr(container_service, "get_container_token", None)
     token = get_token(container_id, player_id_uuid) if callable(get_token) else None
     if token:
-        return token, None
+        return token, None, False
     open_container = getattr(container_service, "open_container", None)
     if not callable(open_container):
-        return None, {"error": "Cannot access container: service unavailable"}
+        return None, {"error": "Cannot access container: service unavailable"}, False
     try:
         open_result = await cast(
             Awaitable[object],
             open_container(container_id, player_id_uuid),
         )
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Container access errors unpredictable
-        return None, {"error": f"Cannot access container: {str(e)}"}
+        return None, {"error": f"Cannot access container: {str(e)}"}, False
     new_token: object | None = None
     if isinstance(open_result, dict):
         new_token = cast(dict[str, object], open_result).get("mutation_token")
-    return new_token, None
+    return new_token, None, True
+
+
+async def _close_session_if_opened_here(
+    container_service: object, container_id: UUID, player_id_uuid: UUID, mutation_token: object | None
+) -> None:
+    """Best-effort close for a session this command opened; never fails the command."""
+    if mutation_token is None:
+        return
+    close_container = getattr(container_service, "close_container", None)
+    if not callable(close_container):
+        return
+    try:
+        _ = await cast(
+            Awaitable[object],
+            close_container(container_id, player_id_uuid, mutation_token),
+        )
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Best-effort cleanup, must not mask the transfer's own result
+        logger.warning(
+            "Failed to close container session after text command",
+            container_id=str(container_id),
+            player_id=str(player_id_uuid),
+            error=str(e),
+        )
 
 
 def _coerce_transfer_quantity(raw: object) -> int:
@@ -133,7 +163,9 @@ async def transfer_item_to_container(
 ) -> dict[str, object]:
     """Transfer an item to container from player inventory."""
     player_id_uuid = UUID(str(player.player_id))
-    mutation_token, open_err = await _ensure_mutation_token(container_service, container_id, player_id_uuid)
+    mutation_token, open_err, opened_here = await _ensure_mutation_token(
+        container_service, container_id, player_id_uuid
+    )
     if open_err:
         return open_err
 
@@ -164,6 +196,9 @@ async def transfer_item_to_container(
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Container operation errors unpredictable
         logger.error("Error putting item in container", player=player.name, error=str(e))
         return {"error": str(e)}
+    finally:
+        if opened_here:
+            await _close_session_if_opened_here(container_service, container_id, player_id_uuid, mutation_token)
 
 
 async def validate_put_command_inputs(
@@ -397,7 +432,9 @@ async def transfer_item_from_container(
     from .inventory_command_helpers import persist_player
 
     player_id_uuid = UUID(str(player.player_id))
-    mutation_token, open_err = await _ensure_mutation_token(container_service, container_id, player_id_uuid)
+    mutation_token, open_err, opened_here = await _ensure_mutation_token(
+        container_service, container_id, player_id_uuid
+    )
     if open_err:
         return open_err
 
@@ -435,6 +472,9 @@ async def transfer_item_from_container(
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Container operation errors unpredictable, must handle gracefully
         logger.error("Error getting item from container", player=player.name, error=str(e))
         return {"error": str(e)}
+    finally:
+        if opened_here:
+            await _close_session_if_opened_here(container_service, container_id, player_id_uuid, mutation_token)
 
 
 async def validate_get_command_inputs(

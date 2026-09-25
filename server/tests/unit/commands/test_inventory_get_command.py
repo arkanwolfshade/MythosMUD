@@ -36,7 +36,9 @@ async def test_get_transfer_out_of_container_error() -> None:
         new_callable=AsyncMock,
         return_value={"error": "nope"},
     ):
-        result = await _get_transfer_out_of_container(MagicMock(), MagicMock(), player, uuid.uuid4(), {}, 1, "bag")
+        result = await _get_transfer_out_of_container(
+            MagicMock(), MagicMock(), MagicMock(), player, uuid.uuid4(), {}, 1, "bag"
+        )
     assert result == {"result": "nope"}
 
 
@@ -44,12 +46,15 @@ async def test_get_transfer_out_of_container_error() -> None:
 async def test_get_transfer_out_of_container_success() -> None:
     player = MagicMock(spec=Player)
     player.name = "P"
+    player.player_id = uuid.uuid4()
     with patch(
         "server.commands.inventory_get_command.transfer_item_from_container",
         new_callable=AsyncMock,
         return_value={"success": True, "transfer_quantity": 1, "item_display_name": "coin"},
     ):
-        result = await _get_transfer_out_of_container(MagicMock(), MagicMock(), player, uuid.uuid4(), {}, 1, "bag")
+        result = await _get_transfer_out_of_container(
+            MagicMock(), MagicMock(), MagicMock(), player, uuid.uuid4(), {}, 1, "bag"
+        )
     assert "You get" in str(result["result"])
     assert result["game_log_channel"] == "game-log"
 
@@ -62,7 +67,9 @@ async def test_get_transfer_out_of_container_not_success() -> None:
         new_callable=AsyncMock,
         return_value={"success": False},
     ):
-        result = await _get_transfer_out_of_container(MagicMock(), MagicMock(), player, uuid.uuid4(), {}, 1, "bag")
+        result = await _get_transfer_out_of_container(
+            MagicMock(), MagicMock(), MagicMock(), player, uuid.uuid4(), {}, 1, "bag"
+        )
     assert "Failed to transfer" in str(result["result"])
 
 

@@ -22,6 +22,7 @@ from .container_service_helpers import (
     ContainerAccessDeniedError,
     ContainerLockedError,
     ContainerNotFoundError,
+    ContainerOpenByAnotherPlayerError,
     ContainerServiceError,
     as_object_dict,
     filter_container_data,
@@ -70,18 +71,45 @@ class ContainerSessionMixin(ContainerAccessMixin):
                 user_friendly="Container is locked",
             )
 
+    async def _raise_if_open_by_another_player(self, container_id: UUID, player_id: UUID) -> None:
+        """Reject open() when another player already holds this container's session.
+
+        Looking into a container stays unrestricted (see look_container.py, which
+        never touches _open_containers); only the interactive session -- opened
+        here and used by get/put/transfer/loot-all -- is single-occupancy.
+        """
+        holders = self._open_containers.get(container_id, {})
+        other_holder_id = next((holder_id for holder_id in holders if holder_id != player_id), None)
+        if other_holder_id is None:
+            return
+        holder_name = "Another player"
+        holder = await self.persistence.get_player_by_id(other_holder_id)
+        if holder is not None:
+            holder_name = str(getattr(holder, "name", holder_name))
+        log_and_raise(
+            ContainerOpenByAnotherPlayerError,
+            f"{holder_name} already has this container open.",
+            operation="open_container",
+            container_id=str(container_id),
+            player_id=str(player_id),
+            details={
+                "container_id": str(container_id),
+                "player_id": str(player_id),
+                "holder_player_id": str(other_holder_id),
+                "holder_name": holder_name,
+            },
+        )
+
     def register_open_session(self, container_id: UUID, player_id: UUID, mutation_token: str | None = None) -> str:
-        """Track open token; error if this player already has the container open."""
-        if container_id in self._open_containers and player_id in self._open_containers[container_id]:
-            log_and_raise(
-                ContainerServiceError,
-                f"Container already open: {container_id}",
-                operation="open_container",
-                container_id=str(container_id),
-                player_id=str(player_id),
-                details={"container_id": str(container_id), "player_id": str(player_id)},
-                user_friendly="Container is already open",
-            )
+        """Track open token; reuse this player's existing token if already open.
+
+        Reopening a container the caller already holds is idempotent rather than an
+        error: both the HTTP /api/containers/open endpoint and text commands
+        (get/put) call this path, and either one may have opened the session first.
+        """
+        existing = self._open_containers.get(container_id, {}).get(player_id)
+        if existing is not None:
+            return existing
         token = mutation_token if mutation_token is not None else str(uuid.uuid4())
         if container_id not in self._open_containers:
             self._open_containers[container_id] = {}
@@ -112,12 +140,16 @@ class ContainerSessionMixin(ContainerAccessMixin):
 
     async def open_container(self, container_id: UUID, player_id: UUID) -> dict[str, object]:
         """
-        Open a container for interaction.
+        Open a container for interaction. Idempotent for the same player (returns
+        their existing mutation token); exclusive across players (a second player
+        is rejected, naming whoever already has it open). Looking into a container
+        (look_container.py) is unaffected -- it never opens a session.
 
         Raises:
             ContainerNotFoundError: If container doesn't exist
             ContainerLockedError: If container is locked
-            ContainerServiceError: If container is already open
+            ContainerAccessDeniedError: If access is denied (proximity/ownership/role/grace)
+            ContainerOpenByAnotherPlayerError: If another player already holds the session
         """
         logger.info("Opening container", container_id=str(container_id), player_id=str(player_id))
         raw_container = await self.persistence.get_container(container_id)
@@ -145,6 +177,7 @@ class ContainerSessionMixin(ContainerAccessMixin):
             )
         self._validate_container_access(container, player)
         self._raise_if_cannot_open_locks(container, player, container_id, player_id)
+        await self._raise_if_open_by_another_player(container_id, player_id)
         mutation_token = self.register_open_session(container_id, player_id)
         logger.info(
             "Container opened",

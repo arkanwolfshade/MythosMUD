@@ -10,6 +10,7 @@ from structlog.stdlib import BoundLogger
 
 from ..alias_storage import AliasStorage
 from ..models.player import Player
+from ..services.inventory_websocket_events import emit_inventory_updated
 from ..structured_logging.enhanced_logging_config import get_logger
 from .container_helpers_inventory import (
     find_container_in_room,
@@ -29,6 +30,7 @@ class PutCommandRuntime:
     """Services and request scope for put-after-validation."""
 
     persistence: object
+    connection_manager: object
     request: object
     container_service: object
     room_manager: object
@@ -79,6 +81,7 @@ async def _put_resolve_container_id(
 async def _put_transfer_finish(
     container_service: object,
     persistence: object,
+    connection_manager: object,
     player: Player,
     container_id: UUID,
     item_found: dict[str, object],
@@ -102,6 +105,7 @@ async def _put_transfer_finish(
     if persist_error:
         return persist_error
 
+    await emit_inventory_updated(connection_manager, UUID(str(player.player_id)), player)
     item_display_name = item_found.get("item_name") or item_found.get("item_id", "item")
     return {
         "result": f"You put {transfer_quantity}x {item_display_name} into {container_name}.",
@@ -145,6 +149,7 @@ async def _put_run_validated(rt: PutCommandRuntime, work: PutValidatedWork) -> C
     return await _put_transfer_finish(
         rt.container_service,
         rt.persistence,
+        rt.connection_manager,
         work.player,
         container_id,
         work.item_found,
@@ -177,6 +182,7 @@ async def handle_put_command(
 
     put_rt = PutCommandRuntime(
         persistence=persistence,
+        connection_manager=connection_manager,
         request=request,
         container_service=container_service,
         room_manager=room_manager,

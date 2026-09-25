@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import uuid
 from contextlib import contextmanager
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -80,6 +81,43 @@ async def test_handle_unequip_command_success():
 
     assert "remove" in result["result"].lower()
     assert result.get("room_message")
+
+
+@pytest.mark.asyncio
+async def test_handle_unequip_command_emits_inventory_updated():
+    """A successful unequip pushes inventory_updated so a GUI inventory panel stays in sync."""
+    persistence = AsyncMock()
+    connection_manager = MagicMock()
+    player = _player_with_equipped()
+    persistence.get_player_by_name = AsyncMock(return_value=player)
+    request = _request_wiring(persistence, connection_manager, player)
+
+    inventory_service = MagicMock()
+    inventory_service.begin_mutation = MagicMock(return_value=_mutation_cm(True))
+    equipment_service = MagicMock()
+    equipment_service.unequip_to_inventory = MagicMock(return_value=([{"item_id": "sword_001"}], {}))
+
+    with (
+        patch("server.commands.inventory_unequip_command.get_shared_services") as mock_services,
+        patch("server.commands.inventory_unequip_command.persist_player", new=AsyncMock(return_value=None)),
+        patch(
+            "server.commands.inventory_unequip_command.build_and_broadcast_inventory_event",
+            new=AsyncMock(),
+        ),
+        patch(
+            "server.commands.inventory_unequip_command.handle_wearable_container_on_unequip",
+            new=AsyncMock(),
+        ),
+        patch("server.commands.inventory_unequip_command.emit_inventory_updated", new_callable=AsyncMock) as mock_emit,
+    ):
+        mock_services.return_value = (inventory_service, MagicMock(), equipment_service)
+        result = await handle_unequip_command(
+            {"slot": "main_hand"}, {"name": "TestPlayer"}, request, None, "TestPlayer"
+        )
+
+    assert "remove" in str(result["result"]).lower()
+    player_id = cast(uuid.UUID, player.player_id)
+    mock_emit.assert_awaited_once_with(connection_manager, player_id, player)
 
 
 @pytest.mark.asyncio

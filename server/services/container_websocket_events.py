@@ -12,7 +12,7 @@ to ensure consistent game state.
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, cast
+from typing import Protocol
 from uuid import UUID
 
 from ..models.container import ContainerComponent
@@ -22,13 +22,31 @@ from ..structured_logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
+class ContainerConnectionManagerLike(Protocol):
+    """Minimal shape these emitters need from a connection manager.
+
+    sequence_counter is required so this satisfies build_event's own
+    _SupportsEventSequence protocol.
+    """
+
+    sequence_counter: int
+
+    async def send_personal_message(self, player_id: UUID, event: dict[str, object]) -> dict[str, object]:
+        """Send event to a single player; returns delivery status."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body (not just a docstring) for a non-None Protocol return type
+
+    async def broadcast_room_event(self, event_type: str, room_id: str, data: dict[str, object]) -> dict[str, object]:
+        """Broadcast an event to everyone in a room; returns delivery stats."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body (not just a docstring) for a non-None Protocol return type
+
+
 async def emit_container_opened(
-    connection_manager: Any,
+    connection_manager: ContainerConnectionManagerLike,
     container: ContainerComponent,
     player_id: UUID,
     mutation_token: str,
     expires_at: datetime,
-) -> dict[str, Any]:
+) -> dict[str, object]:
     """
     Emit container.opened event to the opening player.
 
@@ -48,15 +66,13 @@ async def emit_container_opened(
         player_id=str(player_id),
     )
 
-    # Build event data
-    event_data = {
+    event_data: dict[str, object] = {
         "container": container.model_dump(),
         "owner_id": str(container.owner_id) if container.owner_id else None,
         "mutation_token": mutation_token,
         "expires_at": expires_at.isoformat(),
     }
 
-    # Build event envelope
     event = build_event(
         event_type="container.opened",
         data=event_data,
@@ -64,7 +80,6 @@ async def emit_container_opened(
         connection_manager=connection_manager,
     )
 
-    # Send to player
     delivery_status = await connection_manager.send_personal_message(player_id, event)
 
     logger.debug(
@@ -74,31 +89,26 @@ async def emit_container_opened(
         delivery_status=delivery_status,
     )
 
-    result: dict[str, Any] = cast(dict[str, Any], delivery_status)
-    return result
+    return delivery_status
 
 
-async def emit_container_opened_to_room(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: WebSocket event emission requires many parameters for context and event routing
-    connection_manager: Any,
+async def emit_container_opened_to_room(
+    connection_manager: ContainerConnectionManagerLike,
     container: ContainerComponent,
     room_id: str,
     actor_id: UUID,
-    mutation_token: str,
-    expires_at: datetime,
-) -> dict[str, Any]:
+) -> dict[str, object]:
     """
-    Emit container.opened event to all players in the room.
+    Notify room occupants that someone opened a container.
 
-    This is used to notify other players that someone has opened a container,
-    which may be relevant for environmental containers or corpse looting.
+    Deliberately omits mutation_token/expires_at: those are the opener's
+    credentials for this session and must not be usable by anyone else.
 
     Args:
         connection_manager: ConnectionManager instance
         container: ContainerComponent that was opened
         room_id: Room ID where the container is located
         actor_id: UUID of the player who opened the container
-        mutation_token: Mutation token for this container session
-        expires_at: Timestamp when the mutation token expires
 
     Returns:
         dict: Broadcast delivery statistics
@@ -110,16 +120,12 @@ async def emit_container_opened_to_room(  # pylint: disable=too-many-arguments,t
         actor_id=str(actor_id),
     )
 
-    # Build event data
-    event_data = {
+    event_data: dict[str, object] = {
         "container": container.model_dump(),
         "owner_id": str(container.owner_id) if container.owner_id else None,
         "actor_id": str(actor_id),
-        "mutation_token": mutation_token,
-        "expires_at": expires_at.isoformat(),
     }
 
-    # Broadcast to room
     delivery_stats = await connection_manager.broadcast_room_event(
         event_type="container.opened",
         room_id=room_id,
@@ -133,79 +139,85 @@ async def emit_container_opened_to_room(  # pylint: disable=too-many-arguments,t
         delivery_stats=delivery_stats,
     )
 
-    result: dict[str, Any] = cast(dict[str, Any], delivery_stats)
-    return result
+    return delivery_stats
 
 
 async def emit_container_updated(
-    connection_manager: Any,
-    container_id: UUID,
-    room_id: str,
-    diff: dict[str, Any],
+    connection_manager: ContainerConnectionManagerLike,
+    container: ContainerComponent,
     actor_id: UUID,
-) -> dict[str, Any]:
+) -> dict[str, object]:
     """
-    Emit container.updated event with diff to room occupants.
+    Emit container.updated with the full container snapshot.
+
+    Always sent personally to the actor (so wearable containers, which have no
+    room_id, still reach the player who changed them), plus a room broadcast
+    when the container has a room_id.
 
     Args:
         connection_manager: ConnectionManager instance
-        container_id: UUID of the container that was updated
-        room_id: Room ID where the container is located
-        diff: Dictionary describing what changed (e.g., items added/removed)
+        container: ContainerComponent after the mutation
         actor_id: UUID of the player who made the change
 
     Returns:
-        dict: Broadcast delivery statistics
+        dict: Delivery status from the personal send
     """
     logger.info(
         "Emitting container.updated event",
-        container_id=str(container_id),
-        room_id=room_id,
+        container_id=str(container.container_id),
+        room_id=container.room_id,
         actor_id=str(actor_id),
     )
 
-    # Build event data
-    event_data = {
-        "container_id": str(container_id),
-        "diff": diff,
+    event_data: dict[str, object] = {
+        "container_id": str(container.container_id),
+        "container": container.model_dump(),
         "actor_id": str(actor_id),
     }
 
-    # Broadcast to room
-    delivery_stats = await connection_manager.broadcast_room_event(
+    event = build_event(
         event_type="container.updated",
-        room_id=room_id,
         data=event_data,
+        player_id=actor_id,
+        connection_manager=connection_manager,
     )
+    delivery_status = await connection_manager.send_personal_message(actor_id, event)
+
+    if container.room_id:
+        _ = await connection_manager.broadcast_room_event(
+            event_type="container.updated",
+            room_id=container.room_id,
+            data=event_data,
+        )
 
     logger.debug(
-        "container.updated event broadcast",
-        container_id=str(container_id),
-        room_id=room_id,
-        delivery_stats=delivery_stats,
+        "container.updated event delivered",
+        container_id=str(container.container_id),
+        actor_id=str(actor_id),
+        delivery_status=delivery_status,
     )
 
-    result: dict[str, Any] = cast(dict[str, Any], delivery_stats)
-    return result
+    return delivery_status
 
 
 async def emit_container_closed(
-    connection_manager: Any,
+    connection_manager: ContainerConnectionManagerLike,
     container_id: UUID,
-    room_id: str,
+    room_id: str | None,
     player_id: UUID,
-) -> dict[str, Any]:
+) -> dict[str, object]:
     """
-    Emit container.closed event to room occupants.
+    Emit container.closed personally to the closer, plus a room broadcast
+    when the container has a room_id.
 
     Args:
         connection_manager: ConnectionManager instance
         container_id: UUID of the container that was closed
-        room_id: Room ID where the container is located
+        room_id: Room ID where the container is located, or None (e.g. wearables)
         player_id: UUID of the player who closed the container
 
     Returns:
-        dict: Broadcast delivery statistics
+        dict: Delivery status from the personal send
     """
     logger.info(
         "Emitting container.closed event",
@@ -214,34 +226,80 @@ async def emit_container_closed(
         player_id=str(player_id),
     )
 
-    # Build event data
-    event_data = {
+    event_data: dict[str, object] = {
         "container_id": str(container_id),
     }
 
-    # Broadcast to room
-    delivery_stats = await connection_manager.broadcast_room_event(
+    event = build_event(
         event_type="container.closed",
+        data=event_data,
+        player_id=player_id,
+        connection_manager=connection_manager,
+    )
+    delivery_status = await connection_manager.send_personal_message(player_id, event)
+
+    if room_id:
+        _ = await connection_manager.broadcast_room_event(
+            event_type="container.closed",
+            room_id=room_id,
+            data=event_data,
+        )
+
+    logger.debug(
+        "container.closed event delivered",
+        container_id=str(container_id),
+        player_id=str(player_id),
+        delivery_status=delivery_status,
+    )
+
+    return delivery_status
+
+
+async def emit_container_created(
+    connection_manager: ContainerConnectionManagerLike,
+    container: ContainerComponent,
+    room_id: str,
+) -> dict[str, object]:
+    """
+    Emit container.created to room occupants (e.g. a fresh corpse).
+
+    Args:
+        connection_manager: ConnectionManager instance
+        container: ContainerComponent that was created
+        room_id: Room ID where the container now sits
+
+    Returns:
+        dict: Broadcast delivery statistics
+    """
+    logger.info(
+        "Emitting container.created event",
+        container_id=str(container.container_id),
+        room_id=room_id,
+    )
+
+    event_data: dict[str, object] = {"container": container.model_dump()}
+
+    delivery_stats = await connection_manager.broadcast_room_event(
+        event_type="container.created",
         room_id=room_id,
         data=event_data,
     )
 
     logger.debug(
-        "container.closed event broadcast",
-        container_id=str(container_id),
+        "container.created event broadcast",
+        container_id=str(container.container_id),
         room_id=room_id,
         delivery_stats=delivery_stats,
     )
 
-    result: dict[str, Any] = cast(dict[str, Any], delivery_stats)
-    return result
+    return delivery_stats
 
 
 async def emit_container_decayed(
-    connection_manager: Any,
+    connection_manager: ContainerConnectionManagerLike,
     container_id: UUID,
     room_id: str,
-) -> dict[str, Any]:
+) -> dict[str, object]:
     """
     Emit container.decayed event to room occupants.
 
@@ -261,13 +319,11 @@ async def emit_container_decayed(
         room_id=room_id,
     )
 
-    # Build event data
-    event_data = {
+    event_data: dict[str, object] = {
         "container_id": str(container_id),
         "room_id": room_id,
     }
 
-    # Broadcast to room
     delivery_stats = await connection_manager.broadcast_room_event(
         event_type="container.decayed",
         room_id=room_id,
@@ -281,5 +337,4 @@ async def emit_container_decayed(
         delivery_stats=delivery_stats,
     )
 
-    result: dict[str, Any] = cast(dict[str, Any], delivery_stats)
-    return result
+    return delivery_stats
