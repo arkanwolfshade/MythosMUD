@@ -21,7 +21,7 @@ bodies).
 - **Codacy after edits:** After any successful file edit, run Codacy CLI analysis for the edited file(s) per
   `codacy.mdc`; propose and apply fixes for any new issues.
 - **Server authority:** Treat server state as authoritative over client state; on conflicts, prefer server payloads
-  and fix client handling to align (see `server-authority.mdc`).
+  and fix client handling to align (see `.cursor/rules/server-authority.mdc`).
 - **Process termination:** Never stop processes by generic name alone; require this worktree's repo root in process
   metadata (`scripts/MythosMudProcessScope.ps1`, `process-kill-safety.mdc`). Never kill jcodemunch indexers, MCP servers,
   or Cursor plugin processes (see `Get-MythosMudProtectedDevToolPattern`).

@@ -168,9 +168,10 @@ server/persistence/repositories/  ──►  SQLAlchemy async  ──►  Postgr
 **[SPEC]**
 18 repository classes exist across 21 modules (three of `player_repository.py`'s companions —
 `_mappers.py`, `_room.py`, `_save.py` — are internal helper modules, not separate repositories). This
-table is the doc's own checked claim: `server/tests/unit/infrastructure/test_db_design_table_roster.py`'s
-sibling assertions do not cover this roster, so treat it as accurate as of 2026-09-16 and re-derive with
-`grep -n "^class " server/persistence/repositories/*.py` if it looks stale.
+table is enforced by
+`server/tests/unit/infrastructure/test_database_architecture_repository_roster.py`, symmetric to
+`test_db_design_table_roster.py`'s check on `PACKAGE_DB_DESIGN.md` §5: a repository class added or
+removed without a matching update here fails that test.
 
 | Repository | Purpose | Notes |
 | --- | --- | --- |
