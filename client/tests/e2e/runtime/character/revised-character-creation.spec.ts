@@ -138,14 +138,20 @@ async function assignAllSkillsAndProceedToName(page: Page): Promise<void> {
     ).not.toHaveCount(1, { timeout: 30_000 });
     await select.selectOption({ index: 1 });
   }
-  await page.getByRole('button', { name: 'Next: Name character' }).click();
+  const nextButton = page.getByRole('button', { name: 'Next: Name character' });
+  await expect(nextButton).toBeEnabled({ timeout: 10_000 });
+  await nextButton.evaluate((el: HTMLElement) => {
+    el.click();
+  });
 }
 
 async function submitCharacterName(page: Page, characterName: string): Promise<void> {
   await page.getByTestId('character-name-screen').waitFor({ state: 'visible', timeout: TEST_TIMEOUTS.DEFAULT });
   await page.getByPlaceholder('Enter name').fill(characterName);
   const [createResponse] = await Promise.all([
-    page.waitForResponse(r => r.url().includes('/create-character') && r.request().method() === 'POST' && r.ok(), {
+    // No r.ok() here: a non-2xx (e.g. 429 from character_creation_limiter) must resolve this
+    // promise immediately so the assertion below fails fast instead of the 90s timeout expiring.
+    page.waitForResponse(r => r.url().includes('/create-character') && r.request().method() === 'POST', {
       timeout: 90_000,
     }),
     page
@@ -162,7 +168,8 @@ async function submitCharacterName(page: Page, characterName: string): Promise<v
       el.click();
     }),
   ]);
-  expect(createResponse.ok(), `POST create-character failed: ${createResponse.status()}`).toBeTruthy();
+  const createBody = createResponse.ok() ? '' : await createResponse.text().catch(() => '<unreadable body>');
+  expect(createResponse.ok(), `POST create-character failed: ${createResponse.status()} ${createBody}`).toBeTruthy();
 }
 
 async function recoverCharacterSelectionAfterCreation(page: Page): Promise<void> {
