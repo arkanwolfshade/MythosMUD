@@ -11,6 +11,7 @@ from structlog.stdlib import BoundLogger
 from ..alias_storage import AliasStorage
 from ..models.player import Player
 from ..services.inventory_service import InventoryService
+from ..services.inventory_websocket_events import emit_inventory_updated
 from ..structured_logging.enhanced_logging_config import get_logger
 from .inventory_command_coercion import coerce_int
 from .inventory_command_contracts import CommandResponse, RoomDropManager
@@ -245,6 +246,7 @@ async def complete_pickup_after_floor_extract(ctx: FloorPickupAfterExtract) -> C
         return commit_err
     # commit_err is None only when prepared_stack is present by contract.
     prepared_stack = cast(dict[str, object], prepared_stack)
+    await emit_inventory_updated(ctx.connection_manager, ctx.player_id_uuid, ctx.player)
     return await _pickup_broadcast_success(
         ctx.connection_manager,
         ctx.player,

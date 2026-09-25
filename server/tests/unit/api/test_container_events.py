@@ -32,14 +32,6 @@ def _assert_warning_once(logger_mock: object) -> None:
     warning.assert_called_once()
 
 
-def _diff_items_from_emit(mock_emit: AsyncMock) -> dict[str, object]:
-    """Extract diff['items'] from emit_container_updated await kwargs."""
-    call_args = mock_emit.await_args
-    assert call_args is not None
-    diff = cast(dict[str, object], call_args.kwargs["diff"])
-    return cast(dict[str, object], diff["items"])
-
-
 @pytest.fixture
 def mock_connection_manager() -> ConnectionManager:
     """Create a mock connection manager."""
@@ -245,7 +237,7 @@ class TestEmitTransferEvent:
 
     @pytest.mark.asyncio
     async def test_emit_transfer_event_no_room_id(self, mock_connection_manager: ConnectionManager) -> None:
-        """Test emit_transfer_event handles container without room_id."""
+        """Test emit_transfer_event still emits personally for a container without room_id (wearables)."""
         player_id = uuid.uuid4()
         container_id = uuid.uuid4()
         # Create container with EQUIPMENT source type which allows room_id=None
@@ -272,7 +264,7 @@ class TestEmitTransferEvent:
 
         with patch("server.api.container_events.emit_container_updated", new_callable=AsyncMock) as mock_emit:
             await emit_transfer_event(mock_connection_manager, request_data, result, player_id)
-            mock_emit.assert_not_awaited()
+            mock_emit.assert_awaited_once()
 
     @pytest.mark.asyncio
     async def test_emit_transfer_event_validation_error(self, mock_connection_manager: ConnectionManager) -> None:
@@ -336,9 +328,7 @@ class TestEmitCloseContainerEvent:
         get_container: AsyncMock = AsyncMock(return_value=sample_container_data)
         mock_persistence.get_container = get_container
 
-        with patch(
-            "server.services.container_websocket_events.emit_container_closed", new_callable=AsyncMock
-        ) as mock_emit:
+        with patch("server.api.container_events.emit_container_closed", new_callable=AsyncMock) as mock_emit:
             await emit_close_container_event(
                 mock_connection_manager,
                 container_id,
@@ -357,9 +347,7 @@ class TestEmitCloseContainerEvent:
         container_id = uuid.uuid4()
         mock_persistence.get_container = AsyncMock(return_value=sample_container_data)
 
-        with patch(
-            "server.services.container_websocket_events.emit_container_closed", new_callable=AsyncMock
-        ) as mock_emit:
+        with patch("server.api.container_events.emit_container_closed", new_callable=AsyncMock) as mock_emit:
             await emit_close_container_event(
                 None, container_id, player_id, cast(AsyncPersistenceLayer, mock_persistence)
             )
@@ -374,9 +362,7 @@ class TestEmitCloseContainerEvent:
         container_id = uuid.uuid4()
         mock_persistence.get_container = AsyncMock(return_value=None)
 
-        with patch(
-            "server.services.container_websocket_events.emit_container_closed", new_callable=AsyncMock
-        ) as mock_emit:
+        with patch("server.api.container_events.emit_container_closed", new_callable=AsyncMock) as mock_emit:
             await emit_close_container_event(
                 mock_connection_manager,
                 container_id,
@@ -389,7 +375,7 @@ class TestEmitCloseContainerEvent:
     async def test_emit_close_container_event_no_room_id(
         self, mock_connection_manager: ConnectionManager, mock_persistence: AsyncMock
     ) -> None:
-        """Test emit_close_container_event handles container without room_id."""
+        """Test emit_close_container_event still emits personally for a container without room_id (wearables)."""
         player_id = uuid.uuid4()
         container_id = uuid.uuid4()
         # Create container data with EQUIPMENT source type which allows room_id=None
@@ -404,16 +390,14 @@ class TestEmitCloseContainerEvent:
         }
         mock_persistence.get_container = AsyncMock(return_value=container_data)
 
-        with patch(
-            "server.services.container_websocket_events.emit_container_closed", new_callable=AsyncMock
-        ) as mock_emit:
+        with patch("server.api.container_events.emit_container_closed", new_callable=AsyncMock) as mock_emit:
             await emit_close_container_event(
                 mock_connection_manager,
                 container_id,
                 player_id,
                 cast(AsyncPersistenceLayer, mock_persistence),
             )
-            mock_emit.assert_not_awaited()
+            mock_emit.assert_awaited_once()
 
     @pytest.mark.asyncio
     async def test_emit_close_container_event_persistence_error(
@@ -446,7 +430,7 @@ class TestEmitCloseContainerEvent:
         mock_persistence.get_container = AsyncMock(return_value=sample_container_data)
 
         with patch(
-            "server.services.container_websocket_events.emit_container_closed",
+            "server.api.container_events.emit_container_closed",
             new_callable=AsyncMock,
             side_effect=RuntimeError("Emission error"),
         ):
@@ -461,19 +445,25 @@ class TestEmitCloseContainerEvent:
 
 
 class TestEmitTransferEventDirections:
-    """Test emit_transfer_event with different transfer directions."""
+    """emit_transfer_event carries the full post-transfer container snapshot,
+    regardless of direction; the direction/stack/quantity live only in the
+    HTTP request/response, not the broadcast event."""
 
     @pytest.mark.asyncio
-    async def test_emit_transfer_event_to_player_direction(
-        self, mock_connection_manager: ConnectionManager, sample_container_component: ContainerComponent
+    @pytest.mark.parametrize("direction", ["to_player", "to_container"])
+    async def test_emit_transfer_event_passes_updated_container(
+        self,
+        mock_connection_manager: ConnectionManager,
+        sample_container_component: ContainerComponent,
+        direction: str,
     ) -> None:
-        """Test emit_transfer_event with 'to_player' direction."""
+        """Both directions emit container.updated with the resulting container and actor."""
         player_id = uuid.uuid4()
         container_id = uuid.uuid4()
         request_data = TransferContainerRequest(
             container_id=container_id,
             mutation_token="token",
-            direction="to_player",
+            direction=direction,
             stack={"item_id": str(uuid.uuid4())},
             quantity=1,
         )
@@ -483,39 +473,11 @@ class TestEmitTransferEventDirections:
 
         with patch("server.api.container_events.emit_container_updated", new_callable=AsyncMock) as mock_emit:
             await emit_transfer_event(mock_connection_manager, request_data, result, player_id)
-            mock_emit.assert_awaited_once()
-            # Verify direction is passed correctly in diff
-            items_diff = _diff_items_from_emit(mock_emit)
-            assert items_diff["direction"] == "to_player"
-            assert items_diff["stack"] == request_data.stack
-            assert items_diff["quantity"] == request_data.quantity
-
-    @pytest.mark.asyncio
-    async def test_emit_transfer_event_to_container_direction(
-        self, mock_connection_manager: ConnectionManager, sample_container_component: ContainerComponent
-    ) -> None:
-        """Test emit_transfer_event with 'to_container' direction."""
-        player_id = uuid.uuid4()
-        container_id = uuid.uuid4()
-        request_data = TransferContainerRequest(
-            container_id=container_id,
-            mutation_token="token",
-            direction="to_container",
-            stack={"item_id": str(uuid.uuid4())},
-            quantity=5,
-        )
-        result: dict[str, object] = {
-            "container": cast(object, sample_container_component.model_dump(mode="json")),
-        }
-
-        with patch("server.api.container_events.emit_container_updated", new_callable=AsyncMock) as mock_emit:
-            await emit_transfer_event(mock_connection_manager, request_data, result, player_id)
-            mock_emit.assert_awaited_once()
-            # Verify direction is passed correctly in diff
-            items_diff = _diff_items_from_emit(mock_emit)
-            assert items_diff["direction"] == "to_container"
-            assert items_diff["stack"] == request_data.stack
-            assert items_diff["quantity"] == 5
+            mock_emit.assert_awaited_once_with(
+                connection_manager=mock_connection_manager,
+                container=sample_container_component,
+                actor_id=player_id,
+            )
 
 
 class TestEmitContainerOpenedEventsEdgeCases:

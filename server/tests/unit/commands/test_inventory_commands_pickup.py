@@ -56,6 +56,20 @@ async def test_handle_pickup_command():
 
 
 @pytest.mark.asyncio
+async def test_handle_pickup_command_emits_inventory_updated():
+    """A successful pickup pushes inventory_updated so a GUI inventory panel stays in sync."""
+    stack = sample_floor_item_stack()
+    w = PickupTestWiring()
+    w.set_floor_stack(stack)
+    mock_persist = AsyncMock(return_value=None)
+    with patch("server.commands.inventory_pickup_command.emit_inventory_updated", new_callable=AsyncMock) as mock_emit:
+        result = await _pickup_with_persist_patch(w, {"index": 1}, mock_persist)
+
+    assert "result" in result
+    mock_emit.assert_awaited_once_with(w.connection_manager, w.player_id, w.player)
+
+
+@pytest.mark.asyncio
 async def test_handle_pickup_command_persist_failure_restores_drop_and_inventory():
     """On persist failure, floor stack is restored and inventory reverts (PR #461 rollback path)."""
     stack = sample_floor_item_stack()

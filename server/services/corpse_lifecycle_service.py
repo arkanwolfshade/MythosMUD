@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import UTC, datetime, timedelta
-from typing import Any, cast
+from typing import Any, Protocol, cast
 from uuid import UUID
 
 from ..exceptions import MythosMUDError
@@ -23,6 +23,20 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
+
+
+class CorpseConnectionManagerLike(Protocol):
+    """Minimal shape _emit_corpse_created needs from a connection manager.
+
+    Declared locally (not imported from container_websocket_events.py) because
+    this service sits on the combat_service -> ... -> wearable_container_service
+    import chain, which already cycles back to models/container.py; importing
+    that module here -- even for a type only -- would close a second cycle.
+    """
+
+    async def broadcast_room_event(self, event_type: str, room_id: str, data: dict[str, object]) -> dict[str, object]:
+        """Broadcast an event to everyone in a room; returns delivery stats."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body (not just a docstring) for a non-None Protocol return type
 
 
 def _get_enum_value(enum_or_str: Any) -> str:
@@ -90,7 +104,7 @@ class CorpseLifecycleService:
     def __init__(
         self,
         persistence: Any | None = None,
-        connection_manager: Any | None = None,
+        connection_manager: CorpseConnectionManagerLike | None = None,
         time_service: Any | None = None,
     ) -> None:
         """
@@ -150,6 +164,7 @@ class CorpseLifecycleService:
                 room_id=room_id,
                 items_count=len(corpse.items),
             )
+            await self._emit_corpse_created(corpse, room_id)
             return corpse
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Convert to domain exception - corpse creation errors unpredictable
             log_and_raise(
@@ -160,6 +175,33 @@ class CorpseLifecycleService:
                 room_id=room_id,
                 details={"player_id": str(player_id), "room_id": room_id},
                 user_friendly="Failed to create corpse container",
+            )
+
+    async def _emit_corpse_created(self, corpse: ContainerComponent, room_id: str) -> None:
+        """Best-effort container.created broadcast so room occupants see the fresh corpse.
+
+        Broadcasts inline rather than importing container_websocket_events.emit_container_created:
+        this service sits on the combat_service -> ... -> wearable_container_service import
+        chain, which already cycles back to models/container.py (a pre-existing,
+        baselined cycle -- see server/app/game_tick_corpses.py's own inline-import comment
+        for the decay side of this same event family), so importing that module here
+        -- even lazily -- closes a second, unbaselined cycle. Keep this payload in sync
+        with emit_container_created's event_data shape if that ever changes.
+        """
+        if self.connection_manager is None:
+            return
+        try:
+            _ = await self.connection_manager.broadcast_room_event(
+                event_type="container.created",
+                room_id=room_id,
+                data={"container": corpse.model_dump()},
+            )
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Event emission errors unpredictable, must not fail corpse creation
+            logger.warning(
+                "Failed to emit container.created event for corpse",
+                error=str(e),
+                container_id=str(corpse.container_id),
+                room_id=room_id,
             )
 
     async def create_corpse_on_death(

@@ -57,6 +57,7 @@ def handle_open_container_exceptions(
         ContainerAccessDeniedError,
         ContainerLockedError,
         ContainerNotFoundError,
+        ContainerOpenByAnotherPlayerError,
     )
 
     context_kwargs = create_error_context(
@@ -68,6 +69,10 @@ def handle_open_container_exceptions(
 
     if isinstance(e, ContainerLockedError):
         _raise_container_http(status.HTTP_423_LOCKED, "Container is locked", context_kwargs, e)
+
+    if isinstance(e, ContainerOpenByAnotherPlayerError):
+        # Names the current holder (e.user_friendly), unlike the generic 403 below.
+        _raise_container_http(status.HTTP_409_CONFLICT, e.user_friendly, context_kwargs, e)
 
     if isinstance(e, ContainerAccessDeniedError):
         _raise_container_http(status.HTTP_403_FORBIDDEN, "Access denied", context_kwargs, e)

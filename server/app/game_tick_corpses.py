@@ -12,6 +12,8 @@ from ..time.time_service import get_mythos_chronicle
 if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
     from ..container.main import ApplicationContainer
+    from ..services.container_websocket_events import ContainerConnectionManagerLike
+    from ..services.corpse_lifecycle_service import CorpseConnectionManagerLike
 
 logger = get_logger("server.game_tick")
 
@@ -23,7 +25,7 @@ def _create_corpse_lifecycle_service(app: FastAPI) -> CorpseLifecycleService | N
     if persistence is None:
         return None
 
-    connection_manager = cast(object | None, container.connection_manager)
+    connection_manager = cast("CorpseConnectionManagerLike | None", container.connection_manager)
     time_service = get_mythos_chronicle()
 
     return CorpseLifecycleService(
@@ -48,11 +50,12 @@ async def _cleanup_single_decayed_corpse(
     try:
         if connection_manager and corpse.room_id:
             # Inline import: module-level import cycles through container_websocket_events
-            # back to game_tick_processing (basedpyright reportImportCycles).
+            # back to game_tick_processing (basedpyright reportImportCycles). The type-only
+            # import above (TYPE_CHECKING) is safe; only the runtime function import cycles.
             from ..services.container_websocket_events import emit_container_decayed
 
             _ = await emit_container_decayed(
-                connection_manager=connection_manager,
+                connection_manager=cast("ContainerConnectionManagerLike", connection_manager),
                 container_id=corpse.container_id,
                 room_id=corpse.room_id,
             )

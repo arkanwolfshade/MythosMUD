@@ -10,6 +10,7 @@ from structlog.stdlib import BoundLogger
 
 from ..alias_storage import AliasStorage
 from ..models.player import Player
+from ..services.inventory_websocket_events import emit_inventory_updated
 from ..structured_logging.enhanced_logging_config import get_logger
 from .container_helpers_inventory import (
     find_container_in_room,
@@ -119,6 +120,7 @@ def _container_transfer_messages(
 async def _get_transfer_out_of_container(
     container_service: object,
     persistence: object,
+    connection_manager: object,
     player: Player,
     container_id: UUID,
     item_found: dict[str, object],
@@ -135,6 +137,7 @@ async def _get_transfer_out_of_container(
     if not transfer_result.get("success"):
         return {"result": "Error: Failed to transfer item."}
 
+    await emit_inventory_updated(connection_manager, UUID(str(player.player_id)), player)
     transfer_quantity = transfer_result["transfer_quantity"]
     item_display_name = transfer_result["item_display_name"]
 
@@ -170,6 +173,7 @@ async def _get_from_container_path(rt: GetCommandRuntime, spec: GetItemSpec) -> 
     return await _get_transfer_out_of_container(
         rt.container_service,
         rt.persistence,
+        rt.connection_manager,
         spec.player,
         container_id,
         item_found,

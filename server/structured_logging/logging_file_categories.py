@@ -36,6 +36,7 @@ DEFAULT_LOG_CATEGORIES: dict[str, list[str]] = {
         "server.services.container_service_transfer_from",
         "server.services.container_service_transfer_to",
         "server.services.container_websocket_events",
+        "server.services.inventory_websocket_events",
         # These command modules already log "Item equipped"/"Item unequipped" (etc.) with full
         # player/slot/item context at INFO level; listing them here dual-routes that existing
         # logging into inventory.log alongside commands.log, rather than duplicating the calls

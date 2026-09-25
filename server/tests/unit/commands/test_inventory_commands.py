@@ -126,6 +126,37 @@ async def test_handle_drop_command_no_target():
 
 
 @pytest.mark.asyncio
+async def test_handle_drop_command_emits_inventory_updated() -> None:
+    """A successful drop pushes inventory_updated so a GUI inventory panel stays in sync."""
+    w = PickupTestWiring()
+    w.player.get_inventory = MagicMock(
+        return_value=[
+            {
+                "item_name": "sword",
+                "item_id": "sword_001",
+                "item_instance_id": "inst_001",
+                "prototype_id": "sword_proto",
+                "slot_type": "inventory",
+                "quantity": 2,
+            }
+        ]
+    )
+    mock_persist = AsyncMock(return_value=None)
+
+    with (
+        patch("server.commands.inventory_drop_command.persist_player", mock_persist),
+        patch("server.commands.inventory_drop_command.build_and_broadcast_inventory_event", new_callable=AsyncMock),
+        patch("server.commands.inventory_drop_command.emit_inventory_updated", new_callable=AsyncMock) as mock_emit,
+    ):
+        result = await handle_drop_command(
+            {"index": 1, "quantity": 1}, {"name": "TestPlayer"}, w.request, None, "TestPlayer"
+        )
+
+    assert "result" in result
+    mock_emit.assert_awaited_once_with(w.connection_manager, w.player_id, w.player)
+
+
+@pytest.mark.asyncio
 async def test_handle_drop_command_broadcasts_room_event_after_persist() -> None:
     """Drop success path emits inventory_drop broadcast with expected payload."""
     w = PickupTestWiring()

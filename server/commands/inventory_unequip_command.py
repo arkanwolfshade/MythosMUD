@@ -13,6 +13,7 @@ from ..alias_storage import AliasStorage
 from ..models.player import Player
 from ..services.equipment_service import EquipmentCapacityError, EquipmentService, SlotValidationError
 from ..services.inventory_service import InventoryCapacityError, InventoryService
+from ..services.inventory_websocket_events import emit_inventory_updated
 from ..structured_logging.enhanced_logging_config import get_logger
 from .equipment_helpers import (
     handle_wearable_container_on_unequip,
@@ -117,6 +118,7 @@ async def _unequip_success_payload(
     item_name = unequipped_item.get("item_name") or unequipped_item.get("item_id", "item")
     room_id = str(player.current_room_id)
 
+    await emit_inventory_updated(connection_manager, uuid.UUID(str(player.player_id)), player)
     await build_and_broadcast_inventory_event(
         connection_manager,
         player,

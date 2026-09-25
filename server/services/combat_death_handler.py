@@ -137,21 +137,35 @@ class CombatDeathHandler:
         """Create corpse container when player dies."""
         try:
             from ..container import ApplicationContainer
-            from ..services.corpse_lifecycle_service import CorpseLifecycleService
 
-            connection_manager = self._resolve_connection_manager_for_corpse_creation()
+            # Local import: also picks up CorpseConnectionManagerLike, that module's own
+            # typed connection_manager shape (distinct from this file's _ConnectionManagerLike,
+            # which only covers room subscriber diagnostics). Same module as
+            # CorpseLifecycleService, so this adds no new import edge.
+            from ..services.corpse_lifecycle_service import CorpseConnectionManagerLike, CorpseLifecycleService
+
+            resolved_connection_manager = self._resolve_connection_manager_for_corpse_creation()
+            connection_manager: CorpseConnectionManagerLike | None = None
             persistence: AsyncPersistenceLayer | None = None
 
-            if connection_manager is None:
+            if resolved_connection_manager is None:
                 try:
                     container = ApplicationContainer.get_instance()
-                    connection_manager = getattr(container, "connection_manager", None)
+                    connection_manager = cast(
+                        "CorpseConnectionManagerLike | None",
+                        getattr(container, "connection_manager", None),
+                    )
                     persistence = cast(
                         AsyncPersistenceLayer | None,
                         getattr(container, "async_persistence", None) if container else None,
                     )
                 except (ImportError, AttributeError, RuntimeError, ValueError):
                     pass
+            else:
+                # resolved_connection_manager is already a cast(_ConnectionManagerLike | None, ...)
+                # of the real ConnectionManager in _resolve_connection_manager_for_corpse_creation;
+                # go via object since the two Protocols don't structurally overlap.
+                connection_manager = cast("CorpseConnectionManagerLike", cast(object, resolved_connection_manager))
 
             if persistence is None:
                 logger.warning("Could not get persistence for corpse creation, skipping")

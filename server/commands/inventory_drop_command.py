@@ -4,11 +4,13 @@ from __future__ import annotations
 
 from copy import deepcopy
 from typing import cast
+from uuid import UUID
 
 from structlog.stdlib import BoundLogger
 
 from ..alias_storage import AliasStorage
 from ..models.player import Player
+from ..services.inventory_websocket_events import emit_inventory_updated
 from ..structured_logging.enhanced_logging_config import get_logger
 from .inventory_command_coercion import coerce_int
 from .inventory_command_contracts import CommandResponse, RoomDropManager
@@ -193,4 +195,5 @@ async def handle_drop_command(
         player.set_inventory(previous_inventory)
         return persist_error
 
+    await emit_inventory_updated(connection_manager, UUID(str(player.player_id)), player)
     return await _drop_finish_after_persist(connection_manager, player, room_id, room_manager, drop_stack, quantity)

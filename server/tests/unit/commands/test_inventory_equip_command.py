@@ -137,8 +137,10 @@ async def test_equip_run_mutation_success() -> None:
 async def test_equip_success_payload() -> None:
     player = MagicMock(spec=Player)
     player.name = "Alice"
-    player.player_id = uuid.uuid4()
+    player_id: uuid.UUID = uuid.uuid4()
+    player.player_id = player_id
     player.get_equipped_items.return_value = {"main_hand": {"item_name": "Sword", "item_id": "sword"}}
+    connection_manager = MagicMock()
     with (
         patch(
             "server.commands.inventory_equip_command.find_equipped_item_after_equip",
@@ -146,11 +148,13 @@ async def test_equip_success_payload() -> None:
         ),
         patch("server.commands.inventory_equip_command.handle_wearable_container_on_equip", new=AsyncMock()),
         patch("server.commands.inventory_equip_command.build_and_broadcast_inventory_event", new=AsyncMock()),
+        patch("server.commands.inventory_equip_command.emit_inventory_updated", new_callable=AsyncMock) as mock_emit,
     ):
         result = await _equip_success_payload(
-            MagicMock(), MagicMock(), player, "room-1", "main_hand", {"item_id": "sword"}, None
+            MagicMock(), connection_manager, player, "room-1", "main_hand", {"item_id": "sword"}, None
         )
     assert "You equip Sword" in command_result_text(result)
+    mock_emit.assert_awaited_once_with(connection_manager, player_id, player)
 
 
 @pytest.mark.asyncio

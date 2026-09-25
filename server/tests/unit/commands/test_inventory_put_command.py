@@ -78,7 +78,9 @@ async def test_put_transfer_finish_error() -> None:
         "server.commands.inventory_put_command.transfer_item_to_container",
         new=AsyncMock(return_value={"error": "locked"}),
     ):
-        result = await _put_transfer_finish(MagicMock(), MagicMock(), player, uuid.uuid4(), {}, 0, 1, "chest")
+        result = await _put_transfer_finish(
+            MagicMock(), MagicMock(), MagicMock(), player, uuid.uuid4(), {}, 0, 1, "chest"
+        )
     assert command_result_text(result) == "locked"
 
 
@@ -89,7 +91,9 @@ async def test_put_transfer_finish_not_success() -> None:
         "server.commands.inventory_put_command.transfer_item_to_container",
         new=AsyncMock(return_value={"success": False}),
     ):
-        result = await _put_transfer_finish(MagicMock(), MagicMock(), player, uuid.uuid4(), {}, 0, 1, "chest")
+        result = await _put_transfer_finish(
+            MagicMock(), MagicMock(), MagicMock(), player, uuid.uuid4(), {}, 0, 1, "chest"
+        )
     assert "Failed to transfer" in command_result_text(result)
 
 
@@ -97,7 +101,8 @@ async def test_put_transfer_finish_not_success() -> None:
 async def test_put_transfer_finish_success() -> None:
     player = MagicMock(spec=Player)
     player.name = "Alice"
-    item = {"item_name": "Coin", "item_id": "coin"}
+    player.player_id = uuid.uuid4()
+    item: dict[str, object] = {"item_name": "Coin", "item_id": "coin"}
     with (
         patch(
             "server.commands.inventory_put_command.transfer_item_to_container",
@@ -106,7 +111,9 @@ async def test_put_transfer_finish_success() -> None:
         patch("server.commands.inventory_put_command.remove_item_from_inventory"),
         patch("server.commands.inventory_put_command.persist_player", new=AsyncMock(return_value=None)),
     ):
-        result = await _put_transfer_finish(MagicMock(), MagicMock(), player, uuid.uuid4(), item, 0, 2, "chest")
+        result = await _put_transfer_finish(
+            MagicMock(), MagicMock(), MagicMock(), player, uuid.uuid4(), item, 0, 2, "chest"
+        )
     assert "You put 2x Coin into chest" in command_result_text(result)
 
 
@@ -116,7 +123,7 @@ async def test_put_run_validated_container_error() -> None:
     player.name = "Alice"
     player.player_id = uuid.uuid4()
     player.current_room_id = "room-1"
-    rt = PutCommandRuntime(MagicMock(), MagicMock(), MagicMock(), MagicMock())
+    rt = PutCommandRuntime(MagicMock(), MagicMock(), MagicMock(), MagicMock(), MagicMock())
     work = PutValidatedWork({}, player, "coin", "chest", 1, {"item_name": "Coin"}, 0)
     with patch(
         "server.commands.inventory_put_command._put_resolve_container_id",
@@ -142,7 +149,7 @@ async def test_put_run_validated_success() -> None:
     player.name = "Alice"
     player.player_id = uuid.uuid4()
     player.current_room_id = "room-1"
-    rt = PutCommandRuntime(MagicMock(), MagicMock(), MagicMock(), MagicMock())
+    rt = PutCommandRuntime(MagicMock(), MagicMock(), MagicMock(), MagicMock(), MagicMock())
     work = PutValidatedWork({}, player, "coin", "chest", 1, {"item_name": "Coin"}, 0)
     container_id = uuid.uuid4()
     with (
@@ -185,7 +192,7 @@ async def test_handle_put_command_success() -> None:
 async def test_put_transfer_finish_persist_error() -> None:
     player = MagicMock(spec=Player)
     player.name = "Alice"
-    item = {"item_name": "Coin", "item_id": "coin"}
+    item: dict[str, object] = {"item_name": "Coin", "item_id": "coin"}
     with (
         patch(
             "server.commands.inventory_put_command.transfer_item_to_container",
@@ -197,7 +204,9 @@ async def test_put_transfer_finish_persist_error() -> None:
             new=AsyncMock(return_value={"result": "db error"}),
         ),
     ):
-        result = await _put_transfer_finish(MagicMock(), MagicMock(), player, uuid.uuid4(), item, 0, 1, "chest")
+        result = await _put_transfer_finish(
+            MagicMock(), MagicMock(), MagicMock(), player, uuid.uuid4(), item, 0, 1, "chest"
+        )
     assert command_result_text(result) == "db error"
 
 
