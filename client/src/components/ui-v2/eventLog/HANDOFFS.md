@@ -45,10 +45,27 @@ critical handoffs use request/response (to avoid ordering bugs) and which remain
   text was a server-authority violation and produced a duplicate message alongside the real
   server push. Trusting the server push alone fixes both.
 
+## Container open/transfer/close/loot-all (#711)
+
+- **Mechanism:** HTTP request + push confirmation (not request/response -- the HTTP response
+  body is not used for state).
+- **Server:** `POST /api/containers/{open,transfer,close,loot-all}` report success/failure only
+  (`ContainerOpenResponse`, etc.). The actual state -- the full container snapshot, or the
+  session closing -- arrives separately over the websocket as `container.opened` /
+  `container.updated` / `container.closed`, sent personally to the actor.
+- **Client:** `api/containers.ts` calls do nothing on success and only report the error on
+  failure (e.g. the 409 from `ContainerOpenByAnotherPlayerError`, surfaced verbatim). The
+  projector (`projectorHandlersContainers.ts`) applies the resulting event to `openContainers`;
+  the UI (`ContainerTransferModal`) is driven entirely by that state, not by the HTTP response.
+- **Rationale:** The HTTP response and the websocket event can race (the event may arrive before
+  the fetch promise resolves); trusting only the event avoids a client-side "double open" or a
+  stale response body overwriting a newer push.
+
 ## Summary
 
-| Handoff          | Mechanism        | Notes                                                                                 |
-| ---------------- | ---------------- | ------------------------------------------------------------------------------------- |
-| Enter-room       | Request/response | `command_response` includes `room_state`                                              |
-| Login/game_state | Push-only        | Deterministic on connect                                                              |
-| Respawn          | Push-only        | Dedicated `player_respawned`/`player_delirium_respawned` event; no client fabrication |
+| Handoff                       | Mechanism           | Notes                                                                                 |
+| ----------------------------- | ------------------- | ------------------------------------------------------------------------------------- |
+| Enter-room                    | Request/response    | `command_response` includes `room_state`                                              |
+| Login/game_state              | Push-only           | Deterministic on connect                                                              |
+| Respawn                       | Push-only           | Dedicated `player_respawned`/`player_delirium_respawned` event; no client fabrication |
+| Container open/transfer/close | HTTP request + push | HTTP reports success/failure only; state comes from `container.*` events              |

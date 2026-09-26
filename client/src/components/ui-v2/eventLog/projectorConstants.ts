@@ -63,4 +63,10 @@ export const PROJECTED_EVENT_TYPES = new Set([
   'mythos_time_update',
   'client_message',
   'client_messages_cleared',
+  'container.opened',
+  'container.updated',
+  'container.closed',
+  'container.created',
+  'container.decayed',
+  'inventory_updated',
 ]);
