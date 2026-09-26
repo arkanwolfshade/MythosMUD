@@ -9,7 +9,6 @@ from typing import TYPE_CHECKING
 
 from fastapi import APIRouter, Depends, Query, Request, status
 from pydantic import Field
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..auth.users import get_current_user
@@ -30,23 +29,29 @@ from ..schemas.rooms import (
     RoomUpdateResponse,
 )
 from ..schemas.shared.base import SecureBaseModel
-from ..services.admin_auth_service import AdminAction, get_admin_auth_service
+from ..services.admin_auth_service import AdminAction
 from ..services.exploration_service import ExplorationService
 from ..structured_logging.enhanced_logging_config import get_logger
 from .rooms_helpers import (
     apply_exploration_filter_if_needed,
-    apply_room_exit_to_memory,
     apply_room_properties_to_memory,
-    build_exit_attributes,
-    create_room_link_in_db,
-    delete_room_link_in_db,
+    fetch_room_list,
+    handle_update_room,
+    handle_update_room_position,
     invalidate_room_cache,
-    update_room_link_in_db,
     update_room_position_in_db,
     update_room_properties_in_db,
     validate_admin_room_action,
     validate_room_position_update,
     validate_room_update_environment,
+)
+from .rooms_helpers_exits import (
+    apply_room_exit_to_memory,
+    build_exit_attributes,
+    create_room_link_in_db,
+    delete_room_link_in_db,
+    handle_create_room_exit,
+    update_room_link_in_db,
 )
 
 if TYPE_CHECKING:
@@ -104,58 +109,18 @@ async def list_rooms(  # pylint: disable=too-many-arguments,too-many-positional-
     - Admin users: See all rooms (filtering is skipped)
     - Non-admin users: Only see rooms that the player has explored
     """
-    logger.debug(
-        "Room list requested",
+    return await fetch_room_list(
         plane=plane,
         zone=zone,
         sub_zone=sub_zone,
         include_exits=include_exits,
         filter_explored=filter_explored,
-        has_user=current_user is not None,
+        current_user=current_user,
+        room_service=room_service,
+        persistence=persistence,
+        exploration_service=exploration_service,
+        session=session,
     )
-
-    try:  # pylint: disable=too-many-nested-blocks  # Reason: Room listing requires complex nested logic for filtering, error handling, and response formatting
-        rooms = await room_service.list_rooms(
-            plane=plane,
-            zone=zone,
-            sub_zone=sub_zone,
-            include_exits=include_exits,
-        )
-
-        rooms = await apply_exploration_filter_if_needed(
-            rooms, filter_explored, current_user, room_service, persistence, exploration_service, session
-        )
-
-        logger.debug(
-            "Room list returned",
-            plane=plane,
-            zone=zone,
-            sub_zone=sub_zone,
-            count=len(rooms),
-            filtered=filter_explored,
-            is_admin=(current_user.is_admin or current_user.is_superuser) if current_user else False,
-        )
-
-        return RoomListResponse(
-            rooms=rooms,
-            total=len(rooms),
-            plane=plane,
-            zone=zone,
-            sub_zone=sub_zone,
-        )
-    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room listing errors unpredictable, must handle gracefully
-        logger.error(
-            "Error listing rooms",
-            error=str(e),
-            plane=plane,
-            zone=zone,
-            sub_zone=sub_zone,
-            exc_info=True,
-        )
-        raise LoggedHTTPException(
-            status_code=500,
-            detail="Failed to retrieve room list",
-        ) from e
 
 
 class RoomPositionUpdate(SecureBaseModel):
@@ -180,66 +145,9 @@ async def update_room_position(  # pylint: disable=too-many-arguments,too-many-p
     Updates the map_x and map_y columns in the rooms table for the specified room.
     Requires admin privileges.
     """
-    try:
-        # Validate authentication and permissions
-        validate_room_position_update(current_user, room_id, _request)
-
-        auth_service = get_admin_auth_service()
-        logger.info(
-            "Room position update requested",
-            user=auth_service.get_username(current_user),
-            room_id=room_id,
-            map_x=position_data.map_x,
-            map_y=position_data.map_y,
-        )
-
-        # Verify room exists
-        room = await room_service.get_room(room_id)
-        if not room:
-            logger.warning("Room not found for position update", room_id=room_id)
-            raise LoggedHTTPException(
-                status_code=404,
-                detail="Room not found",
-                requested_room_id=room_id,
-            )
-
-        # Update room position in database
-        await update_room_position_in_db(
-            session, room_id, int(position_data.map_x), int(position_data.map_y), _request
-        )
-
-        logger.info(
-            "Room position updated successfully",
-            room_id=room_id,
-            map_x=position_data.map_x,
-            map_y=position_data.map_y,
-        )
-
-        # Invalidate room cache
-        await invalidate_room_cache(room_service, room_id)
-
-        return RoomPositionUpdateResponse(
-            room_id=room_id,
-            map_x=position_data.map_x,
-            map_y=position_data.map_y,
-            message="Room position updated successfully",
-        )
-
-    except LoggedHTTPException:
-        raise
-    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room creation errors unpredictable, must rollback and create context
-        await session.rollback()
-        logger.error(
-            "Error updating room position",
-            error=str(e),
-            exc_info=True,
-            requested_room_id=room_id,
-        )
-        raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to update room position",
-            requested_room_id=room_id,
-        ) from e
+    return await handle_update_room_position(
+        room_id, position_data.map_x, position_data.map_y, _request, current_user, session, room_service
+    )
 
 
 @room_router.get("/{room_id}", response_model=RoomResponse)
@@ -282,62 +190,7 @@ async def update_room(
     room to a different subzone, which is a structural move (stable_id is unique per subzone) and
     out of scope for this endpoint. See #627.
     """
-    try:
-        validate_admin_room_action(current_user, room_id, _request, AdminAction.UPDATE_ROOM)
-
-        room = await room_service.get_room(room_id)
-        if not room:
-            logger.warning("Room not found for property update", room_id=room_id)
-            raise LoggedHTTPException(
-                status_code=404,
-                detail="Room not found",
-                requested_room_id=room_id,
-            )
-
-        set_environment, environment = validate_room_update_environment(update_data, room_id)
-
-        updated, resolved_environment = await update_room_properties_in_db(
-            session, room_id, update_data.name, update_data.description, environment, set_environment
-        )
-        if not updated:
-            logger.warning("No rows updated for room properties", room_id=room_id)
-            raise LoggedHTTPException(
-                status_code=404,
-                detail="Room not found in database",
-                requested_room_id=room_id,
-            )
-
-        logger.info("Room properties updated successfully", room_id=room_id)
-
-        apply_room_properties_to_memory(
-            room_service,
-            room_id,
-            update_data.name,
-            update_data.description,
-            environment,
-            set_environment,
-            resolved_environment,
-        )
-        await invalidate_room_cache(room_service, room_id)
-
-        return RoomUpdateResponse(
-            room_id=room_id,
-            name=update_data.name,
-            description=update_data.description,
-            environment=environment if set_environment else None,
-            message="Room updated successfully",
-        )
-
-    except LoggedHTTPException:
-        raise
-    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room update errors unpredictable, must rollback and create context
-        await session.rollback()
-        logger.error("Error updating room properties", error=str(e), exc_info=True, requested_room_id=room_id)
-        raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to update room",
-            requested_room_id=room_id,
-        ) from e
+    return await handle_update_room(room_id, update_data, _request, current_user, session, room_service)
 
 
 @room_router.post("/{room_id}/exits", response_model=ExitResponse, status_code=status.HTTP_201_CREATED)
@@ -355,61 +208,7 @@ async def create_room_exit(
     Writes exactly one room_links row for the given direction. A two-way corridor is two calls
     (one per direction) -- this endpoint never synthesizes a reverse exit. See #627.
     """
-    try:
-        validate_admin_room_action(current_user, room_id, _request, AdminAction.CREATE_ROOM_EXIT)
-
-        source_room = await room_service.get_room(room_id)
-        if not source_room:
-            raise LoggedHTTPException(status_code=404, detail="Room not found", requested_room_id=room_id)
-
-        target_room = await room_service.get_room(exit_data.target_room_id)
-        if not target_room:
-            raise LoggedHTTPException(
-                status_code=404,
-                detail="Target room not found",
-                requested_room_id=exit_data.target_room_id,
-            )
-
-        attributes_json = build_exit_attributes(exit_data.flags, exit_data.description)
-
-        try:
-            created = await create_room_link_in_db(
-                session, room_id, exit_data.direction.value, exit_data.target_room_id, attributes_json
-            )
-        except IntegrityError as e:
-            await session.rollback()
-            logger.warning("Exit already exists", room_id=room_id, direction=exit_data.direction.value)
-            raise LoggedHTTPException(
-                status_code=409,
-                detail=f"Exit already exists: {exit_data.direction.value}",
-                requested_room_id=room_id,
-            ) from e
-
-        if not created:
-            raise LoggedHTTPException(status_code=404, detail="Room not found in database", requested_room_id=room_id)
-
-        logger.info("Room exit created successfully", room_id=room_id, direction=exit_data.direction.value)
-
-        apply_room_exit_to_memory(room_service, room_id, exit_data.direction.value, exit_data.target_room_id)
-        await invalidate_room_cache(room_service, room_id)
-
-        return ExitResponse(
-            room_id=room_id,
-            direction=exit_data.direction.value,
-            target_room_id=exit_data.target_room_id,
-            message="Exit created successfully",
-        )
-
-    except LoggedHTTPException:
-        raise
-    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Exit creation errors unpredictable, must rollback and create context
-        await session.rollback()
-        logger.error("Error creating room exit", error=str(e), exc_info=True, requested_room_id=room_id)
-        raise LoggedHTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to create exit",
-            requested_room_id=room_id,
-        ) from e
+    return await handle_create_room_exit(room_id, exit_data, _request, current_user, session, room_service)
 
 
 @room_router.put("/{room_id}/exits/{direction}", response_model=ExitResponse)

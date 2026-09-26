@@ -172,7 +172,7 @@ async def test_update_room_empty_string_environment_clears_to_none() -> None:
     with (
         _bypass_admin_auth(),
         patch(
-            "server.api.rooms.update_room_properties_in_db",
+            "server.api.rooms_helpers.update_room_properties_in_db",
             new_callable=AsyncMock,
             return_value=(True, "outdoors"),
         ) as mock_update,
@@ -198,7 +198,7 @@ async def test_update_room_success_returns_updated_fields() -> None:
     with (
         _bypass_admin_auth(),
         patch(
-            "server.api.rooms.update_room_properties_in_db",
+            "server.api.rooms_helpers.update_room_properties_in_db",
             new_callable=AsyncMock,
             return_value=(True, "arena"),
         ),
@@ -303,7 +303,7 @@ async def test_create_room_exit_duplicate_direction_409() -> None:
     with (
         _bypass_admin_auth(),
         patch(
-            "server.api.rooms.create_room_link_in_db",
+            "server.api.rooms_helpers_exits.create_room_link_in_db",
             new_callable=AsyncMock,
             side_effect=IntegrityError("stmt", {}, Exception("unique_violation")),
         ),
@@ -328,7 +328,7 @@ async def test_create_room_exit_success() -> None:
     room_service.room_cache = None
     with (
         _bypass_admin_auth(),
-        patch("server.api.rooms.create_room_link_in_db", new_callable=AsyncMock, return_value=True),
+        patch("server.api.rooms_helpers_exits.create_room_link_in_db", new_callable=AsyncMock, return_value=True),
     ):
         response = await create_room_exit(
             "room_1",
