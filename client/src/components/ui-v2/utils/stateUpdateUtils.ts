@@ -3,7 +3,23 @@
 
 import type { LucidityStatus } from '../../../types/lucidity';
 import type { MythosTimeState } from '../../../types/mythosTime';
-import type { ChatMessage, Player, QuestLogEntry, Room } from '../types';
+import type {
+  ChatMessage,
+  ContainerSnapshot,
+  InventoryStack,
+  Player,
+  QuestLogEntry,
+  Room,
+  RoomContainerSummary,
+} from '../types';
+
+/** A container this player currently has open (personal container.opened only). */
+export interface OpenContainerState {
+  container: ContainerSnapshot;
+  mutationToken: string;
+  /** Last applied event sequence_number, for stale-update rejection on container.updated. */
+  sequenceNumber?: number;
+}
 
 /** Single active effect for header display (server-authoritative). */
 export interface ActiveEffectDisplay {
@@ -47,4 +63,15 @@ export interface GameState {
   /** Set by rescue_update(status: 'delirium'), cleared by player_delirium_respawned. Server-authoritative. */
   isDelirious?: boolean;
   deliriumLocation?: string | null;
+  /** Containers this player currently has open, keyed by container_id. Populated only from the
+   * personal container.opened delivery (carries mutation_token); a room broadcast of someone
+   * else's open never creates an entry here -- see .cursor/rules/server-authority.mdc. */
+  openContainers?: Record<string, OpenContainerState>;
+  /** This player's carried inventory. Server-authoritative via inventory_updated. */
+  playerInventory?: InventoryStack[];
+  /** This player's equipped-slot items, keyed by slot_type. Server-authoritative via inventory_updated. */
+  playerEquipped?: Record<string, InventoryStack>;
+  /** Containers known to be in the current room (corpses seen via container.created since arrival;
+   * see #711 known-gap notes -- containers already in the room before arrival are not backfilled). */
+  roomContainers?: RoomContainerSummary[];
 }

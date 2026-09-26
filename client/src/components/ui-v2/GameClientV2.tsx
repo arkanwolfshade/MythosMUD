@@ -9,6 +9,7 @@ import { GameClientV2AuxiliaryPanels } from './GameClientV2AuxiliaryPanels';
 import { HeaderBar } from './HeaderBar';
 import { ChatHistoryPanel } from './panels/ChatHistoryPanel';
 import { GameInfoPanel } from './panels/GameInfoPanel';
+import { InventoryPanel } from './panels/InventoryPanel';
 import { LocationPanel } from './panels/LocationPanel';
 import { OccupantsPanel } from './panels/OccupantsPanel';
 import { QuestLogPanel } from './panels/QuestLogPanel';
@@ -18,7 +19,16 @@ import { PanelContainer } from './PanelSystem/PanelContainer';
 import { PanelManagerProvider } from './PanelSystem/PanelManager';
 import { usePanelManager } from './PanelSystem/usePanelManager';
 import { TentacleBackdrop } from './TentacleBackdrop';
-import type { ChatMessage, MythosTimeState, PanelVariant, Player, QuestLogEntry, Room } from './types';
+import type {
+  ChatMessage,
+  InventoryStack,
+  MythosTimeState,
+  PanelVariant,
+  Player,
+  QuestLogEntry,
+  Room,
+  RoomContainerSummary,
+} from './types';
 import { getGameInfoPanelCombatClassName } from './utils/characterInfoPanelOutline';
 import { headerHeightClass } from './utils/headerHeight';
 import { createDefaultPanelLayout } from './utils/panelLayout';
@@ -28,7 +38,7 @@ import type { ActiveEffectDisplay } from './utils/stateUpdateUtils';
 // Extracted to reduce cyclomatic complexity
 /** Panel ids rendered in the main dock (single source for mapped PanelContainers). */
 type MainDockPanelId =
-  'chatHistory' | 'location' | 'roomDescription' | 'occupants' | 'gameInfo' | 'questLog' | 'settings';
+  'chatHistory' | 'location' | 'roomDescription' | 'occupants' | 'gameInfo' | 'questLog' | 'inventory' | 'settings';
 
 /** Dock slot metadata (stable); panel bodies read messages/room in render to avoid invalidating a memo on every chat line. */
 type MainDockSlotMeta = {
@@ -82,6 +92,14 @@ interface GameClientV2Props {
   questLog?: QuestLogEntry[];
   /** Called when user clicks minimap to open full map. */
   onMapClick?: () => void;
+  /** Player's carried items (from inventory_updated). */
+  playerInventory?: InventoryStack[];
+  /** Player's equipped-slot items, keyed by slot_type (from inventory_updated). */
+  playerEquipped?: Record<string, InventoryStack>;
+  /** Containers known to be in the current room (from container.created). */
+  roomContainers?: RoomContainerSummary[];
+  /** Opens a container by id (HTTP /api/containers/open). */
+  onOpenContainer?: (containerId: string) => void;
 }
 
 // Main game client component with three-column layout
@@ -112,6 +130,10 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
     questLog = [],
     onMapClick,
     authToken,
+    playerInventory = [],
+    playerEquipped = {},
+    roomContainers = [],
+    onOpenContainer = () => {},
   } = props;
   const panelManager = usePanelManager();
 
@@ -209,6 +231,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
         panelClassName: getGameInfoPanelCombatClassName(Boolean(player?.in_combat)),
       },
       { id: 'questLog', variant: 'default' },
+      { id: 'inventory', variant: 'default' },
       { id: 'settings', variant: 'default' },
     ],
     [occupantsTitle, player]
@@ -237,6 +260,15 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
       />
     ),
     questLog: <QuestLogPanel questLog={questLog} />,
+    inventory: (
+      <InventoryPanel
+        inventory={playerInventory}
+        equipped={playerEquipped}
+        roomContainers={roomContainers}
+        onSendCommand={onSendCommand}
+        onOpenContainer={onOpenContainer}
+      />
+    ),
     settings: <SettingsPanel />,
   };
   const renderMainDockSlotContent = (id: MainDockPanelId): React.ReactNode => mainDockSlotContent[id];

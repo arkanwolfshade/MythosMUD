@@ -57,6 +57,25 @@ Event types and their `data` shapes as received over the WebSocket. Used by the 
 | `game_tick`                          | Heartbeat/tick              | tick_number, mythos_clock?, mythos_datetime?                                                                                                    |
 | `intentional_disconnect`             | Server-initiated disconnect | message?                                                                                                                                        |
 
+## Container / inventory events (#711)
+
+See `server/services/container_websocket_events.py` and `server/services/inventory_websocket_events.py`.
+Handled in `eventLog/projectorHandlersContainers.ts`.
+
+| event_type          | Description                                                                  | data shape                                                                                                                                                                                                          |
+| ------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `container.opened`  | Container opened. Personal copy carries `mutation_token`; room copy doesn't  | `{ container: ContainerSnapshot, owner_id?, mutation_token?, expires_at?, actor_id? }`; only the personal copy (has `mutation_token`) creates an `openContainers` entry -- see `.cursor/rules/server-authority.mdc` |
+| `container.updated` | Full container snapshot after a transfer/loot-all                            | `{ container_id, container: ContainerSnapshot, actor_id }`; applied only if `container_id` is already in `openContainers` (stale `sequence_number` rejected)                                                        |
+| `container.closed`  | Container session closed                                                     | `{ container_id }`; removes the `openContainers` entry if present                                                                                                                                                   |
+| `container.created` | A new container appeared in the room (e.g. a corpse spawned)                 | `{ container: ContainerSnapshot }`; adds a `roomContainers` summary                                                                                                                                                 |
+| `container.decayed` | A corpse container decayed and was cleaned up                                | `{ container_id, room_id }`; removes from both `openContainers` and `roomContainers`                                                                                                                                |
+| `inventory_updated` | Player's inventory/equipped changed (pickup, drop, equip, unequip, get, put) | `{ inventory: InventoryStack[], equipped: Record<string, InventoryStack> }`; personal only                                                                                                                          |
+
+Note: `container.updated` and `container.closed` share the same payload shape whether delivered
+personally to the actor or broadcast to the room; the projector distinguishes them structurally by
+only ever applying them to a `container_id` already present in `openContainers`, which -- because
+container sessions are exclusive (server-side, #711) -- is only ever the actor's own entry.
+
 ## Local (client-only) events
 
 Never sent by the server -- the `client_` prefix marks them as local. See

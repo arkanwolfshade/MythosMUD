@@ -7,11 +7,12 @@
 import type { GameEvent } from '../eventHandlers/types';
 import type { GameState } from '../utils/stateUpdateUtils';
 import { getInitialGameState, PROJECTED_EVENT_TYPES } from './projectorConstants';
+import { containerHandlers } from './projectorHandlersContainers';
 import { messageHandlers } from './projectorHandlersMessages';
 import { stateHandlers } from './projectorHandlersState';
 import type { EventLog } from './types';
 
-const HANDLERS = { ...stateHandlers, ...messageHandlers };
+const HANDLERS = { ...stateHandlers, ...messageHandlers, ...containerHandlers };
 
 export { getInitialGameState };
 

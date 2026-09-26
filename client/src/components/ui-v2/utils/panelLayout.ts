@@ -150,6 +150,18 @@ export const createDefaultPanelLayout = (viewportWidth: number, viewportHeight: 
       zIndex: 1009,
       minSize: { width: 250, height: 180 },
     },
+    // Minimized by default, mirrors questLog/commandHistory -- opened on demand via the dock.
+    inventory: {
+      id: 'inventory',
+      title: 'Inventory',
+      position: { x: middleColumnX, y: headerHeight + padding + availableHeight * 0.72 },
+      size: { width: middleColumnWidth, height: availableHeight * 0.17 },
+      isMinimized: true,
+      isMaximized: false,
+      isVisible: true,
+      zIndex: 1011,
+      minSize: { width: 250, height: 180 },
+    },
     // #804: minimized by default -- a control panel, not primary content, mirrors commandHistory.
     settings: {
       id: 'settings',

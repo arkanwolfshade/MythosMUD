@@ -93,6 +93,64 @@ export interface ChatMessage {
   tags?: string[];
 }
 
+/** Weapon stats on an inventory stack (mirrors server WeaponStats). */
+export interface WeaponStats {
+  min_damage: number;
+  max_damage: number;
+  modifier?: number;
+  damage_types?: string[];
+  magical?: boolean;
+}
+
+/** A stack of items, in a container or in a player's inventory (mirrors server InventoryStack). */
+export interface InventoryStack {
+  item_instance_id: string;
+  prototype_id: string;
+  item_id: string;
+  item_name: string;
+  slot_type: string;
+  quantity: number;
+  metadata?: Record<string, unknown>;
+  weapon?: WeaponStats;
+  flags?: string[];
+  origin?: Record<string, unknown>;
+  created_at?: string;
+  inner_container?: {
+    capacity_slots: number;
+    items: InventoryStack[];
+    lock_state?: string | null;
+    allowed_roles?: string[];
+  } | null;
+}
+
+export type ContainerSourceType = 'environment' | 'equipment' | 'corpse';
+export type ContainerLockState = 'unlocked' | 'locked' | 'sealed';
+
+/** Full container state (mirrors server ContainerComponent.model_dump()). */
+export interface ContainerSnapshot {
+  container_id: string;
+  source_type: ContainerSourceType;
+  owner_id?: string | null;
+  room_id?: string | null;
+  entity_id?: string | null;
+  lock_state: ContainerLockState;
+  capacity_slots: number;
+  weight_limit?: number | null;
+  decay_at?: string | null;
+  allowed_roles: string[];
+  items: InventoryStack[];
+  metadata: Record<string, unknown>;
+}
+
+/** Room-level container summary, populated from container.created (corpse spawn). */
+export interface RoomContainerSummary {
+  container_id: string;
+  source_type: ContainerSourceType;
+  owner_id?: string | null;
+  decay_at?: string | null;
+  metadata?: Record<string, unknown>;
+}
+
 export interface PanelPosition {
   x: number;
   y: number;

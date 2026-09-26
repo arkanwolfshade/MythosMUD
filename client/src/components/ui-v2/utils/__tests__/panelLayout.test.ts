@@ -16,6 +16,7 @@ describe('panelLayout', () => {
       expect(layout.commandHistory).toBeDefined();
       expect(layout.commandInput).toBeDefined();
       expect(layout.questLog).toBeDefined();
+      expect(layout.inventory).toBeDefined();
       expect(layout.settings).toBeDefined();
     });
 
@@ -31,6 +32,7 @@ describe('panelLayout', () => {
       expect(layout.commandHistory.id).toBe('commandHistory');
       expect(layout.commandInput.id).toBe('commandInput');
       expect(layout.questLog.id).toBe('questLog');
+      expect(layout.inventory.id).toBe('inventory');
       expect(layout.settings.id).toBe('settings');
     });
 
@@ -46,6 +48,7 @@ describe('panelLayout', () => {
       expect(layout.commandHistory.title).toBe('Command History');
       expect(layout.commandInput.title).toBe('Command Input');
       expect(layout.questLog.title).toBe('Journal');
+      expect(layout.inventory.title).toBe('Inventory');
       expect(layout.settings.title).toBe('Settings');
     });
 
@@ -67,6 +70,7 @@ describe('panelLayout', () => {
       expect(layout.occupants.isMinimized).toBe(true);
       expect(layout.commandHistory.isMinimized).toBe(true);
       expect(layout.questLog.isMinimized).toBe(true);
+      expect(layout.inventory.isMinimized).toBe(true);
       expect(layout.settings.isMinimized).toBe(true);
     });
 

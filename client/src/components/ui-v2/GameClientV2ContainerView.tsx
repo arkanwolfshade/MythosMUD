@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
+import { ContainerApiError, openContainer } from '../../api/containers';
 import { logger } from '../../utils/logger';
 import { DeathInterstitial } from '../DeathInterstitial';
 import { DeliriumInterstitial } from '../DeliriumInterstitial';
 import { MainMenuModal } from '../MainMenuModal';
 import { MapView } from '../MapView';
+import { ContainerTransferModals } from './containers/ContainerTransferModal';
+import { CorpseOverlay } from './containers/CorpseOverlay';
 import { GameClientV2 } from './GameClientV2';
 import { ModalContainer } from './primitives';
 import { TabbedInterfaceOverlay } from './components/TabbedInterfaceOverlay';
@@ -122,6 +125,18 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
     activeEffects,
   } = props;
 
+  const [containerOpenError, setContainerOpenError] = useState<string | null>(null);
+
+  const handleOpenContainer = useCallback(
+    (containerId: string) => {
+      setContainerOpenError(null);
+      openContainer(authToken, containerId).catch(e => {
+        setContainerOpenError(e instanceof ContainerApiError ? e.message : 'Could not open that container.');
+      });
+    },
+    [authToken]
+  );
+
   const handleMapClickFromGame = () => {
     if (tabs.length > 0 && gameState.room?.id) {
       openMapTab(gameState.room, authToken, addTab, closeTab);
@@ -196,7 +211,39 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
           onClearHistory={handleClearHistory}
           onDownloadLogs={() => logger.downloadLogs()}
           onMapClick={handleMapClickFromGame}
+          playerInventory={gameState.playerInventory}
+          playerEquipped={gameState.playerEquipped}
+          roomContainers={gameState.roomContainers}
+          onOpenContainer={handleOpenContainer}
         />
+      )}
+
+      <ContainerTransferModals
+        openContainers={gameState.openContainers}
+        playerInventory={gameState.playerInventory}
+        authToken={authToken}
+        onClose={() => {}}
+      />
+      <CorpseOverlay
+        roomContainers={gameState.roomContainers}
+        playerId={gameState.player?.id}
+        onOpen={handleOpenContainer}
+      />
+      {containerOpenError && (
+        <div
+          role="alert"
+          className="fixed bottom-4 left-4 z-[10000] max-w-sm rounded border border-mythos-terminal-error bg-mythos-terminal-background p-3 text-sm text-mythos-terminal-error shadow-xl"
+        >
+          {containerOpenError}
+          <button
+            type="button"
+            className="ml-2 underline"
+            onClick={() => setContainerOpenError(null)}
+            aria-label="Dismiss"
+          >
+            Dismiss
+          </button>
+        </div>
       )}
 
       <DeathInterstitial
