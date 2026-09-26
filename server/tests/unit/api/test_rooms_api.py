@@ -115,9 +115,10 @@ async def test_update_room_position_room_missing() -> None:
     user.id = uuid.uuid4()
     room_service = MagicMock(spec=RoomService)
     room_service.get_room = AsyncMock(return_value=None)
+    auth_service_mock = MagicMock(get_username=MagicMock(return_value="admin"))
     with (
-        patch("server.api.rooms.validate_room_position_update"),
-        patch("server.api.rooms.get_admin_auth_service", return_value=MagicMock(get_username=lambda _u: "admin")),
+        patch("server.api.rooms_helpers.validate_room_position_update"),
+        patch("server.api.rooms_helpers.get_admin_auth_service", return_value=auth_service_mock),
     ):
         with pytest.raises(LoggedHTTPException) as ei:
             await update_room_position(
