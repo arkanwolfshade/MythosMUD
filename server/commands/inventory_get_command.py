@@ -148,7 +148,7 @@ async def _get_transfer_out_of_container(
 async def _get_from_container_path(rt: GetCommandRuntime, spec: GetItemSpec) -> CommandResponse:
     """Resolve room container / wearable container and transfer into inventory."""
     room_id = str(spec.player.current_room_id)
-    container_found, container_id = find_container_in_room(rt.room_manager, room_id, spec.container_name)
+    container_found, container_id = await find_container_in_room(rt.persistence, room_id, spec.container_name)
 
     if not container_found:
         container_found, container_id = await find_wearable_container(
@@ -210,7 +210,7 @@ async def handle_get_command(
     if error or not player:
         return error or {"result": "Player information not found."}
 
-    validation_result = await validate_get_command_inputs(command_data, request, connection_manager)
+    validation_result = await validate_get_command_inputs(command_data, connection_manager, persistence)
     if isinstance(validation_result, dict):
         return validation_result
 

@@ -53,12 +53,11 @@ async def _put_resolve_container_id(
     persistence: object,
     request: object,
     player: Player,
-    room_manager: object,
     room_id: str,
     container_name: str,
 ) -> tuple[UUID | None, CommandResponse | None]:
     """Locate a room or wearable container id, or return an error response."""
-    container_found, cid = find_container_in_room(room_manager, room_id, container_name)
+    container_found, cid = await find_container_in_room(persistence, room_id, container_name)
 
     if not container_found:
         container_found, cid = await find_wearable_container_for_put(persistence, request, player, container_name)
@@ -133,7 +132,7 @@ async def _put_run_validated(rt: PutCommandRuntime, work: PutValidatedWork) -> C
 
     room_id = str(work.player.current_room_id)
     container_id, cid_error = await _put_resolve_container_id(
-        rt.persistence, rt.request, work.player, rt.room_manager, room_id, work.container_name
+        rt.persistence, rt.request, work.player, room_id, work.container_name
     )
     if cid_error:
         return cid_error
@@ -172,7 +171,7 @@ async def handle_put_command(
     if error or not player:
         return error or {"result": "Player information not found."}
 
-    validation_result = await validate_put_command_inputs(command_data, request, connection_manager, player)
+    validation_result = await validate_put_command_inputs(command_data, connection_manager, player, persistence)
     if isinstance(validation_result, dict):
         return validation_result
 

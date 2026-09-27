@@ -336,3 +336,31 @@ class TestApplyRateLimitingForLootAll:
             with pytest.raises(LoggedHTTPException) as exc_info:
                 apply_rate_limiting_for_loot_all(mock_user, mock_request)
             assert exc_info.value.status_code == status.HTTP_429_TOO_MANY_REQUESTS
+
+
+class TestGetContainerServiceCaching:
+    """#711: open-container sessions live on the ContainerService instance.
+
+    A fresh instance per call gave every HTTP request an empty session store, so an open() from
+    one request was invisible to the transfer()/close() of the next.
+    """
+
+    def test_same_persistence_returns_same_service(self, mock_persistence: MagicMock) -> None:
+        """The real server has one long-lived persistence singleton -> one shared service."""
+        first = get_container_service(mock_persistence)
+        second = get_container_service(mock_persistence)
+
+        assert first is second
+
+    def test_open_session_survives_a_second_lookup(self, mock_persistence: MagicMock) -> None:
+        """The whole point of the cache: a token registered once is still there next call."""
+        service = get_container_service(mock_persistence)
+        container_id = uuid.uuid4()
+        player_id = uuid.uuid4()
+        token = service.register_open_session(container_id, player_id)
+
+        assert get_container_service(mock_persistence).get_container_token(container_id, player_id) == token
+
+    def test_distinct_persistence_gets_its_own_service(self) -> None:
+        """Test isolation: each test's own mock persistence must not share session state."""
+        assert get_container_service(MagicMock()) is not get_container_service(MagicMock())

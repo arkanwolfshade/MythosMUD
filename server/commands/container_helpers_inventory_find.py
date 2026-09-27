@@ -5,7 +5,7 @@ group: inventory_container_helpers
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Awaitable, Mapping, Sequence
 from typing import cast
 from uuid import UUID
 
@@ -232,13 +232,27 @@ async def find_wearable_container_for_put(
     return None, None
 
 
-def find_container_in_room(
-    room_manager: object, room_id: str, container_name: str
+def _container_match_text(c: dict[str, object]) -> str:
+    """Build the text a room container can be referred to by.
+
+    Corpses only ever set metadata `player_name` (never `name`); every container also matches
+    by its `source_type` ("corpse"/"equipment"/"environment"), so `get sling from corpse` works
+    even for an unnamed one. See #711 -- this previously matched only `metadata["name"]` or the
+    raw container_id, so no container was ever findable by any name a player would actually type.
+    """
+    meta = c.get("metadata_json", c.get("metadata"))
+    meta_map = cast(dict[str, object], meta) if isinstance(meta, dict) else {}
+    parts = [meta_map.get("name"), meta_map.get("item_name"), meta_map.get("player_name"), c.get("source_type")]
+    return " ".join(str(p) for p in parts if p).lower()
+
+
+async def find_container_in_room(
+    persistence: object, room_id: str, container_name: str
 ) -> tuple[dict[str, object] | None, UUID | None]:
-    """Find a container in the room by name."""
-    get_containers = getattr(room_manager, "get_containers", None)
+    """Find a container in the room by name (matches player/item name or source type)."""
+    get_containers = getattr(persistence, "get_containers_by_room_id", None)
     if callable(get_containers):
-        room_containers_raw: object = get_containers(room_id)
+        room_containers_raw: object = await cast(Awaitable[object], get_containers(room_id))
     else:
         room_containers_raw = []
     room_containers: list[object]
@@ -252,10 +266,7 @@ def find_container_in_room(
         if not isinstance(container, dict):
             continue
         c = cast(dict[str, object], container)
-        meta = c.get("metadata")
-        meta_map = cast(dict[str, object], meta) if isinstance(meta, dict) else {}
-        name_part = str(meta_map.get("name", c.get("container_id", ""))).lower()
-        if target_lower in name_part:
+        if target_lower in _container_match_text(c):
             raw_id = c.get("container_id")
             return c, UUID(str(raw_id))
 

@@ -42,6 +42,10 @@ function graceMetadata(corpse: RoomContainerSummary): { start: string | undefine
 }
 
 export function isCorpseOwner(corpse: RoomContainerSummary, playerId: string | undefined): boolean {
+  // Both sides nullish must NOT count as a match: a corpse summary without owner_id (or a client
+  // without a resolved player id) would otherwise make every viewer the "owner" and drop the
+  // grace-period lock for everyone. Ownership has to be positively proven.
+  if (!corpse.owner_id || !playerId) return false;
   return corpse.owner_id === playerId;
 }
 

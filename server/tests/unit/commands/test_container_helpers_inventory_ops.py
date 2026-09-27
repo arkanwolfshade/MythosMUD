@@ -151,8 +151,7 @@ async def test_validate_put_command_inputs_missing_usage() -> None:
     player.name = "hero"
     player.get_inventory = MagicMock(return_value=[])
     cm = MagicMock()
-    req = MagicMock()
-    out = await validate_put_command_inputs({"item": "", "container": "bag"}, req, cm, player)
+    out = await validate_put_command_inputs({"item": "", "container": "bag"}, cm, player, MagicMock())
     assert isinstance(out, dict)
     assert "Usage" in out["result"]
 
@@ -162,20 +161,18 @@ async def test_validate_put_command_inputs_no_container_service() -> None:
     player = MagicMock()
     player.name = "hero"
     player.get_inventory = MagicMock(return_value=[{"item_name": "rock"}])
-    req = MagicMock()
-    app = MagicMock()
-    state = MagicMock()
-    state.container_service = None
-    app.state = state
-    req.app = app
     cm = MagicMock()
     cm.room_manager = MagicMock()
-    out = await validate_put_command_inputs(
-        {"item": "rock", "container": "bag"},
-        req,
-        cm,
-        player,
-    )
+    with patch(
+        "server.commands.container_helpers_inventory_ops._resolve_container_service",
+        return_value=None,
+    ):
+        out = await validate_put_command_inputs(
+            {"item": "rock", "container": "bag"},
+            cm,
+            player,
+            MagicMock(),
+        )
     assert out == {"result": "Container service is unavailable."}
 
 
@@ -185,23 +182,21 @@ async def test_validate_put_command_inputs_success_returns_typed_tuple() -> None
     player.name = "hero"
     inventory_rows: list[dict[str, object]] = [{"item_name": "rock", "quantity": 2}]
     player.get_inventory = MagicMock(return_value=inventory_rows)
-    req = MagicMock()
-    app = MagicMock()
-    state = MagicMock()
     container_service = MagicMock()
-    state.container_service = container_service
-    app.state = state
-    req.app = app
     room_manager = MagicMock()
     cm = MagicMock()
     cm.room_manager = room_manager
 
-    out = await validate_put_command_inputs(
-        {"item": "rock", "container": "bag", "quantity": "2"},
-        req,
-        cm,
-        player,
-    )
+    with patch(
+        "server.commands.container_helpers_inventory_ops._resolve_container_service",
+        return_value=container_service,
+    ):
+        out = await validate_put_command_inputs(
+            {"item": "rock", "container": "bag", "quantity": "2"},
+            cm,
+            player,
+            MagicMock(),
+        )
 
     assert isinstance(out, tuple)
     item_name, container_name, quantity, out_container_service, out_room_manager, item_found, item_index = out
@@ -220,8 +215,8 @@ async def test_validate_get_command_inputs_room_keyword() -> None:
     cm = SimpleNamespace(room_manager=room_manager)
     out = await validate_get_command_inputs(
         {"item": "x", "container": "room"},
-        MagicMock(),
         cm,
+        MagicMock(),
     )
     assert isinstance(out, tuple)
     item, cname, _, svc, rm = out
@@ -649,3 +644,24 @@ async def test_transfer_item_from_container_inventory_rows_fallback_non_dict_res
     assert result["success"] is True
     set_inv_fb: MagicMock = cast(MagicMock, player.set_inventory)
     set_inv_fb.assert_called_once_with(fallback)
+
+
+def test_resolve_container_service_returns_none_without_persistence() -> None:
+    """No persistence means no service -- callers surface 'Container service is unavailable.'"""
+    from server.commands.container_helpers_inventory_ops import _resolve_container_service
+
+    assert _resolve_container_service(None) is None
+
+
+def test_resolve_container_service_shares_the_http_api_instance() -> None:
+    """#711: text commands must see the same open-container sessions as /api/containers/*.
+
+    There is no app.state.container_service (nothing ever set one); resolving through
+    get_container_service is what keeps get/put and the HTTP endpoints on one instance.
+    """
+    from server.api.container_helpers import get_container_service
+    from server.commands.container_helpers_inventory_ops import _resolve_container_service
+
+    persistence = MagicMock()
+
+    assert _resolve_container_service(persistence) is get_container_service(persistence)

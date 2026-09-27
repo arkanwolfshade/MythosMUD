@@ -39,6 +39,14 @@ class CorpseConnectionManagerLike(Protocol):
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body (not just a docstring) for a non-None Protocol return type
 
 
+class _SyncRoomLookup(Protocol):
+    """The synchronous room lookup _live_room needs from a persistence layer."""
+
+    def get_room_by_id(self, room_id: str) -> object:
+        """Return the in-memory Room for room_id (may be an awaitable on async-only layers)."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body (not just a docstring) for a non-None Protocol return type
+
+
 def _get_enum_value(enum_or_str: Any) -> str:
     """
     Safely get enum value, handling both enum instances and string values.
@@ -164,6 +172,7 @@ class CorpseLifecycleService:
                 room_id=room_id,
                 items_count=len(corpse.items),
             )
+            self._register_corpse_on_room(corpse, room_id)
             await self._emit_corpse_created(corpse, room_id)
             return corpse
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Convert to domain exception - corpse creation errors unpredictable
@@ -176,6 +185,50 @@ class CorpseLifecycleService:
                 details={"player_id": str(player_id), "room_id": room_id},
                 user_friendly="Failed to create corpse container",
             )
+
+    def _register_corpse_on_room(self, corpse: ContainerComponent, room_id: str) -> None:
+        """Add the corpse to the in-memory Room so room_state carries it (#711).
+
+        The container.created broadcast only reaches players subscribed at that instant, which
+        never includes the corpse's own owner -- they are dead when it spawns. Registering it on
+        the Room means the summary rides along in room_state on (re)entry and respawn, so the
+        owner can actually see and loot their own corpse.
+        """
+        try:
+            room = self._live_room(room_id)
+            add_container = getattr(room, "add_container", None) if room is not None else None
+            if not callable(add_container):
+                return
+            _ = add_container(
+                {
+                    "container_id": str(corpse.container_id),
+                    "source_type": _get_enum_value(corpse.source_type),
+                    "owner_id": str(corpse.owner_id) if corpse.owner_id else None,
+                    "decay_at": corpse.decay_at.isoformat() if corpse.decay_at else None,
+                    "metadata": corpse.metadata,
+                }
+            )
+        except (AttributeError, TypeError, RuntimeError, ValueError) as e:
+            logger.warning("Failed to register corpse on room", error=str(e), room_id=room_id)
+
+    def _unregister_corpse_from_room(self, container_id: str, room_id: str) -> None:
+        """Drop a decayed corpse from the in-memory Room (mirror of _register_corpse_on_room)."""
+        try:
+            room = self._live_room(room_id)
+            remove_container = getattr(room, "remove_container", None) if room is not None else None
+            if callable(remove_container):
+                _ = remove_container(container_id)
+        except (AttributeError, TypeError, RuntimeError, ValueError) as e:
+            logger.warning("Failed to unregister corpse from room", error=str(e), room_id=room_id)
+
+    def _live_room(self, room_id: str) -> object | None:
+        """In-memory Room for room_id, or None when persistence exposes no sync lookup."""
+        persistence = cast(object, self.persistence)
+        if not hasattr(persistence, "get_room_by_id"):
+            return None
+        room: object = cast(_SyncRoomLookup, persistence).get_room_by_id(room_id)
+        # An awaitable means this persistence layer is async-only here; skip rather than block.
+        return None if hasattr(room, "__await__") else room
 
     async def _emit_corpse_created(self, corpse: ContainerComponent, room_id: str) -> None:
         """Best-effort container.created broadcast so room occupants see the fresh corpse.
@@ -194,7 +247,7 @@ class CorpseLifecycleService:
             _ = await self.connection_manager.broadcast_room_event(
                 event_type="container.created",
                 room_id=room_id,
-                data={"container": corpse.model_dump()},
+                data={"container": corpse.model_dump(mode="json")},
             )
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Event emission errors unpredictable, must not fail corpse creation
             logger.warning(
@@ -339,6 +392,8 @@ class CorpseLifecycleService:
         container = self._require_corpse_container(container_id, container_data)
         try:
             await self.persistence.delete_container(container_id)
+            if container.room_id:
+                self._unregister_corpse_from_room(str(container_id), container.room_id)
             logger.info(
                 "Decayed corpse cleaned up",
                 container_id=str(container_id),

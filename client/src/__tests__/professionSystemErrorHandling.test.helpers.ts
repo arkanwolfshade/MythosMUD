@@ -90,7 +90,9 @@ function createDefaultRollStatsResponseBody() {
   };
 }
 
-export function createDefaultRollStatsFetchResponse() {
+// Annotated rather than inferred: the inferred mock type reaches into a vitest internal chunk
+// (`Procedure`), which TS2883 rejects as non-portable for an exported declaration.
+export function createDefaultRollStatsFetchResponse(): { ok: boolean; json: ReturnType<typeof vi.fn> } {
   return {
     ok: true,
     json: vi.fn().mockResolvedValue(createDefaultRollStatsResponseBody()),

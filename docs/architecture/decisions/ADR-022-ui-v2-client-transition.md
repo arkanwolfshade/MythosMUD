@@ -1,6 +1,6 @@
 # ADR-022: ui-v2 Client Transition and Legacy Retirement
 
-**Version 1.9.0** · MythosMUD · 2026-09-21
+**Version 1.10.0** · MythosMUD · 2026-09-26
 
 ---
 
@@ -172,6 +172,24 @@ unmodified — they were already command-driven with no GUI assertions, independ
 text-command-reachable premise the deletion rests on.
 
 **[NOTE]**
+[#711](https://github.com/arkanwolfshade/MythosMUD/issues/711) resolved cluster 3's decide-then-port
+question: **full port**, not retirement. `ui-v2` gets a graphical container/inventory UI (dock
+panel, transfer modal, corpse overlay), shipped as two PRs. PR1 (server contracts) fixed real gaps
+the port exposed that the deleted legacy client's `containerStore.ts` had never actually closed:
+`open_container` is now idempotent for the same player and exclusive across players (a second
+player's open is rejected naming the current holder; `look` stays unrestricted for any number of
+players), text `get`/`put` now close the sessions they open instead of leaking them, and
+`container.updated`/`closed` carry the full snapshot and always deliver personally (previously
+room-only, so worn containers got nothing) plus a new `inventory_updated` push event. PR2 (client)
+added the projector handlers, `api/containers.ts`, `InventoryPanel`, `ContainerTransferModal`,
+`CorpseOverlay` (its grace/decay countdown ported from the deleted `corpseOverlayUtils.ts`), and
+backfilled a `panelLayoutBootstrap.ts` gap where a new panel id never appeared for returning users.
+One known gap carried forward: `roomContainers` is populated only from the `container.created`
+broadcast (corpse spawn), not backfilled from `room_state` for a container already in the room
+before the player arrives -- `Room._containers` is world-load static data, not the live DB-backed
+container list, so wiring it up is deferred rather than done speculatively.
+
+**[NOTE]**
 Cluster 4's own removal PR (#693) found the issue's 14-file list was accurate — the second cluster
 running with no undercount, after #692. Every remaining `ui/` sibling and `MythosPanel` (flagged in
 cluster 3's `[NOTE]` as "not our cascade") stayed live, confirming that call. Three status banners
@@ -308,3 +326,4 @@ package's boundary contract.
 | 1.7.0 | 2026-09-08 | #714 resolved: `HallucinationTicker` was not rebuilt. ADR-024 made hallucinations server-authoritative end-to-end instead, reversing #626's client-side exit-hallucination placement along the way. |
 | 1.8.0 | 2026-09-16 | #744 found `ui/`'s 8 survivors were live `ui-v2` dependencies; relocated to `ui-v2/primitives/` with a new barrel, documented in `PACKAGE_UI_PRIMITIVES_DESIGN.md`. |
 | 1.9.0 | 2026-09-21 | #718 triaged unused knip exports/types; set both rules to `"error"` in `client/knip.json`. |
+| 1.10.0 | 2026-09-26 | #711 resolved: full port, not retirement. Server contracts (session exclusivity, live container/inventory events) landed in PR1; the `ui-v2` dock panel, transfer modal, and corpse overlay in PR2. See cluster 3's second `[NOTE]` in §6. |

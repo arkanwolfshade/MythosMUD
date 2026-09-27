@@ -12,7 +12,7 @@ that dimensional shifts are properly tracked.
 
 import uuid
 from decimal import Decimal
-from typing import Any
+from typing import Any, cast
 
 from ..events import EventBus
 from ..events.event_types import (
@@ -397,6 +397,33 @@ class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requ
             List of container data dictionaries
         """
         return list(self._containers)
+
+    def add_container(self, container: dict[str, object]) -> None:
+        """
+        Register a runtime-created container (e.g. a corpse) so room_state carries it.
+
+        Without this, only players who were subscribed when the container.created broadcast fired
+        ever learn about it -- which excludes the corpse's own owner, who is by definition dead at
+        that moment (#711).
+        """
+        container_id = Room._container_id_of(container)
+        existing = cast("list[object]", self._containers)
+        if container_id and any(Room._container_id_of(c) == container_id for c in existing):
+            return
+        self._containers.append(container)
+
+    def remove_container(self, container_id: str) -> None:
+        """Drop a container from the room (decay/cleanup)."""
+        existing = cast("list[object]", self._containers)
+        self._containers = [c for c in existing if Room._container_id_of(c) != container_id]
+
+    @staticmethod
+    def _container_id_of(container: object) -> str:
+        """Container id as a string, or "" when the entry has none."""
+        if not isinstance(container, dict):
+            return ""
+        raw = cast("dict[str, object]", container).get("container_id")
+        return str(raw) if raw is not None else ""
 
     def to_dict(self) -> dict[str, Any]:
         """

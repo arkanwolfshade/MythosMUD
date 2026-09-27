@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -197,3 +198,43 @@ async def test_handle_get_command_uses_pickup_wiring() -> None:
                     "TestPlayer",
                 )
     assert command_result_text(result) == "picked"
+
+
+@pytest.mark.asyncio
+async def test_handle_get_command_passes_persistence_to_validation() -> None:
+    """#711: the container service is resolved from persistence, not a phantom app.state entry.
+
+    validate_get_command_inputs needs persistence to build/reuse the shared ContainerService, so
+    guard the wiring -- passing `request` here instead silently reintroduces
+    "Container service is unavailable." for every `get <item> from <container>`.
+    """
+    w = PickupTestWiring()
+    w.set_floor_stack({"item_name": "coin", "quantity": 1})
+    with (
+        patch(
+            "server.commands.inventory_get_command.validate_get_command_inputs",
+            new_callable=AsyncMock,
+            return_value=("coin", "room", None, MagicMock(), w.room_manager),
+        ) as mock_validate,
+        patch(
+            "server.commands.inventory_get_command.complete_pickup_after_floor_extract",
+            new_callable=AsyncMock,
+            return_value={"result": "picked"},
+        ),
+        patch("server.commands.inventory_get_command.resolve_pickup_item_index", return_value=(0, None, None)),
+    ):
+        _ = await handle_get_command(
+            {"item": "coin", "container": "room"},
+            {"name": "TestPlayer"},
+            w.request,
+            None,
+            "TestPlayer",
+        )
+
+    command_data, connection_manager, persistence = cast(tuple[object, object, object], mock_validate.call_args.args)
+    assert command_data == {"item": "coin", "container": "room"}
+    assert connection_manager is not None
+    # Specifically the persistence layer, not the request -- both are truthy mocks, so identity
+    # is the only assertion that actually catches the regression.
+    assert persistence is w.persistence
+    assert persistence is not w.request

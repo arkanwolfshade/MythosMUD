@@ -69,6 +69,23 @@ describe('isCorpseOwner', () => {
     expect(isCorpseOwner(corpse({ owner_id: 'p1' }), 'p2')).toBe(false);
     expect(isCorpseOwner(corpse({ owner_id: 'p1' }), undefined)).toBe(false);
   });
+
+  it('is false when the corpse has no owner, even for an unidentified viewer', () => {
+    // Regression (#711): `undefined === undefined` made every viewer the owner, which dropped the
+    // grace-period lock for everyone the moment either id was missing from a room summary.
+    expect(isCorpseOwner(corpse({ owner_id: null }), undefined)).toBe(false);
+    expect(isCorpseOwner(corpse({ owner_id: null }), 'p1')).toBe(false);
+    expect(isCorpseOwner(corpse({ owner_id: 'p1' }), '')).toBe(false);
+  });
+
+  it('keeps a non-owner locked out during grace when ownership cannot be proven', () => {
+    const start = new Date().toISOString();
+    const timing = getCorpseTiming(
+      corpse({ owner_id: null, metadata: { grace_period_start: start, grace_period_seconds: 300 } }),
+      undefined
+    );
+    expect(timing.canOpen).toBe(false);
+  });
 });
 
 describe('isGracePeriodActive', () => {
