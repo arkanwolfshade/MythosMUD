@@ -2,7 +2,7 @@
 
 import { buildLucidityStatus } from '../../../utils/lucidityEventUtils';
 import type { GameEvent } from '../eventHandlers/types';
-import type { Player, QuestLogEntry, Room } from '../types';
+import type { Player, QuestLogEntry, Room, RoomContainerSummary } from '../types';
 import { mergeRoomState } from '../utils/roomMergeUtils';
 import type { GameState } from '../utils/stateUpdateUtils';
 import { GAME_LOG_CHANNEL, appendMessage, appendMovementMessage, buildChatMessage } from './projectorMessageUtils';
@@ -29,6 +29,26 @@ function mergePostureMessageIntoState(prevState: GameState, event: GameEvent): G
   const postureMessage = typeof event.data.posture_message === 'string' ? event.data.posture_message.trim() : '';
   if (!postureMessage) return prevState;
   return appendPostureGameInfoMessage(prevState, event, postureMessage);
+}
+
+/**
+ * Room containers carried on a room payload (#711).
+ *
+ * container.created only reaches players subscribed the instant a corpse spawns, which never
+ * includes its own owner -- they are dead at that moment. room_state/game_state backfills the
+ * list on (re)entry and respawn so the owner can actually see their corpse. Absent/!array means
+ * "no information", so the previous list is kept rather than wiped.
+ */
+function roomContainersField(event: GameEvent): Partial<GameState> {
+  const room = event.data.room;
+  if (!room || typeof room !== 'object') return {};
+  const containers = (room as { containers?: unknown }).containers;
+  if (!Array.isArray(containers)) return {};
+  const summaries = containers.filter(
+    (c): c is RoomContainerSummary =>
+      !!c && typeof c === 'object' && typeof (c as RoomContainerSummary).container_id === 'string'
+  );
+  return { roomContainers: summaries };
 }
 
 /** Drop undefined-valued keys so a spread doesn't clobber a good prior value with `undefined`. */
@@ -103,6 +123,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
       ...prevState,
       player: player ?? prevState.player,
       room: room ?? prevState.room,
+      ...roomContainersField(event),
       ...gracePeriodFields(event),
       ...(following !== undefined && { followingTarget: following ?? null }),
       ...questLogField(event),
@@ -125,7 +146,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
 
   room_state(prevState, event) {
     const room = deriveRoomFromRoomState(event);
-    return room ? { ...prevState, room } : prevState;
+    return room ? { ...prevState, room, ...roomContainersField(event) } : prevState;
   },
 
   room_update(prevState, event) {
@@ -228,7 +249,9 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
       deliriumLocation: null,
     };
     if (player) next = { ...next, player: mergeRespawnedPlayer(next.player, player) };
-    if (room) next = { ...next, room };
+    // Respawn is the one moment the corpse owner is guaranteed to have missed their own corpse's
+    // container.created broadcast (they were dead), so backfill from the respawn room payload.
+    if (room) next = { ...next, room, ...roomContainersField(event) };
     if (messageText) {
       const msg = buildChatMessage(messageText, event.timestamp, {
         messageType: 'system',

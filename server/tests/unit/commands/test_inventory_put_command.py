@@ -24,7 +24,6 @@ from .inventory_commands_test_support import command_result_text
 async def test_put_resolve_container_id_room_container() -> None:
     player = MagicMock(spec=Player)
     player.name = "Alice"
-    room_manager = MagicMock()
     container = {"container_id": str(uuid.uuid4())}
     with (
         patch(
@@ -36,7 +35,7 @@ async def test_put_resolve_container_id_room_container() -> None:
             return_value=uuid.UUID(container["container_id"]),
         ),
     ):
-        cid, err = await _put_resolve_container_id(MagicMock(), MagicMock(), player, room_manager, "room-1", "chest")
+        cid, err = await _put_resolve_container_id(MagicMock(), MagicMock(), player, "room-1", "chest")
     assert err is None
     assert cid == uuid.UUID(container["container_id"])
 
@@ -52,7 +51,7 @@ async def test_put_resolve_container_not_found() -> None:
             new=AsyncMock(return_value=(None, None)),
         ),
     ):
-        cid, err = await _put_resolve_container_id(MagicMock(), MagicMock(), player, MagicMock(), "room-1", "bag")
+        cid, err = await _put_resolve_container_id(MagicMock(), MagicMock(), player, "room-1", "bag")
     assert cid is None
     assert err is not None
     assert "don't see" in command_result_text(err)
@@ -66,7 +65,7 @@ async def test_put_resolve_container_missing_id() -> None:
         patch("server.commands.inventory_put_command.find_container_in_room", return_value=({"name": "chest"}, None)),
         patch("server.commands.inventory_put_command.resolve_container_id", return_value=None),
     ):
-        cid, err = await _put_resolve_container_id(MagicMock(), MagicMock(), player, MagicMock(), "room-1", "chest")
+        cid, err = await _put_resolve_container_id(MagicMock(), MagicMock(), player, "room-1", "chest")
     assert cid is None
     assert "no valid ID" in command_result_text(err)
 

@@ -9,8 +9,26 @@ import { vi } from 'vitest';
 
 declare const global: typeof globalThis;
 
+/**
+ * Annotated rather than inferred: the inferred mock type reaches into a vitest internal chunk
+ * (`Procedure`), which TS2883 rejects as non-portable for an exported declaration. Matches the
+ * `ReturnType<typeof vi.fn>` idiom already used for mockedSetInterval below.
+ */
+type ResourceManagerMock = Record<
+  | 'registerEventSource'
+  | 'registerWebSocket'
+  | 'registerTimer'
+  | 'registerInterval'
+  | 'registerCustomResource'
+  | 'removeTimer'
+  | 'removeInterval'
+  | 'cleanup'
+  | 'getStats',
+  ReturnType<typeof vi.fn>
+>;
+
 const { mockResourceManager, fetchSpy } = vi.hoisted(() => {
-  const mockResourceManager = {
+  const mockResourceManager: ResourceManagerMock = {
     registerEventSource: vi.fn(),
     registerWebSocket: vi.fn(),
     registerTimer: vi.fn(),

@@ -5,7 +5,7 @@ This module contains utility functions, validation helpers, rate limiting,
 and event emission helpers used by container API endpoints.
 """
 
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 from uuid import UUID
 
 from fastapi import Request, status
@@ -23,6 +23,9 @@ from ..services.inventory_service import InventoryStack
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.rate_limiter import RateLimiter
 from .container_models import LootAllRequest, TransferContainerRequest
+
+if TYPE_CHECKING:
+    from ..async_persistence import AsyncPersistenceLayer
 
 logger = get_logger(__name__)
 
@@ -76,20 +79,36 @@ async def get_player_id_from_user(current_user: User, persistence: Any) -> UUID:
     return UUID(str(player.player_id))
 
 
+_container_service_cache: dict[int, ContainerService] = {}
+
+
 def get_container_service(persistence: Any) -> ContainerService:
     """
-    Get ContainerService instance.
+    Get the ContainerService for this persistence layer, reusing one across calls.
+
+    ContainerService tracks open-container sessions and mutation tokens in an
+    instance-level dict (see ContainerService._open_containers). A fresh instance per
+    call -- which this used to construct unconditionally -- gives every HTTP request
+    (and every text command) its own empty session store, so an open() from one
+    request is invisible to the transfer()/close() of the next: the whole exclusivity
+    and idempotent-reopen contract silently never worked outside a single call. Caching
+    by persistence identity fixes that for the real server (one long-lived persistence
+    singleton -> one shared ContainerService) while keeping unit tests isolated (each
+    test's own mock persistence gets its own service).
 
     Args:
         persistence: Async persistence layer instance
 
     Returns:
-        ContainerService: Container service instance
-
-    AI: Updated to require persistence parameter instead of accessing app.state.
-        This enables proper dependency injection and testability.
+        ContainerService: Container service instance, shared across calls for the same persistence
     """
-    return ContainerService(persistence=persistence)
+    layer = cast("AsyncPersistenceLayer", persistence)
+    key = id(layer)
+    service = _container_service_cache.get(key)
+    if service is None:
+        service = ContainerService(persistence=layer)
+        _container_service_cache[key] = service
+    return service
 
 
 def validate_user_for_open_container(current_user: User | None, _request: Request) -> None:

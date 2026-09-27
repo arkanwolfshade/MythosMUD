@@ -257,3 +257,55 @@ async def test_emit_container_closed_no_room_id(mock_connection_manager: MagicMo
     assert isinstance(result, dict)
     _async_attr(mock_connection_manager, "send_personal_message").assert_awaited_once()
     _async_attr(mock_connection_manager, "broadcast_room_event").assert_not_awaited()
+
+
+def _real_container_with_datetime() -> ContainerComponent:
+    """A real (not mocked) component, so model_dump's serialization mode actually matters."""
+    from server.models.container import ContainerLockState, ContainerSourceType
+
+    return ContainerComponent(
+        container_id=uuid.uuid4(),
+        source_type=ContainerSourceType.CORPSE,
+        owner_id=uuid.uuid4(),
+        room_id="room_001",
+        capacity_slots=20,
+        lock_state=ContainerLockState.UNLOCKED,
+        decay_at=datetime.now(UTC),
+        items=[],
+        metadata={},
+    )
+
+
+@pytest.mark.asyncio
+async def test_emit_container_created_payload_is_json_serializable(mock_connection_manager: MagicMock) -> None:
+    """Regression (#711): decay_at stayed a datetime and blew up json.dumps in the broadcaster.
+
+    The failure surfaced as "Object of type datetime is not JSON serializable" from
+    message_broadcaster, silently dropping every container.created broadcast.
+    """
+    import json
+
+    _ = await emit_container_created(mock_connection_manager, _real_container_with_datetime(), "room_001")
+
+    payload = cast(
+        dict[str, dict[str, object]],
+        _async_attr(mock_connection_manager, "broadcast_room_event").call_args.kwargs["data"],
+    )
+    _ = json.dumps(payload)  # must not raise
+    assert isinstance(payload["container"]["decay_at"], str)
+    assert isinstance(payload["container"]["container_id"], str)
+
+
+@pytest.mark.asyncio
+async def test_emit_container_updated_payload_is_json_serializable(mock_connection_manager: MagicMock) -> None:
+    """Same serialization contract for the personal container.updated push."""
+    import json
+
+    container = _real_container_with_datetime()
+    _ = await emit_container_updated(mock_connection_manager, container, uuid.uuid4())
+
+    event = cast(
+        dict[str, object],
+        _async_attr(mock_connection_manager, "send_personal_message").call_args.args[1],
+    )
+    _ = json.dumps(event)  # must not raise

@@ -210,3 +210,90 @@ describe('projector container/inventory handlers', () => {
     });
   });
 });
+
+describe('roomContainers backfill from room payloads (#711)', () => {
+  const roomPayload = (containers?: unknown) => ({
+    id: 'room_001',
+    name: 'Foyer',
+    description: 'A grand entrance hall.',
+    exits: {},
+    ...(containers === undefined ? {} : { containers }),
+  });
+
+  const corpseSummary = {
+    container_id: 'corpse-1',
+    source_type: 'corpse',
+    owner_id: 'player-1',
+    decay_at: new Date().toISOString(),
+    metadata: { grace_period_start: new Date().toISOString(), grace_period_seconds: 300 },
+  };
+
+  it('populates roomContainers from room_state', () => {
+    // The corpse owner is dead when container.created fires, so room payloads must backfill it.
+    const next = projectEvent(
+      getInitialGameState(),
+      baseEvent({
+        event_type: 'room_state',
+        data: { room: roomPayload([corpseSummary]) },
+      })
+    );
+
+    expect(next.roomContainers).toEqual([corpseSummary]);
+  });
+
+  it('populates roomContainers from a player_respawned room payload', () => {
+    const next = projectEvent(
+      getInitialGameState(),
+      baseEvent({
+        event_type: 'player_respawned',
+        data: { room: roomPayload([corpseSummary]) },
+      })
+    );
+
+    expect(next.roomContainers).toEqual([corpseSummary]);
+  });
+
+  it('keeps existing roomContainers when a room payload carries no containers field', () => {
+    // Absent means "no information", not "the room is empty" -- wiping would drop a live corpse.
+    const withCorpse = projectEvent(
+      getInitialGameState(),
+      baseEvent({
+        event_type: 'room_state',
+        data: { room: roomPayload([corpseSummary]) },
+      })
+    );
+
+    const next = projectEvent(withCorpse, baseEvent({ event_type: 'room_state', data: { room: roomPayload() } }));
+
+    expect(next.roomContainers).toEqual([corpseSummary]);
+  });
+
+  it('drops entries without a container_id', () => {
+    const next = projectEvent(
+      getInitialGameState(),
+      baseEvent({
+        event_type: 'room_state',
+        data: { room: roomPayload([corpseSummary, { junk: true }, null]) },
+      })
+    );
+
+    expect(next.roomContainers).toEqual([corpseSummary]);
+  });
+
+  it('clears roomContainers when the room reports an empty container list', () => {
+    const withCorpse = projectEvent(
+      getInitialGameState(),
+      baseEvent({
+        event_type: 'room_state',
+        data: { room: roomPayload([corpseSummary]) },
+      })
+    );
+
+    const next = projectEvent(
+      withCorpse,
+      baseEvent({ event_type: 'room_state', data: { room: { ...roomPayload([]), id: 'room_002', name: 'Hallway' } } })
+    );
+
+    expect(next.roomContainers).toEqual([]);
+  });
+});

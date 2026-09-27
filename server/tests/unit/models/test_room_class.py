@@ -5,6 +5,7 @@ Tests the Room class methods for managing room occupants and state.
 """
 
 import uuid
+from typing import cast
 from unittest.mock import Mock
 
 import pytest
@@ -326,3 +327,44 @@ def test_room_repr():
     repr_str = repr(room)
 
     assert "room_001" in repr_str
+
+
+def test_room_add_container_appears_in_to_dict():
+    """#711: a runtime corpse registered on the room rides along in room_state."""
+    room = Room({"id": "room_001", "name": "Test Room"})
+
+    room.add_container({"container_id": "c1", "source_type": "corpse"})
+
+    assert room.to_dict()["containers"] == [{"container_id": "c1", "source_type": "corpse"}]
+
+
+def test_room_add_container_is_idempotent_by_id():
+    """Re-registering the same container must not duplicate it in room_state."""
+    room = Room({"id": "room_001", "name": "Test Room"})
+
+    room.add_container({"container_id": "c1", "source_type": "corpse"})
+    room.add_container({"container_id": "c1", "source_type": "corpse", "decay_at": "later"})
+
+    assert len(room.get_containers()) == 1
+
+
+def test_room_remove_container_drops_only_the_match():
+    """Decay cleanup removes one container and leaves the rest."""
+    room = Room({"id": "room_001", "name": "Test Room"})
+    room.add_container({"container_id": "c1"})
+    room.add_container({"container_id": "c2"})
+
+    room.remove_container("c1")
+
+    remaining = cast(list[dict[str, object]], room.get_containers())
+    assert [c["container_id"] for c in remaining] == ["c2"]
+
+
+def test_room_container_helpers_tolerate_malformed_entries():
+    """Static room JSON can hold non-dict junk; it must not break registration."""
+    room = Room({"id": "room_001", "name": "Test Room", "containers": ["junk", 3]})
+
+    room.add_container({"container_id": "c1"})
+    room.remove_container("c1")
+
+    assert room.get_containers() == ["junk", 3]

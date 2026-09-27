@@ -11,12 +11,12 @@ import { getVersionedApiBaseUrl } from '../utils/config';
 export type TransferDirection = 'to_container' | 'to_player';
 
 export class ContainerApiError extends Error {
-  constructor(
-    message: string,
-    public readonly status: number
-  ) {
+  readonly status: number;
+
+  constructor(message: string, status: number) {
     super(message);
     this.name = 'ContainerApiError';
+    this.status = status;
   }
 }
 

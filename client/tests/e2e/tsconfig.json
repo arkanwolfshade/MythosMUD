@@ -13,6 +13,5 @@
     "noUnusedLocals": false
   },
   "include": ["./**/*.ts", "./**/*.d.ts", "../../src/test/e2e-bootstrap.ts"],
-  "exclude": ["./runtime/fixtures/message-match.ts"],
   "references": [{ "path": "../../tsconfig.app.json" }]
 }

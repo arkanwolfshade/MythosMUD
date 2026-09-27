@@ -113,6 +113,64 @@ export async function despawnSanitariumCultists(page: Page): Promise<void> {
 }
 
 /**
+ * Respawn after death via the in-app "Rejoin the earthly plane" button only -- retried, but
+ * never falling back to ensurePlayableAlive's raw-SQL DB reset.
+ *
+ * That reset (resetE2ePlayerRoomsInDatabase) fixes current_room_id directly in Postgres, bypassing
+ * the server entirely; a container-proximity check right after it can still see the player as
+ * being in "limbo_death_void_limbo_death_void" (the respawn button's own server round trip is what
+ * actually relocates the player -- admin `set DP` only heals them, it never moves them out of the
+ * void room). Use this instead of ensurePlayableAlive whenever the next step is proximity-sensitive
+ * (e.g. opening a container in the room the player died in).
+ */
+export async function respawnAfterCombatDeath(page: Page, username: string, password: string): Promise<Page> {
+  let live = await ensurePlayableConnection(page, { username, password, timeoutMs: 30000 });
+  for (let attempt = 0; attempt < 8; attempt++) {
+    await dismissDeathInterstitial(live);
+    if (!(await isPlayerDead(live))) {
+      // Respawn returns the player to the room they died in -- where the mob that killed them is
+      // still standing. It one-shots a freshly respawned player (25 dmg vs 20 DP), sending them
+      // straight back to limbo a few seconds later and clobbering the successful respawn's
+      // current_room_id write. Clear hostiles first or anything room-sensitive that follows
+      // (container proximity checks especially) races a second death.
+      await despawnSanitariumCultists(live).catch(() => {});
+      live = await ensureStanding(live, 8000).catch(() => live);
+      return live;
+    }
+    await new Promise(r => setTimeout(r, 2000));
+  }
+  throw new Error(`respawnAfterCombatDeath: still in Death > Void for ${username} after retries`);
+}
+
+/**
+ * Click a room corpse's CorpseOverlay Open button, retrying: right after respawn, the server's
+ * persisted current_room_id can lag a moment behind the live session (the respawn round trip
+ * updates the in-memory/broadcast state immediately but the DB write that /api/containers/open's
+ * proximity check reads can trail it briefly), so the very first open attempt can 403. Re-clicking
+ * Open is idempotent server-side once it does succeed. Waits for `itemText` (a known item in the
+ * corpse) to confirm the transfer modal actually opened.
+ */
+export async function openCorpseWithRetry(page: Page, itemText: string): Promise<void> {
+  const openButton = page.getByRole('button', { name: 'Open' }).first();
+  const itemRow = page.getByText(itemText, { exact: true }).first();
+  await expect(page.getByText(/Grace period/i)).toBeVisible({ timeout: 20000 });
+  await expect(openButton).toBeEnabled({ timeout: 10000 });
+
+  for (let attempt = 0; attempt < 6; attempt++) {
+    // CorpseOverlay re-renders every second for its countdown, which can leave Playwright's
+    // actionability check never settling. clickWithoutStability dispatches the DOM click directly
+    // (same helper dismissDeathInterstitial uses); visible/enabled is already asserted above.
+    await clickWithoutStability(openButton);
+    if (await itemRow.isVisible({ timeout: 3000 }).catch(() => false)) {
+      return;
+    }
+    await new Promise(r => setTimeout(r, 2000));
+  }
+
+  await expect(itemRow).toBeVisible({ timeout: 15000 });
+}
+
+/**
  * Clear death interstitial, combat, and low DP so later specs see foyer spawn state.
  * Admin DP set is best-effort (non-admins get a harmless failure).
  * Hard-fails if Location stays on Death > Void after recovery attempts.
@@ -160,6 +218,98 @@ export async function ensurePlayableAlive(page: Page, username: string, password
     await expect(live.getByText(DEFAULT_SPAWN_LOOK_CUE).first()).toBeVisible({ timeout: 20000 });
   }
   return live;
+}
+
+/** Aggressive mob used to trigger real combat death (see combat-messages-game-info.spec.ts). */
+const COMBAT_NPC_ID = 58;
+const COMBAT_NPC_NAME = 'Cultist of the Yellow Sign';
+
+/**
+ * Kill the player through genuine combat so the server's real death path fires
+ * (server/services/combat_death_handler.py::_create_corpse_on_death) -- this is the ONLY reachable
+ * way to create a container in this game today (environmental and wearable containers have no
+ * live data; the generic `admin set DP -9` tick-death path used elsewhere does not create a corpse).
+ *
+ * Spawns several cultists and lets their combat damage do all the work, at full DP and with no
+ * admin DP manipulation. Each hits for ~25 against a 20 DP player, so the first hit lands at -5
+ * (mortally wounded) and a sibling's hit moments later crosses -10 -- a genuine combat death,
+ * which is the only death path that creates a corpse.
+ *
+ * Deliberately does NOT pre-lower DP into the mortally-wounded band: the tick loop decays wounded
+ * players (game_tick_death.py::_process_mortally_wounded_player) and reliably reached -10 first,
+ * routing the death through player_death_service, which creates NO corpse. Several mobs keep the
+ * wounded window down to part of a single combat round.
+ */
+export async function killPlayerViaCombat(page: Page, creds: { username: string; password: string }): Promise<Page> {
+  let live = await ensurePlayableConnection(page, { ...creds, timeoutMs: 45000 });
+  await dismissDeathInterstitial(live);
+  await ensureNotInCombat(live, 4);
+  live = await ensureStanding(live, 10000);
+  await despawnSanitariumCultists(live);
+  // Three attackers: one alone trades blows slowly enough that the player often kills it first,
+  // and a lone hit only wounds. A pack finishes the job inside a round or two.
+  for (let i = 0; i < 3; i++) {
+    await executeCommand(live, `npc spawn ${COMBAT_NPC_ID}`);
+    await new Promise(r => setTimeout(r, 800));
+  }
+
+  // DP 5: still alive (so the tick's wounded-decay death, which creates no corpse, can't claim
+  // them) but low enough that a single ~25-damage cultist hit lands well past -10, making the
+  // killing blow unambiguously combat damage. Note the e2e teardown leaves DP at 50, above the
+  // player's own max of 20, so without this a kill takes three rounds through the wounded band.
+  await executeCommand(live, `admin set DP ${creds.username} 5`);
+  await new Promise(r => setTimeout(r, 500));
+
+  const ids = await listSanitariumCultistIds(live);
+  const target = ids[0] ?? COMBAT_NPC_NAME;
+  await executeCommand(live, `attack ${target}`);
+
+  // Re-issue the attack periodically -- a dropped first command or a slow combat round cadence
+  // (worse with a second connected player in the room) can otherwise leave the poll waiting on
+  // nothing. Re-attacking an already-attacking player is a harmless no-op server-side.
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const dead = await isPlayerDead(live).catch(() => false);
+    if (dead) return live;
+    await new Promise(r => setTimeout(r, 10000));
+    await executeCommand(live, `attack ${target}`).catch(() => {});
+  }
+
+  await expect
+    .poll(async () => isPlayerDead(live), { timeout: 30000, message: 'player death via real combat' })
+    .toBe(true);
+  return live;
+}
+
+/**
+ * Kill the player, respawn them, and guarantee their corpse is actually present in the room.
+ *
+ * A single kill is not enough: the tick loop can finish off a mortally-wounded player before the
+ * mob's next swing lands, and that death path creates no corpse (see killPlayerViaCombat). Retry
+ * the whole cycle until the CorpseOverlay shows one. Returns a live, standing page in the room
+ * with the corpse visible.
+ */
+export async function killPlayerAndProduceCorpse(
+  page: Page,
+  creds: { username: string; password: string },
+  maxAttempts = 3
+): Promise<Page> {
+  let live = page;
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    live = await killPlayerViaCombat(live, creds);
+    live = await respawnAfterCombatDeath(live, creds.username, creds.password);
+    // `look` forces a fresh room_state, which is what carries the corpse summary to a player who
+    // was dead when container.created fired.
+    await executeCommand(live, 'look').catch(() => {});
+    const corpseVisible = await live
+      .getByText(/Grace period/i)
+      .first()
+      .isVisible({ timeout: 25000 })
+      .catch(() => false);
+    if (corpseVisible) {
+      return live;
+    }
+  }
+  throw new Error(`killPlayerAndProduceCorpse: no corpse appeared for ${creds.username} after ${maxAttempts} deaths`);
 }
 
 /**

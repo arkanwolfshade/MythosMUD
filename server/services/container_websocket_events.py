@@ -67,7 +67,7 @@ async def emit_container_opened(
     )
 
     event_data: dict[str, object] = {
-        "container": container.model_dump(),
+        "container": container.model_dump(mode="json"),
         "owner_id": str(container.owner_id) if container.owner_id else None,
         "mutation_token": mutation_token,
         "expires_at": expires_at.isoformat(),
@@ -76,7 +76,7 @@ async def emit_container_opened(
     event = build_event(
         event_type="container.opened",
         data=event_data,
-        player_id=player_id,
+        player_id=str(player_id),
         connection_manager=connection_manager,
     )
 
@@ -121,7 +121,7 @@ async def emit_container_opened_to_room(
     )
 
     event_data: dict[str, object] = {
-        "container": container.model_dump(),
+        "container": container.model_dump(mode="json"),
         "owner_id": str(container.owner_id) if container.owner_id else None,
         "actor_id": str(actor_id),
     }
@@ -171,14 +171,14 @@ async def emit_container_updated(
 
     event_data: dict[str, object] = {
         "container_id": str(container.container_id),
-        "container": container.model_dump(),
+        "container": container.model_dump(mode="json"),
         "actor_id": str(actor_id),
     }
 
     event = build_event(
         event_type="container.updated",
         data=event_data,
-        player_id=actor_id,
+        player_id=str(actor_id),
         connection_manager=connection_manager,
     )
     delivery_status = await connection_manager.send_personal_message(actor_id, event)
@@ -233,7 +233,7 @@ async def emit_container_closed(
     event = build_event(
         event_type="container.closed",
         data=event_data,
-        player_id=player_id,
+        player_id=str(player_id),
         connection_manager=connection_manager,
     )
     delivery_status = await connection_manager.send_personal_message(player_id, event)
@@ -277,7 +277,7 @@ async def emit_container_created(
         room_id=room_id,
     )
 
-    event_data: dict[str, object] = {"container": container.model_dump()}
+    event_data: dict[str, object] = {"container": container.model_dump(mode="json")}
 
     delivery_stats = await connection_manager.broadcast_room_event(
         event_type="container.created",

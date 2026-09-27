@@ -123,14 +123,19 @@ def _strip_cmd_field(value: object) -> str:
     return value.strip() if isinstance(value, str) else ""
 
 
-def _app_state_container_service(request: object) -> object | None:
-    app = cast(object | None, getattr(request, "app", None))
-    if app is None:
+def _resolve_container_service(persistence: object) -> object | None:
+    """Resolve the shared ContainerService the same way the HTTP container API does.
+
+    `get_container_service` caches by persistence identity, so this returns the same
+    instance -- and thus sees the same open-container sessions -- as the HTTP
+    /api/containers/* endpoints. There is no `app.state.container_service`; nothing in
+    server/ ever set one.
+    """
+    if persistence is None:
         return None
-    state = cast(object | None, getattr(app, "state", None))
-    if state is None:
-        return None
-    return cast(object | None, getattr(state, "container_service", None))
+    from ..api.container_helpers import get_container_service
+
+    return get_container_service(persistence)
 
 
 def _extract_items_json_branch(container_found: object, container_id: UUID | None) -> tuple[object, UUID | None] | None:
@@ -203,9 +208,9 @@ async def transfer_item_to_container(
 
 async def validate_put_command_inputs(
     command_data: dict[str, object],
-    request: object,
     connection_manager: object,
     player: Player,
+    persistence: object,
 ) -> tuple[str, str, object | None, object, object, dict[str, object] | None, int | None] | dict[str, str]:
     """Validate and extract inputs for put command."""
     item_name = _strip_cmd_field(command_data.get("item", ""))
@@ -222,7 +227,7 @@ async def validate_put_command_inputs(
         )
         return {"result": "Usage: put <item> [in] <container> [quantity]"}
 
-    container_service = _app_state_container_service(request)
+    container_service = _resolve_container_service(persistence)
     if not container_service:
         return {"result": "Container service is unavailable."}
 
@@ -478,7 +483,7 @@ async def transfer_item_from_container(
 
 
 async def validate_get_command_inputs(
-    command_data: dict[str, object], request: object, connection_manager: object
+    command_data: dict[str, object], connection_manager: object, persistence: object
 ) -> tuple[str, str, object | None, object | None, object] | dict[str, str]:
     """Validate and extract inputs for get command."""
     item_name = _strip_cmd_field(command_data.get("item", ""))
@@ -495,7 +500,7 @@ async def validate_get_command_inputs(
     if container_name.lower() == "room":
         return item_name, container_name, quantity, None, room_manager
 
-    container_service = _app_state_container_service(request)
+    container_service = _resolve_container_service(persistence)
     if not container_service:
         return {"result": "Container service is unavailable."}
 
