@@ -1,6 +1,6 @@
 ---
 name: mythosmud-database-placement
-description: Enforce MythosMUD database placement: production under /data/players/ and /data/npcs/, tests under server/tests/data/players/ and server/tests/data/npcs/. PostgreSQL only; player_id is UUID. Use when creating or moving DB files, adding persistence, or discussing database paths.
+description: "Enforce MythosMUD database placement: production under /data/players/ and /data/npcs/, tests under server/tests/data/players/ and server/tests/data/npcs/. PostgreSQL only; player_id is UUID. Use when creating or moving DB files, adding persistence, or discussing database paths."
 ---
 
 # MythosMUD Database Placement
