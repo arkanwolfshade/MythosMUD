@@ -94,7 +94,7 @@ export interface ChatMessage {
 }
 
 /** Weapon stats on an inventory stack (mirrors server WeaponStats). */
-export interface WeaponStats {
+interface WeaponStats {
   min_damage: number;
   max_damage: number;
   modifier?: number;
@@ -123,8 +123,8 @@ export interface InventoryStack {
   } | null;
 }
 
-export type ContainerSourceType = 'environment' | 'equipment' | 'corpse';
-export type ContainerLockState = 'unlocked' | 'locked' | 'sealed';
+type ContainerSourceType = 'environment' | 'equipment' | 'corpse';
+type ContainerLockState = 'unlocked' | 'locked' | 'sealed';
 
 /** Full container state (mirrors server ContainerComponent.model_dump()). */
 export interface ContainerSnapshot {
