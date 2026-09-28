@@ -5,6 +5,7 @@ Split out of rooms.py to keep that module's file-nloc under the project limit (#
 """
 
 import uuid
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, cast
 
 from fastapi import Request, status
@@ -82,12 +83,19 @@ async def apply_exploration_filter_if_needed(  # pylint: disable=too-many-argume
     return rooms
 
 
-async def fetch_room_list(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: mirrors the /list route's own dependency-heavy signature (#787 file-nloc split)
-    plane: str,
-    zone: str,
-    sub_zone: str | None,
-    include_exits: bool,
-    filter_explored: bool,
+@dataclass(frozen=True)
+class RoomListQuery:
+    """The /list route's query parameters, grouped so fetch_room_list stays under the arg limit."""
+
+    plane: str
+    zone: str
+    sub_zone: str | None
+    include_exits: bool
+    filter_explored: bool
+
+
+async def fetch_room_list(
+    query: RoomListQuery,
     current_user: User | None,
     room_service: RoomService,
     persistence: "AsyncPersistenceLayer",
@@ -100,6 +108,8 @@ async def fetch_room_list(  # pylint: disable=too-many-arguments,too-many-positi
     Raises:
         LoggedHTTPException: 500 if the room service or filter raises.
     """
+    plane, zone, sub_zone = query.plane, query.zone, query.sub_zone
+    include_exits, filter_explored = query.include_exits, query.filter_explored
     logger.debug(
         "Room list requested",
         plane=plane,

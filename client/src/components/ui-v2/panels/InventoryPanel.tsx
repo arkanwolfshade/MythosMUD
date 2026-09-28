@@ -110,6 +110,88 @@ function RoomContainerRow({
   );
 }
 
+function SectionHeading({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="text-xs font-semibold text-mythos-terminal-primary uppercase border-b border-mythos-terminal-primary/30 pb-1 mb-1">
+      {children}
+    </div>
+  );
+}
+
+function EquippedSection({
+  entries,
+  onSendCommand,
+  onOpenContainer,
+}: {
+  entries: [string, InventoryStack][];
+  onSendCommand: (c: string) => void;
+  onOpenContainer: (containerId: string) => void;
+}) {
+  if (entries.length === 0) return null;
+  return (
+    <div>
+      <SectionHeading>Equipped</SectionHeading>
+      <ul>
+        {entries.map(([slot, item]) => (
+          <EquippedRow
+            key={slot}
+            slot={slot}
+            item={item}
+            onSendCommand={onSendCommand}
+            onOpenContainer={onOpenContainer}
+          />
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function CarriedSection({ items, onSendCommand }: { items: InventoryStack[]; onSendCommand: (c: string) => void }) {
+  return (
+    <div>
+      <SectionHeading>Carried ({items.length})</SectionHeading>
+      {items.length === 0 ? (
+        <p className="text-sm text-mythos-terminal-text-secondary">Empty.</p>
+      ) : (
+        <ul>
+          {items.map(item => (
+            <InventoryRow key={item.item_instance_id} item={item} onSendCommand={onSendCommand} />
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+function RoomContainersSection({
+  containers,
+  onOpenContainer,
+}: {
+  containers: RoomContainerSummary[];
+  onOpenContainer: (containerId: string) => void;
+}) {
+  if (containers.length === 0) return null;
+  return (
+    <div>
+      <SectionHeading>In this room</SectionHeading>
+      <ul>
+        {containers.map(c => (
+          <RoomContainerRow key={c.container_id} container={c} onOpenContainer={onOpenContainer} />
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function EmptyInventory() {
+  return (
+    <div className="p-4 text-mythos-terminal-text-secondary">
+      <p>You are carrying nothing.</p>
+      <p className="text-xs mt-2">Use the &quot;inventory&quot; command in-game to refresh.</p>
+    </div>
+  );
+}
+
 /**
  * Player inventory dock panel (#711): carried items, equipped slots, and any containers
  * (corpses) known to be in the current room. Equip/unequip/drop go through the text command
@@ -127,63 +209,15 @@ export const InventoryPanel: React.FC<InventoryPanelProps> = ({
   const equippedEntries = Object.entries(equipped ?? {});
   const containers = roomContainers ?? [];
 
-  if (carried.length === 0 && equippedEntries.length === 0 && containers.length === 0) {
-    return (
-      <div className="p-4 text-mythos-terminal-text-secondary">
-        <p>You are carrying nothing.</p>
-        <p className="text-xs mt-2">Use the &quot;inventory&quot; command in-game to refresh.</p>
-      </div>
-    );
+  if (carried.length + equippedEntries.length + containers.length === 0) {
+    return <EmptyInventory />;
   }
 
   return (
     <div className="p-4 space-y-4 overflow-y-auto max-h-full">
-      {equippedEntries.length > 0 && (
-        <div>
-          <div className="text-xs font-semibold text-mythos-terminal-primary uppercase border-b border-mythos-terminal-primary/30 pb-1 mb-1">
-            Equipped
-          </div>
-          <ul>
-            {equippedEntries.map(([slot, item]) => (
-              <EquippedRow
-                key={slot}
-                slot={slot}
-                item={item}
-                onSendCommand={onSendCommand}
-                onOpenContainer={onOpenContainer}
-              />
-            ))}
-          </ul>
-        </div>
-      )}
-
-      <div>
-        <div className="text-xs font-semibold text-mythos-terminal-primary uppercase border-b border-mythos-terminal-primary/30 pb-1 mb-1">
-          Carried ({carried.length})
-        </div>
-        {carried.length === 0 ? (
-          <p className="text-sm text-mythos-terminal-text-secondary">Empty.</p>
-        ) : (
-          <ul>
-            {carried.map(item => (
-              <InventoryRow key={item.item_instance_id} item={item} onSendCommand={onSendCommand} />
-            ))}
-          </ul>
-        )}
-      </div>
-
-      {containers.length > 0 && (
-        <div>
-          <div className="text-xs font-semibold text-mythos-terminal-primary uppercase border-b border-mythos-terminal-primary/30 pb-1 mb-1">
-            In this room
-          </div>
-          <ul>
-            {containers.map(c => (
-              <RoomContainerRow key={c.container_id} container={c} onOpenContainer={onOpenContainer} />
-            ))}
-          </ul>
-        </div>
-      )}
+      <EquippedSection entries={equippedEntries} onSendCommand={onSendCommand} onOpenContainer={onOpenContainer} />
+      <CarriedSection items={carried} onSendCommand={onSendCommand} />
+      <RoomContainersSection containers={containers} onOpenContainer={onOpenContainer} />
     </div>
   );
 };
