@@ -17,7 +17,7 @@
  */
 
 import { expect, test } from '@playwright/test';
-import { executeCommand, waitForMessage } from '../fixtures/auth';
+import { clickWithoutStability, executeCommand, waitForMessage } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
@@ -99,7 +99,9 @@ test.describe('Multi-User Container Looting', () => {
       // column, so an unscoped locator would never go invisible.
       const slingRow = corpseColumn.getByText('Sling', { exact: true }).first();
       await expect(slingRow).toBeVisible({ timeout: 15000 });
-      await corpseColumn.getByRole('button', { name: 'Transfer' }).first().click();
+      // Same reason as the Open buttons in openCorpseWithRetry: Playwright's stability check can
+      // fail to settle for controls in this modal stack in Firefox, so dispatch the click directly.
+      await clickWithoutStability(corpseColumn.getByRole('button', { name: 'Transfer' }).first());
       await expect(slingRow).not.toBeVisible({ timeout: 15000 });
     } finally {
       await despawnSanitariumCultists(awContext.page);
