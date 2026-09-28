@@ -33,6 +33,7 @@ from ..services.admin_auth_service import AdminAction
 from ..services.exploration_service import ExplorationService
 from ..structured_logging.enhanced_logging_config import get_logger
 from .rooms_helpers import (
+    RoomListQuery,
     apply_exploration_filter_if_needed,
     apply_room_properties_to_memory,
     fetch_room_list,
@@ -110,11 +111,13 @@ async def list_rooms(  # pylint: disable=too-many-arguments,too-many-positional-
     - Non-admin users: Only see rooms that the player has explored
     """
     return await fetch_room_list(
-        plane=plane,
-        zone=zone,
-        sub_zone=sub_zone,
-        include_exits=include_exits,
-        filter_explored=filter_explored,
+        query=RoomListQuery(
+            plane=plane,
+            zone=zone,
+            sub_zone=sub_zone,
+            include_exits=include_exits,
+            filter_explored=filter_explored,
+        ),
         current_user=current_user,
         room_service=room_service,
         persistence=persistence,
