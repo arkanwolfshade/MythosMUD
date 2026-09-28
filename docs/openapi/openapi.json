@@ -7741,6 +7741,31 @@
               }
             ],
             "description": "Nested container for wearable items"
+          },
+          "condition": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Condition",
+            "description": "Item condition, e.g. 'pristine'"
+          },
+          "position": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position",
+            "description": "Ordering position within a container"
           }
         },
         "additionalProperties": false,
