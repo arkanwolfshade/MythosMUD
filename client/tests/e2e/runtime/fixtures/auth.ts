@@ -6,7 +6,7 @@
 
 import './multiplayer-browser-window.d.ts';
 
-import { expect, type BrowserContext, type Page } from '@playwright/test';
+import { expect, type BrowserContext, type Locator, type Page } from '@playwright/test';
 import { CharacterSelectionPage, LoginPage, MotdPage } from '../pages';
 import { createInstrumentedContext } from './e2e-browser-helpers';
 import { TEST_TIMEOUTS } from './test-data';
@@ -273,7 +273,7 @@ export async function logoutPlayer(
   const loginInput = page.getByTestId('username-input');
   if (spaFallback) {
     const softMs = Math.min(timeoutMs, 15000);
-    const reachedLogin = await loginInput.isVisible({ timeout: softMs }).catch(() => false);
+    const reachedLogin = await isVisibleWithin(loginInput, softMs);
     if (!reachedLogin) {
       await page.goto('/', { waitUntil: 'domcontentloaded' });
     }
@@ -504,6 +504,21 @@ async function refreshPlayableSession(page: Page, timeoutMs: number = 45000): Pr
 
   await page.waitForFunction(() => window.__mythosE2eIsGameUiLoaded?.() === true, undefined, { timeout: timeoutMs });
   await waitForPlayableSession(page, timeoutMs);
+}
+
+/**
+ * True if `locator` becomes visible within `ms`, else false.
+ *
+ * Use this instead of `locator.isVisible({ timeout })`: Playwright ignores that timeout and
+ * returns immediately, so it cannot wait for anything. That silently turned "wait up to N ms"
+ * into "check once right now" -- e.g. logoutPlayer reloaded the page ~0ms after clicking Exit,
+ * aborting a ~250ms logout and landing back in the still-valid session.
+ */
+export async function isVisibleWithin(locator: Locator, ms: number): Promise<boolean> {
+  return locator
+    .waitFor({ state: 'visible', timeout: ms })
+    .then(() => true)
+    .catch(() => false);
 }
 
 /**

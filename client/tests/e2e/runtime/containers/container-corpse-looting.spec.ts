@@ -20,7 +20,7 @@
  */
 
 import { expect, test } from '@playwright/test';
-import { executeCommand, waitForMessage } from '../fixtures/auth';
+import { clickWithoutStability, executeCommand, waitForMessage } from '../fixtures/auth';
 import { cleanupMultiPlayerContexts, createMultiPlayerContexts, ensurePlayerInGame } from '../fixtures/multiplayer';
 import {
   despawnSanitariumCultists,
@@ -73,7 +73,9 @@ test.describe('Corpse Looting with Grace Periods', () => {
       // column, where an unscoped locator would still see it and the assertion could never pass.
       const slingRow = corpseColumn.getByText('Sling', { exact: true }).first();
       await expect(slingRow).toBeVisible({ timeout: 15000 });
-      await corpseColumn.getByRole('button', { name: 'Transfer' }).first().click();
+      // Same reason as the Open buttons in openCorpseWithRetry: Playwright's stability check can
+      // fail to settle for controls in this modal stack in Firefox, so dispatch the click directly.
+      await clickWithoutStability(corpseColumn.getByRole('button', { name: 'Transfer' }).first());
       await expect(slingRow).not.toBeVisible({ timeout: 15000 });
     } finally {
       await despawnSanitariumCultists(awContext.page);

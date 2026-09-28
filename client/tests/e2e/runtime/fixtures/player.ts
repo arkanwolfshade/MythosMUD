@@ -11,6 +11,7 @@ import {
   executeCommand,
   getMessages,
   getPageSessionCredentials,
+  isVisibleWithin,
   loginPlayer,
   waitForMessage,
   waitForPlayableSession,
@@ -165,30 +166,36 @@ export function corpseCard(page: Page, opts: { openable: boolean; graceActive?: 
 export async function openCorpseWithRetry(page: Page, itemText: string): Promise<Locator> {
   // Identify the corpse by its CONTENTS, not by position or countdown. A room accumulates
   // corpses across a suite run, and a spec can outlive the 300s grace period, so neither "the
-  // first card" nor "the one still counting down" reliably picks the corpse we just made.
-  // Opening a wrong one is harmless (each opens its own modal), so try each openable card until
-  // a Container column shows the item, and hand that column back so the caller transfers from
-  // the right modal.
+  // first card" nor "the one still counting down" reliably picks the corpse we just made. Try
+  // in-grace cards first (normally only ours), then the rest, until a Container column shows the
+  // item, and hand that column back so the caller transfers from the right modal.
   const columnWithItem = page
     .getByTestId('transfer-column-container')
     .filter({ has: page.getByText(itemText, { exact: true }) })
     .first();
-  const cards = corpseCard(page, { openable: true });
-  await expect(cards.first()).toBeVisible({ timeout: 20000 });
+  const candidates = [
+    corpseCard(page, { openable: true, graceActive: true }),
+    corpseCard(page, { openable: true, graceActive: false }),
+  ];
+  await expect(corpseCard(page, { openable: true }).first()).toBeVisible({ timeout: 20000 });
 
   for (let attempt = 0; attempt < 4; attempt++) {
-    const cardCount = await cards.count();
-    for (let index = 0; index < cardCount; index++) {
-      const openButton = cards.nth(index).getByRole('button', { name: 'Open' });
-      if (!(await openButton.isEnabled().catch(() => false))) {
-        continue;
-      }
-      // CorpseOverlay re-renders every second for its countdown, which can leave Playwright's
-      // actionability check never settling. clickWithoutStability dispatches the DOM click
-      // directly (same helper dismissDeathInterstitial uses).
-      await clickWithoutStability(openButton);
-      if (await columnWithItem.isVisible({ timeout: 3000 }).catch(() => false)) {
-        return columnWithItem;
+    for (const cards of candidates) {
+      const cardCount = await cards.count();
+      for (let index = 0; index < cardCount; index++) {
+        const openButton = cards.nth(index).getByRole('button', { name: 'Open' });
+        if (!(await openButton.isEnabled().catch(() => false))) {
+          continue;
+        }
+        // CorpseOverlay re-renders every second for its countdown, which can leave Playwright's
+        // actionability check never settling. clickWithoutStability dispatches the DOM click
+        // directly (same helper dismissDeathInterstitial uses).
+        await clickWithoutStability(openButton);
+        // A real wait: isVisible({ timeout }) returns immediately, which made this loop click
+        // every corpse's Open in quick succession and stack one modal per corpse.
+        if (await isVisibleWithin(columnWithItem, 3000)) {
+          return columnWithItem;
+        }
       }
     }
     // Right after respawn the persisted current_room_id can briefly lag the live session, so
@@ -330,11 +337,11 @@ export async function killPlayerAndProduceCorpse(
     // `look` forces a fresh room_state, which is what carries the corpse summary to a player who
     // was dead when container.created fired.
     await executeCommand(live, 'look').catch(() => {});
-    const corpseVisible = await live
-      .getByText(/Grace period/i)
-      .first()
-      .isVisible({ timeout: 25000 })
-      .catch(() => false);
+    // Our fresh corpse is the one this player may open AND whose grace is still counting down.
+    // A plain /Grace period/ text match also hit "Grace period ended" on earlier specs' corpses,
+    // and isVisible({ timeout }) never waited -- so a slow render triggered another full kill
+    // cycle and left an extra corpse behind.
+    const corpseVisible = await isVisibleWithin(corpseCard(live, { openable: true, graceActive: true }).first(), 25000);
     if (corpseVisible) {
       return live;
     }
