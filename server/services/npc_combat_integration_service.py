@@ -386,6 +386,17 @@ class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombat
                     target_id=target_id,
                 )
                 return False
+            if "already in combat" in str(e).lower():
+                # Expected contention, not a fault: a player (or this NPC) can be in only one
+                # combat at a time, so when several aggressive NPCs share a room, every one after
+                # the first is refused here on each aggro attempt. Logging that at ERROR flooded
+                # errors.log with routine gameplay.
+                logger.debug(
+                    "NPC attack on player skipped - a participant is already in combat",
+                    npc_id=npc_id,
+                    target_id=target_id,
+                )
+                return False
             logger.error(
                 "Error handling NPC attack on player",
                 error=str(e),

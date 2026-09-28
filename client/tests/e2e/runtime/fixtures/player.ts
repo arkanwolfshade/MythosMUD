@@ -267,15 +267,14 @@ const COMBAT_NPC_NAME = 'Cultist of the Yellow Sign';
  * way to create a container in this game today (environmental and wearable containers have no
  * live data; the generic `admin set DP -9` tick-death path used elsewhere does not create a corpse).
  *
- * Spawns several cultists and lets their combat damage do all the work, at full DP and with no
- * admin DP manipulation. Each hits for ~25 against a 20 DP player, so the first hit lands at -5
- * (mortally wounded) and a sibling's hit moments later crosses -10 -- a genuine combat death,
- * which is the only death path that creates a corpse.
+ * Spawns ONE cultist, drops the player to 5 DP, and attacks it. A cultist hits for ~25, so its
+ * first landed hit takes the player from 5 straight past -10 -- an unambiguous combat death.
  *
- * Deliberately does NOT pre-lower DP into the mortally-wounded band: the tick loop decays wounded
- * players (game_tick_death.py::_process_mortally_wounded_player) and reliably reached -10 first,
- * routing the death through player_death_service, which creates NO corpse. Several mobs keep the
- * wounded window down to part of a single combat round.
+ * One attacker is enough, and more would be wrong: a participant can be in only one combat at a
+ * time (combat_service_start.validate_combat_can_start), so extra cultists are refused on every
+ * aggro attempt and never land a hit. The tick's wounded-decay death (which creates no corpse)
+ * can't pre-empt this either: game_tick_death._player_in_active_combat skips decay while the
+ * player is in an active combat.
  */
 async function killPlayerViaCombat(page: Page, creds: { username: string; password: string }): Promise<Page> {
   let live = await ensurePlayableConnection(page, { ...creds, timeoutMs: 45000 });
@@ -283,12 +282,8 @@ async function killPlayerViaCombat(page: Page, creds: { username: string; passwo
   await ensureNotInCombat(live, 4);
   live = await ensureStanding(live, 10000);
   await despawnSanitariumCultists(live);
-  // Three attackers: one alone trades blows slowly enough that the player often kills it first,
-  // and a lone hit only wounds. A pack finishes the job inside a round or two.
-  for (let i = 0; i < 3; i++) {
-    await executeCommand(live, `npc spawn ${COMBAT_NPC_ID}`);
-    await new Promise(r => setTimeout(r, 800));
-  }
+  await executeCommand(live, `npc spawn ${COMBAT_NPC_ID}`);
+  await new Promise(r => setTimeout(r, 800));
 
   // DP 5: still alive (so the tick's wounded-decay death, which creates no corpse, can't claim
   // them) but low enough that a single ~25-damage cultist hit lands well past -10, making the

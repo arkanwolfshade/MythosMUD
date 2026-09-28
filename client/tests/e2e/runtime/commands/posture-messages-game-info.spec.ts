@@ -50,6 +50,17 @@ async function prepCoLocatedContexts(
   return [aw, target];
 }
 
+/**
+ * Undo `admin set DP <target> 0`. DP 0 is mortally wounded, and the tick decays it by 1 per 100ms
+ * tick (game_tick_death._process_mortally_wounded_players), so the target is dead within about a
+ * second -- long before any message assertion finishes. Restoring DP afterwards is not enough; the
+ * target must be respawned, or the next test starts with a dead player. Run from `finally`.
+ */
+async function restoreTarget(aw: PlayerContext, target: PlayerContext, targetCharName: string): Promise<void> {
+  await executeCommand(aw.page, `admin set DP ${targetCharName} 20`).catch(() => {});
+  target.page = await ensurePlayableAlive(target.page, target.player.username, target.player.password);
+}
+
 test.describe('Posture messages in Game Info (#395)', () => {
   test.describe.configure({ timeout: 300_000 });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
@@ -69,17 +80,19 @@ test.describe('Posture messages in Game Info (#395)', () => {
     const targetCharName = await characterNameFromPage(target);
 
     await aw.page.bringToFront();
-    await executeCommand(aw.page, `admin set DP ${targetCharName} 0`);
-    await expect(aw.page.locator('[data-message-text]').filter({ hasText: ADMIN_DP_SET }).first()).toBeVisible({
-      timeout: 45000,
-    });
+    try {
+      await executeCommand(aw.page, `admin set DP ${targetCharName} 0`);
+      await expect(aw.page.locator('[data-message-text]').filter({ hasText: ADMIN_DP_SET }).first()).toBeVisible({
+        timeout: 45000,
+      });
 
-    await target.page.bringToFront();
-    await expect(target.page.locator('[data-message-text]').filter({ hasText: LYING_SELF }).first()).toBeVisible({
-      timeout: 45000,
-    });
-
-    await executeCommand(aw.page, `admin set DP ${targetCharName} 20`);
+      await target.page.bringToFront();
+      await expect(target.page.locator('[data-message-text]').filter({ hasText: LYING_SELF }).first()).toBeVisible({
+        timeout: 45000,
+      });
+    } finally {
+      await restoreTarget(aw, target, targetCharName);
+    }
   });
 
   test('observer sees third-person sit line when co-player uses /sit', async ({ browser }) => {
@@ -107,11 +120,13 @@ test.describe('Posture messages in Game Info (#395)', () => {
     const targetCharName = await characterNameFromPage(target);
 
     await aw.page.bringToFront();
-    await executeCommand(aw.page, `admin set DP ${targetCharName} 0`);
-    await expect(aw.page.locator('[data-message-text]').filter({ hasText: LYING_ROOM }).first()).toBeVisible({
-      timeout: 45000,
-    });
-
-    await executeCommand(aw.page, `admin set DP ${targetCharName} 20`);
+    try {
+      await executeCommand(aw.page, `admin set DP ${targetCharName} 0`);
+      await expect(aw.page.locator('[data-message-text]').filter({ hasText: LYING_ROOM }).first()).toBeVisible({
+        timeout: 45000,
+      });
+    } finally {
+      await restoreTarget(aw, target, targetCharName);
+    }
   });
 });
