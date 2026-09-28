@@ -19,6 +19,10 @@ test.describe('Administrative Summon Command', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
+    // The waits below allow up to 60s each, but a hook defaults to 30s. As the first spec in the
+    // suite (admin/ sorts first) this runs against a cold server, where two fresh logins alone
+    // can exceed 30s -- failing the spec before any test body runs.
+    test.setTimeout(180_000);
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
@@ -28,7 +32,9 @@ test.describe('Administrative Summon Command', () => {
   });
 
   test.afterAll(async () => {
-    // Cleanup contexts
+    // Two contexts are logged out one after another; give teardown the same headroom as
+    // container-multi-user-looting so a slow logout cannot fail an otherwise-green spec.
+    test.setTimeout(150_000);
     await cleanupMultiPlayerContexts(contexts);
   });
 
