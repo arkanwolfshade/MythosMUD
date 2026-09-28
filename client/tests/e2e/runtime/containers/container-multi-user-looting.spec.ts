@@ -25,6 +25,7 @@ import {
   waitForAllPlayersInGame,
 } from '../fixtures/multiplayer';
 import {
+  corpseCard,
   despawnSanitariumCultists,
   ensurePlayableAlive,
   goEastFromFoyer,
@@ -44,11 +45,18 @@ test.describe('Multi-User Container Looting', () => {
   });
 
   test.afterAll(async () => {
+    // cleanupMultiPlayerContexts walks each context in turn, and a single one can spend 25s in
+    // logoutPlayer plus 10s waiting for the login form (more when it has to heal a dead player).
+    // Two contexts therefore cannot finish inside the default 30s hook budget, which failed the
+    // whole spec even when every assertion in it had passed.
+    test.setTimeout(150_000);
     await cleanupMultiPlayerContexts(contexts);
   });
 
   test('non-owner is denied during the grace period; owner can loot', async () => {
-    test.setTimeout(180_000);
+    // Two player sessions plus a full kill/respawn/corpse cycle; 180s expired mid-test and
+    // reported a bare timeout instead of the real assertion failure.
+    test.setTimeout(420_000);
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
     const awCreds = { username: awContext.player.username, password: awContext.player.password };
@@ -74,16 +82,24 @@ test.describe('Multi-User Container Looting', () => {
       await ithaquaContext.page.bringToFront().catch(() => {});
       await executeCommand(ithaquaContext.page, 'go west');
       await waitForMessage(ithaquaContext.page, /Main Foyer|marble|You (move|go) west/i, 20000).catch(() => {});
-      await expect(ithaquaContext.page.getByText(/Grace period/i)).toBeVisible({ timeout: 20000 });
-      await expect(ithaquaContext.page.getByText(/Only the owner can access during grace period/i)).toBeVisible();
-      await expect(ithaquaContext.page.getByRole('button', { name: 'Open' }).first()).toBeDisabled();
+      // Scope to a grace-locked card: earlier specs can leave already-expired corpses in this
+      // room, whose cards render the same strings and an enabled Open button.
+      const lockedCorpse = corpseCard(ithaquaContext.page, { openable: false, graceActive: true }).first();
+      await expect(lockedCorpse).toBeVisible({ timeout: 20000 });
+      await expect(lockedCorpse.getByText(/Only the owner can access during grace period/i)).toBeVisible();
+      await expect(lockedCorpse.getByRole('button', { name: 'Open' })).toBeDisabled();
 
       // Owner access still succeeds while the same grace period is active.
       await awContext.page.bringToFront().catch(() => {});
-      await openCorpseWithRetry(awContext.page, 'Sling');
+      // Returns the Container column of the modal holding the Sling -- this room also contains
+      // corpses left by earlier specs, whose modals look identical but are empty.
+      const corpseColumn = await openCorpseWithRetry(awContext.page, 'Sling');
 
-      const slingRow = awContext.page.getByText('Sling', { exact: true }).first();
-      await awContext.page.getByRole('button', { name: 'Transfer' }).first().click();
+      // Container column only: after the transfer the Sling reappears in the modal's Inventory
+      // column, so an unscoped locator would never go invisible.
+      const slingRow = corpseColumn.getByText('Sling', { exact: true }).first();
+      await expect(slingRow).toBeVisible({ timeout: 15000 });
+      await corpseColumn.getByRole('button', { name: 'Transfer' }).first().click();
       await expect(slingRow).not.toBeVisible({ timeout: 15000 });
     } finally {
       await despawnSanitariumCultists(awContext.page);

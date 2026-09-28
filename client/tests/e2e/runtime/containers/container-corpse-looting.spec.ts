@@ -44,7 +44,10 @@ test.describe('Corpse Looting with Grace Periods', () => {
   });
 
   test('owner can loot their own corpse during the grace period', async () => {
-    test.setTimeout(180_000);
+    // A kill cycle (combat death + respawn + corpse check) can take ~90s, and
+    // killPlayerAndProduceCorpse retries it, so 180s could expire before the looting assertions
+    // ran at all -- reporting a bare timeout instead of whatever actually went wrong.
+    test.setTimeout(420_000);
     const awContext = contexts[0];
     const creds = { username: awContext.player.username, password: awContext.player.password };
 
@@ -61,11 +64,16 @@ test.describe('Corpse Looting with Grace Periods', () => {
 
       // CorpseOverlay (client/src/components/ui-v2/containers/CorpseOverlay.tsx) renders from the
       // room's container.created broadcast -- the owner's Open button is enabled during grace.
-      await openCorpseWithRetry(awContext.page, 'Sling');
+      // Returns the Container column of the modal that actually holds the Sling, so the transfer
+      // below cannot act on a stale corpse's modal.
+      const corpseColumn = await openCorpseWithRetry(awContext.page, 'Sling');
 
       // ContainerTransferModal shows the corpse's contents (the player's own inventory at death).
-      const slingRow = awContext.page.getByText('Sling', { exact: true }).first();
-      await awContext.page.getByRole('button', { name: 'Transfer' }).first().click();
+      // Scope to the Container column: transferring moves the Sling into the modal's Inventory
+      // column, where an unscoped locator would still see it and the assertion could never pass.
+      const slingRow = corpseColumn.getByText('Sling', { exact: true }).first();
+      await expect(slingRow).toBeVisible({ timeout: 15000 });
+      await corpseColumn.getByRole('button', { name: 'Transfer' }).first().click();
       await expect(slingRow).not.toBeVisible({ timeout: 15000 });
     } finally {
       await despawnSanitariumCultists(awContext.page);

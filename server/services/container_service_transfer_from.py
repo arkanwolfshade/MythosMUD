@@ -217,6 +217,33 @@ class ContainerTransferFromMixin(ContainerTransferToMixin):
                 )
                 raise
 
+    @staticmethod
+    def _resolve_container_stack(container: ContainerComponent, item: InventoryStack) -> InventoryStack:
+        """
+        Replace a caller-supplied stack with the container's own copy of it.
+
+        The GUI identifies the stack by ``{item_id, item_instance_id}`` only, which is what
+        .cursor/rules/server-authority.mdc asks for -- the client must not be the source of truth
+        for item_name or quantity. Downstream inventory validation needs the full stack, though,
+        and used to reject the partial one outright ("Missing required inventory field: item_name",
+        surfacing as a 500 on every GUI loot). Resolving against the container we just loaded gives
+        the authoritative stack without trusting the caller for anything but the identity.
+
+        Args:
+            container: Container component already loaded from persistence.
+            item: Caller-supplied stack, possibly only an identifier.
+
+        Returns:
+            InventoryStack: The container's own stack when the instance id matches, else ``item``.
+        """
+        instance_id = item.get("item_instance_id")
+        if not instance_id:
+            return item
+        for stored in container.items:
+            if stored.get("item_instance_id") == instance_id:
+                return stored
+        return item
+
     async def transfer_from_container(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Container transfer requires many parameters for context and transfer operations
         self,
         container_id: UUID,
@@ -235,6 +262,7 @@ class ContainerTransferFromMixin(ContainerTransferToMixin):
         )
         self._verify_container_open(container_id, player_id, mutation_token)
         container = await self._require_container_component(container_id, player_id, item, "transfer_from_container")
+        item = self._resolve_container_stack(container, item)
         player = await self._require_player_for_transfer(player_id, container_id, item, "transfer_from_container")
         return await self._execute_transfer_from_container(
             container, player, container_id, player_id, mutation_token, item, quantity

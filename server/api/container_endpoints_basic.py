@@ -24,7 +24,7 @@ from ..schemas.containers import (
     ContainerTransferResponse,
 )
 from ..schemas.containers.container_data import ContainerData, InventoryStack
-from ..schemas.game.weapon import WeaponStats
+from ..schemas.game.weapon import weapon_stats_from_metadata
 from ..structured_logging.enhanced_logging_config import get_logger
 from .container_events import (
     emit_close_container_event,
@@ -179,7 +179,7 @@ def _coerce_weapon_on_item(item_copy: dict[str, object]) -> None:
     if not isinstance(weapon_raw, dict):
         return
     try:
-        item_copy["weapon"] = WeaponStats.model_validate(weapon_raw)
+        item_copy["weapon"] = weapon_stats_from_metadata(cast("dict[str, object]", weapon_raw))
     except (ValidationError, TypeError):
         # If weapon dict doesn't match WeaponStats, keep as dict (model may drop it)
         pass

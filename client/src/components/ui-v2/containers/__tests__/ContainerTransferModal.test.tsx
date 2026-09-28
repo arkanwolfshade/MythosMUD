@@ -154,6 +154,21 @@ describe('ContainerTransferModal', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Transfer' }));
     expect(await screen.findByRole('alert')).toHaveTextContent('Container is full');
   });
+  it('labels the two item columns so tests can target one side of the transfer', () => {
+    // Both columns render identical item rows (and the inventory panel behind the modal renders
+    // the same names again), so an unscoped getByText is ambiguous.
+    render(
+      <ContainerTransferModal
+        containerId="c1"
+        state={containerState()}
+        playerInventory={[]}
+        authToken="tok"
+        onClose={vi.fn()}
+      />
+    );
+    expect(screen.getByTestId('transfer-column-container')).toBeInTheDocument();
+    expect(screen.getByTestId('transfer-column-inventory')).toBeInTheDocument();
+  });
 });
 
 describe('ContainerTransferModals', () => {

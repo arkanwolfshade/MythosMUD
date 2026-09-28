@@ -16,7 +16,7 @@ from ..models.game import (  # pylint: disable=unused-import  # Reason: Inventor
     PositionState,
     StatusEffect,
 )
-from ..schemas.game.weapon import WeaponStats
+from ..schemas.game.weapon import WeaponStats, weapon_stats_from_metadata
 from ..schemas.players import PlayerRead
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -43,7 +43,7 @@ def _weapon_from_prototype_registry(registry: Any, prototype_id: str) -> WeaponS
     weapon = prototype.metadata.get("weapon")
     if isinstance(weapon, dict):
         try:
-            return WeaponStats(**weapon)
+            return weapon_stats_from_metadata(cast(dict[str, object], weapon))
         except (ValidationError, TypeError):
             # If weapon dict doesn't match WeaponStats schema, return None
             # ValidationError: Pydantic validation failed

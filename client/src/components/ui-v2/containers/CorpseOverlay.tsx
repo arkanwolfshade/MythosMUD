@@ -14,7 +14,16 @@ function CorpseCard({ corpse, playerId, onOpen }: CorpseCardProps) {
   const graceActive = graceRemaining !== null && graceRemaining.totalSeconds > 0;
 
   return (
-    <div className="border border-mythos-terminal-border rounded p-2 bg-mythos-terminal-surface space-y-1 text-sm">
+    // A room can hold several corpses at once, and every card renders the same labels and an
+    // "Open" button, so tests need to say which card they mean. data-openable distinguishes the
+    // owner's unlocked corpse from one another player is still grace-locked out of.
+    <div
+      className="border border-mythos-terminal-border rounded p-2 bg-mythos-terminal-surface space-y-1 text-sm"
+      data-testid="corpse-card"
+      data-container-id={corpse.container_id}
+      data-openable={canOpen ? 'true' : 'false'}
+      data-grace-active={graceActive ? 'true' : 'false'}
+    >
       <div className="font-medium text-mythos-terminal-text">Corpse</div>
       {graceActive ? (
         <p className="text-xs text-mythos-terminal-warning">

@@ -68,6 +68,26 @@ describe('CorpseOverlay', () => {
     expect(screen.getByRole('button', { name: 'Open' })).toBeEnabled();
   });
 
+  it('distinguishes a still-in-grace corpse from an expired one', () => {
+    // E2E needs this to tell "the corpse I just made" from stale ones left by earlier specs:
+    // an expired corpse is openable by anybody and sorts first, but holds none of our items.
+    const fresh = corpse({ container_id: 'corpse-fresh' });
+    const expired = corpse({
+      container_id: 'corpse-expired',
+      metadata: { grace_period_start: new Date(Date.now() - 400_000).toISOString(), grace_period_seconds: 300 },
+    });
+    render(<CorpseOverlay roomContainers={[expired, fresh]} playerId="owner-1" onOpen={vi.fn()} />);
+
+    const byId = Object.fromEntries(
+      screen.getAllByTestId('corpse-card').map(c => [c.getAttribute('data-container-id'), c])
+    );
+    expect(byId['corpse-fresh']?.getAttribute('data-grace-active')).toBe('true');
+    expect(byId['corpse-expired']?.getAttribute('data-grace-active')).toBe('false');
+    // Both are openable by the owner, so data-openable alone cannot separate them.
+    expect(byId['corpse-fresh']?.getAttribute('data-openable')).toBe('true');
+    expect(byId['corpse-expired']?.getAttribute('data-openable')).toBe('true');
+  });
+
   it('calls onOpen with the container id', () => {
     const onOpen = vi.fn();
     render(<CorpseOverlay roomContainers={[corpse()]} playerId="owner-1" onOpen={onOpen} />);
@@ -86,5 +106,18 @@ describe('CorpseOverlay', () => {
     });
     expect(screen.getByText(/grace period ended/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Open' })).toBeEnabled();
+  });
+  it('marks each card with its container id and whether this player may open it', () => {
+    // E2E scopes to these attributes: a room can hold several corpses whose cards render
+    // identical text and Open buttons, so tests need to say which card they mean.
+    const mine = corpse({ container_id: 'corpse-mine' });
+    const theirs = corpse({ container_id: 'corpse-theirs', owner_id: 'someone-else' });
+    render(<CorpseOverlay roomContainers={[mine, theirs]} playerId="owner-1" onOpen={vi.fn()} />);
+
+    const cards = screen.getAllByTestId('corpse-card');
+    expect(cards).toHaveLength(2);
+    const byId = Object.fromEntries(cards.map(c => [c.getAttribute('data-container-id'), c]));
+    expect(byId['corpse-mine']?.getAttribute('data-openable')).toBe('true');
+    expect(byId['corpse-theirs']?.getAttribute('data-openable')).toBe('false');
   });
 });

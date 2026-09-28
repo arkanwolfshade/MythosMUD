@@ -31,6 +31,17 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
+def _coerce_player_uuid(player_id: uuid.UUID | str) -> uuid.UUID:
+    """Normalise a player id to UUID so connection lookups keyed by UUID cannot silently miss."""
+    if isinstance(player_id, uuid.UUID):
+        return player_id
+    try:
+        return uuid.UUID(player_id)
+    except (ValueError, AttributeError, TypeError) as e:
+        logger.warning("Personal message target is not a valid player UUID", player_id=str(player_id))
+        raise ValueError(f"Invalid player id for personal message: {player_id!r}") from e
+
+
 class PersonalMessageSender:
     """
     Sends personal messages to individual players.
@@ -178,7 +189,7 @@ class PersonalMessageSender:
 
     async def send_message(
         self,
-        player_id: uuid.UUID,
+        player_id: uuid.UUID | str,
         event: dict[str, Any],
         player_websockets: dict[uuid.UUID, list[str]],
         active_websockets: dict[str, "WebSocket"],
@@ -186,8 +197,18 @@ class PersonalMessageSender:
         """
         Send a personal message to a player via WebSocket.
 
+        ``player_websockets`` is keyed by UUID, so a caller that passes the id as a string
+        misses every lookup here: the send silently finds no connection and the event is
+        queued as a pending message instead, surfacing only on the player's next connect.
+        Several callers do exactly that -- combat's death, mortally-wounded and DP-decay
+        broadcasts all declare ``player_id: str`` (server/services/combat_messaging/
+        player_broadcasts.py) -- so a dying player never saw the death interstitial until
+        they reconnected. basedpyright could not catch it because the connection manager is
+        reached through an ``Any``-typed attribute. Normalising here fixes every caller at
+        once rather than at each of them.
+
         Args:
-            player_id: The player's ID (UUID)
+            player_id: The player's ID; a string form is accepted and normalised to UUID.
             event: The event data to send
             player_websockets: Player to WebSocket connection mapping
             active_websockets: Active WebSocket connections
@@ -204,6 +225,7 @@ class PersonalMessageSender:
         }
 
         try:
+            player_id = _coerce_player_uuid(player_id)
             serializable_event = self._prepare_payload(player_id, event)
 
             websocket_count = len(player_websockets.get(player_id, []))
@@ -226,8 +248,8 @@ class PersonalMessageSender:
             logger.debug("Message delivery status", player_id=player_id, delivery_status=delivery_status)
             return delivery_status
 
-        except (DatabaseError, AttributeError) as e:
-            logger.error("Failed to send personal message", player_id=player_id, error=str(e))
+        except (DatabaseError, AttributeError, ValueError) as e:
+            logger.error("Failed to send personal message", player_id=str(player_id), error=str(e))
             delivery_status["success"] = False
             return delivery_status
 
