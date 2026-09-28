@@ -13,7 +13,8 @@ from server.game.player_schema_converter import (
     _weapon_from_prototype_registry,
 )
 from server.models.game import InventoryItem
-from server.schemas.game.weapon import WeaponStats
+from server.schemas.game.weapon import WeaponStats, weapon_stats_from_metadata
+from server.tests.fixtures.shared.weapon_metadata import SLING_PROTOTYPE_WEAPON
 
 
 def test_weapon_from_prototype_registry_none_registry_returns_none() -> None:
@@ -62,6 +63,60 @@ def test_weapon_from_prototype_registry_weapon_present_returns_dict() -> None:
     assert result.min_damage == 1
     assert result.max_damage == 4
     assert result.damage_types == ["slashing", "piercing"]
+
+
+class _StubRegistry:
+    """Typed stand-in for the prototype registry; only ``get`` and ``metadata`` are read.
+
+    A MagicMock works here too, but reading ``registry.get`` off one yields ``Any`` and
+    trips reportAny (see .claude/rules/basedpyright.md).
+    """
+
+    class _Prototype:
+        def __init__(self, weapon: dict[str, object]) -> None:
+            self.metadata: dict[str, object] = {"weapon": weapon}
+
+    def __init__(self, weapon: dict[str, object]) -> None:
+        self._prototype: _StubRegistry._Prototype = _StubRegistry._Prototype(weapon)
+
+    def get(self, prototype_id: str) -> _Prototype:
+        """Return the single stub prototype regardless of the id requested."""
+        _ = prototype_id
+        return self._prototype
+
+
+def test_weapon_stats_from_metadata_drops_unmodelled_prototype_keys() -> None:
+    """The rich ADR-026 metadata keys are projected away, not rejected by extra='forbid'."""
+    result = weapon_stats_from_metadata(SLING_PROTOTYPE_WEAPON)
+    assert result.min_damage == 1
+    assert result.max_damage == 4
+    assert result.damage_types == ["bludgeoning"]
+    assert not hasattr(result, "damage_expr")
+
+
+def test_weapon_from_prototype_registry_parses_real_catalog_shape() -> None:
+    """Regression: the full prototype metadata.weapon dict must not fail validation.
+
+    WeaponStats sets extra='forbid' and models only five keys, so passing a whole
+    metadata.weapon dict used to raise ValidationError for every weapon in the catalog --
+    weapon stats never reached the client and each conversion logged a warning. The older
+    tests here all passed pre-trimmed dicts, which is why this went unnoticed.
+    """
+    registry = _StubRegistry(dict(SLING_PROTOTYPE_WEAPON))
+
+    result = _weapon_from_prototype_registry(registry, "pack_dark_ages.weapon.sling")
+
+    assert result is not None, "full catalog weapon metadata must resolve to WeaponStats"
+    assert result.min_damage == 1
+    assert result.max_damage == 4
+    assert result.damage_types == ["bludgeoning"]
+
+
+def test_weapon_from_prototype_registry_still_returns_none_on_bad_modelled_keys() -> None:
+    """Projection must not paper over a genuinely invalid modelled value."""
+    registry = _StubRegistry({**SLING_PROTOTYPE_WEAPON, "min_damage": -5})
+
+    assert _weapon_from_prototype_registry(registry, "pack_dark_ages.weapon.sling") is None
 
 
 def test_inventory_item_with_weapon_minimal_dict() -> None:

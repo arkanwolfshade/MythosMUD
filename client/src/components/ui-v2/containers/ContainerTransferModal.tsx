@@ -59,7 +59,10 @@ function ItemColumn(props: {
   footer?: React.ReactNode;
 }) {
   return (
-    <div className="flex-1 min-w-0">
+    // The two columns render identical item rows, and the inventory panel behind the modal renders
+    // the same item names again, so an unscoped getByText('Sling') is ambiguous. Give each column a
+    // stable hook so tests can say which side of the transfer they mean.
+    <div className="flex-1 min-w-0" data-testid={`transfer-column-${props.title.toLowerCase()}`}>
       <div className="text-xs font-semibold text-mythos-terminal-primary uppercase border-b border-mythos-terminal-primary/30 pb-1 mb-1">
         {props.title} ({props.items.length})
       </div>

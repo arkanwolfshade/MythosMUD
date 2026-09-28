@@ -145,3 +145,36 @@ async def test_send_message_outer_exception(sender: PersonalMessageSender) -> No
     with patch.object(sender, "_prepare_payload", side_effect=DatabaseError("db")):
         status = await sender.send_message(player_id, {}, {}, {})
     assert status["success"] is False
+
+
+@pytest.mark.asyncio
+async def test_send_message_delivers_when_player_id_is_a_string(sender: PersonalMessageSender) -> None:
+    """Regression: a str player_id must still hit the UUID-keyed connection map.
+
+    player_websockets is keyed by UUID. Combat's death, mortally-wounded and DP-decay
+    broadcasts pass the id as a string (combat_messaging/player_broadcasts.py), so the lookup
+    used to miss, the event was queued as a pending message, and the player only received it
+    on their next connect -- a dying player never saw the death interstitial.
+    """
+    player_id = uuid.uuid4()
+    websocket = MagicMock()
+    websocket.send_json = AsyncMock()
+    websocket.application_state = MagicMock()
+    # No payload-optimizer patch here: this test is about the connection lookup, and the real
+    # optimizer handles this payload fine. Mocking it would only add an untyped lambda.
+    status = await sender.send_message(
+        str(player_id),
+        {"event_type": "player_died", "current_dp": -10},
+        {player_id: ["conn-1"]},
+        {"conn-1": websocket},
+    )
+    assert status["websocket_delivered"] == 1, "string player_id must resolve to the UUID-keyed socket"
+    assert status["success"] is True
+    assert sender.message_queue.pending_messages == {}, "delivered events must not also be queued"
+
+
+@pytest.mark.asyncio
+async def test_send_message_reports_failure_for_non_uuid_player_id(sender: PersonalMessageSender) -> None:
+    """A malformed id degrades to a failed delivery rather than breaking the caller's round."""
+    status = await sender.send_message("not-a-uuid", {"event_type": "player_died"}, {}, {})
+    assert status["success"] is False

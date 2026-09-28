@@ -39,6 +39,11 @@ class InventoryStack(BaseModel):
     origin: dict[str, Any] = Field(default_factory=dict, description="Origin information")
     created_at: str | None = Field(default=None, description="ISO format creation timestamp")
     inner_container: InnerContainer | None = Field(default=None, description="Nested container for wearable items")
+    # Persisted on real stacks but previously unmodelled: with extra="forbid" that made
+    # /api/containers/open return 500 for any container holding a genuine item (corpses always
+    # do), so the whole GUI looting path was unreachable. `position` is container_contents.position.
+    condition: str | None = Field(default=None, description="Item condition, e.g. 'pristine'")
+    position: int | None = Field(default=None, ge=0, description="Ordering position within a container")
 
 
 class InnerContainer(BaseModel):

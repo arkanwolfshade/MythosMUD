@@ -19,6 +19,12 @@ export const useEventProcessing = ({ setGameState }: UseEventProcessingParams) =
 
   // eslint-disable-next-line react-hooks/preserve-manual-memoization -- stable queue processor for setTimeout
   const processEventQueue = useCallback(() => {
+    // Clear the scheduled-run handle first. handleGameEvent only schedules a drain when this is
+    // null, and the `finally` branch below re-arms it with a timeout that calls this function
+    // directly -- so if that run did not clear the handle, it stayed set forever and every later
+    // event was queued but never projected. The UI then froze silently on whatever state it had
+    // (a player could die server-side and never see the death interstitial).
+    processingTimeout.current = null;
     if (isProcessingEvent.current || eventQueue.current.length === 0) {
       return;
     }

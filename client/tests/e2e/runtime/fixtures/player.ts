@@ -4,7 +4,7 @@
  * Helper functions for player management in E2E tests.
  */
 
-import { expect, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 import {
   clickWithoutStability,
   ensurePlayableConnection,
@@ -142,6 +142,23 @@ export async function respawnAfterCombatDeath(page: Page, username: string, pass
   throw new Error(`respawnAfterCombatDeath: still in Death > Void for ${username} after retries`);
 }
 
+/** The ContainerTransferModal's "Container" (corpse/chest) column -- the side being looted from. */
+export function transferContainerColumn(page: Page): Locator {
+  return page.getByTestId('transfer-column-container');
+}
+
+/**
+ * A CorpseOverlay card, narrowed by whether this player may open it.
+ *
+ * Corpses accumulate in a room across a suite run, and every card renders the same "Corpse",
+ * "Grace period ..." and "Open" strings -- so an unscoped locator hits strict-mode violations or
+ * silently targets somebody else's corpse.
+ */
+export function corpseCard(page: Page, opts: { openable: boolean; graceActive?: boolean }): Locator {
+  const grace = opts.graceActive === undefined ? '' : `[data-grace-active="${opts.graceActive}"]`;
+  return page.locator(`[data-testid="corpse-card"][data-openable="${opts.openable}"]${grace}`);
+}
+
 /**
  * Click a room corpse's CorpseOverlay Open button, retrying: right after respawn, the server's
  * persisted current_room_id can lag a moment behind the live session (the respawn round trip
@@ -150,24 +167,42 @@ export async function respawnAfterCombatDeath(page: Page, username: string, pass
  * Open is idempotent server-side once it does succeed. Waits for `itemText` (a known item in the
  * corpse) to confirm the transfer modal actually opened.
  */
-export async function openCorpseWithRetry(page: Page, itemText: string): Promise<void> {
-  const openButton = page.getByRole('button', { name: 'Open' }).first();
-  const itemRow = page.getByText(itemText, { exact: true }).first();
-  await expect(page.getByText(/Grace period/i)).toBeVisible({ timeout: 20000 });
-  await expect(openButton).toBeEnabled({ timeout: 10000 });
+export async function openCorpseWithRetry(page: Page, itemText: string): Promise<Locator> {
+  // Identify the corpse by its CONTENTS, not by position or countdown. A room accumulates
+  // corpses across a suite run, and a spec can outlive the 300s grace period, so neither "the
+  // first card" nor "the one still counting down" reliably picks the corpse we just made.
+  // Opening a wrong one is harmless (each opens its own modal), so try each openable card until
+  // a Container column shows the item, and hand that column back so the caller transfers from
+  // the right modal.
+  const columnWithItem = page
+    .getByTestId('transfer-column-container')
+    .filter({ has: page.getByText(itemText, { exact: true }) })
+    .first();
+  const cards = corpseCard(page, { openable: true });
+  await expect(cards.first()).toBeVisible({ timeout: 20000 });
 
-  for (let attempt = 0; attempt < 6; attempt++) {
-    // CorpseOverlay re-renders every second for its countdown, which can leave Playwright's
-    // actionability check never settling. clickWithoutStability dispatches the DOM click directly
-    // (same helper dismissDeathInterstitial uses); visible/enabled is already asserted above.
-    await clickWithoutStability(openButton);
-    if (await itemRow.isVisible({ timeout: 3000 }).catch(() => false)) {
-      return;
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const cardCount = await cards.count();
+    for (let index = 0; index < cardCount; index++) {
+      const openButton = cards.nth(index).getByRole('button', { name: 'Open' });
+      if (!(await openButton.isEnabled().catch(() => false))) {
+        continue;
+      }
+      // CorpseOverlay re-renders every second for its countdown, which can leave Playwright's
+      // actionability check never settling. clickWithoutStability dispatches the DOM click
+      // directly (same helper dismissDeathInterstitial uses).
+      await clickWithoutStability(openButton);
+      if (await columnWithItem.isVisible({ timeout: 3000 }).catch(() => false)) {
+        return columnWithItem;
+      }
     }
+    // Right after respawn the persisted current_room_id can briefly lag the live session, so
+    // /api/containers/open's proximity check 403s; re-clicking is idempotent once it succeeds.
     await new Promise(r => setTimeout(r, 2000));
   }
 
-  await expect(itemRow).toBeVisible({ timeout: 15000 });
+  await expect(columnWithItem).toBeVisible({ timeout: 15000 });
+  return columnWithItem;
 }
 
 /**
