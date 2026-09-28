@@ -1,6 +1,6 @@
 ---
 name: mythosmud-server-runbook
-description: Follow MythosMUD server lifecycle: stop before start, verify ports 54768 and 5173, run stop script then start_local.ps1 once. Use when starting/stopping the server, debugging port conflicts, or when the user mentions server startup or 'Press any key to exit'.
+description: "Follow MythosMUD server lifecycle: stop before start, verify ports 54768 and 5173, run stop script then start_local.ps1 once. Use when starting/stopping the server, debugging port conflicts, or when the user mentions server startup or 'Press any key to exit'."
 ---
 
 # MythosMUD Server Runbook

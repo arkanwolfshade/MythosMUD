@@ -1,6 +1,6 @@
 ---
 name: mythosmud-code-quality-ai
-description: Apply code quality targets that benefit AI-driven development: docstrings on public API, type hints, naming conventions, no assert in production, complexity targets, __all__ for public modules, client return types. Use when writing or reviewing code for maintainability, improving code for AI tooling, or when the user asks for AI-friendly code quality.
+description: "Apply code quality targets that benefit AI-driven development: docstrings on public API, type hints, naming conventions, no assert in production, complexity targets, __all__ for public modules, client return types. Use when writing or reviewing code for maintainability, improving code for AI tooling, or when the user asks for AI-friendly code quality."
 ---
 
 # MythosMUD Code Quality Targets for AI

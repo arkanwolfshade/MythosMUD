@@ -1,6 +1,6 @@
 ---
 name: mythosmud-test-writing
-description: Write and run MythosMUD tests: server tests under server/tests/unit|integration, client under client; use make test or make test-comprehensive from project root only. Use when adding tests, interpreting test failures, or when the user asks about test layout or coverage.
+description: "Write and run MythosMUD tests: server tests under server/tests/unit|integration, client under client; use make test or make test-comprehensive from project root only. Use when adding tests, interpreting test failures, or when the user asks about test layout or coverage."
 ---
 
 # MythosMUD Test Writing

@@ -1,6 +1,6 @@
 ---
 name: mythosmud-commit-messages
-description: Generate conventional commit messages from git diffs: short summary, optional body, type(scope) format, link issues with #number. Use when the user asks for a commit message, to amend or write commits, or when reviewing staged changes.
+description: "Generate conventional commit messages from git diffs: short summary, optional body, type(scope) format, link issues with #number. Use when the user asks for a commit message, to amend or write commits, or when reviewing staged changes."
 ---
 
 # MythosMUD Commit Messages
