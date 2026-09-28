@@ -22,6 +22,7 @@ from server.app.game_tick_corpses import (
     _log_cleanup_results,
     cleanup_decayed_corpses,
 )
+from server.app.game_tick_death import _process_mortally_wounded_players
 from server.app.game_tick_processing import (
     _process_dead_players,
     _process_mortally_wounded_player,
@@ -389,3 +390,22 @@ async def test_tick_online_players_counts_successes() -> None:
         await _tick_online_players([id_ok, id_skip], 3, "Processed test", process_one)
     assert seen == [str(id_ok), str(id_skip)]
     debug.assert_called_once_with("Processed test", tick_count=3, players_processed=1)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("tick_rate", "tick_count", "should_decay"),
+    [(0.1, 10, True), (0.1, 5, False), (0.1, 11, False), (1.0, 7, True)],
+)
+async def test_mortally_wounded_decay_runs_once_per_second(
+    tick_rate: float, tick_count: int, should_decay: bool
+) -> None:
+    """#908: DP decay is 1 DP per second of game time, not per tick."""
+    get_mortally_wounded_players: AsyncMock = AsyncMock(return_value=[])
+    container: MagicMock = MagicMock()
+    container.player_death_service.get_mortally_wounded_players = get_mortally_wounded_players
+    config: MagicMock = MagicMock()
+    config.game.server_tick_rate = tick_rate
+    with patch("server.app.game_tick_death.get_config", return_value=config):
+        await _process_mortally_wounded_players(container, AsyncMock(), tick_count)
+    assert get_mortally_wounded_players.await_count == int(should_decay)
