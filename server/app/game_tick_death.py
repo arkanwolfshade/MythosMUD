@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ..config import get_config
 from ..constants.spawn_defaults import LIMBO_ROOM_ID
 from ..database import get_async_session
 from ..events.event_types import PlayerDPDecayEvent, PlayerDPUpdated
@@ -135,9 +136,15 @@ async def _process_mortally_wounded_player(container: _TickContainer, player: Pl
         await _handle_player_death_threshold(container, player, session, new_dp, stats)
 
 
+def _dp_decay_due(tick_count: int) -> bool:
+    """True once per second of game time: DP decay is 1 DP/second regardless of tick rate (#908)."""
+    ticks_per_second = max(1, round(1 / get_config().game.server_tick_rate))
+    return not tick_count % ticks_per_second
+
+
 async def _process_mortally_wounded_players(container: _TickContainer, session: AsyncSession, tick_count: int) -> None:
     """Process all mortally wounded players."""
-    if not container.player_death_service:
+    if not container.player_death_service or not _dp_decay_due(tick_count):
         return
 
     death_service = container.player_death_service
