@@ -123,7 +123,7 @@ export async function despawnSanitariumCultists(page: Page): Promise<void> {
  * void room). Use this instead of ensurePlayableAlive whenever the next step is proximity-sensitive
  * (e.g. opening a container in the room the player died in).
  */
-export async function respawnAfterCombatDeath(page: Page, username: string, password: string): Promise<Page> {
+async function respawnAfterCombatDeath(page: Page, username: string, password: string): Promise<Page> {
   let live = await ensurePlayableConnection(page, { username, password, timeoutMs: 30000 });
   for (let attempt = 0; attempt < 8; attempt++) {
     await dismissDeathInterstitial(live);
@@ -140,11 +140,6 @@ export async function respawnAfterCombatDeath(page: Page, username: string, pass
     await new Promise(r => setTimeout(r, 2000));
   }
   throw new Error(`respawnAfterCombatDeath: still in Death > Void for ${username} after retries`);
-}
-
-/** The ContainerTransferModal's "Container" (corpse/chest) column -- the side being looted from. */
-export function transferContainerColumn(page: Page): Locator {
-  return page.getByTestId('transfer-column-container');
 }
 
 /**
@@ -275,7 +270,7 @@ const COMBAT_NPC_NAME = 'Cultist of the Yellow Sign';
  * routing the death through player_death_service, which creates NO corpse. Several mobs keep the
  * wounded window down to part of a single combat round.
  */
-export async function killPlayerViaCombat(page: Page, creds: { username: string; password: string }): Promise<Page> {
+async function killPlayerViaCombat(page: Page, creds: { username: string; password: string }): Promise<Page> {
   let live = await ensurePlayableConnection(page, { ...creds, timeoutMs: 45000 });
   await dismissDeathInterstitial(live);
   await ensureNotInCombat(live, 4);
