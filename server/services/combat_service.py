@@ -206,7 +206,7 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
             turn_interval_seconds=self._turn_interval_seconds,
         )
 
-        await register_combat_impl(self, combat, attacker, room_id)
+        await register_combat_impl(self, combat, room_id)
 
         logger.info("Combat started", combat_id=combat.combat_id, turn_order=combat.turn_order)
 
@@ -502,26 +502,22 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
     async def register_combat_state(
         self,
         combat: CombatInstance,
-        attacker_id: UUID,
-        attacker_name: str,
         room_id: str,
     ) -> None:
-        """Register combat in tracking dicts and notify player combat service."""
+        """Register combat in tracking dicts (by participant type, not attacker role) and notify player service (#918)."""
         self._active_combats[combat.combat_id] = combat
-        self._player_combats[attacker_id] = combat.combat_id
-        target_id = next(
-            (p.participant_id for p in combat.participants.values() if p.participant_id != attacker_id),
-            None,
-        )
-        if target_id:
-            self._npc_combats[target_id] = combat.combat_id
-        if self._player_combat_service:
-            await self._player_combat_service.track_player_combat_state(
-                player_id=attacker_id,
-                player_name=attacker_name,
-                combat_id=combat.combat_id,
-                room_id=room_id,
-            )
+        for participant in combat.participants.values():
+            if participant.participant_type == CombatParticipantType.NPC:
+                self._npc_combats[participant.participant_id] = combat.combat_id
+                continue
+            self._player_combats[participant.participant_id] = combat.combat_id
+            if self._player_combat_service:
+                await self._player_combat_service.track_player_combat_state(
+                    player_id=participant.participant_id,
+                    player_name=participant.name,
+                    combat_id=combat.combat_id,
+                    room_id=room_id,
+                )
 
     async def publish_combat_started_event(self, event: CombatStartedEvent) -> None:
         """Publish a combat started event to NATS."""

@@ -348,21 +348,10 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
             return event_bus, persistence
 
     def _is_npc_in_combat(self) -> bool:
-        """Return True if NPC is in combat (blocks movement); False on lookup failure."""
-        try:
-            from ..services.combat_service import get_combat_service
+        """Return True if NPC is in combat (blocks movement); fails closed on lookup failure (#918)."""
+        from .movement_integration import is_npc_in_combat
 
-            combat_service = get_combat_service()
-            if combat_service:
-                return combat_service.is_npc_in_combat_sync(self.npc_id)
-        except (ImportError, AttributeError, RuntimeError) as exc:
-            logger.debug(
-                "Combat presence check unavailable",
-                npc_id=self.npc_id,
-                error=str(exc),
-                error_type=type(exc).__name__,
-            )
-        return False
+        return is_npc_in_combat(self.npc_id)
 
     def _move_with_integration(self, room_id: str) -> bool:
         """Move NPC using movement integration; return True if successful."""
@@ -536,7 +525,7 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
             context["idle_movement_enabled"] = self._behavior_config.get("idle_movement_enabled", False)
             context["idle_movement_interval"] = self._behavior_config.get("idle_movement_interval", 10)
             context["idle_movement_probability"] = self._behavior_config.get("idle_movement_probability", 0.25)
-            context["in_combat"] = False  # Will be checked by schedule_idle_movement if needed
+            context["in_combat"] = self._is_npc_in_combat()
             context["flee_threshold"] = self._behavior_config.get("flee_threshold", 20)
             if self.npc_type in ["passive_mob", "aggressive_mob"]:
                 _ = self.schedule_idle_movement()
