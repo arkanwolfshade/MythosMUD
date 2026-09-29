@@ -7,6 +7,8 @@ Tests the admin command handler functions.
 # pyright: reportPrivateUsage=false
 
 import uuid
+from dataclasses import dataclass
+from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 import pytest
@@ -148,7 +150,7 @@ async def test_handle_mute_command_success():
     mock_app = MagicMock()
     mock_state = MagicMock()
     mock_user_manager = MagicMock()
-    mute_player_mock: MagicMock = MagicMock(return_value=True)
+    mute_player_mock = AsyncMock(return_value=True)
     mock_user_manager.mute_player = mute_player_mock
     mock_player_service = AsyncMock()
     mock_current_player = MagicMock()
@@ -211,7 +213,7 @@ async def test_handle_unmute_command_success():
     mock_app = MagicMock()
     mock_state = MagicMock()
     mock_user_manager = MagicMock()
-    unmute_player_mock: MagicMock = MagicMock(return_value=True)
+    unmute_player_mock = AsyncMock(return_value=True)
     mock_user_manager.unmute_player = unmute_player_mock
     mock_player_service = AsyncMock()
     mock_current_player = MagicMock()
@@ -240,7 +242,7 @@ async def test_handle_unmute_command_idempotent_when_not_muted():
     mock_app = MagicMock()
     mock_state = MagicMock()
     mock_user_manager = MagicMock()
-    mock_user_manager.unmute_player = MagicMock(return_value=False)
+    mock_user_manager.unmute_player = AsyncMock(return_value=False)
     is_player_muted_mock: MagicMock = MagicMock(return_value=False)
     mock_user_manager.is_player_muted = is_player_muted_mock
     mock_player_service = AsyncMock()
@@ -274,24 +276,72 @@ async def test_handle_mute_global_command_no_user_manager():
     assert "not available" in result["result"]
 
 
+@dataclass(frozen=True)
+class _ResolvedPlayer:
+    """What resolve_player_name returns, as far as the global-mute flow reads it."""
+
+    id: uuid.UUID
+    is_admin: bool
+
+
+_GlobalMuteRig = tuple[SimpleNamespace, AsyncMock, AsyncMock, uuid.UUID, uuid.UUID]
+
+
+def _global_mute_request(*, admin: bool = True) -> _GlobalMuteRig:
+    """(request, mute_global, unmute_global, admin_id, target_id).
+
+    app.state carries an async user_manager and a player_service resolving the admin, then the target.
+    """
+    mute_global = AsyncMock(return_value=True)
+    unmute_global = AsyncMock(return_value=True)
+    admin_id = uuid.uuid4()
+    target_id = uuid.uuid4()
+    resolve = AsyncMock(side_effect=[_ResolvedPlayer(admin_id, admin), _ResolvedPlayer(target_id, False)])
+    state = SimpleNamespace(
+        user_manager=SimpleNamespace(mute_global=mute_global, unmute_global=unmute_global),
+        player_service=SimpleNamespace(resolve_player_name=resolve),
+    )
+    return SimpleNamespace(app=SimpleNamespace(state=state)), mute_global, unmute_global, admin_id, target_id
+
+
 @pytest.mark.asyncio
 async def test_handle_mute_global_command_success():
-    """Test handle_mute_global_command() successful execution."""
-    mock_request = MagicMock()
-    mock_app = MagicMock()
-    mock_state = MagicMock()
-    mock_user_manager = MagicMock()
-    mute_global_mock: MagicMock = MagicMock(return_value=True)
-    mock_user_manager.mute_global = mute_global_mock
-    mock_state.user_manager = mock_user_manager
-    mock_app.state = mock_state
-    mock_request.app = mock_app
+    """mute_global passes muter, target, duration and reason through (it used to pass only a name)."""
+    request, mute_global, _unmute_global, admin_id, target_id = _global_mute_request()
 
-    result = await handle_mute_global_command({}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
+    result = await handle_mute_global_command(
+        {"target_player": "OtherPlayer", "duration_minutes": 30, "reason": "spam"},
+        {"name": "TestPlayer"},
+        request,
+        None,
+        "TestPlayer",
+    )
 
-    assert "result" in result
-    assert "activated" in result["result"].lower()
-    mute_global_mock.assert_called_once()
+    assert result["result"] == "You have globally muted OtherPlayer for 30 minutes."
+    mute_global.assert_awaited_once_with(str(admin_id), "TestPlayer", str(target_id), "OtherPlayer", 30, "spam")
+
+
+@pytest.mark.asyncio
+async def test_handle_mute_global_command_requires_admin():
+    """A non-admin cannot globally mute anyone."""
+    request, mute_global, _unmute_global, _admin_id, _target_id = _global_mute_request(admin=False)
+
+    result = await handle_mute_global_command(
+        {"target_player": "OtherPlayer"}, {"name": "TestPlayer"}, request, None, "TestPlayer"
+    )
+
+    assert "permission" in result["result"]
+    mute_global.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_handle_mute_global_command_no_target():
+    """mute_global without a target shows usage."""
+    request, _mute_global, _unmute_global, _admin_id, _target_id = _global_mute_request()
+
+    result = await handle_mute_global_command({}, {"name": "TestPlayer"}, request, None, "TestPlayer")
+
+    assert result["result"].startswith("Usage: mute_global")
 
 
 @pytest.mark.asyncio
@@ -308,22 +358,28 @@ async def test_handle_unmute_global_command_no_user_manager():
 
 @pytest.mark.asyncio
 async def test_handle_unmute_global_command_success():
-    """Test handle_unmute_global_command() successful execution."""
-    mock_request = MagicMock()
-    mock_app = MagicMock()
-    mock_state = MagicMock()
-    mock_user_manager = MagicMock()
-    unmute_global_mock: MagicMock = MagicMock(return_value=True)
-    mock_user_manager.unmute_global = unmute_global_mock
-    mock_state.user_manager = mock_user_manager
-    mock_app.state = mock_state
-    mock_request.app = mock_app
+    """unmute_global resolves both players and removes the mute."""
+    request, _mute_global, unmute_global, admin_id, target_id = _global_mute_request()
 
-    result = await handle_unmute_global_command({}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
+    result = await handle_unmute_global_command(
+        {"target_player": "OtherPlayer"}, {"name": "TestPlayer"}, request, None, "TestPlayer"
+    )
 
-    assert "result" in result
-    assert "deactivated" in result["result"].lower()
-    unmute_global_mock.assert_called_once()
+    assert result["result"] == "You have globally unmuted OtherPlayer."
+    unmute_global.assert_awaited_once_with(str(admin_id), "TestPlayer", str(target_id), "OtherPlayer")
+
+
+@pytest.mark.asyncio
+async def test_handle_unmute_global_command_not_muted():
+    """unmute_global on someone without a global mute says so."""
+    request, _mute_global, unmute_global, _admin_id, _target_id = _global_mute_request()
+    unmute_global.return_value = False
+
+    result = await handle_unmute_global_command(
+        {"target_player": "OtherPlayer"}, {"name": "TestPlayer"}, request, None, "TestPlayer"
+    )
+
+    assert result["result"] == "OtherPlayer is not globally muted."
 
 
 @pytest.mark.asyncio
@@ -561,7 +617,7 @@ async def test_handle_mute_command_mute_failure():
     mock_app = MagicMock()
     mock_state = MagicMock()
     mock_user_manager = MagicMock()
-    mock_user_manager.mute_player = MagicMock(return_value=False)
+    mock_user_manager.mute_player = AsyncMock(return_value=False)
     mock_player_service = AsyncMock()
     mock_current_player = MagicMock()
     mock_current_player.id = uuid.uuid4()

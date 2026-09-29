@@ -27,10 +27,6 @@ class _AppStateForPlayerService(Protocol):
     player_service: object | None
 
 
-class _MutePersistenceLoader(Protocol):
-    async def load_player_mutes_async(self, player_id: str) -> bool: ...  # pylint: disable=missing-function-docstring
-
-
 logger: BoundLogger = get_logger(__name__)
 
 
@@ -104,26 +100,6 @@ async def check_shutdown_and_reject(websocket: WebSocket, player_id: uuid.UUID) 
     except (WebSocketDisconnect, RuntimeError, AttributeError) as e:
         logger.debug("Could not check shutdown status in WebSocket connection", error=str(e))
     return False
-
-
-async def load_player_mute_data(player_id_str: str) -> None:
-    """Load player mute data when they connect.
-
-    AI: Uses async version to avoid blocking the event loop.
-    #679: resolves the container-owned UserManager instead of a module-level global.
-    """
-    try:
-        from ..container import get_container
-
-        container = cast(object | None, get_container())
-        user_manager = cast(object | None, getattr(container, "user_manager", None)) if container else None
-        if user_manager is None:
-            logger.warning("UserManager not available for loading mute data", player_id=player_id_str)
-            return
-        _ = await cast(_MutePersistenceLoader, user_manager).load_player_mutes_async(player_id_str)
-        logger.info("Loaded mute data", player_id=player_id_str)
-    except (ImportError, RuntimeError, AttributeError, TypeError) as e:
-        logger.error("Error loading mute data", player_id=player_id_str, error=str(e))
 
 
 def validate_occupant_name(name: object) -> bool:

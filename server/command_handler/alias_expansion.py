@@ -43,7 +43,7 @@ async def check_alias_safety(
         Tuple of (is_safe, error_message, expansion_depth)
     """
     alias_graph = AliasGraph(alias_storage)
-    alias_graph.build_graph(player_name)
+    await alias_graph.build_graph(player_name)
 
     if not alias_graph.is_safe_to_expand(alias_name):
         cycle = alias_graph.detect_cycle(alias_name)

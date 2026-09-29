@@ -9,12 +9,13 @@ from server.command_handler.alias_expansion import (
     handle_expanded_command,
     validate_expanded_command,
 )
+from server.utils.alias_graph import AliasGraph
 
 
 @pytest.mark.asyncio
 async def test_check_alias_safety_cycle_detected() -> None:
     mock_storage = MagicMock()
-    mock_graph = MagicMock()
+    mock_graph = MagicMock(spec=AliasGraph)
     mock_graph.is_safe_to_expand.return_value = False
     mock_graph.detect_cycle.return_value = ["a", "b", "a"]
 
@@ -34,7 +35,7 @@ async def test_check_alias_safety_cycle_detected() -> None:
 @pytest.mark.asyncio
 async def test_check_alias_safety_depth_too_deep() -> None:
     mock_storage = MagicMock()
-    mock_graph = MagicMock()
+    mock_graph = MagicMock(spec=AliasGraph)
     mock_graph.is_safe_to_expand.return_value = True
     mock_graph.get_expansion_depth.return_value = 11
 
@@ -49,7 +50,7 @@ async def test_check_alias_safety_depth_too_deep() -> None:
 @pytest.mark.asyncio
 async def test_check_alias_safety_ok() -> None:
     mock_storage = MagicMock()
-    mock_graph = MagicMock()
+    mock_graph = MagicMock(spec=AliasGraph)
     mock_graph.is_safe_to_expand.return_value = True
     mock_graph.get_expansion_depth.return_value = 2
 

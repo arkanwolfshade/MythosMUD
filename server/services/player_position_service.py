@@ -79,16 +79,16 @@ class PlayerPositionService:
         self._connection_manager: SupportsConnectionManager | None = connection_manager
         self._alias_storage: AliasStorage | None = alias_storage
 
-    def ensure_default_aliases(self, player_name: str) -> None:
+    async def ensure_default_aliases(self, player_name: str) -> None:
         """Ensure the expected aliases exist for position commands."""
         if not self._alias_storage:
             return
 
         for alias_name, command in _DEFAULT_ALIAS_MAP.items():
             try:
-                existing_alias = self._alias_storage.get_alias(player_name, alias_name)
+                existing_alias = await self._alias_storage.get_alias(player_name, alias_name)
                 if existing_alias is None or existing_alias.command.lower() != command:
-                    _ = self._alias_storage.create_alias(player_name, alias_name, command)
+                    _ = await self._alias_storage.create_alias(player_name, alias_name, command)
             except Exception as exc:  # noqa: B904  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Alias seeding errors unpredictable, must log but continue
                 logger.warning(
                     "Failed to seed default position alias",
@@ -194,7 +194,7 @@ class PlayerPositionService:
         """Mutate persistence and in-memory tracking to reflect the requested position."""
         normalized_position = self._validate_position(target_position)
         response = self._initial_response(player_name, normalized_position)
-        self.ensure_default_aliases(player_name)
+        await self.ensure_default_aliases(player_name)
 
         if not self._persistence:
             response["message"] = "Position changes are currently unavailable."

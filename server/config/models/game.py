@@ -20,7 +20,6 @@ class GameConfig(BaseSettings):
     max_alias_depth: int = Field(default=10, description="Maximum alias expansion depth")
     max_alias_length: int = Field(default=500, description="Maximum alias command length")
     max_aliases_per_player: int = Field(default=50, description="Maximum aliases per player")
-    aliases_dir: str = Field(..., description="Directory for alias storage (required)")
     motd_file: str = Field(default="data/motd.html", description="Message of the day file")
 
     # Game mechanics
@@ -77,14 +76,6 @@ class GameConfig(BaseSettings):
         """Validate max connections is reasonable."""
         if v < 1 or v > 10:
             raise ValueError("Max connections per player must be between 1 and 10")
-        return v
-
-    @field_validator("aliases_dir")
-    @classmethod
-    def validate_aliases_dir(cls, v: str) -> str:
-        """Validate aliases directory path."""
-        if not v:
-            raise ValueError("Aliases directory must be specified")
         return v
 
     @field_validator("disconnect_grace_period_seconds", "login_grace_period_seconds", "rest_countdown_seconds")

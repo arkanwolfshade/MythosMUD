@@ -88,7 +88,7 @@ checked). Regenerate this table with `grep -nE '^CREATE TABLE' db/schema.sql` if
 | Quests | `quest_definitions`, `quest_instances`, `quest_offers` | `quest_instances.player_id/quest_id → players/quest_definitions`, `quest_offers.quest_id → quest_definitions` |
 | Skills & spells | `skills`, `player_skills`, `skill_use_log`, `spells`, `player_spells` | `player_skills.player_id/skill_id → players/skills`, `player_spells.player_id/spell_id → players/spells` |
 | Effects, corruption & lucidity | `player_effects`, `corruption_adjustment_log`, `corruption_cooldowns`, `player_lucidity`, `lucidity_adjustment_log`, `lucidity_cooldowns`, `lucidity_exposure_state` | All keyed off `players.player_id`, cascade on delete |
-| Social & chat | `aliases`, `emotes`, `emote_aliases` | `emote_aliases.emote_id → emotes` |
+| Social & chat | `aliases`, `emotes`, `emote_aliases`, `player_aliases`, `player_mutes` | `emote_aliases.emote_id → emotes`; `player_aliases.player_id`, `player_mutes.muter_id/target_id → players.player_id`, cascade on delete (#680/#681) |
 | Standalone / reference | `professions`, `calendar_holidays`, `calendar_npc_schedules`, `aliases`, `id_map_users` | No FK in or out — lookup/reference tables |
 
 ## 6. Invariants and where they live

@@ -29,11 +29,6 @@ Schema for validating intersection room definitions. Similar to room schema but 
 
 Master schema that validates both room types using conditional logic based on the `id` field pattern.
 
-### `alias_schema.json`
-
-Schema for validating persisted player alias bundles. Aligns with the `Alias` Pydantic model and enforces alias naming
-conventions, command length limits, and timestamp formatting.
-
 ### `emote_schema.json`
 
 Schema for validating emote definition files consumed by `EmoteService`. Ensures each emote provides player/observer
@@ -56,11 +51,6 @@ errors = validator.validate_room(room_data, "room_file.json")
 if errors:
     print(f"Validation errors: {errors}")
 
-# Validate alias bundle
-
-alias_validator = create_validator("alias")
-errors = alias_validator.validate_alias_bundle(alias_data, "player_aliases.json")
-
 # Validate emote definitions
 
 emote_validator = create_validator("emote")
@@ -81,7 +71,7 @@ pytest server/tests/unit/schemas/test_data_assets.py
 ```
 
 This suite walks `data/<environment>/` for environments such as `local`, `unit_test`, and `e2e_test`, applying the
-unified room, alias, and emote schemas.
+unified room and emote schemas.
 
 ### Configuration
 

@@ -56,29 +56,24 @@ async def test_handle_websocket_connection_full_flow(mock_websocket, mock_ws_con
         "server.realtime.websocket_helpers.check_shutdown_and_reject", new_callable=AsyncMock, return_value=False
     ):
         with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
-            with patch("server.realtime.websocket_helpers.load_player_mute_data", new_callable=AsyncMock):
-                with patch(
-                    "server.realtime.websocket_initial_state.send_initial_game_state",
-                    new_callable=AsyncMock,
-                    return_value=(None, False),
-                ):
-                    # Patch message loop and cleanup to verify try/finally block (lines 371-374) executes
-                    # The mock_websocket fixture already provides send_json = AsyncMock(), so welcome event will succeed
+            with patch(
+                "server.realtime.websocket_initial_state.send_initial_game_state",
+                new_callable=AsyncMock,
+                return_value=(None, False),
+            ):
+                # Patch message loop and cleanup to verify try/finally block (lines 371-374) executes
+                # The mock_websocket fixture already provides send_json = AsyncMock(), so welcome event will succeed
+                with patch("server.realtime.websocket_handler._handle_websocket_message_loop", new_callable=AsyncMock):
                     with patch(
-                        "server.realtime.websocket_handler._handle_websocket_message_loop", new_callable=AsyncMock
-                    ):
-                        with patch(
-                            "server.realtime.websocket_handler._cleanup_connection", new_callable=AsyncMock
-                        ) as mock_cleanup:
-                            # Execute the connection handler - this should reach try/finally block
-                            # The welcome event send (line 369) will succeed because mock_websocket.send_json is AsyncMock
-                            await handle_websocket_connection(
-                                mock_websocket, player_id, None, mock_ws_connection_manager
-                            )
+                        "server.realtime.websocket_handler._cleanup_connection", new_callable=AsyncMock
+                    ) as mock_cleanup:
+                        # Execute the connection handler - this should reach try/finally block
+                        # The welcome event send (line 369) will succeed because mock_websocket.send_json is AsyncMock
+                        await handle_websocket_connection(mock_websocket, player_id, None, mock_ws_connection_manager)
 
-                            # Verify cleanup was called in finally block (line 374)
-                            # If cleanup is called, the try block (line 371-372) must have executed
-                            mock_cleanup.assert_awaited_once_with(player_id, str(player_id), mock_ws_connection_manager)
+                        # Verify cleanup was called in finally block (line 374)
+                        # If cleanup is called, the try block (line 371-372) must have executed
+                        mock_cleanup.assert_awaited_once_with(player_id, str(player_id), mock_ws_connection_manager)
 
 
 @pytest.mark.asyncio
@@ -389,19 +384,16 @@ async def test_handle_websocket_connection_setup_fails(mock_websocket, mock_ws_c
 
     with patch("server.realtime.websocket_handler.check_shutdown_and_reject", new_callable=AsyncMock) as mock_check:
         mock_check.return_value = False
-        with patch("server.realtime.websocket_handler.load_player_mute_data", new_callable=AsyncMock):
-            with patch(
-                "server.realtime.websocket_handler._setup_initial_connection_state", new_callable=AsyncMock
-            ) as mock_setup:
-                # Return should_exit=True to trigger early return
-                mock_setup.return_value = (None, True)
+        with patch(
+            "server.realtime.websocket_handler._setup_initial_connection_state", new_callable=AsyncMock
+        ) as mock_setup:
+            # Return should_exit=True to trigger early return
+            mock_setup.return_value = (None, True)
 
-                await handle_websocket_connection(
-                    mock_websocket, player_id, connection_manager=mock_ws_connection_manager
-                )
+            await handle_websocket_connection(mock_websocket, player_id, connection_manager=mock_ws_connection_manager)
 
-                # Should return early without sending welcome event
-                mock_websocket.send_json.assert_not_awaited()
+            # Should return early without sending welcome event
+            mock_websocket.send_json.assert_not_awaited()
 
 
 @pytest.mark.asyncio
@@ -415,26 +407,23 @@ async def test_handle_websocket_connection_welcome_fails(mock_websocket, mock_ws
 
     with patch("server.realtime.websocket_handler.check_shutdown_and_reject", new_callable=AsyncMock) as mock_check:
         mock_check.return_value = False
-        with patch("server.realtime.websocket_handler.load_player_mute_data", new_callable=AsyncMock):
-            with patch(
-                "server.realtime.websocket_handler._setup_initial_connection_state", new_callable=AsyncMock
-            ) as mock_setup:
-                mock_setup.return_value = ("room_001", False)
+        with patch(
+            "server.realtime.websocket_handler._setup_initial_connection_state", new_callable=AsyncMock
+        ) as mock_setup:
+            mock_setup.return_value = ("room_001", False)
+            with patch("server.realtime.websocket_handler._send_welcome_event", new_callable=AsyncMock) as mock_welcome:
+                # Return False to indicate welcome event failed
+                mock_welcome.return_value = False
+
                 with patch(
-                    "server.realtime.websocket_handler._send_welcome_event", new_callable=AsyncMock
-                ) as mock_welcome:
-                    # Return False to indicate welcome event failed
-                    mock_welcome.return_value = False
+                    "server.realtime.websocket_handler._handle_websocket_message_loop", new_callable=AsyncMock
+                ) as mock_loop:
+                    await handle_websocket_connection(
+                        mock_websocket, player_id, connection_manager=mock_ws_connection_manager
+                    )
 
-                    with patch(
-                        "server.realtime.websocket_handler._handle_websocket_message_loop", new_callable=AsyncMock
-                    ) as mock_loop:
-                        await handle_websocket_connection(
-                            mock_websocket, player_id, connection_manager=mock_ws_connection_manager
-                        )
-
-                        # Message loop should not be called
-                        mock_loop.assert_not_awaited()
+                    # Message loop should not be called
+                    mock_loop.assert_not_awaited()
 
 
 # Disabled: room_state attachment tests require better mocking of app_state and event_handler.

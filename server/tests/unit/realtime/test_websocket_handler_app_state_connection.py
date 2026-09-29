@@ -197,18 +197,16 @@ def test_resolve_and_setup_app_state_services_user_manager_no_hasattr():
 
 
 @pytest.mark.asyncio
-async def test_cleanup_connection_mute_cleanup_error(mock_ws_connection_manager):
-    """Test _cleanup_connection handles error during mute cleanup.
-
-    #679: UserManager is resolved from the container instead of a module-level global.
-    """
+async def test_cleanup_connection_leaves_mutes_alone(mock_ws_connection_manager):
+    """Disconnect must not touch mutes (#681): dropping them let a globally muted player reconnect to escape."""
     player_id = uuid.uuid4()
     mock_ws_connection_manager.disconnect_websocket = AsyncMock()
     mock_user_manager = MagicMock()
-    mock_user_manager.cleanup_player_mutes = MagicMock(side_effect=RuntimeError("Cleanup error"))
     mock_container = MagicMock(user_manager=mock_user_manager)
     with patch("server.container.get_container", return_value=mock_container):
         await _cleanup_connection(player_id, str(player_id), mock_ws_connection_manager)
+    mock_ws_connection_manager.disconnect_websocket.assert_awaited_once_with(player_id)
+    assert mock_user_manager.method_calls == []
 
 
 @pytest.mark.asyncio
@@ -278,8 +276,7 @@ async def test_handle_websocket_connection_initial_state_exit(mock_websocket, mo
             new_callable=AsyncMock,
             return_value=(None, True),
         ):
-            with patch("server.realtime.websocket_helpers.load_player_mute_data", new_callable=AsyncMock):
-                await handle_websocket_connection(mock_websocket, player_id, None, mock_ws_connection_manager)
+            await handle_websocket_connection(mock_websocket, player_id, None, mock_ws_connection_manager)
 
 
 @pytest.mark.asyncio
@@ -299,23 +296,22 @@ async def test_handle_websocket_connection_with_room_and_death(mock_websocket, m
             new_callable=AsyncMock,
             return_value=("room_001", False),
         ):
-            with patch("server.realtime.websocket_helpers.load_player_mute_data", new_callable=AsyncMock):
+            with patch(
+                "server.realtime.websocket_initial_state.check_and_send_death_notification",
+                new_callable=AsyncMock,
+            ):
                 with patch(
-                    "server.realtime.websocket_initial_state.check_and_send_death_notification",
+                    "server.realtime.websocket_initial_state.send_initial_room_state",
                     new_callable=AsyncMock,
                 ):
                     with patch(
-                        "server.realtime.websocket_initial_state.send_initial_room_state",
+                        "server.realtime.websocket_handler._handle_websocket_message_loop",
                         new_callable=AsyncMock,
                     ):
-                        with patch(
-                            "server.realtime.websocket_handler._handle_websocket_message_loop",
-                            new_callable=AsyncMock,
-                        ):
-                            with patch("server.realtime.websocket_handler._cleanup_connection", new_callable=AsyncMock):
-                                await handle_websocket_connection(
-                                    mock_websocket, player_id, None, mock_ws_connection_manager
-                                )
+                        with patch("server.realtime.websocket_handler._cleanup_connection", new_callable=AsyncMock):
+                            await handle_websocket_connection(
+                                mock_websocket, player_id, None, mock_ws_connection_manager
+                            )
 
 
 @pytest.mark.asyncio
@@ -333,7 +329,6 @@ async def test_handle_websocket_connection_initial_setup_error(mock_websocket, m
             new_callable=AsyncMock,
             side_effect=WebSocketDisconnect(1000),
         ):
-            with patch("server.realtime.websocket_helpers.load_player_mute_data", new_callable=AsyncMock):
-                with patch("server.realtime.websocket_handler._handle_websocket_message_loop", new_callable=AsyncMock):
-                    with patch("server.realtime.websocket_handler._cleanup_connection", new_callable=AsyncMock):
-                        await handle_websocket_connection(mock_websocket, player_id, None, mock_ws_connection_manager)
+            with patch("server.realtime.websocket_handler._handle_websocket_message_loop", new_callable=AsyncMock):
+                with patch("server.realtime.websocket_handler._cleanup_connection", new_callable=AsyncMock):
+                    await handle_websocket_connection(mock_websocket, player_id, None, mock_ws_connection_manager)

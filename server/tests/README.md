@@ -141,6 +141,5 @@ Required for tests:
 - `MYTHOSMUD_ADMIN_PASSWORD` - Admin password
 - `SERVER_PORT` - Server port (default: 54768)
 - `LOGGING_ENVIRONMENT` - Logging environment (default: unit_test)
-- `GAME_ALIASES_DIR` - Aliases directory path
 
 These are set automatically by `conftest.py` fixtures.

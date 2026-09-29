@@ -4,17 +4,19 @@ Unit tests for alias command handlers.
 Tests the alias, aliases, and unalias commands.
 """
 
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
+from server.alias_storage import AliasStorage
 from server.commands.alias_commands import handle_alias_command, handle_aliases_command, handle_unalias_command
+from server.models.alias import Alias
 
 
 @pytest.fixture
 def mock_alias_storage():
-    """Create a mock alias storage."""
-    storage = MagicMock()
+    """Create a mock alias storage (spec makes the async methods AsyncMocks)."""
+    storage = MagicMock(spec=AliasStorage)
     return storage
 
 
@@ -375,3 +377,34 @@ async def test_handle_alias_command_update_existing(mock_alias_storage):
         player_name="TestPlayer",
     )
     assert "created successfully" in result["result"] or "updated" in result["result"].lower()
+
+
+@pytest.mark.asyncio
+async def test_handle_alias_command_create_rejected_reports_failure() -> None:
+    """create_alias returning None (invalid name, limit, DB error) must not report success."""
+    storage = MagicMock(spec=AliasStorage)
+    storage.create_alias = AsyncMock(return_value=None)
+    result = await handle_alias_command(
+        command_data={"alias_name": "move", "command": "go north"},
+        _current_user={},
+        _request=MagicMock(),
+        alias_storage=storage,
+        player_name="TestPlayer",
+    )
+    assert result["result"].startswith("Failed to create alias.")
+
+
+@pytest.mark.asyncio
+async def test_handle_unalias_command_remove_failure() -> None:
+    """remove_alias returning False must not report success."""
+    storage = MagicMock(spec=AliasStorage)
+    storage.get_alias = AsyncMock(return_value=Alias(name="n", command="go north"))
+    storage.remove_alias = AsyncMock(return_value=False)
+    result = await handle_unalias_command(
+        command_data={"args": ["n"]},
+        _current_user={},
+        _request=MagicMock(),
+        alias_storage=storage,
+        player_name="TestPlayer",
+    )
+    assert result["result"] == "Failed to remove alias 'n'."

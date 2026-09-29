@@ -166,7 +166,7 @@ server/persistence/repositories/  ──►  SQLAlchemy async  ──►  Postgr
 ### 3.1 Repository roster
 
 **[SPEC]**
-18 repository classes exist across 21 modules (three of `player_repository.py`'s companions —
+19 repository classes exist across 22 modules (three of `player_repository.py`'s companions —
 `_mappers.py`, `_room.py`, `_save.py` — are internal helper modules, not separate repositories). This
 table is enforced by
 `server/tests/unit/infrastructure/test_database_architecture_repository_roster.py`, symmetric to
@@ -185,6 +185,7 @@ removed without a matching update here fails that test.
 | `ItemCatalogRepository` | Paginated `item_prototypes` catalog listing | Backed by the `list_item_prototypes_page` stored procedure |
 | `EmoteRepository` | Emote/pose logging | |
 | `PlayerEffectRepository` | Tick-based status effects | See [ADR-019](decisions/ADR-019-player-effects-system.md) |
+| `PlayerMuteRepository` | Player, channel, and global mutes (`player_mutes`, #681) | Durable store behind `UserManager`'s in-memory index, loaded once at startup |
 | `PlayerSkillRepository`, `SkillRepository`, `SkillUseLogRepository` | Skills catalog, per-character values, use logging | |
 | `PlayerSpellRepository`, `SpellRepository` | Spell catalog, per-character known spells | |
 | `DialogueDefinitionRepository` | NPC dialogue trees | |

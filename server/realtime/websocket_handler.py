@@ -51,7 +51,6 @@ from .websocket_helpers import (
     check_shutdown_and_reject,
     is_client_disconnected_exception,
     is_websocket_disconnect_message,
-    load_player_mute_data,
 )
 from .websocket_initial_state import (
     check_and_send_death_notification,
@@ -154,7 +153,6 @@ async def handle_websocket_connection(
         return
 
     player_id_str = str(player_id)
-    await load_player_mute_data(player_id_str)
 
     connection_id = connection_manager.get_connection_id_from_websocket(websocket)
     bind_request_context(

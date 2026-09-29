@@ -48,12 +48,15 @@ ALTER TABLE IF EXISTS ONLY player_spells DROP CONSTRAINT IF EXISTS player_spells
 ALTER TABLE IF EXISTS ONLY player_spells DROP CONSTRAINT IF EXISTS player_spells_player_id_fkey;
 ALTER TABLE IF EXISTS ONLY player_skills DROP CONSTRAINT IF EXISTS player_skills_skill_id_fkey;
 ALTER TABLE IF EXISTS ONLY player_skills DROP CONSTRAINT IF EXISTS player_skills_player_id_fkey;
+ALTER TABLE IF EXISTS ONLY player_mutes DROP CONSTRAINT IF EXISTS player_mutes_target_id_fkey;
+ALTER TABLE IF EXISTS ONLY player_mutes DROP CONSTRAINT IF EXISTS player_mutes_muter_id_fkey;
 ALTER TABLE IF EXISTS ONLY player_lucidity DROP CONSTRAINT IF EXISTS player_lucidity_player_id_fkey;
 ALTER TABLE IF EXISTS ONLY player_inventories DROP CONSTRAINT IF EXISTS player_inventories_player_id_fkey;
 ALTER TABLE IF EXISTS ONLY player_exploration DROP CONSTRAINT IF EXISTS player_exploration_room_id_fkey;
 ALTER TABLE IF EXISTS ONLY player_exploration DROP CONSTRAINT IF EXISTS player_exploration_player_id_fkey;
 ALTER TABLE IF EXISTS ONLY player_effects DROP CONSTRAINT IF EXISTS player_effects_player_id_fkey;
 ALTER TABLE IF EXISTS ONLY player_channel_preferences DROP CONSTRAINT IF EXISTS player_channel_preferences_player_id_fkey;
+ALTER TABLE IF EXISTS ONLY player_aliases DROP CONSTRAINT IF EXISTS player_aliases_player_id_fkey;
 ALTER TABLE IF EXISTS ONLY npc_spawn_rules DROP CONSTRAINT IF EXISTS npc_spawn_rules_npc_definition_id_fkey;
 ALTER TABLE IF EXISTS ONLY npc_relationships DROP CONSTRAINT IF EXISTS npc_relationships_npc_id_2_fkey;
 ALTER TABLE IF EXISTS ONLY npc_relationships DROP CONSTRAINT IF EXISTS npc_relationships_npc_id_1_fkey;
@@ -119,11 +122,15 @@ DROP INDEX IF EXISTS idx_player_spells_spell_id;
 DROP INDEX IF EXISTS idx_player_spells_player_id;
 DROP INDEX IF EXISTS idx_player_skills_skill_id;
 DROP INDEX IF EXISTS idx_player_skills_player_id;
+DROP INDEX IF EXISTS idx_player_mutes_player;
+DROP INDEX IF EXISTS idx_player_mutes_global;
+DROP INDEX IF EXISTS idx_player_mutes_channel;
 DROP INDEX IF EXISTS idx_player_lucidity_tier;
 DROP INDEX IF EXISTS idx_player_inventories_player_id;
 DROP INDEX IF EXISTS idx_player_exploration_room_id;
 DROP INDEX IF EXISTS idx_player_exploration_player_id;
 DROP INDEX IF EXISTS idx_player_exploration_explored_at;
+DROP INDEX IF EXISTS idx_player_aliases_player_lower_name;
 DROP INDEX IF EXISTS idx_npc_spawn_rules_sub_zone;
 DROP INDEX IF EXISTS idx_npc_spawn_rules_npc_def;
 DROP INDEX IF EXISTS idx_npc_relationships_npc2;
@@ -183,12 +190,14 @@ ALTER TABLE IF EXISTS ONLY players DROP CONSTRAINT IF EXISTS players_new_pkey;
 ALTER TABLE IF EXISTS ONLY player_spells DROP CONSTRAINT IF EXISTS player_spells_player_id_spell_id_key;
 ALTER TABLE IF EXISTS ONLY player_spells DROP CONSTRAINT IF EXISTS player_spells_pkey;
 ALTER TABLE IF EXISTS ONLY player_skills DROP CONSTRAINT IF EXISTS player_skills_pkey;
+ALTER TABLE IF EXISTS ONLY player_mutes DROP CONSTRAINT IF EXISTS player_mutes_pkey;
 ALTER TABLE IF EXISTS ONLY player_lucidity DROP CONSTRAINT IF EXISTS player_lucidity_pkey;
 ALTER TABLE IF EXISTS ONLY player_inventories DROP CONSTRAINT IF EXISTS player_inventories_pkey;
 ALTER TABLE IF EXISTS ONLY player_exploration DROP CONSTRAINT IF EXISTS player_exploration_player_room_unique;
 ALTER TABLE IF EXISTS ONLY player_exploration DROP CONSTRAINT IF EXISTS player_exploration_pkey;
 ALTER TABLE IF EXISTS ONLY player_effects DROP CONSTRAINT IF EXISTS player_effects_pkey;
 ALTER TABLE IF EXISTS ONLY player_channel_preferences DROP CONSTRAINT IF EXISTS player_channel_preferences_pkey;
+ALTER TABLE IF EXISTS ONLY player_aliases DROP CONSTRAINT IF EXISTS player_aliases_pkey;
 ALTER TABLE IF EXISTS ONLY npc_spawn_rules DROP CONSTRAINT IF EXISTS npc_spawn_rules_pkey;
 ALTER TABLE IF EXISTS ONLY npc_relationships DROP CONSTRAINT IF EXISTS npc_relationships_pkey;
 ALTER TABLE IF EXISTS ONLY npc_relationships DROP CONSTRAINT IF EXISTS npc_relationships_npc_id_1_npc_id_2_key;
@@ -244,11 +253,13 @@ DROP TABLE IF EXISTS professions;
 DROP TABLE IF EXISTS players;
 DROP TABLE IF EXISTS player_spells;
 DROP TABLE IF EXISTS player_skills;
+DROP TABLE IF EXISTS player_mutes;
 DROP TABLE IF EXISTS player_lucidity;
 DROP TABLE IF EXISTS player_inventories;
 DROP TABLE IF EXISTS player_exploration;
 DROP TABLE IF EXISTS player_effects;
 DROP TABLE IF EXISTS player_channel_preferences;
+DROP TABLE IF EXISTS player_aliases;
 DROP TABLE IF EXISTS npc_spawn_rules;
 DROP TABLE IF EXISTS npc_relationships;
 DROP TABLE IF EXISTS npc_definitions;
@@ -273,6 +284,8 @@ DROP TABLE IF EXISTS calendar_npc_schedules;
 DROP TABLE IF EXISTS calendar_holidays;
 DROP TABLE IF EXISTS aliases;
 DROP TABLE IF EXISTS account_sanctions;
+DROP FUNCTION IF EXISTS upsert_player_mute(p_mute_type text, p_muter_id uuid, p_muter_name text, p_target_id uuid, p_target_name text, p_channel text, p_reason text, p_muted_at timestamp with time zone, p_expires_at timestamp with time zone);
+DROP FUNCTION IF EXISTS upsert_player_alias(p_player_name text, p_alias_name text, p_command text);
 DROP PROCEDURE IF EXISTS upsert_player(IN p_player_id uuid, IN p_user_id uuid, IN p_name character varying, IN p_inventory text, IN p_status_effects text, IN p_current_room_id character varying, IN p_respawn_room_id character varying, IN p_experience_points integer, IN p_level integer, IN p_is_admin integer, IN p_profession_id bigint, IN p_created_at timestamp with time zone, IN p_last_active timestamp with time zone, IN p_stats jsonb, IN p_is_deleted boolean, IN p_deleted_at timestamp with time zone, IN p_tutorial_instance_id character varying, IN p_inventory_json text, IN p_equipped_json text);
 DROP FUNCTION IF EXISTS upsert_item_instance(p_item_instance_id character varying, p_prototype_id character varying, p_owner_type character varying, p_owner_id character varying, p_location_context character varying, p_quantity integer, p_condition integer, p_flags_override jsonb, p_binding_state character varying, p_attunement_state jsonb, p_custom_name character varying, p_metadata jsonb, p_origin_source character varying, p_origin_metadata jsonb);
 DROP FUNCTION IF EXISTS upsert_dialogue_definition(p_id text, p_definition jsonb, p_npc_definition_id bigint);
@@ -338,6 +351,8 @@ DROP FUNCTION IF EXISTS get_player_spell(p_player_id uuid, p_spell_id character 
 DROP FUNCTION IF EXISTS get_player_skills_with_skill(p_player_id uuid);
 DROP FUNCTION IF EXISTS get_player_by_name(p_name text);
 DROP FUNCTION IF EXISTS get_player_by_id(p_id uuid);
+DROP FUNCTION IF EXISTS get_player_aliases(p_player_name text);
+DROP FUNCTION IF EXISTS get_player_alias(p_player_name text, p_alias_name text);
 DROP FUNCTION IF EXISTS get_npc_system_statistics();
 DROP FUNCTION IF EXISTS get_npc_definitions_by_type(p_npc_type character varying);
 DROP FUNCTION IF EXISTS get_npc_definitions_by_sub_zone(p_sub_zone_id character varying);
@@ -364,13 +379,17 @@ DROP FUNCTION IF EXISTS get_all_skills();
 DROP FUNCTION IF EXISTS get_all_professions();
 DROP FUNCTION IF EXISTS get_active_sanction(p_user_id uuid);
 DROP FUNCTION IF EXISTS get_active_players_by_user_id(p_user_id uuid);
+DROP FUNCTION IF EXISTS get_active_player_mutes();
 DROP FUNCTION IF EXISTS get_active_effects_for_player(p_player_id uuid, p_current_tick integer);
 DROP FUNCTION IF EXISTS fetch_container_items(p_container_id uuid);
 DROP FUNCTION IF EXISTS expire_effects_for_tick(p_current_tick integer);
 DROP FUNCTION IF EXISTS delete_spawn_rule(p_id bigint);
 DROP FUNCTION IF EXISTS delete_room_link(p_from_room_id text, p_direction text);
 DROP FUNCTION IF EXISTS delete_player_skills_for_player(p_player_id uuid);
+DROP FUNCTION IF EXISTS delete_player_mute(p_mute_type text, p_muter_id uuid, p_target_id uuid, p_channel text);
 DROP FUNCTION IF EXISTS delete_player_effect(p_effect_id uuid);
+DROP FUNCTION IF EXISTS delete_player_aliases_by_id(p_player_id uuid);
+DROP FUNCTION IF EXISTS delete_player_alias(p_player_name text, p_alias_name text);
 DROP FUNCTION IF EXISTS delete_player(p_id uuid);
 DROP FUNCTION IF EXISTS delete_npc_definition(p_id bigint);
 DROP FUNCTION IF EXISTS delete_dialogue_definition(p_id text);
@@ -874,6 +893,46 @@ $$;
 
 
 --
+-- Name: delete_player_alias(text, text); Type: FUNCTION; Schema: mythos_dev; Owner: -
+--
+
+CREATE FUNCTION delete_player_alias(p_player_name text, p_alias_name text) RETURNS boolean
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    v_deleted INTEGER;
+BEGIN
+    DELETE FROM player_aliases a
+    USING players p
+    WHERE p.player_id = a.player_id
+      AND lower(p.name) = lower(p_player_name)
+      AND p.is_deleted = false
+      AND lower(a.name) = lower(p_alias_name);
+
+    GET DIAGNOSTICS v_deleted = ROW_COUNT;
+    RETURN v_deleted > 0;
+END;
+$$;
+
+
+--
+-- Name: delete_player_aliases_by_id(uuid); Type: FUNCTION; Schema: mythos_dev; Owner: -
+--
+
+CREATE FUNCTION delete_player_aliases_by_id(p_player_id uuid) RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    v_deleted INTEGER;
+BEGIN
+    DELETE FROM player_aliases WHERE player_id = p_player_id;
+    GET DIAGNOSTICS v_deleted = ROW_COUNT;
+    RETURN v_deleted;
+END;
+$$;
+
+
+--
 -- Name: delete_player_effect(uuid); Type: FUNCTION; Schema: mythos_dev; Owner: -
 --
 
@@ -882,6 +941,30 @@ CREATE FUNCTION delete_player_effect(p_effect_id uuid) RETURNS void
     AS $$
 BEGIN
     DELETE FROM player_effects WHERE player_effects.id = p_effect_id;
+END;
+$$;
+
+
+--
+-- Name: delete_player_mute(text, uuid, uuid, text); Type: FUNCTION; Schema: mythos_dev; Owner: -
+--
+
+CREATE FUNCTION delete_player_mute(p_mute_type text, p_muter_id uuid, p_target_id uuid, p_channel text) RETURNS boolean
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    v_deleted INTEGER;
+BEGIN
+    DELETE FROM player_mutes m
+    WHERE m.mute_type = p_mute_type
+      AND (
+          (p_mute_type = 'player' AND m.muter_id = p_muter_id AND m.target_id = p_target_id)
+          OR (p_mute_type = 'channel' AND m.muter_id = p_muter_id AND m.channel = p_channel)
+          OR (p_mute_type = 'global' AND m.target_id = p_target_id)
+      );
+
+    GET DIAGNOSTICS v_deleted = ROW_COUNT;
+    RETURN v_deleted > 0;
 END;
 $$;
 
@@ -1009,6 +1092,31 @@ BEGIN
     WHERE pe.player_id = p_player_id
       AND (pe.duration - (p_current_tick - pe.applied_at_tick)) > 0
     ORDER BY pe.applied_at_tick;
+END;
+$$;
+
+
+--
+-- Name: get_active_player_mutes(); Type: FUNCTION; Schema: mythos_dev; Owner: -
+--
+
+CREATE FUNCTION get_active_player_mutes() RETURNS TABLE(mute_type text, muter_id uuid, muter_name character varying, target_id uuid, target_name character varying, channel character varying, reason text, muted_at timestamp with time zone, expires_at timestamp with time zone)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        m.mute_type,
+        m.muter_id,
+        m.muter_name,
+        m.target_id,
+        m.target_name,
+        m.channel,
+        m.reason,
+        m.muted_at,
+        m.expires_at
+    FROM player_mutes m
+    WHERE m.expires_at IS NULL OR m.expires_at > now();
 END;
 $$;
 
@@ -1699,6 +1807,54 @@ BEGIN
         (SELECT count(*)::bigint FROM npc_definitions),
         COALESCE(v_by_type, '{}'::jsonb),
         (SELECT count(*)::bigint FROM npc_spawn_rules);
+END;
+$$;
+
+
+--
+-- Name: get_player_alias(text, text); Type: FUNCTION; Schema: mythos_dev; Owner: -
+--
+
+CREATE FUNCTION get_player_alias(p_player_name text, p_alias_name text) RETURNS TABLE(id uuid, name character varying, command character varying, created_at timestamp with time zone, updated_at timestamp with time zone)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        a.id,
+        a.name,
+        a.command,
+        a.created_at,
+        a.updated_at
+    FROM player_aliases a
+    JOIN players p ON p.player_id = a.player_id
+    WHERE lower(p.name) = lower(p_player_name)
+      AND p.is_deleted = false
+      AND lower(a.name) = lower(p_alias_name);
+END;
+$$;
+
+
+--
+-- Name: get_player_aliases(text); Type: FUNCTION; Schema: mythos_dev; Owner: -
+--
+
+CREATE FUNCTION get_player_aliases(p_player_name text) RETURNS TABLE(id uuid, name character varying, command character varying, created_at timestamp with time zone, updated_at timestamp with time zone)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        a.id,
+        a.name,
+        a.command,
+        a.created_at,
+        a.updated_at
+    FROM player_aliases a
+    JOIN players p ON p.player_id = a.player_id
+    WHERE lower(p.name) = lower(p_player_name)
+      AND p.is_deleted = false
+    ORDER BY a.created_at, a.name;
 END;
 $$;
 
@@ -3340,6 +3496,73 @@ END;
 $$;
 
 
+--
+-- Name: upsert_player_alias(text, text, text); Type: FUNCTION; Schema: mythos_dev; Owner: -
+--
+
+CREATE FUNCTION upsert_player_alias(p_player_name text, p_alias_name text, p_command text) RETURNS TABLE(id uuid, name character varying, command character varying, created_at timestamp with time zone, updated_at timestamp with time zone)
+    LANGUAGE plpgsql
+    AS $$
+#variable_conflict use_column
+DECLARE
+    v_player_id UUID;
+BEGIN
+    SELECT p.player_id INTO v_player_id
+    FROM players p
+    WHERE lower(p.name) = lower(p_player_name)
+      AND p.is_deleted = false;
+
+    IF v_player_id IS NULL THEN
+        RETURN;
+    END IF;
+
+    RETURN QUERY
+    INSERT INTO player_aliases AS a (player_id, name, command)
+    VALUES (v_player_id, p_alias_name, p_command)
+    ON CONFLICT (player_id, lower(name)) DO UPDATE
+        SET name = EXCLUDED.name,
+            command = EXCLUDED.command,
+            updated_at = now()
+    RETURNING a.id, a.name, a.command, a.created_at, a.updated_at;
+END;
+$$;
+
+
+--
+-- Name: upsert_player_mute(text, uuid, text, uuid, text, text, text, timestamp with time zone, timestamp with time zone); Type: FUNCTION; Schema: mythos_dev; Owner: -
+--
+
+CREATE FUNCTION upsert_player_mute(p_mute_type text, p_muter_id uuid, p_muter_name text, p_target_id uuid, p_target_name text, p_channel text, p_reason text, p_muted_at timestamp with time zone, p_expires_at timestamp with time zone) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    PERFORM delete_player_mute(p_mute_type, p_muter_id, p_target_id, p_channel);
+
+    INSERT INTO player_mutes (
+        mute_type,
+        muter_id,
+        muter_name,
+        target_id,
+        target_name,
+        channel,
+        reason,
+        muted_at,
+        expires_at
+    ) VALUES (
+        p_mute_type,
+        p_muter_id,
+        p_muter_name,
+        p_target_id,
+        p_target_name,
+        p_channel,
+        coalesce(p_reason, ''),
+        p_muted_at,
+        p_expires_at
+    );
+END;
+$$;
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -4064,6 +4287,20 @@ ALTER TABLE npc_spawn_rules ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
 
 
 --
+-- Name: player_aliases; Type: TABLE; Schema: mythos_dev; Owner: -
+--
+
+CREATE TABLE player_aliases (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    player_id uuid NOT NULL,
+    name character varying(20) NOT NULL,
+    command character varying(200) NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+--
 -- Name: player_channel_preferences; Type: TABLE; Schema: mythos_dev; Owner: -
 --
 
@@ -4195,6 +4432,47 @@ COMMENT ON COLUMN player_lucidity.current_lcd IS 'Current lucidity value (-100 t
 --
 
 COMMENT ON COLUMN player_lucidity.current_tier IS 'Current lucidity tier: lucid, uneasy, fractured, deranged, or catatonic.';
+
+
+--
+-- Name: player_mutes; Type: TABLE; Schema: mythos_dev; Owner: -
+--
+
+CREATE TABLE player_mutes (
+    id bigint NOT NULL,
+    mute_type text NOT NULL,
+    muter_id uuid NOT NULL,
+    muter_name character varying(50) NOT NULL,
+    target_id uuid,
+    target_name character varying(50),
+    channel character varying(32),
+    reason text DEFAULT ''::text NOT NULL,
+    muted_at timestamp with time zone DEFAULT now() NOT NULL,
+    expires_at timestamp with time zone,
+    CONSTRAINT chk_player_mutes_shape CHECK ((((mute_type = 'channel'::text) AND (channel IS NOT NULL) AND (target_id IS NULL)) OR ((mute_type <> 'channel'::text) AND (channel IS NULL) AND (target_id IS NOT NULL)))),
+    CONSTRAINT chk_player_mutes_type CHECK ((mute_type = ANY (ARRAY['player'::text, 'channel'::text, 'global'::text])))
+);
+
+
+--
+-- Name: COLUMN player_mutes.expires_at; Type: COMMENT; Schema: mythos_dev; Owner: -
+--
+
+COMMENT ON COLUMN player_mutes.expires_at IS 'NULL means permanent.';
+
+
+--
+-- Name: player_mutes_id_seq; Type: SEQUENCE; Schema: mythos_dev; Owner: -
+--
+
+ALTER TABLE player_mutes ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME player_mutes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
 
 
 --
@@ -5067,6 +5345,14 @@ ALTER TABLE ONLY npc_spawn_rules
 
 
 --
+-- Name: player_aliases player_aliases_pkey; Type: CONSTRAINT; Schema: mythos_dev; Owner: -
+--
+
+ALTER TABLE ONLY player_aliases
+    ADD CONSTRAINT player_aliases_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: player_channel_preferences player_channel_preferences_pkey; Type: CONSTRAINT; Schema: mythos_dev; Owner: -
 --
 
@@ -5112,6 +5398,14 @@ ALTER TABLE ONLY player_inventories
 
 ALTER TABLE ONLY player_lucidity
     ADD CONSTRAINT player_lucidity_pkey PRIMARY KEY (player_id);
+
+
+--
+-- Name: player_mutes player_mutes_pkey; Type: CONSTRAINT; Schema: mythos_dev; Owner: -
+--
+
+ALTER TABLE ONLY player_mutes
+    ADD CONSTRAINT player_mutes_pkey PRIMARY KEY (id);
 
 
 --
@@ -5554,6 +5848,13 @@ CREATE INDEX idx_npc_spawn_rules_sub_zone ON npc_spawn_rules USING btree (sub_zo
 
 
 --
+-- Name: idx_player_aliases_player_lower_name; Type: INDEX; Schema: mythos_dev; Owner: -
+--
+
+CREATE UNIQUE INDEX idx_player_aliases_player_lower_name ON player_aliases USING btree (player_id, lower((name)::text));
+
+
+--
 -- Name: idx_player_exploration_explored_at; Type: INDEX; Schema: mythos_dev; Owner: -
 --
 
@@ -5607,6 +5908,27 @@ CREATE INDEX idx_player_inventories_player_id ON player_inventories USING btree 
 --
 
 CREATE INDEX idx_player_lucidity_tier ON player_lucidity USING btree (current_tier);
+
+
+--
+-- Name: idx_player_mutes_channel; Type: INDEX; Schema: mythos_dev; Owner: -
+--
+
+CREATE UNIQUE INDEX idx_player_mutes_channel ON player_mutes USING btree (muter_id, channel) WHERE (mute_type = 'channel'::text);
+
+
+--
+-- Name: idx_player_mutes_global; Type: INDEX; Schema: mythos_dev; Owner: -
+--
+
+CREATE UNIQUE INDEX idx_player_mutes_global ON player_mutes USING btree (target_id) WHERE (mute_type = 'global'::text);
+
+
+--
+-- Name: idx_player_mutes_player; Type: INDEX; Schema: mythos_dev; Owner: -
+--
+
+CREATE UNIQUE INDEX idx_player_mutes_player ON player_mutes USING btree (muter_id, target_id) WHERE (mute_type = 'player'::text);
 
 
 --
@@ -6110,6 +6432,14 @@ ALTER TABLE ONLY npc_spawn_rules
 
 
 --
+-- Name: player_aliases player_aliases_player_id_fkey; Type: FK CONSTRAINT; Schema: mythos_dev; Owner: -
+--
+
+ALTER TABLE ONLY player_aliases
+    ADD CONSTRAINT player_aliases_player_id_fkey FOREIGN KEY (player_id) REFERENCES players(player_id) ON DELETE CASCADE;
+
+
+--
 -- Name: player_channel_preferences player_channel_preferences_player_id_fkey; Type: FK CONSTRAINT; Schema: mythos_dev; Owner: -
 --
 
@@ -6155,6 +6485,22 @@ ALTER TABLE ONLY player_inventories
 
 ALTER TABLE ONLY player_lucidity
     ADD CONSTRAINT player_lucidity_player_id_fkey FOREIGN KEY (player_id) REFERENCES players(player_id) ON DELETE CASCADE;
+
+
+--
+-- Name: player_mutes player_mutes_muter_id_fkey; Type: FK CONSTRAINT; Schema: mythos_dev; Owner: -
+--
+
+ALTER TABLE ONLY player_mutes
+    ADD CONSTRAINT player_mutes_muter_id_fkey FOREIGN KEY (muter_id) REFERENCES players(player_id) ON DELETE CASCADE;
+
+
+--
+-- Name: player_mutes player_mutes_target_id_fkey; Type: FK CONSTRAINT; Schema: mythos_dev; Owner: -
+--
+
+ALTER TABLE ONLY player_mutes
+    ADD CONSTRAINT player_mutes_target_id_fkey FOREIGN KEY (target_id) REFERENCES players(player_id) ON DELETE CASCADE;
 
 
 --

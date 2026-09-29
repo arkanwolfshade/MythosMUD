@@ -115,39 +115,6 @@ class MessageFilteringHelper:
 
         return targets
 
-    async def preload_receiver_mute_data(self, user_manager: "UserManager", targets: set[str], sender_id: str) -> None:
-        """
-        Pre-load mute data for all potential receivers.
-
-        Args:
-            user_manager: UserManager instance to use for loading
-            targets: Set of all target player IDs
-            sender_id: Sender player ID to exclude
-        """
-        receiver_ids = [pid for pid in targets if pid != sender_id]
-        if not receiver_ids:
-            return
-
-        logger.debug(
-            "=== BROADCAST FILTERING DEBUG: Pre-loading mute data for receivers ===",
-            receiver_count=len(receiver_ids),
-        )
-
-        try:
-            receiver_ids_typed: list[uuid.UUID | str] = cast(list[uuid.UUID | str], receiver_ids)
-            load_results = await user_manager.load_player_mutes_batch(receiver_ids_typed)
-            logger.debug(
-                "=== BROADCAST FILTERING DEBUG: Batch loaded mute data ===",
-                loaded_count=sum(1 for v in load_results.values() if v),
-                failed_count=sum(1 for v in load_results.values() if not v),
-            )
-        except (NATSError, RuntimeError) as e:
-            logger.warning(
-                "Failed to batch load mute data for receivers",
-                receiver_count=len(receiver_ids),
-                error=str(e),
-            )
-
     def extract_chat_event_info(
         self, chat_event: dict[str, Any]
     ) -> tuple[str | None, dict[str, Any], str | None, bool]:
@@ -422,15 +389,6 @@ class MessageFilteringHelper:
                 sender_id=sender_id,
             )
 
-            # Load the receiver's mute data before checking
-            mute_load_result = user_manager.load_player_mutes(receiver_id)
-            logger.debug(
-                "=== MUTE FILTERING DEBUG: Mute data load result ===",
-                receiver_id=receiver_id,
-                sender_id=sender_id,
-                mute_load_result=mute_load_result,
-            )
-
             # Check what mute data is available (only for debugging, not for logic).
             # _player_mutes uses UUID keys; fall back to the raw string if receiver_id
             # isn't a valid UUID so the lookup below simply misses, same as before.
@@ -525,15 +483,6 @@ class MessageFilteringHelper:
         )
 
         try:
-            # Load the receiver's mute data before checking (if not already loaded) - async version
-            mute_load_result = await user_manager.load_player_mutes_async(receiver_id)
-            logger.debug(
-                "=== BROADCAST FILTERING DEBUG: Mute data load result (async) ===",
-                receiver_id=receiver_id,
-                sender_id=sender_id,
-                mute_load_result=mute_load_result,
-            )
-
             # Check what mute data is available (only for debugging, not for logic).
             # NOTE: receiver_id is passed as-is (str) here, matching prior behavior; it
             # only matches player_mutes' UUID keys when receiver_id happens to already be
