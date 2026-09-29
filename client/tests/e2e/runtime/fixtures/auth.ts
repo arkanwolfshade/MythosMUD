@@ -135,7 +135,7 @@ export async function loginPlayer(page: Page, username: string, password: string
   await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
 
   const loginNetworkFailure = page.getByText(/NetworkError when attempting to fetch/i);
-  if (await loginNetworkFailure.isVisible({ timeout: 8000 }).catch(() => false)) {
+  if (await loginNetworkFailure.isVisible().catch(() => false)) {
     throw new Error(
       'E2E login: NetworkError on login fetch — backend unreachable or wrong API URL. ' +
         'Run the FastAPI server on http://127.0.0.1:54768 and ensure Vite proxies /v1 (or env) for E2E.'
@@ -211,7 +211,7 @@ export async function assertNoRestDisconnectPollution(page: Page): Promise<void>
   }
 
   const input = page.getByTestId('command-input');
-  if (await input.isVisible({ timeout: 2000 }).catch(() => false)) {
+  if (await isVisibleWithin(input, 2000)) {
     await input.fill('stand');
     await input.press('Enter');
     await new Promise(r => setTimeout(r, 800));
@@ -244,7 +244,7 @@ export async function logoutPlayer(
 ): Promise<void> {
   await page.bringToFront().catch(() => {});
 
-  if (await isUsernameLoginVisible(page, 2000)) {
+  if (await isUsernameLoginVisible(page)) {
     return;
   }
 
@@ -252,7 +252,7 @@ export async function logoutPlayer(
 
   // Prefer intentional Exit-the-Realm / logout so the server emits left_game (not linkdead grace).
   const logoutButton = page.getByTestId('logout-button');
-  const inGame = await logoutButton.isVisible({ timeout: 3000 }).catch(() => false);
+  const inGame = await isVisibleWithin(logoutButton, 3000);
   if (inGame) {
     const logoutEnabled = await logoutButton.isEnabled({ timeout: 3000 }).catch(() => false);
     if (logoutEnabled) {
@@ -380,11 +380,10 @@ export async function ensurePlayableConnection(page: Page, options?: EnsurePlaya
 
 const RECOVER_COMMAND_READY_MS = 8000;
 
-async function isUsernameLoginVisible(page: Page, visibilityTimeoutMs = 2000): Promise<boolean> {
-  return page
-    .getByTestId('username-input')
-    .isVisible({ timeout: visibilityTimeoutMs })
-    .catch(() => false);
+/** Instant check unless `waitMs` is given -- most callers probe a page that is usually NOT on login. */
+async function isUsernameLoginVisible(page: Page, waitMs?: number): Promise<boolean> {
+  const input = page.getByTestId('username-input');
+  return waitMs === undefined ? input.isVisible() : isVisibleWithin(input, waitMs);
 }
 
 async function restorePlayableAfterLogin(
@@ -482,7 +481,7 @@ async function refreshPlayableSession(page: Page, timeoutMs: number = 45000): Pr
 
   const onLogin = await page
     .getByTestId('username-input')
-    .isVisible({ timeout: 2000 })
+    .isVisible()
     .catch(() => false);
   if (onLogin) {
     return;
@@ -494,10 +493,7 @@ async function refreshPlayableSession(page: Page, timeoutMs: number = 45000): Pr
 
   await page.reload({ waitUntil: 'domcontentloaded' });
 
-  const onLoginAfterReload = await page
-    .getByTestId('username-input')
-    .isVisible({ timeout: 5000 })
-    .catch(() => false);
+  const onLoginAfterReload = await isVisibleWithin(page.getByTestId('username-input'), 5000);
   if (onLoginAfterReload) {
     return;
   }

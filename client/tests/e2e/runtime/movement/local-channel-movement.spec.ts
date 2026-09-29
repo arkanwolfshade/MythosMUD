@@ -33,7 +33,7 @@ async function contextsNeedRefresh(contexts: MultiPlayerContexts): Promise<boole
     }
     const onLogin = await c.page
       .getByTestId('username-input')
-      .isVisible({ timeout: 1500 })
+      .isVisible()
       .catch(() => false);
     if (onLogin) {
       return true;

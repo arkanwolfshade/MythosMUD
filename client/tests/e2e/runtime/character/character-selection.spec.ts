@@ -13,11 +13,6 @@ test.describe('Character Selection at Login', () => {
     // Login as user with multiple characters
     await loginPlayer(page, 'Ithaqua', 'Cthulhu1');
 
-    // Verify character selection screen appears (if user has multiple characters)
-    const characterSelection = page.locator('h1, h2, h3').filter({ hasText: /Select Your Character/i });
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const _isVisible = await characterSelection.isVisible({ timeout: 5000 }).catch(() => false);
-
     // This test verifies character selection exists (may or may not appear depending on character count)
     expect(page).toBeTruthy();
   });
@@ -28,13 +23,13 @@ test.describe('Character Selection at Login', () => {
 
     // Check if character selection screen appears (defensive: UI may not be in selection state)
     const characterSelection = page.locator('h1, h2, h3').filter({ hasText: /Select Your Character/i });
-    const isVisible = await characterSelection.isVisible({ timeout: 5000 }).catch(() => false);
+    const isVisible = await characterSelection.isVisible().catch(() => false);
 
     /* eslint-disable playwright/no-conditional-in-test -- defensive UI flow */
     if (isVisible) {
       // Click "Select Character" button for first character
       const selectButton = page.locator('button:has-text("Select Character")').first();
-      if (await selectButton.isVisible({ timeout: 3000 }).catch(() => false)) {
+      if (await selectButton.isVisible().catch(() => false)) {
         await selectButton.click();
         await page
           .getByTestId('command-input')

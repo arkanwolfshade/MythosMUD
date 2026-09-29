@@ -16,7 +16,7 @@ export class CharacterSelectionPage {
   async isVisible(): Promise<boolean> {
     return this.page
       .getByRole('heading', { name: /Select Your Character/i })
-      .isVisible({ timeout: 2000 })
+      .isVisible()
       .catch(() => false);
   }
 

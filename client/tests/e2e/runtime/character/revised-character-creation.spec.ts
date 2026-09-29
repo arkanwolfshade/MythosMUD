@@ -8,6 +8,7 @@
  */
 
 import { expect, test, type Locator, type Page } from '@playwright/test';
+import { isVisibleWithin } from '../fixtures/auth';
 import { cleanupE2ECharacters } from '../fixtures/character-cleanup';
 import { TEST_TIMEOUTS } from '../fixtures/test-data';
 import { LoginPage } from '../pages';
@@ -68,7 +69,7 @@ async function acceptStatsAndSelectFirstProfession(page: Page): Promise<void> {
 
 async function deleteRevisedTestCharacterToMakeRoom(page: Page, createButton: Locator): Promise<void> {
   // beforeEach cleanup should leave a free slot; this is only a last-resort escape hatch at 3/3.
-  if (await createButton.isVisible({ timeout: 5000 }).catch(() => false)) {
+  if (await isVisibleWithin(createButton, 5000)) {
     return;
   }
 
@@ -179,7 +180,7 @@ async function recoverCharacterSelectionAfterCreation(page: Page): Promise<void>
 
   const onLogin = await page
     .getByTestId('username-input')
-    .isVisible({ timeout: 2000 })
+    .isVisible()
     .catch(() => false);
   if (!onLogin) {
     await page.goto('/');
@@ -187,12 +188,7 @@ async function recoverCharacterSelectionAfterCreation(page: Page): Promise<void>
   }
 
   const loginPage = new LoginPage(page);
-  if (
-    await page
-      .getByTestId('username-input')
-      .isVisible({ timeout: 5000 })
-      .catch(() => false)
-  ) {
+  if (await isVisibleWithin(page.getByTestId('username-input'), 5000)) {
     await loginPage.login('Ithaqua', 'Cthulhu1');
   }
 
