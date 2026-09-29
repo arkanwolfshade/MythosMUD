@@ -231,6 +231,20 @@ only the combat-only `player_mortally_wounded` event, per the server-authority r
 `isMortallyWounded` slot and its inert CSS class were deleted in the same PR.
 
 **[NOTE]**
+[#713](https://github.com/arkanwolfshade/MythosMUD/issues/713) resolved: the rescue banner **was**
+rebuilt, but not as the old `rescueState` pipeline. A banner over the server as it stood would have
+had nothing to show, because `ground` sent `channeling` and then `success`/`failed` within
+milliseconds, so the server was changed first: `ground` is now a timed, interruptible ritual
+(`GameConfig.ground_channel_seconds`, `server/commands/ground_channel.py`), and every `rescue_update`
+carries a server-set `role` (`rescuer`/`target`) so the client words its banner from the server's
+data rather than by matching names. The client projects the latest phase into `GameState.rescueStatus`
+(`rescue_update`, excluding `delirium`, which keeps its own modal) and derives the persistent
+"Catatonic" state from `lucidityStatus.tier` instead of a second slot, so it survives reconnect for
+free. The banner's expiry timer lives in the component, keyed on the event's `sequence_number`, to
+keep the projector pure and to avoid comparing client and server clocks. The instant `rescue` flow
+(`RescueService`) is untouched apart from `role`; it is still not registered as a command.
+
+**[NOTE]**
 [#714](https://github.com/arkanwolfshade/MythosMUD/issues/714) resolved: `HallucinationTicker`
 was **not** rebuilt. Investigation found the real gap was one level deeper than a missing
 renderer — the server was already emitting hallucination content (`lucidity_event_dispatcher`'s

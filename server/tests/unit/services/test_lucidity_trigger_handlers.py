@@ -61,7 +61,29 @@ async def test_handle_catatonia_transitions_resolves_catatonia(
         )
     assert lucidity_record.catatonia_entered_at is None
     observer.on_catatonia_cleared.assert_called_once()
-    send_event.assert_awaited_once()
+    send_event.assert_awaited_once_with(
+        player_id=player_id, status="success", role="target", current_lcd=20, message="Consciousness steadies."
+    )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("reason_code", ["ground_rescue", "rescue_command"])
+async def test_handle_catatonia_transitions_command_owned_exit_sends_no_success(
+    lucidity_record: MagicMock, player_id: uuid.UUID, reason_code: str
+) -> None:
+    """The rescue command sends the target's success itself, so the trigger must not duplicate it (#713)."""
+    lucidity_record.catatonia_entered_at = datetime.now(UTC)
+    with patch("server.services.lucidity_trigger_handlers.send_rescue_update_event", new=AsyncMock()) as send_event:
+        await handle_catatonia_transitions(
+            record=lucidity_record,
+            player_id=player_id,
+            new_tier="lucid",
+            previous_tier="catatonic",
+            new_lcd=1,
+            catatonia_observer=MagicMock(),
+            reason_code=reason_code,
+        )
+    send_event.assert_not_awaited()
 
 
 @pytest.mark.asyncio
@@ -69,7 +91,13 @@ async def test_handle_delirium_trigger_sends_event(player_id: uuid.UUID) -> None
     handlers._last_delirium_trigger.clear()
     with patch("server.services.lucidity_trigger_handlers.send_rescue_update_event", new=AsyncMock()) as send_event:
         await handle_delirium_trigger(player_id, new_lcd=-11, previous_lcd=0)
-    send_event.assert_awaited_once()
+    send_event.assert_awaited_once_with(
+        player_id=str(player_id),
+        status="delirium",
+        role="target",
+        current_lcd=-11,
+        message="Your mind fractures completely. The sanitarium calls you back from the edge of madness...",
+    )
 
 
 @pytest.mark.asyncio

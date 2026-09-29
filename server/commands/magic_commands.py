@@ -22,6 +22,7 @@ import uuid  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Im
 from typing import TYPE_CHECKING, Any  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Import must come after from __future__ and docstring per Python spec
 
 from server.alias_storage import AliasStorage  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Import must come after from __future__ and docstring per Python spec
+from server.commands.ground_channel import cancel_ground_channel  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Import must come after from __future__ and docstring per Python spec
 from server.commands.rest_command import cancel_rest_countdown, is_player_resting  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Import must come after from __future__ and docstring per Python spec
 from server.game.magic.spell_registry import SpellRegistry  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Import must come after from __future__ and docstring per Python spec
 from server.persistence.repositories.player_spell_repository import PlayerSpellRepository  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Import must come after from __future__ and docstring per Python spec
@@ -182,6 +183,7 @@ class MagicCommandHandler:
             if not connection_manager:
                 return
             player_id = uuid.UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
+            await cancel_ground_channel(player_id, connection_manager)  # casting breaks /ground too (#713)
             if not is_player_resting(player_id, connection_manager):
                 return
             await cancel_rest_countdown(player_id, connection_manager)

@@ -157,6 +157,26 @@ async def test_handle_rest_command_player_not_found(
 
 
 @pytest.mark.asyncio
+async def test_handle_rest_command_rejected_while_channeling_ground(
+    mock_request: MagicMock,
+    mock_persistence: MockPersistence,
+    mock_connection_manager: MagicMock,
+    mock_player: MagicMock,
+) -> None:
+    """#713: a rescuer mid-/ground ritual cannot start /rest."""
+    mock_request.app.state.persistence = mock_persistence
+    mock_request.app.state.connection_manager = mock_connection_manager
+    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    player_id = uuid.UUID(mock_player.player_id)
+    mock_connection_manager.grounding_by_rescuer = {player_id: uuid.uuid4()}
+
+    result = await handle_rest_command({}, {}, mock_request, None, "TestPlayer")
+
+    assert "grounding ritual" in result["result"].lower()
+    assert player_id not in mock_connection_manager.resting_players
+
+
+@pytest.mark.asyncio
 async def test_handle_rest_command_already_resting(
     mock_request: MagicMock,
     mock_persistence: MockPersistence,

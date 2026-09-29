@@ -16,6 +16,7 @@ import uuid
 from typing import Any, cast
 
 from ..alias_storage import AliasStorage
+from ..commands.ground_channel import cancel_ground_channel
 from ..commands.rest_command import cancel_rest_countdown, is_player_resting
 from ..exceptions import DatabaseError, ValidationError
 from ..game.dialogue import get_dialogue_service
@@ -274,6 +275,8 @@ async def _cancel_rest_if_moving(
         return None
     raw_id = player.player_id
     player_id = uuid.UUID(raw_id) if isinstance(raw_id, str) else raw_id
+    # Moving also breaks a /ground ritual (#713); the interrupted event carries its own message.
+    await cancel_ground_channel(player_id, connection_manager)
     if not is_player_resting(player_id, connection_manager):
         return None
     await cancel_rest_countdown(player_id, connection_manager)

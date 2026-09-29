@@ -74,6 +74,7 @@ async def _dispatch_rescue_events(
         await event_dispatcher(
             target_player_id_str,
             status="rescued",
+            role="target",
             rescuer_name=rescuer_name,
             target_name=target_name,
             message=f"{rescuer_name} steadies {target_name}.",
@@ -82,6 +83,7 @@ async def _dispatch_rescue_events(
         await event_dispatcher(
             rescuer_player_id_str,
             status="rescued",
+            role="rescuer",
             rescuer_name=rescuer_name,
             target_name=target_name,
             message=f"You rescue {target_name}, their lucidity stabilizing.",

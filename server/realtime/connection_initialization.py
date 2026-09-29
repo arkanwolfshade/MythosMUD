@@ -56,6 +56,9 @@ def initialize_connection_state(manager: Any, event_publisher: Any | None = None
     manager.login_grace_period_players = {}
     manager.login_grace_period_start_times = {}
     manager.resting_players = {}
+    # /ground channels (#713): keyed by target id, plus rescuer id -> target id.
+    manager.grounding_channels = {}
+    manager.grounding_by_rescuer = {}
     manager.intentional_disconnects = set()
     manager.connection_timestamps = {}
 

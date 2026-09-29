@@ -202,6 +202,7 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
           mythosTime={gameState.mythosTime ?? mythosTime}
           healthStatus={healthStatus}
           lucidityStatus={lucidityStatus}
+          rescueStatus={gameState.rescueStatus ?? null}
           activeEffects={activeEffects}
           followingTarget={gameState.followingTarget ?? null}
           questLog={gameState.questLog ?? []}

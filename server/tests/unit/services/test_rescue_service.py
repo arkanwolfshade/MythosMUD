@@ -193,6 +193,10 @@ async def test_rescue_success(
     assert float(result["new_lcd"]) == 1.0
     mock_lucidity_service.apply_lucidity_adjustment.assert_awaited_once()
     mock_event_dispatcher.assert_awaited()
+    # Reason: UNTYPED_FIXTURE - mock_event_dispatcher is an untyped module fixture (see this file's baseline).
+    # Appropriate because: typing the shared fixture is out of scope for one assertion; the values compared are plain strings.
+    roles = {call.kwargs["role"] for call in mock_event_dispatcher.await_args_list}  # pyright: ignore[reportUnknownVariableType, reportUnknownMemberType]
+    assert roles == {"target", "rescuer"}  # #713: each recipient is told which side they are on
 
 
 @pytest.mark.asyncio

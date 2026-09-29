@@ -158,6 +158,22 @@ async def test_apply_target_rest_grace_allows_disconnect_grace_target() -> None:
 
 
 @pytest.mark.asyncio
+async def test_apply_target_rest_grace_interrupts_ground_channel() -> None:
+    """#713: an attacked target's /ground channel is interrupted (which also ends it for the rescuer)."""
+    target = _participant("Target")
+    connection_manager: MagicMock = MagicMock()
+    with (
+        patch("server.services.combat_service_start.is_player_in_login_grace_period", return_value=False),
+        patch("server.commands.rest_command.is_player_resting", return_value=False),
+        patch("server.commands.ground_channel.cancel_ground_channel", new_callable=AsyncMock) as cancel_ground,
+    ):
+        await combat_service_start.apply_target_rest_and_grace_checks(
+            MagicMock(), connection_manager, target, _participant("Attacker")
+        )
+    cancel_ground.assert_awaited_once_with(target.participant_id, connection_manager)
+
+
+@pytest.mark.asyncio
 async def test_apply_target_rest_cancels_rest() -> None:
     """Resting target has rest countdown cancelled."""
     target = _participant("Target")

@@ -270,6 +270,7 @@ class LucidityService:
             previous_tier=previous_tier,
             new_lcd=new_lcd,
             catatonia_observer=self._catatonia_observer,
+            reason_code=reason_code,
         )
         await handle_delirium_and_sanitarium_triggers(player_id, new_lcd, previous_lcd, self._catatonia_observer)
         return await self._finalize_lucidity_adjustment(

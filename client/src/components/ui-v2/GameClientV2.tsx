@@ -3,8 +3,10 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import type { HealthStatus } from '../../types/health';
 import { deriveHealthStatusFromPlayer } from '../../types/health';
 import { deriveLucidityStatusFromPlayer, type LucidityStatus } from '../../types/lucidity';
+import type { RescueStatus } from '../../types/rescue';
 import { publishTier } from '../../utils/lucidityTierRelay';
 import { IncapacitatedBanner } from '../health/IncapacitatedBanner';
+import { RescueBanner } from '../health/RescueBanner';
 import { GameClientV2AuxiliaryPanels } from './GameClientV2AuxiliaryPanels';
 import { HeaderBar } from './HeaderBar';
 import { ChatHistoryPanel } from './panels/ChatHistoryPanel';
@@ -80,6 +82,8 @@ interface GameClientV2Props {
   mythosTime: MythosTimeState | null;
   healthStatus: HealthStatus | null;
   lucidityStatus: LucidityStatus | null;
+  /** Latest rescue phase for the banner (GameState.rescueStatus, #713). */
+  rescueStatus?: RescueStatus | null;
   // Event handlers
   onSendCommand: (command: string) => void;
   onSendChatMessage: (message: string, channel: string) => void;
@@ -120,6 +124,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
     mythosTime,
     healthStatus,
     lucidityStatus,
+    rescueStatus = null,
     onSendCommand,
     onSendChatMessage,
     onClearMessages,
@@ -303,13 +308,14 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
         <div
           className={`relative flex min-h-0 flex-1 ${headerHeightClass(isHeaderCollapsed, mythosTime).padding} transition-[padding-top] duration-300`}
         >
-          {isIncapacitated && (
-            <div
-              className={`absolute inset-x-0 ${headerHeightClass(isHeaderCollapsed, mythosTime).offset} z-40 px-4 pt-2`}
-            >
-              <IncapacitatedBanner />
-            </div>
-          )}
+          {/* pointer-events-none: this strip is present even when both banners render nothing, and must
+              not swallow clicks meant for the panels beneath; each banner re-enables its own. */}
+          <div
+            className={`pointer-events-none absolute inset-x-0 ${headerHeightClass(isHeaderCollapsed, mythosTime).offset} z-40 flex flex-col gap-2 px-4 pt-2`}
+          >
+            {isIncapacitated && <IncapacitatedBanner className="pointer-events-auto" />}
+            <RescueBanner rescueStatus={rescueStatus} isCatatonic={derivedLucidityStatus?.tier === 'catatonic'} />
+          </div>
           {mainDockSlots.map(slot => {
             const panel = panelManager.getPanel(slot.id);
             if (!panel?.isVisible) {
