@@ -23,6 +23,7 @@ from .room_id_utils import RoomIDUtils
 class _SubscriberOccupantSource(Protocol):
     """The ConnectionManager surface used to read subscription-based room membership."""
 
+    # pylint: disable-next=missing-function-docstring  # Reason: PEP 544 Protocol stub
     async def get_room_occupants(self, room_id: str) -> list[dict[str, object]]: ...
 
 
