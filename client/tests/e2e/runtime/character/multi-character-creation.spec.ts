@@ -13,13 +13,13 @@ test.describe('Multi-Character Creation', () => {
 
     // Check if character selection screen appears (defensive: UI may not be in selection state)
     const characterSelection = page.locator('h1, h2, h3').filter({ hasText: /Select Your Character/i });
-    const isVisible = await characterSelection.isVisible({ timeout: 5000 }).catch(() => false);
+    const isVisible = await characterSelection.isVisible().catch(() => false);
 
     /* eslint-disable playwright/no-conditional-in-test -- defensive UI flow */
     if (isVisible) {
       // Click "Create New Character" button
       const createButton = page.locator('button:has-text("Create New Character")');
-      if (await createButton.isVisible({ timeout: 3000 }).catch(() => false)) {
+      if (await createButton.isVisible().catch(() => false)) {
         await createButton.click();
         await page
           .getByRole('textbox')

@@ -107,7 +107,7 @@ async function tryDeleteOneTestCharacter(page: Page): Promise<boolean> {
     if (!isDeletableTestCharacter(charName)) continue;
 
     const deleteBtn = card.getByRole('button', { name: 'Delete', exact: true });
-    if (!(await deleteBtn.isVisible({ timeout: 2000 }).catch(() => false))) continue;
+    if (!(await deleteBtn.isVisible().catch(() => false))) continue;
 
     await deleteCharacterFromCard(page, card, charName);
     return true;

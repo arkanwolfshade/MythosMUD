@@ -281,7 +281,7 @@ async function resyncE2ePlayersAfterDatabaseReset(contexts: PlayerContext[], tim
 
     const motdVisible = await ctx.page
       .getByTestId('motd-enter-realm')
-      .isVisible({ timeout: 2500 })
+      .isVisible()
       .catch(() => false);
     if (motdVisible) {
       const motdPage = new MotdPage(ctx.page);
@@ -303,7 +303,7 @@ async function ensureMultiplayerReadyForCoLocate(contexts: PlayerContext[], time
   for (const ctx of contexts) {
     const motdVisible = await ctx.page
       .getByTestId('motd-enter-realm')
-      .isVisible({ timeout: 2500 })
+      .isVisible()
       .catch(() => false);
     if (motdVisible) {
       const motdPage = new MotdPage(ctx.page);
@@ -316,7 +316,7 @@ async function ensureMultiplayerReadyForCoLocate(contexts: PlayerContext[], time
   for (const ctx of contexts) {
     const onLogin = await ctx.page
       .getByTestId('username-input')
-      .isVisible({ timeout: 2000 })
+      .isVisible()
       .catch(() => false);
     if (onLogin) {
       await loginPlayer(ctx.page, ctx.player.username, ctx.player.password);

@@ -67,7 +67,7 @@ test.describe('Who Command', () => {
       for (const c of contexts) {
         const onLogin = await c.page
           .getByTestId('username-input')
-          .isVisible({ timeout: 1500 })
+          .isVisible()
           .catch(() => false);
         if (onLogin) {
           needsFresh = true;

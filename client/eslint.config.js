@@ -98,6 +98,18 @@ export default tseslint.config([
       ecmaVersion: 2020,
       globals: { ...globals.node, ...globals.browser },
     },
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          // #911: Playwright ignores isVisible's timeout and returns immediately.
+          selector:
+            "CallExpression[callee.property.name='isVisible'] > ObjectExpression > Property[key.name='timeout']",
+          message:
+            'isVisible() ignores `timeout` and never waits. Use isVisibleWithin(locator, ms) from fixtures/auth.',
+        },
+      ],
+    },
   },
   {
     files: ['playwright.config.ts', '**/playwright.runtime.config.ts'],

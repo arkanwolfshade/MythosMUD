@@ -27,7 +27,9 @@ export async function dismissDeathInterstitial(page: Page): Promise<void> {
   const respawnBtn = page.getByRole('button', {
     name: /Rejoin the earthly plane|Returning to the mortal realm/i,
   });
-  if (await respawnBtn.isVisible({ timeout: 5000 }).catch(() => false)) {
+  // Called speculatively while alive too, so only wait for the button when Location already says dead.
+  const visible = (await isInDeathVoid(page)) ? await isVisibleWithin(respawnBtn, 5000) : await respawnBtn.isVisible();
+  if (visible) {
     await clickWithoutStability(respawnBtn);
     await page
       .getByTestId('command-input')
@@ -74,7 +76,7 @@ export async function isPlayerDead(page: Page): Promise<boolean> {
   const respawnBtn = page.getByRole('button', {
     name: /Rejoin the earthly plane|Returning to the mortal realm/i,
   });
-  return respawnBtn.isVisible({ timeout: 500 }).catch(() => false);
+  return respawnBtn.isVisible().catch(() => false);
 }
 
 /**
@@ -394,7 +396,7 @@ export async function ensureStanding(page: Page, timeoutMs: number = 10000): Pro
   let live = page;
   const onLogin = await live
     .getByTestId('username-input')
-    .isVisible({ timeout: 1000 })
+    .isVisible()
     .catch(() => false);
   if (onLogin) {
     const session = getPageSessionCredentials(live);

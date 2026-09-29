@@ -70,7 +70,7 @@ async function playerContextNeedsRecovery(c: PlayerContext): Promise<boolean> {
   }
   const onLogin = await c.page
     .getByTestId('username-input')
-    .isVisible({ timeout: 1500 })
+    .isVisible()
     .catch(() => false);
   return onLogin || !(await isPageConnected(c.page));
 }
@@ -235,7 +235,7 @@ export async function prepareReceiverForInboundMessages(
 
   const onLogin = await page
     .getByTestId('username-input')
-    .isVisible({ timeout: 2000 })
+    .isVisible()
     .catch(() => false);
   if (onLogin) {
     await loginPlayer(page, player.username, player.password);
@@ -279,7 +279,7 @@ export async function waitForCrossPlayerMessage(
         async () => {
           const onLogin = await playerContext.page
             .getByTestId('username-input')
-            .isVisible({ timeout: 500 })
+            .isVisible()
             .catch(() => false);
           if (onLogin) {
             await loginPlayer(playerContext.page, playerContext.player.username, playerContext.player.password);
@@ -308,7 +308,7 @@ export async function waitForCrossPlayerMessage(
 
     const onLoginAtTimeout = await playerContext.page
       .getByTestId('username-input')
-      .isVisible({ timeout: 500 })
+      .isVisible()
       .catch(() => false);
     const sessionHint = onLoginAtTimeout
       ? ' Receiver is on the login screen (session lost while sender tab had focus). ' +

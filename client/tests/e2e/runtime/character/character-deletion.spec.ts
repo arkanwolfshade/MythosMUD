@@ -13,12 +13,12 @@ test.describe('Character Deletion', () => {
 
     // Check if character selection screen appears (defensive: UI may not be in selection state)
     const characterSelection = page.locator('h1, h2, h3').filter({ hasText: /Select Your Character/i });
-    const isVisible = await characterSelection.isVisible({ timeout: 5000 }).catch(() => false);
+    const isVisible = await characterSelection.isVisible().catch(() => false);
 
     /* eslint-disable playwright/no-conditional-in-test, playwright/no-conditional-expect -- defensive UI flow */
     if (isVisible) {
       const deleteButton = page.locator('button:has-text("Delete")').first();
-      if (await deleteButton.isVisible({ timeout: 3000 }).catch(() => false)) {
+      if (await deleteButton.isVisible().catch(() => false)) {
         await deleteButton.click();
         await page
           .getByText(/Are you sure/i)
@@ -26,7 +26,7 @@ test.describe('Character Deletion', () => {
           .catch(() => {});
 
         const confirmation = page.getByText(/Are you sure/i);
-        const confirmsVisible = await confirmation.isVisible({ timeout: 5000 }).catch(() => false);
+        const confirmsVisible = await confirmation.isVisible().catch(() => false);
         expect(confirmsVisible || true).toBeTruthy(); // May or may not appear
       }
     }

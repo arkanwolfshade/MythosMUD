@@ -2,7 +2,7 @@
 
 import { test, type Browser, type BrowserContext, type Page } from '@playwright/test';
 
-import { loginPlayer } from '../../runtime/fixtures/auth';
+import { isVisibleWithin, loginPlayer } from '../../runtime/fixtures/auth';
 import {
   ADMIN_STORAGE_PATH,
   ADMIN_USERNAME,
@@ -31,7 +31,7 @@ async function setupAuthStorage(
     }
 
     const commandInput = page.getByTestId('command-input');
-    const isLoggedIn = await commandInput.isVisible({ timeout: 5000 }).catch(() => false);
+    const isLoggedIn = await isVisibleWithin(commandInput, 5000);
     if (!isLoggedIn) {
       throw new Error('Login verification failed - command input not found');
     }
@@ -72,21 +72,18 @@ async function openAuthenticatedPage(
   const page = await context.newPage();
   await page.goto(BASE_URL, { waitUntil: 'load' });
 
-  const isAtLoginScreen = await page
-    .getByTestId('username-input')
-    .isVisible({ timeout: 2000 })
-    .catch(() => false);
+  const isAtLoginScreen = await isVisibleWithin(page.getByTestId('username-input'), 2000);
 
   if (isAtLoginScreen) {
     await loginPlayer(page, username, password);
     await context.storageState({ path: storagePath });
   } else {
     const commandInput = page.getByTestId('command-input');
-    const isInGame = await commandInput.isVisible({ timeout: 10000 }).catch(() => false);
+    const isInGame = await isVisibleWithin(commandInput, 10000);
 
     if (!isInGame) {
       const motdButton = page.getByTestId('motd-enter-realm');
-      const isAtMOTD = await motdButton.isVisible({ timeout: 5000 }).catch(() => false);
+      const isAtMOTD = await isVisibleWithin(motdButton, 5000);
 
       if (isAtMOTD) {
         await motdButton.click();
