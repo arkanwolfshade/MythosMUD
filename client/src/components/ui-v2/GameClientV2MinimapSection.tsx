@@ -17,7 +17,7 @@ export type MinimapPanelSectionProps = {
   'updatePosition' | 'updateSize' | 'toggleMinimize' | 'toggleMaximize' | 'focusPanel'
 >;
 
-function MinimapInlineBody({
+export function MinimapInlineBody({
   room,
   authToken,
   onMapClick,
@@ -41,7 +41,7 @@ function MinimapInlineBody({
   return (
     <>
       <div className="text-xs text-mythos-terminal-text/70 shrink-0 truncate" title={room.id}>
-        {room.id}
+        {room.name || room.id}
       </div>
       <div className="flex-1 min-h-16 mt-1">
         <AsciiMinimap
