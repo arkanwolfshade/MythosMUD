@@ -17,6 +17,7 @@ from sqlalchemy.exc import DatabaseError, IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ...async_persistence import AsyncPersistenceLayer
+from ...config import get_config
 from ...models.lucidity import PlayerLucidity
 from ...models.player import Player
 from ...services.lucidity_service import CatatoniaObserverProtocol, LucidityService, LucidityUpdateResult
@@ -98,7 +99,7 @@ class _PlayerFluxComputation:  # pylint: disable=too-few-public-methods  # Reaso
 
 
 class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Reason: Lucidity flux service requires many state tracking and configuration attributes
-    """Applies passive LCD flux each in-game minute with structured telemetry."""
+    """Applies passive LCD flux once per real-time minute (process_interval_seconds) with structured telemetry."""
 
     def __init__(
         self,
@@ -115,7 +116,8 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
             dict[str, object],  # normalize_environment_config returns dict[str, Any]
             normalize_environment_config(cfg.environment_config or DEFAULT_ENVIRONMENT_CONFIG),
         )
-        self._ticks_per_minute = max(1, cfg.ticks_per_minute)
+        self._process_interval_seconds: float = cfg.process_interval_seconds
+        self._ticks_per_run: int = max(1, round(cfg.process_interval_seconds / get_config().game.server_tick_rate))
         self._adaptive_window = max(1, cfg.adaptive_window_minutes)
         self._epsilon = 1e-6
         self._context_resolver = cfg.context_resolver
@@ -132,7 +134,8 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
 
         logger.info(
             "PassiveLucidityFluxService initialized",
-            ticks_per_minute=self._ticks_per_minute,
+            process_interval_seconds=self._process_interval_seconds,
+            ticks_per_run=self._ticks_per_run,
             adaptive_window_minutes=self._adaptive_window,
             room_cache_ttl=self._room_cache_ttl,
         )
@@ -273,7 +276,7 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
         logger.debug(
             "Processing passive LCD flux tick",
             tick_count=tick_count,
-            ticks_per_minute=self._ticks_per_minute,
+            ticks_per_run=self._ticks_per_run,
             should_process=self._should_process_tick(tick_count),
         )
 
@@ -314,7 +317,8 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
     def get_flux_runtime_status(self) -> dict[str, object]:
         """Snapshot of scheduler state for ops and tests."""
         return {
-            "ticks_per_minute": self._ticks_per_minute,
+            "process_interval_seconds": self._process_interval_seconds,
+            "ticks_per_run": self._ticks_per_run,
             "adaptive_window_minutes": self._adaptive_window,
             "tracked_players": len(self._player_room_tracker),
             "residual_count": len(self._residuals),
@@ -323,7 +327,7 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
         }
 
     def _should_process_tick(self, tick_count: int) -> bool:
-        return self._ticks_per_minute <= 1 or not tick_count % self._ticks_per_minute
+        return not tick_count % self._ticks_per_run
 
     async def _get_room_cached(self, room_id: str) -> FluxRoom | None:
         """Get room from cache or fetch from database with TTL management."""

@@ -15,6 +15,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from server.config import get_config
 from server.models.corruption import CorruptionTier
 from server.services.corruption_service import CorruptionUpdateResult
 from server.services.passive_corruption_flux.config import CorruptionFluxServiceConfig, CorruptionOverride
@@ -37,10 +38,11 @@ def test_package_reexports_public_surface() -> None:
 
 
 def _make_service(
-    ticks_per_minute: int = 1, corruption_overrides: dict[str, CorruptionOverride] | None = None
+    ticks_per_run: int = 1, corruption_overrides: dict[str, CorruptionOverride] | None = None
 ) -> PassiveCorruptionFluxService:
     config = CorruptionFluxServiceConfig(
-        ticks_per_minute=ticks_per_minute, corruption_overrides=corruption_overrides or {}
+        process_interval_seconds=ticks_per_run * get_config().game.server_tick_rate,
+        corruption_overrides=corruption_overrides or {},
     )
     return PassiveCorruptionFluxService(config=config)
 
@@ -70,8 +72,20 @@ def _player(corruption: int = 0, room_id: str = "room-1") -> MagicMock:
     return player
 
 
+@pytest.mark.parametrize(("tick_rate", "expected_ticks"), [(0.1, 6), (0.2, 3), (1.0, 1)])
+def test_default_cadence_derived_from_tick_rate(tick_rate: float, expected_ticks: int) -> None:
+    """#914: corruption keeps its 0.6s per-invocation cadence whatever the server tick rate."""
+    real = get_config()
+    config = real.model_copy(update={"game": real.game.model_copy(update={"server_tick_rate": tick_rate})})
+    with patch("server.services.passive_corruption_flux.service.get_config", return_value=config):
+        svc = PassiveCorruptionFluxService(config=CorruptionFluxServiceConfig(corruption_overrides={}))
+    assert [svc._should_process_tick(t) for t in range(expected_ticks + 1)] == [True] + [False] * (
+        expected_ticks - 1
+    ) + [True]
+
+
 def test_should_process_tick() -> None:
-    svc = _make_service(ticks_per_minute=2)
+    svc = _make_service(ticks_per_run=2)
     assert svc._should_process_tick(0) is True
     assert svc._should_process_tick(1) is False
     assert svc._should_process_tick(2) is True
@@ -193,7 +207,7 @@ def test_tier_floor_boundaries() -> None:
 @pytest.mark.asyncio
 async def test_process_tick_for_player_applies_bounded_rising_delta() -> None:
     """A pure player lingering in a corrupt room converges upward, capped at the room's target."""
-    svc = _make_service(ticks_per_minute=1)
+    svc = _make_service(ticks_per_run=1)
     player_id = uuid.uuid4()
     persistence = MagicMock()
     persistence.get_player_by_id = AsyncMock(return_value=_player(corruption=0))
@@ -226,7 +240,7 @@ async def test_process_tick_for_player_applies_bounded_rising_delta() -> None:
 
 @pytest.mark.asyncio
 async def test_process_tick_for_player_skipped_off_cadence() -> None:
-    svc = _make_service(ticks_per_minute=6)
+    svc = _make_service(ticks_per_run=6)
     persistence = MagicMock()
     persistence.get_player_by_id = AsyncMock()
     svc._persistence = persistence
@@ -239,14 +253,14 @@ async def test_process_tick_for_player_skipped_off_cadence() -> None:
 
 @pytest.mark.asyncio
 async def test_process_tick_for_player_no_persistence_is_noop() -> None:
-    svc = _make_service(ticks_per_minute=1)
+    svc = _make_service(ticks_per_run=1)
     result = await svc.process_tick_for_player(uuid.uuid4(), tick_count=0)
     assert result == {"delta": 0}
 
 
 @pytest.mark.asyncio
 async def test_process_tick_for_player_zero_delta_skips_write() -> None:
-    svc = _make_service(ticks_per_minute=1)
+    svc = _make_service(ticks_per_run=1)
     persistence = MagicMock()
     # Room target equals current value -> zero signed flux -> zero residual delta -> no write.
     persistence.get_player_by_id = AsyncMock(return_value=_player(corruption=50))
@@ -271,7 +285,7 @@ async def test_innsmouth_pier_converges_upward_and_clamps_at_its_own_ceiling() -
     broader zone target (40) per PR-A's room-beats-zone precedence, that a lingering player
     converges upward, and that the ceiling clamps exactly at 65 rather than continuing to rise."""
     svc = _make_service(
-        ticks_per_minute=1,
+        ticks_per_run=1,
         corruption_overrides={"earth|innsmouth|waterfront": CorruptionOverride(rate=0.05, target=40.0)},
     )
     room = _room(

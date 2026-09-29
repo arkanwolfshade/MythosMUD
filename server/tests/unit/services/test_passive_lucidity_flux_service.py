@@ -7,6 +7,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from sqlalchemy.exc import IntegrityError
 
+from server.config import get_config
 from server.services.lucidity_service import LucidityUpdateResult
 from server.services.passive_lucidity_flux.config import FluxServiceConfig
 from server.services.passive_lucidity_flux.models import PassiveFluxContext
@@ -15,12 +16,23 @@ from server.services.passive_lucidity_flux.service import PassiveLucidityFluxSer
 
 def _make_service(**kwargs: object) -> PassiveLucidityFluxService:
     config = FluxServiceConfig(
-        ticks_per_minute=2,
+        # Every 2 ticks, whatever the configured tick rate.
+        process_interval_seconds=2 * get_config().game.server_tick_rate,
         adaptive_window_minutes=5,
         lucidity_rate_overrides={"earth|arkham|downtown": -0.5},
         **kwargs,
     )
     return PassiveLucidityFluxService(config=config)
+
+
+@pytest.mark.parametrize(("tick_rate", "expected_ticks"), [(0.1, 600), (1.0, 60)])
+def test_default_cadence_is_once_per_real_minute(tick_rate: float, expected_ticks: int) -> None:
+    """#914: per-minute rates must apply once per minute, not every 6 ticks (~100x/min at 0.1s)."""
+    real = get_config()
+    config = real.model_copy(update={"game": real.game.model_copy(update={"server_tick_rate": tick_rate})})
+    with patch("server.services.passive_lucidity_flux.service.get_config", return_value=config):
+        svc = PassiveLucidityFluxService(config=FluxServiceConfig(lucidity_rate_overrides={}))
+    assert svc.get_flux_runtime_status()["ticks_per_run"] == expected_ticks
 
 
 def test_should_process_tick() -> None:

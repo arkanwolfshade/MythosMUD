@@ -90557,14 +90557,6 @@
                 "code": "reportUnannotatedClassAttribute",
                 "range": {
                     "startColumn": 13,
-                    "endColumn": 30,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportUnannotatedClassAttribute",
-                "range": {
-                    "startColumn": 13,
                     "endColumn": 29,
                     "lineCount": 1
                 }
