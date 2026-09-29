@@ -18,7 +18,9 @@ class FluxServiceConfig:
     """Optional configuration for PassiveLucidityFluxService. All fields have defaults."""
 
     environment_config: dict[str, Any] | None = None
-    ticks_per_minute: int = 6
+    # Wall-clock cadence; the tick modulus is derived from game.server_tick_rate (#914). Rates in
+    # DEFAULT_ENVIRONMENT_CONFIG and lucidity_drain_rate overrides are LCD per minute, applied per run.
+    process_interval_seconds: float = 60.0
     adaptive_window_minutes: int = 10
     context_resolver: Callable[[Player, datetime], PassiveFluxContext] | None = None
     now_provider: Callable[[], datetime] | None = None

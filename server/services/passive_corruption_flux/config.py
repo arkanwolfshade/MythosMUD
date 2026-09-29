@@ -41,14 +41,15 @@ class CorruptionFluxServiceConfig:
     """Optional configuration for PassiveCorruptionFluxService. All fields have defaults."""
 
     environment_config: dict[str, object] | None = None
-    ticks_per_minute: int = 6
+    # Wall-clock cadence; the tick modulus is derived from game.server_tick_rate (#914).
+    process_interval_seconds: float = 0.6
     context_resolver: Callable[[Player, datetime], PassiveCorruptionFluxContext] | None = None
     now_provider: Callable[[], datetime] | None = None
     corruption_overrides: dict[str, CorruptionOverride] | None = None
 
 
-# Rate is a magnitude (points per invocation, roughly once every 0.6s -- see service.py's
-# _should_process_tick), not a signed flux: the room's target decides direction, this decides
+# Rate is a magnitude (points per invocation, once every process_interval_seconds = 0.6s), not a
+# signed flux: the room's target decides direction, this decides
 # speed. Target is the corruption value a lingering player converges toward; 0 (the default) means
 # "no ambient effect at all" rather than "pulls toward purity" -- only a room/zone that explicitly
 # sets a target does anything.

@@ -25,6 +25,7 @@ from typing import TYPE_CHECKING, Protocol, cast
 
 from sqlalchemy.exc import DatabaseError, SQLAlchemyError
 
+from ...config import get_config
 from ...models.corruption import CorruptionTier, compute_tier
 from ...structured_logging.enhanced_logging_config import get_logger
 from ...utils.int_coercion import coerce_int
@@ -94,7 +95,7 @@ class PassiveCorruptionFluxService:  # pylint: disable=too-few-public-methods
     _sub_zone_target_overrides: dict[str, dict[str, float]]
     _room_rate_overrides: dict[str, dict[str, float]]
     _room_target_overrides: dict[str, dict[str, float]]
-    _ticks_per_minute: int
+    _ticks_per_run: int
     _context_resolver: Callable[[Player, datetime], PassiveCorruptionFluxContext] | None
     _now_provider: Callable[[], datetime]
     _db_overrides: dict[str, CorruptionOverride]
@@ -118,7 +119,7 @@ class PassiveCorruptionFluxService:  # pylint: disable=too-few-public-methods
         self._sub_zone_target_overrides = _profile_map(env_cfg.get("sub_zone_target_overrides"))
         self._room_rate_overrides = _profile_map(env_cfg.get("room_rate_overrides"))
         self._room_target_overrides = _profile_map(env_cfg.get("room_target_overrides"))
-        self._ticks_per_minute = max(1, cfg.ticks_per_minute)
+        self._ticks_per_run = max(1, round(cfg.process_interval_seconds / get_config().game.server_tick_rate))
         self._context_resolver = cfg.context_resolver
         self._now_provider = cfg.now_provider or (lambda: datetime.now(UTC))
         self._db_overrides = (
@@ -129,12 +130,13 @@ class PassiveCorruptionFluxService:  # pylint: disable=too-few-public-methods
 
         logger.info(
             "PassiveCorruptionFluxService initialized",
-            ticks_per_minute=self._ticks_per_minute,
+            process_interval_seconds=cfg.process_interval_seconds,
+            ticks_per_run=self._ticks_per_run,
             db_overrides=len(self._db_overrides),
         )
 
     def _should_process_tick(self, tick_count: int) -> bool:
-        return self._ticks_per_minute <= 1 or not tick_count % self._ticks_per_minute
+        return not tick_count % self._ticks_per_run
 
     def _get_room(self, room_id: str) -> FluxRoom | None:
         if self._persistence is None:
