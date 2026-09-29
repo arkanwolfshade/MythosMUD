@@ -142,11 +142,10 @@ async def validate_combat_can_start(
 async def register_combat(
     service: CombatService,
     combat: CombatInstance,
-    attacker: CombatParticipantData,
     room_id: str,
 ) -> None:
     """Register combat instance and track player combat state."""
-    await service.register_combat_state(combat, attacker.participant_id, attacker.name, room_id)
+    await service.register_combat_state(combat, room_id)
 
 
 async def publish_combat_started_event(service: CombatService, combat: CombatInstance, room_id: str) -> None:

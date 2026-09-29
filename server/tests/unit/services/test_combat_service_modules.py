@@ -88,9 +88,8 @@ async def test_register_combat_delegates_to_service() -> None:
     service: MagicMock = MagicMock()
     service.register_combat_state = register_combat_state
     combat = _combat_instance()
-    attacker = _participant()
-    await combat_service_start.register_combat(service, combat, attacker, "room_001")
-    register_combat_state.assert_awaited_once_with(combat, attacker.participant_id, attacker.name, "room_001")
+    await combat_service_start.register_combat(service, combat, "room_001")
+    register_combat_state.assert_awaited_once_with(combat, "room_001")
 
 
 @pytest.mark.asyncio

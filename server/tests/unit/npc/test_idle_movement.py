@@ -118,7 +118,7 @@ def test_should_idle_move_probability_passes_when_random_below_threshold(
     npc_instance.is_active = True
     npc_definition = MagicMock()
     behavior_config: dict[str, object] = {"idle_movement_enabled": True, "idle_movement_probability": 0.25}
-    mock_get_combat.return_value = MagicMock(_npc_combats={})
+    mock_get_combat.return_value = MagicMock(is_npc_in_combat_sync=MagicMock(return_value=False))
     assert idle_movement_handler.should_idle_move(npc_instance, npc_definition, behavior_config) is True
 
 
@@ -136,7 +136,7 @@ def test_should_idle_move_probability_fails_when_random_above_threshold(
     npc_instance.is_active = True
     npc_definition = MagicMock()
     behavior_config: dict[str, object] = {"idle_movement_enabled": True, "idle_movement_probability": 0.25}
-    mock_get_combat.return_value = MagicMock(_npc_combats={})
+    mock_get_combat.return_value = MagicMock(is_npc_in_combat_sync=MagicMock(return_value=False))
     assert idle_movement_handler.should_idle_move(npc_instance, npc_definition, behavior_config) is False
 
 
@@ -155,8 +155,7 @@ def test_should_idle_move_false_when_registered_in_combat(
     npc_instance.is_active = True
     npc_definition = MagicMock()
     behavior_config: dict[str, object] = {"idle_movement_enabled": True, "idle_movement_probability": 1.0}
-    mock_svc = MagicMock()
-    mock_svc._npc_combats = {npc_uuid: MagicMock()}
+    mock_svc = MagicMock(is_npc_in_combat_sync=MagicMock(return_value=True))
     mock_get_combat.return_value = mock_svc
     assert idle_movement_handler.should_idle_move(npc_instance, npc_definition, behavior_config) is False
 
@@ -175,25 +174,18 @@ def test_should_idle_move_true_when_not_in_combat_and_probability_succeeds(
     npc_instance.is_active = True
     npc_definition = MagicMock()
     behavior_config: dict[str, object] = {"idle_movement_enabled": True, "idle_movement_probability": 1.0}
-    mock_svc = MagicMock()
-    mock_svc._npc_combats = {}
+    mock_svc = MagicMock(is_npc_in_combat_sync=MagicMock(return_value=False))
     mock_get_combat.return_value = mock_svc
     assert idle_movement_handler.should_idle_move(npc_instance, npc_definition, behavior_config) is True
 
 
 def test_is_npc_in_combat_true(idle_movement_handler: IdleMovementHandler) -> None:
-    """Test _is_npc_in_combat() when NPC is in combat."""
+    """_is_npc_in_combat() is True when the combat service reports the NPC in combat."""
     npc_instance = MagicMock()
     npc_instance.npc_id = "npc_001"
-    # The function imports get_combat_service from ..services.combat_service
     with patch("server.services.combat_service.get_combat_service") as mock_get_combat_service:
-        mock_combat_service = MagicMock()
-        npc_uuid = uuid.uuid4()
-        mock_combat_service._npc_combats = {npc_uuid: MagicMock()}
-        mock_get_combat_service.return_value = mock_combat_service
-        result: bool = idle_movement_handler._is_npc_in_combat(npc_instance)
-        # May return True if combat service is available and NPC is in combat
-        assert isinstance(result, bool)
+        mock_get_combat_service.return_value = MagicMock(is_npc_in_combat_sync=MagicMock(return_value=True))
+        assert idle_movement_handler._is_npc_in_combat(npc_instance) is True
 
 
 def test_is_npc_in_combat_false(idle_movement_handler: IdleMovementHandler) -> None:

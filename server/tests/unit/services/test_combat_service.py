@@ -417,9 +417,28 @@ async def test_register_combat_state_tracks_participants() -> None:
     attacker = _make_participant("Attacker")
     target = _make_participant("Target", participant_type=CombatParticipantType.NPC)
     combat.participants = {attacker.participant_id: attacker, target.participant_id: target}
-    await service.register_combat_state(combat, attacker.participant_id, attacker.name, "room_001")
+    await service.register_combat_state(combat, "room_001")
     assert service.get_combat(combat.combat_id) is combat
+    assert service.get_combat_id_for_npc_uuid(target.participant_id) == combat.combat_id
     pcs.track_player_combat_state.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_register_combat_state_files_npc_attacker_by_type() -> None:
+    """NPC-initiated combat (#918): NPC lands in _npc_combats, the player is the one tracked."""
+    service = _make_service()
+    track: AsyncMock = AsyncMock()
+    service.set_player_combat_service(MagicMock(track_player_combat_state=track))
+    combat = _make_combat_instance()
+    npc = _make_participant("Cultist", participant_type=CombatParticipantType.NPC)
+    player = _make_participant("Player")
+    combat.participants = {npc.participant_id: npc, player.participant_id: player}
+    await service.register_combat_state(combat, "room_001")
+    assert service.get_combat_id_for_npc_uuid(npc.participant_id) == combat.combat_id
+    assert service.get_combat_id_for_participant(player.participant_id) == combat.combat_id
+    track.assert_awaited_once_with(
+        player_id=player.participant_id, player_name="Player", combat_id=combat.combat_id, room_id="room_001"
+    )
 
 
 @pytest.mark.asyncio
