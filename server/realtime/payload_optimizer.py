@@ -60,7 +60,7 @@ class PayloadOptimizer:
             int: Size in bytes
         """
         try:
-            json_str = json.dumps(payload, separators=(",", ":"))
+            json_str = json.dumps(payload, separators=(",", ":"), default=str)
             return len(json_str.encode("utf-8"))
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Payload size calculation errors unpredictable, must return 0
             logger.warning("Error calculating payload size", error=str(e))
@@ -77,7 +77,7 @@ class PayloadOptimizer:
             dict: Compressed payload with metadata
         """
         try:
-            json_str = json.dumps(payload, separators=(",", ":"))
+            json_str = json.dumps(payload, separators=(",", ":"), default=str)
             compressed = gzip.compress(json_str.encode("utf-8"), compresslevel=6)
 
             return {

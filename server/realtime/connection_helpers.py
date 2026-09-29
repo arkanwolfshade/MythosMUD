@@ -7,6 +7,7 @@ for various operations like UUID conversion, sequence numbers, and deprecated me
 
 # pylint: disable=too-many-locals  # Reason: Connection helpers require many intermediate variables for complex connection operations
 
+from datetime import date, datetime
 from typing import Any, cast
 
 import aiofiles  # pylint: disable=import-error
@@ -22,6 +23,9 @@ def convert_uuids_to_strings(obj: Any) -> Any:
     """
     Recursively convert UUID objects to strings for JSON serialization.
 
+    datetime/date values become ISO strings too: websocket.send_json uses plain json.dumps,
+    so a raw datetime would otherwise fail at send time and zero out the payload-size guard (#906).
+
     Args:
         obj: Object to convert
 
@@ -34,6 +38,8 @@ def convert_uuids_to_strings(obj: Any) -> Any:
         return [convert_uuids_to_strings(item) for item in obj]
     if hasattr(obj, "__class__") and "UUID" in obj.__class__.__name__:
         return str(obj)
+    if isinstance(obj, (datetime, date)):
+        return obj.isoformat()
     return obj
 
 
@@ -247,7 +253,6 @@ async def handle_new_login_impl(player_id: Any, manager: Any) -> None:
         await cancel_rest_countdown(player_id, manager)
 
         import json
-        from datetime import datetime
         from pathlib import Path
 
         login_log_entry = {
