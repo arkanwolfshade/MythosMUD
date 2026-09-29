@@ -197,11 +197,53 @@ class LoggerNameFilter(logging.Filter):
         return False
 
 
+def _category_logger_names(prefixes: list[str]) -> list[str]:
+    """Logger names for a category: each prefix as-is, plus a "server."-qualified form for module loggers."""
+    names: list[str] = []
+    for prefix in prefixes:
+        names.append(prefix)
+        if not prefix.startswith("server."):
+            names.append(f"server.{prefix}")
+    return names
+
+
+def _category_level(log_file: str, environment: str, log_level: str) -> int:
+    """Logger level for a category in the given environment."""
+    # Set DEBUG level for combat modules in local/debug environments
+    if log_file == "combat" and (environment == "local" or log_level == "DEBUG"):
+        return logging.DEBUG
+    if log_file == "npc" and environment == "e2e_test":
+        # NPC behavior-engine/threading debug lines fire continuously (idle movement,
+        # condition evaluation, per-tick "Executed NPC behavior") -- at DEBUG level in a
+        # long-running e2e session this rotates connect/disconnect and other genuine
+        # events out of npc.log's small e2e rotation window (10MB x 3) within minutes,
+        # making connection-lifecycle bugs nearly undiagnosable from the logs (#297/#610
+        # investigation cost most of a session to this). Opt back into full NPC debug
+        # detail locally via LOGGING_LEVEL=DEBUG with LOGGING_ENVIRONMENT=local.
+        return logging.INFO
+    return getattr(logging, str(log_level).upper(), logging.INFO)
+
+
+def apply_category_levels(prefixes: list[str], log_file: str, environment: str, log_level: str) -> None:
+    """
+    Set the category's logger levels without attaching handlers.
+
+    The async logging path routes records through a single root QueueHandler, so it never calls
+    add_handler_to_loggers -- but it still needs the levels, or every category inherits the root's
+    DEBUG and per-category clamps (e.g. the e2e npc INFO clamp) silently never apply (#912).
+    """
+    level = _category_level(log_file, environment, log_level)
+    for logger_name in _category_logger_names(prefixes):
+        target_logger = logging.getLogger(logger_name)
+        target_logger.setLevel(level)
+        target_logger.propagate = True
+
+
 def add_handler_to_loggers(
     handler: logging.Handler, prefixes: list[str], log_file: str, environment: str, log_level: str
 ) -> None:
     """
-    Add handler to loggers that match the prefixes.
+    Add handler to loggers that match the prefixes, and set their category level.
 
     Adds a filter to the handler to ensure it only processes logs from
     loggers matching the specified prefixes, preventing cross-contamination.
@@ -213,30 +255,9 @@ def add_handler_to_loggers(
     # but we also need to add it to the actual file handler (see _setup_category_handlers)
     handler.addFilter(LoggerNameFilter(prefixes))
 
-    for prefix in prefixes:
-        # Try both the prefix as-is and with "server." prefix for module-based loggers
-        logger_names = [prefix]
-        if not prefix.startswith("server."):
-            logger_names.append(f"server.{prefix}")
-
-        for logger_name in logger_names:
-            target_logger = logging.getLogger(logger_name)
-            target_logger.addHandler(handler)
-            # Set DEBUG level for combat modules in local/debug environments
-            if log_file == "combat" and (environment == "local" or log_level == "DEBUG"):
-                target_logger.setLevel(logging.DEBUG)
-            elif log_file == "npc" and environment == "e2e_test":
-                # NPC behavior-engine/threading debug lines fire continuously (idle movement,
-                # condition evaluation, per-tick "Executed NPC behavior") -- at DEBUG level in a
-                # long-running e2e session this rotates connect/disconnect and other genuine
-                # events out of npc.log's small e2e rotation window (10MB x 3) within minutes,
-                # making connection-lifecycle bugs nearly undiagnosable from the logs (#297/#610
-                # investigation cost most of a session to this). Opt back into full NPC debug
-                # detail locally via LOGGING_LEVEL=DEBUG with LOGGING_ENVIRONMENT=local.
-                target_logger.setLevel(logging.INFO)
-            else:
-                target_logger.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
-            target_logger.propagate = True
+    for logger_name in _category_logger_names(prefixes):
+        logging.getLogger(logger_name).addHandler(handler)
+    apply_category_levels(prefixes, log_file, environment, log_level)
 
 
 def create_handler_for_category(

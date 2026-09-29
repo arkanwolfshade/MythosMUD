@@ -16,6 +16,7 @@ from pathlib import Path
 import pytest
 
 from server.config.models.security_logging import LoggingConfig
+from server.structured_logging.logging_file_categories import DEFAULT_LOG_CATEGORIES
 from server.structured_logging.logging_file_setup import (
     LOG_QUEUE_MAXSIZE,
     DropOldestQueueHandler,
@@ -185,3 +186,30 @@ def test_drop_oldest_queue_handler_caps_queue() -> None:
         )
         handler.enqueue(record)
     assert log_queue.qsize() == 4
+
+
+def test_async_setup_applies_category_levels(temp_log_base: Path) -> None:
+    """#912: the async path skips add_handler_to_loggers, but must still set category levels.
+
+    Before the fix no category logger got a level, so server.npc.* inherited root's DEBUG and the
+    e2e npc INFO clamp never applied -- ~90% of e2e server.log was NPC debug noise.
+    """
+    config = LoggingConfig(
+        environment="e2e_test",
+        log_base=str(temp_log_base),
+        rotation_max_size="1MB",
+        rotation_backup_count=2,
+    )
+    touched = [name for prefixes in DEFAULT_LOG_CATEGORIES.values() for name in prefixes]
+    touched += [f"server.{name}" for name in touched if not name.startswith("server.")]
+    saved_levels = {name: logging.getLogger(name).level for name in touched}
+    before = _root_handlers_snapshot()
+    try:
+        setup_enhanced_file_logging(config=config, log_level="DEBUG", player_service=None, enable_async=True)
+        assert logging.getLogger("server.npc.threading").getEffectiveLevel() == logging.INFO
+        assert logging.getLogger("server.realtime.foo").getEffectiveLevel() == logging.DEBUG
+    finally:
+        stop_queue_listener()
+        _restore_root_handlers(before)
+        for name, level in saved_levels.items():
+            logging.getLogger(name).setLevel(level)

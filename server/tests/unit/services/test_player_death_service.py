@@ -9,7 +9,7 @@ Tests the PlayerDeathService class for managing player mortality and DP decay.
 # (mock_session.rollback.assert_awaited_once, ...) resolve to Unknown throughout this file.
 
 import uuid
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -430,3 +430,50 @@ async def test_handle_player_death_handles_error(player_death_service, mock_sess
     result = await player_death_service.handle_player_death(sample_player_id, "room_001", None, mock_session)
     assert result is False
     mock_session.rollback.assert_awaited_once()
+
+
+def _session_with_players(players: list[MagicMock]) -> AsyncMock:
+    """Async session whose select(Player) returns the given players."""
+    scalars = MagicMock()
+    scalars.all = MagicMock(return_value=players)
+    result = MagicMock()
+    result.scalars = MagicMock(return_value=scalars)
+    return AsyncMock(execute=AsyncMock(return_value=result))
+
+
+def _player(player_id: uuid.UUID, *, dead: bool = False, mortally_wounded: bool = False) -> MagicMock:
+    player = MagicMock(spec=Player)
+    player.player_id = player_id
+    player.is_dead = MagicMock(return_value=dead)
+    player.is_mortally_wounded = MagicMock(return_value=mortally_wounded)
+    return player
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("dead", [False, True])
+async def test_get_dead_players_debug_only_when_found(dead: bool) -> None:
+    """#912: runs every tick; an empty result must not emit a debug line."""
+    player_id = uuid.uuid4()
+    player = _player(player_id, dead=dead)
+    debug = MagicMock()
+    with patch("server.services.player_death_service.logger.debug", debug):
+        found = await PlayerDeathService().get_dead_players(_session_with_players([player]))
+    assert len(found) == int(dead)
+    assert debug.call_count == int(dead)
+    if dead:
+        debug.assert_called_once_with("Found dead players", count=1, player_ids=[player_id])
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("wounded", [False, True])
+async def test_get_mortally_wounded_players_debug_only_when_found(wounded: bool) -> None:
+    """#912: runs every game-second; an empty result must not emit a debug line."""
+    player_id = uuid.uuid4()
+    player = _player(player_id, mortally_wounded=wounded)
+    debug = MagicMock()
+    with patch("server.services.player_death_service.logger.debug", debug):
+        found = await PlayerDeathService().get_mortally_wounded_players(_session_with_players([player]))
+    assert len(found) == int(wounded)
+    assert debug.call_count == int(wounded)
+    if wounded:
+        debug.assert_called_once_with("Found mortally wounded players", count=1, player_ids=[player_id])
