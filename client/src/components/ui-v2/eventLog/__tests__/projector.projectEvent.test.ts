@@ -110,6 +110,50 @@ describe('projector', () => {
       expect(state.room?.occupant_count).toBe(2);
     });
 
+    it('same-room room_update with npcs but no players keeps the existing players (#776)', () => {
+      const log: EventLog = [
+        {
+          event_type: 'room_occupants',
+          timestamp: new Date().toISOString(),
+          sequence_number: 1,
+          room_id: 'room1',
+          data: { players: ['ArkanWolfshade'], npcs: ['Dr. Armitage'], count: 2 },
+        },
+        {
+          event_type: 'room_update',
+          timestamp: new Date().toISOString(),
+          sequence_number: 2,
+          data: {
+            room: { id: 'room1', name: 'Main Foyer', description: '', exits: {}, npcs: ['Nurse Ratched'] },
+          },
+        },
+      ];
+      const state = projectState(log);
+      expect(state.room?.players).toEqual(['ArkanWolfshade']);
+      expect(state.room?.npcs).toEqual(['Nurse Ratched']);
+    });
+
+    it('same-room room_update with an explicit empty players list is authoritative', () => {
+      const log: EventLog = [
+        {
+          event_type: 'room_occupants',
+          timestamp: new Date().toISOString(),
+          sequence_number: 1,
+          room_id: 'room1',
+          data: { players: ['Ithaqua'], npcs: [], count: 1 },
+        },
+        {
+          event_type: 'room_update',
+          timestamp: new Date().toISOString(),
+          sequence_number: 2,
+          data: {
+            room: { id: 'room1', name: 'Main Foyer', description: '', exits: {}, players: [], npcs: ['Nurse'] },
+          },
+        },
+      ];
+      expect(projectState(log).room?.players).toEqual([]);
+    });
+
     it('trusts the server room_occupants payload even when self is absent (no client injection)', () => {
       // The server's occupant lists always include the connected player (see
       // player_event_handlers_room.py get_room_occupants(ensure_player_included=...)). If a
