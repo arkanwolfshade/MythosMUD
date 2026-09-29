@@ -13,6 +13,10 @@ from .lucidity_helpers import CatatoniaObserverProtocol, utc_now
 
 logger = get_logger(__name__)
 
+# reason_codes of the rescue paths that announce the target's success themselves (#713):
+# rescue_commands.ground -> "ground_rescue", rescue_service.rescue -> "rescue_command".
+COMMAND_OWNED_RESCUE_REASONS = frozenset({"ground_rescue", "rescue_command"})
+
 # Delirium respawn debounce: do not log/send delirium event again for the same player within this many seconds.
 DELIRIUM_DEBOUNCE_SECONDS = 120
 _last_delirium_trigger: dict[str, datetime] = {}
@@ -27,8 +31,14 @@ async def handle_catatonia_transitions(
     previous_tier: str,
     new_lcd: int,
     catatonia_observer: CatatoniaObserverProtocol | None,
+    reason_code: str | None = None,
 ) -> None:
-    """Handle catatonia entry and exit transitions."""
+    """Handle catatonia entry and exit transitions.
+
+    When a rescue command caused the exit (`reason_code` in `COMMAND_OWNED_RESCUE_REASONS`) the
+    command sends the target's success event itself, with the rescuer named (#713); sending
+    another here would show the target two terminal events and two chat lines.
+    """
     if new_tier == "catatonic":
         if record.catatonia_entered_at is None:
             entered_at = utc_now()
@@ -50,11 +60,14 @@ async def handle_catatonia_transitions(
         logger.info("Catatonia resolved", player_id=player_id, tier_after=new_tier, lcd=new_lcd)
         if catatonia_observer:
             catatonia_observer.on_catatonia_cleared(player_id=player_id, resolved_at=resolved_at)
+        if reason_code in COMMAND_OWNED_RESCUE_REASONS:
+            return
         await send_rescue_update_event(
             player_id=player_id,
             status="success",
+            role="target",
             current_lcd=new_lcd,
-            message="Consciousness steadies; the grounding ritual completes.",
+            message="Consciousness steadies.",
         )
 
 
@@ -75,6 +88,7 @@ async def handle_delirium_trigger(player_id: uuid.UUID, new_lcd: int, previous_l
     await send_rescue_update_event(
         player_id=player_id_str,
         status="delirium",
+        role="target",
         current_lcd=new_lcd,
         message="Your mind fractures completely. The sanitarium calls you back from the edge of madness...",
     )
@@ -96,6 +110,7 @@ async def handle_sanitarium_trigger(
     await send_rescue_update_event(
         player_id=str(player_id),
         status="sanitarium",
+        role="target",
         current_lcd=new_lcd,
         message="Orderlies whisk you to Arkham Sanitarium for observation.",
     )

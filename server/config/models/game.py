@@ -39,6 +39,10 @@ class GameConfig(BaseSettings):
     rest_countdown_seconds: float = Field(
         default=10.0, description="/rest command countdown before disconnect outside a rest location, in seconds"
     )
+    ground_channel_seconds: float = Field(
+        default=10.0,
+        description="/ground ritual channel time before a catatonic target is stabilised, in seconds (#713)",
+    )
 
     # Combat system configuration
     combat_enabled: bool = Field(default=True, description="Enable/disable combat system")
@@ -78,7 +82,12 @@ class GameConfig(BaseSettings):
             raise ValueError("Max connections per player must be between 1 and 10")
         return v
 
-    @field_validator("disconnect_grace_period_seconds", "login_grace_period_seconds", "rest_countdown_seconds")
+    @field_validator(
+        "disconnect_grace_period_seconds",
+        "login_grace_period_seconds",
+        "rest_countdown_seconds",
+        "ground_channel_seconds",
+    )
     @classmethod
     def validate_grace_period_seconds(cls, v: float) -> float:
         """Validate grace/countdown periods are positive and sane (a zero or negative value

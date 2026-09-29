@@ -3,6 +3,7 @@
 
 import type { LucidityStatus } from '../../../types/lucidity';
 import type { MythosTimeState } from '../../../types/mythosTime';
+import type { RescueStatus } from '../../../types/rescue';
 import type {
   ChatMessage,
   ContainerSnapshot,
@@ -63,6 +64,8 @@ export interface GameState {
   /** Set by rescue_update(status: 'delirium'), cleared by player_delirium_respawned. Server-authoritative. */
   isDelirious?: boolean;
   deliriumLocation?: string | null;
+  /** Latest rescue phase for the banner (#713). Set by rescue_update (not delirium), cleared by player_respawned. */
+  rescueStatus?: RescueStatus | null;
   /** Containers this player currently has open, keyed by container_id. Populated only from the
    * personal container.opened delivery (carries mutation_token); a room broadcast of someone
    * else's open never creates an entry here -- see .cursor/rules/server-authority.mdc. */

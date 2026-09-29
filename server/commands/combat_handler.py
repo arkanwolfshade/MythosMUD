@@ -206,8 +206,10 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
             return {"result": "You are still warded by protective energies. You cannot engage in combat yet."}
         # Lazy import: avoids import-time cycle (combat_handler <-> rest_command chain) and satisfies
         # static analysis that ties top-level rest_command imports to unused-symbol false positives.
+        from server.commands.ground_channel import cancel_ground_channel
         from server.commands.rest_command import cancel_rest_countdown, is_player_resting
 
+        await cancel_ground_channel(player_id, connection_manager)  # attacking breaks /ground too (#713)
         if is_player_resting(player_id, connection_manager):
             await cancel_rest_countdown(player_id, connection_manager)
             logger.info("Rest interrupted by combat command", player_id=player_id, player_name=player_name)

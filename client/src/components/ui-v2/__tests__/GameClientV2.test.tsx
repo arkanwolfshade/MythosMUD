@@ -231,6 +231,29 @@ describe('GameClientV2', () => {
     expect(screen.queryByTestId('incapacitated-banner')).not.toBeInTheDocument();
   });
 
+  it('should render the rescue banner for a server rescue phase (#713)', () => {
+    const rescueStatus = {
+      status: 'channeling' as const,
+      role: 'rescuer' as const,
+      message: 'You steady Wilmarth and begin channeling focus.',
+      etaSeconds: 10,
+      seq: 1,
+    };
+    render(<GameClientV2 {...defaultProps} rescueStatus={rescueStatus} />);
+    expect(screen.getByTestId('rescue-banner')).toHaveTextContent('You steady Wilmarth');
+  });
+
+  it('should render the rescue banner as catatonic when the lucidity tier is catatonic (#713)', () => {
+    const lucidityStatus = { current: 0, max: 100, tier: 'catatonic' as const, liabilities: [] };
+    render(<GameClientV2 {...defaultProps} lucidityStatus={lucidityStatus} />);
+    expect(screen.getByTestId('rescue-banner')).toHaveTextContent('Catatonic');
+  });
+
+  it('should not render the rescue banner without a rescue phase or catatonia (#713)', () => {
+    render(<GameClientV2 {...defaultProps} rescueStatus={null} />);
+    expect(screen.queryByTestId('rescue-banner')).not.toBeInTheDocument();
+  });
+
   it('should handle lucidityStatus prop', () => {
     const lucidityStatus = {
       current: 75,

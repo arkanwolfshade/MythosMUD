@@ -4,13 +4,27 @@ Unit tests for rescue command handlers.
 Tests the rescue command functionality.
 """
 
+import asyncio
 import uuid
+from collections.abc import Callable
+from dataclasses import dataclass
+from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from server.commands.rescue_commands import handle_ground_command, handle_rescue_command
 from server.models.lucidity import PlayerLucidity
+from server.tests.unit.commands.ground_commands_test_support import (
+    FakeConnectionManager,
+    FakeLucidityService,
+    FakePersistence,
+    FakePlayer,
+    FakeSession,
+    RescueEventRecorder,
+    catatonic_record,
+    ground_request,
+)
 
 
 @pytest.mark.asyncio
@@ -244,118 +258,117 @@ async def test_handle_ground_command_not_catatonic():
         assert "isn't catatonic" in result["result"].lower()
 
 
+@dataclass
+class _GroundRig:
+    """Typed fakes wired the way `handle_ground_command` resolves them."""
+
+    request: SimpleNamespace
+    manager: FakeConnectionManager
+    persistence: FakePersistence
+    target: FakePlayer
+    session: FakeSession
+    service: FakeLucidityService
+
+
+def _ground_rig(*, tier: str = "catatonic", apply_error: Exception | None = None) -> _GroundRig:
+    manager = FakeConnectionManager()
+    rescuer = FakePlayer(uuid.uuid4(), "room_a")
+    target = FakePlayer(uuid.uuid4(), "room_a")
+    persistence = FakePersistence({"TestPlayer": rescuer, "OtherPlayer": target})
+    return _GroundRig(
+        request=ground_request(persistence, manager),
+        manager=manager,
+        persistence=persistence,
+        target=target,
+        session=FakeSession(catatonic_record(tier)),
+        service=FakeLucidityService(error=apply_error),
+    )
+
+
+async def _run_ground(
+    rig: _GroundRig, *, key: str = "target", after_start: Callable[[], None] | None = None
+) -> tuple[dict[str, str], RescueEventRecorder]:
+    """Run /ground with a short channel, call `after_start` once it is running, wait for it to finish."""
+    events = RescueEventRecorder()
+    with (
+        patch("server.commands.rescue_commands.get_async_session", side_effect=rig.session.factory),
+        patch("server.commands.rescue_commands.LucidityService", return_value=rig.service),
+        patch("server.commands.ground_channel.ground_channel_seconds", return_value=0.05),
+        patch("server.commands.rescue_commands.send_rescue_update_event", new=events),
+    ):
+        result = await handle_ground_command(
+            {key: "OtherPlayer"}, {"username": "TestPlayer"}, rig.request, None, "TestPlayer"
+        )
+        if after_start:
+            after_start()
+        tasks = [c.task for c in rig.manager.grounding_channels.values() if c.task]
+        _ = await asyncio.gather(*tasks)
+    return result, events
+
+
 @pytest.mark.asyncio
 async def test_handle_ground_command_success():
-    """Test handle_ground_command() successfully grounds target."""
-    mock_request = MagicMock()
-    mock_request.app = MagicMock()
-    mock_request.app.state = MagicMock(persistence=MagicMock(), catatonia_registry=None)
-    mock_persistence = mock_request.app.state.persistence
-    mock_rescuer = MagicMock()
-    mock_rescuer.player_id = uuid.uuid4()
-    mock_rescuer.current_room_id = uuid.uuid4()
-    mock_target = MagicMock()
-    mock_target.player_id = uuid.uuid4()
-    mock_target.current_room_id = mock_rescuer.current_room_id
-    mock_persistence.get_player_by_name = AsyncMock(side_effect=[mock_rescuer, mock_target])
-    mock_lucidity_record = MagicMock(spec=PlayerLucidity)
-    mock_lucidity_record.current_tier = "catatonic"
-    mock_lucidity_record.current_lcd = 0.0
-    mock_session = MagicMock()
-    mock_session.get = AsyncMock(return_value=mock_lucidity_record)
-    mock_session.commit = AsyncMock()
-    mock_lucidity_service = MagicMock()
-    mock_result = MagicMock()
-    mock_result.new_lcd = 1.0
-    mock_lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
-    with patch("server.commands.rescue_commands.get_async_session") as mock_session_factory:
-        with patch("server.commands.rescue_commands.LucidityService", return_value=mock_lucidity_service):
-            with patch("server.commands.rescue_commands.send_rescue_update_event", new_callable=AsyncMock):
+    """ground starts a channel (channeling to both), then success events with role after the eta."""
+    rig = _ground_rig()
+    result, events = await _run_ground(rig)
 
-                async def session_gen():
-                    yield mock_session
-
-                mock_session_factory.return_value = session_gen()
-                result = await handle_ground_command(
-                    {"target": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer"
-                )
-                assert "result" in result
-                assert "kneel" in result["result"].lower() or "anchor" in result["result"].lower()
+    assert "begin the grounding ritual" in result["result"]
+    channeling = events.with_status("channeling")
+    assert {e.role for e in channeling} == {"target", "rescuer"} and len(channeling) == 2
+    assert all(e.eta_seconds == 0.05 for e in channeling)
+    assert rig.service.calls == [(rig.target.player_id, "ground_rescue")]
+    assert {("success", "target"), ("success", "rescuer")} <= events.status_roles()
+    assert rig.manager.grounding_channels == {} and rig.manager.grounding_by_rescuer == {}
 
 
 @pytest.mark.asyncio
 async def test_handle_ground_command_target_player_key():
-    """Test handle_ground_command() accepts target_player key."""
-    mock_request = MagicMock()
-    mock_request.app = MagicMock()
-    mock_request.app.state = MagicMock(persistence=MagicMock())
-    mock_persistence = mock_request.app.state.persistence
-    mock_rescuer = MagicMock()
-    mock_rescuer.player_id = uuid.uuid4()
-    mock_rescuer.current_room_id = uuid.uuid4()
-    mock_target = MagicMock()
-    mock_target.player_id = uuid.uuid4()
-    mock_target.current_room_id = mock_rescuer.current_room_id
-    mock_persistence.get_player_by_name = AsyncMock(side_effect=[mock_rescuer, mock_target])
-    mock_lucidity_record = MagicMock(spec=PlayerLucidity)
-    mock_lucidity_record.current_tier = "catatonic"
-    mock_lucidity_record.current_lcd = 0.0
-    mock_session = MagicMock()
-    mock_session.get = AsyncMock(return_value=mock_lucidity_record)
-    mock_session.commit = AsyncMock()
-    mock_lucidity_service = MagicMock()
-    mock_result = MagicMock()
-    mock_result.new_lcd = 1.0
-    mock_lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
-    with patch("server.commands.rescue_commands.get_async_session") as mock_session_factory:
-        with patch("server.commands.rescue_commands.LucidityService", return_value=mock_lucidity_service):
-            with patch("server.commands.rescue_commands.send_rescue_update_event", new_callable=AsyncMock):
+    """handle_ground_command() accepts the target_player key."""
+    rig = _ground_rig()
+    result, _ = await _run_ground(rig, key="target_player")
 
-                async def session_gen():
-                    yield mock_session
-
-                mock_session_factory.return_value = session_gen()
-                result = await handle_ground_command(
-                    {"target_player": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer"
-                )
-                assert "result" in result
-                mock_persistence.get_player_by_name.assert_any_call("OtherPlayer")
+    assert "begin the grounding ritual" in result["result"]
+    assert rig.service.calls == [(rig.target.player_id, "ground_rescue")]
 
 
 @pytest.mark.asyncio
 async def test_handle_ground_command_apply_lucidity_error():
-    """Test handle_ground_command() handles errors during lucidity adjustment."""
-    mock_request = MagicMock()
-    mock_request.app = MagicMock()
-    mock_request.app.state = MagicMock(persistence=MagicMock())
-    mock_persistence = mock_request.app.state.persistence
-    mock_rescuer = MagicMock()
-    mock_rescuer.player_id = uuid.uuid4()
-    mock_rescuer.current_room_id = uuid.uuid4()
-    mock_target = MagicMock()
-    mock_target.player_id = uuid.uuid4()
-    mock_target.current_room_id = mock_rescuer.current_room_id
-    mock_persistence.get_player_by_name = AsyncMock(side_effect=[mock_rescuer, mock_target])
-    mock_lucidity_record = MagicMock(spec=PlayerLucidity)
-    mock_lucidity_record.current_tier = "catatonic"
-    mock_lucidity_record.current_lcd = 0.0
-    mock_session = MagicMock()
-    mock_session.get = AsyncMock(return_value=mock_lucidity_record)
-    mock_session.commit = AsyncMock()
-    mock_session.rollback = AsyncMock()
-    mock_lucidity_service = MagicMock()
-    mock_lucidity_service.apply_lucidity_adjustment = AsyncMock(side_effect=Exception("Database error"))
-    with patch("server.commands.rescue_commands.get_async_session") as mock_session_factory:
-        with patch("server.commands.rescue_commands.LucidityService", return_value=mock_lucidity_service):
-            with patch("server.commands.rescue_commands.send_rescue_update_event", new_callable=AsyncMock):
+    """A failing adjustment rolls back and sends failed (not success) to both participants."""
+    rig = _ground_rig(apply_error=Exception("Database error"))
+    _, events = await _run_ground(rig)
 
-                async def session_gen():
-                    yield mock_session
+    assert rig.session.rollbacks == 1
+    assert {("failed", "target"), ("failed", "rescuer")} <= events.status_roles()
+    assert not events.with_status("success")
 
-                mock_session_factory.return_value = session_gen()
-                result = await handle_ground_command(
-                    {"target": "OtherPlayer"}, {"username": "TestPlayer"}, mock_request, None, "TestPlayer"
-                )
-                assert "result" in result
-                assert "interference" in result["result"].lower() or "fails" in result["result"].lower()
-                mock_session.rollback.assert_awaited_once()
+
+@pytest.mark.asyncio
+async def test_handle_ground_command_target_left_room_during_channel_is_interrupted():
+    """If the target is no longer in the rescuer's room when the channel elapses, no adjustment is applied."""
+    rig = _ground_rig()
+
+    def target_moves() -> None:
+        rig.target.current_room_id = "room_b"
+
+    result, events = await _run_ground(rig, after_start=target_moves)
+
+    assert "begin the grounding ritual" in result["result"]
+    assert rig.service.calls == []
+    assert not events.with_status("success") and not events.with_status("failed")
+    assert {("interrupted", "target"), ("interrupted", "rescuer")} <= events.status_roles()
+
+
+@pytest.mark.asyncio
+async def test_handle_ground_command_rejects_while_in_combat():
+    """The ritual cannot start during combat, mirroring /rest."""
+    rig = _ground_rig()
+    with (
+        patch("server.commands.rescue_commands.get_async_session", side_effect=rig.session.factory),
+        patch("server.commands.rescue_commands.check_player_in_combat", new=AsyncMock(return_value=True)),
+    ):
+        result = await handle_ground_command(
+            {"target": "OtherPlayer"}, {"username": "TestPlayer"}, rig.request, None, "TestPlayer"
+        )
+
+    assert "during combat" in result["result"]
+    assert rig.manager.grounding_channels == {}

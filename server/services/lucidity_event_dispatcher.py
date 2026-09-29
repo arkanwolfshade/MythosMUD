@@ -7,6 +7,7 @@ from __future__ import annotations
 import uuid
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
+from typing import Literal
 
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.liability_types import LiabilityStackEntry
@@ -152,13 +153,20 @@ async def send_rescue_update_event(
     target_name: str | None = None,
     progress: float | None = None,
     eta_seconds: float | None = None,
+    role: Literal["rescuer", "target"] | None = None,
 ) -> None:
-    """Send rescue progress/status updates to either participant."""
+    """Send rescue progress/status updates to either participant.
+
+    `role` tells the recipient which side of the rescue they are on (#713), so the client
+    words its banner from the server's data rather than matching names.
+    """
     payload: dict[str, object] = {
         "status": status,
         "rescuer_name": rescuer_name,
         "target_name": target_name,
     }
+    if role is not None:
+        payload["role"] = role
     if current_lcd is not None:
         payload["current_lcd"] = current_lcd
     if message:

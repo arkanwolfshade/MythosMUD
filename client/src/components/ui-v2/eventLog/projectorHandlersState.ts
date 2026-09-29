@@ -247,6 +247,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
       deathLocation: null,
       isDelirious: false,
       deliriumLocation: null,
+      rescueStatus: null,
     };
     if (player) next = { ...next, player: mergeRespawnedPlayer(next.player, player) };
     // Respawn is the one moment the corpse owner is guaranteed to have missed their own corpse's

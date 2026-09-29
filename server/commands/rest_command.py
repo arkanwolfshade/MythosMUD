@@ -369,6 +369,12 @@ async def _execute_rest_flow(
     if is_player_resting(player_id, connection_manager):
         return {"result": "You are already resting. The countdown will complete shortly."}
 
+    # Read the registry directly: importing ground_channel here would close an import cycle
+    # (ground_channel -> services -> ... -> rest_command). Only the rescuer channels, so only they are rejected.
+    channeling = getattr(connection_manager, "grounding_by_rescuer", None)
+    if isinstance(channeling, dict) and player_id in channeling:
+        return {"result": "You cannot rest while a grounding ritual is underway."}
+
     if await check_player_in_combat(player_id, app):
         return {"result": "You cannot rest during combat. End combat first."}
 

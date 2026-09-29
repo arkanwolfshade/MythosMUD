@@ -71,6 +71,12 @@ async def _disconnect_during_rest_is_intentional(player_id: uuid.UUID, manager: 
 
 async def _resolve_intentional_disconnect(player_id: uuid.UUID, manager: Any) -> bool:
     """True if disconnect was intentional logout or mid-/rest Exit countdown."""
+    # A dropped socket breaks a /ground ritual for both participants (#713); it is not a logout.
+    from ..commands.ground_channel import cancel_ground_channel
+
+    # Reason: DYNAMIC_DISPATCH - manager is Any per this function's own parameter.
+    # Appropriate because: same unsuppressed convention as this function's own signature; the callee takes object.
+    await cancel_ground_channel(player_id, manager)  # pyright: ignore[reportAny]
     if player_id in getattr(manager, "intentional_disconnects", set()):
         return True
     return await _disconnect_during_rest_is_intentional(player_id, manager)

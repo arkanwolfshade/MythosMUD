@@ -450,6 +450,85 @@ describe('projector', () => {
       expect(next.messages[0].text).toBe('Your mind fractures completely.');
     });
 
+    it('rescue_update(channeling) sets rescueStatus from the payload and keeps the server line in chat', () => {
+      const next = projectEvent(getInitialGameState(), {
+        event_type: 'rescue_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 7,
+        data: {
+          status: 'channeling',
+          role: 'rescuer',
+          rescuer_name: 'Armitage',
+          target_name: 'Wilmarth',
+          eta_seconds: 10,
+          message: 'You steady Wilmarth and begin channeling focus.',
+        },
+      });
+      expect(next.rescueStatus).toEqual({
+        status: 'channeling',
+        role: 'rescuer',
+        rescuerName: 'Armitage',
+        targetName: 'Wilmarth',
+        message: 'You steady Wilmarth and begin channeling focus.',
+        etaSeconds: 10,
+        seq: 7,
+      });
+      expect(next.messages[0].text).toBe('You steady Wilmarth and begin channeling focus.');
+      expect(next.isDelirious).toBeFalsy();
+    });
+
+    it.each(['success', 'failed', 'interrupted', 'rescued', 'sanitarium'])(
+      'rescue_update(%s) replaces the previous rescueStatus',
+      status => {
+        const prev = {
+          ...getInitialGameState(),
+          rescueStatus: { status: 'channeling' as const, role: 'target' as const, etaSeconds: 10, seq: 1 },
+        };
+        const next = projectEvent(prev, {
+          event_type: 'rescue_update',
+          timestamp: new Date().toISOString(),
+          sequence_number: 2,
+          data: { status, role: 'target' },
+        });
+        expect(next.rescueStatus).toMatchObject({ status, role: 'target', seq: 2 });
+        expect(next.rescueStatus?.etaSeconds).toBeUndefined();
+      }
+    );
+
+    it('rescue_update treats an absent role as the target', () => {
+      const next = projectEvent(getInitialGameState(), {
+        event_type: 'rescue_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { status: 'sanitarium', message: 'Orderlies whisk you to Arkham Sanitarium for observation.' },
+      });
+      expect(next.rescueStatus?.role).toBe('target');
+    });
+
+    it('rescue_update(delirium) does not set rescueStatus (the delirium modal owns it)', () => {
+      const next = projectEvent(getInitialGameState(), {
+        event_type: 'rescue_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { status: 'delirium', message: 'Your mind fractures completely.' },
+      });
+      expect(next.rescueStatus).toBeUndefined();
+    });
+
+    it('player_respawned clears rescueStatus', () => {
+      const prev = {
+        ...getInitialGameState(),
+        rescueStatus: { status: 'sanitarium' as const, role: 'target' as const, seq: 3 },
+      };
+      const next = projectEvent(prev, {
+        event_type: 'player_respawned',
+        timestamp: new Date().toISOString(),
+        sequence_number: 4,
+        data: {},
+      });
+      expect(next.rescueStatus).toBeNull();
+    });
+
     it('player_delirium_respawned clears isDelirious and applies the server room', () => {
       const prev = { ...getInitialGameState(), isDelirious: true, deliriumLocation: 'Sanitarium' };
       const next = projectEvent(prev, {

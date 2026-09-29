@@ -51,6 +51,7 @@ async def apply_target_rest_and_grace_checks(
 ) -> None:
     """Check target login grace period (raises) and resting (cancel + log)."""
     # Inline import: combat_service_start <- ... <- player_position_service <- rest_command.
+    from server.commands.ground_channel import cancel_ground_channel
     from server.commands.rest_command import cancel_rest_countdown, is_player_resting
 
     target_id = target.participant_id
@@ -62,6 +63,8 @@ async def apply_target_rest_and_grace_checks(
             attacker_name=attacker.name,
         )
         raise ValueError("Target is protected by login grace period and cannot be attacked")
+    # Being attacked breaks a /ground ritual for rescuer and catatonic target alike (#713).
+    await cancel_ground_channel(target_id, connection_manager)
     if is_player_resting(target_id, connection_manager):
         await cancel_rest_countdown(target_id, connection_manager)
         logger.info(
