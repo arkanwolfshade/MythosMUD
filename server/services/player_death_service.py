@@ -98,11 +98,13 @@ class PlayerDeathService:
             await session.rollback()
             return []
 
-        logger.debug(
-            "Found mortally wounded players",
-            count=len(mortally_wounded),
-            player_ids=[p.player_id for p in mortally_wounded],
-        )
+        # Called every game-second; only log when there is something to report (#912).
+        if mortally_wounded:
+            logger.debug(
+                "Found mortally wounded players",
+                count=len(mortally_wounded),
+                player_ids=[p.player_id for p in mortally_wounded],
+            )
 
         return mortally_wounded
 
@@ -124,11 +126,13 @@ class PlayerDeathService:
             # Filter for dead players using Player domain logic
             dead_players = [p for p in all_players if p.is_dead()]
 
-            logger.debug(
-                "Found dead players",
-                count=len(dead_players),
-                player_ids=[p.player_id for p in dead_players],
-            )
+            # Called every tick; only log when there is something to report (#912).
+            if dead_players:
+                logger.debug(
+                    "Found dead players",
+                    count=len(dead_players),
+                    player_ids=[p.player_id for p in dead_players],
+                )
 
             return dead_players
 
