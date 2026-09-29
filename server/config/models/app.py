@@ -56,7 +56,6 @@ class AppConfig(BaseSettings):
         """Set environment variables for legacy code that reads them directly."""
         # pylint: disable=no-member  # Reason: Pydantic model fields are dynamically accessible after validation
         database = self.database
-        game = self.game
 
         if database.url:
             os.environ["DATABASE_URL"] = database.url
@@ -64,8 +63,6 @@ class AppConfig(BaseSettings):
         if database.npc_url:
             os.environ["NPC_DATABASE_URL"] = database.npc_url
 
-        if game.aliases_dir:
-            os.environ["ALIASES_DIR"] = game.aliases_dir
         # pylint: enable=no-member
 
         return self

@@ -209,7 +209,6 @@ async def _websocket_unified_command_result(
     """Build request context, run process_command_unified, attach room_state when applicable."""
     from ..alias_storage import AliasStorage
     from ..command_handler_unified import process_command_unified
-    from ..config import get_config
     from ..realtime.request_context import create_websocket_request_context
 
     cm_app: object | None = getattr(cm, "app", None)
@@ -220,9 +219,7 @@ async def _websocket_unified_command_result(
 
     request_context = create_websocket_request_context(app_state=app_state, user=player)
     player_name = cast(str, getattr(player, "name", "Unknown"))
-    config = get_config()
-    aliases_dir = config.game.aliases_dir
-    alias_storage = AliasStorage(storage_dir=aliases_dir) if aliases_dir else AliasStorage()
+    alias_storage = AliasStorage()
     request_context.set_alias_storage(alias_storage)
     _ = resolve_and_setup_app_state_services(app_state, request_context)
 

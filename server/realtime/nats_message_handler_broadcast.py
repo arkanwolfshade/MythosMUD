@@ -32,10 +32,6 @@ class NATSMessageBroadcastMixin(  # pylint: disable=too-few-public-methods  # Re
         """Collect all players subscribed to a room (canonical and original IDs)."""
         return self._filtering_helper.collect_room_targets(room_id)
 
-    async def _preload_receiver_mute_data(self, user_manager: UserManager, targets: set[str], sender_id: str) -> None:
-        """Pre-load mute data for all potential receivers."""
-        await self._filtering_helper.preload_receiver_mute_data(user_manager, targets, sender_id)
-
     def _extract_chat_event_info(
         self, chat_event: dict[str, Any]
     ) -> tuple[str | None, dict[str, Any], str | None, bool]:
@@ -261,8 +257,6 @@ class NATSMessageBroadcastMixin(  # pylint: disable=too-few-public-methods  # Re
                 sender_id=sender_id,
                 channel=channel,
             )
-
-            await self._preload_receiver_mute_data(user_manager, targets, sender_id)
 
             event_type, chat_event_data, message_id, sender_already_notified = self._extract_chat_event_info(chat_event)
 

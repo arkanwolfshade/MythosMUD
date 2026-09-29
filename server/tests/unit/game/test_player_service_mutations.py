@@ -27,17 +27,21 @@ def player_service(mock_persistence):
 
 
 @pytest.mark.asyncio
-async def test_delete_player_success(player_service, mock_persistence, tmp_path, monkeypatch):
-    """Test delete_player() successfully deletes player."""
+async def test_delete_player_success(
+    player_service: PlayerService, mock_persistence: MagicMock, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Test delete_player() deletes the player and their aliases (by id: players are soft-deleted)."""
     player_id = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.name = "TestPlayer"
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
     mock_persistence.delete_player = AsyncMock(return_value=True)
-    monkeypatch.setenv("ALIASES_DIR", str(tmp_path))
+    delete_aliases = AsyncMock(return_value=True)
+    monkeypatch.setattr("server.game.player_service.AliasStorage.delete_player_aliases_by_id", delete_aliases)
     success, message = await player_service.delete_player(player_id)
     assert success is True
     assert "deleted" in message.lower() or "TestPlayer" in message
+    delete_aliases.assert_awaited_once_with(str(player_id))
 
 
 @pytest.mark.asyncio

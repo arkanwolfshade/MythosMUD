@@ -35,68 +35,73 @@ def test_player_position_service_init_none_values():
     assert service._alias_storage is None
 
 
-def test_ensure_default_aliases_no_storage():
+@pytest.mark.asyncio
+async def test_ensure_default_aliases_no_storage():
     """Test ensure_default_aliases does nothing when no alias storage."""
     service = PlayerPositionService(None, None, None)
 
     # Should not raise
-    service.ensure_default_aliases("testplayer")
+    await service.ensure_default_aliases("testplayer")
 
 
-def test_ensure_default_aliases_creates_missing():
+@pytest.mark.asyncio
+async def test_ensure_default_aliases_creates_missing():
     """Test ensure_default_aliases creates missing aliases."""
     alias_storage = MagicMock()
-    alias_storage.get_alias = MagicMock(return_value=None)  # Alias doesn't exist
-    alias_storage.create_alias = MagicMock()
+    alias_storage.get_alias = AsyncMock(return_value=None)  # Alias doesn't exist
+    alias_storage.create_alias = AsyncMock()
 
     service = PlayerPositionService(None, None, alias_storage)
-    service.ensure_default_aliases("testplayer")
+    await service.ensure_default_aliases("testplayer")
 
     # Should create 3 aliases: sit, stand, lie
     assert alias_storage.create_alias.call_count == 3
 
 
-def test_ensure_default_aliases_updates_incorrect():
+@pytest.mark.asyncio
+async def test_ensure_default_aliases_updates_incorrect():
     """Test ensure_default_aliases updates incorrect aliases."""
     alias_storage = MagicMock()
     existing_alias = MagicMock()
     existing_alias.command = "/wrong_command"  # Incorrect command
-    alias_storage.get_alias = MagicMock(return_value=existing_alias)
-    alias_storage.create_alias = MagicMock()
+    alias_storage.get_alias = AsyncMock(return_value=existing_alias)
+    alias_storage.create_alias = AsyncMock()
 
     service = PlayerPositionService(None, None, alias_storage)
-    service.ensure_default_aliases("testplayer")
+    await service.ensure_default_aliases("testplayer")
 
     # Should update 3 aliases
     assert alias_storage.create_alias.call_count == 3
 
 
-def test_ensure_default_aliases_keeps_correct():
+@pytest.mark.asyncio
+async def test_ensure_default_aliases_keeps_correct():
     """Test ensure_default_aliases keeps correct aliases."""
     alias_storage = MagicMock()
     existing_alias = MagicMock()
     existing_alias.command = "/sit"  # Correct command
-    alias_storage.get_alias = MagicMock(return_value=existing_alias)
-    alias_storage.create_alias = MagicMock()
+    alias_storage.get_alias = AsyncMock(return_value=existing_alias)
+    alias_storage.create_alias = AsyncMock()
 
     service = PlayerPositionService(None, None, alias_storage)
-    service.ensure_default_aliases("testplayer")
+    await service.ensure_default_aliases("testplayer")
 
     # Should not create if alias is correct
     # But it will check all 3, so might create others
     alias_storage.create_alias.assert_called()
 
 
-def test_ensure_default_aliases_handles_errors():
+@pytest.mark.asyncio
+async def test_ensure_default_aliases_handles_errors():
     """Test ensure_default_aliases handles errors gracefully."""
     alias_storage = MagicMock()
-    alias_storage.get_alias = MagicMock(side_effect=Exception("Test error"))
-    alias_storage.create_alias = MagicMock()
+    alias_storage.get_alias = AsyncMock(side_effect=Exception("Test error"))
+    alias_storage.create_alias = AsyncMock()
 
     service = PlayerPositionService(None, None, alias_storage)
 
     # Should not raise
-    service.ensure_default_aliases("testplayer")
+    await service.ensure_default_aliases("testplayer")
 
 
 @pytest.mark.asyncio

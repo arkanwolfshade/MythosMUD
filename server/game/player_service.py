@@ -303,11 +303,8 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
         player_name = player.name if hasattr(player, "name") else player.get("name", "unknown")
         logger.info("Player deleted successfully", player_id=player_id)
 
-        # Delete player aliases if they exist
-        config = get_config()
-        aliases_dir = config.game.aliases_dir
-        alias_storage = AliasStorage(storage_dir=aliases_dir) if aliases_dir else AliasStorage()
-        alias_storage.delete_player_aliases(player_name)
+        # Players are soft-deleted, so the player_aliases FK cascade never fires
+        _ = await AliasStorage().delete_player_aliases_by_id(str(player_id))
         logger.debug("Player aliases deleted")
 
         return True, f"Player {player_name} has been deleted"

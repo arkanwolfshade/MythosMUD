@@ -38,7 +38,7 @@ class AliasGraph:
         self.graph: nx.DiGraph = nx.DiGraph()  # type: ignore[type-arg]  # mypy: NetworkX DiGraph doesn't support generic type parameters
         logger.debug("AliasGraph initialized")
 
-    def build_graph(self, player_name: str) -> None:
+    async def build_graph(self, player_name: str) -> None:
         """
         Build dependency graph for a player's aliases.
 
@@ -50,7 +50,7 @@ class AliasGraph:
 
         AI: Constructs the alias dependency graph for cycle detection.
         """
-        aliases = self.alias_storage.get_player_aliases(player_name)
+        aliases = await self.alias_storage.get_player_aliases(player_name)
 
         for alias in aliases:
             self.graph.add_node(alias.name)

@@ -20,14 +20,13 @@ from ..exceptions import DatabaseError
 from ..structured_logging.admin_actions_logger import get_admin_actions_logger
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..time.time_service import get_mythos_chronicle
+from .admin_global_mute_commands import handle_mute_global_command, handle_unmute_global_command
 from .admin_hallucinate_command import _handle_admin_hallucinate_command
 from .admin_mute_commands import (
     handle_add_admin_command,
     handle_mute_command,
-    handle_mute_global_command,
     handle_mutes_command,
     handle_unmute_command,
-    handle_unmute_global_command,
 )
 from .admin_setlucidity_command import _handle_admin_set_lucidity_command
 from .admin_setstat_command import _handle_admin_set_stat_command

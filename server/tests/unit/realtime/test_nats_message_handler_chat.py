@@ -389,8 +389,10 @@ async def test_broadcast_to_room_with_filtering_exception(nats_message_handler):
     sender_id = str(uuid.uuid4())
     nats_message_handler._collect_room_targets = MagicMock(return_value=set())
     nats_message_handler._get_user_manager = MagicMock(return_value=MagicMock())
-    nats_message_handler._preload_receiver_mute_data = AsyncMock(side_effect=NATSError("Error"))
+    nats_message_handler._extract_chat_event_info = MagicMock(side_effect=NATSError("Error"))
+    nats_message_handler._send_messages_to_players = AsyncMock()
     await nats_message_handler._broadcast_to_room_with_filtering("room_001", chat_event, sender_id, "say")
+    nats_message_handler._send_messages_to_players.assert_not_awaited()
 
 
 @pytest.mark.asyncio

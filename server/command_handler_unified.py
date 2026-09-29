@@ -35,7 +35,6 @@ from .command_handler.command_guards import (
     check_grace_period_block as _check_grace_period_block,
 )
 from .commands.command_service import CommandService
-from .config import get_config
 from .help.help_content import get_help_content as get_help_content_new
 from .middleware.command_rate_limiter import command_rate_limiter
 from .models.alias import Alias
@@ -279,24 +278,9 @@ def _validate_command_basics(command_line: str, player_name: str) -> dict[str, o
     return None
 
 
-def _ensure_alias_storage(alias_storage: AliasStorage | None) -> AliasStorage | None:
+def _ensure_alias_storage(alias_storage: AliasStorage | None) -> AliasStorage:
     """Ensure alias storage is initialized."""
-    if alias_storage:
-        return alias_storage
-
-    try:
-        config = get_config()
-        aliases_dir = config.game.aliases_dir
-        storage = AliasStorage(storage_dir=aliases_dir) if aliases_dir else AliasStorage()
-        logger.debug("AliasStorage initialized")
-        return storage
-    except (OSError, ValueError, TypeError) as e:
-        logger.error(
-            "Failed to initialize AliasStorage",
-            error=str(e),
-            error_type=type(e).__name__,
-        )
-        return None
+    return alias_storage or AliasStorage()
 
 
 async def _run_expanded_alias(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Expansion needs alias, args, user, and request context
@@ -358,7 +342,7 @@ async def _process_alias_expansion(  # pylint: disable=too-many-arguments,too-ma
     if not alias_storage:
         return None
 
-    alias = alias_storage.get_alias(player_name, cmd)
+    alias = await alias_storage.get_alias(player_name, cmd)
     if not alias:
         return None
 

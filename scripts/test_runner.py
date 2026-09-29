@@ -91,8 +91,6 @@ class TestRunner:
             {
                 "LOGGING_ENVIRONMENT": "unit_test",
                 "MYTHOSMUD_TEST_MODE": "true",
-                # Use absolute paths for aliases to avoid accidental relative path resolution
-                "GAME_ALIASES_DIR": str(self.data_dir / "players" / "aliases"),
                 "PYTHONPATH": str(self.server_dir),
             }
         )
@@ -118,9 +116,6 @@ class TestRunner:
                 "DATABASE_NPC_URL not set, using same as DATABASE_URL",
                 database_npc_url=env["DATABASE_NPC_URL"],
             )
-
-        # Ensure legacy ALIASES_DIR is set explicitly and absolutely for any code that still reads it
-        env["ALIASES_DIR"] = env["GAME_ALIASES_DIR"]
 
         logger.info(
             "Test environment configured",
@@ -335,6 +330,19 @@ class TestRunner:
         )
 
 
+class _Args(argparse.Namespace):
+    """Typed view of the CLI options, so attribute reads don't go through untyped Namespace.__getattr__."""
+
+    unit: bool = False
+    integration: bool = False
+    e2e: bool = False
+    coverage: bool = False
+    paths: list[str] | None = None
+    markers: str | None = None
+    pytest_args: list[str] | None = None
+    project_root: Path | None = None
+
+
 def main():
     """Main entry point for the test runner."""
     parser = argparse.ArgumentParser(
@@ -368,9 +376,10 @@ Examples:
     # Project root override
     parser.add_argument("--project-root", type=Path, help="Override project root directory")
 
-    args = parser.parse_args()
+    args = parser.parse_args(namespace=_Args())
 
     # Determine project root
+    project_root: Path | None
     if args.project_root:
         project_root = args.project_root
     else:

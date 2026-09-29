@@ -26,25 +26,31 @@ if TYPE_CHECKING:
     class UserManagerProtocol(Protocol):
         """Protocol for user manager."""
 
-        def mute_channel(self, player_id: str, player_name: str, channel: str) -> bool:
-            """Mute a channel for a player."""
+        # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright needs `...` in async stubs returning bool
 
-        def unmute_channel(self, player_id: str, player_name: str, channel: str) -> bool:
+        async def mute_channel(self, player_id: str, player_name: str, channel: str) -> bool:
+            """Mute a channel for a player."""
+            ...
+
+        async def unmute_channel(self, player_id: str, player_name: str, channel: str) -> bool:
             """Unmute a channel for a player."""
+            ...
 
         def is_channel_muted(self, player_id: str, channel: str) -> bool:
             """Check if channel is muted."""
 
-        def mute_player(self, muter_id: str, muter_name: str, target_id: str, target_name: str) -> bool:
+        async def mute_player(self, muter_id: str, muter_name: str, target_id: str, target_name: str) -> bool:
             """Mute a player for another player."""
+            ...
 
-        def unmute_player(self, muter_id: str, muter_name: str, target_id: str, target_name: str) -> bool:
+        async def unmute_player(self, muter_id: str, muter_name: str, target_id: str, target_name: str) -> bool:
             """Unmute a player for another player."""
+            ...
 
         def is_player_muted(self, muter_id: str, target_id: str) -> bool:
             """Check if player is muted."""
 
-        def mute_global(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Mute operations require many parameters for context and validation
+        async def mute_global(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Mute operations require many parameters for context and validation
             self,
             muter_id: str,
             muter_name: str,
@@ -54,9 +60,11 @@ if TYPE_CHECKING:
             reason: str,
         ) -> bool:
             """Apply global mute."""
+            ...
 
-        def unmute_global(self, unmuter_id: str, unmuter_name: str, target_id: str, target_name: str) -> bool:
+        async def unmute_global(self, unmuter_id: str, unmuter_name: str, target_id: str, target_name: str) -> bool:
             """Remove global mute."""
+            ...
 
         def is_globally_muted(self, player_id: str) -> bool:
             """Check if player is globally muted."""
@@ -78,9 +86,6 @@ if TYPE_CHECKING:
 
         def get_system_stats(self) -> dict[str, Any]:
             """Get system stats."""
-
-        def load_player_mutes(self, player_id: str) -> None:
-            """Load player mutes."""
 
 
 logger = get_logger("communications.chat_moderation")
@@ -113,7 +118,7 @@ class ChatModeration:
         player = await self.player_service.get_player_by_id(player_id_str)
         player_name = player.name if player else player_id_str
 
-        success = self.user_manager.mute_channel(player_id_str, player_name, channel)
+        success = await self.user_manager.mute_channel(player_id_str, player_name, channel)
         if success:
             logger.info("Player muted channel", player_id=player_id_str, channel=channel)
         return bool(success)
@@ -126,7 +131,7 @@ class ChatModeration:
         player = await self.player_service.get_player_by_id(player_id_str)
         player_name = player.name if player else player_id_str
 
-        success = self.user_manager.unmute_channel(player_id_str, player_name, channel)
+        success = await self.user_manager.unmute_channel(player_id_str, player_name, channel)
         if success:
             logger.info("Player unmuted channel", player_id=player_id_str, channel=channel)
         return bool(success)
@@ -150,7 +155,7 @@ class ChatModeration:
 
         target_id_str = normalize_player_id(target_player.id)
 
-        success = self.user_manager.mute_player(muter_id_str, muter_name, target_id_str, target_player_name)
+        success = await self.user_manager.mute_player(muter_id_str, muter_name, target_id_str, target_player_name)
         if success:
             logger.info("Player muted another player", muter_id=muter_id_str, target=target_player_name)
         return bool(success)
@@ -169,7 +174,7 @@ class ChatModeration:
 
         target_id_str = normalize_player_id(target_player.id)
 
-        success = self.user_manager.unmute_player(muter_id_str, muter_name, target_id_str, target_player_name)
+        success = await self.user_manager.unmute_player(muter_id_str, muter_name, target_id_str, target_player_name)
         if success:
             logger.info("Player unmuted another player", muter_id=muter_id_str, target=target_player_name)
         return bool(success)
@@ -196,7 +201,7 @@ class ChatModeration:
 
         target_id_str = normalize_player_id(target_player.id)
 
-        success = self.user_manager.mute_global(
+        success = await self.user_manager.mute_global(
             muter_id_str, muter_name, target_id_str, target_player_name, duration_minutes, reason
         )
         if success:
@@ -219,7 +224,7 @@ class ChatModeration:
 
         target_id_str = normalize_player_id(target_player.id)
 
-        success = self.user_manager.unmute_global(unmuter_id_str, unmuter_name, target_id_str, target_player_name)
+        success = await self.user_manager.unmute_global(unmuter_id_str, unmuter_name, target_id_str, target_player_name)
         if success:
             logger.info("Player globally unmuted", unmuter_id=unmuter_id_str, target=target_player_name)
         return bool(success)
@@ -342,9 +347,6 @@ class ChatModeration:
 
             # Convert to string for user_manager methods (they expect strings)
             player_id_str = str(player_id_uuid)
-
-            # Load player's mute data first
-            self.user_manager.load_player_mutes(player_id_str)
 
             # Get mute information from UserManager
             mute_info = self.user_manager.get_player_mutes(player_id_str)

@@ -166,9 +166,6 @@ async def _authorize_emote_sender(
         logger.warning("Player not found for predefined emote")
         return None, None, {"success": False, "error": "Player not found"}
 
-    # Load player's mute data to ensure it's available for permission checks
-    _ = ctx["user_manager"].load_player_mutes(player_id)
-
     if not ctx["rate_limiter"].check_rate_limit(player_id, "emote", player.name):
         logger.warning("Rate limit exceeded for predefined emote", player_id=player_id, player_name=player.name)
         return (
@@ -340,8 +337,6 @@ async def _authorize_local_sender(
     if not player:
         logger.warning("Player not found for local message")
         return None, None, {"success": False, "error": "Player not found"}
-
-    _ = ctx["user_manager"].load_player_mutes(player_id)
 
     if not ctx["rate_limiter"].check_rate_limit(player_id, "local", player.name):
         logger.warning("Rate limit exceeded for local message", player_id=player_id, player_name=player.name)

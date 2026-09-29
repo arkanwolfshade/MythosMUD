@@ -27,7 +27,6 @@ _ = os.environ.setdefault("SERVER_HOST", "127.0.0.1")
 _ = os.environ.setdefault("LOGGING_ENVIRONMENT", "unit_test")
 _ = os.environ.setdefault("DATABASE_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
 _ = os.environ.setdefault("DATABASE_NPC_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
-_ = os.environ.setdefault("GAME_ALIASES_DIR", "data/unit_test/players/aliases")
 if not os.environ.get("MYTHOSMUD_ADMIN_PASSWORD"):
     os.environ["MYTHOSMUD_ADMIN_PASSWORD"] = "test-admin-password-for-development"
 if not os.environ.get("MYTHOSMUD_JWT_SECRET"):

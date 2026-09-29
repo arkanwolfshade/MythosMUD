@@ -63,8 +63,6 @@ else:
 # This prevents test isolation issues where env vars might be cleared by other tests
 if not os.environ.get("DATABASE_NPC_URL"):
     os.environ["DATABASE_NPC_URL"] = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
-if "GAME_ALIASES_DIR" not in os.environ:
-    os.environ["GAME_ALIASES_DIR"] = "data/unit_test/players/aliases"
 # Unit tests use schema mythos_unit in database mythos_unit (not public)
 if "POSTGRES_SEARCH_PATH" not in os.environ:
     os.environ["POSTGRES_SEARCH_PATH"] = "mythos_unit"

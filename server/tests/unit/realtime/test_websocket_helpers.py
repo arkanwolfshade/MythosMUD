@@ -21,7 +21,6 @@ from server.realtime.websocket_helpers import (
     get_occupant_names,
     is_client_disconnected_exception,
     is_websocket_disconnect_message,
-    load_player_mute_data,
     validate_occupant_name,
 )
 
@@ -144,36 +143,6 @@ async def test_check_shutdown_and_reject_websocket_disconnect():
     ):
         result = await check_shutdown_and_reject(mock_websocket, player_id)
         assert result is False
-
-
-@pytest.mark.asyncio
-async def test_load_player_mute_data_success():
-    """Test load_player_mute_data() successfully loads mute data.
-
-    #679: resolves UserManager from the container instead of a module-level global.
-    """
-    player_id_str = "player_123"
-    mock_user_manager = MagicMock()
-    mock_user_manager.load_player_mutes_async = AsyncMock(return_value=True)
-    mock_container = MagicMock(user_manager=mock_user_manager)
-
-    with patch("server.container.get_container", return_value=mock_container):
-        await load_player_mute_data(player_id_str)
-        mock_user_manager.load_player_mutes_async.assert_called_once_with(player_id_str)
-
-
-@pytest.mark.asyncio
-async def test_load_player_mute_data_import_error():
-    """Test load_player_mute_data() handles ImportError."""
-    import sys
-
-    player_id_str = "player_123"
-    original_module = sys.modules.pop("server.services.user_manager", None)
-    try:
-        await load_player_mute_data(player_id_str)
-    finally:
-        if original_module is not None:
-            sys.modules["server.services.user_manager"] = original_module
 
 
 def test_validate_occupant_name_valid():

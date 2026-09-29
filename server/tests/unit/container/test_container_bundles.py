@@ -695,7 +695,10 @@ async def test_game_bundle_initialize_wiring() -> None:
                         with patch("server.game.party_service.PartyService"):
                             with patch("server.game.player_service.PlayerService"):
                                 with patch("server.game.room_service.RoomService"):
-                                    with patch("server.services.user_manager.UserManager"):
+                                    with patch(
+                                        "server.services.user_manager.UserManager",
+                                        MagicMock(return_value=MagicMock(load_all_mutes=AsyncMock(return_value=0))),
+                                    ):
                                         with patch("server.services.container_service.ContainerService"):
                                             with patch("server.game.skill_service.SkillService"):
                                                 with patch("server.game.level_service.LevelService"):

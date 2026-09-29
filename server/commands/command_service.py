@@ -18,13 +18,12 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import parse_command
 from ..validators.security_validator import strip_ansi_codes
 from .admin_commands import handle_admin_command
+from .admin_global_mute_commands import handle_mute_global_command, handle_unmute_global_command
 from .admin_mute_commands import (
     handle_add_admin_command,
     handle_mute_command,
-    handle_mute_global_command,
     handle_mutes_command,
     handle_unmute_command,
-    handle_unmute_global_command,
 )
 from .admin_shutdown_command import handle_shutdown_command
 from .admin_summon_command import handle_summon_command

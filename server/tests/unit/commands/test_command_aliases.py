@@ -8,6 +8,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+from server.alias_storage import AliasStorage
 from server.command_handler_unified import (
     _ensure_alias_storage,
     _handle_special_command_routing,
@@ -20,34 +21,17 @@ class TestEnsureAliasStorage:
 
     def test_ensure_alias_storage_returns_existing(self):
         """Test _ensure_alias_storage returns existing storage if provided."""
-        mock_storage = MagicMock()
+        mock_storage = MagicMock(spec=AliasStorage)
         result = _ensure_alias_storage(mock_storage)
         assert result == mock_storage
 
     def test_ensure_alias_storage_initializes_new(self):
-        """Test _ensure_alias_storage initializes new storage when None."""
-        with (
-            patch("server.command_handler_unified.get_config") as mock_config,
-            patch("server.command_handler_unified.AliasStorage") as mock_alias_class,
-        ):
-            mock_config_instance = MagicMock()
-            mock_config_instance.game.aliases_dir = "/test/aliases"
-            mock_config.return_value = mock_config_instance
-            mock_storage = MagicMock()
-            mock_alias_class.return_value = mock_storage
-
+        """Test _ensure_alias_storage creates a DB-backed storage when None."""
+        created = MagicMock()
+        with patch("server.command_handler_unified.AliasStorage", return_value=created) as mock_alias_class:
             result = _ensure_alias_storage(None)
-            assert result == mock_storage
-            mock_alias_class.assert_called_once_with(storage_dir="/test/aliases")
-
-    def test_ensure_alias_storage_handles_error(self):
-        """Test _ensure_alias_storage returns None on initialization error."""
-        with (
-            patch("server.command_handler_unified.get_config", side_effect=OSError("Config error")),
-            patch("server.command_handler_unified.AliasStorage"),
-        ):
-            result = _ensure_alias_storage(None)
-            assert result is None
+            assert result is created
+            mock_alias_class.assert_called_once_with()
 
 
 class TestProcessAliasExpansion:
@@ -62,7 +46,7 @@ class TestProcessAliasExpansion:
     @pytest.mark.asyncio
     async def test_process_alias_expansion_no_alias(self):
         """Test _process_alias_expansion returns None when alias not found."""
-        mock_storage = MagicMock()
+        mock_storage = MagicMock(spec=AliasStorage)
         mock_storage.get_alias.return_value = None
 
         result = await _process_alias_expansion("cmd", [], mock_storage, "testplayer", {}, MagicMock())
@@ -71,7 +55,7 @@ class TestProcessAliasExpansion:
     @pytest.mark.asyncio
     async def test_process_alias_expansion_unsafe_alias(self):
         """Test _process_alias_expansion returns error for unsafe alias."""
-        mock_storage = MagicMock()
+        mock_storage = MagicMock(spec=AliasStorage)
         mock_alias = MagicMock()
         mock_alias.name = "testalias"
         mock_storage.get_alias.return_value = mock_alias
@@ -85,7 +69,7 @@ class TestProcessAliasExpansion:
     @pytest.mark.asyncio
     async def test_process_alias_expansion_invalid_expanded(self):
         """Test _process_alias_expansion returns error for invalid expanded command."""
-        mock_storage = MagicMock()
+        mock_storage = MagicMock(spec=AliasStorage)
         mock_alias = MagicMock()
         mock_alias.name = "testalias"
         mock_alias.get_expanded_command.return_value = "invalid; command"
@@ -105,7 +89,7 @@ class TestHandleSpecialCommandRouting:
     @pytest.mark.asyncio
     async def test_handle_special_command_routing_alias_command(self):
         """Test _handle_special_command_routing handles alias management commands."""
-        mock_storage = MagicMock()
+        mock_storage = MagicMock(spec=AliasStorage)
         mock_request = MagicMock()
 
         with patch(
@@ -127,7 +111,7 @@ class TestHandleSpecialCommandRouting:
     @pytest.mark.asyncio
     async def test_handle_special_command_routing_emote_conversion(self):
         """Test _handle_special_command_routing converts single-word emotes."""
-        mock_storage = MagicMock()
+        mock_storage = MagicMock(spec=AliasStorage)
         mock_storage.get_alias.return_value = None  # No alias found
         mock_request = MagicMock()
 

@@ -100,29 +100,10 @@ class TestHelperFunctions:
         """Test _ensure_alias_storage creates new storage when None."""
         from server.command_handler_unified import _ensure_alias_storage
 
-        with (
-            patch("server.command_handler_unified.get_config") as mock_config,
-            patch("server.command_handler_unified.AliasStorage") as mock_storage_class,
-        ):
-            mock_config.return_value.game.aliases_dir = "/test/aliases"
-            mock_storage = MagicMock()
-            mock_storage_class.return_value = mock_storage
-
+        with patch("server.command_handler_unified.AliasStorage") as mock_storage_class:
             result = _ensure_alias_storage(None)
-            assert result == mock_storage
-            mock_storage_class.assert_called_once_with(storage_dir="/test/aliases")
-
-    def test_ensure_alias_storage_handles_error(self):
-        """Test _ensure_alias_storage returns None on error."""
-        from server.command_handler_unified import _ensure_alias_storage
-
-        with (
-            patch("server.command_handler_unified.get_config", side_effect=OSError("Config error")),
-            patch("server.command_handler_unified.logger") as mock_logger,
-        ):
-            result = _ensure_alias_storage(None)
-            assert result is None
-            mock_logger.error.assert_called_once()
+            assert result == mock_storage_class.return_value
+            mock_storage_class.assert_called_once_with()
 
     @pytest.mark.asyncio
     async def test_check_grace_period_block_no_connection_manager(self):
@@ -299,7 +280,7 @@ class TestHelperFunctions:
         mock_request = MagicMock()
         mock_user = {"username": "testplayer"}
         mock_storage = MagicMock()
-        mock_storage.get_alias = MagicMock(return_value=None)
+        mock_storage.get_alias = AsyncMock(return_value=None)
 
         result = await _process_alias_expansion("look", [], mock_storage, "testplayer", mock_user, mock_request)
         assert result is None
@@ -314,7 +295,7 @@ class TestHelperFunctions:
         mock_storage = MagicMock()
         mock_alias = MagicMock()
         mock_alias.name = "test_alias"
-        mock_storage.get_alias = MagicMock(return_value=mock_alias)
+        mock_storage.get_alias = AsyncMock(return_value=mock_alias)
 
         with patch("server.command_handler_unified.check_alias_safety", return_value=(False, "Unsafe alias", 0)):
             result = await _process_alias_expansion("test", [], mock_storage, "testplayer", mock_user, mock_request)
@@ -332,7 +313,7 @@ class TestHelperFunctions:
         mock_alias = MagicMock()
         mock_alias.name = "test_alias"
         mock_alias.get_expanded_command = MagicMock(return_value="invalid command")
-        mock_storage.get_alias = MagicMock(return_value=mock_alias)
+        mock_storage.get_alias = AsyncMock(return_value=mock_alias)
 
         with (
             patch("server.command_handler_unified.check_alias_safety", return_value=(True, None, 1)),

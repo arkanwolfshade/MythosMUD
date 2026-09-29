@@ -14,19 +14,17 @@ the documented Temporal bounded context (docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUND
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from pydantic import ValidationError
 
 from server.container.utils import decode_json_column
 from server.structured_logging.enhanced_logging_config import get_logger
-from server.utils.project_paths import (
-    get_environment_data_dir,
-    normalize_environment,
-)
 
 if TYPE_CHECKING:
+    from server.async_persistence import AsyncPersistenceLayer
     from server.container.main import ApplicationContainer
+    from server.services.user_manager import UserManager
 
 logger = get_logger(__name__)
 
@@ -196,7 +194,7 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
             async_persistence=container.async_persistence,
         )
 
-    def _init_player_quest_layer(self, container: ApplicationContainer, normalized_environment: str) -> None:
+    def _init_player_quest_layer(self, container: ApplicationContainer) -> None:
         """Wire player/room/user, container, skill, level, and quest services."""
         persistence = container.persistence
         async_persistence = container.async_persistence
@@ -206,8 +204,7 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
 
         self.player_service = PlayerService(persistence=persistence, instance_manager=self.instance_manager)
         self.room_service = RoomService(persistence=persistence)
-        user_management_dir = get_environment_data_dir(normalized_environment) / "user_management"
-        self.user_manager = UserManager(data_dir=user_management_dir, async_persistence=async_persistence)
+        self.user_manager = UserManager(async_persistence=cast("AsyncPersistenceLayer | None", async_persistence))
         self._wire_user_manager_after_init(self.follow_service, container.nats_message_handler, self.user_manager)
         from server.services.container_service import ContainerService
 
@@ -255,14 +252,27 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
         await self.emote_service.load_emotes()
         logger.info("EmoteService initialized and loaded", emote_count=len(self.emote_service.emotes))
 
+    async def _load_player_mutes(self) -> None:
+        """Fill UserManager's in-memory mute index from the database (#681)."""
+        from server.exceptions import DatabaseError
+
+        user_manager = cast("UserManager | None", self.user_manager)
+        if user_manager is None:
+            return
+        try:
+            _ = await user_manager.load_all_mutes()
+        except DatabaseError as e:
+            # Degrade to "no mutes known" rather than refusing to start; new mutes still persist.
+            logger.error("Failed to load player mutes; starting with none", error=str(e))
+
     async def initialize(self, container: ApplicationContainer) -> None:
         """Initialize game services. Requires Core and Realtime."""
         self._require_core_services(container)
-        normalized_environment = normalize_environment(container.config.logging.environment)
         logger.debug("Initializing gameplay services...")
         self._init_movement_layer(container)
         logger.debug("Initializing game services...")
-        self._init_player_quest_layer(container, normalized_environment)
+        self._init_player_quest_layer(container)
+        await self._load_player_mutes()
         logger.info("Game services initialized")
         await self._initialize_item_services(container)
         self._wire_item_registry_to_player_service()

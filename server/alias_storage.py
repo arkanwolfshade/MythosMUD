@@ -1,434 +1,150 @@
-"""Alias storage utilities for MythosMUD.
+"""Alias storage for MythosMUD.
 
 As noted in the restricted archives of Miskatonic University, this module
-handles the persistence of player command aliases in JSON format, providing
-a robust and extensible storage system for user-defined command shortcuts.
+persists player command aliases in PostgreSQL (table ``player_aliases``, #680)
+via the stored functions in ``db/procedures/player_aliases.sql``.
 """
 
-import json
-import os
-import shutil
-from datetime import datetime
-from pathlib import Path
-from typing import TYPE_CHECKING, TypeAlias, cast
+import re
+from datetime import UTC, datetime
+from typing import Protocol, cast
 
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
+
+from .database import get_session_maker
 from .models.alias import Alias
 from .structured_logging.enhanced_logging_config import get_logger
-from .validators.security_validator import validate_player_name
 
 logger = get_logger(__name__)
 
-if TYPE_CHECKING:  # pragma: no cover - type checking only
-    from schemas.validator import SchemaValidator
-
-# JSON alias bundle / record shapes (no typing.Any — basedpyright reportExplicitAny).
-# TypeAlias (not PEP 695 `type`) so older AST parsers (Codacy) accept the module.
-# noqa UP040: PEP 695 `type` is a syntax error for Codacy's Python parser.
-AliasPayload: TypeAlias = dict[str, object]  # noqa: UP040
-AliasRecord: TypeAlias = dict[str, object]  # noqa: UP040
+MAX_ALIASES_PER_PLAYER = 50
+_RESERVED_COMMANDS = frozenset({"alias", "aliases", "unalias", "help"})
+_ALIAS_NAME_PATTERN = re.compile(r"^[a-zA-Z][a-zA-Z0-9_]*$")
 
 
-class _AliasValidatorCache:  # pylint: disable=too-few-public-methods  # Reason: private holder for lazy schema validator state
-    """Mutable cache for the lazy schema validator (avoids redefining module constants)."""
+class _AliasRow(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    """Shape of player_aliases procedure result rows."""
 
-    __slots__: tuple[str, ...] = ("import_failed", "validator")
-
-    def __init__(self) -> None:
-        self.validator: SchemaValidator | None = None
-        self.import_failed: bool = False
-
-
-_alias_validator_cache = _AliasValidatorCache()
+    id: object
+    name: str
+    command: str
+    created_at: datetime
+    updated_at: datetime
 
 
-def _empty_alias_payload() -> AliasPayload:
-    return {"version": "1.0", "aliases": []}
+def _naive_utc(value: datetime) -> datetime:
+    """Alias stores naive UTC timestamps (see models/alias.py)."""
+    return value.astimezone(UTC).replace(tzinfo=None) if value.tzinfo else value
 
 
-def _as_alias_payload(raw: object) -> AliasPayload | None:
-    """Narrow json.load output to a string-keyed object map."""
-    if not isinstance(raw, dict):
-        return None
-    return cast(AliasPayload, raw)
-
-
-def _as_alias_record(raw: object) -> AliasRecord | None:
-    if not isinstance(raw, dict):
-        return None
-    return cast(AliasRecord, raw)
-
-
-def _parse_alias_timestamp(value: object) -> datetime | None:
-    if not isinstance(value, str):
-        return None
-    ts_str = value.replace("Z", "").split("+")[0]
-    return datetime.fromisoformat(ts_str)
-
-
-def _apply_alias_timestamps(record: AliasRecord) -> None:
-    """Normalize created_at/updated_at JSON strings to naive datetime in place."""
-    for key in ("created_at", "updated_at"):
-        parsed = _parse_alias_timestamp(record.get(key))
-        if parsed is not None:
-            record[key] = parsed
-
-
-def _get_alias_validator() -> "SchemaValidator | None":
-    """Lazily instantiate and cache the alias schema validator."""
-    cache = _alias_validator_cache
-
-    if cache.validator is not None:
-        return cache.validator
-
-    if cache.import_failed:
-        return None
-
-    try:
-        from schemas.validator import create_validator
-    except ImportError as exc:  # pragma: no cover - environment without schemas package
-        logger.warning("Alias schema validator unavailable", error=str(exc))
-        cache.import_failed = True
-        return None
-
-    try:
-        cache.validator = create_validator("alias")
-    except Exception as exc:  # noqa: B904  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Validator creation errors unpredictable, must handle gracefully
-        logger.warning("Alias schema validator creation failed", error=str(exc))
-        cache.validator = None
-
-    return cache.validator
+def _row_to_alias(row: object) -> Alias:
+    r = cast(_AliasRow, row)
+    return Alias(
+        id=str(r.id),
+        name=r.name,
+        command=r.command,
+        created_at=_naive_utc(r.created_at),
+        updated_at=_naive_utc(r.updated_at),
+    )
 
 
 class AliasStorage:
-    """Manages player alias storage in JSON files.
+    """Player alias persistence backed by the ``player_aliases`` table.
 
-    Each player's aliases are stored in a separate JSON file:
-    data/players/aliases/{player_name}_aliases.json
+    Aliases are addressed by player name (all the command pipeline carries) and
+    stored against the active player's ``player_id``. Database failures are logged
+    and reported as "no alias" / ``False`` so a DB hiccup never breaks command input.
     """
 
-    storage_dir: Path
-
-    def __init__(self, storage_dir: str | None = None) -> None:
-        if storage_dir:
-            self.storage_dir = Path(storage_dir)
-        else:
-            # AI Agent: Type narrowing - os.environ.get returns str | None
-            aliases_dir = os.environ.get("ALIASES_DIR")
-            if aliases_dir:
-                self.storage_dir = Path(aliases_dir)
-            else:
-                raise ValueError(
-                    "ALIASES_DIR environment variable must be set. See server/env.example for configuration template."
-                )
-
-        self.storage_dir.mkdir(parents=True, exist_ok=True)
-
-    def get_alias_file_path(self, player_name: str) -> Path:
-        """Get the file path for a player's aliases.
-
-        Human: reject path separators / traversal in player_name before touching disk.
-        AI: CodeQL py/path-injection — basename + realpath/commonpath containment (recognized barriers).
-        """
-        if not player_name:
-            raise ValueError("Player name is required for alias storage path")
-        safe_name = validate_player_name(player_name)
-        # Drop any directory components; CodeQL treats basename as a path sanitizer.
-        safe_name = os.path.basename(safe_name)
-        if ".." in safe_name or os.sep in safe_name or (os.altsep is not None and os.altsep in safe_name):
-            raise ValueError("Invalid player name for alias path")
-        base_dir = os.path.realpath(str(self.storage_dir))
-        candidate = os.path.realpath(os.path.join(base_dir, f"{safe_name}_aliases.json"))
-        if not candidate.startswith(base_dir + os.sep):
-            raise ValueError("Alias path escapes storage directory")
-        return Path(candidate)
-
-    def _resolved_alias_open_path(self, player_name: str) -> str:
-        """Absolute str path for open(); re-checks containment at the open site.
-
-        Human: CodeQL taints path from player_name through load/save; barrier must be
-        adjacent to open() on a realpath str, not only in the Path builder.
-        AI: CodeQL py/path-injection models startswith(base+sep) after realpath, not
-        commonpath alone — keep that check inline at every open/exists site too.
-        """
-        base = os.path.realpath(str(self.storage_dir))
-        path = os.path.realpath(str(self.get_alias_file_path(player_name)))
-        if not path.startswith(base + os.sep):
-            raise ValueError("Alias path escapes storage directory")
-        return path
-
-    def _load_alias_data(self, player_name: str) -> AliasPayload:
-        """Load alias data from JSON file."""
-        # Inline CodeQL py/path-injection barrier (startswith after realpath).
-        base = os.path.realpath(str(self.storage_dir))
-        open_path = os.path.realpath(str(self.get_alias_file_path(player_name)))
-        if not open_path.startswith(base + os.sep):
-            raise ValueError("Alias path escapes storage directory")
-
-        if not os.path.exists(open_path):
-            return _empty_alias_payload()
-
+    async def _fetch(self, sql: str, params: dict[str, str]) -> list[Alias] | None:
+        """Run a row-returning alias function; None on database error."""
         try:
-            with open(open_path, encoding="utf-8") as f:
-                raw: object = cast(object, json.load(f))
+            session_maker = get_session_maker()
+            async with session_maker() as session:
+                # text() required to call PG function; SQL literal, values bound.
+                # nosemgrep: python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text
+                result = await session.execute(text(sql), params)
+                rows = [_row_to_alias(row) for row in result.all()]
+                await session.commit()
+                return rows
+        except (SQLAlchemyError, OSError) as e:
+            logger.error("Alias database error", error=str(e), player_name=params.get("player_name"))
+            return None
 
-            data = _as_alias_payload(raw)
-            if data is None:
-                logger.error(
-                    "Alias file root is not an object",
-                    player_name=player_name,
-                    file_path=open_path,
-                )
-                return _empty_alias_payload()
+    async def get_player_aliases(self, player_name: str) -> list[Alias]:
+        """Get all aliases for a player (empty on unknown player or DB error)."""
+        rows = await self._fetch(
+            "SELECT id, name, command, created_at, updated_at FROM get_player_aliases(:player_name)",
+            {"player_name": player_name},
+        )
+        return rows or []
 
-            validation_errors = self._validate_alias_payload(data, Path(open_path))
-            if validation_errors:
-                logger.error(
-                    "Alias schema validation failed",
-                    player_name=player_name,
-                    file_path=open_path,
-                    errors=validation_errors,
-                )
-                return _empty_alias_payload()
+    async def get_alias(self, player_name: str, alias_name: str) -> Alias | None:
+        """Get a specific alias for a player (case-insensitive name match)."""
+        rows = await self._fetch(
+            "SELECT id, name, command, created_at, updated_at FROM get_player_alias(:player_name, :alias_name)",
+            {"player_name": player_name, "alias_name": alias_name},
+        )
+        return rows[0] if rows else None
 
-            return data
-        except (OSError, json.JSONDecodeError) as e:
-            # Log error and return default structure
-            logger.error("Error loading alias data", player_name=player_name, error=str(e))
-            return _empty_alias_payload()
+    async def create_alias(self, player_name: str, name: str, command: str) -> Alias | None:
+        """Create (or replace the command of) an alias; None if invalid, over the limit, or on error."""
+        if not self.validate_alias_name(name) or not self.validate_alias_command(command):
+            return None
 
-    def _save_alias_data(self, player_name: str, data: AliasPayload) -> bool:
-        """Save alias data to JSON file."""
-        # Inline CodeQL py/path-injection barrier (startswith after realpath).
-        base = os.path.realpath(str(self.storage_dir))
-        open_path = os.path.realpath(str(self.get_alias_file_path(player_name)))
-        if not open_path.startswith(base + os.sep):
-            raise ValueError("Alias path escapes storage directory")
-        file_path = Path(open_path)
+        if len(await self.get_player_aliases(player_name)) >= MAX_ALIASES_PER_PLAYER:
+            return None
 
-        # Ensure directory exists
-        file_path.parent.mkdir(parents=True, exist_ok=True)
+        rows = await self._fetch(
+            "SELECT id, name, command, created_at, updated_at FROM upsert_player_alias(:player_name, :alias_name, :command)",
+            {"player_name": player_name, "alias_name": name, "command": command},
+        )
+        return rows[0] if rows else None
 
-        validation_errors = self._validate_alias_payload(data, file_path)
-        if validation_errors:
-            logger.error(
-                "Aborting alias save due to schema validation failure",
-                player_name=player_name,
-                file_path=open_path,
-                errors=validation_errors,
-            )
-            return False
-
+    async def _call_scalar(self, sql: str, params: dict[str, str]) -> object:
+        """Run a scalar-returning alias function; None on database error."""
         try:
-            with open(open_path, "w", encoding="utf-8") as f:
-                json.dump(data, f, indent=2, default=str)
-            return True
-        except OSError as e:
-            logger.error("Error saving alias data", player_name=player_name, error=str(e))
-            return False
+            session_maker = get_session_maker()
+            async with session_maker() as session:
+                # text() required to call PG function; SQL literal, values bound.
+                # nosemgrep: python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text
+                result = await session.execute(text(sql), params)
+                value = cast(object, result.scalar())
+                await session.commit()
+                return value
+        except (SQLAlchemyError, OSError) as e:
+            logger.error("Alias database error", error=str(e), player_name=params.get("player_name"))
+            return None
 
-    def get_player_aliases(self, player_name: str) -> list[Alias]:
-        """Get all aliases for a player."""
-        data = self._load_alias_data(player_name)
-        aliases: list[Alias] = []
+    async def remove_alias(self, player_name: str, alias_name: str) -> bool:
+        """Remove an alias for a player. False if not found or on error."""
+        deleted = await self._call_scalar(
+            "SELECT delete_player_alias(:player_name, :alias_name)",
+            {"player_name": player_name, "alias_name": alias_name},
+        )
+        return deleted is True
 
-        raw_aliases: object = data.get("aliases", [])
-        if not isinstance(raw_aliases, list):
-            return aliases
-
-        for raw_entry in cast(list[object], raw_aliases):
-            alias_data = _as_alias_record(raw_entry)
-            if alias_data is None:
-                continue
-            try:
-                # Convert timestamp strings back to datetime objects
-                # Handle both "Z" suffix and timezone-aware formats
-                record: AliasRecord = dict(alias_data)
-                _apply_alias_timestamps(record)
-                alias = Alias.model_validate(record)
-                aliases.append(alias)
-            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Alias parsing errors unpredictable, must continue processing
-                logger.error("Error parsing alias data", error=str(e))
-                continue
-
-        return aliases
-
-    def save_player_aliases(self, player_name: str, aliases: list[Alias]) -> bool:
-        """Save aliases for a player."""
-        # Convert aliases to JSON-serializable format
-        alias_data: list[AliasRecord] = []
-        for alias in aliases:
-            alias_dict = cast(AliasRecord, cast(object, alias.model_dump()))
-            alias_data.append(alias_dict)
-
-        data: AliasPayload = {"version": "1.0", "aliases": alias_data}
-
-        return self._save_alias_data(player_name, data)
-
-    def add_alias(self, player_name: str, alias: Alias) -> bool:
-        """Add or update an alias for a player."""
-        aliases = self.get_player_aliases(player_name)
-
-        # Check if alias already exists
-        existing_index = None
-        for i, existing_alias in enumerate(aliases):
-            if existing_alias.name.lower() == alias.name.lower():
-                existing_index = i
-                break
-
-        if existing_index is not None:
-            # Update existing alias
-            aliases[existing_index] = alias
-        else:
-            # Add new alias
-            aliases.append(alias)
-
-        return self.save_player_aliases(player_name, aliases)
-
-    def remove_alias(self, player_name: str, alias_name: str) -> bool:
-        """Remove an alias for a player."""
-        aliases = self.get_player_aliases(player_name)
-
-        # Find and remove the alias
-        for i, alias in enumerate(aliases):
-            if alias.name.lower() == alias_name.lower():
-                del aliases[i]
-                return self.save_player_aliases(player_name, aliases)
-
-        return False  # Alias not found
-
-    def get_alias(self, player_name: str, alias_name: str) -> Alias | None:
-        """Get a specific alias for a player."""
-        aliases = self.get_player_aliases(player_name)
-
-        for alias in aliases:
-            if alias.name.lower() == alias_name.lower():
-                return alias
-
-        return None
-
-    def clear_aliases(self, player_name: str) -> bool:
-        """Clear all aliases for a player."""
-        return self.save_player_aliases(player_name, [])
-
-    def get_alias_count(self, player_name: str) -> int:
-        """Get the number of aliases for a player."""
-        aliases = self.get_player_aliases(player_name)
-        return len(aliases)
+    async def delete_player_aliases_by_id(self, player_id: str) -> bool:
+        """Delete every alias of a player (used when a character is deleted)."""
+        deleted = await self._call_scalar(
+            "SELECT delete_player_aliases_by_id(:player_id)",
+            {"player_id": str(player_id)},
+        )
+        return deleted is not None
 
     def validate_alias_name(self, alias_name: str) -> bool:
         """Validate alias name format."""
         if not alias_name or len(alias_name) > 20:
             return False
-
-        # Check if it's a reserved command
-        reserved_commands = {"alias", "aliases", "unalias", "help"}
-        if alias_name.lower() in reserved_commands:
+        if alias_name.lower() in _RESERVED_COMMANDS:
             return False
-
-        # Check naming convention (alphanumeric + underscore, must start with letter)
-        import re
-
-        pattern = r"^[a-zA-Z][a-zA-Z0-9_]*$"
-        return bool(re.match(pattern, alias_name))
+        # Alphanumeric + underscore, must start with a letter
+        return bool(_ALIAS_NAME_PATTERN.match(alias_name))
 
     def validate_alias_command(self, command: str) -> bool:
         """Validate alias command."""
         if not command or len(command) > 200:
             return False
-
-        # Check if it's a reserved command
-        reserved_commands = {"alias", "aliases", "unalias", "help"}
         first_word = command.strip().split()[0].lower() if command.strip() else ""
-        if first_word in reserved_commands:
-            return False
-
-        return True
-
-    def create_alias(self, player_name: str, name: str, command: str) -> Alias | None:
-        """Create and save a new alias for a player."""
-        # Validate inputs
-        if not self.validate_alias_name(name):
-            return None
-
-        if not self.validate_alias_command(command):
-            return None
-
-        # Check alias limit (50 per player as per PLANNING_aliases.md)
-        current_count = self.get_alias_count(player_name)
-        if current_count >= 50:
-            return None
-
-        # Create new alias
-        alias = Alias(name=name, command=command)
-
-        # Save to storage
-        if self.add_alias(player_name, alias):
-            return alias
-
-        return None
-
-    def list_alias_files(self) -> list[str]:
-        """List all alias files in the storage directory."""
-        if not self.storage_dir.exists():
-            return []
-
-        files: list[str] = []
-        for file_path in self.storage_dir.glob("*_aliases.json"):
-            # Extract player name from filename
-            player_name = file_path.stem.replace("_aliases", "")
-            files.append(player_name)
-
-        return files
-
-    def delete_player_aliases(self, player_name: str) -> bool:
-        """Delete a player's alias file."""
-        file_path = self.get_alias_file_path(player_name)
-
-        if file_path.exists():
-            try:
-                file_path.unlink()
-                return True
-            except OSError as e:
-                logger.error("Error deleting alias file", player_name=player_name, error=str(e))
-                return False
-
-        return True  # File doesn't exist, consider it "deleted"
-
-    def backup_aliases(self, player_name: str, backup_dir: str | None = None) -> bool:
-        """Create a backup of a player's aliases."""
-        if backup_dir is None:
-            backup_dir = str(self.storage_dir / "backups")
-
-        backup_path = Path(backup_dir)
-        backup_path.mkdir(parents=True, exist_ok=True)
-
-        source_file = self.get_alias_file_path(player_name)
-        if not source_file.exists():
-            return False
-
-        # Use sanitized path stem — never raw player_name in backup filenames.
-        backup_file = backup_path / f"{source_file.stem}_backup.json"
-
-        try:
-            _ = shutil.copy2(source_file, backup_file)
-            return True
-        except OSError as e:
-            logger.error("Error creating backup", player_name=player_name, error=str(e))
-            return False
-
-    def _validate_alias_payload(self, data: AliasPayload, file_path: Path) -> list[str]:
-        """
-        Validate alias payload against the shared schema when available.
-
-        Args:
-            data: Alias payload to validate.
-            file_path: Location of the payload for logging context.
-
-        Returns:
-            List of schema validation error strings. Empty if schema is unavailable or the data is valid.
-        """
-        validator = _get_alias_validator()
-        if validator is None:
-            return []
-        # SchemaValidator.validate_alias_bundle is typed with dict[str, Any] for JSON generality.
-        return validator.validate_alias_bundle(data, str(file_path))
+        return first_word not in _RESERVED_COMMANDS

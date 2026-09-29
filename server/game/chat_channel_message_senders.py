@@ -47,9 +47,6 @@ class ChatUserManager(Protocol):
     def is_admin(self, player_id: str) -> bool:
         """Return True if the player has admin chat privileges."""
 
-    def load_player_mutes(self, player_id: str) -> object:
-        """Load mute state for the player."""
-
     def is_channel_muted(self, player_id: str, channel: str) -> bool:
         """Return True if the player is muted on this channel."""
 
@@ -175,7 +172,6 @@ async def _authorize_system_sender(
     if not ctx["user_manager"].is_admin(player_id):
         logger.debug("=== CHAT SERVICE DEBUG: Player not admin ===")
         return None, {"success": False, "error": "You must be an admin to send system messages"}
-    ctx["user_manager"].load_player_mutes(player_id)
     if not ctx["rate_limiter"].check_rate_limit(player_id, "system", player.name):
         logger.debug("=== CHAT SERVICE DEBUG: Rate limit exceeded ===")
         return None, {"success": False, "error": "Rate limit exceeded for system messages", "rate_limited": True}
@@ -453,7 +449,6 @@ async def _authorize_global_sender(
     level_error = check_global_level_requirement(player, player_id)
     if level_error:
         return None, level_error
-    ctx["user_manager"].load_player_mutes(player_id)
     if not ctx["rate_limiter"].check_rate_limit(player_id, "global", player.name):
         logger.debug("=== CHAT SERVICE DEBUG: Rate limit exceeded ===")
         return None, {"success": False, "error": "Rate limit exceeded for global chat", "rate_limited": True}
