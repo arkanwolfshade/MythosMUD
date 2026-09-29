@@ -90,14 +90,15 @@ function getRoomDataFromEvent(event: GameEvent): RoomOrNull {
   return raw;
 }
 
-function resolvePayloadNpcs(existingRoom: Room, payloadRoom?: Room): string[] {
-  if (payloadRoom === undefined || payloadRoom.npcs === undefined) {
-    return preferOccupantList(undefined, existingRoom.npcs);
+/**
+ * Omitted from the payload -> keep the existing list; an explicit array (even []) is authoritative.
+ * A same-room room_update carrying only npcs must not wipe players (#776), and vice versa.
+ */
+function resolvePayloadList(existing: string[] | undefined, fromPayload: string[] | undefined): string[] {
+  if (fromPayload === undefined) {
+    return preferOccupantList(undefined, existing);
   }
-  if (Array.isArray(payloadRoom.npcs)) {
-    return payloadRoom.npcs;
-  }
-  return [];
+  return Array.isArray(fromPayload) ? fromPayload : [];
 }
 
 /**
@@ -119,10 +120,10 @@ function resolvePreservedOccupantArrays(
       npcsArr: preferOccupantList(undefined, existingRoom.npcs),
     };
   }
-  const playersFromPayload = payloadRoom === undefined ? undefined : payloadRoom.players;
-  const players = preferOccupantList(playersFromPayload, undefined);
-  const npcsArr = resolvePayloadNpcs(existingRoom, payloadRoom);
-  return { players, npcsArr };
+  return {
+    players: resolvePayloadList(existingRoom.players, payloadRoom?.players),
+    npcsArr: resolvePayloadList(existingRoom.npcs, payloadRoom?.npcs),
+  };
 }
 
 function resolvePreservedOccupantCount(usePayloadOccupants: boolean, length: number, payloadCount?: number): number {
