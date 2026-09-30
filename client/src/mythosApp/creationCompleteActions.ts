@@ -22,6 +22,17 @@ export interface CreationCompleteActions {
   setError: Dispatch<SetStateAction<string | null>>;
 }
 
+// The character already exists server-side; only the follow-up list refresh failed. Land on the
+// picker: 'stats' would invite creating a duplicate, and hiding it mounts the game with no characterId.
+function showPickerAfterRefreshFailure(a: CreationCompleteActions): void {
+  a.setError('Character created, but failed to refresh character list. Please refresh the page.');
+  a.setPendingStats(null);
+  a.setSelectedProfession(undefined);
+  a.setPendingSkillsPayload(null);
+  a.setCreationStep(null);
+  a.setShowCharacterSelection(true);
+}
+
 export async function runAfterCharacterCreatedFlow(authToken: string, a: CreationCompleteActions): Promise<void> {
   const result = await refreshCharactersAfterCreation(authToken);
   if (result.outcome === 'ok') {
@@ -44,11 +55,7 @@ export async function runAfterCharacterCreatedFlow(authToken: string, a: Creatio
     }
     const errorMessage = await messageFromCreationRefreshHttpError(result.response);
     console.error('Failed to refresh characters list:', errorMessage);
-    a.setError('Character created, but failed to refresh character list. Please refresh the page.');
-    a.setSelectedProfession(undefined);
-    a.setCreationStep(null);
-    a.setShowCharacterSelection(true);
-    a.setShowCharacterSelection(false);
+    showPickerAfterRefreshFailure(a);
     return;
   }
   if (isServerUnavailable(result.error, null)) {
@@ -56,8 +63,5 @@ export async function runAfterCharacterCreatedFlow(authToken: string, a: Creatio
     return;
   }
   console.error('Failed to refresh characters list:', result.error);
-  a.setError('Character created, but failed to refresh character list. Please refresh the page.');
-  a.setSelectedProfession(undefined);
-  a.setCreationStep('stats');
-  a.setShowCharacterSelection(false);
+  showPickerAfterRefreshFailure(a);
 }
