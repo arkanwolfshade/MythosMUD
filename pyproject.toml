@@ -49,7 +49,7 @@ dependencies = [
     "aiofiles>=24.1.0", # Async file I/O to prevent blocking the event loop
     "virtualenv>=21.7.1",
     # Security patches for transitive dependencies (Dependabot alerts #11-21)
-    "urllib3>=2.7.0",  # Fixes alerts #15, #16, #18 - CVE-2025-66418, CVE-2025-66471
+    "urllib3>=2.8.0",  # Security floor; 2.8.0 fixes GHSA-8988-9cw3-xx77, GHSA-vxq7-64xx-v4gw, GHSA-gh4c-6fx4-qh6g
     "pyasn1>=0.6.4",  # Dependabot #160/#161; prior #11/#19 CVE-2026-23490
     "starlette>=1.3.1",  # #529/#112 Host-header validation; lock resolves 1.2.x
     "python-multipart>=0.0.27",  # Fixes alert #12 - CVE-2024-53981, CVE-2024-24762
