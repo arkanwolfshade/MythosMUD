@@ -1,6 +1,6 @@
 # Server & Client Package Documentation Coverage
 
-**Version 1.3.0** · MythosMUD · 2026-09-16
+**Version 1.4.0** · MythosMUD · 2026-09-29
 
 ---
 
@@ -36,7 +36,7 @@ consistently): **Documented** — the package is the primary subject of an ADR, 
 `docs/subsystems/*.md` doc (reverse-engineered from code — a record exists but is unverified,
 never certifiable as conformance). **Undocumented** — neither.
 
-### Documented (18)
+### Documented (20)
 
 | Package | Document(s) |
 | --- | --- |
@@ -58,6 +58,8 @@ never certifiable as conformance). **Undocumented** — neither.
 | `server/models/` | [`PACKAGE_MODELS_DESIGN.md`](PACKAGE_MODELS_DESIGN.md) *(new, this pass)* |
 | `server/services/` | [`PACKAGE_SERVICES_DESIGN.md`](PACKAGE_SERVICES_DESIGN.md) *(new, this pass)* |
 | `db/` root DDL files | [`PACKAGE_DB_DESIGN.md`](PACKAGE_DB_DESIGN.md) *(new, this pass)* |
+| `client/src/mythosApp/` | [`PACKAGE_MYTHOS_APP_DESIGN.md`](PACKAGE_MYTHOS_APP_DESIGN.md) *(new, this pass)* |
+| `client/src/components/map/` | [`PACKAGE_MAP_DESIGN.md`](PACKAGE_MAP_DESIGN.md) *(new, this pass)* |
 
 ### Provisional (2)
 
@@ -66,7 +68,7 @@ never certifiable as conformance). **Undocumented** — neither.
 | `server/game/` | `docs/subsystems/*` coverage only |
 | `server/npc/` | `docs/subsystems/*` coverage only |
 
-### Undocumented (23)
+### Undocumented (21)
 
 Each cites the issue that owns writing its documentation. `server/domain/` (formerly one of
 `#746`'s 22 batched entries) is no longer listed: it was an empty, zero-reference hexagonal-
@@ -76,8 +78,6 @@ section for the record.
 
 | Package | Owning issue |
 | --- | --- |
-| `client/src/mythosApp/` | [`#742`](https://github.com/arkanwolfshade/MythosMUD/issues/742) |
-| `client/src/components/map/` | [`#743`](https://github.com/arkanwolfshade/MythosMUD/issues/743) |
 | `server/utils/` | [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746) |
 | `server/monitoring/` | [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746) |
 | `server/validators/` | [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746) |
@@ -100,14 +100,15 @@ section for the record.
 | `client/src/components/lucidity/` | [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746) |
 | `client/src/components/magic/` | [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746) |
 
-**Reconciliation:** 18 Documented + 2 Provisional + 23 Undocumented = 43, one below the `#648`
+**Reconciliation:** 20 Documented + 2 Provisional + 21 Undocumented = 43, one below the `#648`
 item 2 sweep's original 44-package inventory (10 Documented + 2 Provisional + 32 Undocumented at
 that time). Six of the 32 flipped to Documented in the `#736`–`#741` pass, one more (`db/` root
 DDL files) in the `#745` pass; one (`server/domain/`) was removed rather than documented in the
 `#757` remediation, so it drops out of the inventory entirely instead of flipping status. The
 `#744` pass reclassifies `client/src/components/ui/` (legacy) — relocated into
 `client/src/components/ui-v2/primitives/` and documented — from Undocumented to Documented; the
-count stays 43, not 44.
+count stays 43, not 44. The `#742` and `#743` pass flips `client/src/mythosApp/` and
+`client/src/components/map/` from Undocumented to Documented; the count stays 43.
 
 ## 3. Related documentation
 
@@ -127,3 +128,4 @@ count stays 43, not 44.
 | 1.1.0 | 2026-08-30 | Remove `server/domain/` from the inventory (deleted, not documented, per `#757`); count drops from 44 to 43 |
 | 1.2.0 | 2026-09-16 | `db/` root DDL files flip Undocumented → Documented via `PACKAGE_DB_DESIGN.md`; `server/persistence/` row repointed to consolidated `DATABASE_ARCHITECTURE.md` (#745) |
 | 1.3.0 | 2026-09-16 | `client/src/components/ui/` (legacy) flips Undocumented → Documented as `client/src/components/ui-v2/primitives/` via `PACKAGE_UI_PRIMITIVES_DESIGN.md`, after relocation out of the standalone `ui/` directory (#744) |
+| 1.4.0 | 2026-09-29 | `client/src/mythosApp/` and `client/src/components/map/` flip Undocumented → Documented via `PACKAGE_MYTHOS_APP_DESIGN.md` and `PACKAGE_MAP_DESIGN.md` (#742, #743) |

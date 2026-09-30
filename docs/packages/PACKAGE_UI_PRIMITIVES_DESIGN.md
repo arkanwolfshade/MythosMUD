@@ -1,6 +1,6 @@
 # UI Primitives Package Design
 
-**Version 1.0.0** · MythosMUD · 2026-09-16
+**Version 1.0.1** · MythosMUD · 2026-09-29
 
 ---
 
@@ -119,11 +119,11 @@ code outside this directory (tests are the one exception — see §6).
   `useEffect` cleanup — nesting two open `ModalContainer`s registers two document-level listeners
   with no z-order awareness of which one Escape should close; the components do not coordinate
   with each other.
-- **`exports` and `types` knip rules are `"off"`** in `client/knip.json` (only `files` is
-  `"error"`) — an export added to `index.ts` that gains no consumer will **not** be flagged
-  automatically. Cross-reference [`#718`](https://github.com/arkanwolfshade/MythosMUD/issues/718),
-  which tracks knip's 94 unused-export/unused-type findings across the whole client once those
-  rules are enabled.
+- **knip enforces `files`, `exports` and `types` as `"error"`** in `client/knip.json`, and CI runs
+  `npm run knip` — an export added to `index.ts` that gains no consumer **will** fail the check.
+  (This bullet previously said the `exports`/`types` rules were `"off"`, with the backlog tracked in
+  [`#718`](https://github.com/arkanwolfshade/MythosMUD/issues/718); that issue is closed and the
+  rules are on.)
 - `ChannelSelector`'s `icon` field on `Channel` is typed `keyof typeof MythosIcons`, so a channel
   config referencing an icon name that doesn't exist in `MythosIcons` is a compile error, not a
   runtime blank icon.
@@ -154,8 +154,8 @@ code outside this directory (tests are the one exception — see §6).
   mocks replace the whole module and can mask or duplicate other symbols from the same import.
 - **TypeScript error adding an icon**: `EldritchIcon`'s `iconMap` is `Record`-total over
   `MythosIcons` — a new `MythosIcons` key needs a same-change `iconMap` entry, not a follow-up.
-- **An unused export in `index.ts` isn't caught by CI**: knip's `exports`/`types` rules are off
-  project-wide (§5); this is a known gap, not a broken check.
+- **CI fails on an unused `index.ts` export**: knip's `exports`/`types` rules are on project-wide
+  (§5). Remove the export, or add the consumer, rather than suppressing the check.
 
 ## 8. Related docs
 
@@ -175,3 +175,4 @@ code outside this directory (tests are the one exception — see §6).
 | Version | Date       | Change                                                                                                                |
 | ------- | ---------- | --------------------------------------------------------------------------------------------------------------------- |
 | 1.0.0   | 2026-09-16 | Initial version; relocated from `client/src/components/ui/` to `client/src/components/ui-v2/primitives/`, closes #744 |
+| 1.0.1   | 2026-09-29 | §5/§7: correct the knip claim — `exports`/`types` rules are now `"error"` and enforced in CI (#718 closed) |
