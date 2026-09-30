@@ -1,1 +1,1 @@
-export { RoomMapEditor } from './RoomMapEditorImpl';
+export { RoomMapEditor } from './RoomMapEditorRuntime';
