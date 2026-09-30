@@ -13,7 +13,7 @@ dependencies = [
     "uvicorn[standard]>=0.40.0",
     "gunicorn>=23.0.0",  # Production process manager with Uvicorn workers
     "pydantic>=2.12.5",
-    "pydantic-settings>=2.14.2",
+    "pydantic-settings>=2.14.2,<2.15",  # #784: 2.15.0 adds a typed-Any `_build_sources` param to __init__ that the basedpyright baseline does not cover; CI resolves outside uv.lock
     "argon2-cffi>=25.1.0",
     "PyJWT>=2.14.0",  # JWT for auth_utils and fastapi-users; >=2.14.0 fixes 7 advisories (GHSA-9v7f-9g4p-ffgj et al.)
     "faker>=40.1.0",
@@ -49,7 +49,7 @@ dependencies = [
     "aiofiles>=24.1.0", # Async file I/O to prevent blocking the event loop
     "virtualenv>=21.7.1",
     # Security patches for transitive dependencies (Dependabot alerts #11-21)
-    "urllib3>=2.7.0",  # Fixes alerts #15, #16, #18 - CVE-2025-66418, CVE-2025-66471
+    "urllib3>=2.8.0",  # Security floor; 2.8.0 fixes GHSA-8988-9cw3-xx77, GHSA-vxq7-64xx-v4gw, GHSA-gh4c-6fx4-qh6g
     "pyasn1>=0.6.4",  # Dependabot #160/#161; prior #11/#19 CVE-2026-23490
     "starlette>=1.3.1",  # #529/#112 Host-header validation; lock resolves 1.2.x
     "python-multipart>=0.0.27",  # Fixes alert #12 - CVE-2024-53981, CVE-2024-24762
@@ -84,7 +84,7 @@ dev = [
     # Use sqlfluff instead, which provides comprehensive SQL linting
     "asyncpg-stubs>=0.31.0",
     "import-linter>=2.5",  # Enforces ADR-001 layer direction as CI-checked contracts (#757)
-    "basedpyright>=1.38.2",  # #784 gate; CI installs .[dev], not [dependency-groups] dev
+    "basedpyright==1.39.9",  # #784 gate; exact pin: the baseline is checker-version specific (1.40.1 adds 76 findings). CI installs .[dev], not [dependency-groups] dev
 ]
 
 [tool.setuptools.packages.find]
@@ -438,7 +438,7 @@ dev = [
     "vulture>=2.11", # Dead code finder (unused functions, classes, variables)
     # sqlint>=0.2.1 - REMOVED: Conflicts with click>=8.1.8 (sqlint requires click==7.0)
     # Use sqlfluff instead, which provides comprehensive SQL linting
-    "basedpyright>=1.38.2",
+    "basedpyright==1.39.9",  # keep in lockstep with [project.optional-dependencies] dev
     "import-linter>=2.5", # Enforces ADR-001 layer direction as CI-checked contracts (#757)
 ]
 
