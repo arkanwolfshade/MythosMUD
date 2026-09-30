@@ -13,7 +13,7 @@ dependencies = [
     "uvicorn[standard]>=0.40.0",
     "gunicorn>=23.0.0",  # Production process manager with Uvicorn workers
     "pydantic>=2.12.5",
-    "pydantic-settings>=2.14.2,<2.15",  # #784: 2.15.0 adds a typed-Any `_build_sources` param to __init__ that the basedpyright baseline does not cover; CI resolves outside uv.lock
+    "pydantic-settings>=2.15",
     "argon2-cffi>=25.1.0",
     "PyJWT>=2.14.0",  # JWT for auth_utils and fastapi-users; >=2.14.0 fixes 7 advisories (GHSA-9v7f-9g4p-ffgj et al.)
     "faker>=40.1.0",
