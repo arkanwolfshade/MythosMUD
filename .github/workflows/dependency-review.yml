@@ -7,7 +7,12 @@
 #
 # Source repository: https://github.com/actions/dependency-review-action
 name: "Dependency Review"
-on: [pull_request]
+# push to main submits the snapshot PR base SHAs compare against (#938); without it the base has
+# 0 snapshots and every PR inherits main's whole dependency tree as "newly added".
+on:
+  pull_request:
+  push:
+    branches: [main]
 
 # Scorecard TokenPermissions: top-level stays read; elevate write only on this job for snapshot upload.
 permissions:
@@ -46,24 +51,11 @@ jobs:
           token: ${{ github.token }}
           # Match PR head commit so submitted snapshots align with dependency-review API head SHA
           # (default PR checkout is the merge commit; github.sha would not match pull_request.head.sha).
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Detect Python lockfile changes in PR
-        id: python_lock_changed
-        run: |
-          set -euo pipefail
-          if git diff --name-only \
-            "${{ github.event.pull_request.base.sha }}" \
-            "${{ github.event.pull_request.head.sha }}" \
-            -- uv.lock pyproject.toml | grep -q .; then
-            echo "changed=true" >> "${GITHUB_OUTPUT}"
-          else
-            echo "changed=false" >> "${GITHUB_OUTPUT}"
-          fi
+          # On push to main, github.sha is the commit later PRs use as their base SHA.
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       # Private data: shallow git fetch with URL-encoded user:token (same pattern as ci.yml).
       - name: Resolve data submodule (repository + commit)
-        if: steps.python_lock_changed.outputs.changed == 'true'
         id: data_submodule
         run: |
           set -euo pipefail
@@ -86,7 +78,6 @@ jobs:
           echo "sha=${sha}" >> "${GITHUB_OUTPUT}"
           echo "::notice::Will fetch ${suffix}@${sha}"
       - name: Clone private data into data/
-        if: steps.python_lock_changed.outputs.changed == 'true'
         env:
           SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT }}
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
@@ -118,15 +109,17 @@ jobs:
 
       # Vendored node_modules must not be scanned (stale fast-uri@3.1.0 was committed previously); use lockfiles.
       - name: Remove vendored static_data node_modules before snapshot
-        if: steps.python_lock_changed.outputs.changed == 'true'
         run: rm -rf scripts/static_data/node_modules
 
-      # Component Detection expands uv.lock into a full snapshot. Running it on npm-only PRs makes
-      # Dependency Review treat the entire Python tree as newly added versus main's static graph.
+      # Every same-repo PR head and every main commit gets a snapshot, so both sides of Dependency
+      # Review's base/head comparison are always snapshot-backed. A lockfile-changed guard would
+      # leave non-lockfile PRs with a base snapshot but no head snapshot and stall the review job in
+      # retry-on-snapshot-warnings. Forked PRs have no MYTHOSMUD_PAT (data submodule), so they skip
+      # the snapshot and compare against main's static graph; accepted for this repo.
       - name: Submit dependency snapshot (Component Detection)
         if: >-
-          github.event.pull_request.head.repo.full_name == github.repository &&
-          steps.python_lock_changed.outputs.changed == 'true'
+          github.event_name == 'push' ||
+          github.event.pull_request.head.repo.full_name == github.repository
         uses: advanced-security/component-detection-dependency-submission-action@b282c67b1008fde9b60da4bdfcd8849613e293b2 # v0.1.6
         with:
           detectorArgs: UvLock=EnableIfDefaultOff,NpmLockfile3=EnableIfDefaultOff
@@ -137,6 +130,8 @@ jobs:
   dependency-review:
     name: Dependency Review
     needs: submit-snapshot
+    # Push to main only submits a snapshot; there is no PR to review.
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     # Job-level permissions replace the workflow default entirely (unlisted scopes become
     # "none"), so contents:read must be restated here even though it matches the top-level default.
