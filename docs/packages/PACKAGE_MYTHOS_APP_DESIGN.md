@@ -200,13 +200,15 @@ owned by [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746)):
   `creationStep` is `null` and the picker is hidden, so `AppRootViews` falls through to
   `AppSessionOutroViews` and mounts `GameClientV2Container` with whatever `selectedCharacterId`
   was already in state (empty for a first character). The `network_error` branch, by contrast,
-  sets `creationStep('stats')`. Not fixed here; docs-only change.
+  sets `creationStep('stats')`. Tracked in
+  [`#926`](https://github.com/arkanwolfshade/MythosMUD/issues/926).
 - **`useAuthSessionRestore.ts` hard-codes `const inCharacterCreation = false;`**, so the
   `&& !inCharacterCreation` guards are dead. Behavioural consequence: on page reload a
   single-character account skips the picker, sets the selected character and leaves `showMotd`
   `false`, so the MOTD interstitial and the `start-login-grace-period` call (both driven by
   `handleMotdContinue`) are skipped. They only run after an explicit `handleCharacterSelected`.
-  Whether that is intended is not recorded anywhere in the code.
+  Whether that is intended is not recorded anywhere in the code. Tracked in
+  [`#927`](https://github.com/arkanwolfshade/MythosMUD/issues/927).
 - **Auth request URLs are inconsistent.** Login/register use `${API_V1_BASE}/auth/...`; character
   endpoints use `${API_V1_BASE}/api/players/...`. Both are correct against the server today;
   changing `API_V1_BASE` needs both families checked.
