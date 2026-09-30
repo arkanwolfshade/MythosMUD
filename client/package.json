@@ -82,7 +82,7 @@
   },
   "overrides": {
     "undici": "^7.28.0",
-    "fast-uri": "4.1.4",
+    "fast-uri": "4.1.5",
     "lodash": "^4.18.1",
     "flatted": "^3.4.4",
     "glob": "^13.0.6",
