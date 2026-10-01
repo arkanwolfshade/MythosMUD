@@ -177,7 +177,9 @@ async def test_create_corpse_on_death_nests_worn_container_contents_and_deletes_
     coins = _stack("coin", slot_type="backpack")
     player = _dying_player([], {"back": _stack("backpack", "pack-1", slot_type="back")})
     mock_persistence.get_player_by_id = AsyncMock(return_value=player)
-    mock_persistence.get_containers_by_entity_id = AsyncMock(return_value=[_worn_container_row(row_id, "pack-1", [coins])])
+    mock_persistence.get_containers_by_entity_id = AsyncMock(
+        return_value=[_worn_container_row(row_id, "pack-1", [coins])]
+    )
     mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4())})
 
     _ = await corpse_service.create_corpse_on_death(uuid.uuid4(), "room_001")
@@ -226,6 +228,7 @@ async def test_create_corpse_on_death_spills_past_the_slot_limit_onto_extra_corp
     corpse_service: CorpseLifecycleService, mock_persistence: MagicMock
 ) -> None:
     """A container holds at most 20 stacks, so 25 are split rather than dropped (#917)."""
+
     def _new_container_row(**_kwargs: object) -> dict[str, str]:
         return {"container_id": str(uuid.uuid4())}
 
@@ -673,16 +676,31 @@ def _corpse_component(room_id: str = "room_001") -> ContainerComponent:
     )
 
 
+class _RecordingRoom:
+    """Room stand-in with real methods: the service checks rooms with a runtime_checkable Protocol,
+    which (on Python 3.12+) uses getattr_static and so does not see MagicMock's dynamic attributes."""
+
+    def __init__(self) -> None:
+        self.added: list[dict[str, object]] = []
+        self.removed: list[str] = []
+
+    def add_container(self, container: dict[str, object]) -> None:
+        self.added.append(container)
+
+    def remove_container(self, container_id: str) -> None:
+        self.removed.append(container_id)
+
+
 def test_register_corpse_on_room_adds_summary(mock_persistence: MagicMock) -> None:
     """#711: the owner is dead when container.created fires, so room_state must carry the corpse."""
-    room = MagicMock()
+    room = _RecordingRoom()
     mock_persistence.get_room_by_id = MagicMock(return_value=room)
     service = CorpseLifecycleService(persistence=mock_persistence)
     corpse = _corpse_component()
 
     service._register_corpse_on_room(corpse, "room_001")  # pyright: ignore[reportPrivateUsage]
 
-    summary = cast(dict[str, object], cast(MagicMock, room.add_container).call_args.args[0])
+    (summary,) = room.added
     assert summary["container_id"] == str(corpse.container_id)
     assert summary["source_type"] == "corpse"
     assert summary["owner_id"] == str(corpse.owner_id)
@@ -710,13 +728,22 @@ def test_register_corpse_on_room_survives_missing_room(mock_persistence: MagicMo
 
 def test_unregister_corpse_from_room_removes_by_id(mock_persistence: MagicMock) -> None:
     """Decay cleanup drops the corpse from the in-memory room too."""
-    room = MagicMock()
+    room = _RecordingRoom()
     mock_persistence.get_room_by_id = MagicMock(return_value=room)
     service = CorpseLifecycleService(persistence=mock_persistence)
 
     service._unregister_corpse_from_room("c1", "room_001")  # pyright: ignore[reportPrivateUsage]
 
-    cast(MagicMock, room.remove_container).assert_called_once_with("c1")
+    assert room.removed == ["c1"]
+
+
+def test_register_corpse_on_room_skips_objects_that_are_not_rooms(mock_persistence: MagicMock) -> None:
+    """Anything without the Room container methods is skipped, not called."""
+    mock_persistence.get_room_by_id = MagicMock(return_value=object())
+    service = CorpseLifecycleService(persistence=mock_persistence)
+
+    service._register_corpse_on_room(_corpse_component(), "room_001")  # pyright: ignore[reportPrivateUsage]
+    service._unregister_corpse_from_room("c1", "room_001")  # pyright: ignore[reportPrivateUsage]
 
 
 def test_live_room_returns_none_when_persistence_has_no_sync_lookup() -> None:

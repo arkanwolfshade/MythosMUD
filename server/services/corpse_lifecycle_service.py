@@ -14,7 +14,7 @@ from __future__ import annotations
 import uuid
 from collections.abc import Mapping
 from datetime import UTC, datetime, timedelta
-from typing import TYPE_CHECKING, Any, Protocol, cast
+from typing import TYPE_CHECKING, Any, Protocol, cast, runtime_checkable
 from uuid import UUID
 
 from ..exceptions import MythosMUDError
@@ -42,6 +42,21 @@ class CorpseConnectionManagerLike(Protocol):
     async def broadcast_room_event(self, event_type: str, room_id: str, data: dict[str, object]) -> dict[str, object]:
         """Broadcast an event to everyone in a room; returns delivery stats."""
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body (not just a docstring) for a non-None Protocol return type
+
+
+@runtime_checkable
+class _RoomContainers(Protocol):
+    """The in-memory Room's container registry (server/models/room.py::Room).
+
+    An isinstance check against this replaces getattr(room, "add_container", None) + callable(),
+    which some pylint versions cannot follow and report as "add_container is not callable".
+    """
+
+    def add_container(self, container: dict[str, object]) -> None:
+        """Register a runtime-created container so room_state carries it."""
+
+    def remove_container(self, container_id: str) -> None:
+        """Drop a container from the room."""
 
 
 class _SyncRoomLookup(Protocol):
@@ -251,10 +266,9 @@ class CorpseLifecycleService:
         """
         try:
             room = self._live_room(room_id)
-            add_container = getattr(room, "add_container", None) if room is not None else None
-            if not callable(add_container):
+            if not isinstance(room, _RoomContainers):
                 return
-            _ = add_container(
+            room.add_container(
                 {
                     "container_id": str(corpse.container_id),
                     "source_type": _get_enum_value(corpse.source_type),
@@ -270,9 +284,8 @@ class CorpseLifecycleService:
         """Drop a decayed corpse from the in-memory Room (mirror of _register_corpse_on_room)."""
         try:
             room = self._live_room(room_id)
-            remove_container = getattr(room, "remove_container", None) if room is not None else None
-            if callable(remove_container):
-                _ = remove_container(container_id)
+            if isinstance(room, _RoomContainers):
+                room.remove_container(container_id)
         except (AttributeError, TypeError, RuntimeError, ValueError) as e:
             logger.warning("Failed to unregister corpse from room", error=str(e), room_id=room_id)
 
@@ -383,7 +396,9 @@ class CorpseLifecycleService:
                 # Persistence returns items_json/metadata_json; _filter_container_data maps them back.
                 row = ContainerComponent.model_validate(_filter_container_data(raw))
             except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: BLE001  # Reason: one unreadable row must not stop a death; it is left in place, not deleted
-                logger.warning("Skipping unreadable worn container row on death", player_id=str(player_id), error=str(e))
+                logger.warning(
+                    "Skipping unreadable worn container row on death", player_id=str(player_id), error=str(e)
+                )
                 continue
             item_instance_id: object = row.metadata.get("item_instance_id")
             if item_instance_id:
