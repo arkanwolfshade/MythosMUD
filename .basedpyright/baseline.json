@@ -92262,14 +92262,6 @@
                     "endColumn": 45,
                     "lineCount": 1
                 }
-            },
-            {
-                "code": "reportUnusedParameter",
-                "range": {
-                    "startColumn": 4,
-                    "endColumn": 11,
-                    "lineCount": 1
-                }
             }
         ],
         "./server/tests/fixtures/shared/__init__.py": [
