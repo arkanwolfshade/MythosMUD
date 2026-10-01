@@ -110,6 +110,29 @@ async def test_get_rooms_with_exits_resolves_from_subzone_when_room_unset(
 
 @pytest.mark.asyncio
 @pytest.mark.integration
+async def test_get_rooms_with_exits_returns_zone_and_subzone_display_names(
+    session_factory: async_sessionmaker[AsyncSession], cascade_room: str
+) -> None:
+    """#910: the death screen needs zones.name / subzones.name, not the stable IDs."""
+    async with session_factory() as session:
+        row = (
+            (
+                await session.execute(
+                    text(
+                        "SELECT zone_display_name, subzone_display_name FROM get_rooms_with_exits() WHERE stable_id = :id"
+                    ),
+                    {"id": cascade_room},
+                )
+            )
+            .mappings()
+            .one()
+        )
+    assert row["zone_display_name"] == "Test Zone"
+    assert row["subzone_display_name"] == "Test Subzone"
+
+
+@pytest.mark.asyncio
+@pytest.mark.integration
 async def test_update_room_properties_resolves_from_zone_when_room_and_subzone_unset(
     session_factory: async_sessionmaker[AsyncSession], cascade_room: str
 ) -> None:

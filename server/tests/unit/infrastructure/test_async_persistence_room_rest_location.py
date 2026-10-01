@@ -139,3 +139,33 @@ def test_build_room_objects_tolerates_missing_coordinates(async_persistence_laye
     room_init: RoomInitPayload = cast(RoomInitPayload, mock_room_class.call_args[0][0])
     assert room_init.get("map_x") is None
     assert room_init.get("map_y") is None
+
+
+def test_build_room_objects_carries_display_names(async_persistence_layer: AsyncPersistenceLayer):
+    """#910: zone/sub-zone display names must survive ProcessedRoomData -> RoomInitPayload."""
+    room_data_list: list[ProcessedRoomData] = [
+        {
+            "room_id": "earth_arkhamcity_sanitarium_room_foyer_001",
+            "stable_id": "room_foyer_001",
+            "name": "Foyer",
+            "description": "",
+            "attributes": {},
+            "plane": "earth",
+            "zone": "arkhamcity",
+            "sub_zone": "sanitarium",
+            "map_x": None,
+            "map_y": None,
+            "room_environment": None,
+            "resolved_environment": "indoors",
+            "zone_display_name": "Arkham City",
+            "subzone_display_name": "Sanitarium",
+        }
+    ]
+    result_container: RoomLoadResult = {"rooms": {}}
+    with patch("server.models.room.Room") as mock_room_class:
+        mock_room_class.return_value = MagicMock()
+        async_persistence_layer._build_room_objects(room_data_list, {}, result_container)
+
+    room_init: RoomInitPayload = cast(RoomInitPayload, mock_room_class.call_args[0][0])
+    assert room_init.get("zone_name") == "Arkham City"
+    assert room_init.get("sub_zone_name") == "Sanitarium"

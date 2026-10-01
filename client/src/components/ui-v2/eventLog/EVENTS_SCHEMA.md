@@ -13,19 +13,19 @@ Event types and their `data` shapes as received over the WebSocket. Used by the 
 
 ## Player events
 
-| event_type                                              | Description                 | data shape                                                                                       |
-| ------------------------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------ |
-| `player_entered_game`                                   | Player entered game         | player identity / room id                                                                        |
-| `player_entered`                                        | Player entered room         | player name, room                                                                                |
-| `player_left_game`                                      | Player left game            | —                                                                                                |
-| `player_left`                                           | Player left room            | —                                                                                                |
-| `player_died` / `playerdied`                            | Player died                 | `{ current_dp?, death_location?, room_id? }`; sets `isDead: true`, `deathLocation`               |
-| `player_respawned` / `playerrespawned`                  | Respawn                     | `{ player?, room?, message? }`; clears `isDead`/`deathLocation`/`isDelirious`/`deliriumLocation` |
-| `player_delirium_respawned` / `playerdeliriumrespawned` | Delirium respawn            | same as `player_respawned` (same handler)                                                        |
-| `player_dp_updated` / `playerdpupdated`                 | DP update                   | `{ new_dp, max_dp, posture?, posture_message?, player? }`                                        |
-| `player_dp_decay`                                       | Mortally wounded bleed tick | `{ posture_message? }` (full bleed line deferred)                                                |
-| `player_posture_change`                                 | Room posture observer       | `{ message, player_name, position, previous_position? }`                                         |
-| `player_update`                                         | Full player update          | `{ stats?, posture_message?, in_combat? }`                                                       |
+| event_type                                              | Description                 | data shape                                                                                                                                                                      |
+| ------------------------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `player_entered_game`                                   | Player entered game         | player identity / room id                                                                                                                                                       |
+| `player_entered`                                        | Player entered room         | player name, room                                                                                                                                                               |
+| `player_left_game`                                      | Player left game            | —                                                                                                                                                                               |
+| `player_left`                                           | Player left room            | —                                                                                                                                                                               |
+| `player_died` / `playerdied`                            | Player died                 | `{ current_dp?, death_location? }`; `death_location` is server-composed `Zone › Sub-zone › Room` (#910); sets `isDead: true`, `deathLocation` (null if absent, never `room_id`) |
+| `player_respawned` / `playerrespawned`                  | Respawn                     | `{ player?, room?, message? }`; clears `isDead`/`deathLocation`/`isDelirious`/`deliriumLocation`                                                                                |
+| `player_delirium_respawned` / `playerdeliriumrespawned` | Delirium respawn            | same as `player_respawned` (same handler)                                                                                                                                       |
+| `player_dp_updated` / `playerdpupdated`                 | DP update                   | `{ new_dp, max_dp, posture?, posture_message?, player? }`                                                                                                                       |
+| `player_dp_decay`                                       | Mortally wounded bleed tick | `{ posture_message? }` (full bleed line deferred)                                                                                                                               |
+| `player_posture_change`                                 | Room posture observer       | `{ message, player_name, position, previous_position? }`                                                                                                                        |
+| `player_update`                                         | Full player update          | `{ stats?, posture_message?, in_combat? }`                                                                                                                                      |
 
 ## Combat events
 

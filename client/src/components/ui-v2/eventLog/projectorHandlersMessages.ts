@@ -14,7 +14,7 @@ import {
 } from './messageMapper';
 import type { ProjectorHandler } from './projectorHandlersState';
 import { GAME_LOG_CHANNEL, appendMessage, appendMovementMessage, buildChatMessage } from './projectorMessageUtils';
-import { deriveRoomFromRoomState } from './projectorRoom';
+import { deriveRoomFromRoomState, formatRoomLocation } from './projectorRoom';
 import { toRescueStatus } from './rescueStatus';
 
 /** Daypart flavor text (ported from legacy eventHandlers/systemHandlers.ts DAYPART_MESSAGES). */
@@ -92,7 +92,7 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
       nextState = { ...nextState, messages: appendMessage(nextState.messages, msg) };
     }
     if (status === 'delirium') {
-      nextState = { ...nextState, isDelirious: true, deliriumLocation: nextState.room?.name ?? null };
+      nextState = { ...nextState, isDelirious: true, deliriumLocation: formatRoomLocation(nextState.room) };
     }
     const rescueStatus = toRescueStatus(event.data, event.sequence_number);
     if (rescueStatus) nextState = { ...nextState, rescueStatus };

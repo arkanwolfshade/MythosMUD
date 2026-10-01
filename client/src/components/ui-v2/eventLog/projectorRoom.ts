@@ -9,6 +9,20 @@ type RoomMeta = Omit<Room, 'players' | 'npcs' | 'occupants' | 'occupant_count'>;
 type RoomOrNull = Room | null;
 type OccupantPair = { players: string[]; npcsArr: string[] };
 
+/**
+ * "Zone › Sub-zone › Room" from display names (#910). Blank/missing segments are skipped and raw IDs
+ * are never used; returns null when the room carries no usable name.
+ */
+export function formatRoomLocation(room: Room | null): string | null {
+  if (!room) {
+    return null;
+  }
+  const parts = [room.zone_name, room.sub_zone_name, room.name].filter(
+    (p): p is string => typeof p === 'string' && p.trim() !== ''
+  );
+  return parts.length > 0 ? parts.join(' › ') : null;
+}
+
 function extractRoomMetadata(roomData: Room): RoomMeta {
   // Omit occupant fields via destructuring (eslint: unused names intentional)
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars */

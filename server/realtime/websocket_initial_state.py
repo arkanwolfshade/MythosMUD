@@ -205,10 +205,9 @@ def _get_death_location_name(room: Room | dict[str, object]) -> str:
     if isinstance(room, dict):
         name = room.get("name")
         return str(name) if name is not None else "The Spaces Between"
-    room_name = cast(object, room.name)
-    if isinstance(room_name, str):
-        return room_name
-    return "The Spaces Between"
+    from ..utils.room_utils import format_room_location
+
+    return format_room_location(room) or "The Spaces Between"
 
 
 def _usable_persisted_death_name(stored_name: object, stored_id: object, limbo_id: str) -> str | None:
@@ -231,14 +230,13 @@ def _room_name_from_lookup(looked_up: object) -> str | None:
     """Extract a non-empty room name from a sync room lookup result."""
     if looked_up is None or hasattr(looked_up, "__await__"):
         return None
-    name = getattr(looked_up, "name", None)
-    if isinstance(name, str) and name.strip():
-        return name
-    return None
+    from ..utils.room_utils import format_room_location
+
+    return format_room_location(looked_up) or None
 
 
 def _lookup_death_room_display_name(stored_id: str) -> str:
-    """Resolve a death_room_id to a room name; fall back to the id."""
+    """Resolve a death_room_id to a "Zone › Sub-zone › Room" string; never fall back to the raw id (#910)."""
     from ..container.async_persistence_access import get_container_async_persistence
 
     try:
@@ -249,7 +247,7 @@ def _lookup_death_room_display_name(stored_id: str) -> str:
             return name
     except (AttributeError, TypeError, RuntimeError, ValueError):
         pass
-    return stored_id
+    return "Unknown Location"
 
 
 def _resolve_stored_death_location(player: "Player", canonical_room_id: str, room: "Room | dict[str, object]") -> str:

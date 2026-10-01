@@ -5,9 +5,11 @@ Tests utility functions for room operations.
 """
 
 import warnings
+from types import SimpleNamespace
 
 from server.utils.room_utils import (
     extract_subzone_from_room_id,
+    format_room_location,
     get_local_channel_subject,
     get_plane_from_room_id,
     get_subzone_local_channel_subject,
@@ -111,3 +113,12 @@ def test_get_subzone_local_channel_subject_invalid():
     """Test get_subzone_local_channel_subject() returns None for invalid room ID."""
     assert get_subzone_local_channel_subject("invalid") is None
     assert get_subzone_local_channel_subject("") is None
+
+
+def test_format_room_location_full_and_degraded():
+    """#910: zone/sub-zone/room display names, skipping missing segments, never a raw ID."""
+    room = SimpleNamespace(zone_name="Arkham City", sub_zone_name="Sanitarium", name="Foyer")
+    assert format_room_location(room) == "Arkham City › Sanitarium › Foyer"
+    assert format_room_location(SimpleNamespace(zone_name=None, sub_zone_name=" ", name="Foyer")) == "Foyer"
+    assert format_room_location(SimpleNamespace(zone_name="Arkham City", name="Foyer")) == "Arkham City › Foyer"
+    assert format_room_location(SimpleNamespace(id="earth_x_y_z")) == ""

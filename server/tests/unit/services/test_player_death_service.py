@@ -330,20 +330,22 @@ def test_get_room_name_for_death_with_room(player_death_service):
     """Test _get_room_name_for_death() returns room name when available."""
     mock_room = MagicMock()
     mock_room.name = "Test Room"
+    mock_room.zone_name = "Test Zone"
+    mock_room.sub_zone_name = "Test Sub"
     mock_persistence = MagicMock()
     mock_persistence.get_room_by_id.return_value = mock_room
     player_death_service._async_persistence = mock_persistence  # #679: injected, not via container
     result = player_death_service._get_room_name_for_death("room_001")
-    assert result == "Test Room"
+    assert result == "Test Zone › Test Sub › Test Room"
 
 
 def test_get_room_name_for_death_no_room(player_death_service):
-    """Test _get_room_name_for_death() returns room_id when room not found."""
+    """Test _get_room_name_for_death() never leaks the room_id when room not found (#910)."""
     mock_persistence = MagicMock()
     mock_persistence.get_room_by_id.return_value = None
     player_death_service._async_persistence = mock_persistence  # #679: injected, not via container
     result = player_death_service._get_room_name_for_death("room_001")
-    assert result == "room_001"
+    assert result == "Unknown Location"
 
 
 def test_get_room_name_for_death_empty_location(player_death_service):
@@ -353,10 +355,10 @@ def test_get_room_name_for_death_empty_location(player_death_service):
 
 
 def test_get_room_name_for_death_no_container(player_death_service):
-    """Test _get_room_name_for_death() returns room_id when async_persistence unavailable."""
+    """Test _get_room_name_for_death() never leaks the room_id when async_persistence unavailable (#910)."""
     player_death_service._async_persistence = None
     result = player_death_service._get_room_name_for_death("room_001")
-    assert result == "room_001"
+    assert result == "Unknown Location"
 
 
 def test_publish_death_event_with_event_bus(player_death_service, sample_player_id, mock_event_bus):

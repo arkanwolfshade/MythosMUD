@@ -43,6 +43,9 @@ export interface Room {
   plane?: string;
   zone?: string;
   sub_zone?: string;
+  /** Display names (zones.name / subzones.name); zone/sub_zone above are stable IDs. */
+  zone_name?: string | null;
+  sub_zone_name?: string | null;
   environment?: string;
   exits: Record<string, string>;
   // Legacy: flat list of occupant names (for backward compatibility)

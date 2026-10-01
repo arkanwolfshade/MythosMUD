@@ -218,10 +218,9 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
     const deathData = event.data as {
       current_dp?: number;
       death_location?: string;
-      room_id?: string;
     };
     const deathCurrentDp = deathData.current_dp;
-    let next = { ...prevState, isDead: true, deathLocation: deathData.death_location ?? deathData.room_id ?? null };
+    let next = { ...prevState, isDead: true, deathLocation: deathData.death_location ?? null };
     if (prevState.player?.stats && typeof deathCurrentDp === 'number') {
       next = {
         ...next,
