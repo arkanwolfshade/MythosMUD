@@ -4,17 +4,26 @@ from __future__ import annotations
 
 import importlib.util
 from pathlib import Path
+from typing import Protocol, cast
 
 PROJECT_ROOT = Path(__file__).resolve().parents[4]
 SCRIPT = PROJECT_ROOT / "scripts" / "run_make_stages.py"
 
 
-def _load_module():
+class _RunMakeStages(Protocol):
+    """The functions these tests call on scripts/run_make_stages.py (loaded by path, so untyped)."""
+
+    def stage_failed_from_output(self, output: str, returncode: int) -> str | None: ...
+
+    def keep_going_requested(self, makeflags: str | None = None) -> bool: ...
+
+
+def _load_module() -> _RunMakeStages:
     spec = importlib.util.spec_from_file_location("run_make_stages", SCRIPT)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    return module
+    return cast(_RunMakeStages, cast(object, module))
 
 
 def test_stage_failed_from_output_nonzero() -> None:
@@ -26,6 +35,27 @@ def test_stage_failed_from_output_traceback() -> None:
     mod = _load_module()
     out = 'Traceback (most recent call last):\n  File "x.py", line 1\n'
     assert mod.stage_failed_from_output(out, 0) == "traceback/callstack detected in output"
+
+
+def test_stage_failed_from_output_node_fatal_crash_fails_despite_exit_zero() -> None:
+    """A crashed vitest that still left exit 0 must fail the stage (#950); this is the real output."""
+    mod = _load_module()
+    out = (
+        " RUN  v5.0.0 C:/projects/MythosMUD/client\n"
+        "      Coverage enabled with v8\n"
+        "FATAL ERROR: MarkCompactCollector: young object promotion failed "
+        "Allocation failed - JavaScript heap out of memory\n"
+        "----- Native stack trace -----\n"
+        " 1: 00007FF6477A9891\n"
+    )
+    assert mod.stage_failed_from_output(out, 0) == "Node/V8 fatal crash detected in output"
+
+
+def test_stage_failed_from_output_server_fatal_log_line_is_not_a_crash() -> None:
+    """The server's own "FATAL ERROR: ..." log line must not be mistaken for a V8 crash."""
+    mod = _load_module()
+    out = "[error] FATAL ERROR: Terminating all connections for player player_id=abc\n11525 passed\n"
+    assert mod.stage_failed_from_output(out, 0) is None
 
 
 def test_stage_failed_from_output_ok() -> None:

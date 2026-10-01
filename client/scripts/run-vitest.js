@@ -26,8 +26,14 @@ const vitest = spawn(process.execPath, [vitestBin, ...args], {
   },
 });
 
-vitest.on('close', code => {
-  process.exit(code ?? 0);
+// A child killed by a signal (e.g. the Linux OOM killer) reports code === null; `code ?? 0` turned
+// that into success (#950). Only a real exit code is passed through.
+vitest.on('close', (code, signal) => {
+  if (code === null) {
+    console.error(`Vitest was terminated by ${signal ?? 'an unknown cause'} before reporting results.`);
+    process.exit(1);
+  }
+  process.exit(code);
 });
 
 vitest.on('error', error => {
