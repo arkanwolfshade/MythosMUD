@@ -17,19 +17,22 @@ from server.services.wearable_container_service import (
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+# pyright: reportAny=false
+# TEST_MOCK: MagicMock/AsyncMock attribute and call chains (mock_persistence.create_container, get_inventory,
+# .assert_awaited_once, ...) resolve to Any throughout this file.
 
 
 @pytest.fixture
-def mock_persistence():
+def mock_persistence() -> MagicMock:
     """Create mock persistence layer."""
     persistence = MagicMock()
     persistence.get_containers_by_entity_id = AsyncMock(return_value=[])
-    persistence.create_container = MagicMock(return_value={"container_id": str(uuid.uuid4())})
+    persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4())})
     return persistence
 
 
 @pytest.fixture
-def wearable_service(mock_persistence):
+def wearable_service(mock_persistence: MagicMock) -> WearableContainerService:
     """Create WearableContainerService instance."""
     return WearableContainerService(mock_persistence)
 
@@ -80,7 +83,7 @@ async def test_handle_equip_wearable_container_creates_new(wearable_service, moc
     """Test handle_equip_wearable_container creates new container."""
     player_id = uuid.uuid4()
     new_container_id = uuid.uuid4()
-    mock_persistence.create_container = MagicMock(return_value={"container_id": str(new_container_id)})
+    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(new_container_id)})
     item_stack = {
         "item_id": "item_001",
         "item_instance_id": "item_instance_001",
@@ -195,7 +198,7 @@ async def test_add_items_to_wearable_container(wearable_service, mock_persistenc
         "lock_state": "unlocked",
     }
     mock_persistence.get_container = AsyncMock(return_value=container_data)
-    mock_persistence.update_container = MagicMock(
+    mock_persistence.update_container = AsyncMock(
         return_value={"container_id": str(container_id), "items": [{"item_id": "item_001"}]}
     )
     items = [{"item_id": "item_001"}]
@@ -247,7 +250,7 @@ async def test_update_wearable_container_items(wearable_service, mock_persistenc
         "lock_state": "unlocked",
     }
     mock_persistence.get_container = AsyncMock(return_value=container_data)
-    mock_persistence.update_container = MagicMock(
+    mock_persistence.update_container = AsyncMock(
         return_value={"container_id": str(container_id), "items": [{"item_id": "item_001"}]}
     )
     items = [{"item_id": "item_001"}]
@@ -261,12 +264,12 @@ async def test_handle_container_overflow(wearable_service, mock_persistence):
     player_id = uuid.uuid4()
     container_id = uuid.uuid4()
     mock_player = MagicMock()
-    mock_player.inventory = []
+    mock_player.get_inventory.return_value = []
     mock_player.current_room_id = "room_001"
     mock_player.set_inventory = MagicMock()
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
     mock_persistence.save_player = AsyncMock()
-    mock_persistence.create_container = MagicMock()
+    mock_persistence.create_container = AsyncMock()
     overflow_items = [{"item_id": "item_001"}]
     result = await wearable_service.handle_container_overflow(player_id, container_id, overflow_items)
     assert isinstance(result, dict)
@@ -291,12 +294,12 @@ async def test_handle_container_overflow_inventory_full(wearable_service, mock_p
     container_id = uuid.uuid4()
     mock_player = MagicMock()
     # Fill inventory to max capacity (20 slots)
-    mock_player.inventory = [{"item_id": f"item_{i}"} for i in range(20)]
+    mock_player.get_inventory.return_value = [{"item_id": f"item_{i}"} for i in range(20)]
     mock_player.current_room_id = "room_001"
     mock_player.set_inventory = MagicMock()
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
     mock_persistence.save_player = AsyncMock()
-    mock_persistence.create_container = MagicMock()
+    mock_persistence.create_container = AsyncMock()
     overflow_items = [{"item_id": "overflow_item"}]
     result = await wearable_service.handle_container_overflow(player_id, container_id, overflow_items)
     assert isinstance(result, dict)
@@ -311,7 +314,7 @@ async def test_handle_container_overflow_no_room_id(wearable_service, mock_persi
     player_id = uuid.uuid4()
     container_id = uuid.uuid4()
     mock_player = MagicMock()
-    mock_player.inventory = []
+    mock_player.get_inventory.return_value = []
     # No current_room_id attribute
     if hasattr(mock_player, "current_room_id"):
         delattr(mock_player, "current_room_id")
@@ -329,10 +332,10 @@ async def test_handle_container_overflow_ground_container_error(wearable_service
     player_id = uuid.uuid4()
     container_id = uuid.uuid4()
     mock_player = MagicMock()
-    mock_player.inventory = [{"item_id": f"item_{i}"} for i in range(20)]  # Full
+    mock_player.get_inventory.return_value = [{"item_id": f"item_{i}"} for i in range(20)]  # Full
     mock_player.current_room_id = "room_001"
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.create_container = MagicMock(side_effect=Exception("Container creation failed"))
+    mock_persistence.create_container = AsyncMock(side_effect=Exception("Container creation failed"))
     overflow_items = [{"item_id": "overflow_item"}]
     # Should not raise, just log error
     result = await wearable_service.handle_container_overflow(player_id, container_id, overflow_items)
@@ -344,7 +347,7 @@ async def test_handle_equip_wearable_container_creation_error(wearable_service, 
     """Test handle_equip_wearable_container handles container creation error."""
     player_id = uuid.uuid4()
     mock_persistence.get_containers_by_entity_id = AsyncMock(return_value=[])
-    mock_persistence.create_container = MagicMock(side_effect=Exception("Creation failed"))
+    mock_persistence.create_container = AsyncMock(side_effect=Exception("Creation failed"))
     item_stack = {
         "item_id": "item_001",
         "item_instance_id": "item_instance_001",
@@ -359,7 +362,7 @@ async def test_handle_equip_wearable_container_with_lock_state(wearable_service,
     """Test handle_equip_wearable_container with lock_state and allowed_roles."""
     player_id = uuid.uuid4()
     new_container_id = uuid.uuid4()
-    mock_persistence.create_container = MagicMock(return_value={"container_id": str(new_container_id)})
+    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(new_container_id)})
     item_stack = {
         "item_id": "item_001",
         "item_instance_id": "item_instance_001",
@@ -373,9 +376,9 @@ async def test_handle_equip_wearable_container_with_lock_state(wearable_service,
     result = await wearable_service.handle_equip_wearable_container(player_id, item_stack)
     assert result is not None
     # Verify create_container was called with lock_state and allowed_roles
-    call_kwargs = mock_persistence.create_container.call_args[1]
-    assert call_kwargs["lock_state"] == "locked"
-    assert call_kwargs["allowed_roles"] == ["admin"]
+    params = mock_persistence.create_container.call_args.args[1]
+    assert params.lock_state == "locked"
+    assert params.allowed_roles == ["admin"]
 
 
 @pytest.mark.asyncio
@@ -455,7 +458,7 @@ async def test_add_items_to_wearable_container_update_fails(wearable_service, mo
         "lock_state": "unlocked",
     }
     mock_persistence.get_container = AsyncMock(return_value=container_data)
-    mock_persistence.update_container = MagicMock(return_value=None)  # Update fails
+    mock_persistence.update_container = AsyncMock(return_value=None)  # Update fails
     items = [{"item_id": "item_001"}]
     with pytest.raises(WearableContainerServiceError, match="Failed to update"):
         await wearable_service.add_items_to_wearable_container(player_id, container_id, items)
@@ -505,7 +508,7 @@ async def test_update_wearable_container_items_update_fails(wearable_service, mo
         "lock_state": "unlocked",
     }
     mock_persistence.get_container = AsyncMock(return_value=container_data)
-    mock_persistence.update_container = MagicMock(return_value=None)
+    mock_persistence.update_container = AsyncMock(return_value=None)
     items = [{"item_id": "item_001"}]
     with pytest.raises(WearableContainerServiceError, match="Failed to update"):
         await wearable_service.update_wearable_container_items(player_id, container_id, items)
@@ -578,7 +581,7 @@ async def test_handle_equip_wearable_container_filters_non_equipment(wearable_se
     }
     mock_persistence.get_containers_by_entity_id = AsyncMock(return_value=[environment_container])
     new_container_id = uuid.uuid4()
-    mock_persistence.create_container = MagicMock(return_value={"container_id": str(new_container_id)})
+    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(new_container_id)})
     item_stack = {
         "item_id": "item_001",
         "item_instance_id": item_instance_id,
@@ -644,7 +647,7 @@ async def test_add_items_to_wearable_container_non_dict_items(wearable_service, 
             return iter([("item_id", "item_002")])
 
     items = [MockItem()]  # Non-dict item that can be converted to dict
-    mock_persistence.update_container = MagicMock(
+    mock_persistence.update_container = AsyncMock(
         return_value={"container_id": str(container_id), "items": [{"item_id": "item_001"}, {"item_id": "item_002"}]}
     )
     result = await wearable_service.add_items_to_wearable_container(player_id, container_id, items)
@@ -659,12 +662,12 @@ async def test_handle_container_overflow_partial_spill(wearable_service, mock_pe
     container_id = uuid.uuid4()
     mock_player = MagicMock()
     # Fill inventory to 19 slots (1 space remaining)
-    mock_player.inventory = [{"item_id": f"item_{i}"} for i in range(19)]
+    mock_player.get_inventory.return_value = [{"item_id": f"item_{i}"} for i in range(19)]
     mock_player.current_room_id = "room_001"
     mock_player.set_inventory = MagicMock()
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
     mock_persistence.save_player = AsyncMock()
-    mock_persistence.create_container = MagicMock()
+    mock_persistence.create_container = AsyncMock()
     overflow_items = [{"item_id": "spill_1"}, {"item_id": "spill_2"}]  # 2 items, only 1 space
     result = await wearable_service.handle_container_overflow(player_id, container_id, overflow_items)
     assert len(result["spilled_items"]) == 1
@@ -677,7 +680,7 @@ async def test_handle_container_overflow_save_player_error(wearable_service, moc
     player_id = uuid.uuid4()
     container_id = uuid.uuid4()
     mock_player = MagicMock()
-    mock_player.inventory = []
+    mock_player.get_inventory.return_value = []
     mock_player.current_room_id = "room_001"
     mock_player.set_inventory = MagicMock()
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
@@ -694,7 +697,7 @@ async def test_handle_container_overflow_empty_overflow(wearable_service, mock_p
     player_id = uuid.uuid4()
     container_id = uuid.uuid4()
     mock_player = MagicMock()
-    mock_player.inventory = []
+    mock_player.get_inventory.return_value = []
     mock_player.current_room_id = "room_001"
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
     overflow_items: list[dict[str, Any]] = []
@@ -813,7 +816,7 @@ async def test_add_items_to_wearable_container_dict_items(wearable_service, mock
     }
     mock_persistence.get_container = AsyncMock(return_value=container_data)
     items = [{"item_id": "item_002"}]  # Dict items
-    mock_persistence.update_container = MagicMock(
+    mock_persistence.update_container = AsyncMock(
         return_value={"container_id": str(container_id), "items": [{"item_id": "item_001"}, {"item_id": "item_002"}]}
     )
     result = await wearable_service.add_items_to_wearable_container(player_id, container_id, items)
@@ -828,12 +831,12 @@ async def test_handle_container_overflow_no_spilled_items(wearable_service, mock
     container_id = uuid.uuid4()
     mock_player = MagicMock()
     # Fill inventory to max capacity (20 slots)
-    mock_player.inventory = [{"item_id": f"item_{i}"} for i in range(20)]
+    mock_player.get_inventory.return_value = [{"item_id": f"item_{i}"} for i in range(20)]
     mock_player.current_room_id = "room_001"
     mock_player.set_inventory = MagicMock()
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
     mock_persistence.save_player = AsyncMock()
-    mock_persistence.create_container = MagicMock()
+    mock_persistence.create_container = AsyncMock()
     overflow_items = [{"item_id": "overflow_1"}, {"item_id": "overflow_2"}]
     result = await wearable_service.handle_container_overflow(player_id, container_id, overflow_items)
     assert len(result["spilled_items"]) == 0
@@ -848,12 +851,12 @@ async def test_handle_container_overflow_spilled_items_save_player(wearable_serv
     player_id = uuid.uuid4()
     container_id = uuid.uuid4()
     mock_player = MagicMock()
-    mock_player.inventory = []
+    mock_player.get_inventory.return_value = []
     mock_player.current_room_id = "room_001"
     mock_player.set_inventory = MagicMock()
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
     mock_persistence.save_player = AsyncMock()
-    mock_persistence.create_container = MagicMock()
+    mock_persistence.create_container = AsyncMock()
     overflow_items = [{"item_id": "spill_1"}]
     result = await wearable_service.handle_container_overflow(player_id, container_id, overflow_items)
     assert len(result["spilled_items"]) == 1
@@ -905,7 +908,7 @@ async def test_handle_equip_wearable_container_existing_container_no_metadata(we
     }
     mock_persistence.get_containers_by_entity_id = AsyncMock(return_value=[existing_container])
     new_container_id = uuid.uuid4()
-    mock_persistence.create_container = MagicMock(return_value={"container_id": str(new_container_id)})
+    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(new_container_id)})
     item_stack = {
         "item_id": "item_001",
         "item_instance_id": item_instance_id,
@@ -933,7 +936,7 @@ async def test_handle_equip_wearable_container_existing_container_different_item
     }
     mock_persistence.get_containers_by_entity_id = AsyncMock(return_value=[existing_container])
     new_container_id = uuid.uuid4()
-    mock_persistence.create_container = MagicMock(return_value={"container_id": str(new_container_id)})
+    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(new_container_id)})
     item_stack = {
         "item_id": "item_001",
         "item_instance_id": item_instance_id,
@@ -952,11 +955,11 @@ async def test_handle_container_overflow_room_id_empty_string(wearable_service, 
     player_id = uuid.uuid4()
     container_id = uuid.uuid4()
     mock_player = MagicMock()
-    mock_player.inventory = [{"item_id": f"item_{i}"} for i in range(20)]  # Full
+    mock_player.get_inventory.return_value = [{"item_id": f"item_{i}"} for i in range(20)]  # Full
     mock_player.current_room_id = ""  # Empty string
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
     mock_persistence.save_player = AsyncMock()
-    mock_persistence.create_container = MagicMock()
+    mock_persistence.create_container = AsyncMock()
     overflow_items = [{"item_id": "overflow_item"}]
     result = await wearable_service.handle_container_overflow(player_id, container_id, overflow_items)
     # Should add to inventory since room_id is falsy
@@ -1002,3 +1005,156 @@ async def test_update_wearable_container_items_wrong_source_type(wearable_servic
     items = [{"item_id": "item_001"}]
     with pytest.raises(WearableContainerServiceError, match="not a wearable container"):
         await wearable_service.update_wearable_container_items(player_id, container_id, items)
+
+
+# --- #951: real persistence row shape, awaited async persistence ---------------------------------
+# The tests above model rows with pre-rename keys (items/metadata) and synchronous persistence
+# mocks, which is exactly how every defect below went unnoticed. These use what ContainerRepository
+# really returns: items_json/metadata_json plus created_at/updated_at.
+
+
+def _persistence_row(player_id: uuid.UUID, item_instance_id: str, **overrides: object) -> dict[str, object]:
+    row: dict[str, object] = {
+        "container_id": str(uuid.uuid4()),
+        "source_type": "equipment",
+        "owner_id": None,
+        "room_id": None,
+        "entity_id": str(player_id),
+        "lock_state": "unlocked",
+        "capacity_slots": 10,
+        "weight_limit": None,
+        "decay_at": None,
+        "allowed_roles": [],
+        "items_json": [{"item_id": "coin", "item_name": "Coin", "slot_type": "backpack", "quantity": 3}],
+        "metadata_json": {"item_instance_id": item_instance_id, "item_name": "Backpack"},
+        "created_at": "2026-10-01T00:00:00+00:00",
+        "updated_at": "2026-10-01T00:00:00+00:00",
+    }
+    row.update(overrides)
+    return row
+
+
+def _backpack_stack(item_instance_id: str) -> dict[str, object]:
+    return {
+        "item_id": "backpack",
+        "item_name": "Backpack",
+        "item_instance_id": item_instance_id,
+        "inner_container": {"capacity_slots": 10, "items": []},
+    }
+
+
+@pytest.mark.asyncio
+async def test_equip_awaits_create_container_and_returns_its_id(
+    wearable_service: WearableContainerService, mock_persistence: MagicMock
+):
+    """create_container is async: unawaited, equipping a wearable container always failed (#951)."""
+    new_container_id = uuid.uuid4()
+    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(new_container_id)})
+
+    result = await wearable_service.handle_equip_wearable_container(uuid.uuid4(), _backpack_stack("pack-1"))
+
+    assert result == {"container_id": new_container_id}
+    mock_persistence.create_container.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_equip_reuses_the_existing_row_found_through_metadata_json(
+    wearable_service: WearableContainerService, mock_persistence: MagicMock
+):
+    """Re-equipping matches the row by metadata_json.item_instance_id instead of creating another (#951)."""
+    player_id = uuid.uuid4()
+    row = _persistence_row(player_id, "pack-1")
+    mock_persistence.get_containers_by_entity_id = AsyncMock(return_value=[row])
+
+    result = await wearable_service.handle_equip_wearable_container(player_id, _backpack_stack("pack-1"))
+
+    assert result == {"container_id": uuid.UUID(str(row["container_id"]))}
+    mock_persistence.create_container.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_unequip_folds_the_real_rows_contents_into_inner_container(
+    wearable_service: WearableContainerService, mock_persistence: MagicMock
+):
+    """Unequip finds the row by metadata_json and returns its items_json as inner_container items (#951)."""
+    player_id = uuid.uuid4()
+    mock_persistence.get_containers_by_entity_id = AsyncMock(return_value=[_persistence_row(player_id, "pack-1")])
+
+    result = await wearable_service.handle_unequip_wearable_container(player_id, {"item_instance_id": "pack-1"})
+
+    assert result is not None
+    assert result["inner_container"]["capacity_slots"] == 10
+    assert [item["item_id"] for item in result["inner_container"]["items"]] == ["coin"]
+
+
+@pytest.mark.asyncio
+async def test_get_wearable_containers_validates_real_rows(
+    wearable_service: WearableContainerService, mock_persistence: MagicMock
+):
+    """ContainerComponent forbids extra fields, so un-renamed items_json/metadata_json rows were all dropped."""
+    player_id = uuid.uuid4()
+    mock_persistence.get_containers_by_entity_id = AsyncMock(return_value=[_persistence_row(player_id, "pack-1")])
+
+    containers = await wearable_service.get_wearable_containers_for_player(player_id)
+
+    assert len(containers) == 1
+    assert containers[0].metadata["item_instance_id"] == "pack-1"
+
+
+@pytest.mark.asyncio
+async def test_update_items_awaits_update_container_and_raises_when_it_fails(
+    wearable_service: WearableContainerService, mock_persistence: MagicMock
+):
+    """update_container is async: unawaited, a failed update (None) was never detected (#951)."""
+    player_id = uuid.uuid4()
+    row = _persistence_row(player_id, "pack-1")
+    mock_persistence.get_container = AsyncMock(return_value=row)
+    mock_persistence.update_container = AsyncMock(return_value=None)
+
+    with pytest.raises(WearableContainerServiceError, match="Failed to update"):
+        _ = await wearable_service.update_wearable_container_items(
+            player_id, uuid.UUID(str(row["container_id"])), [{"item_id": "coin"}]
+        )
+    mock_persistence.update_container.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_overflow_awaits_the_ground_container_so_items_are_not_lost(
+    wearable_service: WearableContainerService, mock_persistence: MagicMock
+):
+    """Items that don't fit in the inventory go to a ground container, which must actually be created (#951)."""
+    player = MagicMock()
+    player.get_inventory.return_value = [{"item_id": f"item_{i}"} for i in range(20)]
+    player.current_room_id = "room_001"
+    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
+    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4())})
+
+    result = await wearable_service.handle_container_overflow(uuid.uuid4(), uuid.uuid4(), [{"item_id": "ring"}])
+
+    assert result["ground_items"] == [{"item_id": "ring"}]
+    mock_persistence.create_container.assert_awaited_once()
+    call = mock_persistence.create_container.await_args
+    assert call is not None
+    source_type, params = call.args
+    assert source_type == "environment"
+    assert params.items_json == [{"item_id": "ring"}]
+    assert params.room_id == "room_001"
+
+
+@pytest.mark.asyncio
+async def test_overflow_spills_into_a_real_players_json_backed_inventory(
+    wearable_service: WearableContainerService, mock_persistence: MagicMock
+):
+    """Player.inventory is a JSON string column; spilling must go through get_inventory/set_inventory (#951)."""
+    from server.models.player import Player
+
+    player = Player(player_id=str(uuid.uuid4()), user_id=str(uuid.uuid4()), name="Spiller", inventory="[]")
+    player.current_room_id = "room_001"
+    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
+    mock_persistence.save_player = AsyncMock()
+
+    result = await wearable_service.handle_container_overflow(uuid.uuid4(), uuid.uuid4(), [{"item_id": "ring"}])
+
+    assert result["spilled_items"] == [{"item_id": "ring"}]
+    assert player.get_inventory() == [{"item_id": "ring"}]
+    mock_persistence.save_player.assert_awaited_once_with(player)
