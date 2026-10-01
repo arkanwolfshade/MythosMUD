@@ -210,9 +210,30 @@ export async function openCorpseWithRetry(page: Page, itemText: string): Promise
 }
 
 /**
- * Clear death interstitial, combat, and low DP so later specs see foyer spawn state.
+ * Drop the client, reset both E2E players' rooms to the spawn room in the database, and log back in.
+ * Lands the player in Main Foyer from anywhere, including Death > Void.
+ */
+async function relogInAtSpawn(page: Page, username: string, password: string): Promise<Page> {
+  // Fast path: do not wait on Exit-the-Realm (void / ward often blocks it for tens of seconds).
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  // Workers=1 default: safe to reset both E2E player rows mid-spec.
+  resetE2ePlayerRoomsInDatabase();
+  await loginPlayer(page, username, password);
+  await waitForPlayableSession(page, 30000);
+  await dismissDeathInterstitial(page);
+  await executeCommand(page, `admin set DP ${username} 20`).catch(() => {});
+  await dismissDeathInterstitial(page);
+  const live = await ensurePlayableConnection(page, { username, password, timeoutMs: 30000 });
+  await executeCommand(live, 'look').catch(() => {});
+  return ensureStanding(live, 8000).catch(() => live);
+}
+
+/**
+ * Clear death interstitial, combat, and low DP, and put the player in Main Foyer, so later specs
+ * see foyer spawn state.
  * Admin DP set is best-effort (non-admins get a harmless failure).
- * Hard-fails if Location stays on Death > Void after recovery attempts.
+ * Hard-fails if Location stays on Death > Void after recovery attempts, or the player cannot be
+ * returned to Main Foyer.
  */
 export async function ensurePlayableAlive(page: Page, username: string, password: string): Promise<Page> {
   let live = await ensurePlayableConnection(page, { username, password, timeoutMs: 30000 });
@@ -233,18 +254,7 @@ export async function ensurePlayableAlive(page: Page, username: string, password
   }
   if (await isInDeathVoid(live)) {
     recoveredFromVoid = true;
-    // Fast path: do not wait on Exit-the-Realm (void / ward often blocks it for tens of seconds).
-    await live.goto('/', { waitUntil: 'domcontentloaded' });
-    // Workers=1 default: safe to reset both E2E player rows mid-spec.
-    resetE2ePlayerRoomsInDatabase();
-    await loginPlayer(live, username, password);
-    await waitForPlayableSession(live, 30000);
-    await dismissDeathInterstitial(live);
-    await executeCommand(live, `admin set DP ${username} 20`).catch(() => {});
-    await dismissDeathInterstitial(live);
-    live = await ensurePlayableConnection(live, { username, password, timeoutMs: 30000 });
-    await executeCommand(live, 'look').catch(() => {});
-    live = await ensureStanding(live, 8000).catch(() => live);
+    live = await relogInAtSpawn(live, username, password);
   }
 
   if (await isInDeathVoid(live)) {
@@ -255,6 +265,16 @@ export async function ensurePlayableAlive(page: Page, username: string, password
   if (recoveredFromVoid) {
     await executeCommand(live, 'look').catch(() => {});
     await expect(live.getByText(DEFAULT_SPAWN_LOOK_CUE).first()).toBeVisible({ timeout: 20000 });
+  }
+
+  // Honour "foyer spawn state": ensureNotInCombat's flee (above) or an earlier spec's movement can
+  // leave the player a room or more away, and the corruption specs then failed looking for Main
+  // Foyer from the Patient Bedroom. Walk back when one step away; otherwise relog at spawn.
+  const beforeReturn = live;
+  live = await ensureInMainFoyer(beforeReturn).catch(() => relogInAtSpawn(beforeReturn, username, password));
+  const location = await currentLocation(live);
+  if (!/Main Foyer/i.test(location)) {
+    throw new Error(`ensurePlayableAlive: ${username} is in "${location}", not Main Foyer`);
   }
   return live;
 }
