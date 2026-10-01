@@ -8,6 +8,7 @@ exactly one row, so callers must check the *value*, not row presence.
 """
 
 import uuid
+from typing import cast
 
 import pytest
 from sqlalchemy import text
@@ -46,17 +47,20 @@ async def test_update_container_found_returns_the_id(
             text("SELECT update_container(:id, 'locked', NULL)"),
             {"id": container_row},
         )
-        returned_id = result.scalar()
+        returned_id = cast(object, result.scalar())
         assert returned_id is not None
         assert uuid.UUID(str(returned_id)) == container_row
         await session.commit()
 
-        lock_state = (
-            await session.execute(
-                text("SELECT lock_state FROM containers WHERE container_instance_id = :id"),
-                {"id": container_row},
-            )
-        ).scalar()
+        lock_state = cast(
+            object,
+            (
+                await session.execute(
+                    text("SELECT lock_state FROM containers WHERE container_instance_id = :id"),
+                    {"id": container_row},
+                )
+            ).scalar(),
+        )
         assert lock_state == "locked"
 
 
@@ -83,10 +87,13 @@ async def test_update_container_null_fields_leave_them_unchanged(
         await session.execute(text("SELECT update_container(:id, NULL, NULL)"), {"id": container_row})
         await session.commit()
 
-        lock_state = (
-            await session.execute(
-                text("SELECT lock_state FROM containers WHERE container_instance_id = :id"),
-                {"id": container_row},
-            )
-        ).scalar()
+        lock_state = cast(
+            object,
+            (
+                await session.execute(
+                    text("SELECT lock_state FROM containers WHERE container_instance_id = :id"),
+                    {"id": container_row},
+                )
+            ).scalar(),
+        )
         assert lock_state == "unlocked"

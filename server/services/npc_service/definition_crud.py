@@ -2,7 +2,7 @@
 
 import json
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, cast
 
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
@@ -307,7 +307,7 @@ class NPCDefinitionCRUDMixin:
                 text("SELECT delete_npc_definition(:id)"),
                 {"id": definition_id},
             )
-            deleted = result.scalar()
+            deleted = cast(object, result.scalar())
             if deleted:
                 logger.info("Deleted NPC definition", definition_id=definition_id, name=definition.name)
             return bool(deleted)

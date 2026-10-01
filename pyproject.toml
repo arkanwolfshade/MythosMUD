@@ -84,7 +84,7 @@ dev = [
     # Use sqlfluff instead, which provides comprehensive SQL linting
     "asyncpg-stubs>=0.31.0",
     "import-linter>=2.5",  # Enforces ADR-001 layer direction as CI-checked contracts (#757)
-    "basedpyright==1.39.9",  # #784 gate; exact pin: the baseline is checker-version specific (1.40.1 adds 76 findings). CI installs .[dev], not [dependency-groups] dev
+    "basedpyright==1.40.1",  # #784 gate; exact pin: the baseline is checker-version specific. CI installs .[dev], not [dependency-groups] dev
 ]
 
 [tool.setuptools.packages.find]
@@ -438,7 +438,7 @@ dev = [
     "vulture>=2.11", # Dead code finder (unused functions, classes, variables)
     # sqlint>=0.2.1 - REMOVED: Conflicts with click>=8.1.8 (sqlint requires click==7.0)
     # Use sqlfluff instead, which provides comprehensive SQL linting
-    "basedpyright==1.39.9",  # keep in lockstep with [project.optional-dependencies] dev
+    "basedpyright==1.40.1",  # keep in lockstep with [project.optional-dependencies] dev
     "import-linter>=2.5", # Enforces ADR-001 layer direction as CI-checked contracts (#757)
 ]
 

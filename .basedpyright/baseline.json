@@ -92356,14 +92356,6 @@
                 }
             },
             {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 29,
-                    "endColumn": 40,
-                    "lineCount": 1
-                }
-            },
-            {
                 "code": "reportUnusedCallResult",
                 "range": {
                     "startColumn": 8,
@@ -92501,14 +92493,6 @@
                     "startColumn": 24,
                     "endColumn": 65,
                     "lineCount": 2
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 29,
-                    "endColumn": 34,
-                    "lineCount": 1
                 }
             },
             {
@@ -93071,14 +93055,6 @@
                     "startColumn": 16,
                     "endColumn": 76,
                     "lineCount": 2
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 29,
-                    "endColumn": 34,
-                    "lineCount": 1
                 }
             },
             {
@@ -110383,14 +110359,6 @@
             }
         ],
         "./server/tests/unit/caching/test_cache_service.py": [
-            {
-                "code": "reportUnusedFunction",
-                "range": {
-                    "startColumn": 4,
-                    "endColumn": 24,
-                    "lineCount": 1
-                }
-            },
             {
                 "code": "reportInvalidTypeForm",
                 "range": {
@@ -173067,14 +173035,6 @@
             }
         ],
         "./server/tests/unit/monitoring/test_exception_tracker.py": [
-            {
-                "code": "reportUnusedFunction",
-                "range": {
-                    "startColumn": 4,
-                    "endColumn": 25,
-                    "lineCount": 1
-                }
-            },
             {
                 "code": "reportPrivateUsage",
                 "range": {

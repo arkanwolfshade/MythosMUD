@@ -5,7 +5,7 @@ Async persistence for player_effects table via PostgreSQL stored procedures:
 add, delete, get active, has_effect, remaining_ticks, and expire effects by current tick.
 """
 
-from typing import Any, TypedDict
+from typing import Any, TypedDict, cast
 from uuid import UUID
 
 from sqlalchemy import text
@@ -92,7 +92,7 @@ class PlayerEffectRepository:
                 ),
                 params,
             )
-            effect_id = result.scalar()
+            effect_id = cast(object, result.scalar())
             await session.commit()
             logger.debug(
                 "Added player effect",

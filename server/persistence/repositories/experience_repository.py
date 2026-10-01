@@ -144,7 +144,7 @@ class ExperienceRepository:
                     text("SELECT update_player_stat_field(:player_id, :path, :delta)"),
                     {"player_id": str(player_id), "path": path, "delta": delta},
                 )
-                rows_updated = result.scalar()
+                rows_updated = cast(object, result.scalar())
                 if not rows_updated:
                     raise ValueError(f"Player {player_id} not found")
 

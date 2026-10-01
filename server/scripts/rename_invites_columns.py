@@ -11,6 +11,7 @@ This script renames:
 import os
 import sys
 from pathlib import Path
+from typing import cast
 
 from anyio import run
 from dotenv import load_dotenv
@@ -134,7 +135,7 @@ async def apply_migration(database_url: str) -> bool:
                     """
                 )
             )
-            table_exists = result.scalar()
+            table_exists = cast(object, result.scalar())
 
             if not table_exists:
                 logger.error("Invites table does not exist in database")

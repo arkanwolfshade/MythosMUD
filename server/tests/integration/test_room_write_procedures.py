@@ -147,12 +147,15 @@ async def test_update_room_properties_writes_and_reads_back(
         assert row["environment"] == "arena"
 
         # #663: environment lives in the column now, never in the JSONB blob.
-        has_jsonb_key = (
-            await session.execute(
-                text("SELECT attributes ? 'environment' FROM rooms WHERE stable_id = :id"),
-                {"id": source_id},
-            )
-        ).scalar()
+        has_jsonb_key = cast(
+            object,
+            (
+                await session.execute(
+                    text("SELECT attributes ? 'environment' FROM rooms WHERE stable_id = :id"),
+                    {"id": source_id},
+                )
+            ).scalar(),
+        )
         assert has_jsonb_key is False
 
 
@@ -175,12 +178,15 @@ async def test_update_room_properties_clears_environment_to_null(
         assert resolved_environment == "outdoors"
         await session.commit()
 
-        environment = (
-            await session.execute(
-                text("SELECT environment FROM rooms WHERE stable_id = :id"),
-                {"id": source_id},
-            )
-        ).scalar()
+        environment = cast(
+            object,
+            (
+                await session.execute(
+                    text("SELECT environment FROM rooms WHERE stable_id = :id"),
+                    {"id": source_id},
+                )
+            ).scalar(),
+        )
         assert environment is None
 
 
@@ -238,7 +244,7 @@ async def test_create_room_link_writes_a_single_row(
             text("SELECT create_room_link(:from_id, 'north', :to_id, CAST(:attrs AS jsonb))"),
             {"from_id": source_id, "to_id": target_id, "attrs": json.dumps({"description": "A dark corridor."})},
         )
-        assert bool(result.scalar()) is True
+        assert bool(cast(object, result.scalar())) is True
         await session.commit()
 
         rows = (
@@ -261,14 +267,17 @@ async def test_create_room_link_writes_a_single_row(
         assert rows[0]["attributes"]["description"] == "A dark corridor."
 
         # No reverse link was synthesized -- bidirectionality in this schema is two explicit rows.
-        reverse = (
-            await session.execute(
-                text(
-                    "SELECT COUNT(*) FROM room_links rl JOIN rooms r1 ON rl.from_room_id = r1.id WHERE r1.stable_id = :from_id"
-                ),
-                {"from_id": target_id},
-            )
-        ).scalar()
+        reverse = cast(
+            object,
+            (
+                await session.execute(
+                    text(
+                        "SELECT COUNT(*) FROM room_links rl JOIN rooms r1 ON rl.from_room_id = r1.id WHERE r1.stable_id = :from_id"
+                    ),
+                    {"from_id": target_id},
+                )
+            ).scalar(),
+        )
         assert reverse == 0
 
 
@@ -306,13 +315,13 @@ async def test_create_room_link_unknown_room_returns_false(
             text("SELECT create_room_link(:from_id, 'north', 'does_not_exist', CAST(:attrs AS jsonb))"),
             {"from_id": source_id, "attrs": "{}"},
         )
-        assert bool(missing_target.scalar()) is False
+        assert bool(cast(object, missing_target.scalar())) is False
 
         missing_source = await session.execute(
             text("SELECT create_room_link('does_not_exist', 'north', :to_id, CAST(:attrs AS jsonb))"),
             {"to_id": target_id, "attrs": "{}"},
         )
-        assert bool(missing_source.scalar()) is False
+        assert bool(cast(object, missing_source.scalar())) is False
 
 
 @pytest.mark.asyncio
@@ -334,7 +343,7 @@ async def test_update_room_link_changes_target_and_attributes(
             text("SELECT update_room_link(:from_id, 'north', :to_id, CAST(:attrs AS jsonb))"),
             {"from_id": source_id, "to_id": source_id, "attrs": json.dumps({"flags": ["self_reference"]})},
         )
-        assert bool(result.scalar()) is True
+        assert bool(cast(object, result.scalar())) is True
         await session.commit()
 
         row = (
@@ -367,7 +376,7 @@ async def test_update_room_link_missing_exit_returns_false(
             text("SELECT update_room_link(:from_id, 'south', :to_id, NULL)"),
             {"from_id": source_id, "to_id": target_id},
         )
-        assert bool(result.scalar()) is False
+        assert bool(cast(object, result.scalar())) is False
 
 
 @pytest.mark.asyncio
@@ -385,17 +394,20 @@ async def test_delete_room_link_removes_the_row(
         await session.commit()
 
         result = await session.execute(text("SELECT delete_room_link(:from_id, 'north')"), {"from_id": source_id})
-        assert bool(result.scalar()) is True
+        assert bool(cast(object, result.scalar())) is True
         await session.commit()
 
-        remaining = (
-            await session.execute(
-                text(
-                    "SELECT COUNT(*) FROM room_links rl JOIN rooms r1 ON rl.from_room_id = r1.id WHERE r1.stable_id = :from_id"
-                ),
-                {"from_id": source_id},
-            )
-        ).scalar()
+        remaining = cast(
+            object,
+            (
+                await session.execute(
+                    text(
+                        "SELECT COUNT(*) FROM room_links rl JOIN rooms r1 ON rl.from_room_id = r1.id WHERE r1.stable_id = :from_id"
+                    ),
+                    {"from_id": source_id},
+                )
+            ).scalar(),
+        )
         assert remaining == 0
 
 
@@ -408,4 +420,4 @@ async def test_delete_room_link_missing_exit_returns_false(
     source_id, _target_id = room_pair
     async with session_factory() as session:
         result = await session.execute(text("SELECT delete_room_link(:from_id, 'south')"), {"from_id": source_id})
-        assert bool(result.scalar()) is False
+        assert bool(cast(object, result.scalar())) is False

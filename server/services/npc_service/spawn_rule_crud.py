@@ -1,7 +1,7 @@
 """NPC spawn rule CRUD operations for NPCService."""
 
 import json
-from typing import Any
+from typing import Any, cast
 
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
@@ -161,7 +161,7 @@ class NPCSpawnRuleCRUDMixin:
                 text("SELECT delete_spawn_rule(:id)"),
                 {"id": rule_id},
             )
-            deleted = result.scalar()
+            deleted = cast(object, result.scalar())
             if deleted:
                 logger.info("Deleted NPC spawn rule", rule_id=rule_id, npc_definition_id=rule.npc_definition_id)
             return bool(deleted)

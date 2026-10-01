@@ -75,7 +75,7 @@ async def create_room_link_in_db(
         query,
         {"from_room_id": from_room_id, "direction": direction, "to_room_id": to_room_id, "attributes": attributes_json},
     )
-    created = bool(result.scalar())
+    created = bool(cast(object, result.scalar()))
     if created:
         await session.commit()
     return created
@@ -164,7 +164,7 @@ async def update_room_link_in_db(
         query,
         {"from_room_id": from_room_id, "direction": direction, "to_room_id": to_room_id, "attributes": attributes_json},
     )
-    updated = bool(result.scalar())
+    updated = bool(cast(object, result.scalar()))
     if updated:
         await session.commit()
     return updated
@@ -174,7 +174,7 @@ async def delete_room_link_in_db(session: AsyncSession, from_room_id: str, direc
     """Delete a room exit via delete_room_link(). Returns False if the room or exit isn't found."""
     query = text("SELECT delete_room_link(:from_room_id, :direction)")
     result = await session.execute(query, {"from_room_id": from_room_id, "direction": direction})
-    deleted = bool(result.scalar())
+    deleted = bool(cast(object, result.scalar()))
     if deleted:
         await session.commit()
     return deleted

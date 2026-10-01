@@ -9,6 +9,7 @@ to the PostgreSQL database.
 import os
 import sys
 from pathlib import Path
+from typing import cast
 
 from anyio import run
 from dotenv import load_dotenv
@@ -81,7 +82,7 @@ async def apply_migration(database_url: str) -> bool:
                     """
                 )
             )
-            table_exists = result.scalar()
+            table_exists = cast(object, result.scalar())
 
             if not table_exists:
                 logger.error("Users table does not exist in database")
@@ -100,7 +101,7 @@ async def apply_migration(database_url: str) -> bool:
                     """
                 )
             )
-            column_exists = result.scalar()
+            column_exists = cast(object, result.scalar())
 
             if column_exists:
                 logger.info("Column hashed_password already exists, skipping migration")
@@ -124,7 +125,7 @@ async def apply_migration(database_url: str) -> bool:
                     """
                 )
             )
-            column_exists = result.scalar()
+            column_exists = cast(object, result.scalar())
 
             if column_exists:
                 logger.info("Migration applied successfully - hashed_password column added")

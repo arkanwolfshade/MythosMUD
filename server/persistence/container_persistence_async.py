@@ -432,7 +432,7 @@ async def delete_container_async(session: AsyncSession, container_id: UUID) -> b
             text("SELECT delete_container(:cid)"),
             {"cid": container_id_str},
         )
-        deleted = result.scalar()
+        deleted = cast(object, result.scalar())
         await session.commit()
         return bool(deleted)
     except SQLAlchemyError as e:

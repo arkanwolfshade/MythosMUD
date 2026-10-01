@@ -8,6 +8,7 @@ This corrects the previous migration - we want is_active in the database to matc
 import os
 import sys
 from pathlib import Path
+from typing import cast
 
 from anyio import run
 from dotenv import load_dotenv
@@ -61,7 +62,7 @@ async def apply_migration(database_url: str) -> bool:
                     """
                 )
             )
-            table_exists = result.scalar()
+            table_exists = cast(object, result.scalar())
 
             if not table_exists:
                 logger.error("Invites table does not exist in database")
@@ -80,7 +81,7 @@ async def apply_migration(database_url: str) -> bool:
                     """
                 )
             )
-            has_used = result.scalar()
+            has_used = cast(object, result.scalar())
 
             result = await conn.execute(
                 text(
@@ -94,7 +95,7 @@ async def apply_migration(database_url: str) -> bool:
                     """
                 )
             )
-            has_is_active = result.scalar()
+            has_is_active = cast(object, result.scalar())
 
             if has_is_active:
                 logger.info("Column is_active already exists, skipping migration")
@@ -122,7 +123,7 @@ async def apply_migration(database_url: str) -> bool:
                     """
                 )
             )
-            column_exists = result.scalar()
+            column_exists = cast(object, result.scalar())
 
             if column_exists:
                 logger.info("Migration applied successfully - column renamed to is_active")
