@@ -12,7 +12,7 @@ import pytest
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from server.models.player import Player
+from server.models.player import Player, PlayerInventory
 from server.models.user import User
 from server.services.npc_startup_service import ARENA_ROOM_IDS
 
@@ -204,6 +204,75 @@ async def test_get_npc_system_statistics_return_shape(
     )
     assert isinstance(first.get("total_npc_definitions"), int | None)
     assert isinstance(first.get("total_spawn_rules"), int | None)
+
+
+@pytest.mark.asyncio
+async def test_clear_player_inventory_empties_gear_and_leaves_stats_untouched(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    """
+    clear_player_inventory() empties carried + equipped items and touches nothing else (#917).
+
+    Death moves gear onto a corpse; clearing it through upsert_player rewrote stats from a
+    stale Player and put a dead player back to their pre-death DP, looping death forever.
+    """
+    stats: dict[str, object] = {"current_dp": -10, "max_dp": 20}
+    sling = '[{"item_id": "sling", "item_name": "Sling", "slot_type": "inventory", "quantity": 1}]'
+    async with session_factory() as session:
+        user_id = uuid.uuid4()
+        player_id = uuid.uuid4()
+        user = User(
+            id=str(user_id),
+            email=f"clearinv_{user_id}@example.com",
+            username=f"clearinv_{str(user_id)[:8]}",
+            display_name=f"Clear Inv {str(user_id)[:8]}",
+            hashed_password="hashed",
+            is_active=True,
+            is_superuser=False,
+            is_verified=True,
+        )
+        player = Player(
+            player_id=str(player_id),
+            user_id=str(user_id),
+            name=f"clearinv_{str(player_id)[:8]}",
+            inventory=sling,
+            stats=stats,
+        )
+        gear = PlayerInventory(
+            player_id=str(player_id),
+            inventory_json=sling,
+            equipped_json='{"head": {"item_id": "hat", "item_name": "Hat", "slot_type": "head", "quantity": 1}}',
+        )
+        session.add_all([user, player])
+        await session.flush()
+        session.add(gear)
+        await session.flush()
+
+        cleared = (await session.execute(text("SELECT clear_player_inventory(:id)"), {"id": player_id})).scalar()
+        missing = (await session.execute(text("SELECT clear_player_inventory(:id)"), {"id": uuid.uuid4()})).scalar()
+        row = (
+            (
+                await session.execute(
+                    text(
+                        """
+                        SELECT p.inventory, p.stats, pi.inventory_json, pi.equipped_json
+                        FROM players p JOIN player_inventories pi ON pi.player_id = p.player_id
+                        WHERE p.player_id = :id
+                        """
+                    ),
+                    {"id": player_id},
+                )
+            )
+            .mappings()
+            .one()
+        )
+
+    assert cleared is True
+    assert missing is False
+    assert row["inventory"] == "[]"
+    assert row["inventory_json"] == "[]"
+    assert row["equipped_json"] == "{}"
+    assert row["stats"] == stats
 
 
 @pytest.mark.asyncio

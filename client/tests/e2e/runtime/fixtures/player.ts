@@ -259,6 +259,46 @@ export async function ensurePlayableAlive(page: Page, username: string, password
   return live;
 }
 
+/** Location panel line, e.g. "Arkham City > Sanitarium > Main Foyer" (Game Info keeps stale room dumps). */
+async function currentLocation(page: Page): Promise<string> {
+  const body = await page.evaluate(() => document.body?.innerText ?? '').catch(() => '');
+  return body.match(/Location\s*\n\s*([^\n]+)/i)?.[1]?.trim() ?? '';
+}
+
+/**
+ * The single way back to Main Foyer from each room a flee out of it can land in (the foyer's
+ * up/south/west/east neighbours, per the room exits in the database).
+ */
+const WAY_BACK_TO_MAIN_FOYER: [RegExp, string][] = [
+  [/Sanitarium Entrance/i, 'north'],
+  [/Eastern Hallway - Section 1/i, 'west'],
+  [/Western Hallway - Section 1/i, 'east'],
+  [/Patient Bedroom/i, 'down'],
+];
+
+/**
+ * Put the player in Main Foyer, the respawn room, before a corpse-producing death (#917).
+ *
+ * A corpse lies where its owner died, but respawn always returns them to Main Foyer. When
+ * ensureNotInCombat's flee had left the player a room away, they died there, respawned in the foyer,
+ * and the spec looked for the corpse in the wrong room.
+ */
+async function ensureInMainFoyer(page: Page): Promise<Page> {
+  let live = page;
+  const inFoyer = async () => /Main Foyer/i.test(await currentLocation(live));
+  if (await inFoyer()) return live;
+  live = await prepareForDirectionalMove(live);
+  if (await inFoyer()) return live;
+  const here = await currentLocation(live);
+  const way = WAY_BACK_TO_MAIN_FOYER.find(([room]) => room.test(here))?.[1];
+  if (!way) {
+    throw new Error(`ensureInMainFoyer: no known way back to Main Foyer from "${here}"`);
+  }
+  await executeCommand(live, `go ${way}`);
+  await expect.poll(inFoyer, { timeout: 20000, message: `return to Main Foyer from "${here}"` }).toBe(true);
+  return live;
+}
+
 /** Aggressive mob used to trigger real combat death (see combat-messages-game-info.spec.ts). */
 const COMBAT_NPC_ID = 58;
 const COMBAT_NPC_NAME = 'Cultist of the Yellow Sign';
@@ -277,13 +317,22 @@ const COMBAT_NPC_NAME = 'Cultist of the Yellow Sign';
  * aggro attempt and never land a hit. The tick's wounded-decay death (which creates no corpse)
  * can't pre-empt this either: game_tick_death._player_in_active_combat skips decay while the
  * player is in an active combat.
+ *
+ * The fight happens in Main Foyer (the respawn room), and `corpsesBefore` counts the openable,
+ * in-grace corpse cards there just before it, so the caller can tell a fresh corpse from one an
+ * earlier run left inside its 300s grace period.
  */
-async function killPlayerViaCombat(page: Page, creds: { username: string; password: string }): Promise<Page> {
+async function killPlayerViaCombat(
+  page: Page,
+  creds: { username: string; password: string }
+): Promise<{ live: Page; corpsesBefore: number }> {
   let live = await ensurePlayableConnection(page, { ...creds, timeoutMs: 45000 });
   await dismissDeathInterstitial(live);
   await ensureNotInCombat(live, 4);
   live = await ensureStanding(live, 10000);
   await despawnSanitariumCultists(live);
+  live = await ensureInMainFoyer(live);
+  const corpsesBefore = await corpseCard(live, { openable: true, graceActive: true }).count();
   await executeCommand(live, `npc spawn ${COMBAT_NPC_ID}`);
   await new Promise(r => setTimeout(r, 800));
 
@@ -303,7 +352,7 @@ async function killPlayerViaCombat(page: Page, creds: { username: string; passwo
   // nothing. Re-attacking an already-attacking player is a harmless no-op server-side.
   for (let attempt = 0; attempt < 6; attempt++) {
     const dead = await isPlayerDead(live).catch(() => false);
-    if (dead) return live;
+    if (dead) return { live, corpsesBefore };
     await new Promise(r => setTimeout(r, 10000));
     await executeCommand(live, `attack ${target}`).catch(() => {});
   }
@@ -311,7 +360,17 @@ async function killPlayerViaCombat(page: Page, creds: { username: string; passwo
   await expect
     .poll(async () => isPlayerDead(live), { timeout: 30000, message: 'player death via real combat' })
     .toBe(true);
-  return live;
+  return { live, corpsesBefore };
+}
+
+/** True once `locator` matches more than `baseline` elements, false if that doesn't happen in time. */
+async function countGrowsWithin(locator: Locator, baseline: number, timeoutMs: number): Promise<boolean> {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if ((await locator.count()) > baseline) return true;
+    await new Promise(r => setTimeout(r, 500));
+  }
+  return false;
 }
 
 /**
@@ -329,17 +388,16 @@ export async function killPlayerAndProduceCorpse(
 ): Promise<Page> {
   let live = page;
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    live = await killPlayerViaCombat(live, creds);
-    live = await respawnAfterCombatDeath(live, creds.username, creds.password);
+    const killed = await killPlayerViaCombat(live, creds);
+    live = await respawnAfterCombatDeath(killed.live, creds.username, creds.password);
     // `look` forces a fresh room_state, which is what carries the corpse summary to a player who
     // was dead when container.created fired.
     await executeCommand(live, 'look').catch(() => {});
-    // Our fresh corpse is the one this player may open AND whose grace is still counting down.
-    // A plain /Grace period/ text match also hit "Grace period ended" on earlier specs' corpses,
-    // and isVisible({ timeout }) never waited -- so a slow render triggered another full kill
-    // cycle and left an extra corpse behind.
-    const corpseVisible = await isVisibleWithin(corpseCard(live, { openable: true, graceActive: true }).first(), 25000);
-    if (corpseVisible) {
+    // Our fresh corpse is one this player may open AND whose grace is still counting down -- and
+    // it must be NEW: an earlier run's corpse can still be in grace (300s), and matching it let a
+    // death in another room pass here and fail later as an "empty corpse" (#917).
+    const inGrace = corpseCard(live, { openable: true, graceActive: true });
+    if (await countGrowsWithin(inGrace, killed.corpsesBefore, 25000)) {
       return live;
     }
   }

@@ -439,6 +439,30 @@ BEGIN
 END;
 $$;
 
+-- clear_player_inventory: empty a player's carried and equipped items and nothing else (#917).
+-- Used when death moves a player's gear onto a corpse. It must not go through upsert_player,
+-- which rewrites the whole row (stats included) from an in-memory Player: a Player loaded
+-- before the death's DP write lands would put a dead player back to their pre-death DP.
+-- Returns false for a non-existent or soft-deleted player.
+CREATE OR REPLACE FUNCTION :schema_name.clear_player_inventory(p_id UUID)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_updated integer;
+BEGIN
+    UPDATE players SET inventory = '[]' WHERE player_id = p_id AND is_deleted = false;
+    GET DIAGNOSTICS v_updated = ROW_COUNT;
+    IF v_updated = 0 THEN
+        RETURN false;
+    END IF;
+    UPDATE player_inventories
+    SET inventory_json = '[]', equipped_json = '{}'
+    WHERE player_id = p_id;
+    RETURN true;
+END;
+$$;
+
 -- delete_player: hard delete player and inventory
 CREATE OR REPLACE FUNCTION :schema_name.delete_player(p_id UUID)
 RETURNS BOOLEAN

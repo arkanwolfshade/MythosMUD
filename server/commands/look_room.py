@@ -5,6 +5,7 @@ This module handles looking at rooms, including formatting room descriptions,
 listing items, NPCs, players, and exits in the room.
 """
 
+from collections.abc import Mapping, Sequence
 from typing import Any, cast
 
 from ..realtime.occupant_display import format_occupant_display_name
@@ -27,28 +28,28 @@ def _format_items_section(room_drops: list[dict[str, Any]]) -> list[str]:
     return [str(line) for line in drop_lines] + [""]
 
 
-# Reason: SERIALIZATION_BOUNDARY - containers_data/persistence are duck-typed values from the
-# untyped persistence layer, matching this module's existing, unsuppressed Any conventions
-# (see _try_lookup_phantom_implicit below).
-# Appropriate because: room/container records here are loosely-shaped dicts with no fixed schema
-# in this module; a TypedDict/Protocol is out of scope for this complexity-only extraction.
-def _classify_containers_and_corpses(containers_data: Any) -> tuple[list[str], list[str]]:  # pyright: ignore[reportAny, reportExplicitAny]
+def _container_metadata(container: Mapping[str, object]) -> Mapping[str, object]:
+    """A container record's metadata: persistence rows carry metadata_json, room summaries metadata (#917)."""
+    raw = container.get("metadata_json") or container.get("metadata")
+    return cast("Mapping[str, object]", raw) if isinstance(raw, Mapping) else {}
+
+
+def _classify_containers_and_corpses(containers_data: Sequence[Mapping[str, object]]) -> tuple[list[str], list[str]]:
     """Split room container records into (environment container names, corpse descriptions)."""
     containers: list[str] = []
     corpses: list[str] = []
     for container in containers_data:
         source_type = container.get("source_type", "")
+        metadata = _container_metadata(container)
         if source_type == "corpse":
-            player_name = container.get("metadata", {}).get("player_name", "Unknown")
-            corpses.append(f"the corpse of {player_name}")
+            corpses.append(f"the corpse of {metadata.get('player_name', 'Unknown')}")
         elif source_type == "environment":
-            container_name = container.get("metadata", {}).get("name", "Unknown Container")
-            containers.append(container_name)
+            containers.append(str(metadata.get("name", "Unknown Container")))
     return containers, corpses
 
 
 # Reason: SERIALIZATION_BOUNDARY - persistence is Any per this module's established convention.
-# Appropriate because: same unsuppressed convention as _classify_containers_and_corpses above.
+# Appropriate because: the persistence layer is duck-typed here and this module has no shared protocol for it.
 async def _format_containers_section(room_id: str | None, persistence: Any) -> list[str]:  # pyright: ignore[reportAny, reportExplicitAny]
     """Format the containers/corpses section of room look."""
     if not room_id or not persistence:
@@ -56,7 +57,7 @@ async def _format_containers_section(room_id: str | None, persistence: Any) -> l
     try:
         # Reason: SERIALIZATION_BOUNDARY - persistence is Any per this function's own parameter.
         # Appropriate because: same unsuppressed convention as this function's own signature.
-        containers_data = await persistence.get_containers_by_room_id(room_id)  # pyright: ignore[reportAny]
+        containers_data: Sequence[Mapping[str, object]] = await persistence.get_containers_by_room_id(room_id)  # pyright: ignore[reportAny]
     except (AttributeError, TypeError) as exc:  # pragma: no cover - defensive logging path
         logger.debug("Failed to get containers by room id", room_id=room_id, error=str(exc))
         return []

@@ -9,6 +9,7 @@ psycopg2-based container_persistence for use by ContainerRepository.
 from __future__ import annotations
 
 import json
+from collections.abc import Mapping
 from typing import Any, cast
 from uuid import UUID
 
@@ -78,6 +79,22 @@ def _validate_container_create_params(source_type: str, capacity_slots: int, loc
         )
 
 
+# A worn/carried container item keeps its contents in `inner_container`, which has no column in
+# item_instances or container_contents. Carry it through storage inside the item's metadata instead
+# (#917): stashed on write by _metadata_with_inner_container, lifted back out by _build_item_dict.
+INNER_CONTAINER_METADATA_KEY = "inner_container"
+
+
+def _metadata_with_inner_container(item: Mapping[str, object]) -> dict[str, object]:
+    """Item metadata with the stack's `inner_container` (if any) stashed under the reserved key."""
+    raw_metadata = item.get("metadata")
+    metadata: dict[str, object] = dict(cast("Mapping[str, object]", raw_metadata)) if raw_metadata else {}
+    inner_container = item.get("inner_container")
+    if inner_container:
+        metadata[INNER_CONTAINER_METADATA_KEY] = inner_container
+    return metadata
+
+
 async def _populate_container_items_async(
     session: AsyncSession, container_id: Any, items_json: list[dict[str, Any]]
 ) -> None:
@@ -99,7 +116,7 @@ async def _populate_container_items_async(
                     "owner_type": "container",
                     "owner_id": str(container_id),
                     "quantity": item.get("quantity", 1),
-                    "metadata_payload": item.get("metadata", {}),
+                    "metadata_payload": _metadata_with_inner_container(item),
                 },
             )
         except (DatabaseError, ValidationError) as e:
@@ -145,13 +162,14 @@ def _build_item_dict(mapping: dict[str, Any]) -> dict[str, Any] | None:
     item_instance_id = mapping.get("item_instance_id")
     if not item_instance_id:
         return None
-    metadata_val = _parse_item_metadata(mapping.get("metadata"))
+    metadata_val = dict(_parse_item_metadata(mapping.get("metadata")))
+    inner_container = cast("object", metadata_val.pop(INNER_CONTAINER_METADATA_KEY, None))
     quantity = mapping.get("quantity")
     position = mapping.get("position")
     condition = mapping.get("condition")
     item_id = mapping.get("item_id")
     item_name = mapping.get("item_name")
-    return {
+    item: dict[str, object] = {
         "item_instance_id": str(item_instance_id),
         "item_id": str(item_id) if item_id else None,
         "item_name": str(item_name) if item_name else "Unknown Item",
@@ -161,6 +179,9 @@ def _build_item_dict(mapping: dict[str, Any]) -> dict[str, Any] | None:
         "metadata": metadata_val,
         "slot_type": "backpack",
     }
+    if inner_container:
+        item["inner_container"] = inner_container
+    return item
 
 
 async def fetch_container_items_async(session: AsyncSession, container_id: UUID) -> list[dict[str, Any]]:

@@ -55,6 +55,10 @@ class PlayerRepositoryProtocol(Protocol):
         """Save multiple players in a single transaction."""
         ...
 
+    async def clear_player_inventory(self, player_id: uuid.UUID) -> bool:
+        """Empty a player's carried and equipped items without touching stats (#917)."""
+        ...
+
     async def list_players(self) -> list[Player]:
         """List all players."""
         ...

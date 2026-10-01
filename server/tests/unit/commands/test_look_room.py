@@ -75,6 +75,24 @@ async def test_format_containers_section_with_containers():
 
 
 @pytest.mark.asyncio
+async def test_format_containers_section_names_come_from_persistence_metadata_json():
+    """Persistence rows carry metadata_json, not metadata; names must not fall back to Unknown (#917)."""
+    mock_persistence = AsyncMock()
+    mock_persistence.get_containers_by_room_id = AsyncMock(
+        return_value=[
+            {"source_type": "environment", "metadata_json": {"name": "Chest"}, "items_json": []},
+            {"source_type": "corpse", "metadata_json": {"player_name": "DeadPlayer"}, "items_json": []},
+        ]
+    )
+
+    result = await _format_containers_section("test_room", mock_persistence)
+
+    assert "You see: Chest" in result
+    assert "the corpse of DeadPlayer" in result
+    assert not any("Unknown" in line for line in result)
+
+
+@pytest.mark.asyncio
 async def test_format_containers_section_empty():
     """Test _format_containers_section with no containers."""
     mock_persistence = AsyncMock()

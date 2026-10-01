@@ -351,6 +351,59 @@ def test_combat_participant_apply_damage_player_dies():
     assert target_mortally_wounded is False
 
 
+def test_combat_participant_apply_damage_mortally_wounded_player_dies_on_the_killing_hit():
+    """A player at 0 DP (mortally wounded) is killed by the hit that reaches -10."""
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="TestPlayer",
+        current_dp=0,
+        max_dp=100,
+        dexterity=10,
+    )
+    old_dp, target_died, _ = participant.apply_damage(25)
+
+    assert old_dp == 0
+    assert participant.current_dp == -10
+    assert target_died is True
+
+
+def test_combat_participant_apply_damage_already_dead_player_does_not_die_again():
+    """Later hits on a player already at the -10 floor must not re-report death (#917).
+
+    Each re-report re-fired death handling, so one death produced ~50 corpses and death events.
+    """
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="TestPlayer",
+        current_dp=-10,
+        max_dp=100,
+        dexterity=10,
+    )
+    old_dp, target_died, target_mortally_wounded = participant.apply_damage(25)
+
+    assert old_dp == -10
+    assert participant.current_dp == -10
+    assert target_died is False
+    assert target_mortally_wounded is False
+
+
+def test_combat_participant_apply_damage_player_reports_death_exactly_once_across_hits():
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="TestPlayer",
+        current_dp=5,
+        max_dp=100,
+        dexterity=10,
+    )
+
+    deaths = [participant.apply_damage(25)[1] for _ in range(5)]
+
+    assert deaths == [True, False, False, False, False]
+
+
 def test_combat_participant_apply_damage_player_caps_at_negative_10():
     """Test apply_damage caps player DP at -10."""
     participant = CombatParticipant(

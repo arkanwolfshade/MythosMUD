@@ -2,6 +2,7 @@
 
 import json
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -121,6 +122,26 @@ def test_build_item_dict_missing_instance_id() -> None:
     assert _build_item_dict({"item_name": "Ghost Item"}) is None
 
 
+def test_build_item_dict_lifts_inner_container_out_of_metadata() -> None:
+    """A stashed inner_container comes back as a stack field, not as metadata (#917)."""
+    inner = {"capacity_slots": 8, "items": [{"item_id": "coin"}], "lock_state": "unlocked"}
+    raw_metadata = {"color": "red", "inner_container": inner}
+
+    item = _build_item_dict({"item_instance_id": "pack-1", "item_id": "backpack", "metadata": raw_metadata})
+
+    assert item is not None
+    assert item["inner_container"] == inner
+    assert item["metadata"] == {"color": "red"}
+    assert raw_metadata == {"color": "red", "inner_container": inner}  # the source mapping is not mutated
+
+
+def test_build_item_dict_omits_inner_container_when_absent() -> None:
+    item = _build_item_dict({"item_instance_id": "sling-1", "item_id": "sling", "metadata": {}})
+
+    assert item is not None
+    assert "inner_container" not in item
+
+
 @pytest.mark.asyncio
 async def test_fetch_container_items_async() -> None:
     container_id = uuid.uuid4()
@@ -205,6 +226,41 @@ async def test_populate_container_items_async() -> None:
             [{"item_instance_id": str(item_id), "item_id": "proto-1", "quantity": 2}],
         )
     assert session.execute.await_count == 2
+
+
+@pytest.mark.asyncio
+async def test_populate_container_items_stashes_inner_container_in_metadata_and_it_round_trips() -> None:
+    """inner_container has no column, so it rides in item metadata and survives a read (#917)."""
+    inner = {"capacity_slots": 8, "items": [{"item_id": "coin", "quantity": 3}], "lock_state": "unlocked"}
+    session = MagicMock()
+    session.execute = AsyncMock()
+    with patch(
+        "server.persistence.item_instance_persistence_async.ensure_item_instance_async",
+        new_callable=AsyncMock,
+    ) as ensure:
+        await _populate_container_items_async(
+            session,
+            uuid.uuid4(),
+            [
+                {
+                    "item_instance_id": "pack-1",
+                    "item_id": "backpack",
+                    "metadata": {"color": "red"},
+                    "inner_container": inner,
+                },
+                {"item_instance_id": "sling-1", "item_id": "sling"},
+            ],
+        )
+
+    pack_metadata = cast("object", ensure.await_args_list[0].kwargs["options"]["metadata_payload"])
+    sling_metadata = cast("object", ensure.await_args_list[1].kwargs["options"]["metadata_payload"])
+    assert pack_metadata == {"color": "red", "inner_container": inner}
+    assert sling_metadata == {}
+
+    restored = _build_item_dict({"item_instance_id": "pack-1", "item_id": "backpack", "metadata": pack_metadata})
+    assert restored is not None
+    assert restored["inner_container"] == inner
+    assert restored["metadata"] == {"color": "red"}
 
 
 @pytest.mark.asyncio

@@ -4,6 +4,9 @@ Unit tests for corpse lifecycle service.
 Tests the CorpseLifecycleService class.
 """
 # pylint: disable=redefined-outer-name,too-many-lines  # Reason: Pytest fixtures use fixture names as parameters. Comprehensive test file with many test cases.
+# pyright: reportAny=false
+# TEST_MOCK: MagicMock/AsyncMock attribute and call chains (mock_persistence.create_container, clear_player_inventory,
+# .assert_awaited_once, ...) resolve to Any throughout this file.
 
 import uuid
 from datetime import UTC, datetime, timedelta
@@ -23,8 +26,13 @@ from server.services.corpse_lifecycle_service import (
 
 @pytest.fixture
 def mock_persistence() -> MagicMock:
-    """Create a mock persistence layer."""
-    return MagicMock()
+    """Create a mock persistence layer: no worn containers, player saves and row deletes succeed."""
+    persistence = MagicMock()
+    persistence.get_containers_by_entity_id = AsyncMock(return_value=[])
+    persistence.save_player = AsyncMock()
+    persistence.clear_player_inventory = AsyncMock(return_value=True)
+    persistence.delete_container = AsyncMock(return_value=True)
+    return persistence
 
 
 @pytest.fixture
@@ -93,6 +101,191 @@ async def test_create_corpse_on_death_success(corpse_service, mock_persistence):
     assert result.room_id == room_id
     mock_persistence.get_player_by_id.assert_awaited_once_with(player_id)
     mock_persistence.create_container.assert_awaited_once()
+
+
+def _stack(item_id: str, instance_id: str | None = None, slot_type: str = "inventory") -> dict[str, object]:
+    return {
+        "item_id": item_id,
+        "item_name": item_id.title(),
+        "slot_type": slot_type,
+        "quantity": 1,
+        "item_instance_id": instance_id or f"inst-{item_id}",
+    }
+
+
+def _dying_player(
+    inventory: list[dict[str, object]], equipped: dict[str, dict[str, object]] | None = None
+) -> MagicMock:
+    player = MagicMock()
+    player.name = "Wolfshade"
+    player.get_inventory.return_value = inventory
+    player.get_equipped_items.return_value = equipped or {}
+    return player
+
+
+def _worn_container_row(
+    container_instance_id: str, item_instance_id: str, items: list[dict[str, object]]
+) -> dict[str, object]:
+    """A worn-container row exactly as persistence returns it: items_json/metadata_json, not items/metadata."""
+    return {
+        "container_id": container_instance_id,
+        "source_type": "equipment",
+        "owner_id": None,
+        "room_id": None,
+        "entity_id": str(uuid.uuid4()),
+        "lock_state": "unlocked",
+        "capacity_slots": 8,
+        "weight_limit": None,
+        "decay_at": None,
+        "allowed_roles": [],
+        "items_json": items,
+        "metadata_json": {"item_instance_id": item_instance_id, "item_name": "Backpack"},
+        "created_at": "2026-09-30T00:00:00+00:00",
+        "updated_at": "2026-09-30T00:00:00+00:00",
+    }
+
+
+def _created_items(mock_persistence: MagicMock, call: int = 0) -> list[dict[str, object]]:
+    return mock_persistence.create_container.await_args_list[call].kwargs["items_json"]
+
+
+@pytest.mark.asyncio
+async def test_create_corpse_on_death_moves_carried_and_equipped_items_off_the_player(
+    corpse_service: CorpseLifecycleService, mock_persistence: MagicMock
+) -> None:
+    """Items are moved, not copied: the player is emptied once the corpse holds everything (#917)."""
+    player_id = uuid.uuid4()
+    player = _dying_player([_stack("sling")], {"head": _stack("hat", slot_type="head")})
+    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
+    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4())})
+
+    _ = await corpse_service.create_corpse_on_death(player_id, "room_001")
+
+    assert [i["item_id"] for i in _created_items(mock_persistence)] == ["sling", "hat"]
+    mock_persistence.clear_player_inventory.assert_awaited_once_with(player_id)
+    # Never a whole-row save: it rewrote stats from a Player loaded before the death's DP write
+    # landed, reviving the dead player and re-triggering death in a loop (#917).
+    mock_persistence.save_player.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_create_corpse_on_death_nests_worn_container_contents_and_deletes_its_row(
+    corpse_service: CorpseLifecycleService, mock_persistence: MagicMock
+) -> None:
+    """A worn backpack's live contents travel inside its stack; its equipment row is then removed (#917)."""
+    row_id = str(uuid.uuid4())
+    coins = _stack("coin", slot_type="backpack")
+    player = _dying_player([], {"back": _stack("backpack", "pack-1", slot_type="back")})
+    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
+    mock_persistence.get_containers_by_entity_id = AsyncMock(return_value=[_worn_container_row(row_id, "pack-1", [coins])])
+    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4())})
+
+    _ = await corpse_service.create_corpse_on_death(uuid.uuid4(), "room_001")
+
+    (backpack,) = _created_items(mock_persistence)
+    assert backpack["inner_container"] == {"capacity_slots": 8, "items": [coins], "lock_state": "unlocked"}
+    mock_persistence.delete_container.assert_awaited_once_with(uuid.UUID(row_id))
+
+
+@pytest.mark.asyncio
+async def test_create_corpse_on_death_ignores_worn_rows_for_other_items_and_non_equipment(
+    corpse_service: CorpseLifecycleService, mock_persistence: MagicMock
+) -> None:
+    other_row = _worn_container_row(str(uuid.uuid4()), "some-other-pack", [])
+    chest_row = {**_worn_container_row(str(uuid.uuid4()), "pack-1", []), "source_type": "environment"}
+    player = _dying_player([], {"back": _stack("backpack", "pack-1", slot_type="back")})
+    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
+    mock_persistence.get_containers_by_entity_id = AsyncMock(return_value=[other_row, chest_row])
+    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4())})
+
+    _ = await corpse_service.create_corpse_on_death(uuid.uuid4(), "room_001")
+
+    (backpack,) = _created_items(mock_persistence)
+    assert "inner_container" not in backpack
+    mock_persistence.delete_container.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_create_corpse_on_death_keeps_an_unreadable_worn_row_instead_of_deleting_it(
+    corpse_service: CorpseLifecycleService, mock_persistence: MagicMock
+) -> None:
+    """If a worn row cannot be read, its contents cannot be nested, so the row must survive (#917)."""
+    unreadable = {**_worn_container_row(str(uuid.uuid4()), "pack-1", []), "capacity_slots": 999}
+    player = _dying_player([], {"back": _stack("backpack", "pack-1", slot_type="back")})
+    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
+    mock_persistence.get_containers_by_entity_id = AsyncMock(return_value=[unreadable])
+    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4())})
+
+    _ = await corpse_service.create_corpse_on_death(uuid.uuid4(), "room_001")
+
+    mock_persistence.delete_container.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_create_corpse_on_death_spills_past_the_slot_limit_onto_extra_corpses(
+    corpse_service: CorpseLifecycleService, mock_persistence: MagicMock
+) -> None:
+    """A container holds at most 20 stacks, so 25 are split rather than dropped (#917)."""
+    def _new_container_row(**_kwargs: object) -> dict[str, str]:
+        return {"container_id": str(uuid.uuid4())}
+
+    player = _dying_player([_stack(f"item{n}") for n in range(25)])
+    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
+    mock_persistence.create_container = AsyncMock(side_effect=_new_container_row)
+
+    result = await corpse_service.create_corpse_on_death(uuid.uuid4(), "room_001")
+
+    assert [len(_created_items(mock_persistence, n)) for n in range(2)] == [20, 5]
+    assert mock_persistence.create_container.await_count == 2
+    assert isinstance(result, ContainerComponent)
+    mock_persistence.clear_player_inventory.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_create_corpse_on_death_empty_handed_player_still_gets_one_corpse(
+    corpse_service: CorpseLifecycleService, mock_persistence: MagicMock
+) -> None:
+    mock_persistence.get_player_by_id = AsyncMock(return_value=_dying_player([]))
+    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4())})
+
+    _ = await corpse_service.create_corpse_on_death(uuid.uuid4(), "room_001")
+
+    mock_persistence.create_container.assert_awaited_once()
+    assert _created_items(mock_persistence) == []
+
+
+@pytest.mark.asyncio
+async def test_create_corpse_on_death_leaves_player_untouched_when_corpse_persist_fails(
+    corpse_service: CorpseLifecycleService, mock_persistence: MagicMock
+) -> None:
+    """No corpse means nothing may be taken from the player: an item is never lost (#917)."""
+    player = _dying_player([_stack("sling")])
+    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
+    mock_persistence.create_container = AsyncMock(side_effect=RuntimeError("db down"))
+
+    with pytest.raises(CorpseServiceError):
+        _ = await corpse_service.create_corpse_on_death(uuid.uuid4(), "room_001")
+
+    mock_persistence.clear_player_inventory.assert_not_awaited()
+    mock_persistence.delete_container.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_create_corpse_on_death_logs_but_does_not_raise_when_clearing_the_player_fails(
+    corpse_service: CorpseLifecycleService, mock_persistence: MagicMock
+) -> None:
+    """The corpse already exists; a failed clear must not abort the death, and worn rows must survive it."""
+    row_id = str(uuid.uuid4())
+    player = _dying_player([], {"back": _stack("backpack", "pack-1", slot_type="back")})
+    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
+    mock_persistence.get_containers_by_entity_id = AsyncMock(return_value=[_worn_container_row(row_id, "pack-1", [])])
+    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4())})
+    mock_persistence.clear_player_inventory = AsyncMock(side_effect=RuntimeError("db down"))
+
+    result = await corpse_service.create_corpse_on_death(uuid.uuid4(), "room_001")
+
+    assert isinstance(result, ContainerComponent)
+    mock_persistence.delete_container.assert_not_awaited()
 
 
 @pytest.mark.asyncio
