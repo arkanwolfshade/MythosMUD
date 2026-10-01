@@ -7,6 +7,7 @@ the test database (mythos_unit or mythos_e2e) with procedures already applied.
 """
 
 import uuid
+from typing import cast
 
 import pytest
 from sqlalchemy import text
@@ -248,8 +249,12 @@ async def test_clear_player_inventory_empties_gear_and_leaves_stats_untouched(
         session.add(gear)
         await session.flush()
 
-        cleared = (await session.execute(text("SELECT clear_player_inventory(:id)"), {"id": player_id})).scalar()
-        missing = (await session.execute(text("SELECT clear_player_inventory(:id)"), {"id": uuid.uuid4()})).scalar()
+        cleared = cast(
+            object, (await session.execute(text("SELECT clear_player_inventory(:id)"), {"id": player_id})).scalar()
+        )
+        missing = cast(
+            object, (await session.execute(text("SELECT clear_player_inventory(:id)"), {"id": uuid.uuid4()})).scalar()
+        )
         row = (
             (
                 await session.execute(
@@ -314,6 +319,6 @@ async def test_add_player_effect_generates_id(
             ),
             {"player_id": player_id, **ADD_EFFECT_PARAMS},
         )
-        effect_id = result.scalar()
+        effect_id = cast(object, result.scalar())
 
     assert effect_id is not None

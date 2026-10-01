@@ -192,7 +192,7 @@ async def update_room_position_in_db(
         },
     )
 
-    if not bool(result.scalar()):
+    if not bool(cast(object, result.scalar())):
         logger.warning("No rows updated for room position", room_id=room_id)
         raise LoggedHTTPException(
             status_code=404,

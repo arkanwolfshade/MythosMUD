@@ -26,7 +26,7 @@ from server.services.corruption_tier_cache import corruption_tier_cache
 
 
 @pytest.fixture(autouse=True)
-def _clear_corruption_tier_cache():  # pyright: ignore[reportUnusedFunction] -- pytest autouse fixture, used implicitly
+def _clear_corruption_tier_cache():  # pytest autouse fixture, used implicitly
     """The tier cache is a module-level singleton (#815) -- reset it around each test."""
     yield
     corruption_tier_cache._tiers.clear()  # noqa: SLF001  # pyright: ignore[reportPrivateUsage]

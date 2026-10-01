@@ -135,9 +135,12 @@ async def test_count_coordinated_rooms_counts_positioned_rooms(
 ) -> None:
     zone_stable_id, *_rest = room_pair
     async with session_factory() as session:
-        count = (
-            await session.execute(text("SELECT count_coordinated_rooms(:pattern)"), {"pattern": zone_stable_id})
-        ).scalar()
+        count = cast(
+            object,
+            (
+                await session.execute(text("SELECT count_coordinated_rooms(:pattern)"), {"pattern": zone_stable_id})
+            ).scalar(),
+        )
         assert count == 2
 
 
@@ -150,9 +153,10 @@ async def test_get_coordinate_conflicts_pairs_same_coordinate_rooms(
     zone_stable_id, subzone_stable_id, source_id, source_stable_id, _target_id, _target_stable_id = room_pair
     conflicting_stable_id = f"{zone_stable_id}_{subzone_stable_id}_room_conflict"
     async with session_factory() as session:
-        subzone_id = (
-            await session.execute(text("SELECT subzone_id FROM rooms WHERE id = :id"), {"id": source_id})
-        ).scalar()
+        subzone_id = cast(
+            object,
+            (await session.execute(text("SELECT subzone_id FROM rooms WHERE id = :id"), {"id": source_id})).scalar(),
+        )
         await session.execute(
             text(
                 "INSERT INTO rooms (id, subzone_id, stable_id, name, description, map_x, map_y) "
@@ -189,9 +193,10 @@ async def test_coordinate_validator_detects_conflict_via_stored_procedures(
     zone_stable_id, subzone_stable_id, source_id, source_stable_id, _target_id, _target_stable_id = room_pair
     conflicting_stable_id = f"{zone_stable_id}_{subzone_stable_id}_room_conflict"
     async with session_factory() as session:
-        subzone_id = (
-            await session.execute(text("SELECT subzone_id FROM rooms WHERE id = :id"), {"id": source_id})
-        ).scalar()
+        subzone_id = cast(
+            object,
+            (await session.execute(text("SELECT subzone_id FROM rooms WHERE id = :id"), {"id": source_id})).scalar(),
+        )
         insert_conflict_room = (
             "INSERT INTO rooms (id, subzone_id, stable_id, name, description, map_x, map_y) "
             + "VALUES (:id, :subzone_id, :stable_id, 'Conflict', 'A room.', 0, 0)"
@@ -217,7 +222,10 @@ async def test_get_room_id_by_stable_id_resolves_the_uuid(
 ) -> None:
     _zone, _subzone, source_id, source_stable_id, _target_id, _target_stable_id = room_pair
     async with session_factory() as session:
-        found = (await session.execute(text("SELECT get_room_id_by_stable_id(:id)"), {"id": source_stable_id})).scalar()
+        found = cast(
+            object,
+            (await session.execute(text("SELECT get_room_id_by_stable_id(:id)"), {"id": source_stable_id})).scalar(),
+        )
         assert found is not None
         assert uuid.UUID(str(found)) == source_id
 
@@ -227,7 +235,10 @@ async def test_get_room_id_by_stable_id_unknown_returns_null(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        found = (await session.execute(text("SELECT get_room_id_by_stable_id(:id)"), {"id": "does_not_exist"})).scalar()
+        found = cast(
+            object,
+            (await session.execute(text("SELECT get_room_id_by_stable_id(:id)"), {"id": "does_not_exist"})).scalar(),
+        )
         assert found is None
 
 
@@ -270,22 +281,25 @@ async def test_mark_room_explored_new_then_existing(
             text("SELECT mark_room_explored(:player_id, :room_id)"),
             {"player_id": player_row, "room_id": source_id},
         )
-        assert bool(first.scalar()) is True
+        assert bool(cast(object, first.scalar())) is True
         await session.commit()
 
         second = await session.execute(
             text("SELECT mark_room_explored(:player_id, :room_id)"),
             {"player_id": player_row, "room_id": source_id},
         )
-        assert bool(second.scalar()) is False
+        assert bool(cast(object, second.scalar())) is False
         await session.commit()
 
-        count = (
-            await session.execute(
-                text("SELECT COUNT(*) FROM player_exploration WHERE player_id = :player_id AND room_id = :room_id"),
-                {"player_id": player_row, "room_id": source_id},
-            )
-        ).scalar()
+        count = cast(
+            object,
+            (
+                await session.execute(
+                    text("SELECT COUNT(*) FROM player_exploration WHERE player_id = :player_id AND room_id = :room_id"),
+                    {"player_id": player_row, "room_id": source_id},
+                )
+            ).scalar(),
+        )
         assert count == 1
 
 
@@ -314,18 +328,24 @@ async def test_get_explored_rooms_and_is_room_explored(
         )
         assert [str(r) for r in explored] == [str(source_id)]
 
-        is_source_explored = (
-            await session.execute(
-                text("SELECT is_room_explored(:player_id, :room_id)"),
-                {"player_id": player_row, "room_id": source_id},
-            )
-        ).scalar()
+        is_source_explored = cast(
+            object,
+            (
+                await session.execute(
+                    text("SELECT is_room_explored(:player_id, :room_id)"),
+                    {"player_id": player_row, "room_id": source_id},
+                )
+            ).scalar(),
+        )
         assert bool(is_source_explored) is True
 
-        is_target_explored = (
-            await session.execute(
-                text("SELECT is_room_explored(:player_id, :room_id)"),
-                {"player_id": player_row, "room_id": target_id},
-            )
-        ).scalar()
+        is_target_explored = cast(
+            object,
+            (
+                await session.execute(
+                    text("SELECT is_room_explored(:player_id, :room_id)"),
+                    {"player_id": player_row, "room_id": target_id},
+                )
+            ).scalar(),
+        )
         assert bool(is_target_explored) is False

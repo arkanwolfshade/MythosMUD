@@ -596,8 +596,9 @@ class PlayerExploration(Base):
 # Event listener to handle legacy string stats in database
 # Converts JSON strings to dicts before MutableDict coercion
 # As documented in "Legacy Data Migration Patterns" - Dr. Armitage, 1931
+# SQLAlchemy registers this listener via the decorator; basedpyright >= 1.40 no longer reports it as unused.
 @event.listens_for(Player, "load")
-def _convert_legacy_stats_string(target: Player, _context: object) -> None:  # pyright: ignore[reportUnusedFunction]  # Reason: SQLAlchemy registers this listener; static analysis does not see the hookup
+def _convert_legacy_stats_string(target: Player, _context: object) -> None:
     """
     Convert legacy string stats to dict during SQLAlchemy load event.
 

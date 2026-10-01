@@ -35,7 +35,7 @@ from server.npc.npc_display_names import register_npc_display_name, resolve_npc_
 
 
 @pytest.fixture(autouse=True)
-def _reset_chat_npc_wiring():  # pyright: ignore[reportUnusedFunction] - pytest autouse; not called directly
+def _reset_chat_npc_wiring():  # pytest autouse; not called directly
     """Keep process-wide chat wiring isolated per test."""
     set_chat_service_for_npc_system(None)
     reset_npc_spoke_subscription_for_tests()

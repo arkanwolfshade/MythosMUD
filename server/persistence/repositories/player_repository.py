@@ -11,7 +11,7 @@ and inventory management using PostgreSQL stored procedures.
 import traceback
 import uuid
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
@@ -299,9 +299,12 @@ class PlayerRepository:
                 # ON CONFLICT DO UPDATE writes is_deleted/deleted_at from this in-memory Player,
                 # so a stale object loaded before a delete would silently un-delete the row.
                 # NULL (not-yet-inserted player) must fall through to the upsert.
-                deleted = (
-                    await session.execute(text("SELECT player_is_deleted(:id)"), {"id": str(player.player_id)})
-                ).scalar()
+                deleted = cast(
+                    object,
+                    (
+                        await session.execute(text("SELECT player_is_deleted(:id)"), {"id": str(player.player_id)})
+                    ).scalar(),
+                )
                 if deleted is True:
                     self._logger.warning(
                         "Refusing to save deleted player (stale in-memory Player)",
@@ -339,9 +342,12 @@ class PlayerRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                cleared = (
-                    await session.execute(text("SELECT clear_player_inventory(:id)"), {"id": str(player_id)})
-                ).scalar()
+                cleared = cast(
+                    object,
+                    (
+                        await session.execute(text("SELECT clear_player_inventory(:id)"), {"id": str(player_id)})
+                    ).scalar(),
+                )
                 await session.commit()
                 return cleared is True
         except (DatabaseError, SQLAlchemyError) as e:
@@ -483,7 +489,7 @@ class PlayerRepository:
                     text("SELECT soft_delete_player(:id)"),
                     {"id": str(player_id)},
                 )
-                deleted = result.scalar()
+                deleted = cast(object, result.scalar())
                 await session.commit()
                 if deleted:
                     self._logger.info("Player soft-deleted successfully", player_id=player_id)
@@ -520,7 +526,7 @@ class PlayerRepository:
                     text("SELECT delete_player(:id)"),
                     {"id": str(player_id)},
                 )
-                deleted = result.scalar()
+                deleted = cast(object, result.scalar())
                 await session.commit()
                 if deleted:
                     self._logger.info("Player deleted successfully", player_id=player_id)

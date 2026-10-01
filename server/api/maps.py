@@ -8,7 +8,7 @@ This module handles ASCII map rendering and coordinate management endpoints.
 
 import uuid
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, NoReturn
+from typing import TYPE_CHECKING, Any, NoReturn, cast
 
 from fastapi import APIRouter, Depends, Query, Request
 from pydantic import Field
@@ -457,7 +457,7 @@ async def _persist_map_origin(session: AsyncSession, room_id: str, origin_data: 
     await session.execute(text("SELECT clear_room_map_origins(:pattern)"), {"pattern": zone_pattern})
     result = await session.execute(text("SELECT set_room_map_origin(:room_id)"), {"room_id": room_id})
     await session.commit()
-    if not bool(result.scalar()):
+    if not bool(cast(object, result.scalar())):
         raise LoggedHTTPException(status_code=404, detail="Room not found", requested_room_id=room_id)
 
 
