@@ -2,7 +2,7 @@
  * Unit tests for corpseOverlayUtils.ts (#711): grace-period / decay countdown math.
  */
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { RoomContainerSummary } from '../../types';
 import {
   calculateTimeRemaining,
@@ -141,8 +141,16 @@ describe('getCorpseTiming', () => {
   });
 
   it('computes decayRemaining from decay_at', () => {
-    const c = corpse({ decay_at: new Date(Date.now() + 3600_000).toISOString(), metadata: {} });
-    const timing = getCorpseTiming(c, 'owner-1');
-    expect(timing.decayRemaining?.hours).toBe(1);
+    // Pin the clock: with a live clock, the milliseconds between building decay_at and
+    // getCorpseTiming reading Date.now() left 59:59.x, which floored to 0 hours (flaky).
+    vi.useFakeTimers();
+    try {
+      vi.setSystemTime(new Date('2026-01-01T00:00:00Z'));
+      const c = corpse({ decay_at: new Date(Date.now() + 3600_000).toISOString(), metadata: {} });
+      const timing = getCorpseTiming(c, 'owner-1');
+      expect(timing.decayRemaining?.hours).toBe(1);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

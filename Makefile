@@ -18,9 +18,13 @@ POWERSHELL := cd $(PROJECT_ROOT) && pwsh -NoProfile -ExecutionPolicy Bypass -Fil
 # When Make's SHELL is Git Bash or WSL bash, `npm` may resolve to a Windows path that bash
 # cannot execute (/bin/bash: C:/Program Files/nodejs/npm: No such file or directory). Run via
 # PowerShell on Windows so the Windows Node/npm install is used. Non-Windows keeps plain npm.
+# No trailing `exit $$LASTEXITCODE`: Make's recipe shell (Git sh) expanded $LASTEXITCODE inside the
+# double quotes to nothing, so pwsh ran a bare `exit` and returned 0 even when npm failed -- a
+# failing client test never failed `make test` on Windows (#950). pwsh -Command already exits 1
+# when its last command fails.
 ifeq ($(OS),Windows_NT)
 define run_npm_client
-	cd $(PROJECT_ROOT) && pwsh -NoProfile -ExecutionPolicy Bypass -Command "Set-Location -LiteralPath (Join-Path '$(PROJECT_ROOT)' 'client'); npm run $(1); exit $$LASTEXITCODE"
+	cd $(PROJECT_ROOT) && pwsh -NoProfile -ExecutionPolicy Bypass -Command "Set-Location -LiteralPath (Join-Path '$(PROJECT_ROOT)' 'client'); npm run $(1)"
 endef
 else
 define run_npm_client
