@@ -139,6 +139,20 @@ export async function createMultiPlayerContexts(browser: Browser, playerUsername
 }
 
 /**
+ * Put every player in Main Foyer, alive and standing: the E2E baseline each test starts from (#956).
+ *
+ * Call from `test.beforeEach` in specs whose tests move players. Built on ensurePlayableAlive, which
+ * walks a player back when one room away and otherwise relogs at spawn. Mutates each context's page
+ * (a relog can replace it). Players are reset one at a time: the relog path resets both E2E players'
+ * rooms in the database.
+ */
+export async function resetPlayersToMainFoyer(contexts: PlayerContext[]): Promise<void> {
+  for (const ctx of contexts) {
+    ctx.page = await ensurePlayableAlive(ctx.page, ctx.player.username, ctx.player.password);
+  }
+}
+
+/**
  * Cleanup multiple player contexts.
  *
  * Intentionally logs out each player before closing the browser context so the server

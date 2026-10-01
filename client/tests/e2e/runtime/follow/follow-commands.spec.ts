@@ -19,6 +19,7 @@ import {
   waitForCrossPlayerMessage,
   waitForLookReflectedInUi,
   type PlayerContext,
+  resetPlayersToMainFoyer,
 } from '../fixtures/multiplayer';
 
 /** Dr. Francis Morgan: non-aggressive quest_giver spawned in the admin's current room (sanitarium foyer). */
@@ -86,6 +87,11 @@ test.describe('Follow Commands', () => {
   test.beforeAll(async ({ browser }) => {
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     await waitForAllPlayersInGame(contexts, 60000);
+  });
+
+  test.beforeEach(async () => {
+    // E2E baseline: every test starts with the players in Main Foyer (#956).
+    await resetPlayersToMainFoyer(contexts);
   });
 
   test.afterAll(async () => {

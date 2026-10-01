@@ -18,6 +18,7 @@ import {
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
   type PlayerContext,
+  resetPlayersToMainFoyer,
 } from '../fixtures/multiplayer';
 
 /** Command responses may not reach `[data-message-text]` while this banner is present. */
@@ -69,6 +70,11 @@ test.describe('Party Commands', () => {
   test.beforeAll(async ({ browser }) => {
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     await waitForAllPlayersInGame(contexts, 60000);
+  });
+
+  test.beforeEach(async () => {
+    // E2E baseline: every test starts with the players in Main Foyer (#956).
+    await resetPlayersToMainFoyer(contexts);
   });
 
   test.afterAll(async () => {

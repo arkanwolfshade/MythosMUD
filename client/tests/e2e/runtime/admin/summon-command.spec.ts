@@ -13,6 +13,7 @@ import {
   createMultiPlayerContexts,
   ensurePlayerInGame,
   waitForAllPlayersInGame,
+  resetPlayersToMainFoyer,
 } from '../fixtures/multiplayer';
 
 test.describe('Administrative Summon Command', () => {
@@ -29,6 +30,11 @@ test.describe('Administrative Summon Command', () => {
     await ensurePlayerInGame(contexts[1], 60000);
 
     // Summoning does not require two players; no co-location step.
+  });
+
+  test.beforeEach(async () => {
+    // E2E baseline: every test starts with the players in Main Foyer (#956).
+    await resetPlayersToMainFoyer(contexts);
   });
 
   test.afterAll(async () => {

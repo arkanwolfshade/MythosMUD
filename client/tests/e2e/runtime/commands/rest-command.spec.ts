@@ -15,6 +15,7 @@ import {
   ensureFreshMultiPlayerContexts,
   ensurePlayerInGame,
   waitForAllPlayersInGame,
+  resetPlayersToMainFoyer,
 } from '../fixtures/multiplayer';
 import { ensureStanding } from '../fixtures/player';
 
@@ -42,6 +43,8 @@ test.describe('Rest Command', () => {
     // /rest there disconnects instantly instead of starting the 10s countdown other rooms use.
     test.setTimeout(300_000);
     contexts = await ensureFreshMultiPlayerContexts(browser, contexts, ['ArkanWolfshade', 'Ithaqua']);
+    // E2E baseline: start each test in Main Foyer (#956); fresh logins land in the saved room.
+    await resetPlayersToMainFoyer(contexts);
 
     const awContext = contexts[0];
 
@@ -76,6 +79,8 @@ test.describe('Rest Command', () => {
     // The prior test disconnected AW at the rest location; get a fresh, connected pair and move
     // off the rest location before testing the countdown path.
     contexts = await ensureFreshMultiPlayerContexts(browser, contexts, ['ArkanWolfshade', 'Ithaqua']);
+    // E2E baseline: start each test in Main Foyer (#956); fresh logins land in the saved room.
+    await resetPlayersToMainFoyer(contexts);
     const awContext = contexts[0];
 
     await ensurePlayerInGame(awContext, 30000);
@@ -110,6 +115,8 @@ test.describe('Rest Command', () => {
 
   test('should block /rest during combat', async ({ browser }) => {
     contexts = await ensureFreshMultiPlayerContexts(browser, contexts, ['ArkanWolfshade', 'Ithaqua']);
+    // E2E baseline: start each test in Main Foyer (#956); fresh logins land in the saved room.
+    await resetPlayersToMainFoyer(contexts);
     const awContext = contexts[0];
 
     await ensurePlayerInGame(awContext, 30000);

@@ -22,6 +22,7 @@ import {
   waitForCrossPlayerMessage,
   waitForLookReflectedInUi,
   type PlayerContext,
+  resetPlayersToMainFoyer,
 } from '../fixtures/multiplayer';
 import { ensureStanding } from '../fixtures/player';
 
@@ -125,6 +126,11 @@ test.describe('Local Channel Basic', () => {
       // Ignore unmute errors - players may not be muted to begin with
       // This is expected if mute state doesn't persist between test runs
     }
+  });
+
+  test.beforeEach(async () => {
+    // E2E baseline: every test starts with the players in Main Foyer (#956).
+    await resetPlayersToMainFoyer(contexts);
   });
 
   test.afterAll(async () => {
