@@ -76,3 +76,15 @@ def test_makefile_composites_use_fail_fast_runner() -> None:
     assert "scripts/run_make_stages.py" in makefile
     for target in ("all:", "codacy-tools:", "test:", "test-coverage:"):
         assert target in makefile
+
+
+def test_windows_npm_recipe_does_not_reference_pwsh_variables_inside_shell_quotes() -> None:
+    """#950: Make's recipe shell (Git sh) expands $LASTEXITCODE inside the double-quoted pwsh -Command
+    to nothing, so `exit $$LASTEXITCODE` became a bare `exit` and every client npm step exited 0 --
+    a failing client test never failed `make test` on Windows."""
+    makefile = (PROJECT_ROOT / "Makefile").read_text(encoding="utf-8")
+    recipe_lines = [line for line in makefile.splitlines() if "pwsh" in line and "npm run" in line]
+
+    assert recipe_lines, "expected the Windows run_npm_client recipe"
+    for line in recipe_lines:
+        assert "$$" not in line, f"pwsh variable inside sh double quotes would be expanded by sh: {line.strip()}"
