@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import json
 from decimal import Decimal
-from typing import TYPE_CHECKING, TypedDict, cast
+from typing import TYPE_CHECKING, NotRequired, TypedDict, cast
 
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
@@ -51,6 +51,9 @@ class ProcessedRoomData(TypedDict):
     # by get_rooms_with_exits().
     room_environment: str | None
     resolved_environment: str
+    # #910: zones.name / subzones.name for display; absent on rows from older procedure shapes.
+    zone_display_name: NotRequired[str | None]
+    subzone_display_name: NotRequired[str | None]
 
 
 class RoomLoadResult(TypedDict):
@@ -75,6 +78,8 @@ class RoomInitPayload(TypedDict, total=False):
     attributes: dict[str, object]
     map_x: float | None
     map_y: float | None
+    zone_name: str | None
+    sub_zone_name: str | None
 
 
 def _row_optional_str(row: dict[str, object], key: str) -> str | None:
@@ -209,7 +214,9 @@ class RoomCacheLoader:
                         map_x,
                         map_y,
                         room_environment,
-                        resolved_environment
+                        resolved_environment,
+                        zone_display_name,
+                        subzone_display_name
                     FROM get_rooms_with_exits()
                     """
                 )
@@ -310,6 +317,8 @@ class RoomCacheLoader:
                     "map_y": _row_optional_float(row, "map_y"),
                     "room_environment": _row_optional_str(row, "room_environment"),
                     "resolved_environment": _row_optional_str(row, "resolved_environment") or "outdoors",
+                    "zone_display_name": _row_optional_str(row, "zone_display_name"),
+                    "subzone_display_name": _row_optional_str(row, "subzone_display_name"),
                 }
             )
 
@@ -349,6 +358,8 @@ class RoomCacheLoader:
             "map_y": _row_optional_float(row, "map_y"),
             "room_environment": _row_optional_str(row, "room_environment"),
             "resolved_environment": _row_optional_str(row, "resolved_environment") or "outdoors",
+            "zone_display_name": _row_optional_str(row, "zone_display_name"),
+            "subzone_display_name": _row_optional_str(row, "subzone_display_name"),
         }
 
     def _process_room_rows(self, rooms_rows: list[dict[str, object]]) -> list[ProcessedRoomData]:
@@ -519,6 +530,8 @@ class RoomCacheLoader:
                 # here until now, which is why every zone laid itself out by force layout.
                 "map_x": room_data_item["map_x"],
                 "map_y": room_data_item["map_y"],
+                "zone_name": room_data_item.get("zone_display_name"),
+                "sub_zone_name": room_data_item.get("subzone_display_name"),
             }
 
             result_container["rooms"][room_id] = Room(dict(room_payload), self._event_bus)

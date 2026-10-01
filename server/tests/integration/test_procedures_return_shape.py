@@ -37,6 +37,9 @@ GET_ROOMS_WITH_EXITS_COLUMNS = {
     # #663: room's own (possibly NULL) rooms.environment column, and the room -> subzone ->
     # zone -> 'outdoors' cascade resolved in SQL.
     "room_environment",
+    # #910: zones.name / subzones.name for the death screen.
+    "zone_display_name",
+    "subzone_display_name",
     "resolved_environment",
 }
 
@@ -92,7 +95,9 @@ async def test_get_rooms_with_exits_return_shape(
                     map_x,
                     map_y,
                     room_environment,
-                    resolved_environment
+                    resolved_environment,
+                    zone_display_name,
+                    subzone_display_name
                 FROM get_rooms_with_exits()
                 """
             )

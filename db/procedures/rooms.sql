@@ -30,7 +30,11 @@ RETURNS TABLE (
     -- #663: room_environment is the room's own (possibly NULL) column; resolved_environment is
     -- the room -> subzone -> zone -> 'outdoors' cascade. Appended for the same reason as map_x/map_y.
     room_environment text,
-    resolved_environment text
+    resolved_environment text,
+    -- #910: human-readable zones.name / subzones.name for the death screen ("Arkham City > Sanitarium > Foyer").
+    -- Appended for the same reason as the columns above.
+    zone_display_name text,
+    subzone_display_name text
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -63,7 +67,9 @@ BEGIN
         r.map_x,
         r.map_y,
         r.environment,
-        COALESCE(r.environment, sz.environment, z.environment, 'outdoors')
+        COALESCE(r.environment, sz.environment, z.environment, 'outdoors'),
+        z.name,
+        sz.name
     FROM rooms r
     LEFT JOIN subzones sz ON r.subzone_id = sz.id
     LEFT JOIN zones z ON sz.zone_id = z.id
@@ -83,7 +89,9 @@ BEGIN
         sz.stable_id,
         sz.environment,
         z.stable_id,
-        z.environment
+        z.environment,
+        z.name,
+        sz.name
     ORDER BY z.stable_id, sz.stable_id, r.stable_id;
 END;
 $$ LANGUAGE plpgsql;

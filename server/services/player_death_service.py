@@ -10,7 +10,7 @@ All persistence calls wrapped in asyncio.to_thread() to prevent event loop block
 """
 
 import uuid
-from typing import Any
+from typing import Any, cast
 
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
@@ -21,6 +21,7 @@ from server.events.event_types import PlayerDiedEvent, PlayerDPDecayEvent
 from server.models.game import PositionState
 from server.models.player import Player
 from server.structured_logging.enhanced_logging_config import get_logger, log_exception_once
+from server.utils.room_utils import format_room_location
 
 logger = get_logger(__name__)
 
@@ -274,7 +275,7 @@ class PlayerDeathService:
             death_location: Room ID where the player died
 
         Returns:
-            Room name if available, otherwise the room ID or "Unknown Location"
+            "Zone › Sub-zone › Room" display string, or "Unknown Location" (never the raw room ID, #910)
         """
         if not death_location or death_location == LIMBO_ROOM_ID:
             return "Unknown Location"
@@ -284,14 +285,14 @@ class PlayerDeathService:
                 room = self._async_persistence.get_room_by_id(death_location)
                 # Handle case where get_room_by_id might return a coroutine (if mocked as async)
                 if hasattr(room, "__await__"):
-                    # It's a coroutine, can't await in sync context - just return location
-                    return death_location
-                return room.name if room and hasattr(room, "name") else death_location
+                    # It's a coroutine, can't await in sync context - just return unknown
+                    return "Unknown Location"
+                return format_room_location(cast(object, room)) or "Unknown Location"
             except (AttributeError, TypeError):
-                # If room lookup fails, just return the location
-                return death_location
+                # If room lookup fails, don't leak the room ID
+                return "Unknown Location"
 
-        return death_location
+        return "Unknown Location"
 
     def _persist_death_location_stats(self, player: Player, death_location: str, room_name: str) -> None:
         """Store death room id/name on player stats so login can show the place of death."""

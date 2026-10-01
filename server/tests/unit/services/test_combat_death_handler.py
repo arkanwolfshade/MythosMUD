@@ -6,6 +6,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType
+from server.models.room import Room
 from server.services.combat_death_handler import CombatDeathHandler
 
 
@@ -212,3 +213,39 @@ async def test_handle_target_state_mortally_wounded_error(mock_messaging, handle
     await handler.handle_target_state_changes(
         player_target, MagicMock(), target_mortally_wounded=True, target_died=False, combat=combat
     )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("room_attrs", "expected"),
+    [
+        (
+            {"zone_name": "Arkham City", "sub_zone_name": "Sanitarium", "name": "Foyer"},
+            "Arkham City › Sanitarium › Foyer",
+        ),
+        ({"name": "Foyer"}, "Foyer"),
+        ({"name": ""}, "Unknown Location"),
+    ],
+)
+async def test_death_location_uses_display_names_never_room_id(
+    room_attrs: dict[str, str],
+    expected: str,
+    handler: CombatDeathHandler,
+    player_target: CombatParticipant,
+    combat: CombatInstance,
+):
+    """#910: death_location is 'Zone > Sub-zone > Room', skipping blanks, never the raw room ID."""
+    room = Room({"id": combat.room_id} | room_attrs)
+    broadcast = AsyncMock(return_value=True)
+    with (
+        patch(
+            "server.container.async_persistence_access.get_container_async_persistence",
+            return_value=MagicMock(get_room_by_id=MagicMock(return_value=room)),
+        ),
+        patch("server.services.combat_messaging_integration.combat_messaging_integration") as messaging,
+        patch.object(CombatDeathHandler, "_create_corpse_on_death", new_callable=AsyncMock),
+    ):
+        messaging.broadcast_player_death = broadcast
+        await handler._handle_player_death_events(player_target, combat)  # pyright: ignore[reportPrivateUsage]
+    assert broadcast.await_args is not None
+    assert broadcast.await_args.kwargs["death_location"] == expected

@@ -450,6 +450,33 @@ describe('projector', () => {
       expect(next.messages[0].text).toBe('Your mind fractures completely.');
     });
 
+    it('rescue_update(delirium) shows zone / sub-zone / room and skips missing segments (#910)', () => {
+      const room = { id: 'earth_x_y_z', name: 'Foyer', description: '', exits: {} };
+      const event = {
+        event_type: 'rescue_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { status: 'delirium' },
+      };
+      const full = projectEvent(
+        { ...getInitialGameState(), room: { ...room, zone_name: 'Arkham City', sub_zone_name: 'Sanitarium' } },
+        event
+      );
+      expect(full.deliriumLocation).toBe('Arkham City › Sanitarium › Foyer');
+      const partial = projectEvent({ ...getInitialGameState(), room: { ...room, zone_name: 'Arkham City' } }, event);
+      expect(partial.deliriumLocation).toBe('Arkham City › Foyer');
+    });
+
+    it('player_died never falls back to the raw room_id (#910)', () => {
+      const died = projectEvent(getInitialGameState(), {
+        event_type: 'player_died',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { room_id: 'earth_arkhamcity_sanitarium_room_foyer_001' },
+      });
+      expect(died.deathLocation).toBeNull();
+    });
+
     it('rescue_update(channeling) sets rescueStatus from the payload and keeps the server line in chat', () => {
       const next = projectEvent(getInitialGameState(), {
         event_type: 'rescue_update',

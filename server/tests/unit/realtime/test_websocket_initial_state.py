@@ -735,3 +735,47 @@ async def test_send_initial_room_state_handles_exception(
         await send_initial_room_state(
             mock_websocket, player_id, player_id_str, canonical_room_id, mock_connection_manager
         )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("stats", "expected"),
+    [
+        ({"current_dp": -15}, "Arkham City › Sanitarium › Foyer"),
+        ({"current_dp": -15, "death_room_id": "earth_x_y_z"}, "Unknown Location"),
+    ],
+)
+async def test_check_and_send_death_notification_location_display(
+    mock_websocket: AsyncMock,
+    mock_connection_manager: AsyncMock,
+    stats: dict[str, object],
+    expected: str,
+):
+    """#910: death_location is 'Zone > Sub-zone > Room'; an unresolvable death_room_id never leaks the id."""
+    room = Room(
+        {"id": "earth_arkhamcity_sanitarium_room_foyer_001", "name": "Foyer"}
+        | {"zone_name": "Arkham City", "sub_zone_name": "Sanitarium"}
+    )
+    mock_player = MagicMock(spec=Player)
+    mock_player.name = "TestPlayer"
+    mock_player.get_stats = MagicMock(return_value=stats)
+    player_id = uuid.uuid4()
+
+    with patch("server.container.async_persistence_access.get_container_async_persistence") as mock_get_persistence:
+        mock_persistence = AsyncMock()
+        mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
+        mock_persistence.get_room_by_id = MagicMock(return_value=None)
+        mock_get_persistence.return_value = mock_persistence
+
+        await check_and_send_death_notification(
+            mock_websocket,
+            player_id,
+            str(player_id),
+            "earth_arkhamcity_sanitarium_room_foyer_001",
+            room,
+            mock_connection_manager,
+        )
+
+        send_json_mock: AsyncMock = cast(AsyncMock, mock_websocket.send_json)
+        payload = cast(dict[str, dict[str, object]], send_json_mock.call_args[0][0])
+        assert payload["data"]["death_location"] == expected

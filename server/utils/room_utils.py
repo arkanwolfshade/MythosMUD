@@ -5,6 +5,26 @@ This module provides utility functions for room-related operations,
 including sub-zone extraction for the Advanced Chat Channels feature.
 """
 
+from typing import cast
+
+LOCATION_SEPARATOR = " \N{SINGLE RIGHT-POINTING ANGLE QUOTATION MARK} "
+
+
+def _display_text(room: object, attr: str) -> str:
+    value = cast(object, getattr(room, attr, None))
+    return value.strip() if isinstance(value, str) else ""
+
+
+def format_room_location(room: object) -> str:
+    """
+    Build "Zone › Sub-zone › Room" from a room's display names (#910).
+
+    Segments that are missing or blank are skipped, and raw IDs are never used, so the
+    result is "" when the room carries no usable names; callers pick their own fallback.
+    """
+    parts = (_display_text(room, attr) for attr in ("zone_name", "sub_zone_name", "name"))
+    return LOCATION_SEPARATOR.join(p for p in parts if p)
+
 
 def extract_subzone_from_room_id(room_id: str) -> str | None:
     """

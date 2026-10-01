@@ -115,11 +115,9 @@ class PlayerRespawnService:
         if not death_location or death_location in (LIMBO_ROOM_ID, "catatonia_failover"):
             return
         stats = player.get_stats()
+        # Display name is filled by the death service; never store the raw id there (#910).
+        # Login re-resolves the name from death_room_id when it is missing.
         stats[DEATH_ROOM_ID_STAT] = death_location
-        # Display name filled by death service when available; keep id as fallback.
-        existing = stats.get(DEATH_LOCATION_STAT)
-        if not isinstance(existing, str) or not existing.strip():
-            stats[DEATH_LOCATION_STAT] = death_location
         player.set_stats(stats)
 
     @staticmethod

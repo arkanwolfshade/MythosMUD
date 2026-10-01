@@ -93,16 +93,15 @@ class CombatDeathHandler:
             from ..events.event_types import PlayerDiedEvent
             from ..services.combat_messaging_integration import combat_messaging_integration
 
-            death_location_display = combat.room_id
+            death_location_display = "Unknown Location"  # never the raw room ID (#910)
             try:
                 from ..container.async_persistence_access import get_container_async_persistence
+                from ..utils.room_utils import format_room_location
 
                 persistence = get_container_async_persistence()
                 room = persistence.get_room_by_id(combat.room_id) if persistence else None
                 if room is not None and not hasattr(room, "__await__"):
-                    name = getattr(room, "name", None)
-                    if isinstance(name, str) and name.strip():
-                        death_location_display = name
+                    death_location_display = format_room_location(room) or death_location_display
             except (AttributeError, TypeError, RuntimeError, ValueError):
                 pass
 
