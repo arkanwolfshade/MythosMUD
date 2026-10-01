@@ -324,6 +324,36 @@ class PlayerRepository:
                 user_friendly="Failed to save player",
             )
 
+    async def clear_player_inventory(self, player_id: uuid.UUID) -> bool:
+        """
+        Empty a player's carried and equipped items without touching any other column (#917).
+
+        Unlike save_player, this never rewrites stats, so it cannot race a concurrent DP write.
+
+        Returns:
+            bool: False if the player does not exist or is soft-deleted
+
+        Raises:
+            DatabaseError: If database operation fails
+        """
+        try:
+            session_maker = get_session_maker()
+            async with session_maker() as session:
+                cleared = (
+                    await session.execute(text("SELECT clear_player_inventory(:id)"), {"id": str(player_id)})
+                ).scalar()
+                await session.commit()
+                return cleared is True
+        except (DatabaseError, SQLAlchemyError) as e:
+            log_and_raise(
+                DatabaseError,
+                f"Database error clearing player inventory: {e}",
+                operation="clear_player_inventory",
+                player_id=player_id,
+                details={"player_id": str(player_id), "error": str(e)},
+                user_friendly="Failed to clear player inventory",
+            )
+
     async def list_players(self) -> list[Player]:
         """
         List all players.

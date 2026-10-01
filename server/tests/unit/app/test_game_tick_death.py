@@ -35,6 +35,7 @@ from server.app.game_tick_processing import (
 )
 from server.app.game_tick_protocols import _tick_online_players
 from server.models.combat import CombatStatus
+from server.services.corpse_lifecycle_service import CorpseServiceError
 
 
 @pytest.mark.asyncio
@@ -60,17 +61,15 @@ async def test_process_mortally_wounded_skips_active_combat() -> None:
     process_mortally_wounded_tick.assert_not_called()
 
 
-@pytest.mark.asyncio
-async def test_process_mortally_wounded_death_threshold() -> None:
-    process_mortally_wounded_tick: AsyncMock = AsyncMock()
+def _bleed_out_setup() -> tuple[MagicMock, MagicMock, AsyncMock, AsyncMock]:
+    """A container and player whose next tick takes the player to -10 DP, plus the limbo-move mock."""
     handle_player_death: AsyncMock = AsyncMock()
     player_death_service: MagicMock = MagicMock()
-    player_death_service.process_mortally_wounded_tick = process_mortally_wounded_tick
+    player_death_service.process_mortally_wounded_tick = AsyncMock()
     player_death_service.handle_player_death = handle_player_death
     move_player_to_limbo: AsyncMock = AsyncMock()
     player_respawn_service: MagicMock = MagicMock()
     player_respawn_service.move_player_to_limbo = move_player_to_limbo
-    get_stats: MagicMock = MagicMock(return_value={"current_dp": -10, "max_dp": 100})
     container: MagicMock = MagicMock()
     container.player_death_service = player_death_service
     container.combat_service = None
@@ -80,14 +79,74 @@ async def test_process_mortally_wounded_death_threshold() -> None:
     player.player_id = str(uuid.uuid4())
     player.name = "Victim"
     player.current_room_id = "room-1"
-    player.get_stats = get_stats
+    player.get_stats = MagicMock(return_value={"current_dp": -10, "max_dp": 100})
+    return container, player, handle_player_death, move_player_to_limbo
+
+
+@pytest.mark.asyncio
+async def test_process_mortally_wounded_death_threshold() -> None:
+    container, player, handle_player_death, move_player_to_limbo = _bleed_out_setup()
     session: AsyncMock = AsyncMock()
-    with patch(
-        "server.app.game_tick_death.combat_messaging_integration.send_dp_decay_message",
-        new_callable=AsyncMock,
+    order: list[str] = []
+
+    async def _record_corpse(*_args: object, **_kwargs: object) -> None:
+        order.append("corpse")
+
+    async def _record_limbo(*_args: object, **_kwargs: object) -> bool:
+        order.append("limbo")
+        return True
+
+    corpse_service = MagicMock()
+    corpse_service.create_corpse_on_death = AsyncMock(side_effect=_record_corpse)
+    move_player_to_limbo.side_effect = _record_limbo
+    with (
+        patch(
+            "server.app.game_tick_death.combat_messaging_integration.send_dp_decay_message",
+            new_callable=AsyncMock,
+        ),
+        patch("server.app.game_tick_death.CorpseLifecycleService", return_value=corpse_service) as corpse_service_cls,
     ):
         await _process_mortally_wounded_player(container, player, session)
     handle_player_death.assert_awaited_once()
+    # Bleed-out deaths never pass through combat's death handler, so the tick must make the corpse (#917):
+    # in the room the player died in, before the limbo move relocates them.
+    corpse_service_cls.assert_called_once()
+    assert corpse_service_cls.call_args.kwargs["persistence"] is container.async_persistence
+    corpse_service.create_corpse_on_death.assert_awaited_once_with(uuid.UUID(player.player_id), "room-1")
+    assert order == ["corpse", "limbo"]
+
+
+@pytest.mark.asyncio
+async def test_bleed_out_corpse_failure_does_not_abort_the_death_sequence() -> None:
+    container, player, _, move_player_to_limbo = _bleed_out_setup()
+    corpse_service = MagicMock()
+    corpse_service.create_corpse_on_death = AsyncMock(side_effect=CorpseServiceError("db down"))
+    with (
+        patch(
+            "server.app.game_tick_death.combat_messaging_integration.send_dp_decay_message",
+            new_callable=AsyncMock,
+        ),
+        patch("server.app.game_tick_death.CorpseLifecycleService", return_value=corpse_service),
+    ):
+        await _process_mortally_wounded_player(container, player, AsyncMock())
+    move_player_to_limbo.assert_awaited_once()
+    container.event_bus.publish.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_bleed_out_without_persistence_skips_corpse_but_still_moves_to_limbo() -> None:
+    container, player, _, move_player_to_limbo = _bleed_out_setup()
+    container.async_persistence = None
+    with (
+        patch(
+            "server.app.game_tick_death.combat_messaging_integration.send_dp_decay_message",
+            new_callable=AsyncMock,
+        ),
+        patch("server.app.game_tick_death.CorpseLifecycleService") as corpse_service_cls,
+    ):
+        await _process_mortally_wounded_player(container, player, AsyncMock())
+    corpse_service_cls.assert_not_called()
+    move_player_to_limbo.assert_awaited_once()
 
 
 @pytest.mark.asyncio

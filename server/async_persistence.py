@@ -194,6 +194,10 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         """Save a player. Delegates to PlayerRepository."""
         return await self._player_repo.save_player(player)
 
+    async def clear_player_inventory(self, player_id: uuid.UUID) -> bool:
+        """Empty a player's carried and equipped items only. Delegates to PlayerRepository."""
+        return await self._player_repo.clear_player_inventory(player_id)
+
     async def list_players(self) -> list[Player]:
         """List all players. Delegates to PlayerRepository."""
         # Ensure room cache is loaded before validation (validate_and_fix_player_room checks cache)

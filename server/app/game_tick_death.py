@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import datetime
 import uuid
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -15,6 +15,7 @@ from ..database import get_async_session
 from ..events.event_types import PlayerDPDecayEvent, PlayerDPUpdated
 from ..models.combat import CombatStatus
 from ..services.combat_messaging_integration import combat_messaging_integration
+from ..services.corpse_lifecycle_service import CorpseLifecycleService, CorpseServiceError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
 from .game_tick_protocols import (
@@ -30,6 +31,7 @@ logger = get_logger("server.game_tick")
 
 if TYPE_CHECKING:
     from ..models.player import Player
+    from ..services.corpse_lifecycle_service import CorpseConnectionManagerLike
 
 __all__ = [
     "_handle_player_death_threshold",
@@ -66,6 +68,27 @@ async def _player_in_active_combat(container: _TickContainer, player: Player) ->
     return False
 
 
+async def _create_bleed_out_corpse(container: _TickContainer, player_uuid: uuid.UUID, room_id: str) -> None:
+    """Move a bled-out player's gear onto a corpse in the death room (#917).
+
+    Bleed-out deaths (DP decay to -10, no killing blow) never pass through combat's death handler,
+    which is the only other place a corpse is made, so without this they kept everything.
+    """
+    persistence = container.async_persistence
+    if persistence is None:
+        logger.warning("No persistence available for bleed-out corpse creation", player_id=player_uuid)
+        return
+    corpse_service = CorpseLifecycleService(
+        persistence=persistence,
+        connection_manager=cast("CorpseConnectionManagerLike | None", cast(object, container.connection_manager)),
+    )
+    try:
+        _ = await corpse_service.create_corpse_on_death(player_uuid, room_id)
+    except CorpseServiceError as corpse_error:
+        # A failed corpse must not abort the death sequence (limbo move, DP publish) that follows.
+        logger.error("Error creating bleed-out corpse", player_id=player_uuid, room_id=room_id, error=str(corpse_error))
+
+
 async def _handle_player_death_threshold(
     container: _TickContainer, player: Player, session: AsyncSession, new_dp: int, stats: dict[str, object]
 ) -> None:
@@ -82,8 +105,10 @@ async def _handle_player_death_threshold(
     death_service = container.player_death_service
     respawn_service = container.player_respawn_service
     player_uuid = uuid.UUID(str(player.player_id))
-    _ = await death_service.handle_player_death(player_uuid, str(player.current_room_id), None, session)
-    _ = await respawn_service.move_player_to_limbo(player_uuid, str(player.current_room_id), session)
+    death_room_id = str(player.current_room_id)
+    _ = await death_service.handle_player_death(player_uuid, death_room_id, None, session)
+    await _create_bleed_out_corpse(container, player_uuid, death_room_id)
+    _ = await respawn_service.move_player_to_limbo(player_uuid, death_room_id, session)
 
     if not container.event_bus:
         return

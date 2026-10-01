@@ -139,13 +139,17 @@ class CombatParticipant:  # pylint: disable=too-many-instance-attributes  # Reas
 
         Returns:
             Tuple of (old_dp, target_died, target_mortally_wounded)
+            - target_died: True on the hit that kills a player (crossing to -10 from above), not on
+              later hits against a player already dead at the -10 floor (players only)
             - target_mortally_wounded: True if this hit crossed from positive DP to 0 (players only)
         """
         old_dp = self.current_dp
         effective = max(0, damage - self.armor_points)
         if self.participant_type == CombatParticipantType.PLAYER:
             self.current_dp = max(-10, self.current_dp - effective)
-            target_died = self.is_dead()
+            # Death is the transition into -10, not a state: a player stays at the floor until respawn,
+            # and every further hit reporting "died" re-fired death handling (#917).
+            target_died = old_dp > -10 and self.is_dead()
             target_mortally_wounded = old_dp > 0 and not self.current_dp
         else:
             self.current_dp = max(0, self.current_dp - effective)
