@@ -20,6 +20,7 @@ import {
   prepareReceiverForInboundMessages,
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
+  resetPlayersToMainFoyer,
 } from '../fixtures/multiplayer';
 import { ensureStanding, goEastFromFoyer } from '../fixtures/player';
 
@@ -119,6 +120,11 @@ test.describe('Local Channel Movement', () => {
     // Mute state persists across specs; local delivery is filtered until unmuted.
     await executeCommand(contexts[0].page, 'unmute Ithaqua').catch(() => {});
     await executeCommand(contexts[1].page, 'unmute ArkanWolfshade').catch(() => {});
+  });
+
+  test.beforeEach(async () => {
+    // E2E baseline: every test starts with the players in Main Foyer (#956).
+    await resetPlayersToMainFoyer(contexts);
   });
 
   test.afterAll(async () => {

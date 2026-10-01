@@ -21,6 +21,7 @@ import {
   waitForCrossPlayerMessage,
   waitForLookReflectedInUi,
   type PlayerContext,
+  resetPlayersToMainFoyer,
 } from '../fixtures/multiplayer';
 
 async function nudgeStandBothPlayers(aw: PlayerContext, other: PlayerContext): Promise<void> {
@@ -107,6 +108,11 @@ test.describe('Local Channel Integration', () => {
       // Ignore unmute errors - players may not be muted to begin with
       // This is expected if mute state doesn't persist between test runs
     }
+  });
+
+  test.beforeEach(async () => {
+    // E2E baseline: every test starts with the players in Main Foyer (#956).
+    await resetPlayersToMainFoyer(contexts);
   });
 
   test.afterAll(async () => {

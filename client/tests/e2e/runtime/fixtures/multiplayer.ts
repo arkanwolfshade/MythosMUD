@@ -9,6 +9,7 @@ export {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
   reopenPlayerPageIfClosed,
+  resetPlayersToMainFoyer,
 } from './multiplayer-contexts';
 export type { PlayerContext } from './multiplayer-contexts';
 

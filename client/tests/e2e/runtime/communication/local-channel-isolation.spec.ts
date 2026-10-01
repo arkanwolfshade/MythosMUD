@@ -21,6 +21,7 @@ import {
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
   type PlayerContext,
+  resetPlayersToMainFoyer,
 } from '../fixtures/multiplayer';
 import { ensureStanding, goEastFromFoyer } from '../fixtures/player';
 import { DEFAULT_SPAWN_LOOK_CUE, EASTERN_HALLWAY_LOOK_CUE } from '../fixtures/test-data';
@@ -113,6 +114,11 @@ test.describe('Local Channel Isolation', () => {
     test.setTimeout(120_000);
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     await waitForAllPlayersInGame(contexts, 60000);
+  });
+
+  test.beforeEach(async () => {
+    // E2E baseline: every test starts with the players in Main Foyer (#956).
+    await resetPlayersToMainFoyer(contexts);
   });
 
   test.afterAll(async () => {

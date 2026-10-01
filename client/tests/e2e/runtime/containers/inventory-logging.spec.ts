@@ -15,7 +15,12 @@
 import { expect, test } from '@playwright/test';
 import { executeCommand, waitForMessage } from '../fixtures/auth';
 import { escapeRegExpLiteral } from '../fixtures/message-match';
-import { createMultiPlayerContexts, cleanupMultiPlayerContexts, ensurePlayerInGame } from '../fixtures/multiplayer';
+import {
+  createMultiPlayerContexts,
+  cleanupMultiPlayerContexts,
+  ensurePlayerInGame,
+  resetPlayersToMainFoyer,
+} from '../fixtures/multiplayer';
 import { logOffset, waitForLogLine } from '../fixtures/server-logs';
 
 const SLING_ITEM_ID = 'pack_dark_ages.weapon.sling';
@@ -33,6 +38,11 @@ test.describe('Inventory actions write to inventory.log', () => {
   test.beforeAll(async ({ browser }) => {
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade']);
     await ensurePlayerInGame(contexts[0], 60000);
+  });
+
+  test.beforeEach(async () => {
+    // E2E baseline: every test starts with the players in Main Foyer (#956).
+    await resetPlayersToMainFoyer(contexts);
   });
 
   test.afterAll(async () => {

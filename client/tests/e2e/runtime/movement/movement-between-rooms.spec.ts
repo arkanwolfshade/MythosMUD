@@ -19,6 +19,7 @@ import {
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
   type PlayerContext,
+  resetPlayersToMainFoyer,
 } from '../fixtures/multiplayer';
 import { ensureStanding } from '../fixtures/player';
 
@@ -68,6 +69,11 @@ test.describe('Movement Between Rooms', () => {
     await executeCommand(ithaquaContext.page, 'go north');
     await new Promise(r => setTimeout(r, 3000));
     await ensurePlayersInSameRoom(contexts, 2, 60000);
+  });
+
+  test.beforeEach(async () => {
+    // E2E baseline: every test starts with the players in Main Foyer (#956).
+    await resetPlayersToMainFoyer(contexts);
   });
 
   test.afterAll(async () => {

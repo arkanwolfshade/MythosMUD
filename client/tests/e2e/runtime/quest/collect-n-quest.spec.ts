@@ -18,6 +18,7 @@ import {
 } from '../fixtures/auth';
 import { ensureStanding } from '../fixtures/player';
 import { TEST_TIMEOUTS } from '../fixtures/test-data';
+import { resetE2ePlayerRoomsInDatabase } from '../fixtures/multiplayer';
 
 /** Example collect_n seed. Swap fields to exercise another definition without rewriting flow helpers. */
 const COLLECT_N = {
@@ -200,6 +201,11 @@ test.describe('collect_n quest ask/turnin', () => {
 
   test.beforeAll(() => {
     resetCollectNQuestInstances();
+  });
+
+  test.beforeEach(() => {
+    // E2E baseline (#956): each test logs in fresh, landing in the saved room, so reset it to Main Foyer.
+    resetE2ePlayerRoomsInDatabase();
   });
 
   test('quest ask fails when the target NPC is not in the room', async ({ page }) => {

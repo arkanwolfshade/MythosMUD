@@ -21,6 +21,7 @@ import {
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
   type PlayerContext,
+  resetPlayersToMainFoyer,
 } from '../fixtures/multiplayer';
 
 /**
@@ -114,6 +115,11 @@ test.describe('Chat Messages Between Players', () => {
       // Ignore unmute errors - players may not be muted to begin with
       // This is expected if mute state doesn't persist between test runs
     }
+  });
+
+  test.beforeEach(async () => {
+    // E2E baseline: every test starts with the players in Main Foyer (#956).
+    await resetPlayersToMainFoyer(contexts);
   });
 
   test.afterAll(async () => {
