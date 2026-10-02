@@ -34,7 +34,8 @@ Get-Content $envFile | ForEach-Object {
 
 $defaultArgs = @(
     "server/tests/",
-    "-m", "integration"
+    "-m", "integration",
+    "--durations=30"
 )
 
 if ($PytestArgs.Count -gt 0) {
