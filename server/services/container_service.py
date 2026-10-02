@@ -15,6 +15,7 @@ Implementation is split across mixins to keep each module under Lizard file-nloc
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from typing import cast
 from uuid import UUID
 
 from ..async_persistence import AsyncPersistenceLayer
@@ -46,6 +47,7 @@ __all__ = [
     "ContainerOpenByAnotherPlayerError",
     "audit_logger",
     "filter_container_data",
+    "get_container_service",
     "get_enum_value",
 ]
 
@@ -72,3 +74,33 @@ class ContainerService(
 
     # Track open containers: {container_id: {player_id: mutation_token}}
     _open_containers: dict[UUID, dict[UUID, str]] = field(default_factory=dict, init=False)
+
+
+_container_service_cache: dict[int, ContainerService] = {}
+
+
+def get_container_service(persistence: object) -> ContainerService:
+    """
+    Get the ContainerService for this persistence layer, reusing one across calls.
+
+    ContainerService tracks open-container sessions and mutation tokens in an
+    instance-level dict (see ContainerService._open_containers). A fresh instance per
+    call -- which this used to construct unconditionally -- gives every HTTP request
+    (and every text command) its own empty session store, so an open() from one
+    request is invisible to the transfer()/close() of the next: the whole exclusivity
+    and idempotent-reopen contract silently never worked outside a single call. Caching
+    by persistence identity fixes that for the real server (one long-lived persistence
+    singleton -> one shared ContainerService) while keeping unit tests isolated (each
+    test's own mock persistence gets its own service).
+
+    Lives in the service layer (re-exported by server.api.container_helpers) so realtime
+    disconnect cleanup can release a departing player's sessions on the same instance (#964).
+    """
+    # Accepts any object, as before the move: callers pass the persistence singleton or test doubles.
+    layer = cast(AsyncPersistenceLayer, persistence)
+    key = id(layer)
+    service = _container_service_cache.get(key)
+    if service is None:
+        service = ContainerService(persistence=layer)
+        _container_service_cache[key] = service
+    return service

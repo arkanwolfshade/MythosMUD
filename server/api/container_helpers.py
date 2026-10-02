@@ -5,7 +5,7 @@ This module contains utility functions, validation helpers, rate limiting,
 and event emission helpers used by container API endpoints.
 """
 
-from typing import TYPE_CHECKING, Any, cast
+from typing import Any, cast
 from uuid import UUID
 
 from fastapi import Request, status
@@ -19,13 +19,11 @@ from ..services.container_service import (
     ContainerService,
     ContainerServiceError,
 )
+from ..services.container_service import get_container_service as shared_container_service
 from ..services.inventory_service import InventoryStack
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.rate_limiter import RateLimiter
 from .container_models import LootAllRequest, TransferContainerRequest
-
-if TYPE_CHECKING:
-    from ..async_persistence import AsyncPersistenceLayer
 
 logger = get_logger(__name__)
 
@@ -79,9 +77,6 @@ async def get_player_id_from_user(current_user: User, persistence: Any) -> UUID:
     return UUID(str(player.player_id))
 
 
-_container_service_cache: dict[int, ContainerService] = {}
-
-
 def get_container_service(persistence: Any) -> ContainerService:
     """
     Get the ContainerService for this persistence layer, reusing one across calls.
@@ -102,13 +97,8 @@ def get_container_service(persistence: Any) -> ContainerService:
     Returns:
         ContainerService: Container service instance, shared across calls for the same persistence
     """
-    layer = cast("AsyncPersistenceLayer", persistence)
-    key = id(layer)
-    service = _container_service_cache.get(key)
-    if service is None:
-        service = ContainerService(persistence=layer)
-        _container_service_cache[key] = service
-    return service
+    # The cache itself lives in the service layer so realtime disconnect cleanup can reach it (#964).
+    return shared_container_service(cast(object, persistence))
 
 
 def validate_user_for_open_container(current_user: User | None, _request: Request) -> None:

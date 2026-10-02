@@ -15,6 +15,7 @@ from structlog.stdlib import BoundLogger
 from ..async_persistence import AsyncPersistenceLayer
 from ..models import Player
 from ..models.room import Room
+from ..services.container_service import get_container_service
 from ..structured_logging.enhanced_logging_config import get_logger
 from .player_presence_utils import extract_player_name
 
@@ -154,6 +155,17 @@ def _cleanup_player_references(player_id: uuid.UUID, manager: "ConnectionManager
     # H1 fix: Allow processed_disconnects to shrink so it does not grow unbounded
     if player_id in manager.processed_disconnects:
         manager.processed_disconnects.discard(player_id)
+
+    _release_container_sessions(player_id, manager)
+
+
+def _release_container_sessions(player_id: uuid.UUID, manager: "ConnectionManager") -> None:
+    """Release containers the departing player still has open, or nobody else can open them (#964)."""
+    persistence = cast(AsyncPersistenceLayer | None, manager.async_persistence)
+    if persistence is None:
+        return
+    # Same shared instance HTTP open/close and the get/put commands use (cached per persistence).
+    _ = get_container_service(persistence).release_player_sessions(player_id)
 
 
 # Referenced here so pyright sees use in-module; player_presence_tracker imports these names.

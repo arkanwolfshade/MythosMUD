@@ -9,6 +9,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from server.api.container_helpers import get_container_service as api_get_container_service
+
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
 from server.realtime.player_disconnect_handlers import (
@@ -19,6 +21,7 @@ from server.realtime.player_disconnect_handlers import (
     age_off_disconnected_sessions,
     handle_player_disconnect_broadcast,
 )
+from server.services.container_service import get_container_service
 
 
 @pytest.fixture
@@ -248,6 +251,30 @@ def test_cleanup_player_references_marks_session_for_aging(mock_connection_manag
     assert session_id in mock_connection_manager.session_disconnect_times
     assert player_id in mock_connection_manager.player_sessions
     assert session_id in mock_connection_manager.session_connections
+
+
+def test_cleanup_player_references_releases_open_container_sessions(mock_connection_manager: MagicMock):
+    """#964: leaving the game releases the shared ContainerService's sessions held by that player."""
+    persistence = MagicMock()
+    mock_connection_manager.async_persistence = persistence
+    player_id, other_player_id = uuid.uuid4(), uuid.uuid4()
+    corpse_id, other_corpse_id = uuid.uuid4(), uuid.uuid4()
+    service = get_container_service(persistence)
+    # The HTTP endpoints go through the api wrapper; it must hand out this same instance.
+    assert api_get_container_service(persistence) is service
+    _ = service.register_open_session(corpse_id, player_id, "leaver-token")
+    _ = service.register_open_session(other_corpse_id, other_player_id, "stayer-token")
+
+    _cleanup_player_references(player_id, mock_connection_manager)
+
+    assert service.get_container_token(corpse_id, player_id) is None
+    assert service.get_container_token(other_corpse_id, other_player_id) == "stayer-token"
+
+
+def test_cleanup_player_references_without_persistence_skips_container_release(mock_connection_manager: MagicMock):
+    """No persistence (early startup / tests): nothing to release, and cleanup must not fail."""
+    mock_connection_manager.async_persistence = None
+    _cleanup_player_references(uuid.uuid4(), mock_connection_manager)
 
 
 def test_age_off_disconnected_sessions_removes_expired():

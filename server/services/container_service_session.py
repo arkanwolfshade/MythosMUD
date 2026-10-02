@@ -280,6 +280,25 @@ class ContainerSessionMixin(ContainerAccessMixin):
         # Audit log container close
         await self._audit_log_container_close(container_id, player_id)
 
+    def release_player_sessions(self, player_id: UUID) -> int:
+        """
+        Release every container session this player holds (#964).
+
+        Sessions are single-occupancy and otherwise only end via close_container, so a
+        player who leaves the game with a container open would block it for everyone
+        until server restart. Called when the player fully leaves (intentional logout or
+        linkdead grace period expiry), not on a mere connection drop.
+
+        Returns:
+            Number of container sessions released
+        """
+        held = [container_id for container_id, holders in self._open_containers.items() if player_id in holders]
+        for container_id in held:
+            self._remove_container_from_open_list(container_id, player_id)
+        if held:
+            logger.info("Released container sessions for departed player", player_id=str(player_id), count=len(held))
+        return len(held)
+
     def get_container_token(self, container_id: UUID, player_id: UUID) -> str | None:
         """
         Get existing mutation token if container is already open by this player.
