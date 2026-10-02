@@ -11,6 +11,7 @@ Both seeded characters use DEFAULT_RESPAWN_ROOM (server.constants.spawn_defaults
 Player rows use CALL upsert_player (db/procedures/players.sql) so player_inventories stays consistent.
 
 Safe to run multiple times: skips existing users by username; skips player if character name exists.
+Ids are deterministic (uuid5 of the name), so a re-seed after the rows are deleted recreates the same ids.
 
 Run from project root: uv run python scripts/seed_e2e_users.py
 Use the same DATABASE_URL and POSTGRES_SEARCH_PATH as the E2E server (e.g. .env.e2e_test).
@@ -50,6 +51,22 @@ hash_password: Callable[[str], str] = cast(Callable[[str], str], _hash_password_
 DEFAULT_RESPAWN_ROOM: str = cast(str, _default_respawn_room)  # pyright: ignore[reportUnnecessaryCast]
 
 E2E_PASSWORD = "Cthulhu1"
+
+# The E2E accounts get the same ids on every seed (#969). make test-playwright's integration stage deletes
+# users/players under a still-running E2E server; re-seeding with fresh uuid4s left that server holding ids that
+# no longer existed (stale players, NPCs attacking a deleted ArkanWolfshade).
+_E2E_ID_NAMESPACE = uuid.uuid5(uuid.NAMESPACE_URL, "mythosmud:e2e-accounts")
+
+
+def e2e_user_id(username: str) -> uuid.UUID:
+    """Deterministic users.id for a seeded E2E account."""
+    return uuid.uuid5(_E2E_ID_NAMESPACE, f"user:{username}")
+
+
+def e2e_player_id(character_name: str) -> uuid.UUID:
+    """Deterministic players.player_id for a seeded E2E character."""
+    return uuid.uuid5(_E2E_ID_NAMESPACE, f"player:{character_name}")
+
 
 # Stats aligned with mythos_e2e players.stats default + fields used by gameplay/teardown.
 DEFAULT_STATS: dict[str, int | str] = {
@@ -127,7 +144,7 @@ async def _ensure_player_for_user(
     if existing_char:
         return
 
-    player_id = uuid.uuid4()
+    player_id = e2e_player_id(character_name)
     stats_json = json.dumps(DEFAULT_STATS)
     _ = await conn.execute(
         UPSERT_PLAYER_SQL,
@@ -176,7 +193,7 @@ async def _seed_e2e_users() -> None:
             if row:
                 user_id = cast(uuid.UUID, row["id"])
             else:
-                user_id = uuid.uuid4()
+                user_id = e2e_user_id(spec.username)
                 _ = await conn.execute(
                     """
                     INSERT INTO users (
