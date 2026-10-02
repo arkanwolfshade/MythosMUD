@@ -23,6 +23,7 @@ from psycopg2.extras import RealDictCursor
 from structlog.stdlib import BoundLogger
 
 from ..exceptions import DatabaseError, ValidationError
+from ..models.container import MAX_CONTAINER_CAPACITY_SLOTS
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
 from .container_create_params import ContainerCreateParams
@@ -184,10 +185,10 @@ def _validate_new_container_params(source_type: str, capacity_slots: int, lock_s
             details={"source_type": source_type},
             user_friendly="Invalid container type",
         )
-    if capacity_slots < 1 or capacity_slots > 20:
+    if capacity_slots < 1 or capacity_slots > MAX_CONTAINER_CAPACITY_SLOTS:
         log_and_raise(
             ValidationError,
-            f"Invalid capacity_slots: {capacity_slots}. Must be between 1 and 20",
+            f"Invalid capacity_slots: {capacity_slots}. Must be between 1 and {MAX_CONTAINER_CAPACITY_SLOTS}",
             operation="create_container",
             capacity_slots=capacity_slots,
             details={"capacity_slots": capacity_slots},

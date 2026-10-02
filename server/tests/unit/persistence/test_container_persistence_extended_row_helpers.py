@@ -14,6 +14,7 @@ import psycopg2
 import pytest
 
 from server.exceptions import DatabaseError, ValidationError
+from server.models.container import MAX_CONTAINER_CAPACITY_SLOTS
 from server.persistence import ContainerCreateParams
 from server.persistence.container_helpers import _coerce_row_quantity
 from server.persistence.container_persistence import (
@@ -159,7 +160,9 @@ def test_validate_new_container_params_rejects_invalid():
     with pytest.raises(ValidationError):
         _validate_new_container_params("environment", 0, "unlocked")
     with pytest.raises(ValidationError):
-        _validate_new_container_params("environment", 21, "unlocked")
+        _validate_new_container_params("environment", MAX_CONTAINER_CAPACITY_SLOTS + 1, "unlocked")
+    # 200 is the global ceiling (lost-and-found chest); the old 20-slot cap must no longer apply.
+    _validate_new_container_params("environment", MAX_CONTAINER_CAPACITY_SLOTS, "unlocked")
     with pytest.raises(ValidationError):
         _validate_new_container_params("environment", 5, "broken")
 
