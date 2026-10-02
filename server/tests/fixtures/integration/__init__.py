@@ -28,8 +28,11 @@ _ALLOWED_INTEGRATION_DB_NAMES = ("mythos_unit", "mythos_e2e")
 # mythos_dev must NEVER be truncated or deleted by tests. Do not add it to allowed names.
 _PROTECTED_DB_NAMES = ("mythos_dev", "mythos_stage", "mythos_prod")
 
-# Reference/world seed loaded from DML + migrations (arena zone, professions, etc.).
+# Every ORM table data/db/seed.sql populates (world topology plus content catalogs).
 # db_cleanup must not wipe these between integration tests; flow tests create their own rows.
+# make test-playwright runs integration tests against mythos_e2e, so wiping the content tables broke
+# later Playwright runs on the same E2E stack (#963). A unit test fails if seed.sql gains a table
+# this set misses.
 _REFERENCE_SEED_TABLES = frozenset(
     {
         "zones",
@@ -38,6 +41,16 @@ _REFERENCE_SEED_TABLES = frozenset(
         "room_links",
         "zone_configurations",
         "professions",
+        "item_prototypes",
+        "skills",
+        "spells",
+        "emotes",
+        "emote_aliases",
+        "quest_definitions",
+        "quest_offers",
+        "dialogue_definitions",
+        "calendar_holidays",
+        "calendar_npc_schedules",
     }
 )
 

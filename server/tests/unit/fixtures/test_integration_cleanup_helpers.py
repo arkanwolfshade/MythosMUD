@@ -8,12 +8,16 @@ integration tests, so a wrong table name here is a silent behavior change, not a
 
 from __future__ import annotations
 
+import re
+
 import pytest
 
+from server.models.base import Base
 from server.tests.fixtures.integration import (
     _REFERENCE_SEED_TABLES,  # pyright: ignore[reportPrivateUsage]
     _should_preserve_table_on_cleanup,  # pyright: ignore[reportPrivateUsage]
 )
+from server.utils.project_paths import get_project_root
 
 
 def test_preserves_the_dbmate_migration_ledger() -> None:
@@ -30,8 +34,20 @@ def test_no_longer_special_cases_the_unused_alembic_table_name() -> None:
 
 @pytest.mark.parametrize("table_name", sorted(_REFERENCE_SEED_TABLES))
 def test_preserves_every_reference_seed_table(table_name: str) -> None:
-    """World topology and professions must survive cleanup so procedure/E2E tests keep seed data."""
+    """World topology and content catalogs must survive cleanup so procedure/E2E tests keep seed data."""
     assert _should_preserve_table_on_cleanup(table_name) is True
+
+
+def test_preserves_every_orm_table_that_seed_sql_populates() -> None:
+    """#963: integration cleanup runs against mythos_e2e under make test-playwright, and wiping seeded
+    content (item_prototypes, skills, quests, ...) broke later Playwright runs. Any ORM-mapped table
+    data/db/seed.sql fills must be in _REFERENCE_SEED_TABLES, or cleanup deletes it."""
+    seed = (get_project_root() / "data" / "db" / "seed.sql").read_text(encoding="utf-8")
+    seeded = set(re.findall(r"^COPY (\w+) \(", seed, flags=re.MULTILINE))
+    assert "rooms" in seeded, "seed.sql COPY blocks did not parse"
+    orm_tables = {table.name for table in Base.metadata.sorted_tables}
+    missing = (seeded & orm_tables) - _REFERENCE_SEED_TABLES
+    assert not missing, f"db_cleanup would delete seeded tables: {sorted(missing)}"
 
 
 @pytest.mark.parametrize("table_name", ["players", "users", "player_effects", "quest_instances"])
