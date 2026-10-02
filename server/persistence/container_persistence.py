@@ -22,8 +22,8 @@ from psycopg2.extensions import cursor as PsycopgCursor
 from psycopg2.extras import RealDictCursor
 from structlog.stdlib import BoundLogger
 
+from ..constants.containers import MAX_CONTAINER_CAPACITY_SLOTS
 from ..exceptions import DatabaseError, ValidationError
-from ..models.container import MAX_CONTAINER_CAPACITY_SLOTS
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
 from .container_create_params import ContainerCreateParams

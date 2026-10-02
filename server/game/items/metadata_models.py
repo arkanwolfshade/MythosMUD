@@ -9,9 +9,11 @@ on ``metadata.weapon`` until Phase 3.
 
 from __future__ import annotations
 
-from typing import ClassVar
+from typing import ClassVar, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
+
+from server.constants.containers import MAX_CONTAINER_CAPACITY_SLOTS
 
 
 class WeaponMetadata(BaseModel):
@@ -83,6 +85,16 @@ class CatalogMetadata(BaseModel):
     source_key: str | None = Field(default=None, min_length=1, max_length=120)
 
 
+class ContainerMetadata(BaseModel):
+    """Container definition on a prototype (backpacks, chests); instantiated as ``inner_container``."""
+
+    model_config: ClassVar[ConfigDict] = ConfigDict(extra="forbid")
+
+    capacity_slots: int = Field(ge=1, le=MAX_CONTAINER_CAPACITY_SLOTS)
+    lock_state: Literal["unlocked", "locked", "sealed"] = "unlocked"
+    allowed_roles: list[str] = Field(default_factory=list)
+
+
 class ItemMetadata(BaseModel):
     """Validated known keys under item prototype metadata (ADR-026).
 
@@ -96,3 +108,4 @@ class ItemMetadata(BaseModel):
     tome: TomeMetadata | None = None
     equipment: EquipmentMetadata | None = None
     catalog: CatalogMetadata | None = None
+    container: ContainerMetadata | None = None

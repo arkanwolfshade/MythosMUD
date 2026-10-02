@@ -13,8 +13,8 @@ from unittest.mock import MagicMock, patch
 import psycopg2
 import pytest
 
+from server.constants.containers import MAX_CONTAINER_CAPACITY_SLOTS
 from server.exceptions import DatabaseError, ValidationError
-from server.models.container import MAX_CONTAINER_CAPACITY_SLOTS
 from server.persistence import ContainerCreateParams
 from server.persistence.container_helpers import _coerce_row_quantity
 from server.persistence.container_persistence import (
