@@ -8,10 +8,10 @@
  * of player location.
  */
 
-import { expect, test, type Page } from '@playwright/test';
+import { type Page } from '@playwright/test';
+import { expect, adoptSharedPlayers, test } from '../fixtures/shared-session';
 import { executeCommand, waitForMessage } from '../fixtures/auth';
 import {
-  cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
   ensureMultiplayerCoLocated,
   ensurePlayerInGame,
@@ -183,13 +183,13 @@ async function deliverWhisperAcrossRooms(
   }
 }
 
-test.describe('Whisper Movement', () => {
+test.describe('Whisper Movement', { tag: '@shared-session' }, () => {
   test.describe.configure({ mode: 'serial', timeout: 300_000 });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
-  test.beforeAll(async ({ browser }) => {
+  test.beforeAll(async ({ browser, sharedPlayers }) => {
     test.setTimeout(120_000);
-    contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    contexts = await adoptSharedPlayers(browser, sharedPlayers);
     await waitForAllPlayersInGame(contexts, 60000);
   });
 
@@ -206,11 +206,6 @@ test.describe('Whisper Movement', () => {
       contexts[1].player.password
     );
   }
-
-  test.afterAll(async () => {
-    test.setTimeout(60_000);
-    await cleanupMultiPlayerContexts(contexts);
-  });
 
   test('Ithaqua should receive whisper when both players in same room', async () => {
     await prepareWhisperPair();

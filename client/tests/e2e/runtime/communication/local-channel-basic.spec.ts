@@ -7,11 +7,10 @@
  * and that the local channel system works correctly for basic multiplayer communication.
  */
 
-import { expect, test } from '@playwright/test';
+import { expect, adoptSharedPlayers, test } from '../fixtures/shared-session';
 import { ensurePlayableConnection, executeCommand, waitForMessage } from '../fixtures/auth';
 import { ensureE2eRuntimeReady } from '../fixtures/e2e-runtime-ready';
 import {
-  cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
   ensureMultiplayerCoLocated,
   ensurePlayerInGame,
@@ -96,13 +95,13 @@ async function executeUnmuteAndWaitForAck(
   }
 }
 
-test.describe('Local Channel Basic', () => {
+test.describe('Local Channel Basic', { tag: '@shared-session' }, () => {
   test.describe.configure({ timeout: 360_000 });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
-  test.beforeAll(async ({ browser }) => {
+  test.beforeAll(async ({ browser, sharedPlayers }) => {
     test.setTimeout(360_000);
-    contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    contexts = await adoptSharedPlayers(browser, sharedPlayers);
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
@@ -131,11 +130,6 @@ test.describe('Local Channel Basic', () => {
   test.beforeEach(async () => {
     // E2E baseline: every test starts with the players in Main Foyer (#956).
     await resetPlayersToMainFoyer(contexts);
-  });
-
-  test.afterAll(async () => {
-    // Cleanup contexts
-    await cleanupMultiPlayerContexts(contexts);
   });
 
   test('Ithaqua should see AW local channel message', async () => {
