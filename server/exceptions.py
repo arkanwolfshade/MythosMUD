@@ -10,7 +10,7 @@ preservation and understanding.
 import traceback
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
-from typing import Any, TypedDict, Unpack
+from typing import Any, ClassVar, Literal, TypedDict, Unpack
 
 from fastapi import HTTPException
 
@@ -91,6 +91,10 @@ class MythosMUDError(LoggedException):
     for proper error categorization and debugging.
     """
 
+    # Subclasses for expected, user-caused outcomes (bad input, a container someone else holds, ...)
+    # set "warning" so they stay out of errors.log, where real failures need to be visible (#965).
+    log_level: ClassVar[Literal["error", "warning"]] = "error"
+
     def __init__(
         self,
         message: str,
@@ -122,8 +126,9 @@ class MythosMUDError(LoggedException):
         self.mark_logged()
 
     def _log_error(self) -> None:
-        """Log the error with structured context."""
-        logger.error(
+        """Log the error with structured context, at the class's log_level."""
+        log = logger.warning if self.log_level == "warning" else logger.error
+        log(
             # Include the specific error message in the log text for coverage tests
             # while still providing structured fields for analysis.
             "MythosMUD error occurred: " + str(self.message),
@@ -178,6 +183,8 @@ class DatabaseError(MythosMUDError):
 class ValidationError(MythosMUDError):
     """Data validation errors (e.g. empty local/whisper message). Log at warning, not error."""
 
+    log_level: ClassVar[Literal["error", "warning"]] = "warning"
+
     def __init__(
         self,
         message: str,
@@ -193,16 +200,6 @@ class ValidationError(MythosMUDError):
             self.details["field"] = field_name
         if value is not None:
             self.details["value"] = str(value)
-
-    def _log_error(self) -> None:
-        """Log validation errors at warning so expected user-input errors do not flood error log."""
-        logger.warning(
-            "MythosMUD error occurred: " + str(self.message),
-            message=self.message,
-            error_type=self.__class__.__name__,
-            details=self.details,
-            timestamp=self.timestamp.isoformat(),
-        )
 
 
 class GameLogicError(MythosMUDError):
