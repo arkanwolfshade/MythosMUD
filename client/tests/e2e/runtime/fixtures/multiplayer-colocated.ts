@@ -208,6 +208,8 @@ export interface EnsureMultiplayerCoLocatedOptions {
 
 const TELEPORT_SETTLE_BASE_MS = 6000;
 const MAX_COLOCATE_ATTEMPTS = 3;
+/** Cap for ensureMultiplayerCoLocated's "already together?" check before it falls back to teleporting. */
+const ALREADY_COLOCATED_CHECK_MS = 5000;
 
 /** Best-effort: resolves once all players' Location panels show the same non-empty room, or after timeoutMs. */
 async function waitForSharedLocation(contexts: PlayerContext[], timeoutMs: number): Promise<void> {
@@ -461,6 +463,16 @@ export async function ensureMultiplayerCoLocated(
   const coLocateTimeoutMs = options?.coLocateTimeoutMs ?? 45000;
 
   await ensureMultiplayerReadyForCoLocate(contexts, timeoutMs);
+
+  // Most callers run right after resetPlayersToMainFoyer (#956), so the players are already together.
+  // Verify that directly (same strict check the teleport path ends with) and skip goto/teleport/settle.
+  // Short timeout: when they are co-located the panels are already current; otherwise fall through.
+  const alreadyCoLocated = await ensurePlayersInSameRoom(contexts, contexts.length, ALREADY_COLOCATED_CHECK_MS)
+    .then(() => true)
+    .catch(() => false);
+  if (alreadyCoLocated) {
+    return;
+  }
 
   const [awContext, otherContext] = contexts;
   const otherCharName = await resolveOtherCharacterName(otherContext);
