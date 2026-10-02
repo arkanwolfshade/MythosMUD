@@ -96,6 +96,7 @@ class ContainerRepository:
         items_json: list[dict[str, Any]] | None = None,
         lock_state: str | None = None,
         metadata_json: dict[str, Any] | None = None,
+        capacity_slots: int | None = None,
     ) -> dict[str, Any] | None:
         """Update a container (async)."""
         session_maker = get_session_maker()
@@ -106,6 +107,7 @@ class ContainerRepository:
                 items_json=items_json,
                 lock_state=lock_state,
                 metadata_json=metadata_json,
+                capacity_slots=capacity_slots,
             )
             if not result:
                 return None

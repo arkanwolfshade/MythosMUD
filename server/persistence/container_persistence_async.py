@@ -17,6 +17,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ..constants.containers import MAX_CONTAINER_CAPACITY_SLOTS
 from ..exceptions import DatabaseError, ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
@@ -59,10 +60,10 @@ def _validate_container_create_params(source_type: str, capacity_slots: int, loc
             details={"source_type": source_type},
             user_friendly="Invalid container type",
         )
-    if capacity_slots < 1 or capacity_slots > 20:
+    if capacity_slots < 1 or capacity_slots > MAX_CONTAINER_CAPACITY_SLOTS:
         log_and_raise(
             ValidationError,
-            f"Invalid capacity_slots: {capacity_slots}. Must be between 1 and 20",
+            f"Invalid capacity_slots: {capacity_slots}. Must be between 1 and {MAX_CONTAINER_CAPACITY_SLOTS}",
             operation="create_container_async",
             capacity_slots=capacity_slots,
             details={"capacity_slots": capacity_slots},
@@ -399,8 +400,9 @@ async def update_container_async(  # pylint: disable=too-many-locals  # Reason: 
     items_json: list[dict[str, Any]] | None = None,
     lock_state: str | None = None,
     metadata_json: dict[str, Any] | None = None,
+    capacity_slots: int | None = None,
 ) -> ContainerData | None:
-    """Update a container's items, lock_state, or metadata (async)."""
+    """Update a container's items, lock_state, metadata, or capacity (async)."""
     from .container_helpers import validate_lock_state
 
     validate_lock_state(lock_state)
@@ -418,6 +420,11 @@ async def update_container_async(  # pylint: disable=too-many-locals  # Reason: 
                 "lock_state": lock_state,
                 "metadata_json": json.dumps(metadata_json) if metadata_json is not None else None,
             },
+        )
+    if capacity_slots is not None:
+        _ = await session.execute(
+            text("SELECT set_container_capacity(:cid, :capacity_slots)"),
+            {"cid": container_id_str, "capacity_slots": capacity_slots},
         )
     await session.commit()
     logger.info("Container updated", container_id=str(container_id))

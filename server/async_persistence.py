@@ -445,11 +445,14 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         items_json: list[dict[str, object]] | None = None,
         lock_state: str | None = None,
         metadata_json: dict[str, object] | None = None,
+        capacity_slots: int | None = None,
     ) -> dict[str, object] | None:
         """Update a container."""
         return cast(
             dict[str, object] | None,
-            await self._container_repo.update_container(container_id, items_json, lock_state, metadata_json),
+            await self._container_repo.update_container(
+                container_id, items_json, lock_state, metadata_json, capacity_slots
+            ),
         )
 
     async def get_decayed_containers(self, current_time: datetime | None = None) -> list[dict[str, object]]:
