@@ -9,6 +9,15 @@ from unittest.mock import patch
 import pytest
 from fastapi import HTTPException
 
+from server.exceptions import DatabaseError, MythosMUDError, ValidationError
+from server.services.container_service import (
+    ContainerAccessDeniedError,
+    ContainerCapacityError,
+    ContainerLockedError,
+    ContainerNotFoundError,
+    ContainerOpenByAnotherPlayerError,
+    ContainerServiceError,
+)
 from server.utils.enhanced_error_logging import (
     create_enhanced_error_context,
     create_error_context,
@@ -98,3 +107,46 @@ def test_log_security_event_enhanced():
     with patch("server.utils.enhanced_error_logging.log_with_context") as mock_log:
         log_security_event_enhanced("login_failed", severity="medium", user_id="u1", logger_name=__name__)
     mock_log.assert_called_once()
+
+
+@pytest.mark.parametrize(
+    ("exception_class", "expected_level"),
+    [
+        (ContainerOpenByAnotherPlayerError, "warning"),
+        (ContainerNotFoundError, "warning"),
+        (ContainerLockedError, "warning"),
+        (ContainerCapacityError, "warning"),
+        (ContainerAccessDeniedError, "warning"),
+        (ValidationError, "warning"),
+        (ContainerServiceError, "error"),
+        (DatabaseError, "error"),
+    ],
+)
+def test_log_and_raise_enhanced_uses_exception_log_level(
+    exception_class: type[MythosMUDError], expected_level: str
+) -> None:
+    """#965: expected, player-caused rejections log at warning (both lines) so errors.log shows real failures."""
+    with (
+        patch("server.utils.enhanced_error_logging.log_with_context") as mock_log,
+        patch("server.exceptions.logger.error") as exception_error,
+        patch("server.exceptions.logger.warning") as exception_warning,
+        pytest.raises(exception_class),
+    ):
+        log_and_raise_enhanced(exception_class, "rejected", operation="open_container", logger_name=__name__)
+
+    assert mock_log.call_args.args[1] == expected_level
+    # The exception's own "MythosMUD error occurred" line follows the same level (when it logs at all).
+    if expected_level == "warning":
+        exception_error.assert_not_called()
+    else:
+        exception_warning.assert_not_called()
+
+
+def test_log_and_raise_enhanced_log_as_error_overrides_warning_level() -> None:
+    with (
+        patch("server.utils.enhanced_error_logging.log_with_context") as mock_log,
+        pytest.raises(ContainerNotFoundError),
+    ):
+        log_and_raise_enhanced(ContainerNotFoundError, "gone", log_as_error=True, logger_name=__name__)
+
+    assert mock_log.call_args.args[1] == "error"
