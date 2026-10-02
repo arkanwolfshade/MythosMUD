@@ -15,6 +15,7 @@ from typing import assert_never, cast
 from structlog.stdlib import BoundLogger
 
 from server.exceptions import ValidationError
+from server.game.instance_manager import TemplateRoomEntryError
 from server.game.magic.spell_effect_flee import run_flee_effect
 from server.game.magic.spell_effect_types import (
     NpcSpellDamageTarget,
@@ -445,6 +446,11 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
                 "destination_room_id": destination_room_id,
                 "original_room_id": original_room_id,
             }
+        except TemplateRoomEntryError as e:
+            logger.warning(
+                "Teleport spell targets an instance template room", room_id=e.room_id, spell_id=spell.spell_id
+            )
+            return {"success": False, "message": str(e), "effect_applied": False}
         except OSError as e:
             logger.error("Error teleporting player", target_id=target.target_id, error=str(e))
             return {"success": False, "message": f"Failed to teleport: {str(e)}", "effect_applied": False}

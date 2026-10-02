@@ -8,7 +8,7 @@ creation, retrieval, validation, and state management.
 # pylint: disable=wrong-import-position,too-many-lines  # Reason: Imports after TYPE_CHECKING block are intentional to avoid circular dependencies. Player service requires 650 lines to implement comprehensive player operations (CRUD, state management, combat integration, search, creation, validation); splitting would reduce cohesion and increase coupling between player-related concerns
 
 import uuid
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from ..alias_storage import AliasStorage
 
@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
 
     # Removed: from ..persistence import PersistenceLayer - now using async_persistence parameter
+    from ..async_persistence import AsyncPersistenceLayer
     from ..services.player_respawn_service import PlayerRespawnService
 from ..config import get_config
 from ..exceptions import DatabaseError, ValidationError
@@ -23,6 +24,7 @@ from ..models import Stats
 from ..schemas.players import PlayerRead
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.enhanced_error_logging import log_and_raise_enhanced
+from .instance_manager import TemplateRoomEntryError, is_template_room
 from .player_creation_service import PlayerCreationService
 from .player_respawn_wrapper import PlayerRespawnWrapper
 from .player_schema_converter import PlayerSchemaConverter
@@ -447,7 +449,19 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
 
         Returns:
             bool: True if successful, False otherwise
+
+        Raises:
+            TemplateRoomEntryError: new_room_id is an instance template (teleport/goto/spell callers
+                report its message; only instances cloned from a template may be entered).
         """
+        # persistence is untyped (Any) on this service; narrow it at this boundary.
+        rooms = cast("AsyncPersistenceLayer", self.persistence)
+        destination = rooms.get_room_by_id(new_room_id)
+        if is_template_room(destination):
+            logger.warning(
+                "Refused location update into instance template room", player_name=player_name, room_id=new_room_id
+            )
+            raise TemplateRoomEntryError(new_room_id)
         try:
             # Get the raw SQLAlchemy player object for modification
             player = await self.persistence.get_player_by_name(player_name)

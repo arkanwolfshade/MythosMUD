@@ -11,13 +11,19 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from server.game.instance_manager import TemplateRoomEntryError
 from server.game.player_service import PlayerService
+from server.models.player import Player
+from server.models.room import Room
 
 
 @pytest.fixture
 def mock_persistence():
     """Create a mock persistence layer."""
-    return AsyncMock()
+    persistence = AsyncMock()
+    # Room lookups are synchronous (cache) on AsyncPersistenceLayer; unknown room by default.
+    persistence.get_room_by_id = MagicMock(return_value=None)
+    return persistence
 
 
 @pytest.fixture
@@ -470,3 +476,54 @@ async def test_validate_player_name_too_short_one_char(player_service, mock_pers
     valid, message = await player_service.validate_player_name("A")
     assert valid is False
     assert "3 characters" in message or "at least" in message
+
+
+BEDROOM_ID = "earth_arkhamcity_sanitarium_room_tutorial_bedroom_001"
+FOYER_ID = "earth_arkhamcity_sanitarium_room_foyer_001"
+
+
+def _template_bedroom() -> Room:
+    return Room(
+        {
+            "id": BEDROOM_ID,
+            "attributes": {"instance_template_id": "tutorial_sanitarium", "instance_exit_room_id": FOYER_ID},
+        }
+    )
+
+
+@pytest.mark.asyncio
+async def test_update_player_location_refuses_instance_template(
+    player_service: PlayerService, mock_persistence: AsyncMock
+) -> None:
+    """teleport/goto/spells all route here: a template room raises, and nothing is saved."""
+    get_player = AsyncMock()
+    save_player = AsyncMock()
+    mock_persistence.configure_mock(
+        get_room_by_id=MagicMock(return_value=_template_bedroom()),
+        get_player_by_name=get_player,
+        save_player=save_player,
+    )
+
+    with pytest.raises(TemplateRoomEntryError, match="instance template"):
+        _ = await player_service.update_player_location("TestPlayer", BEDROOM_ID)
+
+    get_player.assert_not_awaited()
+    save_player.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_update_player_location_allows_instance_clone(
+    player_service: PlayerService, mock_persistence: AsyncMock
+) -> None:
+    """A clone of the template (instance_ room id) is a normal destination."""
+    clone_id = f"instance_{uuid.uuid4()}_{BEDROOM_ID}"
+    clone = Room({"id": clone_id, "attributes": {"instance_template_id": "tutorial_sanitarium"}})
+    player = Player(name="TestPlayer", current_room_id=FOYER_ID)
+    mock_persistence.configure_mock(
+        get_room_by_id=MagicMock(return_value=clone),
+        get_player_by_name=AsyncMock(return_value=player),
+        save_player=AsyncMock(),
+    )
+
+    assert await player_service.update_player_location("TestPlayer", clone_id) is True
+    assert player.current_room_id == clone_id

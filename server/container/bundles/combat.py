@@ -23,6 +23,7 @@ if TYPE_CHECKING:
     from server.async_persistence import AsyncPersistenceLayer
     from server.container.main import ApplicationContainer
     from server.services.passive_corruption_flux.service import PassiveCorruptionFluxService
+    from server.services.player_combat_service import PlayerCombatService
 
 logger = get_logger(__name__)
 
@@ -129,8 +130,13 @@ class CombatBundle:
         )
         logger.info("Player death service initialized")
 
+        # player_combat_service / async_persistence are declared Any; narrow them at this boundary.
+        respawn_combat = cast("PlayerCombatService | None", self.player_combat_service)
+        respawn_rooms = cast("AsyncPersistenceLayer | None", container.async_persistence)
         self.player_respawn_service = PlayerRespawnService(
-            event_bus=container.event_bus, player_combat_service=self.player_combat_service
+            event_bus=container.event_bus,
+            player_combat_service=respawn_combat,
+            room_lookup=respawn_rooms.get_room_by_id if respawn_rooms else None,
         )
         logger.info("Player respawn service initialized")
 
