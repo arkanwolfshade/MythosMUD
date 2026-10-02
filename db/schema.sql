@@ -303,6 +303,7 @@ DROP FUNCTION IF EXISTS update_player_health(p_player_id uuid, p_delta integer);
 DROP FUNCTION IF EXISTS update_player_current_room(p_id uuid, p_room_id character varying);
 DROP FUNCTION IF EXISTS update_npc_definition(p_id bigint, p_name character varying, p_description text, p_npc_type character varying, p_sub_zone_id character varying, p_room_id character varying, p_required_npc boolean, p_max_population integer, p_spawn_probability real, p_base_stats text, p_behavior_config text, p_ai_integration_stub text);
 DROP FUNCTION IF EXISTS update_container(p_container_id uuid, p_lock_state text, p_metadata_json jsonb);
+DROP FUNCTION IF EXISTS set_container_capacity(p_container_id uuid, p_capacity_slots integer);
 DROP FUNCTION IF EXISTS soft_delete_player(p_id uuid);
 DROP FUNCTION IF EXISTS set_room_map_origin(p_room_id text);
 DROP FUNCTION IF EXISTS reserve_invite(p_invite_code text);
@@ -3036,6 +3037,27 @@ BEGIN
       AND is_deleted = false;
     GET DIAGNOSTICS v_updated = ROW_COUNT;
     RETURN v_updated > 0;
+END;
+$$;
+
+
+--
+-- Name: set_container_capacity(uuid, integer); Type: FUNCTION; Schema: mythos_dev; Owner: -
+--
+
+CREATE FUNCTION set_container_capacity(p_container_id uuid, p_capacity_slots integer) RETURNS uuid
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    v_id uuid;
+BEGIN
+    UPDATE containers
+    SET
+        updated_at = NOW(),
+        capacity_slots = p_capacity_slots
+    WHERE container_instance_id = p_container_id
+    RETURNING container_instance_id INTO v_id;
+    RETURN v_id;
 END;
 $$;
 

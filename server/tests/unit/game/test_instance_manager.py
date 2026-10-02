@@ -8,7 +8,7 @@ import uuid
 
 import pytest
 
-from server.game.instance_manager import InstanceManager
+from server.game.instance_manager import InstanceManager, is_template_room
 from server.models.room import Room
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
@@ -153,3 +153,23 @@ def test_get_room_by_id_returns_room_when_in_instance(instance_manager: Instance
     result = instance_manager.get_room_by_id(room_id)
     assert result is not None
     assert result.id == room_id
+
+
+def test_is_template_room_true_for_template(tutorial_room: Room):
+    """The tutorial bedroom template must never be entered directly."""
+    assert is_template_room(tutorial_room) is True
+
+
+def test_is_template_room_false_for_instance_clone(instance_manager: InstanceManager):
+    """Clones copy instance_template_id from the template but are the rooms players enter."""
+    instance = instance_manager.create_instance(template_id="tutorial_sanitarium", owner_player_id=uuid.uuid4())
+    clone = next(iter(instance.rooms.values()))
+    assert clone.attributes.get("instance_template_id") == "tutorial_sanitarium"
+    assert is_template_room(clone) is False
+
+
+def test_is_template_room_false_for_ordinary_room_and_none():
+    """Rooms without instance_template_id (and a missing room) are not templates."""
+    foyer = Room({"id": "earth_arkhamcity_sanitarium_room_foyer_001", "attributes": {"rest_location": True}})
+    assert is_template_room(foyer) is False
+    assert is_template_room(None) is False

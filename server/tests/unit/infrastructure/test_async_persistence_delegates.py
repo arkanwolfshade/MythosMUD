@@ -244,8 +244,20 @@ async def test_update_container_delegates(async_persistence_layer: AsyncPersiste
 
     assert result == mock_container
     async_persistence_layer._container_repo.update_container.assert_awaited_once_with(
-        container_id, items_json, "locked", None
+        container_id, items_json, "locked", None, None
     )
+
+
+@pytest.mark.asyncio
+async def test_update_container_delegates_capacity(async_persistence_layer: AsyncPersistenceLayer):
+    """capacity_slots (room furniture refresh) is passed through to ContainerRepository."""
+    container_id = uuid.uuid4()
+    repo_update = AsyncMock(return_value={"container_id": str(container_id)})
+    async_persistence_layer._container_repo.update_container = repo_update
+
+    _ = await async_persistence_layer.update_container(container_id, capacity_slots=200)
+
+    repo_update.assert_awaited_once_with(container_id, None, None, None, 200)
 
 
 @pytest.mark.asyncio

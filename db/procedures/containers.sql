@@ -254,6 +254,27 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+-- set_container_capacity: resize a container to its prototype's capacity (room furniture refresh
+-- at startup). Kept separate from update_container so that function's signature never changes
+-- (a new optional parameter would leave the old overload behind and make calls ambiguous).
+CREATE OR REPLACE FUNCTION :schema_name.set_container_capacity( -- noqa: PRS
+    p_container_id uuid,
+    p_capacity_slots integer
+) RETURNS uuid AS $$
+DECLARE
+    v_id uuid;
+BEGIN
+    UPDATE containers
+    SET
+        updated_at = NOW(),
+        capacity_slots = p_capacity_slots
+    WHERE container_instance_id = p_container_id
+    RETURNING container_instance_id INTO v_id;
+    RETURN v_id;
+END;
+$$ LANGUAGE plpgsql;
+
+
 -- delete_container: delete by id, return true if row deleted
 CREATE OR REPLACE FUNCTION :schema_name.delete_container(p_container_id uuid) -- noqa: PRS
 RETURNS boolean AS $$

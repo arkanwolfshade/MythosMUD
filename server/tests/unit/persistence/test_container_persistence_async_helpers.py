@@ -3,11 +3,12 @@
 import json
 import uuid
 from typing import cast
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import ANY, AsyncMock, MagicMock, patch
 
 import pytest
 from sqlalchemy.exc import SQLAlchemyError
 
+from server.constants.containers import MAX_CONTAINER_CAPACITY_SLOTS
 from server.exceptions import DatabaseError, ValidationError
 from server.persistence.container_persistence_async import (
     _build_item_dict,
@@ -59,7 +60,7 @@ def test_prepare_container_create_params() -> None:
     [
         ("invalid", 5, "unlocked"),
         ("environment", 0, "unlocked"),
-        ("environment", 21, "unlocked"),
+        ("environment", MAX_CONTAINER_CAPACITY_SLOTS + 1, "unlocked"),
         ("environment", 5, "broken"),
     ],
 )
@@ -70,6 +71,8 @@ def test_validate_container_create_params_rejects_invalid(source_type: str, capa
 
 def test_validate_container_create_params_accepts_valid() -> None:
     _validate_container_create_params("corpse", 10, "sealed")
+    # The async create path is the one the game uses; it must honour the global cap, not 20.
+    _validate_container_create_params("environment", MAX_CONTAINER_CAPACITY_SLOTS, "unlocked")
 
 
 def test_row_to_mapping_from_sqlalchemy_row() -> None:
@@ -400,3 +403,25 @@ async def test_delete_container_async_db_error() -> None:
     with pytest.raises(DatabaseError):
         await delete_container_async(session, uuid.uuid4())
     session.rollback.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_update_container_async_capacity_calls_set_container_capacity() -> None:
+    """capacity_slots goes through its own procedure, leaving update_container's signature alone."""
+    container_id = uuid.uuid4()
+    execute = AsyncMock()
+    commit = AsyncMock()
+    session = MagicMock()
+    session.configure_mock(execute=execute, commit=commit)
+    with patch(
+        "server.persistence.container_persistence_async.get_container_async",
+        new_callable=AsyncMock,
+        return_value=MagicMock(),
+    ):
+        _ = await update_container_async(session, container_id, capacity_slots=200)
+
+    execute.assert_awaited_once_with(ANY, {"cid": str(container_id), "capacity_slots": 200})
+    call = execute.await_args
+    assert call is not None
+    assert "set_container_capacity" in str(cast(object, call.args[0]))
+    commit.assert_awaited_once()

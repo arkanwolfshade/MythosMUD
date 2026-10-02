@@ -26,6 +26,20 @@ if TYPE_CHECKING:
 
 logger = get_logger(__name__)
 
+# Instance room ids: instance_{instance_uuid}_{template_stable_id}
+INSTANCE_ROOM_PREFIX = "instance_"
+
+
+def is_template_room(room: Room | None) -> bool:
+    """True if room is an instance template: only ever cloned, never entered directly.
+
+    Clones copy the template's attributes (instance_template_id included), so they are told apart
+    by their instance_ room id.
+    """
+    if room is None or not room.attributes.get("instance_template_id"):
+        return False
+    return not cast(str, room.id).startswith(INSTANCE_ROOM_PREFIX)
+
 
 @dataclass
 class Instance:
