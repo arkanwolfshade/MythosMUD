@@ -11,8 +11,8 @@ from uuid import uuid4
 import pytest
 from pydantic import ValidationError
 
+from server.constants.containers import MAX_CONTAINER_CAPACITY_SLOTS
 from server.models.container import (
-    MAX_CONTAINER_CAPACITY_SLOTS,
     ContainerComponent,
     ContainerLockState,
     ContainerSourceType,

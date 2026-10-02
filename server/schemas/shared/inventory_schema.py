@@ -13,6 +13,8 @@ from typing import Any
 from jsonschema import Draft7Validator
 from jsonschema import ValidationError as JSONSchemaValidationError
 
+from server.constants.containers import MAX_CONTAINER_CAPACITY_SLOTS
+
 
 class InventorySchemaValidationError(Exception):
     """Raised when inventory payloads fail schema validation."""
@@ -81,7 +83,7 @@ PLAYER_INVENTORY_SCHEMA: dict[str, Any] = {
                         "capacity_slots": {
                             "type": "integer",
                             "minimum": 1,
-                            "maximum": 20,
+                            "maximum": MAX_CONTAINER_CAPACITY_SLOTS,
                             "description": "Maximum number of inventory slots in the nested container.",
                         },
                         "items": {

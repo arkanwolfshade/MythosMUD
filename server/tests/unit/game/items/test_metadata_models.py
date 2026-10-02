@@ -1,5 +1,9 @@
 """Unit tests for ADR-026 item metadata Pydantic contracts."""
 
+import pytest
+from pydantic import ValidationError
+
+from server.constants.containers import MAX_CONTAINER_CAPACITY_SLOTS
 from server.game.items.metadata_models import ItemMetadata, WeaponMetadata
 
 
@@ -45,3 +49,25 @@ def test_item_metadata_accepts_rich_dual_write_weapon() -> None:
     assert meta.catalog.namespace == "era_classic"
     assert meta.armor is not None
     assert meta.armor.armor_points == 1
+
+
+def test_item_metadata_container_defaults_and_cap() -> None:
+    meta = ItemMetadata.model_validate({"container": {"capacity_slots": MAX_CONTAINER_CAPACITY_SLOTS}})
+    assert meta.container is not None
+    assert meta.container.capacity_slots == MAX_CONTAINER_CAPACITY_SLOTS
+    assert meta.container.lock_state == "unlocked"
+    assert meta.container.allowed_roles == []
+
+
+@pytest.mark.parametrize(
+    "container",
+    [
+        {"capacity_slots": MAX_CONTAINER_CAPACITY_SLOTS + 1},
+        {"capacity_slots": 0},
+        {"capacity_slots": 10, "lock_state": "ajar"},
+        {"capcity_slots": 10},  # typo'd key must not be silently ignored
+    ],
+)
+def test_item_metadata_container_rejects_invalid(container: dict[str, object]) -> None:
+    with pytest.raises(ValidationError):
+        _ = ItemMetadata.model_validate({"container": container})

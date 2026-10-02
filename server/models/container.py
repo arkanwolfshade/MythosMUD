@@ -16,15 +16,13 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, field_validator
 
+from ..constants.containers import MAX_CONTAINER_CAPACITY_SLOTS
+
 if TYPE_CHECKING:
     from ..services.inventory_service import InventoryStack
 else:
     # Use dict[str, Any] at runtime to avoid circular import
     InventoryStack = dict[str, Any]
-
-# Global ceiling on any container's capacity; each container's real size comes from its prototype.
-# Mirrored by containers_capacity_slots_check in db/schema.sql and db/migrations.
-MAX_CONTAINER_CAPACITY_SLOTS = 200
 
 
 class ContainerSourceType(StrEnum):
