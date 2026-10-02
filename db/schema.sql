@@ -3680,7 +3680,7 @@ CREATE TABLE containers (
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     container_item_instance_id character varying(64),
     items_json jsonb DEFAULT '[]'::jsonb NOT NULL,
-    CONSTRAINT containers_capacity_slots_check CHECK (((capacity_slots > 0) AND (capacity_slots <= 20))),
+    CONSTRAINT containers_capacity_slots_check CHECK (((capacity_slots > 0) AND (capacity_slots <= 200))),
     CONSTRAINT containers_lock_state_check CHECK ((lock_state = ANY (ARRAY['unlocked'::text, 'locked'::text, 'sealed'::text]))),
     CONSTRAINT containers_source_type_check CHECK ((source_type = ANY (ARRAY['environment'::text, 'equipment'::text, 'corpse'::text]))),
     CONSTRAINT containers_weight_limit_check CHECK (((weight_limit IS NULL) OR (weight_limit > 0)))

@@ -22,6 +22,10 @@ else:
     # Use dict[str, Any] at runtime to avoid circular import
     InventoryStack = dict[str, Any]
 
+# Global ceiling on any container's capacity; each container's real size comes from its prototype.
+# Mirrored by containers_capacity_slots_check in db/schema.sql and db/migrations.
+MAX_CONTAINER_CAPACITY_SLOTS = 200
+
 
 class ContainerSourceType(StrEnum):
     """Source type for container instances."""
@@ -102,8 +106,8 @@ class ContainerComponent(BaseModel):
     capacity_slots: int = Field(
         ...,
         ge=1,
-        le=20,
-        description="Maximum number of inventory slots (1-20)",
+        le=MAX_CONTAINER_CAPACITY_SLOTS,
+        description=f"Maximum number of inventory slots (1-{MAX_CONTAINER_CAPACITY_SLOTS})",
     )
     weight_limit: int | None = Field(
         default=None,

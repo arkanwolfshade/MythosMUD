@@ -12,6 +12,7 @@ import pytest
 from pydantic import ValidationError
 
 from server.models.container import (
+    MAX_CONTAINER_CAPACITY_SLOTS,
     ContainerComponent,
     ContainerLockState,
     ContainerSourceType,
@@ -411,7 +412,7 @@ def test_container_component_capacity_slots_validation_max():
             container_id=uuid4(),
             source_type=ContainerSourceType.ENVIRONMENT,
             room_id="room123",
-            capacity_slots=21,  # Above maximum of 20
+            capacity_slots=MAX_CONTAINER_CAPACITY_SLOTS + 1,
         )
 
 
@@ -429,9 +430,9 @@ def test_container_component_capacity_slots_valid_range():
         container_id=uuid4(),
         source_type=ContainerSourceType.ENVIRONMENT,
         room_id="room123",
-        capacity_slots=20,  # Maximum
+        capacity_slots=MAX_CONTAINER_CAPACITY_SLOTS,
     )
-    assert container2.capacity_slots == 20
+    assert container2.capacity_slots == MAX_CONTAINER_CAPACITY_SLOTS
 
     container3 = ContainerComponent(
         container_id=uuid4(),
