@@ -405,6 +405,34 @@ async def test_open_container_rejects_second_player_naming_holder(service: Conta
 
 
 @pytest.mark.asyncio
+async def test_release_player_sessions_frees_containers_for_other_players(service: ContainerService):
+    """#964: a holder who leaves the game must not keep their containers locked for everyone else."""
+    corpse_id, other_corpse_id, bystander_corpse_id = uuid.uuid4(), uuid.uuid4(), uuid.uuid4()
+    holder_id, second_player_id, bystander_id = uuid.uuid4(), uuid.uuid4(), uuid.uuid4()
+    _ = service.register_open_session(corpse_id, holder_id, "holder-token")
+    _ = service.register_open_session(other_corpse_id, holder_id, "holder-token-2")
+    _ = service.register_open_session(bystander_corpse_id, bystander_id, "bystander-token")
+
+    assert service.release_player_sessions(holder_id) == 2
+    assert service.release_player_sessions(holder_id) == 0
+
+    assert service.get_container_token(corpse_id, holder_id) is None
+    assert service.get_container_token(other_corpse_id, holder_id) is None
+    assert service.get_container_token(bystander_corpse_id, bystander_id) == "bystander-token"
+
+    second_player = MagicMock(spec=["name", "current_room_id", "is_admin"])
+    second_player.name = "Ithaqua"
+    second_player.current_room_id = "earth_arkham_downtown_001"
+    second_player.is_admin = False
+    service.persistence.get_container = AsyncMock(return_value=_container_data(corpse_id))
+    service.persistence.get_player_by_id = AsyncMock(return_value=second_player)
+
+    result = await service.open_container(corpse_id, second_player_id)
+
+    assert service.get_container_token(corpse_id, second_player_id) == result["mutation_token"]
+
+
+@pytest.mark.asyncio
 async def test_open_container_sealed_non_admin(service: ContainerService):
     container_id = uuid.uuid4()
     player_id = uuid.uuid4()
