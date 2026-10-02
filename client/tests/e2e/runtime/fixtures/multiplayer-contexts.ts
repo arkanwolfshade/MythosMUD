@@ -115,21 +115,23 @@ export async function createMultiPlayerContexts(browser: Browser, playerUsername
       throw new Error(`Test player not found: ${username}`);
     }
 
-    // Stagger second (and later) player logins to reduce concurrent load and session thrash.
-    // 5s gives server time to finish first player's WebSocket/subscriptions before second login.
-    if (i > 0) {
-      await new Promise(resolve => setTimeout(resolve, 5000));
-    }
-
     // Fresh context per player (no storageState). Isolated storage prevents cross-login effects.
     const context = await createInstrumentedContext(browser);
     const page = await context.newPage();
 
     await loginPlayer(page, player.username, player.password);
 
-    // Post-login stabilization: first player needs extra time for UI to fully render
-    if (i === 0) {
-      await new Promise(r => setTimeout(r, 2000));
+    // Stagger the next login until this player's WebSocket and room subscription are up, which is
+    // what the old fixed 5s (+2s first-player) sleeps waited for. Best-effort: waitForAllPlayersInGame
+    // reports a stuck player with full diagnostics.
+    if (i < playerUsernames.length - 1) {
+      await page
+        .waitForFunction(
+          () => window.__mythosE2eHasConnectedStatus?.() === true && window.__mythosE2eHasRoomSubscription?.() === true,
+          undefined,
+          { timeout: 30000 }
+        )
+        .catch(() => {});
     }
 
     contexts.push({ context, page, player });

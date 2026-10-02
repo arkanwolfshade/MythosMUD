@@ -38,7 +38,8 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: RUNTIME_PARALLEL ? PARALLEL_WORKERS : 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [['html'], ['list']],
+  /* html open:'never': the default 'on-failure' serves the report and blocks on Ctrl+C, which stalls make test-playwright. */
+  reporter: [['html', { open: 'never' }], ['list'], ['json', { outputFile: 'test-results/runtime-results.json' }]],
   /* Global setup and teardown */
   globalSetup: './runtime/global-setup.ts',
   globalTeardown: './runtime/global-teardown.ts',

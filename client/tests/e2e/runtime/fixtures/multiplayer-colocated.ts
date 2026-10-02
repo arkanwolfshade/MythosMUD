@@ -23,7 +23,7 @@ import {
 import type { OccupantsSnapshot } from './multiplayer-browser-helpers';
 import { reopenPlayerPageIfClosed, type PlayerContext } from './multiplayer-contexts';
 import { ensurePlayerInGame, waitForAllPlayersInGame } from './multiplayer-ready';
-import { assertPlayerAlive } from './player';
+import { assertPlayerAlive, currentLocation, waitUntil } from './player';
 import { TEST_TIMEOUTS, type TestPlayer } from './test-data';
 
 function formatOccupantsSnapshotForError(snapshot: unknown): string {
@@ -209,6 +209,14 @@ export interface EnsureMultiplayerCoLocatedOptions {
 const TELEPORT_SETTLE_BASE_MS = 6000;
 const MAX_COLOCATE_ATTEMPTS = 3;
 
+/** Best-effort: resolves once all players' Location panels show the same non-empty room, or after timeoutMs. */
+async function waitForSharedLocation(contexts: PlayerContext[], timeoutMs: number): Promise<void> {
+  await waitUntil(async () => {
+    const locations = await Promise.all(contexts.map(c => currentLocation(c.page)));
+    return locations[0] !== '' && locations.every(l => l === locations[0]);
+  }, timeoutMs);
+}
+
 /**
  * Reset E2E player rows in mythos_e2e (same script as global-teardown).
  * In-memory server state is stale until players relog; pair with {@link resyncE2ePlayersAfterDatabaseReset}.
@@ -357,10 +365,12 @@ async function runCoLocateTeleportAttempt(
   });
   awContext.context = awContext.page.context();
   // Admin-only: move AW to the other character before bringing them together (Ithaqua cannot teleport).
+  // goto/teleport have landed once every player's Location panel names the same room. These waits
+  // keep the old fixed sleeps as caps but return early; ensurePlayersInSameRoom still verifies occupants.
   await executeCommand(awContext.page, `goto ${otherCharName}`);
-  await new Promise(r => setTimeout(r, 2000));
+  await waitForSharedLocation(contexts, 2000);
   await executeCommand(awContext.page, `teleport ${otherCharName}`);
-  await new Promise(r => setTimeout(r, TELEPORT_SETTLE_BASE_MS + attempt * 2000));
+  await waitForSharedLocation(contexts, TELEPORT_SETTLE_BASE_MS + attempt * 2000);
 
   for (const ctx of contexts) {
     await reopenPlayerPageIfClosed(ctx);

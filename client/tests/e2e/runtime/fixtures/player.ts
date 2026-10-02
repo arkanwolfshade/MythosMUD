@@ -13,6 +13,7 @@ import {
   getPageSessionCredentials,
   isVisibleWithin,
   loginPlayer,
+  logoutPlayer,
   waitForMessage,
   waitForPlayableSession,
 } from './auth';
@@ -22,6 +23,19 @@ import { locationIndicatesDeathVoid, requiredAliveButDeadMessage } from '../../.
 
 /** Zone key for earth_arkhamcity_sanitarium_room_foyer_001 (npc zone command). */
 const SANITARIUM_ZONE_KEY = 'arkhamcity/sanitarium';
+
+/**
+ * Best-effort wait: true once `predicate` holds, false if it doesn't within `timeoutMs`.
+ * For settle waits that replace fixed sleeps; use `expect` for anything that must hold.
+ */
+export async function waitUntil(predicate: () => Promise<boolean>, timeoutMs: number): Promise<boolean> {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if (await predicate()) return true;
+    await new Promise(r => setTimeout(r, 250));
+  }
+  return false;
+}
 
 export async function dismissDeathInterstitial(page: Page): Promise<void> {
   const respawnBtn = page.getByRole('button', {
@@ -35,7 +49,8 @@ export async function dismissDeathInterstitial(page: Page): Promise<void> {
       .getByTestId('command-input')
       .waitFor({ state: 'visible', timeout: 30000 })
       .catch(() => {});
-    await new Promise(r => setTimeout(r, 1500));
+    // Respawn has landed once Location leaves Death > Void (was a fixed 1.5s settle).
+    await waitUntil(async () => !(await isInDeathVoid(page)), 5000);
   }
 }
 
@@ -50,7 +65,8 @@ export async function ensureNotInCombat(page: Page, maxAttempts = 10): Promise<v
       return;
     }
     await executeCommand(page, 'flee').catch(() => {});
-    await new Promise(r => setTimeout(r, 1500));
+    // Same 1.5s cap as the old fixed sleep, but returns as soon as Character Info shows In Combat: No.
+    await waitUntil(async () => !(await isInCombatYes(page)), 1500);
     await dismissDeathInterstitial(page);
   }
 }
@@ -210,12 +226,24 @@ export async function openCorpseWithRetry(page: Page, itemText: string): Promise
 }
 
 /**
- * Drop the client, reset both E2E players' rooms to the spawn room in the database, and log back in.
+ * Log out, reset both E2E players' rooms to the spawn room in the database, and log back in.
  * Lands the player in Main Foyer from anywhere, including Death > Void.
+ *
+ * Must be a real logout before the DB reset: a bare page.goto('/') only drops the WebSocket, the
+ * server keeps the player in memory for the linkdead grace period, and session restore reconnects to
+ * that in-memory player in its old room, ignoring the reset row (seen: stuck in Sanitarium Chapel).
+ * Logging out first also stops the logout's own save from overwriting the reset.
  */
 async function relogInAtSpawn(page: Page, username: string, password: string): Promise<Page> {
-  // Fast path: do not wait on Exit-the-Realm (void / ward often blocks it for tens of seconds).
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  // spaFallback bounds the wait when Exit-the-Realm is blocked (void / ward).
+  await logoutPlayer(page, 25000, { spaFallback: true }).catch(() => {});
+  // Clear the persisted token so loginPlayer gets the login form instead of a session restore.
+  await page
+    .evaluate(() => {
+      localStorage.clear();
+      sessionStorage.clear();
+    })
+    .catch(() => {});
   // Workers=1 default: safe to reset both E2E player rows mid-spec.
   resetE2ePlayerRoomsInDatabase();
   await loginPlayer(page, username, password);
@@ -280,7 +308,7 @@ export async function ensurePlayableAlive(page: Page, username: string, password
 }
 
 /** Location panel line, e.g. "Arkham City > Sanitarium > Main Foyer" (Game Info keeps stale room dumps). */
-async function currentLocation(page: Page): Promise<string> {
+export async function currentLocation(page: Page): Promise<string> {
   const body = await page.evaluate(() => document.body?.innerText ?? '').catch(() => '');
   return body.match(/Location\s*\n\s*([^\n]+)/i)?.[1]?.trim() ?? '';
 }
@@ -371,9 +399,9 @@ async function killPlayerViaCombat(
   // (worse with a second connected player in the room) can otherwise leave the poll waiting on
   // nothing. Re-attacking an already-attacking player is a harmless no-op server-side.
   for (let attempt = 0; attempt < 6; attempt++) {
-    const dead = await isPlayerDead(live).catch(() => false);
+    // Poll for death for up to 10s (was a fixed 10s sleep), re-attacking only if it hasn't happened.
+    const dead = await waitUntil(() => isPlayerDead(live).catch(() => false), 10000);
     if (dead) return { live, corpsesBefore };
-    await new Promise(r => setTimeout(r, 10000));
     await executeCommand(live, `attack ${target}`).catch(() => {});
   }
 
@@ -385,12 +413,7 @@ async function killPlayerViaCombat(
 
 /** True once `locator` matches more than `baseline` elements, false if that doesn't happen in time. */
 async function countGrowsWithin(locator: Locator, baseline: number, timeoutMs: number): Promise<boolean> {
-  const deadline = Date.now() + timeoutMs;
-  while (Date.now() < deadline) {
-    if ((await locator.count()) > baseline) return true;
-    await new Promise(r => setTimeout(r, 500));
-  }
-  return false;
+  return waitUntil(async () => (await locator.count()) > baseline, timeoutMs);
 }
 
 /**

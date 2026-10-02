@@ -23,8 +23,11 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host "[INFO] Running Playwright runtime E2E (client/)..." -ForegroundColor Cyan
+$playwrightTimer = [Diagnostics.Stopwatch]::StartNew()
 npm run test:e2e:runtime
 $playwrightExit = $LASTEXITCODE
+$playwrightTimer.Stop()
+Write-Host "[TIMING] Playwright stage: $($playwrightTimer.Elapsed.ToString('hh\:mm\:ss'))" -ForegroundColor Cyan
 Set-Location -LiteralPath $ProjectRoot
 
 if ($playwrightExit -ne 0) {
@@ -34,5 +37,9 @@ if ($playwrightExit -ne 0) {
 }
 
 Write-Host "[INFO] Playwright E2E passed; running server integration tests..." -ForegroundColor Cyan
+$integrationTimer = [Diagnostics.Stopwatch]::StartNew()
 & (Join-Path $ProjectRoot "scripts" "run_integration_tests_playwright.ps1") @PytestArgs
-exit $LASTEXITCODE
+$integrationExit = $LASTEXITCODE
+$integrationTimer.Stop()
+Write-Host "[TIMING] Integration stage: $($integrationTimer.Elapsed.ToString('hh\:mm\:ss'))" -ForegroundColor Cyan
+exit $integrationExit
