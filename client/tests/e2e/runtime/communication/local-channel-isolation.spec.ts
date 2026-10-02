@@ -8,10 +8,10 @@
  * works correctly for local communication.
  */
 
-import { expect, test, type Page } from '@playwright/test';
+import { type Page } from '@playwright/test';
+import { expect, adoptSharedPlayers, test } from '../fixtures/shared-session';
 import { executeCommand, waitForMessage } from '../fixtures/auth';
 import {
-  cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
   ensureMultiplayerCoLocated,
   ensurePlayerInGame,
@@ -105,25 +105,20 @@ async function ensureIthaquaInFoyer(ithaqua: PlayerContext): Promise<void> {
   await expect(ithaqua.page.getByText(/Main Foyer/i).first()).toBeVisible({ timeout: 20000 });
 }
 
-test.describe('Local Channel Isolation', () => {
+test.describe('Local Channel Isolation', { tag: '@shared-session' }, () => {
   test.describe.configure({ mode: 'serial', timeout: 300_000 });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   // Keep beforeAll light — heavy co-locate belongs in tests (default hook timeout is 30s).
-  test.beforeAll(async ({ browser }) => {
+  test.beforeAll(async ({ browser, sharedPlayers }) => {
     test.setTimeout(120_000);
-    contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    contexts = await adoptSharedPlayers(browser, sharedPlayers);
     await waitForAllPlayersInGame(contexts, 60000);
   });
 
   test.beforeEach(async () => {
     // E2E baseline: every test starts with the players in Main Foyer (#956).
     await resetPlayersToMainFoyer(contexts);
-  });
-
-  test.afterAll(async () => {
-    test.setTimeout(60_000);
-    await cleanupMultiPlayerContexts(contexts);
   });
 
   async function prepareLocalIsolationPair(): Promise<void> {

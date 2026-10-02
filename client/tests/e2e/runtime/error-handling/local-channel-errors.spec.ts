@@ -6,11 +6,10 @@
  * empty messages, long messages, and other error conditions.
  */
 
-import { expect, test } from '@playwright/test';
+import { expect, adoptSharedPlayers, test } from '../fixtures/shared-session';
 import { executeCommand, getMessages, waitForMessage } from '../fixtures/auth';
 import { ensureE2eRuntimeReady } from '../fixtures/e2e-runtime-ready';
 import {
-  cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
   ensureMultiplayerCoLocated,
   ensurePlayerInGame,
@@ -32,11 +31,11 @@ const EMPTY_LOCAL_REJECTION =
 const LONG_LOCAL_REJECTION =
   /Invalid command format|Local message too long|Command too long|too long|500 characters|max \d+ characters/i;
 
-test.describe('Local Channel Errors', () => {
+test.describe('Local Channel Errors', { tag: '@shared-session' }, () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
-  test.beforeAll(async ({ browser }) => {
-    contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+  test.beforeAll(async ({ browser, sharedPlayers }) => {
+    contexts = await adoptSharedPlayers(browser, sharedPlayers);
     // Do not call ensureMultiplayerCoLocated here: 5x coLocateTimeout can exceed the default
     // 180s beforeAll budget when Occupants UI lags. Most tests are sender-only; co-locate only where needed.
     await waitForAllPlayersInGame(contexts, 60000);
@@ -47,11 +46,6 @@ test.describe('Local Channel Errors', () => {
   test.beforeEach(async () => {
     // E2E baseline: every test starts with the players in Main Foyer (#956).
     await resetPlayersToMainFoyer(contexts);
-  });
-
-  test.afterAll(async () => {
-    // Cleanup contexts
-    await cleanupMultiPlayerContexts(contexts);
   });
 
   test('should reject empty local message', async () => {

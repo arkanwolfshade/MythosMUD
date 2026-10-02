@@ -7,11 +7,10 @@
  * works correctly for private multiplayer communication.
  */
 
-import { expect, test } from '@playwright/test';
+import { expect, adoptSharedPlayers, test } from '../fixtures/shared-session';
 import { executeCommand, waitForMessage } from '../fixtures/auth';
 import { ensureE2eRuntimeReady } from '../fixtures/e2e-runtime-ready';
 import {
-  cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
   ensurePlayerInGame,
   getPlayerMessages,
@@ -43,21 +42,16 @@ async function waitForPlayableUi(contexts: PlayerContext[]): Promise<void> {
   );
 }
 
-test.describe('Whisper Basic', () => {
+test.describe('Whisper Basic', { tag: '@shared-session' }, () => {
   test.describe.configure({ mode: 'serial' });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
-  test.beforeAll(async ({ browser }) => {
-    contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+  test.beforeAll(async ({ browser, sharedPlayers }) => {
+    contexts = await adoptSharedPlayers(browser, sharedPlayers);
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
     await ensureE2eRuntimeReady(contexts, 60000);
-  });
-
-  test.afterAll(async () => {
-    // Cleanup contexts
-    await cleanupMultiPlayerContexts(contexts);
   });
 
   test('Ithaqua should receive AW whisper message', async () => {

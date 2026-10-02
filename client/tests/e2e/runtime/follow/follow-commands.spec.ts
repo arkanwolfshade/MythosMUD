@@ -8,10 +8,10 @@
  * same InviteModal component), plus a single-player NPC case party has no equivalent of.
  */
 
-import { expect, test, type Page } from '@playwright/test';
+import { type Page } from '@playwright/test';
+import { expect, adoptSharedPlayers, test } from '../fixtures/shared-session';
 import { clickWithoutStability, executeCommand, getMessages, waitForMessage } from '../fixtures/auth';
 import {
-  cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
   ensureMultiplayerCoLocated,
   ensurePlayerInGame,
@@ -81,21 +81,17 @@ async function despawnMorganInstances(page: Page): Promise<void> {
   }
 }
 
-test.describe('Follow Commands', () => {
+test.describe('Follow Commands', { tag: '@shared-session' }, () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
-  test.beforeAll(async ({ browser }) => {
-    contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+  test.beforeAll(async ({ browser, sharedPlayers }) => {
+    contexts = await adoptSharedPlayers(browser, sharedPlayers);
     await waitForAllPlayersInGame(contexts, 60000);
   });
 
   test.beforeEach(async () => {
     // E2E baseline: every test starts with the players in Main Foyer (#956).
     await resetPlayersToMainFoyer(contexts);
-  });
-
-  test.afterAll(async () => {
-    await cleanupMultiPlayerContexts(contexts);
   });
 
   test('following with no active follow shows helpful message', async () => {

@@ -69,12 +69,23 @@ export default defineConfig({
   expect: {
     timeout: 30000,
   },
-  /* Runtime E2E project: bundled Firefox (no system Chrome required).
+  /* Runtime E2E projects: bundled Firefox (no system Chrome required).
    * Install browsers once per machine: `cd client && npx playwright install firefox`
+   *
+   * `shared-session` specs (tagged @shared-session) reuse one logged-in player pair per worker
+   * (fixtures/shared-session.ts). Everything else runs in `isolated`. The split matters: separate
+   * projects get separate workers, so the shared pair is logged out before an isolated spec logs
+   * the same accounts in.
    */
   projects: [
     {
-      name: 'firefox',
+      name: 'shared-session',
+      grep: /@shared-session/,
+      use: { ...devices['Desktop Firefox'] },
+    },
+    {
+      name: 'isolated',
+      grepInvert: /@shared-session/,
       use: { ...devices['Desktop Firefox'] },
     },
   ],

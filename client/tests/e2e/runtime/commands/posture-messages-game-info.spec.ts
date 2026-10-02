@@ -5,10 +5,9 @@
  * plus voluntary /sit third-person room broadcast.
  */
 
-import { expect, test } from '@playwright/test';
+import { expect, adoptSharedPlayers, test } from '../fixtures/shared-session';
 import { executeCommand } from '../fixtures/auth';
 import {
-  cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
   ensureFreshMultiPlayerContexts,
   ensurePlayerInGame,
@@ -61,17 +60,13 @@ async function restoreTarget(aw: PlayerContext, target: PlayerContext, targetCha
   target.page = await ensurePlayableAlive(target.page, target.player.username, target.player.password);
 }
 
-test.describe('Posture messages in Game Info (#395)', () => {
+test.describe('Posture messages in Game Info (#395)', { tag: '@shared-session' }, () => {
   test.describe.configure({ timeout: 300_000 });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
-  test.beforeAll(async ({ browser }) => {
-    contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+  test.beforeAll(async ({ browser, sharedPlayers }) => {
+    contexts = await adoptSharedPlayers(browser, sharedPlayers);
     await waitForAllPlayersInGame(contexts);
-  });
-
-  test.afterAll(async () => {
-    await cleanupMultiPlayerContexts(contexts);
   });
 
   test('target sees lying line when admin sets DP to 0 (server-initiated self)', async ({ browser }) => {
