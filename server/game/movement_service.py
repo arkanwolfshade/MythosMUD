@@ -24,6 +24,7 @@ from ..exceptions import DatabaseError, ValidationError
 from ..models.room import Room
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
+from .instance_manager import is_template_room
 from .movement_helpers import (
     check_combat_state,
     check_player_posture,
@@ -478,6 +479,11 @@ class MovementService:
 
         if not to_room:
             self._logger.error("To room does not exist", room_id=to_room_id)
+            return False
+
+        if is_template_room(to_room):
+            # Template rooms are only ever cloned; an exit into one is a world-data bug.
+            self._logger.warning("Refused move into instance template room", player_id=player_id, room_id=to_room_id)
             return False
 
         if not await validate_player_room_membership(

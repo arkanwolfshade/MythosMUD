@@ -30,15 +30,37 @@ logger = get_logger(__name__)
 INSTANCE_ROOM_PREFIX = "instance_"
 
 
-def is_template_room(room: Room | None) -> bool:
-    """True if room is an instance template: only ever cloned, never entered directly.
+def template_id_of(room: Room | None) -> str | None:
+    """instance_template_id of a template room (never of its clones), else None.
 
     Clones copy the template's attributes (instance_template_id included), so they are told apart
-    by their instance_ room id.
+    by their instance_ room id. attributes is untyped JSONB: only a non-empty string id counts.
     """
-    if room is None or not room.attributes.get("instance_template_id"):
-        return False
-    return not cast(str, room.id).startswith(INSTANCE_ROOM_PREFIX)
+    if room is None:
+        return None
+    template_id = cast(object, room.attributes.get("instance_template_id"))
+    if not isinstance(template_id, str) or not template_id:
+        return None
+    return None if cast(str, room.id).startswith(INSTANCE_ROOM_PREFIX) else template_id
+
+
+def is_template_room(room: Room | None) -> bool:
+    """True if room is an instance template: only ever cloned, never entered directly."""
+    return template_id_of(room) is not None
+
+
+def template_exit_room_id(room: Room) -> str:
+    """Where a template (or its instances) lets players out, e.g. the Sanitarium Main Foyer."""
+    return str(room.attributes.get("instance_exit_room_id") or DEFAULT_EXIT_ROOM_ID)
+
+
+class TemplateRoomEntryError(ValueError):
+    """Something tried to place a player directly into an instance template room."""
+
+    def __init__(self, room_id: str) -> None:
+        """Record which template room was refused."""
+        super().__init__("That room is an instance template; it cannot be entered directly.")
+        self.room_id: str = room_id
 
 
 @dataclass

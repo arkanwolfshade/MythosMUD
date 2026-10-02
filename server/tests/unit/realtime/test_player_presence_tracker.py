@@ -11,11 +11,15 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.exceptions import DatabaseError
+from server.game.instance_manager import InstanceManager
 from server.models.corruption import CorruptionTier
+from server.models.player import Player
+from server.models.room import Room
 from server.realtime.player_presence_tracker import (
     _acquire_disconnect_lock,
     _build_player_info,
     _resolve_room_id,
+    _resolve_room_id_for_tutorial_reconnect,  # pyright: ignore[reportPrivateUsage] -- unit-tested directly, same as the other private helpers imported here
     _should_skip_disconnect,
     _warm_corruption_tier_cache,  # pyright: ignore[reportPrivateUsage] -- unit-tested directly, same as the other private helpers imported here
     broadcast_connection_message_impl,
@@ -805,3 +809,62 @@ async def test_track_player_disconnected_impl_finally_cleanup():
 
                 # Even with error, finally block should remove player
                 assert player_id not in mock_manager.disconnecting_players
+
+
+BEDROOM_ID = "earth_arkhamcity_sanitarium_room_tutorial_bedroom_001"
+FOYER_ID = "earth_arkhamcity_sanitarium_room_foyer_001"
+
+
+def _template_bedroom() -> Room:
+    return Room(
+        {
+            "id": BEDROOM_ID,
+            "attributes": {"instance_template_id": "tutorial_sanitarium", "instance_exit_room_id": FOYER_ID},
+        }
+    )
+
+
+def _foyer() -> Room:
+    return Room({"id": FOYER_ID, "attributes": {}})
+
+
+def _manager_with(instance_manager: InstanceManager, rooms: dict[str, Room], save_player: AsyncMock) -> MagicMock:
+    manager = MagicMock()
+    manager.configure_mock(
+        **{
+            "async_persistence.get_room_by_id": MagicMock(side_effect=rooms.get),
+            "async_persistence.save_player": save_player,
+            "app.state.container.instance_manager": instance_manager,
+        }
+    )
+    return manager
+
+
+@pytest.mark.asyncio
+async def test_tutorial_reentry_gives_stranded_player_a_fresh_instance():
+    """A player saved in the template room with no instance goes back through a fresh tutorial."""
+    rooms = {BEDROOM_ID: _template_bedroom(), FOYER_ID: _foyer()}
+    instance_manager = InstanceManager(room_cache=rooms)
+    save_player = AsyncMock()
+    manager = _manager_with(instance_manager, rooms, save_player)
+    player = Player(player_id=str(uuid.uuid4()), name="Stranded", current_room_id=BEDROOM_ID, tutorial_instance_id=None)
+
+    room_id = await _resolve_room_id_for_tutorial_reconnect(player, manager)
+
+    assert room_id is not None
+    assert room_id.startswith("instance_")
+    assert room_id.endswith(BEDROOM_ID)
+    assert player.tutorial_instance_id is not None
+    assert instance_manager.get_instance(player.tutorial_instance_id) is not None
+    assert player.current_room_id == room_id
+    save_player.assert_awaited_once_with(player)
+
+
+@pytest.mark.asyncio
+async def test_tutorial_reentry_ignores_players_outside_templates():
+    """No instance and an ordinary saved room: normal room resolution applies."""
+    rooms = {BEDROOM_ID: _template_bedroom(), FOYER_ID: _foyer()}
+    manager = _manager_with(InstanceManager(room_cache=rooms), rooms, AsyncMock())
+    player = Player(player_id=str(uuid.uuid4()), name="Visitor", current_room_id=FOYER_ID, tutorial_instance_id=None)
+
+    assert await _resolve_room_id_for_tutorial_reconnect(player, manager) is None

@@ -11,8 +11,10 @@ from collections.abc import Mapping
 from typing import Any, Protocol, cast
 
 from ..exceptions import DatabaseError
+from ..game.instance_manager import template_id_of
 from ..models.corruption import compute_tier
 from ..models.player import Player
+from ..models.room import Room
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
 from .disconnect_catchup import CatchupManager, CatchupPlayer, build_catchup_message
@@ -28,6 +30,23 @@ from .player_disconnect_handlers import (
 from .player_presence_utils import extract_player_name, get_player_position
 
 logger = get_logger(__name__)
+
+
+class RoomLookup(Protocol):  # pylint: disable=too-few-public-methods  # Reason: single-method structural type
+    """Anything that resolves a room id to a Room (AsyncPersistenceLayer)."""
+
+    def get_room_by_id(self, room_id: str) -> Room | None:
+        """The room, or None if unknown."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright needs a stub body for a non-None return
+
+
+class _RoomLookupOwner(Protocol):  # pylint: disable=too-few-public-methods  # Reason: single-attribute structural type
+    """The ConnectionManager's room source, as the tutorial re-entry repair reads it."""
+
+    @property
+    def async_persistence(self) -> RoomLookup | None:
+        """Persistence used for room lookups (None in some tests)."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright needs a stub body for a non-None return
 
 
 def _warm_corruption_tier_cache(player_id: uuid.UUID, player: Player) -> None:
@@ -155,16 +174,22 @@ def _resolve_room_id(player: Any, manager: Any) -> str | None:
 
 async def _resolve_room_id_for_tutorial_reconnect(player: Any, manager: Any) -> str | None:
     """
-    For players with tutorial_instance_id, ensure instance exists and return first room.
+    Place tutorial players in a live tutorial instance on (re)entry and return its first room.
 
-    Per plan: on reconnect, place player at the beginning of the tutorial instance.
-    If instance was lost (e.g. server restart), recreate it.
+    A player whose instance was flushed (real logout, server restart) gets a fresh one. A player
+    saved in a template room with no instance at all (stranded there by the old template-room
+    leaks) is sent back through a fresh instance of that template too.
 
     Returns:
         First room ID if tutorial player, None to fall back to normal resolution
     """
+    from ..game.player_creation_service import TUTORIAL_TEMPLATE_ID
+
     instance_id = getattr(player, "tutorial_instance_id", None)
-    if not instance_id:
+    player_obj = cast(Player, player)
+    rooms = cast(_RoomLookupOwner, manager).async_persistence
+    template_id = TUTORIAL_TEMPLATE_ID if player_obj.tutorial_instance_id else _stranded_template_id(player_obj, rooms)
+    if not template_id:
         return None
 
     instance_manager = _get_instance_manager_from_manager(manager)
@@ -175,17 +200,16 @@ async def _resolve_room_id_for_tutorial_reconnect(player: Any, manager: Any) -> 
         )
         return None
 
-    instance = instance_manager.get_instance(instance_id)
+    instance = instance_manager.get_instance(instance_id) if instance_id else None
     if not instance:
         logger.info(
-            "Tutorial instance missing on reconnect, recreating",
+            "Tutorial instance missing on (re)entry, creating a fresh one",
             player_id=player.player_id,
             instance_id=instance_id,
+            template_id=template_id,
         )
-        from ..game.player_creation_service import TUTORIAL_TEMPLATE_ID
-
         instance = instance_manager.create_instance(
-            template_id=TUTORIAL_TEMPLATE_ID,
+            template_id=template_id,
             owner_player_id=player.player_id,
         )
         instance_id = instance.instance_id
@@ -200,6 +224,14 @@ async def _resolve_room_id_for_tutorial_reconnect(player: Any, manager: Any) -> 
     if manager.async_persistence:
         await manager.async_persistence.save_player(player)
     return cast(str, first_room_id)
+
+
+def _stranded_template_id(player: Player, persistence: RoomLookup | None) -> str | None:
+    """instance_template_id of the player's saved room if it is a template room, else None."""
+    room_id = player.current_room_id
+    if persistence is None or not room_id:
+        return None
+    return template_id_of(persistence.get_room_by_id(room_id))
 
 
 def _get_instance_manager_from_manager(manager: Any) -> Any:

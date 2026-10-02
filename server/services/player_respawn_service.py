@@ -11,7 +11,7 @@ from __future__ import annotations
 # pylint: disable=too-many-locals,too-many-statements,too-many-lines  # Reason: Respawn service requires many intermediate variables and statements for complex respawn logic; single cohesive module preferred over split.
 import random
 import uuid
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from datetime import UTC, datetime, timedelta
 from typing import Protocol, cast
 
@@ -21,9 +21,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..constants.spawn_defaults import DEFAULT_RESPAWN_ROOM, LIMBO_ROOM_ID
 from ..events.event_types import BaseEvent, PlayerDeliriumRespawnedEvent, PlayerRespawnedEvent
 from ..exceptions import DatabaseError
+from ..game.instance_manager import is_template_room, template_exit_room_id
 from ..models.game import PositionState
 from ..models.lucidity import LucidityActionCode, PlayerLucidity
 from ..models.player import Player
+from ..models.room import Room
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
 from ..utils.liability_types import DecodeLiabilitiesFn, EncodeLiabilitiesFn
@@ -85,6 +87,7 @@ class PlayerRespawnService:
         self,
         event_bus: _RespawnEventPublisher | None = None,
         player_combat_service: _PlayerCombatClearing | None = None,
+        room_lookup: Callable[[str], Room | None] | None = None,
     ) -> None:
         """
         Initialize the player respawn service.
@@ -92,14 +95,36 @@ class PlayerRespawnService:
         Args:
             event_bus: Optional event bus for publishing events
             player_combat_service: Optional player combat service for clearing combat state
+            room_lookup: Optional room-by-id lookup; lets a respawn room that is an instance
+                template be redirected to that template's exit room
         """
         self._event_bus: _RespawnEventPublisher | None = event_bus
         self._player_combat_service: _PlayerCombatClearing | None = player_combat_service
+        self._room_lookup: Callable[[str], Room | None] | None = room_lookup
         logger.info(
             "PlayerRespawnService initialized",
             event_bus_available=bool(event_bus),
             player_combat_service_available=bool(player_combat_service),
         )
+
+    def _redirect_template_respawn(self, player_id: uuid.UUID, respawn_room_id: str) -> str:
+        """A template room is never entered directly: respawn at its exit room instead.
+
+        ponytail: always the exit room, never the player's live instance -- the only template
+        today (tutorial bedroom) is no_death, so a respawn into a live instance cannot happen.
+        Route to the instance once an instance template allows death.
+        """
+        room = self._room_lookup(respawn_room_id) if self._room_lookup else None
+        if room is None or not is_template_room(room):
+            return respawn_room_id
+        exit_room_id = template_exit_room_id(room)
+        logger.warning(
+            "Respawn room is an instance template; using its exit room",
+            player_id=player_id,
+            template_room_id=respawn_room_id,
+            exit_room_id=exit_room_id,
+        )
+        return exit_room_id
 
     @staticmethod
     def _normalize_current_dp(stats: dict[str, object]) -> int:
@@ -445,7 +470,7 @@ class PlayerRespawnService:
                     player_id=player_id,
                     custom_respawn_room=respawn_room_id,
                 )
-                return respawn_room_id
+                return self._redirect_template_respawn(player_id, respawn_room_id)
 
             logger.debug(
                 "Using default respawn room for player",

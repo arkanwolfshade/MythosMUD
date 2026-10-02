@@ -17,6 +17,7 @@ from server.game.movement_helpers import (
     validate_player_room_membership,
 )
 from server.game.movement_service import MovementService
+from server.models.room import Room
 
 
 @pytest.fixture
@@ -618,3 +619,35 @@ async def test_validate_player_room_membership_auto_add(movement_service, mock_p
     )
     assert result is True
     room.add_player_silently.assert_called_once_with(player_id)
+
+
+BEDROOM_ID = "earth_arkhamcity_sanitarium_room_tutorial_bedroom_001"
+FOYER_ID = "earth_arkhamcity_sanitarium_room_foyer_001"
+
+
+def _template_bedroom() -> Room:
+    return Room(
+        {
+            "id": BEDROOM_ID,
+            "attributes": {"instance_template_id": "tutorial_sanitarium", "instance_exit_room_id": FOYER_ID},
+        }
+    )
+
+
+def _foyer() -> Room:
+    return Room({"id": FOYER_ID, "attributes": {}})
+
+
+@pytest.mark.asyncio
+async def test_validate_movement_rooms_refuses_instance_template(
+    movement_service: MovementService, mock_persistence: MagicMock
+) -> None:
+    """An exit into a template room (bad world data) must never move a player into it."""
+    rooms = {FOYER_ID: _foyer(), BEDROOM_ID: _template_bedroom()}
+    mock_persistence.configure_mock(get_room_by_id=MagicMock(side_effect=rooms.get))
+
+    with patch("server.game.movement_service.validate_player_room_membership", new_callable=AsyncMock) as membership:
+        allowed = await movement_service._validate_movement_rooms(uuid.uuid4(), FOYER_ID, BEDROOM_ID)  # pyright: ignore[reportPrivateUsage] -- unit-tested directly, like this file's other _validate_* tests
+
+    assert allowed is False
+    membership.assert_not_awaited()

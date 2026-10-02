@@ -277,7 +277,9 @@ async def initialize_combat_services(app: FastAPI, container: ApplicationContain
     logger.info("Player death service initialized")
 
     app.state.player_respawn_service = PlayerRespawnService(
-        event_bus=container.event_bus, player_combat_service=app.state.player_combat_service
+        event_bus=container.event_bus,
+        player_combat_service=app.state.player_combat_service,
+        room_lookup=container.async_persistence.get_room_by_id if container.async_persistence else None,
     )
     logger.info("Player respawn service initialized")
 

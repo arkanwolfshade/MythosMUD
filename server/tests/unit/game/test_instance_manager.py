@@ -8,7 +8,13 @@ import uuid
 
 import pytest
 
-from server.game.instance_manager import InstanceManager, is_template_room
+from server.game.instance_manager import (
+    InstanceManager,
+    TemplateRoomEntryError,
+    is_template_room,
+    template_exit_room_id,
+    template_id_of,
+)
 from server.models.room import Room
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
@@ -173,3 +179,21 @@ def test_is_template_room_false_for_ordinary_room_and_none():
     foyer = Room({"id": "earth_arkhamcity_sanitarium_room_foyer_001", "attributes": {"rest_location": True}})
     assert is_template_room(foyer) is False
     assert is_template_room(None) is False
+
+
+def test_template_id_of_and_exit_room(tutorial_room: Room, instance_manager: InstanceManager):
+    """Only the template itself reports a template id; its exit room comes from attributes."""
+    assert template_id_of(tutorial_room) == "tutorial_sanitarium"
+    clone = next(iter(instance_manager.create_instance("tutorial_sanitarium", uuid.uuid4()).rooms.values()))
+    assert template_id_of(clone) is None
+    assert template_id_of(None) is None
+    assert template_exit_room_id(tutorial_room) == "earth_arkhamcity_sanitarium_room_foyer_001"
+    assert template_exit_room_id(Room({"id": "x", "attributes": {}})) == "earth_arkhamcity_sanitarium_room_foyer_001"
+
+
+def test_template_room_entry_error_message():
+    """The refusal message is what admins see from teleport/goto."""
+    error = TemplateRoomEntryError("room_x")
+    assert isinstance(error, ValueError)
+    assert error.room_id == "room_x"
+    assert "instance template" in str(error)
