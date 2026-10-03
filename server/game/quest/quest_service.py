@@ -11,8 +11,11 @@ from __future__ import annotations
 
 import uuid
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, cast
 
+from sqlalchemy.exc import SQLAlchemyError
+
+from server.exceptions import DatabaseError
 from server.game.quest.collect_inventory import (
     collect_player_stacks,
     consume_prototype_from_player,
@@ -25,8 +28,9 @@ from server.game.quest.quest_chat_notify import (
     notify_quest_started,
     should_notify_quest_progress,
 )
+from server.models.player import Player
 from server.models.quest import QuestInstance
-from server.schemas.quest import QuestDefinitionSchema
+from server.schemas.quest import QuestDefinitionSchema, QuestRewardSchema
 from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -487,6 +491,28 @@ class QuestService:
                 error=str(e),
             )
 
+    async def _apply_respawn_room_reward(self, player_id: uuid.UUID, quest_id: str, reward: QuestRewardSchema) -> None:
+        """Point the player's respawn at config.room_id (leaving the tutorial -> Sanitarium Main Foyer)."""
+        room_id = cast(object, reward.config.get("room_id"))
+        if not isinstance(room_id, str) or not room_id:
+            logger.warning("respawn_room reward without config.room_id", quest_id=quest_id)
+            return
+        try:
+            loaded = await self._load_player_for_collect(player_id)
+            if loaded is None:
+                return
+            player = cast(Player, loaded)
+            player.respawn_room_id = room_id
+            await self._save_player_after_consume(player)
+        except (DatabaseError, SQLAlchemyError) as e:
+            logger.warning(
+                "Failed to apply respawn_room quest reward",
+                player_id=str(player_id),
+                quest_id=quest_id,
+                room_id=room_id,
+                error=str(e),
+            )
+
     async def _apply_rewards(
         self,
         player_id: uuid.UUID,
@@ -501,6 +527,8 @@ class QuestService:
                 await self._apply_spell_reward(player_id, quest_id, reward)
             elif reward.type == "item":
                 await self._apply_item_reward(player_id, quest_id, reward)
+            elif reward.type == "respawn_room":
+                await self._apply_respawn_room_reward(player_id, quest_id, reward)
 
     def _turn_in_inventory_full_error(
         self, player_id: uuid.UUID, definition: QuestDefinitionSchema

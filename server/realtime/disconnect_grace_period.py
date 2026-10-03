@@ -20,9 +20,11 @@ from ..models.player import Player
 from ..structured_logging.enhanced_logging_config import get_logger
 from .disconnect_catchup import CatchupManager, capture_grace_snapshot
 from .player_disconnect_handlers import (
+    InstanceFlushOwner,
     _cleanup_player_references,
     _collect_disconnect_keys,
     _remove_player_from_online_tracking,
+    flush_departing_tutorial_instance,
     handle_player_disconnect_broadcast,
 )
 from .player_presence_utils import extract_player_name
@@ -113,6 +115,7 @@ async def start_grace_period(
             # Clean up ghost players
             manager._cleanup_ghost_players()  # pylint: disable=protected-access  # Reason: Accessing protected member _cleanup_ghost_players is necessary for disconnect grace period implementation, this is part of the internal API
 
+            await flush_departing_tutorial_instance(pl, cast(InstanceFlushOwner, manager))
             # Clean up remaining references
             _cleanup_player_references(player_id, manager)
 

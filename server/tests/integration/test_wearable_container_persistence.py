@@ -42,6 +42,7 @@ async def _create_player(session_factory: async_sessionmaker[AsyncSession]) -> u
 
 
 @pytest.mark.asyncio
+@pytest.mark.usefixtures("fresh_database_manager")
 async def test_equip_creates_one_row_reuses_it_and_unequip_reads_it_back(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:

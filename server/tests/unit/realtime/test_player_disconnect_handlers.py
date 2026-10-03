@@ -5,6 +5,7 @@ Tests the player disconnect handling functions.
 """
 
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -13,15 +14,18 @@ from server.api.container_helpers import get_container_service as api_get_contai
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+from server.models.player import Player
 from server.realtime.player_disconnect_handlers import (
     SESSION_AGE_OFF_SECONDS,
     _cleanup_player_references,
     _collect_disconnect_keys,
     _remove_player_from_online_tracking,
     age_off_disconnected_sessions,
+    flush_departing_tutorial_instance,
     handle_player_disconnect_broadcast,
 )
 from server.services.container_service import get_container_service
+from server.services.instance_flush_service import InstanceFlushService
 
 
 @pytest.fixture
@@ -390,3 +394,41 @@ def test_collect_disconnect_keys_no_canonical_id():
     assert player_id in uuid_keys
     # Should still collect name if available
     assert "TestPlayer" in str_keys
+
+
+class _FlushOwner:
+    """Typed stand-in for the ConnectionManager attribute the departure flush reads."""
+
+    def __init__(self, flusher: InstanceFlushService | None) -> None:
+        self.instance_flush_service: InstanceFlushService | None = flusher
+
+
+@pytest.mark.asyncio
+async def test_flush_departing_tutorial_instance_flushes_the_players_instance():
+    """A real departure flushes the instance but keeps the id, so re-entry builds a fresh one."""
+    flush = AsyncMock(return_value=1)
+    flusher = MagicMock()
+    flusher.configure_mock(flush=flush)
+    player = Player(player_id=str(uuid.uuid4()), name="Leaver", tutorial_instance_id="instance_abc")
+
+    await flush_departing_tutorial_instance(player, _FlushOwner(cast(InstanceFlushService, flusher)))
+
+    flush.assert_awaited_once_with("instance_abc")
+    assert player.tutorial_instance_id == "instance_abc"
+
+
+@pytest.mark.asyncio
+async def test_flush_departing_tutorial_instance_skips_non_tutorial_players():
+    flush = AsyncMock()
+    flusher = MagicMock()
+    flusher.configure_mock(flush=flush)
+
+    await flush_departing_tutorial_instance(
+        Player(player_id=str(uuid.uuid4()), name="Vet"), _FlushOwner(cast(InstanceFlushService, flusher))
+    )
+    await flush_departing_tutorial_instance(None, _FlushOwner(cast(InstanceFlushService, flusher)))
+    await flush_departing_tutorial_instance(
+        Player(player_id=str(uuid.uuid4()), name="Newbie", tutorial_instance_id="instance_abc"), _FlushOwner(None)
+    )
+
+    flush.assert_not_awaited()

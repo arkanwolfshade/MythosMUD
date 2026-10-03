@@ -15,7 +15,7 @@ that dimensional shifts are properly recorded.
 import threading
 import time
 import uuid
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -37,7 +37,9 @@ from .movement_monitor import get_movement_monitor
 if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
     from ..models.player import Player
+    from ..services.instance_flush_service import InstanceFlushService
     from ..services.player_combat_service import PlayerCombatService
+    from .instance_manager import InstanceManager
 
 
 class MovementService:
@@ -60,6 +62,7 @@ class MovementService:
         async_persistence: "AsyncPersistenceLayer | None" = None,
         exploration_service: Any | None = None,
         instance_manager: Any | None = None,
+        instance_flush: "InstanceFlushService | None" = None,
     ) -> None:
         """
         Initialize the movement service.
@@ -70,12 +73,15 @@ class MovementService:
             async_persistence: Optional AsyncPersistenceLayer instance (required for persistence operations)
             exploration_service: Optional ExplorationService for tracking room exploration
             instance_manager: Optional InstanceManager for tutorial exit handling
+            instance_flush: Optional InstanceFlushService; on tutorial exit the instance's floor
+                items go to the lost-and-found (without it the instance is just destroyed)
         """
         self._event_bus = event_bus
         if async_persistence is None:
             raise ValueError("async_persistence is required for MovementService")
         self._persistence = async_persistence
         self._instance_manager = instance_manager
+        self._instance_flush: InstanceFlushService | None = instance_flush
         self._lock = threading.RLock()
         self._logger = get_logger("MovementService")
         self._player_combat_service = player_combat_service
@@ -227,21 +233,29 @@ class MovementService:
         timing_breakdown["db_write_ms"] = (db_write_end - db_write_start) * 1000
 
     async def _handle_tutorial_exit_if_applicable(self, player: Any, to_room_id: str) -> None:
-        """If player exited tutorial instance (moved to fixed exit room), clear and destroy instance."""
-        if not self._instance_manager:
+        """If player exited tutorial instance (moved to fixed exit room), clear and flush instance."""
+        instance_manager = cast("InstanceManager | None", self._instance_manager)
+        tutorial_player = cast("Player", player)
+        instance_id = tutorial_player.tutorial_instance_id
+        if instance_manager is None or not instance_id:
             return
-        instance_id = getattr(player, "tutorial_instance_id", None)
-        if not instance_id:
-            return
-        exit_room_id = self._instance_manager.get_exit_room_id(instance_id)
+        exit_room_id = instance_manager.get_exit_room_id(instance_id)
         if to_room_id != exit_room_id:
             return
-        setattr(player, "tutorial_instance_id", None)  # noqa: B010  # Reason: SQLAlchemy column
-        await self._persistence.save_player(player)
-        self._instance_manager.destroy_instance(instance_id)
+        tutorial_player.tutorial_instance_id = None
+        # Safety net: the leave_the_tutorial quest reward normally moves respawn to the exit room, but
+        # a player whose quest is not active must never keep respawning into the template.
+        respawn_room_id = tutorial_player.respawn_room_id
+        if respawn_room_id and is_template_room(self._persistence.get_room_by_id(respawn_room_id)):
+            tutorial_player.respawn_room_id = exit_room_id
+        await self._persistence.save_player(tutorial_player)
+        if self._instance_flush is not None:
+            _ = await self._instance_flush.flush(instance_id)
+        else:
+            instance_manager.destroy_instance(instance_id)
         self._logger.info(
             "Tutorial exit: cleared instance",
-            player_id=player.player_id,
+            player_id=tutorial_player.player_id,
             instance_id=instance_id,
         )
 

@@ -24,12 +24,15 @@ from server.structured_logging.enhanced_logging_config import get_logger
 if TYPE_CHECKING:
     from server.async_persistence import AsyncPersistenceLayer
     from server.container.main import ApplicationContainer
+    from server.realtime.connection_manager import ConnectionManager
+    from server.services.instance_flush_service import InstanceFlushService
     from server.services.user_manager import UserManager
 
 logger = get_logger(__name__)
 
 GAME_ATTRS = (
     "instance_manager",
+    "instance_flush_service",
     "movement_service",
     "player_position_service",
     "follow_service",
@@ -58,6 +61,7 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
     """Game services: movement, player, room, user, container, caches, items."""
 
     instance_manager: Any = None
+    instance_flush_service: InstanceFlushService | None = None
     movement_service: Any = None
     player_position_service: Any = None
     follow_service: Any = None
@@ -148,11 +152,27 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
         )
         async_persistence.set_instance_manager(instance_manager)
         self.instance_manager = instance_manager
+        from server.services.instance_flush_service import (  # pylint: disable=redefined-outer-name  # Reason: runtime import of the TYPE_CHECKING name, kept local like this bundle's other services
+            InstanceFlushService,
+        )
+
+        # Floor drops live on the realtime room manager (bundle initialized before this one); the
+        # connection manager also flushes a departing player's tutorial instance.
+        realtime = cast("ConnectionManager | None", getattr(container, "connection_manager", None))
+        flusher = InstanceFlushService(
+            instance_manager,
+            realtime.room_manager if realtime else None,
+            cast("AsyncPersistenceLayer", async_persistence),
+        )
+        self.instance_flush_service = flusher
+        if realtime is not None:
+            realtime.instance_flush_service = flusher
         self.movement_service = MovementService(
             event_bus=event_bus,
             async_persistence=async_persistence,
             exploration_service=self.exploration_service,
             instance_manager=instance_manager,
+            instance_flush=flusher,
         )
         from server.game.follow_service import FollowService
         from server.services.player_position_service import PlayerPositionService
