@@ -46,6 +46,7 @@ def _registry(name: str, capacity: int) -> PrototypeRegistry:
 
 
 @pytest.mark.asyncio
+@pytest.mark.usefixtures("fresh_database_manager")
 async def test_furniture_container_created_once_then_refreshed_in_place(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:

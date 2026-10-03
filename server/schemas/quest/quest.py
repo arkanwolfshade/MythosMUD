@@ -31,8 +31,10 @@ class QuestGoalSchema(BaseModel):
 class QuestRewardSchema(BaseModel):
     """Single reward in a quest definition (xp, item, spell)."""
 
-    type: str = Field(..., description="Reward type: xp, item, spell")
-    config: dict[str, Any] = Field(default_factory=dict, description="Type-specific config (amount, item_id, spell_id)")
+    type: str = Field(..., description="Reward type: xp, item, spell, respawn_room")
+    config: dict[str, Any] = Field(
+        default_factory=dict, description="Type-specific config (amount, item_id, spell_id, room_id)"
+    )
 
     model_config = ConfigDict(extra="allow")
 

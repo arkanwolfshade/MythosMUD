@@ -10,13 +10,16 @@ Phase 1: Bundles own initialization; container delegates and flattens attributes
 # pylint: disable=too-many-instance-attributes,too-many-statements  # Reason: DI container requires many service instances; __init__ declares all attributes for backward compatibility
 import threading
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from anyio import Lock
 
 from server.container.utils import decode_json_column, normalize_path_from_url_or_path
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.project_paths import get_project_root
+
+if TYPE_CHECKING:
+    from server.services.instance_flush_service import InstanceFlushService
 
 logger = get_logger(__name__)
 
@@ -57,6 +60,7 @@ class ApplicationContainer:
     player_service: Any
     room_service: Any
     movement_service: Any
+    instance_flush_service: "InstanceFlushService | None"
     player_position_service: Any
     follow_service: Any
     party_service: Any
@@ -128,6 +132,7 @@ class ApplicationContainer:
         self.player_service = None
         self.room_service = None
         self.movement_service = None
+        self.instance_flush_service = None
         self.player_position_service = None
         self.follow_service = None
         self.party_service = None

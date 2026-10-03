@@ -15,6 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 # Ensure all table metadata is registered so create_all creates every table
 # (e.g. quest_definitions, quest_offers) regardless of which test runs first.
 import server.models  # noqa: F401  # Reason: Import for side effect so create_all registers all table metadata (e.g. quest_*)
+from server.database import close_db, reset_database
 from server.database_config_helpers import get_postgres_connect_args
 from server.models.base import Base
 
@@ -146,6 +147,21 @@ def integration_engine(request: pytest.FixtureRequest) -> Generator[AsyncEngine,
 # Track if tables have been created to avoid concurrent creation (namespace avoids global statement)
 class _IntegrationState:
     tables_created = False
+
+
+@pytest.fixture(scope="function")
+async def fresh_database_manager() -> AsyncGenerator[None, None]:
+    """
+    Give a test its own process-wide DatabaseManager (the engine AsyncPersistenceLayer uses).
+
+    Each async test runs on its own event loop; a DatabaseManager left over from an earlier test
+    keeps an asyncpg pool bound to that test's closed loop, so the next AsyncPersistenceLayer test
+    fails with "attached to a different loop".
+    """
+    reset_database()
+    yield
+    await close_db()
+    reset_database()
 
 
 @pytest.fixture(scope="function")

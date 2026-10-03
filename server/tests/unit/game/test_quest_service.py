@@ -18,6 +18,7 @@ from unittest.mock import AsyncMock, patch
 import pytest
 
 from server.game.quest.quest_service import QuestService
+from server.models.player import Player
 
 # pylint: disable=redefined-outer-name  # Reason: Pytest fixtures are injected as function parameters, which triggers this warning but is the standard pytest pattern
 # pylint: disable=protected-access  # Reason: Tests need to access protected members to verify internal state and behavior
@@ -647,3 +648,63 @@ async def test_turn_in_inventory_full_blocks_item_reward(
     assert result["success"] is False
     message = _message(result)
     assert "inventory" in message.lower() or "full" in message.lower()
+
+
+class _RespawnPersistence:
+    """Typed async_persistence stand-in for reward application."""
+
+    def __init__(self, player: Player) -> None:
+        self.player: Player = player
+        self.saved: list[Player] = []
+
+    async def get_player_by_id(self, player_id: uuid.UUID) -> Player:
+        _ = player_id
+        return self.player
+
+    async def save_player(self, player: Player) -> None:
+        self.saved.append(player)
+
+
+async def _complete_tutorial_with_rewards(rewards: list[dict[str, object]], persistence: _RespawnPersistence) -> None:
+    def_repo = _MockDefRepo()
+    instance_repo = _MockInstanceRepo()
+    row = _make_definition_row()
+    row.definition["rewards"] = rewards
+    instance_repo.list_active_by_player = AsyncMock(
+        return_value=[_InstanceStub(quest_id="leave_the_tutorial", progress={})]
+    )
+    def_repo.get_by_id = AsyncMock(return_value=row)
+    instance_repo.update_state_and_progress = AsyncMock()
+    service = QuestService(
+        quest_definition_repository=def_repo,
+        quest_instance_repository=instance_repo,
+        async_persistence=persistence,
+    )
+    with (
+        patch("server.game.quest.quest_service.notify_quest_progress"),
+        patch("server.game.quest.quest_service.notify_quest_completed"),
+    ):
+        await service.record_complete_activity(uuid.uuid4(), "exit_tutorial_room")
+
+
+async def test_respawn_room_reward_moves_the_players_respawn():
+    """Completing leave_the_tutorial points respawn at the Sanitarium Main Foyer."""
+    foyer = "earth_arkhamcity_sanitarium_room_foyer_001"
+    player = Player(name="Newbie", respawn_room_id="earth_arkhamcity_sanitarium_room_tutorial_bedroom_001")
+    persistence = _RespawnPersistence(player)
+
+    await _complete_tutorial_with_rewards([{"type": "respawn_room", "config": {"room_id": foyer}}], persistence)
+
+    assert player.respawn_room_id == foyer
+    assert persistence.saved == [player]
+
+
+async def test_respawn_room_reward_without_room_id_changes_nothing():
+    bedroom = "earth_arkhamcity_sanitarium_room_tutorial_bedroom_001"
+    player = Player(name="Newbie", respawn_room_id=bedroom)
+    persistence = _RespawnPersistence(player)
+
+    await _complete_tutorial_with_rewards([{"type": "respawn_room", "config": {}}], persistence)
+
+    assert player.respawn_room_id == bedroom
+    assert persistence.saved == []

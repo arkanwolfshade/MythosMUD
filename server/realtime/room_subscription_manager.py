@@ -125,6 +125,13 @@ class RoomSubscriptionManager:
             logger.error("Error listing room drops", room_id=room_id, error=str(exc))
             return []
 
+    def pop_room_drops_with_prefix(self, prefix: str) -> list[dict[str, object]]:
+        """Remove and return every drop in rooms whose id starts with prefix (an instance's rooms)."""
+        popped: list[dict[str, object]] = []
+        for room_id in [room_id for room_id in self.room_drops if room_id.startswith(prefix)]:
+            popped.extend(self.room_drops.pop(room_id))
+        return popped
+
     def add_room_drop(self, room_id: str, stack: Mapping[str, Any]) -> None:
         """
         Append an item stack to the room drop ledger.

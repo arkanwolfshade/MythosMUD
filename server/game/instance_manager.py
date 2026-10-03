@@ -221,6 +221,11 @@ class InstanceManager:
             return None
         return target_room_id
 
+    def list_instance_ids(self) -> list[str]:
+        """Ids of every live instance (shutdown flushes them all)."""
+        with self._lock:
+            return list(self._instances)
+
     def get_instance(self, instance_id: str) -> Instance | None:
         """Return the instance if it exists."""
         with self._lock:
