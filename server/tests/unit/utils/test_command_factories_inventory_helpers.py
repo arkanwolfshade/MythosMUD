@@ -82,10 +82,10 @@ def test_create_put_command_with_quantity():
 
 
 def test_create_get_command():
-    """Test create_get_command() creates GetCommand."""
+    """Test create_get_command() without "from" takes the whole phrase from the room."""
     command = InventoryCommandFactory.create_get_command(["item", "container"])
-    assert command.item == "item"
-    assert command.container == "container"
+    assert command.item == "item container"
+    assert command.container == "room"
 
 
 def test_create_get_command_with_from():

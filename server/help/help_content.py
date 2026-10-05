@@ -90,35 +90,38 @@ or peer into the unknown.</p>
     "put": {
         "category": "Inventory",
         "description": "Put an item from your inventory into a container",
-        "usage": "put <item> [in] <container> [quantity]",
+        "usage": "put <item> [in|into] <container> [quantity]",
         "examples": [
             "put lantern in backpack",
             "put lantern backpack",
+            "put folk tonic into chest",
             "put 1 in backpack",
             "put lantern in backpack 2",
         ],
         "detailed_help": """
 <div style="color: #8B4513;">
 <h3>PUT Command</h3>
-<p>Transfer items from your inventory into a container. The "in" keyword is optional,
-making the command more natural to use.</p>
+<p>Transfer items from your inventory into a container. "in" or "into" marks where the item name
+ends and the container name begins.</p>
 
 <h4>Usage:</h4>
 <ul>
-<li><strong>put &lt;item&gt; [in] &lt;container&gt; [quantity]</strong> - Put item into container</li>
+<li><strong>put &lt;item&gt; [in|into] &lt;container&gt; [quantity]</strong> - Put item into container</li>
 </ul>
 
 <h4>Examples:</h4>
 <ul>
 <li>put lantern in backpack</li>
 <li>put lantern backpack</li>
+<li>put folk tonic into chest</li>
 <li>put 1 in backpack</li>
 <li>put lantern in backpack 2</li>
 </ul>
 
 <h4>Notes:</h4>
 <ul>
-<li>The "in" keyword is optional - both "put lantern backpack" and "put lantern in backpack" work</li>
+<li>Items with names of more than one word need "in" or "into": "put folk tonic into chest"</li>
+<li>Without "in"/"into" the first word is the item and the rest is the container</li>
 <li>You can use item names or inventory numbers</li>
 <li>You can specify quantity to put only part of a stack</li>
 <li>Container must be accessible (in room or equipped)</li>
@@ -132,35 +135,40 @@ making the command more natural to use.</p>
     "get": {
         "category": "Inventory",
         "description": "Get an item from a container into your inventory",
-        "usage": "get <item> [from] <container> [quantity]",
+        "usage": "get <item> [from <container>] [quantity]",
         "examples": [
             "get lantern from backpack",
-            "get lantern backpack",
+            "get folk tonic from chest",
+            "get folk tonic",
             "get 1 from backpack",
             "get lantern from backpack 2",
         ],
         "detailed_help": """
 <div style="color: #8B4513;">
 <h3>GET Command</h3>
-<p>Transfer items from a container into your inventory. The "from" keyword is optional,
-making the command more natural to use.</p>
+<p>Transfer items from a container, or from the floor, into your inventory. "from" marks where the
+item name ends and the container name begins.</p>
 
 <h4>Usage:</h4>
 <ul>
-<li><strong>get &lt;item&gt; [from] &lt;container&gt; [quantity]</strong> - Get item from container</li>
+<li><strong>get &lt;item&gt; from &lt;container&gt; [quantity]</strong> - Get item from container</li>
+<li><strong>get &lt;item&gt; [quantity]</strong> - Get item from the floor</li>
 </ul>
 
 <h4>Examples:</h4>
 <ul>
 <li>get lantern from backpack</li>
-<li>get lantern backpack</li>
+<li>get folk tonic from chest</li>
+<li>get folk tonic</li>
 <li>get 1 from backpack</li>
 <li>get lantern from backpack 2</li>
 </ul>
 
 <h4>Notes:</h4>
 <ul>
-<li>The "from" keyword is optional - both "get lantern backpack" and "get lantern from backpack" work</li>
+<li>"from" is required to take from a container: "get lantern backpack" looks for an item called
+"lantern backpack" on the floor</li>
+<li>Item and container names may each be several words</li>
 <li>You can use item names or container item numbers</li>
 <li>You can specify quantity to get only part of a stack</li>
 <li>Container must be accessible (in room or equipped)</li>

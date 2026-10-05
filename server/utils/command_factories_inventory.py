@@ -106,6 +106,50 @@ def _parse_equip_selector(selector_tokens: list[str], args: list[str]) -> tuple[
     return index, search_term, target_slot
 
 
+_GET_USAGE = "Usage: get <item> [from <container>] [quantity]"
+_PUT_USAGE = "Usage: put <item> [in|into] <container> [quantity]"
+
+
+def _split_item_container(
+    args: list[str], separators: frozenset[str], usage: str
+) -> tuple[str, str | None, int | None]:
+    """
+    Split get/put args into (item, container, quantity); container is None when no separator is present.
+
+    The separator word is the only thing that can tell where a multi-word item name ends (#982), so it
+    is kept through parsing. Splitting on its LAST occurrence lets item names contain the word
+    ("letter from arkham from chest"). A trailing integer is a quantity unless it is the only token,
+    which stays an index selector.
+    """
+    tokens = [arg for arg in args if arg.strip()]
+    quantity: int | None = None
+    if len(tokens) > 1:
+        try:
+            quantity = int(tokens[-1])
+        except ValueError:
+            quantity = None
+        else:
+            if quantity <= 0:
+                log_and_raise_enhanced(
+                    MythosValidationError,
+                    "Quantity must be a positive integer",
+                    quantity=quantity,
+                    logger_name=__name__,
+                )
+            tokens = tokens[:-1]
+
+    separator_at = max((i for i, token in enumerate(tokens) if token.lower() in separators), default=None)
+    if separator_at is None:
+        if not tokens:
+            log_and_raise_enhanced(MythosValidationError, usage, logger_name=__name__)
+        return " ".join(tokens), None, quantity
+
+    item_tokens, container_tokens = tokens[:separator_at], tokens[separator_at + 1 :]
+    if not item_tokens or not container_tokens:
+        log_and_raise_enhanced(MythosValidationError, usage, args=args, logger_name=__name__)
+    return " ".join(item_tokens), " ".join(container_tokens), quantity
+
+
 class InventoryCommandFactory:
     """Factory class for creating inventory and item management command objects."""
 
@@ -278,47 +322,13 @@ class InventoryCommandFactory:
         Create put command.
 
         Supports: put <item> [in|into] <container> [quantity]
-        The "in"/"into" keyword is optional.
+        "in"/"into" is required for a multi-word item; without it the first word is the item.
         """
-        if not args:
-            log_and_raise_enhanced(
-                MythosValidationError,
-                "Usage: put <item> [in] <container> [quantity]",
-                logger_name=__name__,
-            )
-
-        # Remove optional "in"/"into" keyword (get drops "from" the same way)
-        args_clean = [arg for arg in args if arg.lower() not in ("in", "into")]
-
-        if len(args_clean) < 2:
-            log_and_raise_enhanced(
-                MythosValidationError,
-                "Usage: put <item> [in] <container> [quantity]",
-                logger_name=__name__,
-            )
-
-        item = args_clean[0]
-        container = args_clean[1]
-        quantity = None
-
-        # Check if last argument is a quantity
-        if len(args_clean) > 2:
-            try:
-                quantity = int(args_clean[-1])
-                if quantity <= 0:
-                    log_and_raise_enhanced(
-                        MythosValidationError,
-                        "Quantity must be a positive integer",
-                        quantity=quantity,
-                        logger_name=__name__,
-                    )
-                # If quantity was parsed, container might be multi-word
-                if len(args_clean) > 3:
-                    container = " ".join(args_clean[1:-1])
-            except ValueError:
-                # Last arg is not a number, container might be multi-word
-                container = " ".join(args_clean[1:])
-
+        item, container, quantity = _split_item_container(args, frozenset({"in", "into"}), _PUT_USAGE)
+        if container is None:
+            item, _, container = item.partition(" ")
+            if not container:
+                log_and_raise_enhanced(MythosValidationError, _PUT_USAGE, args=args, logger_name=__name__)
         return PutCommand(item=item, container=container, quantity=quantity)
 
     @staticmethod
@@ -326,51 +336,11 @@ class InventoryCommandFactory:
         """
         Create get command.
 
-        Supports: get <item> [from] <container> [quantity]
-        The "from" keyword is optional.
+        Supports: get <item> [from <container>] [quantity]
+        Without "from" the whole phrase is an item taken from the room ("room" is the floor sentinel).
         """
-        if not args:
-            log_and_raise_enhanced(
-                MythosValidationError,
-                "Usage: get <item> [from] <container> [quantity]",
-                logger_name=__name__,
-            )
-
-        # Remove optional "from" keyword
-        args_clean = [arg for arg in args if arg.lower() != "from"]
-        if not args_clean:
-            log_and_raise_enhanced(
-                MythosValidationError,
-                "Usage: get <item> [from] <container> [quantity]",
-                logger_name=__name__,
-            )
-        if len(args_clean) == 1:
-            # Single arg: get from room/floor (container sentinel)
-            return GetCommand(item=args_clean[0], container="room", quantity=None)
-
-        item = args_clean[0]
-        container = args_clean[1]
-        quantity = None
-
-        # Check if last argument is a quantity
-        if len(args_clean) > 2:
-            try:
-                quantity = int(args_clean[-1])
-                if quantity <= 0:
-                    log_and_raise_enhanced(
-                        MythosValidationError,
-                        "Quantity must be a positive integer",
-                        quantity=quantity,
-                        logger_name=__name__,
-                    )
-                # If quantity was parsed, container might be multi-word
-                if len(args_clean) > 3:
-                    container = " ".join(args_clean[1:-1])
-            except ValueError:
-                # Last arg is not a number, container might be multi-word
-                container = " ".join(args_clean[1:])
-
-        return GetCommand(item=item, container=container, quantity=quantity)
+        item, container, quantity = _split_item_container(args, frozenset({"from"}), _GET_USAGE)
+        return GetCommand(item=item, container=container or "room", quantity=quantity)
 
     @staticmethod
     def create_equip_command(args: list[str]) -> EquipCommand:
