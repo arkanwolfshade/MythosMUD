@@ -46,8 +46,8 @@ test.describe.serial('Folk tonic consumable', () => {
   test('drinking a tonic restores lucidity and spends one; a second is refused and kept', async () => {
     await executeCommand(aw.page, `summon ${TONIC} 2`);
     await waitForMessage(aw.page, /You summon 2x Folk Tonic/i, 25000);
-    // Regression: the summon spec leaves an `artifact.miskatonic.codex` on this floor, and "tonic" is a substring
-    // of its id. A whole word in an item's name must win over that. (`get folk tonic` would read as item + container.)
+    // Regression: "tonic" is a substring of `artifact.miskatonic.codex`, which used to be left on this floor by the
+    // summon spec (#985). A whole word in an item's name must win over a substring of another item's id.
     await executeCommand(aw.page, 'get tonic');
     await waitForMessage(aw.page, /You (get|pick up) 2x Folk Tonic/i, 15000);
 
