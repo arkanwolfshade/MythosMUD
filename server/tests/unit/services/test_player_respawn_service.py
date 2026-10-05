@@ -25,6 +25,7 @@ from server.services.player_respawn_service import (
     PlayerRespawnService,
     _utc_now,
 )
+from server.services.player_respawn_state import normalize_current_dp
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
@@ -445,9 +446,9 @@ async def test_respawn_player_from_delirium_combat_clear_error(
     mock_session.commit.assert_awaited_once()
 
 
-def test_normalize_current_dp_non_numeric(respawn_service):
+def test_normalize_current_dp_non_numeric():
     """Non-numeric current_dp defaults to zero."""
-    assert respawn_service._normalize_current_dp({"current_dp": "bad"}) == 0
+    assert normalize_current_dp({"current_dp": "bad"}) == 0
 
 
 def test_can_move_to_limbo_catatonia_failover(respawn_service, sample_player):

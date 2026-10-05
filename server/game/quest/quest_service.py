@@ -11,11 +11,8 @@ from __future__ import annotations
 
 import uuid
 from datetime import UTC, datetime
-from typing import Any, cast
+from typing import Any
 
-from sqlalchemy.exc import SQLAlchemyError
-
-from server.exceptions import DatabaseError
 from server.game.quest.collect_inventory import (
     collect_player_stacks,
     consume_prototype_from_player,
@@ -28,17 +25,12 @@ from server.game.quest.quest_chat_notify import (
     notify_quest_started,
     should_notify_quest_progress,
 )
-from server.models.player import Player
+from server.game.quest.quest_rewards import QuestRewardsMixin
 from server.models.quest import QuestInstance
-from server.schemas.quest import QuestDefinitionSchema, QuestRewardSchema
+from server.schemas.quest import QuestDefinitionSchema
 from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
-
-
-async def _call_add_item_to_inventory(fn: Any, player_id: uuid.UUID, item_id: str, count: int) -> None:
-    """Call inventory add_item_to_inventory (fn from getattr). Isolates Any call for type checkers."""
-    await fn(player_id, item_id, count)  # fn is Any from getattr; callable at runtime (guarded by callable(add))
 
 
 def _parse_definition(definition: dict[str, Any]) -> QuestDefinitionSchema:
@@ -122,7 +114,7 @@ def _build_collect_n_progress(
     return new_progress
 
 
-class QuestService:
+class QuestService(QuestRewardsMixin):
     """
     Core quest logic: start by trigger, progress by events, complete/turn-in, abandon.
 
@@ -430,122 +422,6 @@ class QuestService:
             from server.events.event_types import QuestCompleted
 
             self._event_bus.publish(QuestCompleted(player_id=str(player_id), quest_id=instance.quest_id))
-
-    async def _apply_xp_reward(self, player_id: uuid.UUID, quest_id: str, reward: Any) -> None:
-        """Apply a single XP reward. No-op if no level service or zero amount."""
-        amount = reward.config.get("amount", 0)
-        if not amount or not self._level_service:
-            return
-        try:
-            await self._level_service.grant_xp(player_id, amount)
-        except Exception as e:  # pylint: disable=broad-except  # Reason: XP reward must not crash quest completion; log and continue
-            logger.warning(
-                "Failed to grant quest XP",
-                player_id=str(player_id),
-                quest_id=quest_id,
-                amount=amount,
-                error=str(e),
-            )
-
-    async def _apply_spell_reward(self, player_id: uuid.UUID, quest_id: str, reward: Any) -> None:
-        """Apply a single spell reward. No-op if no spell_learning_service or no spell_id."""
-        spell_id = reward.config.get("spell_id") or reward.config.get("spell")
-        if not spell_id or not self._spell_learning_service:
-            return
-        try:
-            await self._spell_learning_service.learn_spell_from_quest(player_id, quest_id, spell_id)
-        except Exception as e:  # pylint: disable=broad-except  # Reason: Spell reward must not crash quest completion; log and continue
-            logger.warning(
-                "Failed to grant quest spell",
-                player_id=str(player_id),
-                quest_id=quest_id,
-                spell_id=spell_id,
-                error=str(e),
-            )
-
-    async def _apply_item_reward(self, player_id: uuid.UUID, quest_id: str, reward: Any) -> None:
-        """Apply a single item reward. Skips if inventory full (per plan)."""
-        if not self._inventory_service:
-            return
-        has_slot = getattr(self._inventory_service, "has_inventory_slot", lambda _: True)(player_id)
-        if not has_slot:
-            logger.warning(
-                "Quest item reward skipped: inventory full",
-                player_id=str(player_id),
-                quest_id=quest_id,
-            )
-            return
-        item_id = reward.config.get("item_id") or reward.config.get("item")
-        if not item_id:
-            return
-        try:
-            add = getattr(self._inventory_service, "add_item_to_inventory", None)
-            if callable(add):
-                await _call_add_item_to_inventory(add, player_id, item_id, 1)
-        except Exception as e:  # pylint: disable=broad-except  # Reason: Item reward must not crash quest completion; log and continue
-            logger.warning(
-                "Failed to grant quest item",
-                player_id=str(player_id),
-                quest_id=quest_id,
-                item_id=item_id,
-                error=str(e),
-            )
-
-    async def _apply_respawn_room_reward(self, player_id: uuid.UUID, quest_id: str, reward: QuestRewardSchema) -> None:
-        """Point the player's respawn at config.room_id (leaving the tutorial -> Sanitarium Main Foyer)."""
-        room_id = cast(object, reward.config.get("room_id"))
-        if not isinstance(room_id, str) or not room_id:
-            logger.warning("respawn_room reward without config.room_id", quest_id=quest_id)
-            return
-        try:
-            loaded = await self._load_player_for_collect(player_id)
-            if loaded is None:
-                return
-            player = cast(Player, loaded)
-            player.respawn_room_id = room_id
-            await self._save_player_after_consume(player)
-        except (DatabaseError, SQLAlchemyError) as e:
-            logger.warning(
-                "Failed to apply respawn_room quest reward",
-                player_id=str(player_id),
-                quest_id=quest_id,
-                room_id=room_id,
-                error=str(e),
-            )
-
-    async def _apply_rewards(
-        self,
-        player_id: uuid.UUID,
-        quest_id: str,
-        definition: QuestDefinitionSchema,
-    ) -> None:
-        """Apply XP, item, and spell rewards. Block item if inventory full (per plan)."""
-        for reward in definition.rewards:
-            if reward.type == "xp":
-                await self._apply_xp_reward(player_id, quest_id, reward)
-            elif reward.type == "spell":
-                await self._apply_spell_reward(player_id, quest_id, reward)
-            elif reward.type == "item":
-                await self._apply_item_reward(player_id, quest_id, reward)
-            elif reward.type == "respawn_room":
-                await self._apply_respawn_room_reward(player_id, quest_id, reward)
-
-    def _turn_in_inventory_full_error(
-        self, player_id: uuid.UUID, definition: QuestDefinitionSchema
-    ) -> dict[str, Any] | None:
-        """Return inventory-full error when an item reward needs a free slot."""
-        if not self._inventory_service:
-            return None
-        for reward in definition.rewards:
-            if reward.type != "item":
-                continue
-            has_slot = getattr(self._inventory_service, "has_inventory_slot", lambda _: True)(player_id)
-            if not has_slot:
-                return {
-                    "success": False,
-                    "message": "Your inventory is full. Free a slot before turning in.",
-                }
-        return None
 
     def _turn_in_validation_error(
         self,
