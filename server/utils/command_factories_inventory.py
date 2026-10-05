@@ -110,6 +110,24 @@ _GET_USAGE = "Usage: get <item> [from <container>] [quantity]"
 _PUT_USAGE = "Usage: put <item> [in|into] <container> [quantity]"
 
 
+def _pop_trailing_quantity(tokens: list[str]) -> tuple[list[str], int | None]:
+    """Split a trailing integer quantity off tokens; a lone token is never a quantity (it is an index selector)."""
+    if len(tokens) < 2:
+        return tokens, None
+    try:
+        quantity = int(tokens[-1])
+    except ValueError:
+        return tokens, None
+    if quantity <= 0:
+        log_and_raise_enhanced(
+            MythosValidationError,
+            "Quantity must be a positive integer",
+            quantity=quantity,
+            logger_name=__name__,
+        )
+    return tokens[:-1], quantity
+
+
 def _split_item_container(
     args: list[str], separators: frozenset[str], usage: str
 ) -> tuple[str, str | None, int | None]:
@@ -118,25 +136,9 @@ def _split_item_container(
 
     The separator word is the only thing that can tell where a multi-word item name ends (#982), so it
     is kept through parsing. Splitting on its LAST occurrence lets item names contain the word
-    ("letter from arkham from chest"). A trailing integer is a quantity unless it is the only token,
-    which stays an index selector.
+    ("letter from arkham from chest").
     """
-    tokens = [arg for arg in args if arg.strip()]
-    quantity: int | None = None
-    if len(tokens) > 1:
-        try:
-            quantity = int(tokens[-1])
-        except ValueError:
-            quantity = None
-        else:
-            if quantity <= 0:
-                log_and_raise_enhanced(
-                    MythosValidationError,
-                    "Quantity must be a positive integer",
-                    quantity=quantity,
-                    logger_name=__name__,
-                )
-            tokens = tokens[:-1]
+    tokens, quantity = _pop_trailing_quantity([arg for arg in args if arg.strip()])
 
     separator_at = max((i for i, token in enumerate(tokens) if token.lower() in separators), default=None)
     if separator_at is None:
