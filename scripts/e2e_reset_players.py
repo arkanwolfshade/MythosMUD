@@ -101,6 +101,21 @@ async def _reset_tutorial_character(conn: asyncpg.Connection) -> None:
     )
 
 
+FOLK_TONIC_COOLDOWN_KEY = "folk_tonic"
+
+
+async def _clear_folk_tonic_cooldowns(conn: asyncpg.Connection) -> None:
+    """Forget the folk tonic cooldown (30 min) for the shared E2E players, so reruns can drink again."""
+    _ = await conn.execute(
+        """
+        DELETE FROM lucidity_cooldowns
+        WHERE action_code = $1
+            AND player_id IN (SELECT player_id FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua'))
+        """,
+        FOLK_TONIC_COOLDOWN_KEY,
+    )
+
+
 async def _reset_e2e_players() -> None:
     database_url = os.environ.get("DATABASE_URL", "").strip()
     if not database_url:
@@ -131,6 +146,7 @@ async def _reset_e2e_players() -> None:
             """,
             room_id,
         )
+        await _clear_folk_tonic_cooldowns(conn)
         # Opt-in: ordinary resets run on every relog and must not empty the chest mid-test.
         if "--tutorial" in sys.argv[1:]:
             await _reset_tutorial_character(conn)

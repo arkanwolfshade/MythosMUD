@@ -51,6 +51,7 @@ from .command_inventory import (
     PutCommand,
     ReadCommand,
     UnequipCommand,
+    UseCommand,
 )
 
 # Import magic commands
@@ -161,6 +162,7 @@ __all__ = [
     "GetCommand",
     "EquipCommand",
     "UnequipCommand",
+    "UseCommand",
     "ReadCommand",
     # Player state commands
     "QuitCommand",
@@ -233,6 +235,7 @@ Command = (
     | GetCommand
     | EquipCommand
     | UnequipCommand
+    | UseCommand
     | ReadCommand
     | QuitCommand
     | LogoutCommand

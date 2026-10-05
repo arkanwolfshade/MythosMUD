@@ -13,7 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..models.lucidity import LucidityExposureState
 from ..structured_logging.enhanced_logging_config import get_logger
-from .lucidity_service import CatatoniaObserverProtocol, LucidityService
+from .lucidity_service import CatatoniaObserverProtocol, LucidityService, LucidityUpdateResult
 
 logger = get_logger(__name__)
 
@@ -64,7 +64,6 @@ class ActiveLucidityService:
         "meditate": RecoveryActionProfile(lcd_delta=6, cooldown=timedelta(minutes=10)),
         "group_solace": RecoveryActionProfile(lcd_delta=4, cooldown=timedelta(minutes=20)),
         "therapy": RecoveryActionProfile(lcd_delta=15, cooldown=timedelta(hours=12)),
-        "folk_tonic": RecoveryActionProfile(lcd_delta=3, cooldown=timedelta(minutes=30)),
     }
 
     ACCLIMATION_THRESHOLD = 6  # total encounters before acclimation applies
@@ -159,37 +158,56 @@ class ActiveLucidityService:
         if profile is None:
             raise UnknownLucidityActionError(action_code)
 
-        now = self._now_provider()
-        cooldown = await self._lucidity_service.get_cooldown(player_id_uuid, action_key)
-        if cooldown and cooldown.cooldown_expires_at:
-            cooldown_expiry = cooldown.cooldown_expires_at
-            if cooldown_expiry.tzinfo is None:
-                cooldown_expiry = cooldown_expiry.replace(tzinfo=UTC)
-            if cooldown_expiry > now:
-                raise LucidityActionOnCooldownError(action_key)
-
-        metadata = {
-            "recovery_action": action_key,
-        }
-
-        result = await self._lucidity_service.apply_lucidity_adjustment(
+        return await self.apply_timed_recovery(
             player_id_uuid,
-            profile.lcd_delta,
-            reason_code=f"recovery_{action_key}",
-            metadata=metadata,
+            cooldown_key=action_key,
+            lcd_delta=profile.lcd_delta,
+            cooldown=profile.cooldown,
             location_id=location_id,
         )
 
-        expires_at = (now + profile.cooldown).replace(tzinfo=None)
-        await self._lucidity_service.set_cooldown(player_id_uuid, action_key, expires_at)
+    async def apply_timed_recovery(
+        self,
+        player_id: uuid.UUID,
+        *,
+        cooldown_key: str,
+        lcd_delta: int,
+        cooldown: timedelta,
+        location_id: str | None = None,
+    ) -> LucidityUpdateResult:
+        """Apply an LCD gain under a named cooldown (shared by recovery actions and consumable items).
+
+        The key names the cooldown row and the audit reason code (``recovery_<key>``), so several
+        sources may share one cooldown by sharing a key.
+        """
+
+        now = self._now_provider()
+        existing = await self._lucidity_service.get_cooldown(player_id, cooldown_key)
+        if existing and existing.cooldown_expires_at:
+            cooldown_expiry = existing.cooldown_expires_at
+            if cooldown_expiry.tzinfo is None:
+                cooldown_expiry = cooldown_expiry.replace(tzinfo=UTC)
+            if cooldown_expiry > now:
+                raise LucidityActionOnCooldownError(cooldown_key)
+
+        result = await self._lucidity_service.apply_lucidity_adjustment(
+            player_id,
+            lcd_delta,
+            reason_code=f"recovery_{cooldown_key}",
+            metadata={"recovery_action": cooldown_key},
+            location_id=location_id,
+        )
+
+        expires_at = (now + cooldown).replace(tzinfo=None)
+        _ = await self._lucidity_service.set_cooldown(player_id, cooldown_key, expires_at)
 
         logger.info(
             "Recovery action performed",
             # Structlog handles UUID objects automatically, no need to convert to string
-            player_id=player_id_uuid,
-            action=action_key,
-            lcd_delta=profile.lcd_delta,
-            cooldown_minutes=profile.cooldown.total_seconds() / 60,
+            player_id=player_id,
+            action=cooldown_key,
+            lcd_delta=lcd_delta,
+            cooldown_minutes=cooldown.total_seconds() / 60,
         )
 
         return result

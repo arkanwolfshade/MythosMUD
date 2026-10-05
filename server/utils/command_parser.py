@@ -25,6 +25,9 @@ from .enhanced_error_logging import log_and_raise_enhanced
 
 logger = get_logger(__name__)
 
+# Verbs that resolve to ``use`` before the factory lookup (no CommandType/handler of their own).
+_USE_ALIASES = ("drink", "quaff")
+
 
 def _build_command_factory_part1(factory: CommandFactory) -> dict[str, object]:
     """Build core, admin, and utility command mappings."""
@@ -65,6 +68,7 @@ def _build_command_factory_part1(factory: CommandFactory) -> dict[str, object]:
         CommandType.GET.value: factory.create_get_command,
         CommandType.EQUIP.value: factory.create_equip_command,
         CommandType.UNEQUIP.value: factory.create_unequip_command,
+        CommandType.USE.value: factory.create_use_command,
         CommandType.READ.value: factory.create_read_command,
         CommandType.QUIT.value: factory.create_quit_command,
         CommandType.LOGOUT.value: factory.create_logout_command,
@@ -168,7 +172,7 @@ class CommandParser:
         command, args = self._parse_command_parts(normalized)
 
         # Validate command type (including aliases)
-        valid_commands_with_aliases = self.valid_commands | {"l", "g"}  # Add aliases (no w for whisper)
+        valid_commands_with_aliases = self.valid_commands | {"l", "g", *_USE_ALIASES}  # Add aliases (no w for whisper)
         if command not in valid_commands_with_aliases:
             log_and_raise_enhanced(
                 MythosValidationError,
@@ -237,8 +241,8 @@ class CommandParser:
         return command, args
 
     def _resolve_command_alias(self, command: str) -> str:
-        """Resolve single-letter aliases to full command names."""
-        alias_map = {"w": "whisper", "l": "local", "g": "global"}
+        """Resolve aliases (single-letter, and drink/quaff for use) to full command names."""
+        alias_map = {"w": "whisper", "l": "local", "g": "global", **dict.fromkeys(_USE_ALIASES, "use")}
         return alias_map.get(command, command)
 
     def _invoke_create_method(

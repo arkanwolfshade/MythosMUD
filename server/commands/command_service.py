@@ -68,6 +68,7 @@ from .inventory_commands import (
     handle_pickup_command,
     handle_put_command,
     handle_unequip_command,
+    handle_use_command,
 )
 from .magic_commands import (
     handle_cast_command,
@@ -176,6 +177,7 @@ _COMMAND_HANDLERS: dict[str, CommandHandler] = {
     "get": cast(CommandHandler, handle_get_command),
     "equip": cast(CommandHandler, handle_equip_command),
     "unequip": cast(CommandHandler, handle_unequip_command),
+    "use": cast(CommandHandler, handle_use_command),
     # Position commands
     "sit": cast(CommandHandler, handle_sit_command),
     "stand": cast(CommandHandler, handle_stand_command),
@@ -193,7 +195,7 @@ _COMMAND_HANDLERS: dict[str, CommandHandler] = {
     # corruption recovery rite
     "cleanse": handle_cleanse_command,
     "ground": handle_ground_command,
-    # NOTE: pray, meditate, group_solace, therapy, folk_tonic, debrief are
+    # NOTE: pray, meditate, group_solace, therapy, debrief are
     # intentionally NOT registered here. See lucidity_recovery_commands.py
     # and debrief_command.py module docstrings (#813) for why.
 }

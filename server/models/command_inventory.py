@@ -133,6 +133,34 @@ class EquipCommand(BaseCommand):
         return normalized
 
 
+class UseCommand(BaseCommand):
+    """Command for using a consumable item from inventory (also reached via drink/quaff)."""
+
+    command_type: Literal[CommandType.USE] = CommandType.USE
+    index: int | None = Field(default=None, ge=1, description="Inventory slot index to use (1-based).")
+    search_term: str | None = Field(
+        default=None,
+        min_length=1,
+        max_length=120,
+        description="Name fragment or prototype identifier to resolve inventory item.",
+    )
+
+    @field_validator("search_term")
+    @classmethod
+    def validate_search_term(cls, v: str | None) -> str | None:
+        """Strip search term; blank becomes None."""
+        if v is None:
+            return v
+        return v.strip() or None
+
+    @model_validator(mode="after")
+    def validate_use_requirements(self) -> "UseCommand":
+        """Ensure either index or search_term is provided."""
+        if self.index is None and self.search_term is None:
+            raise ValueError("Use command requires an item number or name.")
+        return self
+
+
 class ReadCommand(BaseCommand):
     """Command for reading an item (e.g. a spellbook) from inventory."""
 

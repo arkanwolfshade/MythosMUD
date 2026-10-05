@@ -29,6 +29,7 @@ from ..monitoring.monitoring_dashboard import get_monitoring_dashboard
 from ..monitoring.performance_monitor import get_performance_monitor
 from ..realtime.dead_letter_queue import DeadLetterQueue
 from ..services.room_furniture_loader import FurnitureStartupPersistence, initialize_room_furniture
+from ..services.room_item_seeder import RoomListPersistence, initialize_room_items
 from ..structured_logging.enhanced_logging_config import (
     get_logger,
     log_exception_once,
@@ -209,6 +210,11 @@ async def _startup_application(app: FastAPI) -> ApplicationContainer:
     await initialize_room_furniture(
         cast(FurnitureStartupPersistence | None, container.async_persistence),
         cast(object, container.item_prototype_registry),
+    )
+    await initialize_room_items(
+        cast(RoomListPersistence | None, container.async_persistence),
+        cast(object, container.item_factory),
+        cast(object | None, getattr(getattr(app.state, "connection_manager", None), "room_manager", None)),
     )
 
     # Enhance logging system with PlayerGuidFormatter now that player service is available

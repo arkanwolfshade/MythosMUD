@@ -61,6 +61,7 @@ class CommandType(StrEnum):
     GET = "get"
     EQUIP = "equip"
     UNEQUIP = "unequip"
+    USE = "use"
     READ = "read"
     QUIT = "quit"
     LOGOUT = "logout"

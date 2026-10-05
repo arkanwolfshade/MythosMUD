@@ -93,6 +93,7 @@ _COMMAND_HELP_TEXTS: dict[str, str] = {
     CommandType.DROP.value: "drop <inventory-number> [quantity] - Drop an inventory item",
     CommandType.EQUIP.value: "equip <inventory-number> [slot] - Equip an item",
     CommandType.UNEQUIP.value: "unequip <slot> - Unequip an item",
+    CommandType.USE.value: "use <inventory-number|item-name> - Use a consumable (also: drink, quaff)",
     CommandType.QUIT.value: "quit - Quit the game",
     CommandType.SIT.value: "sit - Sit down and adopt a seated posture",
     CommandType.STAND.value: "stand - Return to a standing posture",

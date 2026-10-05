@@ -139,6 +139,24 @@ def test_parse_command_valid_global_alias_g(command_parser):
     assert result.message == "hello everyone"
 
 
+@pytest.mark.parametrize("verb", ["use", "drink", "quaff"])
+def test_parse_command_use_and_its_aliases(command_parser, verb):
+    """#870: use, drink and quaff all build a UseCommand (the aliases resolve to 'use' in the parser)."""
+    by_name = command_parser.parse_command(f"/{verb} folk tonic")
+    by_index = command_parser.parse_command(f"{verb} 3")
+
+    assert by_name.command_type == CommandType.USE
+    assert by_name.search_term == "folk tonic"
+    assert by_index.command_type == CommandType.USE
+    assert by_index.index == 3
+
+
+def test_parse_command_use_requires_an_item(command_parser):
+    """#870: bare 'drink' reports a usage error rather than an unknown command."""
+    with pytest.raises(MythosValidationError, match="Usage: use"):
+        command_parser.parse_command("drink")
+
+
 def test_parse_command_with_slash_prefix(command_parser):
     """Test parse_command handles slash prefix."""
     result = command_parser.parse_command("/look")

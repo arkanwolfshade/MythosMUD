@@ -23,6 +23,7 @@ from .inventory_get_command import handle_get_command
 from .inventory_pickup_command import handle_pickup_command
 from .inventory_put_command import handle_put_command
 from .inventory_unequip_command import handle_unequip_command
+from .inventory_use_command import handle_use_command
 
 logger: BoundLogger = get_logger(__name__)
 
@@ -35,6 +36,7 @@ __all__ = [
     "handle_pickup_command",
     "handle_put_command",
     "handle_unequip_command",
+    "handle_use_command",
 ]
 
 

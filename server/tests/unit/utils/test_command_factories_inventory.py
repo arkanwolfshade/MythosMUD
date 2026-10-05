@@ -336,3 +336,24 @@ def test_create_put_command_ignores_in_and_into(preposition: str) -> None:
 
     assert command.item == "sling"
     assert command.container == "chest"
+
+
+def test_create_use_command_by_index():
+    """Test create_use_command() treats a number as a 1-based inventory index."""
+    command = InventoryCommandFactory.create_use_command(["2"])
+    assert command.index == 2
+    assert command.search_term is None
+
+
+def test_create_use_command_by_multi_word_name():
+    """Test create_use_command() joins the arguments into a name search."""
+    command = InventoryCommandFactory.create_use_command(["folk", "tonic"])
+    assert command.index is None
+    assert command.search_term == "folk tonic"
+
+
+@pytest.mark.parametrize("args", [[], ["   "], ["0"]])
+def test_create_use_command_rejects_missing_or_zero_selector(args: list[str]) -> None:
+    """Test create_use_command() needs a name or a positive number."""
+    with pytest.raises(ValidationError):
+        _ = InventoryCommandFactory.create_use_command(args)

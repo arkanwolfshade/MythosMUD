@@ -16,7 +16,8 @@ Read `[NOTE]` only if additional context is needed.
 
 **[NOTE]**
 The lucidity subsystem covers lucidity (LCD) as a stat, lucidity tiers (including catatonic),
-recovery rituals (meditate, pray, therapy, folk_tonic, group_solace), and integration with
+recovery rituals (meditate, pray, therapy, group_solace), consumable items such as the folk tonic
+(drunk via `/use`), and integration with
 rescue/ground. ActiveLucidityService runs recovery actions with cooldowns; lucidity_recovery_commands
 expose the rituals. Lucidity is stored in PlayerLucidity (or equivalent) and affects Mythos spell
 costs and catatonia (rescue/ground). Archived doc docs/archive/lucidity-system.md provides
@@ -32,7 +33,6 @@ flowchart LR
     Meditate[handle_meditate_command]
     Pray[handle_pray_command]
     Therapy[handle_therapy_command]
-    FolkTonic[handle_folk_tonic_command]
     GroupSolace[handle_group_solace_command]
   end
   subgraph active [ActiveLucidityService]
@@ -43,6 +43,10 @@ flowchart LR
     PlayerLucidity[PlayerLucidity]
     LucidityService[LucidityService]
   end
+  subgraph consumables [Consumable items]
+    UseCmd[handle_use_command]
+    ItemEffects[item_effects: component.lucidity_recovery]
+  end
   subgraph rescue [Rescue]
     Ground[ground command]
     apply_lucidity_adjustment[apply_lucidity_adjustment]
@@ -50,7 +54,8 @@ flowchart LR
   Meditate --> ActiveLucidityService
   Pray --> ActiveLucidityService
   Therapy --> ActiveLucidityService
-  FolkTonic --> ActiveLucidityService
+  UseCmd --> ItemEffects
+  ItemEffects --> ActiveLucidityService
   GroupSolace --> ActiveLucidityService
   ActiveLucidityService --> Cooldown
   ActiveLucidityService --> LucidityService
@@ -60,7 +65,7 @@ flowchart LR
 **Components:**
 
 - **lucidity_recovery_commands**: [server/commands/lucidity_recovery_commands.py](../../server/commands/lucidity_recovery_commands.py) – handle_meditate_command, handle_pray_command, handle_therapy*
-  command, handle_folk_tonic_command, handle_group_solace_command. Each validates context
+  command, handle_group_solace_command. Each validates context
   (persistence, player, room), calls ActiveLucidityService (or equivalent) with action code,
   handles LucidityActionOnCooldownError and UnknownLucidityActionError; some actions restore MP
   (meditate, pray) via mp_regeneration_service.
@@ -89,8 +94,15 @@ flowchart LR
 
 **[NOTE]**
 
-- **Action codes**: meditate, pray, therapy, folk_tonic, group_solace (or as defined in
+- **Action codes**: meditate, pray, therapy, group_solace (or as defined in
   ActiveLucidityService). Unknown action -> UnknownLucidityActionError.
+- **Consumable recovery (#870)**: the folk tonic is not an action code. It is an `item_type: consumable`
+  prototype (`consumable.folk_tonic`) whose `effect_components` tag `component.lucidity_recovery` is
+  dispatched by [server/game/items/item_effects.py](../../server/game/items/item_effects.py) when a
+  player runs `use` / `drink` / `quaff` ([inventory_use_command.py](../../server/commands/inventory_use_command.py)).
+  The prototype's `metadata.lucidity_recovery` supplies `lcd_delta`, `cooldown_minutes` and an explicit
+  `cooldown_key` (audit reason code `recovery_<cooldown_key>`); the effect calls
+  `ActiveLucidityService.apply_timed_recovery`. A tonic used during its cooldown is refused and not consumed.
 - **Dependencies**: Persistence, get_async_session, ActiveLucidityService, optional
   mp_regeneration_service; rescue uses LucidityService and send_rescue_update_event.
 
@@ -98,7 +110,7 @@ flowchart LR
 
 **[NOTE]**
 
-1. **meditate / pray / therapy / folk_tonic / group_solace** – Validate persistence and player
+1. **meditate / pray / therapy / group_solace** – Validate persistence and player
    room; call ActiveLucidityService with action code; on cooldown return formatted message; on
    success optionally restore MP (meditate, pray) and return result.
 2. **ground** – LucidityService.apply_lucidity_adjustment(reason_code="ground_rescue") to bring
