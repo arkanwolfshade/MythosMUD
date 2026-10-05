@@ -2,6 +2,9 @@
 """
 E2E test teardown: reset ArkanWolfshade and Ithaqua to starting room and set current_dp to 50.
 
+With --tutorial it also puts E2ETutorial back at the start of the tutorial (see
+_reset_tutorial_character) and empties the lost-and-found chest; the tutorial specs call that.
+
 Invoked from Playwright global-teardown so that after make test-playwright, both test players
 are returned to DEFAULT_RESPAWN_ROOM (see server/constants/spawn_defaults.py) with
 stats.current_dp = 50, regardless of test pass/fail.
@@ -10,7 +13,10 @@ Uses DATABASE_URL from environment (e.g. from .env.e2e_test); defaults to mythos
 """
 
 import importlib.util
+import json
 import os
+import sys
+import uuid
 
 import asyncpg
 from anyio import run
@@ -33,6 +39,66 @@ def _load_default_respawn_room() -> str:
     if not isinstance(raw, str):
         raise TypeError("DEFAULT_RESPAWN_ROOM must be str")
     return raw
+
+
+TUTORIAL_CHARACTER = "E2ETutorial"
+TUTORIAL_BEDROOM = "earth_arkhamcity_sanitarium_room_tutorial_bedroom_001"
+TUTORIAL_ITEM_PROTOTYPE = "pack_dark_ages.weapon.sling"
+
+
+async def _reset_tutorial_character(conn: asyncpg.Connection) -> None:
+    """Put E2ETutorial back at the start of the tutorial, holding one Sling, and empty the lost-and-found.
+
+    Saved in the bedroom template with no instance, so login goes through the re-entry repair and
+    gets a fresh instance; quest rows are deleted so leave_the_tutorial starts again on spawn.
+    """
+    player_id: object = await conn.fetchval("SELECT player_id FROM players WHERE name = $1", TUTORIAL_CHARACTER)
+    if player_id is None:
+        raise RuntimeError(f"{TUTORIAL_CHARACTER} is not seeded; run scripts/seed_e2e_users.py first")
+    sling = {
+        "item_id": TUTORIAL_ITEM_PROTOTYPE,
+        "prototype_id": TUTORIAL_ITEM_PROTOTYPE,
+        "item_instance_id": f"e2e-tutorial-sling-{uuid.uuid4().hex[:12]}",
+        "item_name": "Sling",
+        "slot_type": "backpack",
+        "quantity": 1,
+    }
+    inventory = json.dumps([sling])
+    # Both inventory copies, as upsert_player writes them: Player.get_inventory() reads the
+    # players.inventory column, while player_inventories.inventory_json is the row joined on load.
+    _ = await conn.execute(
+        """
+        UPDATE players
+        SET
+            current_room_id = $2,
+            respawn_room_id = $2,
+            tutorial_instance_id = NULL,
+            inventory = $3,
+            stats = jsonb_set(
+                jsonb_set(COALESCE(stats, '{}'::jsonb), '{current_dp}', '50'::jsonb),
+                '{position}',
+                '"standing"'::jsonb
+            )
+        WHERE player_id = $1
+        """,
+        player_id,
+        TUTORIAL_BEDROOM,
+        inventory,
+    )
+    _ = await conn.execute("DELETE FROM quest_instances WHERE player_id = $1", player_id)
+    _ = await conn.execute(
+        """
+        INSERT INTO player_inventories (player_id, inventory_json, equipped_json)
+        VALUES ($1, $2, '{}')
+        ON CONFLICT (player_id) DO UPDATE SET inventory_json = EXCLUDED.inventory_json, equipped_json = '{}'
+        """,
+        player_id,
+        inventory,
+    )
+    _ = await conn.execute(
+        "SELECT clear_container_contents(container_instance_id) FROM containers "
+        "WHERE metadata_json ->> 'role' = 'lost_and_found'"
+    )
 
 
 async def _reset_e2e_players() -> None:
@@ -65,6 +131,9 @@ async def _reset_e2e_players() -> None:
             """,
             room_id,
         )
+        # Opt-in: ordinary resets run on every relog and must not empty the chest mid-test.
+        if "--tutorial" in sys.argv[1:]:
+            await _reset_tutorial_character(conn)
     finally:
         await conn.close()
 
