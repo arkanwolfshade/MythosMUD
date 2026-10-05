@@ -160,6 +160,10 @@ class CommandFactory:
         """Create UnequipCommand from arguments."""
         return self._inventory.create_unequip_command(args)
 
+    def create_use_command(self, args: list[str]) -> BaseCommand:
+        """Create UseCommand from arguments."""
+        return self._inventory.create_use_command(args)
+
     def create_read_command(self, args: list[str]) -> BaseCommand:
         """Create ReadCommand from arguments."""
         return self._inventory.create_read_command(args)

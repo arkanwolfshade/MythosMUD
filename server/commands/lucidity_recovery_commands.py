@@ -6,10 +6,12 @@ as bare no-arg commands would ship ungated, spammable-on-cooldown sanity
 recovery -- ``_perform_recovery_action`` enforces only a cooldown, with no
 location, item, or skill gate. See #868 (pray/meditate: holy-site or
 holy/idol item gating), #869 (therapy: NPC/player Psychology or
-Psychoanalysis skill gate), #870 (folk tonic: should be a consumable item,
-not a command), and #871 (group solace: should be a spell, not a command)
-for the intended designs. Do not re-register these in ``_COMMAND_HANDLERS``
-without the corresponding gate implemented.
+Psychoanalysis skill gate), and #871 (group solace: should be a spell, not a
+command) for the intended designs. Do not re-register these in
+``_COMMAND_HANDLERS`` without the corresponding gate implemented.
+
+Folk tonic (#870) is no longer a command here: it is a ``consumable`` item drunk
+via ``/use`` (see server/commands/inventory_use_command.py).
 """
 
 # pylint: disable=too-many-locals,too-many-return-statements  # Reason: Recovery commands require many intermediate variables for complex lucidity logic and multiple return statements for early validation returns
@@ -271,22 +273,9 @@ async def handle_therapy_command(
     return await _perform_recovery_action("therapy", command_data, current_user, request, alias_storage, player_name)
 
 
-async def handle_folk_tonic_command(
-    command_data: dict[str, Any],
-    current_user: dict[str, Any],
-    request: Any,
-    alias_storage: AliasStorage | None,
-    player_name: str,
-) -> dict[str, str]:
-    """Swallow a dubious folk tonic brewed by cautiously reliable apothecaries."""
-
-    return await _perform_recovery_action("folk_tonic", command_data, current_user, request, alias_storage, player_name)
-
-
 __all__ = [
     "handle_pray_command",
     "handle_meditate_command",
     "handle_group_solace_command",
     "handle_therapy_command",
-    "handle_folk_tonic_command",
 ]

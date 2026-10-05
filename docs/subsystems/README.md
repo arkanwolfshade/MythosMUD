@@ -36,7 +36,7 @@ troubleshooting. Code is the source of truth; these docs are derived from it.
 | Status effects | [SUBSYSTEM_STATUS_EFFECTS_DESIGN.md](SUBSYSTEM_STATUS_EFFECTS_DESIGN.md) | DP, posture, incapacitation, death; mechanics and persistence; no_death rooms (ADR-009).                 |
 | Magic          | [SUBSYSTEM_MAGIC_DESIGN.md](SUBSYSTEM_MAGIC_DESIGN.md)                   | Cast, spells, spell, learn, stop; MP/lucidity costs; SpellRegistry, SpellEffects, targeting.             |
 | Skills / Level | [SUBSYSTEM_SKILLS_LEVEL_DESIGN.md](SUBSYSTEM_SKILLS_LEVEL_DESIGN.md)     | Skills catalog, occupation/personal interest, level/XP curve, level-up hook, teach.                      |
-| Lucidity       | [SUBSYSTEM_LUCIDITY_DESIGN.md](SUBSYSTEM_LUCIDITY_DESIGN.md)             | Recovery rituals (meditate, pray, therapy, folk_tonic, group_solace); cooldowns; ActiveLucidityService.  |
+| Lucidity       | [SUBSYSTEM_LUCIDITY_DESIGN.md](SUBSYSTEM_LUCIDITY_DESIGN.md)             | Recovery rituals (meditate, pray, therapy, group_solace); folk tonic consumable; cooldowns; ActiveLucidityService.  |
 | Respawn        | [SUBSYSTEM_RESPAWN_DESIGN.md](SUBSYSTEM_RESPAWN_DESIGN.md)               | Dead (DP -10 or limbo) respawn by user_id; PlayerRespawnWrapper and PlayerRespawnService.                |
 | NPC system     | [SUBSYSTEM_NPC_DESIGN.md](SUBSYSTEM_NPC_DESIGN.md)                       | Lifecycle, spawning, behavior, combat/movement/communication integration; population control.            |
 | Admin commands | [SUBSYSTEM_ADMIN_COMMANDS_DESIGN.md](SUBSYSTEM_ADMIN_COMMANDS_DESIGN.md) | Mute, teleport, goto, shutdown, summon, setstat, setlucidity, npc; validate_admin_permission; audit log. |

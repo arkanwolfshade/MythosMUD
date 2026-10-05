@@ -316,8 +316,8 @@ async def test_perform_recovery_action_invalid_string_player_id(active_lucidity_
 @pytest.mark.asyncio
 async def test_perform_recovery_action_all_actions(active_lucidity_service, sample_player_id):
     """Test perform_recovery_action() works for all recovery actions."""
-    actions = ["pray", "meditate", "group_solace", "therapy", "folk_tonic"]
-    expected_deltas = [8, 6, 4, 15, 3]
+    actions = ["pray", "meditate", "group_solace", "therapy"]
+    expected_deltas = [8, 6, 4, 15]
 
     for action, expected_delta in zip(actions, expected_deltas, strict=True):
         mock_result = MagicMock()

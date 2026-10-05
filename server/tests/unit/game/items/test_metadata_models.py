@@ -71,3 +71,28 @@ def test_item_metadata_container_defaults_and_cap() -> None:
 def test_item_metadata_container_rejects_invalid(container: dict[str, object]) -> None:
     with pytest.raises(ValidationError):
         _ = ItemMetadata.model_validate({"container": container})
+
+
+def test_item_metadata_accepts_lucidity_recovery() -> None:
+    meta = ItemMetadata.model_validate(
+        {"lucidity_recovery": {"cooldown_key": "folk_tonic", "lcd_delta": 3, "cooldown_minutes": 30}}
+    )
+    assert meta.lucidity_recovery is not None
+    assert meta.lucidity_recovery.cooldown_key == "folk_tonic"
+    assert meta.lucidity_recovery.lcd_delta == 3
+    assert meta.lucidity_recovery.cooldown_minutes == 30
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        {"lcd_delta": 3, "cooldown_minutes": 30},
+        {"cooldown_key": "", "lcd_delta": 3, "cooldown_minutes": 30},
+        {"cooldown_key": "folk_tonic", "lcd_delta": 0, "cooldown_minutes": 30},
+        {"cooldown_key": "folk_tonic", "lcd_delta": 3, "cooldown_minutes": 0},
+        {"cooldown_key": "folk_tonic", "lcd_delta": 3, "cooldown_minutes": 30, "typo": 1},
+    ],
+)
+def test_item_metadata_rejects_bad_lucidity_recovery(payload: dict[str, object]) -> None:
+    with pytest.raises(ValidationError):
+        _ = ItemMetadata.model_validate({"lucidity_recovery": payload})

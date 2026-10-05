@@ -2,7 +2,7 @@
 Inventory command factory methods.
 
 This module contains factory methods for inventory and item management commands:
-pickup, drop, put, get, equip, unequip, inventory.
+pickup, drop, put, get, equip, unequip, use, inventory.
 """
 
 from ..exceptions import ValidationError as MythosValidationError
@@ -15,6 +15,7 @@ from ..models.command import (
     PutCommand,
     ReadCommand,
     UnequipCommand,
+    UseCommand,
 )
 from ..structured_logging.enhanced_logging_config import get_logger
 from .enhanced_error_logging import log_and_raise_enhanced
@@ -383,6 +384,20 @@ class InventoryCommandFactory:
         selector_tokens = _normalize_equip_slot_tokens(list(args))
         index, search_term, target_slot = _parse_equip_selector(selector_tokens, args)
         return EquipCommand(index=index, search_term=search_term, target_slot=target_slot)
+
+    @staticmethod
+    def create_use_command(args: list[str]) -> UseCommand:
+        """Create use command (``use``/``drink``/``quaff``): a 1-based inventory number or an item name."""
+        candidate = " ".join(args).strip()
+        if not candidate or (candidate.isdecimal() and int(candidate) < 1):
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: use <inventory-number|item-name>",
+                logger_name=__name__,
+            )
+        if candidate.isdecimal():
+            return UseCommand(index=int(candidate))
+        return UseCommand(search_term=candidate)
 
     @staticmethod
     def create_unequip_command(args: list[str]) -> UnequipCommand:

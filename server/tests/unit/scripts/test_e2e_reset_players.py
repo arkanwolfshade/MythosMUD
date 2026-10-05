@@ -25,7 +25,9 @@ class _ResetScript(Protocol):
 
     TUTORIAL_BEDROOM: str
     TUTORIAL_ITEM_PROTOTYPE: str
+    FOLK_TONIC_COOLDOWN_KEY: str
     _reset_tutorial_character: Callable[[object], Awaitable[None]]
+    _clear_folk_tonic_cooldowns: Callable[[object], Awaitable[None]]
 
 
 class _SeedSpec(Protocol):
@@ -81,6 +83,19 @@ async def test_reset_tutorial_character_restores_tutorial_start_state() -> None:
     assert [stack["item_id"] for stack in stacks] == [script.TUTORIAL_ITEM_PROTOTYPE]
     assert "clear_container_contents" in chest_clear[0]
     assert "lost_and_found" in chest_clear[0]
+
+
+async def test_clear_folk_tonic_cooldowns_targets_the_shared_players_only() -> None:
+    script = cast(_ResetScript, _load("e2e_reset_players"))
+    conn = _RecordingConnection(None)
+
+    await script._clear_folk_tonic_cooldowns(conn)
+
+    [(query, args)] = conn.executed
+    assert query.startswith("DELETE FROM lucidity_cooldowns WHERE action_code = $1")
+    assert "'ArkanWolfshade', 'Ithaqua'" in query
+    assert args == (script.FOLK_TONIC_COOLDOWN_KEY,)
+    assert script.FOLK_TONIC_COOLDOWN_KEY == "folk_tonic"
 
 
 async def test_reset_tutorial_character_requires_the_seeded_character() -> None:

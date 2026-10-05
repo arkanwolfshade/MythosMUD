@@ -95,6 +95,16 @@ class ContainerMetadata(BaseModel):
     allowed_roles: list[str] = Field(default_factory=list)
 
 
+class LucidityRecoveryMetadata(BaseModel):
+    """Lucidity gain applied when a consumable is used (``component.lucidity_recovery``)."""
+
+    model_config: ClassVar[ConfigDict] = ConfigDict(extra="forbid")
+
+    cooldown_key: str = Field(min_length=1, max_length=64)
+    lcd_delta: int = Field(ge=1)
+    cooldown_minutes: int = Field(ge=1)
+
+
 class ItemMetadata(BaseModel):
     """Validated known keys under item prototype metadata (ADR-026).
 
@@ -109,3 +119,4 @@ class ItemMetadata(BaseModel):
     equipment: EquipmentMetadata | None = None
     catalog: CatalogMetadata | None = None
     container: ContainerMetadata | None = None
+    lucidity_recovery: LucidityRecoveryMetadata | None = None
