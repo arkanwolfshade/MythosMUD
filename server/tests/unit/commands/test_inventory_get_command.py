@@ -238,3 +238,51 @@ async def test_handle_get_command_passes_persistence_to_validation() -> None:
     # is the only assertion that actually catches the regression.
     assert persistence is w.persistence
     assert persistence is not w.request
+
+
+def _chest_row(container_id: uuid.UUID, items: list[dict[str, object]]) -> dict[str, object]:
+    """A room container as get_containers_by_room_id returns it: contents under items_json."""
+    return {"container_id": str(container_id), "source_type": "environment", "items_json": items}
+
+
+@pytest.mark.asyncio
+async def test_get_from_container_path_reads_persistence_items_json() -> None:
+    """`get sling from chest` finds items stored under items_json (they used to be invisible)."""
+    player = MagicMock(spec=Player)
+    player.current_room_id = "room_1"
+    player.name = "P"
+    rt = GetCommandRuntime(MagicMock(), MagicMock(), MagicMock(), MagicMock(), MagicMock())
+    spec = GetItemSpec(player=player, item_name="sling", container_name="chest", quantity=1)
+    container_id = uuid.uuid4()
+    sling: dict[str, object] = {"item_id": "pack_dark_ages.weapon.sling", "item_name": "Sling", "quantity": 1}
+    transfer = AsyncMock(return_value={"result": "You get 1x Sling from chest."})
+    with (
+        patch(
+            "server.commands.inventory_get_command.find_container_in_room",
+            return_value=(_chest_row(container_id, [sling]), container_id),
+        ),
+        patch("server.commands.inventory_get_command._get_transfer_out_of_container", transfer),
+    ):
+        result = await _get_from_container_path(rt, spec)
+
+    assert result == {"result": "You get 1x Sling from chest."}
+    assert transfer.await_args is not None
+    assert transfer.await_args.args[5] == sling
+
+
+@pytest.mark.asyncio
+async def test_get_from_empty_container_says_item_not_there() -> None:
+    """An empty container is not "invalid container data": the item just is not in it."""
+    player = MagicMock(spec=Player)
+    player.current_room_id = "room_1"
+    player.name = "P"
+    rt = GetCommandRuntime(MagicMock(), MagicMock(), MagicMock(), MagicMock(), MagicMock())
+    spec = GetItemSpec(player=player, item_name="sling", container_name="chest", quantity=1)
+    container_id = uuid.uuid4()
+    with patch(
+        "server.commands.inventory_get_command.find_container_in_room",
+        return_value=(_chest_row(container_id, []), container_id),
+    ):
+        result = await _get_from_container_path(rt, spec)
+
+    assert result == {"result": "You don't see 'sling' in chest."}

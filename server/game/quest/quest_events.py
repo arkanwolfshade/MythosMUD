@@ -101,7 +101,9 @@ def _make_on_player_left(quest_service: Any) -> Any:  # noqa: ANN401
     async def _on_player_left_room(event: PlayerLeftRoom) -> None:
         try:
             player_id = _parse_player_id(event.player_id)
-            if not player_id:
+            # Only a real move is an exit: a disconnect (or deleting the character) also removes the
+            # player from the room, with no destination, and must not complete "leave the room" goals.
+            if not player_id or not event.to_room_id:
                 return
             # Use stable room id so exit_<stable_id> matches quest goals (definitions use stable id, not instance id)
             stable_room_id = _entity_id_for_quest_offer(event.room_id)

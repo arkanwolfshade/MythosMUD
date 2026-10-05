@@ -158,10 +158,8 @@ async def _get_from_container_path(rt: GetCommandRuntime, spec: GetItemSpec) -> 
     if not container_found:
         return {"result": f"You don't see any '{spec.container_name}' here."}
 
+    # An empty container (or unparseable contents) simply holds nothing to take.
     container_items, container_id = parse_container_items(container_found, container_id, spec.player)
-    if not container_items and container_id:
-        return {"result": "Error: Invalid container data format."}
-
     item_found, _ = find_item_in_container(container_items, spec.item_name, spec.player, container_id)
     if not item_found:
         return {"result": f"You don't see '{spec.item_name}' in {spec.container_name}."}

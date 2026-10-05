@@ -368,3 +368,19 @@ def test_room_container_helpers_tolerate_malformed_entries():
     room.remove_container("c1")
 
     assert room.get_containers() == ["junk", 3]
+
+
+def test_room_player_left_event_carries_destination():
+    """PlayerLeftRoom says where the player went; None means they went nowhere (disconnect)."""
+    published: list[object] = []
+    event_bus = Mock()
+    event_bus.configure_mock(publish=published.append)
+    room = Room({"id": "room_001"}, event_bus=event_bus)
+    walker, leaver = uuid.uuid4(), uuid.uuid4()
+    room.add_player_silently(walker)
+    room.add_player_silently(leaver)
+
+    room.player_left(walker, to_room_id="room_002")
+    room.player_left(leaver)
+
+    assert [cast(object, getattr(event, "to_room_id", "missing")) for event in published] == ["room_002", None]

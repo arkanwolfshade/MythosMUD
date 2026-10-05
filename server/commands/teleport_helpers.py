@@ -193,7 +193,7 @@ async def update_player_room_location(
         try:
             source_room = persistence.get_room_by_id(original_room_id)
             if source_room:
-                source_room.player_left(target_player_identifier)
+                source_room.player_left(target_player_identifier, to_room_id=target_room_id)
         except (ValueError, AttributeError, TypeError) as exc:
             logger.debug(
                 "Failed to mark teleport target as leaving source room",

@@ -218,7 +218,7 @@ class MovementService(RoomOccupancyMixin):
         self._logger.info("Moving player", player_id=resolved_player_id, from_room=from_room.id, to_room=to_room.id)
         room_update_start = time.time()
         self._logger.debug("Removing player from room", player_id=resolved_player_id, room_id=from_room.id)
-        from_room.player_left(resolved_player_id)
+        from_room.player_left(resolved_player_id, to_room_id=cast(str, to_room.id))
         self._logger.debug("Adding player to room", player_id=resolved_player_id, room_id=to_room.id)
         to_room.player_entered(resolved_player_id, force_event=True, from_room_id=from_room.id)
         room_update_end = time.time()

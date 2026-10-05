@@ -714,3 +714,19 @@ async def test_tutorial_exit_hook_ignores_other_destinations(mock_persistence: M
     assert player.tutorial_instance_id == instance_id
     save.assert_not_awaited()
     flush.assert_not_awaited()
+
+
+def test_room_transfer_tells_the_source_room_where_the_player_went(mock_persistence: MagicMock) -> None:
+    """Walking sets PlayerLeftRoom.to_room_id; only such leaves count as quest exits (not disconnects)."""
+    service = MovementService(async_persistence=mock_persistence)
+    player_left = MagicMock()
+    player_entered = MagicMock()
+    from_room = MagicMock()
+    from_room.configure_mock(id=FOYER_ID, player_left=player_left)
+    to_room = MagicMock()
+    to_room.configure_mock(id="earth_arkhamcity_sanitarium_room_hallway_001", player_entered=player_entered)
+
+    service._execute_room_transfer(from_room, to_room, "player-1", {})  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
+
+    player_left.assert_called_once_with("player-1", to_room_id="earth_arkhamcity_sanitarium_room_hallway_001")
+    player_entered.assert_called_once_with("player-1", force_event=True, from_room_id=FOYER_ID)

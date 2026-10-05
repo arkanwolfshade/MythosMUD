@@ -276,8 +276,8 @@ class InventoryCommandFactory:
         """
         Create put command.
 
-        Supports: put <item> [in] <container> [quantity]
-        The "in" keyword is optional.
+        Supports: put <item> [in|into] <container> [quantity]
+        The "in"/"into" keyword is optional.
         """
         if not args:
             log_and_raise_enhanced(
@@ -286,8 +286,8 @@ class InventoryCommandFactory:
                 logger_name=__name__,
             )
 
-        # Remove optional "in" keyword
-        args_clean = [arg for arg in args if arg.lower() != "in"]
+        # Remove optional "in"/"into" keyword (get drops "from" the same way)
+        args_clean = [arg for arg in args if arg.lower() not in ("in", "into")]
 
         if len(args_clean) < 2:
             log_and_raise_enhanced(
