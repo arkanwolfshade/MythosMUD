@@ -5,6 +5,7 @@
  */
 
 import { expect, type Locator, type Page } from '@playwright/test';
+import { locationIndicatesDeathVoid, requiredAliveButDeadMessage } from '../../../../src/utils/deathVoidLocation';
 import {
   clickWithoutStability,
   ensurePlayableConnection,
@@ -19,7 +20,6 @@ import {
 } from './auth';
 import { resetE2ePlayerRoomsInDatabase } from './multiplayer';
 import { DEFAULT_SPAWN_LOOK_CUE, EASTERN_HALLWAY_LOOK_CUE } from './test-data';
-import { locationIndicatesDeathVoid, requiredAliveButDeadMessage } from '../../../../src/utils/deathVoidLocation';
 
 /** Zone key for earth_arkhamcity_sanitarium_room_foyer_001 (npc zone command). */
 const SANITARIUM_ZONE_KEY = 'arkhamcity/sanitarium';
@@ -171,6 +171,15 @@ async function respawnAfterCombatDeath(page: Page, username: string, password: s
 export function corpseCard(page: Page, opts: { openable: boolean; graceActive?: boolean }): Locator {
   const grace = opts.graceActive === undefined ? '' : `[data-grace-active="${opts.graceActive}"]`;
   return page.locator(`[data-testid="corpse-card"][data-openable="${opts.openable}"]${grace}`);
+}
+
+/**
+ * The row for `itemText` in a ContainerTransferModal column. Every row has its own "Transfer"
+ * button, so a column-wide getByRole('button', { name: 'Transfer' }).first() acts on whichever
+ * item the server lists first -- target buttons through this row instead (#980).
+ */
+export function containerRow(column: Locator, itemText: string): Locator {
+  return column.getByRole('listitem').filter({ has: column.page().getByText(itemText, { exact: true }) });
 }
 
 /**

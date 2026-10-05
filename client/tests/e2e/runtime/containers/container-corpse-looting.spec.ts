@@ -23,6 +23,7 @@ import { expect, test } from '@playwright/test';
 import { clickWithoutStability, executeCommand, waitForMessage } from '../fixtures/auth';
 import { cleanupMultiPlayerContexts, createMultiPlayerContexts, ensurePlayerInGame } from '../fixtures/multiplayer';
 import {
+  containerRow,
   despawnSanitariumCultists,
   ensurePlayableAlive,
   killPlayerAndProduceCorpse,
@@ -30,6 +31,7 @@ import {
 } from '../fixtures/player';
 
 const LOOT_ITEM_ID = 'pack_dark_ages.weapon.sling';
+const LEADING_ITEM_ID = 'artifact.miskatonic.codex';
 
 test.describe('Corpse Looting with Grace Periods', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
@@ -51,11 +53,19 @@ test.describe('Corpse Looting with Grace Periods', () => {
     const awContext = contexts[0];
     const creds = { username: awContext.player.username, password: awContext.player.password };
 
-    // Guarantee a known item in the corpse: summon and pick up a sling before dying.
+    // Corpse contents follow pickup order, so picking up the Codex first guarantees the Sling is
+    // never the corpse's first row: a Transfer click not scoped to the Sling's row (#980) then
+    // moves the wrong item every time instead of only when a previous run left items behind.
+    // waitForMessage also matches older log lines, so each wait names its item.
+    await executeCommand(awContext.page, `/summon ${LEADING_ITEM_ID} 1`);
+    await waitForMessage(awContext.page, /You summon\s+1x\s+Codex/i, 15000);
+    await executeCommand(awContext.page, 'pickup codex');
+    await waitForMessage(awContext.page, /You pick up\s+\d+x\s+Codex/i, 10000);
+
     await executeCommand(awContext.page, `/summon ${LOOT_ITEM_ID} 1`);
-    await waitForMessage(awContext.page, /You summon\s+1x/i, 15000);
+    await waitForMessage(awContext.page, /You summon\s+1x\s+Sling/i, 15000);
     await executeCommand(awContext.page, 'pickup sling');
-    await waitForMessage(awContext.page, /You pick up/i, 10000);
+    await waitForMessage(awContext.page, /You pick up\s+\d+x\s+Sling/i, 10000);
 
     try {
       // Die, respawn back into the death room (= DEFAULT_RESPAWN_ROOM), and guarantee the corpse
@@ -75,7 +85,8 @@ test.describe('Corpse Looting with Grace Periods', () => {
       await expect(slingRow).toBeVisible({ timeout: 15000 });
       // Same reason as the Open buttons in openCorpseWithRetry: Playwright's stability check can
       // fail to settle for controls in this modal stack in Firefox, so dispatch the click directly.
-      await clickWithoutStability(corpseColumn.getByRole('button', { name: 'Transfer' }).first());
+      // Scoped to the Sling's row: the Codex is listed first, so an unscoped click moves it (#980).
+      await clickWithoutStability(containerRow(corpseColumn, 'Sling').getByRole('button', { name: 'Transfer' }));
       await expect(slingRow).not.toBeVisible({ timeout: 15000 });
     } finally {
       await despawnSanitariumCultists(awContext.page);

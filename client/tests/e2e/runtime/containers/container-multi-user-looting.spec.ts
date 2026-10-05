@@ -25,6 +25,7 @@ import {
   waitForAllPlayersInGame,
 } from '../fixtures/multiplayer';
 import {
+  containerRow,
   corpseCard,
   despawnSanitariumCultists,
   ensurePlayableAlive,
@@ -101,7 +102,8 @@ test.describe('Multi-User Container Looting', () => {
       await expect(slingRow).toBeVisible({ timeout: 15000 });
       // Same reason as the Open buttons in openCorpseWithRetry: Playwright's stability check can
       // fail to settle for controls in this modal stack in Firefox, so dispatch the click directly.
-      await clickWithoutStability(corpseColumn.getByRole('button', { name: 'Transfer' }).first());
+      // Scoped to the Sling's row: the corpse can list other items first (#980).
+      await clickWithoutStability(containerRow(corpseColumn, 'Sling').getByRole('button', { name: 'Transfer' }));
       await expect(slingRow).not.toBeVisible({ timeout: 15000 });
     } finally {
       await despawnSanitariumCultists(awContext.page);
