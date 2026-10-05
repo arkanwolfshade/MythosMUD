@@ -4,4 +4,3 @@ tools-configs/
 cli-config.yaml
 logs/
 *.sh
-generated/
