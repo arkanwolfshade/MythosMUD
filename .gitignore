@@ -438,3 +438,5 @@ client/.claude/hooks/state/edited-files.json
 .codacy/tools-configs/ruleset.xml
 .basedpyright/baseline.json
 .codacy/tools-configs/ruleset.xml
+client/tests/e2e/runtime/.claude/hooks/state/edited-files.json
+client/tests/e2e/.claude/hooks/state/edited-files.json
