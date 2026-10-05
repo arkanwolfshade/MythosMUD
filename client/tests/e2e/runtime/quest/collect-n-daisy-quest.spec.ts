@@ -10,9 +10,9 @@ import { spawnSync } from 'child_process';
 import { join } from 'path';
 import { E2E_PROJECT_ROOT, loadE2eEnv } from '../../../../src/test/e2e-bootstrap';
 import { ensurePlayableConnection, executeCommand, getMessages, loginPlayer, waitForMessage } from '../fixtures/auth';
+import { resetE2ePlayerRoomsInDatabase } from '../fixtures/multiplayer';
 import { ensureStanding } from '../fixtures/player';
 import { EASTERN_HALLWAY_LOOK_CUE, TEST_TIMEOUTS } from '../fixtures/test-data';
-import { resetE2ePlayerRoomsInDatabase } from '../fixtures/multiplayer';
 
 const MORGAN_NAME = 'Dr. Francis Morgan';
 const DAISY_PROTOTYPE = 'misc.herb.sanitarium_daisy';
@@ -150,7 +150,7 @@ test.describe('collect_n daisy quest ask/turnin', () => {
     const summonMsgs = await getMessages(page);
     expect(summonMsgs.some(m => /You summon\s+3x/i.test(m))).toBe(true);
 
-    // get <item> [from] <container> [quantity]; room floor uses container "room"
+    // get <item> [from <container>] [quantity]; room floor uses container "room"
     await executeCommand(page, 'get daisy from room 3');
     await waitForMessage(page, /You get\s+\d+x|daisy|Sanitarium Daisy/i, 25000);
 

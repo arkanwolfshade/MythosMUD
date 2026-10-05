@@ -226,7 +226,7 @@ async def validate_put_command_inputs(
             container_name=container_name,
             command_data=command_data,
         )
-        return {"result": "Usage: put <item> [in] <container> [quantity]"}
+        return {"result": "Usage: put <item> [in|into] <container> [quantity]"}
 
     container_service = _resolve_container_service(persistence)
     if not container_service:
@@ -492,7 +492,7 @@ async def validate_get_command_inputs(
     quantity = command_data.get("quantity")
 
     if not item_name or not container_name:
-        return {"result": "Usage: get <item> [from] <container> [quantity]"}
+        return {"result": "Usage: get <item> [from <container>] [quantity]"}
 
     room_manager = getattr(connection_manager, "room_manager", None)
     if not room_manager:

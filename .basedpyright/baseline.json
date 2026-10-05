@@ -290003,22 +290003,6 @@
                 "code": "reportUnusedCallResult",
                 "range": {
                     "startColumn": 8,
-                    "endColumn": 73,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportUnusedCallResult",
-                "range": {
-                    "startColumn": 8,
-                    "endColumn": 74,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportUnusedCallResult",
-                "range": {
-                    "startColumn": 8,
                     "endColumn": 59,
                     "lineCount": 1
                 }

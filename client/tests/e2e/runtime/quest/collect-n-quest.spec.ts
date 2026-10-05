@@ -16,9 +16,9 @@ import {
   loginPlayer,
   waitForMessage,
 } from '../fixtures/auth';
+import { resetE2ePlayerRoomsInDatabase } from '../fixtures/multiplayer';
 import { ensureStanding } from '../fixtures/player';
 import { TEST_TIMEOUTS } from '../fixtures/test-data';
-import { resetE2ePlayerRoomsInDatabase } from '../fixtures/multiplayer';
 
 /** Example collect_n seed. Swap fields to exercise another definition without rewriting flow helpers. */
 const COLLECT_N = {
@@ -167,7 +167,7 @@ async function summonAndPickupCollectItems(page: Page): Promise<void> {
   const summonMsgs = await getMessages(page);
   expect(summonMsgs.some(m => new RegExp(`You summon\\s+${COLLECT_N.count}x`, 'i').test(m))).toBe(true);
 
-  // get <item> [from] <container> [quantity]; room floor uses container "room"
+  // get <item> [from <container>] [quantity]; room floor uses container "room"
   await executeCommand(page, `get ${COLLECT_N.itemGetAlias} from room ${COLLECT_N.count}`);
   const itemNameEsc = escapeRegExp(COLLECT_N.itemDisplayName);
   await waitForMessage(page, new RegExp(`You get\\s+\\d+x|${COLLECT_N.itemGetAlias}|${itemNameEsc}`, 'i'), 25000);
