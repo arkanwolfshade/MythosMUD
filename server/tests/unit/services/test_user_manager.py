@@ -9,7 +9,7 @@ server/tests/integration/test_player_aliases_and_mutes_db.py.
 import uuid
 from datetime import UTC, datetime, timedelta
 from typing import override
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -191,9 +191,18 @@ async def test_unmute_player_success(user_manager: UserManager, mute_repo: _Fake
 @pytest.mark.asyncio
 async def test_unmute_player_not_muted(user_manager: UserManager, mute_repo: _FakeMuteRepository):
     """Test unmute_player() when player is not muted."""
-    result = await user_manager.unmute_player(uuid.uuid4(), "Muter", uuid.uuid4(), "Target")
+    warning_mock: MagicMock = MagicMock()
+    debug_mock: MagicMock = MagicMock()
+    with (
+        patch("server.services.user_manager.logger.warning", warning_mock),
+        patch("server.services.user_manager.logger.debug", debug_mock),
+    ):
+        result = await user_manager.unmute_player(uuid.uuid4(), "Muter", uuid.uuid4(), "Target")
     assert result is False
     assert not mute_repo.deleted
+    # #974: a no-op unmute is expected input (idempotent cleanup), not a warning-worthy fault.
+    assert warning_mock.call_count == 0
+    assert debug_mock.call_count == 1
 
 
 @pytest.mark.asyncio
@@ -230,8 +239,16 @@ async def test_unmute_channel_success(user_manager: UserManager, mute_repo: _Fak
 @pytest.mark.asyncio
 async def test_unmute_channel_not_muted(user_manager: UserManager):
     """Test unmute_channel() when channel is not muted."""
-    result = await user_manager.unmute_channel(uuid.uuid4(), "Player", "global")
+    warning_mock: MagicMock = MagicMock()
+    debug_mock: MagicMock = MagicMock()
+    with (
+        patch("server.services.user_manager.logger.warning", warning_mock),
+        patch("server.services.user_manager.logger.debug", debug_mock),
+    ):
+        result = await user_manager.unmute_channel(uuid.uuid4(), "Player", "global")
     assert result is False
+    assert warning_mock.call_count == 0
+    assert debug_mock.call_count == 1
 
 
 @pytest.mark.asyncio

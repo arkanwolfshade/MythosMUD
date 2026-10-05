@@ -444,7 +444,8 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
                 )
 
                 return True
-            logger.warning("Attempted to unmute non-muted player", unmuter_id=unmuter_id_uuid, target_id=target_id_uuid)
+            # Expected no-op (idempotent cleanup unmutes), not a fault; the command layer replies to the player.
+            logger.debug("Attempted to unmute non-muted player", unmuter_id=unmuter_id_uuid, target_id=target_id_uuid)
             return False
 
         except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
@@ -554,7 +555,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
                 )
 
                 return True
-            logger.warning("Attempted to unmute non-muted channel", player_id=player_id_uuid, channel=channel)
+            logger.debug("Attempted to unmute non-muted channel", player_id=player_id_uuid, channel=channel)
             return False
 
         except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
