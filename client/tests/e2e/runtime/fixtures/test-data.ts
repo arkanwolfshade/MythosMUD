@@ -17,7 +17,7 @@
 export const DEFAULT_RESPAWN_ROOM = 'earth_arkhamcity_sanitarium_room_foyer_001' as const;
 
 /** The tutorial bedroom instance template (stable id; players are only ever in clones of it). */
-export const TUTORIAL_BEDROOM_ROOM = 'earth_arkhamcity_sanitarium_room_tutorial_bedroom_001' as const;
+const TUTORIAL_BEDROOM_ROOM = 'earth_arkhamcity_sanitarium_room_tutorial_bedroom_001' as const;
 
 /**
  * After `look`, foyer prose shows in Location / Room Description (not always Game Info).
