@@ -187,12 +187,13 @@ class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requ
             self._players.remove(player_id_str)
             self._logger.debug("Player removed from room silently", player_id=player_id, room_id=self.id)
 
-    def player_left(self, player_id: uuid.UUID | str) -> None:
+    def player_left(self, player_id: uuid.UUID | str, to_room_id: str | None = None) -> None:
         """
         Remove a player from the room and trigger event.
 
         Args:
             player_id: The ID of the player leaving the room (UUID or string)
+            to_room_id: Where they went; None when they did not go anywhere (e.g. disconnected)
         """
         if not player_id:
             raise ValueError("Player ID cannot be empty")
@@ -210,7 +211,7 @@ class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requ
         # Publish event if event bus is available
         # Events still expect string, so convert for event creation
         if self._event_bus:
-            event = PlayerLeftRoom(player_id=player_id_str, room_id=self.id)
+            event = PlayerLeftRoom(player_id=player_id_str, room_id=self.id, to_room_id=to_room_id)
             self._event_bus.publish(event)
 
     def object_added(self, object_id: str, player_id: str | None = None) -> None:

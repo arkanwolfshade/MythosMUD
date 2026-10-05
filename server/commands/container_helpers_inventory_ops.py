@@ -150,7 +150,8 @@ def _extract_items_json_branch(container_found: object, container_id: UUID | Non
 
 
 def _extract_items_dict_branch(data: dict[str, object], container_id: UUID | None) -> tuple[object, UUID | None]:
-    items = data.get("items", [])
+    # Persistence rows (get_containers_by_room_id) carry "items_json"; ContainerData.to_dict() "items".
+    items = data["items_json"] if "items_json" in data else data.get("items", [])
     cid = container_id
     if not cid:
         raw = data.get("container_id")

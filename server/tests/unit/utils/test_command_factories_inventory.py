@@ -327,3 +327,12 @@ def test_create_read_command_with_args():
     """Test create_read_command() ignores args at the model level (handler parses command_data['args'])."""
     command = InventoryCommandFactory.create_read_command(["spellbook", "fireball"])
     assert command.command_type == "read"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+
+
+@pytest.mark.parametrize("preposition", ["in", "into", "INTO"])
+def test_create_put_command_ignores_in_and_into(preposition: str) -> None:
+    """`put sling into chest` names the chest, not a container called "into chest"."""
+    command = InventoryCommandFactory.create_put_command(["sling", preposition, "chest"])
+
+    assert command.item == "sling"
+    assert command.container == "chest"

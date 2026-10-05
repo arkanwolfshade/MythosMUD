@@ -1,6 +1,8 @@
 """Unit tests for quest event subscriptions and handlers."""
 
 import uuid
+from collections.abc import Awaitable, Callable
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -83,9 +85,32 @@ async def test_player_left_records_exit_activity():
     handler = quest_events._make_on_player_left(quest_service)
     player_id = uuid.uuid4()
     stable_room = "earth_arkhamcity_downtown_001"
-    event = PlayerLeftRoom(player_id=str(player_id), room_id=f"instance_{uuid.uuid4()}_{stable_room}")
+    event = PlayerLeftRoom(
+        player_id=str(player_id),
+        room_id=f"instance_{uuid.uuid4()}_{stable_room}",
+        to_room_id="earth_arkhamcity_downtown_002",
+    )
     await handler(event)
     quest_service.record_complete_activity.assert_awaited_once_with(player_id, f"exit_{stable_room}")
+
+
+@pytest.mark.asyncio
+async def test_player_left_without_destination_is_not_an_exit():
+    """A disconnect (or character deletion) leaves the room with no destination: no exit activity.
+
+    Otherwise logging out inside the tutorial bedroom completed leave_the_tutorial.
+    """
+    record = AsyncMock()
+    quest_service = MagicMock()
+    quest_service.configure_mock(record_complete_activity=record)
+    handler = cast(
+        Callable[[PlayerLeftRoom], Awaitable[None]],
+        quest_events._make_on_player_left(quest_service),  # pyright: ignore[reportPrivateUsage] -- unit-tested directly, like this file's other handlers
+    )
+    await handler(
+        PlayerLeftRoom(player_id=str(uuid.uuid4()), room_id="earth_arkhamcity_sanitarium_room_tutorial_bedroom_001")
+    )
+    record.assert_not_awaited()
 
 
 @pytest.mark.asyncio

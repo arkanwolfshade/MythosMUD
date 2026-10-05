@@ -79,6 +79,17 @@ def test_extract_items_from_container_dict() -> None:
     assert items == [{"item_name": "x"}]
 
 
+def test_extract_items_from_container_persistence_row() -> None:
+    """Room containers come from persistence as dicts with items_json (not items)."""
+    cid = uuid.uuid4()
+    items, out_cid = extract_items_from_container(
+        {"items_json": [{"item_name": "Sling"}], "container_id": str(cid), "source_type": "environment"},
+        None,
+    )
+    assert out_cid == cid
+    assert items == [{"item_name": "Sling"}]
+
+
 def test_extract_items_from_container_items_json_attr() -> None:
     cid = uuid.uuid4()
     obj = SimpleNamespace(items_json=[{"n": 1}], container_instance_id=cid)
