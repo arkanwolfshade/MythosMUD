@@ -120,6 +120,15 @@ E2E_USER_SPECS: tuple[E2eUserSpec, ...] = (
         seed_player=True,
         player_is_admin=0,
     ),
+    # Put into tutorial state by `e2e_reset_players.py --tutorial` (tutorial E2E specs).
+    E2eUserSpec(
+        username="E2ETutorial",
+        email="e2etutorial@test.local",
+        is_superuser=False,
+        is_admin=False,
+        seed_player=True,
+        player_is_admin=0,
+    ),
 )
 
 UPSERT_PLAYER_SQL = """

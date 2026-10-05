@@ -1,48 +1,67 @@
 /**
  * Scenario 24: Environmental Container Interactions
  *
- * #711 ported the container GUI (open/transfer/close via HTTP + `get`/`put` text commands both
- * work end to end now), but environmental containers -- chests, crates, and similar room fixtures
- * -- are not reachable in this game today:
- * - server/services/environmental_container_loader.py has zero production callers of
- *   `migrate_room_container_to_postgresql` anywhere in server/.
- * - No room JSON under data/ defines a `container` block for the loader to migrate.
- * Only corpse containers are reachable (created by a genuine combat death; see
- * container-corpse-looting.spec.ts and container-multi-user-looting.spec.ts). This test stays
- * skipped honestly rather than asserting against a container type nothing spawns -- unskip it
- * once an environmental container is actually seeded and wired into a room.
+ * Environmental containers are room furniture: a room's `attributes.furniture` names an item
+ * prototype that defines `metadata.container`, and the server creates the container at startup
+ * (server/services/room_furniture_loader.py). The Sanitarium Main Foyer has one: the
+ * Lost-and-Found Chest (200 slots), where items left in tutorial bedrooms end up. It is shared --
+ * anyone can put items in and take them out.
  */
 
 import { expect, test } from '@playwright/test';
-import { executeCommand, waitForMessage } from '../fixtures/auth';
+import { executeCommand, getMessages, waitForMessage } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
+  resetPlayersToMainFoyer,
   waitForAllPlayersInGame,
 } from '../fixtures/multiplayer';
+
+const LOOT_ITEM_ID = 'pack_dark_ages.weapon.sling';
 
 test.describe('Environmental Container Interactions', () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
-    // Create contexts for both players
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     await waitForAllPlayersInGame(contexts);
   });
 
+  test.beforeEach(async () => {
+    await resetPlayersToMainFoyer(contexts);
+  });
+
   test.afterAll(async () => {
-    // Cleanup contexts
     await cleanupMultiPlayerContexts(contexts);
   });
 
-  // Skipped: no environmental container is reachable in live game data (see file header).
-  // eslint-disable-next-line playwright/no-skipped-test -- unskip once a container is seeded in a room
-  test.skip('should allow opening environmental containers', async () => {
+  test('the foyer Lost-and-Found Chest is listed in the room', async () => {
     const awContext = contexts[0];
 
-    await executeCommand(awContext.page, 'open container');
-    await waitForMessage(awContext.page, 'container', 10000).catch(() => {});
+    await executeCommand(awContext.page, 'look');
+    await waitForMessage(awContext.page, /You see:[^\n]*Lost-and-Found Chest/i, 15000);
+    expect((await getMessages(awContext.page)).some(message => /Lost-and-Found Chest/i.test(message))).toBe(true);
+  });
 
-    expect(awContext.page).toBeTruthy();
+  test('one player can put an item in the chest and another can take it out', async () => {
+    const [awContext, ithaquaContext] = contexts;
+
+    // A known item to deposit: AW (admin) summons a Sling and picks it up.
+    await executeCommand(awContext.page, `/summon ${LOOT_ITEM_ID} 1`);
+    await waitForMessage(awContext.page, /You summon\s+1x/i, 15000);
+    await executeCommand(awContext.page, 'pickup sling');
+    await waitForMessage(awContext.page, /You pick up/i, 10000);
+
+    // Replies name the container as typed ("chest"), not the furniture's full name.
+    await executeCommand(awContext.page, 'put sling into chest');
+    await waitForMessage(awContext.page, /You put 1x Sling into chest/i, 15000);
+
+    await executeCommand(ithaquaContext.page, 'get sling from chest');
+    await waitForMessage(ithaquaContext.page, /You get 1x Sling from chest/i, 15000);
+    expect(await getMessages(ithaquaContext.page)).toContainEqual(expect.stringMatching(/You get 1x Sling/i));
+
+    // Leave Ithaqua's persistent inventory as it was.
+    await executeCommand(ithaquaContext.page, 'put sling into chest');
+    await waitForMessage(ithaquaContext.page, /You put 1x Sling into chest/i, 15000);
   });
 });

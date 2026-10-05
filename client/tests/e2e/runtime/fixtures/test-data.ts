@@ -6,13 +6,18 @@
  * Canonical accounts (run e2e.bat, make ensure-e2e-database, or scripts/bootstrap_e2e_database.ps1):
  * - ArkanWolfshade / Cthulhu1 / character name ArkanWolfshade (admin)
  * - Ithaqua / Cthulhu1 / character name Ithaqua (regular)
+ * - E2ETutorial / Cthulhu1 / character name E2ETutorial (regular; tutorial specs reset it into
+ *   the tutorial with `scripts/e2e_reset_players.py --tutorial`, see fixtures/tutorial.ts)
  *
  * Playwright global-setup runs scripts/seed_e2e_users.py as an idempotent safety net.
  * Seeded players use DEFAULT_RESPAWN_ROOM (matches server.constants.spawn_defaults).
  */
 
 /** Matches server.constants.spawn_defaults.DEFAULT_RESPAWN_ROOM (sanitarium foyer / Morgan). */
-const DEFAULT_RESPAWN_ROOM = 'earth_arkhamcity_sanitarium_room_foyer_001' as const;
+export const DEFAULT_RESPAWN_ROOM = 'earth_arkhamcity_sanitarium_room_foyer_001' as const;
+
+/** The tutorial bedroom instance template (stable id; players are only ever in clones of it). */
+export const TUTORIAL_BEDROOM_ROOM = 'earth_arkhamcity_sanitarium_room_tutorial_bedroom_001' as const;
 
 /**
  * After `look`, foyer prose shows in Location / Room Description (not always Game Info).
@@ -61,6 +66,16 @@ export const TEST_PLAYERS: TestPlayer[] = [
     isAdmin: false,
     isSuperuser: false,
     startingRoom: DEFAULT_RESPAWN_ROOM,
+  },
+  {
+    username: 'E2ETutorial',
+    password: 'Cthulhu1',
+    userId: 'test-user-e2etutorial-001',
+    playerId: 'test-player-e2etutorial-001',
+    email: 'e2etutorial@test.local',
+    isAdmin: false,
+    isSuperuser: false,
+    startingRoom: TUTORIAL_BEDROOM_ROOM,
   },
 ];
 
