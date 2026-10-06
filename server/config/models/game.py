@@ -67,6 +67,10 @@ class GameConfig(BaseSettings):
     aggro_damage_threat_multiplier: float = Field(
         default=1.0, description="Damage threat multiplier (tanks may use >1.0 later)"
     )
+    aggro_utility_threat: float = Field(
+        default=5.0,
+        description="Flat threat a buff or debuff adds (#833); about one heal's worth, so support can pull without damage",
+    )
 
     # Hallucination system (#714)
     hallucination_rng_seed: int | None = Field(

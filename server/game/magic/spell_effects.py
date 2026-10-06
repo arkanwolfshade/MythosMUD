@@ -34,6 +34,7 @@ from server.game.magic.spell_effects_support import (
     process_create_object_effect,
     process_stat_modify_effect,
 )
+from server.game.magic.spell_effects_threat import add_utility_threat_for_spell
 from server.game.movement_service import MovementService
 from server.game.player_service import PlayerService
 from server.models.spell import Spell, SpellEffectType
@@ -123,7 +124,13 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
             mastery=mastery,
         )
         mastery_modifier = 1.0 + (mastery / 100.0)
-        return await self._dispatch_effect(spell, target, caster_id, mastery_modifier)
+        result = await self._dispatch_effect(spell, target, caster_id, mastery_modifier)
+        if (
+            spell.effect_type in (SpellEffectType.STATUS_EFFECT, SpellEffectType.STAT_MODIFY)
+            and result.get("success") is True
+        ):
+            add_utility_threat_for_spell(self._combat_service, caster_id, target)  # #833: support can pull
+        return result
 
     async def _dispatch_effect(  # lizard: allow ccn (exhaustive match/case over SpellEffectType, one delegating line per case; assert_never enforces exhaustiveness, see #787)
         self,

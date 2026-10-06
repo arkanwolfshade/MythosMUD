@@ -213,3 +213,30 @@ def test_aggro_nightgaunt_like_damage_and_heal_threat() -> None:
     assert target_id == secondary.participant_id
     assert did_switch is True
     assert combat.npc_current_target[nightgaunt.participant_id] == secondary.participant_id
+
+
+def test_aggro_support_pulls_with_utility_threat_and_no_damage() -> None:
+    """#833: the tank holds the mob; a support caster applies debuffs (no damage) until the mob turns on them."""
+    combat = _make_combat()
+    npc = _make_participant("Mob", CombatParticipantType.NPC)
+    tank = _make_participant("Tank", CombatParticipantType.PLAYER)
+    support = _make_participant("Support", CombatParticipantType.PLAYER)
+    for p in (npc, tank, support):
+        combat.participants[p.participant_id] = p
+
+    aggro_threat.add_damage_threat(combat, npc.participant_id, tank.participant_id, 10.0)  # tank: 10 threat
+    combat.npc_current_target[npc.participant_id] = tank.participant_id
+
+    # Two debuffs = 10 threat: level with the tank, short of the 10% margin needed to take the mob.
+    for _ in range(2):
+        aggro_threat.add_utility_threat(combat, npc.participant_id, support.participant_id, 5.0, npc_participant=npc)
+    target_id, did_switch = aggro_threat.update_aggro(combat, npc, "room_1", combat.participants, stability_margin=0.10)
+    assert did_switch is False
+    assert target_id == tank.participant_id
+
+    # A third debuff (15 >= 11) crosses it, and the support caster never dealt a point of damage.
+    aggro_threat.add_utility_threat(combat, npc.participant_id, support.participant_id, 5.0, npc_participant=npc)
+    target_id, did_switch = aggro_threat.update_aggro(combat, npc, "room_1", combat.participants, stability_margin=0.10)
+    assert did_switch is True
+    assert target_id == support.participant_id
+    assert support.current_dp == 50
