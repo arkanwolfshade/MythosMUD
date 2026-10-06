@@ -28,7 +28,7 @@ def _get_db_name_from_url(url: str) -> str:
         parsed = urlparse(url)
         path = (parsed.path or "").strip("/")
         return path.split("/")[0] if path else ""
-    except (ValueError, AttributeError, IndexError, TypeError):
+    except ValueError, AttributeError, IndexError, TypeError:
         return ""
 
 

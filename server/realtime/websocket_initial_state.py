@@ -245,7 +245,7 @@ def _lookup_death_room_display_name(stored_id: str) -> str:
         name = _room_name_from_lookup(looked_up)
         if name is not None:
             return name
-    except (AttributeError, TypeError, RuntimeError, ValueError):
+    except AttributeError, TypeError, RuntimeError, ValueError:
         pass
     return "Unknown Location"
 

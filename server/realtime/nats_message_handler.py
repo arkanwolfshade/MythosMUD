@@ -137,7 +137,7 @@ class NATSMessageHandler(
                 resolved = _resolve_connection_manager(self._connection_manager)
                 if resolved is not None:
                     return resolved
-            except (RuntimeError, AttributeError):
+            except RuntimeError, AttributeError:
                 # Resolution error - fall through to fallback
                 pass
 
@@ -146,7 +146,7 @@ class NATSMessageHandler(
             fallback = _resolve_connection_manager(None)
             if fallback is not None:
                 return fallback
-        except (RuntimeError, AttributeError):
+        except RuntimeError, AttributeError:
             # Resolution error - fall through to legacy stub
             pass
 

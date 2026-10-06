@@ -280,7 +280,7 @@ async def handle_new_login_impl(player_id: Any, manager: Any) -> None:
 
             config = get_config()
             environment = config.logging.environment
-        except (ImportError, AttributeError):
+        except ImportError, AttributeError:
             # Fallback to development if config not available
             environment = "development"
 

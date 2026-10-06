@@ -75,7 +75,7 @@ def _resolve_inner_uuid(inner: object) -> UUID | None:
     try:
         cid = UUID(inner) if isinstance(inner, str) else inner
         return cid if isinstance(cid, UUID) else UUID(str(inner))
-    except (ValueError, TypeError):
+    except ValueError, TypeError:
         return None
 
 

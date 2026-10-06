@@ -147,5 +147,5 @@ def _parse_player_id(player_id: str) -> uuid.UUID | None:
     """Parse player_id string to UUID. Returns None if invalid."""
     try:
         return uuid.UUID(player_id)
-    except (ValueError, TypeError):
+    except ValueError, TypeError:
         return None

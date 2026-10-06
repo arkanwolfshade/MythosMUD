@@ -189,7 +189,7 @@ class NPCCombatIntegrationValidationMixin:
         """End any active combat that includes this player when room validation fails."""
         try:
             player_uuid = uuid.UUID(player_id)
-        except (ValueError, TypeError):
+        except ValueError, TypeError:
             logger.debug(
                 "Could not parse player_id for combat end check",
                 player_id=player_id,

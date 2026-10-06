@@ -207,7 +207,7 @@ async def _find_container_via_inner_container(item: Mapping[str, object], persis
         return None
     try:
         return await _fetch_container(persistence, inner_container_id)
-    except (ValueError, TypeError):
+    except ValueError, TypeError:
         return None
 
 
@@ -380,7 +380,7 @@ def _get_container_description(
         prototype = registry.get(prototype_id)
         if prototype is not None and hasattr(prototype, "long_description"):
             return cast(_Prototype, prototype).long_description
-    except (AttributeError, TypeError, KeyError):
+    except AttributeError, TypeError, KeyError:
         logger.debug("Failed to get prototype for container", prototype_id=prototype_id)
 
     return None

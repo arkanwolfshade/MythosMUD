@@ -27,7 +27,7 @@ def _stats_int(stats: dict[str, object], key: str, default: int) -> int:
         return default
     try:
         return int(value)
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         return default
 
 
@@ -74,7 +74,7 @@ class HealthRepository:
             if isinstance(raw_resist, int | float | str):
                 try:
                     resist_value = int(raw_resist)
-                except (TypeError, ValueError):
+                except TypeError, ValueError:
                     resist_value = 0
             else:
                 resist_value = 0

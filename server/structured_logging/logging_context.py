@@ -60,7 +60,7 @@ def get_current_context() -> dict[str, Any]:
     try:
         # Use get_contextvars() to get the current context-local context
         return structlog.contextvars.get_contextvars()
-    except (AttributeError, KeyError):
+    except AttributeError, KeyError:
         # If there's no bound context, return empty dict
         return {}
 

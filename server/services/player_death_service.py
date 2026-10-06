@@ -288,7 +288,7 @@ class PlayerDeathService:
                     # It's a coroutine, can't await in sync context - just return unknown
                     return "Unknown Location"
                 return format_room_location(cast(object, room)) or "Unknown Location"
-            except (AttributeError, TypeError):
+            except AttributeError, TypeError:
                 # If room lookup fails, don't leak the room ID
                 return "Unknown Location"
 

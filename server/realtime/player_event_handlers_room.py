@@ -719,7 +719,7 @@ class PlayerRoomEventHandler:
             if self.connection_manager is None:
                 return
             await self.connection_manager.unsubscribe_from_room(player_id_uuid, room_id)
-        except (ValueError, AttributeError):
+        except ValueError, AttributeError:
             self._logger.warning("Failed to convert player_id to UUID for room unsubscription", player_id=player_id)
 
     async def broadcast_player_left_message(

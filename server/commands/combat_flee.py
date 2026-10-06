@@ -103,7 +103,7 @@ def _get_flee_player_uuid(player: _PlayerForFlee) -> tuple[uuid.UUID | None, dic
         return (player_id, None)
     try:
         return (uuid.UUID(player_id), None)
-    except (ValueError, TypeError):
+    except ValueError, TypeError:
         return (None, {"result": "You are not recognized by the cosmic forces."})
 
 

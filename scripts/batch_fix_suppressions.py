@@ -44,7 +44,7 @@ def fix_file(file_path: Path, dry_run: bool = True) -> tuple[int, list[str]]:
     """
     try:
         content = file_path.read_text(encoding="utf-8")
-    except (UnicodeDecodeError, PermissionError):
+    except UnicodeDecodeError, PermissionError:
         return (0, [])
 
     original_content = content

@@ -31,7 +31,7 @@ def _register_event_class(registry: dict[str, type[BaseEvent]], obj: object) -> 
             registry[inst.event_type] = obj
         else:
             registry[obj.__name__] = obj
-    except (TypeError, AttributeError):
+    except TypeError, AttributeError:
         registry[obj.__name__] = obj
 
 
@@ -71,7 +71,7 @@ def _copy_public_event_attrs(event: BaseEvent) -> dict[str, object]:
             value = cast(object, getattr(event, field_name))  # getattr is typed Any
             if not callable(value) and not isinstance(value, type):
                 data[field_name] = value
-        except (AttributeError, TypeError):
+        except AttributeError, TypeError:
             pass
     return data
 
@@ -148,7 +148,7 @@ def serialize_event(event: object) -> dict[str, object]:
 
     try:
         data = _extract_event_fields(event)
-    except (TypeError, AttributeError):
+    except TypeError, AttributeError:
         data = {"event_type": type(event).__name__}
 
     data["_event_type"] = getattr(event, "event_type", type(event).__name__)
@@ -176,7 +176,7 @@ def _init_kwargs_from_event_data(cls: type[BaseEvent], data: dict[str, object]) 
             continue
         try:
             kwargs[key] = _convert_value_from_json(value, init_fields[key].type)
-        except (StopIteration, TypeError):
+        except StopIteration, TypeError:
             kwargs[key] = value
     return kwargs
 

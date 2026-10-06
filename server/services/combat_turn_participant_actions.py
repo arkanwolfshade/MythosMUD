@@ -95,7 +95,7 @@ async def _get_target_stats_for_damage(
             stats_candidate = cast(object, target_player.get_stats())
         else:
             stats_candidate = cast(object, {})
-    except (TypeError, ValueError, AttributeError):
+    except TypeError, ValueError, AttributeError:
         return {"constitution": 50}
     if isinstance(stats_candidate, dict):
         return cast(dict[str, object], stats_candidate)

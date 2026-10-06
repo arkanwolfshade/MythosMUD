@@ -29,7 +29,7 @@ def is_websocket_open_impl(_manager: object, websocket: WebSocket) -> bool:
     try:
         state: object | None = getattr(websocket, "application_state", None)
         return state != WebSocketState.DISCONNECTED
-    except (AttributeError, ValueError, TypeError):
+    except AttributeError, ValueError, TypeError:
         return True
 
 
@@ -48,7 +48,7 @@ async def safe_close_websocket_impl(
         return
     try:
         await asyncio.wait_for(websocket.close(code=code, reason=reason), timeout=2.0)
-    except (AttributeError, ValueError, TypeError, RuntimeError, WebSocketDisconnect):
+    except AttributeError, ValueError, TypeError, RuntimeError, WebSocketDisconnect:
         pass
     finally:
         manager.mark_websocket_closed(ws_id)

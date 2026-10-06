@@ -248,7 +248,7 @@ def _parse_value_from_args(value_input: str | int | None, args: list[str]) -> st
         return value_input
     try:
         return int(args[2])
-    except (ValueError, TypeError):
+    except ValueError, TypeError:
         return args[2]
 
 
@@ -299,7 +299,7 @@ def validate_set_stat_inputs(
 
     try:
         value = int(value_input)
-    except (ValueError, TypeError):
+    except ValueError, TypeError:
         logger.warning("Admin set command with invalid value", player_name=player_name, value=value_input)
         return {"result": f"Invalid value '{value_input}'. Value must be an integer."}
 

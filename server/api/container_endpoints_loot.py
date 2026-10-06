@@ -108,7 +108,7 @@ async def loot_all_items(
         )
         await _audit_loot_all(player_id, player, request_data, final_container, items_looted)
         return _build_loot_all_response(final_container, player_inventory, items_looted)
-    except (LoggedHTTPException, HTTPException):
+    except LoggedHTTPException, HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Container operation errors unpredictable, must create error context
         handle_loot_all_exceptions(e, request, current_user, request_data.container_id)

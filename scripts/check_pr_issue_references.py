@@ -60,7 +60,7 @@ def _run_gh(args: list[str]) -> str | None:
         result = subprocess.run(  # nosec B603 -- fixed "gh" executable, args are our own list
             ["gh", *args], capture_output=True, text=True, timeout=_GH_TIMEOUT_SECONDS, check=False
         )
-    except (OSError, subprocess.TimeoutExpired):
+    except OSError, subprocess.TimeoutExpired:
         return None
     if result.returncode != 0:
         return None

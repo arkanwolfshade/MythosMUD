@@ -31,7 +31,7 @@ def _close_registered_coro(coro: object, *_args: object, **_kwargs: object) -> M
     if callable(close):
         try:
             _ = close()
-        except (RuntimeError, TypeError, AttributeError):
+        except RuntimeError, TypeError, AttributeError:
             pass
     return MagicMock()
 

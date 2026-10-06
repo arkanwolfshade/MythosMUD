@@ -332,7 +332,7 @@ class ChatModeration:
             if isinstance(player_id, str):
                 try:
                     player_id_uuid = uuid.UUID(player_id)
-                except (ValueError, AttributeError):
+                except ValueError, AttributeError:
                     logger.error("Invalid player_id format", player_id=player_id)
                     return "Invalid player ID format."
             else:

@@ -55,7 +55,7 @@ def _parse_npc_stats_dict(npc_stats: Any) -> dict[str, Any]:
     if isinstance(npc_stats, str):
         try:
             return cast(dict[str, Any], json.loads(npc_stats))
-        except (json.JSONDecodeError, TypeError):
+        except json.JSONDecodeError, TypeError:
             return {}
     if isinstance(npc_stats, dict):
         return npc_stats
@@ -126,7 +126,7 @@ def _parse_stat_datetime(dt_value: Any) -> str:
         else:
             dt = datetime.fromisoformat(str(dt_value))
         return dt.strftime("%Y-%m-%d %H:%M:%S")
-    except (ValueError, TypeError, OSError):
+    except ValueError, TypeError, OSError:
         return str(dt_value)
 
 
@@ -239,7 +239,7 @@ def _get_lifecycle_manager() -> Any | None:
             return None
 
         return lifecycle_manager
-    except (AttributeError, TypeError, ValueError):
+    except AttributeError, TypeError, ValueError:
         return None
 
 

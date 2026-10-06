@@ -429,7 +429,7 @@ class HealthMonitor:
         """Wait for a task to be cancelled, with timeout."""
         try:
             await asyncio.wait_for(task, timeout=5.0)
-        except (TimeoutError, asyncio.CancelledError):
+        except TimeoutError, asyncio.CancelledError:
             pass
         except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors during task wait
             logger.debug("Task cancellation wait completed", error=str(e))

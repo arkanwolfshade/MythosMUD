@@ -106,7 +106,7 @@ def _truncate(text: str, width: int) -> str:
 def _format_jsonish(value: object) -> str:
     try:
         return json.dumps(value, separators=(",", ":"), default=str)
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         return str(value)
 
 

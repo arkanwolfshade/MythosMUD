@@ -562,7 +562,7 @@ async def _resolve_player_id_from_path_or_token(
     resolved = uuid.UUID(str(player.player_id))
     try:
         path_uuid = uuid.UUID(player_id)
-    except (ValueError, AttributeError, TypeError):
+    except ValueError, AttributeError, TypeError:
         return resolved
     if path_uuid != resolved:
         return None

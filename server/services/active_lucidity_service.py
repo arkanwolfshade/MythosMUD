@@ -93,7 +93,7 @@ class ActiveLucidityService:
         if isinstance(player_id, str):
             try:
                 player_id_uuid = uuid.UUID(player_id)
-            except (ValueError, AttributeError):
+            except ValueError, AttributeError:
                 logger.error("Invalid player_id format", player_id=player_id)
                 raise ValueError(f"Invalid player_id format: {player_id}") from None
         else:
@@ -147,7 +147,7 @@ class ActiveLucidityService:
         if isinstance(player_id, str):
             try:
                 player_id_uuid = uuid.UUID(player_id)
-            except (ValueError, AttributeError):
+            except ValueError, AttributeError:
                 logger.error("Invalid player_id format", player_id=player_id)
                 raise ValueError(f"Invalid player_id format: {player_id}") from None
         else:
@@ -218,7 +218,7 @@ class ActiveLucidityService:
         if isinstance(player_id, str):
             try:
                 player_id_uuid = uuid.UUID(player_id)
-            except (ValueError, AttributeError):
+            except ValueError, AttributeError:
                 logger.error("Invalid player_id format", player_id=player_id)
                 raise ValueError(f"Invalid player_id format: {player_id}") from None
         else:

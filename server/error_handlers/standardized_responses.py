@@ -175,7 +175,7 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
                 return str(user["id"])
             if hasattr(user, "id"):
                 return str(user.id)
-        except (KeyError, AttributeError, TypeError):
+        except KeyError, AttributeError, TypeError:
             # Silently skip if user information cannot be extracted
             pass
         return None

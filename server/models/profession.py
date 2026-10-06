@@ -56,7 +56,7 @@ class Profession(Base):
         """Get profession stat requirements as dictionary."""
         try:
             return cast(dict[str, Any], json.loads(self.stat_requirements))
-        except (json.JSONDecodeError, TypeError):
+        except json.JSONDecodeError, TypeError:
             return {}
 
     def set_stat_requirements(self, requirements: dict[str, Any]) -> None:
@@ -67,7 +67,7 @@ class Profession(Base):
         """Get profession mechanical effects as dictionary."""
         try:
             return cast(dict[str, Any], json.loads(self.mechanical_effects))
-        except (json.JSONDecodeError, TypeError):
+        except json.JSONDecodeError, TypeError:
             return {}
 
     def set_mechanical_effects(self, effects: dict[str, Any]) -> None:
@@ -78,7 +78,7 @@ class Profession(Base):
         """Get stat modifiers as list of {stat, value}."""
         try:
             return cast(list[dict[str, Any]], json.loads(self.stat_modifiers))
-        except (json.JSONDecodeError, TypeError):
+        except json.JSONDecodeError, TypeError:
             return []
 
     def set_stat_modifiers(self, modifiers: list[dict[str, Any]]) -> None:
@@ -89,7 +89,7 @@ class Profession(Base):
         """Get skill modifiers as list of {skill_key, value}."""
         try:
             return cast(list[dict[str, Any]], json.loads(self.skill_modifiers))
-        except (json.JSONDecodeError, TypeError):
+        except json.JSONDecodeError, TypeError:
             return []
 
     def set_skill_modifiers(self, modifiers: list[dict[str, Any]]) -> None:

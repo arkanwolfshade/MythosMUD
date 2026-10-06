@@ -96,7 +96,7 @@ class InventoryMutationGuard:
         record_custom_alert = cast(Callable[..., None], record_custom_alert)
         try:
             parameters: Mapping[str, inspect.Parameter] = inspect.signature(record_custom_alert).parameters
-        except (TypeError, ValueError):
+        except TypeError, ValueError:
             parameters = cast(Mapping[str, inspect.Parameter], {})
         try:
             if "message" in parameters:
@@ -262,7 +262,7 @@ class InventoryMutationGuard:
                     if lock.locked():
                         # Lock is held, can't cleanup yet
                         return
-                except (AttributeError, RuntimeError):
+                except AttributeError, RuntimeError:
                     # If locked() method is not available or raises an error,
                     # assume lock might be held and skip cleanup to be safe
                     return

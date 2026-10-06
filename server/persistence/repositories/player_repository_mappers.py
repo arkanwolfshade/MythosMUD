@@ -30,7 +30,7 @@ def _parse_equipped_safely(equipped_json: str) -> dict[str, Any]:
     try:
         parsed = json.loads(equipped_json)
         return parsed if isinstance(parsed, dict) else {}
-    except (json.JSONDecodeError, TypeError):
+    except json.JSONDecodeError, TypeError:
         return {}
 
 

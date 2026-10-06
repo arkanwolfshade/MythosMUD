@@ -208,7 +208,7 @@ async def test_persist_player_dp_background(persistence_handler):
         if created_tasks:
             try:
                 await asyncio.wait_for(created_tasks[0], timeout=0.1)
-            except (TimeoutError, Exception):  # noqa: BLE001  # pylint: disable=broad-except  # Reason: Test cleanup - we don't care about specific error types, just ensuring task doesn't hang
+            except TimeoutError, Exception:  # noqa: BLE001  # pylint: disable=broad-except  # Reason: Test cleanup - we don't care about specific error types, just ensuring task doesn't hang
                 # Task may complete or error, that's fine for this test
                 pass
 
@@ -234,7 +234,7 @@ async def test_persist_player_dp_background_task_error(persistence_handler):
     if captured_coro:
         try:
             await asyncio.wait_for(captured_coro, timeout=0.1)
-        except (TimeoutError, Exception):  # noqa: BLE001  # pylint: disable=broad-except  # Reason: Test cleanup - we don't care about specific error types, just ensuring coroutine doesn't hang
+        except TimeoutError, Exception:  # noqa: BLE001  # pylint: disable=broad-except  # Reason: Test cleanup - we don't care about specific error types, just ensuring coroutine doesn't hang
             # Expected - coroutine may error or timeout
             pass
 
@@ -267,7 +267,7 @@ async def test_persist_player_dp_background_persistence_failure(persistence_hand
                 if created_tasks:
                     try:
                         await asyncio.wait_for(created_tasks[0], timeout=0.5)
-                    except (TimeoutError, ValueError):
+                    except TimeoutError, ValueError:
                         # Expected - task may complete or error
                         pass
 

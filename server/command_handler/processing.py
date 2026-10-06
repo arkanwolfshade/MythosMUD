@@ -231,7 +231,7 @@ def _handle_processing_error(
                 error=str(e)[:200],  # Truncate to avoid encoding issues
                 log_error=str(log_error)[:200],
             )
-        except (ImportError, AttributeError, TypeError, RuntimeError):
+        except ImportError, AttributeError, TypeError, RuntimeError:
             # Last resort: silent failure to prevent test crashes
             pass
 

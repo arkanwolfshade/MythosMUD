@@ -280,7 +280,7 @@ class NPCOccupantProcessor:
                 return None
 
             return lifecycle_manager
-        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError):
+        except ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError:
             return None
 
     def _filter_single_fallback_npc(self, npc_id: str, lifecycle_manager: Any, room_id: str) -> bool:

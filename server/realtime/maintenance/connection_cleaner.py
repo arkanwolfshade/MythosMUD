@@ -306,7 +306,7 @@ class ConnectionCleaner:
         """Return True if websocket appears dead (should be cleaned up)."""
         try:
             return websocket.client_state.name != "CONNECTED"
-        except (RuntimeError, ConnectionError, AttributeError):
+        except RuntimeError, ConnectionError, AttributeError:
             return True
 
     def _get_players_to_check(

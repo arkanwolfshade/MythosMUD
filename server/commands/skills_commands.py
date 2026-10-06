@@ -35,7 +35,7 @@ def _resolve_player_id(player: Any) -> uuid.UUID | None:
         return None
     try:
         return uuid.UUID(player_id_raw) if isinstance(player_id_raw, str) else player_id_raw
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         return None
 
 

@@ -282,7 +282,7 @@ def create_handler_for_category(
                 backupCount=backup_count,
                 encoding="utf-8",
             )
-        except (FileNotFoundError, OSError):
+        except FileNotFoundError, OSError:
             # If directory doesn't exist or was deleted, recreate it and try again
             ensure_log_directory(log_path)
             handler = handler_class(

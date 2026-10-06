@@ -338,5 +338,5 @@ async def _get_member_display(member_id: str, async_persistence: Any) -> str:
 
         p = await async_persistence.get_player_by_id(uuid.UUID(member_id))
         return getattr(p, "name", member_id) if p else member_id
-    except (ValueError, TypeError, AttributeError):
+    except ValueError, TypeError, AttributeError:
         return member_id

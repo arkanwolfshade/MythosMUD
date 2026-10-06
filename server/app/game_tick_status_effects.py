@@ -175,7 +175,7 @@ async def _validate_and_get_player(container: _TickContainer, player_id: str) ->
     # Convert player_id from str to UUID
     try:
         player_uuid = uuid.UUID(player_id)
-    except (ValueError, AttributeError):
+    except ValueError, AttributeError:
         logger.warning("Invalid player_id format", player_id=player_id)
         return None, None
 

@@ -177,7 +177,7 @@ class Player(Base):
                 stats = cast(dict[str, object], stats_val)
             else:
                 raise TypeError(f"Unexpected stats type: {type(stats_val)}")
-        except (json.JSONDecodeError, TypeError, AttributeError):
+        except json.JSONDecodeError, TypeError, AttributeError:
             stats = {
                 "strength": 50,
                 "dexterity": 50,
@@ -201,7 +201,7 @@ class Player(Base):
             stats["position"] = "standing"
             try:
                 self.set_stats(stats)
-            except (json.JSONDecodeError, TypeError, AttributeError):
+            except json.JSONDecodeError, TypeError, AttributeError:
                 # Fallback silently if persistence update fails during read-time normalization
                 pass
 
@@ -234,7 +234,7 @@ class Player(Base):
                 return cast(list[dict[str, object]], json.loads(inventory_value))
             # Handle None or other types
             return []
-        except (json.JSONDecodeError, TypeError, AttributeError):
+        except json.JSONDecodeError, TypeError, AttributeError:
             return []
 
     def set_inventory(self, inventory: Sequence[Mapping[str, object]]) -> None:
@@ -252,7 +252,7 @@ class Player(Base):
         """Get player status effects as list."""
         try:
             return cast(list[dict[str, object]], json.loads(self.status_effects))
-        except (json.JSONDecodeError, TypeError):
+        except json.JSONDecodeError, TypeError:
             return []
 
     def set_status_effects(self, status_effects: list[dict[str, object]]) -> None:
@@ -276,13 +276,13 @@ class Player(Base):
                         parsed = cast(dict[str, object], parsed_raw)
                         self._equipped_items = parsed
                         return parsed
-                except (json.JSONDecodeError, TypeError, AttributeError):
+                except json.JSONDecodeError, TypeError, AttributeError:
                     pass
             return {}
         if isinstance(equipped, str):
             try:
                 equipped_dict = cast(dict[str, object], json.loads(equipped))
-            except (json.JSONDecodeError, TypeError, AttributeError):
+            except json.JSONDecodeError, TypeError, AttributeError:
                 equipped_dict = {}
             self._equipped_items = equipped_dict
             return equipped_dict
@@ -615,7 +615,7 @@ def _convert_legacy_stats_string(target: Player, _context: object) -> None:
             # Parse JSON string to dict
             # MutableDict will automatically wrap this dict
             target.stats = json.loads(target.stats)
-        except (json.JSONDecodeError, TypeError):
+        except json.JSONDecodeError, TypeError:
             # If parsing fails, use default stats
             target.stats = {
                 "strength": 50,

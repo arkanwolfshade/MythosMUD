@@ -92,7 +92,7 @@ def _get_npc_lifecycle_manager() -> NpcLifecycleManagerPort | None:
         if not hasattr(svc, "lifecycle_manager") or not svc.lifecycle_manager:
             return None
         return cast(NpcLifecycleManagerPort, cast(object, svc.lifecycle_manager))
-    except (AttributeError, ImportError, TypeError, RuntimeError):
+    except AttributeError, ImportError, TypeError, RuntimeError:
         return None
 
 
@@ -106,7 +106,7 @@ def _lookup_npc_by_id_or_uuid(
         return lm.active_npcs[npc_id]
     try:
         parsed = uuid.UUID(npc_id)
-    except (ValueError, TypeError):
+    except ValueError, TypeError:
         return None
     if combat_service is None:
         integration_raw: object | None = None
@@ -199,7 +199,7 @@ def _resolve_npc_id_for_event(npc_instance: NpcSpellDamageTarget, target: Target
     """Resolve NPC id for combat events (UUID or string)."""
     try:
         return uuid.UUID(str(target.target_id))
-    except (ValueError, TypeError):
+    except ValueError, TypeError:
         return npc_instance.npc_id
 
 

@@ -97,7 +97,7 @@ class PeriodicOrphanAuditor:  # pylint: disable=too-many-instance-attributes  # 
                     await self._do_full_cleanup_audit()
                     await sleep(self.check_interval)
 
-                except (asyncio.CancelledError, KeyboardInterrupt):
+                except asyncio.CancelledError, KeyboardInterrupt:
                     logger.info("Orphan auditing traversal cancelled by feedback loop programming")
                     self.audit_running = False
                     return

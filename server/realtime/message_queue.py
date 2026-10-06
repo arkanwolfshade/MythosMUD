@@ -244,7 +244,7 @@ class MessageQueue:
 
                     dt = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
                     msg_ts = dt.timestamp()
-                except (ValueError, AttributeError):
+                except ValueError, AttributeError:
                     # If parsing fails, assume it's old
                     return False
             elif isinstance(timestamp, int | float):

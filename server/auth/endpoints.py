@@ -383,7 +383,7 @@ async def _authenticate_user_credentials(
                 expected_user_id=str(user.id),
                 actual_user_id=str(authenticated_user.id),
             )
-    except (LoggedHTTPException, HTTPException):
+    except LoggedHTTPException, HTTPException:
         raise
     except Exception as e:
         logger.error("Authentication failed", error=str(e), error_type=type(e).__name__)

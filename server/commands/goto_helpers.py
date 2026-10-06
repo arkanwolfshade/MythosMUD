@@ -207,7 +207,7 @@ def log_goto_failure(
                 "target_room_id": target_player.current_room_id,
             },
         )
-    except (OSError, AttributeError, TypeError):
+    except OSError, AttributeError, TypeError:
         pass  # Ignore logging errors if command itself failed
 
     logger.error(
