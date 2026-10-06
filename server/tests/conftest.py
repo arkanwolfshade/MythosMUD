@@ -48,8 +48,8 @@ if "SERVER_PORT" not in os.environ:
     os.environ["SERVER_PORT"] = "54768"
 if "SERVER_HOST" not in os.environ:
     os.environ["SERVER_HOST"] = "127.0.0.1"
-if "LOGGING_ENVIRONMENT" not in os.environ:
-    os.environ["LOGGING_ENVIRONMENT"] = "unit_test"
+# Unconditional: start_e2e_test.ps1 leaves e2e_test in the shell, which would route pytest logs to logs/e2e_test.
+os.environ["LOGGING_ENVIRONMENT"] = "unit_test"
 # CRITICAL: Never run tests against mythos_dev. If DATABASE_URL points at a protected DB, force mythos_unit.
 # setdefault alone would leave mythos_dev in place if e.g. .env or shell had it set, allowing truncation.
 _current_db_url = os.environ.get("DATABASE_URL", "")

@@ -8,7 +8,10 @@ receiving records (H5).
 """
 
 import logging
+import os
 import queue
+import subprocess
+import sys
 import time
 from logging.handlers import QueueHandler
 from pathlib import Path
@@ -213,3 +216,22 @@ def test_async_setup_applies_category_levels(temp_log_base: Path) -> None:
         _restore_root_handlers(before)
         for name, level in saved_levels.items():
             logging.getLogger(name).setLevel(level)
+
+
+def test_test_conftest_overrides_inherited_logging_environment() -> None:
+    """#983: start_e2e_test.ps1 leaves LOGGING_ENVIRONMENT=e2e_test in the shell.
+
+    A later `make test` from that shell inherited it, so pytest warnings landed in
+    logs/e2e_test/warnings.log. The test conftest must force unit_test regardless.
+    """
+    env = {**os.environ, "LOGGING_ENVIRONMENT": "e2e_test"}
+    result = subprocess.run(
+        [sys.executable, "-c", "import os, server.tests.conftest; print(os.environ['LOGGING_ENVIRONMENT'])"],
+        capture_output=True,
+        text=True,
+        env=env,
+        cwd=Path(__file__).resolve().parents[4],
+        check=True,
+        timeout=120,
+    )
+    assert result.stdout.strip().splitlines()[-1] == "unit_test"
