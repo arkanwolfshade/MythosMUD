@@ -181,7 +181,7 @@ class CombatBundle:
         """Create CombatService with NATS and register it. Assumes NATS is connected."""
         from server.services.combat_service import CombatService, PlayerLifecycleServices, set_combat_service
 
-        self.combat_service = CombatService(
+        combat_service = CombatService(
             self.player_combat_service,
             container.nats_service,
             player_lifecycle_services=PlayerLifecycleServices(
@@ -190,6 +190,8 @@ class CombatBundle:
             ),
             event_bus=container.event_bus,
         )
+        combat_service.skill_service = container.skill_service  # graded taunt rolls (#833)
+        self.combat_service = combat_service
         set_combat_service(self.combat_service)
         if container.player_service is None:
             raise RuntimeError("PlayerService must be initialized")

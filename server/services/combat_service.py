@@ -60,6 +60,7 @@ from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from server.game.magic.magic_service import MagicService
+    from server.game.skill_service import SkillService
     from server.services.npc_combat_data_provider import NPCCombatDataProvider
     from server.services.npc_combat_integration_service import NPCCombatIntegrationService
     from server.services.player_death_service import PlayerDeathService
@@ -80,6 +81,7 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
     _player_death_service: "PlayerDeathService | None"
     _player_respawn_service: "PlayerRespawnService | None"
     magic_service: "MagicService | None"
+    skill_service: "SkillService | None"  # #833: graded skill rolls (taunt); linked after both services exist
     _event_bus: EventBus
     _combat_event_publisher: CombatEventPublisher
     _auto_progression_enabled: bool
@@ -113,6 +115,7 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         self._player_death_service = life.player_death_service if life else None
         self._player_respawn_service = life.player_respawn_service if life else None
         self.magic_service = magic_service  # For casting state checks
+        self.skill_service = None
         # CRITICAL: Use shared EventBus instance, not a new one
         self._event_bus = event_bus or EventBus()
         # Create combat event publisher with proper NATS service and subject_manager

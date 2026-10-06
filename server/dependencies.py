@@ -186,7 +186,7 @@ def get_skill_service(request: Request) -> SkillService:
     container = get_container(request)
     if container.skill_service is None:
         raise RuntimeError("SkillService not initialized in container")
-    return cast(SkillService, container.skill_service)
+    return container.skill_service
 
 
 SkillServiceDep = Depends(get_skill_service)  # pylint: disable=invalid-name  # Reason: FastAPI dependency name follows FastAPI conventions

@@ -14,6 +14,7 @@ the documented Temporal bounded context (docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUND
 
 from __future__ import annotations
 
+import uuid
 from typing import TYPE_CHECKING, Any, cast
 
 from pydantic import ValidationError
@@ -24,6 +25,7 @@ from server.structured_logging.enhanced_logging_config import get_logger
 if TYPE_CHECKING:
     from server.async_persistence import AsyncPersistenceLayer
     from server.container.main import ApplicationContainer
+    from server.game.skill_service import SkillService
     from server.realtime.connection_manager import ConnectionManager
     from server.services.instance_flush_service import InstanceFlushService
     from server.services.user_manager import UserManager
@@ -72,7 +74,7 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
     user_manager: Any = None
     container_service: Any = None
     level_service: Any = None
-    skill_service: Any = None
+    skill_service: SkillService | None = None
     # Reason: DYNAMIC_DISPATCH:di-container - GameBundle flattens heterogeneous services onto ApplicationContainer.
     # Appropriate because: sibling slots (skill_service, quest_service, ...) already use Any for the same
     # DI flatten surface; call sites narrow with isinstance/cast rather than a shared Protocol here.
@@ -229,24 +231,27 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
         from server.services.container_service import ContainerService
 
         self.container_service = ContainerService(persistence=persistence)
-        from server.game.skill_service import SkillService
+        from server.game.skill_service import (  # pylint: disable=redefined-outer-name  # Reason: runtime import of the TYPE_CHECKING name, kept local like this bundle's other services
+            SkillService,
+        )
         from server.persistence.repositories.player_skill_repository import PlayerSkillRepository
         from server.persistence.repositories.skill_repository import SkillRepository
         from server.persistence.repositories.skill_use_log_repository import SkillUseLogRepository
 
-        self.skill_service = SkillService(
+        skill_service = SkillService(
             skill_repository=SkillRepository(),
             player_skill_repository=PlayerSkillRepository(),
             skill_use_log_repository=SkillUseLogRepository(),
             persistence=async_persistence,
         )
+        self.skill_service = skill_service
         from server.game.item_catalog_service import ItemCatalogService
         from server.persistence.repositories.item_catalog_repository import ItemCatalogRepository
 
         self.item_catalog_service = ItemCatalogService(ItemCatalogRepository())
 
-        async def _skill_improvement_on_level_up(player_id: Any, new_level: int) -> None:
-            await self.skill_service.run_improvement_rolls(player_id, new_level)
+        async def _skill_improvement_on_level_up(player_id: uuid.UUID, new_level: int) -> None:
+            await skill_service.run_improvement_rolls(player_id, new_level)
 
         from server.game.level_service import LevelService
 

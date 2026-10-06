@@ -11,11 +11,9 @@ from collections.abc import Mapping
 from typing import TYPE_CHECKING, Protocol, cast
 
 from server.commands.combat_app_protocols import AppWithState
-from server.events.combat_events import CombatTargetSwitchEvent
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType
 from server.schemas.shared import TargetType
 from server.schemas.shared.target_resolution import TargetMatch
-from server.services.aggro_threat import apply_taunt, update_aggro
 from server.services.combat_service import CombatService
 from server.services.combat_service_npc import find_participant_uuid_by_string_id
 from server.services.npc_combat_integration_service import NPCCombatIntegrationService
@@ -161,41 +159,30 @@ def _validate_taunt_target_name(
     return target_raw
 
 
-async def _apply_taunt_and_maybe_broadcast(
+async def _queue_taunt(
     handler: TauntCommandHandler,
     combat: CombatInstance,
     npc_participant: CombatParticipant,
     player_id: uuid.UUID,
-    room_id: str,
 ) -> dict[str, str] | None:
-    """Apply taunt and broadcast target switch if aggro changed. Returns error dict or None on success."""
-    applied = apply_taunt(
-        combat,
-        npc_participant.participant_id,
-        player_id,
-        combat.room_id,
-        room_id,
+    """
+    Queue the taunt as the player's action for the next round (#833). Returns an error dict, or None when queued.
+
+    A player has one action per round, so a taunt replaces anything already queued for it; the roll and the
+    hate-list change happen when the round resolves (see combat_taunt_action).
+    """
+    combat_svc = handler.combat_service
+    if not combat_svc:
+        return {"result": "Combat is not available."}
+    combat.clear_queued_actions(player_id, round_number=combat.combat_round + 1)
+    queued = await combat_svc.queue_combat_action(
+        combat_id=combat.combat_id,
+        participant_id=player_id,
+        action_type="taunt",
+        target_id=npc_participant.participant_id,
     )
-    if not applied:
-        return {"result": "You must be in the same room as the creature to taunt it."}
-    new_target_id, did_switch = update_aggro(combat, npc_participant, combat.room_id, combat.participants)
-    if did_switch and new_target_id and handler.npc_combat_service:
-        new_target = combat.participants.get(new_target_id)
-        new_target_name = new_target.name if new_target else "someone"
-        mi = handler.npc_combat_service.get_messaging_integration()
-        _ = await mi.broadcast_combat_target_switch(
-            combat.room_id, str(combat.combat_id), npc_participant.name, new_target_name
-        )
-        # NATS-consumable in addition to the direct room broadcast above (#634)
-        if handler.combat_service:
-            _ = await handler.combat_service.publish_combat_target_switch_event_to_nats(
-                CombatTargetSwitchEvent(
-                    combat_id=combat.combat_id,
-                    room_id=combat.room_id,
-                    npc_name=npc_participant.name,
-                    new_target_name=new_target_name,
-                )
-            )
+    if not queued:
+        return {"result": "You cannot taunt right now."}
     return None
 
 
@@ -207,7 +194,7 @@ async def run_handle_taunt_command(
     alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, str]:
-    """Handle taunt command: draw NPC aggro (ADR-016). Room-local only."""
+    """Handle taunt command: queue an Intimidate/Fighting roll to draw NPC aggro (ADR-016, #833). Room-local only."""
     _ = alias_storage
     request_app = cast(AppWithState | None, getattr(request, "app", None) if request is not None else None)
     rest_check = await handler.check_and_interrupt_rest(request_app, player_name, current_user)
@@ -219,11 +206,11 @@ async def run_handle_taunt_command(
     context = await _validate_taunt_context(handler, request_app, current_user, target_result)
     if isinstance(context, dict):
         return context
-    player_id, combat, npc_participant, ctx_room_id = context
-    apply_err = await _apply_taunt_and_maybe_broadcast(handler, combat, npc_participant, player_id, ctx_room_id)
-    if apply_err:
-        return apply_err
-    return {"result": f"You taunt {npc_participant.name}, drawing its attention!"}
+    player_id, combat, npc_participant, _ = context
+    queue_err = await _queue_taunt(handler, combat, npc_participant, player_id)
+    if queue_err:
+        return queue_err
+    return {"result": f"You square up to {npc_participant.name}."}
 
 
 __all__ = [

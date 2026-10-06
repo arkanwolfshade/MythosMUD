@@ -130,9 +130,12 @@ def apply_taunt(
     taunter_entity_id: UUID,
     combat_room_id: str,
     taunter_room_id: str,
+    margin_multiplier: float = 1.0,
 ) -> bool:
     """
     Set taunter's threat to current top + margin so they become top. Room-local only.
+
+    ``margin_multiplier`` widens the lead (a Hard or Extreme taunt roll uses 2.0, #833); 1.0 is the plain taunt.
 
     Returns True if taunt was applied (taunter in same room as combat), False otherwise.
     """
@@ -147,7 +150,7 @@ def apply_taunt(
         return False
     hate = get_or_create_hate_list(combat, npc_id)
     current_top = max(hate.values()) if hate else 0.0
-    margin = current_top * 0.10 + 1.0  # become top by at least 10% + 1
+    margin = (current_top * 0.10 + 1.0) * margin_multiplier  # become top by at least 10% + 1 (scaled)
     hate[taunter_entity_id] = current_top + margin
     logger.debug(
         "Taunt applied",

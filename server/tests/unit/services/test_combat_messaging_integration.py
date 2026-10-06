@@ -214,6 +214,32 @@ async def test_broadcast_combat_target_switch(messaging_integration, mock_connec
 
 
 @pytest.mark.asyncio
+async def test_broadcast_taunt_result() -> None:
+    """#833: a resolved taunt sends exactly one combat_taunt room line, to everyone including the taunter."""
+    captured: list[tuple[str, dict[str, object], str | None]] = []
+
+    async def _broadcast_to_room(
+        room_id: str, event: dict[str, object], exclude_player: str | None = None
+    ) -> dict[str, int]:
+        captured.append((room_id, event, exclude_player))
+        return {"sent": 5, "failed": 0}
+
+    manager: MagicMock = MagicMock()
+    manager.broadcast_to_room = _broadcast_to_room
+    integration = CombatMessagingIntegration(connection_manager=manager)
+
+    _ = await integration.broadcast_taunt_result("room_001", "combat_001", "Ann bellows a challenge at Ghoul!")
+
+    assert len(captured) == 1
+    room_id, event, exclude_player = captured[0]
+    data = cast(dict[str, object], event["data"])
+    assert room_id == "room_001"
+    assert event["event_type"] == "combat_taunt"
+    assert data["message"] == "Ann bellows a challenge at Ghoul!"
+    assert exclude_player is None
+
+
+@pytest.mark.asyncio
 async def test_broadcast_player_joined_combat() -> None:
     """#833: the join line goes to the room as one short message and skips the joiner."""
     captured: list[tuple[str, dict[str, object], str | None]] = []

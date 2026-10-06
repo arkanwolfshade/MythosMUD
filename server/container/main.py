@@ -19,6 +19,7 @@ from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.project_paths import get_project_root
 
 if TYPE_CHECKING:
+    from server.game.skill_service import SkillService
     from server.services.instance_flush_service import InstanceFlushService
 
 logger = get_logger(__name__)
@@ -68,7 +69,7 @@ class ApplicationContainer:
     user_manager: Any
     container_service: Any
     level_service: Any
-    skill_service: Any
+    skill_service: "SkillService | None"
     item_catalog_service: Any
     room_cache_service: Any
     profession_cache_service: Any

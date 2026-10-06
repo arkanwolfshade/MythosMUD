@@ -441,7 +441,7 @@ def _attach_combat_service(app: FastAPI, container: ApplicationContainer) -> Non
         set_combat_service,
     )
 
-    app.state.combat_service = CombatService(
+    combat_service = CombatService(
         app.state.player_combat_service,
         container.nats_service,
         player_lifecycle_services=PlayerLifecycleServices(
@@ -450,6 +450,8 @@ def _attach_combat_service(app: FastAPI, container: ApplicationContainer) -> Non
         ),
         event_bus=container.event_bus,
     )
+    combat_service.skill_service = container.skill_service  # graded taunt rolls (#833)
+    app.state.combat_service = combat_service
     set_combat_service(app.state.combat_service)
     if container.player_service is None:
         raise RuntimeError("PlayerService must be initialized")
