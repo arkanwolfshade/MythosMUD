@@ -20,9 +20,13 @@ from server.services import combat_taunt_action, combat_turn_participant_actions
 from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
+    from server.schemas.shared import TargetMatch
     from server.services.combat_service import CombatService
 
 logger: BoundLogger = get_logger(__name__)
+
+#: What ``queue_combat_action`` stores as an action's target when none was given.
+_NO_TARGET = uuid.UUID(int=0)
 
 
 class CombatTurnProcessor:
@@ -296,7 +300,7 @@ class CombatTurnProcessor:
             if not player or not room_id:
                 return
 
-            target = self._build_spell_target(action, participant, room_id)
+            target = self._build_spell_target(action, participant, room_id, combat)
             effect_result = await self._apply_spell_effects(magic_service, spell, participant, target)
             await self._finalize_spell_execution(magic_service, participant, spell, effect_result, room_id, action)
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Spell execution errors unpredictable
@@ -389,18 +393,31 @@ class CombatTurnProcessor:
         room_id = player.current_room_id or combat.room_id
         return player, room_id
 
-    def _build_spell_target(self, action: CombatAction, participant: CombatParticipant, room_id: str) -> Any:
-        """Recreate the spell target from queued action data."""
+    def _build_spell_target(
+        self, action: CombatAction, participant: CombatParticipant, room_id: str, combat: CombatInstance
+    ) -> "TargetMatch":
+        """
+        Recreate the spell target from queued action data.
+
+        The nil UUID is what ``queue_combat_action`` stores when a spell had no explicit target: that means the
+        caster. Otherwise the target's type comes from the combat roster, so a buff or heal aimed at an ally is
+        a player target rather than being misread as an NPC (#833).
+        """
         from server.schemas.shared import (  # noqa: PLC0415  # Reason: Local import
             TargetMatch,
             TargetType,
         )
 
-        target_type = TargetType.NPC if action.target_id else TargetType.PLAYER
-        target_name = action.spell_name or "target"
+        if action.target_id == _NO_TARGET:
+            target_type, target_id = TargetType.PLAYER, participant.participant_id
+        else:
+            queued_target = combat.participants.get(action.target_id)
+            is_player = queued_target is not None and queued_target.participant_type == CombatParticipantType.PLAYER
+            target_type = TargetType.PLAYER if is_player else TargetType.NPC
+            target_id = action.target_id
         return TargetMatch(
-            target_id=str(action.target_id) if action.target_id else str(participant.participant_id),
-            target_name=target_name,
+            target_id=str(target_id),
+            target_name=action.spell_name or "target",
             target_type=target_type,
             room_id=room_id,
         )

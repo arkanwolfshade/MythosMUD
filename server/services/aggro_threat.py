@@ -124,6 +124,38 @@ def add_heal_threat(
     )
 
 
+def add_utility_threat(
+    combat: CombatInstance,
+    npc_id: UUID,
+    source_entity_id: UUID,
+    amount: float | None = None,
+    npc_participant: CombatParticipant | None = None,
+) -> None:
+    """
+    Add flat threat for applying a buff or debuff, so support can pull without dealing damage (ADR-016 §3, #833).
+
+    ``amount`` defaults to ``aggro_utility_threat``. Like heal threat it is *not* skipped for passive mobs (a
+    caster working magic near one can draw it), and it is scaled by the NPC's aggression level and the
+    corruption gap to the source.
+    """
+    base = amount if amount is not None else get_config().game.aggro_utility_threat
+    if base <= 0:
+        return
+    participant = npc_participant or combat.participants.get(npc_id)
+    scale = _aggression_scale(participant.aggression_level if participant else None)
+    scale *= _corruption_scale(participant, combat.participants.get(source_entity_id))
+    delta = base * scale
+    hate = get_or_create_hate_list(combat, npc_id)
+    hate[source_entity_id] = hate.get(source_entity_id, 0.0) + delta
+    logger.debug(
+        "Utility threat added",
+        npc_id=str(npc_id),
+        source_id=str(source_entity_id),
+        amount=base,
+        delta=delta,
+    )
+
+
 def apply_taunt(
     combat: CombatInstance,
     npc_id: UUID,

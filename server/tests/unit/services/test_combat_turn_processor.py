@@ -784,7 +784,8 @@ def test_build_spell_target_npc(combat_turn_processor: CombatTurnProcessor) -> N
         round=1,
         spell_name="bolt",
     )
-    target = combat_turn_processor._build_spell_target(action, participant, "room_1")  # pylint: disable=protected-access  # noqa: SLF001
+    combat = CombatInstance(combat_id=uuid4(), room_id="room_1", participants={pid: participant})
+    target = combat_turn_processor._build_spell_target(action, participant, "room_1", combat)  # pylint: disable=protected-access  # noqa: SLF001
     assert target.room_id == "room_1"
     assert str(tid) in target.target_id
 
