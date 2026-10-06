@@ -348,6 +348,20 @@ describe('projector', () => {
       expect(next.messages[0].messageType).toBe('combat');
     });
 
+    it('combat_taunt appends the taunt result line as a combat message (#833)', () => {
+      const prev = getInitialGameState();
+      const event: GameEvent = {
+        event_type: 'combat_taunt',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { message: 'Ashcroft bellows a challenge at the ghoul!' },
+      };
+      const next = projectEvent(prev, event);
+      expect(next.messages).toHaveLength(1);
+      expect(next.messages[0].text).toBe('Ashcroft bellows a challenge at the ghoul!');
+      expect(next.messages[0].messageType).toBe('combat');
+    });
+
     it('player_respawned merges onto previous player (#776: thin RespawnPlayerData must not wipe stats)', () => {
       const prev = getInitialGameState();
       prev.player = {

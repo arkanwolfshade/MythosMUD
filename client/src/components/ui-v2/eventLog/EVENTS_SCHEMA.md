@@ -38,6 +38,7 @@ Event types and their `data` shapes as received over the WebSocket. Used by the 
 | `npc_died` / `combat_death` | NPC/combat death      | target, room                       |
 | `combat_target_switch`      | NPC aggro switch      | message, npc_name, new_target_name |
 | `combat_participant_joined` | Player joined a fight | message, player_name, npc_name     |
+| `combat_taunt`              | Taunt resolved        | message                            |
 
 ## Message events
 

@@ -10,11 +10,13 @@ Processes queued actions and generates default actions for automatic combat prog
 import uuid
 from typing import TYPE_CHECKING, Any, cast
 
+from sqlalchemy.exc import SQLAlchemyError
 from structlog.stdlib import BoundLogger
 
 from server.config import get_config
+from server.exceptions import DatabaseError
 from server.models.combat import CombatAction, CombatInstance, CombatParticipant, CombatParticipantType, CombatStatus
-from server.services import combat_turn_participant_actions
+from server.services import combat_taunt_action, combat_turn_participant_actions
 from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
@@ -235,12 +237,29 @@ class CombatTurnProcessor:
             await self._execute_attack_action(combat, participant, action)
         elif action.action_type == "spell":
             await self._execute_spell_action(combat, participant, action, current_tick)
+        elif action.action_type == "taunt":
+            await self._execute_taunt_action(combat, participant, action)
         elif action.action_type == "flee_skip":
             self._handle_flee_skip_action(combat, participant)
         else:
             self._log_unknown_action(action)
 
         participant.last_action_tick = current_tick
+
+    async def _execute_taunt_action(
+        self, combat: CombatInstance, participant: CombatParticipant, action: CombatAction
+    ) -> None:
+        """Execute a queued taunt (#833): graded Intimidate/Fighting roll, then the hate-list change."""
+        try:
+            await combat_taunt_action.resolve_taunt_action(self._combat_service, combat, participant, action)
+        except (AttributeError, ValueError, TypeError, RuntimeError, KeyError, SQLAlchemyError, DatabaseError) as e:
+            logger.error(
+                "Error executing queued taunt",
+                participant_id=participant.participant_id,
+                target_id=action.target_id,
+                error=str(e),
+                exc_info=True,
+            )
 
     async def _execute_attack_action(
         self, combat: CombatInstance, participant: CombatParticipant, action: CombatAction

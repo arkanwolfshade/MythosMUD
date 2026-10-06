@@ -172,3 +172,12 @@ class CombatBroadcastMixin(HasConnectionManager):
             "Combat join broadcast",
             exclude_player=player_id,
         )
+
+    async def broadcast_taunt_result(self, room_id: str, combat_id: str, message: str) -> dict[str, object]:
+        """Broadcast the one room line for a resolved taunt: success, failure or fumble (#833)."""
+        return await self._broadcast_combat_event(
+            "combat_taunt",
+            room_id,
+            {"combat_id": combat_id, "message": message},
+            "Combat taunt broadcast",
+        )
