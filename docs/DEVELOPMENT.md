@@ -62,7 +62,7 @@ For contributor workflow and pull requests, see [CONTRIBUTING.md](../CONTRIBUTIN
 **[SPEC]**
 
 - **Git**
-- **Python 3.12+** (managed via [pyenv-win](https://github.com/pyenv-win/pyenv-win) recommended)
+- **Python 3.14+** (installed via `uv python install`; the exact patch version is pinned in `.python-version`)
 - **Node.js 22+** and **npm** (NVM for Windows recommended)
 - **PostgreSQL 15+** (**required** for local development and tests)
 - **[uv](https://github.com/astral-sh/uv)** (for Python dependency management - **required**)
@@ -124,11 +124,10 @@ above.
 
 **[NOTE]**
 
-### a. Set Python Version (if using pyenv-win)
+### a. Install the Pinned Python Version
 
 ```sh
-pyenv install 3.12.11  # if not already installed
-pyenv local 3.12.11
+uv python install  # installs the version pinned in .python-version (3.14.7)
 ```
 
 ### b. Install Dependencies
@@ -437,13 +436,14 @@ This file is for **human** lab setup. Do not duplicate agent policy here.
 ### Python version issues
 
 ```sh
-# Ensure you have Python 3.12+ installed
+# Ensure you have Python 3.14+ installed
 
 python --version
 
-# If using pyenv, set the local version
+# Install the version pinned in .python-version and rebuild the venv
 
-pyenv local 3.12.11
+uv python install
+uv venv --clear
 ```
 
 ### Dependency conflicts

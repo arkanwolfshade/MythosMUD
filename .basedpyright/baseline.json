@@ -8434,14 +8434,6 @@
                 }
             },
             {
-                "code": "reportDeprecated",
-                "range": {
-                    "startColumn": 19,
-                    "endColumn": 38,
-                    "lineCount": 1
-                }
-            },
-            {
                 "code": "reportAny",
                 "range": {
                     "startColumn": 23,
@@ -297960,14 +297952,6 @@
                     "endColumn": 44,
                     "lineCount": 1
                 }
-            },
-            {
-                "code": "reportDeprecated",
-                "range": {
-                    "startColumn": 19,
-                    "endColumn": 38,
-                    "lineCount": 1
-                }
             }
         ],
         "./server/validators/combat_validator.py": [
@@ -298286,48 +298270,8 @@
             {
                 "code": "reportPossiblyUnboundVariable",
                 "range": {
-                    "startColumn": 47,
-                    "endColumn": 56,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportPossiblyUnboundVariable",
-                "range": {
-                    "startColumn": 58,
-                    "endColumn": 73,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportPossiblyUnboundVariable",
-                "range": {
-                    "startColumn": 7,
-                    "endColumn": 16,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportPossiblyUnboundVariable",
-                "range": {
-                    "startColumn": 12,
-                    "endColumn": 21,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportPossiblyUnboundVariable",
-                "range": {
                     "startColumn": 24,
                     "endColumn": 40,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportPossiblyUnboundVariable",
-                "range": {
-                    "startColumn": 17,
-                    "endColumn": 26,
                     "lineCount": 1
                 }
             },

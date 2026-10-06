@@ -26,6 +26,8 @@ PROJECT_ROOT = _project_root
 CI = os.getenv("CI")
 GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS")
 IN_CI = bool(CI or GITHUB_ACTIONS)
+# Venv lib dir for the running interpreter (e.g. "python3.14"); keeps site-packages paths version-agnostic.
+PY_LIB_DIR = f"python{sys.version_info.major}.{sys.version_info.minor}"
 
 if IN_CI:
     print("Running CI test suite directly (already in CI environment)...")
@@ -97,7 +99,7 @@ if IN_CI:
                             try:
                                 contents = os.listdir(venv_site_packages)
                                 print(f"[INFO] Site-packages contents: {contents[:10]}")  # First 10 entries
-                            except (OSError, PermissionError):
+                            except OSError, PermissionError:
                                 # OSError: file system errors, PermissionError: access denied
                                 # Silently ignore - this is just for debugging output
                                 pass
@@ -183,7 +185,7 @@ if IN_CI:
         # We're in CI using a symlinked venv Python - need to set VIRTUAL_ENV and PYTHONPATH
         # to ensure it uses the venv's site-packages and the project is importable
         venv_dir = os.path.dirname(os.path.dirname(venv_python))  # Go up from bin/python
-        venv_site_packages = os.path.join(venv_dir, "lib", "python3.12", "site-packages")
+        venv_site_packages = os.path.join(venv_dir, "lib", PY_LIB_DIR, "site-packages")
         verify_env["VIRTUAL_ENV"] = venv_dir
         path_sep = os.pathsep
         existing_verify_path = verify_env.get("PYTHONPATH", "")
@@ -252,7 +254,7 @@ if IN_CI:
     # Python uses the venv's site-packages, not the base Python's
     if IN_CI and venv_python and sys_executable_normalized == venv_python:
         venv_dir = os.path.dirname(os.path.dirname(venv_python))  # Go up from bin/python to venv root
-        venv_site_packages = os.path.join(venv_dir, "lib", "python3.12", "site-packages")
+        venv_site_packages = os.path.join(venv_dir, "lib", PY_LIB_DIR, "site-packages")
         env["VIRTUAL_ENV"] = venv_dir
         # PYTHONPATH: project root first (so 'server' is importable), then venv site-packages
         path_sep = os.pathsep
@@ -478,7 +480,7 @@ else:
     # This avoids Windows filesystem I/O issues and ensures Linux-specific dependencies work correctly
     # Use Popen with real-time output to avoid deadlock from output buffering
     start_time = time.time()
-    # Project requires Python >= 3.12, so encoding/errors arguments are available
+    # Project requires Python >= 3.14, so encoding/errors arguments are available
     # nosemgrep: python.lang.compatibility.python36.python36-compatibility-Popen2
     # nosemgrep: python.lang.compatibility.python36.python36-compatibility-Popen1
     process = subprocess.Popen(

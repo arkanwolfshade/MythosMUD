@@ -247,10 +247,7 @@ def get_magic_service(request: Request) -> "MagicService":
     if container.magic_service is None:
         raise RuntimeError("MagicService not initialized in container")
 
-    # Import here to avoid circular dependency
-    from .game.magic.magic_service import MagicService  # noqa: PLC0415
-
-    return cast(MagicService, container.magic_service)
+    return cast("MagicService", container.magic_service)
 
 
 def get_spell_registry(request: Request) -> "SpellRegistry":
@@ -261,10 +258,7 @@ def get_spell_registry(request: Request) -> "SpellRegistry":
     if container.spell_registry is None:
         raise RuntimeError("SpellRegistry not initialized in container")
 
-    # Import here to avoid circular dependency
-    from .game.magic.spell_registry import SpellRegistry  # noqa: PLC0415
-
-    return cast(SpellRegistry, container.spell_registry)
+    return cast("SpellRegistry", container.spell_registry)
 
 
 def get_spell_targeting_service(request: Request) -> "SpellTargetingService":
@@ -275,10 +269,7 @@ def get_spell_targeting_service(request: Request) -> "SpellTargetingService":
     if container.spell_targeting_service is None:
         raise RuntimeError("SpellTargetingService not initialized in container")
 
-    # Import here to avoid circular dependency
-    from .game.magic.spell_targeting import SpellTargetingService  # noqa: PLC0415
-
-    return cast(SpellTargetingService, container.spell_targeting_service)
+    return cast("SpellTargetingService", container.spell_targeting_service)
 
 
 def get_spell_effects(request: Request) -> "SpellEffects":
@@ -289,10 +280,7 @@ def get_spell_effects(request: Request) -> "SpellEffects":
     if container.spell_effects is None:
         raise RuntimeError("SpellEffects not initialized in container")
 
-    # Import here to avoid circular dependency
-    from .game.magic.spell_effects import SpellEffects  # noqa: PLC0415
-
-    return cast(SpellEffects, container.spell_effects)
+    return cast("SpellEffects", container.spell_effects)
 
 
 def get_spell_learning_service(request: Request) -> "SpellLearningService":
@@ -303,10 +291,7 @@ def get_spell_learning_service(request: Request) -> "SpellLearningService":
     if container.spell_learning_service is None:
         raise RuntimeError("SpellLearningService not initialized in container")
 
-    # Import here to avoid circular dependency
-    from .game.magic.spell_learning_service import SpellLearningService  # noqa: PLC0415
-
-    return cast(SpellLearningService, container.spell_learning_service)
+    return cast("SpellLearningService", container.spell_learning_service)
 
 
 def get_mp_regeneration_service(request: Request) -> "MPRegenerationService":

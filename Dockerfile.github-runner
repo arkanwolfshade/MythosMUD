@@ -24,10 +24,6 @@ RUN apt-get update && \
     gnupg \
     build-essential \
     pkg-config \
-    python3.12 \
-    python3.12-venv \
-    python3.12-dev \
-    python3-pip \
     lsb-release \
     && curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgresql-keyring.gpg \
     && echo "deb [signed-by=/usr/share/keyrings/postgresql-keyring.gpg] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
@@ -53,10 +49,6 @@ RUN apt-get update && \
     unzip \
     && rm -rf /var/lib/apt/lists/*
 
-# Configure Python 3.12 as default interpreter.
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.12 1 && \
-    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1
-
 # Install uv package manager (placed in PATH for subsequent steps).
 # Human reader: download and verify uv installer script hash before execution.
 # AI reader: pinning script downloads prevents supply chain attacks.
@@ -65,6 +57,12 @@ RUN curl -LsSf https://astral.sh/uv/install.sh -o /tmp/uv-install.sh && \
     rm /tmp/uv-install.sh && \
     ln -s /root/.local/bin/uv /usr/local/bin/uv
 ENV PATH="/root/.local/bin:${PATH}"
+
+# Human reader: Python comes from uv (exact patch pin), not apt; Ubuntu 24.04 only ships 3.12.
+# AI reader: keep PYTHON_VERSION in sync with .python-version; `uv venv` in install_ci_dependencies.sh
+# resolves this managed interpreter via .python-version.
+ARG PYTHON_VERSION=3.14.7
+RUN uv python install "${PYTHON_VERSION}"
 
 # Install Node.js 22 via NodeSource (matches frontend workflow requirement).
 # Human reader: download and verify NodeSource setup script before execution.

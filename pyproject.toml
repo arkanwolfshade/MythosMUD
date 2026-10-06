@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "mythosmud"
 version = "0.1.0"
 description = "MythosMUD - A Cthulhu Mythos-themed MUD"
-requires-python = ">=3.12"
+requires-python = ">=3.14"
 
 dependencies = [
     "fastapi>=0.128.0",
@@ -106,7 +106,7 @@ ignore_names = ["_request", "request", "app", "_", "db", "_db"]
 min_confidence = 80
 
 [tool.ruff]
-target-version = "py312"
+target-version = "py314"
 # line-length checks disabled project-wide; formatter may still use this for wrap
 line-length = 120
 # Generated graphify extract/wiki trees (and any nested **/graphify/** dumps).
@@ -126,6 +126,9 @@ select = [
 ignore = [
     "E501",  # line too long - line-length checks disabled globally
     "B008",  # do not perform function calls in argument defaults
+    # py314 (PEP 649/749) modernization deferred from #748 to #988; remove these when it lands.
+    "UP037",  # quoted annotations (420 sites); safe to unquote only with runtime-resolver review
+    "UP043",  # unnecessary default type args
 ]
 # Cyclomatic complexity threshold: 11 (matches Codacy threshold)
 # Functions with complexity > 10 will trigger C901 violation
@@ -244,7 +247,7 @@ exclude_lines = [
 fail_under = 63
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.14"
 files = ["server"]
 plugins = ["sqlalchemy.ext.mypy.plugin", "pydantic.mypy"]
 
@@ -390,7 +393,7 @@ check_untyped_defs = true
 # pyenv-win/.../Lib/*.py, that file is outside the project: close it and set the
 # interpreter to this workspace's .venv.
 [tool.basedpyright]
-pythonVersion = "3.12"
+pythonVersion = "3.14"
 venvPath = "."
 venv = ".venv"
 # Repo root on path so scripts/*.py can import the top-level `server` package (same as runtime sys.path).

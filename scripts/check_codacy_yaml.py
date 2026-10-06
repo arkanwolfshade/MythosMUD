@@ -30,8 +30,8 @@ def _content_is_valid(content: str) -> tuple[bool, list[str]]:
     for tool, _ in REQUIRED_TOOLS.items():
         if tool not in content:
             reasons.append(f"missing {tool}")
-    if "python@3.11.11" in content and "python@3.12.10" not in content:
-        reasons.append("wrong Python version (3.11.11 instead of 3.12.10)")
+    if "python@3.11.11" in content and "python@3.14.7" not in content:
+        reasons.append("wrong Python version (3.11.11 instead of 3.14.7)")
     return (len(reasons) == 0, reasons)
 
 

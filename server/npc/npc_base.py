@@ -356,7 +356,6 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
     def _move_with_integration(self, room_id: str) -> bool:
         """Move NPC using movement integration; return True if successful."""
         from ..async_persistence import AsyncPersistenceLayer
-        from ..events import EventBus
         from .movement_integration import NPCMovementIntegration
 
         event_bus, persistence = self._get_integration_dependencies()
@@ -366,7 +365,7 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
             return False
 
         movement_integration = NPCMovementIntegration(
-            cast(EventBus | None, event_bus), persistence=cast(AsyncPersistenceLayer, persistence)
+            cast("EventBus | None", event_bus), persistence=cast(AsyncPersistenceLayer, persistence)
         )
         success = movement_integration.move_npc_to_room(self.npc_id, self.current_room or "unknown", room_id)
 
