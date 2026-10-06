@@ -164,6 +164,16 @@ async def test_execute_combat_action_reports_the_foe_when_already_engaged(mock_h
 
 
 @pytest.mark.asyncio
+async def test_execute_attack_on_npc_goes_through_the_normal_attack_path(mock_handler: MagicMock) -> None:
+    """#833: assist attacks an already-resolved NPC via the same path as `attack` (so joins and refusals match)."""
+    run: AsyncMock = AsyncMock(return_value={"result": "You attack Orc!"})
+    with patch("server.commands.combat_attack._execute_combat_action", new=run):
+        out = await combat_attack.execute_attack_on_npc(mock_handler, "hero", "npc1", "r1", npc_instance=None)
+    assert out == {"result": "You attack Orc!"}
+    run.assert_awaited_once_with(mock_handler, "hero", "npc1", "attack", "r1", npc_instance=None)
+
+
+@pytest.mark.asyncio
 async def test_run_handle_attack_command_blocked_by_rest(mock_handler: MagicMock) -> None:
     """check_and_interrupt_rest non-None short-circuits attack."""
     mock_handler.check_and_interrupt_rest = AsyncMock(return_value={"result": "warded"})

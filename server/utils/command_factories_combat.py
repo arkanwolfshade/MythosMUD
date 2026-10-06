@@ -6,6 +6,7 @@ attack, punch, kick, strike, flee.
 """
 
 from ..models.command import (
+    AssistCommand,
     AttackCommand,
     FleeCommand,
     KickCommand,
@@ -59,3 +60,9 @@ class CombatCommandFactory:
         """Create TauntCommand from arguments (target NPC name)."""
         target = " ".join(args) if args else None
         return TauntCommand(target=target)
+
+    @staticmethod
+    def create_assist_command(args: list[str]) -> AssistCommand:
+        """Create AssistCommand from arguments (player name, or none for the party leader)."""
+        target = " ".join(args) if args else None
+        return AssistCommand(target=target)

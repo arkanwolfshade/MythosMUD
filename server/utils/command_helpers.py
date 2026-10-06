@@ -101,6 +101,15 @@ _COMMAND_HELP_TEXTS: dict[str, str] = {
     CommandType.FLEE.value: (
         "flee - Attempt to flee from combat (random adjacent room); failure costs your round and draws free hits"
     ),
+    CommandType.TAUNT.value: (
+        "taunt <npc> - Spend your round drawing a creature's attention: rolls Intimidate or Fighting, whichever is "
+        "higher. A strong roll holds it firmly, a failure does nothing, and a fumble makes it ignore you. "
+        "You must already be fighting it, in the same room"
+    ),
+    CommandType.ASSIST.value: (
+        "assist [player] - Join the fight a player is in and attack their foe; with no name, join your party "
+        "leader's. You then fight on your own until it ends"
+    ),
 }
 
 _GENERAL_COMMAND_HELP = """
@@ -136,6 +145,8 @@ Available Commands:
 - stand - Return to a standing posture
 - lie [down] - Lie down on the ground
 - flee - Attempt to flee from combat (random adjacent room); failure costs your round and draws free hits
+- taunt <npc> - Spend your round drawing a creature's attention (Intimidate or Fighting roll)
+- assist [player] - Join a player's (or your party leader's) fight and attack their foe
 
 Directions: north, south, east, west
 Use 'help <command>' for detailed information about a specific command.

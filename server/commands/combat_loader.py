@@ -146,3 +146,16 @@ async def handle_taunt_command(
     app = _app_from_request(request)
     handler = get_combat_command_handler(app)
     return await handler.handle_taunt_command(command_data, current_user, request, alias_storage, player_name)
+
+
+async def handle_assist_command(
+    command_data: dict[str, object],
+    current_user: dict[str, object],
+    request: object | None,
+    alias_storage: AliasStorage | None,
+    player_name: str,
+) -> dict[str, str]:
+    """Handle assist command: join a player's (or your party leader's) fight (#833)."""
+    app = _app_from_request(request)
+    handler = get_combat_command_handler(app)
+    return await handler.handle_assist_command(command_data, current_user, request, alias_storage, player_name)

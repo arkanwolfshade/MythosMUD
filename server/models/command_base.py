@@ -86,6 +86,7 @@ class CommandType(StrEnum):
     KICK = "kick"
     STRIKE = "strike"
     TAUNT = "taunt"
+    ASSIST = "assist"
     FLEE = "flee"
     SUMMON = "summon"
     # NPC admin commands (spawn is alias for npc spawn)

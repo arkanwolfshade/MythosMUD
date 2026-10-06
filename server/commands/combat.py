@@ -15,6 +15,7 @@ from server.commands.combat_helpers import (
 )
 from server.commands.combat_loader import (
     get_combat_command_handler,
+    handle_assist_command,
     handle_attack_command,
     handle_flee_command,
     handle_kick_command,
@@ -28,6 +29,7 @@ __all__ = [
     "CombatCommandHandlerExtras",
     "FleePreconditionError",
     "get_combat_command_handler",
+    "handle_assist_command",
     "handle_attack_command",
     "handle_flee_command",
     "handle_kick_command",
