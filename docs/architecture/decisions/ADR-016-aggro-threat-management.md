@@ -70,7 +70,20 @@ Detailed formulas, data structures, UpdateAggro() behaviour, and test scenarios 
 - [Aggro and Threat System Design](../aggro-threat-system.md) – Formulas, data structures, pseudocode, test scenarios
 - [Aggro and Threat Implementation Plan](../../archive/aggro-threat-implementation-plan.md) – Implementation summary and key files
 
-## 8. Changelog
+## 8. Addendum: Group combat and attention control (#833)
+
+**[SPEC]**
+This addendum records decisions made when the classic kit was completed and a Call of Cthulhu style attention layer was added. It refines, and does not replace, the decisions above.
+
+- **Combat roster:** A combat is **N players against exactly one NPC**. A player who attacks an NPC already fighting in their room **joins** that combat; their first attack is queued for the next round. Joining a phantom (ADR-024 hallucination) encounter, another room's fight, or a second NPC is refused. Multi-NPC packs are deferred (#994).
+- **Leaving and ending:** One player leaves with `remove_participant` (queued actions, hate-list entries, target links and tracking go with them) and the fight continues for the rest. The combat ends when no living NPC/phantom **or** no living player remains (mortally wounded players at 0 DP still count). A 1v1 behaves as before.
+- **Player targets:** `CombatInstance.player_current_target` mirrors `npc_current_target`. Auto-attack uses it and never targets an ally. XP on an NPC's death is paid in full to every living player still in the fight.
+- **Taunt is a roll and costs the round:** `taunt <npc>` queues a combat action (it replaces anything queued for that round, so there is no auto-attack). It resolves on the player's initiative slot as one d100 against the **higher of `intimidate` and `fighting`**: Hard or Extreme makes the taunter top with a doubled lead, Regular is the plain taunt, Failure changes nothing, and a Fumble (100, or 96-100 under skill 50) wipes the taunter from that NPC's hate list. Each result gets one room line. Taunt stays room-local and the taunter's room and the target are re-checked at resolution.
+- **Utility threat:** A successful status-effect or stat-modify spell adds a flat `aggro_utility_threat` (default 5.0), scaled by the NPC's aggression level and the corruption gap like heal threat. It is **not** skipped for passive mobs. A debuff on an NPC draws only that NPC; a buff on the caster or an ally draws every NPC in the fight. Area and phantom targets add nothing.
+- **Assist:** `assist <player>` (or a bare `assist` for the party leader) is **one-shot target resolution**: it finds the foe that player is fighting and goes through the ordinary attack path, which performs the join. The assister then fights on their own and does not follow later target switches.
+- **Deferred (own issues):** Protect / draw-fire and the tank threat multiplier (#991), Fight Back threat (#992), NPC target bias and fixation (#993), packs (#994), adjacent-room pull (#995), threat inspection and the personal switch notice (#996), hate-list trim and flee interaction (#997), persistent auto-assist (#998).
+
+## 9. Changelog
 
 **[SPEC]**
 
@@ -78,3 +91,4 @@ Detailed formulas, data structures, UpdateAggro() behaviour, and test scenarios 
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
 | 1.1.0 | 2026-08-28 | Record provenance (post-hoc authorship); fix broken implementation-plan link, now in `docs/archive/` (#721) |
+| 1.2.0 | 2026-10-06 | Addendum: N-player combat, graded taunt, utility threat, assist (#833) |

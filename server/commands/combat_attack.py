@@ -241,6 +241,21 @@ async def _execute_phantom_combat_action(
         return {"result": f"Error executing {command} command"}
 
 
+async def execute_attack_on_npc(
+    handler: object,
+    player_name: str,
+    npc_id: str,
+    room_id: str,
+    npc_instance: object | None = None,
+) -> dict[str, str]:
+    """
+    Attack an already-resolved NPC through the normal attack path (used by assist, #833).
+
+    That path starts a fight, joins one the NPC is already in, or refuses with "You're already fighting X".
+    """
+    return await _execute_combat_action(handler, player_name, npc_id, "attack", room_id, npc_instance=npc_instance)
+
+
 async def run_handle_attack_command(
     handler: Any,
     command_data: dict[str, Any],

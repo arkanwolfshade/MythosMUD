@@ -37,6 +37,7 @@ from .catalog_commands import handle_catalog_command
 from .channel_commands import handle_channel_command
 from .cleanse_command import handle_cleanse_command
 from .combat import (
+    handle_assist_command,
     handle_attack_command,
     handle_flee_command,
     handle_kick_command,
@@ -192,6 +193,7 @@ _COMMAND_HANDLERS: dict[str, CommandHandler] = {
     "strike": handle_strike_command,
     "flee": handle_flee_command,
     "taunt": handle_taunt_command,
+    "assist": handle_assist_command,
     # corruption recovery rite
     "cleanse": handle_cleanse_command,
     "ground": handle_ground_command,

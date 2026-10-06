@@ -70,6 +70,8 @@ _SYSTEM_COMMANDS = {
     "unwield",
     "kill",
     "attack",
+    "taunt",
+    "assist",
     "flee",
     "follow",
     "unfollow",

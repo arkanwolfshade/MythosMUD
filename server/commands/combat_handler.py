@@ -22,6 +22,7 @@ from structlog.stdlib import BoundLogger
 from server.alias_storage import AliasStorage
 from server.async_persistence import AsyncPersistenceLayer
 from server.commands.combat_app_protocols import AppWithState
+from server.commands.combat_assist import run_handle_assist_command
 from server.commands.combat_attack import run_handle_attack_command
 from server.commands.combat_taunt import run_handle_taunt_command
 from server.game.player_service import PlayerService
@@ -73,6 +74,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
     npc_combat_service: NPCCombatIntegrationService
     persistence: AsyncPersistenceLayer
     _item_prototype_registry: object | None
+    _party_service: object | None
     combat_validator: CombatValidator
     target_resolution_service: TargetResolutionService
 
@@ -112,6 +114,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
         )
         self.persistence = async_persistence
         self._item_prototype_registry = opt.item_prototype_registry
+        self._party_service = opt.party_service
         self.combat_validator = CombatValidator(party_service=opt.party_service)
         self.target_resolution_service = TargetResolutionService(
             async_persistence,
@@ -138,6 +141,11 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
     def item_prototype_registry(self) -> object | None:
         """Item prototype registry for command modules."""
         return self._item_prototype_registry
+
+    @property
+    def party_service(self) -> object | None:
+        """Party service for command modules (bare ``assist`` follows the party leader)."""
+        return self._party_service
 
     async def check_and_interrupt_rest(
         self, request_app: AppWithState | None, player_name: str, current_user: Mapping[str, object]
@@ -358,6 +366,17 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
     ) -> dict[str, str]:
         """Handle taunt command: draw NPC aggro (ADR-016). Room-local only."""
         return await run_handle_taunt_command(self, command_data, current_user, request, alias_storage, player_name)
+
+    async def handle_assist_command(
+        self,
+        command_data: dict[str, Any],
+        current_user: dict[str, Any],
+        request: object | None,
+        alias_storage: AliasStorage | None,
+        player_name: str,
+    ) -> dict[str, str]:
+        """Handle assist command: join a player's (or your party leader's) fight and attack their foe (#833)."""
+        return await run_handle_assist_command(self, command_data, current_user, request, alias_storage, player_name)
 
     def _get_room_data(self, room_id: str) -> object | None:
         """Get room data from persistence."""
