@@ -185,14 +185,19 @@ async def test_execute_voluntary_flee_success_moves_player():
     room = MagicMock()
     room.exits = {"north": "room_2"}
     get_room = MagicMock(return_value=room)
+    remove_participant: AsyncMock = AsyncMock(return_value=True)
+    end_combat: AsyncMock = AsyncMock()
     combat_service = AsyncMock()
+    combat_service.remove_participant = remove_participant
+    combat_service.end_combat = end_combat
     movement_service = AsyncMock()
     movement_service.move_player = AsyncMock(return_value=True)
     with patch("server.services.combat_flee_handler.try_voluntary_flee_roll", return_value=True):
         with patch("server.services.combat_flee_handler.secrets.choice", return_value="room_2"):
             result = await execute_voluntary_flee(combat_service, get_room, movement_service, combat, fleeing_id)
     assert result is True
-    combat_service.end_combat.assert_awaited_once()
+    remove_participant.assert_awaited_once()
+    end_combat.assert_not_awaited()
     movement_service.move_player.assert_awaited_once()
 
 

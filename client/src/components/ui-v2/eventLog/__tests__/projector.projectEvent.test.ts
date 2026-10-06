@@ -334,6 +334,20 @@ describe('projector', () => {
       expect(next.messages[0].messageType).toBe('combat');
     });
 
+    it('combat_participant_joined appends the room join line as a combat message (#833)', () => {
+      const prev = getInitialGameState();
+      const event: GameEvent = {
+        event_type: 'combat_participant_joined',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { message: 'Ashcroft joins the fight against the ghoul!' },
+      };
+      const next = projectEvent(prev, event);
+      expect(next.messages).toHaveLength(1);
+      expect(next.messages[0].text).toBe('Ashcroft joins the fight against the ghoul!');
+      expect(next.messages[0].messageType).toBe('combat');
+    });
+
     it('player_respawned merges onto previous player (#776: thin RespawnPlayerData must not wipe stats)', () => {
       const prev = getInitialGameState();
       prev.player = {

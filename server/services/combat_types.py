@@ -32,3 +32,11 @@ class CombatParticipantData:
     # ADR-027: snapshot for turn damage rolls (attacks / dual-write ints).
     npc_base_stats: dict[str, object] | None = None
     npc_behavior_config: dict[str, object] | None = None
+
+
+class AlreadyEngagedError(Exception):
+    """A player already fighting one foe tried to attack another (#833: one NPC per combat)."""
+
+    def __init__(self, foe_name: str) -> None:
+        super().__init__(f"Already fighting {foe_name}")
+        self.foe_name: str = foe_name

@@ -125,7 +125,8 @@ async def test_apply_damage_and_check_involuntary_flee_returns_early_result_on_f
 
     service.apply_attack_damage = AsyncMock(return_value=(5, False, False))  # type: ignore[assignment]
     service.check_involuntary_flee = AsyncMock(return_value=True)  # type: ignore[assignment]
-    service.end_combat = AsyncMock()  # type: ignore[assignment]
+    remove_participant: AsyncMock = AsyncMock(return_value=True)
+    service.remove_participant = remove_participant  # type: ignore[assignment]
 
     target_died, mortally_wounded, early = await service.apply_damage_and_check_involuntary_flee(
         combat, attacker, target, damage=7
@@ -137,7 +138,65 @@ async def test_apply_damage_and_check_involuntary_flee_returns_early_result_on_f
     assert early.success is True
     assert early.combat_ended is True
     assert "flee" in (early.message or "").lower()
-    service.end_combat.assert_awaited_once()  # type: ignore[attr-defined]
+    remove_participant.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_register_joined_participant_tracks_only_the_joiner() -> None:
+    """#833: a late joiner is tracked as in-combat without re-registering the whole fight."""
+    service = _make_service()
+    combat = _make_combat_instance()
+    joiner = _make_participant("Joiner", participant_type=CombatParticipantType.PLAYER)
+    combat.participants[joiner.participant_id] = joiner
+    track: AsyncMock = AsyncMock()
+    player_combat_service = MagicMock()
+    player_combat_service.track_player_combat_state = track
+    service.set_player_combat_service(player_combat_service)
+
+    await service.register_joined_participant(combat, joiner.participant_id, "room_1")
+
+    assert service.get_combat_id_for_participant(joiner.participant_id) == combat.combat_id
+    track.assert_awaited_once_with(
+        player_id=joiner.participant_id, player_name="Joiner", combat_id=combat.combat_id, room_id="room_1"
+    )
+
+
+@pytest.mark.asyncio
+async def test_untrack_participant_clears_tracking_and_player_state() -> None:
+    service = _make_service()
+    combat = _make_combat_instance()
+    player = _make_participant("Leaver", participant_type=CombatParticipantType.PLAYER)
+    combat.participants[player.participant_id] = player
+    clear: AsyncMock = AsyncMock()
+    player_combat_service = MagicMock()
+    player_combat_service.track_player_combat_state = AsyncMock()
+    player_combat_service.clear_player_combat_state = clear
+    service.set_player_combat_service(player_combat_service)
+    await service.register_joined_participant(combat, player.participant_id, "room_1")
+    assert service.get_combat_id_for_participant(player.participant_id) == combat.combat_id
+
+    await service.untrack_participant(player.participant_id)
+
+    assert service.get_combat_id_for_participant(player.participant_id) is None
+    clear.assert_awaited_once_with(player.participant_id)
+    await service.untrack_participant(player.participant_id)  # idempotent for an already-untracked player
+
+
+@pytest.mark.asyncio
+async def test_join_and_remove_participant_delegate_to_their_modules() -> None:
+    service = _make_service()
+    combat = _make_combat_instance()
+    joiner = MagicMock()
+    join_impl: AsyncMock = AsyncMock()
+    with patch("server.services.combat_service_start.join_existing_combat", new=join_impl):
+        await service.join_combat(combat, joiner, "room_1")
+    join_impl.assert_awaited_once_with(service, combat, joiner, "room_1")
+
+    pid = uuid.uuid4()
+    remove_impl: AsyncMock = AsyncMock(return_value=True)
+    with patch("server.services.combat_service_end.remove_participant", new=remove_impl):
+        assert await service.remove_participant(combat.combat_id, pid, "left") is True
+    remove_impl.assert_awaited_once_with(service, combat.combat_id, pid, "left")
 
 
 @pytest.mark.asyncio

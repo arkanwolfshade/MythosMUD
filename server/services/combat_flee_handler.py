@@ -51,6 +51,12 @@ class _FleeFreeHitsCombatService(Protocol):
         """Apply one attack; returns result including death/combat-end flags."""
         ...
 
+    async def remove_participant(
+        self, combat_id: UUID, participant_id: UUID, reason: str = "Participant left combat"
+    ) -> bool:
+        """Remove one player from a combat; True if that ended it (#833)."""
+        ...
+
 
 # pylint: enable=unnecessary-ellipsis
 
@@ -265,7 +271,7 @@ async def execute_voluntary_flee(
 
     to_room_id = str(secrets.choice(list(exits.values())))
     reason = f"{participant.name} flees from combat!"
-    await combat_service.end_combat(combat.combat_id, reason)
+    await combat_service.remove_participant(combat.combat_id, fleeing_participant_id, reason)
     moved = await movement_service.move_player(fleeing_participant_id, room_id, to_room_id)
     if not moved:
         logger.warning(

@@ -5,6 +5,7 @@ Tests the CombatMessagingIntegration class for integrating combat messages
 with the real-time messaging system.
 """
 
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -210,6 +211,36 @@ async def test_broadcast_combat_target_switch(messaging_integration, mock_connec
     assert args[0] == "room_001"
     assert args[1]["event_type"] == "combat_target_switch"
     assert args[1]["data"]["message"] == "Ghoul turns its gaze to Investigator."
+
+
+@pytest.mark.asyncio
+async def test_broadcast_player_joined_combat() -> None:
+    """#833: the join line goes to the room as one short message and skips the joiner."""
+    captured: list[tuple[str, dict[str, object], str | None]] = []
+
+    async def _broadcast_to_room(
+        room_id: str, event: dict[str, object], exclude_player: str | None = None
+    ) -> dict[str, int]:
+        captured.append((room_id, event, exclude_player))
+        return {"sent": 5, "failed": 0}
+
+    manager: MagicMock = MagicMock()
+    manager.broadcast_to_room = _broadcast_to_room
+    integration = CombatMessagingIntegration(connection_manager=manager)
+
+    result = await integration.broadcast_player_joined_combat(
+        "room_001", "combat_001", "Blackwood", "Ghoul", "player_002"
+    )
+
+    assert result == {"sent": 5, "failed": 0}
+    assert len(captured) == 1
+    room_id, event, exclude_player = captured[0]
+    data = cast(dict[str, object], event["data"])
+    assert room_id == "room_001"
+    assert event["event_type"] == "combat_participant_joined"
+    assert data["message"] == "Blackwood joins the fight against Ghoul!"
+    assert data["player_name"] == "Blackwood"
+    assert exclude_player == "player_002"
 
 
 @pytest.mark.asyncio

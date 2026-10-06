@@ -182,6 +182,8 @@ class CombatInstance:  # pylint: disable=too-many-instance-attributes  # Reason:
     # Aggro/threat (ADR-016): per-NPC hate list and current target; keyed by NPC participant_id
     npc_hate_lists: dict[UUID, dict[UUID, float]] = field(default_factory=dict)  # npc_id -> {entity_id -> threat}
     npc_current_target: dict[UUID, UUID] = field(default_factory=dict)  # npc_id -> current target participant_id
+    # Player-side mirror (#833): player participant_id -> the foe they are attacking; read by auto-attack and assist
+    player_current_target: dict[UUID, UUID] = field(default_factory=dict)
 
     def get_current_turn_participant(self) -> CombatParticipant | None:
         """Get the participant whose turn it is."""
@@ -226,18 +228,18 @@ class CombatInstance:  # pylint: disable=too-many-instance-attributes  # Reason:
         CRITICAL: Combat should NOT end when a player is mortally wounded (0 DP) but not dead (-10 DP).
         Players at 0 DP are still attackable and should remain in combat until -10 DP.
         """
-        # Count participants that are actually dead (not just incapacitated)
-        # For players: dead if DP <= -10
-        # For NPCs: dead if DP <= 0
-        dead_participants = [
-            p
-            for p in self.participants.values()
-            if p.is_dead()  # Use is_dead() instead of is_alive() to check actual death, not incapacitation
-        ]
-        alive_count = len(self.participants) - len(dead_participants)
-        # Combat ends only when <= 1 participant is not dead
-        # This allows NPCs to continue attacking mortally wounded players (0 DP) until -10 DP
-        return alive_count <= 1
+        # Use is_dead() instead of is_alive() to check actual death, not incapacitation
+        # (players: dead at DP <= -10; NPCs: dead at DP <= 0). Mortally wounded players stay in the fight.
+        alive = self.get_alive_participants()
+        if len(alive) <= 1:
+            return True
+        # #833: with several players in one fight the count alone is wrong (two players left after the NPC
+        # dies would never end it), so when a non-player side exists, both sides must still have someone alive.
+        if all(p.participant_type == CombatParticipantType.PLAYER for p in self.participants.values()):
+            return False
+        players_alive = any(p.participant_type == CombatParticipantType.PLAYER for p in alive)
+        foes_alive = any(p.participant_type != CombatParticipantType.PLAYER for p in alive)
+        return not (players_alive and foes_alive)
 
     def get_alive_participants(self) -> list[CombatParticipant]:
         """

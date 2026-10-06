@@ -222,7 +222,9 @@ async def handle_new_connection_setup(
             combat = await combat_service.get_combat_by_participant(player_id)
             if combat:
                 try:
-                    await combat_service.end_combat(combat.combat_id, "Player logged in - removing from combat")
+                    _ = await combat_service.remove_participant(
+                        combat.combat_id, player_id, "Player logged in - removing from combat"
+                    )
                     logger.info(
                         "Ended combat for player on login",
                         player_id=player_id,

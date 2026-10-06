@@ -28,6 +28,7 @@ from ..models.combat import CombatResult
 from ..structured_logging.enhanced_logging_config import get_logger
 from .combat_event_publisher import CombatEventPublisher
 from .combat_messaging_integration import CombatMessagingIntegration
+from .combat_types import AlreadyEngagedError
 from .npc_combat_data_provider import NPCCombatDataProvider
 from .npc_combat_grace import (
     is_npc_attack_on_player_blocked_by_login_grace_period,
@@ -214,6 +215,11 @@ class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombat
         if not await self._validate_combat_location(player_id, npc_id, room_id, npc_instance):
             await self._end_combat_if_participant_in_combat(player_id, npc_id)
             return False
+
+        # #833: refuse before first-engagement side effects (memory, encounter lucidity) fire for the wrong foe.
+        engaged_foe = await self.get_engaged_foe_name(player_id, npc_id)
+        if engaged_foe:
+            raise AlreadyEngagedError(engaged_foe)
 
         first_engagement = self._combat_memory.record_attack(npc_id, player_id)
         attacker_uuid, target_uuid = await self._setup_combat_uuids_and_mappings(

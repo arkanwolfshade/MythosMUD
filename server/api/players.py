@@ -645,7 +645,7 @@ async def _end_combat_for_grace_period(player_id: uuid.UUID) -> None:
         return
 
     try:
-        await combat_service.end_combat(combat.combat_id, "Player entered login grace period")
+        _ = await combat_service.remove_participant(combat.combat_id, player_id, "Player entered login grace period")
         logger.info(
             "Ended combat for player entering login grace period",
             player_id=player_id,

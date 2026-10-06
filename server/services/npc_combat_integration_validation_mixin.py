@@ -11,6 +11,7 @@ from uuid import UUID, uuid4
 from structlog.stdlib import BoundLogger
 
 from ..constants.spawn_defaults import LIMBO_ROOM_ID
+from ..models.combat import CombatParticipantType
 from ..structured_logging.enhanced_logging_config import get_logger
 from .combat_service import CombatService
 from .npc_combat_data_provider import NPCCombatDataProvider
@@ -206,7 +207,25 @@ class NPCCombatIntegrationValidationMixin:
                 npc_id=npc_id,
                 reason=reason,
             )
-            await self.get_combat_service().end_combat(existing_combat.combat_id, reason)
+            _ = await self.get_combat_service().remove_participant(existing_combat.combat_id, player_uuid, reason)
+
+    async def get_engaged_foe_name(
+        self: _NPCCombatIntegrationValidationDeps, player_id: str, npc_id: str
+    ) -> str | None:
+        """Name of the foe this player is already fighting when it is not ``npc_id`` (#833), else None."""
+        try:
+            uuid_mapping = self.get_uuid_mapping()
+            player_uuid = uuid_mapping.convert_to_uuid(player_id)
+            npc_uuid = uuid_mapping.convert_to_uuid(npc_id)
+        except ValueError:
+            return None
+        combat = await self.get_combat_service().get_combat_by_participant(player_uuid)
+        if combat is None or npc_uuid in combat.participants:
+            return None
+        foe = next(
+            (p for p in combat.participants.values() if p.participant_type != CombatParticipantType.PLAYER), None
+        )
+        return foe.name if foe else None
 
     async def _setup_combat_uuids_and_mappings(
         self: _NPCCombatIntegrationValidationDeps,

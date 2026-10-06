@@ -585,14 +585,23 @@ async def test_apply_damage_and_check_involuntary_flee() -> None:
 
     player = _attack_participant("Player")
     check_involuntary_flee_true: AsyncMock = AsyncMock(return_value=True)
-    end_combat: AsyncMock = AsyncMock()
+    remove_participant: AsyncMock = AsyncMock(return_value=True)
     service.check_involuntary_flee = check_involuntary_flee_true
-    service.end_combat = end_combat
+    service.remove_participant = remove_participant
     died, mw, early = await combat_service_attack.apply_damage_and_check_involuntary_flee(
         service, combat, attacker, player, 5
     )
     assert early is not None
     assert early.combat_ended is True
+    remove_participant.assert_awaited_once()
+
+    # #833: other players remain, so the terror-flee leaves the fight running for them.
+    remove_participant.return_value = False
+    _, _, early = await combat_service_attack.apply_damage_and_check_involuntary_flee(
+        service, combat, attacker, player, 5
+    )
+    assert early is not None
+    assert early.combat_ended is False
 
 
 @pytest.mark.asyncio

@@ -81,3 +81,10 @@ class CombatInitializer:  # pylint: disable=too-few-public-methods  # Reason: In
         combat.participants[target.participant_id] = _build_participant(target)
         combat.turn_order = _compute_turn_order(attacker, target)
         return combat
+
+    @staticmethod
+    def add_participant(combat: CombatInstance, data: CombatParticipantData) -> None:
+        """Add a late joiner to a running combat (#833) and rebuild initiative order by dexterity."""
+        combat.participants[data.participant_id] = _build_participant(data)
+        ordered = sorted(combat.participants.values(), key=lambda p: p.dexterity, reverse=True)
+        combat.turn_order = [p.participant_id for p in ordered]

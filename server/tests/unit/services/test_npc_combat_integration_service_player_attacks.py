@@ -337,6 +337,7 @@ async def test_process_combat_attack_queue_failure(
 
     mock_combat = MagicMock()
     mock_combat.combat_id = "combat_001"
+    mock_combat.participants = {target_uuid: MagicMock()}
     mock_combat_result = MagicMock()
     mock_combat_result.success = True
 

@@ -69,6 +69,36 @@ class TestCombatInitializer:
         assert not combat.queued_actions
         assert not combat.round_actions
 
+    def test_add_participant_joins_and_rebuilds_initiative(self, attacker_data, target_data):
+        """#833: a late joiner becomes a PLAYER participant and turn order is rebuilt by dexterity."""
+        combat = CombatInitializer.create_combat_instance(
+            room_id="room_001",
+            attacker=attacker_data,
+            target=target_data,
+            current_tick=0,
+            auto_progression_enabled=True,
+            turn_interval_seconds=10,
+        )
+        joiner = CombatParticipantData(
+            participant_id=uuid.uuid4(),
+            name="Player2",
+            current_dp=80,
+            max_dp=100,
+            dexterity=20,
+            participant_type=CombatParticipantType.PLAYER,
+        )
+
+        CombatInitializer.add_participant(combat, joiner)
+
+        assert len(combat.participants) == 3
+        assert combat.participants[joiner.participant_id].name == "Player2"
+        assert combat.participants[joiner.participant_id].participant_type == CombatParticipantType.PLAYER
+        assert combat.turn_order == [
+            joiner.participant_id,
+            attacker_data.participant_id,
+            target_data.participant_id,
+        ]
+
     def test_create_combat_instance_participants(self, attacker_data, target_data):
         """Test create_combat_instance adds participants correctly."""
         combat = CombatInitializer.create_combat_instance(

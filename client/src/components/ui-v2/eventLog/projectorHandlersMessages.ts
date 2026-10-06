@@ -328,6 +328,9 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     });
     return { ...prevState, messages: appendMessage(prevState.messages, msg) };
   },
+  combat_participant_joined(prevState, event) {
+    return messageHandlers.combat_target_switch!(prevState, event);
+  },
 
   intentional_disconnect(prevState, event) {
     const message = (event.data as { message?: string }).message || 'You have disconnected from the game.';
