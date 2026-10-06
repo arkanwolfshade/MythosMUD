@@ -122,7 +122,7 @@ Cleans build artifacts and temporary files.
 
 PowerShell 5.1 or higher (for PowerShell scripts)
 
-- Python 3.12+ (for Python scripts)
+- Python 3.14+ (for Python scripts)
 - Node.js 18+ (for client development)
 
 ## Notes

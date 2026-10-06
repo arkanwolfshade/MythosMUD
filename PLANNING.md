@@ -240,7 +240,7 @@ When multiple tasks are pending, prioritize in this order:
 | Layer           | Technology                    | Status         | Notes                                       |
 | --------------- | ----------------------------- | -------------- | ------------------------------------------- |
 | Front-End       | React 19 + TypeScript         | ✅ Implemented | Vite 7, Panel-based UI                      |
-| Back-End        | Python 3.12+ (FastAPI 0.119+) | ✅ Implemented | Async, type-safe                            |
+| Back-End        | Python 3.14+ (FastAPI 0.119+) | ✅ Implemented | Async, type-safe                            |
 | Real-Time       | WebSocket + SSE + NATS        | ✅ Implemented | Dual connection system, pub/sub messaging   |
 | Database        | PostgreSQL                    | ✅ Implemented | Development, tests, and production          |
 | Auth            | FastAPI Users                 | ✅ Implemented | Argon2 password hashing, invite-only system |

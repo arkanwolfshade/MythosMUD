@@ -25,7 +25,7 @@ and COPPA compliance are mandatory.
 
 ## Stack
 
-- **Backend**: Python 3.12+, FastAPI, Pydantic, SQLAlchemy, asyncpg, AnyIO
+- **Backend**: Python 3.14+, FastAPI, Pydantic, SQLAlchemy, asyncpg, AnyIO
 - **Frontend**: React, TypeScript, Vite
 - **Database**: PostgreSQL only (`mythos_unit`, `mythos_e2e` for tests; `mythos_dev` protected)
 - **Tooling**: uv (Python), ruff (lint/format), mypy, pre-commit, ESLint, Prettier

@@ -24,7 +24,7 @@ The following Codacy CLI commands will **overwrite** this file and remove manual
 - **Trivy**: kept in `.codacy/codacy.yaml` under `tools:` for **Codacy** (cloud analysis and
   `codacy_cli_analyze` with `tool: trivy`). See the comment block at the top of `codacy.yaml` for why both exist.
 
-**Python Version**: 3.12.10 (matches project Python version)
+**Python Version**: 3.14.7 (matches project Python version)
 
 **Node Version**: 24.11.0 (matches project Node version from .nvmrc)
 
@@ -60,7 +60,7 @@ The following Codacy CLI commands will **overwrite** this file and remove manual
 1. **Manually edit** `.codacy/codacy.yaml`
 2. **Do NOT** run `config discover` or `init` commands
 3. **Preserve** the `lizard@1.17.31` tool entry
-4. **Keep** Python version at 3.12.10
+4. **Keep** Python version at 3.14.7
 5. **Keep** Node version at 24.11.0 (matches project Node version from .nvmrc)
 6. **Maintain** all tools listed in the MythosMUD Codacy coding standard
 
@@ -81,7 +81,7 @@ If this file is modified by Codacy extension or CLI:
 
    - `shellcheck`, `spectral`, `sqlfluff`, `sqlint`, `stylelint`, `trivy` (Codacy; local SCA: `make grype`)
 
-5. **Check Python version**: Should be `3.12.10`, not `3.11.11`
+5. **Check Python version**: Should be `3.14.7`, not `3.11.11`
 6. **Check Node version**: Should be `24.11.0` (matches `.nvmrc`), not `22.2.0`
 
 ## 🔍 Troubleshooting

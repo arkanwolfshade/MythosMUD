@@ -73,7 +73,7 @@ combat.
 **Tech Stack:**
 
 - Frontend: React 19+ + TypeScript 6+ (Vite 8+)
-- Backend: Python 3.12+ (FastAPI 0.128+)
+- Backend: Python 3.14+ (FastAPI 0.128+)
 - Database: PostgreSQL (development, tests, and production)
 - Real-time: WebSockets + NATS messaging
 - Authentication: FastAPI Users + Argon2 + JWT
@@ -211,7 +211,7 @@ See [DEVELOPMENT.md](docs/DEVELOPMENT.md) or [CONTRIBUTING.md](CONTRIBUTING.md) 
 ### Quickstart
 
 1. **Prerequisites:**
-   - Python 3.12+ (managed via pyenv-win recommended)
+   - Python 3.14+ (`uv python install` reads the pinned version from `.python-version`)
    - Node.js 22+ and npm (NVM for Windows recommended)
    - PostgreSQL 15+ (required for development and tests)
    - [uv](https://github.com/astral-sh/uv) for Python dependency management

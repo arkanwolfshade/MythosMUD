@@ -38,7 +38,7 @@ body:
       description: What environment are you using?
       placeholder: |
         - OS: Windows/Mac/Linux
-        - Python version: 3.12
+        - Python version: 3.14
         - Node version: 22
         - Browser: Chrome 120
     validations:

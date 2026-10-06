@@ -132,7 +132,7 @@ Before you begin your research, ensure you have the proper tools:
 
 **Required Software**:
 
-**Python 3.12+** (managed via pyenv-win recommended)
+**Python 3.14+** (`uv python install` reads the pinned version from `.python-version`)
 
 **Node.js 22+** and npm (NVM for Windows recommended)
 

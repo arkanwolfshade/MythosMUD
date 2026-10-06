@@ -132,9 +132,10 @@ jobs:
           cd ..
 
       - name: Set up Python
+        id: setup-python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
-          python-version: "3.12"
+          python-version-file: ".python-version"
       # Pinned uv binary (scripts/ensure_uv_ci.sh) avoids curl|sh install.sh (supply-chain).
       - name: Install uv (pinned, SHA256-verified)
         run: |
@@ -145,9 +146,11 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .venv-ci
-          key: ${{ runner.os }}-uv-${{ hashFiles('**/pyproject.toml', '**/uv.lock') }}
+          # Interpreter version is part of the key AND the restore prefix: a venv built on another
+          # Python (e.g. 3.12) must never be restored, since the install step skips rebuilding a valid-looking venv.
+          key: ${{ runner.os }}-py${{ steps.setup-python.outputs.python-version }}-uv-${{ hashFiles('**/pyproject.toml', '**/uv.lock') }}
           restore-keys: |
-            ${{ runner.os }}-uv-
+            ${{ runner.os }}-py${{ steps.setup-python.outputs.python-version }}-uv-
       - name: Install dependencies
         run: |
           # UV_PROJECT_ENVIRONMENT tells uv venv to create .venv-ci instead of .venv.
@@ -169,6 +172,14 @@ jobs:
           uv pip install --python .venv-ci/bin/python "pytest-mock>=3.14.0"
           # Verify pytest was installed correctly and show where it's installed
           python -c "import pytest, sys, site; print(f'pytest {pytest.__version__}'); print(f'Python: {sys.executable}'); print(f'Site-packages: {site.getsitepackages()[0] if site.getsitepackages() else site.getusersitepackages()}')"
+      - name: Verify venv Python matches .python-version
+        run: |
+          expected="Python $(tr -d '[:space:]' < .python-version)"
+          actual="$(.venv-ci/bin/python --version)"
+          if [ "${actual}" != "${expected}" ]; then
+            echo "::error::venv-ci is '${actual}' but .python-version pins '${expected}'"
+            exit 1
+          fi
       - name: Lint with ruff
         run: |
           source .venv-ci/bin/activate

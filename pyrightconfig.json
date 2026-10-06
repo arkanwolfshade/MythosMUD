@@ -1,6 +1,6 @@
 {
   "extends": "./pyproject.toml",
-  "pythonVersion": "3.12",
+  "pythonVersion": "3.14",
   "venvPath": ".",
   "venv": ".venv",
   "extraPaths": ["."]
