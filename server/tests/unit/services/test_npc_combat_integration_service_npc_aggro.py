@@ -178,8 +178,8 @@ async def test_handle_npc_attack_on_player_invalid_location(integration_service:
     integration_service._combat_service.get_combat_by_participant = AsyncMock(
         return_value=MagicMock(combat_id=combat_id)
     )
-    mock_end_combat: AsyncMock = AsyncMock()
-    integration_service._combat_service.end_combat = mock_end_combat
+    mock_remove_participant: AsyncMock = AsyncMock()
+    integration_service._combat_service.remove_participant = mock_remove_participant
 
     result = await integration_service.handle_npc_attack_on_player(
         npc_id=npc_id,
@@ -191,7 +191,7 @@ async def test_handle_npc_attack_on_player_invalid_location(integration_service:
 
     assert result is False
     mock_start_combat.assert_not_awaited()
-    mock_end_combat.assert_awaited_once()
+    mock_remove_participant.assert_awaited_once()
 
 
 @pytest.mark.asyncio

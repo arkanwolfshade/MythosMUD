@@ -13,6 +13,7 @@ from server.game.weapons import resolve_weapon_attack_from_equipped
 from server.models.combat import CombatParticipantType
 from server.npc.combat_integration import NPCCombatIntegration
 from server.schemas.shared import TargetType
+from server.services.combat_types import AlreadyEngagedError
 from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -171,6 +172,8 @@ async def _execute_combat_action(
             )
             return {"result": f"You cannot attack {npc_name} right now."}
         return {"result": f"You {command} {npc_name}!"}
+    except AlreadyEngagedError as engaged:
+        return {"result": f"You're already fighting {engaged.foe_name}."}
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Combat action errors unpredictable
         logger.error("Error executing combat action", error=str(e), exc_info=True)
         return {"result": f"Error executing {command} command"}

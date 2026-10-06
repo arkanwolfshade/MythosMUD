@@ -52,6 +52,7 @@ export const PROJECTED_EVENT_TYPES = new Set([
   'npc_died',
   'combat_death',
   'combat_target_switch',
+  'combat_participant_joined',
   'lucidity_change',
   'luciditychange',
   'intentional_disconnect',

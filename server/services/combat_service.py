@@ -551,6 +551,38 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         """Remove combat from tracking dictionaries."""
         self._cleanup_handler.cleanup_combat_tracking(combat)
 
+    async def register_joined_participant(self, combat: CombatInstance, participant_id: UUID, room_id: str) -> None:
+        """Track one player who joined a running combat (#833); mirrors the player branch of register_combat_state."""
+        participant = combat.participants[participant_id]
+        self._player_combats[participant_id] = combat.combat_id
+        if self._player_combat_service:
+            await self._player_combat_service.track_player_combat_state(
+                player_id=participant_id,
+                player_name=participant.name,
+                combat_id=combat.combat_id,
+                room_id=room_id,
+            )
+
+    async def join_combat(self, combat: CombatInstance, joiner: CombatParticipantData, room_id: str) -> None:
+        """Add a player to a combat already in progress (#833). Raises ValueError if they may not join."""
+        from server.services.combat_service_start import join_existing_combat
+
+        await join_existing_combat(self, combat, joiner, room_id)
+
+    async def untrack_participant(self, participant_id: UUID) -> None:
+        """Stop tracking a player who left a combat that continues without them (#833)."""
+        _ = self._player_combats.pop(participant_id, None)
+        if self._player_combat_service:
+            await self._player_combat_service.clear_player_combat_state(participant_id)
+
+    async def remove_participant(
+        self, combat_id: UUID, participant_id: UUID, reason: str = "Participant left combat"
+    ) -> bool:
+        """Remove a player from a combat; ends it only if no player is left (#833). True if it ended."""
+        from server.services.combat_service_end import remove_participant as remove_participant_impl
+
+        return await remove_participant_impl(self, combat_id, participant_id, reason)
+
     def check_connection_state(self, room_id: str) -> None:
         """Check connection state before publishing combat ended event."""
         self._cleanup_handler.check_connection_state(room_id)

@@ -12,6 +12,7 @@ from server.config import get_config
 from server.events.combat_events import CombatStartedEvent
 from server.models.combat import CombatInstance
 from server.realtime.login_grace_period import is_player_in_login_grace_period
+from server.services.combat_initialization import CombatInitializer
 from server.services.combat_types import CombatParticipantData
 from server.services.nats_exceptions import NATSError
 from server.structured_logging.enhanced_logging_config import get_logger
@@ -149,6 +150,35 @@ async def register_combat(
 ) -> None:
     """Register combat instance and track player combat state."""
     await service.register_combat_state(combat, room_id)
+
+
+async def join_existing_combat(
+    service: CombatService,
+    combat: CombatInstance,
+    joiner: CombatParticipantData,
+    room_id: str,
+) -> None:
+    """
+    Add a player to a combat already in progress (#833).
+
+    Same room only, never into a phantom encounter (ADR-024 hallucinations are per-player), and the joiner
+    must not already be fighting. The joiner's first action is queued by the caller for the next round.
+
+    Raises:
+        ValueError: if any of those rules is broken.
+    """
+    from server.models.combat import CombatParticipantType  # noqa: PLC0415  # Avoid circular import
+
+    if str(combat.room_id) != str(room_id):
+        raise ValueError("Combat is in another room")
+    if any(p.participant_type == CombatParticipantType.PHANTOM for p in combat.participants.values()):
+        raise ValueError("Cannot join a phantom encounter")
+    if joiner.participant_id in combat.participants or await service.get_combat_by_participant(joiner.participant_id):
+        raise ValueError("Participant is already in combat")
+
+    CombatInitializer.add_participant(combat, joiner)
+    await service.register_joined_participant(combat, joiner.participant_id, room_id)
+    logger.info("Participant joined combat", combat_id=combat.combat_id, participant=joiner.name, room_id=room_id)
 
 
 async def publish_combat_started_event(service: CombatService, combat: CombatInstance, room_id: str) -> None:

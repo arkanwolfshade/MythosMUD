@@ -306,11 +306,17 @@ def _should_continue_player_turn(combat: CombatInstance, player: CombatParticipa
 
 
 def _select_player_target(combat: CombatInstance, player: CombatParticipant) -> CombatParticipant | None:
-    """Select first non-self participant as target."""
-    for participant in combat.participants.values():
-        if participant.participant_id != player.participant_id:
-            return participant
-    return None
+    """Select the player's tracked target, else the first living foe (#833: never an ally)."""
+    tracked_id = combat.player_current_target.get(player.participant_id)
+    tracked = combat.participants.get(tracked_id) if tracked_id is not None else None
+    if tracked is not None and not tracked.is_dead():
+        return tracked
+    others = [p for p in combat.participants.values() if p.participant_id != player.participant_id]
+    foes = [p for p in others if p.participant_type != CombatParticipantType.PLAYER]
+    if foes:
+        return next((p for p in foes if not p.is_dead()), None)
+    # No non-player side (player-vs-player): keep the legacy first-other pick.
+    return others[0] if others else None
 
 
 def _should_skip_for_casting(combat_service: CombatService, player: CombatParticipant, current_tick: int) -> bool:

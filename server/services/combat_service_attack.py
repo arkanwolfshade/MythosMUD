@@ -85,6 +85,12 @@ async def queue_combat_action(
         spell_name=spell_name,
     )
     combat.queue_action(participant_id, action)
+    if (
+        action_type == "attack"
+        and target_id is not None
+        and combat.participants[participant_id].participant_type == CombatParticipantType.PLAYER
+    ):
+        combat.player_current_target[participant_id] = target_id  # #833: read by auto-attack and assist
     logger.info(
         "Combat action queued",
         combat_id=combat_id,
@@ -207,16 +213,36 @@ async def apply_damage_and_check_involuntary_flee(
         damage=damage,
         max_dp=target.max_dp,
     )
-    await service.end_combat(combat.combat_id, f"{target.name} flees in terror from the attack")
+    combat_ended = await service.remove_participant(
+        combat.combat_id, target.participant_id, f"{target.name} flees in terror from the attack"
+    )
     early = CombatResult(
         success=True,
         damage=damage,
         target_died=False,
-        combat_ended=True,
+        combat_ended=combat_ended,
         message=f"{target.name} flees in panic from {current_participant.name}'s attack!",
         combat_id=combat.combat_id,
     )
     return (target_died, target_mortally_wounded, early)
+
+
+def _xp_recipients(
+    combat: CombatInstance, killer: CombatParticipant, target: CombatParticipant
+) -> list[CombatParticipant]:
+    """
+    Who is paid when ``target`` dies (#833): every living player still in the fight, each the full reward.
+
+    Mortally wounded players (0 DP) still count; anyone who fled or was removed is gone from the roster. For a
+    non-NPC target (a player died) the killer alone is returned, which keeps the old no-op behaviour.
+    """
+    if target.participant_type != CombatParticipantType.NPC:
+        return [killer]
+    players = [p for p in combat.participants.values() if p.participant_type == CombatParticipantType.PLAYER]
+    recipients = [p for p in players if not p.is_dead()]
+    if killer.participant_type == CombatParticipantType.PLAYER and killer not in recipients:
+        recipients.append(killer)
+    return recipients
 
 
 async def finalize_attack_result(
@@ -264,7 +290,8 @@ async def finalize_attack_result(
     )
     result.xp_awarded = xp_awarded if xp_awarded is not None else 0
     if target_died:
-        await service.award_xp_to_player(current_participant, target, target_id, result.xp_awarded)
+        for recipient in _xp_recipients(combat, current_participant, target):
+            await service.award_xp_to_player(recipient, target, target_id, result.xp_awarded)
     await service.handle_combat_completion(combat, combat_ended)
     return result
 

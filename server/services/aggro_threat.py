@@ -185,7 +185,19 @@ def clear_aggro_for_combat(combat: CombatInstance) -> None:
     """Clear all aggro state for this combat (call on combat end)."""
     combat.npc_hate_lists.clear()
     combat.npc_current_target.clear()
+    combat.player_current_target.clear()
     logger.debug("Aggro cleared for combat", combat_id=str(combat.combat_id))
+
+
+def remove_entity_from_aggro(combat: CombatInstance, entity_id: UUID) -> None:
+    """Drop one departed participant from every hate list and from both current-target maps (#833)."""
+    for hate in combat.npc_hate_lists.values():
+        _ = hate.pop(entity_id, None)
+    _ = combat.npc_hate_lists.pop(entity_id, None)
+    for targets in (combat.npc_current_target, combat.player_current_target):
+        _ = targets.pop(entity_id, None)
+        for holder in [k for k, v in targets.items() if v == entity_id]:
+            del targets[holder]
 
 
 def _select_top_alive_candidate(

@@ -129,16 +129,46 @@ class CombatBroadcastMixin(HasConnectionManager):
         log_room_broadcast_result("Combat attack broadcast", room_id, cast(dict[str, Any], broadcast_stats))
         return cast(dict[str, Any], broadcast_stats)
 
+    async def _broadcast_combat_event(
+        self,
+        event_type: str,
+        room_id: str,
+        data: dict[str, object],
+        label: str,
+        exclude_player: str | None = None,
+    ) -> dict[str, object]:
+        """Build one combat event and send it to the room, optionally skipping one player."""
+        event = build_event(event_type, data, room_id=room_id)
+        broadcast_stats = await self.connection_manager.broadcast_to_room(room_id, event, exclude_player=exclude_player)
+        stats = cast(dict[str, object], broadcast_stats)
+        log_room_broadcast_result(label, room_id, stats)
+        return stats
+
     async def broadcast_combat_target_switch(
         self, room_id: str, combat_id: str, npc_name: str, new_target_name: str
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         """Broadcast one short room message when an NPC switches aggro target (ADR-016)."""
         room_message = f"{npc_name} turns its gaze to {new_target_name}."
-        event = build_event(
+        return await self._broadcast_combat_event(
             "combat_target_switch",
+            room_id,
             {"combat_id": combat_id, "npc_name": npc_name, "new_target_name": new_target_name, "message": room_message},
-            room_id=room_id,
+            "Combat target switch broadcast",
         )
-        broadcast_stats = await self.connection_manager.broadcast_to_room(room_id, event)
-        log_room_broadcast_result("Combat target switch broadcast", room_id, cast(dict[str, Any], broadcast_stats))
-        return cast(dict[str, Any], broadcast_stats)
+
+    async def broadcast_player_joined_combat(
+        self, room_id: str, combat_id: str, player_name: str, npc_name: str, player_id: str
+    ) -> dict[str, object]:
+        """Broadcast one room line when a player joins a fight already under way (#833). The joiner is excluded."""
+        return await self._broadcast_combat_event(
+            "combat_participant_joined",
+            room_id,
+            {
+                "combat_id": combat_id,
+                "player_name": player_name,
+                "npc_name": npc_name,
+                "message": f"{player_name} joins the fight against {npc_name}!",
+            },
+            "Combat join broadcast",
+            exclude_player=player_id,
+        )

@@ -11,7 +11,7 @@ from uuid import UUID
 from structlog.stdlib import BoundLogger
 
 from ..app.game_tick_counter import get_current_tick
-from ..models.combat import CombatResult
+from ..models.combat import CombatInstance, CombatResult
 from ..structured_logging.enhanced_logging_config import get_logger
 from .combat_messaging_integration import CombatMessagingIntegration
 from .combat_service import CombatService
@@ -50,6 +50,18 @@ class _NPCCombatIntegrationDeps(Protocol):
         current_tick: int,
     ) -> CombatResult:
         """Start a new combat from mixin combat pipeline."""
+        raise NotImplementedError
+
+    async def join_existing_combat_for_mixin(
+        self,
+        player_id: str,
+        room_id: str,
+        attacker_uuid: UUID,
+        target_uuid: UUID,
+        damage: int,
+        combat: CombatInstance,
+    ) -> CombatResult:
+        """Join the combat the target NPC is already in (#833)."""
         raise NotImplementedError
 
 
@@ -124,6 +136,16 @@ class NPCCombatIntegrationCombatMixin:
         combat_service = self.get_combat_service()
         existing_combat = await combat_service.get_combat_by_participant(attacker_uuid)
         if existing_combat:
+            if target_uuid not in existing_combat.participants:
+                # #833: one NPC per combat; an engaged player cannot queue an attack on a foe outside their fight.
+                return CombatResult(
+                    success=False,
+                    damage=0,
+                    target_died=False,
+                    combat_ended=False,
+                    message="Already fighting another foe",
+                    combat_id=existing_combat.combat_id,
+                )
             queued = await combat_service.queue_combat_action(
                 combat_id=existing_combat.combat_id,
                 participant_id=attacker_uuid,
@@ -150,8 +172,49 @@ class NPCCombatIntegrationCombatMixin:
 
             logger.warning("Failed to queue action, executing immediately", participant_id=attacker_uuid)
             return await combat_service.process_attack(attacker_id=attacker_uuid, target_id=target_uuid, damage=damage)
+        target_combat = await combat_service.get_combat_by_participant(target_uuid)
+        if target_combat:
+            return await self.join_existing_combat_for_mixin(
+                player_id, room_id, attacker_uuid, target_uuid, damage, target_combat
+            )
         return await self.start_new_combat_for_mixin(
             player_id, room_id, attacker_uuid, target_uuid, damage, npc_instance, current_tick
+        )
+
+    async def join_existing_combat_for_mixin(
+        self: _NPCCombatIntegrationDeps,
+        player_id: str,
+        room_id: str,
+        attacker_uuid: UUID,
+        target_uuid: UUID,
+        damage: int,
+        combat: CombatInstance,
+    ) -> CombatResult:
+        """Join the combat the target NPC is already in (#833); the first attack is queued for the next round."""
+        data_provider = self.get_data_provider()
+        player_name = await data_provider.get_player_name(player_id)
+        attacker_data = await data_provider.get_player_combat_data(player_id, attacker_uuid, player_name)
+
+        combat_service = self.get_combat_service()
+        await combat_service.join_combat(combat, attacker_data, room_id)
+        _ = await combat_service.queue_combat_action(
+            combat_id=combat.combat_id,
+            participant_id=attacker_uuid,
+            action_type="attack",
+            target_id=target_uuid,
+            damage=damage,
+        )
+        npc = combat.participants.get(target_uuid)
+        _ = await self.get_messaging_integration().broadcast_player_joined_combat(
+            room_id, str(combat.combat_id), player_name, npc.name if npc else "the creature", player_id
+        )
+        return CombatResult(
+            success=True,
+            damage=0,
+            target_died=False,
+            combat_ended=False,
+            message="Joined combat; attack queued for next round",
+            combat_id=combat.combat_id,
         )
 
     async def start_new_combat_for_mixin(

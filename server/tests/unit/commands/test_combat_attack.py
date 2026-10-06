@@ -13,6 +13,7 @@ import pytest
 from server.commands import combat_attack
 from server.models.combat import CombatResult
 from server.schemas.shared.target_resolution import TargetType
+from server.services.combat_types import AlreadyEngagedError
 
 # pylint: disable=redefined-outer-name,protected-access
 # Reason: pytest fixtures; tests call combat_attack private helpers (no public test seam).
@@ -144,6 +145,22 @@ async def test_execute_combat_action_failure_message(mock_handler: MagicMock) ->
     with patch("server.commands.combat_attack._resolve_combat_damage", return_value=5):
         out = await combat_attack._execute_combat_action(mock_handler, "hero", "n1", "punch", "r1", npc_instance=npc)
     assert "cannot attack" in out["result"].lower()
+
+
+@pytest.mark.asyncio
+async def test_execute_combat_action_reports_the_foe_when_already_engaged(mock_handler: MagicMock) -> None:
+    """#833: an engaged player is told which foe they are on, not the generic 'cannot attack' line."""
+    persistence: MagicMock = MagicMock()
+    persistence.get_player_by_name = AsyncMock(return_value=MagicMock(player_id="pid"))
+    mock_handler.persistence = persistence
+    npc_combat_service: MagicMock = MagicMock()
+    npc_combat_service.handle_player_attack_on_npc = AsyncMock(side_effect=AlreadyEngagedError("Ghoul"))
+    mock_handler.npc_combat_service = npc_combat_service
+    npc = MagicMock()
+    npc.name = "Orc"
+    with patch("server.commands.combat_attack._resolve_combat_damage", return_value=5):
+        out = await combat_attack._execute_combat_action(mock_handler, "hero", "n1", "punch", "r1", npc_instance=npc)
+    assert out["result"] == "You're already fighting Ghoul."
 
 
 @pytest.mark.asyncio
