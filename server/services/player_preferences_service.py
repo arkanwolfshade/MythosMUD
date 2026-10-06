@@ -437,7 +437,7 @@ class PlayerPreferencesService:
             try:
                 uuid.UUID(player_id)
                 return True
-            except (ValueError, AttributeError, TypeError):
+            except ValueError, AttributeError, TypeError:
                 return False
 
         # Type signature guarantees player_id is uuid.UUID | str, so all cases are handled above
@@ -475,5 +475,5 @@ class PlayerPreferencesService:
         try:
             parsed = json.loads(json_str)
             return isinstance(parsed, list)
-        except (json.JSONDecodeError, TypeError):
+        except json.JSONDecodeError, TypeError:
             return False

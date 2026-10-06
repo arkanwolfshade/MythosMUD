@@ -63,7 +63,7 @@ class SafeRotatingFileHandler(RotatingFileHandler):
                 # Double-check directory exists right before opening
                 ensure_log_directory(log_path)
                 return super()._open()
-            except (FileNotFoundError, OSError):
+            except FileNotFoundError, OSError:
                 # Directory might have been deleted, will retry on next iteration
                 if attempt == max_retries - 1:
                     # Final attempt failed - try one more time with directory creation
@@ -73,7 +73,7 @@ class SafeRotatingFileHandler(RotatingFileHandler):
                         # One more directory check right before opening
                         ensure_log_directory(log_path)
                         return super()._open()
-                    except (FileNotFoundError, OSError):  # pylint: disable=try-except-raise  # Reason: Final fallback returns StringIO instead of raising to prevent infinite recursion in logging error handling
+                    except FileNotFoundError, OSError:  # pylint: disable=try-except-raise  # Reason: Final fallback returns StringIO instead of raising to prevent infinite recursion in logging error handling
                         # If still failing after all retries, return a no-op StringIO as fallback
                         # This prevents infinite recursion when logging errors
                         # The logging system will handle this gracefully
@@ -114,7 +114,7 @@ class SafeRotatingFileHandler(RotatingFileHandler):
             # between the check above and when parent tries to open the file
             try:
                 return bool(super().shouldRollover(record))
-            except (FileNotFoundError, OSError):
+            except FileNotFoundError, OSError:
                 # Directory might have been deleted, will retry on next iteration
                 if attempt == max_retries - 1:
                     # Final attempt failed - return False (no rollover) rather than raising
@@ -220,7 +220,7 @@ def _instantiate_aggregator_handler(
     ensure_log_directory(log_path)
     try:
         return handler_class(log_path, maxBytes=max_bytes, backupCount=backup_count, encoding="utf-8")
-    except (FileNotFoundError, OSError):
+    except FileNotFoundError, OSError:
         # If directory doesn't exist or was deleted, recreate it and try again
         ensure_log_directory(log_path)
         return handler_class(log_path, maxBytes=max_bytes, backupCount=backup_count, encoding="utf-8")

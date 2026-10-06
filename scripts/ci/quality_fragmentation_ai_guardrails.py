@@ -252,7 +252,7 @@ def _build_python_call_usage_map(python_texts: list[tuple[str, str]]) -> dict[st
             with warnings.catch_warnings():
                 warnings.filterwarnings("ignore", category=SyntaxWarning)
                 tree = ast.parse(text, filename=path)
-        except (SyntaxError, ValueError, TypeError):
+        except SyntaxError, ValueError, TypeError:
             continue
         for node in (n for n in ast.walk(tree) if isinstance(n, ast.Call)):
             call_name = _call_target_name(node)

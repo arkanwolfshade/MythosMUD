@@ -263,10 +263,10 @@ class NPCCombatDataProvider:
                     # Appropriate because: aggression_level's whole point is to clamp/validate
                     # this loosely-typed config value, so accepting object here is correct.
                     aggression_level = max(0, min(10, int(raw)))  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType]  # Reason: CHECKER_CONFLICT:call-overload - mypy rejects int(object) statically; basedpyright is authoritative and the surrounding try/except guards the runtime case.
-                except (TypeError, ValueError):
+                except TypeError, ValueError:
                     pass
             return behavior_snapshot, aggression_level
-        except (ValueError, AttributeError, TypeError):
+        except ValueError, AttributeError, TypeError:
             return None, None
 
     def get_npc_combat_data(self, npc_instance: Any, target_uuid: UUID) -> CombatParticipantData:

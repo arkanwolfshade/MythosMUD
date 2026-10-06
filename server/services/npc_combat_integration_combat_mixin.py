@@ -203,7 +203,7 @@ class NPCCombatIntegrationCombatMixin:
                     )
                     if isinstance(current_rid_raw, str):
                         broadcast_room_id = current_rid_raw
-                except (ValueError, TypeError, AttributeError):
+                except ValueError, TypeError, AttributeError:
                     pass
             await broadcast_room_update(
                 str(killer_id),

@@ -188,7 +188,7 @@ def configure_pool_settings(database_url: str) -> dict[str, object]:
                     "pool_timeout": db_config_dict["pool_timeout"],
                 }
             )
-        except (PydanticValidationError, ImportError, RuntimeError):
+        except PydanticValidationError, ImportError, RuntimeError:
             # Script or minimal env: use defaults so DB can connect without full AppConfig
             pool_kwargs.update(_DEFAULT_POOL_SETTINGS)
     return pool_kwargs

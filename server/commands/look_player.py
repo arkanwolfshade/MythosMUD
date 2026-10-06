@@ -76,7 +76,7 @@ async def _resolve_room_player(
         # Reason: DYNAMIC_DISPATCH - persistence is Any per this function's own parameter above.
         # Appropriate because: same unsuppressed convention as this function's own signature.
         return await persistence.get_player_by_id(player_id)  # pyright: ignore[reportAny]
-    except (ValueError, AttributeError):
+    except ValueError, AttributeError:
         logger.debug("Failed to get player", player_id=player_id_str, error="Invalid UUID or missing method")
         return None
 
@@ -161,7 +161,7 @@ def _player_id_uuid(target_player: Any) -> uuid.UUID | None:
     try:
         player_id = target_player.player_id
         return uuid.UUID(player_id) if isinstance(player_id, str) else player_id
-    except (ValueError, AttributeError, TypeError):
+    except ValueError, AttributeError, TypeError:
         return None
 
 
@@ -178,7 +178,7 @@ def _apply_grace_period_labels(player_name_display: str, target_player: Any, con
             player_name_display = f"{player_name_display} (linkdead)"
         if is_player_in_login_grace_period(player_id, connection_manager):
             player_name_display = f"{player_name_display} (warded)"
-    except (ValueError, AttributeError, ImportError, TypeError):
+    except ValueError, AttributeError, ImportError, TypeError:
         pass
     return player_name_display
 

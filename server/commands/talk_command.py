@@ -28,7 +28,7 @@ def _resolve_player_id(player: object) -> uuid.UUID | None:
         return raw
     try:
         return uuid.UUID(str(raw))
-    except (ValueError, TypeError):
+    except ValueError, TypeError:
         return None
 
 
@@ -78,7 +78,7 @@ async def _talk_with_npc(player: object, player_id: uuid.UUID, npc_name_arg: str
         return {"result": "That person has nothing to say."}
     try:
         definition_id = int(definition_id_str)
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         return {"result": "That person has nothing to say."}
 
     npc_id_raw = cast(object | None, getattr(npc, "npc_id", None))

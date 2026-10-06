@@ -394,7 +394,7 @@ class MessageFilteringHelper:
             # isn't a valid UUID so the lookup below simply misses, same as before.
             try:
                 receiver_lookup_key: uuid.UUID | str = uuid.UUID(receiver_id)
-            except (ValueError, AttributeError, TypeError):
+            except ValueError, AttributeError, TypeError:
                 receiver_lookup_key = receiver_id
             self._debug_dump_receiver_mute_cache(user_manager, receiver_lookup_key, receiver_id, sender_id)
 

@@ -143,7 +143,7 @@ def _code_tokens(content: str) -> list[tokenize.TokenInfo]:
             for tok in tokenize.generate_tokens(iter(content.splitlines(keepends=True)).__next__)
             if tok.type not in _SKIP_TOKEN_TYPES
         ]
-    except (tokenize.TokenError, IndentationError, SyntaxError):
+    except tokenize.TokenError, IndentationError, SyntaxError:
         # Unparsable file is not this guard's problem to diagnose; other tooling (ruff, basedpyright)
         # already fails the build on a syntax error.
         return []

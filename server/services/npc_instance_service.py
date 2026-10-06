@@ -216,7 +216,7 @@ class NPCInstanceService:
             combat_service = get_combat_service()
             if not (combat_service and combat_service.is_npc_in_combat_sync(npc_id)):
                 return None
-        except (ImportError, AttributeError, RuntimeError):
+        except ImportError, AttributeError, RuntimeError:
             return None
 
         npc_name = getattr(self.lifecycle_manager.active_npcs[npc_id], "name", "Unknown")
@@ -325,7 +325,7 @@ class NPCInstanceService:
                 if hasattr(npc_instance, "get_stats"):
                     try:
                         npc_stats_dict = npc_instance.get_stats()
-                    except (AttributeError, TypeError):
+                    except AttributeError, TypeError:
                         npc_stats_dict = getattr(npc_instance, "stats", {})
                 else:
                     npc_stats_dict = getattr(npc_instance, "stats", {})
@@ -390,7 +390,7 @@ class NPCInstanceService:
             if hasattr(npc_instance, "get_stats"):
                 try:
                     npc_stats_dict = npc_instance.get_stats()
-                except (AttributeError, TypeError):
+                except AttributeError, TypeError:
                     npc_stats_dict = getattr(npc_instance, "stats", {})
             else:
                 npc_stats_dict = getattr(npc_instance, "stats", {})

@@ -378,7 +378,7 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
                 if "+" in last_active_str or "-" in last_active_str[-6:]:
                     return datetime.fromisoformat(last_active_str)
                 return datetime.fromisoformat(last_active_str).replace(tzinfo=UTC)
-            except (ValueError, AttributeError):
+            except ValueError, AttributeError:
                 return None
 
         return None  # type: ignore[unreachable]  # Reason: Defensive programming fallback

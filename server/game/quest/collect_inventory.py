@@ -22,7 +22,7 @@ def _stack_quantity(stack: dict[str, Any]) -> int:
     """Return non-negative quantity for a stack."""
     try:
         qty = int(stack.get("quantity", 1) or 1)
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         return 1
     return max(qty, 0)
 

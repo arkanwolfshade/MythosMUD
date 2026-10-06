@@ -74,7 +74,7 @@ class EventBusLifecycleMixin(EventBusMixinBase):
         self._shutdown_event.set()
         try:
             self._event_queue.put_nowait(None)  # Sentinel to wake up waiting task
-        except (asyncio.QueueFull, RuntimeError, AttributeError):
+        except asyncio.QueueFull, RuntimeError, AttributeError:
             # Queue is full, closed, or doesn't exist - task will wake up on timeout or cancellation
             pass
 
@@ -84,7 +84,7 @@ class EventBusLifecycleMixin(EventBusMixinBase):
             try:
                 if self._processing_task.cancel():
                     _ = await asyncio.wait_for(self._processing_task, timeout=0.5)
-            except (TimeoutError, asyncio.CancelledError, RuntimeError):
+            except TimeoutError, asyncio.CancelledError, RuntimeError:
                 # Task was cancelled, timed out, or event loop is closing - expected
                 pass
 
@@ -93,7 +93,7 @@ class EventBusLifecycleMixin(EventBusMixinBase):
         try:
             if not task.done() and not task.cancel():
                 return
-        except (RuntimeError, AttributeError):
+        except RuntimeError, AttributeError:
             pass
 
     async def _abandon_pending_tasks(self, pending: set[asyncio.Task[object]]) -> None:
@@ -102,7 +102,7 @@ class EventBusLifecycleMixin(EventBusMixinBase):
             self._cancel_task_quietly(task)
         try:
             _ = await asyncio.wait_for(asyncio.gather(*pending, return_exceptions=True), timeout=0.2)
-        except (TimeoutError, RuntimeError, asyncio.CancelledError):
+        except TimeoutError, RuntimeError, asyncio.CancelledError:
             pass
 
     async def _cancel_and_wait_for_active_tasks(self) -> None:
@@ -122,7 +122,7 @@ class EventBusLifecycleMixin(EventBusMixinBase):
             )
             if pending:
                 await self._abandon_pending_tasks(pending)
-        except (RuntimeError, asyncio.CancelledError, AttributeError):
+        except RuntimeError, asyncio.CancelledError, AttributeError:
             pass
 
     def _finalize_shutdown(self) -> None:
@@ -218,7 +218,7 @@ class EventBusLifecycleMixin(EventBusMixinBase):
             if not loop.is_closed():
                 for task in list(self._active_tasks):
                     self._cancel_task_quietly(task)
-        except (RuntimeError, Exception):  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Event loop cleanup errors unpredictable, must handle gracefully
+        except RuntimeError, Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Event loop cleanup errors unpredictable, must handle gracefully
             pass
         finally:
             self._active_tasks.clear()

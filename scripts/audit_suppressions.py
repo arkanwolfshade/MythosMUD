@@ -92,7 +92,7 @@ def find_suppressions(file_path: Path, patterns: list[tuple[str, str]]) -> list[
 
     try:
         content = file_path.read_text(encoding="utf-8")
-    except (UnicodeDecodeError, PermissionError):
+    except UnicodeDecodeError, PermissionError:
         return suppressions
 
     for line_num, line in enumerate(content.splitlines(), start=1):

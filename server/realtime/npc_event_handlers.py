@@ -110,7 +110,7 @@ class NPCEventHandler:
         try:
             result: dict[str, Any] | None = cast(dict[str, Any] | None, json.loads(behavior_config))
             return result
-        except (json.JSONDecodeError, ValueError):
+        except json.JSONDecodeError, ValueError:
             return None
 
     def _extract_spawn_message_from_config(self, behavior_config: dict[str, Any]) -> str | None:
@@ -270,7 +270,7 @@ class NPCEventHandler:
                 # Reason: DYNAMIC_DISPATCH - json.loads() on an untyped string returns Any.
                 # Appropriate because: same unsuppressed convention as this function's own signature.
                 return json.loads(behavior_config)  # pyright: ignore[reportAny]
-            except (json.JSONDecodeError, ValueError):
+            except json.JSONDecodeError, ValueError:
                 return None
         # Reason: DYNAMIC_DISPATCH - behavior_config is Any per this function's own return type.
         # Appropriate because: same unsuppressed convention as this function's own signature.

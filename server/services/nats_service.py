@@ -353,7 +353,7 @@ class NATSService(NATSServicePoolMixin, NATSServiceSubscriptionMixin):  # pylint
         # Give them a brief moment to cancel
         try:
             _ = await asyncio.wait_for(asyncio.gather(*pending, return_exceptions=True), timeout=0.5)
-        except (TimeoutError, Exception):  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Task cancellation errors unpredictable, must abandon remaining tasks on any error during shutdown
+        except TimeoutError, Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Task cancellation errors unpredictable, must abandon remaining tasks on any error during shutdown
             pass  # Abandon remaining tasks
 
     async def _cancel_background_tasks(self) -> None:

@@ -58,7 +58,7 @@ def log_failed_admin_move(
             error_message=str(error),
             additional_data=additional_data,
         )
-    except (OSError, AttributeError, TypeError):
+    except OSError, AttributeError, TypeError:
         pass  # Ignore logging errors if command itself failed
 
 

@@ -237,7 +237,7 @@ class GameStateProvider:
                 # Check login grace period (can have both indicators)
                 if is_player_in_login_grace_period(player_id_uuid, connection_manager):
                     player_name = f"{player_name} (warded)"
-        except (AttributeError, ImportError, TypeError, ValueError):
+        except AttributeError, ImportError, TypeError, ValueError:
             # If we can't check grace period, use name as-is
             pass
         return player_name
@@ -264,7 +264,7 @@ class GameStateProvider:
                     player_name = self._get_player_name_with_grace_periods(player_id_uuid, player_obj)
                     if player_name:
                         player_names.append(player_name)
-            except (ValueError, AttributeError):
+            except ValueError, AttributeError:
                 # Skip invalid UUIDs
                 pass
         room_data["players"] = player_names
@@ -353,7 +353,7 @@ class GameStateProvider:
                 occupant_name = f"{occupant_name} (linkdead)"
             if is_player_in_login_grace_period(occ_player_id_uuid, connection_manager):
                 occupant_name = f"{occupant_name} (warded)"
-        except (AttributeError, ImportError, TypeError, ValueError):
+        except AttributeError, ImportError, TypeError, ValueError:
             pass
         return occupant_name
 
@@ -406,7 +406,7 @@ class GameStateProvider:
             if isinstance(raw_stats, str):
                 try:
                     stats_data = json.loads(raw_stats)
-                except (ValueError, TypeError, json.JSONDecodeError):
+                except ValueError, TypeError, json.JSONDecodeError:
                     stats_data = {}
             elif isinstance(raw_stats, dict):
                 stats_data = raw_stats

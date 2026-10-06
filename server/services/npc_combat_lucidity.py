@@ -141,12 +141,12 @@ class NPCCombatLucidity:  # pylint: disable=too-few-public-methods  # Reason: Lu
 
         try:
             base_stats = npc_definition.get_base_stats()
-        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError):
+        except ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError:
             base_stats = {}
 
         try:
             behavior_config = npc_definition.get_behavior_config()
-        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError):
+        except ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError:
             behavior_config = {}
 
         for source in (base_stats, behavior_config):

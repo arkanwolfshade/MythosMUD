@@ -1022,7 +1022,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
                 return True
 
             return False
-        except (ValueError, TypeError):
+        except ValueError, TypeError:
             return False
 
     def get_who_muted_player(self, player_id: uuid.UUID | str) -> list[tuple[str, str]]:
@@ -1055,7 +1055,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
                     muted_by.append((muter_name, "personal"))
 
             return muted_by
-        except (ValueError, TypeError):
+        except ValueError, TypeError:
             return []
 
     def get_system_stats(self) -> dict[str, object]:

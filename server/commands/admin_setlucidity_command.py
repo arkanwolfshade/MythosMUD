@@ -50,7 +50,7 @@ def _extract_command_args(command_data: dict[str, Any]) -> tuple[str | None, int
             target_player = args[0] if not target_player else target_player
             try:
                 lcd_value = int(args[1])
-            except (ValueError, TypeError):
+            except ValueError, TypeError:
                 lcd_value = None
     return target_player, lcd_value
 
@@ -64,7 +64,7 @@ def _validate_lcd_value(lcd_value: Any, player_name: str) -> tuple[int | None, d
 
     try:
         lcd_value_int = int(lcd_value)
-    except (ValueError, TypeError):
+    except ValueError, TypeError:
         logger.warning("Admin setlucidity command with invalid LCD value", player_name=player_name, lcd_value=lcd_value)
         return None, {"result": f"Invalid LCD value '{lcd_value}'. LCD value must be an integer between -100 and 100."}
 
@@ -275,7 +275,7 @@ async def _execute_lucidity_change(  # pylint: disable=too-many-arguments,too-ma
                 success=False,
                 additional_data={"error": str(e), "error_type": type(e).__name__},
             )
-        except (OSError, AttributeError, TypeError):
+        except OSError, AttributeError, TypeError:
             pass  # Ignore logging errors if command itself failed
         return {"result": f"Error setting lucidity for {target_player}: {str(e)}"}
 

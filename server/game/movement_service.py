@@ -161,7 +161,7 @@ class MovementService(RoomOccupancyMixin):
             try:
                 player_uuid = uuid.UUID(player_id)
                 player = await self._persistence.get_player_by_id(player_uuid)
-            except (ValueError, AttributeError):
+            except ValueError, AttributeError:
                 player = await self._persistence.get_player_by_name(player_id)
                 if player:
                     self._logger.info("Resolved player by name", player_name=player_id, player_id=player.player_id)
@@ -175,7 +175,7 @@ class MovementService(RoomOccupancyMixin):
         resolved_player_id_str = str(player.player_id)
         try:
             resolved_player_id: uuid.UUID | str = uuid.UUID(resolved_player_id_str)
-        except (ValueError, AttributeError, TypeError):
+        except ValueError, AttributeError, TypeError:
             resolved_player_id = resolved_player_id_str
 
         if str(resolved_player_id) != str(player_id):
@@ -479,7 +479,7 @@ class MovementService(RoomOccupancyMixin):
             fresh = await self._persistence.get_player_by_id(player_id)
             if fresh is not None:
                 return fresh
-        except (DatabaseError, SQLAlchemyError):
+        except DatabaseError, SQLAlchemyError:
             pass
         return player_obj
 

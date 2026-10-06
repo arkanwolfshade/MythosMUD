@@ -41,7 +41,7 @@ class PlayerEventHandlerUtils:
         """
         try:
             return uuid.UUID(player_id) if isinstance(player_id, str) else player_id
-        except (ValueError, TypeError):
+        except ValueError, TypeError:
             self._logger.warning("Invalid player_id format, cannot convert to UUID", player_id=player_id)
             return None
 
@@ -240,7 +240,7 @@ class PlayerEventHandlerUtils:
         try:
             player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
             return player_id_uuid in self.connection_manager.disconnecting_players
-        except (ValueError, AttributeError):
+        except ValueError, AttributeError:
             return False
 
     def is_player_in_grace_period(self, player_id: uuid.UUID | str) -> bool:
@@ -259,5 +259,5 @@ class PlayerEventHandlerUtils:
         try:
             player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
             return is_player_in_grace_period(player_id_uuid, self.connection_manager)
-        except (ValueError, AttributeError, ImportError):
+        except ValueError, AttributeError, ImportError:
             return False

@@ -36,7 +36,7 @@ def _looks_like_player_uuid(value: object) -> bool:
         return False
     try:
         _ = uuid.UUID(value)
-    except (ValueError, TypeError):
+    except ValueError, TypeError:
         return False
     return True
 

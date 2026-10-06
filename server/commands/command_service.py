@@ -284,7 +284,7 @@ class CommandService:
                         error=str(e)[:200],  # Truncate to avoid encoding issues
                         log_error=str(log_error)[:200],
                     )
-                except (ValueError, TypeError, AttributeError, KeyError, RuntimeError):  # pylint: disable=broad-exception-caught  # noqa: B904                    # Last resort: silent failure to prevent test crashes
+                except ValueError, TypeError, AttributeError, KeyError, RuntimeError:  # pylint: disable=broad-exception-caught  # noqa: B904                    # Last resort: silent failure to prevent test crashes
                     # Using broad exception catch as this is defensive code to prevent cascading failures
                     pass
             return {"result": f"Error processing {command_type} command: {str(e)}"}

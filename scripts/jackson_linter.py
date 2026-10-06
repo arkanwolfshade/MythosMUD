@@ -70,7 +70,7 @@ def _first_fallback_encoding_that_parses(json_file: Path) -> str | None:
         try:
             with open(json_file, encoding=encoding) as f:
                 json.load(f)
-        except (UnicodeDecodeError, json.JSONDecodeError):
+        except UnicodeDecodeError, json.JSONDecodeError:
             continue
         return encoding
     return None

@@ -64,7 +64,7 @@ def _format_liabilities(liabilities: Iterable[LiabilityStackEntry] | None) -> li
         stacks = entry.get("stacks", 1)
         try:
             stacks_int = int(stacks)
-        except (TypeError, ValueError):
+        except TypeError, ValueError:
             stacks_int = 1
 
         if stacks_int > 1:

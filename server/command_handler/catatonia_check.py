@@ -85,7 +85,7 @@ def _check_catatonia_registry(state: object, player_id: uuid.UUID | str, player_
                 True,
                 "Your body lies unresponsive, trapped in catatonia. Another must ground you.",
             )
-    except (ImportError, AttributeError, TypeError, RuntimeError):  # pragma: no cover - defensive
+    except ImportError, AttributeError, TypeError, RuntimeError:  # pragma: no cover - defensive
         logger.exception("Catatonia registry lookup failed", player=player_name)
     return False, None
 

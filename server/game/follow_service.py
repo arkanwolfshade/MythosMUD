@@ -319,7 +319,7 @@ class FollowService:
                 followee = await self._async_persistence.get_player_by_id(uuid.UUID(tid))
                 if followee is not None and followee.name:
                     target_display_name = followee.name
-            except (ValueError, TypeError, AttributeError):
+            except ValueError, TypeError, AttributeError:
                 pass
         self._send_result_to_player(requestor_id, f"You are now following {target_display_name}.")
         self._send_result_to_player(tid, f"{requestor_name} is now following you.")
@@ -378,7 +378,7 @@ class FollowService:
                 follower = await self._async_persistence.get_player_by_id(uuid.UUID(follower_id))
                 if follower is not None and follower.name:
                     follower_name = follower.name
-            except (ValueError, TypeError, AttributeError):
+            except ValueError, TypeError, AttributeError:
                 pass
         self._send_result_to_player(followee_id, f"{follower_name} is no longer following you.")
 
@@ -421,7 +421,7 @@ class FollowService:
             if target_player is not None and target_player.name:
                 return target_player.name
             return target_id
-        except (ValueError, TypeError, AttributeError):
+        except ValueError, TypeError, AttributeError:
             return target_id
 
     async def _followers_display_line(
@@ -442,7 +442,7 @@ class FollowService:
                     names.append(player.name)
                 else:
                     names.append(pid)
-            except (ValueError, TypeError, AttributeError):
+            except ValueError, TypeError, AttributeError:
                 names.append(pid)
         return "Following you: " + ", ".join(names)
 

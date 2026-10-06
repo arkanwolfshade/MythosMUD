@@ -46,7 +46,7 @@ def is_shutdown_pending(app: Any) -> bool:
             return cast(bool, app.state.container.server_shutdown_pending)
         # Fallback to app.state for backward compatibility
         return getattr(app.state, "server_shutdown_pending", False)
-    except (AttributeError, OSError):
+    except AttributeError, OSError:
         return False
 
 
@@ -198,7 +198,7 @@ async def _cancel_existing_shutdown_task(app: Any) -> None:
         # Only await if it's actually a coroutine/task
         if asyncio.iscoroutine(existing_task) or asyncio.isfuture(existing_task):
             await existing_task
-    except (asyncio.CancelledError, RuntimeError):
+    except asyncio.CancelledError, RuntimeError:
         # Task was cancelled or already finished
         pass
 
@@ -247,7 +247,7 @@ async def _create_countdown_task(app: Any, countdown_coro: Any) -> asyncio.Task[
                     # If register_task didn't create a task (e.g., it's a mock), create one
                     countdown_task = loop.create_task(countdown_coro)
                 return countdown_task
-            except (AttributeError, RuntimeError, TypeError):
+            except AttributeError, RuntimeError, TypeError:
                 # register_task failed or is a mock that doesn't handle coroutines
                 return loop.create_task(countdown_coro)
         else:
@@ -468,7 +468,7 @@ async def _cancel_countdown_task(countdown_task: Any) -> None:
             # Only await if it's actually a coroutine/task
             if asyncio.iscoroutine(countdown_task) or asyncio.isfuture(countdown_task):
                 await countdown_task
-        except (asyncio.CancelledError, RuntimeError):
+        except asyncio.CancelledError, RuntimeError:
             # Task was cancelled or already finished
             pass
 

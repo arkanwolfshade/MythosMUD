@@ -154,7 +154,7 @@ def _get_item_description_from_prototype(
             item_name = fallback_name or "Unknown Item"
         description = prototype.long_description if prototype else "You see nothing remarkable about it."
         return f"{item_name}\n{description}"
-    except (AttributeError, TypeError, KeyError):
+    except AttributeError, TypeError, KeyError:
         item_name = item_found.get("item_name", item_found.get("name", fallback_name or "Unknown Item"))
         return f"{item_name}\nYou see nothing remarkable about it."
 

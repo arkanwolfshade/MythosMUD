@@ -55,12 +55,12 @@ def extract_user_id_from_non_mapping(user: object) -> object:
     if callable(get_fn):
         try:
             return get_fn("id")
-        except (AttributeError, KeyError, TypeError):
+        except AttributeError, KeyError, TypeError:
             return USER_ID_UNAVAILABLE
     if hasattr(user, "id"):
         try:
             return cast(_UserObjectWithId, user).id
-        except (AttributeError, TypeError):
+        except AttributeError, TypeError:
             return USER_ID_UNAVAILABLE
     return USER_ID_UNAVAILABLE
 

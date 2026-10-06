@@ -102,7 +102,7 @@ class CombatDeathHandler:
                 room = persistence.get_room_by_id(combat.room_id) if persistence else None
                 if room is not None and not hasattr(room, "__await__"):
                     death_location_display = format_room_location(room) or death_location_display
-            except (AttributeError, TypeError, RuntimeError, ValueError):
+            except AttributeError, TypeError, RuntimeError, ValueError:
                 pass
 
             # CRITICAL: Always send current_dp=-10 for death events, never use target.current_dp
@@ -158,7 +158,7 @@ class CombatDeathHandler:
                         AsyncPersistenceLayer | None,
                         getattr(container, "async_persistence", None) if container else None,
                     )
-                except (ImportError, AttributeError, RuntimeError, ValueError):
+                except ImportError, AttributeError, RuntimeError, ValueError:
                     pass
             else:
                 # resolved_connection_manager is already a cast(_ConnectionManagerLike | None, ...)

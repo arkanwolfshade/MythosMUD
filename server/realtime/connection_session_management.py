@@ -62,7 +62,7 @@ def _is_websocket_connected(websocket: WebSocket) -> bool:
     try:
         client_state_name: str = websocket.client_state.name
         return client_state_name == "CONNECTED"
-    except (AttributeError, ValueError, TypeError):
+    except AttributeError, ValueError, TypeError:
         return False
 
 

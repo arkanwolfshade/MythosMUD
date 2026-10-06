@@ -89,7 +89,7 @@ def _pickup_quantity_or_error(
         return qty_raw, None
     try:
         qty = coerce_int(qty_raw, default=0)
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         return None, {"result": "Quantity must be a positive number."}
     return qty, None
 

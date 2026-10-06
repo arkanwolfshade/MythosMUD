@@ -62,7 +62,7 @@ def _get_db_name_from_url(url: str) -> str:
         parsed = urlparse(url)
         path = (parsed.path or "").strip("/")
         return path.split("/")[0] if path else ""
-    except (ValueError, AttributeError, IndexError, TypeError):
+    except ValueError, AttributeError, IndexError, TypeError:
         return ""
 
 
@@ -285,7 +285,7 @@ async def db_cleanup(
         # Use session_factory from parameter (do not call getfixturevalue in teardown)
         async with session_factory() as session:
             await _delete_mutable_integration_test_rows(session)
-    except (RuntimeError, AttributeError):
+    except RuntimeError, AttributeError:
         # Event loop is closed or connection issues - this is expected on Windows
         # when the event loop closes before asyncpg connections are fully cleaned up
         # The data will be cleaned up by the next test's setup or manual cleanup

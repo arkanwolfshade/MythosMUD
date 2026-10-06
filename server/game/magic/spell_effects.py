@@ -272,7 +272,7 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
         max_dp = int(stats_after.get("max_dp", 0))
         try:
             npc_id_ev: uuid.UUID | str = uuid.UUID(str(target.target_id))
-        except (ValueError, TypeError):
+        except ValueError, TypeError:
             npc_id_ev = npc_instance.npc_id
 
         # Spell damage updates the live NPC instance first (take_damage). Combat UI and melee

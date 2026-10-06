@@ -318,7 +318,7 @@ def _persist_mythos_state_on_error() -> None:
         chronicle = get_mythos_chronicle()
         chronicle.freeze()
         logger.info("Mythos chronicle state persisted during error shutdown")
-    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError):
+    except AttributeError, KeyError, TypeError, ValueError, RuntimeError:
         logger.warning("Failed to persist mythos chronicle state during error shutdown")
 
 
@@ -328,7 +328,7 @@ async def _cleanup_container_on_error(container: ApplicationContainer | None) ->
         return
     try:
         await container.shutdown()
-    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError):
+    except AttributeError, KeyError, TypeError, ValueError, RuntimeError:
         pass
 
 

@@ -180,7 +180,7 @@ def _coerce_weapon_on_item(item_copy: dict[str, object]) -> None:
         return
     try:
         item_copy["weapon"] = weapon_stats_from_metadata(cast("dict[str, object]", weapon_raw))
-    except (ValidationError, TypeError):
+    except ValidationError, TypeError:
         # If weapon dict doesn't match WeaponStats, keep as dict (model may drop it)
         pass
 

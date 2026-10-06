@@ -59,7 +59,7 @@ async def _trigger_quests_for_room_on_spawn(player_id: uuid.UUID, room_id: str, 
         app = getattr(manager, "app", None)
         if app and getattr(app, "state", None) and getattr(app.state, "container", None):
             quest_service = getattr(app.state.container, "quest_service", None)
-    except (AttributeError, TypeError):
+    except AttributeError, TypeError:
         pass
     if not quest_service:
         return

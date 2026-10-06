@@ -59,14 +59,14 @@ class RoomOccupancyMixin:
         if isinstance(player_id, str):
             try:
                 player_uuid = uuid.UUID(player_id)
-            except (ValueError, AttributeError):
+            except ValueError, AttributeError:
                 return
         else:
             player_uuid = player_id
 
         try:
             player = await self._persistence.get_player_by_id(player_uuid)
-        except (ValueError, AttributeError):
+        except ValueError, AttributeError:
             return
 
         if not player:
@@ -206,7 +206,7 @@ class RoomOccupancyMixin:
         if isinstance(player_id, str):
             try:
                 player_id_uuid = uuid.UUID(player_id)
-            except (ValueError, AttributeError):
+            except ValueError, AttributeError:
                 return None
         else:
             player_id_uuid = player_id

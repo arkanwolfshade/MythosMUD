@@ -43,7 +43,7 @@ def _grace_period_blocks_negative_status_effect(
         return False
     try:
         return is_player_in_login_grace_period(target_id, engine.connection_manager)
-    except (AttributeError, ImportError, TypeError, ValueError):
+    except AttributeError, ImportError, TypeError, ValueError:
         return False
 
 

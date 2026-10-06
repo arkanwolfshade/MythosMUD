@@ -26,7 +26,7 @@ def _parse_occupant_player_id(player_id: uuid.UUID | str | None) -> uuid.UUID | 
         return None
     try:
         return player_id if isinstance(player_id, uuid.UUID) else uuid.UUID(str(player_id))
-    except (ValueError, AttributeError, TypeError):
+    except ValueError, AttributeError, TypeError:
         return None
 
 
@@ -62,5 +62,5 @@ def format_occupant_display_name(
     try:
         display = _apply_grace_badges(name, resolved, connection_manager)
         return _apply_corruption_badge(display, resolved)
-    except (ValueError, AttributeError, ImportError, TypeError):
+    except ValueError, AttributeError, ImportError, TypeError:
         return name

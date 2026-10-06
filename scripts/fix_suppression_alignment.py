@@ -56,7 +56,7 @@ def _parse_file_line_pattern(line: str) -> tuple[str, int] | None:
         # Validate that it looks like a file path (ends with .py)
         if potential_file.endswith(".py"):
             return (potential_file, potential_line)
-    except (ValueError, IndexError):
+    except ValueError, IndexError:
         pass
 
     return None

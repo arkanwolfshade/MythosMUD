@@ -44,7 +44,7 @@ def _weapon_from_prototype_registry(registry: Any, prototype_id: str) -> WeaponS
     if isinstance(weapon, dict):
         try:
             return weapon_stats_from_metadata(cast(dict[str, object], weapon))
-        except (ValidationError, TypeError):
+        except ValidationError, TypeError:
             # If weapon dict doesn't match WeaponStats schema, return None
             # ValidationError: Pydantic validation failed
             # TypeError: Invalid argument types for model construction
@@ -184,7 +184,7 @@ class PlayerSchemaConverter:
                 # Try to find enum by value index (not recommended but handles legacy data)
                 position_value = PositionState.STANDING.value
             return PositionState(str(position_value))
-        except (ValueError, TypeError):
+        except ValueError, TypeError:
             logger.warning(
                 "Invalid position value on player stats, defaulting to standing",
                 player_id=player_id,

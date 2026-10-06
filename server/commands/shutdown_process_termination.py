@@ -26,7 +26,7 @@ def _find_uvicorn_processes() -> list[Any]:
             if proc.info["name"] and "uvicorn" in proc.info["name"].lower():
                 uvicorn_processes.append(proc)
                 logger.info("Found uvicorn process", pid=proc.info["pid"], name=proc.info["name"])
-        except (psutil.NoSuchProcess, psutil.AccessDenied):
+        except psutil.NoSuchProcess, psutil.AccessDenied:
             continue
     return uvicorn_processes
 
@@ -50,7 +50,7 @@ def _terminate_uvicorn_processes(uvicorn_processes: list[Any]) -> None:
             if proc.is_running():
                 logger.warning("Killing stubborn uvicorn process", pid=proc.info["pid"])
                 proc.kill()
-        except (psutil.NoSuchProcess, psutil.AccessDenied):
+        except psutil.NoSuchProcess, psutil.AccessDenied:
             pass
 
 

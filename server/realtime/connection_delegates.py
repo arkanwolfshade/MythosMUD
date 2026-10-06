@@ -70,7 +70,7 @@ def _websocket_client_connected(websocket: WebSocket) -> bool:
         client_state = cast(object, getattr(websocket, "client_state", None))
         state_name = cast(object | None, getattr(client_state, "name", None))
         return state_name == "CONNECTED"
-    except (AttributeError, ValueError, TypeError):
+    except AttributeError, ValueError, TypeError:
         return False
 
 

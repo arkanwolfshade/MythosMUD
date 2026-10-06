@@ -57,7 +57,7 @@ def _loads_json_dict(raw: str) -> _JSONDict:
     try:
         # json.loads is typed as Any in typeshed; treat root value as object before narrowing.
         parsed = cast(object, json.loads(raw))
-    except (json.JSONDecodeError, TypeError):
+    except json.JSONDecodeError, TypeError:
         return {}
     return cast(_JSONDict, parsed) if isinstance(parsed, dict) else {}
 

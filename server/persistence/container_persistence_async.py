@@ -153,7 +153,7 @@ def _parse_item_metadata(raw: Any) -> dict[str, Any]:
             return {}
         try:
             return cast(dict[str, Any], json.loads(raw))
-        except (json.JSONDecodeError, ValueError):
+        except json.JSONDecodeError, ValueError:
             return {}
     return {}
 

@@ -11,7 +11,7 @@ def _int_from_decimal_string(stripped: str, default: int) -> int:
 def _int_from_float_safe(value: float, default: int) -> int:
     try:
         return int(value)
-    except (ValueError, OverflowError):
+    except ValueError, OverflowError:
         return default
 
 
