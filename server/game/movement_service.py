@@ -22,6 +22,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from ..events import EventBus
 from ..exceptions import DatabaseError, ValidationError
 from ..models.room import Room
+from ..realtime.connection_manager_api import send_system_notification
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
 from .instance_manager import is_template_room
@@ -251,7 +252,11 @@ class MovementService(RoomOccupancyMixin):
             tutorial_player.respawn_room_id = exit_room_id
         await self._persistence.save_player(tutorial_player)
         if self._instance_flush is not None:
-            _ = await self._instance_flush.flush(instance_id)
+            if await self._instance_flush.flush(instance_id):
+                await send_system_notification(
+                    tutorial_player.player_id,
+                    "The things you left behind will be waiting in your deposit box at Arkham Savings & Trust.",
+                )
         else:
             instance_manager.destroy_instance(instance_id)
         self._logger.info(

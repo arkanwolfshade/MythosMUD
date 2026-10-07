@@ -706,6 +706,30 @@ async def test_tutorial_exit_keeps_a_normal_respawn_room(mock_persistence: Magic
 
 
 @pytest.mark.asyncio
+async def test_tutorial_exit_tells_the_player_their_things_are_in_the_deposit_box(mock_persistence: MagicMock) -> None:
+    service, player, _, _, flush = _exit_hook_setup(mock_persistence, FOYER_ID)
+    flush.return_value = 2
+
+    with patch("server.game.movement_service.send_system_notification", new_callable=AsyncMock) as notify:
+        await service._handle_tutorial_exit_if_applicable(player, FOYER_ID)  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
+
+    notify.assert_awaited_once()
+    assert notify.await_args is not None
+    assert notify.await_args.args[0] == player.player_id
+    assert "deposit box at Arkham Savings & Trust" in notify.await_args.args[1]
+
+
+@pytest.mark.asyncio
+async def test_tutorial_exit_is_silent_when_nothing_was_left_behind(mock_persistence: MagicMock) -> None:
+    service, player, _, _, _ = _exit_hook_setup(mock_persistence, FOYER_ID)  # its flush moves 0 stacks by default
+
+    with patch("server.game.movement_service.send_system_notification", new_callable=AsyncMock) as notify:
+        await service._handle_tutorial_exit_if_applicable(player, FOYER_ID)  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
+
+    notify.assert_not_awaited()
+
+
+@pytest.mark.asyncio
 async def test_tutorial_exit_hook_ignores_other_destinations(mock_persistence: MagicMock) -> None:
     service, player, instance_id, save, flush = _exit_hook_setup(mock_persistence, BEDROOM_ID)
 

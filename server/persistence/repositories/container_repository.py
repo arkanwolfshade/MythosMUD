@@ -21,6 +21,7 @@ from server.persistence.container_persistence_async import (
     update_container_async,
 )
 from server.persistence.container_query_helpers_async import (
+    get_bank_container_async,
     get_containers_by_entity_id_async,
     get_containers_by_room_id_async,
     get_decayed_containers_async,
@@ -81,6 +82,13 @@ class ContainerRepository:
         async with session_maker() as session:
             results = await get_containers_by_room_id_async(session, room_id)
             return [_container_data_to_dict(r) for r in results]
+
+    async def get_bank_container(self, owner_id: uuid.UUID) -> dict[str, object] | None:
+        """Get a player's bank deposit box (async), or None if they have never opened one."""
+        session_maker = get_session_maker()
+        async with session_maker() as session:
+            result = await get_bank_container_async(session, owner_id)
+            return _container_data_to_dict(result) if result else None
 
     async def get_containers_by_entity_id(self, entity_id: uuid.UUID) -> list[dict[str, Any]]:
         """Get all containers owned by an entity (async)."""

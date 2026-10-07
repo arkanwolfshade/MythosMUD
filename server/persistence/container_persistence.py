@@ -22,7 +22,7 @@ from psycopg2.extensions import cursor as PsycopgCursor
 from psycopg2.extras import RealDictCursor
 from structlog.stdlib import BoundLogger
 
-from ..constants.containers import MAX_CONTAINER_CAPACITY_SLOTS
+from ..constants.containers import CONTAINER_SOURCE_TYPES, MAX_CONTAINER_CAPACITY_SLOTS
 from ..exceptions import DatabaseError, ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
@@ -176,10 +176,10 @@ _SELECT_CONTAINER_BY_ID_SQL = f"SELECT {CONTAINER_ROW_COLUMNS} FROM get_containe
 
 
 def _validate_new_container_params(source_type: str, capacity_slots: int, lock_state: str) -> None:
-    if source_type not in ("environment", "equipment", "corpse"):
+    if source_type not in CONTAINER_SOURCE_TYPES:
         log_and_raise(
             ValidationError,
-            f"Invalid source_type: {source_type}. Must be 'environment', 'equipment', or 'corpse'",
+            f"Invalid source_type: {source_type}. Must be one of {', '.join(CONTAINER_SOURCE_TYPES)}",
             operation="create_container",
             source_type=source_type,
             details={"source_type": source_type},

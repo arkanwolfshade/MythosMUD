@@ -4,10 +4,14 @@ Unit tests for inventory command factories.
 Tests the InventoryCommandFactory class methods.
 """
 
+from collections.abc import Callable
+
 import pytest
 
 from server.exceptions import ValidationError
+from server.models.command import CommandType, DepositCommand, WithdrawCommand
 from server.utils.command_factories_inventory import InventoryCommandFactory
+from server.utils.command_parser import parse_command
 
 
 def test_create_pickup_command():
@@ -167,6 +171,52 @@ def test_create_get_command_no_args():
     """Test create_get_command() raises error with no args."""
     with pytest.raises(ValidationError, match="Usage: get"):
         InventoryCommandFactory.create_get_command([])
+
+
+def test_create_bank_command_takes_no_arguments():
+    assert InventoryCommandFactory.create_bank_command([]).command_type == CommandType.BANK
+    with pytest.raises(ValidationError, match="takes no arguments"):
+        _ = InventoryCommandFactory.create_bank_command(["lantern"])
+
+
+@pytest.mark.parametrize(
+    ("create", "usage"),
+    [
+        (InventoryCommandFactory.create_deposit_command, "Usage: deposit"),
+        (InventoryCommandFactory.create_withdraw_command, "Usage: withdraw"),
+    ],
+)
+def test_deposit_and_withdraw_share_item_and_quantity_parsing(
+    create: Callable[[list[str]], DepositCommand | WithdrawCommand], usage: str
+):
+    single = create(["lantern"])
+    assert (single.item, single.quantity) == ("lantern", None)
+
+    multi_word = create(["folk", "tonic", "2"])
+    assert (multi_word.item, multi_word.quantity) == ("folk tonic", 2)
+
+    assert create(["3"]).item == "3"  # a lone number is an inventory/box index, never a quantity
+    assert create(["3"]).quantity is None
+
+    with pytest.raises(ValidationError, match=usage):
+        _ = create([])
+    with pytest.raises(ValidationError, match=usage):
+        _ = create(["   "])
+    with pytest.raises(ValidationError, match="Quantity must be a positive integer"):
+        _ = create(["lantern", "0"])
+
+
+@pytest.mark.parametrize(
+    ("line", "command_type"),
+    [
+        ("bank", CommandType.BANK),
+        ("deposit lantern 2", CommandType.DEPOSIT),
+        ("withdraw folk tonic", CommandType.WITHDRAW),
+    ],
+)
+def test_bank_verbs_are_registered_end_to_end(line: str, command_type: CommandType):
+    """Guards every registry (input allow-list, parser map, factory), not just the factory method."""
+    assert parse_command(line).command_type == command_type
 
 
 def test_create_get_command_only_item_get_from_room():

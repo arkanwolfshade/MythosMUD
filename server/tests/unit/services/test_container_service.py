@@ -166,6 +166,46 @@ def test_validate_ownership_equipment_mismatch_raises(service: ContainerService)
         service._validate_ownership(container, str(uuid.uuid4()))
 
 
+def _bank_box(owner_id: uuid.UUID | None) -> ContainerComponent:
+    return _container(source_type=ContainerSourceType.BANK, room_id=None, owner_id=owner_id)
+
+
+def test_validate_ownership_bank_owner_passes(service: ContainerService):
+    owner_id = uuid.uuid4()
+    service._validate_ownership(_bank_box(owner_id), str(owner_id))
+
+
+def test_validate_ownership_bank_other_player_raises(service: ContainerService):
+    with pytest.raises(ContainerAccessDeniedError):
+        service._validate_ownership(_bank_box(uuid.uuid4()), str(uuid.uuid4()))
+
+
+@pytest.mark.parametrize("player_id", [str(uuid.uuid4()), "", "None"])
+def test_validate_ownership_orphaned_bank_box_matches_nobody(service: ContainerService, player_id: str):
+    """owner_id goes NULL when the character is deleted; that box must stay shut, even to a blank id."""
+    with pytest.raises(ContainerAccessDeniedError):
+        service._validate_ownership(_bank_box(None), player_id)
+
+
+def test_validate_container_access_bank_owner_opens_it_anywhere(service: ContainerService):
+    """A bank box has no room, so proximity does not apply: the owner is the only gate."""
+    owner_id = uuid.uuid4()
+    player = MagicMock(
+        player_id=str(owner_id), current_room_id="earth_arkhamcity_downtown_room_main_st_006", is_admin=False
+    )
+    service._validate_container_access(_bank_box(owner_id), player)
+
+
+def test_validate_container_access_bank_is_closed_to_other_players_and_admins(service: ContainerService):
+    box = _bank_box(uuid.uuid4())
+    stranger = MagicMock(player_id=str(uuid.uuid4()), current_room_id="somewhere", is_admin=False)
+    admin = MagicMock(player_id=str(uuid.uuid4()), current_room_id="somewhere", is_admin=True)
+    with pytest.raises(ContainerAccessDeniedError):
+        service._validate_container_access(box, stranger)
+    with pytest.raises(ContainerAccessDeniedError):
+        service._validate_container_access(box, admin)
+
+
 def test_validate_role_access_denies_player_without_role(service: ContainerService):
     container = _container(allowed_roles=["admin"])
     with pytest.raises(ContainerAccessDeniedError):

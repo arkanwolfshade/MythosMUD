@@ -79,6 +79,28 @@ class GetCommand(BaseCommand):
     quantity: int | None = Field(None, ge=1, description="Quantity to get (defaults to full stack)")
 
 
+class BankCommand(BaseCommand):
+    """Command for listing the contents of the player's bank deposit box."""
+
+    command_type: Literal[CommandType.BANK] = CommandType.BANK
+
+
+class DepositCommand(BaseCommand):
+    """Command for depositing an inventory item into the player's bank deposit box."""
+
+    command_type: Literal[CommandType.DEPOSIT] = CommandType.DEPOSIT
+    item: str = Field(..., min_length=1, description="Item name or inventory index to deposit")
+    quantity: int | None = Field(None, ge=1, description="Quantity to deposit (defaults to full stack)")
+
+
+class WithdrawCommand(BaseCommand):
+    """Command for withdrawing an item from the player's bank deposit box into inventory."""
+
+    command_type: Literal[CommandType.WITHDRAW] = CommandType.WITHDRAW
+    item: str = Field(..., min_length=1, description="Item name or deposit box index to withdraw")
+    quantity: int | None = Field(None, ge=1, description="Quantity to withdraw (defaults to full stack)")
+
+
 class EquipCommand(BaseCommand):
     """Command for equipping an item from inventory."""
 
