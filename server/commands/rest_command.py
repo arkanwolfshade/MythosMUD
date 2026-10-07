@@ -110,6 +110,15 @@ async def _delayed_disconnect_player_intentionally(
         logger.info("Disconnecting player intentionally via /rest", player_id=player_id)
         for connection_id in connection_ids_to_close:
             _ = await connection_manager.disconnect_websocket_connection(player_id, connection_id)
+        if not connection_manager.player_websockets.get(player_id):
+            # Closing by connection id only cleans up connection data; it never takes the player out of
+            # online tracking. The socket's own close handler does that only while it still sees the
+            # intentional mark, which the finally below clears, so whether /rest really logged the
+            # player out depended on which task ran first. When it did not, the player stayed "online":
+            # nobody saw them leave, and a quick relog was taken for an extra connection that skipped
+            # enter setup (the tutorial re-entry repair, player_entered_game). Do the intentional
+            # teardown here while the mark is still set; processed_disconnects keeps it to once.
+            await connection_manager.force_disconnect_player(player_id)
     except (AttributeError, RuntimeError, ValueError, TypeError) as e:
         logger.error("Error disconnecting player", player_id=player_id, error=str(e), exc_info=True)
     finally:
