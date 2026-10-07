@@ -307,9 +307,7 @@ def _should_continue_player_turn(combat: CombatInstance, player: CombatParticipa
 
 def _select_player_target(combat: CombatInstance, player: CombatParticipant) -> CombatParticipant | None:
     """Select the player's tracked target, else the first living foe (#833: never an ally)."""
-    tracked_id = combat.player_current_target.get(player.participant_id)
-    tracked = combat.participants.get(tracked_id) if tracked_id is not None else None
-    if tracked is not None and not tracked.is_dead():
+    if (tracked := combat.living_tracked_target(player.participant_id)) is not None:
         return tracked
     others = [p for p in combat.participants.values() if p.participant_id != player.participant_id]
     foes = [p for p in others if p.participant_type != CombatParticipantType.PLAYER]

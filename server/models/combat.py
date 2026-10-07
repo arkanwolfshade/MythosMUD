@@ -215,6 +215,12 @@ class CombatInstance:  # pylint: disable=too-many-instance-attributes  # Reason:
             return None
         return guard
 
+    def living_tracked_target(self, player_id: UUID) -> CombatParticipant | None:
+        """The player's tracked target while it is still alive, else None (#833). Read by auto-attack and assist."""
+        tracked_id = self.player_current_target.get(player_id)
+        tracked = self.participants.get(tracked_id) if tracked_id is not None else None
+        return tracked if tracked is not None and not tracked.is_dead() else None
+
     def is_guarding(self, protector_id: UUID) -> bool:
         """True while this participant is giving someone active cover."""
         return any(
