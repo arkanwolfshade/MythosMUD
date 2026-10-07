@@ -6,8 +6,8 @@
     "organization": "arkanwolfshade",
     "repositoryId": "809353",
     "repositoryName": "mythosmud_data",
-    "createdAt": "2026-10-05T18:50:27.478Z",
-    "updatedAt": "2026-10-05T18:50:27.478Z",
+    "createdAt": "2026-10-06T19:12:42.574Z",
+    "updatedAt": "2026-10-06T19:12:42.574Z",
     "languages": [
       "HTML",
       "JSON",
@@ -23,26 +23,7 @@
     },
     {
       "toolId": "Checkov",
-      "patterns": [
-        {
-          "patternId": "Checkov_CKV2_GCP_36"
-        },
-        {
-          "patternId": "Checkov_CKV2_GCP_35"
-        },
-        {
-          "patternId": "Checkov_CKV_AZURE_144"
-        },
-        {
-          "patternId": "Checkov_CKV_AZURE_142"
-        },
-        {
-          "patternId": "Checkov_CKV2_GCP_3"
-        },
-        {
-          "patternId": "Checkov_CKV_GCP_3"
-        }
-      ]
+      "patterns": []
     },
     {
       "toolId": "Semgrep",
