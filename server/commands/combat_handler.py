@@ -24,6 +24,7 @@ from server.async_persistence import AsyncPersistenceLayer
 from server.commands.combat_app_protocols import AppWithState
 from server.commands.combat_assist import run_handle_assist_command
 from server.commands.combat_attack import run_handle_attack_command
+from server.commands.combat_protect import run_handle_protect_command
 from server.commands.combat_taunt import run_handle_taunt_command
 from server.game.player_service import PlayerService
 from server.realtime.login_grace_period import is_player_in_login_grace_period
@@ -377,6 +378,17 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
     ) -> dict[str, str]:
         """Handle assist command: join a player's (or your party leader's) fight and attack their foe (#833)."""
         return await run_handle_assist_command(self, command_data, current_user, request, alias_storage, player_name)
+
+    async def handle_protect_command(
+        self,
+        command_data: dict[str, Any],
+        current_user: dict[str, Any],
+        request: object | None,
+        alias_storage: AliasStorage | None,
+        player_name: str,
+    ) -> dict[str, str]:
+        """Handle protect command: cover an ally so NPC blows aimed at them land on you (#991)."""
+        return await run_handle_protect_command(self, command_data, current_user, request, alias_storage, player_name)
 
     def _get_room_data(self, room_id: str) -> object | None:
         """Get room data from persistence."""

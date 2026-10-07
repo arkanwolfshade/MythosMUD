@@ -25,6 +25,7 @@ from .command_combat import (
     AttackCommand,
     FleeCommand,
     KickCommand,
+    ProtectCommand,
     PunchCommand,
     StrikeCommand,
     TauntCommand,
@@ -191,6 +192,7 @@ __all__ = [
     "StrikeCommand",
     "TauntCommand",
     "AssistCommand",
+    "ProtectCommand",
     # Magic commands
     "CastCommand",
     "SpellCommand",

@@ -35,6 +35,7 @@ This document specifies the aggro and threat management system for MythosMUD com
 | Healing | threat += heal_amount \* healing_threat_factor (e.g. 0.5) applied to the mob's hate list for the healer (and/or healing target as appropriate). |
 | Utility | threat += `aggro_utility_threat` (default 5.0) per successful buff/debuff, x aggression x corruption scale; not skipped for passive_mob (#833). |
 | Taunt   | A queued action that rolls d100 vs max(intimidate, fighting): top + margin (x2 on Hard/Extreme), nothing on failure, wiped on fumble. Valid only if taunter.room_id == mob.room_id (#833). |
+| Protect | A queued action that rolls d100 vs fighting. On success the protector gains `aggro_protect_threat_share` (0.5) of the ally's threat on each mob, soaks the mob's hits aimed at the ally while cover lasts (each adds damage threat), and earns `aggro_guarding_threat_multiplier` (1.5) on damage threat (#991). |
 
 All values are per-mob: one hate list per mob (or per combat instance).
 
@@ -106,6 +107,7 @@ UpdateAggro(mob, room):
 | Support pull         | Tank holds the mob; a support caster applies debuffs (no damage) until their threat is 110% of the tank's -> mob switches to them (#833).                  |
 | Taunt fumble         | The tank holding aggro fumbles: their hate entry is wiped, the next in line becomes the target, one line announces it (#833).                             |
 | Join and assist      | A second player attacks (or assists) in the fight's room and joins it; a player already fighting another foe is refused (#833).                          |
+| Tank covers healer   | A healer holds the mob; the tank protects them. The mob's hits land on the tank, whose threat grows 1.5x per hit until the mob turns on the tank (#991).  |
 
 ## 9. Feedback (low-latency, text-efficient)
 
@@ -122,6 +124,7 @@ The following were decided and are fixed for implementation:
 - **Default stability margin:** 0.10 (10%).
 - **Stealth / aggro shedding:** Option A (wipe). Stealth removes the player from the mob's hate list (or sets threat to 0); no decay-over-time while stealthed.
 - **Group combat (#833):** N players vs one NPC per combat; taunt is a graded, round-costing roll; utility threat is flat and spreads by target; `assist` is one-shot. Full rationale: ADR-016 section 8.
+- **Protect (#991):** a queued Fighting roll; success redirects the mob's hits from the covered ally to the protector for this round and the next, shares threat, and applies the guarding multiplier. No fumble case. Full rationale: ADR-016 section 9.
 
 ## 11. References
 

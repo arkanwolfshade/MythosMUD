@@ -362,6 +362,27 @@ describe('projector', () => {
       expect(next.messages[0].messageType).toBe('combat');
     });
 
+    it('combat_protect appends the protect cast and intercept lines as combat messages (#991)', () => {
+      const prev = getInitialGameState();
+      const cast: GameEvent = {
+        event_type: 'combat_protect',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { message: 'Ashcroft throws themselves in front of Pickman!' },
+      };
+      const intercept: GameEvent = {
+        event_type: 'combat_protect',
+        timestamp: new Date().toISOString(),
+        sequence_number: 2,
+        data: { message: 'Ashcroft takes the blow meant for Pickman!' },
+      };
+      const next = projectEvent(projectEvent(prev, cast), intercept);
+      expect(next.messages).toHaveLength(2);
+      expect(next.messages[0].text).toBe('Ashcroft throws themselves in front of Pickman!');
+      expect(next.messages[1].text).toBe('Ashcroft takes the blow meant for Pickman!');
+      expect(next.messages.every(m => m.messageType === 'combat')).toBe(true);
+    });
+
     it('player_respawned merges onto previous player (#776: thin RespawnPlayerData must not wipe stats)', () => {
       const prev = getInitialGameState();
       prev.player = {

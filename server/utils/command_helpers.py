@@ -110,6 +110,12 @@ _COMMAND_HELP_TEXTS: dict[str, str] = {
         "assist [player] - Join the fight a player is in and attack their foe; with no name, join your party "
         "leader's. You then fight on your own until it ends"
     ),
+    CommandType.PROTECT.value: (
+        "protect <player> - Spend your round covering an ally: rolls Fighting. On a success, blows aimed at them "
+        "land on you for the rest of this round and the next (a strong roll adds a round), you hold more of the "
+        "creature's attention, and part of their share of it passes to you. A miss does nothing. You can join their "
+        "fight this way"
+    ),
 }
 
 _GENERAL_COMMAND_HELP = """
@@ -147,6 +153,7 @@ Available Commands:
 - flee - Attempt to flee from combat (random adjacent room); failure costs your round and draws free hits
 - taunt <npc> - Spend your round drawing a creature's attention (Intimidate or Fighting roll)
 - assist [player] - Join a player's (or your party leader's) fight and attack their foe
+- protect <player> - Spend your round covering an ally so blows aimed at them land on you (Fighting roll)
 
 Directions: north, south, east, west
 Use 'help <command>' for detailed information about a specific command.

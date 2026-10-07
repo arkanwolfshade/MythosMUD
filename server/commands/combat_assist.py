@@ -74,7 +74,7 @@ class AssistCommandHandler(Protocol):
 _PHANTOM_REFUSAL = "You see nothing there to fight."
 
 
-def _assisted_name_from_command(command_data: Mapping[str, object]) -> str | None:
+def assisted_name_from_command(command_data: Mapping[str, object]) -> str | None:
     """The player name typed after ``assist``, or None for a bare ``assist``."""
     raw = command_data.get("target_player")
     if raw is None:
@@ -82,19 +82,19 @@ def _assisted_name_from_command(command_data: Mapping[str, object]) -> str | Non
     return raw.strip() or None if isinstance(raw, str) else None
 
 
-async def _resolve_named_player(
-    handler: AssistCommandHandler, player_uuid: uuid.UUID, name: str
+async def resolve_named_player(
+    handler: AssistCommandHandler, player_uuid: uuid.UUID, name: str, verb: str = "assist"
 ) -> tuple[uuid.UUID, str] | dict[str, str]:
-    """Resolve ``assist <name>`` to a same-room player. Returns (player_id, display_name) or an error dict."""
+    """Resolve ``assist <name>`` (or any ``<verb> <name>``) to a same-room player. Returns (id, name) or an error dict."""
     result = await handler.target_resolution_service.resolve_target(str(player_uuid), name)
     if not result.success:
         return {"result": result.error_message or "No such player here."}
     match = result.get_single_match()
     if match is None or match.target_type != TargetType.PLAYER:
-        return {"result": "You can only assist players."}
+        return {"result": f"You can only {verb} players."}
     assisted_id = uuid.UUID(str(match.target_id))
     if assisted_id == player_uuid:
-        return {"result": "You can't assist yourself."}
+        return {"result": f"You can't {verb} yourself."}
     return assisted_id, match.target_name
 
 
@@ -126,20 +126,31 @@ def _foe_of(combat: CombatInstance, assisted_id: uuid.UUID) -> CombatParticipant
     )
 
 
+async def find_ally_fight(
+    combat_service: CombatService, ally_id: uuid.UUID, ally_name: str, room_id: str
+) -> tuple[CombatInstance, CombatParticipant] | dict[str, str]:
+    """The fight a player is in and the foe they are fighting, or the refusal to give (not fighting, not here, phantom)."""
+    combat = await combat_service.get_combat_by_participant(ally_id)
+    if combat is None:
+        return {"result": f"{ally_name} isn't fighting anything."}
+    if str(combat.room_id) != room_id:
+        return {"result": f"{ally_name} isn't here."}
+    foe = _foe_of(combat, ally_id)
+    if foe is None:
+        return {"result": f"{ally_name} isn't fighting anything."}
+    if foe.participant_type == CombatParticipantType.PHANTOM:
+        return {"result": _PHANTOM_REFUSAL}
+    return combat, foe
+
+
 async def _find_assisted_foe(
     combat_service: CombatService, assisted_id: uuid.UUID, assisted_name: str, room_id: str, player_uuid: uuid.UUID
 ) -> CombatParticipant | dict[str, str]:
     """Find the foe to attack, or the refusal to give. Applies the not-fighting, not-here, phantom and already rules."""
-    combat = await combat_service.get_combat_by_participant(assisted_id)
-    if combat is None:
-        return {"result": f"{assisted_name} isn't fighting anything."}
-    if str(combat.room_id) != room_id:
-        return {"result": f"{assisted_name} isn't here."}
-    foe = _foe_of(combat, assisted_id)
-    if foe is None:
-        return {"result": f"{assisted_name} isn't fighting anything."}
-    if foe.participant_type == CombatParticipantType.PHANTOM:
-        return {"result": _PHANTOM_REFUSAL}
+    found = await find_ally_fight(combat_service, assisted_id, assisted_name, room_id)
+    if isinstance(found, dict):
+        return found
+    combat, foe = found
     if player_uuid in combat.participants:
         return {"result": f"You are already fighting {foe.name}."}
     return foe
@@ -149,17 +160,20 @@ async def _resolve_assisted(
     handler: AssistCommandHandler, player_uuid: uuid.UUID, command_data: Mapping[str, object]
 ) -> tuple[uuid.UUID, str] | dict[str, str]:
     """Who is being assisted: the named player, or the party leader for a bare ``assist``."""
-    name = _assisted_name_from_command(command_data)
+    name = assisted_name_from_command(command_data)
     if name is not None:
-        return await _resolve_named_player(handler, player_uuid, name)
+        return await resolve_named_player(handler, player_uuid, name)
     leader = _resolve_party_leader(handler, player_uuid)
     if isinstance(leader, dict):
         return leader
     return leader, "Your party leader"
 
 
-async def _load_assister(
-    handler: AssistCommandHandler, request_app: AppWithState | None, current_user: Mapping[str, object]
+async def load_assister(
+    handler: AssistCommandHandler,
+    request_app: AppWithState | None,
+    current_user: Mapping[str, object],
+    verb: str = "assist",
 ) -> tuple[uuid.UUID, str, CombatService] | dict[str, str]:
     """Load the assisting player and check they may fight. Returns (player_id, room_id, combat_service) or an error."""
     player, _room, error = await handler.get_player_and_room(request_app, current_user)
@@ -167,7 +181,7 @@ async def _load_assister(
         return error
     combat_service = handler.combat_service
     if not isinstance(player, Player) or combat_service is None:
-        return {"result": "You cannot assist anyone right now."}
+        return {"result": f"You cannot {verb} anyone right now."}
     room_id = str(player.current_room_id)
     if not player.is_alive():
         return {"result": "You are incapacitated and cannot attack."}
@@ -196,7 +210,7 @@ async def run_handle_assist_command(
     rest_check = await handler.check_and_interrupt_rest(request_app, player_name, current_user)
     if rest_check:
         return rest_check
-    assister = await _load_assister(handler, request_app, current_user)
+    assister = await load_assister(handler, request_app, current_user)
     if isinstance(assister, dict):
         return assister
     player_uuid, room_id, combat_service = assister

@@ -105,6 +105,7 @@ def _build_command_factory_part2(factory: CommandFactory) -> dict[str, object]:
         CommandType.FLEE.value: factory.create_flee_command,
         CommandType.TAUNT.value: factory.create_taunt_command,
         CommandType.ASSIST.value: factory.create_assist_command,
+        CommandType.PROTECT.value: factory.create_protect_command,
         CommandType.CAST.value: factory.create_cast_command,
         CommandType.SPELL.value: factory.create_spell_command,
         CommandType.SPELLS.value: factory.create_spells_command,

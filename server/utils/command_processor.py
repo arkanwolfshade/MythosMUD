@@ -147,6 +147,7 @@ class CommandProcessor:
             CommandType.STRIKE,
             CommandType.TAUNT,
             CommandType.ASSIST,
+            CommandType.PROTECT,
             CommandType.FLEE,
         ]
 

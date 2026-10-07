@@ -72,6 +72,7 @@ _SYSTEM_COMMANDS = {
     "attack",
     "taunt",
     "assist",
+    "protect",
     "flee",
     "follow",
     "unfollow",

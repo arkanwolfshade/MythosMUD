@@ -283,6 +283,10 @@ class CommandFactory:
         """Create AssistCommand from arguments (player name, or none for the party leader)."""
         return self._combat.create_assist_command(args)
 
+    def create_protect_command(self, args: list[str]) -> BaseCommand:
+        """Create ProtectCommand from arguments (the player to cover)."""
+        return self._combat.create_protect_command(args)
+
     # Utility commands
     def create_alias_command(self, args: list[str]) -> BaseCommand:
         """Create AliasCommand from arguments."""

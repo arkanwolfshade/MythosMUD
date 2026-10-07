@@ -81,9 +81,19 @@ This addendum records decisions made when the classic kit was completed and a Ca
 - **Taunt is a roll and costs the round:** `taunt <npc>` queues a combat action (it replaces anything queued for that round, so there is no auto-attack). It resolves on the player's initiative slot as one d100 against the **higher of `intimidate` and `fighting`**: Hard or Extreme makes the taunter top with a doubled lead, Regular is the plain taunt, Failure changes nothing, and a Fumble (100, or 96-100 under skill 50) wipes the taunter from that NPC's hate list. Each result gets one room line. Taunt stays room-local and the taunter's room and the target are re-checked at resolution.
 - **Utility threat:** A successful status-effect or stat-modify spell adds a flat `aggro_utility_threat` (default 5.0), scaled by the NPC's aggression level and the corruption gap like heal threat. It is **not** skipped for passive mobs. A debuff on an NPC draws only that NPC; a buff on the caster or an ally draws every NPC in the fight. Area and phantom targets add nothing.
 - **Assist:** `assist <player>` (or a bare `assist` for the party leader) is **one-shot target resolution**: it finds the foe that player is fighting and goes through the ordinary attack path, which performs the join. The assister then fights on their own and does not follow later target switches.
-- **Deferred (own issues):** Protect / draw-fire and the tank threat multiplier (#991), Fight Back threat (#992), NPC target bias and fixation (#993), packs (#994), adjacent-room pull (#995), threat inspection and the personal switch notice (#996), hate-list trim and flee interaction (#997), persistent auto-assist (#998).
+- **Deferred (own issues):** Fight Back threat (#992), NPC target bias and fixation (#993), packs (#994), adjacent-room pull (#995), threat inspection and the personal switch notice (#996), hate-list trim and flee interaction (#997), persistent auto-assist (#998).
 
-## 9. Changelog
+## 9. Addendum: Protect and the tank multiplier (#991)
+
+**[SPEC]**
+This addendum adds the draw-fire maneuver and the per-player damage-threat multiplier that section 8 deferred.
+
+- **Protect:** `protect <player>` queues a combat action (it replaces anything queued for that round, so there is no auto-attack) and, like `assist`, joins the ally's fight if the protector is not in it yet. It rolls d100 against `fighting` only. Regular or better covers the ally for the rest of that round and the next (`protect_cover_rounds`, default 1); Hard or Extreme adds one more round. Failure and Fumble are the same: nothing happens, the round is spent, and one room line says so. The issue proposed a fumble backfire; it was deliberately not built.
+- **Intercept:** while cover is active, an NPC attack aimed at the covered player lands on the protector instead, announced by one extra room line before the normal hit line. A redirect happens once and never chains. A protector covers one ally and an ally has one protector; the latest successful protect wins. Cover ends early if the protector flees, is removed, dies or drops to 0 DP, or the ally leaves the fight.
+- **Threat:** a success hands the protector `aggro_protect_threat_share` (default 0.5) of the ally's current threat on every NPC, and each intercepted hit adds damage threat for the damage the protector absorbs.
+- **Tank multiplier:** a participant giving active cover earns `aggro_guarding_threat_multiplier` (default 1.5) on damage threat, melee and spell, applied inside `add_damage_threat`. The factor is derived on read from the guard state, so it cannot go stale. A persisted ADR-019 player effect was rejected as the source: combat reads no player effects today, they expire on game ticks rather than combat rounds, and each read is a database round trip. The guard factor is the single hook that effects, equipment or professions can feed later. There is no mandatory tank class.
+
+## 10. Changelog
 
 **[SPEC]**
 
@@ -92,3 +102,4 @@ This addendum records decisions made when the classic kit was completed and a Ca
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
 | 1.1.0 | 2026-08-28 | Record provenance (post-hoc authorship); fix broken implementation-plan link, now in `docs/archive/` (#721) |
 | 1.2.0 | 2026-10-06 | Addendum: N-player combat, graded taunt, utility threat, assist (#833) |
+| 1.3.0 | 2026-10-07 | Addendum: Protect and the guarding tank multiplier (#991) |
