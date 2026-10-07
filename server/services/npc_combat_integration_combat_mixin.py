@@ -64,6 +64,12 @@ class _NPCCombatIntegrationDeps(Protocol):
         """Join the combat the target NPC is already in (#833)."""
         raise NotImplementedError
 
+    async def join_player_to_combat(
+        self, player_id: str, room_id: str, player_uuid: UUID, combat: CombatInstance, foe_name: str
+    ) -> None:
+        """Add a player to a fight under way and announce it (#833, #991)."""
+        raise NotImplementedError
+
 
 class NPCCombatIntegrationCombatMixin:
     """start_combat / process_attack paths and post-death broadcast."""
@@ -191,22 +197,14 @@ class NPCCombatIntegrationCombatMixin:
         combat: CombatInstance,
     ) -> CombatResult:
         """Join the combat the target NPC is already in (#833); the first attack is queued for the next round."""
-        data_provider = self.get_data_provider()
-        player_name = await data_provider.get_player_name(player_id)
-        attacker_data = await data_provider.get_player_combat_data(player_id, attacker_uuid, player_name)
-
-        combat_service = self.get_combat_service()
-        await combat_service.join_combat(combat, attacker_data, room_id)
-        _ = await combat_service.queue_combat_action(
+        npc = combat.participants.get(target_uuid)
+        await self.join_player_to_combat(player_id, room_id, attacker_uuid, combat, npc.name if npc else "the creature")
+        _ = await self.get_combat_service().queue_combat_action(
             combat_id=combat.combat_id,
             participant_id=attacker_uuid,
             action_type="attack",
             target_id=target_uuid,
             damage=damage,
-        )
-        npc = combat.participants.get(target_uuid)
-        _ = await self.get_messaging_integration().broadcast_player_joined_combat(
-            room_id, str(combat.combat_id), player_name, npc.name if npc else "the creature", player_id
         )
         return CombatResult(
             success=True,
@@ -215,6 +213,28 @@ class NPCCombatIntegrationCombatMixin:
             combat_ended=False,
             message="Joined combat; attack queued for next round",
             combat_id=combat.combat_id,
+        )
+
+    async def join_player_to_combat(
+        self: _NPCCombatIntegrationDeps,
+        player_id: str,
+        room_id: str,
+        player_uuid: UUID,
+        combat: CombatInstance,
+        foe_name: str,
+    ) -> None:
+        """
+        Add a player to a fight already under way and tell the room (#833, #991).
+
+        ``CombatService.join_combat`` refuses a phantom fight, another room, and a player already fighting elsewhere.
+        The caller queues the joiner's first action (an attack for ``attack``, a protect for ``protect``).
+        """
+        data_provider = self.get_data_provider()
+        player_name = await data_provider.get_player_name(player_id)
+        joiner = await data_provider.get_player_combat_data(player_id, player_uuid, player_name)
+        await self.get_combat_service().join_combat(combat, joiner, room_id)
+        _ = await self.get_messaging_integration().broadcast_player_joined_combat(
+            room_id, str(combat.combat_id), player_name, foe_name, player_id
         )
 
     async def start_new_combat_for_mixin(

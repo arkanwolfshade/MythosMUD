@@ -181,3 +181,12 @@ class CombatBroadcastMixin(HasConnectionManager):
             {"combat_id": combat_id, "message": message},
             "Combat taunt broadcast",
         )
+
+    async def broadcast_protect_result(self, room_id: str, combat_id: str, message: str) -> dict[str, object]:
+        """Broadcast one room line for a protect: its cast result, or one hit the cover redirected (#991)."""
+        return await self._broadcast_combat_event(
+            "combat_protect",
+            room_id,
+            {"combat_id": combat_id, "message": message},
+            "Combat protect broadcast",
+        )

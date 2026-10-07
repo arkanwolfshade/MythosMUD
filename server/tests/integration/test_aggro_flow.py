@@ -6,9 +6,12 @@ Uses real CombatInstance and aggro_threat module; no full combat service or NATS
 """
 
 import uuid
+from unittest.mock import MagicMock
+
+import pytest
 
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType
-from server.services import aggro_threat
+from server.services import aggro_threat, combat_protect_action
 
 
 def _make_combat(room_id: str = "room_1") -> CombatInstance:
@@ -240,3 +243,54 @@ def test_aggro_support_pulls_with_utility_threat_and_no_damage() -> None:
     assert did_switch is True
     assert target_id == support.participant_id
     assert support.current_dp == 50
+
+
+@pytest.mark.asyncio
+async def test_aggro_protect_lets_a_tank_out_earn_the_healer_without_a_taunt() -> None:
+    """#991: a healer holds the mob; the tank covers them, soaks two blows, and the mob turns on the tank."""
+    combat = _make_combat()
+    npc = _make_participant("Mob", CombatParticipantType.NPC)
+    tank = _make_participant("Tank", CombatParticipantType.PLAYER)
+    healer = _make_participant("Healer", CombatParticipantType.PLAYER)
+    for p in (npc, tank, healer):
+        combat.participants[p.participant_id] = p
+    hate = aggro_threat.get_or_create_hate_list(combat, npc.participant_id)
+    hate[healer.participant_id] = 50.0
+    hate[tank.participant_id] = 10.0
+    combat.npc_current_target[npc.participant_id] = healer.participant_id
+    combat.set_guard(healer.participant_id, tank.participant_id, expires_round=combat.combat_round + 1)
+    service = MagicMock()
+    service.get_npc_combat_integration_service = MagicMock(return_value=None)
+
+    for _ in range(2):  # two 20-damage blows the mob aims at the healer
+        landed = await combat_protect_action.intercept_for_guard(service, combat, npc, healer, 20)
+        assert landed is tank
+    # Each absorbed blow earns 20 * 1.5 (guarding) = 30: the tank is at 70, past the healer's 50 + 10% margin.
+    assert hate[tank.participant_id] == pytest.approx(70.0)
+    target_id, did_switch = aggro_threat.update_aggro(combat, npc, "room_1", combat.participants, stability_margin=0.10)
+    assert did_switch is True
+    assert target_id == tank.participant_id
+
+
+@pytest.mark.asyncio
+async def test_aggro_without_protect_the_same_blows_change_nothing() -> None:
+    """#991 control: with no cover the blows land on the healer and the tank's threat does not move."""
+    combat = _make_combat()
+    npc = _make_participant("Mob", CombatParticipantType.NPC)
+    tank = _make_participant("Tank", CombatParticipantType.PLAYER)
+    healer = _make_participant("Healer", CombatParticipantType.PLAYER)
+    for p in (npc, tank, healer):
+        combat.participants[p.participant_id] = p
+    hate = aggro_threat.get_or_create_hate_list(combat, npc.participant_id)
+    hate[healer.participant_id] = 50.0
+    hate[tank.participant_id] = 10.0
+    combat.npc_current_target[npc.participant_id] = healer.participant_id
+    service = MagicMock()
+
+    for _ in range(2):
+        landed = await combat_protect_action.intercept_for_guard(service, combat, npc, healer, 20)
+        assert landed is healer
+    assert hate[tank.participant_id] == 10.0
+    target_id, did_switch = aggro_threat.update_aggro(combat, npc, "room_1", combat.participants, stability_margin=0.10)
+    assert did_switch is False
+    assert target_id == healer.participant_id
