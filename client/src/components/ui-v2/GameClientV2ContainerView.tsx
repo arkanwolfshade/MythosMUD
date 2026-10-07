@@ -82,6 +82,102 @@ function InviteModal({
   );
 }
 
+type PendingInviteModalsProps = Pick<
+  GameClientV2ContainerViewProps,
+  | 'clearedFollowRequestId'
+  | 'setClearedFollowRequestId'
+  | 'clearedPartyInviteId'
+  | 'setClearedPartyInviteId'
+  | 'sendMessage'
+> & {
+  pendingFollowRequest: GameClientV2ContainerViewProps['gameState']['pendingFollowRequest'];
+  pendingPartyInvite: GameClientV2ContainerViewProps['gameState']['pendingPartyInvite'];
+};
+
+/**
+ * The follow-request and party-invite prompts.
+ *
+ * clearedFollowRequestId/clearedPartyInviteId are UX-only local dismissal: the server never sends
+ * a follow_request_cleared/party_invite_cleared event, so this state is not persisted across
+ * reconnect (a stale pending request/invite will show its modal again after reconnect, which is
+ * correct -- the server still considers it pending).
+ */
+function PendingInviteModals({
+  pendingFollowRequest,
+  pendingPartyInvite,
+  clearedFollowRequestId,
+  setClearedFollowRequestId,
+  clearedPartyInviteId,
+  setClearedPartyInviteId,
+  sendMessage,
+}: PendingInviteModalsProps) {
+  const followRequest =
+    pendingFollowRequest && clearedFollowRequestId !== pendingFollowRequest.request_id ? pendingFollowRequest : null;
+  const partyInvite =
+    pendingPartyInvite && clearedPartyInviteId !== pendingPartyInvite.invite_id ? pendingPartyInvite : null;
+
+  const respondToFollow = (requestId: string, accept: boolean) => {
+    setClearedFollowRequestId(requestId);
+    sendMessage('follow_response', { request_id: requestId, accept });
+  };
+  const respondToParty = (inviteId: string, accept: boolean) => {
+    setClearedPartyInviteId(inviteId);
+    sendMessage('party_invite_response', { invite_id: inviteId, accept });
+  };
+
+  return (
+    <>
+      {followRequest && (
+        <InviteModal
+          title="Follow request"
+          message={`${followRequest.requestor_name} wants to follow you.`}
+          onDecline={() => respondToFollow(followRequest.request_id, false)}
+          onAccept={() => respondToFollow(followRequest.request_id, true)}
+        />
+      )}
+      {partyInvite && (
+        <InviteModal
+          title="Party invite"
+          message={`${partyInvite.inviter_name} has invited you to join their party.`}
+          onDecline={() => respondToParty(partyInvite.invite_id, false)}
+          onAccept={() => respondToParty(partyInvite.invite_id, true)}
+        />
+      )}
+    </>
+  );
+}
+
+/** Opening a room container, and the error to show when the server refuses. */
+function useOpenContainer(authToken: string) {
+  const [containerOpenError, setContainerOpenError] = useState<string | null>(null);
+  const handleOpenContainer = useCallback(
+    (containerId: string) => {
+      setContainerOpenError(null);
+      openContainer(authToken, containerId).catch(e => {
+        setContainerOpenError(e instanceof ContainerApiError ? e.message : 'Could not open that container.');
+      });
+    },
+    [authToken]
+  );
+  const dismissContainerOpenError = useCallback(() => setContainerOpenError(null), []);
+  return { containerOpenError, handleOpenContainer, dismissContainerOpenError };
+}
+
+function ContainerOpenErrorAlert({ message, onDismiss }: { message: string | null; onDismiss: () => void }) {
+  if (!message) return null;
+  return (
+    <div
+      role="alert"
+      className="fixed bottom-4 left-4 z-[10000] max-w-sm rounded border border-mythos-terminal-error bg-mythos-terminal-background p-3 text-sm text-mythos-terminal-error shadow-xl"
+    >
+      {message}
+      <button type="button" className="ml-2 underline" onClick={onDismiss} aria-label="Dismiss">
+        Dismiss
+      </button>
+    </div>
+  );
+}
+
 function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
   const {
     playerName,
@@ -125,17 +221,7 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
     activeEffects,
   } = props;
 
-  const [containerOpenError, setContainerOpenError] = useState<string | null>(null);
-
-  const handleOpenContainer = useCallback(
-    (containerId: string) => {
-      setContainerOpenError(null);
-      openContainer(authToken, containerId).catch(e => {
-        setContainerOpenError(e instanceof ContainerApiError ? e.message : 'Could not open that container.');
-      });
-    },
-    [authToken]
-  );
+  const { containerOpenError, handleOpenContainer, dismissContainerOpenError } = useOpenContainer(authToken);
 
   const handleMapClickFromGame = () => {
     if (tabs.length > 0 && gameState.room?.id) {
@@ -150,28 +236,6 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
     if (gameState.room) openMapTab(gameState.room, authToken, addTab, closeTab);
   };
 
-  // clearedFollowRequestId/clearedPartyInviteId are UX-only local dismissal: the server never sends
-  // a follow_request_cleared/party_invite_cleared event, so this state is not persisted across
-  // reconnect (a stale pending request/invite will show its modal again after reconnect, which is
-  // correct -- the server still considers it pending).
-  const respondToFollow = (accept: boolean) => {
-    const reqId = gameState.pendingFollowRequest!.request_id;
-    setClearedFollowRequestId(reqId);
-    sendMessage('follow_response', { request_id: reqId, accept });
-  };
-
-  const respondToParty = (accept: boolean) => {
-    const inviteId = gameState.pendingPartyInvite!.invite_id;
-    setClearedPartyInviteId(inviteId);
-    sendMessage('party_invite_response', { invite_id: inviteId, accept });
-  };
-
-  const showFollowModal = Boolean(
-    gameState.pendingFollowRequest && clearedFollowRequestId !== gameState.pendingFollowRequest.request_id
-  );
-  const showPartyModal = Boolean(
-    gameState.pendingPartyInvite && clearedPartyInviteId !== gameState.pendingPartyInvite.invite_id
-  );
   const containerClass = `game-terminal-container ${isDead ? 'dead' : ''}`;
   const currentRoomForMenu =
     gameState.room == null
@@ -230,22 +294,7 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
         playerId={gameState.player?.id}
         onOpen={handleOpenContainer}
       />
-      {containerOpenError && (
-        <div
-          role="alert"
-          className="fixed bottom-4 left-4 z-[10000] max-w-sm rounded border border-mythos-terminal-error bg-mythos-terminal-background p-3 text-sm text-mythos-terminal-error shadow-xl"
-        >
-          {containerOpenError}
-          <button
-            type="button"
-            className="ml-2 underline"
-            onClick={() => setContainerOpenError(null)}
-            aria-label="Dismiss"
-          >
-            Dismiss
-          </button>
-        </div>
-      )}
+      <ContainerOpenErrorAlert message={containerOpenError} onDismiss={dismissContainerOpenError} />
 
       <DeathInterstitial
         isVisible={isDead}
@@ -260,23 +309,15 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
         isRespawning={isDeliriumRespawning}
       />
 
-      {showFollowModal && gameState.pendingFollowRequest && (
-        <InviteModal
-          title="Follow request"
-          message={`${gameState.pendingFollowRequest.requestor_name} wants to follow you.`}
-          onDecline={() => respondToFollow(false)}
-          onAccept={() => respondToFollow(true)}
-        />
-      )}
-
-      {showPartyModal && gameState.pendingPartyInvite && (
-        <InviteModal
-          title="Party invite"
-          message={`${gameState.pendingPartyInvite.inviter_name} has invited you to join their party.`}
-          onDecline={() => respondToParty(false)}
-          onAccept={() => respondToParty(true)}
-        />
-      )}
+      <PendingInviteModals
+        pendingFollowRequest={gameState.pendingFollowRequest}
+        pendingPartyInvite={gameState.pendingPartyInvite}
+        clearedFollowRequestId={clearedFollowRequestId}
+        setClearedFollowRequestId={setClearedFollowRequestId}
+        clearedPartyInviteId={clearedPartyInviteId}
+        setClearedPartyInviteId={setClearedPartyInviteId}
+        sendMessage={sendMessage}
+      />
 
       <MainMenuModal
         isOpen={isMainMenuOpen}
