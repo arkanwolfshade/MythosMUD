@@ -435,6 +435,10 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         """Get all containers in a room."""
         return cast(list[dict[str, object]], await self._container_repo.get_containers_by_room_id(room_id))
 
+    async def get_bank_container(self, owner_id: uuid.UUID) -> dict[str, object] | None:
+        """Get a player's bank deposit box, or None if they have never opened one."""
+        return await self._container_repo.get_bank_container(owner_id)
+
     async def get_containers_by_entity_id(self, entity_id: uuid.UUID) -> list[dict[str, object]]:
         """Get all containers owned by an entity."""
         return cast(list[dict[str, object]], await self._container_repo.get_containers_by_entity_id(entity_id))

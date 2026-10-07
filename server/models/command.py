@@ -52,6 +52,8 @@ from .command_follow import FollowCommand, FollowingCommand, UnfollowCommand
 
 # Import inventory commands
 from .command_inventory import (
+    BankCommand,
+    DepositCommand,
     DropCommand,
     EquipCommand,
     GetCommand,
@@ -61,6 +63,7 @@ from .command_inventory import (
     ReadCommand,
     UnequipCommand,
     UseCommand,
+    WithdrawCommand,
 )
 
 # Import magic commands
@@ -169,6 +172,9 @@ __all__ = [
     "DropCommand",
     "PutCommand",
     "GetCommand",
+    "BankCommand",
+    "DepositCommand",
+    "WithdrawCommand",
     "EquipCommand",
     "UnequipCommand",
     "UseCommand",
@@ -244,6 +250,9 @@ Command = (
     | DropCommand
     | PutCommand
     | GetCommand
+    | BankCommand
+    | DepositCommand
+    | WithdrawCommand
     | EquipCommand
     | UnequipCommand
     | UseCommand

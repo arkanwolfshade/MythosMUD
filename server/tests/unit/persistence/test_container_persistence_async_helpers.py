@@ -8,7 +8,7 @@ from unittest.mock import ANY, AsyncMock, MagicMock, patch
 import pytest
 from sqlalchemy.exc import SQLAlchemyError
 
-from server.constants.containers import MAX_CONTAINER_CAPACITY_SLOTS
+from server.constants.containers import CONTAINER_SOURCE_TYPES, MAX_CONTAINER_CAPACITY_SLOTS
 from server.exceptions import DatabaseError, ValidationError
 from server.persistence.container_persistence_async import (
     _build_item_dict,
@@ -73,6 +73,17 @@ def test_validate_container_create_params_accepts_valid() -> None:
     _validate_container_create_params("corpse", 10, "sealed")
     # The async create path is the one the game uses; it must honour the global cap, not 20.
     _validate_container_create_params("environment", MAX_CONTAINER_CAPACITY_SLOTS, "unlocked")
+
+
+@pytest.mark.parametrize("source_type", CONTAINER_SOURCE_TYPES)
+def test_validate_container_create_params_accepts_every_source_type(source_type: str) -> None:
+    """Includes 'bank': a hardcoded list here once would have refused every deposit box at create time."""
+    _validate_container_create_params(source_type, 100, "unlocked")
+
+
+def test_validate_container_create_params_error_names_the_valid_source_types() -> None:
+    with pytest.raises(ValidationError, match="environment, equipment, corpse, bank"):
+        _validate_container_create_params("vault", 5, "unlocked")
 
 
 def test_row_to_mapping_from_sqlalchemy_row() -> None:

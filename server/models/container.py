@@ -31,6 +31,7 @@ class ContainerSourceType(StrEnum):
     ENVIRONMENT = "environment"
     EQUIPMENT = "equipment"
     CORPSE = "corpse"
+    BANK = "bank"
 
 
 class ContainerLockState(StrEnum):
@@ -190,7 +191,9 @@ class ContainerComponent(BaseModel):
             try:
                 return ContainerSourceType(v.lower())
             except ValueError as err:
-                raise ValueError(f"Invalid source_type: {v}. Must be 'environment', 'equipment', or 'corpse'") from err
+                raise ValueError(
+                    f"Invalid source_type: {v}. Must be 'environment', 'equipment', 'corpse', or 'bank'"
+                ) from err
         raise ValueError(f"Invalid source_type type: {type(v)}")
 
     @field_validator("lock_state", mode="before")

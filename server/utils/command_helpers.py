@@ -91,6 +91,9 @@ _COMMAND_HELP_TEXTS: dict[str, str] = {
     CommandType.INVENTORY.value: "inventory - Show your inventory",
     CommandType.PICKUP.value: "pickup <item-number> [quantity] - Pick up a room item",
     CommandType.DROP.value: "drop <inventory-number> [quantity] - Drop an inventory item",
+    CommandType.BANK.value: "bank - List what is in your bank deposit box (only you can open it); must be at a bank",
+    CommandType.DEPOSIT.value: "deposit <item> [quantity] - Deposit an inventory item into your bank deposit box",
+    CommandType.WITHDRAW.value: "withdraw <item> [quantity] - Withdraw an item from your bank deposit box",
     CommandType.EQUIP.value: "equip <inventory-number> [slot] - Equip an item",
     CommandType.UNEQUIP.value: "unequip <slot> - Unequip an item",
     CommandType.USE.value: "use <inventory-number|item-name> - Use a consumable (also: drink, quaff)",
@@ -146,6 +149,9 @@ Available Commands:
 - time - Show the current Mythos time
 - whoami - Show your personal status (alias of status)
 - inventory - Show your inventory
+- bank - List what is in your bank deposit box (must be at a bank)
+- deposit <item> [quantity] - Deposit an inventory item into your bank deposit box
+- withdraw <item> [quantity] - Withdraw an item from your bank deposit box
 - quit - Quit the game
 - sit - Sit down and adopt a seated posture
 - stand - Return to a standing posture

@@ -179,6 +179,93 @@ item name ends and the container name begins.</p>
 </div>
 """,
     },
+    "bank": {
+        "category": "Inventory",
+        "description": "List what is in your bank deposit box",
+        "usage": "bank",
+        "examples": ["bank"],
+        "detailed_help": """
+<div style="color: #8B4513;">
+<h3>BANK Command</h3>
+<p>Every character has a deposit box at Arkham Savings &amp; Trust that only they can open. Items you
+leave behind when you exit the tutorial end up here.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>bank</strong> - List the contents of your deposit box</li>
+</ul>
+
+<h4>Notes:</h4>
+<ul>
+<li>You must be in a bank to use <strong>bank</strong>, <strong>deposit</strong> and <strong>withdraw</strong></li>
+<li>The box holds 100 stacks; a full box refuses deposits until you withdraw something</li>
+<li>Use the numbers shown with <strong>withdraw</strong></li>
+</ul>
+</div>
+""",
+    },
+    "deposit": {
+        "category": "Inventory",
+        "description": "Deposit an item from your inventory into your bank deposit box",
+        "usage": "deposit <item> [quantity]",
+        "examples": ["deposit lantern", "deposit folk tonic 2", "deposit 1"],
+        "detailed_help": """
+<div style="color: #8B4513;">
+<h3>DEPOSIT Command</h3>
+<p>Store an item from your inventory in your deposit box. Only you can open it.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>deposit &lt;item&gt; [quantity]</strong> - Deposit an item</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>deposit lantern</li>
+<li>deposit folk tonic 2</li>
+<li>deposit 1</li>
+</ul>
+
+<h4>Notes:</h4>
+<ul>
+<li>You must be in a bank</li>
+<li>You can use item names or inventory numbers</li>
+<li>You can specify quantity to deposit only part of a stack</li>
+</ul>
+</div>
+""",
+    },
+    "withdraw": {
+        "category": "Inventory",
+        "description": "Withdraw an item from your bank deposit box into your inventory",
+        "usage": "withdraw <item> [quantity]",
+        "examples": ["withdraw lantern", "withdraw folk tonic 2", "withdraw 1"],
+        "detailed_help": """
+<div style="color: #8B4513;">
+<h3>WITHDRAW Command</h3>
+<p>Take an item out of your deposit box and into your inventory.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>withdraw &lt;item&gt; [quantity]</strong> - Withdraw an item</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>withdraw lantern</li>
+<li>withdraw folk tonic 2</li>
+<li>withdraw 1</li>
+</ul>
+
+<h4>Notes:</h4>
+<ul>
+<li>You must be in a bank</li>
+<li>You can use item names or the numbers shown by <strong>bank</strong></li>
+<li>Your inventory must have available capacity</li>
+</ul>
+</div>
+""",
+    },
     "go": {
         "category": "Movement",
         "description": "Move in a specific direction",

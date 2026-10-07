@@ -7,6 +7,8 @@ pickup, drop, put, get, equip, unequip, use, inventory.
 
 from ..exceptions import ValidationError as MythosValidationError
 from ..models.command import (
+    BankCommand,
+    DepositCommand,
     DropCommand,
     EquipCommand,
     GetCommand,
@@ -16,6 +18,7 @@ from ..models.command import (
     ReadCommand,
     UnequipCommand,
     UseCommand,
+    WithdrawCommand,
 )
 from ..structured_logging.enhanced_logging_config import get_logger
 from .enhanced_error_logging import log_and_raise_enhanced
@@ -108,6 +111,8 @@ def _parse_equip_selector(selector_tokens: list[str], args: list[str]) -> tuple[
 
 _GET_USAGE = "Usage: get <item> [from <container>] [quantity]"
 _PUT_USAGE = "Usage: put <item> [in|into] <container> [quantity]"
+_DEPOSIT_USAGE = "Usage: deposit <item> [quantity]"
+_WITHDRAW_USAGE = "Usage: withdraw <item> [quantity]"
 
 
 def _pop_trailing_quantity(tokens: list[str]) -> tuple[list[str], int | None]:
@@ -343,6 +348,31 @@ class InventoryCommandFactory:
         """
         item, container, quantity = _split_item_container(args, frozenset({"from"}), _GET_USAGE)
         return GetCommand(item=item, container=container or "room", quantity=quantity)
+
+    @staticmethod
+    def create_bank_command(args: list[str]) -> BankCommand:
+        """Create bank command (takes no arguments)."""
+        if args:
+            log_and_raise_enhanced(
+                MythosValidationError, "Bank command takes no arguments", args=args, logger_name=__name__
+            )
+        return BankCommand()
+
+    @staticmethod
+    def create_deposit_command(args: list[str]) -> DepositCommand:
+        """Create deposit command. Supports: deposit <item> [quantity]"""
+        tokens, quantity = _pop_trailing_quantity([arg for arg in args if arg.strip()])
+        if not tokens:
+            log_and_raise_enhanced(MythosValidationError, _DEPOSIT_USAGE, args=args, logger_name=__name__)
+        return DepositCommand(item=" ".join(tokens), quantity=quantity)
+
+    @staticmethod
+    def create_withdraw_command(args: list[str]) -> WithdrawCommand:
+        """Create withdraw command. Supports: withdraw <item> [quantity]"""
+        tokens, quantity = _pop_trailing_quantity([arg for arg in args if arg.strip()])
+        if not tokens:
+            log_and_raise_enhanced(MythosValidationError, _WITHDRAW_USAGE, args=args, logger_name=__name__)
+        return WithdrawCommand(item=" ".join(tokens), quantity=quantity)
 
     @staticmethod
     def create_equip_command(args: list[str]) -> EquipCommand:

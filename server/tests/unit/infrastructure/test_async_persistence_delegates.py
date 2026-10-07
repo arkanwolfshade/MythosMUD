@@ -220,6 +220,20 @@ async def test_get_containers_by_room_id_delegates(async_persistence_layer: Asyn
 
 
 @pytest.mark.asyncio
+async def test_get_bank_container_delegates(async_persistence_layer: AsyncPersistenceLayer):
+    """Test get_bank_container delegates to ContainerRepository."""
+    owner_id = uuid.uuid4()
+    mock_box: dict[str, object] = {"container_id": str(uuid.uuid4()), "source_type": "bank"}
+    async_persistence_layer._container_repo.get_bank_container = AsyncMock(return_value=mock_box)
+
+    assert await async_persistence_layer.get_bank_container(owner_id) == mock_box
+    async_persistence_layer._container_repo.get_bank_container.assert_awaited_once_with(owner_id)
+
+    async_persistence_layer._container_repo.get_bank_container = AsyncMock(return_value=None)
+    assert await async_persistence_layer.get_bank_container(owner_id) is None
+
+
+@pytest.mark.asyncio
 async def test_get_containers_by_entity_id_delegates(async_persistence_layer: AsyncPersistenceLayer):
     """Test get_containers_by_entity_id delegates to ContainerRepository."""
     entity_id = uuid.uuid4()

@@ -17,7 +17,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..constants.containers import MAX_CONTAINER_CAPACITY_SLOTS
+from ..constants.containers import CONTAINER_SOURCE_TYPES, MAX_CONTAINER_CAPACITY_SLOTS
 from ..exceptions import DatabaseError, ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
@@ -51,10 +51,10 @@ def _prepare_container_create_params(**params: Any) -> dict[str, Any]:
 
 def _validate_container_create_params(source_type: str, capacity_slots: int, lock_state: str) -> None:
     """Validate create_container params. Raises ValidationError on invalid input."""
-    if source_type not in ("environment", "equipment", "corpse"):
+    if source_type not in CONTAINER_SOURCE_TYPES:
         log_and_raise(
             ValidationError,
-            f"Invalid source_type: {source_type}. Must be 'environment', 'equipment', or 'corpse'",
+            f"Invalid source_type: {source_type}. Must be one of {', '.join(CONTAINER_SOURCE_TYPES)}",
             operation="create_container_async",
             source_type=source_type,
             details={"source_type": source_type},

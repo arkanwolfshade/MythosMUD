@@ -153,6 +153,7 @@ DROP INDEX IF EXISTS idx_invites_expires_at;
 DROP INDEX IF EXISTS idx_invites_active;
 DROP INDEX IF EXISTS idx_emote_alias_on_alias;
 DROP INDEX IF EXISTS idx_corruption_adjustment_player_created;
+DROP INDEX IF EXISTS uq_containers_bank_owner;
 DROP INDEX IF EXISTS idx_containers_source_type;
 DROP INDEX IF EXISTS idx_containers_room_id;
 DROP INDEX IF EXISTS idx_containers_owner_id;
@@ -3704,7 +3705,7 @@ CREATE TABLE containers (
     items_json jsonb DEFAULT '[]'::jsonb NOT NULL,
     CONSTRAINT containers_capacity_slots_check CHECK (((capacity_slots > 0) AND (capacity_slots <= 200))),
     CONSTRAINT containers_lock_state_check CHECK ((lock_state = ANY (ARRAY['unlocked'::text, 'locked'::text, 'sealed'::text]))),
-    CONSTRAINT containers_source_type_check CHECK ((source_type = ANY (ARRAY['environment'::text, 'equipment'::text, 'corpse'::text]))),
+    CONSTRAINT containers_source_type_check CHECK ((source_type = ANY (ARRAY['environment'::text, 'equipment'::text, 'corpse'::text, 'bank'::text]))),
     CONSTRAINT containers_weight_limit_check CHECK (((weight_limit IS NULL) OR (weight_limit > 0)))
 );
 
@@ -5713,6 +5714,13 @@ CREATE INDEX idx_containers_room_id ON containers USING btree (room_id) WHERE (r
 --
 
 CREATE INDEX idx_containers_source_type ON containers USING btree (source_type);
+
+
+--
+-- Name: uq_containers_bank_owner; Type: INDEX; Schema: mythos_dev; Owner: -
+--
+
+CREATE UNIQUE INDEX uq_containers_bank_owner ON containers USING btree (owner_id) WHERE (source_type = 'bank'::text);
 
 
 --

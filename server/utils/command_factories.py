@@ -152,6 +152,18 @@ class CommandFactory:
         """Create GetCommand from arguments."""
         return self._inventory.create_get_command(args)
 
+    def create_bank_command(self, args: list[str]) -> BaseCommand:
+        """Create BankCommand from arguments."""
+        return self._inventory.create_bank_command(args)
+
+    def create_deposit_command(self, args: list[str]) -> BaseCommand:
+        """Create DepositCommand from arguments."""
+        return self._inventory.create_deposit_command(args)
+
+    def create_withdraw_command(self, args: list[str]) -> BaseCommand:
+        """Create WithdrawCommand from arguments."""
+        return self._inventory.create_withdraw_command(args)
+
     def create_equip_command(self, args: list[str]) -> BaseCommand:
         """Create EquipCommand from arguments."""
         return self._inventory.create_equip_command(args)

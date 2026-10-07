@@ -33,6 +33,7 @@ from .alias_commands import (
     handle_aliases_command,
     handle_unalias_command,
 )
+from .bank_commands import handle_bank_command, handle_deposit_command, handle_withdraw_command
 from .catalog_commands import handle_catalog_command
 from .channel_commands import handle_channel_command
 from .cleanse_command import handle_cleanse_command
@@ -177,6 +178,9 @@ _COMMAND_HANDLERS: dict[str, CommandHandler] = {
     "drop": cast(CommandHandler, handle_drop_command),
     "put": cast(CommandHandler, handle_put_command),
     "get": cast(CommandHandler, handle_get_command),
+    "bank": cast(CommandHandler, handle_bank_command),
+    "deposit": cast(CommandHandler, handle_deposit_command),
+    "withdraw": cast(CommandHandler, handle_withdraw_command),
     "equip": cast(CommandHandler, handle_equip_command),
     "unequip": cast(CommandHandler, handle_unequip_command),
     "use": cast(CommandHandler, handle_use_command),

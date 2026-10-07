@@ -332,6 +332,47 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+-- get_bank_container: a player's bank deposit box (at most one: uq_containers_bank_owner)
+CREATE OR REPLACE FUNCTION :schema_name.get_bank_container(p_owner_id uuid) -- noqa: PRS
+RETURNS TABLE (
+    container_instance_id uuid,
+    source_type text,
+    owner_id uuid,
+    room_id character varying,
+    entity_id uuid,
+    lock_state text,
+    capacity_slots integer,
+    weight_limit integer,
+    decay_at timestamp with time zone,
+    allowed_roles jsonb,
+    metadata_json jsonb,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone,
+    container_item_instance_id character varying
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        c.container_instance_id,
+        c.source_type,
+        c.owner_id,
+        c.room_id,
+        c.entity_id,
+        c.lock_state,
+        c.capacity_slots,
+        c.weight_limit,
+        c.decay_at,
+        c.allowed_roles,
+        c.metadata_json,
+        c.created_at,
+        c.updated_at,
+        c.container_item_instance_id
+    FROM containers c
+    WHERE c.source_type = 'bank' AND c.owner_id = p_owner_id;
+END;
+$$ LANGUAGE plpgsql;
+
+
 -- get_containers_by_entity_id: containers owned by entity
 CREATE OR REPLACE FUNCTION :schema_name.get_containers_by_entity_id(p_entity_id uuid) -- noqa: PRS
 RETURNS TABLE (
