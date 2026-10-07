@@ -112,9 +112,7 @@ def _resolve_party_leader(handler: AssistCommandHandler, player_uuid: uuid.UUID)
 
 def _foe_of(combat: CombatInstance, assisted_id: uuid.UUID) -> CombatParticipant | None:
     """The foe the assisted player is fighting: their tracked target, else the fight's first living non-player."""
-    tracked_id = combat.player_current_target.get(assisted_id)
-    tracked = combat.participants.get(tracked_id) if tracked_id is not None else None
-    if tracked is not None and not tracked.is_dead():
+    if (tracked := combat.living_tracked_target(assisted_id)) is not None:
         return tracked
     return next(
         (
