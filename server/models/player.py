@@ -17,7 +17,7 @@ from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, cast, override
 
-from sqlalchemy import BigInteger, Boolean, DateTime, ForeignKey, Integer, String, Text, event, func, text
+from sqlalchemy import BigInteger, Boolean, DateTime, ForeignKey, Integer, String, Text, event, func
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.ext.mutable import MutableDict, MutableList
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -535,14 +535,14 @@ class PlayerChannelPreferences(Base):
         DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(UTC),
-        server_default=text("CURRENT_TIMESTAMP"),
+        server_default=func.current_timestamp(),  # pylint: disable=not-callable  # DDL default for non-ORM inserts
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(UTC),
         onupdate=lambda: datetime.now(UTC),
-        server_default=text("CURRENT_TIMESTAMP"),
+        server_default=func.current_timestamp(),  # pylint: disable=not-callable  # DDL default for non-ORM inserts
     )
 
     player: Mapped[Player] = relationship("Player", back_populates="channel_preferences")
@@ -568,7 +568,7 @@ class PlayerInventory(Base):
         DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(UTC),
-        server_default=text("CURRENT_TIMESTAMP"),
+        server_default=func.current_timestamp(),  # pylint: disable=not-callable  # DDL default for non-ORM inserts
     )
 
     player: Mapped[Player] = relationship("Player", back_populates="inventory_record")
@@ -581,14 +581,22 @@ class PlayerExploration(Base):
 
     __tablename__ = "player_exploration"  # pyright: ignore[reportUnannotatedClassAttribute]
 
-    id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True, server_default=text("gen_random_uuid()"))
+    id: Mapped[str] = mapped_column(
+        UUID(as_uuid=False),
+        primary_key=True,
+        server_default=func.gen_random_uuid(),  # pylint: disable=not-callable  # DDL default for non-ORM inserts
+    )
     player_id: Mapped[str] = mapped_column(
         UUID(as_uuid=False), ForeignKey("players.player_id", ondelete="CASCADE"), nullable=False
     )
     room_id: Mapped[str] = mapped_column(
         UUID(as_uuid=False), ForeignKey("rooms.id", ondelete="CASCADE"), nullable=False
     )
-    explored_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=text("now()"))
+    explored_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),  # pylint: disable=not-callable  # DDL default for non-ORM inserts
+    )
 
     player: Mapped[Player] = relationship("Player", back_populates="exploration_records")
 
