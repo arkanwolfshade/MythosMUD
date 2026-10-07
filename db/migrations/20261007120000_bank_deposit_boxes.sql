@@ -27,7 +27,7 @@ SELECT
     'a8e3f1c4-5b2d-5c97-9e41-7d0b6f2a3c58'::uuid AS id,
     street.subzone_id,
     'earth_arkhamcity_downtown_room_arkham_savings_001' AS stable_id,
-    'Arkham Savings & Trust' AS name,
+    'Arkham Savings & Trust' AS room_name,
     'A hushed banking hall of dark oak and brass grilles, where the tellers speak in lowered voices '
     || 'as though the money might overhear. Rows of numbered deposit boxes line the vault wall behind '
     || 'the clerk''s desk; each opens, the clerks insist, only to the name engraved upon it.' AS description,
@@ -82,7 +82,7 @@ INSERT INTO npc_definitions (
     max_population, spawn_probability, base_stats, behavior_config, ai_integration_stub
 )
 SELECT
-    'Josiah Fenwick' AS name,
+    'Josiah Fenwick' AS npc_name,
     'A precise, colourless clerk in a high collar who has never been seen to blink. He keeps the '
     || 'ledger of every box in the vault and, it is said, has never once misplaced a deposit - or a '
     || 'depositor.' AS description,
@@ -116,9 +116,12 @@ WHERE
     r.stable_id = 'earth_arkhamcity_downtown_room_arkham_savings_001'
     AND (l.from_room_id = r.id OR l.to_room_id = r.id);
 
-DELETE FROM rooms WHERE stable_id = 'earth_arkhamcity_downtown_room_arkham_savings_001';
+DELETE FROM rooms
+WHERE stable_id = 'earth_arkhamcity_downtown_room_arkham_savings_001';
 
-DROP INDEX IF EXISTS uq_containers_bank_owner;
+-- CONCURRENTLY cannot run inside dbmate's transaction, and this rollback block is never reached through
+-- scripts/migrate.ps1 (it only exposes up/status), so the brief table lock is acceptable.
+DROP INDEX IF EXISTS uq_containers_bank_owner; -- noqa: PG01
 
 -- Deliberately no DELETE of bank containers: re-adding the narrower CHECK below fails while any
 -- player still has a box, so a rollback can never silently destroy deposited items.
