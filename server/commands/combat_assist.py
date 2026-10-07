@@ -158,6 +158,30 @@ async def _resolve_assisted(
     return leader, "Your party leader"
 
 
+async def _load_assister(
+    handler: AssistCommandHandler, request_app: AppWithState | None, current_user: Mapping[str, object]
+) -> tuple[uuid.UUID, str, CombatService] | dict[str, str]:
+    """Load the assisting player and check they may fight. Returns (player_id, room_id, combat_service) or an error."""
+    player, _room, error = await handler.get_player_and_room(request_app, current_user)
+    if error:
+        return error
+    combat_service = handler.combat_service
+    if not isinstance(player, Player) or combat_service is None:
+        return {"result": "You cannot assist anyone right now."}
+    room_id = str(player.current_room_id)
+    if not player.is_alive():
+        return {"result": "You are incapacitated and cannot attack."}
+    if handler.room_forbids_combat(room_id):
+        return {"result": "The cosmic forces forbid violence in this place."}
+    return uuid.UUID(str(player.player_id)), room_id, combat_service
+
+
+def _npc_string_id(handler: AssistCommandHandler, foe: CombatParticipant) -> str:
+    """The NPC's string id for the attack path; falls back to the participant UUID when none was mapped."""
+    mapped = handler.npc_combat_service.get_uuid_mapping().get_original_string_id(foe.participant_id)
+    return mapped or str(foe.participant_id)
+
+
 async def run_handle_assist_command(
     handler: AssistCommandHandler,
     command_data: Mapping[str, object],
@@ -172,19 +196,10 @@ async def run_handle_assist_command(
     rest_check = await handler.check_and_interrupt_rest(request_app, player_name, current_user)
     if rest_check:
         return rest_check
-    player, _room, error = await handler.get_player_and_room(request_app, current_user)
-    if error:
-        return error
-    combat_service = handler.combat_service
-    if not isinstance(player, Player) or combat_service is None:
-        return {"result": "You cannot assist anyone right now."}
-
-    player_uuid = uuid.UUID(str(player.player_id))
-    room_id = str(player.current_room_id)
-    if not player.is_alive():
-        return {"result": "You are incapacitated and cannot attack."}
-    if handler.room_forbids_combat(room_id):
-        return {"result": "The cosmic forces forbid violence in this place."}
+    assister = await _load_assister(handler, request_app, current_user)
+    if isinstance(assister, dict):
+        return assister
+    player_uuid, room_id, combat_service = assister
 
     assisted = await _resolve_assisted(handler, player_uuid, command_data)
     if isinstance(assisted, dict):
@@ -194,8 +209,7 @@ async def run_handle_assist_command(
     if isinstance(foe, dict):
         return foe
 
-    npc_id = handler.npc_combat_service.get_uuid_mapping().get_original_string_id(foe.participant_id)
-    npc_id = npc_id or str(foe.participant_id)
+    npc_id = _npc_string_id(handler, foe)
     return await execute_attack_on_npc(
         handler, player_name, npc_id, room_id, npc_instance=handler.get_npc_instance(npc_id)
     )
