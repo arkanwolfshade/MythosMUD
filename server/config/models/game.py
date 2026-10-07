@@ -71,6 +71,22 @@ class GameConfig(BaseSettings):
         default=5.0,
         description="Flat threat a buff or debuff adds (#833); about one heal's worth, so support can pull without damage",
     )
+    aggro_guarding_threat_multiplier: float = Field(
+        default=1.5,
+        ge=1.0,
+        description="Damage-threat multiplier while a player is covering an ally with Protect (#991); the tank multiplier",
+    )
+    aggro_protect_threat_share: float = Field(
+        default=0.5,
+        ge=0.0,
+        le=1.0,
+        description="Fraction of the ally's threat on each NPC a successful Protect hands to the protector (#991)",
+    )
+    protect_cover_rounds: int = Field(
+        default=1,
+        ge=1,
+        description="Rounds a Regular Protect covers the ally after the round it resolves in; Hard/Extreme add one (#991)",
+    )
 
     # Hallucination system (#714)
     hallucination_rng_seed: int | None = Field(
