@@ -21,6 +21,7 @@ import pytest
 
 from server.commands.rest_command import (
     _check_rest_location,
+    _delayed_disconnect_player_intentionally,
     _disconnect_player_intentionally,
     _start_rest_countdown,
     cancel_rest_countdown,
@@ -560,3 +561,60 @@ def test_is_player_resting_no_manager_attribute() -> None:
     result = is_player_resting(player_id, manager)
 
     assert result is False
+
+
+@pytest.mark.asyncio
+async def test_rest_location_logout_tears_the_player_down_once_the_last_socket_is_closed(
+    mock_connection_manager: MagicMock,
+) -> None:
+    """The instant /rest logout must take the player out of online tracking itself, while still marked intentional.
+
+    Closing by connection id only cleans up connection data. The socket's own close handler does the rest only if
+    it still sees the intentional mark, which this task clears in its finally, so a slow handler left the player
+    "online": nobody saw them leave and a quick relog skipped enter setup (e2e: tutorial-instance-lifecycle).
+    """
+    player_id = uuid.uuid4()
+    mock_connection_manager.player_websockets[player_id] = ["conn-1"]
+
+    async def close(pid: uuid.UUID, connection_id: str) -> bool:
+        mock_connection_manager.player_websockets[pid].remove(connection_id)
+        if not mock_connection_manager.player_websockets[pid]:
+            del mock_connection_manager.player_websockets[pid]
+        return True
+
+    marked_during_teardown: list[bool] = []
+
+    async def teardown(pid: uuid.UUID) -> None:
+        marked_during_teardown.append(pid in mock_connection_manager.intentional_disconnects)
+
+    mock_connection_manager.disconnect_websocket_connection = AsyncMock(side_effect=close)
+    force_disconnect: AsyncMock = AsyncMock(side_effect=teardown)
+    mock_connection_manager.force_disconnect_player = force_disconnect
+
+    await _delayed_disconnect_player_intentionally(player_id, mock_connection_manager, None)
+
+    force_disconnect.assert_awaited_once_with(player_id)
+    assert marked_during_teardown == [True]
+    assert player_id not in mock_connection_manager.intentional_disconnects
+
+
+@pytest.mark.asyncio
+async def test_rest_location_logout_leaves_a_player_who_already_reconnected_alone(
+    mock_connection_manager: MagicMock,
+) -> None:
+    """#297: a reconnect during the delay keeps its new socket, so the full teardown must not run."""
+    player_id = uuid.uuid4()
+    mock_connection_manager.player_websockets[player_id] = ["conn-1"]
+
+    async def close_and_reconnect(pid: uuid.UUID, _connection_id: str) -> bool:
+        mock_connection_manager.player_websockets[pid] = ["conn-2"]
+        return True
+
+    mock_connection_manager.disconnect_websocket_connection = AsyncMock(side_effect=close_and_reconnect)
+    force_disconnect: AsyncMock = AsyncMock()
+    mock_connection_manager.force_disconnect_player = force_disconnect
+
+    await _delayed_disconnect_player_intentionally(player_id, mock_connection_manager, None)
+
+    force_disconnect.assert_not_awaited()
+    assert mock_connection_manager.player_websockets[player_id] == ["conn-2"]
