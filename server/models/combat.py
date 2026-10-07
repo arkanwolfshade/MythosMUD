@@ -159,6 +159,14 @@ class CombatParticipant:  # pylint: disable=too-many-instance-attributes  # Reas
 
 
 @dataclass
+class Guard:
+    """Cover one participant (the protector) gives another (#991): hits aimed at the ally land on the protector."""
+
+    protector_id: UUID
+    expires_round: int  # last combat round the cover holds; later rounds find it inactive
+
+
+@dataclass
 class CombatInstance:  # pylint: disable=too-many-instance-attributes  # Reason: Combat instance requires many fields to capture complete combat state
     """Represents an active combat instance."""
 
@@ -184,6 +192,35 @@ class CombatInstance:  # pylint: disable=too-many-instance-attributes  # Reason:
     npc_current_target: dict[UUID, UUID] = field(default_factory=dict)  # npc_id -> current target participant_id
     # Player-side mirror (#833): player participant_id -> the foe they are attacking; read by auto-attack and assist
     player_current_target: dict[UUID, UUID] = field(default_factory=dict)
+    # Protect (#991): ally participant_id -> the cover a protector gives them; read through active_guard
+    guards: dict[UUID, Guard] = field(default_factory=dict)
+
+    def set_guard(self, ally_id: UUID, protector_id: UUID, expires_round: int) -> None:
+        """Record cover over an ally. A protector covers one ally and an ally has one protector; the latest wins."""
+        self.guards = {a: g for a, g in self.guards.items() if a != ally_id and g.protector_id != protector_id}
+        self.guards[ally_id] = Guard(protector_id=protector_id, expires_round=expires_round)
+
+    def active_guard(self, ally_id: UUID) -> Guard | None:
+        """
+        The cover currently protecting the ally, or None.
+
+        Checked on read, so nothing needs cleaning up: cover lapses when its rounds run out, the protector is gone
+        or down (0 DP or less), or the ally has left the fight.
+        """
+        guard = self.guards.get(ally_id)
+        if guard is None or guard.expires_round < self.combat_round or ally_id not in self.participants:
+            return None
+        protector = self.participants.get(guard.protector_id)
+        if protector is None or not protector.can_act_in_combat():
+            return None
+        return guard
+
+    def is_guarding(self, protector_id: UUID) -> bool:
+        """True while this participant is giving someone active cover."""
+        return any(
+            guard.protector_id == protector_id and self.active_guard(ally_id) is not None
+            for ally_id, guard in self.guards.items()
+        )
 
     def get_current_turn_participant(self) -> CombatParticipant | None:
         """Get the participant whose turn it is."""

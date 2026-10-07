@@ -7,17 +7,20 @@ stealth wipe, and UpdateAggro for target resolution.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 from server.config import get_config
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType
 from server.structured_logging.enhanced_logging_config import get_logger
 
+if TYPE_CHECKING:
+    from server.config.models.game import GameConfig
+
 logger = get_logger(__name__)
 
 
-def _get_aggro_config() -> Any:
+def _get_aggro_config() -> GameConfig:
     """Return game config for aggro constants."""
     return get_config().game
 
@@ -49,6 +52,13 @@ def _corruption_scale(npc_participant: CombatParticipant | None, source_particip
     return corruption_hostility_scale(npc_corruption, source_corruption)
 
 
+def _guarding_factor(combat: CombatInstance, source_entity_id: UUID) -> float:
+    """#991: the tank multiplier. A participant giving active Protect cover earns extra damage threat."""
+    if not combat.is_guarding(source_entity_id):
+        return 1.0
+    return _get_aggro_config().aggro_guarding_threat_multiplier
+
+
 def add_damage_threat(
     combat: CombatInstance,
     npc_id: UUID,
@@ -60,8 +70,9 @@ def add_damage_threat(
     """
     Add threat to an NPC's hate list from damage dealt.
 
-    threat += amount * multiplier (default from config aggro_damage_threat_multiplier).
-    passive_mob: no damage threat (only taunt/healing add threat). aggression_level 0-10 scales multiplier.
+    threat += amount * multiplier (default from config aggro_damage_threat_multiplier), times the guarding factor
+    while the source is covering an ally (#991). passive_mob: no damage threat (only taunt/healing add threat).
+    aggression_level 0-10 scales multiplier.
     """
     if amount <= 0:
         return
@@ -78,6 +89,7 @@ def add_damage_threat(
     scale = _aggression_scale(getattr(participant, "aggression_level", None) if participant else None)
     mult *= scale
     mult *= _corruption_scale(participant, combat.participants.get(source_entity_id))
+    mult *= _guarding_factor(combat, source_entity_id)
     delta = amount * mult
     hate = get_or_create_hate_list(combat, npc_id)
     hate[source_entity_id] = hate.get(source_entity_id, 0.0) + delta
