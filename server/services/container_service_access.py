@@ -74,22 +74,25 @@ class ContainerAccessMixin:  # pylint: disable=too-few-public-methods  # Reason:
                     user_friendly="You must be in the same room as the container",
                 )
 
+    @staticmethod
+    def _validate_bank_ownership(container: ContainerComponent, player_id: str) -> None:
+        """Validate player owns a bank deposit box. An orphaned box (owner_id NULL) matches nobody."""
+        if container.owner_id is None or str(container.owner_id) != str(player_id):
+            log_and_raise(
+                ContainerAccessDeniedError,
+                f"Player does not own bank container: {container.container_id}",
+                operation="validate_ownership",
+                container_id=str(container.container_id),
+                player_id=str(player_id),
+                details={"container_id": str(container.container_id), "player_id": str(player_id)},
+                user_friendly="You do not own this container",
+            )
+
     def _validate_ownership(self, container: ContainerComponent, player_id: str) -> None:
         """Validate player owns equipment or bank container."""
         if container.source_type == ContainerSourceType.BANK:
-            # An orphaned box (owner_id NULL after the character was deleted) matches nobody.
-            if container.owner_id is None or str(container.owner_id) != str(player_id):
-                log_and_raise(
-                    ContainerAccessDeniedError,
-                    f"Player does not own bank container: {container.container_id}",
-                    operation="validate_ownership",
-                    container_id=str(container.container_id),
-                    player_id=str(player_id),
-                    details={"container_id": str(container.container_id), "player_id": str(player_id)},
-                    user_friendly="You do not own this container",
-                )
-            return
-        if container.source_type == ContainerSourceType.EQUIPMENT:
+            self._validate_bank_ownership(container, player_id)
+        elif container.source_type == ContainerSourceType.EQUIPMENT:
             player_id_uuid = UUID(str(player_id)) if player_id else None
             container_entity_id_uuid = UUID(str(container.entity_id)) if container.entity_id else None
             if container_entity_id_uuid != player_id_uuid:
