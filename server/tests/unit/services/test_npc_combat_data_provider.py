@@ -171,3 +171,21 @@ async def test_get_player_combat_data_reads_live_corruption(persistence: MagicMo
     provider = NPCCombatDataProvider(persistence)
     data = await provider.get_player_combat_data(str(player_id), uuid.uuid4(), "Hero")
     assert data.corruption == 45
+
+
+@pytest.mark.parametrize(
+    ("stored", "expected"),
+    [("aggressive", 10), ("passive", 0), (7, 7), ("frenzied", None), (None, None)],
+)
+def test_get_npc_combat_data_reads_aggression_level_from_catalog_or_int(
+    persistence: MagicMock, stored: object, expected: int | None
+) -> None:
+    """#999: the catalog stores "passive"/"aggressive"; those used to be dropped, silently disabling scaling."""
+    npc = SimpleNamespace(
+        name="Ghoul",
+        npc_type="aggressive_mob",
+        get_combat_stats=lambda: {"current_dp": 50, "max_dp": 50, "dexterity": 8},
+        get_behavior_config=lambda: {"aggression_level": stored},
+    )
+    data = NPCCombatDataProvider(persistence).get_npc_combat_data(npc, uuid.uuid4())
+    assert data.aggression_level == expected

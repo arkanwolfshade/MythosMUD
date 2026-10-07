@@ -10,6 +10,8 @@ from typing import TYPE_CHECKING, Any, cast
 from jsonschema import Draft7Validator
 from jsonschema import ValidationError as JSONSchemaValidationError
 
+from .aggression import AGGRESSION_LEVEL_BY_NAME, AGGRESSION_LEVEL_MAX, AGGRESSION_LEVEL_MIN
+
 if TYPE_CHECKING:
     from server.models.npc import NPCDefinition
 
@@ -140,9 +142,12 @@ COMBAT_BEHAVIOR_SCHEMA = {
     "type": "object",
     "properties": {
         "aggression_level": {
-            "type": "string",
-            "enum": ["passive", "aggressive"],
-            "description": "NPC aggression level",
+            # #999: same contract as behavior_config["aggression_level"] (see aggression.py).
+            "anyOf": [
+                {"type": "string", "enum": list(AGGRESSION_LEVEL_BY_NAME)},
+                {"type": "integer", "minimum": AGGRESSION_LEVEL_MIN, "maximum": AGGRESSION_LEVEL_MAX},
+            ],
+            "description": "NPC aggression level: an int 0-10, or the name passive (0) / aggressive (10)",
         },
         "retreat_threshold": {
             "type": "number",
