@@ -15,6 +15,7 @@ from server.game.npcs.attack_damage import armor_points_from_base_stats
 
 from ..models.combat import CombatParticipantType
 from ..npc.lifecycle_manager import NPCLifecycleManager
+from ..schemas.combat.aggression import parse_aggression_level
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
 from .combat_types import CombatParticipantData
@@ -253,18 +254,8 @@ class NPCCombatDataProvider:
                 return None, None
             typed_behavior_config = cast(dict[object, object], behavior_config)
             behavior_snapshot = {str(k): v for k, v in typed_behavior_config.items()}
-            aggression_level: int | None = None
-            raw = typed_behavior_config.get("aggression_level")
-            if raw is not None:
-                try:
-                    # Reason: SERIALIZATION_BOUNDARY - raw is object from the untyped
-                    # behavior_config dict; int() on an arbitrary object is guarded by the
-                    # except clause below.
-                    # Appropriate because: aggression_level's whole point is to clamp/validate
-                    # this loosely-typed config value, so accepting object here is correct.
-                    aggression_level = max(0, min(10, int(raw)))  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType]  # Reason: CHECKER_CONFLICT:call-overload - mypy rejects int(object) statically; basedpyright is authoritative and the surrounding try/except guards the runtime case.
-                except TypeError, ValueError:
-                    pass
+            # #999: the catalog stores "passive"/"aggressive", other configs an int 0-10.
+            aggression_level = parse_aggression_level(typed_behavior_config.get("aggression_level"))
             return behavior_snapshot, aggression_level
         except ValueError, AttributeError, TypeError:
             return None, None
