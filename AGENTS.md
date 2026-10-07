@@ -34,7 +34,7 @@ bodies).
   **restart Cursor**. **Slack** and other marketplace MCPs stay separate unless you add them in user MCP settings. For
   jCodeMunch usage, see [QUICKSTART](https://github.com/jgravelle/jcodemunch-mcp/blob/main/QUICKSTART.md).
 - **Token efficiency over speed:** Prefer targeted retrieval over dumping large files; see
-  `.cursor/rules/token-efficiency.mdc` (pairs with `jcodemunch.mdc`) and `USER_RULES.md`.
+  `.cursor/rules/token-efficiency.mdc` (pairs with `jcodemunch.mdc`) and [`USER_RULES.md`](USER_RULES.md).
 - **basedpyright `Any`:** Do not introduce `typing.Any` or suppress `reportAny` / `reportExplicitAny`.
   Rule: `.cursor/rules/basedpyright-no-any.mdc` (Claude: `.claude/rules/basedpyright.md`). After
   Python edits, run `uv run basedpyright <edited files>`. Ponytail must not treat `Any` as a
@@ -872,7 +872,7 @@ jobs:
   [`data/MythosMUD-Obsidian/AGENTS.md`](data/MythosMUD-Obsidian/AGENTS.md); skill
   `mythosmud-llm-wiki`; Karpathy pattern
   [gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
-- **User-specific rules:** `USER_RULES.md`
+- **User-specific rules:** [`USER_RULES.md`](USER_RULES.md)
 - **Task tracking:** [GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues)
 
 ## Code Exploration Policy
