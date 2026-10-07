@@ -12,6 +12,7 @@ from uuid import UUID
 from server.app.game_tick_counter import get_current_tick
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType, CombatResult
 from server.services.aggro_threat import add_damage_threat
+from server.services.combat_protect_action import intercept_for_guard
 from server.services.nats_exceptions import NATSError
 from server.structured_logging.enhanced_logging_config import get_logger
 
@@ -311,6 +312,9 @@ async def process_attack(
     early = await service.validate_melee_or_end_combat(combat, current_participant, target, attacker_id, target_id)
     if early is not None:
         return early
+    # #991: cover redirects an NPC's blow from the protected player to their protector.
+    target = await intercept_for_guard(service, combat, current_participant, target, damage)
+    target_id = target.participant_id
     logger.info(
         "Processing attack",
         attacker_name=current_participant.name,
