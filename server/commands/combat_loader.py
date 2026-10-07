@@ -159,3 +159,16 @@ async def handle_assist_command(
     app = _app_from_request(request)
     handler = get_combat_command_handler(app)
     return await handler.handle_assist_command(command_data, current_user, request, alias_storage, player_name)
+
+
+async def handle_protect_command(
+    command_data: dict[str, object],
+    current_user: dict[str, object],
+    request: object | None,
+    alias_storage: AliasStorage | None,
+    player_name: str,
+) -> dict[str, str]:
+    """Handle protect command: cover an ally so NPC blows aimed at them land on you (#991)."""
+    app = _app_from_request(request)
+    handler = get_combat_command_handler(app)
+    return await handler.handle_protect_command(command_data, current_user, request, alias_storage, player_name)

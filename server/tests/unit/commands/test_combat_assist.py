@@ -1,7 +1,7 @@
 """Unit tests for the assist command (#833): which foe it picks, the refusals, and the hand-off to the attack path."""
 
 # pyright: reportPrivateUsage=false
-# Reason: _assisted_name_from_command is exercised directly for its key/blank handling.
+# Reason: assisted_name_from_command is exercised directly for its key/blank handling.
 
 from __future__ import annotations
 
@@ -387,4 +387,4 @@ async def test_assist_needs_a_real_player_and_a_combat_service(real_player: bool
 def test_the_assisted_name_is_read_from_either_key_and_blank_means_bare(
     command_data: dict[str, object], expected: str | None
 ) -> None:
-    assert combat_assist._assisted_name_from_command(command_data) == expected
+    assert combat_assist.assisted_name_from_command(command_data) == expected
