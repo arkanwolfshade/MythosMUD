@@ -512,36 +512,6 @@ def test_create_command_object_re_raises_mythos_validation_error(command_parser)
         command_parser._command_factory["look"] = original_method
 
 
-def test_get_command_help_specific(command_parser):
-    """Test get_command_help returns help for specific command."""
-    result = command_parser.get_command_help("look")
-
-    assert "Examine your surroundings" in result
-
-
-def test_get_command_help_none(command_parser):
-    """Test get_command_help returns general help when command_name is None."""
-    result = command_parser.get_command_help(None)
-
-    assert "Available commands" in result
-    assert "look:" in result
-
-
-def test_get_command_help_unknown_command(command_parser):
-    """Test get_command_help returns error message for unknown command."""
-    result = command_parser.get_command_help("unknown_command")
-
-    assert "No help available" in result
-
-
-def test_get_command_help_case_insensitive(command_parser):
-    """Test get_command_help is case-insensitive."""
-    result_lower = command_parser.get_command_help("look")
-    result_upper = command_parser.get_command_help("LOOK")
-
-    assert result_lower == result_upper
-
-
 def test_parse_command_global_function():
     """Test parse_command global function uses global parser."""
     result = parse_command("look")

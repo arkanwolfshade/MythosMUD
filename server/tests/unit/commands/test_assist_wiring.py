@@ -14,9 +14,9 @@ from server.commands import combat_loader
 from server.commands.combat import CombatCommandHandler, CombatCommandHandlerExtras
 from server.commands.combat_loader import handle_assist_command
 from server.commands.command_service import _COMMAND_HANDLERS
+from server.help.help_content import get_help_content
 from server.models.command import AssistCommand, CommandType
 from server.utils.command_factories_combat import CombatCommandFactory
-from server.utils.command_helpers import get_command_help
 from server.utils.command_parser import CommandParser
 from server.utils.command_processor import CommandProcessor
 
@@ -94,13 +94,14 @@ def test_the_combat_handler_exposes_the_party_service_it_was_given() -> None:
 
 
 def test_help_explains_both_new_combat_verbs() -> None:
-    assert "assist [player]" in get_command_help("assist")
-    assert "party" in get_command_help("assist")
-    assert "taunt <npc>" in get_command_help("taunt")
-    assert "Intimidate" in get_command_help("taunt")
-    general = get_command_help()
-    assert "- assist [player]" in general
-    assert "- taunt <npc>" in general
+    assist, taunt = get_help_content("assist"), get_help_content("taunt")
+    assert "assist [player]" in assist
+    assert "party" in assist
+    assert "taunt &lt;npc&gt;" in taunt
+    assert "Intimidate" in taunt
+    general = get_help_content()
+    assert "<strong>assist</strong>" in general
+    assert "<strong>taunt</strong>" in general
 
 
 @pytest.mark.parametrize("verb", ["assist", "taunt", "ASSIST"])

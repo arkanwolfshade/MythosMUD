@@ -203,7 +203,7 @@ def _user_flag_true(current_user: object, key: str) -> bool:
     return bool(getattr(current_user, key, False))
 
 
-async def _resolve_is_admin(
+async def resolve_is_admin(
     current_user: object,
     request: object,
     player_name: str,
@@ -250,7 +250,7 @@ async def handle_catalog_command(
     service = _get_catalog_service(request)
 
     try:
-        is_admin = await _resolve_is_admin(current_user, request, player_name)
+        is_admin = await resolve_is_admin(current_user, request, player_name)
         response = await service.list_catalog(query, is_admin=is_admin)
         return {"result": format_catalog_output(response)}
     except Exception as e:  # pylint: disable=broad-except

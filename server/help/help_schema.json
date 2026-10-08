@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.mythosmud.local/help-docs.json",
+  "title": "MythosMUD help documentation",
+  "description": "Shared schema for server/help/commands.json and server/help/guides.json. Each file carries one of the two top-level keys. details_html may only use tags and attributes allowed by the client's INCOMING_HTML_DOMPURIFY_CONFIG; tests enforce this.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "commands": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/command" }
+    },
+    "guides": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/guide" }
+    }
+  },
+  "$defs": {
+    "topicName": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]*$"
+    },
+    "htmlLines": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "command": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "category", "summary", "usage"],
+      "properties": {
+        "name": { "$ref": "#/$defs/topicName" },
+        "aliases": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/topicName" }
+        },
+        "category": { "type": "string", "minLength": 1 },
+        "admin_only": { "type": "boolean" },
+        "summary": { "type": "string", "minLength": 1 },
+        "usage": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "arguments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "required", "description"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "required": { "type": "boolean" },
+              "description": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "examples": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["input"],
+            "properties": {
+              "input": { "type": "string", "minLength": 1 },
+              "note": { "type": "string" }
+            }
+          }
+        },
+        "see_also": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/topicName" }
+        },
+        "details_html": { "$ref": "#/$defs/htmlLines" }
+      }
+    },
+    "guide": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "group", "summary"],
+      "properties": {
+        "id": { "$ref": "#/$defs/topicName" },
+        "title": { "type": "string", "minLength": 1 },
+        "group": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string", "minLength": 1 },
+        "see_also": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/topicName" }
+        },
+        "details_html": { "$ref": "#/$defs/htmlLines" }
+      }
+    }
+  }
+}

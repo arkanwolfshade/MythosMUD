@@ -162,6 +162,42 @@ def _request_with(
     return _CatalogRequestStub(_CatalogAppStub(_CatalogAppStateStub(container)))
 
 
+def _persistence_returning(player: object | None) -> MagicMock:
+    persistence = MagicMock()
+    persistence.get_player_by_name = AsyncMock(return_value=player)
+    return persistence
+
+
+@pytest.mark.asyncio
+async def test_resolve_is_admin_trusts_the_stored_player_over_the_user_flags() -> None:
+    request = _request_with(persistence=_persistence_returning(MagicMock(is_admin=True)))
+
+    assert await cmd.resolve_is_admin({"username": "Alice"}, request, "Alice") is True
+
+
+@pytest.mark.asyncio
+async def test_resolve_is_admin_is_false_for_a_plain_player_with_no_flags() -> None:
+    request = _request_with(persistence=_persistence_returning(MagicMock(is_admin=False)))
+
+    assert await cmd.resolve_is_admin({"username": "Alice"}, request, "Alice") is False
+
+
+@pytest.mark.asyncio
+async def test_resolve_is_admin_falls_back_to_flags_when_the_lookup_fails() -> None:
+    persistence = MagicMock()
+    persistence.get_player_by_name = AsyncMock(side_effect=RuntimeError("db down"))
+    request = _request_with(persistence=persistence)
+
+    assert await cmd.resolve_is_admin({"username": "Alice", "is_admin": True}, request, "Alice") is True
+    assert await cmd.resolve_is_admin({"username": "Alice"}, request, "Alice") is False
+
+
+@pytest.mark.asyncio
+async def test_resolve_is_admin_without_a_request_reads_only_the_user_flags() -> None:
+    assert await cmd.resolve_is_admin({"is_superuser": True}, None, "Alice") is True
+    assert await cmd.resolve_is_admin({}, None, "Alice") is False
+
+
 @pytest.mark.asyncio
 async def test_handle_catalog_command_admin_from_player() -> None:
     persistence = MagicMock()

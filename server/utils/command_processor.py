@@ -195,6 +195,7 @@ class CommandProcessor:
             "look_in": "look_in",
             "instance_number": "instance_number",
             "spell_name": "spell_name",
+            "topic": "topic",
             "args": "args",
         }
 
@@ -237,27 +238,6 @@ class CommandProcessor:
         if is_safe:
             return True, None
         return False, "Command contains dangerous patterns"
-
-    def get_command_help(self, command_name: str | None = None) -> str:
-        """
-        Get help information for commands.
-
-        Args:
-            command_name: Specific command to get help for, or None for general help
-
-        Returns:
-            Help text for the command(s)
-        """
-        try:
-            return self.parser.get_command_help(command_name)
-        except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
-            logger.error(
-                "Error getting command help",
-                error=str(e),
-                command_name=command_name,
-                error_type=type(e).__name__,
-            )
-            return "Help system temporarily unavailable."
 
 
 # Global instance for use throughout the application

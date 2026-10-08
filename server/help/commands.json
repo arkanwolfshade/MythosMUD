@@ -1,0 +1,2040 @@
+{
+  "commands": [
+    {
+      "name": "look",
+      "category": "Exploration",
+      "summary": "Examine your surroundings, look at players, items, containers, or peer in a direction",
+      "usage": [
+        "look [target] or /look [target]"
+      ],
+      "examples": [
+        {
+          "input": "look"
+        },
+        {
+          "input": "look north"
+        },
+        {
+          "input": "look player Armitage"
+        },
+        {
+          "input": "look item lantern"
+        },
+        {
+          "input": "look container backpack"
+        },
+        {
+          "input": "look in backpack"
+        },
+        {
+          "input": "look backpack-2"
+        }
+      ],
+      "details_html": [
+        "<p>The ancient texts speak of observation as the first step toward understanding.",
+        "Use this command to examine your surroundings, inspect items, examine containers,",
+        "or peer into the unknown.</p>",
+        "<p class=\"help-subhead\"><strong>Usage:</strong></p>",
+        "<ul>",
+        "<li><strong>look</strong> - Examine your current location</li>",
+        "<li><strong>look [direction]</strong> - Look in a specific direction (north, south, east, west, up, down)</li>",
+        "<li><strong>look player [name]</strong> - Look at another player</li>",
+        "<li><strong>look item [name]</strong> - Examine an item (in room, inventory, or equipped)</li>",
+        "<li><strong>look container [name]</strong> - Examine a container</li>",
+        "<li><strong>look in [container]</strong> - Look inside a container to see its contents</li>",
+        "<li><strong>look [name]-[number]</strong> or <strong>look [name] [number]</strong> - Target specific instance when multiple exist</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>Target Priority:</strong></p>",
+        "<p>When using ambiguous targets, the system resolves in this order:</p>",
+        "<ol>",
+        "<li>Players</li>",
+        "<li>NPCs</li>",
+        "<li>Items (room drops, inventory, equipped)</li>",
+        "<li>Containers (room containers, wearable containers)</li>",
+        "<li>Directions</li>",
+        "</ol>",
+        "<p class=\"help-subhead\"><strong>Instance Targeting:</strong></p>",
+        "<p>When multiple items or containers match a name, use instance numbers:</p>",
+        "<ul>",
+        "<li><strong>look backpack-2</strong> - Look at the second backpack</li>",
+        "<li><strong>look lantern 1</strong> - Look at the first lantern</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>Container Inspection:</strong></p>",
+        "<p>To see the contents of a container, use the \"in\" keyword:</p>",
+        "<ul>",
+        "<li><strong>look in backpack</strong> - See what's inside your backpack</li>",
+        "<li><strong>look container chest</strong> - Examine a chest (shows capacity and lock status)</li>",
+        "</ul>",
+        "<p>As the Necronomicon suggests: \"That which can be seen may yet remain unseen to the untrained eye.\"</p>"
+      ]
+    },
+    {
+      "name": "put",
+      "category": "Inventory",
+      "summary": "Put an item from your inventory into a container",
+      "usage": [
+        "put <item> [in|into] <container> [quantity]"
+      ],
+      "examples": [
+        {
+          "input": "put lantern in backpack"
+        },
+        {
+          "input": "put lantern backpack"
+        },
+        {
+          "input": "put folk tonic into chest"
+        },
+        {
+          "input": "put 1 in backpack"
+        },
+        {
+          "input": "put lantern in backpack 2"
+        }
+      ],
+      "details_html": [
+        "<p>Transfer items from your inventory into a container. \"in\" or \"into\" marks where the item name",
+        "ends and the container name begins.</p>",
+        "<p class=\"help-subhead\"><strong>Usage:</strong></p>",
+        "<ul>",
+        "<li><strong>put &lt;item&gt; [in|into] &lt;container&gt; [quantity]</strong> - Put item into container</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>Notes:</strong></p>",
+        "<ul>",
+        "<li>Items with names of more than one word need \"in\" or \"into\": \"put folk tonic into chest\"</li>",
+        "<li>Without \"in\"/\"into\" the first word is the item and the rest is the container</li>",
+        "<li>You can use item names or inventory numbers</li>",
+        "<li>You can specify quantity to put only part of a stack</li>",
+        "<li>Container must be accessible (in room or equipped)</li>",
+        "<li>Container must have available capacity</li>",
+        "</ul>",
+        "<p>As noted in the restricted archives: \"Proper storage of artifacts prevents dimensional contamination.\"</p>"
+      ]
+    },
+    {
+      "name": "get",
+      "category": "Inventory",
+      "summary": "Get an item from a container into your inventory",
+      "usage": [
+        "get <item> [from <container>] [quantity]"
+      ],
+      "examples": [
+        {
+          "input": "get lantern from backpack"
+        },
+        {
+          "input": "get folk tonic from chest"
+        },
+        {
+          "input": "get folk tonic"
+        },
+        {
+          "input": "get 1 from backpack"
+        },
+        {
+          "input": "get lantern from backpack 2"
+        }
+      ],
+      "details_html": [
+        "<p>Transfer items from a container, or from the floor, into your inventory. \"from\" marks where the",
+        "item name ends and the container name begins.</p>",
+        "<p class=\"help-subhead\"><strong>Usage:</strong></p>",
+        "<ul>",
+        "<li><strong>get &lt;item&gt; from &lt;container&gt; [quantity]</strong> - Get item from container</li>",
+        "<li><strong>get &lt;item&gt; [quantity]</strong> - Get item from the floor</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>Notes:</strong></p>",
+        "<ul>",
+        "<li>\"from\" is required to take from a container: \"get lantern backpack\" looks for an item called",
+        "\"lantern backpack\" on the floor</li>",
+        "<li>Item and container names may each be several words</li>",
+        "<li>You can use item names or container item numbers</li>",
+        "<li>You can specify quantity to get only part of a stack</li>",
+        "<li>Container must be accessible (in room or equipped)</li>",
+        "<li>Your inventory must have available capacity</li>",
+        "</ul>",
+        "<p>As noted in the restricted archives: \"Retrieval of stored artifacts requires careful handling.\"</p>"
+      ]
+    },
+    {
+      "name": "bank",
+      "category": "Inventory",
+      "summary": "List what is in your bank deposit box",
+      "usage": [
+        "bank"
+      ],
+      "examples": [
+        {
+          "input": "bank"
+        }
+      ],
+      "details_html": [
+        "<p>Every character has a deposit box at Arkham Savings &amp; Trust that only they can open. Items you",
+        "leave behind when you exit the tutorial end up here.</p>",
+        "<p class=\"help-subhead\"><strong>Usage:</strong></p>",
+        "<ul>",
+        "<li><strong>bank</strong> - List the contents of your deposit box</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>Notes:</strong></p>",
+        "<ul>",
+        "<li>You must be in a bank to use <strong>bank</strong>, <strong>deposit</strong> and <strong>withdraw</strong></li>",
+        "<li>The box holds 100 stacks; a full box refuses deposits until you withdraw something</li>",
+        "<li>Use the numbers shown with <strong>withdraw</strong></li>",
+        "</ul>"
+      ]
+    },
+    {
+      "name": "deposit",
+      "category": "Inventory",
+      "summary": "Deposit an item from your inventory into your bank deposit box",
+      "usage": [
+        "deposit <item> [quantity]"
+      ],
+      "examples": [
+        {
+          "input": "deposit lantern"
+        },
+        {
+          "input": "deposit folk tonic 2"
+        },
+        {
+          "input": "deposit 1"
+        }
+      ],
+      "details_html": [
+        "<p>Store an item from your inventory in your deposit box. Only you can open it.</p>",
+        "<p class=\"help-subhead\"><strong>Usage:</strong></p>",
+        "<ul>",
+        "<li><strong>deposit &lt;item&gt; [quantity]</strong> - Deposit an item</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>Notes:</strong></p>",
+        "<ul>",
+        "<li>You must be in a bank</li>",
+        "<li>You can use item names or inventory numbers</li>",
+        "<li>You can specify quantity to deposit only part of a stack</li>",
+        "</ul>"
+      ]
+    },
+    {
+      "name": "withdraw",
+      "category": "Inventory",
+      "summary": "Withdraw an item from your bank deposit box into your inventory",
+      "usage": [
+        "withdraw <item> [quantity]"
+      ],
+      "examples": [
+        {
+          "input": "withdraw lantern"
+        },
+        {
+          "input": "withdraw folk tonic 2"
+        },
+        {
+          "input": "withdraw 1"
+        }
+      ],
+      "details_html": [
+        "<p>Take an item out of your deposit box and into your inventory.</p>",
+        "<p class=\"help-subhead\"><strong>Usage:</strong></p>",
+        "<ul>",
+        "<li><strong>withdraw &lt;item&gt; [quantity]</strong> - Withdraw an item</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>Notes:</strong></p>",
+        "<ul>",
+        "<li>You must be in a bank</li>",
+        "<li>You can use item names or the numbers shown by <strong>bank</strong></li>",
+        "<li>Your inventory must have available capacity</li>",
+        "</ul>"
+      ]
+    },
+    {
+      "name": "go",
+      "category": "Movement",
+      "summary": "Move in a specific direction",
+      "usage": [
+        "go <direction> or /go <direction>"
+      ],
+      "examples": [
+        {
+          "input": "go north"
+        },
+        {
+          "input": "go south"
+        },
+        {
+          "input": "go east"
+        },
+        {
+          "input": "go west"
+        },
+        {
+          "input": "/go north"
+        },
+        {
+          "input": "/go south"
+        }
+      ],
+      "details_html": [
+        "<p>Traverse the non-Euclidean corridors of our world. Each step brings you closer to revelations best left undiscovered.</p>",
+        "<p class=\"help-subhead\"><strong>Available Directions:</strong></p>",
+        "<ul>",
+        "<li>north</li>",
+        "<li>south</li>",
+        "<li>east</li>",
+        "<li>west</li>",
+        "</ul>",
+        "<p>You must be on your feet to move, and you cannot walk away from a fight (use <code>flee</code>). Moving breaks off any rest in progress.</p>",
+        "<p>Remember: \"The geometry of this place is not as it seems.\" - Prof. Armitage</p>"
+      ],
+      "see_also": [
+        "look",
+        "stand",
+        "flee",
+        "follow"
+      ]
+    },
+    {
+      "name": "say",
+      "category": "Communication",
+      "summary": "Speak to other players in your current room",
+      "usage": [
+        "say <message>"
+      ],
+      "examples": [
+        {
+          "input": "say Hello everyone!"
+        },
+        {
+          "input": "say What a strange place this is..."
+        }
+      ],
+      "details_html": [
+        "<p>Project your voice into the eldritch air, allowing your words to reach",
+        "the ears of those who share your current location. As the ancient texts",
+        "suggest, communication is the first step toward understanding.</p>",
+        "<p class=\"help-subhead\"><strong>Usage:</strong></p>",
+        "<ul>",
+        "<li><strong>say [message]</strong> - Speak to players in your current room</li>",
+        "</ul>",
+        "<p>Note: Your words will be heard by all players currently in the same room.</p>"
+      ]
+    },
+    {
+      "name": "talk",
+      "category": "Communication",
+      "summary": "Speak with an NPC through a dialogue tree (private to you)",
+      "usage": [
+        "talk <npc> | talk <number>"
+      ],
+      "examples": [
+        {
+          "input": "talk Armitage"
+        },
+        {
+          "input": "talk 1"
+        },
+        {
+          "input": "talk morgan"
+        }
+      ],
+      "details_html": [
+        "<p>Begin or continue a private conversation with an NPC who has a dialogue tree.",
+        "Replies appear as personal system messages (not room chat). Leaving the room",
+        "ends the conversation.</p>",
+        "<p class=\"help-subhead\"><strong>Usage:</strong></p>",
+        "<ul>",
+        "<li><strong>talk &lt;npc&gt;</strong> - Start (or restart) dialogue with an NPC in your room</li>",
+        "<li><strong>talk &lt;number&gt;</strong> - Choose a numbered reply from the current options</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>Notes:</strong></p>",
+        "<ul>",
+        "<li>The NPC must be in the same room</li>",
+        "<li>Not every NPC has a dialogue tree; those without will say they have nothing to say</li>",
+        "<li>Choose an option whose next is empty (or farewell) to end the conversation</li>",
+        "<li>Quest ask/turnin remain separate: use <strong>quest ask</strong> / <strong>quest turnin</strong></li>",
+        "<li>For detailed help: <strong>help talk</strong></li>",
+        "</ul>",
+        "<p>As noted in the restricted stacks: conversation is a lantern in the dark.</p>"
+      ]
+    },
+    {
+      "name": "me",
+      "category": "Communication",
+      "summary": "Describe an action in the third person; the line is shown to you.",
+      "usage": [
+        "me <action>"
+      ],
+      "examples": [
+        {
+          "input": "me adjusts spectacles"
+        },
+        {
+          "input": "me looks around nervously"
+        }
+      ],
+      "details_html": [
+        "<p>Your name is placed in front of the action, so <code>me studies the map</code> reads as your character studying the map.</p>",
+        "<p>At present the line is shown only to you. To have everyone in the room see it, use <code>emote</code>.</p>"
+      ],
+      "see_also": [
+        "emote",
+        "pose",
+        "say"
+      ]
+    },
+    {
+      "name": "pose",
+      "category": "Communication",
+      "summary": "Set your character's pose or description",
+      "usage": [
+        "pose <description>",
+        "pose"
+      ],
+      "examples": [
+        {
+          "input": "pose is reading an ancient tome"
+        },
+        {
+          "input": "pose stands guard"
+        }
+      ],
+      "details_html": [
+        "<p>Set a persistent description of what your character is doing or how they appear. Others see it when they look at you or at the room.</p>",
+        "<p>It stays until you change it. Use <code>pose</code> with no description to clear it.</p>"
+      ],
+      "see_also": [
+        "emote",
+        "me",
+        "look"
+      ]
+    },
+    {
+      "name": "alias",
+      "category": "System",
+      "summary": "Create or view command aliases",
+      "usage": [
+        "alias <name> <command> or alias <name>"
+      ],
+      "examples": [
+        {
+          "input": "alias n go north"
+        },
+        {
+          "input": "alias l look"
+        },
+        {
+          "input": "alias n"
+        }
+      ],
+      "details_html": [
+        "<p>Create shortcuts for commonly used commands. Aliases allow you to define",
+        "your own command names for frequently used actions.</p>",
+        "<p class=\"help-subhead\"><strong>Usage:</strong></p>",
+        "<ul>",
+        "<li><strong>alias [name] [command]</strong> - Create a new alias</li>",
+        "<li><strong>alias [name]</strong> - View an existing alias</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>Rules:</strong></p>",
+        "<ul>",
+        "<li>Alias names must start with a letter</li>",
+        "<li>Only alphanumeric characters and underscores allowed</li>",
+        "<li>Maximum 50 aliases per player</li>",
+        "<li>Cannot alias reserved commands</li>",
+        "</ul>",
+        "<p>After creating an alias, you can use the alias name as a command.</p>"
+      ]
+    },
+    {
+      "name": "aliases",
+      "category": "System",
+      "summary": "List all your aliases",
+      "usage": [
+        "aliases"
+      ],
+      "examples": [
+        {
+          "input": "aliases"
+        }
+      ],
+      "details_html": [
+        "<p>View all the aliases you have created for quick command access.</p>",
+        "<p class=\"help-subhead\"><strong>Usage:</strong></p>",
+        "<ul>",
+        "<li><strong>aliases</strong> - List all your aliases</li>",
+        "</ul>",
+        "<p>This will show you all your current aliases and what commands they execute.</p>"
+      ]
+    },
+    {
+      "name": "unalias",
+      "category": "System",
+      "summary": "Remove a command alias",
+      "usage": [
+        "unalias <name>"
+      ],
+      "examples": [
+        {
+          "input": "unalias n"
+        },
+        {
+          "input": "unalias l"
+        }
+      ],
+      "details_html": [
+        "<p>Remove an alias that you no longer need or want to change.</p>",
+        "<p class=\"help-subhead\"><strong>Usage:</strong></p>",
+        "<ul>",
+        "<li><strong>unalias [name]</strong> - Remove the specified alias</li>",
+        "</ul>",
+        "<p>After removing an alias, you can create a new one with the same name if desired.</p>"
+      ]
+    },
+    {
+      "name": "help",
+      "category": "System",
+      "summary": "Get help on commands",
+      "usage": [
+        "help [command]"
+      ],
+      "examples": [
+        {
+          "input": "help"
+        },
+        {
+          "input": "help look"
+        },
+        {
+          "input": "help go"
+        }
+      ],
+      "details_html": [
+        "<p>Access the ancient knowledge contained within these digital scrolls.",
+        "Learn about available commands and their proper usage.</p>",
+        "<p class=\"help-subhead\"><strong>Usage:</strong></p>",
+        "<ul>",
+        "<li><strong>help</strong> - Show general help and command categories</li>",
+        "<li><strong>help [command]</strong> - Get detailed help for a specific command</li>",
+        "</ul>",
+        "<p>Use this command whenever you need guidance on how to use the game's features.</p>"
+      ]
+    },
+    {
+      "name": "npc",
+      "category": "Administration",
+      "summary": "NPC management commands (admin only)",
+      "usage": [
+        "npc <subcommand> [arguments]"
+      ],
+      "examples": [
+        {
+          "input": "npc help"
+        },
+        {
+          "input": "npc list"
+        },
+        {
+          "input": "npc create TestNPC shopkeeper arkhamcity_downtown earth_arkhamcity_downtown_001"
+        }
+      ],
+      "details_html": [
+        "<p>As documented in the Cultes des Goules, proper administrative protocols",
+        "are essential for maintaining control over the eldritch entities that",
+        "lurk in the shadows of our world.</p>",
+        "<p class=\"help-subhead\"><strong>Usage:</strong></p>",
+        "<ul>",
+        "<li><strong>npc help</strong> - Show NPC command help</li>",
+        "<li><strong>npc list</strong> - List all NPC definitions</li>",
+        "<li><strong>npc create &lt;name&gt; &lt;type&gt; &lt;sub_zone_id&gt; &lt;room_id&gt;</strong> - Create a new NPC definition</li>",
+        "<li><strong>npc edit &lt;id&gt; &lt;field&gt; &lt;value&gt;</strong> - Edit an NPC definition</li>",
+        "<li><strong>npc delete &lt;id&gt;</strong> - Delete an NPC definition</li>",
+        "<li><strong>npc spawn &lt;definition_id&gt; &lt;room_id&gt;</strong> - Spawn an NPC instance</li>",
+        "<li><strong>npc despawn &lt;npc_id&gt;</strong> - Despawn an NPC instance</li>",
+        "<li><strong>npc move &lt;npc_id&gt; &lt;room_id&gt;</strong> - Move an NPC instance</li>",
+        "<li><strong>npc stats &lt;npc_id&gt;</strong> - Get NPC instance stats</li>",
+        "<li><strong>npc population</strong> - Get NPC population statistics</li>",
+        "<li><strong>npc zone [zone_key]</strong> - Get NPC zone statistics</li>",
+        "<li><strong>npc status</strong> - Get NPC system status</li>",
+        "<li><strong>npc behavior &lt;npc_id&gt; &lt;behavior_type&gt;</strong> - Set NPC behavior type</li>",
+        "<li><strong>npc react &lt;npc_id&gt; &lt;reaction_type&gt;</strong> - Trigger NPC reaction</li>",
+        "<li><strong>npc stop &lt;npc_id&gt;</strong> - Stop NPC current behavior</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>NPC Types:</strong></p>",
+        "<ul>",
+        "<li>shopkeeper - Merchant NPCs</li>",
+        "<li>passive_mob - Non-aggressive creatures</li>",
+        "<li>aggressive_mob - Hostile creatures</li>",
+        "<li>quest_giver - Quest NPCs</li>",
+        "<li>merchant - Trading NPCs</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>Behavior Types:</strong></p>",
+        "<ul>",
+        "<li>passive - NPC remains non-aggressive</li>",
+        "<li>aggressive - NPC becomes hostile</li>",
+        "<li>defensive - NPC defends when attacked</li>",
+        "<li>wander - NPC moves randomly</li>",
+        "<li>patrol - NPC follows a patrol route</li>",
+        "<li>guard - NPC guards a specific area</li>",
+        "<li>idle - NPC remains stationary</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>Reaction Types:</strong></p>",
+        "<ul>",
+        "<li>greet - NPC greets players</li>",
+        "<li>attack - NPC attacks target</li>",
+        "<li>flee - NPC runs away</li>",
+        "<li>investigate - NPC investigates area</li>",
+        "<li>alert - NPC becomes alert</li>",
+        "<li>calm - NPC becomes calm</li>",
+        "<li>excited - NPC becomes excited</li>",
+        "<li>suspicious - NPC becomes suspicious</li>",
+        "</ul>",
+        "<p><strong>Note:</strong> These commands require admin privileges. Only administrators",
+        "can manage NPCs in the world.</p>"
+      ],
+      "admin_only": true
+    },
+    {
+      "name": "who",
+      "category": "Utility",
+      "summary": "List online players with their levels and locations",
+      "usage": [
+        "who [name]"
+      ],
+      "examples": [
+        {
+          "input": "who"
+        },
+        {
+          "input": "who alice"
+        },
+        {
+          "input": "who al"
+        }
+      ],
+      "details_html": [
+        "<p>Peer into the shadows to see which fellow investigators are currently active",
+        "in our realm. This command reveals the presence of other players, their levels,",
+        "and their current locations.</p>",
+        "<p class=\"help-subhead\"><strong>Usage:</strong></p>",
+        "<ul>",
+        "<li><strong>who</strong> - List all online players with levels and locations</li>",
+        "<li><strong>who [name]</strong> - Search for specific players by name (case-insensitive partial matching)</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>Output Format:</strong></p>",
+        "<ul>",
+        "<li><strong>PlayerName [Level] - Zone: Sub-zone: Room</strong> - Regular player</li>",
+        "<li><strong>PlayerName [Level] [ADMIN] - Zone: Sub-zone: Room</strong> - Administrator</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>Sample Output:</strong></p>",
+        "<pre>",
+        "Online Players (3): alice [5] - Arkham: City: Northside Intersection Derby Garrison,",
+        "bob [3] - Arkham: City: Northside Room Derby St 001,",
+        "charlie [7] [ADMIN] - Arkham: City: Northside Room High Ln 002",
+        "Players matching 'al' (1): alice [5] - Arkham: City: Northside Intersection Derby Garrison",
+        "No players found matching 'xyz'. Try 'who' to see all online players.",
+        "</pre>",
+        "<p>As the ancient texts suggest: \"Knowledge of one's companions is the first step toward survival in the face of the unknown.\"</p>"
+      ]
+    },
+    {
+      "name": "catalog",
+      "category": "Utility",
+      "summary": "Browse the item prototype catalog (paginated text table)",
+      "usage": [
+        "catalog [type=<t>] [namespace=<ns>] [search=<q>] [page=<n>]"
+      ],
+      "examples": [
+        {
+          "input": "catalog"
+        },
+        {
+          "input": "catalog type=weapon"
+        },
+        {
+          "input": "catalog namespace=core search=knife"
+        },
+        {
+          "input": "catalog page=2"
+        }
+      ],
+      "details_html": [
+        "<p>List item prototypes from the archives. Prints a short paginated table in-game.",
+        "Players see name, type, and short description; administrators see full prototype",
+        "fields. For the rich HTML table, open ESC Main Menu and choose Catalog.</p>",
+        "<p class=\"help-subhead\"><strong>Usage:</strong></p>",
+        "<ul>",
+        "<li><strong>catalog</strong> - First page of all prototypes (sorted by name)</li>",
+        "<li><strong>catalog type=&lt;t&gt;</strong> - Filter by item_type</li>",
+        "<li><strong>catalog namespace=&lt;ns&gt;</strong> - Filter by metadata namespace</li>",
+        "<li><strong>catalog search=&lt;q&gt;</strong> - Search name, description, or id</li>",
+        "<li><strong>catalog page=&lt;n&gt;</strong> - Jump to page n</li>",
+        "<li>Bare words without key=value are treated as search text</li>",
+        "</ul>"
+      ]
+    },
+    {
+      "name": "cast",
+      "category": "Magic",
+      "summary": "Cast a learned spell",
+      "usage": [
+        "cast <spell_name> [target]"
+      ],
+      "examples": [
+        {
+          "input": "cast heal"
+        },
+        {
+          "input": "cast heal self"
+        },
+        {
+          "input": "cast heal me"
+        },
+        {
+          "input": "cast heal other ithaqua"
+        },
+        {
+          "input": "cast fireball goblin"
+        }
+      ],
+      "details_html": [
+        "<p>Harness the eldritch forces that lie beyond the veil of reality. Casting spells requires",
+        "Magic Points (MP) and, for Mythos spells, lucidity. The forbidden knowledge exacts its price.</p>",
+        "<p class=\"help-subhead\"><strong>Usage:</strong></p>",
+        "<ul>",
+        "<li><strong>cast [spell_name]</strong> - Cast a spell on yourself (self-target spells)</li>",
+        "<li><strong>cast [spell_name] [target]</strong> - Cast a spell on a specific target</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>Spell Casting:</strong></p>",
+        "<ul>",
+        "<li>You must have learned the spell first (use /learn, /teach, or /read)</li>",
+        "<li>Spells cost Magic Points (MP) to cast</li>",
+        "<li>Mythos spells also cost lucidity</li>",
+        "<li>Some spells require material components (consumed on cast)</li>",
+        "<li>Spells with casting times require you to wait - use /stop to interrupt</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>Combat Integration:</strong></p>",
+        "<ul>",
+        "<li>In combat, if no target is specified, the spell targets your combat opponent</li>",
+        "<li>Casting spells with casting times waits for your turn in combat</li>",
+        "<li>You can interrupt casting with /stop (may cost MP if LUCK check fails)</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>Mastery:</strong></p>",
+        "<p>Your mastery level affects spell effectiveness and success chance. Mastery increases",
+        "with successful casts. Use /spells to see your learned spells and mastery levels.</p>",
+        "<p>Warning: \"That which calls upon the void may yet call back.\" - Prof. Armitage</p>"
+      ]
+    },
+    {
+      "name": "spells",
+      "category": "Magic",
+      "summary": "List all learned spells with mastery levels",
+      "usage": [
+        "spells"
+      ],
+      "examples": [
+        {
+          "input": "spells"
+        }
+      ],
+      "details_html": [
+        "<p>Review your accumulated arcane knowledge. This command displays all spells you have",
+        "learned along with your current mastery level for each.</p>",
+        "<p class=\"help-subhead\"><strong>Usage:</strong></p>",
+        "<ul>",
+        "<li><strong>spells</strong> - List all your learned spells with mastery percentages</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>Output Format:</strong></p>",
+        "<ul>",
+        "<li><strong>Spell Name - Mastery: XX%</strong> - Each learned spell with mastery level</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>Mastery Levels:</strong></p>",
+        "<ul>",
+        "<li>Mastery ranges from 0% to 100%</li>",
+        "<li>Mastery increases with successful spell casts</li>",
+        "<li>Higher mastery improves spell effectiveness and success chance</li>",
+        "<li>Use /spell [name] to see detailed spell information</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>Learning Spells:</strong></p>",
+        "<p>Learn new spells using /learn, or be taught by an NPC with /teach.",
+        "Some spells can be learned from spellbooks using /read.</p>",
+        "<p>As the Necronomicon warns: \"Knowledge gained is knowledge that cannot be unlearned.\"</p>"
+      ]
+    },
+    {
+      "name": "spell",
+      "category": "Magic",
+      "summary": "Show detailed information about a specific spell",
+      "usage": [
+        "spell <spell_name>"
+      ],
+      "examples": [
+        {
+          "input": "spell heal"
+        },
+        {
+          "input": "spell fireball"
+        }
+      ],
+      "details_html": [
+        "<p>Examine the intricate details of a specific spell. This command reveals the spell's",
+        "costs, effects, requirements, and your current mastery level if you know it.</p>",
+        "<p class=\"help-subhead\"><strong>Usage:</strong></p>",
+        "<ul>",
+        "<li><strong>spell [spell_name]</strong> - Show detailed information about a spell</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>Spell Information Displayed:</strong></p>",
+        "<ul>",
+        "<li><strong>Name</strong> - Spell name</li>",
+        "<li><strong>Description</strong> - What the spell does</li>",
+        "<li><strong>School</strong> - Spell school (mythos, clerical, elemental, other)</li>",
+        "<li><strong>MP Cost</strong> - Magic Points required to cast</li>",
+        "<li><strong>Lucidity Cost</strong> - Lucidity required (Mythos spells only)</li>",
+        "<li><strong>Corruption on Cast</strong> - Corruption gained (some Mythos spells)</li>",
+        "<li><strong>Casting Time</strong> - Time in seconds before spell completes</li>",
+        "<li><strong>Target Type</strong> - Who/what the spell can target</li>",
+        "<li><strong>Range</strong> - How far the spell can reach</li>",
+        "<li><strong>Effect</strong> - What effect the spell produces</li>",
+        "<li><strong>Required Materials</strong> - Material components needed (if any)</li>",
+        "<li><strong>Your Mastery</strong> - Your mastery level (if learned) or \"Not learned\"</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>Notes:</strong></p>",
+        "<ul>",
+        "<li>You can view spell information even if you haven't learned it</li>",
+        "<li>Use this to plan which spells to learn</li>",
+        "<li>Material components marked as \"(consumed)\" are used up when casting</li>",
+        "<li>Material components marked as \"(reusable)\" are not consumed</li>",
+        "</ul>",
+        "<p>Remember: \"Understanding the cost of power is the first lesson in wielding it.\"</p>"
+      ]
+    },
+    {
+      "name": "learn",
+      "category": "Magic",
+      "summary": "Learn a spell by name.",
+      "usage": [
+        "learn <spell_name>"
+      ],
+      "examples": [
+        {
+          "input": "learn heal"
+        },
+        {
+          "input": "learn fireball"
+        }
+      ],
+      "details_html": [
+        "<p>Acquire new arcane knowledge by naming the spell you wish to learn. This is a stopgap while quests and vendors are not yet able to teach spells.</p>",
+        "<p>Spells can also be had from a spellbook with <code>read</code>, or from an NPC teacher with <code>teach</code>.</p>",
+        "<p>Once learned, use <code>spells</code> to see your repertoire and <code>spell</code> to study one in detail.</p>",
+        "<p>Warning: \"The price of forbidden knowledge is often paid in sanity.\" - Cultes des Goules</p>"
+      ],
+      "see_also": [
+        "read",
+        "teach",
+        "spells",
+        "spell",
+        "cast"
+      ]
+    },
+    {
+      "name": "teach",
+      "category": "Magic",
+      "summary": "Learn a spell from an NPC teacher in your room.",
+      "usage": [
+        "teach <npc_name> <spell_name>"
+      ],
+      "details_html": [
+        "<p>Some who dwell in this world know spells and will share them. Find such a teacher, stand in the same room, and ask for the spell by name.</p>",
+        "<p>The teacher must be an NPC; you cannot learn this way from another player.</p>",
+        "<p>Forbidden knowledge can leave its mark. If the spell taints the mind, you are told so when the lesson ends.</p>"
+      ],
+      "arguments": [
+        {
+          "name": "npc_name",
+          "required": true,
+          "description": "The teacher: an NPC in your room."
+        },
+        {
+          "name": "spell_name",
+          "required": true,
+          "description": "The spell you wish to be taught."
+        }
+      ],
+      "see_also": [
+        "learn",
+        "read",
+        "spells",
+        "cast",
+        "talk"
+      ]
+    },
+    {
+      "name": "stop",
+      "category": "Magic",
+      "summary": "Interrupt your current spell casting",
+      "usage": [
+        "stop"
+      ],
+      "examples": [
+        {
+          "input": "stop"
+        }
+      ],
+      "details_html": [
+        "<p>Abandon your current spell casting attempt. Interrupting a spell mid-cast is dangerous",
+        "and may cost you Magic Points depending on your luck.</p>",
+        "<p class=\"help-subhead\"><strong>Usage:</strong></p>",
+        "<ul>",
+        "<li><strong>stop</strong> - Interrupt your current spell casting</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>When to Use:</strong></p>",
+        "<ul>",
+        "<li>You're casting a spell with a casting time and want to cancel it</li>",
+        "<li>You need to change tactics during combat</li>",
+        "<li>You realize you're casting the wrong spell</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>Interruption Cost:</strong></p>",
+        "<ul>",
+        "<li>A LUCK check determines if you avoid MP loss</li>",
+        "<li>If LUCK check passes: No MP lost, casting stops safely</li>",
+        "<li>If LUCK check fails: You lose the spell's MP cost</li>",
+        "<li>Spell does not complete and has no effect</li>",
+        "</ul>",
+        "<p class=\"help-subhead\"><strong>Notes:</strong></p>",
+        "<ul>",
+        "<li>Only works if you are currently casting a spell</li>",
+        "<li>Instant cast spells (0 casting time) cannot be interrupted</li>",
+        "<li>Material components already consumed are not refunded</li>",
+        "<li>Useful for canceling long casting times when needed</li>",
+        "</ul>",
+        "<p>Warning: \"Interrupting the flow of eldritch power is not without risk.\"</p>"
+      ]
+    },
+    {
+      "name": "local",
+      "category": "Communication",
+      "summary": "Speak to everyone in your current sub-zone.",
+      "usage": [
+        "local <message>",
+        "l <message>"
+      ],
+      "aliases": [
+        "l"
+      ],
+      "arguments": [
+        {
+          "name": "message",
+          "required": true,
+          "description": "What you say. Long messages are rejected."
+        }
+      ],
+      "examples": [
+        {
+          "input": "local Has anyone seen the librarian?"
+        }
+      ],
+      "see_also": [
+        "say",
+        "global",
+        "whisper",
+        "channel"
+      ]
+    },
+    {
+      "name": "global",
+      "category": "Communication",
+      "summary": "Speak to every investigator on the server. Gated by character level.",
+      "usage": [
+        "global <message>",
+        "g <message>"
+      ],
+      "aliases": [
+        "g"
+      ],
+      "arguments": [
+        {
+          "name": "message",
+          "required": true,
+          "description": "What you say to the whole server."
+        }
+      ],
+      "examples": [
+        {
+          "input": "global Does anyone know a way into the Miskatonic stacks?"
+        }
+      ],
+      "see_also": [
+        "local",
+        "say",
+        "channel"
+      ],
+      "details_html": [
+        "<p>If your character is not yet experienced enough, the server tells you so instead of sending the message.</p>"
+      ]
+    },
+    {
+      "name": "whisper",
+      "category": "Communication",
+      "summary": "Send a private message to one player.",
+      "usage": [
+        "whisper <player> <message>"
+      ],
+      "arguments": [
+        {
+          "name": "player",
+          "required": true,
+          "description": "The player to address."
+        },
+        {
+          "name": "message",
+          "required": true,
+          "description": "What you whisper."
+        }
+      ],
+      "examples": [
+        {
+          "input": "whisper Armitage The seal is cracked."
+        }
+      ],
+      "see_also": [
+        "reply",
+        "say",
+        "mute"
+      ]
+    },
+    {
+      "name": "reply",
+      "category": "Communication",
+      "summary": "Answer the last player who whispered to you.",
+      "usage": [
+        "reply <message>"
+      ],
+      "arguments": [
+        {
+          "name": "message",
+          "required": true,
+          "description": "Your answer."
+        }
+      ],
+      "examples": [
+        {
+          "input": "reply I will meet you at the library."
+        }
+      ],
+      "see_also": [
+        "whisper"
+      ]
+    },
+    {
+      "name": "emote",
+      "category": "Communication",
+      "summary": "Perform an action that everyone in the room sees.",
+      "usage": [
+        "emote <action>"
+      ],
+      "arguments": [
+        {
+          "name": "action",
+          "required": true,
+          "description": "The action to perform."
+        }
+      ],
+      "examples": [
+        {
+          "input": "emote shudders at the sound."
+        }
+      ],
+      "see_also": [
+        "me",
+        "pose",
+        "say"
+      ]
+    },
+    {
+      "name": "channel",
+      "category": "Communication",
+      "summary": "Switch to a chat channel, or set your default channel.",
+      "usage": [
+        "channel <channel_name>",
+        "channel default <channel_name>"
+      ],
+      "arguments": [
+        {
+          "name": "channel_name",
+          "required": true,
+          "description": "The channel to use."
+        }
+      ],
+      "examples": [
+        {
+          "input": "channel default local",
+          "note": "Make local your default channel."
+        }
+      ],
+      "see_also": [
+        "say",
+        "local",
+        "global"
+      ]
+    },
+    {
+      "name": "mute",
+      "category": "Communication",
+      "summary": "Silence a player for yourself, optionally for a limited time.",
+      "usage": [
+        "mute <player> [duration_in_minutes]"
+      ],
+      "arguments": [
+        {
+          "name": "player",
+          "required": true,
+          "description": "The player to mute."
+        },
+        {
+          "name": "duration_in_minutes",
+          "required": false,
+          "description": "How long the mute lasts, up to one week. Omit for a permanent mute."
+        }
+      ],
+      "examples": [
+        {
+          "input": "mute Wilmarth 60",
+          "note": "Mute Wilmarth for an hour."
+        }
+      ],
+      "see_also": [
+        "unmute",
+        "mutes"
+      ],
+      "details_html": [
+        "<p>A mute is personal: it applies to you alone.</p>"
+      ]
+    },
+    {
+      "name": "unmute",
+      "category": "Communication",
+      "summary": "Lift a mute you placed on a player.",
+      "usage": [
+        "unmute <player>"
+      ],
+      "arguments": [
+        {
+          "name": "player",
+          "required": true,
+          "description": "The player to unmute."
+        }
+      ],
+      "examples": [
+        {
+          "input": "unmute Wilmarth"
+        }
+      ],
+      "see_also": [
+        "mute",
+        "mutes"
+      ]
+    },
+    {
+      "name": "mutes",
+      "category": "Communication",
+      "summary": "Show every mute currently in effect for you, with expiry times.",
+      "usage": [
+        "mutes"
+      ],
+      "see_also": [
+        "mute",
+        "unmute"
+      ]
+    },
+    {
+      "name": "follow",
+      "category": "Companions",
+      "summary": "Follow a player or NPC in your room as they move.",
+      "usage": [
+        "follow <target>"
+      ],
+      "arguments": [
+        {
+          "name": "target",
+          "required": true,
+          "description": "A player or NPC in the same room."
+        }
+      ],
+      "examples": [
+        {
+          "input": "follow Armitage"
+        }
+      ],
+      "see_also": [
+        "unfollow",
+        "following",
+        "party"
+      ],
+      "details_html": [
+        "<p>Following an NPC takes effect at once. Following a player needs their consent: they are sent a request, which lapses if they do not answer.</p>",
+        "<p>You can follow only one target at a time. If you cannot make the same move as them, or cannot get to your feet, you lose them.</p>"
+      ]
+    },
+    {
+      "name": "unfollow",
+      "category": "Companions",
+      "summary": "Stop following whoever you are following.",
+      "usage": [
+        "unfollow"
+      ],
+      "see_also": [
+        "follow",
+        "following"
+      ]
+    },
+    {
+      "name": "following",
+      "category": "Companions",
+      "summary": "Show who you are following and who is following you.",
+      "usage": [
+        "following"
+      ],
+      "see_also": [
+        "follow",
+        "unfollow"
+      ]
+    },
+    {
+      "name": "party",
+      "category": "Companions",
+      "summary": "Form and manage an adventuring party.",
+      "usage": [
+        "party",
+        "party invite <player>",
+        "party leave",
+        "party kick <player>",
+        "party list"
+      ],
+      "arguments": [
+        {
+          "name": "player",
+          "required": false,
+          "description": "Required for invite and kick: the player's name."
+        }
+      ],
+      "examples": [
+        {
+          "input": "party invite Armitage"
+        },
+        {
+          "input": "party leave"
+        }
+      ],
+      "see_also": [
+        "follow",
+        "assist"
+      ],
+      "details_html": [
+        "<p>With no subcommand, <code>party</code> shows your party's status.</p>",
+        "<p>Only the leader may invite, kick, or disband. An invited player is asked to accept or decline, and the invitation lapses if they do not answer. A player can belong to only one party, and the invited player must be in the same room.</p>",
+        "<p>Parties are not remembered: if the leader leaves or disconnects, the party is dissolved.</p>"
+      ]
+    },
+    {
+      "name": "journal",
+      "category": "Quests",
+      "summary": "Read your quest log.",
+      "usage": [
+        "journal",
+        "quests"
+      ],
+      "aliases": [
+        "quests"
+      ],
+      "see_also": [
+        "quest",
+        "talk"
+      ]
+    },
+    {
+      "name": "quest",
+      "category": "Quests",
+      "summary": "Ask an NPC about a quest, turn one in, or abandon one.",
+      "usage": [
+        "quest ask <npc>",
+        "quest turnin <npc>",
+        "quest abandon <quest name>"
+      ],
+      "arguments": [
+        {
+          "name": "npc",
+          "required": false,
+          "description": "For ask and turnin: the NPC to speak with."
+        },
+        {
+          "name": "quest name",
+          "required": false,
+          "description": "For abandon: the quest's common name."
+        }
+      ],
+      "examples": [
+        {
+          "input": "quest ask Armitage"
+        },
+        {
+          "input": "quest abandon The Missing Folio"
+        }
+      ],
+      "see_also": [
+        "journal",
+        "talk"
+      ]
+    },
+    {
+      "name": "status",
+      "category": "Utility",
+      "summary": "Show your character's current condition.",
+      "usage": [
+        "status"
+      ],
+      "see_also": [
+        "whoami",
+        "skills"
+      ]
+    },
+    {
+      "name": "whoami",
+      "category": "Utility",
+      "summary": "Show your own status. Works exactly like status.",
+      "usage": [
+        "whoami"
+      ],
+      "see_also": [
+        "status",
+        "who"
+      ]
+    },
+    {
+      "name": "skills",
+      "category": "Utility",
+      "summary": "List your character's skills.",
+      "usage": [
+        "skills"
+      ],
+      "see_also": [
+        "status"
+      ]
+    },
+    {
+      "name": "time",
+      "category": "Utility",
+      "summary": "Show the current Mythos time and any holidays in effect.",
+      "usage": [
+        "time"
+      ]
+    },
+    {
+      "name": "quit",
+      "category": "System",
+      "summary": "Leave the game.",
+      "usage": [
+        "quit"
+      ],
+      "see_also": [
+        "logout",
+        "rest"
+      ]
+    },
+    {
+      "name": "logout",
+      "category": "System",
+      "summary": "Log out cleanly: your session is closed and your connections dropped.",
+      "usage": [
+        "logout"
+      ],
+      "see_also": [
+        "quit",
+        "rest"
+      ]
+    },
+    {
+      "name": "rest",
+      "category": "System",
+      "summary": "Withdraw from the world and disconnect cleanly.",
+      "usage": [
+        "rest"
+      ],
+      "see_also": [
+        "quit",
+        "logout",
+        "sit"
+      ],
+      "details_html": [
+        "<p>In an inn, hotel, or motel, resting disconnects you at once. Anywhere else you sit down and a short countdown begins.</p>",
+        "<p>Combat, moving, or casting a spell breaks the countdown. Chatting, looking, and handling your inventory do not. You cannot rest while in combat.</p>"
+      ]
+    },
+    {
+      "name": "inventory",
+      "category": "Inventory",
+      "summary": "List what you carry and wear, including the contents of containers.",
+      "usage": [
+        "inventory"
+      ],
+      "see_also": [
+        "equip",
+        "drop",
+        "look"
+      ]
+    },
+    {
+      "name": "pickup",
+      "category": "Inventory",
+      "summary": "Pick up an item lying in the room.",
+      "usage": [
+        "pickup <item-number|item-name> [quantity]"
+      ],
+      "arguments": [
+        {
+          "name": "item",
+          "required": true,
+          "description": "The item's number in the room list, or part of its name."
+        },
+        {
+          "name": "quantity",
+          "required": false,
+          "description": "How many to take. Defaults to the whole stack."
+        }
+      ],
+      "examples": [
+        {
+          "input": "pickup 1"
+        },
+        {
+          "input": "pickup lantern"
+        }
+      ],
+      "see_also": [
+        "drop",
+        "get",
+        "inventory"
+      ]
+    },
+    {
+      "name": "drop",
+      "category": "Inventory",
+      "summary": "Drop an item from your inventory into the room.",
+      "usage": [
+        "drop <inventory-number> [quantity]"
+      ],
+      "arguments": [
+        {
+          "name": "inventory-number",
+          "required": true,
+          "description": "The item's slot number in your inventory."
+        },
+        {
+          "name": "quantity",
+          "required": false,
+          "description": "How many to drop. Defaults to the whole stack."
+        }
+      ],
+      "examples": [
+        {
+          "input": "drop 3"
+        },
+        {
+          "input": "drop 2 5",
+          "note": "Drop five of the items in slot 2."
+        }
+      ],
+      "see_also": [
+        "pickup",
+        "inventory"
+      ]
+    },
+    {
+      "name": "equip",
+      "category": "Inventory",
+      "summary": "Wield or wear an item from your inventory.",
+      "usage": [
+        "equip <inventory-number|item-name> [slot]"
+      ],
+      "arguments": [
+        {
+          "name": "item",
+          "required": true,
+          "description": "The item's slot number, or part of its name."
+        },
+        {
+          "name": "slot",
+          "required": false,
+          "description": "Which slot to put it in, when it could go in more than one."
+        }
+      ],
+      "examples": [
+        {
+          "input": "equip 2"
+        },
+        {
+          "input": "equip lantern"
+        }
+      ],
+      "see_also": [
+        "unequip",
+        "inventory"
+      ]
+    },
+    {
+      "name": "unequip",
+      "category": "Inventory",
+      "summary": "Take off or put away something you have equipped.",
+      "usage": [
+        "unequip <slot|item-name>"
+      ],
+      "arguments": [
+        {
+          "name": "slot",
+          "required": true,
+          "description": "The slot to empty, or the equipped item's name."
+        }
+      ],
+      "examples": [
+        {
+          "input": "unequip head"
+        }
+      ],
+      "see_also": [
+        "equip",
+        "inventory"
+      ]
+    },
+    {
+      "name": "use",
+      "category": "Inventory",
+      "summary": "Use a consumable from your inventory.",
+      "usage": [
+        "use <inventory-number|item-name>",
+        "drink <item>",
+        "quaff <item>"
+      ],
+      "aliases": [
+        "drink",
+        "quaff"
+      ],
+      "arguments": [
+        {
+          "name": "item",
+          "required": true,
+          "description": "The item's slot number, or part of its name."
+        }
+      ],
+      "examples": [
+        {
+          "input": "use 4"
+        },
+        {
+          "input": "drink folk tonic"
+        }
+      ],
+      "see_also": [
+        "inventory",
+        "equip"
+      ]
+    },
+    {
+      "name": "read",
+      "category": "Magic",
+      "summary": "Read a spellbook to learn a spell from it.",
+      "usage": [
+        "read <item_name> [spell_name]"
+      ],
+      "arguments": [
+        {
+          "name": "item_name",
+          "required": true,
+          "description": "The book to read."
+        },
+        {
+          "name": "spell_name",
+          "required": false,
+          "description": "Which spell to learn, when the book holds several. Optional if it holds only one."
+        }
+      ],
+      "examples": [
+        {
+          "input": "read grimoire"
+        }
+      ],
+      "see_also": [
+        "learn",
+        "spells",
+        "cast"
+      ]
+    },
+    {
+      "name": "sit",
+      "category": "Posture",
+      "summary": "Sit down.",
+      "usage": [
+        "sit"
+      ],
+      "see_also": [
+        "stand",
+        "lie",
+        "rest"
+      ]
+    },
+    {
+      "name": "stand",
+      "category": "Posture",
+      "summary": "Return to your feet.",
+      "usage": [
+        "stand"
+      ],
+      "see_also": [
+        "sit",
+        "lie",
+        "flee"
+      ]
+    },
+    {
+      "name": "lie",
+      "category": "Posture",
+      "summary": "Lie down on the ground.",
+      "usage": [
+        "lie",
+        "lie down"
+      ],
+      "see_also": [
+        "sit",
+        "stand"
+      ]
+    },
+    {
+      "name": "attack",
+      "category": "Combat",
+      "summary": "Attack a creature in your room.",
+      "usage": [
+        "attack <target>"
+      ],
+      "arguments": [
+        {
+          "name": "target",
+          "required": true,
+          "description": "The creature's name. Only NPCs can be attacked."
+        }
+      ],
+      "examples": [
+        {
+          "input": "attack cultist"
+        }
+      ],
+      "see_also": [
+        "punch",
+        "kick",
+        "strike",
+        "flee",
+        "taunt"
+      ],
+      "details_html": [
+        "<p>You cannot attack while incapacitated, or while protective wards still shield you.</p>"
+      ]
+    },
+    {
+      "name": "punch",
+      "category": "Combat",
+      "summary": "Another way to attack: works exactly like attack.",
+      "usage": [
+        "punch <target>"
+      ],
+      "arguments": [
+        {
+          "name": "target",
+          "required": true,
+          "description": "The creature's name."
+        }
+      ],
+      "see_also": [
+        "attack",
+        "kick",
+        "strike"
+      ]
+    },
+    {
+      "name": "kick",
+      "category": "Combat",
+      "summary": "Another way to attack: works exactly like attack.",
+      "usage": [
+        "kick <target>"
+      ],
+      "arguments": [
+        {
+          "name": "target",
+          "required": true,
+          "description": "The creature's name."
+        }
+      ],
+      "see_also": [
+        "attack",
+        "punch",
+        "strike"
+      ]
+    },
+    {
+      "name": "strike",
+      "category": "Combat",
+      "summary": "Another way to attack: works exactly like attack.",
+      "usage": [
+        "strike <target>"
+      ],
+      "arguments": [
+        {
+          "name": "target",
+          "required": true,
+          "description": "The creature's name."
+        }
+      ],
+      "see_also": [
+        "attack",
+        "punch",
+        "kick"
+      ]
+    },
+    {
+      "name": "flee",
+      "category": "Combat",
+      "summary": "Break away from combat into a random adjacent room.",
+      "usage": [
+        "flee"
+      ],
+      "see_also": [
+        "attack",
+        "stand"
+      ],
+      "details_html": [
+        "<p>You must be in combat. A failed attempt costs your round and draws free blows. If you are not on your feet, getting up uses the attempt and you must try again.</p>"
+      ]
+    },
+    {
+      "name": "taunt",
+      "category": "Combat",
+      "summary": "Spend your round drawing a creature's attention onto you.",
+      "usage": [
+        "taunt <npc>"
+      ],
+      "arguments": [
+        {
+          "name": "npc",
+          "required": true,
+          "description": "A creature already fighting in your room."
+        }
+      ],
+      "examples": [
+        {
+          "input": "taunt cultist"
+        }
+      ],
+      "see_also": [
+        "protect",
+        "assist",
+        "attack"
+      ],
+      "details_html": [
+        "<p>The roll is Intimidate or Fighting, whichever is higher. A strong roll holds the creature firmly, a failure does nothing, and a fumble makes it ignore you.</p>",
+        "<p>You must already be fighting the creature, in the same room. Only NPCs can be taunted.</p>"
+      ]
+    },
+    {
+      "name": "assist",
+      "category": "Combat",
+      "summary": "Join the fight a player is in and attack their foe.",
+      "usage": [
+        "assist [player]"
+      ],
+      "arguments": [
+        {
+          "name": "player",
+          "required": false,
+          "description": "Whose fight to join. With no name, you join your party leader's fight."
+        }
+      ],
+      "examples": [
+        {
+          "input": "assist Armitage"
+        },
+        {
+          "input": "assist",
+          "note": "Join your party leader's fight."
+        }
+      ],
+      "see_also": [
+        "party",
+        "protect",
+        "taunt"
+      ],
+      "details_html": [
+        "<p>Once you join, you fight on your own until the fight ends.</p>"
+      ]
+    },
+    {
+      "name": "protect",
+      "category": "Combat",
+      "summary": "Spend your round covering an ally so blows aimed at them land on you.",
+      "usage": [
+        "protect <player>"
+      ],
+      "arguments": [
+        {
+          "name": "player",
+          "required": true,
+          "description": "An ally in your room."
+        }
+      ],
+      "examples": [
+        {
+          "input": "protect Armitage"
+        }
+      ],
+      "see_also": [
+        "assist",
+        "taunt",
+        "party"
+      ],
+      "details_html": [
+        "<p>The roll is Fighting. On a success, blows aimed at your ally land on you for the rest of this round and the next; a strong roll adds a round. You also hold more of the creature's attention, and part of your ally's share of it passes to you. A miss does nothing. You can join their fight this way.</p>"
+      ]
+    },
+    {
+      "name": "cleanse",
+      "category": "Recovery",
+      "summary": "Perform a cleansing rite that pares back the corruption clinging to you.",
+      "usage": [
+        "cleanse"
+      ],
+      "see_also": [
+        "ground",
+        "status"
+      ],
+      "details_html": [
+        "<p>The rite cannot be repeated at once. If you try too soon, you are told how long to wait.</p>"
+      ]
+    },
+    {
+      "name": "ground",
+      "category": "Recovery",
+      "summary": "Begin a ritual to bring a catatonic ally back to their senses.",
+      "usage": [
+        "ground <player>"
+      ],
+      "arguments": [
+        {
+          "name": "player",
+          "required": true,
+          "description": "An ally whose mind has shattered, within reach."
+        }
+      ],
+      "examples": [
+        {
+          "input": "ground Armitage"
+        }
+      ],
+      "see_also": [
+        "cleanse",
+        "party"
+      ],
+      "details_html": [
+        "<p>The ritual takes time to work. Moving, casting a spell, entering combat, or a disconnect by either of you interrupts it. You cannot begin it during combat, and the target must actually be catatonic.</p>"
+      ]
+    },
+    {
+      "name": "system",
+      "category": "Administration",
+      "summary": "Broadcast a system message to every player.",
+      "usage": [
+        "system <message>"
+      ],
+      "admin_only": true,
+      "arguments": [
+        {
+          "name": "message",
+          "required": true,
+          "description": "The announcement."
+        }
+      ]
+    },
+    {
+      "name": "mute_global",
+      "category": "Administration",
+      "summary": "Silence a player for everyone, optionally for a limited time.",
+      "usage": [
+        "mute_global <player> [duration_in_minutes] [reason]"
+      ],
+      "admin_only": true,
+      "arguments": [
+        {
+          "name": "player",
+          "required": true,
+          "description": "The player to silence."
+        },
+        {
+          "name": "duration_in_minutes",
+          "required": false,
+          "description": "How long, up to one week. Omit for permanent."
+        },
+        {
+          "name": "reason",
+          "required": false,
+          "description": "Why, for the record."
+        }
+      ],
+      "see_also": [
+        "unmute_global",
+        "mute"
+      ]
+    },
+    {
+      "name": "unmute_global",
+      "category": "Administration",
+      "summary": "Lift a global mute.",
+      "usage": [
+        "unmute_global <player>"
+      ],
+      "admin_only": true,
+      "arguments": [
+        {
+          "name": "player",
+          "required": true,
+          "description": "The player to restore."
+        }
+      ],
+      "see_also": [
+        "mute_global"
+      ]
+    },
+    {
+      "name": "add_admin",
+      "category": "Administration",
+      "summary": "Grant administrator privileges to a player.",
+      "usage": [
+        "add_admin <player>"
+      ],
+      "admin_only": true,
+      "arguments": [
+        {
+          "name": "player",
+          "required": true,
+          "description": "The player to promote."
+        }
+      ]
+    },
+    {
+      "name": "admin",
+      "category": "Administration",
+      "summary": "Administrative utilities, chosen by subcommand.",
+      "usage": [
+        "admin status",
+        "admin time",
+        "admin set <stat_name> <target_player> <value>",
+        "admin setlucidity <target_player> <lcd_value>",
+        "admin lcd <target_player> <lcd_value>"
+      ],
+      "admin_only": true,
+      "arguments": [
+        {
+          "name": "subcommand",
+          "required": true,
+          "description": "status, time, set, or setlucidity (also written lcd)."
+        }
+      ],
+      "details_html": [
+        "<p>Lucidity values must be between -100 and 100.</p>"
+      ]
+    },
+    {
+      "name": "summon",
+      "category": "Administration",
+      "summary": "Conjure an item or NPC into your current room.",
+      "usage": [
+        "summon <prototype_id> [quantity] [item|npc]"
+      ],
+      "admin_only": true,
+      "arguments": [
+        {
+          "name": "prototype_id",
+          "required": true,
+          "description": "The prototype to conjure."
+        },
+        {
+          "name": "quantity",
+          "required": false,
+          "description": "How many, from 1 to 5. Defaults to 1."
+        },
+        {
+          "name": "item|npc",
+          "required": false,
+          "description": "What kind of prototype it is. Defaults to item."
+        }
+      ],
+      "see_also": [
+        "npc",
+        "catalog"
+      ]
+    },
+    {
+      "name": "teleport",
+      "category": "Administration",
+      "summary": "Bring a player to your location, or to a room beside it.",
+      "usage": [
+        "teleport <player_name> [direction]"
+      ],
+      "admin_only": true,
+      "arguments": [
+        {
+          "name": "player_name",
+          "required": true,
+          "description": "The player to move."
+        },
+        {
+          "name": "direction",
+          "required": false,
+          "description": "Send them to the adjoining room in this direction instead."
+        }
+      ],
+      "see_also": [
+        "goto"
+      ]
+    },
+    {
+      "name": "goto",
+      "category": "Administration",
+      "summary": "Go to a player's location.",
+      "usage": [
+        "goto <player_name>"
+      ],
+      "admin_only": true,
+      "arguments": [
+        {
+          "name": "player_name",
+          "required": true,
+          "description": "The player to join."
+        }
+      ],
+      "see_also": [
+        "teleport"
+      ]
+    },
+    {
+      "name": "shutdown",
+      "category": "Administration",
+      "summary": "Shut the server down after a countdown, or cancel one in progress.",
+      "usage": [
+        "shutdown",
+        "shutdown <seconds>",
+        "shutdown cancel"
+      ],
+      "admin_only": true,
+      "arguments": [
+        {
+          "name": "seconds",
+          "required": false,
+          "description": "Countdown length. Defaults to a short countdown if omitted."
+        }
+      ]
+    }
+  ]
+}
