@@ -205,6 +205,33 @@ body {
   color: #708090;
 }
 
+/* Server-rendered help (the help command and the Manual page): class-only styling, since the sanitizer strips style */
+.help-entry {
+  margin: 0.25rem 0;
+}
+.help-entry ul,
+.help-entry ol {
+  margin: 0.25rem 0 0.5rem 1.25rem;
+  list-style: disc;
+}
+.help-entry ol {
+  list-style: decimal;
+}
+.help-title {
+  color: var(--color-mythos-terminal-secondary, #ff9800);
+  margin-bottom: 0.25rem;
+}
+.help-subhead {
+  color: var(--color-mythos-terminal-text-secondary, #4caf50);
+  margin-top: 0.5rem;
+}
+.help-aliases {
+  opacity: 0.7;
+}
+.help-entry code {
+  color: var(--color-mythos-terminal-secondary, #ff9800);
+}
+
 /* Minimap popout: force fully opaque background so other panels do not show through */
 .panel-minimap-opaque,
 .panel-minimap-opaque > div,
