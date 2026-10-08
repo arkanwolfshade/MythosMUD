@@ -73,7 +73,7 @@ async def test_reset_tutorial_character_restores_tutorial_start_state() -> None:
 
     await script._reset_tutorial_character(conn)
 
-    [player_update, quest_delete, inventory, chest_clear] = conn.executed
+    [player_update, quest_delete, inventory, chest_clear, bank_clear] = conn.executed
     assert "tutorial_instance_id = NULL" in player_update[0]
     assert player_update[1][:2] == (player_id, script.TUTORIAL_BEDROOM)
     # Player.get_inventory() reads players.inventory: both copies must carry the same Sling.
@@ -83,6 +83,11 @@ async def test_reset_tutorial_character_restores_tutorial_start_state() -> None:
     assert [stack["item_id"] for stack in stacks] == [script.TUTORIAL_ITEM_PROTOTYPE]
     assert "clear_container_contents" in chest_clear[0]
     assert "lost_and_found" in chest_clear[0]
+    # What the tutorial leaves behind lands in the leaver's deposit box; it must not carry over into
+    # the next test, and only the tutorial character's own box may be emptied.
+    assert "clear_container_contents" in bank_clear[0]
+    assert "source_type = 'bank'" in bank_clear[0]
+    assert bank_clear[1] == (player_id,)
 
 
 async def test_clear_folk_tonic_cooldowns_targets_the_shared_players_only() -> None:

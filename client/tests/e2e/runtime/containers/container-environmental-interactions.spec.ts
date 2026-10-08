@@ -4,8 +4,8 @@
  * Environmental containers are room furniture: a room's `attributes.furniture` names an item
  * prototype that defines `metadata.container`, and the server creates the container at startup
  * (server/services/room_furniture_loader.py). The Sanitarium Main Foyer has one: the
- * Lost-and-Found Chest (200 slots), where items left in tutorial bedrooms end up. It is shared --
- * anyone can put items in and take them out.
+ * Lost-and-Found Chest (200 slots). It is shared -- anyone can put items in and take them out.
+ * (Items left in tutorial bedrooms no longer land here; they go to the leaver's bank deposit box.)
  */
 
 import { expect, test } from '@playwright/test';

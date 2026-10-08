@@ -3,7 +3,8 @@
 E2E test teardown: reset ArkanWolfshade and Ithaqua to starting room and set current_dp to 50.
 
 With --tutorial it also puts E2ETutorial back at the start of the tutorial (see
-_reset_tutorial_character) and empties the lost-and-found chest; the tutorial specs call that.
+_reset_tutorial_character), empties the lost-and-found chest and E2ETutorial's bank deposit box;
+the tutorial specs call that.
 
 Invoked from Playwright global-teardown so that after make test-playwright, both test players
 are returned to DEFAULT_RESPAWN_ROOM (see server/constants/spawn_defaults.py) with
@@ -47,10 +48,12 @@ TUTORIAL_ITEM_PROTOTYPE = "pack_dark_ages.weapon.sling"
 
 
 async def _reset_tutorial_character(conn: asyncpg.Connection) -> None:
-    """Put E2ETutorial back at the start of the tutorial, holding one Sling, and empty the lost-and-found.
+    """Put E2ETutorial back at the start of the tutorial, holding one Sling, with nothing banked.
 
     Saved in the bedroom template with no instance, so login goes through the re-entry repair and
     gets a fresh instance; quest rows are deleted so leave_the_tutorial starts again on spawn.
+    Both the shared lost-and-found chest and E2ETutorial's deposit box are emptied: what the tutorial
+    leaves behind lands in the box, and it would otherwise carry over into the next test.
     """
     player_id: object = await conn.fetchval("SELECT player_id FROM players WHERE name = $1", TUTORIAL_CHARACTER)
     if player_id is None:
@@ -98,6 +101,11 @@ async def _reset_tutorial_character(conn: asyncpg.Connection) -> None:
     _ = await conn.execute(
         "SELECT clear_container_contents(container_instance_id) FROM containers "
         "WHERE metadata_json ->> 'role' = 'lost_and_found'"
+    )
+    _ = await conn.execute(
+        "SELECT clear_container_contents(container_instance_id) FROM containers "
+        "WHERE source_type = 'bank' AND owner_id = $1",
+        player_id,
     )
 
 
