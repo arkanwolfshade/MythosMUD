@@ -1,3 +1,349 @@
 {
-  "guides": []
+  "guides": [
+    {
+      "id": "getting-started",
+      "title": "Getting Started: First Steps in the Dark",
+      "group": "Core survival",
+      "summary": "The habits that keep a new investigator alive long enough to learn the rest.",
+      "see_also": [
+        "look",
+        "go",
+        "status",
+        "skills",
+        "inventory",
+        "talk",
+        "journal",
+        "help",
+        "rest",
+        "movement",
+        "combat",
+        "lucidity"
+      ],
+      "details_html": [
+        "<p>You arrive as one more investigator in a world that does not welcome study. A few habits will keep you alive long enough to learn the rest.</p>",
+        "<ul>",
+        "<li><strong>Open your eyes.</strong> <code>look</code> describes where you stand. Give it a direction, a person, an item, or a container and it will tell you more.</li>",
+        "<li><strong>Walk with care.</strong> <code>go</code> and a direction takes you through an exit. Mind your posture; the dead weight of a body on the floor goes nowhere.</li>",
+        "<li><strong>Know yourself.</strong> <code>status</code> reports your condition, <code>skills</code> your talents, and <code>inventory</code> what you carry.</li>",
+        "<li><strong>Listen to the living.</strong> <code>talk</code> opens a private conversation with those who dwell here. Some have only gossip; some have work, and <code>journal</code> keeps the account of it.</li>",
+        "<li><strong>Respect shelter.</strong> Some places are warded: the cosmic forces forbid violence there, and death cannot find you. Learn the lie of the land before you test the places that are not.</li>",
+        "<li><strong>Ask the archives.</strong> <code>help</code> lists every topic and <code>help</code> followed by a topic explains it. Press ESC for the Main Menu, where the Map, your Skills, the Catalog, and this Manual each open in a new tab.</li>",
+        "<li><strong>Leave well.</strong> <code>rest</code> ends your session cleanly. See <em>resting</em>.</li>",
+        "</ul>",
+        "<p>Read on in <em>movement</em>, <em>combat</em>, and above all <em>lucidity</em>. The first keeps you upright, the second keeps you breathing, and the third keeps you yourself.</p>"
+      ]
+    },
+    {
+      "id": "movement",
+      "title": "Movement: Paths, Posture, and Pursuit",
+      "group": "Core survival",
+      "summary": "How to move through the world, and what holds you in place.",
+      "see_also": [
+        "go",
+        "look",
+        "stand",
+        "sit",
+        "lie",
+        "flee",
+        "follow",
+        "rest"
+      ],
+      "details_html": [
+        "<p>The world is a web of rooms joined by exits. <code>go</code> and a direction carries you through the exit that lies that way. <code>look</code> tells you which exits a room has.</p>",
+        "<p><strong>Stand to walk.</strong> A seated or prone investigator goes nowhere. If you have been brought low, <code>stand</code> first. <code>sit</code> and <code>lie</code> are yours to use when you wish to be low, and others can see that you are.</p>",
+        "<p><strong>A fight holds you.</strong> You cannot simply walk out of a struggle. <code>flee</code> breaks away into a nearby room, at a price, and a failed attempt costs you dearly.</p>",
+        "<p><strong>Resting is broken by movement.</strong> If you had begun a vigil, stepping away ends it.</p>",
+        "<p><strong>Companions.</strong> With <code>follow</code> you move as another moves. A creature may be followed at once; another investigator must consent. A follower is raised to their feet if need be, and is lost if they cannot keep pace.</p>",
+        "<p>Use <code>look</code> with a direction to peer along an exit before you commit to it.</p>"
+      ]
+    },
+    {
+      "id": "wounds-and-death",
+      "title": "Wounds, Death, and Return",
+      "group": "Core survival",
+      "summary": "How the body fails, what happens when it does, and how you return.",
+      "see_also": [
+        "status",
+        "cast",
+        "use",
+        "lucidity",
+        "ground",
+        "combat"
+      ],
+      "details_html": [
+        "<p>The body keeps accounts that the mind cannot. Every blow, spell, and hazard draws down your vitality.</p>",
+        "<ul>",
+        "<li><strong>Wounded</strong> - you are hurt but able. Fight, cast, and walk as you will.</li>",
+        "<li><strong>Mortally wounded</strong> - your vitality is spent and you yet live. You cannot attack, cast, or walk until you are mended. Do not linger.</li>",
+        "<li><strong>Dead</strong> - fall further and you die.</li>",
+        "</ul>",
+        "<p>Death here is not the end of the story. You return to the world at a place of recall, with your vitality restored, and the account continues.</p>",
+        "<p><strong>Sheltered places.</strong> In some rooms the wards are strong enough that death cannot take you, and violence is forbidden altogether. Seek them out when you are weak.</p>",
+        "<p><strong>Mending.</strong> Healing spells and certain items restore vitality. Use <code>cast</code> and <code>use</code> before you are in the last extremity, not after.</p>",
+        "<p>A mind may fail before the body does. That is a separate ruin, told of in <em>lucidity</em>.</p>"
+      ]
+    },
+    {
+      "id": "lucidity",
+      "title": "Lucidity: The Fragile Hold",
+      "group": "Core survival",
+      "summary": "How the mind frays, what it sees when it does, and the ways back.",
+      "see_also": [
+        "status",
+        "use",
+        "ground",
+        "cleanse",
+        "cast"
+      ],
+      "details_html": [
+        "<p>The faculty of Miskatonic keep a grim axiom pinned above the reading-room door: <em>knowledge costs</em>. Every glimpse of what lies beneath the skin of the world is paid for by the mind that beheld it. Your <strong>lucidity</strong> is the measure of what you have left to spend.</p>",
+        "<p><strong>The stages of unravelling.</strong> A sound mind sees the world as it is. As lucidity wanes you pass through thresholds, each worse than the last:</p>",
+        "<ul>",
+        "<li><strong>Uneasy</strong> - the first cracks. A room may feel wrong the moment you enter it.</li>",
+        "<li><strong>Fractured</strong> - the mind begins to invent. Things are heard and seen that are not there.</li>",
+        "<li><strong>Deranged</strong> - the invention turns constant, and cruel. Even the way forward may deceive you.</li>",
+        "<li><strong>Catatonic</strong> - the mind lets go entirely. You will need an ally to bring you back.</li>",
+        "</ul>",
+        "<p><strong>What wears the mind.</strong> Forbidden magic spends lucidity as a gambler spends coin, and a mind already thin may be unable to afford the spell. The horrors of the dark take their share. Nor is lucidity ever perfectly still; it drifts of its own accord.</p>",
+        "<p><strong>What the unravelled mind perceives.</strong> A mind in tatters is an unreliable witness. It may hear a whisper from someone who is not there, glimpse a figure that means harm, or feel the air turn cold for no cause. These deceptions arrive by the same roads as every true thing, and nothing marks them as false. Trust what you can verify, and never assume that a thing which feels real is real.</p>",
+        "<p><strong>Finding the way back.</strong></p>",
+        "<ul>",
+        "<li>A <em>folk tonic</em> steadies the mind when taken with <code>use</code> (or <code>drink</code>). The body will not abide a second dose too soon: a tonic taken before its time is refused, and is not wasted.</li>",
+        "<li>A companion whose mind has shattered can be called back by an ally who performs <code>ground</code>. Do not mistake this for a small kindness; it asks the rescuer to hold still, cast nothing, and stay out of any fight while it works.</li>",
+        "<li>Corruption is a different taint and answers to a different rite: <code>cleanse</code>.</li>",
+        "</ul>",
+        "<p>Take stock of yourself often with <code>status</code>. The sane investigator is merely the one whose delusions have not yet been put to the test.</p>"
+      ]
+    },
+    {
+      "id": "resting",
+      "title": "Resting: Leaving the World Cleanly",
+      "group": "Core survival",
+      "summary": "How to end a session without leaving a mark on the world.",
+      "see_also": [
+        "rest",
+        "quit",
+        "logout",
+        "sit",
+        "stand"
+      ],
+      "details_html": [
+        "<p>A traveler who vanishes mid-stride is treated differently by the world than one who takes their leave properly. <code>rest</code> is the proper way.</p>",
+        "<ul>",
+        "<li><strong>In an inn, hotel, or motel</strong> you are gone at once.</li>",
+        "<li><strong>Anywhere else</strong> you sit down and keep a short vigil. When it ends, you are gone, cleanly.</li>",
+        "<li><strong>The vigil is broken</strong> by fighting, by moving, and by casting a spell.</li>",
+        "<li><strong>The vigil is not broken</strong> by speaking, looking about, or arranging your belongings.</li>",
+        "</ul>",
+        "<p>You cannot rest in the midst of a fight. <code>quit</code> and <code>logout</code> are other ways to leave.</p>"
+      ]
+    },
+    {
+      "id": "combat",
+      "title": "Combat: Steel, Nerve, and the Retreat",
+      "group": "Conflict & power",
+      "summary": "How fights are begun, shared, and survived.",
+      "see_also": [
+        "attack",
+        "punch",
+        "kick",
+        "strike",
+        "taunt",
+        "protect",
+        "assist",
+        "flee",
+        "wounds-and-death",
+        "adventuring-parties"
+      ],
+      "details_html": [
+        "<p>Only creatures may be fought; other investigators are never your quarry.</p>",
+        "<p><strong>Begin.</strong> <code>attack</code> and a name starts the fight. <code>punch</code>, <code>kick</code>, and <code>strike</code> are other ways of saying it; they change the telling, not the deed. You strike with what you hold in your main hand, or with bare hands if you hold nothing.</p>",
+        "<p><strong>Where you cannot fight.</strong> Warded rooms forbid violence. You cannot fight while mortally wounded. A newly arrived investigator is shielded by protective energies for a time, and cannot yet begin a fight.</p>",
+        "<p><strong>Each round, one deed.</strong> In a fight you act once each round, so choose well:</p>",
+        "<ul>",
+        "<li><code>taunt</code> draws a creature's attention onto you, testing your nerve and your fighting.</li>",
+        "<li><code>protect</code> covers an ally so that blows meant for them fall on you.</li>",
+        "<li><code>assist</code> joins a fight already begun, taking up the cause of another.</li>",
+        "<li><code>flee</code> breaks away into a nearby room. It may cost you your round and invite blows as you turn.</li>",
+        "</ul>",
+        "<p><strong>Spoils.</strong> Experience goes to whoever lands the killing blow. See <em>skill-growth</em>.</p>",
+        "<p>Fighting breaks off any rest, and a stricken investigator should mind <em>wounds-and-death</em> before it is too late.</p>"
+      ]
+    },
+    {
+      "id": "magic",
+      "title": "Magic: The Price of Power",
+      "group": "Conflict & power",
+      "summary": "Where spells come from, what they cost, and how to use them.",
+      "see_also": [
+        "cast",
+        "spells",
+        "spell",
+        "learn",
+        "teach",
+        "read",
+        "stop",
+        "lucidity"
+      ],
+      "details_html": [
+        "<p>Spells are learned, not found. They come by three roads:</p>",
+        "<ul>",
+        "<li><code>read</code> a spellbook that holds the spell.</li>",
+        "<li><code>teach</code> - ask an NPC who knows the spell to instruct you.</li>",
+        "<li><code>learn</code> - name the spell directly, a stopgap while other teachers are wanting.</li>",
+        "</ul>",
+        "<p><strong>The price.</strong> Every spell draws on your reserves of magic. Spells of the Mythos also draw on your lucidity, and some need material components that are consumed in the casting. These costs are paid before the working takes hold.</p>",
+        "<p><strong>The craft.</strong> <code>spells</code> lists what you know and <code>spell</code> with a name studies one closely. <code>cast</code> and a spell, and often a target, works it. Depending on the spell, the target may be yourself, another, a creature, or the room.</p>",
+        "<p>Some spells take time to work. <code>stop</code> abandons one mid-casting, though the attempt may cost you. Practice deepens your mastery of a spell.</p>",
+        "<p>You cannot cast while mortally wounded, and casting breaks off any rest. Heed <em>lucidity</em>: a mind already thin may be unable to afford the Mythos.</p>"
+      ]
+    },
+    {
+      "id": "skill-growth",
+      "title": "Skill and Experience: Growing Less Frail",
+      "group": "Conflict & power",
+      "summary": "Where your talents come from and how your station in the world rises.",
+      "see_also": [
+        "skills",
+        "status",
+        "teach",
+        "quest",
+        "journal",
+        "combat"
+      ],
+      "details_html": [
+        "<p><code>skills</code> lists your talents. Your occupation gave you your strongest, and a personal interest sharpened one more. The Main Menu opens the same record on its own page.</p>",
+        "<p><strong>Experience</strong> comes from two sources: landing the killing blow on a creature, and completing quests. As it accumulates, your level rises. It never falls.</p>",
+        "<p>Quests are tracked in your <code>journal</code>. Speak to those who dwell here with <code>talk</code>, and use <code>quest ask</code> to learn what they need and <code>quest turnin</code> to report what you have done.</p>",
+        "<p>Knowledge of another kind is taught by those who hold it; see <em>magic</em>.</p>"
+      ]
+    },
+    {
+      "id": "chat-and-emotes",
+      "title": "Voices, Whispers, and Gestures",
+      "group": "Social",
+      "summary": "Every way to be heard, and to be seen, and to shut out those you would rather not hear.",
+      "see_also": [
+        "say",
+        "local",
+        "global",
+        "whisper",
+        "reply",
+        "channel",
+        "emote",
+        "me",
+        "pose",
+        "talk",
+        "mute",
+        "unmute",
+        "mutes",
+        "lucidity"
+      ],
+      "details_html": [
+        "<p><strong>Speech</strong> travels as far as you send it:</p>",
+        "<ul>",
+        "<li><code>say</code> reaches those in your room.</li>",
+        "<li><code>local</code> reaches your whole sub-zone. <code>l</code> is a shorthand.</li>",
+        "<li><code>global</code> reaches every investigator on the server, once your character is experienced enough. <code>g</code> is a shorthand.</li>",
+        "<li><code>whisper</code> reaches one player, and <code>reply</code> answers the last who whispered to you.</li>",
+        "<li><code>channel</code> switches your channel, and sets which one you speak on by default.</li>",
+        "</ul>",
+        "<p><strong>Gesture</strong> speaks without words. <code>emote</code> shows an action to everyone in the room, from a set of known gestures or freely as you write it. <code>me</code> writes an action in the third person, shown to you for now. <code>pose</code> sets a description that others see when they look at you, until you change it or clear it.</p>",
+        "<p><strong>Conversation with the living.</strong> <code>talk</code> is private, a thread between you and one who dwells here.</p>",
+        "<p><strong>Silence.</strong> <code>mute</code> shuts a player out for yourself, for as long as you choose; <code>unmute</code> lifts it and <code>mutes</code> shows who you have silenced.</p>",
+        "<p>A frayed mind may hear voices that no one spoke. See <em>lucidity</em>.</p>"
+      ]
+    },
+    {
+      "id": "adventuring-parties",
+      "title": "Companions: Parties and Pursuit",
+      "group": "Social",
+      "summary": "How to travel with others, and what is asked of them.",
+      "see_also": [
+        "party",
+        "follow",
+        "unfollow",
+        "following",
+        "assist",
+        "protect"
+      ],
+      "details_html": [
+        "<p>A lone investigator is a short story. There are two ways to travel together.</p>",
+        "<p><strong>Following.</strong> <code>follow</code> keeps you at another's heels. A creature may be followed at once; another investigator must consent, and the request lapses if they do not answer. You may follow only one at a time. <code>unfollow</code> ends it, and <code>following</code> shows who follows whom.</p>",
+        "<p><strong>Parties.</strong> <code>party invite</code> and a name invites a player who stands in your room; they are asked to accept or decline. Only the leader may invite, send away, or dissolve the party, and any member may <code>party leave</code>. A player may belong to only one party.</p>",
+        "<p>Parties are not remembered. If the leader departs or loses their connection, the company is dissolved.</p>",
+        "<p>In a fight, a companion's cause is yours to take up with <code>assist</code>, and their danger yours to share with <code>protect</code>.</p>"
+      ]
+    },
+    {
+      "id": "carrying-and-containers",
+      "title": "Possessions: Carrying, Wearing, and Storing",
+      "group": "Economy & items",
+      "summary": "How to gather, wear, and keep what you find.",
+      "see_also": [
+        "inventory",
+        "pickup",
+        "drop",
+        "equip",
+        "unequip",
+        "put",
+        "get",
+        "look",
+        "catalog",
+        "banking",
+        "consumables"
+      ],
+      "details_html": [
+        "<p><code>inventory</code> lists what you carry and wear, and what lies inside your containers.</p>",
+        "<p><strong>Gathering.</strong> <code>pickup</code> takes something lying in the room, by its number or part of its name. <code>drop</code> leaves something by its slot number.</p>",
+        "<p><strong>Wearing.</strong> <code>equip</code> puts an item to use, in the slot it suits. <code>unequip</code> takes it off again. What you hold in your main hand is what you fight with.</p>",
+        "<p><strong>Storing.</strong> <code>put</code> moves an item into a container, and <code>get</code> takes it out. A container must be within reach, either in the room or equipped, and must have room. Name an item by its words or its number. If several of a kind are about, tell them apart with a number, as in a second backpack.</p>",
+        "<p><code>look in</code> and a container's name shows what it holds.</p>",
+        "<p><strong>Knowing what exists.</strong> <code>catalog</code> lists the kinds of item known to the archives, and the Main Menu opens the same list on its own page.</p>",
+        "<p>For things you would rather keep safe, see <em>banking</em>.</p>"
+      ]
+    },
+    {
+      "id": "banking",
+      "title": "The Bank: A Box Only You Can Open",
+      "group": "Economy & items",
+      "summary": "Safe-keeping for what you cannot carry or cannot risk.",
+      "see_also": [
+        "bank",
+        "deposit",
+        "withdraw",
+        "inventory",
+        "carrying-and-containers"
+      ],
+      "details_html": [
+        "<p>Every investigator has a deposit box at Arkham Savings &amp; Trust. No one else may open it.</p>",
+        "<ul>",
+        "<li>You must stand in a bank to use it.</li>",
+        "<li><code>bank</code> lists what the box holds, each item numbered.</li>",
+        "<li><code>deposit</code> moves something from your inventory into the box, all of a stack or only part of it.</li>",
+        "<li><code>withdraw</code> takes something out, by name or by the number <code>bank</code> showed. Your inventory must have room.</li>",
+        "</ul>",
+        "<p>The box holds a finite number of stacks. When it is full, it refuses deposits until you withdraw something.</p>",
+        "<p>Things you leave behind when you depart the tutorial are not lost; they are waiting for you in your box.</p>"
+      ]
+    },
+    {
+      "id": "consumables",
+      "title": "Tonics and Draughts: Consumables",
+      "group": "Economy & items",
+      "summary": "Items made to be used up.",
+      "see_also": [
+        "use",
+        "inventory",
+        "lucidity",
+        "wounds-and-death"
+      ],
+      "details_html": [
+        "<p>Some items are made to be used up. <code>use</code> and an item's number or name does it. <code>drink</code> and <code>quaff</code> are the same act in other words.</p>",
+        "<p>What an item does depends on the item. A <em>folk tonic</em> steadies a wavering mind; other draughts may mend wounds.</p>",
+        "<p>Such remedies are not to be abused. The body will not abide a second dose too soon, and a tonic used before its time is refused and kept, not wasted.</p>",
+        "<p>Spellbooks are read, not used; see <code>read</code> and <em>magic</em>.</p>"
+      ]
+    }
+  ]
 }
