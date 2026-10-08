@@ -73,7 +73,10 @@ async def test_handle_websocket_connection_full_flow(mock_websocket, mock_ws_con
 
                         # Verify cleanup was called in finally block (line 374)
                         # If cleanup is called, the try block (line 371-372) must have executed
-                        mock_cleanup.assert_awaited_once_with(player_id, str(player_id), mock_ws_connection_manager)
+                        # The handler hands cleanup its own connection id so a superseded socket can be recognised.
+                        mock_cleanup.assert_awaited_once_with(
+                            player_id, str(player_id), mock_ws_connection_manager, "conn_001"
+                        )
 
 
 @pytest.mark.asyncio
