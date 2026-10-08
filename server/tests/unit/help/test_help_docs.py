@@ -58,6 +58,24 @@ class _AllowlistChecker(HTMLParser):
             self.violations.append(f"bare text (wrap it in <p>): {data.strip()[:30]!r}")
 
 
+def _command(
+    name: str, *, category: str = "Exploration", admin_only: bool = False, see_also: list[str] | None = None
+) -> CommandDoc:
+    """A complete synthetic entry: loaded docs always carry every optional list, so test doubles must too."""
+    return {
+        "name": name,
+        "category": category,
+        "summary": "Summary.",
+        "usage": [name],
+        "aliases": [],
+        "admin_only": admin_only,
+        "arguments": [],
+        "examples": [],
+        "see_also": see_also or [],
+        "details_html": [],
+    }
+
+
 def _violations(html: str) -> list[str]:
     checker = _AllowlistChecker()
     checker.feed(html)
@@ -193,26 +211,14 @@ def test_admin_commands_are_hidden_from_everyone_else() -> None:
 def test_hidden_admin_commands_are_not_offered_as_suggestions_or_see_also(monkeypatch: pytest.MonkeyPatch) -> None:
     docs: HelpDocs = {
         "commands": [
-            {
-                "name": "peek",
-                "category": "Exploration",
-                "summary": "Look.",
-                "usage": ["peek"],
-                "see_also": ["secret"],
-            },
-            {
-                "name": "secret",
-                "category": "Administration",
-                "admin_only": True,
-                "summary": "Hidden.",
-                "usage": ["secret"],
-            },
+            _command("peek", see_also=["secret"]),
+            _command("secret", category="Administration", admin_only=True),
         ],
         "guides": [],
     }
     monkeypatch.setattr(help_content, "load_help_docs", lambda: docs)
 
-    assert get_manual(is_admin=False)["commands"][0].get("see_also") == []
-    assert get_manual(is_admin=True)["commands"][0].get("see_also") == ["secret"]
+    assert get_manual(is_admin=False)["commands"][0]["see_also"] == []
+    assert get_manual(is_admin=True)["commands"][0]["see_also"] == ["secret"]
     assert "secret" not in get_help_content("secrt")
     assert "<code>secret</code>" in get_help_content("secrt", is_admin=True)

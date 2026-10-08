@@ -60,7 +60,8 @@ def test_the_response_model_round_trips_the_documentation_as_json() -> None:
     by_name = {cmd["name"]: cmd for cmd in body["commands"]}
     assert by_name["look"]["category"] == "Exploration"
     assert by_name["local"]["aliases"] == ["l"]
-    assert "aliases" not in by_name["time"]  # NotRequired keys stay absent, not null
+    assert by_name["time"]["aliases"] == []  # optional lists arrive as empty lists, so clients need no guards
+    assert by_name["time"]["admin_only"] is False
 
 
 def test_the_router_produces_a_valid_openapi_schema() -> None:
