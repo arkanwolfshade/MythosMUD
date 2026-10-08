@@ -4,11 +4,12 @@ System commands for MythosMUD.
 This module contains handlers for system-level commands like help.
 """
 
-from typing import Any
+from typing import Any, cast
 
 from ..alias_storage import AliasStorage
 from ..help.help_content import get_help_content
 from ..structured_logging.enhanced_logging_config import get_logger
+from .catalog_commands import resolve_is_admin
 
 logger = get_logger(__name__)
 
@@ -38,37 +39,36 @@ async def handle_system_command(
     return {"result": f"System message sent: {message}"}
 
 
+def _help_topic(command_data: dict[str, object]) -> str | None:
+    """Topic from the validated command's ``topic`` field, falling back to the first positional arg."""
+    topic: object = command_data.get("topic")
+    if isinstance(topic, str) and topic.strip():
+        return topic
+    args: object = command_data.get("args")
+    if isinstance(args, list) and args:
+        return str(cast(list[object], args)[0])
+    return None
+
+
 async def handle_help_command(
-    command_data: dict[str, Any],
-    _current_user: dict[str, Any],
-    _request: Any,
+    command_data: dict[str, object],
+    current_user: object,
+    request: object,
     _alias_storage: AliasStorage | None,
     player_name: str,
-) -> dict[str, str]:
+) -> dict[str, object]:
     """
-    Handle the help command.
+    Handle the help command: ``help`` lists topics, ``help <command|alias|guide>`` shows one entry.
 
-    Args:
-        command_data: Command data dictionary containing args and other info
-        current_user: Current user information
-        request: FastAPI request object
-        alias_storage: Alias storage instance
-        player_name: Player name for logging
-
-    Returns:
-        dict: Help content result
+    Admin-only commands are documented only for admins. The result is HTML restricted to the tags the
+    client sanitizer keeps, so it is flagged ``is_html``.
     """
-    # Extract args from command_data
-    args: list[Any] = command_data.get("args", [])
-
-    logger.debug("Processing help command", player_name=player_name, args=args)
-
-    if len(args) > 1:
+    args: object = command_data.get("args")
+    if isinstance(args, list) and len(cast(list[object], args)) > 1:
         logger.warning("Help command with too many arguments", player_name=player_name, args=args)
         return {"result": "Usage: help [command]"}
 
-    command_name = args[0] if args else None
-    help_content = get_help_content(command_name)
-
-    logger.debug("Help content generated", player_name=player_name, command=command_name)
-    return {"result": help_content}
+    topic = _help_topic(command_data)
+    is_admin = await resolve_is_admin(current_user, request, player_name)
+    logger.debug("Processing help command", player_name=player_name, topic=topic, is_admin=is_admin)
+    return {"result": get_help_content(topic, is_admin=is_admin), "is_html": True}

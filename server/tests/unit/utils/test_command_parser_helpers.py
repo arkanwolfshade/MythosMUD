@@ -78,27 +78,6 @@ def test_parse_command_parts_whitespace_only_raises(command_parser):
     assert "Empty command" in str(exc_info.value)
 
 
-def test_get_command_help_specific_command(command_parser):
-    """Test get_command_help() returns help for specific command."""
-    result = command_parser.get_command_help("look")
-    assert "look" in result.lower()
-    assert "direction" in result.lower()
-
-
-def test_get_command_help_unknown_command(command_parser):
-    """Test get_command_help() returns error for unknown command."""
-    result = command_parser.get_command_help("unknown_command")
-    assert "unknown" in result.lower() or "not found" in result.lower()
-
-
-def test_get_command_help_none(command_parser):
-    """Test get_command_help() returns general help when None."""
-    result = command_parser.get_command_help(None)
-    assert isinstance(result, str)
-    assert len(result) > 0
-    assert "Available commands" in result or "commands" in result.lower()
-
-
 def test_create_command_object_with_alias_l(command_parser):
     """Test _create_command_object() handles 'l' alias."""
     with patch.object(command_parser, "_command_factory", {"local": MagicMock(return_value=MagicMock())}):

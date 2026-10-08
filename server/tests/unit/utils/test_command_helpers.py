@@ -7,8 +7,7 @@ Tests helper functions for command parsing and validation.
 import pytest
 
 from server.exceptions import ValidationError as MythosValidationError
-from server.models.command import CommandType
-from server.utils.command_helpers import get_command_help, get_username_from_user, validate_command_safety
+from server.utils.command_helpers import get_username_from_user, validate_command_safety
 
 
 def test_validate_command_safety_safe_commands():
@@ -54,40 +53,6 @@ def test_validate_command_safety_xss_attempts():
     """Test validate_command_safety detects XSS attempts."""
     assert validate_command_safety("look <script>") is False
     assert validate_command_safety("go javascript:alert(1)") is False
-
-
-def test_get_command_help_no_command():
-    """Test get_command_help with no command (general help)."""
-    result = get_command_help()
-
-    assert "Available Commands:" in result
-    assert "look" in result
-    assert "go" in result
-    assert "say" in result
-
-
-def test_get_command_help_specific_commands():
-    """Test get_command_help with specific command types."""
-    assert "Look around" in get_command_help(CommandType.LOOK.value)
-    assert "Move in" in get_command_help(CommandType.GO.value)
-    assert "Say something" in get_command_help(CommandType.SAY.value)
-    assert "Send private message" in get_command_help(CommandType.WHISPER.value)
-    assert "Reply to last whisper" in get_command_help(CommandType.REPLY.value)
-
-
-def test_get_command_help_unknown_command():
-    """Test get_command_help with unknown command."""
-    result = get_command_help("unknown_command")
-
-    assert "Unknown command: unknown_command" == result
-
-
-def test_get_command_help_case_insensitive():
-    """Test get_command_help is case insensitive."""
-    result_upper = get_command_help("LOOK")
-    result_lower = get_command_help("look")
-
-    assert result_upper == result_lower
 
 
 def test_get_username_from_user_player_object():

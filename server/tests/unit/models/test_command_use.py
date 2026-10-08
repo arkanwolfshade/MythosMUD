@@ -3,10 +3,10 @@
 import pytest
 from pydantic import ValidationError
 
+from server.help.help_content import get_help_content
 from server.models.command import UseCommand
 from server.models.command_base import CommandType
 from server.utils.command_factories import CommandFactory
-from server.utils.command_helpers import get_command_help
 
 
 def test_use_command_type_is_use() -> None:
@@ -43,8 +43,8 @@ def test_command_factory_builds_use_command() -> None:
 
 
 def test_use_has_help_text_naming_its_aliases() -> None:
-    help_text = get_command_help(CommandType.USE.value)
+    help_text = get_help_content(CommandType.USE.value)
 
-    assert help_text.startswith("use ")
+    assert "<code>use " in help_text
     assert "drink" in help_text
     assert "quaff" in help_text
