@@ -3,7 +3,8 @@
  *
  * Leaving the tutorial is one-way, so every tutorial test starts from a reset:
  * `scripts/e2e_reset_players.py --tutorial` saves E2ETutorial in the bedroom template with no
- * instance, one Sling in its inventory and no quest rows, and empties the lost-and-found chest.
+ * instance, one Sling in its inventory and no quest rows, and empties the lost-and-found chest and
+ * E2ETutorial's bank deposit box (what the tutorial leaves behind lands in the box).
  * Logging in then goes through the server's re-entry repair, which builds a brand new instance.
  */
 
@@ -26,10 +27,18 @@ export const TUTORIAL_BEDROOM_LOOK_CUE = /small, spartan room|narrow bed and a n
 /** What `look` says about a floor with nothing on it. */
 export const EMPTY_FLOOR_CUE = /The floor bears no abandoned curios/i;
 
+/** Arkham Savings & Trust: the bank room (db/migrations/20261007120000_bank_deposit_boxes.sql). */
+export const BANK_ROOM_ID = 'earth_arkhamcity_downtown_room_arkham_savings_001';
+
+/** `look` in the bank (the room name is only in the Location header; the description carries this). */
+export const BANK_LOOK_CUE = /hushed banking hall/i;
+
 export interface E2ePlayerState {
   current_room_id: string;
   respawn_room_id: string | null;
   tutorial_instance_id: string | null;
+  /** Names of the stacks in the character's bank deposit box (empty when they have none). */
+  bank_items: string[];
 }
 
 function runE2eScript(script: string, args: string[]): string {
@@ -68,13 +77,25 @@ async function clearStoredSession(page: Page): Promise<void> {
     .catch(() => {});
 }
 
-/** Log E2ETutorial out (a real departure: its instance is flushed) and back in (a fresh instance). */
-export async function relogTutorialCharacter(tutorial: PlayerContext, resetFirst: boolean): Promise<void> {
+/**
+ * Log E2ETutorial out (a real departure: its instance is flushed) and back in (a fresh instance).
+ * With `placeAt` it logs back in standing in that room instead (only meaningful once the tutorial is
+ * over, e.g. at the bank): the move is written between logout and login, because the server keeps a
+ * logged-in player's room in memory and would overwrite it.
+ */
+export async function relogTutorialCharacter(
+  tutorial: PlayerContext,
+  resetFirst: boolean,
+  placeAt?: string
+): Promise<void> {
   await logoutPlayer(tutorial.page, 25000, { spaFallback: true }).catch(() => {});
   await clearStoredSession(tutorial.page);
   if (resetFirst) {
     // Logging out first also stops the logout's own save from overwriting the reset.
     resetTutorialCharacterInDatabase();
+  }
+  if (placeAt) {
+    runE2eScript('e2e_place_player.py', [TUTORIAL_USERNAME, placeAt]);
   }
   await loginPlayer(tutorial.page, tutorial.player.username, tutorial.player.password);
   await waitForPlayableSession(tutorial.page, 30000);
