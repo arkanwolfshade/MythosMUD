@@ -76,13 +76,13 @@ function MotdCommandsList() {
         • <code>look</code> - Examine your surroundings
       </p>
       <p>
-        • <code>move [direction]</code> - Navigate between locations
+        • <code>go [direction]</code> - Navigate between locations
       </p>
       <p>
         • <code>inventory</code> - Check your possessions
       </p>
       <p>
-        • <code>stats</code> - View your character statistics
+        • <code>status</code> - View your character's condition
       </p>
       <p>
         • <code>help</code> - Access the knowledge archives
