@@ -47,7 +47,18 @@ describe('MotdContent', () => {
     // Assert
     expect(screen.getByText('Available Commands:')).toBeInTheDocument();
     expect(screen.getByText(/look/)).toBeInTheDocument();
-    expect(screen.getByText(/move \[direction\]/)).toBeInTheDocument();
+    expect(screen.getByText(/go \[direction\]/)).toBeInTheDocument();
+    expect(screen.getByText(/status/)).toBeInTheDocument();
+  });
+
+  it('should only advertise commands that exist (there is no move or stats command)', () => {
+    // Act
+    const { container } = render(<MotdContent />);
+
+    // Assert
+    const listed = Array.from(container.querySelectorAll('.welcome-text code')).map(el => el.textContent);
+    expect(listed).not.toContain('move [direction]');
+    expect(listed).not.toContain('stats');
   });
 
   it('should render Yellow Sign', () => {
