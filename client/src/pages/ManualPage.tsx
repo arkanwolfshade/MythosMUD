@@ -17,12 +17,12 @@ interface ManualCommand {
   category: string;
   summary: string;
   usage: string[];
-  aliases?: string[];
-  admin_only?: boolean;
-  arguments?: { name: string; required: boolean; description: string }[];
-  examples?: { input: string; note?: string }[];
-  see_also?: string[];
-  details_html?: string[];
+  aliases: string[];
+  admin_only: boolean;
+  arguments: { name: string; required: boolean; description: string }[];
+  examples: { input: string; note?: string }[];
+  see_also: string[];
+  details_html: string[];
 }
 
 interface ManualGuide {
@@ -30,8 +30,8 @@ interface ManualGuide {
   title: string;
   group: string;
   summary: string;
-  see_also?: string[];
-  details_html?: string[];
+  see_also: string[];
+  details_html: string[];
 }
 
 interface ManualDocs {
@@ -41,7 +41,6 @@ interface ManualDocs {
 
 const GUIDES_HEADING = 'Lore & Guidance';
 const NOT_AUTHENTICATED = 'Not authenticated. Please log in first.';
-const SUBHEAD_CLASS = 'help-subhead';
 
 function useManualDocs() {
   const [docs, setDocs] = useState<ManualDocs | null>(null);
@@ -78,8 +77,8 @@ function useManualDocs() {
   return { docs, error };
 }
 
-function matches(query: string, ...fields: (string | undefined)[]): boolean {
-  return fields.some(field => field?.toLowerCase().includes(query));
+function matches(query: string, ...fields: string[]): boolean {
+  return fields.some(field => field.toLowerCase().includes(query));
 }
 
 function groupBy<T>(items: T[], key: (item: T) => string): [string, T[]][] {
@@ -95,7 +94,7 @@ function filterDocs(docs: ManualDocs, rawQuery: string): ManualDocs {
   const query = rawQuery.trim().toLowerCase();
   if (!query) return docs;
   return {
-    commands: docs.commands.filter(c => matches(query, c.name, c.summary, ...(c.aliases ?? []))),
+    commands: docs.commands.filter(c => matches(query, c.name, c.summary, ...c.aliases)),
     guides: docs.guides.filter(g => matches(query, g.id, g.title, g.summary)),
   };
 }
@@ -115,13 +114,13 @@ function TopicLinks({ topics }: { topics: string[] }) {
   );
 }
 
-function Details({ lines }: { lines?: string[] }) {
-  if (!lines || lines.length === 0) return null;
+function Details({ lines }: { lines: string[] }) {
+  if (lines.length === 0) return null;
   return <SafeHtml tag="div" className="help-entry" html={lines.join('\n')} />;
 }
 
-function SeeAlso({ topics }: { topics?: string[] }) {
-  if (!topics || topics.length === 0) return null;
+function SeeAlso({ topics }: { topics: string[] }) {
+  if (topics.length === 0) return null;
   return (
     <p className="manual-seealso">
       <span className="help-subhead">See also: </span>
@@ -130,42 +129,44 @@ function SeeAlso({ topics }: { topics?: string[] }) {
   );
 }
 
+function Section({ title, items }: { title: string; items: React.ReactNode[] }) {
+  if (items.length === 0) return null;
+  return (
+    <>
+      <p className="help-subhead">{title}</p>
+      <ul className="help-entry">{items}</ul>
+    </>
+  );
+}
+
 function CommandBody({ command }: { command: ManualCommand }) {
   return (
     <>
-      <p className="help-subhead">Usage</p>
-      <ul className="help-entry">
-        {command.usage.map(usage => (
+      <Section
+        title="Usage"
+        items={command.usage.map(usage => (
           <li key={usage}>
             <code>{usage}</code>
           </li>
         ))}
-      </ul>
-      {command.arguments && command.arguments.length > 0 && (
-        <>
-          <p className={SUBHEAD_CLASS}>Arguments</p>
-          <ul className="help-entry">
-            {command.arguments.map(arg => (
-              <li key={arg.name}>
-                <code>{arg.name}</code> ({arg.required ? 'required' : 'optional'}) - {arg.description}
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-      {command.examples && command.examples.length > 0 && (
-        <>
-          <p className={SUBHEAD_CLASS}>Examples</p>
-          <ul className="help-entry">
-            {command.examples.map(example => (
-              <li key={example.input}>
-                <code>{example.input}</code>
-                {example.note ? ` - ${example.note}` : ''}
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
+      />
+      <Section
+        title="Arguments"
+        items={command.arguments.map(arg => (
+          <li key={arg.name}>
+            <code>{arg.name}</code> ({arg.required ? 'required' : 'optional'}) - {arg.description}
+          </li>
+        ))}
+      />
+      <Section
+        title="Examples"
+        items={command.examples.map(example => (
+          <li key={example.input}>
+            <code>{example.input}</code>
+            {example.note ? ` - ${example.note}` : ''}
+          </li>
+        ))}
+      />
     </>
   );
 }
@@ -175,7 +176,7 @@ function CommandEntry({ command }: { command: ManualCommand }) {
     <article id={command.name} className="manual-entry scroll-mt-4">
       <h3 className="help-title font-bold">
         {command.name.toUpperCase()}
-        {command.aliases && command.aliases.length > 0 && (
+        {command.aliases.length > 0 && (
           <span className="help-aliases text-sm font-normal"> (also: {command.aliases.join(', ')})</span>
         )}
         {command.admin_only && <span className="help-aliases text-sm font-normal"> [admin]</span>}

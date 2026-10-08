@@ -12,7 +12,7 @@ The documentation itself lives in ``commands.json`` and ``guides.json`` beside t
 import json
 from collections.abc import Mapping
 from difflib import get_close_matches
-from functools import lru_cache
+from functools import lru_cache, partial
 from html import escape
 from pathlib import Path
 from typing import NotRequired, TypedDict, cast
@@ -39,7 +39,33 @@ class HelpExample(TypedDict):
 
 
 class CommandDoc(TypedDict):
-    """Documentation for one player-facing command."""
+    """Documentation for one player-facing command. Optional authored fields are always present (empty by default)."""
+
+    name: str
+    category: str
+    summary: str
+    usage: list[str]
+    aliases: list[str]
+    admin_only: bool
+    arguments: list[HelpArgument]
+    examples: list[HelpExample]
+    see_also: list[str]
+    details_html: list[str]
+
+
+class GuideDoc(TypedDict):
+    """A concept guide, reachable as ``help <id>`` and on the Manual page. Optional fields are always present."""
+
+    id: str
+    title: str
+    group: str
+    summary: str
+    see_also: list[str]
+    details_html: list[str]
+
+
+class _RawCommand(TypedDict):
+    """A command as authored in commands.json, where optional fields may be absent."""
 
     name: str
     category: str
@@ -53,8 +79,8 @@ class CommandDoc(TypedDict):
     details_html: NotRequired[list[str]]
 
 
-class GuideDoc(TypedDict):
-    """A concept guide, reachable as ``help <id>`` and on the Manual page."""
+class _RawGuide(TypedDict):
+    """A guide as authored in guides.json, where optional fields may be absent."""
 
     id: str
     title: str
@@ -75,6 +101,32 @@ def _read_json(filename: str) -> Mapping[str, object]:
     return cast(Mapping[str, object], json.loads((_HELP_DIR / filename).read_text(encoding="utf-8")))
 
 
+def _complete_command(raw: _RawCommand) -> CommandDoc:
+    return {
+        "name": raw["name"],
+        "category": raw["category"],
+        "summary": raw["summary"],
+        "usage": raw["usage"],
+        "aliases": raw.get("aliases", []),
+        "admin_only": raw.get("admin_only", False),
+        "arguments": raw.get("arguments", []),
+        "examples": raw.get("examples", []),
+        "see_also": raw.get("see_also", []),
+        "details_html": raw.get("details_html", []),
+    }
+
+
+def _complete_guide(raw: _RawGuide) -> GuideDoc:
+    return {
+        "id": raw["id"],
+        "title": raw["title"],
+        "group": raw["group"],
+        "summary": raw["summary"],
+        "see_also": raw.get("see_also", []),
+        "details_html": raw.get("details_html", []),
+    }
+
+
 @lru_cache(maxsize=1)
 def load_help_docs() -> HelpDocs:
     """Load and schema-validate the help documentation (cached for the process lifetime)."""
@@ -84,8 +136,8 @@ def load_help_docs() -> HelpDocs:
     validate(commands_file, schema)
     validate(guides_file, schema)
     return {
-        "commands": cast(list[CommandDoc], commands_file.get("commands", [])),
-        "guides": cast(list[GuideDoc], guides_file.get("guides", [])),
+        "commands": [_complete_command(c) for c in cast(list[_RawCommand], commands_file.get("commands", []))],
+        "guides": [_complete_guide(g) for g in cast(list[_RawGuide], guides_file.get("guides", []))],
     }
 
 
@@ -93,35 +145,25 @@ def _visible_names(commands: list[CommandDoc], guides: list[GuideDoc]) -> set[st
     names = {guide["id"] for guide in guides}
     for cmd in commands:
         names.add(cmd["name"])
-        names.update(cmd.get("aliases", []))
+        names.update(cmd["aliases"])
     return names
 
 
-def _command_with_visible_see_also(cmd: CommandDoc, visible: set[str]) -> CommandDoc:
-    if "see_also" not in cmd:
-        return cmd
-    scrubbed = cmd.copy()
-    scrubbed["see_also"] = [topic for topic in cmd["see_also"] if topic in visible]
-    return scrubbed
-
-
-def _guide_with_visible_see_also(guide: GuideDoc, visible: set[str]) -> GuideDoc:
-    if "see_also" not in guide:
-        return guide
-    scrubbed = guide.copy()
-    scrubbed["see_also"] = [topic for topic in guide["see_also"] if topic in visible]
+def _with_visible_see_also[Doc: (CommandDoc, GuideDoc)](doc: Doc, visible: set[str]) -> Doc:
+    scrubbed = doc.copy()
+    scrubbed["see_also"] = [topic for topic in doc["see_also"] if topic in visible]
     return scrubbed
 
 
 def get_manual(is_admin: bool = False) -> HelpDocs:
     """Return the documentation a caller may see; admin-only entries are removed for everyone else."""
     docs = load_help_docs()
-    commands = [cmd for cmd in docs["commands"] if is_admin or not cmd.get("admin_only", False)]
+    commands = [cmd for cmd in docs["commands"] if is_admin or not cmd["admin_only"]]
     guides = docs["guides"]
     visible = _visible_names(commands, guides)
     return {
-        "commands": [_command_with_visible_see_also(cmd, visible) for cmd in commands],
-        "guides": [_guide_with_visible_see_also(guide, visible) for guide in guides],
+        "commands": [_with_visible_see_also(cmd, visible) for cmd in commands],
+        "guides": [_with_visible_see_also(guide, visible) for guide in guides],
     }
 
 
@@ -155,19 +197,16 @@ def _example_html(example: HelpExample) -> str:
 
 def _format_command(cmd: CommandDoc) -> str:
     title = f"<strong>{_e(cmd['name'].upper())}</strong>"
-    aliases = cmd.get("aliases", [])
-    if aliases:
-        title += f' <span class="help-aliases">(also: {_e(", ".join(aliases))})</span>'
+    if cmd["aliases"]:
+        title += f' <span class="help-aliases">(also: {_e(", ".join(cmd["aliases"]))})</span>'
     parts = ['<div class="help-entry">', f'<p class="help-title">{title}</p>', f"<p>{_e(cmd['summary'])}</p>"]
     parts += [_subhead("Usage"), _ul([f"<code>{_e(usage)}</code>" for usage in cmd["usage"]])]
-    arguments = cmd.get("arguments", [])
-    if arguments:
-        parts += [_subhead("Arguments"), _ul([_argument_html(arg) for arg in arguments])]
-    examples = cmd.get("examples", [])
-    if examples:
-        parts += [_subhead("Examples"), _ul([_example_html(example) for example in examples])]
-    parts += cmd.get("details_html", [])
-    parts += _see_also_html(cmd.get("see_also", []))
+    if cmd["arguments"]:
+        parts += [_subhead("Arguments"), _ul([_argument_html(arg) for arg in cmd["arguments"]])]
+    if cmd["examples"]:
+        parts += [_subhead("Examples"), _ul([_example_html(example) for example in cmd["examples"]])]
+    parts += cmd["details_html"]
+    parts += _see_also_html(cmd["see_also"])
     parts.append("</div>")
     return "\n".join(parts)
 
@@ -179,8 +218,8 @@ def _format_guide(guide: GuideDoc) -> str:
         '<div class="help-entry">',
         f'<p class="help-title">{title} {group}</p>',
         f"<p>{_e(guide['summary'])}</p>",
-        *guide.get("details_html", []),
-        *_see_also_html(guide.get("see_also", [])),
+        *guide["details_html"],
+        *_see_also_html(guide["see_also"]),
         "</div>",
     ]
     return "\n".join(parts)
@@ -236,13 +275,10 @@ def get_help_content(topic: str | None = None, *, is_admin: bool = False) -> str
     """
     manual = get_manual(is_admin)
     commands, guides = manual["commands"], manual["guides"]
-    if not topic or not topic.strip():
+    key = (topic or "").strip().lower().lstrip("/")
+    if not key:
         return _format_index(commands, guides)
-    key = topic.strip().lower().lstrip("/")
-    for cmd in commands:
-        if key == cmd["name"] or key in cmd.get("aliases", []):
-            return _format_command(cmd)
-    for guide in guides:
-        if key == guide["id"]:
-            return _format_guide(guide)
-    return _format_not_found(key, _visible_names(commands, guides))
+    renderers = {guide["id"]: partial(_format_guide, guide) for guide in guides}
+    renderers |= {name: partial(_format_command, cmd) for cmd in commands for name in (cmd["name"], *cmd["aliases"])}
+    render = renderers.get(key)
+    return render() if render else _format_not_found(key, set(renderers))

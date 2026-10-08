@@ -26,6 +26,17 @@ vi.mock('../../utils/config.js', () => ({
   API_V1_BASE: 'http://localhost:54768/v1',
 }));
 
+// GET /v1/api/help always sends every optional list (empty by default), so fixtures are completed the same way.
+const complete = <T extends object>(entry: T) => ({
+  aliases: [],
+  admin_only: false,
+  arguments: [],
+  examples: [],
+  see_also: [],
+  details_html: [],
+  ...entry,
+});
+
 const manualBody = {
   commands: [
     {
@@ -45,7 +56,7 @@ const manualBody = {
       usage: ['local <message>', 'l <message>'],
       aliases: ['l'],
     },
-  ],
+  ].map(complete),
   guides: [
     {
       id: 'lucidity',
