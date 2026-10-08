@@ -20,7 +20,8 @@ logger = get_logger(__name__)
 item_catalog_router = APIRouter(prefix="/api/item-catalog", tags=["item-catalog"])
 
 
-def _user_is_admin(user: User) -> bool:
+def user_is_admin(user: User) -> bool:
+    """True for admin and superuser accounts; shared by the REST routes that filter by role."""
     return bool(getattr(user, "is_admin", False) or getattr(user, "is_superuser", False))
 
 
@@ -36,7 +37,7 @@ async def get_item_catalog(
     page_size: Annotated[int, Query(ge=1, le=100)] = 25,
 ) -> ItemCatalogResponse:
     """Return a paginated item prototype catalog with role-based columns."""
-    is_admin = _user_is_admin(current_user)
+    is_admin = user_is_admin(current_user)
     query = normalize_catalog_query(
         item_type=item_type,
         namespace=namespace,

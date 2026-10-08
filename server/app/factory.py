@@ -19,6 +19,7 @@ from ..api.admin import npc_router as admin_npc_router
 from ..api.admin import subject_router as admin_subject_router
 from ..api.containers import container_router
 from ..api.game import game_router
+from ..api.help import help_router
 from ..api.item_catalog import item_catalog_router
 from ..api.maps import map_router
 from ..api.metrics import router as metrics_router
@@ -239,6 +240,7 @@ OPENAPI_TAGS = [
     {"name": "game", "description": "Game state: enter game, movement, combat actions."},
     {"name": "containers", "description": "Unified container system: environmental, wearable, corpse storage."},
     {"name": "item-catalog", "description": "Paginated item prototype catalog for players and admins."},
+    {"name": "help", "description": "Command reference and guides for the Manual page; admin commands admin-only."},
     {"name": "rooms", "description": "Room data and exploration."},
     {"name": "maps", "description": "ASCII map rendering and exploration views."},
     {"name": "realtime", "description": "WebSocket connection and real-time game events."},
@@ -270,6 +272,7 @@ def _register_v1_routers(app: FastAPI) -> None:
     v1_router.include_router(profession_router)
     v1_router.include_router(skills_router)
     v1_router.include_router(item_catalog_router)
+    v1_router.include_router(help_router)
     v1_router.include_router(game_router)
     v1_router.include_router(monitoring_router)
     v1_router.include_router(system_monitoring_router)
