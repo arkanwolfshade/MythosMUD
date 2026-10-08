@@ -6,7 +6,7 @@ Tests the utility functions in command_helpers.py module.
 
 from unittest.mock import MagicMock
 
-from server.utils.command_helpers import get_command_help, get_username_from_user, validate_command_safety
+from server.utils.command_helpers import get_username_from_user, validate_command_safety
 
 
 def test_validate_command_safety_safe():
@@ -46,29 +46,6 @@ def test_validate_command_safety_xss():
     """Test validate_command_safety() returns False for XSS attempts."""
     assert validate_command_safety("look <script>") is False
     assert validate_command_safety("say javascript:") is False
-
-
-def test_get_command_help_specific_command():
-    """Test get_command_help() returns help for specific command."""
-    result = get_command_help("look")
-
-    assert "look" in result.lower()
-    assert "direction" in result.lower()
-
-
-def test_get_command_help_unknown_command():
-    """Test get_command_help() returns error message for unknown command."""
-    result = get_command_help("unknown_command")
-
-    assert "unknown" in result.lower()
-
-
-def test_get_command_help_general():
-    """Test get_command_help() returns general help when command_type is None."""
-    result = get_command_help(None)
-
-    assert isinstance(result, str)
-    assert len(result) > 0
 
 
 def test_get_username_from_user_with_name():

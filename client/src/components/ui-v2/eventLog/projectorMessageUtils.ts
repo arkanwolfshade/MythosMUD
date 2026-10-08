@@ -19,11 +19,12 @@ function channelToMessageType(channel: string): 'whisper' | 'shout' | 'emote' | 
 export function buildChatMessage(
   text: string,
   timestamp: string,
-  opts: { isHtml?: boolean; messageType?: string; channel?: string } = {}
+  opts: { isHtml?: boolean; isCompleteHtml?: boolean; messageType?: string; channel?: string } = {}
 ): ChatMessage {
-  const { messageType = 'system', channel = 'game', isHtml = false } = opts;
+  const { messageType = 'system', channel = 'game', isHtml = false, isCompleteHtml = false } = opts;
   const type = channelToMessageType(channel);
-  return { text, timestamp, isHtml, messageType, channel, type };
+  // isCompleteHtml: text is finished markup, so panels must not run it through the ANSI converter (which escapes it).
+  return { text, timestamp, isHtml, messageType, channel, type, ...(isCompleteHtml ? { isCompleteHtml } : {}) };
 }
 
 export function appendMessage(prevMessages: ChatMessage[], message: ChatMessage): ChatMessage[] {

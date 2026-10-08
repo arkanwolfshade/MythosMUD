@@ -8,6 +8,11 @@ vi.mock('../pages/MapPage', () => ({
   default: () => <div>Map Page</div>,
 }));
 
+vi.mock('../pages/ManualPage', () => ({
+  ManualPage: () => <div>Manual Page</div>,
+  default: () => <div>Manual Page</div>,
+}));
+
 vi.mock('../App', () => ({
   App: () => <div>Main App</div>,
 }));
@@ -41,6 +46,19 @@ describe('AppRouter', () => {
       },
       { timeout: 3000 }
     );
+  });
+
+  it('should render manual page for /manual route', async () => {
+    window.history.replaceState({}, '', '/manual');
+    render(<AppRouter />);
+
+    await waitFor(
+      () => {
+        expect(screen.getByText('Manual Page')).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
+    expect(screen.queryByText('Main App')).not.toBeInTheDocument();
   });
 
   it('should render main app for unknown routes', () => {

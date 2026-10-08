@@ -45,6 +45,43 @@ describe('GameInfoPanel', () => {
     expect(screen.getByText('Combat message')).toBeInTheDocument();
   });
 
+  it('renders a complete-HTML message as real markup, not escaped text (help output)', () => {
+    const help: ChatMessage[] = [
+      {
+        text: '<div class="help-entry"><p><strong>LOOK</strong></p></div>',
+        timestamp: new Date().toISOString(),
+        isHtml: true,
+        isCompleteHtml: true,
+        messageType: 'system',
+        channel: 'game',
+        type: 'system',
+      },
+    ];
+
+    const { container } = render(<GameInfoPanel messages={help} />);
+
+    expect(container.querySelector('.help-entry strong')?.textContent).toBe('LOOK');
+    expect(screen.queryByText(/<strong>/)).not.toBeInTheDocument();
+  });
+
+  it('still treats isHtml text that is not marked complete as ANSI text, escaping its markup', () => {
+    const ansiText: ChatMessage[] = [
+      {
+        text: '<strong>LOOK</strong>',
+        timestamp: new Date().toISOString(),
+        isHtml: true,
+        messageType: 'system',
+        channel: 'game',
+        type: 'system',
+      },
+    ];
+
+    const { container } = render(<GameInfoPanel messages={ansiText} />);
+
+    expect(container.querySelector('strong')).toBeNull();
+    expect(screen.getByText(/<strong>LOOK<\/strong>/)).toBeInTheDocument();
+  });
+
   it('should call onClearMessages when clear button is clicked', () => {
     render(<GameInfoPanel messages={mockMessages} onClearMessages={mockOnClearMessages} />);
 

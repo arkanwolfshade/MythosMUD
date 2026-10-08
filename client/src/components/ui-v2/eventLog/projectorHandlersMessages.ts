@@ -154,6 +154,7 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
       const messageTypeResult = determineMessageType(message);
       const msg = buildChatMessage(message, event.timestamp, {
         isHtml,
+        isCompleteHtml: isHtml, // a command result flagged is_html is finished markup (e.g. help), not ANSI text
         messageType: messageTypeResult.type,
         channel: messageTypeResult.channel ?? 'game',
       });
@@ -161,6 +162,7 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     } else if (gameLogMessage && !isRoomNameOnly) {
       const msg = buildChatMessage(gameLogMessage, event.timestamp, {
         isHtml,
+        isCompleteHtml: isHtml,
         messageType: 'system',
         channel: gameLogChannel,
       });

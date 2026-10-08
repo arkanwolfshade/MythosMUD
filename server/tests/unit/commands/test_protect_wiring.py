@@ -14,9 +14,9 @@ from server.commands import combat_loader
 from server.commands.combat import CombatCommandHandler
 from server.commands.combat_loader import handle_protect_command
 from server.commands.command_service import _COMMAND_HANDLERS
+from server.help.help_content import get_help_content
 from server.models.command import CommandType, ProtectCommand
 from server.utils.command_factories_combat import CombatCommandFactory
-from server.utils.command_helpers import get_command_help
 from server.utils.command_parser import CommandParser
 from server.utils.command_processor import CommandProcessor
 
@@ -78,9 +78,10 @@ async def test_the_combat_handler_routes_protect_to_its_command_module() -> None
 
 
 def test_help_explains_protect() -> None:
-    assert "protect <player>" in get_command_help("protect")
-    assert "Fighting" in get_command_help("protect")
-    assert "- protect <player>" in get_command_help()
+    protect = get_help_content("protect")
+    assert "protect &lt;player&gt;" in protect
+    assert "Fighting" in protect
+    assert "<strong>protect</strong>" in get_help_content()
 
 
 @pytest.mark.parametrize("verb", ["protect", "PROTECT"])

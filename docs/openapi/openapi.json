@@ -1963,6 +1963,33 @@
         }
       }
     },
+    "/v1/api/help": {
+      "get": {
+        "tags": [
+          "help"
+        ],
+        "summary": "Get Help Docs",
+        "description": "Return every command and guide the caller may see.",
+        "operationId": "get_help_docs_v1_api_help_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HelpDocs"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
     "/v1/game/status": {
       "get": {
         "tags": [
@@ -5780,6 +5807,77 @@
         "title": "CloseContainerRequest",
         "description": "Request model for closing a container."
       },
+      "CommandDoc": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          },
+          "usage": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Usage"
+          },
+          "aliases": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Aliases"
+          },
+          "admin_only": {
+            "type": "boolean",
+            "title": "Admin Only"
+          },
+          "arguments": {
+            "items": {
+              "$ref": "#/components/schemas/HelpArgument"
+            },
+            "type": "array",
+            "title": "Arguments"
+          },
+          "examples": {
+            "items": {
+              "$ref": "#/components/schemas/HelpExample"
+            },
+            "type": "array",
+            "title": "Examples"
+          },
+          "see_also": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "See Also"
+          },
+          "details_html": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Details Html"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "category",
+          "summary",
+          "usage"
+        ],
+        "title": "CommandDoc",
+        "description": "Documentation for one player-facing command."
+      },
       "CommandRequest": {
         "properties": {
           "command": {
@@ -7277,6 +7375,49 @@
           "server_time": "2025-01-12T15:30:45.123456Z"
         }
       },
+      "GuideDoc": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "group": {
+            "type": "string",
+            "title": "Group"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          },
+          "see_also": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "See Also"
+          },
+          "details_html": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Details Html"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "group",
+          "summary"
+        ],
+        "title": "GuideDoc",
+        "description": "A concept guide, reachable as ``help <id>`` and on the Manual page."
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -7457,6 +7598,73 @@
         ],
         "title": "HealthStatus",
         "description": "Health status enumeration for system components."
+      },
+      "HelpArgument": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "required": {
+            "type": "boolean",
+            "title": "Required"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "required",
+          "description"
+        ],
+        "title": "HelpArgument",
+        "description": "One documented command argument."
+      },
+      "HelpDocs": {
+        "properties": {
+          "commands": {
+            "items": {
+              "$ref": "#/components/schemas/CommandDoc"
+            },
+            "type": "array",
+            "title": "Commands"
+          },
+          "guides": {
+            "items": {
+              "$ref": "#/components/schemas/GuideDoc"
+            },
+            "type": "array",
+            "title": "Guides"
+          }
+        },
+        "type": "object",
+        "required": [
+          "commands",
+          "guides"
+        ],
+        "title": "HelpDocs",
+        "description": "Everything the help system documents."
+      },
+      "HelpExample": {
+        "properties": {
+          "input": {
+            "type": "string",
+            "title": "Input"
+          },
+          "note": {
+            "type": "string",
+            "title": "Note"
+          }
+        },
+        "type": "object",
+        "required": [
+          "input"
+        ],
+        "title": "HelpExample",
+        "description": "One example invocation with an optional explanation."
       },
       "HolidayEntry": {
         "properties": {
@@ -12542,6 +12750,10 @@
     {
       "name": "item-catalog",
       "description": "Paginated item prototype catalog for players and admins."
+    },
+    {
+      "name": "help",
+      "description": "Command reference and guides for the Manual page; admin commands admin-only."
     },
     {
       "name": "rooms",

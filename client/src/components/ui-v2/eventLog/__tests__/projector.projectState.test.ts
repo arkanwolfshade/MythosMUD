@@ -255,6 +255,38 @@ describe('projector', () => {
       expect(state.player?.stats?.current_dp).toBe(95);
       expect(state.player?.stats?.lucidity).toBe(50);
     });
+
+    it('command_response flagged is_html becomes a complete-HTML message (help output)', () => {
+      const html = '<div class="help-entry"><p><strong>LOOK</strong></p></div>';
+      const state = projectState([
+        {
+          event_type: 'command_response',
+          timestamp: new Date().toISOString(),
+          sequence_number: 1,
+          data: { result: html, is_html: true },
+        },
+      ]);
+
+      const last = state.messages[state.messages.length - 1];
+      expect(last.isHtml).toBe(true);
+      expect(last.isCompleteHtml).toBe(true);
+      expect(last.text).toBe(html);
+    });
+
+    it('command_response without is_html is plain text and never marked complete HTML', () => {
+      const state = projectState([
+        {
+          event_type: 'command_response',
+          timestamp: new Date().toISOString(),
+          sequence_number: 1,
+          data: { result: 'You sit down.' },
+        },
+      ]);
+
+      const last = state.messages[state.messages.length - 1];
+      expect(last.isHtml).toBe(false);
+      expect('isCompleteHtml' in last).toBe(false);
+    });
   });
 
   describe('game_tick', () => {

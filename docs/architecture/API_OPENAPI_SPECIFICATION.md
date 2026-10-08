@@ -108,6 +108,7 @@ actually declare — do not hand-edit the rows between the markers below; edit `
 | game | Game state: enter game, movement, combat actions. |
 | containers | Unified container system: environmental, wearable, corpse storage. |
 | item-catalog | Paginated item prototype catalog for players and admins. |
+| help | Command reference and guides for the Manual page; admin commands admin-only. |
 | rooms | Room data and exploration. |
 | maps | ASCII map rendering and exploration views. |
 | realtime | WebSocket connection and real-time game events. |
