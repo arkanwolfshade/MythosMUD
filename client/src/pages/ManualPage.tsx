@@ -6,7 +6,7 @@
  * (e.g. /manual#look).
  */
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { SafeHtml } from '../components/common/SafeHtml';
 import { API_V1_BASE } from '../utils/config.js';
 import { logger } from '../utils/logger.js';
@@ -41,7 +41,7 @@ interface ManualDocs {
 
 const GUIDES_HEADING = 'Lore & Guidance';
 const NOT_AUTHENTICATED = 'Not authenticated. Please log in first.';
-const SUBHEAD_CLASS = 'help-subhead mt-3';
+const SUBHEAD_CLASS = 'help-subhead';
 
 function useManualDocs() {
   const [docs, setDocs] = useState<ManualDocs | null>(null);
@@ -117,13 +117,13 @@ function TopicLinks({ topics }: { topics: string[] }) {
 
 function Details({ lines }: { lines?: string[] }) {
   if (!lines || lines.length === 0) return null;
-  return <SafeHtml tag="div" className="help-entry mt-2" html={lines.join('\n')} />;
+  return <SafeHtml tag="div" className="help-entry" html={lines.join('\n')} />;
 }
 
 function SeeAlso({ topics }: { topics?: string[] }) {
   if (!topics || topics.length === 0) return null;
   return (
-    <p className="mt-3 text-sm">
+    <p className="manual-seealso">
       <span className="help-subhead">See also: </span>
       <TopicLinks topics={topics} />
     </p>
@@ -133,7 +133,7 @@ function SeeAlso({ topics }: { topics?: string[] }) {
 function CommandBody({ command }: { command: ManualCommand }) {
   return (
     <>
-      <p className="help-subhead mt-2">Usage</p>
+      <p className="help-subhead">Usage</p>
       <ul className="help-entry">
         {command.usage.map(usage => (
           <li key={usage}>
@@ -172,8 +172,8 @@ function CommandBody({ command }: { command: ManualCommand }) {
 
 function CommandEntry({ command }: { command: ManualCommand }) {
   return (
-    <article id={command.name} className="mb-6 scroll-mt-4">
-      <h3 className="help-title text-lg font-bold">
+    <article id={command.name} className="manual-entry scroll-mt-4">
+      <h3 className="help-title font-bold">
         {command.name.toUpperCase()}
         {command.aliases && command.aliases.length > 0 && (
           <span className="help-aliases text-sm font-normal"> (also: {command.aliases.join(', ')})</span>
@@ -190,8 +190,8 @@ function CommandEntry({ command }: { command: ManualCommand }) {
 
 function GuideEntry({ guide }: { guide: ManualGuide }) {
   return (
-    <article id={guide.id} className="mb-6 scroll-mt-4">
-      <h3 className="help-title text-lg font-bold">
+    <article id={guide.id} className="manual-entry scroll-mt-4">
+      <h3 className="help-title font-bold">
         {guide.title}
         <span className="help-aliases text-sm font-normal"> ({guide.group})</span>
       </h3>
@@ -211,7 +211,7 @@ function Contents({ docs }: { docs: ManualDocs }) {
     ...(docs.guides.length > 0 ? [[GUIDES_HEADING, docs.guides.map(g => g.id)] as [string, string[]]] : []),
   ];
   return (
-    <nav aria-label="Contents" className="mb-8 text-sm space-y-2">
+    <nav aria-label="Contents" className="manual-contents">
       {sections.map(([heading, topics]) => (
         <p key={heading}>
           <span className="help-subhead">{heading}: </span>
@@ -231,7 +231,7 @@ function ManualBody({ docs }: { docs: ManualDocs }) {
       <Contents docs={docs} />
       {groupBy(docs.commands, c => c.category).map(([category, items]) => (
         <section key={category} aria-label={category}>
-          <h2 className="text-xl font-bold mb-3 border-b border-mythos-terminal-border">{category}</h2>
+          <h2 className="manual-heading font-bold border-b border-mythos-terminal-border">{category}</h2>
           {items.map(command => (
             <CommandEntry key={command.name} command={command} />
           ))}
@@ -239,7 +239,7 @@ function ManualBody({ docs }: { docs: ManualDocs }) {
       ))}
       {docs.guides.length > 0 && (
         <section aria-label={GUIDES_HEADING}>
-          <h2 className="text-xl font-bold mb-3 border-b border-mythos-terminal-border">{GUIDES_HEADING}</h2>
+          <h2 className="manual-heading font-bold border-b border-mythos-terminal-border">{GUIDES_HEADING}</h2>
           {docs.guides.map(guide => (
             <GuideEntry key={guide.id} guide={guide} />
           ))}
@@ -252,15 +252,15 @@ function ManualBody({ docs }: { docs: ManualDocs }) {
 function ManualError({ error }: { error: string }) {
   return (
     <div className="flex items-center justify-center min-h-screen bg-mythos-terminal-background text-mythos-terminal-text">
-      <div className="text-center max-w-md p-6">
-        <h1 className="text-2xl font-bold mb-4 text-mythos-terminal-error">Error</h1>
-        <p className="mb-4">{error}</p>
+      <div className="manual-error text-center">
+        <h1 className="font-bold text-mythos-terminal-error">Error</h1>
+        <p>{error}</p>
         <button
           type="button"
           onClick={() => {
             window.location.href = '/';
           }}
-          className="px-4 py-2 bg-mythos-terminal-primary text-white rounded hover:bg-mythos-terminal-primary/80"
+          className="manual-button bg-mythos-terminal-primary text-white rounded hover:bg-mythos-terminal-primary/80"
         >
           Go to Game
         </button>
@@ -275,7 +275,14 @@ function ManualError({ error }: { error: string }) {
 export const ManualPage: React.FC = () => {
   const { docs, error } = useManualDocs();
   const [query, setQuery] = useState('');
+  const pageRef = useRef<HTMLDivElement>(null);
   const visible = useMemo(() => (docs ? filterDocs(docs, query) : null), [docs, query]);
+
+  // The app shell clips the document (html/body/#root are overflow: hidden), so this page scrolls itself. A scroll
+  // container only takes PageUp/PageDown/Space/arrow keys once focused, so focus it as soon as the page mounts.
+  useEffect(() => {
+    pageRef.current?.focus({ preventScroll: true });
+  }, []);
 
   useEffect(() => {
     if (!docs) return;
@@ -286,20 +293,20 @@ export const ManualPage: React.FC = () => {
   if (error && !docs) return <ManualError error={error} />;
 
   return (
-    <div className="min-h-screen bg-mythos-terminal-background text-mythos-terminal-text p-4 sm:p-6">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-2xl font-bold mb-1">Field Manual</h1>
-        <p className="text-mythos-terminal-text/70 text-sm mb-4">
+    <div ref={pageRef} tabIndex={-1} className="manual-page bg-mythos-terminal-background text-mythos-terminal-text">
+      <div className="manual-content">
+        <h1 className="font-bold">Field Manual</h1>
+        <p className="manual-intro text-mythos-terminal-text/70">
           Compiled for investigators by the Department of Occult Studies, Miskatonic University.
         </p>
-        <label className="block mb-6">
-          <span className="text-sm">Search the archives</span>
+        <label className="manual-search">
+          <span>Search the archives</span>
           <input
             type="search"
             value={query}
             onChange={event => setQuery(event.target.value)}
             placeholder="a command, an alias, a topic"
-            className="mt-1 w-full px-2 py-1 bg-mythos-terminal-background border border-mythos-terminal-border rounded"
+            className="bg-mythos-terminal-background border border-mythos-terminal-border rounded"
           />
         </label>
         {visible ? <ManualBody docs={visible} /> : <p className="opacity-70">Consulting the archives...</p>}

@@ -232,6 +232,76 @@ body {
   color: var(--color-mythos-terminal-secondary, #ff9800);
 }
 
+/*
+ * Manual page layout. The unlayered `*` reset below zeroes margin and padding, and unlayered CSS beats
+ * Tailwind's layered utilities, so spacing utilities have no effect app-wide. This page spaces itself
+ * with plain classes instead of changing that global reset.
+ */
+.manual-page {
+  /* html, body and #root are overflow: hidden, so the page is its own scroll container. */
+  height: 100vh;
+  overflow-y: auto;
+  padding: 1rem;
+}
+.manual-page:focus {
+  outline: none;
+}
+@media (min-width: 640px) {
+  .manual-page {
+    padding: 1.5rem;
+  }
+}
+.manual-content {
+  max-width: 56rem;
+  margin: 0 auto;
+}
+.manual-intro {
+  margin: 0.25rem 0 1rem;
+}
+.manual-search {
+  display: block;
+  margin-bottom: 1.5rem;
+}
+.manual-search input {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.35rem 0.5rem;
+}
+.manual-contents {
+  margin-bottom: 2rem;
+}
+.manual-contents p {
+  margin-bottom: 0.5rem;
+}
+.manual-heading {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.25rem;
+}
+.manual-entry {
+  margin-bottom: 1.75rem;
+}
+.manual-entry > p {
+  margin: 0.25rem 0;
+}
+.manual-entry .help-entry p {
+  margin: 0.5rem 0;
+}
+.manual-seealso {
+  margin-top: 0.75rem;
+}
+.manual-error {
+  max-width: 28rem;
+  padding: 1.5rem;
+}
+.manual-error h1,
+.manual-error p {
+  margin-bottom: 1rem;
+}
+.manual-button {
+  padding: 0.5rem 1rem;
+}
+
 /* Minimap popout: force fully opaque background so other panels do not show through */
 .panel-minimap-opaque,
 .panel-minimap-opaque > div,

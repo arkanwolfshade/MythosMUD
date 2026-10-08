@@ -166,6 +166,18 @@ describe('ManualPage', () => {
     expect(document.getElementById('lucidity')).not.toBeNull();
   });
 
+  it('takes focus on mount so the page scrolls with the keyboard straight away', async () => {
+    hoisted.getTokenMock.mockReturnValue('token');
+    vi.spyOn(global, 'fetch').mockResolvedValueOnce(mockJsonResponse(manualBody));
+
+    const { container } = render(<ManualPage />);
+    await screen.findByRole('heading', { name: 'LOOK' });
+
+    // The app shell clips the document, so this page is its own scroll container; a scroller only takes
+    // PageUp/PageDown/Space/arrow keys once focused.
+    expect(container.querySelector('.manual-page')).toHaveFocus();
+  });
+
   it('scrolls to the topic named in the URL hash once loaded', async () => {
     hoisted.getTokenMock.mockReturnValue('token');
     window.history.replaceState({}, '', '/manual#local');
