@@ -114,10 +114,13 @@ _send_welcome_event = send_welcome_event
 
 
 async def _cleanup_connection_and_clear_context(
-    player_id: uuid.UUID, player_id_str: str, connection_manager: "ConnectionManager"
+    player_id: uuid.UUID,
+    player_id_str: str,
+    connection_manager: "ConnectionManager",
+    connection_id: str | None = None,
 ) -> None:
     """Run connection cleanup and clear the bound logging context together."""
-    await _cleanup_connection(player_id, player_id_str, connection_manager)
+    await _cleanup_connection(player_id, player_id_str, connection_manager, connection_id)
     clear_request_context()
 
 
@@ -164,17 +167,17 @@ async def handle_websocket_connection(
 
     _, should_exit = await _setup_initial_connection_state(websocket, player_id, player_id_str, connection_manager)
     if should_exit:
-        await _cleanup_connection_and_clear_context(player_id, player_id_str, connection_manager)
+        await _cleanup_connection_and_clear_context(player_id, player_id_str, connection_manager, connection_id)
         return
 
     if not await _send_welcome_event(websocket, player_id, player_id_str):
-        await _cleanup_connection_and_clear_context(player_id, player_id_str, connection_manager)
+        await _cleanup_connection_and_clear_context(player_id, player_id_str, connection_manager, connection_id)
         return
 
     try:
         await _handle_websocket_message_loop(websocket, player_id, player_id_str, connection_manager)
     finally:
-        await _cleanup_connection_and_clear_context(player_id, player_id_str, connection_manager)
+        await _cleanup_connection_and_clear_context(player_id, player_id_str, connection_manager, connection_id)
 
 
 async def handle_websocket_message(websocket: WebSocket, player_id: str, message: "WebSocketInboundMessage") -> None:

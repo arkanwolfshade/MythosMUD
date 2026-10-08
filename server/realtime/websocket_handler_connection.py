@@ -32,14 +32,41 @@ class AsyncPersistenceRoomLookup(Protocol):  # pylint: disable=too-few-public-me
     def get_room_by_id(self, room_id: str) -> object | None: ...  # pylint: disable=missing-function-docstring
 
 
+def _is_superseded(connection_id: str | None, player_id: uuid.UUID, connection_manager: "ConnectionManager") -> bool:
+    """True when this handler's socket is no longer registered but the player has a newer live one.
+
+    A replaced session's old handler can finish after the new socket has registered (#610). Its teardown
+    is player-scoped, so running it would close the new socket and start a grace period for a player who
+    is connected. Without a connection id (legacy callers) nothing is considered superseded.
+    """
+    if connection_id is None:
+        return False
+    registered = connection_id in connection_manager.player_websockets.get(player_id, [])
+    return not registered and connection_manager.has_websocket_connection(player_id)
+
+
 async def cleanup_websocket_connection(
-    player_id: uuid.UUID, _player_id_str: str, connection_manager: "ConnectionManager"
+    player_id: uuid.UUID,
+    _player_id_str: str,
+    connection_manager: "ConnectionManager",
+    connection_id: str | None = None,
 ) -> None:
     """Clean up connection, follow state, and party state on disconnect.
+
+    ``connection_id`` is the socket whose handler is ending. If a newer session has already replaced it, the
+    player is still live and this stale handler must not tear anything down (see ``_is_superseded``).
 
     Mutes are deliberately left alone: they are persisted (#681) and indexed for all players,
     and dropping them on disconnect let a globally muted player reconnect to escape the mute.
     """
+    if _is_superseded(connection_id, player_id, connection_manager):
+        logger.info(
+            "Skipping disconnect cleanup for superseded connection",
+            player_id=player_id,
+            connection_id=connection_id,
+        )
+        return
+
     try:
         from ..container import get_container
 
