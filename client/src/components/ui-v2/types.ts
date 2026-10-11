@@ -1,6 +1,8 @@
 // TypeScript interfaces for UI v2 panel system
 // Type definitions for UI v2 components
 
+import type { MessageCategory } from '../../types/messageCategory';
+
 export interface Player {
   /** Character/player UUID from server (player_id). Used for Skills tab URL, etc. */
   id?: string;
@@ -82,6 +84,8 @@ export interface ChatMessage {
   timestamp: string;
   isHtml: boolean;
   isCompleteHtml?: boolean;
+  /** Server-assigned semantic category; drives presentation and panel routing (replaces `messageType`). */
+  category?: MessageCategory;
   messageType?: string;
   channel?: string;
   type?: string;
