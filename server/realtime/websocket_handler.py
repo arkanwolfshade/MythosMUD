@@ -8,9 +8,9 @@ process_websocket_command, or handle_chat_message.
 """
 
 # pyright: reportImportCycles=false
-# Reason: websocket_handler_connection.py and websocket_handler_message_loop.py were extracted
-# from this module for Lizard file-nloc limits, and both import back `websocket_handler`
-# (deferred to function scope, so no runtime circular-import) to reach coordinator entry points.
+# Reason: websocket_handler_message_loop.py was extracted from this module for Lizard file-nloc
+# limits, and imports back `websocket_handler` (deferred to function scope, so no runtime
+# circular-import) to reach coordinator entry points.
 # basedpyright still flags the structural cycle regardless of the deferred import.
 
 import uuid

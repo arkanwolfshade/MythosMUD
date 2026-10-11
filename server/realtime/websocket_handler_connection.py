@@ -13,6 +13,12 @@ from structlog.stdlib import BoundLogger
 from ..models.room import Room
 from ..structured_logging.enhanced_logging_config import get_logger
 from .envelope import build_event
+from .websocket_initial_state import (
+    check_and_send_death_notification,
+    check_and_send_delirium_notification,
+    send_initial_game_state,
+    send_initial_room_state,
+)
 
 if TYPE_CHECKING:
     from .connection_manager import ConnectionManager
@@ -100,10 +106,8 @@ async def setup_initial_connection_state(
     Returns:
         Tuple of (canonical_room_id, should_exit)
     """
-    from . import websocket_handler as ws_handler
-
     try:
-        canonical_room_id, should_exit = await ws_handler.send_initial_game_state(
+        canonical_room_id, should_exit = await send_initial_game_state(
             websocket, player_id, player_id_str, connection_manager
         )
         if should_exit:
@@ -115,7 +119,7 @@ async def setup_initial_connection_state(
                 ap = cast(AsyncPersistenceRoomLookup, ap_raw)
                 room = ap.get_room_by_id(canonical_room_id)
                 if room is not None:
-                    await ws_handler.check_and_send_death_notification(
+                    await check_and_send_death_notification(
                         websocket,
                         player_id,
                         player_id_str,
@@ -123,8 +127,8 @@ async def setup_initial_connection_state(
                         cast(Room | dict[str, object], room),
                         connection_manager,
                     )
-                    await ws_handler.check_and_send_delirium_notification(player_id, player_id_str)
-                    await ws_handler.send_initial_room_state(
+                    await check_and_send_delirium_notification(player_id, player_id_str)
+                    await send_initial_room_state(
                         websocket, player_id, player_id_str, canonical_room_id, connection_manager
                     )
 
