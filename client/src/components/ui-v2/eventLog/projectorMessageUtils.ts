@@ -1,5 +1,6 @@
 // Message-building helpers for the projector (split from projector.ts for file-nloc)
 
+import type { MessageCategory } from '../../../types/messageCategory';
 import type { GameEvent } from '../eventHandlers/types';
 import type { ChatMessage } from '../types';
 import { sanitizeChatMessageForState } from '../utils/messageUtils';
@@ -19,12 +20,27 @@ function channelToMessageType(channel: string): 'whisper' | 'shout' | 'emote' | 
 export function buildChatMessage(
   text: string,
   timestamp: string,
-  opts: { isHtml?: boolean; isCompleteHtml?: boolean; messageType?: string; channel?: string } = {}
+  opts: {
+    isHtml?: boolean;
+    isCompleteHtml?: boolean;
+    messageType?: string;
+    channel?: string;
+    category?: MessageCategory;
+  } = {}
 ): ChatMessage {
-  const { messageType = 'system', channel = 'game', isHtml = false, isCompleteHtml = false } = opts;
+  const { messageType = 'system', channel = 'game', isHtml = false, isCompleteHtml = false, category } = opts;
   const type = channelToMessageType(channel);
   // isCompleteHtml: text is finished markup, so panels must not run it through the ANSI converter (which escapes it).
-  return { text, timestamp, isHtml, messageType, channel, type, ...(isCompleteHtml ? { isCompleteHtml } : {}) };
+  return {
+    text,
+    timestamp,
+    isHtml,
+    messageType,
+    channel,
+    type,
+    ...(category ? { category } : {}),
+    ...(isCompleteHtml ? { isCompleteHtml } : {}),
+  };
 }
 
 export function appendMessage(prevMessages: ChatMessage[], message: ChatMessage): ChatMessage[] {
