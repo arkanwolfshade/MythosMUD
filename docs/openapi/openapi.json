@@ -5873,10 +5873,16 @@
           "name",
           "category",
           "summary",
-          "usage"
+          "usage",
+          "aliases",
+          "admin_only",
+          "arguments",
+          "examples",
+          "see_also",
+          "details_html"
         ],
         "title": "CommandDoc",
-        "description": "Documentation for one player-facing command."
+        "description": "Documentation for one player-facing command. Optional authored fields are always present (empty by default)."
       },
       "CommandRequest": {
         "properties": {
@@ -7413,10 +7419,12 @@
           "id",
           "title",
           "group",
-          "summary"
+          "summary",
+          "see_also",
+          "details_html"
         ],
         "title": "GuideDoc",
-        "description": "A concept guide, reachable as ``help <id>`` and on the Manual page."
+        "description": "A concept guide, reachable as ``help <id>`` and on the Manual page. Optional fields are always present."
       },
       "HTTPValidationError": {
         "properties": {
