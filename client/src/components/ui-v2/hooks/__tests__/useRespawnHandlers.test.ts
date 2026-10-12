@@ -81,7 +81,10 @@ describe('useRespawnHandlers', () => {
         expect(mockAppendLocalEvent).toHaveBeenCalledWith(
           expect.objectContaining({
             event_type: 'client_message',
-            data: expect.objectContaining({ text: expect.stringContaining('Respawn failed'), messageType: 'error' }),
+            data: expect.objectContaining({
+              text: expect.stringContaining('Respawn failed'),
+              category: 'system.error',
+            }),
           })
         );
       });
@@ -98,7 +101,7 @@ describe('useRespawnHandlers', () => {
         expect(mockSetIsRespawning).toHaveBeenCalledWith(true);
         expect(mockSetIsRespawning).toHaveBeenCalledWith(false);
         expect(mockAppendLocalEvent).toHaveBeenCalledWith(
-          expect.objectContaining({ data: expect.objectContaining({ messageType: 'error' }) })
+          expect.objectContaining({ data: expect.objectContaining({ category: 'system.error' }) })
         );
       });
     });

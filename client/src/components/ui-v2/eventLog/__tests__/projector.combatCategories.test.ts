@@ -1,6 +1,6 @@
 /**
  * Combat / status events carry a server-assigned `data.category`; the projector passes it through to the
- * message it appends. The legacy messageType / channel stay exactly as before (additive wave).
+ * message it appends. Combat lines are not chat, so they carry no channel.
  */
 /// <reference lib="es2020" />
 /// <reference types="vitest/globals" />
@@ -13,15 +13,14 @@ function event(event_type: string, data: Record<string, unknown>): GameEvent {
 }
 
 describe('projector combat and status categories', () => {
-  it('npc_attacked passes combat.hit through, keeping the legacy fields', () => {
+  it('npc_attacked passes combat.hit through and carries no channel', () => {
     const next = projectEvent(
       getInitialGameState(),
       event('npc_attacked', { npc_name: 'Ghoul', damage: 3, category: 'combat.hit' })
     );
     expect(next.messages).toHaveLength(1);
     expect(next.messages[0].category).toBe('combat.hit');
-    expect(next.messages[0].messageType).toBe('system');
-    expect(next.messages[0].channel).toBe('game-log');
+    expect(next.messages[0].channel).toBeUndefined();
   });
 
   it('npc_took_damage passes combat.hit through', () => {
@@ -54,7 +53,6 @@ describe('projector combat and status categories', () => {
         event(eventType, { message: 'The Ghoul turns its gaze.', category: 'combat.status' })
       );
       expect(next.messages[0].category).toBe('combat.status');
-      expect(next.messages[0].messageType).toBe('combat');
     }
   );
 
@@ -75,8 +73,8 @@ describe('projector combat and status categories', () => {
     expect(next.rescueStatus).toBeTruthy();
   });
 
-  it('leaves category off when the server sent none (legacy payloads)', () => {
+  it('falls back to command.output when the server sent no category', () => {
     const next = projectEvent(getInitialGameState(), event('npc_attacked', { npc_name: 'Ghoul', damage: 3 }));
-    expect(next.messages[0]).not.toHaveProperty('category');
+    expect(next.messages[0].category).toBe('command.output');
   });
 });

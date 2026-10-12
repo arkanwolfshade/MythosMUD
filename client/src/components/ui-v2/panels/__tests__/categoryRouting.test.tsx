@@ -1,7 +1,7 @@
 /**
  * Category-aware presentation and routing for GameInfoPanel and ChatHistoryPanel, plus the
- * room panels that share the cat-* vocabulary. Legacy (category-absent) behavior is covered by
- * the existing suites; the fallback cases here pin that it is unchanged.
+ * room panels that share the cat-* vocabulary. Every message carries a server category; there is no
+ * messageType path any more.
  */
 
 import { fireEvent, render, screen } from '@testing-library/react';
@@ -15,17 +15,8 @@ import { GameInfoPanel } from '../GameInfoPanel';
 import { LocationPanel } from '../LocationPanel';
 import { RoomDescriptionPanel } from '../RoomDescriptionPanel';
 
-function msg(text: string, category: MessageCategory | undefined, extra: Partial<ChatMessage> = {}): ChatMessage {
-  return {
-    text,
-    timestamp: new Date().toISOString(),
-    isHtml: false,
-    // Mirrors buildChatMessage's default: categorized messages still carry the legacy fields.
-    messageType: 'system',
-    channel: 'game',
-    ...(category ? { category } : {}),
-    ...extra,
-  };
+function msg(text: string, category: MessageCategory, extra: Partial<ChatMessage> = {}): ChatMessage {
+  return { text, timestamp: new Date().toISOString(), isHtml: false, category, ...extra };
 }
 
 function renderChat(messages: ChatMessage[], corruption = 0) {
@@ -83,12 +74,11 @@ describe('GameInfoPanel category routing', () => {
     }
   });
 
-  it('applies the category class instead of the legacy messageType class', () => {
-    render(<GameInfoPanel messages={[msg('Hurt!', 'combat.hurt'), msg('Plain', undefined)]} />);
+  it('applies the category class', () => {
+    render(<GameInfoPanel messages={[msg('Hurt!', 'combat.hurt')]} />);
     const hurt = textBox('Hurt!');
     expect(hurt.className).toContain('cat cat-combat cat-combat-hurt cat-reg-alert');
     expect(hurt.className).not.toContain('text-mythos-terminal');
-    expect(textBox('Plain').className).not.toContain('cat-');
   });
 
   it('renders a room name with the heading register', () => {
@@ -96,27 +86,14 @@ describe('GameInfoPanel category routing', () => {
     expect(textBox('Sanitarium Foyer').className).toContain('cat-reg-heading');
   });
 
-  it('falls back to the legacy messageType path when category is absent', () => {
-    const legacy: ChatMessage[] = [
-      msg('legacy chat', undefined, { messageType: 'chat', channel: 'global' }),
-      msg('legacy say', undefined, { messageType: 'chat', channel: 'say' }),
-      msg('legacy error', undefined, { messageType: 'error' }),
-    ];
-    render(<GameInfoPanel messages={legacy} />);
-    expect(screen.queryByText('legacy chat')).not.toBeInTheDocument();
-    expect(screen.getByText('legacy say')).toBeInTheDocument();
-    expect(textBox('legacy error').className).toBe('flex-1 text-mythos-terminal-error font-bold');
-  });
-
-  it('uses the legacy class for an unknown category string', () => {
+  it('uses the default style for an unknown category string', () => {
     vi.spyOn(console, 'warn').mockImplementation(() => undefined);
-    const unknown = msg('mystery', undefined, { messageType: 'error' });
-    (unknown as { category?: string }).category = 'lore.tome';
+    const unknown = { ...msg('mystery', 'command.output'), category: 'lore.tome' } as unknown as ChatMessage;
     render(<GameInfoPanel messages={[unknown]} />);
-    expect(textBox('mystery').className).toBe('flex-1 text-mythos-terminal-error font-bold');
+    expect(textBox('mystery').className).toBe('flex-1 text-mythos-terminal-text');
   });
 
-  it('filters categorized messages through the dropdown', () => {
+  it('filters categorized messages through the domain dropdown', () => {
     render(
       <GameInfoPanel messages={[msg('boom', 'combat.hit'), msg('oops', 'system.error'), msg('hello', 'chat.say')]} />
     );
@@ -124,9 +101,12 @@ describe('GameInfoPanel category routing', () => {
     fireEvent.change(select, { target: { value: 'combat' } });
     expect(screen.getByText('boom')).toBeInTheDocument();
     expect(screen.queryByText('oops')).not.toBeInTheDocument();
-    fireEvent.change(select, { target: { value: 'error' } });
+    fireEvent.change(select, { target: { value: 'system' } });
     expect(screen.getByText('oops')).toBeInTheDocument();
     expect(screen.queryByText('boom')).not.toBeInTheDocument();
+    fireEvent.change(select, { target: { value: 'chat' } });
+    expect(screen.getByText('hello')).toBeInTheDocument();
+    expect(screen.queryByText('oops')).not.toBeInTheDocument();
   });
 });
 
@@ -148,12 +128,6 @@ describe('ChatHistoryPanel category routing', () => {
     }
   });
 
-  it('accepts a categorized chat line whose messageType is the buildChatMessage default', () => {
-    // Legacy routing would drop this (messageType 'system'); the category wins.
-    renderChat([msg('categorized', 'chat.local', { messageType: 'system', channel: 'local' })]);
-    expect(screen.getByText('categorized')).toBeInTheDocument();
-  });
-
   it('still filters by message.channel', () => {
     renderChat([msg('in say', 'chat.say', { channel: 'say' }), msg('in global', 'chat.global', { channel: 'global' })]);
     fireEvent.change(screen.getByTestId('channel-selector'), { target: { value: 'global' } });
@@ -161,17 +135,14 @@ describe('ChatHistoryPanel category routing', () => {
     expect(screen.queryByText('in say')).not.toBeInTheDocument();
   });
 
-  it('keeps legacy messages on the legacy path', () => {
-    renderChat([
-      msg('legacy chat', undefined, { messageType: 'chat', channel: 'say' }),
-      msg('legacy system', undefined, { messageType: 'system' }),
-    ]);
-    expect(screen.getByText('legacy chat')).toBeInTheDocument();
-    expect(screen.queryByText('legacy system')).not.toBeInTheDocument();
-    expect(textBox('legacy chat').className).toContain('mythos-corruption-text');
+  it('falls back to the category suffix when a chat line carries no channel', () => {
+    renderChat([msg('in whisper', 'chat.whisper'), msg('in say', 'chat.say')]);
+    fireEvent.change(screen.getByTestId('channel-selector'), { target: { value: 'whisper' } });
+    expect(screen.getByText('in whisper')).toBeInTheDocument();
+    expect(screen.queryByText('in say')).not.toBeInTheDocument();
   });
 
-  it('excludes system.* from the all-messages history view, like legacy system lines', () => {
+  it('excludes system.* from the all-messages history view', () => {
     renderChat([
       msg('hello', 'chat.say', { channel: 'say' }),
       msg('sysnote', 'system.info'),

@@ -63,8 +63,10 @@ from the text.
 
 - **Source of truth:** `server/constants/message_category.py` (`MessageCategory`). `client/src/types/messageCategory.ts`
   mirrors it by hand; `server/tests/unit/constants/test_message_category.py` fails if the two drift.
-- **Reserved namespaces** (no values yet): `lore.*`, `item.*`, `npc.*`, `command.misfire`. Unknown categories fall back
-  to the default style.
+- **Reserved namespaces** (no values yet): `lore.*`, `item.*`, `npc.*`, `command.misfire`.
+- **Missing or unknown category:** the client reads every `data.category` through one validating helper
+  (`readCategory` in `projectorMessageUtils.ts`). A missing or unknown value falls back to `command.output`, with one
+  development-only warning per event type, so a server omission is visible rather than silently mis-styled.
 - **Wire shape:** `data.category` is a string. `combat_attack` is the one exception: its recipients see different
   lines, so it carries `data.categories`, a map keyed exactly like `data.messages`
   (`attack_attacker` / `attack_defender` / `attack_other`), each value a category from that recipient's perspective.
@@ -76,8 +78,9 @@ from the text.
 - **Posture self-lines** (`posture_message` on `player_update`, `player_dp_updated`, `player_dp_decay`) are tagged by
   `attach_posture_self_message` in `server/realtime/posture_notify.py`: `room.movement`, except the DP-decay collapse
   line, which is `status.health`.
-- **Client-authored lines** (`client_message`, time and tick notices, `player_entered_game` / `player_left_game`) get a
-  fixed category per event type in `projectorHandlersMessages.ts` / `projectorHandlersState.ts`.
+- **Client-authored lines:** `client_message` carries its own `data.category` (`buildLocalMessageEvent` defaults it to
+  `system.info`). Time and tick notices and `player_entered_game` / `player_left_game` get a fixed category per event
+  type in `projectorHandlersMessages.ts` / `projectorHandlersState.ts`.
 - **Invariant:** `server/tests/unit/realtime/test_message_category_invariants.py` drives every text emitter and checks
   the category, and cross-checks the list against the projector handlers above.
 
@@ -116,10 +119,10 @@ Never sent by the server -- the `client_` prefix marks them as local. See
 `eventLog/projectorMessageUtils.ts` (`buildLocalMessageEvent`/`buildLocalClearMessagesEvent`) and
 `.cursor/rules/server-authority.mdc`.
 
-| event_type                | Description                               | data shape               |
-| ------------------------- | ----------------------------------------- | ------------------------ |
-| `client_message`          | Local UI message (error, connection lost) | `{ text, messageType? }` |
-| `client_messages_cleared` | User clicked "Clear messages"             | `{}`                     |
+| event_type                | Description                               | data shape            |
+| ------------------------- | ----------------------------------------- | --------------------- |
+| `client_message`          | Local UI message (error, connection lost) | `{ text, category? }` |
+| `client_messages_cleared` | User clicked "Clear messages"             | `{}`                  |
 
 ## Common event envelope
 

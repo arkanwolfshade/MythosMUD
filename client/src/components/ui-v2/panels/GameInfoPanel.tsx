@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ansiToHtmlWithBreaks } from '../../../utils/ansiToHtml';
 import { SafeHtml } from '../../common/SafeHtml';
 import { EldritchIcon, MythosIcons, TerminalButton } from '../primitives';
 import type { ChatMessage } from '../types';
@@ -13,27 +12,24 @@ interface GameInfoPanelProps {
   inCombat?: boolean;
 }
 
-/** Room-scoped channels mirrored in Game Info so E2E and players see cross-player delivery. */
-const GAME_INFO_CHAT_CHANNELS = new Set(['party', 'local', 'say']);
-
-function chatMessageVisibleInGameInfo(channel: string | undefined): boolean {
-  return channel != null && GAME_INFO_CHAT_CHANNELS.has(channel);
-}
+/** Room-scoped chat categories mirrored in Game Info so E2E and players see cross-player delivery. */
+const GAME_INFO_CHAT_CATEGORIES: ReadonlySet<string> = new Set(['chat.say', 'chat.local', 'chat.party']);
 
 /** Category routing: every category shows in Game Info except chat.*, of which only say/local/party are mirrored. */
 function categoryVisibleInGameInfo(category: string): boolean {
-  if (!category.startsWith('chat.')) return true;
-  return chatMessageVisibleInGameInfo(category.slice('chat.'.length));
+  return !category.startsWith('chat.') || GAME_INFO_CHAT_CATEGORIES.has(category);
 }
 
-/** The dropdown's legacy filter keys (system/error/combat/emote/...) for a categorized message. */
-function filterKeyForCategory(category: string): string | undefined {
-  const [domain, kind] = category.split('.');
-  if (domain === 'combat') return 'combat';
-  if (domain === 'system') return kind === 'error' ? 'error' : 'system';
-  if (domain === 'chat') return kind;
-  return undefined;
-}
+/** Dropdown filter: one entry per category domain (the part before the dot). */
+const MESSAGE_FILTERS: ReadonlyArray<{ value: string; label: string }> = [
+  { value: 'all', label: 'All Messages' },
+  { value: 'combat', label: 'Combat' },
+  { value: 'status', label: 'Status' },
+  { value: 'system', label: 'System' },
+  { value: 'room', label: 'Room' },
+  { value: 'chat', label: 'Chat' },
+  { value: 'command', label: 'Commands' },
+];
 
 // Simplified game info panel without search history and time filters
 // Based on findings from "Event Logging in Non-Euclidean Systems" - Dr. Armitage, 1928
@@ -52,25 +48,6 @@ export const GameInfoPanel: React.FC<GameInfoPanelProps> = ({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const getMessageClass = (messageType?: string): string => {
-    switch (messageType) {
-      case 'emote':
-        return 'text-mythos-terminal-primary italic';
-      case 'system':
-        return 'text-mythos-terminal-warning font-bold';
-      case 'error':
-        return 'text-mythos-terminal-error font-bold';
-      case 'whisper':
-        return 'text-mythos-terminal-secondary italic';
-      case 'shout':
-        return 'text-mythos-terminal-warning font-bold';
-      case 'combat':
-        return 'text-mythos-terminal-warning font-bold';
-      default:
-        return 'text-mythos-terminal-text';
-    }
-  };
-
   const formatTimestamp = (timestamp: string): string => {
     try {
       const date = new Date(timestamp);
@@ -87,16 +64,11 @@ export const GameInfoPanel: React.FC<GameInfoPanelProps> = ({
 
   // Filter messages - simplified (no time filter, no search history)
   const filteredMessages = messages.filter(message => {
-    // Exclude chat from Game Info except room-scoped channels (E2E asserts on [data-message-text] here).
-    if (message.category) {
-      if (!categoryVisibleInGameInfo(message.category)) return false;
-    } else if (message.messageType === 'chat' && !chatMessageVisibleInGameInfo(message.channel)) {
-      return false;
-    }
+    // Exclude chat from Game Info except room-scoped categories (E2E asserts on [data-message-text] here).
+    if (!categoryVisibleInGameInfo(message.category)) return false;
 
-    // Apply message type filter
-    const filterKey = message.category ? filterKeyForCategory(message.category) : message.messageType;
-    if (messageFilter !== 'all' && filterKey !== messageFilter) {
+    // Apply category-domain filter
+    if (messageFilter !== 'all' && message.category.split('.')[0] !== messageFilter) {
       return false;
     }
 
@@ -166,7 +138,7 @@ export const GameInfoPanel: React.FC<GameInfoPanelProps> = ({
         </div>
       </div>
 
-      {/* Simplified Filters - Only message type and search */}
+      {/* Simplified Filters - Only category domain and search */}
       <div className="p-3 border-b border-gray-700 bg-mythos-terminal-background space-y-2">
         <div className="flex space-x-2">
           <select
@@ -176,13 +148,11 @@ export const GameInfoPanel: React.FC<GameInfoPanelProps> = ({
             }}
             className="bg-mythos-terminal-surface border border-gray-600 rounded px-2 py-1 text-xs"
           >
-            <option value="all">All Messages</option>
-            <option value="system">System</option>
-            <option value="emote">Emotes</option>
-            <option value="whisper">Whispers</option>
-            <option value="shout">Shouts</option>
-            <option value="error">Errors</option>
-            <option value="combat">Combat</option>
+            {MESSAGE_FILTERS.map(filter => (
+              <option key={filter.value} value={filter.value}>
+                {filter.label}
+              </option>
+            ))}
           </select>
           <input
             type="text"
@@ -211,16 +181,13 @@ export const GameInfoPanel: React.FC<GameInfoPanelProps> = ({
                   {formatTimestamp(message.timestamp)}
                 </span>
                 <div
-                  className={`flex-1 ${getMessageCategoryClass(message.category) ?? getMessageClass(message.messageType)}`}
+                  className={`flex-1 ${getMessageCategoryClass(message.category) ?? 'text-mythos-terminal-text'}`}
                   data-message-text={message.text}
                 >
                   {message.isHtml ? (
-                    <SafeHtml
-                      html={message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text)}
-                      tag="div"
-                    />
+                    <SafeHtml html={message.text} tag="div" />
                   ) : (
-                    <span>{message.text}</span>
+                    <span style={{ whiteSpace: 'pre-wrap' }}>{message.text}</span>
                   )}
                 </div>
               </div>

@@ -51,7 +51,9 @@ async function runDeliriumRespawn(params: UseRespawnHandlersParams): Promise<voi
         status: result.status,
         error: result.raw,
       });
-      appendLocalEvent(buildLocalMessageEvent(`Delirium respawn failed: ${apiErrorDetail(result.raw)}`, 'error'));
+      appendLocalEvent(
+        buildLocalMessageEvent(`Delirium respawn failed: ${apiErrorDetail(result.raw)}`, 'system.error')
+      );
       setIsDeliriumRespawning(false);
       return;
     }
@@ -69,7 +71,7 @@ async function runDeliriumRespawn(params: UseRespawnHandlersParams): Promise<voi
   } catch (error) {
     logger.error('GameClientV2Container', 'Error calling delirium respawn API', { error });
     appendLocalEvent(
-      buildLocalMessageEvent('Failed to respawn from delirium due to network error. Please try again.', 'error')
+      buildLocalMessageEvent('Failed to respawn from delirium due to network error. Please try again.', 'system.error')
     );
     setIsDeliriumRespawning(false);
   }
@@ -84,7 +86,7 @@ async function runDeathRespawn(params: UseRespawnHandlersParams): Promise<void> 
     const result = await postRespawn(authToken, '/api/players/respawn');
     if (!result.ok) {
       logger.error('GameClientV2Container', 'Respawn failed', { status: result.status, error: result.raw });
-      appendLocalEvent(buildLocalMessageEvent(`Respawn failed: ${apiErrorDetail(result.raw)}`, 'error'));
+      appendLocalEvent(buildLocalMessageEvent(`Respawn failed: ${apiErrorDetail(result.raw)}`, 'system.error'));
       setIsRespawning(false);
       return;
     }
@@ -97,7 +99,9 @@ async function runDeathRespawn(params: UseRespawnHandlersParams): Promise<void> 
     setIsRespawning(false);
   } catch (error) {
     logger.error('GameClientV2Container', 'Error calling respawn API', { error });
-    appendLocalEvent(buildLocalMessageEvent('Failed to respawn due to network error. Please try again.', 'error'));
+    appendLocalEvent(
+      buildLocalMessageEvent('Failed to respawn due to network error. Please try again.', 'system.error')
+    );
     setIsRespawning(false);
   }
 }

@@ -5,22 +5,10 @@
 /// <reference types="vitest/globals" />
 
 import type { GameEvent } from '../../eventHandlers/types';
-import type { ChatMessage } from '../../types';
 import type { GameState } from '../../utils/stateUpdateUtils';
 import { getInitialGameState, projectEvent, projectState } from '../projector';
 import type { EventLog } from '../types';
 
-vi.mock('../../utils/messageUtils', () => ({
-  sanitizeChatMessageForState: (msg: unknown) => {
-    const m = msg as ChatMessage;
-    return {
-      ...m,
-      messageType: m.messageType ?? 'system',
-      channel: m.channel ?? 'game',
-      type: m.type ?? 'say',
-    };
-  },
-}));
 describe('projector', () => {
   describe('getInitialGameState', () => {
     it('returns initial state with null player, null room, empty messages', () => {
@@ -326,12 +314,12 @@ describe('projector', () => {
         event_type: 'combat_target_switch',
         timestamp: new Date().toISOString(),
         sequence_number: 1,
-        data: { message: 'The horror turns its gaze to Soandso.' },
+        data: { message: 'The horror turns its gaze to Soandso.', category: 'combat.status' },
       };
       const next = projectEvent(prev, event);
       expect(next.messages).toHaveLength(1);
       expect(next.messages[0].text).toBe('The horror turns its gaze to Soandso.');
-      expect(next.messages[0].messageType).toBe('combat');
+      expect(next.messages[0].category).toBe('combat.status');
     });
 
     it('combat_participant_joined appends the room join line as a combat message (#833)', () => {
@@ -340,12 +328,12 @@ describe('projector', () => {
         event_type: 'combat_participant_joined',
         timestamp: new Date().toISOString(),
         sequence_number: 1,
-        data: { message: 'Ashcroft joins the fight against the ghoul!' },
+        data: { message: 'Ashcroft joins the fight against the ghoul!', category: 'combat.status' },
       };
       const next = projectEvent(prev, event);
       expect(next.messages).toHaveLength(1);
       expect(next.messages[0].text).toBe('Ashcroft joins the fight against the ghoul!');
-      expect(next.messages[0].messageType).toBe('combat');
+      expect(next.messages[0].category).toBe('combat.status');
     });
 
     it('combat_taunt appends the taunt result line as a combat message (#833)', () => {
@@ -354,12 +342,12 @@ describe('projector', () => {
         event_type: 'combat_taunt',
         timestamp: new Date().toISOString(),
         sequence_number: 1,
-        data: { message: 'Ashcroft bellows a challenge at the ghoul!' },
+        data: { message: 'Ashcroft bellows a challenge at the ghoul!', category: 'combat.status' },
       };
       const next = projectEvent(prev, event);
       expect(next.messages).toHaveLength(1);
       expect(next.messages[0].text).toBe('Ashcroft bellows a challenge at the ghoul!');
-      expect(next.messages[0].messageType).toBe('combat');
+      expect(next.messages[0].category).toBe('combat.status');
     });
 
     it('combat_protect appends the protect cast and intercept lines as combat messages (#991)', () => {
@@ -368,19 +356,19 @@ describe('projector', () => {
         event_type: 'combat_protect',
         timestamp: new Date().toISOString(),
         sequence_number: 1,
-        data: { message: 'Ashcroft throws themselves in front of Pickman!' },
+        data: { message: 'Ashcroft throws themselves in front of Pickman!', category: 'combat.status' },
       };
       const intercept: GameEvent = {
         event_type: 'combat_protect',
         timestamp: new Date().toISOString(),
         sequence_number: 2,
-        data: { message: 'Ashcroft takes the blow meant for Pickman!' },
+        data: { message: 'Ashcroft takes the blow meant for Pickman!', category: 'combat.status' },
       };
       const next = projectEvent(projectEvent(prev, cast), intercept);
       expect(next.messages).toHaveLength(2);
       expect(next.messages[0].text).toBe('Ashcroft throws themselves in front of Pickman!');
       expect(next.messages[1].text).toBe('Ashcroft takes the blow meant for Pickman!');
-      expect(next.messages.every(m => m.messageType === 'combat')).toBe(true);
+      expect(next.messages.every(m => m.category === 'combat.status')).toBe(true);
     });
 
     it('player_respawned merges onto previous player (#776: thin RespawnPlayerData must not wipe stats)', () => {
@@ -751,7 +739,7 @@ describe('projector', () => {
         event_type: 'client_message',
         timestamp: new Date().toISOString(),
         sequence_number: 0,
-        data: { text: 'Connection lost.', messageType: 'system' },
+        data: { text: 'Connection lost.', category: 'system.info' },
       });
       expect(withMessage.messages).toHaveLength(1);
 

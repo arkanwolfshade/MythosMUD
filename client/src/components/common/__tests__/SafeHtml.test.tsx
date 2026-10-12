@@ -120,8 +120,7 @@ describe('SafeHtml', () => {
     expect(div?.getAttribute('style')).toBeNull();
   });
 
-  it('should handle ANSI-to-HTML converted content', () => {
-    // Simulate content from ansiToHtmlWithBreaks
+  it('should strip inline style attributes from finished HTML', () => {
     const ansiHtml = '<span style="color: #ff4444">Red text</span>';
     // nosemgrep: typescript.react.security.audit.dangerouslysetinnerhtml.dangerouslysetinnerhtml
     const { container } = render(<SafeHtml html={ansiHtml} />);

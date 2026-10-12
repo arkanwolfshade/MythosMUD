@@ -15,7 +15,7 @@ function ev(event_type: string, data: Record<string, unknown>, timestamp = TS): 
   return { event_type, timestamp, sequence_number: 1, data };
 }
 
-function categories(state: GameState): (string | undefined)[] {
+function categories(state: GameState): string[] {
   return state.messages.map(m => m.category);
 }
 
@@ -23,18 +23,17 @@ describe('server-tagged room and system events', () => {
   it('room_message passes data.category through', () => {
     const next = projectEvent(
       getInitialGameState(),
-      ev('room_message', { message: 'Rat left north.', message_type: 'system', category: 'room.movement' })
+      ev('room_message', { message: 'Rat left north.', category: 'room.movement' })
     );
     expect(categories(next)).toEqual(['room.movement']);
   });
 
-  it('room_message without a category still renders (legacy path)', () => {
+  it('room_message without a category falls back to command.output', () => {
     const next = projectEvent(getInitialGameState(), ev('room_message', { message: 'A rat scurries in.' }));
-    expect(next.messages).toHaveLength(1);
-    expect(next.messages[0].category).toBeUndefined();
+    expect(categories(next)).toEqual(['command.output']);
   });
 
-  it('keeps the 2 s duplicate filter for room.movement without the legacy system message_type', () => {
+  it('keeps the 2 s duplicate filter for room.movement, keyed on the category alone', () => {
     const event = (timestamp: string) =>
       ev('room_message', { message: 'A rat scurries in.', category: 'room.movement' }, timestamp);
     let state = projectEvent(getInitialGameState(), event('2026-10-11T12:00:00.000Z'));
@@ -44,18 +43,20 @@ describe('server-tagged room and system events', () => {
     expect(state.messages).toHaveLength(2);
   });
 
-  it('does not dedupe non-movement room messages', () => {
-    const event = (timestamp: string) => ev('room_message', { message: 'The wind howls.' }, timestamp);
+  it('does not dedupe non-movement room messages, even with the legacy system message_type', () => {
+    const event = (timestamp: string) =>
+      ev(
+        'room_message',
+        { message: 'The wind howls.', message_type: 'system', category: 'room.description' },
+        timestamp
+      );
     let state = projectEvent(getInitialGameState(), event('2026-10-11T12:00:00.000Z'));
     state = projectEvent(state, event('2026-10-11T12:00:01.000Z'));
     expect(state.messages).toHaveLength(2);
   });
 
   it('system passes data.category through', () => {
-    const next = projectEvent(
-      getInitialGameState(),
-      ev('system', { message: 'Careful.', message_type: 'warning', category: 'system.warning' })
-    );
+    const next = projectEvent(getInitialGameState(), ev('system', { message: 'Careful.', category: 'system.warning' }));
     expect(categories(next)).toEqual(['system.warning']);
   });
 
@@ -78,17 +79,20 @@ describe('server-tagged room and system events', () => {
 });
 
 describe('client-authored messages get a fixed category per event type', () => {
-  it.each([
-    ['error', 'system.error'],
-    ['warning', 'system.warning'],
-    ['system', 'system.info'],
-    ['info', 'system.info'],
-  ])('client_message with messageType %s -> %s', (messageType, expected) => {
-    const next = projectEvent(getInitialGameState(), buildLocalMessageEvent('Something happened.', messageType));
-    expect(categories(next)).toEqual([expected]);
+  it.each(['system.error', 'system.warning', 'system.info'] as const)(
+    'client_message built with category %s keeps it',
+    category => {
+      const next = projectEvent(getInitialGameState(), buildLocalMessageEvent('Something happened.', category));
+      expect(categories(next)).toEqual([category]);
+    }
+  );
+
+  it('intentional_disconnect takes the category the server sent (system.info)', () => {
+    const next = projectEvent(getInitialGameState(), ev('intentional_disconnect', { category: 'system.info' }));
+    expect(categories(next)).toEqual(['system.info']);
   });
 
-  it('buildLocalMessageEvent default (system) is system.info', () => {
+  it('buildLocalMessageEvent default is system.info', () => {
     const next = projectEvent(getInitialGameState(), buildLocalMessageEvent('Connection to server lost.'));
     expect(categories(next)).toEqual(['system.info']);
   });
@@ -99,8 +103,11 @@ describe('client-authored messages get a fixed category per event type', () => {
     expect(categories(state)).toEqual(['room.movement', 'room.movement']);
   });
 
-  it('player_respawned message -> system.info', () => {
-    const next = projectEvent(getInitialGameState(), ev('player_respawned', { message: 'You awaken.' }));
+  it('player_respawned message takes the category the server sent (system.info)', () => {
+    const next = projectEvent(
+      getInitialGameState(),
+      ev('player_respawned', { message: 'You awaken.', category: 'system.info' })
+    );
     expect(categories(next)).toEqual(['system.info']);
   });
 

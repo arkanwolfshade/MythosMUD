@@ -82,13 +82,12 @@ export interface QuestLogEntry {
 export interface ChatMessage {
   text: string;
   timestamp: string;
+  /** True when `text` is finished HTML (e.g. help) to render through SafeHtml; otherwise plain text. */
   isHtml: boolean;
-  isCompleteHtml?: boolean;
-  /** Server-assigned semantic category; drives presentation and panel routing (replaces `messageType`). */
-  category?: MessageCategory;
-  messageType?: string;
+  /** Server-assigned semantic category; drives presentation and panel routing. */
+  category: MessageCategory;
+  /** Chat-conversation identity (whisper, party, ...); present on chat.* messages only. */
   channel?: string;
-  type?: string;
   /** Optional: 'npc' | 'system' when server marks non-player speakers. */
   speakerKind?: string;
   aliasChain?: Array<{
@@ -97,7 +96,6 @@ export interface ChatMessage {
     alias_name: string;
   }>;
   rawText?: string;
-  tags?: string[];
 }
 
 /** Weapon stats on an inventory stack (mirrors server WeaponStats). */
