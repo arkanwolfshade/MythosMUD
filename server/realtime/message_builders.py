@@ -11,6 +11,7 @@ from collections.abc import Callable
 from datetime import UTC, datetime
 from typing import Any, cast
 
+from ..constants.message_category import MessageCategory
 from ..events.event_types import PlayerEnteredRoom, PlayerLeftRoom
 
 
@@ -66,6 +67,7 @@ class MessageBuilder:
                 "player_id": player_id,
                 "player_name": player_name,
                 "message": f"{player_name} enters the room.",
+                "category": MessageCategory.ROOM_MOVEMENT,
             },
         }
 
@@ -93,6 +95,7 @@ class MessageBuilder:
                 "player_id": player_id,
                 "player_name": player_name,
                 "message": f"{player_name} leaves the room.",
+                "category": MessageCategory.ROOM_MOVEMENT,
             },
         }
 

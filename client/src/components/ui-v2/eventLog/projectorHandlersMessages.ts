@@ -33,7 +33,11 @@ function appendDaypartMessage(prevState: GameState, event: GameEvent, daypart: s
   const previousDaypart = prevState.mythosTime?.daypart ?? null;
   if (!previousDaypart || previousDaypart === daypart) return prevState;
   const description = DAYPART_MESSAGES[daypart] ?? `The Mythos clock shifts into the ${daypart} watch.`;
-  const msg = buildChatMessage(`[Time] ${description}`, event.timestamp, { messageType: 'system', channel: 'system' });
+  const msg = buildChatMessage(`[Time] ${description}`, event.timestamp, {
+    messageType: 'system',
+    channel: 'system',
+    category: 'system.info',
+  });
   return { ...prevState, messages: appendMessage(prevState.messages, msg) };
 }
 
@@ -56,6 +60,7 @@ function appendHolidayMessages(
       buildChatMessage(`[Time] The observance of ${holiday.name} begins.`, event.timestamp, {
         messageType: 'system',
         channel: 'system',
+        category: 'system.info',
       })
     );
   }
@@ -65,6 +70,7 @@ function appendHolidayMessages(
       buildChatMessage(`[Time] The observance of ${holiday.name} has passed.`, event.timestamp, {
         messageType: 'system',
         channel: 'system',
+        category: 'system.info',
       })
     );
   }
@@ -76,12 +82,23 @@ function readCategory(data: GameEvent['data']): MessageCategory | undefined {
   return typeof data.category === 'string' ? (data.category as MessageCategory) : undefined;
 }
 
+/** client_message has no server category: its severity is the messageType the caller passed in. */
+function clientMessageCategory(messageType: string): MessageCategory {
+  if (messageType === 'error') return 'system.error';
+  if (messageType === 'warning') return 'system.warning';
+  return 'system.info';
+}
+
 export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
   client_message(prevState, event) {
     const text = typeof event.data.text === 'string' ? event.data.text : '';
     if (!text) return prevState;
     const messageType = typeof event.data.messageType === 'string' ? event.data.messageType : 'system';
-    const msg = buildChatMessage(text, event.timestamp, { messageType, channel: 'game' });
+    const msg = buildChatMessage(text, event.timestamp, {
+      messageType,
+      channel: 'game',
+      category: clientMessageCategory(messageType),
+    });
     return { ...prevState, messages: appendMessage(prevState.messages, msg) };
   },
 
@@ -247,16 +264,15 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
       typeof event.data.message_type === 'string' ? (event.data.message_type as string) : undefined;
     const isHtml = Boolean(event.data.is_html);
     if (!message) return prevState;
+    const category = event.data.category as MessageCategory | undefined;
+    const isMovement = messageTypeFromEvent === 'system' || category === 'room.movement';
     const messageType = messageTypeFromEvent === 'system' ? 'system' : determineMessageType(message).type;
     const channel =
       messageTypeFromEvent === 'system' ? GAME_LOG_CHANNEL : (determineMessageType(message).channel ?? 'game');
-    const msg = buildChatMessage(message, event.timestamp, { isHtml, messageType, channel });
+    const msg = buildChatMessage(message, event.timestamp, { isHtml, messageType, channel, category });
     return {
       ...prevState,
-      messages:
-        messageTypeFromEvent === 'system'
-          ? appendMovementMessage(prevState.messages, msg)
-          : appendMessage(prevState.messages, msg),
+      messages: isMovement ? appendMovementMessage(prevState.messages, msg) : appendMessage(prevState.messages, msg),
     };
   },
 
@@ -266,6 +282,7 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     const msg = buildChatMessage(systemMessage, event.timestamp, {
       messageType: 'system',
       channel: 'game',
+      category: event.data.category as MessageCategory | undefined,
     });
     return { ...prevState, messages: appendMessage(prevState.messages, msg) };
   },
@@ -416,6 +433,7 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
           const chimeMsg = buildChatMessage(`[Time] The clock chimes ${formattedClock} Mythos`, event.timestamp, {
             messageType: 'system',
             channel: 'system',
+            category: 'system.info',
           });
           nextState = {
             ...nextState,
@@ -434,6 +452,7 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
       const tickMsg = buildChatMessage(`[Tick ${tickNumber}]`, event.timestamp, {
         messageType: 'system',
         channel: 'system',
+        category: 'system.info',
       });
       nextState = { ...nextState, messages: appendMessage(nextState.messages, tickMsg) };
     }

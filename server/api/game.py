@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING
 from fastapi import APIRouter, Depends
 
 from ..auth.dependencies import get_current_superuser
+from ..constants.message_category import MessageCategory
 from ..dependencies import ConnectionManagerDep, get_container
 from ..models.user import User
 from ..schemas.calendar import HolidayEntry
@@ -78,6 +79,7 @@ async def broadcast_message(
             "message": message,
             "broadcaster": current_user.username,
             "broadcaster_id": str(current_user.id),
+            "category": MessageCategory.SYSTEM_INFO,
         },
     )
 
