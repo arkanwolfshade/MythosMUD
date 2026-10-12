@@ -99,4 +99,13 @@ describe('message category palette', () => {
     expect(css).toContain('html.text-labels .cat::before');
     expect(css).toContain('font-display: swap');
   });
+
+  it('keeps a gap after the text label (found in a real browser: the inline-block collapses a trailing space)', () => {
+    const start = css.indexOf('html.text-labels .cat::before {');
+    expect(start).toBeGreaterThanOrEqual(0);
+    const block = css.slice(start, css.indexOf('}', start));
+    const margin = /margin-inline-end:\s*([^;]+);/.exec(block)?.[1].trim();
+    expect(margin, 'text-label mode sets margin-inline-end').toBeDefined();
+    expect(parseFloat(margin ?? '0')).toBeGreaterThan(0);
+  });
 });
