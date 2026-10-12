@@ -99,10 +99,10 @@ WebSocket-based real-time gameplay updates.
 
 ```typescript
 // Client-side authentication
-const response = await fetch('/auth/login', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ username, password })
+const response = await fetch("/auth/login", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ username, password }),
 });
 
 const { access_token } = await response.json();
@@ -125,7 +125,7 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str):
 
 ```typescript
 // Use relative URL behind dev proxy; authenticate via subprotocols
-const websocket = new WebSocket('/api/ws?session_id=' + sessionId, ['bearer', accessToken]);
+const websocket = new WebSocket("/api/ws?session_id=" + sessionId, ["bearer", accessToken]);
 
 websocket.onmessage = (event) => {
   const response = JSON.parse(event.data);
@@ -133,11 +133,13 @@ websocket.onmessage = (event) => {
 };
 
 // Send command
-websocket.send(JSON.stringify({
-  command: 'look',
-  args: [],
-  timestamp: new Date().toISOString()
-}));
+websocket.send(
+  JSON.stringify({
+    command: "look",
+    args: [],
+    timestamp: new Date().toISOString(),
+  }),
+);
 ```
 
 ### **4. Message Format**
@@ -231,7 +233,7 @@ See `archive/REFACTORING_SUMMARY.md` for complete details.
 ```typescript
 // Client-side error handling
 const handleError = (error: string) => {
-  console.error('Connection error:', error);
+  console.error("Connection error:", error);
   // Show user-friendly error message
   // Attempt reconnection if appropriate
 };
@@ -255,18 +257,26 @@ const handleError = (error: string) => {
 | `command_response` | Command results       | `{command, result, success}`      |
 | `heartbeat`        | Connection keep-alive | `{}`                              |
 
+**[SPEC]**
+
+Any event that carries player-visible text also carries `data.category`, a `domain.kind` string from
+`server/constants/message_category.py` (the source of truth); `combat_attack` carries a per-recipient
+`data.categories` map keyed like its `messages` map. Categories are assigned only in shared builders, never in
+command handlers or hallucination code. Reserved namespaces: `lore.*`, `item.*`, `npc.*`, `command.misfire`. See
+`server/realtime/README.md` and `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`.
+
 ### **Event Processing**
 
 ```typescript
 function handleGameEvent(event: GameEvent) {
   switch (event.event_type) {
-    case 'game_state':
+    case "game_state":
       setGameState(event.data);
       break;
-    case 'room_update':
+    case "room_update":
       updateRoom(event.data);
       break;
-    case 'combat_event':
+    case "combat_event":
       displayCombatMessage(event.data);
       break;
     // ... handle other events
@@ -362,9 +372,9 @@ function handleGameEvent(event: GameEvent) {
 
 ```typescript
 // Test WebSocket connection
-const ws = new WebSocket('ws://localhost:54768/api/ws?token=test-token');
+const ws = new WebSocket("ws://localhost:54768/api/ws?token=test-token");
 ws.onmessage = (event) => {
-  console.log('WS message:', JSON.parse(event.data));
+  console.log("WS message:", JSON.parse(event.data));
 };
 ```
 
@@ -422,7 +432,7 @@ a multiplayer game. Future enhancements can be added incrementally without disru
 
 **[SPEC]**
 
-| Version | Date | Change |
-| --- | --- | --- |
-| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
-| 1.1.0 | 2026-08-28 | Remove hard-coded line counts and coverage figure (#722) |
+| Version | Date       | Change                                                   |
+| ------- | ---------- | -------------------------------------------------------- |
+| 1.0.0   | 2026-07-30 | Initial HADS structural conversion                       |
+| 1.1.0   | 2026-08-28 | Remove hard-coded line counts and coverage figure (#722) |

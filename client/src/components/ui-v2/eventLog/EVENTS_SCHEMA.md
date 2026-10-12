@@ -20,12 +20,12 @@ Event types and their `data` shapes as received over the WebSocket. Used by the 
 | `player_left_game`                                      | Player left game            | —                                                                                                                                                                               |
 | `player_left`                                           | Player left room            | —                                                                                                                                                                               |
 | `player_died` / `playerdied`                            | Player died                 | `{ current_dp?, death_location? }`; `death_location` is server-composed `Zone › Sub-zone › Room` (#910); sets `isDead: true`, `deathLocation` (null if absent, never `room_id`) |
-| `player_respawned` / `playerrespawned`                  | Respawn                     | `{ player?, room?, message? }`; clears `isDead`/`deathLocation`/`isDelirious`/`deliriumLocation`                                                                                |
+| `player_respawned` / `playerrespawned`                  | Respawn                     | `{ player?, room?, message?, category }`; clears `isDead`/`deathLocation`/`isDelirious`/`deliriumLocation`                                                                      |
 | `player_delirium_respawned` / `playerdeliriumrespawned` | Delirium respawn            | same as `player_respawned` (same handler)                                                                                                                                       |
-| `player_dp_updated` / `playerdpupdated`                 | DP update                   | `{ new_dp, max_dp, posture?, posture_message?, player? }`                                                                                                                       |
-| `player_dp_decay`                                       | Mortally wounded bleed tick | `{ posture_message? }` (full bleed line deferred)                                                                                                                               |
-| `player_posture_change`                                 | Room posture observer       | `{ message, player_name, position, previous_position? }`                                                                                                                        |
-| `player_update`                                         | Full player update          | `{ stats?, posture_message?, in_combat? }`                                                                                                                                      |
+| `player_dp_updated` / `playerdpupdated`                 | DP update                   | `{ new_dp, max_dp, posture?, posture_message?, player?, category? }`; `category` accompanies `posture_message`                                                                  |
+| `player_dp_decay`                                       | Mortally wounded bleed tick | `{ posture_message?, category? }` (full bleed line deferred); `category` is `status.health`                                                                                     |
+| `player_posture_change`                                 | Room posture observer       | `{ message, player_name, position, previous_position?, category }`                                                                                                              |
+| `player_update`                                         | Full player update          | `{ stats?, posture_message?, category?, in_combat? }`; `category` accompanies `posture_message`                                                                                 |
 
 ## Combat events
 
@@ -41,14 +41,45 @@ Event types and their `data` shapes as received over the WebSocket. Used by the 
 | `combat_taunt`              | Taunt resolved        | message                            |
 | `combat_protect`            | Protect resolved      | message                            |
 
+Each carries `category` (`combat.hit` / `combat.hurt` / `combat.status` / `combat.death`); `combat_attack` carries a
+per-recipient `categories` map instead (see Message categories below).
+
 ## Message events
 
-| event_type         | Description    | data shape                 |
-| ------------------ | -------------- | -------------------------- |
-| `command_response` | Command result | text, channel              |
-| `chat_message`     | Chat message   | text, channel, messageType |
-| `room_message`     | Room message   | text, channel              |
-| `system`           | System message | text, messageType          |
+| event_type         | Description    | data shape                       |
+| ------------------ | -------------- | -------------------------------- |
+| `command_response` | Command result | `{ result, category, channel? }` |
+| `chat_message`     | Chat message   | `{ message, channel, category }` |
+| `room_message`     | Room message   | `{ message, category }`          |
+| `system`           | System message | `{ message, category }`          |
+
+Every event that puts text in the log also carries `data.category` (next section).
+
+## Message categories
+
+The server tags each line of player-visible text with a semantic `data.category` (`domain.kind`, for example
+`chat.whisper` or `combat.hurt`). The client styles and routes the line from the category and never guesses meaning
+from the text.
+
+- **Source of truth:** `server/constants/message_category.py` (`MessageCategory`). `client/src/types/messageCategory.ts`
+  mirrors it by hand; `server/tests/unit/constants/test_message_category.py` fails if the two drift.
+- **Reserved namespaces** (no values yet): `lore.*`, `item.*`, `npc.*`, `command.misfire`. Unknown categories fall back
+  to the default style.
+- **Wire shape:** `data.category` is a string. `combat_attack` is the one exception: its recipients see different
+  lines, so it carries `data.categories`, a map keyed exactly like `data.messages`
+  (`attack_attacker` / `attack_defender` / `attack_other`), each value a category from that recipient's perspective.
+- **`channel` is separate:** on `chat.*` events it names the conversation, not the meaning.
+- **Where it is set:** only in shared builders and chokepoints, never per handler and never by hallucination code
+  (ADR-024: a hallucinated line gets the category of the real thing it imitates by using the same builder). Command
+  handlers do not put `category` in their result dicts; `websocket_handler_commands.py` defaults it to
+  `command.output`, and `build_event` does the same for any `command_response` that names none.
+- **Posture self-lines** (`posture_message` on `player_update`, `player_dp_updated`, `player_dp_decay`) are tagged by
+  `attach_posture_self_message` in `server/realtime/posture_notify.py`: `room.movement`, except the DP-decay collapse
+  line, which is `status.health`.
+- **Client-authored lines** (`client_message`, time and tick notices, `player_entered_game` / `player_left_game`) get a
+  fixed category per event type in `projectorHandlersMessages.ts` / `projectorHandlersState.ts`.
+- **Invariant:** `server/tests/unit/realtime/test_message_category_invariants.py` drives every text emitter and checks
+  the category, and cross-checks the list against the projector handlers above.
 
 ## System events
 
@@ -58,7 +89,7 @@ Event types and their `data` shapes as received over the WebSocket. Used by the 
 | `rescue_update`                      | Rescue/delirium             | `{ status, role?, message?, current_lcd?, rescuer_name?, target_name?, eta_seconds? }`; `status: 'delirium'` sets `isDelirious`/`deliriumLocation`; `channeling`/`success`/`failed`/`interrupted`/`rescued`/`sanitarium` set `rescueStatus` (`role` defaults to `target`; `eta_seconds` on `channeling` only) |
 | `mythos_time_update`                 | Mythos clock (server push)  | `MythosTimePayload` shape; sets `mythosTime`, daypart/holiday flavor messages                                                                                                                                                                                                                                 |
 | `game_tick`                          | Heartbeat/tick              | tick_number, mythos_clock?, mythos_datetime?                                                                                                                                                                                                                                                                  |
-| `intentional_disconnect`             | Server-initiated disconnect | message?                                                                                                                                                                                                                                                                                                      |
+| `intentional_disconnect`             | Server-initiated disconnect | `{ message?, category }`                                                                                                                                                                                                                                                                                      |
 
 ## Container / inventory events (#711)
 

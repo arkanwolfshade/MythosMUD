@@ -20,7 +20,7 @@ from ..alias_storage import AliasStorage
 from ..database import get_async_session
 from ..exceptions import DatabaseError
 from ..realtime.envelope import build_event
-from ..realtime.posture_notify import emit_posture_change, normalize_posture
+from ..realtime.posture_notify import attach_posture_self_message, emit_posture_change, normalize_posture
 from ..services.corruption_service import CorruptionPersistenceProtocol, CorruptionService
 from ..services.lucidity_helpers import CatatoniaObserverProtocol
 from ..services.lucidity_service import LucidityService
@@ -88,7 +88,7 @@ async def _maybe_attach_dp_posture_message(
         send_personal_update=False,
     )
     if posture_message:
-        update_payload["posture_message"] = posture_message
+        attach_posture_self_message(update_payload, posture_message)
 
 
 async def _notify_player_stat_change(ctx: AdminSetStatNotifyContext) -> None:

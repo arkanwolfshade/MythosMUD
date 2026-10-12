@@ -13,12 +13,13 @@ from typing import Protocol, runtime_checkable
 from sqlalchemy.exc import SQLAlchemyError
 from structlog.stdlib import BoundLogger
 
+from ..constants.message_category import MessageCategory
 from ..events.event_types import PlayerDiedEvent, PlayerDPDecayEvent, PlayerDPUpdated, PlayerXPAwardEvent
 from ..models.player import Player
 from .connection_manager import ConnectionManager
 from .envelope import build_event
 from .player_event_handlers_utils import PlayerEventHandlerUtils
-from .posture_notify import emit_posture_change, normalize_posture
+from .posture_notify import attach_posture_self_message, emit_posture_change, normalize_posture
 
 
 @runtime_checkable
@@ -107,8 +108,7 @@ async def _attach_dp_updated_posture_fields(
         send_personal_update=False,
     )
     if posture_message:
-        payload["posture_message"] = posture_message
-        payload["previous_position"] = previous_position
+        attach_posture_self_message(payload, posture_message, previous_position=previous_position)
 
 
 async def _dispatch_player_dp_updated_payload(
@@ -236,8 +236,13 @@ async def _maybe_attach_decay_posture_cross(
         send_personal_update=False,
     )
     if posture_message:
-        decay_payload["posture_message"] = posture_message
-        decay_payload["previous_position"] = previous_position
+        # The collapse is a health event, so its line is status.health rather than the posture default.
+        attach_posture_self_message(
+            decay_payload,
+            posture_message,
+            previous_position=previous_position,
+            category=MessageCategory.STATUS_HEALTH,
+        )
 
 
 async def _dispatch_player_dp_decay_payload(
