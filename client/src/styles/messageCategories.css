@@ -143,7 +143,8 @@ html.high-contrast {
 /* "Text labels" setting: words instead of icons. */
 html.text-labels .cat::before {
   content: var(--cat-text-label);
-  margin-inline-end: 0;
+  /* The ::before is inline-block, which collapses the label's own trailing space, so the gap must be a margin. */
+  margin-inline-end: 0.5em;
   font-weight: 700;
 }
 
