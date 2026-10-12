@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import { AppRouter } from './AppRouter.tsx';
 import './index.css';
+import './styles/messageCategories.css';
 
 // Initialize XState Inspector in development mode for visual FSM debugging
 // AI: XState Inspector provides real-time visualization of state machines
