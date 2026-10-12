@@ -2,6 +2,7 @@
 
 from typing import Any, cast
 
+from server.constants.message_category import MessageCategory
 from server.realtime.envelope import build_event
 from server.services.combat_messaging.base import HasConnectionManager, log_room_broadcast_result
 from server.structured_logging.enhanced_logging_config import get_logger
@@ -20,6 +21,19 @@ class CombatBroadcastMixin(HasConnectionManager):
             "attack_attacker": f"You {action_type} {target_name} for {damage} damage.",
             "attack_defender": f"{attacker_name} {action_type}s you for {damage} damage.",
             "attack_other": f"{attacker_name} {action_type}s {target_name} for {damage} damage.",
+        }
+
+    def _build_combat_attack_categories(self) -> dict[str, str]:
+        """
+        Category of each perspective line in ``messages``, from that recipient's point of view.
+
+        The room event reaches both the defender and bystanders, so it carries one category per
+        ``messages`` key instead of a single ``category``: the defender is hurt, a bystander sees a hit.
+        """
+        return {
+            "attack_attacker": MessageCategory.COMBAT_HIT.value,
+            "attack_defender": MessageCategory.COMBAT_HURT.value,
+            "attack_other": MessageCategory.COMBAT_HIT.value,
         }
 
     def _build_combat_attack_event(
@@ -42,6 +56,7 @@ class CombatBroadcastMixin(HasConnectionManager):
                 "damage": damage,
                 "action_type": action_type,
                 "messages": messages,
+                "categories": self._build_combat_attack_categories(),
             },
             room_id=room_id,
         )
@@ -65,6 +80,7 @@ class CombatBroadcastMixin(HasConnectionManager):
                 "damage": damage,
                 "action_type": action_type,
                 "message": personal_message,
+                "category": MessageCategory.COMBAT_HIT.value,
             },
             room_id=room_id,
             player_id=attacker_id,
@@ -135,10 +151,11 @@ class CombatBroadcastMixin(HasConnectionManager):
         room_id: str,
         data: dict[str, object],
         label: str,
+        category: MessageCategory,
         exclude_player: str | None = None,
     ) -> dict[str, object]:
-        """Build one combat event and send it to the room, optionally skipping one player."""
-        event = build_event(event_type, data, room_id=room_id)
+        """Build one combat event tagged with its message category and send it to the room, optionally skipping one player."""
+        event = build_event(event_type, {**data, "category": category.value}, room_id=room_id)
         broadcast_stats = await self.connection_manager.broadcast_to_room(room_id, event, exclude_player=exclude_player)
         stats = cast(dict[str, object], broadcast_stats)
         log_room_broadcast_result(label, room_id, stats)
@@ -154,6 +171,7 @@ class CombatBroadcastMixin(HasConnectionManager):
             room_id,
             {"combat_id": combat_id, "npc_name": npc_name, "new_target_name": new_target_name, "message": room_message},
             "Combat target switch broadcast",
+            MessageCategory.COMBAT_STATUS,
         )
 
     async def broadcast_player_joined_combat(
@@ -170,6 +188,7 @@ class CombatBroadcastMixin(HasConnectionManager):
                 "message": f"{player_name} joins the fight against {npc_name}!",
             },
             "Combat join broadcast",
+            MessageCategory.COMBAT_STATUS,
             exclude_player=player_id,
         )
 
@@ -180,6 +199,7 @@ class CombatBroadcastMixin(HasConnectionManager):
             room_id,
             {"combat_id": combat_id, "message": message},
             "Combat taunt broadcast",
+            MessageCategory.COMBAT_STATUS,
         )
 
     async def broadcast_protect_result(self, room_id: str, combat_id: str, message: str) -> dict[str, object]:
@@ -189,4 +209,5 @@ class CombatBroadcastMixin(HasConnectionManager):
             room_id,
             {"combat_id": combat_id, "message": message},
             "Combat protect broadcast",
+            MessageCategory.COMBAT_STATUS,
         )

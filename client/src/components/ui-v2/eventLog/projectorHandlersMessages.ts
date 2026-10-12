@@ -94,7 +94,11 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     const messageText = typeof event.data.message === 'string' ? event.data.message.trim() : '';
     let nextState = prevState;
     if (messageText) {
-      const msg = buildChatMessage(messageText, event.timestamp, { messageType: 'system', channel: 'system' });
+      const msg = buildChatMessage(messageText, event.timestamp, {
+        messageType: 'system',
+        channel: 'system',
+        category: event.data.category as MessageCategory | undefined,
+      });
       nextState = { ...nextState, messages: appendMessage(nextState.messages, msg) };
     }
     if (status === 'delirium') {
@@ -276,6 +280,7 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     const msg = buildChatMessage(text, event.timestamp, {
       messageType: 'system',
       channel: GAME_LOG_CHANNEL,
+      category: d.category as MessageCategory | undefined,
     });
     logger.info('projector', 'Combat message appended (npc_attacked)', {
       event_type: 'npc_attacked',
@@ -295,6 +300,7 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     const msg = buildChatMessage(text, event.timestamp, {
       messageType: 'system',
       channel: GAME_LOG_CHANNEL,
+      category: d.category as MessageCategory | undefined,
     });
     logger.info('projector', 'Combat message appended (npc_took_damage)', {
       event_type: 'npc_took_damage',
@@ -318,6 +324,7 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     const msg = buildChatMessage(text, event.timestamp, {
       messageType: 'system',
       channel: GAME_LOG_CHANNEL,
+      category: d.category as MessageCategory | undefined,
     });
     logger.info('projector', 'Combat message appended (player_attacked)', {
       event_type: 'player_attacked',
@@ -332,6 +339,7 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     const msg = buildChatMessage(message, event.timestamp, {
       messageType: 'system',
       channel: GAME_LOG_CHANNEL,
+      category: event.data.category as MessageCategory | undefined,
     });
     return { ...prevState, messages: appendMessage(prevState.messages, msg) };
   },
@@ -345,6 +353,7 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     const msg = buildChatMessage(message, event.timestamp, {
       messageType: 'combat',
       channel: GAME_LOG_CHANNEL,
+      category: event.data.category as MessageCategory | undefined,
     });
     return { ...prevState, messages: appendMessage(prevState.messages, msg) };
   },
