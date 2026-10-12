@@ -10,6 +10,7 @@ including player lookup, teleport effect messages, and broadcasting.
 from typing import Any, cast
 from uuid import UUID
 
+from ..constants.message_category import MessageCategory
 from ..realtime.envelope import build_event
 from ..structured_logging.admin_actions_logger import get_admin_actions_logger
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -168,13 +169,13 @@ async def broadcast_teleport_effects(  # pylint: disable=too-many-arguments  # R
         if hasattr(connection_manager, "broadcast_to_room"):
             departure_event = build_event(
                 "system",
-                {"message": departure_message, "message_type": "info"},
+                {"message": departure_message, "message_type": "info", "category": MessageCategory.SYSTEM_INFO},
                 room_id=from_room_id,
                 connection_manager=connection_manager,
             )
             arrival_event = build_event(
                 "system",
-                {"message": arrival_message, "message_type": "info"},
+                {"message": arrival_message, "message_type": "info", "category": MessageCategory.SYSTEM_INFO},
                 room_id=to_room_id,
                 connection_manager=connection_manager,
             )
@@ -225,7 +226,7 @@ async def notify_player_of_teleport(
                 player_id = UUID(str(raw_player_id)) if not isinstance(raw_player_id, UUID) else raw_player_id
                 event = build_event(
                     "system",
-                    {"message": message, "message_type": "info"},
+                    {"message": message, "message_type": "info", "category": MessageCategory.SYSTEM_INFO},
                     player_id=str(player_id),
                     connection_manager=connection_manager,
                 )

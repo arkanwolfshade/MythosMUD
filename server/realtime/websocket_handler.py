@@ -19,6 +19,7 @@ from typing import TYPE_CHECKING
 from fastapi import WebSocket, WebSocketDisconnect
 from structlog.stdlib import BoundLogger
 
+from ..constants.message_category import MessageCategory
 from ..error_types import ErrorMessages, ErrorType, create_websocket_error_response
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..structured_logging.logging_context import bind_request_context, clear_request_context
@@ -83,6 +84,13 @@ __all__ = [
 ]
 
 logger: BoundLogger = get_logger(__name__)
+
+# send_system_message's message_type -> category; anything else is treated as info.
+_SYSTEM_MESSAGE_CATEGORIES = {
+    "info": MessageCategory.SYSTEM_INFO,
+    "warning": MessageCategory.SYSTEM_WARNING,
+    "error": MessageCategory.SYSTEM_ERROR,
+}
 
 # Test and legacy import names (basedpyright: public symbols from submodules, not private cross-imports).
 _resolve_and_setup_app_state_services = resolve_and_setup_app_state_services
@@ -274,6 +282,7 @@ async def send_system_message(websocket: WebSocket, message: str, message_type: 
             {
                 "message": message,
                 "message_type": message_type,
+                "category": _SYSTEM_MESSAGE_CATEGORIES.get(message_type, MessageCategory.SYSTEM_INFO),
             },
         )
         await websocket.send_json(system_event)

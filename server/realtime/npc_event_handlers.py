@@ -12,6 +12,7 @@ import uuid
 from typing import Any, cast
 
 from ..app.tracked_task_manager import get_global_tracked_manager
+from ..constants.message_category import MessageCategory
 from ..events.event_types import NPCEnteredRoom, NPCLeftRoom
 from ..structured_logging.enhanced_logging_config import get_logger
 from .message_builders import MessageBuilder
@@ -347,6 +348,7 @@ class NPCEventHandler:
                         "message": message,
                         "room_id": room_id,
                         "message_type": message_type,
+                        "category": MessageCategory.ROOM_MOVEMENT,
                     },
                     player_id=player_id,
                 )

@@ -22,6 +22,7 @@ function appendPostureGameInfoMessage(prevState: GameState, event: GameEvent, me
   const msg = buildChatMessage(trimmed, event.timestamp, {
     messageType: 'system',
     channel: GAME_LOG_CHANNEL,
+    category: event.data.category as MessageCategory | undefined,
   });
   return { ...prevState, messages: appendMessage(prevState.messages, msg) };
 }
@@ -258,6 +259,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
       const msg = buildChatMessage(messageText, event.timestamp, {
         messageType: 'system',
         channel: GAME_LOG_CHANNEL,
+        category: 'system.info',
       });
       next = { ...next, messages: appendMessage(next.messages, msg) };
     }
@@ -279,6 +281,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
     const msg = buildChatMessage(`${playerName} has entered the game.`, event.timestamp, {
       messageType: 'system',
       channel: 'game',
+      category: 'room.movement',
     });
     return { ...prevState, messages: appendMessage(prevState.messages, msg) };
   },
@@ -289,6 +292,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
     const msg = buildChatMessage(messageText, event.timestamp, {
       messageType: 'system',
       channel: 'game',
+      category: event.data.category as MessageCategory | undefined,
     });
     return { ...prevState, messages: appendMovementMessage(prevState.messages, msg) };
   },
@@ -299,6 +303,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
     const msg = buildChatMessage(`${playerName} has left the game.`, event.timestamp, {
       messageType: 'system',
       channel: 'game',
+      category: 'room.movement',
     });
     return { ...prevState, messages: appendMessage(prevState.messages, msg) };
   },
@@ -309,6 +314,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
     const msg = buildChatMessage(messageText, event.timestamp, {
       messageType: 'system',
       channel: 'game',
+      category: event.data.category as MessageCategory | undefined,
     });
     return { ...prevState, messages: appendMovementMessage(prevState.messages, msg) };
   },

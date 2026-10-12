@@ -7,6 +7,7 @@ from typing import Protocol, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
+from ..constants.message_category import MessageCategory
 from ..services.position_messages import POSITION_MESSAGES
 from ..structured_logging.enhanced_logging_config import get_logger
 from .envelope import build_event
@@ -87,6 +88,7 @@ async def _broadcast_room_posture_change(
                 "previous_position": previous_position,
                 "position": new_position,
                 "message": room_message,
+                "category": MessageCategory.ROOM_MOVEMENT,
             },
             room_id=room_id_str,
             player_id=player_id_str,
