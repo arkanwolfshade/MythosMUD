@@ -9,6 +9,7 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 
 from server.commands.emote_commands import handle_emote_command
+from server.constants.message_category import MessageCategory
 
 
 @pytest.mark.asyncio
@@ -32,7 +33,7 @@ async def test_handle_emote_command():
 
     result = await handle_emote_command({"action": "smiles"}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
 
-    assert "result" in result
+    assert result == {"result": "TestPlayer smiles", "category": MessageCategory.CHAT_EMOTE, "channel": "emote"}
     mock_chat_service.send_emote_message.assert_awaited_once()
 
 
@@ -60,7 +61,7 @@ async def test_handle_emote_command_predefined_emote():
 
     result = await handle_emote_command({"action": "twibble"}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
 
-    assert result == {"result": "You twibble."}
+    assert result == {"result": "You twibble.", "category": MessageCategory.CHAT_EMOTE, "channel": "emote"}
     mock_emote_service.is_emote_alias.assert_called_with("twibble")
     mock_chat_service.send_emote_message.assert_awaited_once_with("player_id_001", "twibbles.")
 

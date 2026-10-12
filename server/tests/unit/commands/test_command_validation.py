@@ -33,6 +33,7 @@ from server.command_handler_unified import (
     _check_rate_limit,
     _validate_command_basics,
 )
+from server.constants.message_category import MessageCategory
 
 
 class TestCatatoniaChecks:
@@ -313,7 +314,7 @@ class TestValidateCommandBasics:
             patch("server.command_handler_unified.audit_logger.log_security_event") as mock_audit,
         ):
             result = _validate_command_basics("invalid; command", "testplayer")
-            assert result == {"result": "Invalid command format"}
+            assert result == {"result": "Invalid command format", "category": MessageCategory.SYSTEM_ERROR}
             mock_audit.assert_called_once()
 
     def test_validate_command_basics_valid(self):
@@ -377,6 +378,7 @@ class TestCheckGracePeriodBlock:
             message = result["result"]
             assert isinstance(message, str)
             assert "disconnected" in message.lower()
+            assert result["category"] == MessageCategory.SYSTEM_ERROR
 
     @pytest.mark.asyncio
     async def testcheck_grace_period_block_handles_error(self):
@@ -430,6 +432,7 @@ class TestCheckCastingState:
         message = result["result"]
         assert isinstance(message, str)
         assert "casting" in message.lower()
+        assert result["category"] == MessageCategory.SYSTEM_ERROR
 
     @pytest.mark.asyncio
     async def testcheck_casting_state_handles_error(self):
@@ -451,7 +454,7 @@ class TestCheckAllCommandBlocks:
 
         with patch("server.command_handler_unified.check_catatonia_block", return_value=(True, "Catatonic")):
             result = await _check_all_command_blocks("look", "testplayer", mock_request)
-            assert result == {"result": "Catatonic"}
+            assert result == {"result": "Catatonic", "category": MessageCategory.STATUS_LUCIDITY}
 
     @pytest.mark.asyncio
     async def test_check_all_command_blocks_grace_period(self):

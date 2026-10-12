@@ -10,6 +10,7 @@ from dataclasses import dataclass
 
 from structlog.stdlib import BoundLogger
 
+from ..constants.message_category import MessageCategory
 from ..services.fake_sender_registry import fake_sender_registry
 from ..structured_logging.enhanced_logging_config import get_logger
 from .communication_commands_support import (
@@ -128,8 +129,15 @@ def _require_chat_pair(
     return player_service, chat_service
 
 
+def _chat_echo(text: str, category: MessageCategory, channel: str) -> dict[str, str]:
+    """Success echo of an outgoing chat line; the client routes by category + channel, not by the text."""
+    return {"result": text, "category": category, "channel": channel}
+
+
 @dataclass(frozen=True)
 class _RoomChannelOutcomeConfig:
+    category: MessageCategory
+    channel: str
     success_fmt: str
     success_log: str
     fail_log: str
@@ -159,7 +167,7 @@ async def _chat_send_with_room_bundle(
                 room=current_room_id,
                 message_id=message_id_from_result(result),
             )
-            return {"result": cfg.success_fmt.format(message)}
+            return _chat_echo(cfg.success_fmt.format(message), cfg.category, cfg.channel)
         error_msg = _str_error_from_chat_result(result)
         logger.warning(cfg.fail_log, player_name=player_name, error=error_msg)
         return {"result": f"{cfg.err_label}{error_msg}"}
@@ -202,6 +210,8 @@ async def flow_say_command(
         return await c.send_say_message(pid, m)
 
     cfg = _RoomChannelOutcomeConfig(
+        category=MessageCategory.CHAT_SAY,
+        channel="say",
         success_fmt="You say: {0}",
         success_log="Say message sent successfully",
         fail_log="Say command failed",
@@ -236,6 +246,8 @@ async def flow_local_command(
         return await c.send_local_message(pid, m)
 
     cfg = _RoomChannelOutcomeConfig(
+        category=MessageCategory.CHAT_LOCAL,
+        channel="local",
         success_fmt="You say locally: {0}",
         success_log="Local message sent successfully",
         fail_log="Local command failed",
@@ -280,7 +292,7 @@ async def flow_global_command(
                 player_level=player_level,
                 message_id=message_id_from_result(result),
             )
-            return {"result": f"You say (global): {msg_or_err}"}
+            return _chat_echo(f"You say (global): {msg_or_err}", MessageCategory.CHAT_GLOBAL, "global")
         error_msg = _str_error_from_chat_result(result)
         logger.warning("Global command failed", player_name=player_name, error_msg=error_msg)
         return {"result": f"Error sending message: {error_msg}"}
@@ -335,7 +347,9 @@ async def _system_send_if_admin(
             player_name=player_name,
             message_id=message_id_from_result(result),
         )
-        return {"result": f"You system: {message}"}
+        # SYSTEM_INFO, matching what recipients get for the "system" channel (_CHANNEL_CATEGORY), so sender and
+        # recipients see the same line in the same panel.
+        return _chat_echo(f"You system: {message}", MessageCategory.SYSTEM_INFO, "system")
     error_msg = _str_error_from_chat_result(result)
     logger.warning("System command failed", player_name=player_name, error_msg=error_msg)
     return {"result": f"Error sending system message: {error_msg}"}
@@ -412,7 +426,7 @@ async def _deliver_whisper_message(
             target=target,
             message_id=message_id_from_result(result),
         )
-        return {"result": f"You whisper to {target}: {message}"}
+        return _chat_echo(f"You whisper to {target}: {message}", MessageCategory.CHAT_WHISPER, "whisper")
     error_msg = _str_error_from_chat_result(result)
     logger.warning("Whisper command failed", player_name=player_name, error_msg=error_msg)
     return {"result": f"Error sending whisper: {error_msg}"}
@@ -492,7 +506,7 @@ async def _deliver_reply_to_last_whisper(
             last_whisper_sender=last_str,
             message_id=message_id_from_result(result),
         )
-        return {"result": f"You whisper to {last_str}: {message}"}
+        return _chat_echo(f"You whisper to {last_str}: {message}", MessageCategory.CHAT_WHISPER, "whisper")
     error_msg = _str_error_from_chat_result(result)
     logger.warning("Reply command failed", player_name=player_name, error_msg=error_msg)
     return {"result": f"Error sending reply: {error_msg}"}

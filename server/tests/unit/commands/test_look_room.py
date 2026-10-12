@@ -22,6 +22,7 @@ from server.commands.look_room import (
     _handle_room_look,
     _try_lookup_phantom_implicit,
 )
+from server.constants.message_category import MessageCategory
 
 
 def test_format_items_section_empty():
@@ -309,7 +310,7 @@ async def test_handle_room_look_success():
         )
 
         assert "test room description" in result["result"].lower()
-        assert "result" in result
+        assert result["category"] == MessageCategory.ROOM_DESCRIPTION
 
 
 @pytest.mark.asyncio
@@ -351,6 +352,8 @@ async def test_handle_room_look_hallucinates_exits_for_deranged_viewer():
     rendered = cast(str, result["result"])
     assert "Exits: east, up" in rendered
     assert "north" not in rendered.lower().split("exits:")[1]
+    # ADR-024: the hallucinated look is built by the same builder, so it carries the real look's category.
+    assert result["category"] == MessageCategory.ROOM_DESCRIPTION
 
 
 @pytest.mark.asyncio
@@ -376,6 +379,7 @@ async def test_handle_direction_look_success():
     assert result is not None
     assert "Target Room" in result["result"]
     assert "target room" in result["result"].lower()
+    assert result["category"] == MessageCategory.ROOM_DESCRIPTION
 
 
 @pytest.mark.asyncio

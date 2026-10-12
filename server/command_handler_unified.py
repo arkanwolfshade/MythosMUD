@@ -35,6 +35,7 @@ from .command_handler.command_guards import (
     check_grace_period_block as _check_grace_period_block,
 )
 from .commands.command_service import CommandService
+from .constants.message_category import MessageCategory
 from .help.help_content import get_help_content as get_help_content_new
 from .middleware.command_rate_limiter import command_rate_limiter
 from .models.alias import Alias
@@ -123,7 +124,7 @@ async def _check_all_command_blocks(
             command=cmd,
             message=catatonia_message,
         )
-        return {"result": catatonia_message}
+        return {"result": catatonia_message, "category": MessageCategory.STATUS_LUCIDITY}
 
     grace_period_result = await _check_grace_period_block(player_name, request)
     if grace_period_result:
@@ -150,7 +151,7 @@ async def _handle_special_command_routing(  # pylint: disable=too-many-arguments
     if cmd in ["alias", "aliases", "unalias"]:
         logger.debug("Processing alias management command", player=player_name, command=cmd)
         if alias_storage is None:
-            return {"result": "Alias system not available"}
+            return {"result": "Alias system not available", "category": MessageCategory.SYSTEM_ERROR}
         return await command_service.process_command(command_line, user, request, alias_storage, player_name)
 
     alias_result = await _process_alias_expansion(cmd, args, alias_storage, player_name, current_user, request)
@@ -236,7 +237,10 @@ def _check_rate_limit(player_name: str) -> dict[str, object] | None:
             severity="medium",
             metadata={"wait_time": wait_time},
         )
-        return {"result": f"Too many commands. Please wait {wait_time:.1f} seconds."}
+        return {
+            "result": f"Too many commands. Please wait {wait_time:.1f} seconds.",
+            "category": MessageCategory.SYSTEM_ERROR,
+        }
     return None
 
 
@@ -253,7 +257,10 @@ def _validate_command_basics(command_line: str, player_name: str) -> dict[str, o
             length=len(command_line),
             max_length=MAX_COMMAND_LENGTH,
         )
-        return {"result": f"Command too long (max {MAX_COMMAND_LENGTH} characters)"}
+        return {
+            "result": f"Command too long (max {MAX_COMMAND_LENGTH} characters)",
+            "category": MessageCategory.SYSTEM_ERROR,
+        }
 
     # Command Content Validation (CRITICAL-3)
     # Prevent command injection and malicious input
@@ -273,7 +280,7 @@ def _validate_command_basics(command_line: str, player_name: str) -> dict[str, o
             severity="high",
             metadata={"command_sample": command_line[:100]},
         )
-        return {"result": "Invalid command format"}
+        return {"result": "Invalid command format", "category": MessageCategory.SYSTEM_ERROR}
 
     return None
 
@@ -297,7 +304,7 @@ async def _run_expanded_alias(  # pylint: disable=too-many-arguments,too-many-po
     expanded_command = alias.get_expanded_command(args)
     is_valid, validation_error = validate_expanded_command(expanded_command, player_name, alias.name, expansion_depth)
     if not is_valid:
-        return {"result": validation_error}
+        return {"result": validation_error, "category": MessageCategory.SYSTEM_ERROR}
 
     audit_logger.log_alias_expansion(
         player_name=player_name,
@@ -355,7 +362,7 @@ async def _process_alias_expansion(  # pylint: disable=too-many-arguments,too-ma
 
     is_safe, error_msg, expansion_depth = await check_alias_safety(alias_storage, player_name, alias.name)
     if not is_safe:
-        return {"result": error_msg}
+        return {"result": error_msg, "category": MessageCategory.SYSTEM_ERROR}
 
     return await _run_expanded_alias(
         alias, args, cmd, alias_storage, player_name, current_user, request, expansion_depth

@@ -10,6 +10,7 @@ from __future__ import annotations
 import uuid
 from typing import Protocol, cast
 
+from ..constants.message_category import MessageCategory
 from ..realtime.disconnect_grace_period import is_player_in_grace_period
 from ..structured_logging.enhanced_logging_config import get_logger
 from .command_execution_request import CommandExecutionRequest, command_request_app_state
@@ -121,7 +122,10 @@ async def check_grace_period_block(player_name: str, request: CommandExecutionRe
             return None
 
         logger.info("Command blocked - player is in grace period (disconnected)", player=player_name)
-        return {"result": "You are disconnected and cannot perform actions. You will be removed from the game shortly."}
+        return {
+            "result": "You are disconnected and cannot perform actions. You will be removed from the game shortly.",
+            "category": MessageCategory.SYSTEM_ERROR,
+        }
 
     except (AttributeError, ValueError, TypeError, ImportError) as e:
         logger.debug("Error checking grace period", player=player_name, error=str(e))
@@ -150,7 +154,10 @@ async def _get_casting_block_result(
     casting_state = magic_service.casting_state_manager.get_casting_state(player_id)
     if not casting_state:
         return None
-    return {"result": f"You are casting {casting_state.spell_name}. Use 'stop' to interrupt."}
+    return {
+        "result": f"You are casting {casting_state.spell_name}. Use 'stop' to interrupt.",
+        "category": MessageCategory.SYSTEM_ERROR,
+    }
 
 
 async def check_casting_state(cmd: str, player_name: str, request: CommandExecutionRequest) -> dict[str, object] | None:

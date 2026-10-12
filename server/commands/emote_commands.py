@@ -7,6 +7,7 @@ This module contains handlers for the emote command.
 from typing import Any, cast
 
 from ..alias_storage import AliasStorage
+from ..constants.message_category import MessageCategory
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -131,7 +132,7 @@ def _handle_emote_result(
             room=current_room_id,
             message_id=result.get("message", {}).get("id"),
         )
-        return {"result": self_message}
+        return {"result": self_message, "category": MessageCategory.CHAT_EMOTE, "channel": "emote"}
 
     error_msg = result.get("error", "Unknown error")
     logger.warning("Emote command failed", player=player_name, error=error_msg)

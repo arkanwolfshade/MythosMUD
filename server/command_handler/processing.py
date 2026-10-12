@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING, cast
 from structlog.stdlib import BoundLogger
 
 from ..commands.command_service import CommandService
+from ..constants.message_category import MessageCategory
 from ..exceptions import ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.audit_logger import audit_logger
@@ -41,10 +42,10 @@ def _parse_command_line_or_client_error(
     """
     validated_command, error_message, command_type = command_processor.process_command_string(command_line, player_name)
     if error_message:
-        return None, command_type, {"result": error_message}
+        return None, command_type, {"result": error_message, "category": MessageCategory.SYSTEM_ERROR}
     if not validated_command:
         logger.warning("No validated command returned")
-        return None, command_type, {"result": "Invalid command format"}
+        return None, command_type, {"result": "Invalid command format", "category": MessageCategory.SYSTEM_ERROR}
     return validated_command, command_type, None
 
 
@@ -97,7 +98,7 @@ async def _dispatch_parsed_command(
         return client_error
     if validated_command is None:
         logger.warning("Validated command missing after successful parse branch")
-        return {"result": "Invalid command format"}
+        return {"result": "Invalid command format", "category": MessageCategory.SYSTEM_ERROR}
     return await _run_command_service_for_validated(
         validated_command,
         command_type,
@@ -191,7 +192,7 @@ def _handle_validation_error(
 
     # Human reader: do not expose exception details to users.
     # AI reader: CodeQL requires no exception information exposure to external users.
-    return {"result": "Invalid command format"}
+    return {"result": "Invalid command format", "category": MessageCategory.SYSTEM_ERROR}
 
 
 def _handle_processing_error(
@@ -235,4 +236,4 @@ def _handle_processing_error(
             # Last resort: silent failure to prevent test crashes
             pass
 
-    return {"result": "An error occurred while processing your command."}
+    return {"result": "An error occurred while processing your command.", "category": MessageCategory.SYSTEM_ERROR}

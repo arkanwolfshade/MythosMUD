@@ -5,6 +5,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.command_handler import processing
+from server.constants.message_category import MessageCategory
 from server.exceptions import ValidationError
 
 
@@ -17,7 +18,7 @@ def test_parse_command_line_or_client_error_with_message() -> None:
 
     assert validated is None
     assert cmd_type == "look"
-    assert err == {"result": "Bad command"}
+    assert err == {"result": "Bad command", "category": MessageCategory.SYSTEM_ERROR}
 
 
 def test_parse_command_line_or_client_error_no_validated() -> None:
@@ -28,7 +29,7 @@ def test_parse_command_line_or_client_error_no_validated() -> None:
         validated, cmd_type, err = processing._parse_command_line_or_client_error("x", "player1")
 
     assert validated is None
-    assert err == {"result": "Invalid command format"}
+    assert err == {"result": "Invalid command format", "category": MessageCategory.SYSTEM_ERROR}
 
 
 def test_parse_command_line_or_client_error_success() -> None:
@@ -128,7 +129,7 @@ def test_handle_validation_error_security_sensitive() -> None:
     ):
         result = processing._handle_validation_error(err, "admin x", "player1")
 
-    assert result == {"result": "Invalid command format"}
+    assert result == {"result": "Invalid command format", "category": MessageCategory.SYSTEM_ERROR}
     audit.log_command.assert_called_once()
 
 
@@ -141,7 +142,10 @@ def test_handle_processing_error() -> None:
     ):
         result = processing._handle_processing_error(RuntimeError("boom"), "look", "player1")
 
-    assert result == {"result": "An error occurred while processing your command."}
+    assert result == {
+        "result": "An error occurred while processing your command.",
+        "category": MessageCategory.SYSTEM_ERROR,
+    }
     log_mock.error.assert_called_once()
 
 
@@ -154,7 +158,7 @@ async def test_process_command_with_validation_validation_error() -> None:
     ):
         result = await processing.process_command_with_validation("bad", {}, MagicMock(), None, "player1")
 
-    assert result == {"result": "Invalid command format"}
+    assert result == {"result": "Invalid command format", "category": MessageCategory.SYSTEM_ERROR}
 
 
 @pytest.mark.asyncio
@@ -166,4 +170,7 @@ async def test_process_command_with_validation_generic_error() -> None:
     ):
         result = await processing.process_command_with_validation("look", {}, MagicMock(), None, "player1")
 
-    assert result == {"result": "An error occurred while processing your command."}
+    assert result == {
+        "result": "An error occurred while processing your command.",
+        "category": MessageCategory.SYSTEM_ERROR,
+    }

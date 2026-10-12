@@ -14,6 +14,7 @@ from server.command_handler_unified import (
     _handle_special_command_routing,
     _process_alias_expansion,
 )
+from server.constants.message_category import MessageCategory
 
 
 class TestEnsureAliasStorage:
@@ -64,7 +65,7 @@ class TestProcessAliasExpansion:
             patch("server.command_handler_unified.check_alias_safety", return_value=(False, "Unsafe alias", 0)),
         ):
             result = await _process_alias_expansion("testalias", [], mock_storage, "testplayer", {}, MagicMock())
-            assert result == {"result": "Unsafe alias"}
+            assert result == {"result": "Unsafe alias", "category": MessageCategory.SYSTEM_ERROR}
 
     @pytest.mark.asyncio
     async def test_process_alias_expansion_invalid_expanded(self):
@@ -80,7 +81,7 @@ class TestProcessAliasExpansion:
             patch("server.command_handler_unified.validate_expanded_command", return_value=(False, "Invalid command")),
         ):
             result = await _process_alias_expansion("testalias", [], mock_storage, "testplayer", {}, MagicMock())
-            assert result == {"result": "Invalid command"}
+            assert result == {"result": "Invalid command", "category": MessageCategory.SYSTEM_ERROR}
 
 
 class TestHandleSpecialCommandRouting:
@@ -106,7 +107,7 @@ class TestHandleSpecialCommandRouting:
         result = await _handle_special_command_routing(
             "alias", [], "alias test=look", None, "testplayer", {}, MagicMock()
         )
-        assert result == {"result": "Alias system not available"}
+        assert result == {"result": "Alias system not available", "category": MessageCategory.SYSTEM_ERROR}
 
     @pytest.mark.asyncio
     async def test_handle_special_command_routing_emote_conversion(self):

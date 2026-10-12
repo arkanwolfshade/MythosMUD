@@ -17,6 +17,7 @@ from typing import Protocol, cast, overload
 from sqlalchemy.exc import SQLAlchemyError
 from structlog.stdlib import BoundLogger
 
+from ..constants.message_category import MessageCategory
 from ..events.event_types import PlayerEnteredRoom, PlayerLeftRoom
 from .envelope import build_event
 from .message_builders import MessageBuilder
@@ -235,6 +236,7 @@ class PlayerRoomEventHandler:
             "command_response",
             {
                 "result": room_name,
+                "category": MessageCategory.ROOM_NAME,
                 "suppress_chat": False,
                 "is_html": False,
             },
