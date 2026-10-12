@@ -74,6 +74,22 @@ describe('message category palette', () => {
     }
   });
 
+  // chat.* kinds may share colours with each other, but no other category may reuse a chat colour: combat, status,
+  // system, room and command lines must stay distinguishable from chat by colour too (their glyph and register are
+  // a second cue, not the only one).
+  const nonChat = Object.keys(normal).filter(key => !key.startsWith('chat-'));
+  it.each(nonChat)('%s shares no colour with any chat.* category', name => {
+    for (const [label, palette] of [
+      ['normal', normal],
+      ['high contrast', highContrast],
+    ] as const) {
+      const chatColors = Object.entries(palette)
+        .filter(([key]) => key.startsWith('chat-'))
+        .map(([, color]) => color.toLowerCase());
+      expect(chatColors, `${name} in the ${label} palette`).not.toContain(palette[name].toLowerCase());
+    }
+  });
+
   it('measures contrast correctly (sanity check of the helper)', () => {
     expect(contrastRatio('#ffffff', '#000000')).toBeCloseTo(21, 0);
     expect(contrastRatio('#777777', '#1a1a1a')).toBeLessThan(NORMAL_MIN);
