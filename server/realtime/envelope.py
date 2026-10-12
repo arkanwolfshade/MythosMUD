@@ -22,6 +22,8 @@ from collections.abc import Mapping
 from datetime import UTC, datetime
 from typing import Protocol, cast, override
 
+from ..constants.message_category import MessageCategory
+
 
 class _SupportsEventSequence(Protocol):
     """Minimal typing for connection_manager passed to build_event (sequence_counter only)."""
@@ -97,11 +99,16 @@ def build_event(  # pylint: disable=too-many-arguments,too-many-positional-argum
         seq = connection_manager.sequence_counter
     else:
         seq = _get_next_global_sequence()  # Fallback for backward compatibility
+    payload: Mapping[str, object] = {} if data is None else data
+    if event_type == "command_response" and "category" not in payload:
+        # Shared floor for every direct command_response emitter (follow, party, spell, catch-up, ...);
+        # the websocket command chokepoint and chat/look/error paths set a more specific category first.
+        payload = {**payload, "category": MessageCategory.COMMAND_OUTPUT}
     event: dict[str, object] = {
         "event_type": event_type,
         "timestamp": utc_now_z(),
         "sequence_number": seq,
-        "data": {} if data is None else data,
+        "data": payload,
     }
     if room_id is not None:
         event["room_id"] = room_id

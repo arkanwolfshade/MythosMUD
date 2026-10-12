@@ -15,6 +15,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from structlog.stdlib import BoundLogger
 
 from ..async_persistence import AsyncPersistenceLayer
+from ..constants.message_category import MessageCategory
 from ..events.event_types import PlayerDeliriumRespawnedEvent, PlayerRespawnedEvent
 from ..models.player import Player
 from ..models.room import Room
@@ -313,6 +314,7 @@ class PlayerRespawnEventHandler:
                 "old_dp": event.old_dp,
                 "new_dp": event.new_dp,
                 "message": "The sanitarium calls you back from the threshold. You have been restored to life.",
+                "category": MessageCategory.SYSTEM_INFO,
                 "player": player_data,
                 "room": room_data,
                 # CRITICAL: Also include top-level players/npcs/occupants for client projector compatibility
@@ -550,6 +552,7 @@ class PlayerRespawnEventHandler:
                     "old_lucidity": event.old_lucidity,
                     "new_lucidity": event.new_lucidity,
                     "message": "You have been restored to lucidity and returned to the Sanitarium.",
+                    "category": MessageCategory.SYSTEM_INFO,
                     "player": player_data,
                     "room": room_data,
                 },

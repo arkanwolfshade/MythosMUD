@@ -14,6 +14,7 @@ from typing import cast
 
 import pytest
 
+from server.constants.message_category import MessageCategory
 from server.realtime.connection_manager import ConnectionManager
 from server.realtime.envelope import UUIDEncoder, build_event, utc_now_z
 
@@ -222,3 +223,20 @@ def test_build_event_json_serializable():
     assert parsed["event_type"] == "test.event"
     assert parsed["data"] == {"key": "value"}
     assert parsed["player_id"] == str(player_id)
+
+
+def test_build_event_defaults_command_response_to_command_output():
+    """Every direct command_response emitter gets a category even if it names none."""
+    payload = {"result": "You begin to follow Armitage."}
+    event = build_event("command_response", payload)
+    assert event["data"] == {**payload, "category": MessageCategory.COMMAND_OUTPUT}
+    assert "category" not in payload  # the caller's dict is not mutated
+
+
+def test_build_event_keeps_an_explicit_command_response_category():
+    event = build_event("command_response", {"result": "Hi", "category": MessageCategory.CHAT_SAY})
+    assert cast(dict[str, object], event["data"])["category"] == MessageCategory.CHAT_SAY
+
+
+def test_build_event_does_not_tag_other_event_types():
+    assert build_event("room_update", {"room": "r1"})["data"] == {"room": "r1"}

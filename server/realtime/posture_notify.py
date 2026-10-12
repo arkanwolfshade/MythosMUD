@@ -54,6 +54,26 @@ def format_room_posture_message(player_name: str, previous_position: str | None,
     return f"{player_name} shifts their posture uneasily."
 
 
+def attach_posture_self_message(
+    payload: dict[str, object],
+    posture_message: str,
+    *,
+    previous_position: str | None = None,
+    category: MessageCategory = MessageCategory.ROOM_MOVEMENT,
+) -> None:
+    """
+    Put the second-person posture line on a personal payload, tagged with its message category.
+
+    The client renders ``posture_message`` from player_update, player_dp_updated and player_dp_decay alike and
+    reads ``data.category`` to style it, so every attachment goes through here. Posture self-lines are
+    ``room.movement`` by default; a caller whose payload is about another domain (DP decay) passes its own.
+    """
+    payload["posture_message"] = posture_message
+    payload["category"] = category
+    if previous_position is not None:
+        payload["previous_position"] = previous_position
+
+
 def _self_posture_message(position: str) -> str:
     normalized = position.lower()
     entry = POSITION_MESSAGES.get(normalized)
@@ -111,15 +131,9 @@ async def _send_personal_posture_message(
     previous_position: str | None,
     new_position: str,
 ) -> None:
-    update_event = build_event(
-        "player_update",
-        {
-            "posture_message": self_message,
-            "previous_position": previous_position,
-            "stats": {"position": new_position},
-        },
-        player_id=str(player_id),
-    )
+    payload: dict[str, object] = {"previous_position": previous_position, "stats": {"position": new_position}}
+    attach_posture_self_message(payload, self_message)
+    update_event = build_event("player_update", payload, player_id=str(player_id))
     _ = await connection_manager.send_personal_message(player_id, update_event)
 
 

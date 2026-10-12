@@ -14,6 +14,7 @@ from typing import Any
 from anyio import sleep
 
 from ..config import get_config
+from ..constants.message_category import MessageCategory
 from ..realtime.envelope import build_event
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -58,7 +59,7 @@ async def _send_countdown_message(player_id: uuid.UUID, remaining: int, connecti
         message = f"You will disconnect in {remaining} second{'s' if remaining != 1 else ''}..."
         countdown_event = build_event(
             "command_response",
-            {"result": message},
+            {"result": message, "category": MessageCategory.SYSTEM_INFO},
             player_id=player_id,
             connection_manager=connection_manager,
         )
@@ -112,7 +113,7 @@ async def _disconnect_player_after_rest(  # pylint: disable=too-many-arguments,t
     try:
         disconnect_event = build_event(
             "intentional_disconnect",
-            {"message": "You have rested and disconnected from the game."},
+            {"message": "You have rested and disconnected from the game.", "category": MessageCategory.SYSTEM_INFO},
             player_id=player_id,
             connection_manager=connection_manager,
         )
