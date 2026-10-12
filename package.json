@@ -10,6 +10,8 @@
     "flatted": "^3.4.4",
     "markdown-it": ">=15.0.1",
     "linkify-it": ">=6.1.0",
-    "js-yaml": ">=5.4.1"
+    "js-yaml": ">=5.4.1",
+    "smol-toml": "^1.9.0",
+    "katex": "^0.18.2"
   }
 }

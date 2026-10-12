@@ -95,6 +95,8 @@
     },
     "linkify-it": "6.1.0",
     "js-yaml": "5.4.1",
+    "smol-toml": "^1.9.0",
+    "katex": "^0.18.2",
     "@asyncapi/specs": "6.11.1"
   }
 }
