@@ -9,6 +9,7 @@ from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from typing import Literal
 
+from ..constants.message_category import MessageCategory
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.liability_types import LiabilityStackEntry
 
@@ -105,6 +106,7 @@ async def send_lucidity_change_event(
         "max_lcd": event_extras.max_lcd if event_extras.max_lcd is not None else 100,
         "delta": delta,
         "tier": tier,
+        "category": MessageCategory.STATUS_LUCIDITY.value,
     }
 
     liability_strings = _format_liabilities(event_extras.liabilities)
@@ -134,6 +136,7 @@ async def send_catatonia_event(  # pylint: disable=too-many-arguments,too-many-p
         "status": status,
         "rescuer_name": rescuer_name,
         "target_name": target_name,
+        "category": MessageCategory.STATUS_LUCIDITY.value,
     }
     if current_lcd is not None:
         payload["current_lcd"] = current_lcd
@@ -164,6 +167,7 @@ async def send_rescue_update_event(
         "status": status,
         "rescuer_name": rescuer_name,
         "target_name": target_name,
+        "category": MessageCategory.STATUS_RESCUE.value,
     }
     if role is not None:
         payload["role"] = role

@@ -1,5 +1,6 @@
 // State/room/player/combat event handlers for the projector (split from projector.ts for file-nloc)
 
+import type { MessageCategory } from '../../../types/messageCategory';
 import { buildLucidityStatus } from '../../../utils/lucidityEventUtils';
 import type { GameEvent } from '../eventHandlers/types';
 import type { Player, QuestLogEntry, Room, RoomContainerSummary } from '../types';
@@ -208,6 +209,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
       const msg = buildChatMessage(reason.trim(), event.timestamp, {
         messageType: 'system',
         channel: GAME_LOG_CHANNEL,
+        category: event.data.category as MessageCategory | undefined,
       });
       next = { ...next, messages: appendMessage(prevState.messages, msg) };
     }

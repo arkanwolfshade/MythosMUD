@@ -13,6 +13,7 @@ from typing import Protocol, cast
 
 from structlog.stdlib import BoundLogger
 
+from server.constants.message_category import MessageCategory
 from server.events.event_types import NPCDied
 
 from ..services.nats_exceptions import NATSError
@@ -171,7 +172,11 @@ async def _npc_died_broadcast_and_bridge(
     room_id, npc_id, npc_name = ids
 
     npc_display = npc_name or "An unknown creature"
-    broadcast_data = {**data, "message": f"The {npc_display} has been slain."}
+    broadcast_data = {
+        **data,
+        "message": f"The {npc_display} has been slain.",
+        "category": MessageCategory.COMBAT_DEATH.value,
+    }
 
     _ = await connection_manager.broadcast_room_event("npc_died", room_id, broadcast_data)
     logger.debug("NPC died event broadcasted", room_id=room_id, npc_id=npc_id, npc_name=npc_name)
