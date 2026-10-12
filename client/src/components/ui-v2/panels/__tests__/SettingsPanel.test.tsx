@@ -38,6 +38,22 @@ describe('SettingsPanel', () => {
     expect(saved.chatGrain).toBe(false);
   });
 
+  it('adds a Text labels toggle (default off) that sets the class on <html> and persists', () => {
+    renderPanel(<SettingsPanel />);
+    const toggle = screen.getByLabelText('Text labels') as HTMLInputElement;
+    expect(toggle.checked).toBe(false);
+    fireEvent.click(toggle);
+    expect(toggle.checked).toBe(true);
+    expect(document.documentElement.classList.contains('text-labels')).toBe(true);
+    expect(JSON.parse(localStorage.getItem('mythosmud-ui-preferences') ?? '{}').textLabels).toBe(true);
+  });
+
+  it('applies the High contrast toggle to <html>', () => {
+    renderPanel(<SettingsPanel />);
+    fireEvent.click(screen.getByLabelText('High contrast'));
+    expect(document.documentElement.classList.contains('high-contrast')).toBe(true);
+  });
+
   it('renders the other dormant preference toggles', () => {
     renderPanel(<SettingsPanel />);
     expect(screen.getByLabelText('Animations')).toBeInTheDocument();

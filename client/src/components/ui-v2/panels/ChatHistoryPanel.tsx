@@ -7,6 +7,7 @@ import { extractChannelFromMessage, isChatContent } from '../../../utils/message
 import { SafeHtml } from '../../common/SafeHtml';
 import { ChannelSelector, EldritchIcon, MythosIcons, TerminalButton } from '../primitives';
 import type { ChatMessage } from '../types';
+import { getMessageCategoryClass, isPlainRegisterCategory } from '../utils/messageCategoryStyle';
 
 interface ChatHistoryPanelProps {
   messages: ChatMessage[];
@@ -37,7 +38,13 @@ const TYPE_MESSAGE_CLASSES: Record<string, string> = {
   shout: 'text-mythos-terminal-warning font-bold',
 };
 
+/** Category routing: the Chat panel shows chat.* only; every other category lives in Game Info. */
+function isChatCategory(category: string): boolean {
+  return category.startsWith('chat.');
+}
+
 function isExcludedFromChatPanel(message: ChatMessage): boolean {
+  if (message.category) return !isChatCategory(message.category);
   return (
     message.channel === 'game-log' ||
     message.messageType === 'system' ||
@@ -56,6 +63,11 @@ function matchesSelectedChannel(
   isAllChannelSelected: boolean
 ): boolean {
   if (isAllChannelSelected) return true;
+  if (message.category) {
+    // The selector filters on conversation identity (message.channel); category only supplies a fallback.
+    const categoryChannel = message.channel || message.category.slice('chat.'.length);
+    return categoryChannel === normalizedSelectedChannel;
+  }
   const messageChannel = message.channel || extractChannelFromMessage(message.text) || 'local';
   if (message.messageType === 'error') return messageChannel === normalizedSelectedChannel;
   if (message.messageType !== 'chat' && !isChatContent(message.text)) return false;
@@ -83,7 +95,20 @@ function classFromTags(tags: string[] | undefined): string | undefined {
   return undefined;
 }
 
+function getCategorizedMessageClass(category: string): string | undefined {
+  const categoryClass = getMessageCategoryClass(category);
+  if (!categoryClass) return undefined;
+  // #804/ADR-025: the corruption tint reaches only the plain (speech/ambient) register; alert,
+  // private, action, meta and heading lines keep their semantic color. The register is a static
+  // property of the category, so this stays a global filter on the viewer's own corruption value.
+  // #714: no branch here may depend on anything but the category -- a hallucinated message carries
+  // the same category as the real one and must not look different.
+  return isPlainRegisterCategory(category) ? `${categoryClass} mythos-corruption-text` : categoryClass;
+}
+
 function getMessageClass(message: ChatMessage): string {
+  const categorized = message.category ? getCategorizedMessageClass(message.category) : undefined;
+  if (categorized) return categorized;
   // #804: corruption's tint only reaches ordinary chat lines -- a tagged or typed message (error,
   // warning, whisper, ...) keeps its semantic color untouched, since that color carries meaning
   // the decorative filter shouldn't dilute. Which messages qualify is a static property of type/
@@ -206,7 +231,10 @@ export const ChatHistoryPanel: React.FC<ChatHistoryPanelProps> = props => {
   );
 
   const historyEligibleMessages = useMemo(
-    () => messages.filter(message => message.messageType !== 'system'),
+    () =>
+      messages.filter(message =>
+        message.category ? !message.category.startsWith('system.') : message.messageType !== 'system'
+      ),
     [messages]
   );
   const visibleMessages = isHistoryVisible ? historyEligibleMessages : filteredMessages;

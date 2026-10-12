@@ -1,5 +1,9 @@
 import React from 'react';
 import type { Room } from '../types';
+import { getMessageCategoryClass } from '../utils/messageCategoryStyle';
+
+// Heading shares the room.name look (accent font) with the room-name line in Game Info.
+const ROOM_NAME_CLASS = getMessageCategoryClass('room.name') ?? 'text-mythos-terminal-text';
 
 interface LocationPanelProps {
   room: Room | null;
@@ -55,7 +59,7 @@ export const LocationPanel: React.FC<LocationPanelProps> = ({ room }) => {
 
   return (
     <div className="p-4 space-y-2">
-      <div className="text-base text-mythos-terminal-text">
+      <div className={`text-base ${ROOM_NAME_CLASS}`} data-testid="location-heading">
         {formatLocationName(room.zone || 'Unknown')} &gt; {formatLocationName(room.sub_zone || 'Unknown')} &gt;{' '}
         {room.name}
       </div>

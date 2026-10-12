@@ -86,6 +86,16 @@ export const useDebugInfoPreference = () => {
   };
 };
 
+export const useTextLabelsPreference = () => {
+  const { preferences, updatePreferences } = useTheme();
+  return {
+    textLabels: preferences.textLabels,
+    setTextLabels: (textLabels: boolean) => {
+      updatePreferences({ textLabels });
+    },
+  };
+};
+
 export const useChatGrainPreference = () => {
   const { preferences, updatePreferences } = useTheme();
   return {

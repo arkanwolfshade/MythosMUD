@@ -3,6 +3,7 @@ import { ansiToHtmlWithBreaks } from '../../../utils/ansiToHtml';
 import { SafeHtml } from '../../common/SafeHtml';
 import { EldritchIcon, MythosIcons, TerminalButton } from '../primitives';
 import type { ChatMessage } from '../types';
+import { getMessageCategoryClass } from '../utils/messageCategoryStyle';
 
 interface GameInfoPanelProps {
   messages: ChatMessage[];
@@ -17,6 +18,21 @@ const GAME_INFO_CHAT_CHANNELS = new Set(['party', 'local', 'say']);
 
 function chatMessageVisibleInGameInfo(channel: string | undefined): boolean {
   return channel != null && GAME_INFO_CHAT_CHANNELS.has(channel);
+}
+
+/** Category routing: every category shows in Game Info except chat.*, of which only say/local/party are mirrored. */
+function categoryVisibleInGameInfo(category: string): boolean {
+  if (!category.startsWith('chat.')) return true;
+  return chatMessageVisibleInGameInfo(category.slice('chat.'.length));
+}
+
+/** The dropdown's legacy filter keys (system/error/combat/emote/...) for a categorized message. */
+function filterKeyForCategory(category: string): string | undefined {
+  const [domain, kind] = category.split('.');
+  if (domain === 'combat') return 'combat';
+  if (domain === 'system') return kind === 'error' ? 'error' : 'system';
+  if (domain === 'chat') return kind;
+  return undefined;
 }
 
 // Simplified game info panel without search history and time filters
@@ -72,12 +88,15 @@ export const GameInfoPanel: React.FC<GameInfoPanelProps> = ({
   // Filter messages - simplified (no time filter, no search history)
   const filteredMessages = messages.filter(message => {
     // Exclude chat from Game Info except room-scoped channels (E2E asserts on [data-message-text] here).
-    if (message.messageType === 'chat' && !chatMessageVisibleInGameInfo(message.channel)) {
+    if (message.category) {
+      if (!categoryVisibleInGameInfo(message.category)) return false;
+    } else if (message.messageType === 'chat' && !chatMessageVisibleInGameInfo(message.channel)) {
       return false;
     }
 
     // Apply message type filter
-    if (messageFilter !== 'all' && message.messageType !== messageFilter) {
+    const filterKey = message.category ? filterKeyForCategory(message.category) : message.messageType;
+    if (messageFilter !== 'all' && filterKey !== messageFilter) {
       return false;
     }
 
@@ -191,7 +210,10 @@ export const GameInfoPanel: React.FC<GameInfoPanelProps> = ({
                 <span className="text-xs text-mythos-terminal-text-secondary shrink-0">
                   {formatTimestamp(message.timestamp)}
                 </span>
-                <div className={`flex-1 ${getMessageClass(message.messageType)}`} data-message-text={message.text}>
+                <div
+                  className={`flex-1 ${getMessageCategoryClass(message.category) ?? getMessageClass(message.messageType)}`}
+                  data-message-text={message.text}
+                >
                   {message.isHtml ? (
                     <SafeHtml
                       html={message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text)}

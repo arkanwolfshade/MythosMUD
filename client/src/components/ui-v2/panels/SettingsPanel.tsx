@@ -5,6 +5,7 @@ import {
   useChatGrainPreference,
   useCompactModePreference,
   useDebugInfoPreference,
+  useTextLabelsPreference,
 } from '../../../contexts/hooks/useThemeContext';
 import { EldritchIcon, MythosIcons } from '../primitives';
 
@@ -47,6 +48,7 @@ export const SettingsPanel: React.FC = () => {
   const { compactMode, setCompactMode } = useCompactModePreference();
   const { showDebugInfo, setShowDebugInfo } = useDebugInfoPreference();
   const { highContrast, setHighContrast, reducedMotion, setReducedMotion } = useAccessibilityPreference();
+  const { textLabels, setTextLabels } = useTextLabelsPreference();
 
   return (
     <div className="h-full flex flex-col font-mono" data-testid="settings-panel">
@@ -78,6 +80,12 @@ export const SettingsPanel: React.FC = () => {
           description="Increase UI contrast."
           checked={highContrast}
           onChange={setHighContrast}
+        />
+        <SettingsToggleRow
+          label="Text labels"
+          description="Show words such as [Combat] instead of icons before each kind of message."
+          checked={textLabels}
+          onChange={setTextLabels}
         />
         <SettingsToggleRow
           label="Reduced motion"
