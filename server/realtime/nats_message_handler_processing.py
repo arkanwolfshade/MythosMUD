@@ -9,6 +9,7 @@ import uuid
 from datetime import UTC, datetime
 from typing import NotRequired, TypedDict
 
+from ..constants.message_category import MessageCategory
 from ..realtime.circuit_breaker import CircuitBreakerOpen
 from ..realtime.dead_letter_queue import DeadLetterMessage
 from ..realtime.envelope import build_event
@@ -53,6 +54,21 @@ class _ValidatedChatFields(TypedDict):
     target_id: NotRequired[str | None]
     target_name: NotRequired[str | None]
     speaker_kind: NotRequired[str | None]
+
+
+# NATS chat channel -> semantic category. "pose" renders like "emote" (same formatter); unknown channels get none.
+_CHANNEL_CATEGORY: dict[str, MessageCategory] = {
+    "say": MessageCategory.CHAT_SAY,
+    "local": MessageCategory.CHAT_LOCAL,
+    "global": MessageCategory.CHAT_GLOBAL,
+    "party": MessageCategory.CHAT_PARTY,
+    "whisper": MessageCategory.CHAT_WHISPER,
+    "shout": MessageCategory.CHAT_SHOUT,
+    "emote": MessageCategory.CHAT_EMOTE,
+    "pose": MessageCategory.CHAT_EMOTE,
+    "admin": MessageCategory.CHAT_ADMIN,
+    "system": MessageCategory.SYSTEM_INFO,
+}
 
 
 def _optional_str(value: object) -> str | None:
@@ -327,6 +343,9 @@ class NATSMessageProcessingMixin(  # pylint: disable=too-few-public-methods  # R
         speaker_kind = chat_fields.get("speaker_kind")
         if speaker_kind:
             event_data["speaker_kind"] = speaker_kind
+        category = _CHANNEL_CATEGORY.get(chat_fields["channel"])
+        if category is not None:
+            event_data["category"] = category
         return build_event(
             "chat_message",
             event_data,

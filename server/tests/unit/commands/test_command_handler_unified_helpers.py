@@ -11,6 +11,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from server.constants.message_category import MessageCategory
+
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 
@@ -40,6 +42,7 @@ class TestHelperFunctions:
             message = result["result"]
             assert isinstance(message, str)
             assert "Too many commands" in message
+            assert result["category"] == MessageCategory.SYSTEM_ERROR
             mock_audit.assert_called_once()
 
     def test_validate_command_basics_empty(self):
@@ -60,6 +63,7 @@ class TestHelperFunctions:
         message = result["result"]
         assert isinstance(message, str)
         assert "too long" in message.lower()
+        assert result["category"] == MessageCategory.SYSTEM_ERROR
 
     def test_validate_command_basics_invalid_content(self):
         """Test _validate_command_basics returns result for invalid content."""
@@ -469,7 +473,7 @@ class TestHandleSpecialCommandRouting:
         result = await _handle_special_command_routing(
             "alias", ["test", "look"], "alias test look", None, "testplayer", mock_user, mock_request
         )
-        assert result == {"result": "Alias system not available"}
+        assert result == {"result": "Alias system not available", "category": MessageCategory.SYSTEM_ERROR}
 
     @pytest.mark.asyncio
     async def test_handle_special_command_routing_emote_conversion(self):

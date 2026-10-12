@@ -20,11 +20,13 @@ from server.commands.communication_commands_flows import (
     _str_error_from_chat_result,
     _whisper_id_pair_or_error,
     flow_global_command,
+    flow_local_command,
     flow_reply_command,
     flow_say_command,
     flow_system_command,
     flow_whisper_command,
 )
+from server.constants.message_category import MessageCategory
 
 
 def test_str_error_from_chat_result_string() -> None:
@@ -194,6 +196,8 @@ async def test_chat_send_with_room_bundle_success() -> None:
         return {"success": True}
 
     cfg = _RoomChannelOutcomeConfig(
+        category=MessageCategory.CHAT_SAY,
+        channel="say",
         success_fmt="OK: {0}",
         success_log="ok",
         fail_log="fail",
@@ -208,7 +212,7 @@ async def test_chat_send_with_room_bundle_success() -> None:
         send,
         cfg,
     )
-    assert out == {"result": "OK: hello"}
+    assert out == {"result": "OK: hello", "category": MessageCategory.CHAT_SAY, "channel": "say"}
 
 
 @pytest.mark.asyncio
@@ -222,6 +226,8 @@ async def test_chat_send_with_room_bundle_chat_failure() -> None:
         return {"success": False, "error": "nope"}
 
     cfg = _RoomChannelOutcomeConfig(
+        category=MessageCategory.CHAT_SAY,
+        channel="say",
         success_fmt="OK: {0}",
         success_log="ok",
         fail_log="fail",
@@ -251,6 +257,8 @@ async def test_chat_send_with_room_bundle_exception_returns_generic_message() ->
         raise RuntimeError("internal connection reset by peer")
 
     cfg = _RoomChannelOutcomeConfig(
+        category=MessageCategory.CHAT_SAY,
+        channel="say",
         success_fmt="OK: {0}",
         success_log="ok",
         fail_log="fail",
@@ -285,7 +293,7 @@ async def test_flow_say_command_success_broadcasts_room_message() -> None:
 
     out = await flow_say_command({"message": "hello room"}, request, "alice")
 
-    assert out == {"result": "You say: hello room"}
+    assert out == {"result": "You say: hello room", "category": MessageCategory.CHAT_SAY, "channel": "say"}
     send_say_message.assert_awaited_once_with(pid, "hello room")
 
 
@@ -328,7 +336,7 @@ async def test_flow_whisper_command_success_sends_private_message() -> None:
 
     out = await flow_whisper_command({"target": "bob", "message": "psst"}, request, "alice")
 
-    assert out == {"result": "You whisper to bob: psst"}
+    assert out == {"result": "You whisper to bob: psst", "category": MessageCategory.CHAT_WHISPER, "channel": "whisper"}
     send_whisper_message.assert_awaited_once_with(sender_id, target_id, "psst")
 
 
@@ -353,7 +361,11 @@ async def test_flow_reply_command_success_uses_container_services() -> None:
 
     out = await flow_reply_command({"message": "back at you"}, request, "alice")
 
-    assert out == {"result": "You whisper to bob: back at you"}
+    assert out == {
+        "result": "You whisper to bob: back at you",
+        "category": MessageCategory.CHAT_WHISPER,
+        "channel": "whisper",
+    }
     get_last_whisper_sender.assert_called_once_with("alice")
     send_whisper_message.assert_awaited_once_with(sender_id, target_id, "back at you")
 
@@ -413,3 +425,64 @@ async def test_flow_system_command_blocks_non_admin_user() -> None:
 
     assert out == {"result": "You must be an admin to send system messages."}
     send_system_message.assert_not_awaited()
+
+
+def _container_request(player_obj: object, chat_service: object, user_manager: object | None = None) -> SimpleNamespace:
+    player_service = MagicMock()
+    player_service.resolve_player_name = AsyncMock(return_value=player_obj)
+    container = SimpleNamespace(player_service=player_service, chat_service=chat_service, user_manager=user_manager)
+    return SimpleNamespace(app=SimpleNamespace(state=SimpleNamespace(container=container)))
+
+
+@pytest.mark.asyncio
+async def test_flow_local_command_echo_is_tagged_chat_local() -> None:
+    """The local echo carries category + channel so the client routes it to Chat without reading the text."""
+    player_obj = SimpleNamespace(current_room_id="room_a", player_id=uuid.uuid4())
+    chat_service = MagicMock()
+    chat_service.send_local_message = AsyncMock(return_value={"success": True, "message": {"id": "m1"}})
+
+    out = await flow_local_command({"message": "hi"}, _container_request(player_obj, chat_service), "alice")
+
+    assert out == {"result": "You say locally: hi", "category": MessageCategory.CHAT_LOCAL, "channel": "local"}
+
+
+@pytest.mark.asyncio
+async def test_flow_global_command_echo_is_tagged_chat_global() -> None:
+    player_obj = SimpleNamespace(level=3, player_id=uuid.uuid4())
+    chat_service = MagicMock()
+    chat_service.send_global_message = AsyncMock(return_value={"success": True, "message": {"id": "m1"}})
+
+    out = await flow_global_command({"message": "hello world"}, _container_request(player_obj, chat_service), "alice")
+
+    assert out == {
+        "result": "You say (global): hello world",
+        "category": MessageCategory.CHAT_GLOBAL,
+        "channel": "global",
+    }
+
+
+@pytest.mark.asyncio
+async def test_flow_system_command_echo_is_tagged_chat_admin() -> None:
+    player_obj = SimpleNamespace(player_id=uuid.uuid4())
+    chat_service = MagicMock()
+    chat_service.send_system_message = AsyncMock(return_value={"success": True, "message": {"id": "m1"}})
+    user_manager = MagicMock()
+    user_manager.is_admin = MagicMock(return_value=True)
+
+    out = await flow_system_command(
+        {"message": "maintenance"}, _container_request(player_obj, chat_service, user_manager), "alice"
+    )
+
+    assert out == {"result": "You system: maintenance", "category": MessageCategory.SYSTEM_INFO, "channel": "system"}
+
+
+@pytest.mark.asyncio
+async def test_flow_say_command_failure_is_not_tagged_as_chat() -> None:
+    """A failed send is command output (an error line), not a chat line."""
+    player_obj = SimpleNamespace(current_room_id="room_a", player_id=uuid.uuid4())
+    chat_service = MagicMock()
+    chat_service.send_say_message = AsyncMock(return_value={"success": False, "error": "muted"})
+
+    out = await flow_say_command({"message": "hi"}, _container_request(player_obj, chat_service), "alice")
+
+    assert out == {"result": "Error sending message: muted"}

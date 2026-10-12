@@ -11,6 +11,7 @@ from server.commands.communication_commands import (
     handle_pose_command,
     handle_say_command,
 )
+from server.constants.message_category import MessageCategory
 
 from .communication_commands_mocks import request_with_app_container
 
@@ -148,6 +149,8 @@ async def test_handle_me_command_success():
     )
 
     assert "TestPlayer waves hello" in result["result"]
+    assert result["category"] == MessageCategory.CHAT_EMOTE
+    assert result["channel"] == "emote"
 
 
 @pytest.mark.asyncio

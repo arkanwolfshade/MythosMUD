@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING, cast
 from fastapi import WebSocket, WebSocketDisconnect
 from structlog.stdlib import BoundLogger
 
+from ..constants.message_category import MessageCategory
 from ..error_types import ErrorMessages, ErrorType, create_websocket_error_response
 from ..structured_logging.enhanced_logging_config import get_logger
 from .envelope import build_event
@@ -100,7 +101,14 @@ async def _broadcast_command_room_if_needed(
     player = await connection_manager.get_player(player_id_uuid)
     if player and hasattr(player, "current_room_id"):
         room_id = player.current_room_id
-        broadcast_event = build_event("command_response", {"result": result["broadcast"]}, player_id=player_id)
+        broadcast_event = build_event(
+            "command_response",
+            {
+                "result": result["broadcast"],
+                "category": result.get("broadcast_category", MessageCategory.COMMAND_OUTPUT),
+            },
+            player_id=player_id,
+        )
         _ = await connection_manager.broadcast_to_room(str(room_id), broadcast_event, exclude_player=player_id)
         logger.debug("Broadcasted message to room", broadcast_type=result.get("broadcast_type"), room_id=room_id)
     else:
@@ -135,6 +143,7 @@ async def handle_game_command(
         cmd, cmd_args = parsed
 
         result = await process_websocket_command(cmd, cmd_args, player_id, connection_manager=cm)
+        _ = result.setdefault("category", MessageCategory.COMMAND_OUTPUT)
         await websocket.send_json(build_event("command_response", result, player_id=player_id))
         await _broadcast_command_room_if_needed(cm, player_id, result, cmd)
 
@@ -215,7 +224,7 @@ async def _websocket_unified_command_result(
     app_state: object | None = getattr(cm_app, "state", None) if cm_app is not None else None
     if not app_state:
         logger.error("No app state available for WebSocket request context")
-        return {"result": "Server configuration error. Please try again."}
+        return {"result": "Server configuration error. Please try again.", "category": MessageCategory.SYSTEM_ERROR}
 
     request_context = create_websocket_request_context(app_state=app_state, user=player)
     player_name = cast(str, getattr(player, "name", "Unknown"))
@@ -249,5 +258,5 @@ async def process_websocket_command(
     cm = resolve_websocket_connection_manager(connection_manager)
     player, error_result = await validate_player_and_persistence(cm, player_id)
     if error_result:
-        return {"result": error_result}
+        return {"result": error_result, "category": MessageCategory.SYSTEM_ERROR}
     return await _websocket_unified_command_result(cm, player, player_id, cmd, args)

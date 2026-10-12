@@ -9,6 +9,7 @@ from server.command_handler.alias_expansion import (
     handle_expanded_command,
     validate_expanded_command,
 )
+from server.constants.message_category import MessageCategory
 from server.utils.alias_graph import AliasGraph
 
 
@@ -103,7 +104,10 @@ def test_validate_expanded_command_ok() -> None:
 @pytest.mark.asyncio
 async def test_handle_expanded_command_depth_limit() -> None:
     result = await handle_expanded_command("look", {}, MagicMock(), MagicMock(), "player1", depth=11)
-    assert result == {"result": "Alias expansion too deep - possible loop detected"}
+    assert result == {
+        "result": "Alias expansion too deep - possible loop detected",
+        "category": MessageCategory.SYSTEM_ERROR,
+    }
 
 
 @pytest.mark.asyncio

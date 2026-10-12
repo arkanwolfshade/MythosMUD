@@ -8,6 +8,7 @@ listing items, NPCs, players, and exits in the room.
 from collections.abc import Mapping, Sequence
 from typing import Any, cast
 
+from ..constants.message_category import MessageCategory
 from ..realtime.occupant_display import format_occupant_display_name
 from ..services.exit_hallucination import get_hallucinated_exits
 from ..services.lucidity_tier_cache import lucidity_tier_cache
@@ -215,6 +216,7 @@ async def _handle_room_look(
     drop_lines = format_room_drop_lines(room_drops)
     return {
         "result": rendered,
+        "category": MessageCategory.ROOM_DESCRIPTION,
         "drop_summary": "\n".join(drop_lines),  # Keep for backward compatibility
         "room_drops": room_drops,  # Keep for backward compatibility
     }
@@ -242,7 +244,7 @@ async def _handle_direction_look(
                 direction=direction,
                 target_room_id=target_room_id,
             )
-            return {"result": f"{name}\n{desc}"}
+            return {"result": f"{name}\n{desc}", "category": MessageCategory.ROOM_DESCRIPTION}
     logger.debug("No valid exit in direction", player=player_name, direction=direction)
     return {"result": "You see nothing special that way."}
 

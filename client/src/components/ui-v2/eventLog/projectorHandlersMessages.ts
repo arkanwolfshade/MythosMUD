@@ -1,5 +1,6 @@
 // Message/chat/combat/tick event handlers for the projector (split from projector.ts for file-nloc)
 
+import type { MessageCategory } from '../../../types/messageCategory';
 import type { MythosTimePayload } from '../../../types/mythosTime';
 import { logger } from '../../../utils/logger';
 import { determineMessageType } from '../../../utils/messageTypeUtils';
@@ -68,6 +69,11 @@ function appendHolidayMessages(
     );
   }
   return { ...prevState, messages };
+}
+
+/** The server-assigned semantic category on an event payload, if it sent one. */
+function readCategory(data: GameEvent['data']): MessageCategory | undefined {
+  return typeof data.category === 'string' ? (data.category as MessageCategory) : undefined;
 }
 
 export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
@@ -149,6 +155,12 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
       !message.includes('Exits:') &&
       !message.includes('Description:') &&
       message.trim() === prevState.room.name;
+    const category = readCategory(event.data);
+    // Server-tagged chat echoes name their conversation; otherwise fall back to the legacy text guess.
+    const serverChatChannel =
+      category?.startsWith('chat.') && typeof event.data.channel === 'string' && event.data.channel
+        ? (event.data.channel as string)
+        : undefined;
     let nextState = prevState;
     if (!suppressChat && message && !isRoomNameOnly) {
       const messageTypeResult = determineMessageType(message);
@@ -156,7 +168,8 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
         isHtml,
         isCompleteHtml: isHtml, // a command result flagged is_html is finished markup (e.g. help), not ANSI text
         messageType: messageTypeResult.type,
-        channel: messageTypeResult.channel ?? 'game',
+        channel: serverChatChannel ?? messageTypeResult.channel ?? 'game',
+        category,
       });
       nextState = { ...prevState, messages: appendMessage(prevState.messages, msg) };
     } else if (gameLogMessage && !isRoomNameOnly) {
@@ -165,6 +178,7 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
         isCompleteHtml: isHtml,
         messageType: 'system',
         channel: gameLogChannel,
+        category,
       });
       nextState = { ...prevState, messages: appendMessage(prevState.messages, msg) };
     }
@@ -215,7 +229,11 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
             : channel === 'system'
               ? 'system'
               : 'chat';
-    const msg = buildChatMessage(message, event.timestamp, { messageType, channel });
+    const msg = buildChatMessage(message, event.timestamp, {
+      messageType,
+      channel,
+      category: readCategory(event.data),
+    });
     return { ...prevState, messages: appendMessage(prevState.messages, msg) };
   },
 
