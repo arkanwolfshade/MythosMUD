@@ -18,7 +18,7 @@ from ..events.event_types import PlayerDiedEvent, PlayerDPDecayEvent, PlayerDPUp
 from ..models.player import Player
 from .connection_manager import ConnectionManager
 from .envelope import build_event
-from .player_event_handlers_utils import PlayerEventHandlerUtils
+from .player_event_handler_base import PlayerEventHandlerBase
 from .posture_notify import attach_posture_self_message, emit_posture_change, normalize_posture
 
 
@@ -283,30 +283,8 @@ async def _dispatch_player_dp_decay_payload(
     logger.debug("Sent DP decay notification to player", player_id=player_id_str, new_dp=event.new_dp)
 
 
-class PlayerStateEventHandler:
+class PlayerStateEventHandler(PlayerEventHandlerBase):
     """Handles player state update events (XP, DP, death, decay)."""
-
-    connection_manager: ConnectionManager | None
-    utils: PlayerEventHandlerUtils
-    _logger: BoundLogger
-
-    def __init__(
-        self,
-        connection_manager: ConnectionManager | None,
-        utils: PlayerEventHandlerUtils,
-        logger: BoundLogger,
-    ) -> None:
-        """
-        Initialize state event handler.
-
-        Args:
-            connection_manager: ConnectionManager instance
-            utils: PlayerEventHandlerUtils instance
-            logger: Logger instance
-        """
-        self.connection_manager = connection_manager
-        self.utils = utils
-        self._logger = logger
 
     async def handle_player_xp_awarded(self, event: PlayerXPAwardEvent) -> None:
         """
