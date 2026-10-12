@@ -64,24 +64,24 @@
   --cat-chat-emote: #d6e6a0;
   --cat-chat-admin: #f5c97a;
   /* combat */
-  --cat-combat-hit: #f2a93b;
+  --cat-combat-hit: #ff7a1a;
   --cat-combat-hurt: #ff8a5c;
   --cat-combat-miss: #a8b0b8;
   --cat-combat-death: #ff6b6b;
-  --cat-combat-status: #e8dc5a;
+  --cat-combat-status: #ff4081;
   /* room */
   --cat-room-name: #e8d9a8;
   --cat-room-description: #d8d2c0;
   --cat-room-exits: #c4b18a;
   --cat-room-movement: #a6b8aa;
   /* system */
-  --cat-system-info: #7cc4ee;
-  --cat-system-warning: #f2a93b;
+  --cat-system-info: #6ea0ff;
+  --cat-system-warning: #ffcd00;
   --cat-system-error: #ff6b5c;
   /* status */
-  --cat-status-lucidity: #c9a6f0;
+  --cat-status-lucidity: #a569ff;
   --cat-status-health: #ff9e7a;
-  --cat-status-rescue: #6fd3a8;
+  --cat-status-rescue: #ff5fd2;
   /* command */
   --cat-command-output: #4ee07a;
 
@@ -98,21 +98,21 @@ html.high-contrast {
   --cat-chat-shout: #ffc870;
   --cat-chat-emote: #e8f4c0;
   --cat-chat-admin: #ffe0a0;
-  --cat-combat-hit: #ffc870;
+  --cat-combat-hit: #ffa05c;
   --cat-combat-hurt: #ffb090;
   --cat-combat-miss: #d0d6dc;
   --cat-combat-death: #ff9c9c;
-  --cat-combat-status: #f6ee8c;
+  --cat-combat-status: #ff83ad;
   --cat-room-name: #f6ecc8;
   --cat-room-description: #ece8dc;
   --cat-room-exits: #e0d2b0;
   --cat-room-movement: #cfdcd2;
-  --cat-system-info: #b0e0ff;
-  --cat-system-warning: #ffc870;
+  --cat-system-info: #9abcff;
+  --cat-system-warning: #ffdc4c;
   --cat-system-error: #ff9a8e;
-  --cat-status-lucidity: #e2cffa;
+  --cat-status-lucidity: #c096ff;
   --cat-status-health: #ffbfa6;
-  --cat-status-rescue: #a6f0cf;
+  --cat-status-rescue: #ff8fe0;
   --cat-command-output: #8cf5a8;
 
   --cat-border-width: 4px;
