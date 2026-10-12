@@ -1,9 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { ALL_MESSAGES_CHANNEL, CHAT_CHANNEL_OPTIONS, DEFAULT_CHANNEL } from '../../../config/channels';
 import { useChatGrainPreference } from '../../../contexts/hooks/useThemeContext';
-import { ansiToHtmlWithBreaks } from '../../../utils/ansiToHtml';
 import { decayMessageText } from '../../../utils/corruptionDecay';
-import { extractChannelFromMessage, isChatContent } from '../../../utils/messageTypeUtils';
 import { SafeHtml } from '../../common/SafeHtml';
 import { ChannelSelector, EldritchIcon, MythosIcons, TerminalButton } from '../primitives';
 import type { ChatMessage } from '../types';
@@ -21,40 +19,9 @@ interface ChatHistoryPanelProps {
   corruption?: number;
 }
 
-// #714: no 'hallucination' entry here -- under server-authoritative hallucinations, a fake
-// whisper or NPC tell arrives as an ordinary chat message (see ADR-024) and must render
-// indistinguishably from a real one. A distinct color would itself be the truth-leak.
-const TAG_MESSAGE_CLASSES: Record<string, string> = {
-  'command-misfire': 'text-mythos-terminal-warning font-semibold',
-  rescue: 'text-mythos-terminal-primary font-semibold',
-};
-
-const TYPE_MESSAGE_CLASSES: Record<string, string> = {
-  emote: 'text-mythos-terminal-primary italic',
-  system: 'text-mythos-terminal-warning font-bold',
-  error: 'text-mythos-terminal-error font-bold',
-  whisper: 'text-mythos-terminal-secondary italic',
-  party: 'text-mythos-terminal-primary',
-  shout: 'text-mythos-terminal-warning font-bold',
-};
-
 /** Category routing: the Chat panel shows chat.* only; every other category lives in Game Info. */
 function isChatCategory(category: string): boolean {
   return category.startsWith('chat.');
-}
-
-function isExcludedFromChatPanel(message: ChatMessage): boolean {
-  if (message.category) return !isChatCategory(message.category);
-  return (
-    message.channel === 'game-log' ||
-    message.messageType === 'system' ||
-    message.messageType === 'combat' ||
-    message.messageType === 'command'
-  );
-}
-
-function isWhisperOrParty(channel: string): boolean {
-  return channel === 'whisper' || channel === 'party';
 }
 
 function matchesSelectedChannel(
@@ -63,16 +30,9 @@ function matchesSelectedChannel(
   isAllChannelSelected: boolean
 ): boolean {
   if (isAllChannelSelected) return true;
-  if (message.category) {
-    // The selector filters on conversation identity (message.channel); category only supplies a fallback.
-    const categoryChannel = message.channel || message.category.slice('chat.'.length);
-    return categoryChannel === normalizedSelectedChannel;
-  }
-  const messageChannel = message.channel || extractChannelFromMessage(message.text) || 'local';
-  if (message.messageType === 'error') return messageChannel === normalizedSelectedChannel;
-  if (message.messageType !== 'chat' && !isChatContent(message.text)) return false;
-  if (isWhisperOrParty(messageChannel)) return normalizedSelectedChannel === messageChannel;
-  return messageChannel === normalizedSelectedChannel;
+  // The selector filters on conversation identity (message.channel); the category suffix only supplies a fallback.
+  const categoryChannel = message.channel || message.category.slice('chat.'.length);
+  return categoryChannel === normalizedSelectedChannel;
 }
 
 function filterChatHistoryMessages(
@@ -82,17 +42,9 @@ function filterChatHistoryMessages(
 ): ChatMessage[] {
   return messages.filter(
     message =>
-      !isExcludedFromChatPanel(message) &&
+      isChatCategory(message.category) &&
       matchesSelectedChannel(message, normalizedSelectedChannel, isAllChannelSelected)
   );
-}
-
-function classFromTags(tags: string[] | undefined): string | undefined {
-  for (const tag of tags ?? []) {
-    const tagClass = TAG_MESSAGE_CLASSES[tag];
-    if (tagClass) return tagClass;
-  }
-  return undefined;
 }
 
 function getCategorizedMessageClass(category: string): string | undefined {
@@ -107,14 +59,9 @@ function getCategorizedMessageClass(category: string): string | undefined {
 }
 
 function getMessageClass(message: ChatMessage): string {
-  const categorized = message.category ? getCategorizedMessageClass(message.category) : undefined;
-  if (categorized) return categorized;
-  // #804: corruption's tint only reaches ordinary chat lines -- a tagged or typed message (error,
-  // warning, whisper, ...) keeps its semantic color untouched, since that color carries meaning
-  // the decorative filter shouldn't dilute. Which messages qualify is a static property of type/
-  // tag, never of the message's own content, so this stays a *global* filter (ADR-025): the same
-  // corruption value affects every default-colored line identically.
-  return classFromTags(message.tags) ?? TYPE_MESSAGE_CLASSES[message.messageType ?? ''] ?? 'mythos-corruption-text';
+  // #714: styling depends on the category alone -- a hallucinated message carries the same category as the
+  // real one and must not look different.
+  return getCategorizedMessageClass(message.category) ?? 'mythos-corruption-text';
 }
 
 function formatTimestamp(timestamp: string): string {
@@ -231,10 +178,7 @@ export const ChatHistoryPanel: React.FC<ChatHistoryPanelProps> = props => {
   );
 
   const historyEligibleMessages = useMemo(
-    () =>
-      messages.filter(message =>
-        message.category ? !message.category.startsWith('system.') : message.messageType !== 'system'
-      ),
+    () => messages.filter(message => !message.category.startsWith('system.')),
     [messages]
   );
   const visibleMessages = isHistoryVisible ? historyEligibleMessages : filteredMessages;
@@ -301,8 +245,7 @@ function ChatHistoryMessageBody({
   message: ChatMessage;
   corruption: number;
 }): React.ReactElement {
-  const html = message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text);
-  if (message.isHtml) return <SafeHtml html={html} />;
+  if (message.isHtml) return <SafeHtml html={message.text} />;
   // #804: decay is scoped to plain text only -- corrupting arbitrary sanitized HTML text nodes
   // would need DOM-tree-aware processing, out of proportion for a decorative effect.
   const bodyText = decayMessageText(message.rawText ?? message.text, corruption, message.timestamp);

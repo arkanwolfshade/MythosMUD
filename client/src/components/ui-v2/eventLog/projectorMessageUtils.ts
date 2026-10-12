@@ -1,46 +1,46 @@
 // Message-building helpers for the projector (split from projector.ts for file-nloc)
 
-import type { MessageCategory } from '../../../types/messageCategory';
+import { MESSAGE_CATEGORIES, type MessageCategory } from '../../../types/messageCategory';
+import { logger } from '../../../utils/logger';
 import type { GameEvent } from '../eventHandlers/types';
 import type { ChatMessage } from '../types';
 import { sanitizeChatMessageForState } from '../utils/messageUtils';
 
-export const GAME_LOG_CHANNEL = 'game-log';
+const KNOWN_CATEGORIES: ReadonlySet<string> = new Set(MESSAGE_CATEGORIES);
+const FALLBACK_CATEGORY: MessageCategory = 'command.output';
+const warnedEventTypes = new Set<string>();
 
-const CHANNEL_TO_TYPE: Record<string, 'whisper' | 'shout' | 'emote' | 'say'> = {
-  whisper: 'whisper',
-  shout: 'shout',
-  emote: 'emote',
-};
-
-function channelToMessageType(channel: string): 'whisper' | 'shout' | 'emote' | 'say' {
-  return CHANNEL_TO_TYPE[channel] ?? 'say';
+/**
+ * The server-assigned category on an event payload. A missing or unknown value falls back to
+ * `command.output` and, in development only, logs one warning per event type.
+ */
+export function readCategory(data: Record<string, unknown> | undefined, eventType: string): MessageCategory {
+  const value = data?.category;
+  if (typeof value === 'string' && KNOWN_CATEGORIES.has(value)) return value as MessageCategory;
+  if (import.meta.env.DEV && !warnedEventTypes.has(eventType)) {
+    warnedEventTypes.add(eventType);
+    logger.warn(
+      'projector',
+      `Event "${eventType}" carried ${value === undefined ? 'no' : 'an unknown'} message category; using ${FALLBACK_CATEGORY}`,
+      { category: value }
+    );
+  }
+  return FALLBACK_CATEGORY;
 }
 
 export function buildChatMessage(
   text: string,
   timestamp: string,
   opts: {
+    /** True when `text` is finished HTML (e.g. help); otherwise it renders as plain text. */
     isHtml?: boolean;
-    isCompleteHtml?: boolean;
-    messageType?: string;
+    /** Conversation identity; required on chat.* messages, absent otherwise. */
     channel?: string;
-    category?: MessageCategory;
-  } = {}
+    category: MessageCategory;
+  }
 ): ChatMessage {
-  const { messageType = 'system', channel = 'game', isHtml = false, isCompleteHtml = false, category } = opts;
-  const type = channelToMessageType(channel);
-  // isCompleteHtml: text is finished markup, so panels must not run it through the ANSI converter (which escapes it).
-  return {
-    text,
-    timestamp,
-    isHtml,
-    messageType,
-    channel,
-    type,
-    ...(category ? { category } : {}),
-    ...(isCompleteHtml ? { isCompleteHtml } : {}),
-  };
+  const { isHtml = false, channel, category } = opts;
+  return { text, timestamp, isHtml, category, ...(channel ? { channel } : {}) };
 }
 
 export function appendMessage(prevMessages: ChatMessage[], message: ChatMessage): ChatMessage[] {
@@ -68,12 +68,12 @@ export function appendMovementMessage(prevMessages: ChatMessage[], message: Chat
  * `client_` prefix marks it as never coming from the server -- see .cursor/rules/server-authority.mdc.
  * `sequence_number: 0` matches how the event log already treats other locally-appended events.
  */
-export function buildLocalMessageEvent(text: string, messageType: string = 'system'): GameEvent {
+export function buildLocalMessageEvent(text: string, category: MessageCategory = 'system.info'): GameEvent {
   return {
     event_type: 'client_message',
     timestamp: new Date().toISOString(),
     sequence_number: 0,
-    data: { text, messageType },
+    data: { text, category },
   };
 }
 

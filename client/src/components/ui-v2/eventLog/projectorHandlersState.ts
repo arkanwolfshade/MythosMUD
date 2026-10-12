@@ -6,7 +6,7 @@ import type { GameEvent } from '../eventHandlers/types';
 import type { Player, QuestLogEntry, Room, RoomContainerSummary } from '../types';
 import { mergeRoomState } from '../utils/roomMergeUtils';
 import type { GameState } from '../utils/stateUpdateUtils';
-import { GAME_LOG_CHANNEL, appendMessage, appendMovementMessage, buildChatMessage } from './projectorMessageUtils';
+import { appendMessage, appendMovementMessage, buildChatMessage, readCategory } from './projectorMessageUtils';
 import {
   deriveRoomFromGameState,
   deriveRoomFromRoomOccupants,
@@ -16,21 +16,24 @@ import {
 
 export type ProjectorHandler = (prevState: GameState, event: GameEvent) => GameState;
 
-function appendPostureGameInfoMessage(prevState: GameState, event: GameEvent, messageText: string): GameState {
+function appendPostureGameInfoMessage(
+  prevState: GameState,
+  event: GameEvent,
+  messageText: string,
+  category: MessageCategory
+): GameState {
   const trimmed = messageText.trim();
   if (!trimmed) return prevState;
-  const msg = buildChatMessage(trimmed, event.timestamp, {
-    messageType: 'system',
-    channel: GAME_LOG_CHANNEL,
-    category: event.data.category as MessageCategory | undefined,
-  });
+  const msg = buildChatMessage(trimmed, event.timestamp, { category });
   return { ...prevState, messages: appendMessage(prevState.messages, msg) };
 }
 
 function mergePostureMessageIntoState(prevState: GameState, event: GameEvent): GameState {
   const postureMessage = typeof event.data.posture_message === 'string' ? event.data.posture_message.trim() : '';
   if (!postureMessage) return prevState;
-  return appendPostureGameInfoMessage(prevState, event, postureMessage);
+  // The player's own posture line rides on a state payload (player_update, dp updates, decay); the server tags the
+  // line itself (posture_notify.attach_posture_self_message): room.movement, or status.health for the decay collapse.
+  return appendPostureGameInfoMessage(prevState, event, postureMessage, readCategory(event.data, event.event_type));
 }
 
 /**
@@ -208,9 +211,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
     const reason = event.data.reason as string | undefined;
     if (reason?.trim()) {
       const msg = buildChatMessage(reason.trim(), event.timestamp, {
-        messageType: 'system',
-        channel: GAME_LOG_CHANNEL,
-        category: event.data.category as MessageCategory | undefined,
+        category: readCategory(event.data, event.event_type),
       });
       next = { ...next, messages: appendMessage(prevState.messages, msg) };
     }
@@ -257,9 +258,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
     if (room) next = { ...next, room, ...roomContainersField(event) };
     if (messageText) {
       const msg = buildChatMessage(messageText, event.timestamp, {
-        messageType: 'system',
-        channel: GAME_LOG_CHANNEL,
-        category: 'system.info',
+        category: readCategory(event.data, event.event_type),
       });
       next = { ...next, messages: appendMessage(next.messages, msg) };
     }
@@ -279,8 +278,6 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
     const playerName = event.data.player_name as string | undefined;
     if (!playerName || typeof playerName !== 'string' || !playerName.trim()) return prevState;
     const msg = buildChatMessage(`${playerName} has entered the game.`, event.timestamp, {
-      messageType: 'system',
-      channel: 'game',
       category: 'room.movement',
     });
     return { ...prevState, messages: appendMessage(prevState.messages, msg) };
@@ -290,9 +287,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
     const messageText = event.data.message as string | undefined;
     if (!messageText) return prevState;
     const msg = buildChatMessage(messageText, event.timestamp, {
-      messageType: 'system',
-      channel: 'game',
-      category: event.data.category as MessageCategory | undefined,
+      category: readCategory(event.data, event.event_type),
     });
     return { ...prevState, messages: appendMovementMessage(prevState.messages, msg) };
   },
@@ -301,8 +296,6 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
     const playerName = event.data.player_name as string | undefined;
     if (!playerName) return prevState;
     const msg = buildChatMessage(`${playerName} has left the game.`, event.timestamp, {
-      messageType: 'system',
-      channel: 'game',
       category: 'room.movement',
     });
     return { ...prevState, messages: appendMessage(prevState.messages, msg) };
@@ -312,9 +305,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
     const messageText = event.data.message as string | undefined;
     if (!messageText) return prevState;
     const msg = buildChatMessage(messageText, event.timestamp, {
-      messageType: 'system',
-      channel: 'game',
-      category: event.data.category as MessageCategory | undefined,
+      category: readCategory(event.data, event.event_type),
     });
     return { ...prevState, messages: appendMovementMessage(prevState.messages, msg) };
   },
@@ -358,7 +349,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
   player_posture_change(prevState, event) {
     const messageText = typeof event.data.message === 'string' ? event.data.message.trim() : '';
     if (!messageText) return prevState;
-    return appendPostureGameInfoMessage(prevState, event, messageText);
+    return appendPostureGameInfoMessage(prevState, event, messageText, readCategory(event.data, event.event_type));
   },
 
   lucidity_change(prevState, event) {

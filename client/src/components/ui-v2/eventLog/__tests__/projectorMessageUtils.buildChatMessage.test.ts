@@ -16,9 +16,17 @@ describe('buildChatMessage category', () => {
     expect(message.category).toBe('chat.whisper');
   });
 
-  it('omits the category key entirely when none was given', () => {
-    const message = buildChatMessage('A plain line.', TS);
-    expect('category' in message).toBe(false);
+  it('sets only the channel it was given: non-chat messages carry none', () => {
+    const chat = buildChatMessage('Bob says: hi', TS, { category: 'chat.say', channel: 'say' });
+    expect(chat.channel).toBe('say');
+    const plain = buildChatMessage('A plain line.', TS, { category: 'command.output' });
+    expect('channel' in plain).toBe(false);
+    expect(plain.isHtml).toBe(false);
+  });
+
+  it('carries no legacy messageType, type, tags or isCompleteHtml fields', () => {
+    const message = buildChatMessage('<b>Help</b>', TS, { category: 'command.output', isHtml: true });
+    expect(Object.keys(message).sort()).toEqual(['category', 'isHtml', 'text', 'timestamp']);
   });
 
   it('keeps the category through appendMessage sanitization', () => {

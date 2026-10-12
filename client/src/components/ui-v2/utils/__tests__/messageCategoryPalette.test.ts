@@ -4,11 +4,11 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { MESSAGE_CATEGORIES } from '../../../../types/messageCategory';
 
 const read = (relative: string): string => readFileSync(fileURLToPath(new URL(relative, import.meta.url)), 'utf-8');
 
 const css = read('../../../../styles/messageCategories.css');
-const categoryTs = read('../../../../types/messageCategory.ts');
 
 // Panels draw message rows on mythos-terminal-surface (#1a1a1a); the log area behind is darker (#0a0a0a).
 const PANEL_BACKGROUND = '#1a1a1a';
@@ -42,7 +42,7 @@ function paletteIn(selector: string): Record<string, string> {
   return palette;
 }
 
-const categories = [...categoryTs.matchAll(/\|\s*'([a-z]+\.[a-z]+)'/g)].map(m => m[1]);
+const categories: readonly string[] = MESSAGE_CATEGORIES;
 const normal = paletteIn(':root');
 const highContrast = paletteIn('html.high-contrast');
 

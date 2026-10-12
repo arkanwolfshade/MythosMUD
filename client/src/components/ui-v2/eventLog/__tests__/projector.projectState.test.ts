@@ -5,21 +5,9 @@
 /// <reference types="vitest/globals" />
 
 import type { GameEvent } from '../../eventHandlers/types';
-import type { ChatMessage } from '../../types';
 import { getInitialGameState, projectEvent, projectState } from '../projector';
 import type { EventLog } from '../types';
 
-vi.mock('../../utils/messageUtils', () => ({
-  sanitizeChatMessageForState: (msg: unknown) => {
-    const m = msg as ChatMessage;
-    return {
-      ...m,
-      messageType: m.messageType ?? 'system',
-      channel: m.channel ?? 'game',
-      type: m.type ?? 'say',
-    };
-  },
-}));
 describe('projector', () => {
   describe('projectState', () => {
     it('returns initial state for empty log', () => {
@@ -81,6 +69,7 @@ describe('projector', () => {
           player: { name: 'TestPlayer', stats: { current_dp: 27 } },
           room: { id: 'sanitarium', name: 'Sanitarium Foyer', description: 'Here.', exits: {} },
           message: 'The sanitarium calls you back from the threshold. You have been restored to life.',
+          category: 'system.info',
         },
       };
       const next = projectEvent(prev, event);
@@ -88,7 +77,7 @@ describe('projector', () => {
       expect(next.messages[0].text).toBe(
         'The sanitarium calls you back from the threshold. You have been restored to life.'
       );
-      expect(next.messages[0].messageType).toBe('system');
+      expect(next.messages[0].category).toBe('system.info');
       expect(next.messages[0].timestamp).toBe(ts);
     });
 
@@ -102,12 +91,13 @@ describe('projector', () => {
         data: {
           player: { name: 'TestPlayer', stats: { lucidity: 100 } },
           message: 'You have been restored to lucidity and returned to the Sanitarium.',
+          category: 'system.info',
         },
       };
       const next = projectEvent(prev, event);
       expect(next.messages).toHaveLength(1);
       expect(next.messages[0].text).toBe('You have been restored to lucidity and returned to the Sanitarium.');
-      expect(next.messages[0].messageType).toBe('system');
+      expect(next.messages[0].category).toBe('system.info');
     });
 
     it('player_respawned without message does not append to messages', () => {
@@ -256,7 +246,7 @@ describe('projector', () => {
       expect(state.player?.stats?.lucidity).toBe(50);
     });
 
-    it('command_response flagged is_html becomes a complete-HTML message (help output)', () => {
+    it('command_response flagged is_html becomes a finished-HTML message (help output)', () => {
       const html = '<div class="help-entry"><p><strong>LOOK</strong></p></div>';
       const state = projectState([
         {
@@ -269,11 +259,10 @@ describe('projector', () => {
 
       const last = state.messages[state.messages.length - 1];
       expect(last.isHtml).toBe(true);
-      expect(last.isCompleteHtml).toBe(true);
       expect(last.text).toBe(html);
     });
 
-    it('command_response without is_html is plain text and never marked complete HTML', () => {
+    it('command_response without is_html is plain text', () => {
       const state = projectState([
         {
           event_type: 'command_response',
@@ -285,7 +274,6 @@ describe('projector', () => {
 
       const last = state.messages[state.messages.length - 1];
       expect(last.isHtml).toBe(false);
-      expect('isCompleteHtml' in last).toBe(false);
     });
   });
 
