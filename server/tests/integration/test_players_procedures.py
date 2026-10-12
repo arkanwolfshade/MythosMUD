@@ -180,11 +180,15 @@ async def test_reserve_invite_blocks_concurrent_reservation_until_release(
     user_id, _username = user_row
     winner_result: list[bool] = []
     loser_result: list[bool] = []
+    # Set once the holder owns the row lock. NullPool opens a fresh connection per session, so a
+    # fixed sleep can let the racer win the lock under load and make both calls return true.
+    lock_held = asyncio.Event()
 
     async def holder() -> None:
         async with session_factory() as session:
             reserved = await session.execute(text("SELECT reserve_invite(:code)"), {"code": invite_row})
             winner_result.append(bool(cast(object, reserved.scalar())))
+            lock_held.set()
             # Hold the lock briefly so the racer's reserve_invite() call is guaranteed to block
             # inside Postgres, not just get lucky with ordering.
             await asyncio.sleep(0.3)
@@ -194,7 +198,7 @@ async def test_reserve_invite_blocks_concurrent_reservation_until_release(
             await session.commit()
 
     async def racer() -> None:
-        await asyncio.sleep(0.05)  # let holder acquire the lock first
+        _ = await asyncio.wait_for(lock_held.wait(), timeout=10)  # holder must acquire the lock first
         async with session_factory() as session:
             reserved = await session.execute(text("SELECT reserve_invite(:code)"), {"code": invite_row})
             loser_result.append(bool(cast(object, reserved.scalar())))
