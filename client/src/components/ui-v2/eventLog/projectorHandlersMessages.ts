@@ -307,6 +307,17 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     return messageHandlers.combat_target_switch!(prevState, event);
   },
 
+  // Server-wide announcements (#1028): same payload shape as `system`, so reuse its handler.
+  shutdown_notification(prevState, event) {
+    return messageHandlers.system!(prevState, event);
+  },
+  shutdown_cancelled(prevState, event) {
+    return messageHandlers.system!(prevState, event);
+  },
+  system_broadcast(prevState, event) {
+    return messageHandlers.system!(prevState, event);
+  },
+
   intentional_disconnect(prevState, event) {
     const message = (event.data as { message?: string }).message || 'You have disconnected from the game.';
     const msg = buildChatMessage(message, event.timestamp, { category: readCategory(event.data, event.event_type) });

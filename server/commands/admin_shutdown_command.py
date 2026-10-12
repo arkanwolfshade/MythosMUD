@@ -18,6 +18,7 @@ from typing import Any, cast
 from anyio import sleep
 
 from ..alias_storage import AliasStorage
+from ..constants.message_category import MessageCategory
 from ..structured_logging.admin_actions_logger import AdminActionsLogger
 from ..structured_logging.enhanced_logging_config import get_logger
 from .shutdown_sequence import execute_shutdown_sequence
@@ -156,6 +157,7 @@ async def broadcast_shutdown_notification(connection_manager: Any, seconds_remai
             "message": message,
             "seconds_remaining": seconds_remaining,
             "channel": "system",  # System channel for unignorable announcements
+            "category": MessageCategory.SYSTEM_WARNING,
         }
 
         # Handle case where connection_manager might be a mock in tests
@@ -484,6 +486,7 @@ async def _broadcast_shutdown_cancellation(connection_manager: Any) -> None:
     event_data = {
         "message": cancellation_message,
         "channel": "system",
+        "category": MessageCategory.SYSTEM_INFO,
     }
 
     await connection_manager.broadcast_global_event("shutdown_cancelled", event_data)

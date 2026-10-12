@@ -24,14 +24,17 @@ import uuid
 from collections.abc import Awaitable, Callable, Mapping
 from dataclasses import dataclass
 from pathlib import Path
+from types import SimpleNamespace
 from typing import cast, override
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from fastapi import WebSocket
 
+from server.api.game import broadcast_message
 from server.commands.admin_setstat_command import _maybe_attach_dp_posture_message
 from server.commands.admin_setstat_support import SetStatConnectionManager, SetStatTargetPlayer
+from server.commands.admin_shutdown_command import _broadcast_shutdown_cancellation, broadcast_shutdown_notification
 from server.commands.admin_teleport_utils import broadcast_teleport_effects, notify_player_of_teleport
 from server.commands.rest_countdown_task import create_rest_countdown_task
 from server.constants.message_category import MessageCategory
@@ -49,6 +52,7 @@ from server.events.event_types import (
     PlayerLeftRoom,
     PlayerRespawnedEvent,
 )
+from server.models.user import User
 from server.realtime.connection_manager import ConnectionManager
 from server.realtime.event_handlers import EventHandler
 from server.realtime.message_builders import MessageBuilder
@@ -463,6 +467,16 @@ async def _drive_rescue_update() -> list[Emitted]:
     return [("rescue_update", cast(dict[str, object], send.await_args_list[0].args[2]))]
 
 
+async def _drive_admin_broadcasts() -> list[Emitted]:
+    """Shutdown countdown, shutdown cancellation and the superuser /game/broadcast (#1028)."""
+    transport = _Transport()
+    assert await broadcast_shutdown_notification(transport, 10)
+    await _broadcast_shutdown_cancellation(transport)
+    admin = _as(User, SimpleNamespace(id=uuid.uuid4(), username="admin"))
+    _ = await broadcast_message("Hello all", admin, _as(ConnectionManager, transport))
+    return transport.events
+
+
 @dataclass(frozen=True)
 class Emitter:
     """One text-bearing server emitter: the event types it must produce, and how to run it."""
@@ -501,6 +515,11 @@ INVENTORY: tuple[Emitter, ...] = (
         _drive_combat_publisher,
     ),
     Emitter("rescue update", frozenset({"rescue_update"}), _drive_rescue_update),
+    Emitter(
+        "admin broadcasts",
+        frozenset({"shutdown_notification", "shutdown_cancelled", "system_broadcast"}),
+        _drive_admin_broadcasts,
+    ),
 )
 
 
@@ -551,6 +570,9 @@ EXPECTED_CATEGORIES = (
     ("admin set-stat posture", "player_update", MessageCategory.ROOM_MOVEMENT),
     ("rescue update", "rescue_update", MessageCategory.STATUS_RESCUE),
     ("npc died", "npc_died", MessageCategory.COMBAT_DEATH),
+    ("admin broadcasts", "shutdown_notification", MessageCategory.SYSTEM_WARNING),
+    ("admin broadcasts", "shutdown_cancelled", MessageCategory.SYSTEM_INFO),
+    ("admin broadcasts", "system_broadcast", MessageCategory.SYSTEM_INFO),
 )
 
 

@@ -60,6 +60,16 @@ describe('server-tagged room and system events', () => {
     expect(categories(next)).toEqual(['system.warning']);
   });
 
+  it.each([
+    ['shutdown_notification', 'system.warning'],
+    ['shutdown_cancelled', 'system.info'],
+    ['system_broadcast', 'system.info'],
+  ] as const)('%s (#1028) renders as a line with the server category %s', (type, category) => {
+    const next = projectEvent(getInitialGameState(), ev(type, { message: 'The stars shift.', category }));
+    expect(next.messages.map(m => m.text)).toEqual(['The stars shift.']);
+    expect(categories(next)).toEqual([category]);
+  });
+
   it('player_entered / player_left use the server category', () => {
     let state = projectEvent(
       getInitialGameState(),
