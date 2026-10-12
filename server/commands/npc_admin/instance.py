@@ -8,6 +8,7 @@ from ...npc_database import get_npc_session
 from ...services.npc_instance_service import get_npc_instance_service
 from ...services.npc_service import npc_service
 from ...structured_logging.enhanced_logging_config import get_logger
+from ..command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -144,7 +145,7 @@ async def _execute_spawn_loop(
 
     except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         logger.error("Error spawning NPC", admin_name=player_name, error=str(e))
-        return {"result": f"Error spawning NPC: {str(e)}"}
+        return command_error(f"Error spawning NPC: {str(e)}")
 
 
 async def handle_npc_spawn_command(
@@ -159,9 +160,9 @@ async def handle_npc_spawn_command(
 
     definition_id, room_id, quantity, resolve_error = await _resolve_spawn_params(command_data, request, player_name)
     if resolve_error:
-        return {"result": resolve_error}
+        return command_error(resolve_error)
     if definition_id is None or room_id is None:
-        return {"result": "Internal error: spawn parameters not resolved. Please try again."}
+        return command_error("Internal error: spawn parameters not resolved. Please try again.")
 
     return await _execute_spawn_loop(definition_id, room_id, quantity, player_name)
 
@@ -178,7 +179,7 @@ async def handle_npc_despawn_command(
 
     args = command_data.get("args", [])
     if len(args) < 2:
-        return {"result": "Usage: npc despawn <npc_id>"}
+        return command_error("Usage: npc despawn <npc_id>")
 
     npc_id = args[1]
 
@@ -187,14 +188,14 @@ async def handle_npc_despawn_command(
         result = await instance_service.despawn_npc_instance(npc_id)
 
         if not result:
-            return {"result": f"NPC {npc_id} not found or already despawned"}
+            return command_error(f"NPC {npc_id} not found or already despawned")
 
         logger.info("NPC despawned", npc_id=npc_id, admin_name=player_name)
         return {"result": f"NPC {npc_id} despawned successfully"}
 
     except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         logger.error("Error despawning NPC", npc_id=npc_id, admin_name=player_name, error=str(e))
-        return {"result": f"Error despawning NPC: {str(e)}"}
+        return command_error(f"Error despawning NPC: {str(e)}")
 
 
 async def handle_npc_move_command(
@@ -209,7 +210,7 @@ async def handle_npc_move_command(
 
     args = command_data.get("args", [])
     if len(args) < 3:
-        return {"result": "Usage: npc move <npc_id> <room_id>"}
+        return command_error("Usage: npc move <npc_id> <room_id>")
 
     npc_id = args[1]
     room_id = args[2]
@@ -219,14 +220,14 @@ async def handle_npc_move_command(
         result = await instance_service.move_npc_instance(npc_id, room_id)
 
         if not result:
-            return {"result": f"NPC {npc_id} not found or could not be moved"}
+            return command_error(f"NPC {npc_id} not found or could not be moved")
 
         logger.info("NPC moved", npc_id=npc_id, admin_name=player_name, room_id=room_id)
         return {"result": f"NPC {npc_id} moved to {room_id}"}
 
     except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         logger.error("Error moving NPC", npc_id=npc_id, admin_name=player_name, error=str(e))
-        return {"result": f"Error moving NPC: {str(e)}"}
+        return command_error(f"Error moving NPC: {str(e)}")
 
 
 async def handle_npc_stats_command(
@@ -241,7 +242,7 @@ async def handle_npc_stats_command(
 
     args = command_data.get("args", [])
     if len(args) < 2:
-        return {"result": "Usage: npc stats <npc_id>"}
+        return command_error("Usage: npc stats <npc_id>")
 
     npc_id = args[1]
 
@@ -250,7 +251,7 @@ async def handle_npc_stats_command(
         stats = await instance_service.get_npc_stats(npc_id)
 
         if not stats:
-            return {"result": f"NPC {npc_id} not found"}
+            return command_error(f"NPC {npc_id} not found")
 
         result_lines = [f"NPC {npc_id} stats:"]
         for key, value in stats.items():
@@ -261,4 +262,4 @@ async def handle_npc_stats_command(
 
     except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         logger.error("Error getting NPC stats", admin_name=player_name, error=str(e))
-        return {"result": f"Error getting NPC stats: {str(e)}"}
+        return command_error(f"Error getting NPC stats: {str(e)}")

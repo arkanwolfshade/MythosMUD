@@ -9,6 +9,7 @@ from typing import cast
 import pytest
 
 from server.commands.help_commands import handle_help_command
+from server.constants.message_category import MessageCategory
 from server.utils.command_parser import parse_command
 from server.utils.command_processor import CommandProcessor
 
@@ -59,7 +60,7 @@ async def test_handle_help_command_too_many_args():
     """More than one argument is a usage error."""
     result = await handle_help_command({"args": ["look", "north"]}, {}, None, None, "TestPlayer")
 
-    assert result == {"result": "Usage: help [command]"}
+    assert result == {"result": "Usage: help [command]", "category": MessageCategory.SYSTEM_ERROR}
 
 
 @pytest.mark.asyncio

@@ -32,6 +32,7 @@ from .admin_setlucidity_command import _handle_admin_set_lucidity_command
 from .admin_setstat_command import _handle_admin_set_stat_command
 from .admin_teleport_commands import DIRECTION_OPPOSITES, handle_goto_command, handle_teleport_command
 from .admin_teleport_utils import create_teleport_effect_message
+from .command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -78,7 +79,7 @@ async def handle_admin_command(
         return await _handle_admin_hallucinate_command(command_data, current_user, request, alias_storage, player_name)
 
     logger.warning("Unknown admin subcommand requested", player_name=player_name, subcommand=subcommand)
-    return {"result": f"Unknown admin subcommand '{subcommand}'."}
+    return command_error(f"Unknown admin subcommand '{subcommand}'.")
 
 
 def _compute_admin_status(
@@ -188,14 +189,14 @@ async def _resolve_admin_status_player(
     app = request.app if request else None
     if not app:
         logger.warning("Admin status command failed - no application context", player_name=player_name)
-        return {"result": "Admin status information is not available."}
+        return command_error("Admin status information is not available.")
 
     player_service = getattr(app.state, "player_service", None)
     user_manager = getattr(app.state, "user_manager", None)
 
     if not player_service:
         logger.warning("Admin status command failed - no player service", player_name=player_name)
-        return {"result": "Admin status information is not available."}
+        return command_error("Admin status information is not available.")
 
     try:
         player_record = await player_service.resolve_player_name(player_name)
@@ -206,11 +207,11 @@ async def _resolve_admin_status_player(
             error=str(exc),
             error_type=type(exc).__name__,
         )
-        return {"result": f"Unable to resolve player '{player_name}': {str(exc)}"}
+        return command_error(f"Unable to resolve player '{player_name}': {str(exc)}")
 
     if not player_record:
         logger.warning("Admin status command failed - player record not found", player_name=player_name)
-        return {"result": f"Player '{player_name}' not found."}
+        return command_error(f"Player '{player_name}' not found.")
 
     return player_record, user_manager
 

@@ -12,6 +12,7 @@ from ..alias_storage import AliasStorage
 from ..models.player import Player
 from ..services.inventory_websocket_events import emit_inventory_updated
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
 from .inventory_command_coercion import coerce_int
 from .inventory_command_contracts import CommandResponse, RoomDropManager
 from .inventory_command_helpers import (
@@ -56,7 +57,7 @@ def _drop_slot_index_or_error(command_data: dict[str, object], inventory_len: in
     """Resolve 1-based inventory slot from command data or return a usage / range error."""
     index = command_data.get("index")
     if not isinstance(index, int) or index < 1:
-        return {"result": "Usage: drop <inventory-number> [quantity]"}
+        return command_error("Usage: drop <inventory-number> [quantity]")
     if index > inventory_len:
         return {"result": "You do not have an item in that slot."}
     return index
@@ -174,7 +175,7 @@ async def handle_drop_command(
 
     persistence, connection_manager, player, error = await resolve_state_and_player(request, current_user, player_name)
     if error or not player:
-        return error or {"result": "Player information not found."}
+        return error or command_error("Player information not found.")
 
     resolved = _drop_resolve_stack_or_error(command_data, connection_manager, player)
     if not isinstance(resolved, tuple):

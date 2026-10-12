@@ -10,6 +10,7 @@ from ..alias_storage import AliasStorage
 from ..help.help_content import get_help_content
 from ..structured_logging.enhanced_logging_config import get_logger
 from .catalog_commands import resolve_is_admin
+from .command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -26,7 +27,7 @@ async def handle_system_command(
     """
     message = command_data.get("message")
     if not message:
-        return {"result": "Usage: system <message>"}
+        return command_error("Usage: system <message>")
 
     app = getattr(request, "app", None) if request else None
     state = getattr(app, "state", None) if app else None
@@ -66,7 +67,7 @@ async def handle_help_command(
     args: object = command_data.get("args")
     if isinstance(args, list) and len(cast(list[object], args)) > 1:
         logger.warning("Help command with too many arguments", player_name=player_name, args=args)
-        return {"result": "Usage: help [command]"}
+        return {**command_error("Usage: help [command]")}
 
     topic = _help_topic(command_data)
     is_admin = await resolve_is_admin(current_user, request, player_name)

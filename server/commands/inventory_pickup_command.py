@@ -13,6 +13,7 @@ from ..models.player import Player
 from ..services.inventory_service import InventoryService
 from ..services.inventory_websocket_events import emit_inventory_updated
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
 from .inventory_command_coercion import coerce_int
 from .inventory_command_contracts import CommandResponse, RoomDropManager
 from .inventory_command_helpers import (
@@ -179,7 +180,7 @@ async def _pickup_commit_inventory_after_floor_extract(
         return inventory_error, None
 
     if updated_inventory is None:
-        return {"result": "Failed to update inventory."}, None
+        return command_error("Failed to update inventory."), None
     player.set_inventory(updated_inventory)
     logger.info(
         "Pickup: inventory after set_inventory",
@@ -268,7 +269,7 @@ async def handle_pickup_command(
 
     persistence, connection_manager, player, error = await resolve_state_and_player(request, current_user, player_name)
     if error or not player:
-        return error or {"result": "Player information not found."}
+        return error or command_error("Player information not found.")
 
     resolved = _pickup_resolve_floor_stack_or_error(command_data, connection_manager, player)
     if not isinstance(resolved, tuple):

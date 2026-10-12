@@ -9,6 +9,7 @@ from typing import Any, cast
 from ..alias_storage import AliasStorage
 from ..constants.message_category import MessageCategory
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -136,7 +137,7 @@ def _handle_emote_result(
 
     error_msg = result.get("error", "Unknown error")
     logger.warning("Emote command failed", player=player_name, error=error_msg)
-    return {"result": f"Error sending emote: {error_msg}"}
+    return command_error(f"Error sending emote: {error_msg}")
 
 
 async def handle_emote_command(
@@ -164,7 +165,7 @@ async def handle_emote_command(
     action = _extract_emote_action(command_data)
     if not action:
         logger.warning("Emote command with no action", player=player_name)
-        return {"result": "Emote what? Usage: emote <action>"}
+        return command_error("Emote what? Usage: emote <action>")
 
     logger.debug("Player performing emote", player=player_name)
 
@@ -189,4 +190,4 @@ async def handle_emote_command(
         logger.error(
             "Emote command error", player=player_name, action=action, error=str(e), traceback=traceback.format_exc()
         )
-        return {"result": f"Error sending emote: {str(e)}"}
+        return command_error(f"Error sending emote: {str(e)}")

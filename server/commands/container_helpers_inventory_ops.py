@@ -12,6 +12,7 @@ from typing import cast
 from uuid import UUID
 
 from ..models.player import Player
+from .command_results import command_error
 from .container_helpers_inventory_find import find_item_in_inventory
 from .container_helpers_inventory_logging import logger
 
@@ -226,15 +227,15 @@ async def validate_put_command_inputs(
             container_name=container_name,
             command_data=command_data,
         )
-        return {"result": "Usage: put <item> [in|into] <container> [quantity]"}
+        return command_error("Usage: put <item> [in|into] <container> [quantity]")
 
     container_service = _resolve_container_service(persistence)
     if not container_service:
-        return {"result": "Container service is unavailable."}
+        return command_error("Container service is unavailable.")
 
     room_manager = getattr(connection_manager, "room_manager", None)
     if not room_manager:
-        return {"result": "Room manager is unavailable."}
+        return command_error("Room manager is unavailable.")
 
     inventory = player.get_inventory()
     item_found, item_index = find_item_in_inventory(inventory, item_name)
@@ -492,17 +493,17 @@ async def validate_get_command_inputs(
     quantity = command_data.get("quantity")
 
     if not item_name or not container_name:
-        return {"result": "Usage: get <item> [from <container>] [quantity]"}
+        return command_error("Usage: get <item> [from <container>] [quantity]")
 
     room_manager = getattr(connection_manager, "room_manager", None)
     if not room_manager:
-        return {"result": "Room manager is unavailable."}
+        return command_error("Room manager is unavailable.")
 
     if container_name.lower() == "room":
         return item_name, container_name, quantity, None, room_manager
 
     container_service = _resolve_container_service(persistence)
     if not container_service:
-        return {"result": "Container service is unavailable."}
+        return command_error("Container service is unavailable.")
 
     return item_name, container_name, quantity, container_service, room_manager

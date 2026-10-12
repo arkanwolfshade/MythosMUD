@@ -12,6 +12,7 @@ from ..alias_storage import AliasStorage
 from ..models.player import Player
 from ..services.inventory_websocket_events import emit_inventory_updated
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
 from .container_helpers_inventory import (
     find_container_in_room,
     find_item_in_container,
@@ -135,7 +136,7 @@ async def _get_transfer_out_of_container(
         return {"result": transfer_result["error"]}
 
     if not transfer_result.get("success"):
-        return {"result": "Error: Failed to transfer item."}
+        return command_error("Error: Failed to transfer item.")
 
     await emit_inventory_updated(connection_manager, UUID(str(player.player_id)), player)
     transfer_quantity = transfer_result["transfer_quantity"]
@@ -166,7 +167,7 @@ async def _get_from_container_path(rt: GetCommandRuntime, spec: GetItemSpec) -> 
 
     container_id = resolve_container_id(container_found, container_id)
     if not container_id:
-        return {"result": "Error: Could not determine container ID."}
+        return command_error("Error: Could not determine container ID.")
 
     return await _get_transfer_out_of_container(
         rt.container_service,
@@ -206,7 +207,7 @@ async def handle_get_command(
 
     persistence, connection_manager, player, error = await resolve_state_and_player(request, current_user, player_name)
     if error or not player:
-        return error or {"result": "Player information not found."}
+        return error or command_error("Player information not found.")
 
     validation_result = await validate_get_command_inputs(command_data, connection_manager, persistence)
     if isinstance(validation_result, dict):

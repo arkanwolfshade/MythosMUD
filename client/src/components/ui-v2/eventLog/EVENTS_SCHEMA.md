@@ -73,8 +73,9 @@ from the text.
 - **`channel` is separate:** on `chat.*` events it names the conversation, not the meaning.
 - **Where it is set:** only in shared builders and chokepoints, never per handler and never by hallucination code
   (ADR-024: a hallucinated line gets the category of the real thing it imitates by using the same builder). Command
-  handlers do not put `category` in their result dicts; `websocket_handler_commands.py` defaults it to
-  `command.output`, and `build_event` does the same for any `command_response` that names none.
+  handlers put no `category` in successful results; `websocket_handler_commands.py` defaults it to
+  `command.output`, and `build_event` does the same for any `command_response` that names none. Usage,
+  permission, and system failures are the exception: they return `system.error` via `command_error`.
 - **Posture self-lines** (`posture_message` on `player_update`, `player_dp_updated`, `player_dp_decay`) are tagged by
   `attach_posture_self_message` in `server/realtime/posture_notify.py`: `room.movement`, except the DP-decay collapse
   line, which is `status.health`.

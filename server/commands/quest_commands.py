@@ -20,6 +20,7 @@ from ..game.quest.quest_chat_notify import (
 )
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
+from .command_results import command_error
 from .look_npc import _find_matching_npcs, _get_lifecycle_manager, _get_npc_room_id, _should_include_npc
 
 logger = get_logger(__name__)
@@ -219,16 +220,16 @@ async def handle_journal_command(
     try:
         player = await persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
-            return {"result": "Character not found."}
+            return command_error("Character not found.")
         player_id = _resolve_player_id(player)
         if not player_id:
-            return {"result": "Character id is invalid."}
+            return command_error("Character id is invalid.")
 
         entries = await quest_service.get_quest_log(player_id, include_completed=True)
         return {"result": _format_quest_log(entries)}
     except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Command must return user message, not crash
         logger.exception("Journal/quests command failed", player=player_name, error=str(e))
-        return {"result": "Failed to load quest log."}
+        return command_error("Failed to load quest log.")
 
 
 async def _handle_quest_abandon(quest_service: Any, player_id: uuid.UUID, remainder: str) -> dict[str, str]:
@@ -315,7 +316,7 @@ async def _quest_command_ready(
     if ctx_error:
         return {"result": ctx_error}
     if not quest_service or not player_id or player is None:
-        return {"result": "Quest system error. Please try again."}
+        return command_error("Quest system error. Please try again.")
     return player, player_id, quest_service
 
 
@@ -349,4 +350,4 @@ async def handle_quest_command(
         return await _handle_quest_npc_sub(quest_service, player, player_id, sub, remainder)
     except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Command must return user message, not crash
         logger.exception("Quest command failed", player_id=str(player_id), subcommand=sub, error=str(e))
-        return {"result": "Failed to process quest command."}
+        return command_error("Failed to process quest command.")

@@ -11,6 +11,7 @@ from .admin_teleport_utils import (
     get_online_player_by_display_name,
     notify_player_of_teleport,
 )
+from .command_results import command_error
 from .teleport_helpers import update_player_room_location
 
 logger = get_logger(__name__)
@@ -31,13 +32,13 @@ async def validate_goto_context(
     current_player = await player_service.get_player_by_name(player_name)
     if not current_player:
         logger.warning("Goto command failed - current player not found", player_name=player_name)
-        return None, {"result": "Player not found."}
+        return None, command_error("Player not found.")
 
     from .admin_permission_utils import validate_admin_permission
 
     is_admin = await validate_admin_permission(current_player, player_name)
     if not is_admin:
-        return None, {"result": "You do not have permission to use goto commands."}
+        return None, command_error("You do not have permission to use goto commands.")
 
     if not connection_manager:
         logger.warning("Goto command failed - no connection manager", player_name=player_name)
@@ -52,14 +53,14 @@ async def resolve_goto_target(
     """Resolve target player for goto command."""
     target_player_info = await get_online_player_by_display_name(target_player_name, connection_manager)
     if not target_player_info:
-        return None, {"result": f"Player '{target_player_name}' is not online or not found."}
+        return None, command_error(f"Player '{target_player_name}' is not online or not found.")
 
     target_player = await player_service.get_player_by_name(target_player_name)
     if not target_player:
         logger.warning(
             "Goto command failed - target player not found in database", target_player_name=target_player_name
         )
-        return None, {"result": f"Player '{target_player_name}' not found in database."}
+        return None, command_error(f"Player '{target_player_name}' not found in database.")
 
     return target_player, None
 
@@ -81,7 +82,7 @@ async def execute_goto_teleport(  # pylint: disable=too-many-arguments,too-many-
         player_service, connection_manager, player_name, original_room_id, target_room_id, persistence
     )
     if not success:
-        return {"result": f"Failed to teleport to {target_player_name}: database update failed."}
+        return command_error(f"Failed to teleport to {target_player_name}: database update failed.")
 
     await _announce_goto_teleport(
         connection_manager, admin_player_info, player_name, target_player_name, original_room_id, target_room_id
@@ -230,13 +231,13 @@ async def validate_confirm_goto_context(
     current_player = await player_service.get_player_by_name(player_name)
     if not current_player:
         logger.warning("Confirm goto command failed - current player not found", player_name=player_name)
-        return None, {"result": "Player not found."}
+        return None, command_error("Player not found.")
 
     from .admin_permission_utils import validate_admin_permission
 
     is_admin = await validate_admin_permission(current_player, player_name)
     if not is_admin:
-        return None, {"result": "You do not have permission to use goto commands."}
+        return None, command_error("You do not have permission to use goto commands.")
 
     return current_player, None
 
@@ -247,14 +248,14 @@ async def resolve_target_player_for_goto(
     """Resolve target player (online check and database lookup). Returns (target_player_info, target_player, error_result)."""
     target_player_info = await get_online_player_by_display_name(target_player_name, connection_manager)
     if not target_player_info:
-        return None, None, {"result": f"Player '{target_player_name}' is not online or not found."}
+        return None, None, command_error(f"Player '{target_player_name}' is not online or not found.")
 
     target_player = await player_service.get_player_by_name(target_player_name)
     if not target_player:
         logger.warning(
             "Confirm goto command failed - target player not found in database", target_player_name=target_player_name
         )
-        return None, None, {"result": f"Player '{target_player_name}' not found in database."}
+        return None, None, command_error(f"Player '{target_player_name}' not found in database.")
 
     return target_player_info, target_player, None
 
@@ -275,7 +276,7 @@ async def execute_confirm_goto(  # pylint: disable=too-many-arguments,too-many-p
     success = await player_service.update_player_location(player_name, target_room_id)
     if not success:
         logger.error("Failed to update admin player location", player_name=player_name)
-        return {"result": f"Failed to teleport to {target_player_name}: database update failed."}
+        return command_error(f"Failed to teleport to {target_player_name}: database update failed.")
 
     admin_player_info = connection_manager.get_online_player_by_display_name(player_name)
     if admin_player_info:

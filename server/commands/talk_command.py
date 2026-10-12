@@ -11,6 +11,7 @@ from ..game.chat_npc_system import schedule_personal_system
 from ..game.dialogue import DialoguePrompt, format_dialogue_prompt, get_dialogue_service
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
+from .command_results import command_error
 from .communication_commands_support import app_from_request, get_pose_persistence, primary_id
 from .quest_commands import npc_definition_id, resolve_npc_in_player_room
 
@@ -112,7 +113,7 @@ async def handle_talk_command(
 
     remainder = _remainder_from_command_data(command_data)
     if not remainder:
-        return {"result": _TALK_USAGE}
+        return command_error(_TALK_USAGE)
 
     try:
         player = await persistence.get_player_by_name(get_username_from_user(current_user))
@@ -120,10 +121,10 @@ async def handle_talk_command(
         logger.exception("Talk command failed loading player", player=player_name, error=str(e))
         return {"result": "You cannot talk right now."}
     if not player:
-        return {"result": "Character not found."}
+        return command_error("Character not found.")
     player_id = _resolve_player_id(player)
     if not player_id:
-        return {"result": "Character id is invalid."}
+        return command_error("Character id is invalid.")
 
     if remainder.isdigit():
         return await _talk_by_option_index(player_id, int(remainder))

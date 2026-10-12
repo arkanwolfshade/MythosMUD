@@ -12,6 +12,7 @@ from ..alias_storage import AliasStorage
 from ..models.player import Player
 from ..services.inventory_websocket_events import emit_inventory_updated
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
 from .container_helpers_inventory import (
     find_container_in_room,
     find_wearable_container_for_put,
@@ -73,7 +74,7 @@ async def _put_resolve_container_id(
             container_name=container_name,
             player=player.name,
         )
-        return None, {"result": f"Error: Container '{container_name}' has no valid ID."}
+        return None, command_error(f"Error: Container '{container_name}' has no valid ID.")
     return resolved, None
 
 
@@ -96,7 +97,7 @@ async def _put_transfer_finish(
         return {"result": transfer_result["error"]}
 
     if not transfer_result.get("success"):
-        return {"result": "Error: Failed to transfer item."}
+        return command_error("Error: Failed to transfer item.")
 
     transfer_quantity = cast(int, transfer_result["transfer_quantity"])
     remove_item_from_inventory(player, item_index, transfer_quantity)
@@ -169,7 +170,7 @@ async def handle_put_command(
 
     persistence, connection_manager, player, error = await resolve_state_and_player(request, current_user, player_name)
     if error or not player:
-        return error or {"result": "Player information not found."}
+        return error or command_error("Player information not found.")
 
     validation_result = await validate_put_command_inputs(command_data, connection_manager, player, persistence)
     if isinstance(validation_result, dict):

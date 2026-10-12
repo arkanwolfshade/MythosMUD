@@ -19,6 +19,7 @@ from ..schemas.item_catalog import ItemCatalogAdminItem, ItemCatalogPlayerItem, 
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 from ..utils.int_coercion import coerce_int
+from .command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -255,4 +256,4 @@ async def handle_catalog_command(
         return {"result": format_catalog_output(response)}
     except Exception as e:  # pylint: disable=broad-except
         logger.exception("Catalog command failed", player=player_name, error=str(e))
-        return {"result": "Failed to load item catalog."}
+        return command_error("Failed to load item catalog.")

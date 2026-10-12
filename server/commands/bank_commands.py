@@ -20,6 +20,7 @@ from ..models.room import Room
 from ..services.bank_service import BANK_BOX_CAPACITY, BankBoxPersistence, get_or_create_bank_box, is_bank_room
 from ..services.inventory_websocket_events import emit_inventory_updated
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
 from .container_helpers_inventory import (
     find_item_in_container,
     parse_container_items,
@@ -59,7 +60,7 @@ async def _enter_bank(
     """Resolve the player, check they are in a bank room, and get (or create) their box."""
     persistence, connection_manager, player, error = await resolve_state_and_player(request, current_user, player_name)
     if error or not player:
-        return error or {"result": "Player information not found."}
+        return error or command_error("Player information not found.")
     get_room = getattr(persistence, "get_room_by_id", None)
     room = cast(Room | None, get_room(str(player.current_room_id))) if callable(get_room) else None
     if not is_bank_room(room):
@@ -119,7 +120,7 @@ async def handle_deposit_command(
     if "error" in transfer:
         return {"result": str(transfer["error"])}
     if not transfer.get("success"):
-        return {"result": "Error: Failed to transfer item."}
+        return command_error("Error: Failed to transfer item.")
 
     deposited = cast(int, transfer["transfer_quantity"])
     remove_item_from_inventory(visit.player, item_index, deposited)
@@ -163,7 +164,7 @@ async def handle_withdraw_command(
     if "error" in transfer:
         return {"result": str(transfer["error"])}
     if not transfer.get("success"):
-        return {"result": "Error: Failed to transfer item."}
+        return command_error("Error: Failed to transfer item.")
 
     await emit_inventory_updated(visit.connection_manager, UUID(str(visit.player.player_id)), visit.player)
     withdrawn = transfer["transfer_quantity"]

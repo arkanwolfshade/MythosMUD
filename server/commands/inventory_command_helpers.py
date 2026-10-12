@@ -15,6 +15,7 @@ from ..schemas.shared import InventorySchemaValidationError
 from ..services.inventory_service import InventoryCapacityError, InventoryService, InventoryValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
+from .command_results import command_error
 from .inventory_item_matching import match_room_drop_by_name
 
 logger: BoundLogger = get_logger(__name__)
@@ -58,11 +59,11 @@ async def resolve_player(
             player = cast(Player | None, maybe_player)
     except Exception as exc:  # noqa: B904  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Persistence errors unpredictable, must handle gracefully
         logger.error("Persistence error resolving player", player=username, error=str(exc))
-        return None, {"result": f"Error resolving player: {str(exc)}"}
+        return None, command_error(f"Error resolving player: {str(exc)}")
 
     if not player:
         logger.warning("Player not found when handling inventory command", player=username)
-        return None, {"result": "Player information not found."}
+        return None, command_error("Player information not found.")
 
     return player, None
 
@@ -135,7 +136,7 @@ async def persist_player(persistence: object, player: Player) -> dict[str, str] 
     save_player = getattr(persistence, "save_player", None)
     if not callable(save_player):
         logger.error("Persistence missing save_player", player=player.name)
-        return {"result": "An error occurred while saving your inventory."}
+        return command_error("An error occurred while saving your inventory.")
 
     try:
         result = save_player(player)
@@ -148,7 +149,7 @@ async def persist_player(persistence: object, player: Player) -> dict[str, str] 
         return {"result": "Inventory data rejected by schema validation."}
     except Exception as exc:  # noqa: B904  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Persistence errors unpredictable, must handle gracefully
         logger.error("Error saving player inventory", player=player.name, error=str(exc))
-        return {"result": "An error occurred while saving your inventory."}
+        return command_error("An error occurred while saving your inventory.")
 
 
 def resolve_pickup_item_index(
@@ -190,7 +191,7 @@ def resolve_pickup_item_index(
             resolved_index=index,
         )
         return resolved_index_zero, index, None
-    return None, None, {"result": "Usage: pickup <item-number|item-name> [quantity]"}
+    return None, None, command_error("Usage: pickup <item-number|item-name> [quantity]")
 
 
 def prepare_extracted_stack(extracted_stack: dict[str, object], player_name: str, player_id: UUID) -> dict[str, object]:
@@ -321,7 +322,7 @@ def get_room_manager(connection_manager: object, player: Player) -> tuple[object
         logger.warning(
             "Room manager unavailable", player=player.name, player_id=player.player_id, room_id=player.current_room_id
         )
-        return None, {"result": "Room inventory is unavailable."}
+        return None, command_error("Room inventory is unavailable.")
     return room_manager, None
 
 

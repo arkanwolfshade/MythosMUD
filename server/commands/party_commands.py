@@ -16,6 +16,7 @@ from ..schemas.shared import TargetType as SchemaTargetType
 from ..services.target_resolution_service import TargetResolutionService
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
+from .command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -149,7 +150,7 @@ async def handle_party_command(
     handler = subcommand_handlers.get(subcommand)
     if handler is None:
         logger.debug("Party command unknown subcommand", subcommand=subcommand or "(empty)")
-        return {"result": "Usage: party [invite|leave|kick|list] [target]"}
+        return command_error("Usage: party [invite|leave|kick|list] [target]")
     return await handler()
 
 
@@ -211,7 +212,7 @@ async def _handle_party_invite(
     """Handle party invite <name> logic. Uses confirmation pattern: target must accept."""
     if not target_name:
         logger.debug("Party invite rejected: no target name")
-        return {"result": "Invite whom? Usage: party invite <player name>"}
+        return command_error("Invite whom? Usage: party invite <player name>")
     if not party_service.get_party_for_player(player_id):
         create = party_service.create_party(player_id)
         if not create["success"]:
@@ -282,7 +283,7 @@ async def _handle_party_kick(
     """Handle party kick <name> logic."""
     if not target_name:
         logger.debug("Party kick rejected: no target name")
-        return {"result": "Kick whom? Usage: party kick <player name>"}
+        return command_error("Kick whom? Usage: party kick <player name>")
     party = party_service.get_party_for_player(player_id)
     if not party or not party_service.is_leader(player_id):
         logger.debug("Party kick rejected: not leader or no party")

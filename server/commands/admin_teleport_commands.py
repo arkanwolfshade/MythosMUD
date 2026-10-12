@@ -16,6 +16,7 @@ from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
 from .admin_permission_utils import validate_admin_permission
 from .admin_teleport_utils import log_failed_admin_move
+from .command_results import command_error
 from .goto_helpers import (
     execute_goto_teleport,
     log_goto_failure,
@@ -77,14 +78,14 @@ async def _resolve_teleport_execution_context(
     current_player = await player_service.get_player_by_name(player_name)  # pyright: ignore[reportAny]
     if not current_player:
         logger.warning("Teleport command failed - current player not found", player_name=player_name)
-        return None, {"result": "Player not found."}
+        return None, command_error("Player not found.")
 
     if not await validate_admin_permission(current_player, player_name):
-        return None, {"result": "You do not have permission to use teleport commands."}
+        return None, command_error("You do not have permission to use teleport commands.")
 
     target_player_name = command_data.get("target_player")
     if not target_player_name:
-        return None, {"result": "Usage: teleport <player_name> [direction]"}
+        return None, command_error("Usage: teleport <player_name> [direction]")
 
     direction_value = command_data.get("direction")
     # Reason: DYNAMIC_DISPATCH - resolved app/player/connection-manager objects are duck-typed
@@ -214,7 +215,7 @@ async def _execute_teleport_move(
 
     except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError, OSError, KeyError) as e:
         _log_teleport_execution_failure(context, player_name, e)
-        return {"result": f"Failed to teleport {context.target_player_name}: {str(e)}"}
+        return command_error(f"Failed to teleport {context.target_player_name}: {str(e)}")
 
 
 async def handle_teleport_command(
@@ -256,12 +257,12 @@ async def handle_teleport_command(
             player_service, connection_manager, persistence, command_data, player_name
         )
         if error_result or context is None:
-            return error_result or {"result": "Failed to resolve teleport context."}
+            return error_result or command_error("Failed to resolve teleport context.")
 
         return await _execute_teleport_move(player_service, connection_manager, persistence, context, player_name)
     except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError, OSError, KeyError) as e:
         logger.error("Exception in teleport command handler", error=str(e), exc_info=True)
-        return {"result": f"Error processing teleport command: {str(e)}"}
+        return command_error(f"Error processing teleport command: {str(e)}")
 
 
 async def handle_goto_command(
@@ -301,7 +302,7 @@ async def handle_goto_command(
     # Extract target player from command data
     target_player_name = command_data.get("target_player")
     if not target_player_name:
-        return {"result": "Usage: goto <player_name>"}
+        return command_error("Usage: goto <player_name>")
 
     # Resolve target player
     target_player, target_error = await resolve_goto_target(target_player_name, player_service, connection_manager)
@@ -326,7 +327,7 @@ async def handle_goto_command(
         )
     except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError, OSError, KeyError) as e:
         log_goto_failure(player_name, target_player_name, current_player, target_player, e)
-        return {"result": f"Failed to teleport to {target_player_name}: {str(e)}"}
+        return command_error(f"Failed to teleport to {target_player_name}: {str(e)}")
 
 
 __all__ = [

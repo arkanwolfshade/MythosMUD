@@ -46,7 +46,7 @@ def test_message_from_command_missing_message() -> None:
         usage="USAGE",
         empty_log="empty",
     )
-    assert out == {"result": "USAGE"}
+    assert out == {"result": "USAGE", "category": MessageCategory.SYSTEM_ERROR}
 
 
 def test_message_from_command_empty_after_strip() -> None:
@@ -57,7 +57,7 @@ def test_message_from_command_empty_after_strip() -> None:
         usage="USAGE",
         empty_log="empty",
     )
-    assert out == {"result": "USAGE"}
+    assert out == {"result": "USAGE", "category": MessageCategory.SYSTEM_ERROR}
 
 
 def test_message_from_command_strip_true() -> None:
@@ -94,7 +94,7 @@ def test_whisper_id_pair_missing_id() -> None:
     a = SimpleNamespace()
     b = SimpleNamespace(player_id=uuid.uuid4())
     out = _whisper_id_pair_or_error(a, b)
-    assert out == {"result": "Player ID not found."}
+    assert out == {"result": "Player ID not found.", "category": MessageCategory.SYSTEM_ERROR}
 
 
 def test_whisper_id_pair_ok() -> None:
@@ -314,7 +314,10 @@ async def test_flow_whisper_command_exception_returns_generic_message() -> None:
 
     out = await flow_whisper_command({"target": "bob", "message": "psst"}, request, "alice")
 
-    assert out == {"result": "Error sending whisper: Something went wrong. Please try again later."}
+    assert out == {
+        "result": "Error sending whisper: Something went wrong. Please try again later.",
+        "category": MessageCategory.SYSTEM_ERROR,
+    }
     assert "socket reset" not in out["result"]
 
 
@@ -423,7 +426,7 @@ async def test_flow_system_command_blocks_non_admin_user() -> None:
 
     out = await flow_system_command({"message": "forbidden system"}, request, "alice")
 
-    assert out == {"result": "You must be an admin to send system messages."}
+    assert out == {"result": "You must be an admin to send system messages.", "category": MessageCategory.SYSTEM_ERROR}
     send_system_message.assert_not_awaited()
 
 

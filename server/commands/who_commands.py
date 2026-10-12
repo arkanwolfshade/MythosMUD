@@ -9,6 +9,7 @@ This module contains the who command handler and related helper functions.
 from typing import TYPE_CHECKING, Any
 
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
 
 if TYPE_CHECKING:
     from ..models.player import Player
@@ -278,4 +279,4 @@ async def handle_who_command(
             error_message=str(e),
             exc_info=True,
         )
-        return {"result": f"Error retrieving player list: {str(e)}"}
+        return command_error(f"Error retrieving player list: {str(e)}")

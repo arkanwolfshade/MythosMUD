@@ -13,6 +13,7 @@ from ..game.items.models import ItemPrototypeModel
 from ..models.player import Player
 from ..services.inventory_websocket_events import emit_inventory_updated
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
 from .equipment_helpers import resolve_equip_item_index
 from .inventory_command_contracts import CommandResponse
 from .inventory_command_helpers import (
@@ -92,7 +93,7 @@ async def handle_use_command(
 
     persistence, connection_manager, player, error = await resolve_state_and_player(request, current_user, player_name)
     if error or not player:
-        return error or {"result": "Player information not found."}
+        return error or command_error("Player information not found.")
 
     room_id = str(player.current_room_id)
     usable = _resolve_usable_or_error(request, command_data, player, room_id)

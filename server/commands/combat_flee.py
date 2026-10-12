@@ -14,6 +14,8 @@ from server.commands.combat_app_protocols import AppWithState
 from server.commands.combat_helpers import FleePreconditionError
 from server.models.combat import CombatInstance
 
+from .command_results import command_error
+
 if TYPE_CHECKING:
     from server.services.combat_service import CombatService
 
@@ -111,7 +113,7 @@ def _get_flee_room_id(handler: _FleeCommandHandlerLike, room_id: str) -> tuple[s
     """Ensure room exists and has exits; return (room_id, None) or (None, error_dict)."""
     room_data = handler.get_room_data(room_id)
     if not room_data:
-        return None, {"result": "You are in an unknown room."}
+        return None, command_error("You are in an unknown room.")
     raw_exits = getattr(room_data, "exits", None)
     exits: dict[str, str] = {}
     if isinstance(raw_exits, dict):
@@ -169,7 +171,7 @@ async def _resolve_flee_preconditions(
     if uuid_error:
         raise FleePreconditionError(uuid_error)
     if player_id is None:
-        raise FleePreconditionError({"result": "You are not recognized by the cosmic forces."})
+        raise FleePreconditionError(command_error("You are not recognized by the cosmic forces."))
     combat, room_id, combat_error = await _validate_flee_combat_and_room(
         handler, player_id, cast(_PlayerForFlee, player)
     )

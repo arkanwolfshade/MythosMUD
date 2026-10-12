@@ -5,6 +5,7 @@ from typing import Any
 
 from ...alias_storage import AliasStorage
 from ...structured_logging.enhanced_logging_config import get_logger
+from ..command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -19,7 +20,7 @@ async def _get_room_id_for_test_occupants(
     if not room_id:
         room_id = getattr(player_obj, "current_room_id", None)
         if not room_id:
-            return None, {"result": "No room ID provided and player has no current room."}
+            return None, command_error("No room ID provided and player has no current room.")
 
     return room_id, None
 
@@ -31,7 +32,7 @@ def _get_event_handler_for_test_occupants(app: Any) -> tuple[Any | None, dict[st
         event_handler = getattr(app.state.container, "real_time_event_handler", None)
 
     if not event_handler:
-        return None, {"result": "Event handler not available. Cannot test occupants directly."}
+        return None, command_error("Event handler not available. Cannot test occupants directly.")
 
     return event_handler, None
 
@@ -78,16 +79,16 @@ async def _resolve_app_and_player_for_test_occupants(
     """Resolve application and player object for NPC test occupants command."""
     app = request.app if request else None
     if not app:
-        return None, None, {"result": "Server application not available."}
+        return None, None, command_error("Server application not available.")
 
     player_service = getattr(app.state, "player_service", None)
     if not player_service:
-        return None, None, {"result": "Player service not available."}
+        return None, None, command_error("Player service not available.")
 
     maybe_coro = player_service.resolve_player_name(player_name)
     player_obj = await maybe_coro if inspect.isawaitable(maybe_coro) else maybe_coro
     if not player_obj:
-        return None, None, {"result": "Player not found."}
+        return None, None, command_error("Player not found.")
 
     return app, player_obj, None
 
@@ -102,10 +103,10 @@ async def _resolve_room_and_handler_for_test_occupants(
 
     event_handler, error_result = _get_event_handler_for_test_occupants(app)
     if error_result or event_handler is None:
-        return None, None, error_result or {"result": "Event handler not available."}
+        return None, None, error_result or command_error("Event handler not available.")
 
     if room_id is None:
-        return None, None, {"result": "Room ID is required for testing occupants."}
+        return None, None, command_error("Room ID is required for testing occupants.")
 
     return event_handler, room_id, None
 
@@ -177,4 +178,4 @@ async def handle_npc_test_occupants_command(
 
     except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         logger.error("Error testing NPC occupants", admin_name=player_name, error=str(e), exc_info=True)
-        return {"result": f"Error testing NPC occupants: {str(e)}"}
+        return command_error(f"Error testing NPC occupants: {str(e)}")
