@@ -25,6 +25,7 @@ from server.commands.container_helpers_inventory_ops import (
     validate_get_command_inputs,
     validate_put_command_inputs,
 )
+from server.constants.message_category import MessageCategory
 
 
 def test_coerce_transfer_quantity_int_and_str() -> None:
@@ -184,7 +185,7 @@ async def test_validate_put_command_inputs_no_container_service() -> None:
             player,
             MagicMock(),
         )
-    assert out == {"result": "Container service is unavailable."}
+    assert out == {"result": "Container service is unavailable.", "category": MessageCategory.SYSTEM_ERROR}
 
 
 @pytest.mark.asyncio

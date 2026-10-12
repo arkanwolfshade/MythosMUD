@@ -14,19 +14,21 @@ from server.services.target_resolution_service import TargetResolutionService
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.command_parser import get_username_from_user
 
+from .command_results import command_error
+
 logger = get_logger(__name__)
 
 
 def _get_teach_services(app: Any) -> tuple[Any, Any, Any] | dict[str, str]:
     if not app:
-        return {"result": "System error: application not available."}
+        return command_error("System error: application not available.")
 
     persistence = getattr(app.state, "persistence", None)
     spell_learning_service = getattr(app.state, "spell_learning_service", None)
     player_service = getattr(app.state, "player_service", None)
 
     if not persistence or not player_service:
-        return {"result": "System error: required services not available."}
+        return command_error("System error: required services not available.")
     if not spell_learning_service:
         return {"result": "Spell learning system not initialized."}
     return persistence, spell_learning_service, player_service
@@ -95,7 +97,7 @@ async def handle_teach_command(
 
     args = command_data.get("args", [])
     if len(args) < 2:
-        return {"result": "Usage: /teach <npc_name> <spell_name>"}
+        return command_error("Usage: /teach <npc_name> <spell_name>")
 
     npc_name = args[0]
     spell_name = args[1]
@@ -104,5 +106,5 @@ async def handle_teach_command(
     if isinstance(target_match, dict):
         return target_match
 
-    result = await spell_learning_service.learn_spell_from_npc(player.player_id, target_match.target_id, spell_name)
+    result = await spell_learning_service.learn_spell_from_npc(player.player_id, target_match.target_id, spell_name)  # pylint: disable=no-member  # Reason: pylint cannot narrow the services union after the isinstance(dict) early return
     return _format_teach_result(result, spell_name)

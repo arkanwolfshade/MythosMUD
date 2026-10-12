@@ -47,6 +47,7 @@ from .combat import (
     handle_strike_command,
     handle_taunt_command,
 )
+from .command_results import command_error
 from .communication_commands import (
     handle_global_command,
     handle_local_command,
@@ -248,14 +249,14 @@ class CommandService:
         command_type_obj: object = command_data.get("command_type")
         if not isinstance(command_type_obj, str) or not command_type_obj:
             logger.error("No command type in validated command data", player=player_name, command_data=command_data)
-            return {"result": "Invalid command format"}
+            return {**command_error("Invalid command format")}
         command_type = command_type_obj
 
         # Get the appropriate handler
         handler: CommandHandler | None = self.command_handlers.get(command_type)
         if not handler:
             logger.error("No handler found for command type", player=player_name, command_type=command_type)
-            return {"result": f"Unknown command: {command_type}"}
+            return {**command_error(f"Unknown command: {command_type}")}
 
         try:
             # Call handler with command_data (standardized format)
@@ -295,11 +296,11 @@ class CommandService:
                 except ValueError, TypeError, AttributeError, KeyError, RuntimeError:  # pylint: disable=broad-exception-caught  # noqa: B904                    # Last resort: silent failure to prevent test crashes
                     # Using broad exception catch as this is defensive code to prevent cascading failures
                     pass
-            return {"result": f"Error processing {command_type} command: {str(e)}"}
+            return {**command_error(f"Error processing {command_type} command: {str(e)}")}
 
     def _parse_command_string(
         self, command: str, player_name: str
-    ) -> tuple[Command, str, list[object]] | dict[str, str]:
+    ) -> tuple[Command, str, list[object]] | dict[str, object]:
         """
         Parse and validate command string.
 
@@ -323,10 +324,10 @@ class CommandService:
             return (parsed_command, cmd, args)
         except MythosValidationError as e:
             logger.info("Command validation failed", error=str(e))
-            return {"result": str(e)}
+            return {**command_error(str(e))}
         except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
             logger.error("Unexpected error during command parsing", error=str(e))
-            return {"result": f"Error processing command: {str(e)}"}
+            return {**command_error(f"Error processing command: {str(e)}")}
 
     def _prepare_command_data(
         self, parsed_command: Command, cmd: str, args: list[object], player_name: str
@@ -494,7 +495,7 @@ class CommandService:
                 error_message=str(e),
                 exc_info=True,
             )
-            return {"result": f"Error processing command: {str(e)}"}
+            return {**command_error(f"Error processing command: {str(e)}")}
 
     async def process_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command processing requires many parameters for context and routing
         self,
@@ -528,7 +529,7 @@ class CommandService:
         # Step 2: Route to appropriate handler
         if cmd not in self.command_handlers:
             logger.info("Unknown command", command=cmd)
-            return {"result": f"Unknown command: {cmd}. Use 'help' for available commands."}
+            return {**command_error(f"Unknown command: {cmd}. Use 'help' for available commands.")}
 
         handler: CommandHandler = self.command_handlers[cmd]
         command_data = self._prepare_command_data(parsed_command, cmd, args, player_name)

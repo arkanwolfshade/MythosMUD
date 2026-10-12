@@ -11,6 +11,7 @@ from typing import Any
 from ..alias_storage import AliasStorage
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
+from .command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -160,7 +161,7 @@ def _get_status_persistence(app: Any) -> Any | None:
 async def _build_status_result(app: Any, persistence: Any, current_user: dict[str, Any]) -> dict[str, str]:
     player = await persistence.get_player_by_name(get_username_from_user(current_user))
     if not player:
-        return {"result": "Player information not found."}
+        return command_error("Player information not found.")
 
     room = persistence.get_room_by_id(player.current_room_id) if player.current_room_id else None
     room_name = room.name if room else "Unknown location"
@@ -216,7 +217,7 @@ async def handle_status_command(
         return result
     except (AttributeError, TypeError) as e:
         logger.error("Status command error", player=player_name, error=str(e))
-        return {"result": f"Error retrieving status information: {str(e)}"}
+        return command_error(f"Error retrieving status information: {str(e)}")
 
 
 async def handle_whoami_command(

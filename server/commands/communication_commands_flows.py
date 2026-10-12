@@ -13,6 +13,7 @@ from structlog.stdlib import BoundLogger
 from ..constants.message_category import MessageCategory
 from ..services.fake_sender_registry import fake_sender_registry
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
 from .communication_commands_support import (
     ChatCommandsProtocol,
     PlayerResolutionProtocol,
@@ -26,8 +27,8 @@ from .communication_commands_support import (
 
 logger: BoundLogger = get_logger(__name__)
 
-CHAT_UNAVAILABLE: dict[str, str] = {"result": "Chat functionality is not available."}
-ADMIN_UNAVAILABLE: dict[str, str] = {"result": "Admin functionality is not available."}
+CHAT_UNAVAILABLE: dict[str, str] = command_error("Chat functionality is not available.")
+ADMIN_UNAVAILABLE: dict[str, str] = command_error("Admin functionality is not available.")
 
 # Client-facing text when chat flows hit an unexpected exception; never echo str(e) (information leakage).
 _GENERIC_UNEXPECTED_CHAT_FAILURE = "Something went wrong. Please try again later."
@@ -96,11 +97,11 @@ def _message_from_command(
     message = command_data.get("message")
     if not isinstance(message, str):
         logger.warning(empty_log, player_name=player_name, command_data=command_data)
-        return {"result": usage}
+        return command_error(usage)
     text = message.strip() if strip else message
     if not text:
         logger.warning(empty_log, player_name=player_name, command_data=command_data)
-        return {"result": usage}
+        return command_error(usage)
     return text
 
 
@@ -295,7 +296,7 @@ async def flow_global_command(
             return _chat_echo(f"You say (global): {msg_or_err}", MessageCategory.CHAT_GLOBAL, "global")
         error_msg = _str_error_from_chat_result(result)
         logger.warning("Global command failed", player_name=player_name, error_msg=error_msg)
-        return {"result": f"Error sending message: {error_msg}"}
+        return command_error(f"Error sending message: {error_msg}")
     except (AttributeError, TypeError, ValueError, RuntimeError) as e:
         logger.error(
             "Global command error",
@@ -304,7 +305,7 @@ async def flow_global_command(
             error_message=str(e),
             exc_info=True,
         )
-        return {"result": f"Error sending message: {_GENERIC_UNEXPECTED_CHAT_FAILURE}"}
+        return command_error(f"Error sending message: {_GENERIC_UNEXPECTED_CHAT_FAILURE}")
 
 
 def _system_services_triple(
@@ -338,7 +339,7 @@ async def _system_send_if_admin(
     _, player_id = bundle
     if not user_manager.is_admin(player_id):
         logger.warning("Non-admin player attempted to use system command", player_name=player_name)
-        return {"result": "You must be an admin to send system messages."}
+        return command_error("You must be an admin to send system messages.")
     result_raw = await chat_service.send_system_message(player_id, message)
     result = chat_result_map(result_raw)
     if result.get("success"):
@@ -352,7 +353,7 @@ async def _system_send_if_admin(
         return _chat_echo(f"You system: {message}", MessageCategory.SYSTEM_INFO, "system")
     error_msg = _str_error_from_chat_result(result)
     logger.warning("System command failed", player_name=player_name, error_msg=error_msg)
-    return {"result": f"Error sending system message: {error_msg}"}
+    return command_error(f"Error sending system message: {error_msg}")
 
 
 async def flow_system_command(
@@ -386,7 +387,7 @@ async def flow_system_command(
             error_message=str(e),
             exc_info=True,
         )
-        return {"result": f"Error sending system message: {_GENERIC_UNEXPECTED_CHAT_FAILURE}"}
+        return command_error(f"Error sending system message: {_GENERIC_UNEXPECTED_CHAT_FAILURE}")
 
 
 def _whisper_id_pair_or_error(sender_obj: object, target_obj: object) -> tuple[object, object] | dict[str, str]:
@@ -396,7 +397,7 @@ def _whisper_id_pair_or_error(sender_obj: object, target_obj: object) -> tuple[o
     if sender_id is not None and target_id is not None and sender_id == target_id:
         return {"result": "You cannot whisper to yourself"}
     if sender_id is None or target_id is None:
-        return {"result": "Player ID not found."}
+        return command_error("Player ID not found.")
     return (sender_id, target_id)
 
 
@@ -409,7 +410,7 @@ async def _deliver_whisper_message(
 ) -> dict[str, str]:
     sender_obj = await ps.resolve_player_name(player_name)
     if not sender_obj:
-        return {"result": "Player not found."}
+        return command_error("Player not found.")
     target_obj = await ps.resolve_player_name(target)
     if not target_obj:
         return {"result": "You whisper into the aether."}
@@ -429,7 +430,7 @@ async def _deliver_whisper_message(
         return _chat_echo(f"You whisper to {target}: {message}", MessageCategory.CHAT_WHISPER, "whisper")
     error_msg = _str_error_from_chat_result(result)
     logger.warning("Whisper command failed", player_name=player_name, error_msg=error_msg)
-    return {"result": f"Error sending whisper: {error_msg}"}
+    return command_error(f"Error sending whisper: {error_msg}")
 
 
 async def flow_whisper_command(
@@ -447,7 +448,7 @@ async def flow_whisper_command(
             player_name=player_name,
             command_data=command_data,
         )
-        return {"result": "Say what? Usage: whisper <player> <message>"}
+        return command_error("Say what? Usage: whisper <player> <message>")
     svc = _require_chat_pair(request, player_name, fail_log="Whisper command failed")
     if isinstance(svc, dict):
         return svc
@@ -462,7 +463,7 @@ async def flow_whisper_command(
             error_message=str(e),
             exc_info=True,
         )
-        return {"result": f"Error sending whisper: {_GENERIC_UNEXPECTED_CHAT_FAILURE}"}
+        return command_error(f"Error sending whisper: {_GENERIC_UNEXPECTED_CHAT_FAILURE}")
 
 
 async def _deliver_reply_to_last_whisper(
@@ -473,10 +474,10 @@ async def _deliver_reply_to_last_whisper(
 ) -> dict[str, str]:
     sender_obj = await ps.resolve_player_name(player_name)
     if not sender_obj:
-        return {"result": "Player not found."}
+        return command_error("Player not found.")
     sender_id = primary_id(sender_obj)
     if sender_id is None:
-        return {"result": "Player ID not found."}
+        return command_error("Player ID not found.")
 
     # #625/#714: a fake NPC whisper never touched the real whisper tracker below (it isn't a
     # real player) -- check the hallucination-sender registry first, so replying to one answers
@@ -496,7 +497,7 @@ async def _deliver_reply_to_last_whisper(
         return {"result": "The player you're trying to reply to is no longer available."}
     target_id = primary_id(target_obj)
     if target_id is None:
-        return {"result": "Player ID not found."}
+        return command_error("Player ID not found.")
     result_raw = await cs.send_whisper_message(sender_id, target_id, message)
     result = chat_result_map(result_raw)
     if result.get("success"):
@@ -509,7 +510,7 @@ async def _deliver_reply_to_last_whisper(
         return _chat_echo(f"You whisper to {last_str}: {message}", MessageCategory.CHAT_WHISPER, "whisper")
     error_msg = _str_error_from_chat_result(result)
     logger.warning("Reply command failed", player_name=player_name, error_msg=error_msg)
-    return {"result": f"Error sending reply: {error_msg}"}
+    return command_error(f"Error sending reply: {error_msg}")
 
 
 async def flow_reply_command(
@@ -543,4 +544,4 @@ async def flow_reply_command(
             error_message=str(e),
             exc_info=True,
         )
-        return {"result": f"Error sending reply: {_GENERIC_UNEXPECTED_CHAT_FAILURE}"}
+        return command_error(f"Error sending reply: {_GENERIC_UNEXPECTED_CHAT_FAILURE}")

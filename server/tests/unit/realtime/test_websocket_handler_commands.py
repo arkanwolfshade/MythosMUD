@@ -11,6 +11,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from server.commands.command_results import command_error
 from server.constants.message_category import MessageCategory
 from server.realtime.websocket_handler_commands import (
     _attach_room_state_to_result,
@@ -357,6 +358,20 @@ async def test_command_response_defaults_to_command_output_category(
     sent = mock_websocket.send_json.await_args[0][0]
     assert sent["event_type"] == "command_response"
     assert sent["data"]["category"] == MessageCategory.COMMAND_OUTPUT
+
+
+@pytest.mark.asyncio
+async def test_command_response_keeps_system_error_from_command_error(
+    mock_websocket: MagicMock, mock_ws_connection_manager: MagicMock, tmp_path: Path
+) -> None:
+    cm = _player_cm(mock_ws_connection_manager)
+    await _run_game_command_with_unified_result(
+        mock_websocket, cm, tmp_path, {**command_error("Usage: go <direction>")}
+    )
+
+    sent = mock_websocket.send_json.await_args[0][0]
+    assert sent["data"]["result"] == "Usage: go <direction>"
+    assert sent["data"]["category"] == MessageCategory.SYSTEM_ERROR
 
 
 @pytest.mark.asyncio

@@ -37,6 +37,8 @@ from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.command_parser import get_username_from_user
 from server.validators.combat_validator import CombatValidator
 
+from .command_results import command_error
+
 if TYPE_CHECKING:
     from server.events.event_bus import EventBus
     from server.realtime.connection_manager import ConnectionManager
@@ -272,7 +274,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
             return None, None, {"result": "You are not in a room."}
         room = persistence.get_room_by_id(room_id)
         if not room:
-            return None, None, {"result": "You are in an unknown room."}
+            return None, None, command_error("You are in an unknown room.")
         return player, room, None
 
     def _validate_combat_target_match(
@@ -314,7 +316,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
         """Resolve combat target using target resolution service."""
         pid_raw = getattr(player, "player_id", None)
         if pid_raw is None:
-            return None, {"result": "Invalid player state."}
+            return None, command_error("Invalid player state.")
         target_result = await self.target_resolution_service.resolve_target(pid_raw, target_name)
         return self._validate_combat_target_match(target_result, player)
 

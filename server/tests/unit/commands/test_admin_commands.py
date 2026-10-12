@@ -26,6 +26,7 @@ from server.commands.admin_commands import (
     handle_unmute_global_command,
 )
 from server.commands.admin_teleport_commands import handle_goto_command, handle_teleport_command
+from server.constants.message_category import MessageCategory
 
 
 @pytest.mark.asyncio
@@ -781,13 +782,19 @@ class TestResolveAdminStatusPlayer:
     @pytest.mark.asyncio
     async def test_no_app_context_returns_error(self):
         result = await _resolve_admin_status_player(None, "TestPlayer")
-        assert result == {"result": "Admin status information is not available."}
+        assert result == {
+            "result": "Admin status information is not available.",
+            "category": MessageCategory.SYSTEM_ERROR,
+        }
 
     @pytest.mark.asyncio
     async def test_no_player_service_returns_error(self):
         request = MagicMock(app=MagicMock(state=MagicMock(spec=[])))
         result = await _resolve_admin_status_player(request, "TestPlayer")
-        assert result == {"result": "Admin status information is not available."}
+        assert result == {
+            "result": "Admin status information is not available.",
+            "category": MessageCategory.SYSTEM_ERROR,
+        }
 
     @pytest.mark.asyncio
     async def test_database_error_resolving_player_returns_error(self):
@@ -796,14 +803,17 @@ class TestResolveAdminStatusPlayer:
         player_service = MagicMock(resolve_player_name=AsyncMock(side_effect=SQLAlchemyError("db down")))
         request = MagicMock(app=MagicMock(state=MagicMock(player_service=player_service)))
         result = await _resolve_admin_status_player(request, "TestPlayer")
-        assert result == {"result": "Unable to resolve player 'TestPlayer': db down"}
+        assert result == {
+            "result": "Unable to resolve player 'TestPlayer': db down",
+            "category": MessageCategory.SYSTEM_ERROR,
+        }
 
     @pytest.mark.asyncio
     async def test_player_not_found_returns_error(self):
         player_service = MagicMock(resolve_player_name=AsyncMock(return_value=None))
         request = MagicMock(app=MagicMock(state=MagicMock(player_service=player_service)))
         result = await _resolve_admin_status_player(request, "TestPlayer")
-        assert result == {"result": "Player 'TestPlayer' not found."}
+        assert result == {"result": "Player 'TestPlayer' not found.", "category": MessageCategory.SYSTEM_ERROR}
 
     @pytest.mark.asyncio
     async def test_success_returns_player_record_and_user_manager(self):

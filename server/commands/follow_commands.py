@@ -14,6 +14,7 @@ from ..schemas.shared import TargetType as SchemaTargetType
 from ..services.target_resolution_service import TargetResolutionService
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
+from .command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -84,7 +85,7 @@ async def handle_follow_command(
 
     target_identifier = command_data.get("target")
     if not target_identifier or not str(target_identifier).strip():
-        return {"result": "Follow who? Usage: follow <player or NPC name>"}
+        return command_error("Follow who? Usage: follow <player or NPC name>")
 
     match = await _resolve_follow_target(container, async_persistence, requestor_id, str(target_identifier).strip())
     if isinstance(match, dict):

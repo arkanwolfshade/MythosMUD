@@ -14,6 +14,7 @@ from ..alias_storage import AliasStorage
 from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
 from .admin_teleport_utils import log_failed_admin_move
+from .command_results import command_error
 from .goto_helpers import execute_confirm_goto, resolve_target_player_for_goto, validate_confirm_goto_context
 from .teleport_helpers import (
     execute_confirm_teleport,
@@ -46,7 +47,7 @@ def _resolve_connection_manager(app: Any, player_name: str, command_label: str) 
     connection_manager = app.state.connection_manager if app else None  # pyright: ignore[reportAny]
     if not connection_manager:
         logger.warning("Confirm command failed - no connection manager", player_name=player_name, command=command_label)
-        return None, {"result": "Connection manager not available."}
+        return None, command_error("Connection manager not available.")
     return connection_manager, None
 
 
@@ -80,11 +81,11 @@ async def _resolve_confirm_teleport_targets(
         logger.warning(
             "Confirm teleport command failed - target player resolution returned None", player_name=player_name
         )
-        return None, None, {"result": f"Failed to resolve target player '{target_player_name}'."}
+        return None, None, command_error(f"Failed to resolve target player '{target_player_name}'.")
 
     if current_player is None:
         logger.warning("Confirm teleport command failed - current player is None", player_name=player_name)
-        return None, None, {"result": "Current player information is not available."}
+        return None, None, command_error("Current player information is not available.")
 
     return target_player, target_player_info, None
 
@@ -139,7 +140,7 @@ async def _execute_confirm_teleport_move(
         logger.error(
             "Teleport execution failed", admin_name=player_name, target_player_name=target_player_name, error=str(e)
         )
-        return {"result": f"Failed to teleport {target_player_name}: {str(e)}"}
+        return command_error(f"Failed to teleport {target_player_name}: {str(e)}")
 
 
 async def handle_confirm_teleport_command(
@@ -183,7 +184,7 @@ async def handle_confirm_teleport_command(
 
     target_player_name = command_data.get("target_player")
     if not target_player_name:
-        return {"result": "Usage: confirm teleport <player_name>"}
+        return command_error("Usage: confirm teleport <player_name>")
 
     # Reason: DYNAMIC_DISPATCH - resolved app/player/connection-manager objects are duck-typed
     # Appropriate because: same unsuppressed convention as this module's teleport helpers (see _announce_confirm_teleport).
@@ -259,11 +260,11 @@ async def _resolve_confirm_goto_target(
     # After error check, target_player and current_player should not be None, but verify for mypy
     if target_player is None:
         logger.warning("Confirm goto command failed - target player resolution returned None", player_name=player_name)
-        return None, {"result": f"Failed to resolve target player '{target_player_name}'."}
+        return None, command_error(f"Failed to resolve target player '{target_player_name}'.")
 
     if current_player is None:
         logger.warning("Confirm goto command failed - current player is None", player_name=player_name)
-        return None, {"result": "Current player information is not available."}
+        return None, command_error("Current player information is not available.")
 
     return target_player, None
 
@@ -312,7 +313,7 @@ async def _execute_confirm_goto_move(
         logger.error(
             "Goto execution failed", admin_name=player_name, target_player_name=target_player_name, error=str(e)
         )
-        return {"result": f"Failed to teleport to {target_player_name}: {str(e)}"}
+        return command_error(f"Failed to teleport to {target_player_name}: {str(e)}")
 
 
 async def handle_confirm_goto_command(
@@ -356,7 +357,7 @@ async def handle_confirm_goto_command(
 
     target_player_name = command_data.get("target_player")
     if not target_player_name:
-        return {"result": "Usage: confirm goto <player_name>"}
+        return command_error("Usage: confirm goto <player_name>")
 
     # Reason: DYNAMIC_DISPATCH - resolved app/player/connection-manager objects are duck-typed
     # Appropriate because: same unsuppressed convention as this module's teleport helpers (see _announce_confirm_teleport).

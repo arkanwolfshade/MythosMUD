@@ -7,6 +7,7 @@ from ...alias_storage import AliasStorage
 from ...models.npc import NPCDefinitionType
 from ...services.npc_service import NPCDefinitionUpdateParams, npc_service
 from ...structured_logging.enhanced_logging_config import get_logger
+from ..command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -19,22 +20,22 @@ def _parse_npc_edit_args(args: list[Any]) -> tuple[int, str, Any] | dict[str, st
         (npc_id, field, value) on success, or an error result dict on validation failure.
     """
     if len(args) < 4:
-        return {"result": "Usage: npc edit <id> <field> <value>"}
+        return command_error("Usage: npc edit <id> <field> <value>")
     try:
         npc_id = int(args[1])
     except ValueError:
-        return {"result": f"Invalid NPC ID: {args[1]}"}
+        return command_error(f"Invalid NPC ID: {args[1]}")
     field = args[2]
     value = args[3]
     valid_fields = ["name", "npc_type", "sub_zone_id", "room_id"]
     if field not in valid_fields:
-        return {"result": f"Invalid field: {field}. Valid fields: {', '.join(valid_fields)}"}
+        return command_error(f"Invalid field: {field}. Valid fields: {', '.join(valid_fields)}")
     if field == "npc_type":
         try:
             value = NPCDefinitionType(value)
         except ValueError:
             valid_types = [t.value for t in NPCDefinitionType]
-            return {"result": f"Invalid NPC type: {value}. Valid types: {', '.join(valid_types)}"}
+            return command_error(f"Invalid NPC type: {value}. Valid types: {', '.join(valid_types)}")
     return (npc_id, field, value)
 
 
@@ -57,7 +58,7 @@ def _build_npc_edit_params(field: str, value: Any) -> tuple[NPCDefinitionUpdateP
     """Map a single NPC field/value into NPCDefinitionUpdateParams, or return an error dict."""
     builder = _NPC_EDIT_FIELD_BUILDERS.get(field)
     if builder is None:
-        return None, {"result": f"Unsupported NPC field: {field}"}
+        return None, command_error(f"Unsupported NPC field: {field}")
     return builder(value), None
 
 
@@ -66,7 +67,7 @@ async def _execute_npc_edit(request: Any, npc_id: int, field: str, value: Any, p
     try:
         app = request.app if request else None
         if not app or not hasattr(app.state, "db_session_maker"):
-            return {"result": "Database not available."}
+            return command_error("Database not available.")
 
         async with app.state.db_session_maker() as session:
             params, error = _build_npc_edit_params(field, value)
@@ -81,14 +82,14 @@ async def _execute_npc_edit(request: Any, npc_id: int, field: str, value: Any, p
                 params=params,
             )
             if not definition:
-                return {"result": f"NPC definition {npc_id} not found"}
+                return command_error(f"NPC definition {npc_id} not found")
 
             logger.info("NPC definition updated", npc_id=npc_id, admin_name=player_name, field=field, value=value)
             return {"result": f"NPC definition {npc_id} updated successfully"}
 
     except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         logger.error("Error editing NPC", npc_id=npc_id, admin_name=player_name, error=str(e))
-        return {"result": f"Error editing NPC: {str(e)}"}
+        return command_error(f"Error editing NPC: {str(e)}")
 
 
 async def handle_npc_create_command(
@@ -103,7 +104,7 @@ async def handle_npc_create_command(
 
     args = command_data.get("args", [])
     if len(args) < 5:
-        return {"result": "Usage: npc create <name> <type> <sub_zone_id> <room_id>"}
+        return command_error("Usage: npc create <name> <type> <sub_zone_id> <room_id>")
 
     name = args[1]
     npc_type_str = args[2]
@@ -114,12 +115,12 @@ async def handle_npc_create_command(
         npc_type = NPCDefinitionType(npc_type_str)
     except ValueError:
         valid_types = [t.value for t in NPCDefinitionType]
-        return {"result": f"Invalid NPC type: {npc_type_str}. Valid types: {', '.join(valid_types)}"}
+        return command_error(f"Invalid NPC type: {npc_type_str}. Valid types: {', '.join(valid_types)}")
 
     try:
         app = request.app if request else None
         if not app or not hasattr(app.state, "db_session_maker"):
-            return {"result": "Database not available."}
+            return command_error("Database not available.")
 
         async with app.state.db_session_maker() as session:
             definition = await npc_service.create_npc_definition(
@@ -141,7 +142,7 @@ async def handle_npc_create_command(
 
     except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         logger.error("Error creating NPC", admin_name=player_name, error=str(e))
-        return {"result": f"Error creating NPC: {str(e)}"}
+        return command_error(f"Error creating NPC: {str(e)}")
 
 
 async def handle_npc_edit_command(
@@ -173,30 +174,30 @@ async def handle_npc_delete_command(
 
     args = command_data.get("args", [])
     if len(args) < 2:
-        return {"result": "Usage: npc delete <id>"}
+        return command_error("Usage: npc delete <id>")
 
     try:
         npc_id = int(args[1])
     except ValueError:
-        return {"result": f"Invalid NPC ID: {args[1]}"}
+        return command_error(f"Invalid NPC ID: {args[1]}")
 
     try:
         app = request.app if request else None
         if not app or not hasattr(app.state, "db_session_maker"):
-            return {"result": "Database not available."}
+            return command_error("Database not available.")
 
         async with app.state.db_session_maker() as session:
             deleted = await npc_service.delete_npc_definition(session, npc_id)
 
             if not deleted:
-                return {"result": f"NPC definition {npc_id} not found"}
+                return command_error(f"NPC definition {npc_id} not found")
 
             logger.info("NPC definition deleted", npc_id=npc_id, admin_name=player_name)
             return {"result": f"NPC definition {npc_id} deleted successfully"}
 
     except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         logger.error("Error deleting NPC", npc_id=npc_id, admin_name=player_name, error=str(e))
-        return {"result": f"Error deleting NPC: {str(e)}"}
+        return command_error(f"Error deleting NPC: {str(e)}")
 
 
 async def handle_npc_list_command(
@@ -212,7 +213,7 @@ async def handle_npc_list_command(
     try:
         app = request.app if request else None
         if not app or not hasattr(app.state, "db_session_maker"):
-            return {"result": "Database not available."}
+            return command_error("Database not available.")
 
         async with app.state.db_session_maker() as session:
             definitions = await npc_service.get_npc_definitions(session)
@@ -230,4 +231,4 @@ async def handle_npc_list_command(
 
     except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         logger.error("Error listing NPCs", admin_name=player_name, error=str(e))
-        return {"result": f"Error listing NPCs: {str(e)}"}
+        return command_error(f"Error listing NPCs: {str(e)}")

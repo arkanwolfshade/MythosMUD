@@ -10,6 +10,7 @@ from structlog.stdlib import BoundLogger
 from ..models.player import Player
 from ..services.inventory_service import InventoryStack
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
 from .inventory_item_matching import match_equipped_item_by_name, match_inventory_item_by_name, normalize_slot_name
 from .inventory_service_helpers import get_shared_services
 
@@ -61,7 +62,7 @@ def resolve_equip_item_index(
         )
         return match_index, _equip_stack_from_inventory_index(inventory, match_index)
 
-    return None, {"result": "Usage: equip <inventory-number|item-name> [slot]"}
+    return None, {**command_error("Usage: equip <inventory-number|item-name> [slot]")}
 
 
 def normalize_inventory_slots(inventory: list[dict[str, object]]) -> None:
@@ -174,7 +175,7 @@ def resolve_unequip_slot(
     normalized_slot = normalize_slot_name(slot) if isinstance(slot, str) else None
 
     if _unequip_usage_missing_slot(normalized_slot, search_term):
-        return None, {"result": "Usage: unequip <slot|item-name>"}
+        return None, command_error("Usage: unequip <slot|item-name>")
 
     resolved = _try_resolve_unequip_slot_key(normalized_slot, equipped_mapping)
     if resolved is not None:

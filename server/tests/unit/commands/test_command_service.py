@@ -10,6 +10,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.commands.command_service import CommandService
+from server.constants.message_category import MessageCategory
 from server.exceptions import ValidationError as MythosValidationError
 
 
@@ -53,7 +54,7 @@ async def test_process_validated_command_no_command_type(command_service, mock_r
     command_data: dict[str, Any] = {}
     result = await command_service.process_validated_command(command_data, mock_user, mock_request, None, "TestPlayer")
 
-    assert result == {"result": "Invalid command format"}
+    assert result == {"result": "Invalid command format", "category": MessageCategory.SYSTEM_ERROR}
 
 
 @pytest.mark.asyncio
@@ -62,7 +63,7 @@ async def test_process_validated_command_unknown_command(command_service, mock_r
     command_data: dict[str, Any] = {"command_type": "unknown_command"}
     result = await command_service.process_validated_command(command_data, mock_user, mock_request, None, "TestPlayer")
 
-    assert result == {"result": "Unknown command: unknown_command"}
+    assert result == {"result": "Unknown command: unknown_command", "category": MessageCategory.SYSTEM_ERROR}
 
 
 @pytest.mark.asyncio

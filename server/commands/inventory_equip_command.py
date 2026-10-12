@@ -16,6 +16,7 @@ from ..services.equipment_service import EquipmentCapacityError, EquipmentServic
 from ..services.inventory_service import InventoryCapacityError, InventoryService, InventoryStack
 from ..services.inventory_websocket_events import emit_inventory_updated
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
 from .equipment_helpers import (
     find_equipped_item_after_equip,
     handle_wearable_container_on_equip,
@@ -260,7 +261,7 @@ async def _equip_build_work(
 ) -> CommandResponse | EquipCommandWork:
     persistence, connection_manager, player, error = await resolve_state_and_player(request, current_user, player_name)
     if error or not player:
-        return error or {"result": "Player information not found."}
+        return error or command_error("Player information not found.")
 
     inventory = player.get_inventory()
     normalize_inventory_slots(inventory)
@@ -270,7 +271,7 @@ async def _equip_build_work(
 
     resolved_index_zero, error_or_stack = resolve_equip_item_index(command_data, inventory, player, room_id)
     if resolved_index_zero is None:
-        return error_or_stack or {"result": "Failed to resolve item index."}
+        return error_or_stack or command_error("Failed to resolve item index.")
     selected_stack = error_or_stack
 
     slot_or_err = _equip_target_slot_or_error(request, selected_stack, target_slot)
@@ -322,7 +323,7 @@ async def handle_equip_command(
         return mutation_error
 
     if work.selected_stack is None:
-        return {"result": "Selected item is invalid."}
+        return command_error("Selected item is invalid.")
     return await _equip_success_payload(
         request,
         work.connection_manager,

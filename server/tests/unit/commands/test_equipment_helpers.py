@@ -14,6 +14,7 @@ from server.commands.equipment_helpers import (
     resolve_equip_item_index,
     resolve_unequip_slot,
 )
+from server.constants.message_category import MessageCategory
 
 
 def _player() -> MagicMock:
@@ -50,7 +51,10 @@ def test_resolve_equip_search_no_match() -> None:
 
 def test_resolve_equip_usage() -> None:
     _, err = resolve_equip_item_index({}, [], _player(), "room_001")
-    assert err == {"result": "Usage: equip <inventory-number|item-name> [slot]"}
+    assert err == {
+        "result": "Usage: equip <inventory-number|item-name> [slot]",
+        "category": MessageCategory.SYSTEM_ERROR,
+    }
 
 
 def test_normalize_inventory_slots() -> None:
@@ -89,7 +93,7 @@ def test_resolve_unequip_by_slot() -> None:
 def test_resolve_unequip_usage() -> None:
     slot, err = resolve_unequip_slot({}, {})
     assert slot is None
-    assert err == {"result": "Usage: unequip <slot|item-name>"}
+    assert err == {"result": "Usage: unequip <slot|item-name>", "category": MessageCategory.SYSTEM_ERROR}
 
 
 def test_resolve_unequip_by_search() -> None:

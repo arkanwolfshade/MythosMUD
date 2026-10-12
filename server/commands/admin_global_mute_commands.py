@@ -13,6 +13,7 @@ from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
 from .admin_mute_commands import extract_mute_target, mute_duration_display, parse_mute_duration_minutes
 from .admin_permission_utils import validate_admin_permission
+from .command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -65,13 +66,13 @@ async def _resolve_global_mute_players(
 ) -> tuple[_MutePlayerRef, _MutePlayerRef] | dict[str, str]:
     """Resolve the acting admin and the target; an error result if either fails or the actor isn't an admin."""
     if not player_service:
-        return {"result": "Player service not available."}
+        return command_error("Player service not available.")
     admin = await player_service.resolve_player_name(player_name)
     if admin is None or not await validate_admin_permission(admin, player_name):
-        return {"result": "You do not have permission to use global mutes."}
+        return command_error("You do not have permission to use global mutes.")
     target = await player_service.resolve_player_name(target_player)
     if target is None:
-        return {"result": f"Player '{target_player}' not found."}
+        return command_error(f"Player '{target_player}' not found.")
     return admin, target
 
 
@@ -92,7 +93,7 @@ async def _perform_global_mute(  # pylint: disable=too-many-arguments,too-many-p
         logger.info("Global mute applied", admin_name=player_name, target_player=target_player, duration=duration)
         return {"result": f"You have globally muted {target_player} {mute_duration_display(duration)}."}
     logger.warning("Global mute command failed", admin_name=player_name, target_player=target_player)
-    return {"result": f"Failed to globally mute {target_player}."}
+    return command_error(f"Failed to globally mute {target_player}.")
 
 
 async def _perform_global_unmute(
@@ -141,11 +142,11 @@ async def handle_mute_global_command(
 
     if not user_manager:
         logger.warning("Mute global command failed - no user manager", player_name=player_name)
-        return {"result": "Global mute functionality is not available."}
+        return command_error("Global mute functionality is not available.")
 
     target_player = extract_mute_target(command_data)
     if not target_player:
-        return {"result": "Usage: mute_global <player> [duration_in_minutes] [reason]"}
+        return command_error("Usage: mute_global <player> [duration_in_minutes] [reason]")
 
     duration = parse_mute_duration_minutes(command_data.get("duration_minutes"))
     reason = str(command_data.get("reason") or "")
@@ -154,7 +155,7 @@ async def handle_mute_global_command(
         return await _perform_global_mute(user_manager, player_service, player_name, target_player, duration, reason)
     except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError) as e:
         logger.error("Global mute command error", player_name=player_name, error=str(e))
-        return {"result": f"Error globally muting {target_player}: {str(e)}"}
+        return command_error(f"Error globally muting {target_player}: {str(e)}")
 
 
 async def handle_unmute_global_command(
@@ -185,17 +186,17 @@ async def handle_unmute_global_command(
 
     if not user_manager:
         logger.warning("Unmute global command failed - no user manager", player_name=player_name)
-        return {"result": "Global unmute functionality is not available."}
+        return command_error("Global unmute functionality is not available.")
 
     target_player = extract_mute_target(command_data)
     if not target_player:
-        return {"result": "Usage: unmute_global <player>"}
+        return command_error("Usage: unmute_global <player>")
 
     try:
         return await _perform_global_unmute(user_manager, player_service, player_name, target_player)
     except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError) as e:
         logger.error("Global unmute command error", player_name=player_name, error=str(e))
-        return {"result": f"Error globally unmuting {target_player}: {str(e)}"}
+        return command_error(f"Error globally unmuting {target_player}: {str(e)}")
 
 
 __all__ = ["handle_mute_global_command", "handle_unmute_global_command"]

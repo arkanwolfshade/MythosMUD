@@ -27,6 +27,7 @@ from ..alias_storage import AliasStorage
 from ..realtime.posture_notify import emit_posture_change
 from ..services.player_position_service import PlayerPositionService
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
 from .rest_countdown_task import create_rest_countdown_task, rest_countdown_seconds
 
 logger = get_logger(__name__)
@@ -309,13 +310,13 @@ async def _resolve_rest_command_setup(
     """
     app = request.app if request else None
     if not app:
-        return {"result": "System error: application not available."}
+        return command_error("System error: application not available.")
 
     persistence, connection_manager = await _get_services_from_app(app)
     if not persistence:
-        return {"result": "System error: persistence layer not available."}
+        return command_error("System error: persistence layer not available.")
     if not connection_manager:
-        return {"result": "System error: connection manager not available."}
+        return command_error("System error: connection manager not available.")
 
     player = await persistence.get_player_by_name(player_name)
     if not player:

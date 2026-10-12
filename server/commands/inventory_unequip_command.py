@@ -15,6 +15,7 @@ from ..services.equipment_service import EquipmentCapacityError, EquipmentServic
 from ..services.inventory_service import InventoryCapacityError, InventoryService
 from ..services.inventory_websocket_events import emit_inventory_updated
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
 from .equipment_helpers import (
     handle_wearable_container_on_unequip,
     normalize_equipped_items,
@@ -160,12 +161,12 @@ async def handle_unequip_command(
 
     persistence, connection_manager, player, error = await resolve_state_and_player(request, current_user, player_name)
     if error or not player:
-        return error or {"result": "Player information not found."}
+        return error or command_error("Player information not found.")
 
     equipped_mapping = player.get_equipped_items()
     resolved_slot, error_result = resolve_unequip_slot(command_data, equipped_mapping)
     if resolved_slot is None:
-        return error_result or {"result": "Failed to resolve slot."}
+        return error_result or command_error("Failed to resolve slot.")
 
     inventory_service, _, equipment_service = get_shared_services(request)
     mutation_token = cast(str | None, command_data.get("mutation_token"))

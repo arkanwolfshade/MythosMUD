@@ -26,6 +26,7 @@ from .admin_setlucidity_command import (
     get_player_service_from_app,
     resolve_target_player,
 )
+from .command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -98,11 +99,11 @@ def _validate_target_and_type(command_data: dict[str, object]) -> tuple[str, str
     target_player, hallucination_type = extract_args(command_data)
     if not target_player or not hallucination_type:
         raise HallucinateCommandError(
-            {"result": f"Usage: admin hallucinate <target_player> <{'|'.join(_VALID_TYPES)}>"}
+            command_error(f"Usage: admin hallucinate <target_player> <{'|'.join(_VALID_TYPES)}>")
         )
     if hallucination_type not in _VALID_TYPES:
         raise HallucinateCommandError(
-            {"result": f"Unknown hallucination type '{hallucination_type}'. Valid types: {', '.join(_VALID_TYPES)}"}
+            command_error(f"Unknown hallucination type '{hallucination_type}'. Valid types: {', '.join(_VALID_TYPES)}")
         )
     return target_player, hallucination_type
 
@@ -111,23 +112,23 @@ async def resolve_hallucinate_target(app: object, player_name: str, target_playe
     """Resolve admin permissions, the target's id, and the target's current room; raises on failure."""
     player_service: PlayerServiceLike | None = get_player_service_from_app(app)
     if not player_service:
-        raise HallucinateCommandError({"result": "Player service not available."})
+        raise HallucinateCommandError(command_error("Player service not available."))
 
     current_player_obj, permission_error = await check_admin_permissions(app, player_name, player_service)
     if permission_error:
         raise HallucinateCommandError(permission_error)
     if current_player_obj is None:
-        raise HallucinateCommandError({"result": "Current player not found."})
+        raise HallucinateCommandError(command_error("Current player not found."))
 
     target_player_id, resolve_error = await resolve_target_player(player_service, target_player)
     if resolve_error:
         raise HallucinateCommandError(resolve_error)
     if target_player_id is None:
-        raise HallucinateCommandError({"result": f"Player '{target_player}' not found."})
+        raise HallucinateCommandError(command_error(f"Player '{target_player}' not found."))
 
     target_player_obj = await player_service.resolve_player_name(target_player)
     if target_player_obj is None or not target_player_obj.current_room_id:
-        raise HallucinateCommandError({"result": f"'{target_player}' is not currently in a room."})
+        raise HallucinateCommandError(command_error(f"'{target_player}' is not currently in a room."))
 
     return target_player_id, target_player_obj.current_room_id
 
@@ -136,7 +137,7 @@ async def get_current_lcd_or_error(target_player_id: uuid.UUID) -> int:
     """Resolve the target's current LCD via a fresh DB session; raises if none is available."""
     async for session in get_async_session():
         return await get_current_lcd(session, target_player_id)
-    raise HallucinateCommandError({"result": "Database session could not be established. Please try again."})
+    raise HallucinateCommandError(command_error("Database session could not be established. Please try again."))
 
 
 def _log_hallucinate_command(player_name: str, target_player: str, hallucination_type: str, tier: str) -> None:
@@ -169,7 +170,7 @@ async def _handle_admin_hallucinate_command(
     app = cast(object, request.app) if request else None
     if not app:
         logger.warning("Admin hallucinate command failed - no application context", player_name=player_name)
-        return {"result": "Admin hallucinate functionality is not available."}
+        return command_error("Admin hallucinate functionality is not available.")
 
     try:
         target_player, hallucination_type = _validate_target_and_type(command_data)
@@ -190,7 +191,7 @@ async def _handle_admin_hallucinate_command(
             hallucination_type=hallucination_type,
             error=str(exc),
         )
-        return {"result": f"Error forcing hallucination for {target_player}: {str(exc)}"}
+        return command_error(f"Error forcing hallucination for {target_player}: {str(exc)}")
 
     _log_hallucinate_command(player_name, target_player, hallucination_type, tier)
     return {"result": f"Forced '{hallucination_type}' hallucination on {target_player}."}

@@ -46,6 +46,7 @@ from .admin_setstat_support import (
     target_player_uuid,
     validate_set_stat_inputs,
 )
+from .command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -221,7 +222,7 @@ async def _apply_corruption_via_service(ctx: AdminSetStatApplyContext) -> dict[s
     warning_message, range_warning = calculate_stat_warnings(ctx.stat_key, ctx.value, stats)
     player_id = target_player_uuid(ctx.target_player_obj)
     if player_id is None:
-        return {"result": f"Player '{ctx.target_player}' has no valid id."}
+        return command_error(f"Player '{ctx.target_player}' has no valid id.")
 
     delta = ctx.value - old_value
     persistence = cast(CorruptionPersistenceProtocol, cast(object, ctx.persistence))
@@ -249,7 +250,7 @@ async def _apply_lucidity_via_service(ctx: AdminSetStatApplyContext) -> dict[str
     warning_message, range_warning = calculate_stat_warnings(ctx.stat_key, ctx.value, stats)
     player_id = target_player_uuid(ctx.target_player_obj)
     if player_id is None:
-        return {"result": f"Player '{ctx.target_player}' has no valid id."}
+        return command_error(f"Player '{ctx.target_player}' has no valid id.")
 
     catatonia_observer = _get_catatonia_registry_from_app(ctx.app)
     async for session in get_async_session():
@@ -279,11 +280,11 @@ async def _apply_lucidity_via_service(ctx: AdminSetStatApplyContext) -> dict[str
                 error=str(adjust_exc),
                 error_type=type(adjust_exc).__name__,
             )
-            return {"result": f"Error setting lucidity for {ctx.target_player}: {str(adjust_exc)}"}
+            return command_error(f"Error setting lucidity for {ctx.target_player}: {str(adjust_exc)}")
         return await _finish_occult_stat_change(
             ctx, old_value=current_lcd, warning_message=warning_message, range_warning=range_warning
         )
-    return {"result": "Database session could not be established. Please try again."}
+    return command_error("Database session could not be established. Please try again.")
 
 
 async def _apply_stat_change_and_build_result(
@@ -388,7 +389,7 @@ async def _handle_admin_set_stat_command(  # pylint: disable=too-many-arguments,
 
     app, app_error = get_app_or_error(request, player_name)
     if app_error is not None or app is None:
-        return app_error or {"result": "Admin set functionality is not available."}
+        return app_error or command_error("Admin set functionality is not available.")
 
     stat_name_input, target_player, value_input = parse_set_stat_args(command_data)
     validation_result = validate_set_stat_inputs(stat_name_input, target_player, value_input, player_name)
@@ -397,6 +398,6 @@ async def _handle_admin_set_stat_command(  # pylint: disable=too-many-arguments,
 
     stat_key, value = validation_result
     if not stat_name_input or not target_player:
-        return {"result": "Target player and stat name are required."}
+        return command_error("Target player and stat name are required.")
 
     return await _execute_admin_set_stat(app, player_name, stat_name_input, target_player, value_input, stat_key, value)

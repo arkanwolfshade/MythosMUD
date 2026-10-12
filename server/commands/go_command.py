@@ -23,6 +23,7 @@ from ..game.dialogue import get_dialogue_service
 from ..game.movement_service import MovementService
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
+from .command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -228,7 +229,7 @@ async def _execute_movement(  # pylint: disable=too-many-arguments,too-many-posi
             error_message=str(e),
             exc_info=True,
         )
-        return {"result": f"Error during movement: {e!s}"}
+        return command_error(f"Error during movement: {e!s}")
 
 
 def _resolved_direction_for_go_command(command_data: dict[str, Any], player_name: str) -> str | None:
@@ -314,7 +315,7 @@ async def handle_go_command(  # pylint: disable=too-many-arguments  # Reason: St
 
     direction = _resolved_direction_for_go_command(command_data, player_name)
     if direction is None:
-        return {"result": "Go where? Usage: go <direction>"}
+        return command_error("Go where? Usage: go <direction>")
 
     setup_result = await _setup_go_command(request, current_user, player_name)
     if not setup_result:

@@ -17,6 +17,7 @@ from ..alias_storage import AliasStorage
 from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
+from .command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -49,15 +50,15 @@ async def _resolve_muter_and_target_players(
 ) -> tuple[str | None, Any | None, dict[str, str] | None]:
     """Resolve muter and target; return error dict when lookup fails."""
     if not player_service:
-        return None, None, {"result": "Player service not available."}
+        return None, None, command_error("Player service not available.")
 
     current_player_obj = await player_service.resolve_player_name(player_name)
     if not current_player_obj:
-        return None, None, {"result": "Current player not found."}
+        return None, None, command_error("Current player not found.")
 
     target_player_obj = await player_service.resolve_player_name(target_player)
     if not target_player_obj:
-        return None, None, {"result": f"Player '{target_player}' not found."}
+        return None, None, command_error(f"Player '{target_player}' not found.")
 
     return str(current_player_obj.id), target_player_obj, None
 
@@ -86,7 +87,7 @@ async def _perform_mute(
         player_service, player_name, target_player
     )
     if resolve_error or muter_id is None or target_player_obj is None:
-        return resolve_error or {"result": "Player resolution failed."}
+        return resolve_error or command_error("Player resolution failed.")
 
     # Reason: DYNAMIC_DISPATCH - user_manager is Any per this module's established convention
     # (app.state services aren't typed here); awaiting it only moved the existing finding's column.
@@ -103,7 +104,7 @@ async def _perform_mute(
         return _mute_success_result(target_player, duration, player_name)
 
     logger.warning("Mute command failed", admin_name=player_name, target_player=target_player)
-    return {"result": f"Failed to mute {target_player}."}
+    return command_error(f"Failed to mute {target_player}.")
 
 
 async def _perform_unmute(
@@ -123,7 +124,7 @@ async def _perform_unmute(
         player_service, player_name, target_player
     )
     if resolve_error or muter_id is None or target_player_obj is None:
-        return resolve_error or {"result": "Player resolution failed."}
+        return resolve_error or command_error("Player resolution failed.")
 
     # Reason: DYNAMIC_DISPATCH - user_manager is Any per this module's own established,
     # unsuppressed convention (app.state services aren't typed here); target_player_obj.id is
@@ -151,7 +152,7 @@ async def _perform_unmute(
         return {"result": f"You have unmuted {target_player}."}
 
     logger.warning("Unmute command failed", admin_name=player_name, target_player=target_player)
-    return {"result": f"Failed to unmute {target_player}."}
+    return command_error(f"Failed to unmute {target_player}.")
 
 
 async def handle_mute_command(
@@ -182,12 +183,12 @@ async def handle_mute_command(
     user_manager = app.state.user_manager if app else None
     if not user_manager:
         logger.warning("Mute command failed - no user manager", player_name=player_name)
-        return {"result": "Mute functionality is not available."}
+        return command_error("Mute functionality is not available.")
 
     target_player = extract_mute_target(command_data)
     if not target_player:
         logger.warning("Mute command with no target player", player_name=player_name, command_data=command_data)
-        return {"result": "Usage: mute <player_name> [duration_in_minutes]"}
+        return command_error("Usage: mute <player_name> [duration_in_minutes]")
 
     duration = parse_mute_duration_minutes(command_data.get("duration_minutes"))
     player_service = app.state.player_service if app else None
@@ -196,7 +197,7 @@ async def handle_mute_command(
         return await _perform_mute(user_manager, player_service, player_name, target_player, duration)
     except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError) as e:
         logger.error("Mute command error", admin_name=player_name, target_player=target_player, error=str(e))
-        return {"result": f"Error muting {target_player}: {str(e)}"}
+        return command_error(f"Error muting {target_player}: {str(e)}")
 
 
 async def handle_unmute_command(
@@ -228,7 +229,7 @@ async def handle_unmute_command(
 
     if not user_manager:
         logger.warning("Unmute command failed - no user manager", player_name=player_name)
-        return {"result": "Unmute functionality is not available."}
+        return command_error("Unmute functionality is not available.")
 
     # Extract target player from command_data
     target_player = cast(str | None, command_data.get("target_player"))
@@ -236,7 +237,7 @@ async def handle_unmute_command(
     if not target_player:
         # If target player is not in command_data, this is a validation issue
         logger.warning("Unmute command with no target player", player_name=player_name, command_data=command_data)
-        return {"result": "Usage: unmute <player_name>"}
+        return command_error("Usage: unmute <player_name>")
 
     # Reason: DYNAMIC_DISPATCH - app.state services are untyped throughout this module.
     # Appropriate because: same unsuppressed convention as handle_mute_command's identical lookup.
@@ -246,7 +247,7 @@ async def handle_unmute_command(
         return await _perform_unmute(user_manager, player_service, player_name, target_player)
     except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError) as e:
         logger.error("Unmute command error", admin_name=player_name, target_player=target_player, error=str(e))
-        return {"result": f"Error unmuting {target_player}: {str(e)}"}
+        return command_error(f"Error unmuting {target_player}: {str(e)}")
 
 
 async def handle_add_admin_command(
@@ -283,11 +284,11 @@ async def handle_add_admin_command(
 
     if not user_manager:
         logger.warning("Add admin command failed - no user manager", player_name=player_name)
-        return {"result": "Admin management is not available."}
+        return command_error("Admin management is not available.")
 
     if not target_player:
         logger.warning("Add admin command with insufficient arguments", player_name=player_name, args=args)
-        return {"result": "Usage: add_admin <player_name>"}
+        return command_error("Usage: add_admin <player_name>")
 
     try:
         success = user_manager.add_admin(target_player, get_username_from_user(current_user))
@@ -296,10 +297,10 @@ async def handle_add_admin_command(
             return {"result": f"{target_player} has been granted administrator privileges."}
 
         logger.warning("Add admin command failed", admin_name=player_name, target_player=target_player)
-        return {"result": f"Failed to grant administrator privileges to {target_player}."}
+        return command_error(f"Failed to grant administrator privileges to {target_player}.")
     except (ValueError, TypeError, AttributeError, KeyError, DatabaseError, SQLAlchemyError) as e:
         logger.error("Add admin command error", admin_name=player_name, target_player=target_player, error=str(e))
-        return {"result": f"Error granting administrator privileges: {str(e)}"}
+        return command_error(f"Error granting administrator privileges: {str(e)}")
 
 
 def _mute_display_target(category_name: str, target_id_or_channel: Any, mute_info: dict[str, Any]) -> str:
@@ -335,11 +336,11 @@ async def _resolve_current_player_id_for_mutes(
 ) -> tuple[Any | None, dict[str, str] | None]:
     """Resolve current player ID; return error dict when lookup fails."""
     if not player_service:
-        return None, {"result": "Player service not available."}
+        return None, command_error("Player service not available.")
 
     current_player_obj = await player_service.resolve_player_name(player_name)
     if not current_player_obj:
-        return None, {"result": "Current player not found."}
+        return None, command_error("Current player not found.")
 
     return current_player_obj.id, None
 
@@ -363,7 +364,7 @@ async def _perform_mutes_list(
     """Resolve player and format their active mutes."""
     current_player_id, resolve_error = await _resolve_current_player_id_for_mutes(player_service, player_name)
     if resolve_error or current_player_id is None:
-        return resolve_error or {"result": "Player resolution failed."}
+        return resolve_error or command_error("Player resolution failed.")
 
     mutes = user_manager.get_player_mutes(current_player_id)
     mute_list = _collect_mute_display_lines(mutes)
@@ -401,14 +402,14 @@ async def handle_mutes_command(
 
     if not user_manager:
         logger.warning("Mutes command failed - no user manager", player_name=player_name)
-        return {"result": "Mute information is not available."}
+        return command_error("Mute information is not available.")
 
     try:
         player_service = app.state.player_service if app else None
         return await _perform_mutes_list(user_manager, player_service, player_name)
     except (ValueError, TypeError, AttributeError, KeyError) as e:
         logger.error("Mutes command error", player_name=player_name, error=str(e))
-        return {"result": f"Error retrieving mute information: {str(e)}"}
+        return command_error(f"Error retrieving mute information: {str(e)}")
 
 
 __all__ = [

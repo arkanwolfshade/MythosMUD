@@ -64,8 +64,11 @@ the line from it; it does not infer meaning from the text.
 - **Assigned only in shared builders**, never per call site: the command chokepoint
   (`websocket_handler_commands.py`, default `command.output`), `build_event` (defaults a `command_response` that
   names none to `command.output`), `NATSMessageHandler._build_chat_event` (channel to `chat.*`), `MessageBuilder`,
-  `posture_notify.attach_posture_self_message`, and the combat and lucidity dispatchers. Command handlers do not
-  put `category` in their result dicts.
+  `posture_notify.attach_posture_self_message`, and the combat and lucidity dispatchers. Command handlers normally
+  put no `category` in their result dicts; the exception is failure: a handler (or pipeline step) that rejects a
+  command for a usage, permission, or system reason returns `command_error(msg)`
+  (`server/commands/command_results.py`), which sets `system.error`. In-world refusals ("You don't see that here")
+  stay plain and render as `command.output`.
 - **`combat_attack`** is the one event with several perspectives: it carries `data.categories`, keyed like
   `data.messages`, instead of a single `data.category`.
 - **Hallucination code never chooses a category** (ADR-024). A hallucinated message reaches the player through the

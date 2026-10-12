@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, cast
 
 from ...alias_storage import AliasStorage
 from ...structured_logging.enhanced_logging_config import get_logger
+from ..command_results import command_error
 
 if TYPE_CHECKING:
     from ...models.player import Player
@@ -217,18 +218,18 @@ async def handle_npc_command(
 
     _, player_error = await _resolve_npc_command_player(request, player_name)
     if player_error:
-        return {"result": player_error}
+        return command_error(player_error)
 
     subcommand, _args, help_result = _extract_npc_subcommand(command_data)
     if help_result is not None:
         return help_result
     if subcommand is None:
-        return {"result": "Unknown NPC command. Use 'npc help' for available commands."}
+        return command_error("Unknown NPC command. Use 'npc help' for available commands.")
 
     subcommand_map = _build_subcommand_map()
     handler = subcommand_map.get(subcommand)
     if not handler:
-        return {"result": f"Unknown NPC command: {subcommand}. Use 'npc help' for available commands."}
+        return command_error(f"Unknown NPC command: {subcommand}. Use 'npc help' for available commands.")
     return await _invoke_npc_handler(
         handler, subcommand, command_data, current_user, request, alias_storage, player_name
     )

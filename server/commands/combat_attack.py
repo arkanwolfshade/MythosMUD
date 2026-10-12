@@ -16,6 +16,8 @@ from server.schemas.shared import TargetType
 from server.services.combat_types import AlreadyEngagedError
 from server.structured_logging.enhanced_logging_config import get_logger
 
+from .command_results import command_error
+
 logger = get_logger(__name__)
 
 
@@ -176,7 +178,7 @@ async def _execute_combat_action(
         return {"result": f"You're already fighting {engaged.foe_name}."}
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Combat action errors unpredictable
         logger.error("Error executing combat action", error=str(e), exc_info=True)
-        return {"result": f"Error executing {command} command"}
+        return command_error(f"Error executing {command} command")
 
 
 async def _execute_phantom_combat_action(
@@ -238,7 +240,7 @@ async def _execute_phantom_combat_action(
         return {"result": f"You {command} {phantom_data['name']}!"}
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Combat action errors unpredictable
         logger.error("Error executing phantom combat action", error=str(e), exc_info=True)
-        return {"result": f"Error executing {command} command"}
+        return command_error(f"Error executing {command} command")
 
 
 async def execute_attack_on_npc(
@@ -291,4 +293,4 @@ async def run_handle_attack_command(
         return combat_result
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Combat errors unpredictable
         logger.error("ERROR: Exception in combat handler", error=str(e), exc_info=True)
-        return {"result": f"An error occurred during combat: {str(e)}"}
+        return command_error(f"An error occurred during combat: {str(e)}")

@@ -23,6 +23,7 @@ from ..services.lucidity_helpers import CatatoniaObserverProtocol
 from ..services.lucidity_service import LucidityService
 from ..structured_logging.admin_actions_logger import get_admin_actions_logger
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -66,13 +67,17 @@ def _validate_lcd_value(lcd_value: Any, player_name: str) -> tuple[int | None, d
         lcd_value_int = int(lcd_value)
     except ValueError, TypeError:
         logger.warning("Admin setlucidity command with invalid LCD value", player_name=player_name, lcd_value=lcd_value)
-        return None, {"result": f"Invalid LCD value '{lcd_value}'. LCD value must be an integer between -100 and 100."}
+        return None, command_error(
+            f"Invalid LCD value '{lcd_value}'. LCD value must be an integer between -100 and 100."
+        )
 
     if lcd_value_int < -100 or lcd_value_int > 100:
         logger.warning(
             "Admin setlucidity command with LCD value out of range", player_name=player_name, lcd_value=lcd_value_int
         )
-        return None, {"result": f"LCD value {lcd_value_int} is out of range. LCD value must be between -100 and 100."}
+        return None, command_error(
+            f"LCD value {lcd_value_int} is out of range. LCD value must be between -100 and 100."
+        )
 
     return lcd_value_int, None
 
@@ -84,16 +89,16 @@ async def check_admin_permissions(
     user_manager = getattr(app.state, "user_manager", None)
     if not user_manager:
         logger.warning("Admin setlucidity command failed - no user manager", player_name=player_name)
-        return None, {"result": "Admin setlucidity functionality is not available."}
+        return None, command_error("Admin setlucidity functionality is not available.")
 
     current_player_obj = await player_service.resolve_player_name(player_name)
     if not current_player_obj:
-        return None, {"result": "Current player not found."}
+        return None, command_error("Current player not found.")
 
     current_user_id = str(current_player_obj.id)
     if not user_manager.is_admin(current_user_id):
         logger.warning("Admin setlucidity command denied - not admin", player_name=player_name)
-        return None, {"result": "You do not have permission to use this command."}
+        return None, command_error("You do not have permission to use this command.")
 
     return current_player_obj, None
 
@@ -186,7 +191,7 @@ async def _apply_lucidity_change(ctx: LucidityChangeCtx) -> dict[str, str] | Non
             error=str(adjust_exc),
             error_type=type(adjust_exc).__name__,
         )
-        return {"result": f"Error setting lucidity for {ctx.target_player}: {str(adjust_exc)}"}
+        return command_error(f"Error setting lucidity for {ctx.target_player}: {str(adjust_exc)}")
 
 
 def get_player_service_from_app(app: object) -> PlayerServiceLike | None:
@@ -223,7 +228,7 @@ async def resolve_target_player(
     """Resolve target player name to UUID, returning error message if not found."""
     target_player_obj = await player_service.resolve_player_name(target_player)
     if not target_player_obj:
-        return None, {"result": f"Player '{target_player}' not found."}
+        return None, command_error(f"Player '{target_player}' not found.")
 
     target_player_id = (
         uuid.UUID(target_player_obj.id) if isinstance(target_player_obj.id, str) else target_player_obj.id
@@ -261,7 +266,7 @@ async def _execute_lucidity_change(  # pylint: disable=too-many-arguments,too-ma
                 return result
 
         # If async for loop didn't execute (empty generator), return error
-        return {"result": "Database session could not be established. Please try again."}
+        return command_error("Database session could not be established. Please try again.")
 
     except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError, OSError) as e:
         logger.error(
@@ -277,7 +282,7 @@ async def _execute_lucidity_change(  # pylint: disable=too-many-arguments,too-ma
             )
         except OSError, AttributeError, TypeError:
             pass  # Ignore logging errors if command itself failed
-        return {"result": f"Error setting lucidity for {target_player}: {str(e)}"}
+        return command_error(f"Error setting lucidity for {target_player}: {str(e)}")
 
 
 async def _validate_command_context(
@@ -287,18 +292,18 @@ async def _validate_command_context(
     app = request.app if request else None
     if not app:
         logger.warning("Admin setlucidity command failed - no application context", player_name=player_name)
-        return None, None, None, {"result": "Admin setlucidity functionality is not available."}
+        return None, None, None, command_error("Admin setlucidity functionality is not available.")
 
     target_player, lcd_value = _extract_command_args(command_data)
     if not target_player:
         logger.warning(
             "Admin setlucidity command with no target player", player_name=player_name, command_data=command_data
         )
-        return app, None, None, {"result": "Usage: admin setlucidity <target_player> <lcd_value>"}
+        return app, None, None, command_error("Usage: admin setlucidity <target_player> <lcd_value>")
 
     lcd_value_int, validation_error = _validate_lcd_value(lcd_value, player_name)
     if validation_error or lcd_value_int is None:
-        return app, target_player, None, validation_error or {"result": "LCD value is required."}
+        return app, target_player, None, validation_error or command_error("LCD value is required.")
 
     return app, target_player, lcd_value_int, None
 
@@ -309,7 +314,7 @@ async def _setup_command_execution(
     """Setup command execution by checking permissions and resolving target player."""
     current_player_obj, permission_error = await check_admin_permissions(app, player_name, player_service)
     if permission_error or current_player_obj is None:
-        return None, None, permission_error or {"result": "Current player not found."}
+        return None, None, permission_error or command_error("Current player not found.")
 
     current_user_id = str(current_player_obj.id)
 
@@ -343,24 +348,24 @@ async def _handle_admin_set_lucidity_command(  # pylint: disable=too-many-argume
     # Type guards: ensure values are not None after validation
     # If context_error is None, target_player and lcd_value_int should be valid
     if target_player is None:
-        return {"result": "Target player is required."}
+        return command_error("Target player is required.")
     if lcd_value_int is None:
-        return {"result": "LCD value is required."}
+        return command_error("LCD value is required.")
 
     # Get player service from container
     player_service = get_player_service_from_app(app)
     if not player_service:
-        return {"result": "Player service not available."}
+        return command_error("Player service not available.")
 
     # Setup execution context
     current_user_id, target_player_id, setup_error = await _setup_command_execution(
         app, player_name, target_player, player_service
     )
     if setup_error or not current_user_id or not target_player_id:
-        return setup_error or {"result": "Failed to setup command execution."}
+        return setup_error or command_error("Failed to setup command execution.")
 
     # Get catatonia registry and execute change
     catatonia_observer = _get_catatonia_registry_from_app(app)
     return await _execute_lucidity_change(
         target_player_id, lcd_value_int, catatonia_observer, player_name, current_user_id, target_player
-    ) or {"result": "Failed to set lucidity. Please try again."}
+    ) or command_error("Failed to set lucidity. Please try again.")

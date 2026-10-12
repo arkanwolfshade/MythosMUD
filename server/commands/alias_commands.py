@@ -8,6 +8,7 @@ from typing import Any, cast
 
 from ..alias_storage import AliasStorage
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -87,7 +88,7 @@ async def _create_alias(alias_storage: AliasStorage, player_name: str, alias_nam
         logger.error(
             "Failed to create alias", player_name=player_name, alias_name=alias_name, command=command, error=str(e)
         )
-        return {"result": f"Failed to create alias: {str(e)}"}
+        return command_error(f"Failed to create alias: {str(e)}")
 
 
 async def handle_alias_command(
@@ -118,7 +119,7 @@ async def handle_alias_command(
 
     if alias_name is None:
         logger.warning("Alias command with no arguments", player_name=player_name)
-        return {"result": "Usage: alias <name> [command] or alias <name> to view"}
+        return command_error("Usage: alias <name> [command] or alias <name> to view")
 
     if command is None:
         return await _view_alias(alias_storage, player_name, alias_name)
@@ -170,7 +171,7 @@ async def handle_aliases_command(
 
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Alias listing errors unpredictable, must return error message
         logger.error("Failed to list aliases", player_name=player_name, error=str(e))
-        return {"result": f"Failed to list aliases: {str(e)}"}
+        return command_error(f"Failed to list aliases: {str(e)}")
 
 
 async def handle_unalias_command(
@@ -204,7 +205,7 @@ async def handle_unalias_command(
 
     if not args:
         logger.warning("Unalias command with no arguments", player_name=player_name)
-        return {"result": "Usage: unalias <name>"}
+        return command_error("Usage: unalias <name>")
 
     alias_name = cast(str, args[0]).lower()
     logger.debug("Removing alias", player_name=player_name, alias_name=alias_name)
@@ -220,10 +221,10 @@ async def handle_unalias_command(
         # Remove the alias
         # AI Agent: Method is remove_alias, not delete_alias, and requires player_name
         if not await alias_storage.remove_alias(player_name, alias_name):
-            return {"result": f"Failed to remove alias '{alias_name}'."}
+            return command_error(f"Failed to remove alias '{alias_name}'.")
         logger.info("Alias removed", player_name=player_name, alias_name=alias_name)
         return {"result": f"Alias '{alias_name}' removed successfully."}
 
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Alias removal errors unpredictable, must return error message
         logger.error("Failed to remove alias", player_name=player_name, alias_name=alias_name, error=str(e))
-        return {"result": f"Failed to remove alias: {str(e)}"}
+        return command_error(f"Failed to remove alias: {str(e)}")

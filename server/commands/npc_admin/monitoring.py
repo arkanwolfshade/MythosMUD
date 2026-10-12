@@ -5,6 +5,7 @@ from typing import Any
 from ...alias_storage import AliasStorage
 from ...services.npc_instance_service import get_npc_instance_service
 from ...structured_logging.enhanced_logging_config import get_logger
+from ..command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -41,7 +42,7 @@ async def handle_npc_population_command(
 
     except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         logger.error("Error getting NPC population stats", admin_name=player_name, error=str(e))
-        return {"result": f"Error getting NPC population stats: {str(e)}"}
+        return command_error(f"Error getting NPC population stats: {str(e)}")
 
 
 async def handle_npc_zone_command(
@@ -80,7 +81,7 @@ async def handle_npc_zone_command(
 
     except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         logger.error("Error getting NPC zone stats", admin_name=player_name, error=str(e))
-        return {"result": f"Error getting NPC zone stats: {str(e)}"}
+        return command_error(f"Error getting NPC zone stats: {str(e)}")
 
 
 async def handle_npc_status_command(
@@ -109,4 +110,4 @@ async def handle_npc_status_command(
 
     except Exception as e:  # noqa: B904,BLE001  # pylint: disable=broad-exception-caught
         logger.error("Error getting NPC system status", admin_name=player_name, error=str(e))
-        return {"result": f"Error getting NPC system status: {str(e)}"}
+        return command_error(f"Error getting NPC system status: {str(e)}")
