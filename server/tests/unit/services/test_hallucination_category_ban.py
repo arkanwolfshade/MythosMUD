@@ -44,19 +44,24 @@ HALLUCINATION_MODULES = frozenset(
 _CATEGORY_VALUES = frozenset(member.value for member in MessageCategory)
 
 
+def _import_violations(node: ast.Import | ast.ImportFrom) -> list[str]:
+    """What an import statement pulls in that chooses a message category."""
+    if isinstance(node, ast.Import):
+        return [f"imports {alias.name}" for alias in node.names if alias.name.endswith("message_category")]
+    module = node.module or ""
+    found = [f"imports from {module}"] if module.endswith("message_category") else []
+    found.extend(
+        f"imports {alias.name}" for alias in node.names if alias.name in {"MessageCategory", "message_category"}
+    )
+    return found
+
+
 def category_violations(source: str) -> list[str]:
     """What in ``source`` chooses or names a message category: imports of it, or literal category values."""
     found: list[str] = []
     for node in ast.walk(ast.parse(source)):
-        if isinstance(node, ast.ImportFrom):
-            module = node.module or ""
-            if module.endswith("message_category"):
-                found.append(f"imports from {module}")
-            found.extend(
-                f"imports {alias.name}" for alias in node.names if alias.name in {"MessageCategory", "message_category"}
-            )
-        elif isinstance(node, ast.Import):
-            found.extend(f"imports {alias.name}" for alias in node.names if alias.name.endswith("message_category"))
+        if isinstance(node, ast.Import | ast.ImportFrom):
+            found.extend(_import_violations(node))
         elif isinstance(node, ast.Constant) and node.value in _CATEGORY_VALUES:
             found.append(f"literal category {node.value!r}")
     return found

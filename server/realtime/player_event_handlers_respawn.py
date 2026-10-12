@@ -12,7 +12,6 @@ from typing import cast
 
 from anyio import sleep
 from sqlalchemy.exc import SQLAlchemyError
-from structlog.stdlib import BoundLogger
 
 from ..async_persistence import AsyncPersistenceLayer
 from ..constants.message_category import MessageCategory
@@ -21,36 +20,13 @@ from ..models.player import Player
 from ..models.room import Room
 from ..utils.int_coercion import coerce_int
 from . import player_event_handlers_respawn_room as respawn_room
-from .connection_manager import ConnectionManager
+from .player_event_handler_base import PlayerEventHandlerBase
 from .player_event_handlers_respawn_types import RespawnPlayerEventPayload, RespawnPlayerStatsPayload
-from .player_event_handlers_utils import PlayerEventHandlerUtils
 from .posture_notify import emit_posture_change
 
 
-class PlayerRespawnEventHandler:
+class PlayerRespawnEventHandler(PlayerEventHandlerBase):
     """Handles player respawn events (respawn, delirium respawn)."""
-
-    connection_manager: ConnectionManager | None
-    utils: PlayerEventHandlerUtils
-    _logger: BoundLogger
-
-    def __init__(
-        self,
-        connection_manager: ConnectionManager | None,
-        utils: PlayerEventHandlerUtils,
-        logger: BoundLogger,
-    ) -> None:
-        """
-        Initialize respawn event handler.
-
-        Args:
-            connection_manager: ConnectionManager instance
-            utils: PlayerEventHandlerUtils instance
-            logger: Logger instance
-        """
-        self.connection_manager = connection_manager
-        self.utils = utils
-        self._logger = logger
 
     def update_connection_manager_position(self, player_id_str: str, updated_position: str) -> None:
         """

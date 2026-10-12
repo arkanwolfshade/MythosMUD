@@ -580,21 +580,24 @@ def _handler_bodies(source: str) -> dict[str, str]:
     return {name: source[start:end] for (name, start), end in zip(starts, ends, strict=True)}
 
 
+def _newly_delegating(bodies: dict[str, str], text_types: set[str]) -> set[str]:
+    """Handlers not yet known to render text that delegate to one that does."""
+    return {
+        name
+        for name, body in bodies.items()
+        if name not in text_types
+        and any(target in text_types for target in cast(list[str], _DELEGATE_RE.findall(body)))
+    }
+
+
 def _client_text_event_types() -> set[str]:
     """Event types whose projector handler appends text to the message log, following delegating handlers."""
     bodies: dict[str, str] = {}
     for name in ("projectorHandlersMessages.ts", "projectorHandlersState.ts"):
         bodies.update(_handler_bodies((_PROJECTOR_DIR / name).read_text(encoding="utf-8")))
     text_types = {name for name, body in bodies.items() if any(call in body for call in _TEXT_CALLS)}
-    changed = True
-    while changed:
-        changed = False
-        for name, body in bodies.items():
-            if name not in text_types and any(
-                target in text_types for target in cast(list[str], _DELEGATE_RE.findall(body))
-            ):
-                text_types.add(name)
-                changed = True
+    while newly := _newly_delegating(bodies, text_types):
+        text_types |= newly
     return text_types
 
 
