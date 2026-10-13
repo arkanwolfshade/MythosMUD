@@ -1,70 +1,93 @@
 # LoggedHTTPException
 
-> 176 nodes
+> God node · 379 connections · `server/exceptions.py`
 
-## Key Concepts
+**Community:** [Container API Models](Container_API_Models.md)
 
-- **LoggedHTTPException** (375 connections) — `server/exceptions.py`
-- **players.py** (76 connections) — `server/api/players.py`
-- **test_players_api_coverage.py** (59 connections) — `server/tests/unit/api/test_players_api_coverage.py`
-- **_user()** (32 connections) — `server/tests/unit/api/test_players_api_coverage.py`
-- **asyncio** (30 connections)
-- **get_player_quests()** (18 connections) — `server/api/players.py`
-- **skills.py** (18 connections) — `server/api/skills.py`
-- **_start_login_grace_period_body()** (17 connections) — `server/api/players.py`
-- **test_player_respawn_api.py** (17 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **FastAPIRequest** (16 connections)
-- **respawn_player()** (15 connections) — `server/api/player_respawn.py`
-- **delete_player()** (15 connections) — `server/api/players.py`
-- **get_player()** (15 connections) — `server/api/players.py`
-- **select_character()** (15 connections) — `server/api/players.py`
-- **test_player_respawn_handlers.py** (14 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **respawn_player_from_delirium()** (13 connections) — `server/api/player_respawn.py`
-- **create_player()** (13 connections) — `server/api/players.py`
-- **delete_character()** (13 connections) — `server/api/players.py`
-- **get_player_skills()** (13 connections) — `server/api/players.py`
-- **_validate_character_access()** (13 connections) — `server/api/players.py`
-- **UUID** (13 connections)
-- **test_players_quests.py** (13 connections) — `server/tests/unit/api/test_players_quests.py`
-- **_handle_delirium_respawn_validation_error()** (12 connections) — `server/api/player_respawn.py`
-- **get_skills_catalog()** (12 connections) — `server/api/skills.py`
-- **_handle_respawn_validation_error()** (11 connections) — `server/api/player_respawn.py`
-- *... and 151 more nodes in this community*
+## Connections by Relation
 
-## Relationships
+### calls
+- create_character_with_stats() `EXTRACTED`
+- get_item_catalog() `EXTRACTED`
+- handle_container_service_error() `EXTRACTED`
+- get_player_id_from_user() `EXTRACTED`
+- update_room_exit() `EXTRACTED`
+- get_player_quests() `EXTRACTED`
+- get_container_and_player_for_loot_all() `EXTRACTED`
+- delete_room_exit() `EXTRACTED`
+- _update_npc_definition_internal() `EXTRACTED`
+- handle_create_room_exit() `EXTRACTED`
+- handle_update_room() `EXTRACTED`
+- get_npc_definitions() `EXTRACTED`
+- spawn_npc_instance() `EXTRACTED`
+- create_npc_spawn_rule() `EXTRACTED`
+- get_npc_spawn_rules() `EXTRACTED`
+- validate_character_stats() `EXTRACTED`
+- get_player() `EXTRACTED`
+- select_character() `EXTRACTED`
+- get_system_metrics() `EXTRACTED`
+- create_dialogue_definition() `EXTRACTED`
 
-- [User](User.md) (75 shared connections)
-- [PlayerService](PlayerService.md) (67 shared connections)
-- [test_admin_auth_service.py](test_admin_auth_service.py.md) (27 shared connections)
-- [RoomService](RoomService.md) (24 shared connections)
-- [Invite](Invite.md) (24 shared connections)
-- [get_logger](get_logger.md) (21 shared connections)
-- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) (19 shared connections)
-- [api/monitoring.py](api-monitoring.py.md) (19 shared connections)
-- [ExplorationService](ExplorationService.md) (16 shared connections)
-- [ValidationError](ValidationError.md) (16 shared connections)
-- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (15 shared connections)
-- [SecureBaseModel](SecureBaseModel.md) (15 shared connections)
+### contains
+- server/exceptions.py `EXTRACTED`
 
-## Source Files
+### imports
+- api/character_creation.py `EXTRACTED`
+- api/monitoring.py `EXTRACTED`
+- test_players_api_coverage.py `EXTRACTED`
+- players.py `EXTRACTED`
+- test_monitoring_endpoints.py `EXTRACTED`
+- maps.py `EXTRACTED`
+- rooms.py `EXTRACTED`
+- test_maps.py `EXTRACTED`
+- endpoints.py `EXTRACTED`
+- test_exceptions.py `EXTRACTED`
+- api/container_helpers.py `EXTRACTED`
+- real_time.py `EXTRACTED`
+- test_container_helpers.py `EXTRACTED`
+- test_real_time_helpers.py `EXTRACTED`
+- test_item_catalog.py `EXTRACTED`
+- test_metrics_endpoints.py `EXTRACTED`
+- api/player_effects.py `EXTRACTED`
+- test_npc_definitions_api.py `EXTRACTED`
+- test_exceptions_comprehensive.py `EXTRACTED`
+- test_rooms_write_api.py `EXTRACTED`
 
-- `server/api/player_respawn.py`
-- `server/api/players.py`
-- `server/api/skills.py`
-- `server/exceptions.py`
-- `server/schemas/players/player_respawn.py`
-- `server/schemas/players/skill.py`
-- `server/tests/unit/api/test_player_respawn_api.py`
-- `server/tests/unit/api/test_player_respawn_handlers.py`
-- `server/tests/unit/api/test_players_api_coverage.py`
-- `server/tests/unit/api/test_players_quests.py`
-- `server/tests/unit/api/test_skills.py`
+### inherits
+- LoggedException `EXTRACTED`
+- HTTPException `EXTRACTED`
 
-## Audit Trail
+### method
+- .__init__() `EXTRACTED`
 
-- EXTRACTED: 796 (84%)
-- INFERRED: 156 (16%)
-- AMBIGUOUS: 0 (0%)
+### rationale_for
+- HTTPException with automatic logging. This class extends FastAPI's… `EXTRACTED`
+
+### references
+- ._handle_logged_http_exception() `EXTRACTED`
+- ._get_logged_http_user_friendly_message() `EXTRACTED`
+
+### uses
+- TestLootAllItems `INFERRED`
+- TestMonitoringEndpoints `INFERRED`
+- TestRegisterLootEndpoints `INFERRED`
+- TestRollCharacterStats `INFERRED`
+- TestHandleTransferItemsExceptions `INFERRED`
+- TestOpenContainer `INFERRED`
+- TestTransferItems `INFERRED`
+- TestHandleOpenContainerExceptions `INFERRED`
+- TestGetContainerAndPlayerForLootAll `INFERRED`
+- TestHelperFunctions `INFERRED`
+- TestHandleLootAllExceptions `INFERRED`
+- test_apply_lucidity_loss_validation_maps_to_404() `INFERRED`
+- test_create_room_exit_duplicate_direction_409() `INFERRED`
+- TestCreateCharacterWithStats `INFERRED`
+- TestHandleContainerServiceErrorEdgeCases `INFERRED`
+- TestCloseContainer `INFERRED`
+- test_create_room_exit_source_room_missing_404() `INFERRED`
+- test_create_room_exit_target_room_missing_404() `INFERRED`
+- test_update_room_exit_not_found_404() `INFERRED`
+- test_register_user_duplicate_username() `INFERRED`
 
 ---
 

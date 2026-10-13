@@ -1,79 +1,88 @@
 # DatabaseError
 
-> 374 nodes
+> God node · 297 connections · `server/exceptions.py`
 
-## Key Concepts
+**Community:** [Invite & NPC DB Scripts](Invite_&_NPC_DB_Scripts.md)
 
-- **DatabaseError** (254 connections) — `server/exceptions.py`
-- **log_and_raise()** (192 connections) — `server/utils/error_logging.py`
-- **get_session_maker()** (102 connections) — `server/database.py`
-- **database.py** (85 connections) — `server/database.py`
-- **error_logging.py** (61 connections) — `server/utils/error_logging.py`
-- **PlayerSpellRepository** (35 connections) — `server/persistence/repositories/player_spell_repository.py`
-- **PlayerRepository** (32 connections) — `server/persistence/repositories/player_repository.py`
-- **repositories/__init__.py** (31 connections) — `server/persistence/repositories/__init__.py`
-- **player_repository.py** (28 connections) — `server/persistence/repositories/player_repository.py`
-- **PlayerSkillRepository** (24 connections) — `server/persistence/repositories/player_skill_repository.py`
-- **test_quest_instance_repository.py** (22 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **QuestInstance** (21 connections) — `server/models/quest.py`
-- **player_spell_repository.py** (21 connections) — `server/persistence/repositories/player_spell_repository.py`
-- **QuestInstanceRepository** (20 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **dialogue_definition_repository.py** (20 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
-- **test_quest_definition_repository.py** (20 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **PlayerSpell** (19 connections) — `server/models/player_spells.py`
-- **experience_repository.py** (19 connections) — `server/persistence/repositories/experience_repository.py`
-- **player_skill_repository.py** (19 connections) — `server/persistence/repositories/player_skill_repository.py`
-- **quest_instance_repository.py** (19 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **row_to_player()** (18 connections) — `server/persistence/repositories/player_repository_mappers.py`
-- **profession_repository.py** (18 connections) — `server/persistence/repositories/profession_repository.py`
-- **test_profession_repository.py** (18 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
-- **QuestDefinitionRepository** (17 connections) — `server/persistence/repositories/quest_definition_repository.py`
-- **quest_definition_repository.py** (16 connections) — `server/persistence/repositories/quest_definition_repository.py`
-- *... and 349 more nodes in this community*
+## Connections by Relation
 
-## Relationships
+### calls
+- ._get_room_uuid_by_stable_id() `EXTRACTED`
+- .mark_room_as_explored() `EXTRACTED`
+- ._execute_create_npc_definition() `EXTRACTED`
+- ._execute_npc_update() `EXTRACTED`
+- ._execute_create_spawn_rule() `EXTRACTED`
+- .is_room_explored() `EXTRACTED`
+- .get_npc_definitions() `EXTRACTED`
+- .get_explored_rooms() `EXTRACTED`
+- .get_system_statistics() `EXTRACTED`
+- .get_spawn_rules() `EXTRACTED`
+- test_determine_error_type_from_exception_uses_attr() `EXTRACTED`
+- test_canonical_room_id_impl_database_error() `EXTRACTED`
+- .create_container() `EXTRACTED`
+- test_mark_room_as_explored_sync_with_error_handler() `EXTRACTED`
+- .delete() `EXTRACTED`
+- test_is_transient_error_cause_chain_connection_closed() `INFERRED`
+- test_is_transient_error_wrapped_connection_closed() `INFERRED`
+- .load_active() `EXTRACTED`
+- test_seed_new_container_items_skips_bad_rows_and_handles_ensure_error() `EXTRACTED`
+- test_extract_player_name_user_access_error() `EXTRACTED`
 
-- [get_logger](get_logger.md) (73 shared connections)
-- [models/player.py](models-player.py.md) (34 shared connections)
-- [test_skill_service.py](test_skill_service.py.md) (30 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (26 shared connections)
-- [item_instance_persistence.py](item_instance_persistence.py.md) (21 shared connections)
-- [Player](Player.md) (20 shared connections)
-- [player_effect_repository.py](player_effect_repository.py.md) (17 shared connections)
-- [DialogueDefinitionRepository](DialogueDefinitionRepository.md) (16 shared connections)
-- [container_persistence.py](container_persistence.py.md) (14 shared connections)
-- [ExperienceRepository](ExperienceRepository.md) (14 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (14 shared connections)
-- [container_query_helpers_async.py](container_query_helpers_async.py.md) (13 shared connections)
+### contains
+- server/exceptions.py `EXTRACTED`
 
-## Source Files
+### imports
+- connection_manager_methods.py `EXTRACTED`
+- database.py `EXTRACTED`
+- test_combat_service_modules.py `EXTRACTED`
+- test_user_manager.py `EXTRACTED`
+- test_player_presence_tracker.py `EXTRACTED`
+- test_player_respawn_service.py `EXTRACTED`
+- admin_setstat_command.py `EXTRACTED`
+- players.py `EXTRACTED`
+- maps.py `EXTRACTED`
+- player_presence_tracker.py `EXTRACTED`
+- test_container_persistence_extended_row_helpers.py `EXTRACTED`
+- test_maps.py `EXTRACTED`
+- test_connection_delegates.py `EXTRACTED`
+- player_service.py `EXTRACTED`
+- test_admin_commands.py `EXTRACTED`
+- test_player_repository.py `EXTRACTED`
+- test_connection_session_management.py `EXTRACTED`
+- test_npc_service.py `EXTRACTED`
+- container_persistence.py `EXTRACTED`
+- test_container_persistence_async_helpers.py `EXTRACTED`
 
-- `e2e-tests/load-tests/get_invite_codes.py`
-- `server/async_persistence.py`
-- `server/async_persistence_direct_queries.py`
-- `server/container/bundles/game.py`
-- `server/database.py`
-- `server/database_config_helpers.py`
-- `server/exceptions.py`
-- `server/game/skill_service.py`
-- `server/models/dialogue.py`
-- `server/models/player_spells.py`
-- `server/models/quest.py`
-- `server/persistence/repositories/__init__.py`
-- `server/persistence/repositories/dialogue_definition_repository.py`
-- `server/persistence/repositories/emote_repository.py`
-- `server/persistence/repositories/experience_repository.py`
-- `server/persistence/repositories/player_effect_repository.py`
-- `server/persistence/repositories/player_repository.py`
-- `server/persistence/repositories/player_repository_mappers.py`
-- `server/persistence/repositories/player_skill_repository.py`
-- `server/persistence/repositories/player_spell_repository.py`
+### inherits
+- MythosMUDError `EXTRACTED`
 
-## Audit Trail
+### method
+- .__init__() `EXTRACTED`
 
-- EXTRACTED: 1387 (89%)
-- INFERRED: 171 (11%)
-- AMBIGUOUS: 0 (0%)
+### rationale_for
+- Database operation errors. `EXTRACTED`
+
+### uses
+- CombatTurnProcessor `INFERRED`
+- GameBundle `INFERRED`
+- PlayerRepository `INFERRED`
+- DialogueDefinitionRepository `INFERRED`
+- HealthRepository `INFERRED`
+- ConnectionCleaner `INFERRED`
+- RoomCacheLoader `INFERRED`
+- PlayerSpellRepository `INFERRED`
+- MythosTimeEventConsumer `INFERRED`
+- ExperienceRepository `INFERRED`
+- SkillRepository `INFERRED`
+- _FakeMuteRepository `INFERRED`
+- PlayerMuteRepository `INFERRED`
+- PlayerSkillRepository `INFERRED`
+- QuestInstanceRepository `INFERRED`
+- PlayerEffectRepository `INFERRED`
+- QuestRewardsMixin `INFERRED`
+- SpellRepository `INFERRED`
+- FakeBankPersistence `INFERRED`
+- QuestDefinitionRepository `INFERRED`
 
 ---
 

@@ -1,0 +1,56 @@
+# Community 120
+
+> 94 nodes
+
+## Key Concepts
+
+- **NATSConnectionStateMachine** (56 connections) — `server/realtime/connection_state_machine.py`
+- **test_connection_state_machine.py** (39 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_can_attempt_connection_circuit_open()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_can_attempt_connection_connected()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_can_attempt_connection_connecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_can_attempt_connection_disconnected()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_can_attempt_connection_reconnecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_close_circuit()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_connect_transition()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_connected_successfully_from_connecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_connected_successfully_from_reconnecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_connection_failed_from_connecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_connection_failed_from_reconnecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_degrade()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_disconnect_from_connected()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_disconnect_from_degraded()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_get_stats()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_get_stats_no_connected_time()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_get_stats_no_error()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_get_stats_with_error()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_invalid_transition_raises_error()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_last_connected_time_set()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_last_error_set()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_nats_connection_state_machine_init()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_nats_connection_state_machine_init_defaults()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- *... and 69 more nodes in this community*
+
+## Relationships
+
+- [Community 1326](Community_1326.md) (5 shared connections)
+- [Community 1445](Community_1445.md) (2 shared connections)
+- [Community 63](Community_63.md) (1 shared connections)
+- [Community 1682](Community_1682.md) (1 shared connections)
+- [Community 343](Community_343.md) (1 shared connections)
+- [NATS Service Config](NATS_Service_Config.md) (1 shared connections)
+
+## Source Files
+
+- `server/realtime/connection_state_machine.py`
+- `server/tests/unit/realtime/test_connection_state_machine.py`
+
+## Audit Trail
+
+- EXTRACTED: 139 (99%)
+- INFERRED: 1 (1%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

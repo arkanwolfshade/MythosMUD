@@ -1,0 +1,49 @@
+# Community 787
+
+> 21 nodes
+
+## Key Concepts
+
+- **asyncio** (12 connections)
+- **_send_to_websockets()** (11 connections) — `server/realtime/connection_helpers.py`
+- **test_send_to_websockets_websocket_error()** (5 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_broadcast_global_event_impl()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_broadcast_room_event_impl()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_send_personal_message_old_impl_no_connections()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_send_to_websockets()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_send_to_websockets_inactive_connection()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_send_to_websockets_no_connections()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_send_to_websockets_none_websocket()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_send_to_websockets_skips_disconnected_client_state()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **Send event to all active websockets for a player. Args: player_id: The player's…** (1 connections) — `server/realtime/connection_helpers.py`
+- **Test broadcast_room_event_impl() broadcasts room event.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **Test broadcast_global_event_impl() broadcasts global event.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **Test _send_to_websockets() handles websocket errors.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **Test _send_to_websockets() handles None websocket.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **Test _send_to_websockets() skips inactive connections.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **Do not send on sockets whose client_state is not CONNECTED.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **Test send_personal_message_old_impl() when no connections.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **Test _send_to_websockets() sends to websockets.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **Test _send_to_websockets() returns False when no connections.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+
+## Relationships
+
+- [Community 472](Community_472.md) (10 shared connections)
+- [Community 634](Community_634.md) (7 shared connections)
+- [Community 1443](Community_1443.md) (2 shared connections)
+- [Community 170](Community_170.md) (1 shared connections)
+
+## Source Files
+
+- `server/realtime/connection_helpers.py`
+- `server/tests/unit/realtime/test_connection_helpers_impl.py`
+
+## Audit Trail
+
+- EXTRACTED: 44 (98%)
+- INFERRED: 1 (2%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

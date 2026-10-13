@@ -1,0 +1,36 @@
+# Community 1235
+
+> 10 nodes
+
+## Key Concepts
+
+- **.validate_alias_definition()** (7 connections) — `server/validators/command_validator.py`
+- **test_command_validator_validate_alias_definition_inherits_content_validation()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_alias_definition_length_limit()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_alias_definition_valid()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_alias_definition_within_limit()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.validate_alias_definition returns True for valid alias.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.validate_alias_definition inherits content validation.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.validate_alias_definition enforces alias length limit.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.validate_alias_definition allows aliases within limit.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Validate alias definition command. Applies validation to alias commands before…** (1 connections) — `server/validators/command_validator.py`
+
+## Relationships
+
+- [Community 950](Community_950.md) (6 shared connections)
+- [Community 851](Community_851.md) (4 shared connections)
+
+## Source Files
+
+- `server/tests/unit/validators/test_command_validator.py`
+- `server/validators/command_validator.py`
+
+## Audit Trail
+
+- EXTRACTED: 15 (79%)
+- INFERRED: 4 (21%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

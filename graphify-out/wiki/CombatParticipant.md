@@ -1,64 +1,89 @@
 # CombatParticipant
 
-> 246 nodes
+> God node · 291 connections · `server/models/combat.py`
 
-## Key Concepts
+**Community:** [Combat Participants](Combat_Participants.md)
 
-- **CombatParticipant** (226 connections) — `server/models/combat.py`
-- **CombatTurnProcessor** (61 connections) — `server/services/combat_turn_processor.py`
-- **test_combat.py** (60 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_turn_processor.py** (49 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
-- **CombatAction** (29 connections) — `server/models/combat.py`
-- **asyncio** (27 connections)
-- **._execute_spell_action()** (12 connections) — `server/services/combat_turn_processor.py`
-- **process_player_turn()** (10 connections) — `server/services/combat_turn_participant_actions.py`
-- **._execute_queued_action()** (10 connections) — `server/services/combat_turn_processor.py`
-- **_execute_player_attack()** (7 connections) — `server/services/combat_turn_participant_actions.py`
-- **._build_spell_target()** (7 connections) — `server/services/combat_turn_processor.py`
-- **._execute_default_action()** (7 connections) — `server/services/combat_turn_processor.py`
-- **._execute_participant_action()** (7 connections) — `server/services/combat_turn_processor.py`
-- **._execute_round()** (7 connections) — `server/services/combat_turn_processor.py`
-- **._get_player_and_room_for_spell()** (7 connections) — `server/services/combat_turn_processor.py`
-- **test_process_player_turn_fallback_to_basic_unarmed_damage_when_no_player_from_persistence()** (7 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
-- **._execute_attack_action()** (6 connections) — `server/services/combat_turn_processor.py`
-- **._finalize_spell_execution()** (6 connections) — `server/services/combat_turn_processor.py`
-- **._get_spell_for_action()** (6 connections) — `server/services/combat_turn_processor.py`
-- **._is_npc_still_in_world()** (6 connections) — `server/services/combat_turn_processor.py`
-- **_stale_queued_attack_rows()** (6 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
-- **test_execute_participant_action_valid_queued_attack()** (6 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
-- **test_execute_queued_attack_action()** (6 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
-- **test_execute_queued_spell_without_magic_service()** (6 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
-- **test_process_player_turn_fallback_to_basic_unarmed_damage_when_no_app()** (6 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
-- *... and 221 more nodes in this community*
+## Connections by Relation
 
-## Relationships
+### calls
+- _p() `EXTRACTED`
+- _make_participant() `EXTRACTED`
+- _p() `EXTRACTED`
+- _make_participant() `EXTRACTED`
+- _make_participant() `EXTRACTED`
+- _combat_instance() `EXTRACTED`
+- _participant() `EXTRACTED`
+- _make_participant() `EXTRACTED`
+- test_get_combat_target_auto_selects_opponent() `EXTRACTED`
+- _player() `EXTRACTED`
+- _attack_participant() `EXTRACTED`
+- _p() `EXTRACTED`
+- _make_npc_participant() `EXTRACTED`
+- _participant() `EXTRACTED`
+- _participant() `EXTRACTED`
+- _ghoul_fight() `EXTRACTED`
+- test_run_handle_taunt_success_queues_the_taunt_as_the_rounds_action() `EXTRACTED`
+- _build_participant() `EXTRACTED`
+- _make_participant() `EXTRACTED`
+- _p() `EXTRACTED`
 
-- [CombatInstance](CombatInstance.md) (65 shared connections)
-- [get_logger](get_logger.md) (35 shared connections)
-- [CombatAttackHandler](CombatAttackHandler.md) (28 shared connections)
-- [CombatService](CombatService.md) (18 shared connections)
-- [test_combat_service_modules.py](test_combat_service_modules.py.md) (12 shared connections)
-- [test_combat_flee_handler.py](test_combat_flee_handler.py.md) (11 shared connections)
-- [CombatEventHandler](CombatEventHandler.md) (10 shared connections)
-- [test_combat_death_handler.py](test_combat_death_handler.py.md) (9 shared connections)
-- [test_combat_turn_participant_actions.py](test_combat_turn_participant_actions.py.md) (6 shared connections)
-- [test_aggro_threat.py](test_aggro_threat.py.md) (4 shared connections)
-- [CombatParticipantData](CombatParticipantData.md) (2 shared connections)
-- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (2 shared connections)
+### contains
+- models/combat.py `EXTRACTED`
 
-## Source Files
+### imports
+- combat_service.py `EXTRACTED`
+- test_combat_service_modules.py `EXTRACTED`
+- test_combat.py `EXTRACTED`
+- test_combat_turn_processor.py `EXTRACTED`
+- combat_turn_participant_actions.py `EXTRACTED`
+- test_combat_flee_handler.py `EXTRACTED`
+- test_combat_status_message_categories.py `EXTRACTED`
+- test_combat_assist.py `EXTRACTED`
+- test_combat_service.py `EXTRACTED`
+- test_n_player_combat.py `EXTRACTED`
+- test_utility_threat.py `EXTRACTED`
+- aggro_threat.py `EXTRACTED`
+- test_combat_attack_handler.py `EXTRACTED`
+- test_combat_protect_action.py `EXTRACTED`
+- test_combat_protect.py `EXTRACTED`
+- combat_assist.py `EXTRACTED`
+- combat_flee_handler.py `EXTRACTED`
+- test_aggro_threat.py `EXTRACTED`
+- test_combat_death_handler.py `EXTRACTED`
+- test_combat_taunt_action.py `EXTRACTED`
 
-- `server/models/combat.py`
-- `server/services/combat_turn_participant_actions.py`
-- `server/services/combat_turn_processor.py`
-- `server/tests/unit/models/test_combat.py`
-- `server/tests/unit/services/test_combat_turn_processor.py`
+### method
+- .is_alive() `EXTRACTED`
+- .apply_damage() `EXTRACTED`
+- .is_dead() `EXTRACTED`
+- .is_mortally_wounded() `EXTRACTED`
+- .can_act_in_combat() `EXTRACTED`
 
-## Audit Trail
+### rationale_for
+- Represents a participant in combat. `EXTRACTED`
 
-- EXTRACTED: 609 (94%)
-- INFERRED: 41 (6%)
-- AMBIGUOUS: 0 (0%)
+### references
+- add_damage_threat() `EXTRACTED`
+- update_aggro() `EXTRACTED`
+- _combat() `EXTRACTED`
+- resolve_protect_action() `EXTRACTED`
+- resolve_taunt_action() `EXTRACTED`
+- _combat() `EXTRACTED`
+- intercept_for_guard() `EXTRACTED`
+- add_utility_threat() `EXTRACTED`
+- _fight() `EXTRACTED`
+- add_heal_threat() `EXTRACTED`
+- process_player_turn() `EXTRACTED`
+- _hate() `EXTRACTED`
+- finalize_attack_result() `EXTRACTED`
+- ._execute_queued_action() `EXTRACTED`
+- _validate_taunt_context() `EXTRACTED`
+- resolve_player_attack_damage() `EXTRACTED`
+- ._execute_spell_action() `EXTRACTED`
+- _fight() `EXTRACTED`
+- _resolve_npc_target() `EXTRACTED`
+- find_ally_fight() `EXTRACTED`
 
 ---
 

@@ -1,64 +1,98 @@
 # AliasStorage
 
-> 251 nodes
+> God node · 248 connections · `server/alias_storage.py`
 
-## Key Concepts
+**Community:** [Event Bus & Persistence Core](Event_Bus_&_Persistence_Core.md)
 
-- **AliasStorage** (272 connections) — `server/alias_storage.py`
-- **Alias** (72 connections) — `server/models/alias.py`
-- **test_alias_storage.py** (67 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_alias.py** (29 connections) — `server/tests/unit/models/test_alias.py`
-- **Path** (11 connections)
-- **.get_player_aliases()** (10 connections) — `server/alias_storage.py`
-- **.get_alias_file_path()** (9 connections) — `server/alias_storage.py`
-- **._load_alias_data()** (9 connections) — `server/alias_storage.py`
-- **.create_alias()** (7 connections) — `server/alias_storage.py`
-- **._save_alias_data()** (7 connections) — `server/alias_storage.py`
-- **.save_player_aliases()** (7 connections) — `server/alias_storage.py`
-- **._validate_alias_payload()** (7 connections) — `server/alias_storage.py`
-- **alias_storage()** (7 connections) — `server/tests/unit/test_alias_storage.py`
-- **alias.py** (7 connections) — `server/models/alias.py`
-- **.add_alias()** (6 connections) — `server/alias_storage.py`
-- **Path** (6 connections)
-- **test_alias_storage_init_with_env_var()** (5 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_backup_aliases_custom_dir()** (5 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_backup_aliases_io_error()** (5 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_delete_player_aliases_io_error()** (5 connections) — `server/tests/unit/test_alias_storage.py`
-- **AliasPayload** (5 connections)
-- **MonkeyPatch** (5 connections)
-- **.backup_aliases()** (4 connections) — `server/alias_storage.py`
-- **.get_alias()** (4 connections) — `server/alias_storage.py`
-- **.get_alias_count()** (4 connections) — `server/alias_storage.py`
-- *... and 226 more nodes in this community*
+## Connections by Relation
 
-## Relationships
+### calls
+- _ensure_alias_storage() `EXTRACTED`
+- _websocket_unified_command_result() `EXTRACTED`
+- .delete_player() `EXTRACTED`
 
-- [get_logger](get_logger.md) (21 shared connections)
-- [test_npc_admin_commands.py](test_npc_admin_commands.py.md) (18 shared connections)
-- [command_service.py](command_service.py.md) (16 shared connections)
-- [command_handler_unified.py](command_handler_unified.py.md) (13 shared connections)
-- [SpellRegistry](SpellRegistry.md) (12 shared connections)
-- [test_admin_commands.py](test_admin_commands.py.md) (11 shared connections)
-- [combat_loader.py](combat_loader.py.md) (7 shared connections)
-- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (7 shared connections)
-- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (6 shared connections)
-- [inventory_pickup_command.py](inventory_pickup_command.py.md) (5 shared connections)
-- [request_with_app_container](request_with_app_container.md) (5 shared connections)
-- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (4 shared connections)
+### contains
+- alias_storage.py `EXTRACTED`
 
-## Source Files
+### imports
+- command_service.py `EXTRACTED`
+- admin_setstat_command.py `EXTRACTED`
+- look_command.py `EXTRACTED`
+- test_admin_shutdown_command.py `EXTRACTED`
+- player_service.py `EXTRACTED`
+- combat_handler.py `EXTRACTED`
+- rescue_commands.py `EXTRACTED`
+- command_handler_unified.py `EXTRACTED`
+- admin_commands.py `EXTRACTED`
+- admin_setlucidity_command.py `EXTRACTED`
+- admin_summon_command.py `EXTRACTED`
+- combat_assist.py `EXTRACTED`
+- logout_commands.py `EXTRACTED`
+- quest_commands.py `EXTRACTED`
+- test_alias_commands.py `EXTRACTED`
+- admin_teleport_commands.py `EXTRACTED`
+- admin_shutdown_command.py `EXTRACTED`
+- admin_hallucinate_command.py `EXTRACTED`
+- catalog_commands.py `EXTRACTED`
+- rest_command.py `EXTRACTED`
 
-- `server/alias_storage.py`
-- `server/models/alias.py`
-- `server/realtime/request_context.py`
-- `server/tests/unit/models/test_alias.py`
-- `server/tests/unit/test_alias_storage.py`
+### method
+- ._fetch() `EXTRACTED`
+- .create_alias() `EXTRACTED`
+- ._call_scalar() `EXTRACTED`
+- .get_player_aliases() `EXTRACTED`
+- .get_alias() `EXTRACTED`
+- .remove_alias() `EXTRACTED`
+- .delete_player_aliases_by_id() `EXTRACTED`
+- .validate_alias_name() `EXTRACTED`
+- .validate_alias_command() `EXTRACTED`
 
-## Audit Trail
+### rationale_for
+- Player alias persistence backed by the ``player_aliases`` table. Aliases are… `EXTRACTED`
 
-- EXTRACTED: 526 (85%)
-- INFERRED: 96 (15%)
-- AMBIGUOUS: 0 (0%)
+### references
+- _handle_admin_set_stat_command() `EXTRACTED`
+- handle_ground_command() `EXTRACTED`
+- handle_logout_command() `EXTRACTED`
+- handle_alias_command() `EXTRACTED`
+- handle_teleport_command() `EXTRACTED`
+- handle_party_command() `EXTRACTED`
+- handle_rest_command() `EXTRACTED`
+- handle_go_command() `EXTRACTED`
+- handle_goto_command() `EXTRACTED`
+- handle_whisper_command() `EXTRACTED`
+- handle_pray_command() `EXTRACTED`
+- handle_quest_command() `EXTRACTED`
+- _handle_admin_hallucinate_command() `EXTRACTED`
+- handle_mute_command() `EXTRACTED`
+- handle_debrief_command() `EXTRACTED`
+- _handle_admin_set_lucidity_command() `EXTRACTED`
+- handle_look_command() `EXTRACTED`
+- handle_confirm_goto_command() `EXTRACTED`
+- handle_confirm_teleport_command() `EXTRACTED`
+- handle_deposit_command() `EXTRACTED`
+
+### uses
+- CombatCommandHandler `INFERRED`
+- TestHelperFunctions `INFERRED`
+- MagicCommandHandler `INFERRED`
+- handle_read_command() `INFERRED`
+- _prepare_command_for_processing() `INFERRED`
+- process_command_unified() `INFERRED`
+- handle_teach_command() `INFERRED`
+- _handle_special_command_routing() `INFERRED`
+- _process_alias_expansion() `INFERRED`
+- run_handle_protect_command() `INFERRED`
+- run_handle_assist_command() `INFERRED`
+- run_handle_taunt_command() `INFERRED`
+- _run_expanded_alias() `INFERRED`
+- handle_kick_command() `INFERRED`
+- handle_punch_command() `INFERRED`
+- handle_strike_command() `INFERRED`
+- handle_assist_command() `INFERRED`
+- handle_attack_command() `INFERRED`
+- handle_flee_command() `INFERRED`
+- handle_protect_command() `INFERRED`
 
 ---
 

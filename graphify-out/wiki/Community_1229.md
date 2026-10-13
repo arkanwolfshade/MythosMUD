@@ -1,0 +1,36 @@
+# Community 1229
+
+> 10 nodes
+
+## Key Concepts
+
+- **TestCheckCastingState** (7 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.testcheck_casting_state_allowed_command()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.testcheck_casting_state_handles_error()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.testcheck_casting_state_no_magic_service()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.testcheck_casting_state_player_casting()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test check_casting_state function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test check_casting_state allows stop/interrupt/status during casting.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test check_casting_state returns None when no magic service.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test check_casting_state returns block result when player is casting.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test check_casting_state returns None on error.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+
+## Relationships
+
+- [Community 168](Community_168.md) (5 shared connections)
+- [Community 261](Community_261.md) (4 shared connections)
+- [Community 98](Community_98.md) (1 shared connections)
+
+## Source Files
+
+- `server/tests/unit/commands/test_command_validation.py`
+
+## Audit Trail
+
+- EXTRACTED: 18 (95%)
+- INFERRED: 1 (5%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

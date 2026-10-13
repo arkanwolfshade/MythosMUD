@@ -1,0 +1,35 @@
+# Community 1326
+
+> 8 nodes
+
+## Key Concepts
+
+- **connection_state_machine.py** (10 connections) — `server/realtime/connection_state_machine.py`
+- **ConnectionEvent** (5 connections) — `server/realtime/connection_state_machine.py`
+- **test_connection_event_enum()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Enum** (2 connections)
+- **StateMachine** (2 connections)
+- **Connection state machine for NATS messaging. Implements a robust state machine…** (1 connections) — `server/realtime/connection_state_machine.py`
+- **Events that trigger state transitions. AI: Explicit events make the FSM…** (1 connections) — `server/realtime/connection_state_machine.py`
+- **Test ConnectionEvent enum values.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+
+## Relationships
+
+- [Community 120](Community_120.md) (5 shared connections)
+- [Event Bus & Persistence Core](Event_Bus_&_Persistence_Core.md) (2 shared connections)
+- [Community 63](Community_63.md) (2 shared connections)
+
+## Source Files
+
+- `server/realtime/connection_state_machine.py`
+- `server/tests/unit/realtime/test_connection_state_machine.py`
+
+## Audit Trail
+
+- EXTRACTED: 16 (94%)
+- INFERRED: 1 (6%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*
