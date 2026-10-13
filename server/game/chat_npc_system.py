@@ -11,9 +11,11 @@ import uuid
 from collections.abc import Coroutine
 from typing import Protocol, cast
 
+from ..constants.message_segments import MessageSegment, join_parts
 from ..events.event_bus import EventBus
 from ..events.event_types import NPCSpoke
 from ..structured_logging.enhanced_logging_config import get_logger
+from ..utils.npc_disposition_lookup import get_npc_disposition_from_instance
 from .chat_message import ChatMessage
 from .chat_message_helpers import create_and_log_chat_message, store_message_in_room_history
 from .chat_nats_publisher import publish_chat_message_to_nats
@@ -75,6 +77,7 @@ async def send_npc_say_to_room(
     sender_id = npc_sender_id(npc_id)
     chat_message = create_and_log_chat_message(sender_id, npc_name, message, room_id, "say")
     chat_message.speaker_kind = "npc"
+    chat_message.speaker_disposition = get_npc_disposition_from_instance(npc_id).value
     # pylint: disable=protected-access  # Reason: reuse ChatService room history store
     store_message_in_room_history(
         chat_service._room_messages,  # pyright: ignore[reportPrivateUsage]  # Reason: Protocol mirrors ChatService history store
@@ -93,9 +96,12 @@ async def send_npc_say_to_room(
 
 
 async def send_personal_system_message(
-    chat_service: _ChatDeliveryService, player_id: uuid.UUID | str, message: str
+    chat_service: _ChatDeliveryService,
+    player_id: uuid.UUID | str,
+    message: str,
+    content_segments: list[MessageSegment] | None = None,
 ) -> dict[str, object]:
-    """Send a system-channel message to one player (whisper subject)."""
+    """Send a system-channel message to one player (whisper subject); ``content_segments`` describe ``message``."""
     if not message or not message.strip():
         return {"success": False, "error": "Message cannot be empty"}
     player_id_str = str(player_id)
@@ -107,6 +113,8 @@ async def send_personal_system_message(
         target_id=player_id_str,
     )
     chat_message.speaker_kind = "system"
+    if content_segments and join_parts(list(content_segments)) == chat_message.content:
+        chat_message.content_segments = content_segments
     chat_message.log_message()
     success = await publish_chat_message_to_nats(
         chat_message, None, chat_service.nats_service, chat_service.subject_manager
@@ -174,12 +182,14 @@ async def deliver_npc_room_speech(
     return await send_npc_say_to_room(_chat_service, npc_id=npc_id, npc_name=name, room_id=room_id, message=message)
 
 
-async def deliver_personal_system(player_id: uuid.UUID | str, message: str) -> dict[str, object]:
+async def deliver_personal_system(
+    player_id: uuid.UUID | str, message: str, content_segments: list[MessageSegment] | None = None
+) -> dict[str, object]:
     """Deliver personal system chat using the wired ChatService, if any."""
     if _chat_service is None:
         logger.debug("ChatService not wired; system chat skipped", player_id=str(player_id))
         return {"success": False, "error": "ChatService unavailable"}
-    return await send_personal_system_message(_chat_service, player_id, message)
+    return await send_personal_system_message(_chat_service, player_id, message, content_segments)
 
 
 def schedule_npc_room_speech(

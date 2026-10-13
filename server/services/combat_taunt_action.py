@@ -20,6 +20,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from server.constants.message_segments import SegmentPart, join_parts, npc_name_segment
 from server.game.skill_service import SuccessLevel
 from server.models.combat import CombatAction, CombatInstance, CombatParticipant, CombatParticipantType
 from server.services.aggro_threat import apply_stealth_wipe, apply_taunt, update_aggro
@@ -41,13 +42,18 @@ _MARGIN_MULTIPLIER: dict[SuccessLevel, float] = {
 }
 
 
-def taunt_outcome_line(level: SuccessLevel, taunter_name: str, npc_name: str) -> str:
-    """The single room line that announces a taunt's result."""
+def taunt_outcome_parts(level: SuccessLevel, taunter_name: str, npc: SegmentPart) -> list[SegmentPart]:
+    """The single room line that announces a taunt's result, with the NPC as a part so its name can be styled."""
     if level is SuccessLevel.FUMBLE:
-        return f"{taunter_name}'s voice cracks; {npc_name} dismisses them."
+        return [f"{taunter_name}'s voice cracks; ", npc, " dismisses them."]
     if level.is_success:
-        return f"{taunter_name} bellows a challenge at {npc_name}!"
-    return f"{taunter_name}'s bluster fails to impress {npc_name}."
+        return [f"{taunter_name} bellows a challenge at ", npc, "!"]
+    return [f"{taunter_name}'s bluster fails to impress ", npc, "."]
+
+
+def taunt_outcome_line(level: SuccessLevel, taunter_name: str, npc_name: str) -> str:
+    """The plain text of ``taunt_outcome_parts``."""
+    return join_parts(taunt_outcome_parts(level, taunter_name, npc_name))
 
 
 def _apply_taunt_outcome(
@@ -67,13 +73,13 @@ def _apply_taunt_outcome(
         )
 
 
-async def _announce(combat_service: CombatService, combat: CombatInstance, line: str) -> None:
+async def _announce(combat_service: CombatService, combat: CombatInstance, parts: list[SegmentPart]) -> None:
     """Send the room line, if the messaging integration is available."""
     integration = combat_service.get_npc_combat_integration_service()
     if integration is None:
         return
     _ = await integration.get_messaging_integration().broadcast_taunt_result(
-        str(combat.room_id), str(combat.combat_id), line
+        str(combat.room_id), str(combat.combat_id), parts
     )
 
 
@@ -107,7 +113,11 @@ async def resolve_taunt_action(
         npc_id=npc.participant_id,
         result=level.value,
     )
-    await _announce(combat_service, combat, taunt_outcome_line(level, taunter.name, npc.name))
+    integration = combat_service.get_npc_combat_integration_service()
+    npc_part = (
+        npc_name_segment(npc.name, integration.get_npc_disposition(npc.participant_id)) if integration else npc.name
+    )
+    await _announce(combat_service, combat, taunt_outcome_parts(level, taunter.name, npc_part))
 
     new_target_id, did_switch = update_aggro(combat, npc, combat.room_id, combat.participants)
     if did_switch and new_target_id:

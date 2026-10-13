@@ -11,6 +11,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from server.constants.npc_disposition import NpcDisposition
 from server.game.skill_service import SuccessLevel
 from server.models.combat import CombatAction, CombatInstance, CombatParticipant, CombatParticipantType
 from server.services import aggro_threat, combat_taunt_action
@@ -18,6 +19,8 @@ from server.services.combat_turn_processor import CombatTurnProcessor
 
 PLAYER = CombatParticipantType.PLAYER
 NPC = CombatParticipantType.NPC
+#: The NPC's name in the announced line: styled by its disposition (#1036).
+GHOUL = {"text": "Ghoul", "category": "npc.aggressive_mob"}
 
 
 def _p(name: str, ptype: CombatParticipantType = PLAYER, dp: int = 50) -> CombatParticipant:
@@ -71,6 +74,7 @@ def _doubles(
     messaging.broadcast_taunt_result = announce
     integration: MagicMock = MagicMock()
     integration.get_messaging_integration = MagicMock(return_value=messaging)
+    integration.get_npc_disposition = MagicMock(return_value=NpcDisposition.AGGRESSIVE_MOB)
     service: MagicMock = MagicMock()
     service.skill_service = skill_service if skill_linked else None
     service.get_participant_current_room = AsyncMock(return_value=room)
@@ -93,7 +97,7 @@ async def test_regular_success_makes_the_taunter_top_and_pulls_the_npc_off_the_h
     assert _hate(f)[f.tank.participant_id] == pytest.approx(56.0)  # 50 top + (10% of 50 + 1)
     assert f.combat.npc_current_target[f.ghoul.participant_id] == f.tank.participant_id
     roll.assert_awaited_once_with(f.tank.participant_id, ("intimidate", "fighting"))
-    announce.assert_awaited_once_with("r1", str(f.combat.combat_id), "Tank bellows a challenge at Ghoul!")
+    announce.assert_awaited_once_with("r1", str(f.combat.combat_id), ["Tank bellows a challenge at ", GHOUL, "!"])
     switches.assert_awaited_once_with("r1", f.combat.combat_id, [(f.ghoul.participant_id, "Ghoul", "Tank")])
 
 
@@ -106,7 +110,7 @@ async def test_hard_and_extreme_successes_double_the_lead(level: SuccessLevel) -
     await combat_taunt_action.resolve_taunt_action(service, f.combat, f.tank, f.action)
 
     assert _hate(f)[f.tank.participant_id] == pytest.approx(62.0)  # 50 top + 2 * (10% of 50 + 1)
-    announce.assert_awaited_once_with("r1", str(f.combat.combat_id), "Tank bellows a challenge at Ghoul!")
+    announce.assert_awaited_once_with("r1", str(f.combat.combat_id), ["Tank bellows a challenge at ", GHOUL, "!"])
 
 
 @pytest.mark.asyncio
@@ -118,7 +122,7 @@ async def test_failure_changes_nothing_but_still_announces() -> None:
 
     assert _hate(f) == {f.healer.participant_id: 50.0, f.tank.participant_id: 10.0}
     assert f.combat.npc_current_target[f.ghoul.participant_id] == f.healer.participant_id
-    announce.assert_awaited_once_with("r1", str(f.combat.combat_id), "Tank's bluster fails to impress Ghoul.")
+    announce.assert_awaited_once_with("r1", str(f.combat.combat_id), ["Tank's bluster fails to impress ", GHOUL, "."])
     switches.assert_not_awaited()
 
 
@@ -131,7 +135,9 @@ async def test_fumble_wipes_the_taunter_from_the_hate_list() -> None:
 
     assert f.tank.participant_id not in _hate(f)
     assert _hate(f)[f.healer.participant_id] == 50.0
-    announce.assert_awaited_once_with("r1", str(f.combat.combat_id), "Tank's voice cracks; Ghoul dismisses them.")
+    announce.assert_awaited_once_with(
+        "r1", str(f.combat.combat_id), ["Tank's voice cracks; ", GHOUL, " dismisses them."]
+    )
     switches.assert_not_awaited()
 
 

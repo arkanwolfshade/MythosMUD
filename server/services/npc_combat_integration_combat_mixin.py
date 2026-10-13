@@ -11,6 +11,7 @@ from uuid import UUID
 from structlog.stdlib import BoundLogger
 
 from ..app.game_tick_counter import get_current_tick
+from ..constants.npc_disposition import NpcDisposition
 from ..models.combat import CombatInstance, CombatResult
 from ..structured_logging.enhanced_logging_config import get_logger
 from .combat_messaging_integration import CombatMessagingIntegration
@@ -64,8 +65,18 @@ class _NPCCombatIntegrationDeps(Protocol):
         """Join the combat the target NPC is already in (#833)."""
         raise NotImplementedError
 
+    def get_npc_disposition(self, participant_id: UUID) -> NpcDisposition:
+        """Disposition of the NPC behind a combat participant id (#1036)."""
+        raise NotImplementedError
+
     async def join_player_to_combat(
-        self, player_id: str, room_id: str, player_uuid: UUID, combat: CombatInstance, foe_name: str
+        self,
+        player_id: str,
+        room_id: str,
+        player_uuid: UUID,
+        combat: CombatInstance,
+        foe_name: str,
+        foe_id: UUID | None = None,
     ) -> None:
         """Add a player to a fight under way and announce it (#833, #991)."""
         raise NotImplementedError
@@ -198,7 +209,8 @@ class NPCCombatIntegrationCombatMixin:
     ) -> CombatResult:
         """Join the combat the target NPC is already in (#833); the first attack is queued for the next round."""
         npc = combat.participants.get(target_uuid)
-        await self.join_player_to_combat(player_id, room_id, attacker_uuid, combat, npc.name if npc else "the creature")
+        foe_name = npc.name if npc else "the creature"
+        await self.join_player_to_combat(player_id, room_id, attacker_uuid, combat, foe_name, foe_id=target_uuid)
         _ = await self.get_combat_service().queue_combat_action(
             combat_id=combat.combat_id,
             participant_id=attacker_uuid,
@@ -222,6 +234,7 @@ class NPCCombatIntegrationCombatMixin:
         player_uuid: UUID,
         combat: CombatInstance,
         foe_name: str,
+        foe_id: UUID | None = None,
     ) -> None:
         """
         Add a player to a fight already under way and tell the room (#833, #991).
@@ -233,8 +246,9 @@ class NPCCombatIntegrationCombatMixin:
         player_name = await data_provider.get_player_name(player_id)
         joiner = await data_provider.get_player_combat_data(player_id, player_uuid, player_name)
         await self.get_combat_service().join_combat(combat, joiner, room_id)
+        foe_disposition = self.get_npc_disposition(foe_id) if foe_id is not None else None
         _ = await self.get_messaging_integration().broadcast_player_joined_combat(
-            room_id, str(combat.combat_id), player_name, foe_name, player_id
+            room_id, str(combat.combat_id), player_name, foe_name, player_id, npc_disposition=foe_disposition
         )
 
     async def start_new_combat_for_mixin(

@@ -187,6 +187,10 @@ def _build_nats_message_data(chat_message: "ChatMessage", room_id: str | None) -
     speaker_kind = getattr(chat_message, "speaker_kind", None)
     if speaker_kind:
         message_data["speaker_kind"] = speaker_kind
+    if getattr(chat_message, "speaker_disposition", None):
+        message_data["speaker_disposition"] = chat_message.speaker_disposition
+    if getattr(chat_message, "content_segments", None):
+        message_data["content_segments"] = chat_message.content_segments
     return message_data
 
 

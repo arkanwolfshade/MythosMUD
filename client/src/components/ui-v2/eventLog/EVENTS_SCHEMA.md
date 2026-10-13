@@ -117,8 +117,11 @@ styled, with `category: 'npc.<disposition>'`.
 - **Server builds them by construction** (`server/constants/message_segments.py`, `message_with_segments`), and
   `test_message_category_invariants.py` checks the join for every emitter that attaches `segments`.
 - **Where the server sends them:** `room_message` (NPC enters, leaves or moves, and the default appear/leave lines;
-  authored `behavior_config` text has no name placeholder and stays plain) and `npc_died` / `combat_death` ("The X has
-  been slain.").
+  authored `behavior_config` text has no name placeholder and stays plain), `npc_died` / `combat_death` ("The X has been
+  slain."), the combat status lines `combat_target_switch`, `combat_participant_joined` and `combat_taunt`, the
+  `command_response` of `look` (the whole result text, with the "Also here: ..." names styled), and `chat_message` lines
+  from an NPC speaker (`speaker_disposition`) and system narration whose content names a phantom (the spans inside the
+  content are framed by the channel prefix, e.g. `[SYSTEM] `).
 - **Client-composed combat lines** (`npc_attacked`, `npc_took_damage`, `player_attacked`) are worded in the client, so the
   server sends the NPC's disposition instead: `npc_disposition` on the first two, `attacker_disposition` on
   `player_attacked` (present only when the attacker is an NPC). The client builds the spans from it.
@@ -128,8 +131,11 @@ styled, with `category: 'npc.<disposition>'`.
 - **Rendering:** `SegmentedText` gives an `npc.*` span the classes `seg seg-npc-<disposition>`: colour and weight only,
   with no glyph or Text-labels word (those stay on the line). Corruption decay (#804) runs on the whole line first; if it
   changes the line, the decayed plain text is shown and the segments are dropped.
-- **Not segmented yet:** phantom narration, `look`'s "Also here", target-switch / join / taunt / protect lines, NPC
-  speech, and whispers (tracked in #1034).
+- **Chat lines and dampening.** The speaker's name sits outside the content, so it stays styled when dampening rewrites
+  the words; spans inside the content are kept only while the content is untouched, and otherwise dropped for that
+  receiver. A hallucinated fake-NPC whisper carries no disposition (there is no real NPC to take one from).
+- **Not segmented yet:** the attack command's own acknowledgement ("You attack X!"), whose result type is a flat
+  `dict[str, str]` across every command handler, and real NPC whispers (#1034). Protect lines name only players.
 
 ## System events
 

@@ -7,16 +7,17 @@ from __future__ import annotations
 
 import uuid
 from datetime import UTC, datetime
-from typing import NotRequired, TypedDict
+from typing import NotRequired, TypedDict, cast
 
 from ..constants.message_category import MessageCategory
+from ..constants.message_segments import MessageSegment
 from ..realtime.circuit_breaker import CircuitBreakerOpen
 from ..realtime.dead_letter_queue import DeadLetterMessage
 from ..realtime.envelope import build_event
 from ..schemas.realtime import validate_message
 from ..services.nats_exceptions import NATSError
 from ..structured_logging.enhanced_logging_config import get_logger
-from .message_formatters import format_message_content
+from .message_formatters import disposition_or_none, format_message_content, format_message_segments
 from .nats_message_handler_base import NATSMessageHandlerMixinBase
 
 logger = get_logger("communications.nats_message_handler")
@@ -37,6 +38,8 @@ class _ChatMessageFields(TypedDict, total=False):
     target_id: str | None
     target_name: str | None
     speaker_kind: str | None
+    speaker_disposition: str | None
+    content_segments: list[MessageSegment] | None
 
 
 class _ValidatedChatFields(TypedDict):
@@ -54,6 +57,8 @@ class _ValidatedChatFields(TypedDict):
     target_id: NotRequired[str | None]
     target_name: NotRequired[str | None]
     speaker_kind: NotRequired[str | None]
+    speaker_disposition: NotRequired[str | None]
+    content_segments: NotRequired[list[MessageSegment] | None]
 
 
 # NATS chat channel -> semantic category. "pose" renders like "emote" (same formatter); unknown channels get none.
@@ -74,6 +79,22 @@ _CHANNEL_CATEGORY: dict[str, MessageCategory] = {
 def _optional_str(value: object) -> str | None:
     """Narrow a message field to str | None."""
     return value if isinstance(value, str) else None
+
+
+def _optional_segments(value: object) -> list[MessageSegment] | None:
+    """Narrow a message field to a list of ``{text, category?}`` spans, or None if it is anything else."""
+    if not isinstance(value, list):
+        return None
+    segments: list[MessageSegment] = []
+    for raw in cast("list[object]", value):
+        if not isinstance(raw, dict):
+            return None
+        span = cast("dict[str, object]", raw)
+        text, category = span.get("text"), span.get("category")
+        if not isinstance(text, str):
+            return None
+        segments.append({"text": text, "category": category} if isinstance(category, str) else {"text": text})
+    return segments
 
 
 def _str_field(value: object, default: str) -> str:
@@ -266,6 +287,8 @@ class NATSMessageProcessingMixin(  # pylint: disable=too-few-public-methods  # R
             "target_id": target_id,
             "target_name": _optional_str(message_data.get("target_name")),
             "speaker_kind": _optional_str(message_data.get("speaker_kind")),
+            "speaker_disposition": _optional_str(message_data.get("speaker_disposition")),
+            "content_segments": _optional_segments(message_data.get("content_segments")),
         }
 
     def _validate_chat_message_fields(
@@ -315,6 +338,8 @@ class NATSMessageProcessingMixin(  # pylint: disable=too-few-public-methods  # R
             "target_id": chat_fields.get("target_id"),
             "target_name": chat_fields.get("target_name"),
             "speaker_kind": chat_fields.get("speaker_kind"),
+            "speaker_disposition": chat_fields.get("speaker_disposition"),
+            "content_segments": chat_fields.get("content_segments"),
         }
 
     def _build_chat_event(self, chat_fields: _ValidatedChatFields, formatted_message: str) -> dict[str, object]:
@@ -343,6 +368,22 @@ class NATSMessageProcessingMixin(  # pylint: disable=too-few-public-methods  # R
         speaker_kind = chat_fields.get("speaker_kind")
         if speaker_kind:
             event_data["speaker_kind"] = speaker_kind
+        # #1036: the inputs a per-receiver rewrite needs to rebuild the spans, then the spans for this line.
+        speaker_disposition = chat_fields.get("speaker_disposition")
+        content_segments = chat_fields.get("content_segments")
+        if speaker_disposition:
+            event_data["speaker_disposition"] = speaker_disposition
+        if content_segments:
+            event_data["original_segments"] = content_segments
+        segments = format_message_segments(
+            chat_fields["channel"],
+            chat_fields["sender_name"],
+            chat_fields["content"],
+            speaker_disposition=disposition_or_none(speaker_disposition),
+            content_segments=content_segments,
+        )
+        if segments:
+            event_data["segments"] = segments
         category = _CHANNEL_CATEGORY.get(chat_fields["channel"])
         if category is not None:
             event_data["category"] = category

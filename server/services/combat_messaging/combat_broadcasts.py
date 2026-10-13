@@ -3,11 +3,25 @@
 from typing import Any, cast
 
 from server.constants.message_category import MessageCategory
+from server.constants.message_segments import SegmentPart, message_with_segments, npc_name_segment
+from server.constants.npc_disposition import NpcDisposition
 from server.realtime.envelope import build_event
 from server.services.combat_messaging.base import HasConnectionManager, log_room_broadcast_result
 from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
+
+
+def _npc_part(name: str, disposition: NpcDisposition | None) -> SegmentPart:
+    """An NPC's name as a line part: styled when its disposition is known, plain text otherwise (#1036)."""
+    return npc_name_segment(name, disposition) if disposition is not None else name
+
+
+def _line_fields(parts: list[SegmentPart]) -> dict[str, object]:
+    """``message`` for a line built from parts, plus ``segments`` only when something in it is styled."""
+    built = message_with_segments(parts)
+    styled = any("category" in segment for segment in built["segments"])
+    return {"message": built["message"], **({"segments": built["segments"]} if styled else {})}
 
 
 class CombatBroadcastMixin(HasConnectionManager):
@@ -162,42 +176,52 @@ class CombatBroadcastMixin(HasConnectionManager):
         return stats
 
     async def broadcast_combat_target_switch(
-        self, room_id: str, combat_id: str, npc_name: str, new_target_name: str
+        self,
+        room_id: str,
+        combat_id: str,
+        npc_name: str,
+        new_target_name: str,
+        npc_disposition: NpcDisposition | None = None,
     ) -> dict[str, object]:
         """Broadcast one short room message when an NPC switches aggro target (ADR-016)."""
-        room_message = f"{npc_name} turns its gaze to {new_target_name}."
+        line = _line_fields([_npc_part(npc_name, npc_disposition), f" turns its gaze to {new_target_name}."])
         return await self._broadcast_combat_event(
             "combat_target_switch",
             room_id,
-            {"combat_id": combat_id, "npc_name": npc_name, "new_target_name": new_target_name, "message": room_message},
+            {"combat_id": combat_id, "npc_name": npc_name, "new_target_name": new_target_name, **line},
             "Combat target switch broadcast",
             MessageCategory.COMBAT_STATUS,
         )
 
     async def broadcast_player_joined_combat(
-        self, room_id: str, combat_id: str, player_name: str, npc_name: str, player_id: str
+        self,
+        room_id: str,
+        combat_id: str,
+        player_name: str,
+        npc_name: str,
+        player_id: str,
+        npc_disposition: NpcDisposition | None = None,
     ) -> dict[str, object]:
         """Broadcast one room line when a player joins a fight already under way (#833). The joiner is excluded."""
+        line = _line_fields([f"{player_name} joins the fight against ", _npc_part(npc_name, npc_disposition), "!"])
         return await self._broadcast_combat_event(
             "combat_participant_joined",
             room_id,
-            {
-                "combat_id": combat_id,
-                "player_name": player_name,
-                "npc_name": npc_name,
-                "message": f"{player_name} joins the fight against {npc_name}!",
-            },
+            {"combat_id": combat_id, "player_name": player_name, "npc_name": npc_name, **line},
             "Combat join broadcast",
             MessageCategory.COMBAT_STATUS,
             exclude_player=player_id,
         )
 
-    async def broadcast_taunt_result(self, room_id: str, combat_id: str, message: str) -> dict[str, object]:
+    async def broadcast_taunt_result(
+        self, room_id: str, combat_id: str, line: str | list[SegmentPart]
+    ) -> dict[str, object]:
         """Broadcast the one room line for a resolved taunt: success, failure or fumble (#833)."""
+        parts: list[SegmentPart] = [line] if isinstance(line, str) else line
         return await self._broadcast_combat_event(
             "combat_taunt",
             room_id,
-            {"combat_id": combat_id, "message": message},
+            {"combat_id": combat_id, **_line_fields(parts)},
             "Combat taunt broadcast",
             MessageCategory.COMBAT_STATUS,
         )

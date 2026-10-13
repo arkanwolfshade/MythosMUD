@@ -112,3 +112,111 @@ describe('client-composed combat lines', () => {
     expect(project(event('npc_attacked', { ...base, npc_disposition: 'friendly' })).segments).toBeUndefined();
   });
 });
+
+describe('combat status lines (#1036)', () => {
+  it.each([
+    ['combat_target_switch', 'Ghoul turns its gaze to Ashcroft.', [0, 'Ghoul']],
+    ['combat_participant_joined', 'Blackwood joins the fight against Ghoul!', [1, 'Ghoul']],
+    ['combat_taunt', 'Tank bellows a challenge at Ghoul!', [1, 'Ghoul']],
+  ] as const)('%s carries the server segments next to its text', (eventType, message, [index, name]) => {
+    const before = message.slice(0, message.indexOf(name));
+    const after = message.slice(message.indexOf(name) + name.length);
+    const spans = [
+      ...(before ? [{ text: before }] : []),
+      { text: name, category: 'npc.aggressive_mob' },
+      ...(after ? [{ text: after }] : []),
+    ];
+    const line = project(event(eventType, { message, category: 'combat.status', segments: spans }));
+    expect(line.text).toBe(message);
+    expect(line.segments).toEqual(spans);
+    expect(line.segments?.[index]).toEqual({ text: name, category: 'npc.aggressive_mob' });
+  });
+
+  it('drops combat status segments that do not join back to the text', () => {
+    const line = project(
+      event('combat_taunt', {
+        message: 'Tank bellows a challenge at Ghoul!',
+        category: 'combat.status',
+        segments: [{ text: 'Ghoul', category: 'npc.aggressive_mob' }],
+      })
+    );
+    expect(line.segments).toBeUndefined();
+  });
+});
+
+describe('command_response segments (#1036)', () => {
+  const result = 'A damp cellar.\n\nAlso here: Goblin, Rat\nExits: north';
+  const segments = [
+    { text: 'A damp cellar.\n\nAlso here: ' },
+    { text: 'Goblin', category: 'npc.shopkeeper' },
+    { text: ', ' },
+    { text: 'Rat', category: 'npc.aggressive_mob' },
+    { text: '\nExits: north' },
+  ];
+
+  it('carries the look result segments next to its text', () => {
+    const line = project(event('command_response', { result, category: 'room.description', segments }));
+    expect(line.text).toBe(result);
+    expect(line.segments).toEqual(segments);
+  });
+
+  it('drops them when the displayed text is not the result they describe', () => {
+    const line = project(
+      event('command_response', {
+        result,
+        suppress_chat: true,
+        game_log_message: 'You look around.',
+        category: 'room.description',
+        segments,
+      })
+    );
+    expect(line.text).toBe('You look around.');
+    expect(line.segments).toBeUndefined();
+  });
+});
+
+describe('chat_message segments (#1036)', () => {
+  it('carries an NPC speaker name span next to the formatted line', () => {
+    const segments = [{ text: 'Elder', category: 'npc.quest_giver' }, { text: ' says: Welcome.' }];
+    const line = project(
+      event('chat_message', {
+        message: 'Elder says: Welcome.',
+        channel: 'say',
+        category: 'chat.say',
+        segments,
+      })
+    );
+    expect(line.text).toBe('Elder says: Welcome.');
+    expect(line.segments).toEqual(segments);
+  });
+
+  it('carries the spans inside a system narration line, framed by the channel prefix', () => {
+    const segments = [
+      { text: '[SYSTEM] A ' },
+      { text: 'Shadow', category: 'npc.aggressive_mob' },
+      { text: ' materializes before you!' },
+    ];
+    const line = project(
+      event('chat_message', {
+        message: '[SYSTEM] A Shadow materializes before you!',
+        channel: 'system',
+        category: 'system.info',
+        segments,
+      })
+    );
+    expect(line.segments).toEqual(segments);
+  });
+
+  it('drops spans that no longer describe the (dampened) line', () => {
+    const line = project(
+      event('chat_message', {
+        message: 'Elder says: W☁lcome.',
+        channel: 'say',
+        category: 'chat.say',
+        segments: [{ text: 'Elder', category: 'npc.quest_giver' }, { text: ' says: Welcome.' }],
+      })
+    );
+    expect(line.text).toBe('Elder says: W☁lcome.');
+    expect(line.segments).toBeUndefined();
+  });
+});

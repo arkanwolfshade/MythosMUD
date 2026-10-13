@@ -6,12 +6,13 @@ Extracted to keep nats_message_handler.py under the Lizard file-nloc limit.
 from __future__ import annotations
 
 import uuid
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
+from ..constants.message_segments import MessageSegment
 from ..services.nats_exceptions import NATSError
 from ..structured_logging.enhanced_logging_config import get_logger
 from .message_filtering import BroadcastFilterContext
-from .message_formatters import format_message_content
+from .message_formatters import disposition_or_none, format_message_content, format_message_segments
 from .nats_message_handler_base import NATSMessageHandlerMixinBase
 
 if TYPE_CHECKING:
@@ -135,6 +136,14 @@ class NATSMessageBroadcastMixin(  # pylint: disable=too-few-public-methods  # Re
                 receiver_event = chat_event.copy()
                 receiver_event["data"] = event_data.copy()
                 receiver_event["data"]["message"] = receiver_formatted
+                self._apply_receiver_segments(
+                    cast("dict[str, object]", receiver_event["data"]),
+                    cast("dict[str, object]", event_data),
+                    channel,
+                    cast("str", sender_name),
+                    cast("str", original_content),
+                    receiver_content,
+                )
 
                 # Add tags if any (e.g., 'strained', 'muffled', 'scrambled')
                 if dampening_result.get("tags"):
@@ -302,6 +311,35 @@ class NATSMessageBroadcastMixin(  # pylint: disable=too-few-public-methods  # Re
 
         return _UserManagerClass()
 
+    @staticmethod
+    def _apply_receiver_segments(
+        data: dict[str, object],
+        event_data: dict[str, object],
+        channel: str,
+        sender_name: str,
+        original: str,
+        content: str,
+    ) -> None:
+        """
+        Give one receiver's copy of a chat event the styled spans for its line (#1036), or drop stale ones.
+
+        An NPC speaker's name is always styled; spans inside the content survive only while dampening left the content
+        untouched, since dampening rewrites words and would leave them pointing at text that is no longer there.
+        """
+        kept = event_data.get("original_segments") if content == original else None
+        segments = format_message_segments(
+            channel,
+            sender_name,
+            content,
+            speaker_disposition=disposition_or_none(event_data.get("speaker_disposition")),
+            content_segments=cast(list[MessageSegment] | None, kept),
+            for_recipient=channel == "whisper",
+        )
+        if segments:
+            data["segments"] = cast("object", segments)
+        else:
+            _ = data.pop("segments", None)
+
     def _format_message_for_receiver(self, channel: str, sender_name: str, content: str) -> str:
         """
         Format message content for a receiver (after dampening applied).
@@ -377,6 +415,14 @@ class NATSMessageBroadcastMixin(  # pylint: disable=too-few-public-methods  # Re
             receiver_event = chat_event.copy()
             receiver_event["data"] = event_data.copy()
             receiver_event["data"]["message"] = receiver_formatted
+            self._apply_receiver_segments(
+                cast("dict[str, object]", receiver_event["data"]),
+                cast("dict[str, object]", event_data),
+                channel,
+                cast("str", sender_name),
+                cast("str", original_content),
+                receiver_content,
+            )
 
             # Add tags if any (e.g., 'strained', 'muffled', 'scrambled')
             if dampening_result.get("tags"):

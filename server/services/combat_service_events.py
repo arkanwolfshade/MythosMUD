@@ -111,8 +111,14 @@ async def broadcast_aggro_target_switches(
     if not npc_svc:
         return
     mi = npc_svc.get_messaging_integration()
-    for _npc_id, npc_name, new_target_name in switches:
-        _ = await mi.broadcast_combat_target_switch(room_id, str(combat_id), npc_name, new_target_name)
+    for npc_participant_id, npc_name, new_target_name in switches:
+        _ = await mi.broadcast_combat_target_switch(
+            room_id,
+            str(combat_id),
+            npc_name,
+            new_target_name,
+            npc_disposition=npc_svc.get_npc_disposition(npc_participant_id),
+        )
         # NATS-consumable in addition to the direct room broadcast above (#634)
         _ = await service.publish_combat_target_switch_event_to_nats(
             CombatTargetSwitchEvent(
