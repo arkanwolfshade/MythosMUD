@@ -6,6 +6,7 @@ Extracted from combat.py to reduce file nloc (Lizard limit 500).
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from typing import TYPE_CHECKING, cast
 
 from server.alias_storage import AliasStorage
@@ -70,7 +71,7 @@ async def handle_attack_command(
     request: object | None,
     alias_storage: AliasStorage | None,
     player_name: str,
-) -> dict[str, str]:
+) -> Mapping[str, object]:
     """Handle attack command."""
     app = _app_from_request(request)
     handler = get_combat_command_handler(app)
@@ -83,7 +84,7 @@ async def handle_punch_command(
     request: object | None,
     alias_storage: AliasStorage | None,
     player_name: str,
-) -> dict[str, str]:
+) -> Mapping[str, object]:
     """Handle punch command (alias for attack)."""
     command_data = command_data.copy()
     command_data["command_type"] = "punch"
@@ -98,7 +99,7 @@ async def handle_kick_command(
     request: object | None,
     alias_storage: AliasStorage | None,
     player_name: str,
-) -> dict[str, str]:
+) -> Mapping[str, object]:
     """Handle kick command (alias for attack)."""
     command_data = command_data.copy()
     command_data["command_type"] = "kick"
@@ -126,7 +127,7 @@ async def handle_strike_command(
     request: object | None,
     alias_storage: AliasStorage | None,
     player_name: str,
-) -> dict[str, str]:
+) -> Mapping[str, object]:
     """Handle strike command (alias for attack)."""
     command_data = command_data.copy()
     command_data["command_type"] = "strike"
@@ -154,7 +155,7 @@ async def handle_assist_command(
     request: object | None,
     alias_storage: AliasStorage | None,
     player_name: str,
-) -> dict[str, str]:
+) -> Mapping[str, object]:
     """Handle assist command: join a player's (or your party leader's) fight (#833)."""
     app = _app_from_request(request)
     handler = get_combat_command_handler(app)

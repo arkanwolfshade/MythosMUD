@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import uuid
+from collections.abc import Mapping
 from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -65,7 +66,7 @@ async def _assist(
     has_combat_service: bool = True,
     npc_string_ids: dict[uuid.UUID, str] | None = None,
     default_npc_id: str | None = "npc_ghoul",
-) -> tuple[dict[str, str], AsyncMock]:
+) -> tuple[Mapping[str, object], AsyncMock]:
     """Run ``assist`` against a scene; returns (result, the mock standing in for the attack path)."""
     player: MagicMock = MagicMock(spec=Player) if real_player else MagicMock()
     player.player_id = ME

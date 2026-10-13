@@ -338,7 +338,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
         request: object | None,
         alias_storage: AliasStorage | None,
         player_name: str,
-    ) -> dict[str, str]:
+    ) -> Mapping[str, object]:
         """Handle attack commands (attack, punch, kick, etc.)."""
         return await run_handle_attack_command(self, command_data, current_user, request, alias_storage, player_name)
 
@@ -377,7 +377,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
         request: object | None,
         alias_storage: AliasStorage | None,
         player_name: str,
-    ) -> dict[str, str]:
+    ) -> Mapping[str, object]:
         """Handle assist command: join a player's (or your party leader's) fight and attack their foe (#833)."""
         return await run_handle_assist_command(self, command_data, current_user, request, alias_storage, player_name)
 
