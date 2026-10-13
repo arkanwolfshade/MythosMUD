@@ -144,7 +144,7 @@ async def test_execute_combat_action_failure_message(mock_handler: MagicMock) ->
     npc.name = "Orc"
     with patch("server.commands.combat_attack._resolve_combat_damage", return_value=5):
         out = await combat_attack._execute_combat_action(mock_handler, "hero", "n1", "punch", "r1", npc_instance=npc)
-    assert "cannot attack" in out["result"].lower()
+    assert "cannot attack" in str(out["result"]).lower()
 
 
 @pytest.mark.asyncio
@@ -220,7 +220,7 @@ async def test_run_handle_attack_command_success_path(mock_handler: MagicMock) -
             None,
             "hero",
         )
-    assert "slap" in out["result"].lower() and "orc" in out["result"].lower()
+    assert "slap" in str(out["result"]).lower() and "orc" in str(out["result"]).lower()
 
 
 @pytest.mark.asyncio
@@ -256,7 +256,7 @@ async def test_execute_phantom_combat_action_success(mock_handler: MagicMock) ->
         out = await combat_attack._execute_phantom_combat_action(mock_handler, "hero", "phantom_p1_1", "attack", "r1")
     combat_service.start_combat.assert_awaited_once()
     combat_service.process_attack.assert_awaited_once()
-    assert "Shambling Horror" in out["result"]
+    assert "Shambling Horror" in str(out["result"])
 
 
 @pytest.mark.asyncio
@@ -269,7 +269,7 @@ async def test_execute_phantom_combat_action_already_dissipated(mock_handler: Ma
     mock_handler.persistence = persistence
     with patch("server.services.phantom_hostile_service.phantom_hostile_service.get_phantom_data", return_value=None):
         out = await combat_attack._execute_phantom_combat_action(mock_handler, "hero", "phantom_p1_1", "attack", "r1")
-    assert "dissipated" in out["result"].lower()
+    assert "dissipated" in str(out["result"]).lower()
 
 
 @pytest.mark.asyncio
@@ -295,4 +295,4 @@ async def test_run_handle_attack_command_routes_phantom_target(mock_handler: Mag
             mock_handler, {"target_player": "shambling"}, {"username": "u"}, req, None, "hero"
         )
     phantom_exec.assert_awaited_once()
-    assert "Shambling Horror" in out["result"]
+    assert "Shambling Horror" in str(out["result"])

@@ -433,3 +433,19 @@ async def test_process_websocket_command_player_not_found_is_system_error() -> N
     result = await process_websocket_command("look", [], TEST_PLAYER_ID_STR, cm)
 
     assert result == {"result": "Player not found", "category": MessageCategory.SYSTEM_ERROR}
+
+
+@pytest.mark.asyncio
+async def test_command_response_carries_the_handlers_segments_untouched(
+    mock_websocket: MagicMock, mock_ws_connection_manager: MagicMock, tmp_path: Path
+) -> None:
+    """#1039: a command that styles an NPC name returns ``segments``; the chokepoint must not drop them."""
+    cm = _player_cm(mock_ws_connection_manager)
+    segments = [{"text": "You attack "}, {"text": "Ghoul", "category": "npc.aggressive_mob"}, {"text": "!"}]
+    await _run_game_command_with_unified_result(
+        mock_websocket, cm, tmp_path, {"result": "You attack Ghoul!", "segments": segments}
+    )
+
+    sent = mock_websocket.send_json.await_args[0][0]
+    assert sent["data"]["result"] == "You attack Ghoul!"
+    assert sent["data"]["segments"] == segments

@@ -201,7 +201,7 @@ async def run_handle_assist_command(
     request: object | None,
     alias_storage: AliasStorage | None,
     player_name: str,
-) -> dict[str, str]:
+) -> Mapping[str, object]:
     """Handle ``assist [player]``: attack the foe the player (or your party leader) is fighting. Room-local."""
     _ = alias_storage
     request_app = cast(AppWithState | None, getattr(request, "app", None) if request is not None else None)

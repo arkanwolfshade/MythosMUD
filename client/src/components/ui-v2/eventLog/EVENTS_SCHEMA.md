@@ -119,7 +119,8 @@ styled, with `category: 'npc.<disposition>'`.
 - **Where the server sends them:** `room_message` (NPC enters, leaves or moves, and the default appear/leave lines;
   authored `behavior_config` text has no name placeholder and stays plain), `npc_died` / `combat_death` ("The X has been
   slain."), the combat status lines `combat_target_switch`, `combat_participant_joined` and `combat_taunt`, the
-  `command_response` of `look` (the whole result text, with the "Also here: ..." names styled), and `chat_message` lines
+  `command_response` of `look` (the whole result text, with the "Also here: ..." names styled) and of the attack
+  command ("You attack X!"), and `chat_message` lines
   from an NPC speaker (`speaker_disposition`) and system narration whose content names a phantom (the spans inside the
   content are framed by the channel prefix, e.g. the `[SYSTEM]` tag and the space after it).
 - **Client-composed combat lines** (`npc_attacked`, `npc_took_damage`, `player_attacked`) are worded in the client, so the
@@ -134,8 +135,8 @@ styled, with `category: 'npc.<disposition>'`.
 - **Chat lines and dampening.** The speaker's name sits outside the content, so it stays styled when dampening rewrites
   the words; spans inside the content are kept only while the content is untouched, and otherwise dropped for that
   receiver. A hallucinated fake-NPC whisper carries no disposition (there is no real NPC to take one from).
-- **Not segmented yet:** the attack command's own acknowledgement ("You attack X!"), whose result type is a flat
-  `dict[str, str]` across every command handler, and real NPC whispers (#1034). Protect lines name only players.
+- **Not segmented:** real NPC whispers do not exist yet (#1034). The phantom dissipation text is only logged (the
+  server never sends it to a player), and protect lines name only players.
 
 ## System events
 
