@@ -121,7 +121,7 @@ styled, with `category: 'npc.<disposition>'`.
   slain."), the combat status lines `combat_target_switch`, `combat_participant_joined` and `combat_taunt`, the
   `command_response` of `look` (the whole result text, with the "Also here: ..." names styled), and `chat_message` lines
   from an NPC speaker (`speaker_disposition`) and system narration whose content names a phantom (the spans inside the
-  content are framed by the channel prefix, e.g. `[SYSTEM] `).
+  content are framed by the channel prefix, e.g. the `[SYSTEM]` tag and the space after it).
 - **Client-composed combat lines** (`npc_attacked`, `npc_took_damage`, `player_attacked`) are worded in the client, so the
   server sends the NPC's disposition instead: `npc_disposition` on the first two, `attacker_disposition` on
   `player_attacked` (present only when the attacker is an NPC). The client builds the spans from it.
