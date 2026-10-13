@@ -14,6 +14,7 @@ from copy import deepcopy
 from typing import Any, cast
 
 from ..structured_logging.enhanced_logging_config import get_logger
+from .connection_utils import get_npc_disposition_from_instance
 
 logger = get_logger(__name__)
 
@@ -324,6 +325,7 @@ class RoomSubscriptionManager:
                 "player_id": npc_id,
                 "player_name": npc_name,
                 "is_npc": True,
+                "disposition": get_npc_disposition_from_instance(npc_id).value,
             }
         )
 

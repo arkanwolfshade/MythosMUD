@@ -315,8 +315,9 @@ async def test_event_handler_send_room_occupants_update_internal_personalizes(ev
     calls = event_handler.connection_manager.send_personal_message.call_args_list
     sent_to_hallucinator = next(c for c in calls if str(c.args[0]) == hallucinator_id)
     sent_to_other = next(c for c in calls if str(c.args[0]) == other_id)
-    assert "Shambling Horror" in sent_to_hallucinator.args[1]["data"]["npcs"]
-    assert "Shambling Horror" not in sent_to_other.args[1]["data"]["npcs"]
+    # ADR-024: the phantom is tagged exactly like a real hostile, and only its own viewer sees it.
+    assert {"name": "Shambling Horror", "disposition": "aggressive_mob"} in sent_to_hallucinator.args[1]["data"]["npcs"]
+    assert sent_to_other.args[1]["data"]["npcs"] == []
 
 
 @pytest.mark.asyncio

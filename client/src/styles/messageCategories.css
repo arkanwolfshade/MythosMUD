@@ -26,7 +26,7 @@
  *   private chat.whisper
  *   action  chat.emote combat.hit combat.miss
  *   meta    system.info chat.admin
- *   plain   chat.say/local/global/party/shout room.description room.exits room.movement command.output
+ *   plain   chat.say/local/global/party/shout room.description room.exits room.movement command.output npc.*
  *   heading room.name
  * The TS twin of this table is messageCategoryStyle.ts (CATEGORY_REGISTER); a test keeps them honest.
  *
@@ -84,6 +84,11 @@
   --cat-status-rescue: #ff5fd2;
   /* command */
   --cat-command-output: #4ee07a;
+  /* npc disposition: hostile = crimson-magenta (not the orange-red of combat), quest giver = brass, shopkeeper = cyan, passive = muted */
+  --cat-npc-aggressive_mob: #ff5c8a;
+  --cat-npc-quest_giver: #d9b36c;
+  --cat-npc-shopkeeper: #5fd7e0;
+  --cat-npc-passive_mob: #b0b8a8;
 
   --cat-border-width: 3px;
 }
@@ -114,6 +119,10 @@ html.high-contrast {
   --cat-status-health: #ffbfa6;
   --cat-status-rescue: #ff8fe0;
   --cat-command-output: #8cf5a8;
+  --cat-npc-aggressive_mob: #ff9bb8;
+  --cat-npc-quest_giver: #f0d49a;
+  --cat-npc-shopkeeper: #a0eef4;
+  --cat-npc-passive_mob: #d4dacc;
 
   --cat-border-width: 4px;
 }
@@ -184,6 +193,12 @@ html.text-labels .cat::before {
   --cat-glyph: '\203A';
   --cat-glyph-alt: 'command';
   --cat-text-label: '[Command] ';
+}
+.cat-npc {
+  --cat-ink: var(--cat-npc-passive_mob);
+  --cat-glyph: '\00B7';
+  --cat-glyph-alt: 'npc';
+  --cat-text-label: '[NPC] ';
 }
 
 /* Per-kind overrides */
@@ -335,6 +350,35 @@ html.text-labels .cat::before {
   --cat-glyph: '\203A';
   --cat-glyph-alt: 'command output';
   --cat-text-label: '[Command] ';
+}
+
+/* NPC disposition (#1025): the glyph/label carry the meaning too, so colour is never the only cue. */
+.cat-npc-aggressive_mob {
+  --cat-ink: var(--cat-npc-aggressive_mob);
+  --cat-glyph: '\2620';
+  --cat-glyph-alt: 'hostile';
+  --cat-text-label: '[Hostile] ';
+}
+
+.cat-npc-quest_giver {
+  --cat-ink: var(--cat-npc-quest_giver);
+  --cat-glyph: '!';
+  --cat-glyph-alt: 'quest giver';
+  --cat-text-label: '[Quest] ';
+}
+
+.cat-npc-shopkeeper {
+  --cat-ink: var(--cat-npc-shopkeeper);
+  --cat-glyph: '\2696';
+  --cat-glyph-alt: 'shopkeeper';
+  --cat-text-label: '[Merchant] ';
+}
+
+.cat-npc-passive_mob {
+  --cat-ink: var(--cat-npc-passive_mob);
+  --cat-glyph: '\00B7';
+  --cat-glyph-alt: 'passive';
+  --cat-text-label: '[Passive] ';
 }
 
 /* Registers (typography). Underline is deliberately absent: reserved for interactive text. */

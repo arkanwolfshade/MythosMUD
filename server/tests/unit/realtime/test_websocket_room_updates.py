@@ -12,6 +12,7 @@ import pytest
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+from server.constants.npc_disposition import NpcDisposition
 from server.realtime.room_update_event_builder import build_room_update_event
 from server.realtime.websocket_room_updates import (
     _looks_like_player_uuid,
@@ -141,16 +142,23 @@ async def test_get_npc_occupants_success(mock_room: MagicMock):
     with (
         patch("server.realtime.websocket_room_updates.get_npc_instance_service") as mock_get_service,
         patch("server.realtime.websocket_room_updates.get_npc_name_from_instance") as mock_get_name,
+        patch("server.realtime.websocket_room_updates.get_npc_disposition_from_instance") as mock_get_disposition,
     ):
         mock_service = MagicMock()
         mock_service.lifecycle_manager.active_npcs = {"npc_1": mock_npc1, "npc_2": mock_npc2}
         mock_get_service.return_value = mock_service
         mock_get_name.side_effect = {"npc_1": "NPC1", "npc_2": "NPC2"}.get
+        mock_get_disposition.side_effect = {
+            "npc_1": NpcDisposition.SHOPKEEPER,
+            "npc_2": NpcDisposition.AGGRESSIVE_MOB,
+        }.get
 
         result = await get_npc_occupants(mock_room, room_id)
 
-        assert "NPC1" in result
-        assert "NPC2" in result
+        assert result == [
+            {"name": "NPC1", "disposition": NpcDisposition.SHOPKEEPER},
+            {"name": "NPC2", "disposition": NpcDisposition.AGGRESSIVE_MOB},
+        ]
 
 
 @pytest.mark.asyncio
@@ -178,8 +186,7 @@ async def test_get_npc_occupants_filters_dead(mock_room: MagicMock):
 
         result = await get_npc_occupants(mock_room, room_id)
 
-        assert "AliveNPC" in result
-        assert "DeadNPC" not in result
+        assert [npc["name"] for npc in result] == ["AliveNPC"]
 
 
 @pytest.mark.asyncio
@@ -362,7 +369,7 @@ async def test_broadcast_room_update_success(mock_connection_manager):
         mock_get_npc_service.return_value = mock_npc_service
 
         mock_get_players.return_value = ["Player1"]
-        mock_get_npcs.return_value = ["NPC1"]
+        mock_get_npcs.return_value = [{"name": "NPC1", "disposition": NpcDisposition.PASSIVE_MOB}]
         mock_build_event.return_value = {"event_type": "room_update", "data": {}}
 
         await broadcast_room_update(player_id, room_id, mock_connection_manager)

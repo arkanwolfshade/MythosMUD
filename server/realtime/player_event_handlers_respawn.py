@@ -15,6 +15,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from ..async_persistence import AsyncPersistenceLayer
 from ..constants.message_category import MessageCategory
+from ..constants.npc_disposition import NpcOccupant
 from ..events.event_types import PlayerDeliriumRespawnedEvent, PlayerRespawnedEvent
 from ..models.player import Player
 from ..models.room import Room
@@ -274,7 +275,7 @@ class PlayerRespawnEventHandler(PlayerEventHandlerBase):
         player_id_str: str,
         player_data: RespawnPlayerEventPayload | None,
         room_data: dict[str, object] | None,
-        npc_names: list[str],
+        npc_names: list[NpcOccupant],
         player_names: list[str],
         occupant_names: list[str],
     ) -> dict[str, object]:
@@ -404,13 +405,13 @@ class PlayerRespawnEventHandler(PlayerEventHandlerBase):
 
     async def _prepare_room_data_for_respawn(
         self, room_id: str, respawned_player_name: str
-    ) -> tuple[dict[str, object] | None, list[str], list[str], list[str]]:
-        """Prepare room data with NPC and player names for a respawn event."""
+    ) -> tuple[dict[str, object] | None, list[NpcOccupant], list[str], list[str]]:
+        """Prepare room data with NPC occupants and player names for a respawn event."""
         return await respawn_room.prepare_room_data_for_respawn(self, room_id, respawned_player_name, self._logger)
 
     def _room_data_from_persistence_room(
         self, room: Room, respawned_player_name: str
-    ) -> tuple[dict[str, object], list[str], list[str], list[str]]:
+    ) -> tuple[dict[str, object], list[NpcOccupant], list[str], list[str]]:
         """Build room payload from persistence when no live connection manager is available."""
         return respawn_room.room_data_from_persistence_room(self, room, respawned_player_name)
 

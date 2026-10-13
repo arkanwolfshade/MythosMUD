@@ -36,7 +36,7 @@ function paletteIn(selector: string): Record<string, string> {
   expect(start, `${selector} block present`).toBeGreaterThanOrEqual(0);
   const block = css.slice(start, css.indexOf('}', start));
   const palette: Record<string, string> = {};
-  for (const match of block.matchAll(/--cat-([a-z]+-[a-z]+):\s*(#[0-9a-fA-F]{6})\s*;/g)) {
+  for (const match of block.matchAll(/--cat-([a-z]+-[a-z_]+):\s*(#[0-9a-fA-F]{6})\s*;/g)) {
     palette[match[1]] = match[2];
   }
   return palette;

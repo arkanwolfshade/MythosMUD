@@ -105,20 +105,58 @@ describe('projector', () => {
           timestamp: new Date().toISOString(),
           sequence_number: 1,
           room_id: 'room1',
-          data: { players: ['ArkanWolfshade'], npcs: ['Dr. Armitage'], count: 2 },
+          data: {
+            players: ['ArkanWolfshade'],
+            npcs: [{ name: 'Dr. Armitage', disposition: 'quest_giver' }],
+            count: 2,
+          },
         },
         {
           event_type: 'room_update',
           timestamp: new Date().toISOString(),
           sequence_number: 2,
           data: {
-            room: { id: 'room1', name: 'Main Foyer', description: '', exits: {}, npcs: ['Nurse Ratched'] },
+            room: {
+              id: 'room1',
+              name: 'Main Foyer',
+              description: '',
+              exits: {},
+              npcs: [{ name: 'Nurse Ratched', disposition: 'aggressive_mob' }],
+            },
           },
         },
       ];
       const state = projectState(log);
       expect(state.room?.players).toEqual(['ArkanWolfshade']);
-      expect(state.room?.npcs).toEqual(['Nurse Ratched']);
+      expect(state.room?.npcs).toEqual([{ name: 'Nurse Ratched', disposition: 'aggressive_mob' }]);
+    });
+
+    it('room_occupants keeps each NPC disposition, validating the wire shape (#1025)', () => {
+      const log: EventLog = [
+        {
+          event_type: 'room_occupants',
+          timestamp: new Date().toISOString(),
+          sequence_number: 1,
+          room_id: 'room1',
+          data: {
+            players: ['Ithaqua'],
+            npcs: [
+              { name: 'Shopkeep', disposition: 'shopkeeper' },
+              { name: 'Phantom Thing', disposition: 'aggressive_mob' },
+              { name: 'Mystery', disposition: 'unheard-of' },
+              'Legacy String',
+            ],
+            count: 4,
+          },
+        },
+      ];
+      const room = projectState(log).room;
+      expect(room?.npcs).toEqual([
+        { name: 'Shopkeep', disposition: 'shopkeeper' },
+        { name: 'Phantom Thing', disposition: 'aggressive_mob' },
+        { name: 'Mystery', disposition: 'passive_mob' },
+      ]);
+      expect(room?.occupants).toEqual(['Ithaqua', 'Shopkeep', 'Phantom Thing', 'Mystery']);
     });
 
     it('same-room room_update with an explicit empty players list is authoritative', () => {
@@ -135,7 +173,14 @@ describe('projector', () => {
           timestamp: new Date().toISOString(),
           sequence_number: 2,
           data: {
-            room: { id: 'room1', name: 'Main Foyer', description: '', exits: {}, players: [], npcs: ['Nurse'] },
+            room: {
+              id: 'room1',
+              name: 'Main Foyer',
+              description: '',
+              exits: {},
+              players: [],
+              npcs: [{ name: 'Nurse', disposition: 'passive_mob' }],
+            },
           },
         },
       ];
@@ -182,7 +227,7 @@ describe('projector', () => {
           description: '',
           exits: {},
           players: ['Ithaqua'],
-          npcs: ['Morgan'],
+          npcs: [{ name: 'Morgan', disposition: 'passive_mob' as const }],
           occupants: ['Ithaqua', 'Morgan'],
           occupant_count: 5,
         },

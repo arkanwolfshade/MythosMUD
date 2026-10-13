@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+from server.constants.npc_disposition import NpcDisposition
 from server.realtime.npc_occupant_processor import NPCOccupantProcessor
 from server.realtime.room_id_utils import RoomIDUtils
 
@@ -70,6 +71,16 @@ def test_process_npcs_for_occupants(processor: NPCOccupantProcessor) -> None:
     occupants = processor.process_npcs_for_occupants(["npc-1"])
     assert occupants[0]["npc_name"] == "Deep One"
     assert occupants[0]["type"] == "npc"
+
+
+def test_process_npcs_for_occupants_carries_the_live_npcs_disposition(processor: NPCOccupantProcessor) -> None:
+    """#1025: the row carries the instance's disposition so every downstream payload can tag the NPC."""
+    with patch(
+        "server.realtime.npc_occupant_processor.get_npc_disposition_from_instance",
+        return_value=NpcDisposition.AGGRESSIVE_MOB,
+    ):
+        occupants = processor.process_npcs_for_occupants(["npc-1"])
+    assert occupants[0]["disposition"] == "aggressive_mob"
 
 
 def test_filter_fallback_npcs_dead(processor: NPCOccupantProcessor) -> None:

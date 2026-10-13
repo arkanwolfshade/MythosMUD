@@ -3,6 +3,7 @@
 import uuid
 from unittest.mock import MagicMock
 
+from server.constants.npc_disposition import NpcDisposition, NpcOccupant
 from server.events.event_types import PlayerEnteredRoom, PlayerLeftRoom
 from server.realtime.message_builders import MessageBuilder
 
@@ -64,11 +65,12 @@ def test_create_npc_movement_message_variants():
 
 def test_build_occupants_update_message():
     """Occupants update includes structured and legacy fields."""
-    msg = _builder(7).build_occupants_update_message("room_1", ["Alice"], ["Goblin"], ["Alice", "Goblin"])
+    goblin: NpcOccupant = {"name": "Goblin", "disposition": NpcDisposition.AGGRESSIVE_MOB}
+    msg = _builder(7).build_occupants_update_message("room_1", ["Alice"], [goblin], ["Alice", "Goblin"])
     assert msg["event_type"] == "room_occupants"
     assert msg["sequence_number"] == 7
     assert msg["data"]["players"] == ["Alice"]
-    assert msg["data"]["npcs"] == ["Goblin"]
+    assert msg["data"]["npcs"] == [goblin]
     assert msg["data"]["occupants"] == ["Alice", "Goblin"]
     assert msg["data"]["count"] == 2
 

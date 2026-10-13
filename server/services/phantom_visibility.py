@@ -15,6 +15,8 @@ from __future__ import annotations
 
 import uuid
 
+from ..constants.npc_disposition import NpcDisposition, NpcOccupant
+
 
 def get_viewer_phantom_names(viewer_player_id: uuid.UUID | str | None, room_id: str | None) -> list[str]:
     """
@@ -32,6 +34,17 @@ def get_viewer_phantom_names(viewer_player_id: uuid.UUID | str | None, room_id: 
         if data and data["room_id"] == room_id:
             names.append(data["name"])
     return names
+
+
+def get_viewer_phantom_occupants(viewer_player_id: uuid.UUID | str | None, room_id: str | None) -> list[NpcOccupant]:
+    """
+    The viewer's phantoms as ``npcs`` entries. Every phantom is ``aggressive_mob`` (ADR-024): it must carry
+    exactly the tag a real hostile does, whatever its tier or whether it can damage anyone.
+    """
+    return [
+        {"name": name, "disposition": NpcDisposition.AGGRESSIVE_MOB}
+        for name in get_viewer_phantom_names(viewer_player_id, room_id)
+    ]
 
 
 def room_has_hallucinating_viewer(player_ids: list[str]) -> bool:
@@ -53,4 +66,4 @@ def room_has_hallucinating_viewer(player_ids: list[str]) -> bool:
     )
 
 
-__all__ = ["get_viewer_phantom_names", "room_has_hallucinating_viewer"]
+__all__ = ["get_viewer_phantom_names", "get_viewer_phantom_occupants", "room_has_hallucinating_viewer"]

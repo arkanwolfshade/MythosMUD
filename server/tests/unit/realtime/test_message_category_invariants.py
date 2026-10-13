@@ -38,6 +38,7 @@ from server.commands.admin_shutdown_command import _broadcast_shutdown_cancellat
 from server.commands.admin_teleport_utils import broadcast_teleport_effects, notify_player_of_teleport
 from server.commands.rest_countdown_task import create_rest_countdown_task
 from server.constants.message_category import MessageCategory
+from server.constants.npc_disposition import NpcOccupant
 from server.events.combat_events import (
     CombatEndedEvent,
     NPCAttackedEvent,
@@ -343,7 +344,7 @@ class _OfflineRespawnHandler(PlayerRespawnEventHandler):
     @override
     async def _prepare_room_data_for_respawn(
         self, room_id: str, respawned_player_name: str
-    ) -> tuple[None, list[str], list[str], list[str]]:
+    ) -> tuple[None, list[NpcOccupant], list[str], list[str]]:
         return None, [], [], []
 
     @override

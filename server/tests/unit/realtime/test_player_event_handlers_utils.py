@@ -9,6 +9,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
+from server.constants.npc_disposition import NpcDisposition
 from server.realtime.player_event_handlers_utils import PlayerEventHandlerUtils
 
 
@@ -227,8 +228,10 @@ def test_add_valid_name_to_lists_npc(player_event_handler_utils, mock_name_extra
     players: list[str] = []
     npcs: list[str] = []
     all_occupants: list[str] = []
-    player_event_handler_utils.add_valid_name_to_lists("TestNPC", players, npcs, all_occupants, is_player=False)
-    assert "TestNPC" in npcs
+    player_event_handler_utils.add_valid_name_to_lists(
+        "TestNPC", players, npcs, all_occupants, is_player=False, disposition=NpcDisposition.SHOPKEEPER
+    )
+    assert npcs == [{"name": "TestNPC", "disposition": NpcDisposition.SHOPKEEPER}]
     assert "TestNPC" in all_occupants
     assert "TestNPC" not in players
 
@@ -271,12 +274,12 @@ def test_process_dict_occupant_with_player_name(player_event_handler_utils, mock
 def test_process_dict_occupant_with_npc_name(player_event_handler_utils, mock_name_extractor):
     """Test process_dict_occupant() processes NPC occupant."""
     mock_name_extractor.is_valid_name_for_occupant.return_value = True
-    occ = {"npc_name": "TestNPC"}
+    occ = {"npc_name": "TestNPC", "disposition": "quest_giver"}
     players: list[str] = []
     npcs: list[str] = []
     all_occupants: list[str] = []
     player_event_handler_utils.process_dict_occupant(occ, players, npcs, all_occupants)
-    assert "TestNPC" in npcs
+    assert npcs == [{"name": "TestNPC", "disposition": NpcDisposition.QUEST_GIVER}]
     assert "TestNPC" in all_occupants
 
 
@@ -309,12 +312,12 @@ def test_build_occupants_snapshot_data_mixed(player_event_handler_utils, mock_na
     mock_name_extractor.is_valid_name_for_occupant.return_value = True
     occupants_snapshot = [
         {"player_name": "Player1"},
-        {"npc_name": "NPC1"},
+        {"npc_name": "NPC1", "disposition": "aggressive_mob"},
         "Player2",
     ]
     result = player_event_handler_utils.build_occupants_snapshot_data(occupants_snapshot)
     assert result["players"] == ["Player1"]
-    assert result["npcs"] == ["NPC1"]
+    assert result["npcs"] == [{"name": "NPC1", "disposition": NpcDisposition.AGGRESSIVE_MOB}]
     assert "Player2" in result["occupants"]
     assert result["count"] == 3
 

@@ -12,6 +12,7 @@ from typing import Any, Protocol, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
+from ..constants.npc_disposition import NpcOccupant
 from ..structured_logging.enhanced_logging_config import get_logger
 from .npc_occupant_processor import NPCOccupantProcessor
 from .occupant_formatter import OccupantFormatter
@@ -126,7 +127,7 @@ class RoomOccupantManager:
 
     def separate_occupants_by_type(
         self, occupants_info: list[dict[str, Any] | str], room_id: str
-    ) -> tuple[list[str], list[str], list[str]]:
+    ) -> tuple[list[str], list[NpcOccupant], list[str]]:
         """
         Separate occupants into players, NPCs, and all occupants lists.
 

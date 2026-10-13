@@ -17,7 +17,8 @@ from __future__ import annotations
 import uuid
 from typing import TYPE_CHECKING, cast
 
-from ..services.phantom_visibility import get_viewer_phantom_names
+from ..constants.npc_disposition import NpcOccupant
+from ..services.phantom_visibility import get_viewer_phantom_occupants
 from ..structured_logging.enhanced_logging_config import get_logger
 from .envelope import build_event
 from .room_update_event_builder import RoomOccupancyPayload, build_room_update_event
@@ -37,7 +38,7 @@ async def send_personalized_room_events(
     triggering_player_id: str,
     player_ids: list[str],
     player_occupant_names: list[str],
-    npc_occupants: list[str],
+    npc_occupants: list[NpcOccupant],
     occ_payload_base: RoomOccupancyPayload,
 ) -> None:
     """
@@ -54,8 +55,8 @@ async def send_personalized_room_events(
             logger.debug("Skipping personalized room event for non-UUID player id", player_id=viewer_id)
             continue
 
-        viewer_npcs = [*npc_occupants, *get_viewer_phantom_names(viewer_id, room_id)]
-        viewer_occupants = [*player_occupant_names, *viewer_npcs]
+        viewer_npcs = [*npc_occupants, *get_viewer_phantom_occupants(viewer_id, room_id)]
+        viewer_occupants = [*player_occupant_names, *(npc["name"] for npc in viewer_npcs)]
 
         update_event = await build_room_update_event(
             room,
@@ -89,7 +90,7 @@ async def send_personalized_occupants_update(
     room_id: str,
     player_ids: list[str],
     players: list[str],
-    npc_occupants: list[str],
+    npc_occupants: list[NpcOccupant],
     all_occupants: list[str],
     exclude_player: str | None = None,
 ) -> None:
@@ -109,9 +110,9 @@ async def send_personalized_occupants_update(
             logger.debug("Skipping personalized occupants event for non-UUID player id", player_id=viewer_id)
             continue
 
-        phantom_names = get_viewer_phantom_names(viewer_id, room_id)
-        viewer_npcs = [*npc_occupants, *phantom_names]
-        viewer_all_occupants = [*all_occupants, *phantom_names]
+        phantoms = get_viewer_phantom_occupants(viewer_id, room_id)
+        viewer_npcs = [*npc_occupants, *phantoms]
+        viewer_all_occupants = [*all_occupants, *(phantom["name"] for phantom in phantoms)]
         message = message_builder.build_occupants_update_message(room_id, players, viewer_npcs, viewer_all_occupants)
         _ = await connection_manager.send_personal_message(viewer_uuid, message)
 

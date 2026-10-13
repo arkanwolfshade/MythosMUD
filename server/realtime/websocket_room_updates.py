@@ -7,9 +7,11 @@ This module handles room updates and broadcasting to players.
 import uuid
 from typing import TYPE_CHECKING, Any, cast
 
+from ..constants.npc_disposition import NpcOccupant
 from ..services.npc_instance_service import get_npc_instance_service
 from ..services.phantom_visibility import room_has_hallucinating_viewer
 from ..structured_logging.enhanced_logging_config import get_logger
+from .connection_utils import get_npc_disposition_from_instance, npc_occupant
 from .envelope import build_event
 from .occupant_display import format_occupant_display_name
 from .room_update_event_builder import RoomOccupancyPayload, build_room_update_event
@@ -69,16 +71,16 @@ async def get_player_occupants(connection_manager: "ConnectionManager | Any", ro
     return occupant_names
 
 
-async def get_npc_occupants(room: "Room | Any", room_id: str) -> list[str]:
+async def get_npc_occupants(room: "Room | Any", room_id: str) -> list[NpcOccupant]:
     """
-    Get NPC occupant names for a room.
+    Get NPC occupants (name + disposition) for a room.
 
     Room membership comes from `room.get_npcs()` — the Room model's own authoritative list —
     filtered to NPCs the lifecycle manager still considers alive. On any lookup failure (missing
     service, missing lifecycle manager, missing active_npcs) this fails closed: logs a warning
     and returns no NPCs, rather than showing an unfiltered (possibly dead) occupant list.
     """
-    occupant_names = []
+    occupants: list[NpcOccupant] = []
     room_npc_ids = room.get_npcs()
     logger.debug("Room has NPCs", room_id=room_id, npc_ids=room_npc_ids)
 
@@ -105,9 +107,9 @@ async def get_npc_occupants(room: "Room | Any", room_id: str) -> list[str]:
     for npc_id in filtered_npc_ids:
         npc_name = get_npc_name_from_instance(npc_id)
         if npc_name:
-            occupant_names.append(npc_name)
+            occupants.append(npc_occupant(npc_name, get_npc_disposition_from_instance(npc_id)))
 
-    return occupant_names
+    return occupants
 
 
 async def _resolve_room_with_fallback(
@@ -218,7 +220,7 @@ async def _broadcast_full_room_update(
     player_id: str,
     occupant_names: list[str],
     player_occupant_names: list[str],
-    npc_occupants: list[str],
+    npc_occupants: list[NpcOccupant],
     occ_payload: RoomOccupancyPayload,
 ) -> None:
     """Build and broadcast the room-update event, then the room_occupants event."""
@@ -272,7 +274,7 @@ async def broadcast_room_update(
         # if room resolution itself failed, there is no NPC list to derive — matches the
         # fail-closed handling inside get_npc_occupants for any other lookup failure.
         npc_occupants = await get_npc_occupants(room, effective_room_id) if room else []
-        occupant_names = list(player_occupant_names) + list(npc_occupants)
+        occupant_names = list(player_occupant_names) + [npc["name"] for npc in npc_occupants]
 
         occ_payload: RoomOccupancyPayload = {
             "occupants": occupant_names,

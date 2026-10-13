@@ -117,8 +117,9 @@ async def test_broadcast_room_update_personalizes_for_hallucinating_viewer(mock_
     def npcs_of(event: dict[str, object]) -> object:
         return cast("dict[str, object]", event["data"]).get("npcs", [])
 
-    assert any("Shambling Horror" in cast("list[object]", npcs_of(event)) for event in sent_to_hallucinator)
-    assert all("Shambling Horror" not in cast("list[object]", npcs_of(event)) for event in sent_to_other)
+    phantom = {"name": "Shambling Horror", "disposition": "aggressive_mob"}  # ADR-024: same tag as a real hostile
+    assert any(phantom in cast("list[object]", npcs_of(event)) for event in sent_to_hallucinator)
+    assert all(phantom not in cast("list[object]", npcs_of(event)) for event in sent_to_other)
 
 
 @pytest.mark.asyncio

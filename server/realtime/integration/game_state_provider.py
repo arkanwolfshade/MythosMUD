@@ -14,12 +14,14 @@ import uuid
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any, Protocol, cast
 
+from ...constants.npc_disposition import NpcOccupant
 from ...models import Player
 from ...services.exit_hallucination import get_hallucinated_exits
 from ...services.lucidity_tier_cache import lucidity_tier_cache
 from ...services.npc_instance_service import get_npc_instance_service
-from ...services.phantom_visibility import get_viewer_phantom_names
+from ...services.phantom_visibility import get_viewer_phantom_occupants
 from ...structured_logging.enhanced_logging_config import get_logger
+from ..connection_utils import get_npc_disposition_from_instance, npc_disposition_from_row, npc_occupant
 from ..disconnect_grace_period import is_player_in_grace_period
 from ..envelope import build_event
 from ..login_grace_period import (
@@ -290,10 +292,10 @@ class GameStateProvider:
         # As documented in "Resurrection and NPC Display Synchronization" - Dr. Armitage, 1930
         # NPC IDs must be resolved to display names before sending to client
         if "npcs" in room_data and isinstance(room_data["npcs"], list):
-            npc_ids = room_data["npcs"]
+            npc_ids = cast(list[str], room_data["npcs"])
             # Batch load NPC names for efficiency
             npc_names_dict = self.get_npcs_batch(npc_ids)
-            npc_names: list[str] = []
+            npc_occupants: list[NpcOccupant] = []
             for npc_id in npc_ids:
                 npc_name = npc_names_dict.get(npc_id)
                 if npc_name and isinstance(npc_name, str) and npc_name.strip():
@@ -301,15 +303,16 @@ class GameStateProvider:
                     # NPC IDs typically have format like "npc_type_location_timestamp_instance"
                     # If the "name" is the same as the ID, skip it
                     if npc_name != npc_id:
-                        npc_names.append(npc_name)
+                        display_name: str | None = npc_name
                     else:
                         # Fallback: Generate name from ID if name resolution failed
                         # This should rarely happen, but provides a safety net
                         fallback_name = npc_id.split("_")[0].replace("_", " ").title()
-                        if fallback_name and fallback_name != npc_id:
-                            npc_names.append(fallback_name)
-            # Replace NPC IDs with names
-            room_data["npcs"] = npc_names
+                        display_name = fallback_name if fallback_name and fallback_name != npc_id else None
+                    if display_name:
+                        npc_occupants.append(npc_occupant(display_name, get_npc_disposition_from_instance(npc_id)))
+            # Replace NPC IDs with name + disposition entries
+            room_data["npcs"] = npc_occupants
 
         return room_data
 
@@ -365,14 +368,14 @@ class GameStateProvider:
         # Appropriate because: per-player connection state is heterogeneous (room id, websocket
         # refs, timestamps); this parameter only removed player_id, it didn't touch this type.
         online_players: dict[uuid.UUID, dict[str, Any]],  # pyright: ignore[reportExplicitAny]
-    ) -> tuple[list[str], list[str], list[str]]:
+    ) -> tuple[list[str], list[str], list[NpcOccupant]]:
         """Process room occupants and separate into players and NPCs with grace period indicators."""
         occupants: list[str] = []
         player_names_list: list[str] = []
-        npc_names_list: list[str] = []
+        npc_list: list[NpcOccupant] = []
 
         if not room_id:
-            return occupants, player_names_list, npc_names_list
+            return occupants, player_names_list, npc_list
 
         online_players_str = {str(k): v for k, v in online_players.items()}
         occ_infos = await self.room_manager.get_room_occupants(room_id, online_players_str)
@@ -381,11 +384,11 @@ class GameStateProvider:
         connection_manager = getattr(app.state, "connection_manager", None) if app else None
 
         for occ_info in occ_infos:
-            occupant_name = occ_info.get("player_name", "Unknown")
+            occupant_name: str = occ_info.get("player_name", "Unknown")
             is_npc = occ_info.get("is_npc", False)
 
             if is_npc:
-                npc_names_list.append(occupant_name)
+                npc_list.append(npc_occupant(occupant_name, npc_disposition_from_row(occ_info)))
             else:
                 occ_player_id = occ_info.get("player_id")
                 if occ_player_id and connection_manager:
@@ -394,7 +397,7 @@ class GameStateProvider:
 
             occupants.append(occupant_name)
 
-        return occupants, player_names_list, npc_names_list
+        return occupants, player_names_list, npc_list
 
     def _get_fallback_player_data(self, player: Player, player_id: uuid.UUID, room_id: str) -> dict[str, Any]:
         """Get fallback player data when PlayerService is unavailable."""
@@ -580,15 +583,15 @@ class GameStateProvider:
                 )
 
             # Get room occupants (players and NPCs) with grace period indicators
-            occupants, player_names_list, npc_names_list = await self._process_occupants_with_grace_periods(
+            occupants, player_names_list, npc_list = await self._process_occupants_with_grace_periods(
                 room_id, online_players
             )
             # This viewer's own phantom hostiles (#625, #714) -- player-specific, so merged in
             # per-recipient here rather than being part of the room's real occupant data.
-            viewer_phantom_names = get_viewer_phantom_names(player_id, room_id)
-            if viewer_phantom_names:
-                npc_names_list = [*npc_names_list, *viewer_phantom_names]
-                occupants = [*occupants, *viewer_phantom_names]
+            viewer_phantoms = get_viewer_phantom_occupants(player_id, room_id)
+            if viewer_phantoms:
+                npc_list = [*npc_list, *viewer_phantoms]
+                occupants = [*occupants, *(phantom["name"] for phantom in viewer_phantoms)]
 
             # This viewer's hallucinated exits (#626, #714) -- game_state is already a
             # single-recipient payload, so no fan-out is needed, just a direct override.
@@ -622,7 +625,7 @@ class GameStateProvider:
             # BUGFIX: Populate room_data with structured player/NPC arrays for new UI
             if room_data:
                 room_data["players"] = player_names_list
-                room_data["npcs"] = npc_names_list
+                room_data["npcs"] = npc_list
                 # Keep backward compatibility
                 room_data["occupants"] = occupants
 
@@ -630,7 +633,7 @@ class GameStateProvider:
                 "Sending initial game state with structured occupants",
                 occupants_count=len(occupants),
                 players_count=len(player_names_list),
-                npcs_count=len(npc_names_list),
+                npcs_count=len(npc_list),
             )
 
             game_state_event = build_event("game_state", game_state_data, player_id=player_id, room_id=room_id)

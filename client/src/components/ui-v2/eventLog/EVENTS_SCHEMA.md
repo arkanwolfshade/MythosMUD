@@ -9,7 +9,7 @@ Event types and their `data` shapes as received over the WebSocket. Used by the 
 | `game_state`     | Initial state on connect                                     | `{ player, room, occupant_count?, lucidity_tier?, current_lcd?, login_grace_period_active?, login_grace_period_remaining? }` |
 | `room_update`    | Room metadata and/or occupants                               | `{ room?, room_data?, occupants?, occupant_count? }` – room may be under `data.room` or top-level                            |
 | `room_state`     | Authoritative single source for room (replace, do not merge) | `{ room: full room data, occupants?, occupant_count? }`; `room_id` on event                                                  |
-| `room_occupants` | Authoritative occupant list                                  | `{ players?: string[], npcs?: string[], occupants?: string[], count? }`; `room_id` on event                                  |
+| `room_occupants` | Authoritative occupant list                                  | `{ players?: string[], npcs?: NpcOccupant[], occupants?: string[], count? }`; `room_id` on event (see "NPC occupants")       |
 
 ## Player events
 
@@ -63,7 +63,10 @@ from the text.
 
 - **Source of truth:** `server/constants/message_category.py` (`MessageCategory`). `client/src/types/messageCategory.ts`
   mirrors it by hand; `server/tests/unit/constants/test_message_category.py` fails if the two drift.
-- **Reserved namespaces** (no values yet): `lore.*`, `item.*`, `npc.*`, `command.misfire`.
+- **Reserved namespaces** (no values yet): `lore.*`, `item.*`, `command.misfire`.
+- **`npc.*` is a disposition tag, not a line's own category** (#1025): `npc.shopkeeper`, `npc.quest_giver`,
+  `npc.passive_mob`, `npc.aggressive_mob`. Each is the `NPCDefinitionType` value word for word
+  (`server/constants/npc_disposition.py`). See "NPC occupants" below.
 - **Missing or unknown category:** the client reads every `data.category` through one validating helper
   (`readCategory` in `projectorMessageUtils.ts`). A missing or unknown value falls back to `command.output`, with one
   development-only warning per event type, so a server omission is visible rather than silently mis-styled.
@@ -84,6 +87,24 @@ from the text.
   type in `projectorHandlersMessages.ts` / `projectorHandlersState.ts`.
 - **Invariant:** `server/tests/unit/realtime/test_message_category_invariants.py` drives every text emitter and checks
   the category, and cross-checks the list against the projector handlers above.
+
+## NPC occupants
+
+Wherever a payload lists a room's NPCs (`npcs` in `game_state.room`, `room_update`, `room_state`, `room_occupants`,
+`player_respawned`) each entry is
+`NpcOccupant = { name: string, disposition: 'shopkeeper' | 'quest_giver' | 'passive_mob' | 'aggressive_mob' }`.
+
+- The flat `occupants` list stays `string[]` of names (players, then NPCs).
+- **Server is authoritative.** `disposition` comes from the live NPC instance. A missing or unrecognised type is sent as
+  `passive_mob` (with a server warning) so one bad definition row cannot empty a room's occupant list.
+- **Phantom hostiles are always `aggressive_mob`** (ADR-024): every phantom, whatever its tier, carries the tag a real
+  hostile does.
+- **Client validation** is one function, `normalizeNpcOccupants` (`utils/npcOccupants.ts`): it keeps entries with a
+  string `name`, falls back to `passive_mob` for an unknown `disposition`, and drops anything else (a bare string can
+  only mean a bug now; it is not upgraded).
+- **Styling:** the Occupants panel renders each NPC with the `npc.<disposition>` category classes, so colour, glyph and
+  the "Text labels" word all come from the same CSS as message categories. Two NPCs with the same name stay separate
+  rows.
 
 ## System events
 
