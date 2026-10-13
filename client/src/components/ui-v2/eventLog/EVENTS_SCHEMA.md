@@ -106,6 +106,31 @@ Wherever a payload lists a room's NPCs (`npcs` in `game_state.room`, `room_updat
   the "Text labels" word all come from the same CSS as message categories. Two NPCs with the same name stay separate
   rows.
 
+## Segments (styled names inside a line)
+
+A text event may carry `segments: { text: string, category?: string }[]` next to its `message` (#1025). The spans' `text`
+values concatenate to exactly `message`; a span with no `category` takes the line's own. Today only NPC names are
+styled, with `category: 'npc.<disposition>'`.
+
+- **`message` is never replaced.** Search, history, `data-message-text` and screen readers all read it, so a client may
+  drop `segments` and lose colour, never words.
+- **Server builds them by construction** (`server/constants/message_segments.py`, `message_with_segments`), and
+  `test_message_category_invariants.py` checks the join for every emitter that attaches `segments`.
+- **Where the server sends them:** `room_message` (NPC enters, leaves or moves, and the default appear/leave lines;
+  authored `behavior_config` text has no name placeholder and stays plain) and `npc_died` / `combat_death` ("The X has
+  been slain.").
+- **Client-composed combat lines** (`npc_attacked`, `npc_took_damage`, `player_attacked`) are worded in the client, so the
+  server sends the NPC's disposition instead: `npc_disposition` on the first two, `attacker_disposition` on
+  `player_attacked` (present only when the attacker is an NPC). The client builds the spans from it.
+- **Client validation** is `validateSegments` (`utils/messageSegments.ts`), reached through `buildChatMessage`: it drops
+  all spans unless every span is well formed and the texts join to `message`; an unknown span category renders as plain
+  text. HTML lines never carry segments.
+- **Rendering:** `SegmentedText` gives an `npc.*` span the classes `seg seg-npc-<disposition>`: colour and weight only,
+  with no glyph or Text-labels word (those stay on the line). Corruption decay (#804) runs on the whole line first; if it
+  changes the line, the decayed plain text is shown and the segments are dropped.
+- **Not segmented yet:** phantom narration, `look`'s "Also here", target-switch / join / taunt / protect lines, NPC
+  speech, and whispers (tracked in #1034).
+
 ## System events
 
 | event_type                           | Description                 | data shape                                                                                                                                                                                                                                                                                                    |

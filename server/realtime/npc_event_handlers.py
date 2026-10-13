@@ -13,8 +13,16 @@ from typing import Any, cast
 
 from ..app.tracked_task_manager import get_global_tracked_manager
 from ..constants.message_category import MessageCategory
+from ..constants.message_segments import (
+    MessageSegment,
+    SegmentPart,
+    default_name_line,
+    message_with_segments,
+    npc_name_segment,
+)
 from ..events.event_types import NPCEnteredRoom, NPCLeftRoom
 from ..structured_logging.enhanced_logging_config import get_logger
+from .connection_utils import get_npc_disposition_from_instance
 from .message_builders import MessageBuilder
 
 
@@ -311,7 +319,17 @@ class NPCEventHandler:
             self._logger.debug("Error getting NPC departure message", npc_id=npc_id, error=str(e))
             return None
 
-    async def _send_room_message(self, room_id: str, message: str, message_type: str = "npc_spawn") -> None:
+    async def _send_room_line(self, room_id: str, parts: list[SegmentPart], message_type: str = "npc_spawn") -> None:
+        """Send a line built from parts; ``segments`` go out only when something in it is actually styled."""
+        built = message_with_segments(parts)
+        styled = any("category" in segment for segment in built["segments"])
+        await self._send_room_message(
+            room_id, built["message"], message_type, segments=built["segments"] if styled else None
+        )
+
+    async def _send_room_message(
+        self, room_id: str, message: str, message_type: str = "npc_spawn", segments: list[MessageSegment] | None = None
+    ) -> None:
         """
         Send a message to all players in a room.
 
@@ -319,6 +337,7 @@ class NPCEventHandler:
             room_id: The room ID
             message: The message to send
             message_type: Type of message (default: "npc_spawn", use "system" for movement messages)
+            segments: Styled spans that join back to ``message`` (#1025), or None for a plain line
         """
         try:
             # Get all players in the room using room_manager (same as broadcast_to_room)
@@ -349,6 +368,7 @@ class NPCEventHandler:
                         "room_id": room_id,
                         "message_type": message_type,
                         "category": MessageCategory.ROOM_MOVEMENT,
+                        **({"segments": segments} if segments else {}),
                     },
                     player_id=player_id,
                 )
@@ -427,15 +447,17 @@ class NPCEventHandler:
             if event.from_room_id:
                 # This is a movement - create directional message
                 direction = await self._determine_direction_from_rooms(event.from_room_id, event.room_id)
-                movement_message = self.message_builder.create_npc_movement_message(npc_name, direction, "entered")
-                # Send movement message to all players in the room as system message
-                await self._send_room_message(event.room_id, movement_message, message_type="system")
+                name = npc_name_segment(npc_name, get_npc_disposition_from_instance(event.npc_id))
+                parts = self.message_builder.create_npc_movement_parts(name, direction, "entered")
+                await self._send_room_line(event.room_id, parts, message_type="system")
             else:
                 # This is a spawn - use spawn message from behavior_config
                 spawn_message = self._get_npc_spawn_message(event.npc_id)
                 if spawn_message:
                     # Send the spawn message to all players in the room
-                    await self._send_room_message(event.room_id, spawn_message)
+                    disposition = get_npc_disposition_from_instance(event.npc_id)
+                    spawn_parts = default_name_line(spawn_message, npc_name, " appears.", disposition)
+                    await self._send_room_line(event.room_id, spawn_parts)
 
             self._schedule_room_occupants_update(event.room_id)
             self._logger.debug("Processed NPC entered event", npc_id=event.npc_id, room_id=event.room_id)
@@ -489,12 +511,15 @@ class NPCEventHandler:
         npc_name = self._get_npc_name(event.npc_id) or "An NPC"
         if event.to_room_id:
             direction = await self._determine_direction_from_rooms(event.room_id, event.to_room_id)
-            movement_message = self.message_builder.create_npc_movement_message(npc_name, direction, "left")
-            await self._send_room_message(event.room_id, movement_message, message_type="system")
+            name = npc_name_segment(npc_name, get_npc_disposition_from_instance(event.npc_id))
+            parts = self.message_builder.create_npc_movement_parts(name, direction, "left")
+            await self._send_room_line(event.room_id, parts, message_type="system")
         else:
             departure_message = self._get_npc_departure_message(event.npc_id)
             if departure_message:
-                await self._send_room_message(event.room_id, departure_message)
+                disposition = get_npc_disposition_from_instance(event.npc_id)
+                departure_parts = default_name_line(departure_message, npc_name, " leaves.", disposition)
+                await self._send_room_line(event.room_id, departure_parts)
 
     def _schedule_room_occupants_update(self, room_id: str) -> None:
         """Schedule room occupants update broadcast."""

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { SafeHtml } from '../../common/SafeHtml';
+import { SegmentedText } from '../components/SegmentedText';
 import { EldritchIcon, MythosIcons, TerminalButton } from '../primitives';
 import type { ChatMessage } from '../types';
 import { getMessageCategoryClass } from '../utils/messageCategoryStyle';
@@ -187,7 +188,9 @@ export const GameInfoPanel: React.FC<GameInfoPanelProps> = ({
                   {message.isHtml ? (
                     <SafeHtml html={message.text} tag="div" />
                   ) : (
-                    <span style={{ whiteSpace: 'pre-wrap' }}>{message.text}</span>
+                    <span style={{ whiteSpace: 'pre-wrap' }}>
+                      {message.segments ? <SegmentedText segments={message.segments} /> : message.text}
+                    </span>
                   )}
                 </div>
               </div>

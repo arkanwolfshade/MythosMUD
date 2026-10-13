@@ -62,6 +62,18 @@ export function getMessageCategoryClass(category: string | undefined): string | 
   return `cat cat-${domain} cat-${category.replace('.', '-')} cat-reg-${register}`;
 }
 
+/**
+ * `seg seg-npc-<disposition>` for a styled span inside a line (#1025); undefined for a plain span.
+ * Only `npc.*` spans are styled. Unlike `getMessageCategoryClass` there is no glyph or Text-labels word:
+ * those belong to the line, and repeating them on every name would be noise.
+ */
+export function getSegmentClass(category: string | undefined): string | undefined {
+  if (category === undefined || !category.startsWith('npc.') || lookupRegister(category) === undefined) {
+    return undefined;
+  }
+  return `seg seg-${category.replace('.', '-')}`;
+}
+
 /** True when the category is in the plain (speech/ambient) register, the only one #804's corruption tint may touch. */
 export function isPlainRegisterCategory(category: string | undefined): boolean {
   return lookupRegister(category) === 'plain';

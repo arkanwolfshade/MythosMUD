@@ -5,11 +5,12 @@ import { logger } from '../../../utils/logger';
 import { buildMythosTimeState, formatMythosTime12Hour } from '../../../utils/mythosTime';
 import type { GameEvent } from '../eventHandlers/types';
 import type { GameState } from '../utils/stateUpdateUtils';
+import { buildLine } from '../utils/messageSegments';
 import {
-  formatNpcAttackedLine,
-  formatNpcTookDamageLine,
-  formatPlayerAttackedLine,
   mergePlayerDpFromPlayerAttackedPayload,
+  npcAttackedParts,
+  npcTookDamageParts,
+  playerAttackedParts,
 } from './messageMapper';
 import type { ProjectorHandler } from './projectorHandlersState';
 import { appendMessage, appendMovementMessage, buildChatMessage, readCategory } from './projectorMessageUtils';
@@ -201,7 +202,7 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     const isHtml = Boolean(event.data.is_html);
     if (!message) return prevState;
     const category = readCategory(event.data, event.event_type);
-    const msg = buildChatMessage(message, event.timestamp, { isHtml, category });
+    const msg = buildChatMessage(message, event.timestamp, { isHtml, category, segments: event.data.segments });
     return {
       ...prevState,
       messages:
@@ -226,9 +227,10 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     const npcName = (d.npc_name || d.target_name) as string | undefined;
     const damage = d.damage as number | undefined;
     if (!npcName || damage === undefined) return prevState;
-    const text = formatNpcAttackedLine(d);
+    const { text, segments } = buildLine(npcAttackedParts(d));
     const msg = buildChatMessage(text, event.timestamp, {
       category: readCategory(d, event.event_type),
+      segments,
     });
     logger.info('projector', 'Combat message appended (npc_attacked)', {
       event_type: 'npc_attacked',
@@ -243,10 +245,11 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     const npcName = d.npc_name as string | undefined;
     const damage = d.damage as number | undefined;
     if (!npcName || damage === undefined) return prevState;
-    const text = formatNpcTookDamageLine(d);
+    const { text, segments } = buildLine(npcTookDamageParts(d));
     if (!text) return prevState;
     const msg = buildChatMessage(text, event.timestamp, {
       category: readCategory(d, event.event_type),
+      segments,
     });
     logger.info('projector', 'Combat message appended (npc_took_damage)', {
       event_type: 'npc_took_damage',
@@ -266,9 +269,10 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     if (mergedPlayer) {
       nextState = { ...nextState, player: mergedPlayer };
     }
-    const text = formatPlayerAttackedLine(d);
+    const { text, segments } = buildLine(playerAttackedParts(d));
     const msg = buildChatMessage(text, event.timestamp, {
       category: readCategory(d, event.event_type),
+      segments,
     });
     logger.info('projector', 'Combat message appended (player_attacked)', {
       event_type: 'player_attacked',
@@ -282,6 +286,7 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     if (!message) return prevState;
     const msg = buildChatMessage(message, event.timestamp, {
       category: readCategory(event.data, event.event_type),
+      segments: event.data.segments,
     });
     return { ...prevState, messages: appendMessage(prevState.messages, msg) };
   },

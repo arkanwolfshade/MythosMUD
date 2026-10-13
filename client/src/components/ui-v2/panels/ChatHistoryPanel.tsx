@@ -3,6 +3,7 @@ import { ALL_MESSAGES_CHANNEL, CHAT_CHANNEL_OPTIONS, DEFAULT_CHANNEL } from '../
 import { useChatGrainPreference } from '../../../contexts/hooks/useThemeContext';
 import { decayMessageText } from '../../../utils/corruptionDecay';
 import { SafeHtml } from '../../common/SafeHtml';
+import { SegmentedText } from '../components/SegmentedText';
 import { ChannelSelector, EldritchIcon, MythosIcons, TerminalButton } from '../primitives';
 import type { ChatMessage } from '../types';
 import { getMessageCategoryClass, isPlainRegisterCategory } from '../utils/messageCategoryStyle';
@@ -249,7 +250,15 @@ function ChatHistoryMessageBody({
   // #804: decay is scoped to plain text only -- corrupting arbitrary sanitized HTML text nodes
   // would need DOM-tree-aware processing, out of proportion for a decorative effect.
   const bodyText = decayMessageText(message.rawText ?? message.text, corruption, message.timestamp);
-  return <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{bodyText}</span>;
+  // #1025: corruption eats the highlighting first. Decay rewrites whole words, so once it has changed the line the
+  // spans no longer line up with it; fall back to the decayed text. Which branch runs depends only on the text and
+  // the viewer's own corruption, never on whether the line is real (#714).
+  const segments = bodyText === message.text ? message.segments : undefined;
+  return (
+    <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+      {segments ? <SegmentedText segments={segments} /> : bodyText}
+    </span>
+  );
 }
 
 function ChatHistoryMessageRow({

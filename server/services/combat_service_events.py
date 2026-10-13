@@ -12,6 +12,7 @@ from uuid import UUID
 from structlog.stdlib import BoundLogger
 
 from server.events.combat_events import CombatTargetSwitchEvent, NPCDiedEvent, NPCTookDamageEvent
+from server.realtime.connection_utils import get_npc_disposition_from_instance
 from server.services.nats_exceptions import NATSError
 from server.structured_logging.enhanced_logging_config import get_logger
 
@@ -78,6 +79,7 @@ async def publish_npc_died_event(
             npc_name=npc_name,
             xp_reward=xp_reward,
             killer_id=killer_id,
+            npc_disposition=get_npc_disposition_from_instance(str(npc_id)).value,
         )
         return await service.publish_npc_died_event_to_nats(death_event)
     except (NATSError, ValueError, RuntimeError, AttributeError, ConnectionError) as caught:

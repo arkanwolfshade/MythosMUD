@@ -47,6 +47,8 @@ class PlayerAttackedEvent(BaseEvent):  # pylint: disable=too-many-instance-attri
     action_type: str
     target_current_dp: int
     target_max_dp: int
+    # NpcDisposition value when the attacker is an NPC, so the client can style its name (#1025); None for players.
+    attacker_disposition: str | None = None
 
 
 @dataclass
@@ -63,6 +65,7 @@ class NPCAttackedEvent(BaseEvent):  # pylint: disable=too-many-instance-attribut
     action_type: str
     target_current_dp: int
     target_max_dp: int
+    npc_disposition: str | None = None  # NpcDisposition value, for styling the NPC's name (#1025)
 
 
 @dataclass
@@ -76,6 +79,7 @@ class NPCTookDamageEvent(BaseEvent):
     damage: int
     current_dp: int
     max_dp: int
+    npc_disposition: str | None = None  # NpcDisposition value, for styling the NPC's name (#1025)
 
 
 @dataclass
@@ -88,6 +92,7 @@ class NPCDiedEvent(BaseEvent):
     npc_name: str
     xp_reward: int
     killer_id: str | None = None  # Player UUID string who killed the NPC (for quest/XP attribution)
+    npc_disposition: str | None = None  # NpcDisposition value, for styling the NPC's name (#1025)
 
 
 @dataclass

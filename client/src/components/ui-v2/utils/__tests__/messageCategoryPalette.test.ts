@@ -125,3 +125,20 @@ describe('message category palette', () => {
     expect(parseFloat(margin ?? '0')).toBeGreaterThan(0);
   });
 });
+
+describe('segment classes (#1025)', () => {
+  const npcKinds = ['aggressive_mob', 'quest_giver', 'shopkeeper', 'passive_mob'];
+
+  it.each(npcKinds)('seg-npc-%s sets the same colour token as its category, and nothing else decorative', kind => {
+    const start = css.indexOf(`.seg-npc-${kind} {`);
+    expect(start, `.seg-npc-${kind} rule present`).toBeGreaterThanOrEqual(0);
+    const block = css.slice(start, css.indexOf('}', start));
+    expect(block).toContain(`color: var(--cat-npc-${kind});`);
+    expect(block).not.toContain('content');
+  });
+
+  it('gives names weight as a non-colour cue and never a glyph or label (that stays on the line)', () => {
+    expect(css).toMatch(/\.seg \{\s*font-weight: 600;\s*\}/);
+    expect(css).not.toMatch(/\.seg[^{]*::before/);
+  });
+});

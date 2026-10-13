@@ -381,6 +381,27 @@ html.text-labels .cat::before {
   --cat-text-label: '[Passive] ';
 }
 
+/*
+ * Segments (#1025): a styled span inside one line, i.e. an NPC's name. Colour and weight only. There is
+ * deliberately no ::before here: the line already carries one glyph / Text-labels word, and repeating it on every
+ * name would be noise. Weight is the non-colour cue that says "this is a name".
+ */
+.seg {
+  font-weight: 600;
+}
+.seg-npc-aggressive_mob {
+  color: var(--cat-npc-aggressive_mob);
+}
+.seg-npc-quest_giver {
+  color: var(--cat-npc-quest_giver);
+}
+.seg-npc-shopkeeper {
+  color: var(--cat-npc-shopkeeper);
+}
+.seg-npc-passive_mob {
+  color: var(--cat-npc-passive_mob);
+}
+
 /* Registers (typography). Underline is deliberately absent: reserved for interactive text. */
 .cat-reg-alert {
   font-weight: 700;

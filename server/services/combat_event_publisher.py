@@ -336,6 +336,7 @@ class CombatEventPublisher:
             "timestamp": event.timestamp.isoformat(),
             # The client words this line as "X attacks you", so it is always the recipient being hurt.
             "category": MessageCategory.COMBAT_HURT.value,
+            **({"attacker_disposition": event.attacker_disposition} if event.attacker_disposition else {}),
         }
         return await self._publish_combat_payload(
             _CombatPublishJob(
@@ -383,6 +384,7 @@ class CombatEventPublisher:
             "timestamp": event.timestamp.isoformat(),
             # The client words this line as "You attack X", so it is always the recipient dealing damage.
             "category": MessageCategory.COMBAT_HIT.value,
+            **({"npc_disposition": event.npc_disposition} if event.npc_disposition else {}),
         }
         return await self._publish_combat_payload(
             _CombatPublishJob(
@@ -426,6 +428,7 @@ class CombatEventPublisher:
             "timestamp": event.timestamp.isoformat(),
             # The client words this line as "Dealt N damage to X": damage the recipient dealt.
             "category": MessageCategory.COMBAT_HIT.value,
+            **({"npc_disposition": event.npc_disposition} if event.npc_disposition else {}),
         }
         return await self._publish_combat_payload(
             _CombatPublishJob(
@@ -463,6 +466,7 @@ class CombatEventPublisher:
             "npc_name": event.npc_name,
             "xp_reward": event.xp_reward,
             "timestamp": event.timestamp.isoformat(),
+            **({"npc_disposition": event.npc_disposition} if event.npc_disposition else {}),
         }
         if getattr(event, "killer_id", None):
             event_data["killer_id"] = event.killer_id
