@@ -34,6 +34,10 @@ const CATEGORY_REGISTER: Record<MessageCategory, MessageRegister> = {
   'status.health': 'alert',
   'status.rescue': 'alert',
   'command.output': 'plain',
+  'npc.shopkeeper': 'plain',
+  'npc.quest_giver': 'plain',
+  'npc.passive_mob': 'plain',
+  'npc.aggressive_mob': 'plain',
 };
 
 const warnedUnknown = new Set<string>();

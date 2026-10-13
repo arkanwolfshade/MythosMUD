@@ -10,7 +10,9 @@ As documented in "Dimensional Occupancy Tracking" - Dr. Armitage, 1929
 
 from typing import Any
 
+from ..constants.npc_disposition import NpcDisposition, NpcOccupant
 from ..structured_logging.enhanced_logging_config import get_logger
+from .connection_utils import npc_disposition_from_row, npc_occupant
 
 
 class OccupantFormatter:
@@ -79,19 +81,26 @@ class OccupantFormatter:
             )
 
     def _process_npc_name_for_update(
-        self, npc_name: Any, npcs: list[str], all_occupants: list[str], room_id: str
+        self,
+        npc_name: object,
+        disposition: NpcDisposition,
+        npcs: list[NpcOccupant],
+        all_occupants: list[str],
+        room_id: str,
     ) -> None:
         """
         Process an NPC name and add to appropriate lists if valid.
 
         Args:
             npc_name: The NPC name to process
-            npcs: List to append NPC names to
+            disposition: The NPC's disposition, sent with its name
+            npcs: List to append NPC occupants to
             all_occupants: List to append all occupant names to
             room_id: Room ID for logging
         """
-        if self._is_valid_name_for_occupant(npc_name):
-            self._add_valid_name_to_lists(npc_name, npcs, all_occupants)
+        if isinstance(npc_name, str) and self._is_valid_name_for_occupant(npc_name):
+            npcs.append(npc_occupant(npc_name, disposition))
+            all_occupants.append(npc_name)
         elif npc_name:
             self._logger.warning(
                 "Skipping NPC with UUID as name in room_occupants update",
@@ -100,7 +109,12 @@ class OccupantFormatter:
             )
 
     def _process_dict_occupant_for_update(
-        self, occ: dict[str, Any], players: list[str], npcs: list[str], all_occupants: list[str], room_id: str
+        self,
+        occ: dict[str, object],
+        players: list[str],
+        npcs: list[NpcOccupant],
+        all_occupants: list[str],
+        room_id: str,
     ) -> None:
         """
         Process a dictionary occupant and add to appropriate lists if valid.
@@ -108,14 +122,16 @@ class OccupantFormatter:
         Args:
             occ: Occupant information dictionary
             players: List to append player names to
-            npcs: List to append NPC names to
+            npcs: List to append NPC occupants to
             all_occupants: List to append all occupant names to
             room_id: Room ID for logging
         """
         if "player_name" in occ:
             self._process_player_name_for_update(occ.get("player_name"), players, all_occupants, room_id)
         elif "npc_name" in occ:
-            self._process_npc_name_for_update(occ.get("npc_name"), npcs, all_occupants, room_id)
+            self._process_npc_name_for_update(
+                occ.get("npc_name"), npc_disposition_from_row(occ), npcs, all_occupants, room_id
+            )
         else:
             # Fallback for other formats
             name = occ.get("name")
@@ -145,7 +161,7 @@ class OccupantFormatter:
 
     def separate_occupants_by_type(
         self, occupants_info: list[dict[str, Any] | str], room_id: str
-    ) -> tuple[list[str], list[str], list[str]]:
+    ) -> tuple[list[str], list[NpcOccupant], list[str]]:
         """
         Separate occupants into players, NPCs, and all occupants lists.
 
@@ -154,10 +170,10 @@ class OccupantFormatter:
             room_id: Room ID for logging
 
         Returns:
-            Tuple of (players, npcs, all_occupants) lists
+            Tuple of (players, npcs, all_occupants) lists; ``npcs`` carries each NPC's disposition
         """
         players: list[str] = []
-        npcs: list[str] = []
+        npcs: list[NpcOccupant] = []
         all_occupants: list[str] = []
 
         for occ in occupants_info or []:

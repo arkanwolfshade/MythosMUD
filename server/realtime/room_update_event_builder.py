@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, TypedDict, cast
 
+from ..constants.npc_disposition import NpcOccupant
 from ..services.exit_hallucination import get_hallucinated_exits
 from ..services.lucidity_tier_cache import lucidity_tier_cache
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -30,7 +31,7 @@ class RoomOccupancyPayload(TypedDict):
     occupants: list[str]
     count: int
     players: list[str]
-    npcs: list[str]
+    npcs: list[NpcOccupant]
 
 
 async def build_room_update_event(
@@ -40,7 +41,7 @@ async def build_room_update_event(
     occupant_names: list[str],
     connection_manager: ConnectionManager,
     players: list[str] | None = None,
-    npcs: list[str] | None = None,
+    npcs: list[NpcOccupant] | None = None,
     viewer_id: str | None = None,
 ) -> dict[str, object]:
     """

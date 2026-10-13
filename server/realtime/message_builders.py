@@ -12,6 +12,7 @@ from datetime import UTC, datetime
 from typing import Any, cast
 
 from ..constants.message_category import MessageCategory
+from ..constants.npc_disposition import NpcOccupant
 from ..events.event_types import PlayerEnteredRoom, PlayerLeftRoom
 
 
@@ -122,7 +123,7 @@ class MessageBuilder:
         return f"{npc_name} moved."
 
     def build_occupants_update_message(
-        self, room_id_str: str, players: list[str], npcs: list[str], all_occupants: list[str]
+        self, room_id_str: str, players: list[str], npcs: list[NpcOccupant], all_occupants: list[str]
     ) -> dict[str, Any]:
         """
         Build the room occupants update message.
@@ -130,7 +131,7 @@ class MessageBuilder:
         Args:
             room_id_str: Room ID as string
             players: List of player names
-            npcs: List of NPC names
+            npcs: List of NPC occupants (name + disposition)
             all_occupants: List of all occupant names
 
         Returns:

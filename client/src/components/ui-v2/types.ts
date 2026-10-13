@@ -1,7 +1,7 @@
 // TypeScript interfaces for UI v2 panel system
 // Type definitions for UI v2 components
 
-import type { MessageCategory } from '../../types/messageCategory';
+import type { MessageCategory, NpcOccupant } from '../../types/messageCategory';
 
 export interface Player {
   /** Character/player UUID from server (player_id). Used for Skills tab URL, etc. */
@@ -54,7 +54,8 @@ export interface Room {
   occupants?: string[];
   // New: structured occupant data with separate players and NPCs
   players?: string[];
-  npcs?: string[];
+  /** Each NPC with the disposition the server tagged it with (phantoms are `aggressive_mob`). */
+  npcs?: NpcOccupant[];
   occupant_count?: number;
   entities?: Array<{
     name: string;

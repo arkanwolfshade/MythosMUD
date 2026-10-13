@@ -11,6 +11,7 @@ from typing import Any
 from sqlalchemy.exc import SQLAlchemyError
 
 from ..structured_logging.enhanced_logging_config import get_logger
+from .connection_utils import get_npc_disposition_from_instance
 from .room_id_utils import RoomIDUtils
 
 
@@ -382,6 +383,7 @@ class NPCOccupantProcessor:
                 "npc_id": npc_id,
                 "npc_name": npc_name,
                 "type": "npc",
+                "disposition": get_npc_disposition_from_instance(npc_id).value,
             }
             occupants.append(occupant_info)
 

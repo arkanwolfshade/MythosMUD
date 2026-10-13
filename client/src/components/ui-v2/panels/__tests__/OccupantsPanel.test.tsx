@@ -53,13 +53,63 @@ describe('OccupantsPanel', () => {
       description: 'A test room',
       exits: {},
       players: [],
-      npcs: ['NPC1', 'NPC2'],
+      npcs: [
+        { name: 'NPC1', disposition: 'shopkeeper' },
+        { name: 'NPC2', disposition: 'aggressive_mob' },
+      ],
       occupants: ['NPC1', 'NPC2'],
     };
 
     render(<OccupantsPanel room={room} />);
     expect(screen.getByText('NPC1')).toBeInTheDocument();
     expect(screen.getByText('NPC2')).toBeInTheDocument();
+  });
+
+  it('styles each NPC by its disposition through the npc.* category', () => {
+    const room: Room = {
+      id: 'room1',
+      name: 'Test Room',
+      description: 'A test room',
+      exits: {},
+      players: [],
+      npcs: [
+        { name: 'Merchant', disposition: 'shopkeeper' },
+        { name: 'Elder', disposition: 'quest_giver' },
+        { name: 'Rat', disposition: 'aggressive_mob' },
+        { name: 'Pigeon', disposition: 'passive_mob' },
+      ],
+    };
+
+    render(<OccupantsPanel room={room} />);
+
+    for (const [name, disposition] of [
+      ['Merchant', 'shopkeeper'],
+      ['Elder', 'quest_giver'],
+      ['Rat', 'aggressive_mob'],
+      ['Pigeon', 'passive_mob'],
+    ]) {
+      const row = screen.getByText(name);
+      expect(row).toHaveAttribute('data-disposition', disposition);
+      expect(row).toHaveClass('cat', 'cat-npc', `cat-npc-${disposition}`);
+    }
+  });
+
+  it('keeps two same-named NPCs as separate rows, each with its own disposition', () => {
+    const room: Room = {
+      id: 'room1',
+      name: 'Test Room',
+      description: 'A test room',
+      exits: {},
+      npcs: [
+        { name: 'Rat', disposition: 'passive_mob' },
+        { name: 'Rat', disposition: 'aggressive_mob' },
+      ],
+    };
+
+    render(<OccupantsPanel room={room} />);
+
+    const rows = screen.getAllByText('Rat');
+    expect(rows.map(row => row.getAttribute('data-disposition'))).toEqual(['passive_mob', 'aggressive_mob']);
   });
 
   it('should render both players and NPCs', () => {
@@ -69,7 +119,7 @@ describe('OccupantsPanel', () => {
       description: 'A test room',
       exits: {},
       players: ['Player1'],
-      npcs: ['NPC1'],
+      npcs: [{ name: 'NPC1', disposition: 'passive_mob' }],
       occupants: ['Player1', 'NPC1'],
     };
 

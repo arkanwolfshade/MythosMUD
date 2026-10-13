@@ -5,6 +5,9 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import NotRequired, TypedDict
 
+from ..constants.npc_disposition import NpcDisposition, NpcOccupant
+from .connection_utils import npc_occupant
+
 
 class RespawnPlayerStatsPayload(TypedDict):
     """Nested stats object in WebSocket respawn player payloads."""
@@ -47,7 +50,7 @@ def occupant_str_field(occ: dict[str, object], field_keys: tuple[str, ...]) -> s
     return None
 
 
-def is_npc_occupant_row(occ: dict[str, object]) -> bool:
+def is_npc_occupant_row(occ: dict[str, object]) -> bool:  # lizard: allow (named NPC-row predicate)
     """True when the occupant row should be classified as an NPC."""
     return bool(occ.get("is_npc")) or "npc_name" in occ
 
@@ -63,6 +66,23 @@ def append_unique_valid_occupant(
     if not name or not validate_name(name) or name in primary:
         return
     primary.append(name)
+    if name not in occupant_names:
+        occupant_names.append(name)
+
+
+def append_unique_npc_occupant(
+    name: str | None,
+    disposition: NpcDisposition,
+    *,
+    npcs: list[NpcOccupant],
+    occupant_names: list[str],
+) -> None:
+    """Append an NPC (name + disposition) and its name once, skipping blank or already-listed names."""
+    from .websocket_helpers import validate_occupant_name
+
+    if not name or not validate_occupant_name(name) or any(npc["name"] == name for npc in npcs):
+        return
+    npcs.append(npc_occupant(name, disposition))
     if name not in occupant_names:
         occupant_names.append(name)
 

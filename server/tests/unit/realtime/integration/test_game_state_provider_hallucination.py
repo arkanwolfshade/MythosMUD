@@ -94,7 +94,7 @@ async def test_send_initial_game_state_includes_viewer_phantom(
 
     with (
         patch(
-            "server.realtime.integration.game_state_provider.get_viewer_phantom_names",
+            "server.services.phantom_visibility.get_viewer_phantom_names",
             return_value=["Shambling Horror"],
         ),
         patch("server.database.get_async_session", return_value=_no_lucidity_row_session()),
@@ -105,7 +105,8 @@ async def test_send_initial_game_state_includes_viewer_phantom(
     sent_event = cast(dict[str, object], call[1])
     data = cast(dict[str, object], sent_event["data"])
     room_data = cast(dict[str, object], data["room"])
-    assert "Shambling Horror" in cast(list[object], room_data["npcs"])
+    # ADR-024: a phantom carries the same disposition tag a real hostile does.
+    assert {"name": "Shambling Horror", "disposition": "aggressive_mob"} in cast(list[object], room_data["npcs"])
     assert "Shambling Horror" in cast(list[object], data["occupants"])
 
 

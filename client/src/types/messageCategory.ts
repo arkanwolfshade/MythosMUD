@@ -29,6 +29,31 @@ export const MESSAGE_CATEGORIES = [
   'status.health',
   'status.rescue',
   'command.output',
+  'npc.shopkeeper',
+  'npc.quest_giver',
+  'npc.passive_mob',
+  'npc.aggressive_mob',
 ] as const;
 
 export type MessageCategory = (typeof MESSAGE_CATEGORIES)[number];
+
+/** What a player should expect of an NPC on sight; the kind of the matching `npc.<disposition>` category. */
+export const NPC_DISPOSITIONS = ['shopkeeper', 'quest_giver', 'passive_mob', 'aggressive_mob'] as const;
+
+export type NpcDisposition = (typeof NPC_DISPOSITIONS)[number];
+
+/** An NPC in a room's `npcs` list. The server is authoritative for `disposition` (phantoms are `aggressive_mob`). */
+export interface NpcOccupant {
+  name: string;
+  disposition: NpcDisposition;
+}
+
+export const DEFAULT_NPC_DISPOSITION: NpcDisposition = 'passive_mob';
+
+export function isNpcDisposition(value: unknown): value is NpcDisposition {
+  return typeof value === 'string' && (NPC_DISPOSITIONS as readonly string[]).includes(value);
+}
+
+export function npcCategory(disposition: NpcDisposition): MessageCategory {
+  return `npc.${disposition}`;
+}

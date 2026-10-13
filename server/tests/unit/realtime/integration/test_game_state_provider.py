@@ -15,6 +15,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from server.constants.npc_disposition import NpcDisposition
 from server.realtime.integration.game_state_provider import GameStateProvider
 
 
@@ -431,13 +432,19 @@ def test_get_npcs_batch_exception_fallback(game_state_provider):
 async def test_convert_room_uuids_with_npcs(game_state_provider):
     """Test convert_room_uuids_to_names() converts NPC IDs to display names."""
     room_data: dict[str, Any] = {"npcs": ["npc_patient_001"]}
-    with patch.object(
-        game_state_provider,
-        "get_npcs_batch",
-        return_value={"npc_patient_001": "Patient"},
+    with (
+        patch.object(
+            game_state_provider,
+            "get_npcs_batch",
+            return_value={"npc_patient_001": "Patient"},
+        ),
+        patch(
+            "server.realtime.integration.game_state_provider.get_npc_disposition_from_instance",
+            return_value=NpcDisposition.QUEST_GIVER,
+        ),
     ):
         result = await game_state_provider.convert_room_uuids_to_names(room_data)
-    assert result["npcs"] == ["Patient"]
+    assert result["npcs"] == [{"name": "Patient", "disposition": NpcDisposition.QUEST_GIVER}]
 
 
 @pytest.mark.asyncio
@@ -467,7 +474,7 @@ async def test_process_occupants_with_grace_periods(game_state_provider, mock_ge
     other_id = uuid.uuid4()
     mock_room_manager.get_room_occupants = AsyncMock(
         return_value=[
-            {"player_name": "NPC Guard", "is_npc": True, "player_id": "npc_1"},
+            {"player_name": "NPC Guard", "is_npc": True, "player_id": "npc_1", "disposition": "aggressive_mob"},
             {"player_name": "Peer", "is_npc": False, "player_id": str(other_id)},
         ]
     )
@@ -476,7 +483,7 @@ async def test_process_occupants_with_grace_periods(game_state_provider, mock_ge
     mock_get_app.return_value = mock_app
 
     occupants, players, npcs = await game_state_provider._process_occupants_with_grace_periods("room_001", {})
-    assert "NPC Guard" in npcs
+    assert npcs == [{"name": "NPC Guard", "disposition": NpcDisposition.AGGRESSIVE_MOB}]
     assert "Peer" in players
     assert len(occupants) >= 2
 

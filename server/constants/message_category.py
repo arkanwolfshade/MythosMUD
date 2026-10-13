@@ -8,7 +8,10 @@ services, and realtime can all share it without import cycles.
 Mirrored by ``client/src/types/messageCategory.ts`` (kept in step by
 ``server/tests/unit/constants/test_message_category.py``).
 
-Reserved namespaces with no members yet: ``lore.*``, ``item.*``, ``npc.*``, ``command.misfire``.
+``npc.*`` is not a message's own category: it tags an NPC's disposition (see ``npc_disposition.py``) for the
+Occupants panel and, later, name segments.
+
+Reserved namespaces with no members yet: ``lore.*``, ``item.*``, ``command.misfire``.
 
 Categories are assigned only in shared formatters and builders. Hallucination code must never choose one
 (ADR-024): a hallucinated message gets exactly the category of the real thing it imitates.
@@ -49,3 +52,9 @@ class MessageCategory(StrEnum):
     STATUS_RESCUE = "status.rescue"
 
     COMMAND_OUTPUT = "command.output"
+
+    # NPC disposition (#1025); kinds are the NpcDisposition values, so deriving one is an identity mapping.
+    NPC_SHOPKEEPER = "npc.shopkeeper"
+    NPC_QUEST_GIVER = "npc.quest_giver"
+    NPC_PASSIVE_MOB = "npc.passive_mob"
+    NPC_AGGRESSIVE_MOB = "npc.aggressive_mob"
