@@ -38,7 +38,7 @@ export const MESSAGE_CATEGORIES = [
 export type MessageCategory = (typeof MESSAGE_CATEGORIES)[number];
 
 /** What a player should expect of an NPC on sight; the kind of the matching `npc.<disposition>` category. */
-export const NPC_DISPOSITIONS = ['shopkeeper', 'quest_giver', 'passive_mob', 'aggressive_mob'] as const;
+const NPC_DISPOSITIONS = ['shopkeeper', 'quest_giver', 'passive_mob', 'aggressive_mob'] as const;
 
 export type NpcDisposition = (typeof NPC_DISPOSITIONS)[number];
 
