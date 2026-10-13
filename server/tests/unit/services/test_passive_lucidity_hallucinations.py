@@ -26,7 +26,16 @@ async def test_handle_phantom_hostile_hallucination() -> None:
     send.assert_awaited_once()
     assert send.await_args is not None
     assert send.await_args.kwargs["hallucination_type"] == "phantom_hostile_spawn"
-    deliver.assert_awaited_once_with(player_id, "A Shadow materializes before you!")
+    # ADR-024: the phantom's name is styled exactly like a real hostile's, so the narration carries the same tag.
+    deliver.assert_awaited_once_with(
+        player_id,
+        "A Shadow materializes before you!",
+        [
+            {"text": "A "},
+            {"text": "Shadow", "category": "npc.aggressive_mob"},
+            {"text": " materializes before you!"},
+        ],
+    )
 
 
 @pytest.mark.asyncio

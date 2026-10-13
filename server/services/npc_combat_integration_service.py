@@ -23,8 +23,10 @@ from sqlalchemy.exc import SQLAlchemyError
 from structlog.stdlib import BoundLogger
 
 from ..config import get_config
+from ..constants.npc_disposition import DEFAULT_NPC_DISPOSITION, NpcDisposition
 from ..events.event_bus import EventBus
 from ..models.combat import CombatResult
+from ..realtime.connection_utils import get_npc_disposition_from_instance
 from ..structured_logging.enhanced_logging_config import get_logger
 from .combat_event_publisher import CombatEventPublisher
 from .combat_messaging_integration import CombatMessagingIntegration
@@ -457,3 +459,12 @@ class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombat
     def get_original_string_id(self, uuid_id: UUID) -> str | None:
         """Get the original string ID from a UUID."""
         return self._uuid_mapping.get_original_string_id(uuid_id)
+
+    def get_npc_disposition(self, participant_id: UUID) -> NpcDisposition:
+        """
+        Disposition of the NPC behind a combat participant id, for styling its name in a room line (#1036).
+
+        Falls back to the default (passive) when the participant has no mapped live instance.
+        """
+        string_id = self.get_original_string_id(participant_id)
+        return get_npc_disposition_from_instance(string_id) if string_id else DEFAULT_NPC_DISPOSITION

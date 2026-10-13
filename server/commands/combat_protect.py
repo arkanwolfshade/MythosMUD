@@ -41,7 +41,9 @@ async def _join_if_needed(
     if mine is not None:
         return None if mine.combat_id == combat.combat_id else {"result": "You are already in another fight."}
     try:
-        await handler.npc_combat_service.join_player_to_combat(str(player_uuid), room_id, player_uuid, combat, foe.name)
+        await handler.npc_combat_service.join_player_to_combat(
+            str(player_uuid), room_id, player_uuid, combat, foe.name, foe_id=foe.participant_id
+        )
     except ValueError:
         return {"result": "You cannot join that fight."}
     return None

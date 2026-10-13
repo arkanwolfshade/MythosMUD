@@ -127,7 +127,8 @@ async def test_protect_joins_the_allys_fight_when_you_are_not_in_it_yet() -> Non
     result, join, queue = await _protect(_ASH, combats={ASHCROFT: combat}, resolved=_match(ASHCROFT, "Ashcroft"))
 
     assert result == {"result": "You move to cover Ashcroft."}
-    join.assert_awaited_once_with(str(ME), "r1", ME, combat, "Ghoul")
+    foe = next(p for p in combat.participants.values() if p.name == "Ghoul")
+    join.assert_awaited_once_with(str(ME), "r1", ME, combat, "Ghoul", foe_id=foe.participant_id)
     queue.assert_awaited_once()
 
 

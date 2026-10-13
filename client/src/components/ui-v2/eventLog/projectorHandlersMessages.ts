@@ -148,7 +148,7 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     let nextState = prevState;
     const text = !suppressChat && message ? message : gameLogMessage;
     if (text && !isRoomNameEcho) {
-      const msg = buildChatMessage(text, event.timestamp, { isHtml, channel, category });
+      const msg = buildChatMessage(text, event.timestamp, { isHtml, channel, category, segments: event.data.segments });
       nextState = { ...prevState, messages: appendMessage(prevState.messages, msg) };
     }
     const roomStatePayload = event.data.room_state as GameEvent | undefined;
@@ -193,6 +193,7 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     const msg = buildChatMessage(message, event.timestamp, {
       channel: category.startsWith('chat.') ? channel : undefined,
       category,
+      segments: event.data.segments,
     });
     return { ...prevState, messages: appendMessage(prevState.messages, msg) };
   },
@@ -299,6 +300,7 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     if (!message) return prevState;
     const msg = buildChatMessage(message, event.timestamp, {
       category: readCategory(event.data, event.event_type),
+      segments: event.data.segments,
     });
     return { ...prevState, messages: appendMessage(prevState.messages, msg) };
   },

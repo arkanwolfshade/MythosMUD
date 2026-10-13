@@ -9,6 +9,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from server.constants.npc_disposition import NpcDisposition
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType
 from server.services.combat_types import AlreadyEngagedError, CombatParticipantData
 from server.services.npc_combat_integration_service import NPCCombatIntegrationService
@@ -94,7 +95,10 @@ async def test_attacking_an_npc_already_in_combat_joins_the_fight(
     combat_service.queue_combat_action = queue_action
     player_id = str(uuid.uuid4())
 
-    with patch("server.services.npc_combat_integration_combat_mixin.get_current_tick", return_value=7):
+    with (
+        patch("server.services.npc_combat_integration_combat_mixin.get_current_tick", return_value=7),
+        patch.object(integration_service, "get_npc_disposition", return_value=NpcDisposition.AGGRESSIVE_MOB),
+    ):
         result = await integration_service._process_combat_attack(
             player_id, "r1", attacker_uuid, ghoul.participant_id, 6, MagicMock()
         )
@@ -110,7 +114,10 @@ async def test_attacking_an_npc_already_in_combat_joins_the_fight(
         target_id=ghoul.participant_id,
         damage=6,
     )
-    broadcast.assert_awaited_once_with("r1", str(fight.combat_id), "Blackwood", "Ghoul", player_id)
+    # #1036: the room line names the foe, so it carries the foe's disposition for the client to style.
+    broadcast.assert_awaited_once_with(
+        "r1", str(fight.combat_id), "Blackwood", "Ghoul", player_id, npc_disposition=NpcDisposition.AGGRESSIVE_MOB
+    )
 
 
 @pytest.mark.asyncio

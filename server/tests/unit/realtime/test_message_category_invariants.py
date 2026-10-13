@@ -58,6 +58,7 @@ from server.models.user import User
 from server.realtime.connection_manager import ConnectionManager
 from server.realtime.event_handlers import EventHandler
 from server.realtime.message_builders import MessageBuilder
+from server.realtime.message_formatters import format_message_content
 from server.realtime.nats_message_handler import NATSMessageHandler
 from server.realtime.npc_event_handlers import NPCEventHandler
 from server.realtime.player_event_handlers_respawn import PlayerRespawnEventHandler
@@ -231,6 +232,40 @@ def _chat_driver(channel: str) -> Driver:
         return [("chat_message", cast(dict[str, object], event["data"]))]
 
     return drive
+
+
+async def _drive_chat_segments() -> list[Emitted]:
+    """#1036: an NPC speaker's name and a narration line's inner spans, built the way the NATS handler builds them."""
+    handler = NATSMessageHandler(connection_manager=_as(ConnectionManager, _Transport()))
+    events: list[Emitted] = []
+    for extra in (
+        {"speaker_kind": "npc", "speaker_disposition": "aggressive_mob"},
+        {
+            "channel": "system",
+            "content": "A Shadow materializes",
+            "content_segments": [
+                {"text": "A "},
+                {"text": "Shadow", "category": "npc.aggressive_mob"},
+                {"text": " materializes"},
+            ],
+        },
+    ):
+        payload: dict[str, object] = {
+            "channel": "say",
+            "room_id": ROOM_ID,
+            "sender_id": str(uuid.uuid4()),
+            "sender_name": "Ghoul",
+            "content": "Hello",
+            "message_id": "msg_001",
+            "timestamp": "2024-01-01T00:00:00Z",
+            **extra,
+        }
+        validated = handler._validate_chat_message_fields(handler._extract_chat_message_fields(payload), payload)
+        formatted = format_message_content(validated["channel"], validated["sender_name"], validated["content"])
+        events.append(
+            ("chat_message", cast(dict[str, object], handler._build_chat_event(validated, formatted)["data"]))
+        )
+    return events
 
 
 async def _drive_npc_room_messages() -> list[Emitted]:
@@ -508,6 +543,7 @@ INVENTORY: tuple[Emitter, ...] = (
     Emitter("rest countdown", frozenset({"command_response", "intentional_disconnect"}), _drive_rest_countdown),
     *(Emitter(f"chat {channel}", frozenset({"chat_message"}), _chat_driver(channel)) for channel in _CHAT_CHANNELS),
     Emitter("npc room messages", frozenset({"room_message"}), _drive_npc_room_messages),
+    Emitter("chat segments", frozenset({"chat_message"}), _drive_chat_segments),
     Emitter("player enter/leave", frozenset({"player_entered", "player_left"}), _drive_player_enter_leave),
     Emitter("system events", frozenset({"system"}), _drive_system_events),
     Emitter("posture change", frozenset({"player_posture_change", "player_update"}), _drive_posture),
@@ -624,7 +660,7 @@ async def test_inventory_exercises_segments() -> None:
     produced: set[str] = set()
     for emitter in INVENTORY:
         produced |= {event_type for event_type, data in await emitter.drive() if "segments" in data}
-    assert {"room_message", "npc_died"} <= produced
+    assert {"room_message", "npc_died", "chat_message"} <= produced
 
 
 # --- inventory vs the client projector ------------------------------------------------------------------

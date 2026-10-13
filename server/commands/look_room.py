@@ -9,13 +9,14 @@ from collections.abc import Mapping, Sequence
 from typing import Any, cast
 
 from ..constants.message_category import MessageCategory
+from ..constants.message_segments import SegmentPart, join_parts, message_with_segments, npc_name_segment
 from ..realtime.occupant_display import format_occupant_display_name
 from ..services.exit_hallucination import get_hallucinated_exits
 from ..services.lucidity_tier_cache import lucidity_tier_cache
-from ..services.phantom_visibility import get_viewer_phantom_names
+from ..services.phantom_visibility import get_viewer_phantom_occupants
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.room_renderer import format_room_drop_lines
-from .look_npc import _get_npcs_in_room
+from .look_npc import _get_npc_occupants_in_room
 from .look_player import _get_players_in_room
 
 logger = get_logger(__name__)
@@ -77,16 +78,44 @@ async def _format_containers_section(room_id: str | None, persistence: Any) -> l
     return lines
 
 
-async def _format_npcs_section(room_id: str | None, viewer_player_id: Any | None = None) -> list[str]:
-    """Format the NPCs/Mobs section of room look, including the viewer's own phantoms."""
+async def _npc_section_parts(room_id: str | None, viewer_player_id: str | None = None) -> list[SegmentPart]:
+    """
+    The "Also here: ..." line as parts, each NPC name styled by its disposition (#1036).
+
+    Includes the viewer's own phantoms, tagged exactly like a real hostile (ADR-024). Empty when nobody is here.
+    """
     if not room_id:
         return []
-    npc_names = await _get_npcs_in_room(room_id)
-    npc_names = [*npc_names, *get_viewer_phantom_names(viewer_player_id, room_id)]
-    if not npc_names:
+    npcs = [*await _get_npc_occupants_in_room(room_id), *get_viewer_phantom_occupants(viewer_player_id, room_id)]
+    if not npcs:
         return []
-    npc_list = ", ".join(npc_names)
-    return [f"Also here: {npc_list}", ""]
+    parts: list[SegmentPart] = ["Also here: "]
+    for index, npc in enumerate(npcs):
+        if index:
+            parts.append(", ")
+        parts.append(npc_name_segment(npc["name"], npc["disposition"]))
+    return parts
+
+
+def _npc_section_lines(parts: list[SegmentPart]) -> list[str]:
+    """The plain-text lines of the NPC section (the "Also here" line and a spacer), or none."""
+    return [join_parts(parts), ""] if parts else []
+
+
+async def _format_npcs_section(room_id: str | None, viewer_player_id: Any | None = None) -> list[str]:
+    """Format the NPCs/Mobs section of room look, including the viewer's own phantoms."""
+    viewer = str(cast("object", viewer_player_id)) if viewer_player_id is not None else None
+    return _npc_section_lines(await _npc_section_parts(room_id, viewer))
+
+
+def _joined_with_newlines(entries: list[list[SegmentPart]]) -> list[SegmentPart]:
+    """The parts of ``"\n".join(...)`` over lines that are each a list of parts."""
+    parts: list[SegmentPart] = []
+    for index, entry in enumerate(entries):
+        if index:
+            parts.append("\n")
+        parts.extend(entry)
+    return parts
 
 
 async def _try_lookup_phantom_implicit(target_lower: str, room: Any, player: Any) -> dict[str, Any] | None:
@@ -199,7 +228,10 @@ async def _handle_room_look(
     lines.extend(await _format_containers_section(room_id, persistence))
 
     # 5. NPCs/Mobs
-    lines.extend(await _format_npcs_section(room_id, viewer_player_id))
+    npc_parts = await _npc_section_parts(room_id, viewer_id_str)
+    npc_start = len(lines)
+    lines.extend(_npc_section_lines(npc_parts))
+    npc_end = len(lines)
 
     # 6. Players
     players_in_room = await _get_players_in_room(room, persistence)
@@ -212,11 +244,17 @@ async def _handle_room_look(
     # 9. Exits
     lines.append(f"Exits: {exit_list}")
     rendered = "\n".join(lines)
-
+    # #1036: the same text as ``rendered``, with the NPC names in it as styled spans.
+    head: list[list[SegmentPart]] = [[line] for line in lines[:npc_start]]
+    npc_entries: list[list[SegmentPart]] = [npc_parts, [""]] if npc_parts else []
+    tail: list[list[SegmentPart]] = [[line] for line in lines[npc_end:]]
+    entries = [*head, *npc_entries, *tail]
+    built = message_with_segments(_joined_with_newlines(entries))
     drop_lines = format_room_drop_lines(room_drops)
     return {
         "result": rendered,
         "category": MessageCategory.ROOM_DESCRIPTION,
+        **({"segments": built["segments"]} if npc_parts and built["message"] == rendered else {}),
         "drop_summary": "\n".join(drop_lines),  # Keep for backward compatibility
         "room_drops": room_drops,  # Keep for backward compatibility
     }

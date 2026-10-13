@@ -9,6 +9,7 @@ import uuid
 from datetime import UTC, datetime
 from typing import Any
 
+from ..constants.message_segments import MessageSegment
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger("communications.chat_message")
@@ -47,6 +48,10 @@ class ChatMessage:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
         self.echo_sent = False
         # Optional: "npc" | "system" | unset (player). Client may style NPC lines.
         self.speaker_kind: str | None = None
+        # Optional (#1036): an NPC speaker's NpcDisposition value, so the line can style its name.
+        self.speaker_disposition: str | None = None
+        # Optional (#1036): styled spans that describe ``content`` exactly (a name inside a narration line).
+        self.content_segments: list[MessageSegment] | None = None
 
     def to_dict(self) -> dict[str, Any]:
         """Convert message to dictionary for serialization."""
@@ -73,6 +78,10 @@ class ChatMessage:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
         speaker_kind = getattr(self, "speaker_kind", None)
         if speaker_kind:
             result["speaker_kind"] = speaker_kind
+        if getattr(self, "speaker_disposition", None):
+            result["speaker_disposition"] = self.speaker_disposition
+        if getattr(self, "content_segments", None):
+            result["content_segments"] = self.content_segments
 
         return result
 

@@ -23,6 +23,7 @@ from server.commands.look_room import (
     _try_lookup_phantom_implicit,
 )
 from server.constants.message_category import MessageCategory
+from server.constants.npc_disposition import NpcDisposition
 
 
 def test_format_items_section_empty():
@@ -113,9 +114,12 @@ async def test_format_npcs_section_no_room_id():
 @pytest.mark.asyncio
 async def test_format_npcs_section_with_npcs():
     """Test _format_npcs_section with NPCs."""
-    # _format_npcs_section imports _get_npcs_in_room from look_npc, patch it at the import location
-    with patch("server.commands.look_room._get_npcs_in_room", new_callable=AsyncMock) as mock_get_npcs:
-        mock_get_npcs.return_value = ["Goblin", "Orc"]
+    # _format_npcs_section imports _get_npc_occupants_in_room from look_npc, patch it at the import location
+    with patch("server.commands.look_room._get_npc_occupants_in_room", new_callable=AsyncMock) as mock_get_npcs:
+        mock_get_npcs.return_value = [
+            {"name": "Goblin", "disposition": NpcDisposition.PASSIVE_MOB},
+            {"name": "Orc", "disposition": NpcDisposition.AGGRESSIVE_MOB},
+        ]
         result = await _format_npcs_section("test_room")
 
         assert len(result) > 0
@@ -126,8 +130,8 @@ async def test_format_npcs_section_with_npcs():
 @pytest.mark.asyncio
 async def test_format_npcs_section_empty():
     """Test _format_npcs_section with no NPCs."""
-    # _format_npcs_section imports _get_npcs_in_room from look_npc, patch it at the import location
-    with patch("server.commands.look_room._get_npcs_in_room", new_callable=AsyncMock) as mock_get_npcs:
+    # _format_npcs_section imports _get_npc_occupants_in_room from look_npc, patch it at the import location
+    with patch("server.commands.look_room._get_npc_occupants_in_room", new_callable=AsyncMock) as mock_get_npcs:
         mock_get_npcs.return_value = []
         result = await _format_npcs_section("test_room")
         assert not result
@@ -137,7 +141,7 @@ async def test_format_npcs_section_empty():
 async def test_format_npcs_section_includes_viewer_phantom():
     """#625: the Also here: line includes the viewer's own phantom alongside real NPCs."""
     with (
-        patch("server.commands.look_room._get_npcs_in_room", new_callable=AsyncMock) as mock_get_npcs,
+        patch("server.commands.look_room._get_npc_occupants_in_room", new_callable=AsyncMock) as mock_get_npcs,
         patch(
             "server.services.phantom_hostile_service.phantom_hostile_service.get_active_phantoms",
             return_value=["phantom_1"],
@@ -147,7 +151,7 @@ async def test_format_npcs_section_includes_viewer_phantom():
             return_value={"phantom_id": "phantom_1", "room_id": "test_room", "name": "Shambling Horror"},
         ),
     ):
-        mock_get_npcs.return_value = ["Goblin"]
+        mock_get_npcs.return_value = [{"name": "Goblin", "disposition": NpcDisposition.PASSIVE_MOB}]
         result = await _format_npcs_section("test_room", "player-1")
         line = next(line for line in result if "Also here" in line)
         assert "Goblin" in line
@@ -299,7 +303,7 @@ async def test_handle_room_look_success():
     mock_persistence.get_containers_by_room_id = AsyncMock(return_value=[])
     mock_persistence.get_player_by_id = AsyncMock(return_value=None)
 
-    with patch("server.commands.look_room._get_npcs_in_room", new_callable=AsyncMock) as mock_get_npcs:
+    with patch("server.commands.look_room._get_npc_occupants_in_room", new_callable=AsyncMock) as mock_get_npcs:
         mock_get_npcs.return_value = []
 
         result = await _handle_room_look(
@@ -328,7 +332,7 @@ async def test_handle_room_look_hallucinates_exits_for_deranged_viewer():
     mock_persistence.get_player_by_id = AsyncMock(return_value=None)
 
     with (
-        patch("server.commands.look_room._get_npcs_in_room", new_callable=AsyncMock) as mock_get_npcs,
+        patch("server.commands.look_room._get_npc_occupants_in_room", new_callable=AsyncMock) as mock_get_npcs,
         patch(
             "server.commands.look_room.lucidity_tier_cache.is_deranged",
             return_value=True,

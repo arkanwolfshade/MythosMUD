@@ -3,7 +3,6 @@
 from unittest.mock import MagicMock, patch
 
 from server.constants.npc_disposition import DEFAULT_NPC_DISPOSITION, NpcDisposition
-from server.realtime import connection_utils
 from server.realtime.connection_utils import (
     get_npc_disposition_from_instance,
     npc_disposition_from_row,
@@ -11,6 +10,7 @@ from server.realtime.connection_utils import (
     npc_occupant,
 )
 from server.services.phantom_visibility import get_viewer_phantom_occupants
+from server.utils import npc_disposition_lookup
 
 
 def test_npc_disposition_from_type_maps_every_definition_type() -> None:
@@ -19,7 +19,7 @@ def test_npc_disposition_from_type_maps_every_definition_type() -> None:
 
 
 def test_npc_disposition_from_type_falls_back_to_passive_with_a_warning() -> None:
-    with patch.object(connection_utils.logger, "warning") as warning:
+    with patch.object(npc_disposition_lookup.logger, "warning") as warning:
         assert npc_disposition_from_type("friendly", "npc_1") is DEFAULT_NPC_DISPOSITION
         assert npc_disposition_from_type(None, "npc_2") is DEFAULT_NPC_DISPOSITION
     assert warning.call_count == 2
