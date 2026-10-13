@@ -17,6 +17,7 @@ from server.events.combat_events import (
     PlayerAttackedEvent,
 )
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType
+from server.realtime.connection_utils import npc_disposition_from_type
 from server.services.nats_exceptions import NATSError
 from server.structured_logging.enhanced_logging_config import get_logger
 
@@ -41,22 +42,39 @@ class CombatEventHandler:
         so the correct NPC name (e.g. "Dr. Francis Morgan") is used instead of
         any stale or incorrect participant.name.
         """
+        npc_instance = self._resolve_npc_instance(participant)
+        name: object = getattr(npc_instance, "name", None)
+        return str(name) if name else participant.name
+
+    def _resolve_npc_disposition(self, participant: CombatParticipant) -> str | None:
+        """
+        NpcDisposition value of an NPC participant, read from its live instance (#1025).
+
+        None for anyone who is not an NPC (players carry no tag). An NPC whose instance cannot be found gets the
+        default, as everywhere else the disposition is derived.
+        """
         if participant.participant_type != CombatParticipantType.NPC:
-            return participant.name
+            return None
+        npc_instance = self._resolve_npc_instance(participant)
+        npc_type: object = getattr(npc_instance, "npc_type", None)
+        return npc_disposition_from_type(npc_type, str(participant.participant_id)).value
+
+    def _resolve_npc_instance(self, participant: CombatParticipant) -> object | None:
+        """Live NPC instance behind an NPC combat participant, or None if it cannot be resolved."""
+        if participant.participant_type != CombatParticipantType.NPC:
+            return None
         integration = getattr(self._combat_service, "_npc_combat_integration_service", None)
         if not integration:
-            return participant.name
+            return None
         uuid_mapping = getattr(integration, "_uuid_mapping", None)
         data_provider = getattr(integration, "_data_provider", None)
         if not uuid_mapping or not data_provider:
-            return participant.name
+            return None
         string_id = uuid_mapping.get_original_string_id(participant.participant_id)
         if not string_id:
-            return participant.name
+            return None
         npc_instance = data_provider.get_npc_instance(string_id)
-        if npc_instance and getattr(npc_instance, "name", None):
-            return str(npc_instance.name)
-        return participant.name
+        return cast("object | None", npc_instance)
 
     async def _publish_player_attacked_event(
         self,
@@ -83,6 +101,7 @@ class CombatEventHandler:
             action_type="auto_attack",
             target_current_dp=target.current_dp,  # Event field name kept for backward compatibility
             target_max_dp=target.max_dp,  # Event field name kept for backward compatibility
+            attacker_disposition=self._resolve_npc_disposition(current_participant),
         )
         # Reason: DYNAMIC_DISPATCH - combat_event_publisher is Any per this function's own parameter.
         # Appropriate because: same unsuppressed convention as this function's own signature.
@@ -113,6 +132,7 @@ class CombatEventHandler:
             action_type="auto_attack",
             target_current_dp=target.current_dp,  # Event field name kept for backward compatibility
             target_max_dp=target.max_dp,  # Event field name kept for backward compatibility
+            npc_disposition=self._resolve_npc_disposition(target),
         )
         # Reason: DYNAMIC_DISPATCH - combat_event_publisher is Any per this function's own parameter.
         # Appropriate because: same unsuppressed convention as this function's own signature.
@@ -138,6 +158,7 @@ class CombatEventHandler:
             damage=damage,
             current_dp=target.current_dp,  # Event field name kept for backward compatibility
             max_dp=target.max_dp,  # Event field name kept for backward compatibility
+            npc_disposition=self._resolve_npc_disposition(target),
         )
         # Reason: DYNAMIC_DISPATCH - combat_event_publisher is Any per this function's own parameter.
         # Appropriate because: same unsuppressed convention as this function's own signature.

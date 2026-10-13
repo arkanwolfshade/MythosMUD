@@ -14,11 +14,13 @@ from typing import Protocol, cast
 from structlog.stdlib import BoundLogger
 
 from server.constants.message_category import MessageCategory
+from server.constants.message_segments import SegmentPart, message_with_segments, npc_name_segment
 from server.events.event_types import NPCDied
 
 from ..services.nats_exceptions import NATSError
 from ..structured_logging.enhanced_logging_config import get_logger
 from .connection_manager import ConnectionManager
+from .connection_utils import npc_disposition_from_type
 from .envelope import build_event
 
 # Protocol stub bodies use Ellipsis (PEP 544); Pylint W2301 conflicts with pyright if replaced with pass.
@@ -172,10 +174,19 @@ async def _npc_died_broadcast_and_bridge(
     room_id, npc_id, npc_name = ids
 
     npc_display = npc_name or "An unknown creature"
+    disposition_raw = data.get("npc_disposition")
+    # Style the name only when the publisher told us the NPC's disposition (#1025); otherwise the line stays plain.
+    name_part: SegmentPart = (
+        npc_name_segment(npc_display, npc_disposition_from_type(disposition_raw, npc_id))
+        if disposition_raw is not None
+        else npc_display
+    )
+    slain = message_with_segments(["The ", name_part, " has been slain."])
     broadcast_data = {
         **data,
-        "message": f"The {npc_display} has been slain.",
+        "message": slain["message"],
         "category": MessageCategory.COMBAT_DEATH.value,
+        **({"segments": slain["segments"]} if disposition_raw is not None else {}),
     }
 
     _ = await connection_manager.broadcast_room_event("npc_died", room_id, broadcast_data)

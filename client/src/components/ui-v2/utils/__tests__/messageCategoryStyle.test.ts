@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { logger } from '../../../../utils/logger';
-import { getMessageCategoryClass, isPlainRegisterCategory } from '../messageCategoryStyle';
+import { getMessageCategoryClass, getSegmentClass, isPlainRegisterCategory } from '../messageCategoryStyle';
 
 describe('getMessageCategoryClass', () => {
   it('builds cat, domain, kind and register classes', () => {
@@ -58,5 +58,20 @@ describe('isPlainRegisterCategory', () => {
       expect(isPlainRegisterCategory(c)).toBe(false);
     }
     expect(isPlainRegisterCategory(undefined)).toBe(false);
+  });
+});
+
+describe('getSegmentClass', () => {
+  it('styles an npc.* span by disposition, with no glyph or label class', () => {
+    expect(getSegmentClass('npc.aggressive_mob')).toBe('seg seg-npc-aggressive_mob');
+    expect(getSegmentClass('npc.quest_giver')).toBe('seg seg-npc-quest_giver');
+    expect(getSegmentClass('npc.shopkeeper')).toBe('seg seg-npc-shopkeeper');
+    expect(getSegmentClass('npc.passive_mob')).toBe('seg seg-npc-passive_mob');
+  });
+
+  it('leaves everything else as plain text', () => {
+    expect(getSegmentClass(undefined)).toBeUndefined();
+    expect(getSegmentClass('chat.say')).toBeUndefined();
+    expect(getSegmentClass('npc.unheard_of')).toBeUndefined();
   });
 });

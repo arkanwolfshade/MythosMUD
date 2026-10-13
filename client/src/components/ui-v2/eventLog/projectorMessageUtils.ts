@@ -5,6 +5,7 @@ import { logger } from '../../../utils/logger';
 import type { GameEvent } from '../eventHandlers/types';
 import type { ChatMessage } from '../types';
 import { sanitizeChatMessageForState } from '../utils/messageUtils';
+import { validateSegments } from '../utils/messageSegments';
 
 const KNOWN_CATEGORIES: ReadonlySet<string> = new Set(MESSAGE_CATEGORIES);
 const FALLBACK_CATEGORY: MessageCategory = 'command.output';
@@ -37,10 +38,21 @@ export function buildChatMessage(
     /** Conversation identity; required on chat.* messages, absent otherwise. */
     channel?: string;
     category: MessageCategory;
+    /** Raw `segments` from the wire (or a client-composed line); validated here, the one place it is checked. */
+    segments?: unknown;
   }
 ): ChatMessage {
-  const { isHtml = false, channel, category } = opts;
-  return { text, timestamp, isHtml, category, ...(channel ? { channel } : {}) };
+  const { isHtml = false, channel, category, segments } = opts;
+  // HTML lines are sanitized as a whole, so spans over their text cannot be trusted to line up.
+  const validSegments = isHtml ? undefined : validateSegments(segments, text);
+  return {
+    text,
+    timestamp,
+    isHtml,
+    category,
+    ...(channel ? { channel } : {}),
+    ...(validSegments ? { segments: validSegments } : {}),
+  };
 }
 
 export function appendMessage(prevMessages: ChatMessage[], message: ChatMessage): ChatMessage[] {

@@ -38,7 +38,8 @@ from server.commands.admin_shutdown_command import _broadcast_shutdown_cancellat
 from server.commands.admin_teleport_utils import broadcast_teleport_effects, notify_player_of_teleport
 from server.commands.rest_countdown_task import create_rest_countdown_task
 from server.constants.message_category import MessageCategory
-from server.constants.npc_disposition import NpcOccupant
+from server.constants.message_segments import npc_name_segment
+from server.constants.npc_disposition import NpcDisposition, NpcOccupant
 from server.events.combat_events import (
     CombatEndedEvent,
     NPCAttackedEvent,
@@ -247,6 +248,14 @@ async def _drive_npc_room_messages() -> list[Emitted]:
     )
     await handler._send_room_message(ROOM_ID, "Rat left north.", message_type="system")
     await handler._send_room_message(ROOM_ID, "A rat scurries in.")
+    # #1025: the same movement line with the NPC's name as a styled segment.
+    await handler._send_room_line(
+        ROOM_ID,
+        handler.message_builder.create_npc_movement_parts(
+            npc_name_segment("Rat", NpcDisposition.AGGRESSIVE_MOB), "north", "left"
+        ),
+        message_type="system",
+    )
     await asyncio.sleep(0)
     return transport.events
 
@@ -397,6 +406,10 @@ async def _drive_npc_died() -> list[Emitted]:
     transport = _Transport()
     await EventHandler(connection_manager=_as(ConnectionManager, transport)).handle_npc_died_event(
         {"room_id": ROOM_ID, "npc_id": "npc-1", "npc_name": "Shoggoth"}
+    )
+    # #1025: the publisher tells us the NPC's disposition, so the name becomes a styled segment.
+    await EventHandler(connection_manager=_as(ConnectionManager, transport)).handle_npc_died_event(
+        {"room_id": ROOM_ID, "npc_id": "npc-2", "npc_name": "Shoggoth", "npc_disposition": "aggressive_mob"}
     )
     return transport.events
 
@@ -588,6 +601,30 @@ async def test_emitter_chooses_the_documented_category(
     ]
     assert categories
     assert set(categories) == {expected}
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("emitter", INVENTORY, ids=[e.name for e in INVENTORY])
+async def test_segments_always_join_back_to_the_message(emitter: Emitter) -> None:
+    """#1025: wherever an emitter attaches ``segments``, they concatenate to exactly ``message``."""
+    for event_type, data in await emitter.drive():
+        if "segments" not in data:
+            continue
+        label = f"{emitter.name} / {event_type}"
+        segments = cast(list[dict[str, str]], data["segments"])
+        assert "".join(segment["text"] for segment in segments) == data["message"], f"{label}: segments != message"
+        for segment in segments:
+            if "category" in segment:
+                _assert_valid_category(label, segment["category"])
+
+
+@pytest.mark.asyncio
+async def test_inventory_exercises_segments() -> None:
+    """Guard the guard: if no driver emits ``segments``, the join test above is passing vacuously."""
+    produced: set[str] = set()
+    for emitter in INVENTORY:
+        produced |= {event_type for event_type, data in await emitter.drive() if "segments" in data}
+    assert {"room_message", "npc_died"} <= produced
 
 
 # --- inventory vs the client projector ------------------------------------------------------------------

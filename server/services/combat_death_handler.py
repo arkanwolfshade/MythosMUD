@@ -14,6 +14,7 @@ from structlog.stdlib import BoundLogger
 
 from server.async_persistence import AsyncPersistenceLayer
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType
+from server.realtime.connection_utils import get_npc_disposition_from_instance
 from server.services.nats_exceptions import NATSError
 from server.structured_logging.enhanced_logging_config import get_logger
 
@@ -280,6 +281,7 @@ class CombatDeathHandler:
                 npc_name=target.name,
                 xp_reward=xp_reward,
                 killer_id=killer_id,
+                npc_disposition=get_npc_disposition_from_instance(original_npc_id).value,
             )
             _ = await self._combat_service.publish_npc_died_event_to_nats(death_event)
             logger.info("NPCDiedEvent published successfully", npc_id=original_npc_id, combat_id=combat.combat_id)

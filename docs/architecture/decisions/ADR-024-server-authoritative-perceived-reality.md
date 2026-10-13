@@ -129,7 +129,9 @@ Occupant NPCs are now `{ name, disposition }` (`server/constants/npc_disposition
 `NPCDefinitionType` value (`shopkeeper`, `quest_giver`, `passive_mob`, `aggressive_mob`), and the Occupants panel styles
 each NPC from it. **Phantoms are always `aggressive_mob`:** `get_viewer_phantom_occupants`
 (`services/phantom_visibility.py`) tags every phantom, whatever its tier or whether it can damage anyone, so a phantom
-is indistinguishable from a real hostile. The original text above is left as written; this note supersedes it.
+is indistinguishable from a real hostile. NPC names inside message lines follow the same rule through `segments` (`npc.<disposition>`), so any phantom
+line that is later segmented must tag the phantom `aggressive_mob`. The original text above is left as written; this
+note supersedes it.
 
 ## 4. Alternatives Considered
 

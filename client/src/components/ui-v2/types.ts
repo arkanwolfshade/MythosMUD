@@ -80,6 +80,13 @@ export interface QuestLogEntry {
   state: string;
 }
 
+/** A styled span inside a message line (#1025). The spans' text joins back to `ChatMessage.text`. */
+export interface MessageSegment {
+  text: string;
+  /** Style of this span; absent means the line's own category. */
+  category?: MessageCategory;
+}
+
 export interface ChatMessage {
   text: string;
   timestamp: string;
@@ -91,6 +98,8 @@ export interface ChatMessage {
   channel?: string;
   /** Optional: 'npc' | 'system' when server marks non-player speakers. */
   speakerKind?: string;
+  /** Validated styled spans (NPC names); only on plain-text lines, and only when they join back to `text`. */
+  segments?: MessageSegment[];
   aliasChain?: Array<{
     original: string;
     expanded: string;

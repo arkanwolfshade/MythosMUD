@@ -12,6 +12,7 @@ from datetime import UTC, datetime
 from typing import Any, cast
 
 from ..constants.message_category import MessageCategory
+from ..constants.message_segments import SegmentPart, join_parts
 from ..constants.npc_disposition import NpcOccupant
 from ..events.event_types import PlayerEnteredRoom, PlayerLeftRoom
 
@@ -112,15 +113,27 @@ class MessageBuilder:
         Returns:
             Formatted movement message
         """
+        return join_parts(self.create_npc_movement_parts(npc_name, direction, movement_type))
+
+    def create_npc_movement_parts(
+        self, npc: SegmentPart, direction: str | None, movement_type: str
+    ) -> list[SegmentPart]:
+        """
+        The NPC movement line as parts, so the NPC's name can be a styled segment (#1025).
+
+        Args:
+            npc: The NPC's name, or its ``npc_name_segment``
+            direction: Direction of movement (e.g., "north", "south") or None
+            movement_type: "left" or "entered"
+
+        Returns:
+            Parts whose plain text is the movement message
+        """
         if movement_type == "left":
-            if direction:
-                return f"{npc_name} left {direction}."
-            return f"{npc_name} left the room."
+            return [npc, f" left {direction}." if direction else " left the room."]
         if movement_type == "entered":
-            if direction:
-                return f"{npc_name} entered from {direction}."
-            return f"{npc_name} entered the room."
-        return f"{npc_name} moved."
+            return [npc, f" entered from {direction}." if direction else " entered the room."]
+        return [npc, " moved."]
 
     def build_occupants_update_message(
         self, room_id_str: str, players: list[str], npcs: list[NpcOccupant], all_occupants: list[str]
