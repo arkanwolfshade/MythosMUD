@@ -1,98 +1,71 @@
 # AliasStorage
 
-> God node · 248 connections · `server/alias_storage.py`
+> 214 nodes
 
-**Community:** [Event Bus & Persistence Core](Event_Bus_&_Persistence_Core.md)
+## Key Concepts
 
-## Connections by Relation
+- **AliasStorage** (248 connections) — `server/alias_storage.py`
+- **get_npc_instance_service()** (78 connections) — `server/services/npc_instance_service.py`
+- **test_npc_admin_commands.py** (54 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **asyncio** (41 connections)
+- **router.py** (32 connections) — `server/commands/npc_admin/router.py`
+- **npc_admin/__init__.py** (25 connections) — `server/commands/npc_admin/__init__.py`
+- **instance.py** (25 connections) — `server/commands/npc_admin/instance.py`
+- **npc_admin_commands.py** (22 connections) — `server/commands/npc_admin_commands.py`
+- **_build_subcommand_map()** (20 connections) — `server/commands/npc_admin/router.py`
+- **definition.py** (19 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_command()** (18 connections) — `server/commands/npc_admin/router.py`
+- **handle_npc_create_command()** (16 connections) — `server/commands/npc_admin/definition.py`
+- **test_occupants.py** (16 connections) — `server/commands/npc_admin/test_occupants.py`
+- **handle_npc_behavior_command()** (15 connections) — `server/commands/npc_admin/behavior.py`
+- **handle_npc_spawn_command()** (15 connections) — `server/commands/npc_admin/instance.py`
+- **handle_npc_test_occupants_command()** (14 connections) — `server/commands/npc_admin/test_occupants.py`
+- **handle_npc_react_command()** (13 connections) — `server/commands/npc_admin/behavior.py`
+- **handle_npc_stop_command()** (13 connections) — `server/commands/npc_admin/behavior.py`
+- **handle_npc_delete_command()** (13 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_edit_command()** (13 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_list_command()** (13 connections) — `server/commands/npc_admin/definition.py`
+- **behavior.py** (13 connections) — `server/commands/npc_admin/behavior.py`
+- **npc_admin/monitoring.py** (13 connections) — `server/commands/npc_admin/monitoring.py`
+- **handle_npc_despawn_command()** (12 connections) — `server/commands/npc_admin/instance.py`
+- **handle_npc_move_command()** (12 connections) — `server/commands/npc_admin/instance.py`
+- *... and 189 more nodes in this community*
 
-### calls
-- _ensure_alias_storage() `EXTRACTED`
-- _websocket_unified_command_result() `EXTRACTED`
-- .delete_player() `EXTRACTED`
+## Relationships
 
-### contains
-- alias_storage.py `EXTRACTED`
+- [command_error](command_error.md) (33 shared connections)
+- [alias_storage.py](alias_storage.py.md) (30 shared connections)
+- [get_logger](get_logger.md) (22 shared connections)
+- [MessageCategory](MessageCategory.md) (19 shared connections)
+- [PlayerCombatService](PlayerCombatService.md) (19 shared connections)
+- [command_service.py](command_service.py.md) (15 shared connections)
+- [MagicCommandHandler](MagicCommandHandler.md) (12 shared connections)
+- [test_alias_commands.py](test_alias_commands.py.md) (11 shared connections)
+- [AliasGraph](AliasGraph.md) (10 shared connections)
+- [test_alias_storage.py](test_alias_storage.py.md) (10 shared connections)
+- [SecureBaseModel](SecureBaseModel.md) (9 shared connections)
+- [PlayerPositionService](PlayerPositionService.md) (7 shared connections)
 
-### imports
-- command_service.py `EXTRACTED`
-- admin_setstat_command.py `EXTRACTED`
-- look_command.py `EXTRACTED`
-- test_admin_shutdown_command.py `EXTRACTED`
-- player_service.py `EXTRACTED`
-- combat_handler.py `EXTRACTED`
-- rescue_commands.py `EXTRACTED`
-- command_handler_unified.py `EXTRACTED`
-- admin_commands.py `EXTRACTED`
-- admin_setlucidity_command.py `EXTRACTED`
-- admin_summon_command.py `EXTRACTED`
-- combat_assist.py `EXTRACTED`
-- logout_commands.py `EXTRACTED`
-- quest_commands.py `EXTRACTED`
-- test_alias_commands.py `EXTRACTED`
-- admin_teleport_commands.py `EXTRACTED`
-- admin_shutdown_command.py `EXTRACTED`
-- admin_hallucinate_command.py `EXTRACTED`
-- catalog_commands.py `EXTRACTED`
-- rest_command.py `EXTRACTED`
+## Source Files
 
-### method
-- ._fetch() `EXTRACTED`
-- .create_alias() `EXTRACTED`
-- ._call_scalar() `EXTRACTED`
-- .get_player_aliases() `EXTRACTED`
-- .get_alias() `EXTRACTED`
-- .remove_alias() `EXTRACTED`
-- .delete_player_aliases_by_id() `EXTRACTED`
-- .validate_alias_name() `EXTRACTED`
-- .validate_alias_command() `EXTRACTED`
+- `server/alias_storage.py`
+- `server/commands/combat_handler.py`
+- `server/commands/npc_admin/__init__.py`
+- `server/commands/npc_admin/behavior.py`
+- `server/commands/npc_admin/definition.py`
+- `server/commands/npc_admin/instance.py`
+- `server/commands/npc_admin/monitoring.py`
+- `server/commands/npc_admin/router.py`
+- `server/commands/npc_admin/test_occupants.py`
+- `server/commands/npc_admin_commands.py`
+- `server/services/npc_instance_service.py`
+- `server/tests/unit/commands/test_npc_admin_commands.py`
 
-### rationale_for
-- Player alias persistence backed by the ``player_aliases`` table. Aliases are… `EXTRACTED`
+## Audit Trail
 
-### references
-- _handle_admin_set_stat_command() `EXTRACTED`
-- handle_ground_command() `EXTRACTED`
-- handle_logout_command() `EXTRACTED`
-- handle_alias_command() `EXTRACTED`
-- handle_teleport_command() `EXTRACTED`
-- handle_party_command() `EXTRACTED`
-- handle_rest_command() `EXTRACTED`
-- handle_go_command() `EXTRACTED`
-- handle_goto_command() `EXTRACTED`
-- handle_whisper_command() `EXTRACTED`
-- handle_pray_command() `EXTRACTED`
-- handle_quest_command() `EXTRACTED`
-- _handle_admin_hallucinate_command() `EXTRACTED`
-- handle_mute_command() `EXTRACTED`
-- handle_debrief_command() `EXTRACTED`
-- _handle_admin_set_lucidity_command() `EXTRACTED`
-- handle_look_command() `EXTRACTED`
-- handle_confirm_goto_command() `EXTRACTED`
-- handle_confirm_teleport_command() `EXTRACTED`
-- handle_deposit_command() `EXTRACTED`
-
-### uses
-- CombatCommandHandler `INFERRED`
-- TestHelperFunctions `INFERRED`
-- MagicCommandHandler `INFERRED`
-- handle_read_command() `INFERRED`
-- _prepare_command_for_processing() `INFERRED`
-- process_command_unified() `INFERRED`
-- handle_teach_command() `INFERRED`
-- _handle_special_command_routing() `INFERRED`
-- _process_alias_expansion() `INFERRED`
-- run_handle_protect_command() `INFERRED`
-- run_handle_assist_command() `INFERRED`
-- run_handle_taunt_command() `INFERRED`
-- _run_expanded_alias() `INFERRED`
-- handle_kick_command() `INFERRED`
-- handle_punch_command() `INFERRED`
-- handle_strike_command() `INFERRED`
-- handle_assist_command() `INFERRED`
-- handle_attack_command() `INFERRED`
-- handle_flee_command() `INFERRED`
-- handle_protect_command() `INFERRED`
+- EXTRACTED: 736 (89%)
+- INFERRED: 92 (11%)
+- AMBIGUOUS: 0 (0%)
 
 ---
 

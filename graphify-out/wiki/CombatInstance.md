@@ -1,97 +1,66 @@
 # CombatInstance
 
-> God node · 271 connections · `server/models/combat.py`
+> 174 nodes
 
-**Community:** [Combat Instance Turns](Combat_Instance_Turns.md)
+## Key Concepts
 
-## Connections by Relation
+- **CombatInstance** (271 connections) — `server/models/combat.py`
+- **test_combat_flee_handler.py** (43 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **combat_flee_handler.py** (36 connections) — `server/services/combat_flee_handler.py`
+- **_make_participant()** (25 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **asyncio** (21 connections)
+- **execute_voluntary_flee()** (19 connections) — `server/services/combat_flee_handler.py`
+- **execute_flee_failed_free_hits()** (14 connections) — `server/services/combat_flee_handler.py`
+- **UUID** (12 connections)
+- **_check_involuntary_flee_with_session()** (11 connections) — `server/services/combat_flee_handler.py`
+- **try_voluntary_flee_roll()** (11 connections) — `server/services/combat_flee_handler.py`
+- **_involuntary_flee_on_cooldown()** (10 connections) — `server/services/combat_flee_handler.py`
+- **_FleeFreeHitsCombatService** (9 connections) — `server/services/combat_flee_handler.py`
+- **check_involuntary_flee()** (9 connections) — `server/services/combat_flee_handler.py`
+- **_make_npc_participant()** (9 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **._handle_npc_death()** (8 connections) — `server/services/combat_death_handler.py`
+- **_resolve_free_hit_damage()** (8 connections) — `server/services/combat_flee_handler.py`
+- **test_execute_flee_failed_free_hits_one_opponent()** (8 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_execute_flee_failed_free_hits_stops_on_combat_ended()** (8 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_execute_flee_failed_free_hits_stops_on_target_died()** (8 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_execute_flee_failed_free_hits_two_opponents_turn_order()** (8 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **UUID** (8 connections)
+- **._publish_npc_death_event()** (7 connections) — `server/services/combat_death_handler.py`
+- **_ordered_free_hit_attackers()** (7 connections) — `server/services/combat_flee_handler.py`
+- **_alive_result()** (7 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_execute_flee_failed_free_hits_no_opponents_noop()** (7 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- *... and 149 more nodes in this community*
 
-### calls
-- _combat() `EXTRACTED`
-- _make_combat() `EXTRACTED`
-- _make_combat_instance() `EXTRACTED`
-- _combat() `EXTRACTED`
-- _fight() `EXTRACTED`
-- _combat_instance() `EXTRACTED`
-- _fight() `EXTRACTED`
-- _make_combat() `EXTRACTED`
-- _fight() `EXTRACTED`
-- test_get_combat_target_auto_selects_opponent() `EXTRACTED`
-- _start_fight() `EXTRACTED`
-- _fight() `EXTRACTED`
-- test_flee_no_exits_returns_no_escape() `EXTRACTED`
-- test_flee_roll_fails_returns_failure_and_uses_action() `EXTRACTED`
-- test_flee_roll_succeeds_returns_success() `EXTRACTED`
-- _combat() `EXTRACTED`
-- _fight() `EXTRACTED`
-- test_execute_flee_failed_free_hits_one_opponent() `EXTRACTED`
-- test_execute_flee_failed_free_hits_stops_on_combat_ended() `EXTRACTED`
-- test_execute_flee_failed_free_hits_stops_on_target_died() `EXTRACTED`
+## Relationships
 
-### contains
-- models/combat.py `EXTRACTED`
+- [CombatService](CombatService.md) (74 shared connections)
+- [CombatParticipant](CombatParticipant.md) (61 shared connections)
+- [test_combat_service_modules.py](test_combat_service_modules.py.md) (21 shared connections)
+- [CombatAttackHandler](CombatAttackHandler.md) (20 shared connections)
+- [aggro_threat.py](aggro_threat.py.md) (19 shared connections)
+- [SuccessLevel](SuccessLevel.md) (12 shared connections)
+- [combat_assist.py](combat_assist.py.md) (9 shared connections)
+- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (8 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (7 shared connections)
+- [test_n_player_combat.py](test_n_player_combat.py.md) (7 shared connections)
+- [CombatEventHandler](CombatEventHandler.md) (6 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
 
-### imports
-- combat_service.py `EXTRACTED`
-- test_combat_service_modules.py `EXTRACTED`
-- test_combat.py `EXTRACTED`
-- test_combat_turn_processor.py `EXTRACTED`
-- combat_turn_participant_actions.py `EXTRACTED`
-- test_combat_flee_handler.py `EXTRACTED`
-- test_combat_assist.py `EXTRACTED`
-- test_combat_service.py `EXTRACTED`
-- test_n_player_combat.py `EXTRACTED`
-- test_utility_threat.py `EXTRACTED`
-- aggro_threat.py `EXTRACTED`
-- test_combat_attack_handler.py `EXTRACTED`
-- test_combat_protect_action.py `EXTRACTED`
-- test_combat_protect.py `EXTRACTED`
-- combat_assist.py `EXTRACTED`
-- combat_flee_handler.py `EXTRACTED`
-- test_aggro_threat.py `EXTRACTED`
-- test_combat_death_handler.py `EXTRACTED`
-- test_combat_taunt_action.py `EXTRACTED`
-- combat_service_npc.py `EXTRACTED`
+## Source Files
 
-### method
-- .active_guard() `EXTRACTED`
-- .get_alive_participants() `EXTRACTED`
-- .set_guard() `EXTRACTED`
-- .living_tracked_target() `EXTRACTED`
-- .is_guarding() `EXTRACTED`
-- .get_participants_by_initiative() `EXTRACTED`
-- .get_current_turn_participant() `EXTRACTED`
-- .is_combat_over() `EXTRACTED`
-- .queue_action() `EXTRACTED`
-- .get_queued_actions() `EXTRACTED`
-- .clear_queued_actions() `EXTRACTED`
-- .advance_turn() `EXTRACTED`
-- .update_activity() `EXTRACTED`
+- `server/models/combat.py`
+- `server/services/combat_cleanup_handler.py`
+- `server/services/combat_death_handler.py`
+- `server/services/combat_flee_handler.py`
+- `server/services/combat_service.py`
+- `server/tests/unit/models/test_combat.py`
+- `server/tests/unit/services/test_combat_flee_handler.py`
 
-### rationale_for
-- Represents an active combat instance. `EXTRACTED`
+## Audit Trail
 
-### references
-- add_damage_threat() `EXTRACTED`
-- _assist() `EXTRACTED`
-- update_aggro() `EXTRACTED`
-- _protect() `EXTRACTED`
-- get_or_create_hate_list() `EXTRACTED`
-- resolve_protect_action() `EXTRACTED`
-- execute_voluntary_flee() `EXTRACTED`
-- resolve_taunt_action() `EXTRACTED`
-- .create_combat_instance() `EXTRACTED`
-- intercept_for_guard() `EXTRACTED`
-- add_utility_threat() `EXTRACTED`
-- add_heal_threat() `EXTRACTED`
-- apply_taunt() `EXTRACTED`
-- process_player_turn() `EXTRACTED`
-- _hate() `EXTRACTED`
-- join_existing_combat() `EXTRACTED`
-- _resolve_flee_preconditions() `EXTRACTED`
-- resolve_npc_participant_id_in_combat() `EXTRACTED`
-- _validate_flee_combat_and_room() `EXTRACTED`
-- finalize_attack_result() `EXTRACTED`
+- EXTRACTED: 612 (100%)
+- INFERRED: 3 (0%)
+- AMBIGUOUS: 0 (0%)
 
 ---
 

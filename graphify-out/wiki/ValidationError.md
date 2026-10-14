@@ -1,92 +1,67 @@
 # ValidationError
 
-> God node · 327 connections · `server/exceptions.py`
+> 213 nodes
 
-**Community:** [Schema Validation & Channels](Schema_Validation_&_Channels.md)
+## Key Concepts
 
-## Connections by Relation
+- **ValidationError** (325 connections) — `server/exceptions.py`
+- **InventoryCommandFactory** (98 connections) — `server/utils/command_factories_inventory.py`
+- **test_command_factories_inventory.py** (70 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_command_factories_inventory_helpers.py** (22 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **.create_get_command()** (20 connections) — `server/utils/command_factories_inventory.py`
+- **.create_pickup_command()** (19 connections) — `server/utils/command_factories_inventory.py`
+- **.create_put_command()** (19 connections) — `server/utils/command_factories_inventory.py`
+- **command_factories_inventory.py** (17 connections) — `server/utils/command_factories_inventory.py`
+- **.create_equip_command()** (16 connections) — `server/utils/command_factories_inventory.py`
+- **.create_unequip_command()** (14 connections) — `server/utils/command_factories_inventory.py`
+- **MythosValidationError** (10 connections)
+- **.create_drop_command()** (9 connections) — `server/utils/command_factories_inventory.py`
+- **.create_use_command()** (7 connections) — `server/utils/command_factories_inventory.py`
+- **test_create_get_command_separator_needs_both_sides()** (6 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_put_command_separator_needs_both_sides()** (6 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_use_command_rejects_missing_or_zero_selector()** (6 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_deposit_and_withdraw_share_item_and_quantity_parsing()** (6 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **.create_inventory_command()** (6 connections) — `server/utils/command_factories_inventory.py`
+- **_pop_trailing_quantity()** (6 connections) — `server/utils/command_factories_inventory.py`
+- **_split_item_container()** (6 connections) — `server/utils/command_factories_inventory.py`
+- **parametrize** (6 connections)
+- **test_create_drop_command_invalid_index()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **test_create_inventory_command_with_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **test_create_pickup_command_invalid_index()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **test_create_pickup_command_invalid_quantity()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- *... and 188 more nodes in this community*
 
-### calls
-- get_database_path() `EXTRACTED`
-- handle_exception() `EXTRACTED`
-- ._get_rooms_for_movement() `EXTRACTED`
-- ._resolve_player_for_movement() `EXTRACTED`
-- .test_roll_character_stats_profession_not_found() `EXTRACTED`
-- test_get_database_path_none_url() `EXTRACTED`
-- test_get_engine_raises_validation_error() `EXTRACTED`
-- test_get_session_maker_raises_validation_error() `EXTRACTED`
-- test_handle_delirium_validation_generic_500() `EXTRACTED`
-- test_handle_delirium_validation_lucidity_keyword() `EXTRACTED`
-- test_handle_delirium_validation_must_be_delirious() `EXTRACTED`
-- test_handle_delirium_validation_not_found() `EXTRACTED`
-- test_handle_respawn_validation_generic_500() `EXTRACTED`
-- test_handle_respawn_validation_must_be_dead() `EXTRACTED`
-- test_handle_respawn_validation_not_found() `EXTRACTED`
-- test_handle_validation_error_security_sensitive() `EXTRACTED`
-- test_parse_command_string_validation_error() `EXTRACTED`
-- .validate_and_get_profession() `EXTRACTED`
-- test_create_character_with_stats_validation_error() `EXTRACTED`
-- test_validation_error() `EXTRACTED`
+## Relationships
 
-### contains
-- server/exceptions.py `EXTRACTED`
+- [log_and_raise_enhanced](log_and_raise_enhanced.md) (52 shared connections)
+- [get_logger](get_logger.md) (45 shared connections)
+- [command_parser.py](command_parser.py.md) (23 shared connections)
+- [UtilityCommandFactory](UtilityCommandFactory.md) (19 shared connections)
+- [BaseCommand](BaseCommand.md) (17 shared connections)
+- [PlayerService](PlayerService.md) (14 shared connections)
+- [ExplorationCommandFactory](ExplorationCommandFactory.md) (14 shared connections)
+- [test_player_respawn_api.py](test_player_respawn_api.py.md) (12 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (11 shared connections)
+- [DatabaseManager](DatabaseManager.md) (10 shared connections)
+- [PlayerStateCommandFactory](PlayerStateCommandFactory.md) (10 shared connections)
+- [npc_database.py](npc_database.py.md) (9 shared connections)
 
-### imports
-- command_service.py `EXTRACTED`
-- database.py `EXTRACTED`
-- test_container_service.py `EXTRACTED`
-- test_command_factories_inventory.py `EXTRACTED`
-- test_movement_service.py `EXTRACTED`
-- api/character_creation.py `EXTRACTED`
-- test_players_api_coverage.py `EXTRACTED`
-- players.py `EXTRACTED`
-- test_command_factories_utility.py `EXTRACTED`
-- test_container_persistence_extended_row_helpers.py `EXTRACTED`
-- inventory_command_helpers.py `EXTRACTED`
-- command_parser.py `EXTRACTED`
-- test_command_parser.py `EXTRACTED`
-- player_service.py `EXTRACTED`
-- container_persistence.py `EXTRACTED`
-- test_command_factories_exploration.py `EXTRACTED`
-- test_container_persistence_async_helpers.py `EXTRACTED`
-- test_player_service_mutations.py `EXTRACTED`
-- test_database_helpers.py `EXTRACTED`
-- test_database_extended.py `EXTRACTED`
+## Source Files
 
-### inherits
-- MythosMUDError `EXTRACTED`
+- `server/exceptions.py`
+- `server/game/profession_service.py`
+- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/utils/test_command_factories_inventory.py`
+- `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- `server/tests/unit/utils/test_command_parser.py`
+- `server/tests/unit/utils/test_command_processor.py`
+- `server/utils/command_factories_inventory.py`
 
-### method
-- .__init__() `EXTRACTED`
+## Audit Trail
 
-### rationale_for
-- Data validation errors (e.g. empty local/whisper message). Log at warning, not… `EXTRACTED`
-
-### references
-- ._handle_pydantic_validation_error() `EXTRACTED`
-- _handle_validation_error() `EXTRACTED`
-
-### uses
-- DatabaseManager `INFERRED`
-- SpellEffects `INFERRED`
-- validate_room_data() `INFERRED`
-- _initialize_npc_database() `INFERRED`
-- TestRollCharacterStats `INFERRED`
-- TestHandleTransferItemsExceptions `INFERRED`
-- TestValidateRoomData `INFERRED`
-- init_npc_db() `INFERRED`
-- get_npc_database_path() `INFERRED`
-- test_apply_lucidity_loss_validation_maps_to_404() `INFERRED`
-- TestNPCDatabaseInitialization `INFERRED`
-- fetch_user_by_username_case_insensitive() `INFERRED`
-- _create_engine_or_raise() `INFERRED`
-- test_respawn_player_from_delirium_not_found() `INFERRED`
-- test_respawn_player_not_found() `INFERRED`
-- test_respawn_player_validation_error() `INFERRED`
-- test_create_player_validation_error_to_400() `INFERRED`
-- test_delete_player_validation_error() `INFERRED`
-- test_resolve_player_username_error() `INFERRED`
-- test_get_database_path_none_url_raises() `INFERRED`
+- EXTRACTED: 474 (62%)
+- INFERRED: 288 (38%)
+- AMBIGUOUS: 0 (0%)
 
 ---
 

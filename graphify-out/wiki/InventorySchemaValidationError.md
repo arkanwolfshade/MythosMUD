@@ -1,0 +1,64 @@
+# InventorySchemaValidationError
+
+> 59 nodes
+
+## Key Concepts
+
+- **InventorySchemaValidationError** (21 connections) — `server/schemas/shared/inventory_schema.py`
+- **PlayerSavePreparer** (16 connections) — `server/persistence/repositories/player_repository_save.py`
+- **schemas/shared/__init__.py** (15 connections) — `server/schemas/shared/__init__.py`
+- **validate_inventory_payload()** (13 connections) — `server/schemas/shared/inventory_schema.py`
+- **test_inventory_schema.py** (13 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **player_repository_save.py** (11 connections) — `server/persistence/repositories/player_repository_save.py`
+- **.prepare()** (10 connections) — `server/persistence/repositories/player_repository_save.py`
+- **validate_inventory_items()** (10 connections) — `server/schemas/shared/inventory_schema.py`
+- **inventory_schema.py** (8 connections) — `server/schemas/shared/inventory_schema.py`
+- **._prepare_inventory_payload()** (7 connections) — `server/persistence/repositories/player_repository_save.py`
+- **Any** (7 connections)
+- **Player** (7 connections)
+- **_parse_equipped_raw()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
+- **_parse_inventory_raw()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
+- **._ensure_inventory_record()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
+- **._normalize_timestamps()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
+- **._upsert_numeric_defaults()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
+- **._upsert_string_defaults()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
+- **_build_validator()** (5 connections) — `server/schemas/shared/inventory_schema.py`
+- **test_validate_inventory_items_inner_container_capacity_uses_global_cap()** (5 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **._normalize_is_admin()** (4 connections) — `server/persistence/repositories/player_repository_save.py`
+- **test_validate_inventory_items_invalid_quantity()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_items_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_payload_invalid_inventory()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_payload_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- *... and 34 more nodes in this community*
+
+## Relationships
+
+- [alias_storage.py](alias_storage.py.md) (8 shared connections)
+- [TargetType](TargetType.md) (4 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [PlayerInventory](PlayerInventory.md) (3 shared connections)
+- [session](session.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [SecureBaseModel](SecureBaseModel.md) (2 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (2 shared connections)
+- [migrate_combat_data.py](migrate_combat_data.py.md) (1 shared connections)
+- [TargetMatch](TargetMatch.md) (1 shared connections)
+- [test_follow_commands.py](test_follow_commands.py.md) (1 shared connections)
+- [party_commands.py](party_commands.py.md) (1 shared connections)
+
+## Source Files
+
+- `server/persistence/repositories/player_repository_save.py`
+- `server/schemas/shared/__init__.py`
+- `server/schemas/shared/inventory_schema.py`
+- `server/tests/unit/schemas/test_inventory_schema.py`
+
+## Audit Trail
+
+- EXTRACTED: 128 (94%)
+- INFERRED: 8 (6%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*
