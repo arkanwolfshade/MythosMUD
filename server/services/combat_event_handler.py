@@ -200,7 +200,11 @@ class CombatEventHandler:
                 combat_event_publisher, current_participant, target, attacker_name, target_name, damage, combat
             )
 
-        if target.participant_type == CombatParticipantType.NPC:
+        # A player's own hit is already announced by npc_attacked (#1056); npc_took_damage would repeat it.
+        if (
+            target.participant_type == CombatParticipantType.NPC
+            and current_participant.participant_type != CombatParticipantType.PLAYER
+        ):
             await self._publish_npc_took_damage_event(combat_event_publisher, target, target_name, damage, combat)
 
     async def handle_attack_events_and_xp(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Attack event handling requires many parameters for context and event processing

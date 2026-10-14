@@ -1,5 +1,8 @@
 """Unit tests for CombatEventHandler."""
 
+# pyright: reportPrivateUsage=false, reportAny=false
+# Reason: _publish_attack_events is the unit under test, and the NATS publisher is a MagicMock.
+
 import datetime
 import uuid
 from unittest.mock import AsyncMock, MagicMock
@@ -90,6 +93,38 @@ async def test_publish_attack_events_player_target() -> None:
     combat = MagicMock(room_id="room-a", combat_id=uuid.uuid4())
     await handler._publish_attack_events(attacker, target, 10, combat)
     publisher.publish_player_attacked.assert_awaited_once()
+
+
+def _wired_publisher() -> tuple[MagicMock, CombatEventHandler]:
+    publisher = MagicMock()
+    publisher.publish_npc_attacked = AsyncMock()
+    publisher.publish_npc_took_damage = AsyncMock()
+    publisher.publish_player_attacked = AsyncMock()
+    combat_service = MagicMock(_combat_event_publisher=publisher, _npc_combat_integration_service=None)
+    return publisher, CombatEventHandler(combat_service)
+
+
+@pytest.mark.asyncio
+async def test_melee_hit_on_npc_publishes_only_npc_attacked() -> None:
+    """#1056: npc_took_damage would repeat the attacker's own "You attack ..." line as "Dealt N damage"."""
+    publisher, handler = _wired_publisher()
+    combat = MagicMock(room_id="room-a", combat_id=uuid.uuid4())
+    player = _participant("Alice", CombatParticipantType.PLAYER)
+    patient = _participant("Patient", CombatParticipantType.NPC)
+    await handler._publish_attack_events(player, patient, 10, combat)
+    publisher.publish_npc_attacked.assert_awaited_once()
+    publisher.publish_npc_took_damage.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_non_player_hit_on_npc_still_publishes_npc_took_damage() -> None:
+    """npc_took_damage stays the announcement for damage that is not a player's melee hit."""
+    publisher, handler = _wired_publisher()
+    combat = MagicMock(room_id="room-a", combat_id=uuid.uuid4())
+    ghoul = _participant("Ghoul", CombatParticipantType.NPC)
+    patient = _participant("Patient", CombatParticipantType.NPC)
+    await handler._publish_attack_events(ghoul, patient, 10, combat)
+    publisher.publish_npc_took_damage.assert_awaited_once()
 
 
 @pytest.mark.asyncio

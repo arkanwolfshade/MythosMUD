@@ -1,5 +1,8 @@
 """Unit tests for MagicServiceHealingMixin."""
 
+# pyright: reportPrivateUsage=false, reportAny=false
+# Reason: the mixin's private DP-publish helpers are under test, and the persistence layer is a MagicMock.
+
 import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -84,6 +87,22 @@ async def test_publish_or_send_dp_update_publishes_event():
     kwargs = svc._publish_dp_event.await_args.kwargs
     assert kwargs["current_dp"] == 50
     assert kwargs["old_dp"] == 40
+
+
+@pytest.mark.asyncio
+async def test_publish_or_send_dp_update_reports_negative_old_dp_for_mortally_wounded():
+    """#1059: healing a player up from -6 DP reports old_dp -6, not a clamped 0."""
+    svc = _HealingService()
+    player = MagicMock()
+    player.get_stats.return_value = {"current_dp": 4, "max_dp": 100}
+    svc.player_service.persistence.get_player_by_id = AsyncMock(return_value=player)
+    svc._publish_dp_event = AsyncMock()  # type: ignore[method-assign]
+    await svc._publish_or_send_dp_update(uuid.uuid4(), {"heal_amount": 10}, "heal_self", "room_1")
+    await_args = svc._publish_dp_event.await_args
+    assert await_args is not None
+    kwargs = await_args.kwargs
+    assert kwargs["old_dp"] == -6
+    assert kwargs["current_dp"] == 4
 
 
 @pytest.mark.asyncio

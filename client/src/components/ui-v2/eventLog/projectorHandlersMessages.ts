@@ -222,13 +222,21 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     return { ...prevState, messages: appendMessage(prevState.messages, msg) };
   },
 
+  player_mortally_wounded(prevState, event) {
+    return messageHandlers.system!(prevState, event);
+  },
+
+  player_mortally_wounded_room(prevState, event) {
+    return messageHandlers.system!(prevState, event);
+  },
+
   npc_attacked(prevState, event) {
     const d = (event.data?.event_data ?? event.data) as Record<string, unknown> | undefined;
     if (!d) return prevState;
     const npcName = (d.npc_name || d.target_name) as string | undefined;
     const damage = d.damage as number | undefined;
     if (!npcName || damage === undefined) return prevState;
-    const { text, segments } = buildLine(npcAttackedParts(d));
+    const { text, segments } = buildLine(npcAttackedParts(d, prevState.player?.id));
     const msg = buildChatMessage(text, event.timestamp, {
       category: readCategory(d, event.event_type),
       segments,
@@ -270,7 +278,7 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     if (mergedPlayer) {
       nextState = { ...nextState, player: mergedPlayer };
     }
-    const { text, segments } = buildLine(playerAttackedParts(d));
+    const { text, segments } = buildLine(playerAttackedParts(d, prevState.player?.id));
     const msg = buildChatMessage(text, event.timestamp, {
       category: readCategory(d, event.event_type),
       segments,

@@ -1,5 +1,8 @@
 """Unit tests for CombatDeathHandler."""
 
+# pyright: reportUnknownMemberType=false, reportUnknownParameterType=false, reportMissingParameterType=false
+# Reason: the tests take untyped pytest fixtures and assert on MagicMock/AsyncMock attributes.
+
 import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -18,6 +21,7 @@ def combat_service():
     svc.publish_npc_died_event_to_nats = AsyncMock(return_value=True)
     svc.publish_player_died_event_to_nats = AsyncMock(return_value=True)
     svc.publish_player_mortally_wounded_event_to_nats = AsyncMock(return_value=True)
+    svc.remove_participant = AsyncMock(return_value=False)
     return svc
 
 
@@ -195,6 +199,10 @@ async def test_handle_target_state_mortally_wounded(mock_messaging, handler, pla
     mock_messaging.broadcast_player_mortally_wounded.assert_awaited_once()
     # #634: also NATS-consumable alongside the direct room broadcast
     combat_service.publish_player_mortally_wounded_event_to_nats.assert_awaited_once()
+    # #1058: the downed player leaves the fight so attackers disengage and the bleed-out can start
+    combat_service.remove_participant.assert_awaited_once_with(
+        combat.combat_id, player_target.participant_id, "Player incapacitated"
+    )
 
 
 @pytest.mark.asyncio
@@ -208,11 +216,15 @@ async def test_handle_target_state_player_death(mock_death, handler, player_targ
 
 @pytest.mark.asyncio
 @patch("server.services.combat_messaging_integration.combat_messaging_integration")
-async def test_handle_target_state_mortally_wounded_error(mock_messaging, handler, player_target, combat):
+async def test_handle_target_state_mortally_wounded_error(
+    mock_messaging, handler, player_target, combat, combat_service
+):
     mock_messaging.broadcast_player_mortally_wounded = AsyncMock(side_effect=KeyError("bad"))
     await handler.handle_target_state_changes(
         player_target, MagicMock(), target_mortally_wounded=True, target_died=False, combat=combat
     )
+    # a failed broadcast must not leave the downed player stuck in the fight
+    combat_service.remove_participant.assert_awaited_once()
 
 
 @pytest.mark.asyncio

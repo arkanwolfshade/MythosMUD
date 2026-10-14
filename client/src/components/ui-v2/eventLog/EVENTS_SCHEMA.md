@@ -22,8 +22,9 @@ Event types and their `data` shapes as received over the WebSocket. Used by the 
 | `player_died` / `playerdied`                            | Player died                 | `{ current_dp?, death_location? }`; `death_location` is server-composed `Zone › Sub-zone › Room` (#910); sets `isDead: true`, `deathLocation` (null if absent, never `room_id`) |
 | `player_respawned` / `playerrespawned`                  | Respawn                     | `{ player?, room?, message?, category }`; clears `isDead`/`deathLocation`/`isDelirious`/`deliriumLocation`                                                                      |
 | `player_delirium_respawned` / `playerdeliriumrespawned` | Delirium respawn            | same as `player_respawned` (same handler)                                                                                                                                       |
-| `player_dp_updated` / `playerdpupdated`                 | DP update                   | `{ new_dp, max_dp, posture?, posture_message?, player?, category? }`; `category` accompanies `posture_message`                                                                  |
-| `player_dp_decay`                                       | Mortally wounded bleed tick | `{ posture_message?, category? }` (full bleed line deferred); `category` is `status.health`                                                                                     |
+| `player_dp_updated` / `playerdpupdated`                 | DP update                   | `{ new_dp, max_dp, posture?, player? }` (no posture line: defeat is announced by `player_mortally_wounded`)                                                                     |
+| `player_dp_decay`                                       | Mortally wounded bleed tick | `{ new_dp?, current_dp?, message? }`; DP drives the banner countdown (`dp + 10` s); `message` ("Your lifeforce ebbs away...") is `status.health`                                |
+| `player_mortally_wounded` / `_room`                     | Defeat lines                | `{ message, category }`; `category` is `combat.status`; the room variant reaches everyone but the victim                                                                        |
 | `player_posture_change`                                 | Room posture observer       | `{ message, player_name, position, previous_position?, category }`                                                                                                              |
 | `player_update`                                         | Full player update          | `{ stats?, posture_message?, category?, in_combat? }`; `category` accompanies `posture_message`                                                                                 |
 
@@ -79,9 +80,9 @@ from the text.
   handlers put no `category` in successful results; `websocket_handler_commands.py` defaults it to
   `command.output`, and `build_event` does the same for any `command_response` that names none. Usage,
   permission, and system failures are the exception: they return `system.error` via `command_error`.
-- **Posture self-lines** (`posture_message` on `player_update`, `player_dp_updated`, `player_dp_decay`) are tagged by
-  `attach_posture_self_message` in `server/realtime/posture_notify.py`: `room.movement`, except the DP-decay collapse
-  line, which is `status.health`.
+- **Posture self-lines** (`posture_message` on `player_update`) are tagged by `attach_posture_self_message` in
+  `server/realtime/posture_notify.py`: `room.movement`. DP changes (`player_dp_updated`, `player_dp_decay`) set the
+  posture silently; the defeat moment is the `player_mortally_wounded` pair instead (#1057).
 - **Client-authored lines:** `client_message` carries its own `data.category` (`buildLocalMessageEvent` defaults it to
   `system.info`). Time and tick notices and `player_entered_game` / `player_left_game` get a fixed category per event
   type in `projectorHandlersMessages.ts` / `projectorHandlersState.ts`.

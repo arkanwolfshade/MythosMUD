@@ -48,8 +48,6 @@ from server.events.combat_events import (
 )
 from server.events.event_types import (
     PlayerDeliriumRespawnedEvent,
-    PlayerDPDecayEvent,
-    PlayerDPUpdated,
     PlayerEnteredRoom,
     PlayerLeftRoom,
     PlayerRespawnedEvent,
@@ -62,7 +60,6 @@ from server.realtime.message_formatters import format_message_content
 from server.realtime.nats_message_handler import NATSMessageHandler
 from server.realtime.npc_event_handlers import NPCEventHandler
 from server.realtime.player_event_handlers_respawn import PlayerRespawnEventHandler
-from server.realtime.player_event_handlers_state import PlayerStateEventHandler
 from server.realtime.player_event_handlers_utils import PlayerEventHandlerUtils
 from server.realtime.posture_notify import emit_posture_change
 from server.realtime.websocket_handler import send_system_message
@@ -325,32 +322,6 @@ async def _drive_posture() -> list[Emitted]:
     return transport.events
 
 
-def _state_handler(transport: _Transport) -> PlayerStateEventHandler:
-    return PlayerStateEventHandler(
-        _as(ConnectionManager, transport),
-        PlayerEventHandlerUtils(_as(ConnectionManager, transport), MagicMock(), MagicMock()),
-        MagicMock(),
-    )
-
-
-async def _drive_dp_updated() -> list[Emitted]:
-    """Damage that drops a standing player to 0 DP: the DP update carries the lying-down self-line."""
-    transport = _Transport()
-    await _state_handler(transport).handle_player_dp_updated(
-        PlayerDPUpdated(player_id=PLAYER_ID, old_dp=5, new_dp=0, max_dp=10, damage_taken=5, room_id=ROOM_ID)
-    )
-    return transport.events
-
-
-async def _drive_dp_decay() -> list[Emitted]:
-    """Decay across zero: the decay notice carries the collapse self-line."""
-    transport = _Transport()
-    await _state_handler(transport).handle_player_dp_decay(
-        PlayerDPDecayEvent(player_id=PLAYER_ID, old_dp=1, new_dp=0, decay_amount=1, room_id=ROOM_ID)
-    )
-    return transport.events
-
-
 async def _drive_setstat_posture() -> list[Emitted]:
     transport = _Transport()
     payload: dict[str, object] = {"player_id": str(PLAYER_ID)}
@@ -434,6 +405,22 @@ async def _drive_combat_messaging() -> list[Emitted]:
     _ = await integration.broadcast_player_joined_combat(ROOM_ID, "c1", "Bob", "Ghoul", "bob-id")
     _ = await integration.broadcast_taunt_result(ROOM_ID, "c1", "Bob taunts the Ghoul.")
     _ = await integration.broadcast_protect_result(ROOM_ID, "c1", "Bob shields Alice.")
+    return transport.events
+
+
+async def _drive_dp_decay() -> list[Emitted]:
+    """Bleed-out: one 'Your lifeforce ebbs away' line per second while mortally wounded (#1059)."""
+    transport = _Transport()
+    integration = CombatMessagingIntegration(connection_manager=transport)
+    _ = await integration.send_dp_decay_message(str(PLAYER_ID), -3)
+    return transport.events
+
+
+async def _drive_mortally_wounded() -> list[Emitted]:
+    """Defeat: the personal collapse line and the room's 'verge of death' line (#1057)."""
+    transport = _Transport()
+    integration = CombatMessagingIntegration(connection_manager=transport)
+    _ = await integration.broadcast_player_mortally_wounded(str(PLAYER_ID), "Ada", "Ghoul", ROOM_ID)
     return transport.events
 
 
@@ -547,8 +534,6 @@ INVENTORY: tuple[Emitter, ...] = (
     Emitter("player enter/leave", frozenset({"player_entered", "player_left"}), _drive_player_enter_leave),
     Emitter("system events", frozenset({"system"}), _drive_system_events),
     Emitter("posture change", frozenset({"player_posture_change", "player_update"}), _drive_posture),
-    Emitter("dp updated", frozenset({"player_dp_updated"}), _drive_dp_updated),
-    Emitter("dp decay", frozenset({"player_dp_decay"}), _drive_dp_decay),
     Emitter("admin set-stat posture", frozenset({"player_update"}), _drive_setstat_posture),
     Emitter("respawn", frozenset({"player_respawned", "player_delirium_respawned"}), _drive_respawn),
     Emitter(
@@ -557,6 +542,12 @@ INVENTORY: tuple[Emitter, ...] = (
             {"combat_attack", "combat_target_switch", "combat_participant_joined", "combat_taunt", "combat_protect"}
         ),
         _drive_combat_messaging,
+    ),
+    Emitter("dp decay", frozenset({"player_dp_decay"}), _drive_dp_decay),
+    Emitter(
+        "mortally wounded",
+        frozenset({"player_mortally_wounded", "player_mortally_wounded_room"}),
+        _drive_mortally_wounded,
     ),
     Emitter("npc died", frozenset({"npc_died"}), _drive_npc_died),
     Emitter(
@@ -615,9 +606,10 @@ EXPECTED_CATEGORIES = (
     ("respawn", "player_delirium_respawned", MessageCategory.SYSTEM_INFO),
     ("posture change", "player_posture_change", MessageCategory.ROOM_MOVEMENT),
     ("posture change", "player_update", MessageCategory.ROOM_MOVEMENT),  # the second-person self-line
-    ("dp updated", "player_dp_updated", MessageCategory.ROOM_MOVEMENT),
-    ("dp decay", "player_dp_decay", MessageCategory.STATUS_HEALTH),  # the collapse is a health event
     ("admin set-stat posture", "player_update", MessageCategory.ROOM_MOVEMENT),
+    ("dp decay", "player_dp_decay", MessageCategory.STATUS_HEALTH),
+    ("mortally wounded", "player_mortally_wounded", MessageCategory.COMBAT_STATUS),
+    ("mortally wounded", "player_mortally_wounded_room", MessageCategory.COMBAT_STATUS),
     ("rescue update", "rescue_update", MessageCategory.STATUS_RESCUE),
     ("npc died", "npc_died", MessageCategory.COMBAT_DEATH),
     ("admin broadcasts", "shutdown_notification", MessageCategory.SYSTEM_WARNING),

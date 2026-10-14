@@ -362,18 +362,18 @@ const COMBAT_NPC_NAME = 'Cultist of the Yellow Sign';
 
 /**
  * Kill the player through genuine combat so the server's real death path fires
- * (server/services/combat_death_handler.py::_create_corpse_on_death) -- this is the ONLY reachable
- * way to create a container in this game today (environmental and wearable containers have no
- * live data; the generic `admin set DP -9` tick-death path used elsewhere does not create a corpse).
+ * (server/services/combat_death_handler.py::_create_corpse_on_death). Bleed-out deaths also leave
+ * a corpse (game_tick_death._create_bleed_out_corpse, #917), so any death here yields one.
  *
- * Spawns ONE cultist, drops the player to 5 DP, and attacks it. A cultist hits for ~25, so its
- * first landed hit takes the player from 5 straight past -10 -- an unambiguous combat death.
+ * Spawns ONE cultist, which aggros the moment it appears: its first ~25-damage hit lands on the
+ * still full-DP (20) player, takes them to -5, and ends that combat (a downed player leaves the
+ * fight, #1058). Setting DP to 5 below then revives them, the cultist starts a fresh combat, and
+ * its next hit takes them from 5 straight past -10 -- an unambiguous combat death.
  *
  * One attacker is enough, and more would be wrong: a participant can be in only one combat at a
  * time (combat_service_start.validate_combat_can_start), so extra cultists are refused on every
- * aggro attempt and never land a hit. The tick's wounded-decay death (which creates no corpse)
- * can't pre-empt this either: game_tick_death._player_in_active_combat skips decay while the
- * player is in an active combat.
+ * aggro attempt and never land a hit. Left alone, a downed player bleeds out at 1 DP/s and dies
+ * with a corpse too, which is why a retry here can leave more than one corpse in the room.
  *
  * The fight happens in Main Foyer (the respawn room), and `corpsesBefore` counts the openable,
  * in-grace corpse cards there just before it, so the caller can tell a fresh corpse from one an
@@ -393,10 +393,10 @@ async function killPlayerViaCombat(
   await executeCommand(live, `npc spawn ${COMBAT_NPC_ID}`);
   await new Promise(r => setTimeout(r, 800));
 
-  // DP 5: still alive (so the tick's wounded-decay death, which creates no corpse, can't claim
-  // them) but low enough that a single ~25-damage cultist hit lands well past -10, making the
-  // killing blow unambiguously combat damage. Note the e2e teardown leaves DP at 50, above the
-  // player's own max of 20, so without this a kill takes three rounds through the wounded band.
+  // DP 5: alive, but low enough that a single ~25-damage cultist hit lands well past -10, making
+  // the killing blow unambiguously combat damage. This also revives a player the cultist already
+  // downed on spawn (see above). Note the e2e teardown leaves DP at 50, above the player's own max
+  // of 20, so without this a kill would take several rounds through the wounded band.
   await executeCommand(live, `admin set DP ${creds.username} 5`);
   await new Promise(r => setTimeout(r, 500));
 
@@ -428,10 +428,11 @@ async function countGrowsWithin(locator: Locator, baseline: number, timeoutMs: n
 /**
  * Kill the player, respawn them, and guarantee their corpse is actually present in the room.
  *
- * A single kill is not enough: the tick loop can finish off a mortally-wounded player before the
- * mob's next swing lands, and that death path creates no corpse (see killPlayerViaCombat). Retry
- * the whole cycle until the CorpseOverlay shows one. Returns a live, standing page in the room
- * with the corpse visible.
+ * A single kill is not enough: a corpse can be slow to reach the CorpseOverlay for a player who
+ * was dead when container.created fired. Retry the whole cycle until the overlay shows a new one.
+ * Each retry can leave another corpse behind, and only the first holds the player's gear, so
+ * callers looking for an item must try every corpse (openCorpseWithRetry does). Returns a live,
+ * standing page in the room with the corpse visible.
  */
 export async function killPlayerAndProduceCorpse(
   page: Page,

@@ -42,7 +42,7 @@ describe('projector messages', () => {
     expect(next.messages[0].category).toBe('chat.say');
   });
 
-  it('player_dp_updated with posture_message appends to GameInfo (issue #395)', () => {
+  it('player_dp_updated lies the player down in state without any /lie line (#1057)', () => {
     const prev: GameState = {
       ...getInitialGameState(),
       player: {
@@ -58,27 +58,58 @@ describe('projector messages', () => {
         new_dp: 0,
         max_dp: 100,
         posture: 'lying',
-        posture_message: 'You stretch out and lie down.',
-        category: 'room.movement',
       },
     };
     const next = projectEvent(prev, event);
-    expect(next.messages).toHaveLength(1);
-    expect(next.messages[0].text).toBe('You stretch out and lie down.');
-    expect(next.messages[0].category).toBe('room.movement');
+    expect(next.messages).toHaveLength(0);
     expect(next.player?.stats?.position).toBe('lying');
+    expect(next.player?.stats?.current_dp).toBe(0);
   });
 
-  it('player_dp_decay posture line keeps the server category (status.health), not a hardcoded room.movement', () => {
-    const event: GameEvent = {
+  describe('bleed-out (#1059)', () => {
+    const downed: GameState = {
+      ...getInitialGameState(),
+      player: { name: 'TestPlayer', stats: { current_dp: 0, max_dp: 100, lucidity: 50, position: 'lying' } },
+    };
+    const decay = (data: Record<string, unknown>): GameEvent => ({
       event_type: 'player_dp_decay',
       timestamp: new Date().toISOString(),
       sequence_number: 1,
-      data: { posture_message: 'Your strength fails and you collapse.', category: 'status.health' },
+      data,
+    });
+
+    it('merges the decayed DP into the player so the banner countdown can follow it', () => {
+      const next = projectEvent(downed, decay({ old_dp: 0, new_dp: -1, decay_amount: 1 }));
+      expect(next.player?.stats?.current_dp).toBe(-1);
+      expect(next.messages).toHaveLength(0);
+    });
+
+    it('shows each "ebbs away" line with the server category and takes DP from current_dp', () => {
+      const next = projectEvent(
+        downed,
+        decay({ current_dp: -4, message: 'Your lifeforce ebbs away... (DP: -4)', category: 'status.health' })
+      );
+      expect(next.player?.stats?.current_dp).toBe(-4);
+      expect(next.messages).toHaveLength(1);
+      expect(next.messages[0].text).toBe('Your lifeforce ebbs away... (DP: -4)');
+      expect(next.messages[0].category).toBe('status.health');
+    });
+  });
+
+  it.each([
+    ['player_mortally_wounded', "Ghoul's attack causes you to collapse as darkness begins closing in on your vision"],
+    ['player_mortally_wounded_room', "Ada collapses from Ghoul's attack and is on the verge of death!"],
+  ])('%s is shown in Game Info as a combat.status line (#1057)', (eventType, message) => {
+    const event: GameEvent = {
+      event_type: eventType,
+      timestamp: new Date().toISOString(),
+      sequence_number: 1,
+      data: { message, category: 'combat.status' },
     };
     const next = projectEvent(getInitialGameState(), event);
     expect(next.messages).toHaveLength(1);
-    expect(next.messages[0].category).toBe('status.health');
+    expect(next.messages[0].text).toBe(message);
+    expect(next.messages[0].category).toBe('combat.status');
   });
 
   it('player_posture_change appends third-person line to GameInfo (issue #395)', () => {

@@ -65,7 +65,8 @@ async def remove_participant(
     """
     Remove one player from a combat, ending it only when nobody is left to fight (#833).
 
-    If no other living player remains, this is just ``end_combat`` (the leaver stays on the roster so the
+    "Left to fight" means able to act (DP > 0): a mortally wounded ally cannot carry the fight (#1058).
+    If no other such player remains, this is just ``end_combat`` (the leaver stays on the roster so the
     ended event still reaches them, exactly as in a 1v1). Otherwise only that player is dropped: queued
     actions, hate-list entries, target links and combat tracking go with them and the fight continues.
 
@@ -79,7 +80,7 @@ async def remove_participant(
     others_alive = [
         p
         for pid, p in combat.participants.items()
-        if pid != participant_id and p.participant_type == CombatParticipantType.PLAYER and not p.is_dead()
+        if pid != participant_id and p.participant_type == CombatParticipantType.PLAYER and p.can_act_in_combat()
     ]
     if not others_alive:
         await end_combat(service, combat_id, reason)

@@ -35,9 +35,8 @@ def _select_npc_target(combat: CombatInstance, npc_participant_id: UUID) -> Comb
     """
     Select target for NPC attack.
 
-    Prefers participants that are not dead (includes mortally wounded players at 0 DP).
-    CRITICAL: Players at 0 DP are mortally wounded but NOT dead - they should still be attackable.
-    Use is_dead() instead of is_alive() to ensure we can target mortally wounded players.
+    Skips incapacitated participants: a player at 0 to -9 DP is mortally wounded and out of the fight, so
+    NPCs do not keep hitting them (#1058). When nobody else can be fought the NPC has no target.
 
     Args:
         combat: Combat instance
@@ -46,17 +45,8 @@ def _select_npc_target(combat: CombatInstance, npc_participant_id: UUID) -> Comb
     Returns:
         Target participant or None if no valid target found
     """
-    # Prefer participants that are not dead (includes mortally wounded players at 0 DP)
     for participant in combat.participants.values():
-        if participant.participant_id != npc_participant_id:
-            # Check if target is not dead (for players: DP > -10, for NPCs: DP > 0)
-            # This includes mortally wounded players at 0 DP who are still attackable
-            if not participant.is_dead():
-                return participant
-
-    # Fallback: if no non-dead target found, try any participant (shouldn't happen but defensive)
-    for participant in combat.participants.values():
-        if participant.participant_id != npc_participant_id:
+        if participant.participant_id != npc_participant_id and not participant.is_incapacitated():
             return participant
 
     return None
@@ -230,7 +220,7 @@ async def _resolve_npc_target(
     target_id = get_npc_current_target(combat, npc.participant_id)
     if target_id is not None:
         target = combat.participants.get(target_id)
-        if target is not None and not target.is_dead():
+        if target is not None and not target.is_incapacitated():
             return target
     return _select_npc_target(combat, npc.participant_id)
 
@@ -275,7 +265,9 @@ async def process_npc_turn(
             return
         target = await _resolve_npc_target(combat, npc, combat_service)
         if not target:
-            logger.warning("No target found for NPC", npc_name=npc.name, combat_id=combat.combat_id)
+            # Everyone left is incapacitated or gone (#1058): nobody to fight, so end it and let the bleed-out run.
+            logger.info("No target found for NPC; ending combat", npc_name=npc.name, combat_id=combat.combat_id)
+            await combat_service.end_combat(combat.combat_id, "No remaining targets")
             return
         logger.debug("NPC performing automatic attack", npc_name=npc.name, target_name=target.name)
         await _execute_npc_attack(combat_service, npc, target, current_tick)

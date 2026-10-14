@@ -315,35 +315,41 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
       new_dp?: number;
       max_dp?: number;
       posture?: string;
-      posture_message?: string;
       player?: { stats?: { current_dp?: number; max_dp?: number; position?: string } };
     };
     const newDp = data.new_dp ?? data.player?.stats?.current_dp;
     const maxDp = data.max_dp ?? data.player?.stats?.max_dp;
     const position = data.posture ?? data.player?.stats?.position;
     if (!prevState.player?.stats || newDp === undefined) return prevState;
-    return mergePostureMessageIntoState(
-      {
-        ...prevState,
-        player: {
-          ...prevState.player,
-          stats: {
-            ...prevState.player.stats,
-            current_dp: newDp,
-            ...(maxDp !== undefined && { max_dp: maxDp }),
-            ...(position !== undefined && { position }),
-          },
+    return {
+      ...prevState,
+      player: {
+        ...prevState.player,
+        stats: {
+          ...prevState.player.stats,
+          current_dp: newDp,
+          ...(maxDp !== undefined && { max_dp: maxDp }),
+          ...(position !== undefined && { position }),
         },
       },
-      event
-    );
+    };
   },
   playerdpupdated(prevState, event) {
     return stateHandlers.player_dp_updated!(prevState, event);
   },
 
+  // Bleed-out: the server sends two decay events per second. The DP (new_dp or current_dp) drives the
+  // incapacitated countdown (#1059); only the one with a `message` adds a Game Info line.
   player_dp_decay(prevState, event) {
-    return mergePostureMessageIntoState(prevState, event);
+    const data = event.data as { new_dp?: number; current_dp?: number; message?: string };
+    const dp = data.new_dp ?? data.current_dp;
+    const withDp: GameState =
+      prevState.player?.stats && dp !== undefined
+        ? { ...prevState, player: { ...prevState.player, stats: { ...prevState.player.stats, current_dp: dp } } }
+        : prevState;
+    return typeof data.message === 'string'
+      ? appendPostureGameInfoMessage(withDp, event, data.message, readCategory(event.data, event.event_type))
+      : withDp;
   },
 
   player_posture_change(prevState, event) {

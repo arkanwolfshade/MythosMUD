@@ -207,6 +207,37 @@ def test_update_aggro_excludes_dead_from_candidate() -> None:
     assert combat.npc_current_target.get(npc.participant_id) is None
 
 
+def test_update_aggro_treats_a_mortally_wounded_player_as_zero_threat() -> None:
+    """#1058: a player at 0 to -9 DP is never the candidate, however much threat they built up."""
+    combat = _make_combat()
+    npc = _make_participant("Mob", CombatParticipantType.NPC)
+    downed = _make_participant("Downed", CombatParticipantType.PLAYER, current_dp=0)
+    combat.participants[npc.participant_id] = npc
+    combat.participants[downed.participant_id] = downed
+    aggro_threat.get_or_create_hate_list(combat, npc.participant_id)[downed.participant_id] = 999.0
+    target_id, _did_switch = aggro_threat.update_aggro(
+        combat, npc, "room_1", combat.participants, stability_margin=0.10
+    )
+    assert target_id is None
+
+
+def test_update_aggro_switches_off_a_target_who_goes_down() -> None:
+    """#1058: the NPC drops its current target once they are mortally wounded and picks the healthy one."""
+    combat = _make_combat()
+    npc = _make_participant("Mob", CombatParticipantType.NPC)
+    tank = _make_participant("Tank", CombatParticipantType.PLAYER, current_dp=0)
+    ally = _make_participant("Ally", CombatParticipantType.PLAYER, current_dp=40)
+    for p in (npc, tank, ally):
+        combat.participants[p.participant_id] = p
+    hate = aggro_threat.get_or_create_hate_list(combat, npc.participant_id)
+    hate[tank.participant_id] = 500.0
+    hate[ally.participant_id] = 5.0
+    combat.npc_current_target[npc.participant_id] = tank.participant_id
+    target_id, did_switch = aggro_threat.update_aggro(combat, npc, "room_1", combat.participants, stability_margin=0.10)
+    assert target_id == ally.participant_id
+    assert did_switch is True
+
+
 def test_on_player_entered_stealth_wipes_from_all_npcs() -> None:
     """on_player_entered_stealth removes player from every NPC hate list in combat."""
     combat = _make_combat()

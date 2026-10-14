@@ -6,7 +6,7 @@ Mixin that sends player_dp_updated events when spells apply healing
 """
 
 import uuid
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -93,7 +93,8 @@ class MagicServiceHealingMixin:
         current_dp = stats.get("current_dp", 0)
         max_dp = stats.get("max_dp", 0)
         heal_amount = effect_result.get("heal_amount", 0)
-        old_dp = max(0, current_dp - heal_amount)
+        # Mortally wounded players sit at 0 to -9 DP, so the floor is the death threshold, not 0 (#1059).
+        old_dp = max(-10, cast(int, current_dp) - cast(int, heal_amount))
 
         await self._publish_dp_event(
             event_player_id=event_player_id,

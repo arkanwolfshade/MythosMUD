@@ -95,13 +95,14 @@ def test_resolve_npc_disposition_defaults_to_passive_when_the_type_is_unusable()
 
 
 @pytest.mark.asyncio
-async def test_player_attacking_an_npc_tags_the_npc_on_both_events() -> None:
+async def test_player_attacking_an_npc_tags_the_npc_and_skips_the_duplicate_damage_event() -> None:
     wired = _Wired("shopkeeper")
     await wired.handler._publish_attack_events(
         _participant("Hero", CombatParticipantType.PLAYER), _participant("Rat", CombatParticipantType.NPC), 5, COMBAT
     )
     assert _event(wired.npc_attacked, NPCAttackedEvent).npc_disposition == "shopkeeper"
-    assert _event(wired.npc_took_damage, NPCTookDamageEvent).npc_disposition == "shopkeeper"
+    # #1056: npc_attacked already announces the hit, so melee no longer also publishes npc_took_damage
+    wired.npc_took_damage.assert_not_awaited()
 
 
 @pytest.mark.asyncio

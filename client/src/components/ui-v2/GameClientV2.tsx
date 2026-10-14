@@ -310,7 +310,9 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
           <div
             className={`pointer-events-none absolute inset-x-0 ${headerHeightClass(isHeaderCollapsed, mythosTime).offset} z-40 flex flex-col gap-2 px-4 pt-2`}
           >
-            {isIncapacitated && <IncapacitatedBanner className="pointer-events-auto" />}
+            {isIncapacitated && (
+              <IncapacitatedBanner className="pointer-events-auto" currentDp={derivedHealthStatus?.current} />
+            )}
             <RescueBanner rescueStatus={rescueStatus} isCatatonic={derivedLucidityStatus?.tier === 'catatonic'} />
           </div>
           {mainDockSlots.map(slot => {

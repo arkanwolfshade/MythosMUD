@@ -113,6 +113,8 @@ class AggressiveMobNPC(NPCBase):
             if callable(get_players):
                 players = cast(Sequence[str], get_players())
         if players:
+            # ponytail: first player wins; incapacitated ones are refused at attack time (#1058), so a downed
+            # player listed first still idles the mob. Filter here once room occupants carry DP synchronously.
             return (True, True, players[0])
         return (False, False, None)
 
