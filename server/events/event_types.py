@@ -322,8 +322,8 @@ class PlayerMortallyWoundedEvent(BaseEvent):
     Event fired when a player enters mortally wounded state (DP = 0).
 
     This event is triggered when a player's DP reaches 0 but before they die.
-    The player enters a mortally wounded state where they lose 1 DP per tick
-    until reaching -10 DP (death).
+    The player enters a mortally wounded state where they lose 1 DP per second
+    (once out of combat) until reaching -10 DP (death).
     """
 
     player_id: str

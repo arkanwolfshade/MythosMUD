@@ -59,6 +59,10 @@ class _CombatServiceDeps(Protocol):
         """Publish PlayerMortallyWoundedEvent to NATS (#634)."""
         raise NotImplementedError
 
+    async def remove_participant(self, combat_id: UUID, participant_id: UUID, reason: str = ...) -> bool:
+        """Drop a player from a combat; ends it only if no able player is left (#833, #1058)."""
+        raise NotImplementedError
+
 
 CombatServiceDeps = _CombatServiceDeps
 
@@ -357,6 +361,10 @@ class CombatDeathHandler:
                 )
             except (NATSError, ValueError, RuntimeError, AttributeError, ConnectionError, TypeError, KeyError) as e:
                 logger.error("Error publishing player mortally wounded event", error=str(e), exc_info=True)
+            # #1058: a downed player leaves the fight so attackers disengage and the bleed-out clock can run.
+            _ = await self._combat_service.remove_participant(
+                combat.combat_id, target.participant_id, "Player incapacitated"
+            )
 
         if target_died and target.participant_type == CombatParticipantType.PLAYER:
             await self._handle_player_death_events(target, combat)

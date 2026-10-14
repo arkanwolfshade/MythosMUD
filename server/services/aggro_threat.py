@@ -250,12 +250,12 @@ def remove_entity_from_aggro(combat: CombatInstance, entity_id: UUID) -> None:
 def _select_top_alive_candidate(
     hate: dict[UUID, float], participants: dict[UUID, CombatParticipant]
 ) -> tuple[UUID | None, float]:
-    """Return (candidate_id, candidate_threat) for alive entity with max threat."""
+    """Return (candidate_id, candidate_threat) for the able (not dead, not incapacitated) entity with max threat."""
     candidate_id: UUID | None = None
     candidate_threat: float = 0.0
     for eid, threat in hate.items():
         p = participants.get(eid)
-        if p is not None and not p.is_dead() and threat > candidate_threat:
+        if p is not None and not p.is_incapacitated() and threat > candidate_threat:
             candidate_id = eid
             candidate_threat = threat
     return candidate_id, candidate_threat
@@ -273,7 +273,7 @@ def _should_switch_to_candidate(
     if current_target_id is None:
         return True
     current = participants.get(current_target_id)
-    if current is None or current.is_dead():
+    if current is None or current.is_incapacitated():
         return True
     current_threat = hate.get(current_target_id, 0.0)
     threshold = current_threat * (1.0 + margin)
@@ -291,10 +291,10 @@ def update_aggro(
     """
     Resolve current target for an NPC from hate list and stability rule.
 
-    - Candidate = alive participant with highest threat in hate list.
+    - Candidate = able participant with highest threat in hate list (incapacitated ones count as zero threat, #1058).
     - If no current target: set candidate and return (candidate_id, True).
     - Else: switch only if candidate.threat >= current_target_threat * (1 + stability_margin).
-    -     Dead participants are excluded from candidate selection; they remain in hate list.
+    -     Dead or incapacitated participants are excluded from candidate selection; they remain in hate list.
     Optional future: trim zero-threat entries after 30s to bound hate list size.
 
     Returns:

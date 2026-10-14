@@ -68,13 +68,13 @@ test.describe('Multi-User Container Looting', () => {
     await waitForMessage(awContext.page, /You pick up/i, 10000);
 
     try {
-      // Move Ithaqua out before the kill: the cultist one-shots a full-DP player (25 dmg vs 20 DP),
+      // Move Ithaqua out before the kill: the cultist's 25-damage hit exceeds a full-DP player's 20 DP,
       // so a bystander in the room dies too and ends up looking at their OWN corpse -- which would
       // make them the owner and silently invert this test. Re-entering afterwards also exercises
       // the room_state corpse backfill (they miss the container.created broadcast while away).
       ithaquaContext.page = await goEastFromFoyer(ithaquaContext.page);
 
-      // AW dies and respawns; retried until a corpse actually exists (a tick-decay death makes none).
+      // AW dies and respawns; retried until a corpse actually appears in the overlay.
       awContext.page = await killPlayerAndProduceCorpse(awContext.page, awCreds);
 
       // Ithaqua returns to the death room and learns about the corpse from room_state, not the

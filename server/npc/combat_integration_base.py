@@ -312,6 +312,10 @@ class NPCCombatIntegrationBase(ABC):
         handle_npc_attack_on_player so aggro uses the same combat codepath as player-initiated combat.
         Otherwise falls back to direct damage and event publishing (e.g. tests).
         """
+        if await self._is_target_incapacitated(target_id):
+            logger.info("NPC attack skipped - target incapacitated", npc_id=npc_id, target_id=target_id)
+            return False
+
         delegated_result = await self._try_delegate_npc_attack_to_combat_service(
             npc_id, target_id, room_id, attack_damage, npc_instance
         )
@@ -408,6 +412,22 @@ class NPCCombatIntegrationBase(ABC):
                 error=str(e),
             )
             return None
+
+    async def _is_target_incapacitated(self, target_id: str) -> bool:
+        """
+        Return True if the target is a player at 0 DP or below (mortally wounded, #1058).
+
+        Aggressive mobs must not open or rejoin a fight with someone who cannot act; they resume once the
+        player is healed above 0. Anything that is not a loadable player is treated as attackable.
+        """
+        try:
+            player = await self._persistence.get_player_by_id(uuid.UUID(target_id))
+        except ValueError, TypeError, AttributeError:
+            return False
+        if not player:
+            return False
+        current_dp = player.get_stats().get("current_dp")
+        return isinstance(current_dp, int) and current_dp <= 0
 
     async def _is_target_in_login_grace_period(self, target_id: str) -> bool:
         """

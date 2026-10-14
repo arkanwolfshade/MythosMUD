@@ -16,6 +16,21 @@ describe('IncapacitatedBanner', () => {
     expect(banner).toHaveAttribute('aria-live', 'assertive');
   });
 
+  it.each([
+    [0, '10 seconds'],
+    [-3, '7 seconds'],
+    [-9, '1 second'],
+    [-10, '0 seconds'],
+  ])('counts down from server DP: %i DP leaves %s (#1059)', (currentDp, expected) => {
+    render(<IncapacitatedBanner currentDp={currentDp} />);
+    expect(screen.getByTestId('bleed-out-countdown')).toHaveTextContent(`bleeding out: ${expected} remain`);
+  });
+
+  it('shows no countdown when DP is unknown', () => {
+    render(<IncapacitatedBanner />);
+    expect(screen.queryByTestId('bleed-out-countdown')).not.toBeInTheDocument();
+  });
+
   it('renders no dismiss control (self-clearing only, per #715)', () => {
     render(<IncapacitatedBanner />);
     expect(screen.queryByRole('button')).not.toBeInTheDocument();

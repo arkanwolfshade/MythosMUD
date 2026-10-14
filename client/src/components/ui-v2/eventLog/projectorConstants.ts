@@ -37,6 +37,9 @@ export const PROJECTED_EVENT_TYPES = new Set([
   'player_dp_updated',
   'playerdpupdated',
   'player_dp_decay',
+  /** Defeat lines (#1057): the collapse message to the victim, and the room's "verge of death" line. */
+  'player_mortally_wounded',
+  'player_mortally_wounded_room',
   'player_posture_change',
   'player_update',
   'command_response',
