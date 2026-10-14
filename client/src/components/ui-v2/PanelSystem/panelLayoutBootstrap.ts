@@ -8,7 +8,9 @@ import { loadPanelLayout, savePanelLayout } from './panelLayoutValidation';
 
 /** Copy optional panel metadata (opaque, minHeight) from default into stored, and add any
  * default panel id missing from a returning user's saved layout (e.g. a panel added since they
- * last saved -- without this, a new panel id never appears for existing users, see #711). */
+ * last saved -- without this, a new panel id never appears for existing users, see #711).
+ * Saved ids with no default are dropped: a removed panel (the old `settings` dock panel) would
+ * otherwise still claim a minimized-dock slot (getMinimizedPanelIds) and leave a blank gap. */
 export function mergePanelMetadataFromDefault(
   stored: Record<string, PanelState>,
   defaultPanels: Record<string, PanelState>
@@ -16,7 +18,10 @@ export function mergePanelMetadataFromDefault(
   const result = { ...stored };
   for (const id of Object.keys(result)) {
     const def = defaultPanels[id];
-    if (!def) continue;
+    if (!def) {
+      delete result[id];
+      continue;
+    }
     const patch: Partial<PanelState> = {};
     if (def.opaque !== undefined) patch.opaque = def.opaque;
     if (def.minHeight !== undefined) patch.minHeight = def.minHeight;

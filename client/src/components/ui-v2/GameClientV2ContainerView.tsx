@@ -9,9 +9,11 @@ import { MapView } from '../MapView';
 import { ContainerTransferModals } from './containers/ContainerTransferModal';
 import { CorpseOverlay } from './containers/CorpseOverlay';
 import { GameClientV2 } from './GameClientV2';
+import { PANEL_LAYOUT_STORAGE_KEY } from './PanelSystem/panelLayoutValidation';
 import { ModalContainer } from './primitives';
 import { TabbedInterfaceOverlay } from './components/TabbedInterfaceOverlay';
 import type { useGameClientV2Container } from './hooks/useGameClientV2Container';
+import { HEADER_COLLAPSED_STORAGE_KEY } from './utils/headerHeight';
 
 export type GameClientV2ContainerViewProps = ReturnType<typeof useGameClientV2Container>;
 
@@ -163,6 +165,26 @@ function useOpenContainer(authToken: string) {
   return { containerOpenError, handleOpenContainer, dismissContainerOpenError };
 }
 
+/**
+ * "Reset UI Layout" (ESC menu > Settings): forget the saved panel layout and header-collapse state,
+ * then remount GameClientV2 so both re-initialize from defaults. `layoutKey` goes on GameClientV2.
+ * ponytail: remounting also drops transient UI state under it (command draft, filters, scroll).
+ * Upgrade to a RESET_LAYOUT reducer action + lifted header state if that starts to matter.
+ */
+function useResetUiLayout() {
+  const [layoutKey, setLayoutKey] = useState(0);
+  const resetUiLayout = useCallback(() => {
+    try {
+      localStorage.removeItem(PANEL_LAYOUT_STORAGE_KEY);
+      localStorage.removeItem(HEADER_COLLAPSED_STORAGE_KEY);
+    } catch {
+      // localStorage unavailable (private mode, etc.) - nothing was saved, the remount still shows defaults.
+    }
+    setLayoutKey(key => key + 1);
+  }, []);
+  return { layoutKey, resetUiLayout };
+}
+
 function ContainerOpenErrorAlert({ message, onDismiss }: { message: string | null; onDismiss: () => void }) {
   if (!message) return null;
   return (
@@ -222,6 +244,7 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
   } = props;
 
   const { containerOpenError, handleOpenContainer, dismissContainerOpenError } = useOpenContainer(authToken);
+  const { layoutKey, resetUiLayout } = useResetUiLayout();
 
   const handleMapClickFromGame = () => {
     if (tabs.length > 0 && gameState.room?.id) {
@@ -251,6 +274,7 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
     <div className={containerClass} data-game-container>
       {tabs.length === 0 && (
         <GameClientV2
+          key={layoutKey}
           playerName={playerName}
           authToken={authToken}
           onLogout={handleLogout}
@@ -324,6 +348,7 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
         onClose={() => setIsMainMenuOpen(false)}
         onMapClick={handleMainMenuMapClick}
         onLogoutClick={handleLogout}
+        onResetLayoutClick={resetUiLayout}
         currentRoom={currentRoomForMenu}
         openMapInNewTab={false}
         playerId={gameState.player?.id ?? null}

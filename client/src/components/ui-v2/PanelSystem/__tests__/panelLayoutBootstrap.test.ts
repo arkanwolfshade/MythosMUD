@@ -63,11 +63,12 @@ describe('mergePanelMetadataFromDefault', () => {
     expect(out.p1.minHeight).toBe(120);
   });
 
-  it('leaves stored panel unchanged when there is no matching default entry', () => {
-    const stored = { orphan: basePanel('orphan', { opaque: true }) };
-    const defaults = { other: basePanel('other') };
+  it('drops a stored panel id that no longer has a default (a removed panel must not claim a dock slot)', () => {
+    const stored = { chat: basePanel('chat'), settings: basePanel('settings', { isMinimized: true }) };
+    const defaults = { chat: basePanel('chat') };
     const out = mergePanelMetadataFromDefault(stored, defaults);
-    expect(out.orphan).toEqual(stored.orphan);
+    expect(Object.keys(out)).toEqual(['chat']);
+    expect(stored.settings).toBeDefined();
   });
 
   it('does not add metadata when default omits opaque and minHeight', () => {
