@@ -63,7 +63,7 @@ code outside this directory (tests are the one exception — see §6).
 
 - `ui-v2/HeaderBar.tsx` — `EldritchIcon`, `LogoutButton`, `MythosIcons`
 - `ui-v2/GameClientV2ContainerView.tsx` — `ModalContainer`
-- `ui-v2/panels/{ChatHistoryPanel,CommandHistoryPanel,CommandInputPanel,GameInfoPanel,SettingsPanel}.tsx` — `EldritchIcon`, `MythosIcons`, `TerminalButton`, `TerminalInput`, `ChannelSelector`
+- `ui-v2/panels/{ChatHistoryPanel,CommandHistoryPanel,CommandInputPanel,GameInfoPanel}.tsx` — `EldritchIcon`, `MythosIcons`, `TerminalButton`, `TerminalInput`, `ChannelSelector`
 - `ui-v2/PanelSystem/{ExpandedPanelHeader,MinimizedPanelHeader}.tsx` — `EldritchIcon`, `MythosIcons`, `TerminalButton`
 - `config/channels.ts` — `MythosIcons`, the `Channel` type (channel configuration, outside `ui-v2`)
 - `ui-v2/demos/EldritchEffectsDemo.tsx`, `ui-v2/demos/eldritchEffectsDemoData.ts` — all seven

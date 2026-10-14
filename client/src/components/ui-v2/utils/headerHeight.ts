@@ -2,6 +2,9 @@
 // two can't drift out of sync (root cause of a pre-existing 16px gap when collapsed - #699).
 import type { MythosTimeState } from '../../../types/mythosTime';
 
+/** localStorage key for the header's collapsed state; cleared by the ESC menu's "Reset UI Layout". */
+export const HEADER_COLLAPSED_STORAGE_KEY = 'mythosmud-ui-v2-header-collapsed';
+
 /** True when the header needs its second (flavor) row: witching hour or an active holiday. */
 export function hasFlavorRow(mythosTime: MythosTimeState | null): boolean {
   return Boolean(mythosTime && (mythosTime.is_witching_hour || mythosTime.active_holidays.length > 0));

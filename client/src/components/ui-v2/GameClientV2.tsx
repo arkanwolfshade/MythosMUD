@@ -16,7 +16,6 @@ import { LocationPanel } from './panels/LocationPanel';
 import { OccupantsPanel } from './panels/OccupantsPanel';
 import { QuestLogPanel } from './panels/QuestLogPanel';
 import { RoomDescriptionPanel } from './panels/RoomDescriptionPanel';
-import { SettingsPanel } from './panels/SettingsPanel';
 import { PanelContainer } from './PanelSystem/PanelContainer';
 import { PanelManagerProvider } from './PanelSystem/PanelManager';
 import { usePanelManager } from './PanelSystem/usePanelManager';
@@ -32,7 +31,7 @@ import type {
   RoomContainerSummary,
 } from './types';
 import { getGameInfoPanelCombatClassName } from './utils/characterInfoPanelOutline';
-import { headerHeightClass } from './utils/headerHeight';
+import { HEADER_COLLAPSED_STORAGE_KEY, headerHeightClass } from './utils/headerHeight';
 import { createDefaultPanelLayout } from './utils/panelLayout';
 import type { ActiveEffectDisplay } from './utils/stateUpdateUtils';
 
@@ -40,7 +39,7 @@ import type { ActiveEffectDisplay } from './utils/stateUpdateUtils';
 // Extracted to reduce cyclomatic complexity
 /** Panel ids rendered in the main dock (single source for mapped PanelContainers). */
 type MainDockPanelId =
-  'chatHistory' | 'location' | 'roomDescription' | 'occupants' | 'gameInfo' | 'questLog' | 'inventory' | 'settings';
+  'chatHistory' | 'location' | 'roomDescription' | 'occupants' | 'gameInfo' | 'questLog' | 'inventory';
 
 /** Dock slot metadata (stable); panel bodies read messages/room in render to avoid invalidating a memo on every chat line. */
 type MainDockSlotMeta = {
@@ -146,7 +145,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
   // from the same source as the header's own height - see headerHeightClass (#699).
   const [isHeaderCollapsed, setIsHeaderCollapsed] = useState(() => {
     try {
-      return localStorage.getItem('mythosmud-ui-v2-header-collapsed') === 'true';
+      return localStorage.getItem(HEADER_COLLAPSED_STORAGE_KEY) === 'true';
     } catch {
       return false;
     }
@@ -156,7 +155,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
     setIsHeaderCollapsed(prev => {
       const next = !prev;
       try {
-        localStorage.setItem('mythosmud-ui-v2-header-collapsed', String(next));
+        localStorage.setItem(HEADER_COLLAPSED_STORAGE_KEY, String(next));
       } catch {
         // localStorage unavailable (private mode, etc.) - collapse state just won't persist.
       }
@@ -237,7 +236,6 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
       },
       { id: 'questLog', variant: 'default' },
       { id: 'inventory', variant: 'default' },
-      { id: 'settings', variant: 'default' },
     ],
     [occupantsTitle, player]
   );
@@ -274,7 +272,6 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
         onOpenContainer={onOpenContainer}
       />
     ),
-    settings: <SettingsPanel />,
   };
   const renderMainDockSlotContent = (id: MainDockPanelId): React.ReactNode => mainDockSlotContent[id];
 

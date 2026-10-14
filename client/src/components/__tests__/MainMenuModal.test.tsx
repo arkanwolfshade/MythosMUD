@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { ThemeProvider } from '../../contexts/ThemeContext';
 import { MainMenuModal } from '../MainMenuModal';
 
 // Mock createPortal to render in the same tree
@@ -327,14 +328,111 @@ describe('MainMenuModal', () => {
     expect(screen.getByText('Map (New Tab)')).toBeInTheDocument();
   });
 
-  it('should show Settings button as disabled', () => {
-    // Act
-    render(<MainMenuModal {...defaultProps} />);
+  describe('Settings sub-menu', () => {
+    const renderMenu = (props: Partial<React.ComponentProps<typeof MainMenuModal>> = {}) =>
+      render(
+        <ThemeProvider>
+          <MainMenuModal {...defaultProps} {...props} />
+        </ThemeProvider>
+      );
 
-    // Assert
-    const settingsButton = screen.getByLabelText('Settings (coming soon)');
-    expect(settingsButton).toBeDisabled();
-    expect(settingsButton).toHaveTextContent('Settings');
+    const openSettings = () => fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
+
+    afterEach(() => {
+      // Preference toggles persist to localStorage and set classes on <html>.
+      localStorage.clear();
+      document.documentElement.classList.remove('high-contrast');
+    });
+
+    it('should open the Settings view from the main menu', () => {
+      renderMenu();
+
+      openSettings();
+
+      expect(screen.getByRole('heading', { name: 'Settings' })).toBeInTheDocument();
+      expect(screen.getByTestId('settings-toggles')).toBeInTheDocument();
+      expect(screen.queryByText('Map (New Tab)')).not.toBeInTheDocument();
+      expect(screen.getByText('Press ESC to go back')).toBeInTheDocument();
+    });
+
+    it('should list Reset UI Layout first, before the preference toggles', () => {
+      renderMenu({ onResetLayoutClick: vi.fn() });
+      openSettings();
+
+      const reset = screen.getByRole('button', { name: 'Reset UI Layout' });
+      const toggles = screen.getByTestId('settings-toggles');
+      expect(reset.compareDocumentPosition(toggles) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
+
+    it('should reset the layout and close the menu when Reset UI Layout is clicked', () => {
+      const onResetLayoutClick = vi.fn();
+      const onClose = vi.fn();
+      renderMenu({ onResetLayoutClick, onClose });
+      openSettings();
+
+      fireEvent.click(screen.getByRole('button', { name: 'Reset UI Layout' }));
+
+      expect(onResetLayoutClick).toHaveBeenCalledTimes(1);
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not show Reset UI Layout when no handler is provided', () => {
+      renderMenu();
+      openSettings();
+
+      expect(screen.queryByRole('button', { name: 'Reset UI Layout' })).not.toBeInTheDocument();
+    });
+
+    it('should return to the main menu from the Back button without closing', () => {
+      const onClose = vi.fn();
+      renderMenu({ onClose });
+      openSettings();
+
+      fireEvent.click(screen.getByRole('button', { name: '← Back' }));
+
+      expect(screen.getByRole('heading', { name: 'Main Menu' })).toBeInTheDocument();
+      expect(onClose).not.toHaveBeenCalled();
+    });
+
+    it('should step back on ESC inside Settings, then close on the next ESC', () => {
+      const onClose = vi.fn();
+      renderMenu({ onClose });
+      openSettings();
+
+      fireEvent.keyDown(window, { key: 'Escape' });
+      expect(screen.getByRole('heading', { name: 'Main Menu' })).toBeInTheDocument();
+      expect(onClose).not.toHaveBeenCalled();
+
+      fireEvent.keyDown(window, { key: 'Escape' });
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it('should reopen on the main menu, not on a stale Settings view', () => {
+      const { rerender } = renderMenu();
+      openSettings();
+
+      rerender(
+        <ThemeProvider>
+          <MainMenuModal {...defaultProps} isOpen={false} />
+        </ThemeProvider>
+      );
+      rerender(
+        <ThemeProvider>
+          <MainMenuModal {...defaultProps} isOpen={true} />
+        </ThemeProvider>
+      );
+
+      expect(screen.getByRole('heading', { name: 'Main Menu' })).toBeInTheDocument();
+    });
+
+    it('should apply a preference toggle from the menu', () => {
+      renderMenu();
+      openSettings();
+
+      fireEvent.click(screen.getByLabelText('High contrast'));
+
+      expect(document.documentElement.classList.contains('high-contrast')).toBe(true);
+    });
   });
 
   it('should show "Press ESC to close" hint', () => {
