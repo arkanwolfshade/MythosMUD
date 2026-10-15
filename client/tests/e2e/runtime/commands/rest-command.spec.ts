@@ -112,12 +112,18 @@ test.describe('Rest Command', () => {
     const seesCountdown = messages.some(msg => /disconnect in \d+ second/i.test(msg));
     expect(seesCountdown).toBe(true);
 
-    // Cancel countdown so the suite does not intentional-disconnect AW or leave test 3 stuck in "already resting".
-    await executeCommand(awContext.page, 'go west');
-    await waitForMessage(awContext.page, /interrupted|go west|move west|west/i, 15000).catch(() => {});
-    await executeCommand(awContext.page, 'go east');
-    await waitForMessage(awContext.page, /go east|east|Hallway/i, 15000).catch(() => {});
-    awContext.page = await ensureStanding(awContext.page, 8000);
+    // Standing up breaks the /rest sit and must cancel the countdown (it also keeps the suite from
+    // intentional-disconnecting AW or leaving test 3 stuck in "already resting").
+    await executeCommand(awContext.page, '/stand');
+    await waitForMessage(awContext.page, /rest is interrupted/i, 15000);
+
+    // No further countdown lines may arrive once interrupted, and AW must still be in the game.
+    const countdownLines = async () =>
+      (await getMessages(awContext.page)).filter(msg => /disconnect in \d+ second/i.test(msg)).length;
+    const linesAtInterrupt = await countdownLines();
+    await awContext.page.waitForTimeout(3000);
+    expect(await countdownLines()).toBe(linesAtInterrupt);
+    await expect(awContext.page.getByTestId('command-input')).toBeVisible();
   });
 
   test('should block /rest during combat', async ({ browser }) => {

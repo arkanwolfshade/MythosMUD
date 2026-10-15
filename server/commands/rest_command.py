@@ -223,16 +223,19 @@ async def _stand_after_cancelled_rest(player_id: uuid.UUID, connection_manager: 
         logger.warning("Failed to stand player after rest cancel", player_id=player_id, error=str(e))
 
 
-async def cancel_rest_countdown(player_id: uuid.UUID, connection_manager: Any) -> None:
+async def cancel_rest_countdown(
+    player_id: uuid.UUID, connection_manager: Any, *, restore_standing: bool = True
+) -> None:
     """
     Cancel the rest countdown for a player.
 
-    Called from combat, movement, and spell paths when rest must be interrupted.
-    Also restores standing posture (/rest had sat the player).
+    Called from combat, movement, spell, and posture-command paths when rest must be interrupted.
+    Also restores standing posture (/rest had sat the player), unless the caller is itself changing posture.
 
     Args:
         player_id: The player's ID
         connection_manager: ConnectionManager instance
+        restore_standing: Stand the player after cancelling; False when a posture command applies its own change
     """
     if player_id not in connection_manager.resting_players:
         return
@@ -251,7 +254,8 @@ async def cancel_rest_countdown(player_id: uuid.UUID, connection_manager: Any) -
     finally:
         if player_id in connection_manager.resting_players:
             del connection_manager.resting_players[player_id]
-        await _stand_after_cancelled_rest(player_id, connection_manager)
+        if restore_standing:
+            await _stand_after_cancelled_rest(player_id, connection_manager)
 
 
 def is_player_resting(player_id: uuid.UUID, connection_manager: Any) -> bool:
