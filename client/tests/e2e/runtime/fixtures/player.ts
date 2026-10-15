@@ -96,6 +96,17 @@ export async function isPlayerDead(page: Page): Promise<boolean> {
 }
 
 /**
+ * True while the Incapacitated banner is up (DP <= 0). A downed player bleeds 1 DP/s from 0 to -10
+ * and then dies (#1057/#1059), so they are neither dead yet nor safe -- isPlayerDead reads false.
+ */
+export async function isPlayerIncapacitated(page: Page): Promise<boolean> {
+  return page
+    .getByTestId('incapacitated-banner')
+    .isVisible()
+    .catch(() => false);
+}
+
+/**
  * Fail fast when a step requires a living player but the page is dead.
  * Do not silent-respawn here — that hides prior-test cleanup bugs.
  */
@@ -153,6 +164,15 @@ async function respawnAfterCombatDeath(page: Page, username: string, password: s
       // current_room_id write. Clear hostiles first or anything room-sensitive that follows
       // (container proximity checks especially) races a second death.
       await despawnSanitariumCultists(live).catch(() => {});
+      // The cultist can land a hit between respawn and the despawn above. Downed players no longer die
+      // at once -- they bleed out over up to ~10s -- so that player reads as alive here and then dies
+      // after we return, taking the next step (opening the corpse) down with them. Wait for the bleed-out
+      // to resolve (death -> respawn again on the next pass, or recovery -> return) instead of trusting
+      // isPlayerDead alone.
+      if (await isPlayerIncapacitated(live)) {
+        await waitUntil(async () => (await isPlayerDead(live)) || !(await isPlayerIncapacitated(live)), 20000);
+        continue;
+      }
       live = await ensureStanding(live, 8000).catch(() => live);
       return live;
     }
