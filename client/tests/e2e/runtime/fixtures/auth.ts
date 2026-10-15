@@ -225,6 +225,11 @@ export async function assertNoRestDisconnectPollution(page: Page): Promise<void>
   }
 }
 
+// Mirrors REST_LOGOUT_FALLBACK_MS in src/components/ui-v2/hooks/gameClientLogout.ts (not imported: that
+// module pulls the app logger into the Playwright runner) and logoutHandler's default request timeout.
+const REST_LOGOUT_FALLBACK_MS = 15000;
+const LOGOUT_REQUEST_TIMEOUT_MS = 5000;
+
 export interface LogoutPlayerOptions {
   /**
    * When true, SPA-navigate to login if intentional logout never reaches username-input.
@@ -272,7 +277,12 @@ export async function logoutPlayer(
 
   const loginInput = page.getByTestId('username-input');
   if (spaFallback) {
-    const softMs = Math.min(timeoutMs, 15000);
+    // Must outlast the client's own /rest-exit fallback (REST_LOGOUT_FALLBACK_MS in
+    // src/components/ui-v2/hooks/gameClientLogout.ts), which logs out ~15s after the click when the
+    // server's intentional disconnect never reaches the handler, plus the 5s that logout request is
+    // allowed (logoutHandler's default timeout). Giving up at exactly 15s made page.goto('/') below
+    // race that fallback, leaving the page in the game when loginPlayer then looked for the form.
+    const softMs = Math.min(timeoutMs, REST_LOGOUT_FALLBACK_MS + LOGOUT_REQUEST_TIMEOUT_MS);
     const reachedLogin = await isVisibleWithin(loginInput, softMs);
     if (!reachedLogin) {
       await page.goto('/', { waitUntil: 'domcontentloaded' });
