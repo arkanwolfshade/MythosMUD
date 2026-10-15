@@ -7,10 +7,14 @@ Tests the logout and quit command handlers for proper cleanup and session manage
 # pylint: disable=redefined-outer-name  # Reason: Fixtures are injected as parameters by pytest, which is the standard pattern, suppression applied at module level since all test functions use fixtures
 
 import uuid
+from dataclasses import dataclass, field
 from datetime import UTC, datetime
+from types import SimpleNamespace
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from fastapi import Request
 
 from server.commands.logout_commands import (
     _clear_corrupted_cache_entry,
@@ -313,6 +317,69 @@ async def test_handle_quit_command_persistence_error(mock_request, mock_persiste
     # Should still return success message
     assert "result" in result
     assert "Goodbye" in result["result"]
+
+
+@dataclass
+class _QuitHarness:
+    """A request wired to a persistence layer that records lookups, plus the set quit marks intentional."""
+
+    request: Request
+    player_id: uuid.UUID
+    lookups: list[str] = field(default_factory=list)
+    intentional_disconnects: set[uuid.UUID] = field(default_factory=set)
+
+
+def _quit_harness() -> _QuitHarness:
+    player_id = uuid.uuid4()
+    lookups: list[str] = []
+    intentional_disconnects: set[uuid.UUID] = set()
+
+    class _Persistence:
+        """Returns the one player for any name, recording the names asked for."""
+
+        player: SimpleNamespace = SimpleNamespace(player_id=player_id, last_active=datetime.now(UTC))
+
+        async def get_player_by_name(self, name: str) -> SimpleNamespace:
+            lookups.append(name)
+            return self.player
+
+        async def save_player(self, _player: SimpleNamespace) -> None:
+            return None
+
+    persistence = _Persistence()
+    connection_manager = SimpleNamespace(intentional_disconnects=intentional_disconnects)
+    state = SimpleNamespace(
+        container=SimpleNamespace(async_persistence=persistence, connection_manager=connection_manager),
+        persistence=persistence,
+        connection_manager=connection_manager,
+    )
+    request = cast(Request, cast(object, SimpleNamespace(app=SimpleNamespace(state=state))))
+    return _QuitHarness(request, player_id, lookups, intentional_disconnects)
+
+
+@pytest.mark.asyncio
+async def test_handle_quit_command_acts_as_the_selected_character_not_the_account() -> None:
+    """#1071: Arkan_Lovecraft under account ArkanWolfshade must be looked up and marked by character name."""
+    harness = _quit_harness()
+
+    result = await handle_quit_command({}, {"username": "ArkanWolfshade"}, harness.request, None, "Arkan_Lovecraft")
+
+    assert "Goodbye" in result["result"]
+    assert harness.lookups
+    assert set(harness.lookups) == {"Arkan_Lovecraft"}
+    assert harness.player_id in harness.intentional_disconnects
+
+
+@pytest.mark.asyncio
+async def test_handle_quit_command_falls_back_to_the_account_username() -> None:
+    """With no character name supplied the lookup keeps using the account username."""
+    harness = _quit_harness()
+
+    result = await handle_quit_command({}, {"username": "ArkanWolfshade"}, harness.request, None, "")
+
+    assert "Goodbye" in result["result"]
+    assert set(harness.lookups) == {"ArkanWolfshade"}
+    assert harness.player_id in harness.intentional_disconnects
 
 
 @pytest.mark.asyncio

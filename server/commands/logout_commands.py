@@ -252,7 +252,7 @@ async def handle_quit_command(
     current_user: dict[str, Any],
     request: Request,
     _alias_storage: AliasStorage | None,
-    _player_name: str,
+    player_name: str,
 ) -> dict[str, str]:
     """
     Handle the quit command for disconnecting from the game.
@@ -262,7 +262,7 @@ async def handle_quit_command(
         current_user: Current user information
         request: FastAPI request object
         alias_storage: Alias storage instance
-        player_name: Player name for logging
+        player_name: The acting character's name (falls back to the account username when empty)
 
     Returns:
         dict: Quit command result
@@ -271,7 +271,9 @@ async def handle_quit_command(
     _args: list[Any] = command_data.get("args", [])
 
     logger.debug("Processing quit command")
-    username = get_username_from_user(current_user)
+    # The character's name, not the account username: they differ for multi-character accounts (#1071),
+    # and over HTTP current_user is the account User. handle_logout_command resolves it the same way.
+    username = player_name or get_username_from_user(current_user)
     persistence, _ = _get_app_services(request)
     player = None
     if persistence:
