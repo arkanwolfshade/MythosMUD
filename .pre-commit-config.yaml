@@ -178,6 +178,15 @@ repos:
         types: [javascript, ts, json, markdown]
         pass_filenames: false
         always_run: true
+      # CI's "Dead code check (knip)" step fails the React Client job on any unused export or file
+      # (#1069: a helper exported only for use inside its own module). Run it locally too.
+      - id: npm-knip
+        name: npm knip (client dead code)
+        entry: python scripts/precommit_run_npm.py knip
+        language: python
+        types: [javascript, ts]
+        pass_filenames: false
+        always_run: true
       - id: check-codacy-yaml
         name: Check Codacy YAML Configuration
         entry: python scripts/check_codacy_yaml.py
