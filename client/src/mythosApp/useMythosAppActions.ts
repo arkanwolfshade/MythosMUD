@@ -230,6 +230,7 @@ function useMotdAndLogoutHandlers(state: AppState, returnToLogin: () => void, fo
     try {
       await logoutHandler({
         authToken: state.authToken,
+        characterId: state.selectedCharacterId,
         disconnect: () => state.disconnectCallbackRef.current?.(),
         clearState: clearAllState,
         navigateToLogin: clearAllState,

@@ -79,6 +79,17 @@ describe('logoutHandler', () => {
       expect(mockNavigateToLogin).toHaveBeenCalled();
     });
 
+    it('should send the selected character id so the server logs out that character', async () => {
+      fetchSpy.mockResolvedValueOnce({ ok: true, json: vi.fn().mockResolvedValue({}) } as unknown as Response);
+
+      await logoutHandler({ ...defaultOptions, characterId: 'char-123' });
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        '/v1/command',
+        expect.objectContaining({ body: JSON.stringify({ command: 'logout', character_id: 'char-123' }) })
+      );
+    });
+
     it('should proceed with client-side logout even if server responds with error', async () => {
       const mockResponse = {
         ok: false,
