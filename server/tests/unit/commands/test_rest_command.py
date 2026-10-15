@@ -521,6 +521,23 @@ async def test_cancel_rest_countdown_restores_standing(mock_connection_manager: 
 
 
 @pytest.mark.asyncio
+async def test_cancel_rest_countdown_skips_standing_when_caller_changes_posture(
+    mock_connection_manager: MagicMock,
+) -> None:
+    """/stand and /lie apply their own posture, so cancelling must not also stand the player."""
+    player_id = uuid.uuid4()
+    task = asyncio.create_task(asyncio.sleep(100))
+    mock_connection_manager.resting_players[player_id] = task
+
+    with patch("server.commands.rest_command._stand_after_cancelled_rest", new_callable=AsyncMock) as auto_stand:
+        await cancel_rest_countdown(player_id, mock_connection_manager, restore_standing=False)
+
+    auto_stand.assert_not_awaited()
+    assert task.cancelled()
+    assert player_id not in mock_connection_manager.resting_players
+
+
+@pytest.mark.asyncio
 async def test_delayed_disconnect_sends_intentional_notice_before_closing(
     mock_connection_manager: MagicMock,
 ) -> None:
