@@ -9,7 +9,7 @@ during the /rest command, including countdown messages and disconnection.
 
 import asyncio
 import uuid
-from typing import Any
+from typing import Any, Protocol, cast
 
 from anyio import sleep
 
@@ -19,6 +19,16 @@ from ..realtime.envelope import build_event
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
+
+
+class _NoticeConnectionManager(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    """Connection manager surface for the intentional-disconnect notice."""
+
+    sequence_counter: int
+
+    async def send_personal_message(self, player_id: uuid.UUID, event: dict[str, object]) -> object:
+        """Send a personal WebSocket event to one player."""
+
 
 REST_COUNTDOWN_DURATION = 10.0  # 10 seconds (GameConfig.rest_countdown_seconds default)
 
@@ -90,6 +100,33 @@ async def _handle_countdown_loop(player_id: uuid.UUID, connection_manager: Any) 
     return True
 
 
+async def send_intentional_disconnect_notice(
+    player_id: uuid.UUID, connection_manager: _NoticeConnectionManager
+) -> None:
+    """
+    Tell the client the coming socket close is a deliberate /rest exit.
+
+    Without this the client treats the close as a failure and auto-reconnects instead of returning to login.
+    Shared by the countdown path and the instant rest-location path.
+
+    Args:
+        player_id: Player UUID
+        connection_manager: Connection manager instance
+    """
+    try:
+        disconnect_event = build_event(
+            "intentional_disconnect",
+            {"message": "You have rested and disconnected from the game.", "category": MessageCategory.SYSTEM_INFO},
+            player_id=player_id,
+            connection_manager=connection_manager,
+        )
+        _ = await connection_manager.send_personal_message(player_id, disconnect_event)
+    except (AttributeError, RuntimeError, ValueError, TypeError) as e:
+        # Catching specific exceptions for event building/sending failures
+        # This is non-critical since we're about to disconnect anyway
+        logger.debug("Error sending intentional_disconnect event", player_id=player_id, error=str(e))
+
+
 async def _disconnect_player_after_rest(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Rest countdown requires many parameters for game state and disconnection logic
     player_id: uuid.UUID,
     player_name: str,
@@ -109,20 +146,7 @@ async def _disconnect_player_after_rest(  # pylint: disable=too-many-arguments,t
     """
     logger.info("Rest countdown completed, disconnecting player", player_id=player_id, player_name=player_name)
 
-    # Send intentional_disconnect event to client before disconnecting
-    try:
-        disconnect_event = build_event(
-            "intentional_disconnect",
-            {"message": "You have rested and disconnected from the game.", "category": MessageCategory.SYSTEM_INFO},
-            player_id=player_id,
-            connection_manager=connection_manager,
-        )
-        await connection_manager.send_personal_message(player_id, disconnect_event)
-    except (AttributeError, RuntimeError, ValueError, TypeError) as e:
-        # Catching specific exceptions for event building/sending failures
-        # This is non-critical since we're about to disconnect anyway
-        logger.debug("Error sending intentional_disconnect event", player_id=player_id, error=str(e))
-
+    await send_intentional_disconnect_notice(player_id, cast(_NoticeConnectionManager, connection_manager))
     await disconnect_func(player_id, connection_manager, persistence)
 
 

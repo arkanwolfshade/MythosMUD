@@ -390,6 +390,19 @@ async def test_rest_location_instant_disconnect(  # pylint: disable=redefined-ou
     )
     player_websockets_map[player_id] = ["conn-1"]
 
+    # Record ordering: the client only skips its auto-reconnect if it hears intentional_disconnect first.
+    call_order: list[str] = []
+
+    async def record_notice(_player_id: uuid.UUID, event: dict[str, object]) -> None:
+        call_order.append(str(event["event_type"]))
+
+    async def record_close(_player_id: uuid.UUID, _connection_id: str) -> bool:
+        call_order.append("close")
+        return True
+
+    mock_connection_manager_full.send_personal_message = AsyncMock(side_effect=record_notice)
+    mock_connection_manager_full.disconnect_websocket_connection = AsyncMock(side_effect=record_close)
+
     result = await handle_rest_command({}, {}, mock_request, None, "TestPlayer")
 
     # #297: disconnect is deliberately deferred (asyncio.create_task) past a short delay so
@@ -400,6 +413,7 @@ async def test_rest_location_instant_disconnect(  # pylint: disable=redefined-ou
     # /rest time rather than a blanket force_disconnect_player (#297).
     disconnect_ws: AsyncMock = cast(AsyncMock, mock_connection_manager_full.disconnect_websocket_connection)
     disconnect_ws.assert_called_once_with(player_id, "conn-1")
+    assert call_order == ["intentional_disconnect", "close"]
     assert player_id not in resting_players  # No countdown started
     assert "result" in result
     result_text = cast(str, result["result"])
