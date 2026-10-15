@@ -4,8 +4,10 @@ Unit tests for unified command handler.
 Tests core command processing, HTTP endpoints, and legacy compatibility.
 """
 
+import uuid
+from types import SimpleNamespace
 from typing import cast
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 import pytest
 from fastapi import HTTPException, Request
@@ -168,3 +170,73 @@ class TestHandleCommand:
         with patch("server.command_handler_unified.process_command_unified", return_value={"result": "Success"}):
             result = await handle_command(CommandRequest(command="look"), mock_request, mock_user)
             assert result == {"result": "Success"}
+
+
+class TestHandleCommandCharacterId:
+    """MULTI-CHARACTER: the command acts as the selected character, not the account username."""
+
+    @staticmethod
+    def _user(user_id: uuid.UUID | str) -> User:
+        """Duck-typed account: get_username_from_user reads .username, ownership reads .id."""
+        return cast(User, cast(object, SimpleNamespace(id=user_id, username="ArkanWolfshade")))
+
+    @staticmethod
+    def _persistence(player: object | None) -> MagicMock:
+        persistence = MagicMock()
+        persistence.get_player_by_id = AsyncMock(return_value=player)
+        return persistence
+
+    @pytest.mark.asyncio
+    async def test_commands_run_as_the_selected_character(self):
+        """A character named differently from the account (Arkan_Lovecraft vs ArkanWolfshade) is resolved by id."""
+        user_id, character_id = uuid.uuid4(), uuid.uuid4()
+        player = SimpleNamespace(user_id=user_id, is_deleted=False, name="Arkan_Lovecraft")
+
+        with (
+            patch(
+                "server.command_handler_unified.get_container_async_persistence",
+                return_value=self._persistence(player),
+            ),
+            patch("server.command_handler_unified.process_command_unified", new_callable=AsyncMock) as process,
+        ):
+            process.return_value = {"result": "Logged out successfully"}
+            request = CommandRequest(command="logout", character_id=str(character_id))
+            _ = await handle_command(request, MagicMock(), self._user(user_id))
+
+        assert process.await_args is not None
+        assert process.await_args.kwargs["player_name"] == "Arkan_Lovecraft"
+
+    @pytest.mark.asyncio
+    async def test_without_character_id_falls_back_to_the_account_username(self):
+        with patch("server.command_handler_unified.process_command_unified", new_callable=AsyncMock) as process:
+            process.return_value = {"result": "ok"}
+            _ = await handle_command(CommandRequest(command="look"), MagicMock(), self._user(uuid.uuid4()))
+
+        assert process.await_args is not None
+        assert process.await_args.kwargs["player_name"] == "ArkanWolfshade"
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize(
+        ("character_id", "player", "expected_status"),
+        [
+            ("not-a-uuid", None, 400),
+            (str(uuid.uuid4()), None, 404),
+            (str(uuid.uuid4()), SimpleNamespace(user_id="owner", is_deleted=True, name="Gone"), 404),
+            (str(uuid.uuid4()), SimpleNamespace(user_id="someone-else", is_deleted=False, name="Theirs"), 403),
+        ],
+    )
+    async def test_rejects_unusable_characters(self, character_id: str, player: object | None, expected_status: int):
+        """Unknown, deleted, malformed and other users' characters never reach the command pipeline."""
+        with (
+            patch(
+                "server.command_handler_unified.get_container_async_persistence",
+                return_value=self._persistence(player),
+            ),
+            patch("server.command_handler_unified.process_command_unified", new_callable=AsyncMock) as process,
+            pytest.raises(HTTPException) as exc_info,
+        ):
+            request = CommandRequest(command="logout", character_id=character_id)
+            _ = await handle_command(request, MagicMock(), self._user("owner"))
+
+        assert exc_info.value.status_code == expected_status
+        process.assert_not_awaited()

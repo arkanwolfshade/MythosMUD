@@ -5889,6 +5889,17 @@
           "command": {
             "type": "string",
             "title": "Command"
+          },
+          "character_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Character Id"
           }
         },
         "additionalProperties": false,

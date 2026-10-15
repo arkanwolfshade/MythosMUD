@@ -10,6 +10,7 @@ As the Necronomicon states: "In unity there is strength, and in
 consistency there is power."
 """
 
+import uuid
 from typing import Annotated, cast
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
@@ -36,6 +37,7 @@ from .command_handler.command_guards import (
 )
 from .commands.command_service import CommandService
 from .constants.message_category import MessageCategory
+from .container.async_persistence_access import get_container_async_persistence
 from .help.help_content import get_help_content as get_help_content_new
 from .middleware.command_rate_limiter import command_rate_limiter
 from .models.alias import Alias
@@ -58,6 +60,9 @@ class CommandRequest(SecureBaseModel):
     """Request model for command processing."""
 
     command: str
+    # MULTI-CHARACTER: the character this command acts as. Without it the account username is used, which
+    # only matches a character whose name happens to equal it.
+    character_id: str | None = None
 
 
 def _as_user_dict(current_user: object) -> dict[str, object]:
@@ -369,6 +374,20 @@ async def _process_alias_expansion(  # pylint: disable=too-many-arguments,too-ma
     )
 
 
+async def _character_name_for_user(character_id: str, user: User) -> str:
+    """Name of `character_id`, which must be a live character owned by `user` (as the WebSocket path enforces)."""
+    try:
+        character_uuid = uuid.UUID(character_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail="Invalid character_id") from exc
+    player = await get_container_async_persistence().get_player_by_id(character_uuid)
+    if player is None or player.is_deleted:
+        raise HTTPException(status_code=404, detail="Character not found")
+    if str(player.user_id) != str(user.id):
+        raise HTTPException(status_code=403, detail="Character does not belong to user")
+    return str(player.name)
+
+
 # HTTP API endpoint
 @router.post("", status_code=status.HTTP_200_OK, response_model=None)
 async def handle_command(
@@ -383,7 +402,10 @@ async def handle_command(
     if not current_user:
         raise HTTPException(status_code=401, detail="Authentication required")
 
-    player_name = get_username_from_user(current_user)
+    if req.character_id:
+        player_name = await _character_name_for_user(req.character_id, current_user)
+    else:
+        player_name = get_username_from_user(current_user)
     logger.info(
         "HTTP command received",
         player=player_name,
