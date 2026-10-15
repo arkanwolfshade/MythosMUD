@@ -140,6 +140,52 @@ async def test_safe_close_websocket_swallows_websocket_disconnect():
 
 
 @pytest.mark.asyncio
+async def test_safe_close_websocket_closes_live_socket_whose_recycled_id_is_in_closed_set() -> None:
+    """
+    #1070: CPython reuses id() after GC, so a new live socket can collide with a stale closed-set entry.
+
+    The close was skipped while callers logged success, leaving the browser connected after /rest.
+    A socket whose application_state is still CONNECTED must be closed whatever the id history says.
+    """
+    from starlette.websockets import WebSocketState
+
+    from server.realtime.connection_websocket_close import safe_close_websocket_impl
+
+    mark_closed = MagicMock()
+    close = AsyncMock()
+    manager: MagicMock = MagicMock()
+    manager.is_websocket_closed = MagicMock(return_value=True)
+    manager.mark_websocket_closed = mark_closed
+    websocket = AsyncMock()
+    websocket.application_state = WebSocketState.CONNECTED
+    websocket.close = close
+
+    await safe_close_websocket_impl(manager, websocket, code=1000, reason="Connection closed")
+
+    close.assert_awaited_once_with(code=1000, reason="Connection closed")
+    mark_closed.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_safe_close_websocket_skips_already_disconnected_socket() -> None:
+    """A socket Starlette already marked DISCONNECTED is not closed twice."""
+    from starlette.websockets import WebSocketState
+
+    from server.realtime.connection_websocket_close import safe_close_websocket_impl
+
+    close = AsyncMock()
+    manager: MagicMock = MagicMock()
+    manager.mark_websocket_closed = MagicMock()
+    websocket = AsyncMock()
+    websocket.application_state = WebSocketState.DISCONNECTED
+    websocket.close = close
+
+    await safe_close_websocket_impl(manager, websocket)
+
+    close.assert_not_awaited()
+
+
+@pytest.mark.asyncio
 async def test_cleanup_websocket_disconnect_continues_after_close_error():
     """Close failures must not skip intentional leave tracking / room cleanup."""
     import asyncio
