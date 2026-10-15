@@ -76,6 +76,9 @@ test.describe('Rest Command', () => {
     // A typed /rest must end on the login screen and stay there. The regression: the server closed the
     // socket without telling the client the exit was intentional, so the client reconnected within ~25ms.
     await awContext.page.getByTestId('username-input').waitFor({ state: 'visible', timeout: 15000 });
+    // Dwell: a wrongful reconnect must stay absent for the whole window, and an auto-waiting assertion
+    // would pass on its first check.
+    // eslint-disable-next-line playwright/no-wait-for-timeout -- negative dwell, nothing to wait on
     await awContext.page.waitForTimeout(5000);
     await expect(awContext.page.getByTestId('username-input')).toBeVisible();
     await expect(awContext.page.getByTestId('command-input')).toHaveCount(0);
@@ -121,6 +124,7 @@ test.describe('Rest Command', () => {
     const countdownLines = async () =>
       (await getMessages(awContext.page)).filter(msg => /disconnect in \d+ second/i.test(msg)).length;
     const linesAtInterrupt = await countdownLines();
+    // eslint-disable-next-line playwright/no-wait-for-timeout -- negative dwell: no further countdown line may arrive
     await awContext.page.waitForTimeout(3000);
     expect(await countdownLines()).toBe(linesAtInterrupt);
     await expect(awContext.page.getByTestId('command-input')).toBeVisible();
