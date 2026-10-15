@@ -99,7 +99,7 @@ export async function isPlayerDead(page: Page): Promise<boolean> {
  * True while the Incapacitated banner is up (DP <= 0). A downed player bleeds 1 DP/s from 0 to -10
  * and then dies (#1057/#1059), so they are neither dead yet nor safe -- isPlayerDead reads false.
  */
-export async function isPlayerIncapacitated(page: Page): Promise<boolean> {
+async function isPlayerIncapacitated(page: Page): Promise<boolean> {
   return page
     .getByTestId('incapacitated-banner')
     .isVisible()
