@@ -521,6 +521,32 @@ async def test_cancel_rest_countdown_restores_standing(mock_connection_manager: 
 
 
 @pytest.mark.asyncio
+async def test_delayed_disconnect_sends_intentional_notice_before_closing(
+    mock_connection_manager: MagicMock,
+) -> None:
+    """The instant rest-location exit must tell the client it is deliberate, or the client reconnects."""
+    player_id = uuid.uuid4()
+    mock_connection_manager.player_websockets[player_id] = ["conn-1"]
+    mock_connection_manager.sequence_counter = 0
+    order: list[str] = []
+
+    async def record_send(_player_id: uuid.UUID, event: dict[str, object]) -> dict[str, object]:
+        order.append(str(event["event_type"]))
+        return {}
+
+    async def record_close(_player_id: uuid.UUID, _connection_id: str) -> bool:
+        order.append("close")
+        return True
+
+    mock_connection_manager.send_personal_message = AsyncMock(side_effect=record_send)
+    mock_connection_manager.disconnect_websocket_connection = AsyncMock(side_effect=record_close)
+
+    await _delayed_disconnect_player_intentionally(player_id, mock_connection_manager, None)
+
+    assert order == ["intentional_disconnect", "close"]
+
+
+@pytest.mark.asyncio
 async def test_cancel_rest_countdown_not_resting(mock_connection_manager: MagicMock) -> None:
     """Test cancel_rest_countdown() does nothing if player not resting."""
     player_id = uuid.uuid4()

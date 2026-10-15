@@ -28,7 +28,7 @@ from ..realtime.posture_notify import emit_posture_change
 from ..services.player_position_service import PlayerPositionService
 from ..structured_logging.enhanced_logging_config import get_logger
 from .command_results import command_error
-from .rest_countdown_task import create_rest_countdown_task, rest_countdown_seconds
+from .rest_countdown_task import create_rest_countdown_task, rest_countdown_seconds, send_intentional_disconnect_notice
 
 logger = get_logger(__name__)
 
@@ -105,6 +105,9 @@ async def _delayed_disconnect_player_intentionally(
     """
     connection_ids_to_close: list[str] = list(connection_manager.player_websockets.get(player_id, []))
     connection_manager.intentional_disconnects.add(player_id)
+    # Same notice the countdown path sends: a typed /rest never sets the client's intentional-exit flag, so
+    # without it the client reads the close as a failure and reconnects instead of returning to login.
+    await send_intentional_disconnect_notice(player_id, connection_manager)
     try:
         await asyncio.sleep(0.1)
 

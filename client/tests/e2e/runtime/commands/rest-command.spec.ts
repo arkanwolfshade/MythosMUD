@@ -72,6 +72,13 @@ test.describe('Rest Command', () => {
     expect(seesInstantRest).toBe(true);
     const seesCountdown = messages.some(msg => /disconnect in \d+ second/i.test(msg));
     expect(seesCountdown).toBe(false);
+
+    // A typed /rest must end on the login screen and stay there. The regression: the server closed the
+    // socket without telling the client the exit was intentional, so the client reconnected within ~25ms.
+    await awContext.page.getByTestId('username-input').waitFor({ state: 'visible', timeout: 15000 });
+    await awContext.page.waitForTimeout(5000);
+    await expect(awContext.page.getByTestId('username-input')).toBeVisible();
+    await expect(awContext.page.getByTestId('command-input')).toHaveCount(0);
   });
 
   test('should still run the 10s countdown for /rest outside a rest location', async ({ browser }) => {
