@@ -334,7 +334,9 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
   },
 
   intentional_disconnect(prevState, event) {
-    const message = (event.data as { message?: string }).message || 'You have disconnected from the game.';
+    // An explicitly empty message is a silent notice (instant /rest: the command response already says it).
+    const message = (event.data as { message?: string }).message ?? 'You have disconnected from the game.';
+    if (message === '') return prevState;
     const msg = buildChatMessage(message, event.timestamp, { category: readCategory(event.data, event.event_type) });
     return { ...prevState, messages: appendMessage(prevState.messages, msg) };
   },

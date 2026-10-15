@@ -101,7 +101,9 @@ async def _handle_countdown_loop(player_id: uuid.UUID, connection_manager: Any) 
 
 
 async def send_intentional_disconnect_notice(
-    player_id: uuid.UUID, connection_manager: _NoticeConnectionManager
+    player_id: uuid.UUID,
+    connection_manager: _NoticeConnectionManager,
+    message: str = "You have rested and disconnected from the game.",
 ) -> None:
     """
     Tell the client the coming socket close is a deliberate /rest exit.
@@ -112,11 +114,13 @@ async def send_intentional_disconnect_notice(
     Args:
         player_id: Player UUID
         connection_manager: Connection manager instance
+        message: Text shown to the player; "" sends the notice silently (the instant path's command
+            response already says the player is disconnecting)
     """
     try:
         disconnect_event = build_event(
             "intentional_disconnect",
-            {"message": "You have rested and disconnected from the game.", "category": MessageCategory.SYSTEM_INFO},
+            {"message": message, "category": MessageCategory.SYSTEM_INFO},
             player_id=player_id,
             connection_manager=connection_manager,
         )

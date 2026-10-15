@@ -102,6 +102,19 @@ describe('client-authored messages get a fixed category per event type', () => {
     expect(categories(next)).toEqual(['system.info']);
   });
 
+  it('intentional_disconnect with an empty message is silent (instant /rest already printed its own line)', () => {
+    const next = projectEvent(
+      getInitialGameState(),
+      ev('intentional_disconnect', { message: '', category: 'system.info' })
+    );
+    expect(next.messages).toHaveLength(0);
+  });
+
+  it('intentional_disconnect without a message falls back to the default text', () => {
+    const next = projectEvent(getInitialGameState(), ev('intentional_disconnect', { category: 'system.info' }));
+    expect(next.messages.map(m => m.text)).toEqual(['You have disconnected from the game.']);
+  });
+
   it('buildLocalMessageEvent default is system.info', () => {
     const next = projectEvent(getInitialGameState(), buildLocalMessageEvent('Connection to server lost.'));
     expect(categories(next)).toEqual(['system.info']);

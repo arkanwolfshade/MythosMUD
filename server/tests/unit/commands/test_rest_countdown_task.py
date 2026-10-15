@@ -11,6 +11,7 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 
 from server.commands.rest_countdown_task import send_intentional_disconnect_notice
+from server.constants.message_category import MessageCategory
 
 
 @pytest.mark.asyncio
@@ -45,3 +46,23 @@ async def test_send_intentional_disconnect_notice_swallows_send_failure() -> Non
     manager.send_personal_message = AsyncMock(side_effect=RuntimeError("socket closed"))
 
     await send_intentional_disconnect_notice(uuid.uuid4(), manager)
+
+
+@pytest.mark.asyncio
+async def test_send_intentional_disconnect_notice_can_be_silent() -> None:
+    """The instant /rest path already replies "You rest peacefully..."; an empty message avoids a duplicate line."""
+    sent: list[dict[str, object]] = []
+
+    async def record_send(_target: uuid.UUID, event: dict[str, object]) -> dict[str, object]:
+        sent.append(event)
+        return {}
+
+    manager = MagicMock()
+    manager.sequence_counter = 0
+    manager.send_personal_message = AsyncMock(side_effect=record_send)
+
+    await send_intentional_disconnect_notice(uuid.uuid4(), manager, message="")
+
+    assert len(sent) == 1
+    assert sent[0]["event_type"] == "intentional_disconnect"
+    assert sent[0]["data"] == {"message": "", "category": MessageCategory.SYSTEM_INFO}

@@ -107,7 +107,7 @@ async def _delayed_disconnect_player_intentionally(
     connection_manager.intentional_disconnects.add(player_id)
     # Same notice the countdown path sends: a typed /rest never sets the client's intentional-exit flag, so
     # without it the client reads the close as a failure and reconnects instead of returning to login.
-    await send_intentional_disconnect_notice(player_id, connection_manager)
+    await send_intentional_disconnect_notice(player_id, connection_manager, message="")
     try:
         await asyncio.sleep(0.1)
 
