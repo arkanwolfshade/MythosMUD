@@ -7,10 +7,12 @@ from typing import TYPE_CHECKING
 
 from fastapi import FastAPI
 
+from ..events.event_types import PlayerDPUpdated
 from ..monitoring.exception_tracker import track_exception
 from ..realtime.login_grace_period import handle_login_grace_period_expiration, is_player_in_login_grace_period
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
+from .game_tick_death import is_game_second_tick
 from .game_tick_protocols import (
     _app_container,
     _online_player_ids,
@@ -90,6 +92,25 @@ async def _process_damage_over_time_effect(  # pylint: disable=too-many-argument
     return False
 
 
+def _publish_heal_dp_update(container: _TickContainer, player: Player, old_dp: int) -> None:
+    """Tell the client about a DP change from healing; heal_player only writes the database."""
+    stats = player.get_stats()
+    new_dp = coerce_int(stats.get("current_dp", 0), default=0)
+    if new_dp == old_dp or not container.event_bus:
+        return
+    container.event_bus.publish(
+        PlayerDPUpdated(
+            player_id=uuid.UUID(str(player.player_id)),
+            old_dp=old_dp,
+            new_dp=new_dp,
+            max_dp=coerce_int(stats.get("max_dp", 100), default=100),
+            damage_taken=old_dp - new_dp,  # negative for healing
+            source_id="heal_over_time",
+            room_id=player.current_room_id,
+        )
+    )
+
+
 async def _process_heal_over_time_effect(
     container: _TickContainer, player: Player, effect: dict[str, object], remaining: int, player_id: str
 ) -> bool:
@@ -103,21 +124,34 @@ async def _process_heal_over_time_effect(
 
     healing = coerce_int(effect.get("healing", 0), default=0)
     if healing > 0 and container.async_persistence is not None:
+        old_dp = coerce_int(player.get_stats().get("current_dp", 0), default=0)
         await container.async_persistence.heal_player(player, healing)
+        _publish_heal_dp_update(container, player, old_dp)
         logger.debug("Applied heal over time", player_id=player_id, healing=healing, effect_type=effect.get("type", ""))
         return True
     return False
 
 
 async def _process_single_effect(
-    app: FastAPI, container: _TickContainer, player: Player, effect: dict[str, object], player_id: str
+    app: FastAPI,
+    container: _TickContainer,
+    player: Player,
+    effect: dict[str, object],
+    player_id: str,
+    *,
+    second_tick: bool = True,
 ) -> tuple[dict[str, object] | None, bool]:
     """Process a single status effect.
+
+    heal_over_time counts duration in game seconds: it only heals and burns duration when ``second_tick`` is true
+    (ticks run at 10 Hz, so per-tick healing would be ten times the stated rate).
 
     Returns:
         Tuple of (updated_effect_dict or None if expired, effect_applied) where effect_applied indicates if the effect had an impact.
     """
     effect_type = str(effect.get("type", ""))
+    if effect_type == "heal_over_time" and not second_tick:
+        return effect, False
     duration = coerce_int(effect.get("duration", 0), default=0)
     remaining = coerce_int(effect.get("remaining", duration), default=duration) - 1
     effect_applied = False
@@ -184,7 +218,7 @@ async def _validate_and_get_player(container: _TickContainer, player_id: str) ->
 
 
 async def _process_all_status_effects(
-    app: FastAPI, container: _TickContainer, player: Player, player_id: str
+    app: FastAPI, container: _TickContainer, player: Player, player_id: str, *, second_tick: bool = True
 ) -> tuple[list[dict[str, object]], bool, int]:
     """
     Process all status effects for a player.
@@ -194,6 +228,7 @@ async def _process_all_status_effects(
         container: Application container
         player: Player object
         player_id: Player ID as string
+        second_tick: True once per game second (gates heal_over_time)
 
     Returns:
         Tuple of (updated_effects list, effect_applied bool, original_count int)
@@ -207,7 +242,9 @@ async def _process_all_status_effects(
     original_count = len(status_effects)
 
     for effect in status_effects:
-        updated_effect, was_applied = await _process_single_effect(app, container, player, effect, player_id)
+        updated_effect, was_applied = await _process_single_effect(
+            app, container, player, effect, player_id, second_tick=second_tick
+        )
         if updated_effect is not None:
             updated_effects.append(updated_effect)
         if was_applied:
@@ -216,7 +253,9 @@ async def _process_all_status_effects(
     return updated_effects, effect_applied, original_count
 
 
-async def _process_player_status_effects(app: FastAPI, container: _TickContainer, player_id: str) -> bool:
+async def _process_player_status_effects(
+    app: FastAPI, container: _TickContainer, player_id: str, *, second_tick: bool = True
+) -> bool:
     """Process status effects for a single player.
 
     Returns:
@@ -228,7 +267,7 @@ async def _process_player_status_effects(app: FastAPI, container: _TickContainer
             return False
 
         updated_effects, effect_applied, original_count = await _process_all_status_effects(
-            app, container, player, player_id
+            app, container, player, player_id, second_tick=second_tick
         )
 
         return await _update_player_status_effects(container, player, updated_effects, original_count, effect_applied)
@@ -288,12 +327,15 @@ async def process_status_effects(app: FastAPI, tick_count: int) -> None:
     if not is_valid or not container or not container.connection_manager:
         return
 
+    second_tick = is_game_second_tick(tick_count)
     try:
         await _tick_online_players(
             _online_player_ids(container),
             tick_count,
             "Processed status effects",
-            lambda player_id_str: _process_player_status_effects(app, container, player_id_str),
+            lambda player_id_str: _process_player_status_effects(
+                app, container, player_id_str, second_tick=second_tick
+            ),
         )
     except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
         logger.warning("Error processing status/effect ticks", tick_count=tick_count, error=str(e))

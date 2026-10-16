@@ -98,9 +98,14 @@ def extract_definition_id_from_npc(npc_instance: Any, npc_id: str, lifecycle_man
     return None
 
 
+def is_instance_room_id(room_id: str) -> bool:
+    """True for per-player instance rooms (instance_<uuid>_<stable_id>), false for world and template ids."""
+    return room_id.startswith("instance_") and room_id.count("_") >= 2
+
+
 def _stable_room_id_for_zone(room_id: str) -> str:
     """Return stable room id for zone parsing; strip instance_<uuid>_ prefix if present."""
-    if room_id.startswith("instance_") and room_id.count("_") >= 2:
+    if is_instance_room_id(room_id):
         parts = room_id.split("_", 2)
         if len(parts) > 2:
             return parts[2]

@@ -121,8 +121,9 @@ flowchart LR
   document or implement which one is respawned (e.g. first, or by character select).
 - **Tests**: Unit tests for PlayerRespawnWrapper (eligible check, multi-player); PlayerRespawnService
   (respawn room, DP restore); integration test with persistence and session.
-- **no_death rooms**: In no_death rooms damage is capped so DP never goes below 0 (ADR-009); respawn
-  is not triggered there.
+- **no_death rooms**: In no_death rooms damage is capped so DP never goes below 1 (ADR-009, floor
+  amended by ADR-028: at 0 DP a player is mortally wounded and would still bleed out); respawn is not
+  triggered there.
 
 ## 7. Troubleshooting
 

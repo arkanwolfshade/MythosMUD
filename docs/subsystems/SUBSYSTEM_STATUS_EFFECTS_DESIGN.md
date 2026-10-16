@@ -21,7 +21,7 @@ embodied in stats (e.g. current_dp, position), persistence (damage_player, heal_
 apply_lucidity_loss, apply_fear, apply_corruption), and room attributes (no_death, no_combat).
 Combat and magic apply damage; mechanics and persistence own the actual stat updates. Incapacitation
 (DP 0 to -9) blocks attack and movement (posture/combat checks); death at -10 triggers respawn.
-ADR-009 no_death rooms cap damage so DP does not go below 0.
+ADR-009 no_death rooms cap damage so DP does not go below 1 (floor amended by ADR-028).
 
 ## 2. Architecture
 
@@ -77,8 +77,8 @@ flowchart LR
 - **Respawn**: When DP reaches -10 (death), respawn flow places player at respawn location and
   restores DP (see SUBSYSTEM_RESPAWN_DESIGN.md). Default respawn location is the arena center
   (`limbo_arena_arena_arena_5_5`); see `player_respawn_service.DEFAULT_RESPAWN_ROOM`.
-- **Room attributes**: no_combat (block combat), no_death (cap damage so DP never below 0) per
-  ADR-009.
+- **Room attributes**: no_combat (block combat), no_death (cap damage so DP never below 1) per
+  ADR-009 and ADR-028.
 
 ## 3. Key design decisions
 
@@ -93,8 +93,9 @@ flowchart LR
   standing.
 - **Server authority**: All effect application is server-side; client displays state from
   room_state/game_state/player_update.
-- **no_death rooms**: Damage is capped so player DP does not go below 0 in no_death rooms
-  (tutorial/safe zones).
+- **no_death rooms**: Damage is capped so player DP does not go below 1 in no_death rooms
+  (tutorial/safe zones). The floor is 1, not 0: 0 DP is inside the incapacitated band, where the
+  bleed-out tick runs regardless of room attributes and would kill the player at -10 (ADR-028).
 
 ## 4. Constraints
 
@@ -131,7 +132,7 @@ flowchart LR
 - **New blocking condition**: Add check in command or movement validation (e.g. current_dp,
   position, or new flag); return user-facing message and log.
 - **no_death implementation**: Ensure damage path (persistence or combat) checks room.no_death
-  and caps applied damage so current_dp never goes below 0.
+  and caps applied damage so current_dp never goes below 1.
 - **Tests**: Mechanics tests for apply\_\* and damage/heal; combat tests for incapacitated and
   death; movement tests for posture block.
 
@@ -147,7 +148,7 @@ flowchart LR
 - **Death not triggering**: Respawn subscribes to death event or checks DP after damage; ensure
   damage path applies through persistence and emits or triggers respawn at -10.
 - **no_death not capping**: Find where damage is applied (persistence or combat layer) and add
-  room.no_death check and min(current_dp - damage, 0) cap.
+  room.no_death check and cap damage at current_dp - 1 (CombatAttackHandler._cap_damage_for_no_death_room).
 
 See also [SUBSYSTEM_COMBAT_DESIGN.md](SUBSYSTEM_COMBAT_DESIGN.md),
 [SUBSYSTEM_RESPAWN_DESIGN.md](SUBSYSTEM_RESPAWN_DESIGN.md),

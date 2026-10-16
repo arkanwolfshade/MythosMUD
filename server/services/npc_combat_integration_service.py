@@ -247,6 +247,14 @@ class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombat
             )
         )
 
+    async def _apply_first_sight_lucidity(self, npc_id: str, target_id: str, room_id: str) -> None:
+        """Shock the target the first time an NPC engages them, as the player-attack path does."""
+        if not self._combat_memory.record_attack(npc_id, target_id):
+            return
+        npc_definition: object | None = await self._data_provider.get_npc_definition(npc_id)
+        if npc_definition is not None:
+            await self._lucidity.apply_encounter_lucidity_effect(target_id, npc_id, npc_definition, room_id)
+
     async def _run_npc_attack_on_player_after_grace(
         self,
         npc_id: str,
@@ -276,6 +284,7 @@ class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombat
                 return True
             return False
 
+        await self._apply_first_sight_lucidity(npc_id, target_id, room_id)
         await self._apply_npc_attack_damage_for_npc_initiated_combat(
             room_id=room_id,
             target_id=target_id,
