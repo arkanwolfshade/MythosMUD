@@ -28,6 +28,7 @@ from .connection_statistics import (
     get_player_presence_info_impl,
     validate_player_presence_impl,
 )
+from .envelope import next_event_sequence
 from .errors.error_handler import ConnectionErrorHandler
 from .memory_monitor import MemoryMonitor
 from .message_queue import MessageQueue
@@ -629,8 +630,8 @@ def convert_uuids_to_strings_impl(_manager: ConnectionManager, obj: object) -> o
 
 
 def get_next_sequence_impl(manager: ConnectionManager) -> int:
-    """Get the next sequence number for events."""
-    manager.sequence_counter += 1
+    """Get the next sequence number for events (the process-wide sequence; see envelope.next_event_sequence)."""
+    manager.sequence_counter = next_event_sequence()  # mirrored as "last issued"
     return manager.sequence_counter
 
 

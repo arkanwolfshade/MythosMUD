@@ -4,7 +4,12 @@ Unit tests for event handler.
 Tests the event_handler module classes and functions.
 """
 
+# pyright: reportAny=false, reportPrivateUsage=false
+# Reason: MessageBuilder builders return dict[str, Any] message envelopes whose sequence_number the sequence test
+# reads, and it drives RealTimeEventHandler._get_next_sequence directly.
+
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -74,7 +79,6 @@ def test_event_handler_init(mock_event_bus, mock_connection_manager, mock_task_r
         assert handler.event_bus == mock_event_bus
         assert handler.connection_manager == mock_connection_manager
         assert handler.task_registry == mock_task_registry
-        assert handler._sequence_counter == 0
         assert hasattr(handler, "name_extractor")
         assert hasattr(handler, "occupant_manager")
         assert hasattr(handler, "message_builder")
@@ -107,13 +111,41 @@ def test_event_handler_subscribe_to_events(event_handler, mock_event_bus):
 
 
 def test_event_handler_get_next_sequence(event_handler):
-    """Test RealTimeEventHandler._get_next_sequence() increments counter."""
+    """Test RealTimeEventHandler._get_next_sequence() is strictly increasing."""
     seq1 = event_handler._get_next_sequence()
     seq2 = event_handler._get_next_sequence()
 
-    assert seq1 == 1
-    assert seq2 == 2
-    assert event_handler._sequence_counter == 2
+    assert seq2 > seq1
+
+
+def test_all_event_sequence_sources_share_one_total_order(event_handler: RealTimeEventHandler) -> None:
+    """Regression: room_occupants numbered by independent counters let one path shadow another on the client.
+
+    The client drops a room_occupants update whose seq is <= the last applied for that room, so every producer of a
+    client-facing sequence_number must draw from the single process-wide sequence. Interleaving them must give one
+    strictly increasing series.
+    """
+    from server.realtime import connection_manager_methods as cm_methods
+    from server.realtime.envelope import build_event
+
+    manager: MagicMock = MagicMock(sequence_counter=0)
+    builder = event_handler.message_builder
+
+    issued: list[int] = [
+        cast(
+            int, build_event("room_occupants", room_id="r")["sequence_number"]
+        ),  # websocket_room_updates / NPC-death paths
+        builder.build_occupants_update_message("r", ["a"], [], ["a"])[
+            "sequence_number"
+        ],  # join / NPC enter-leave paths
+        cast(int, build_event("container.updated", connection_manager=manager)["sequence_number"]),
+        cm_methods.get_next_sequence_impl(manager),
+        event_handler._get_next_sequence(),
+        builder.get_next_sequence(),
+        cast(int, build_event("room_occupants", room_id="r")["sequence_number"]),
+    ]
+
+    assert issued == sorted(set(issued))  # strictly increasing: no duplicates, no reordering
 
 
 @pytest.mark.asyncio

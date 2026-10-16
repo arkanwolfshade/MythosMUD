@@ -41,13 +41,16 @@ class UUIDEncoder(json.JSONEncoder):
         return cast(object, super().default(o))
 
 
-# Global sequence counter for events (when connection_manager not available)
+# The ONE process-wide event sequence counter. Every sequence_number sent to a client must come from
+# next_event_sequence(): the client rejects a room_occupants update whose seq is <= the last it applied for
+# that room, which is only sound if all sources share a single total order. Independent per-source counters
+# let whichever ran ahead silently shadow the others (stale occupants panel).
 _global_sequence_counter = 0  # pylint: disable=invalid-name  # Reason: Private module-level variable, intentionally uses _ prefix
 _sequence_lock = None  # pylint: disable=invalid-name  # Reason: Private module-level variable, intentionally uses _ prefix
 
 
-def _get_next_global_sequence() -> int:
-    """Thread-safe global sequence number generation (fallback when no connection_manager)."""
+def next_event_sequence() -> int:
+    """Thread-safe next value of the process-wide event sequence."""
     import threading
 
     global _global_sequence_counter, _sequence_lock  # pylint: disable=global-statement  # Reason: Singleton pattern for sequence counter
@@ -84,21 +87,18 @@ def build_event(  # pylint: disable=too-many-arguments,too-many-positional-argum
         sequence_number: Optional explicit sequence number
         connection_manager: Optional object with sequence_counter (see _SupportsEventSequence)
 
-    If sequence_number is not provided and connection_manager is available,
-    uses connection_manager's sequence counter. Otherwise uses global fallback.
+    If sequence_number is not provided the next process-wide sequence is used. When a connection_manager is
+    passed, its sequence_counter is set to the value issued ("last issued"), so callers that read it still work.
 
     AI Agent: connection_manager is now optional parameter instead of global import
     """
-    # Prefer explicit sequence_number; otherwise bump connection_manager counter.
-    # Inline bump (same as get_next_sequence_impl) — do not import connection_manager_methods
-    # (that module imports build_event; a cycle breaks static analysis).
+    # Prefer explicit sequence_number; otherwise draw from the single process-wide counter.
     if sequence_number is not None:
         seq = sequence_number
-    elif connection_manager is not None:
-        connection_manager.sequence_counter += 1
-        seq = connection_manager.sequence_counter
     else:
-        seq = _get_next_global_sequence()  # Fallback for backward compatibility
+        seq = next_event_sequence()
+        if connection_manager is not None:
+            connection_manager.sequence_counter = seq
     payload: Mapping[str, object] = {} if data is None else data
     if event_type == "command_response" and "category" not in payload:
         # Shared floor for every direct command_response emitter (follow, party, spell, catch-up, ...);
