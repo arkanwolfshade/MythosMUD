@@ -375,6 +375,67 @@ BEGIN
 END;
 $$;
 
+-- get_players_not_clearly_alive: players whose stats.current_dp is NOT a JSON number > 0.
+-- Per-tick prefilter for the death / bleed-out checks (PlayerDeathService.get_dead_players and
+-- get_mortally_wounded_players): in the normal case every player is healthy and this returns no rows.
+-- Deliberately a SUPERSET of "dead or mortally wounded" -- missing, null, string and other odd stored
+-- values are returned too, so the Python predicates (Player.is_dead / is_mortally_wounded, which
+-- coerce via coerce_int) keep the final say. Returns the 17 columns of the players table (no inventory
+-- join) because the caller maps them onto session-attached Player entities via select().from_statement().
+CREATE OR REPLACE FUNCTION :schema_name.get_players_not_clearly_alive()
+RETURNS TABLE (
+    player_id uuid,
+    user_id uuid,
+    name character varying(50),
+    inventory text,
+    status_effects text,
+    current_room_id character varying(255),
+    respawn_room_id character varying(100),
+    experience_points integer,
+    level integer,
+    is_admin integer,
+    profession_id bigint,
+    created_at timestamp with time zone,
+    last_active timestamp with time zone,
+    stats jsonb,
+    is_deleted boolean,
+    deleted_at timestamp with time zone,
+    tutorial_instance_id character varying(255)
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        p.player_id,
+        p.user_id,
+        p.name,
+        p.inventory,
+        p.status_effects,
+        p.current_room_id,
+        p.respawn_room_id,
+        p.experience_points,
+        p.level,
+        p.is_admin,
+        p.profession_id,
+        p.created_at,
+        p.last_active,
+        p.stats,
+        p.is_deleted,
+        p.deleted_at,
+        p.tutorial_instance_id
+    FROM players p
+    -- The CASE guards the numeric cast: Postgres may evaluate AND operands in any order, so a bare
+    -- (stats->>'current_dp')::numeric could throw on a row holding a string.
+    WHERE NOT COALESCE(
+        CASE WHEN jsonb_typeof(p.stats->'current_dp') = 'number'
+             THEN (p.stats->>'current_dp')::numeric > 0
+        END,
+        false
+    );
+END;
+$$;
+
 -- update_player_current_room: update current_room_id (for room validation fix)
 CREATE OR REPLACE FUNCTION :schema_name.update_player_current_room(p_id UUID, p_room_id VARCHAR(255))
 RETURNS VOID
