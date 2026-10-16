@@ -31,6 +31,7 @@ from .movement_helpers import (
     check_combat_state,
     check_player_posture,
     extract_player_id,
+    room_exit_refusal,
     validate_exit,
     validate_player_room_membership,
 )
@@ -561,4 +562,21 @@ class MovementService(RoomOccupancyMixin):
         if not check_player_posture(self._logger, posture_player, player_id, from_room_id, to_room_id):
             return False
 
-        return await self._validate_movement_rooms(player_id, from_room_id, to_room_id)
+        if not await self._validate_movement_rooms(player_id, from_room_id, to_room_id):
+            return False
+        # The fresh persisted player decides: the in-memory one may lag a just-granted item.
+        return self._exit_open_to_player(cast("Player", posture_player), from_room_id, to_room_id)
+
+    def _exit_open_to_player(self, player: "Player", from_room_id: str, to_room_id: str) -> bool:
+        """False, with the refusal logged, if the exit to to_room_id needs an item the player does not hold."""
+        from_room = self._persistence.get_room_by_id(from_room_id)
+        refusal = room_exit_refusal(player, from_room, to_room_id) if from_room else None
+        if refusal is None:
+            return True
+        self._logger.info(
+            "Movement refused: exit requirement not met",
+            from_room=from_room_id,
+            to_room=to_room_id,
+            refusal=refusal,
+        )
+        return False

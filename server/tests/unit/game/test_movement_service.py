@@ -540,6 +540,74 @@ async def test_validate_movement_target_room_missing(movement_service, mock_pers
     assert result is False
 
 
+def _gated_player(*, holding: bool) -> Player:
+    """A real player, optionally holding the jade amulet that the gated exit below asks for."""
+    player = Player(player_id=str(uuid.uuid4()), name="Tester")
+    player.set_inventory([{"prototype_id": "jade_amulet", "item_id": "jade_amulet", "quantity": 1}] if holding else [])
+    return player
+
+
+def _wire_gated_exit(mock_persistence: MagicMock, persisted_player: Player) -> None:
+    """room_a has a `down` exit to room_b that needs the jade amulet; persistence serves persisted_player."""
+    from_room = Room(
+        {
+            "id": "room_a",
+            "exits": {"down": "room_b"},
+            "attributes": {"exit_requirements": {"down": {"item": "jade_amulet", "refusal": "Not with empty hands."}}},
+        }
+    )
+    to_room: MagicMock = MagicMock()
+    to_room.has_player = MagicMock(return_value=False)
+
+    def room_for(room_id: str) -> object:
+        return from_room if room_id == "room_a" else to_room
+
+    mock_persistence.get_room_by_id = MagicMock(side_effect=room_for)
+    mock_persistence.get_player_by_id = AsyncMock(return_value=persisted_player)
+
+
+@pytest.mark.asyncio
+async def test_validate_movement_refuses_a_gated_exit_without_the_item(
+    movement_service: MovementService, mock_persistence: MagicMock
+):
+    player = _gated_player(holding=False)
+    _wire_gated_exit(mock_persistence, player)
+
+    with patch("server.game.movement_service.validate_player_room_membership", new=AsyncMock(return_value=True)):
+        result = await movement_service._validate_movement(player, "room_a", "room_b")  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
+
+    assert result is False
+
+
+@pytest.mark.asyncio
+async def test_validate_movement_allows_a_gated_exit_with_the_item(
+    movement_service: MovementService, mock_persistence: MagicMock
+):
+    player = _gated_player(holding=True)
+    _wire_gated_exit(mock_persistence, player)
+
+    with patch("server.game.movement_service.validate_player_room_membership", new=AsyncMock(return_value=True)):
+        result = await movement_service._validate_movement(player, "room_a", "room_b")  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
+
+    assert result is True
+
+
+@pytest.mark.asyncio
+async def test_validate_movement_checks_the_persisted_player_not_a_stale_copy(
+    movement_service: MovementService, mock_persistence: MagicMock
+):
+    """The in-memory player may lag the database (it was just handed the item); the fresh copy decides."""
+    stale = _gated_player(holding=False)
+    fresh = _gated_player(holding=True)
+    fresh.player_id = stale.player_id
+    _wire_gated_exit(mock_persistence, fresh)
+
+    with patch("server.game.movement_service.validate_player_room_membership", new=AsyncMock(return_value=True)):
+        result = await movement_service._validate_movement(stale, "room_a", "room_b")  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
+
+    assert result is True
+
+
 def test_mark_room_explored_with_service(movement_service):
     """Test _mark_room_explored delegates to exploration service."""
     exploration = MagicMock()
