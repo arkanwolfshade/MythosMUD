@@ -131,6 +131,22 @@ def test_get_first_room_id(instance_manager: InstanceManager):
     assert first_room_id in instance.rooms
 
 
+def test_get_first_room_id_prefers_instance_start_room():
+    """A template names its entry room with instance_start; cache order must not decide where players land."""
+    walk_id = "earth_demo_zone_room_walk_001"
+    square_id = "earth_demo_zone_room_square_001"
+    walk = Room({"id": walk_id, "attributes": {"instance_template_id": "demo"}}, event_bus=None)
+    square = Room(
+        {"id": square_id, "attributes": {"instance_template_id": "demo", "instance_start": True}},
+        event_bus=None,
+    )
+    # The start room is deliberately second in cache order.
+    manager = InstanceManager(room_cache={walk_id: walk, square_id: square}, event_bus=None)
+    instance = manager.create_instance(template_id="demo", owner_player_id=uuid.uuid4())
+
+    assert manager.get_first_room_id(instance.instance_id) == f"{instance.instance_id}_{square_id}"
+
+
 def test_get_exit_room_id(instance_manager: InstanceManager):
     """Test get_exit_room_id returns fixed exit room."""
     instance = instance_manager.create_instance(

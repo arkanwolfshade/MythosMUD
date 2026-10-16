@@ -221,7 +221,8 @@
           "SOULBOUND",
           "GLOW",
           "QUEST_ITEM",
-          "CONSUMABLE"
+          "CONSUMABLE",
+          "INSTANCE_BOUND"
         ]
       },
       "uniqueItems": false

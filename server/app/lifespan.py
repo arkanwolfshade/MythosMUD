@@ -38,6 +38,7 @@ from ..structured_logging.enhanced_logging_config import (
 from ..structured_logging.log_aggregator import get_log_aggregator
 from ..time.time_service import get_mythos_chronicle
 from .game_tick_processing import game_tick_loop, get_current_tick, reset_current_tick
+from .lifespan_instance import wire_instance_content
 from .lifespan_shutdown import shutdown_services
 from .lifespan_startup import (
     initialize_container_and_legacy_services,
@@ -216,6 +217,8 @@ async def _startup_application(app: FastAPI) -> ApplicationContainer:
         cast(object, container.item_factory),
         cast(object | None, getattr(getattr(app.state, "connection_manager", None), "room_manager", None)),
     )
+    # Instances populate and tear down their own furniture, items and NPCs; needs the services above.
+    _ = wire_instance_content(container)
 
     # Enhance logging system with PlayerGuidFormatter now that player service is available
     update_logging_with_player_service(container.player_service)

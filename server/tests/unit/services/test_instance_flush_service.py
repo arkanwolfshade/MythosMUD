@@ -6,7 +6,8 @@ from uuid import UUID
 import pytest
 
 from server.exceptions import DatabaseError
-from server.game.instance_manager import InstanceManager
+from server.game.instance_manager import Instance, InstanceManager
+from server.game.items.constants import INSTANCE_BOUND_FLAG
 from server.models.room import Room
 from server.persistence.container_create_params import ContainerCreateParams
 from server.realtime.room_subscription_manager import RoomSubscriptionManager
@@ -100,6 +101,88 @@ async def test_flush_sends_only_that_instances_drops_to_its_owners_box_then_dest
     [(container_id, items)] = persistence.writes
     assert str(container_id) == persistence.boxes[my_id]["container_id"]
     assert items == [_stack("lantern"), _stack("bandage")]
+
+
+@pytest.mark.asyncio
+async def test_flush_destroys_instance_bound_stacks_instead_of_banking_them() -> None:
+    """An instance_bound item (a plot token) never leaves its instance: destroyed, not sent to the owner's box."""
+    manager = _instance_manager()
+    owner_id = uuid.uuid4()
+    instance = manager.create_instance("tutorial_sanitarium", owner_id)
+    amulet = {**_stack("jade_amulet"), "flags": [INSTANCE_BOUND_FLAG]}
+    drops = RoomSubscriptionManager()
+    drops.room_drops = {next(iter(instance.rooms)): [_stack("lantern"), amulet]}
+    persistence = FakeBankPersistence()
+
+    moved = await InstanceFlushService(manager, drops, persistence).flush(instance.instance_id)
+
+    assert moved == 1
+    [(_, items)] = persistence.writes
+    assert items == [_stack("lantern")]
+
+
+@pytest.mark.asyncio
+async def test_flush_with_only_instance_bound_stacks_creates_no_box() -> None:
+    manager = _instance_manager()
+    instance = manager.create_instance("tutorial_sanitarium", uuid.uuid4())
+    drops = RoomSubscriptionManager()
+    drops.room_drops = {next(iter(instance.rooms)): [{**_stack("jade_amulet"), "flags": [INSTANCE_BOUND_FLAG]}]}
+    persistence = FakeBankPersistence()
+
+    assert await InstanceFlushService(manager, drops, persistence).flush(instance.instance_id) == 0
+    assert manager.get_instance(instance.instance_id) is None
+    assert persistence.boxes == {}  # nothing worth banking, so no box is created for it
+    assert persistence.writes == []
+
+
+class FakeContent:
+    """Stands in for InstanceContentService.teardown; records whether the instance still existed when it ran."""
+
+    def __init__(self, manager: InstanceManager, recovered: list[dict[str, object]]) -> None:
+        self._manager: InstanceManager = manager
+        self.recovered: list[dict[str, object]] = recovered
+        self.torn_down: list[tuple[str, bool]] = []
+
+    async def populate(self, instance: Instance) -> None:
+        _ = instance
+
+    async def teardown(self, instance: Instance) -> list[dict[str, object]]:
+        self.torn_down.append((instance.instance_id, self._manager.get_instance(instance.instance_id) is not None))
+        return self.recovered
+
+
+@pytest.mark.asyncio
+async def test_flush_tears_down_content_first_and_banks_what_its_containers_held() -> None:
+    """Container contents are banked with the floor drops (instance-bound ones destroyed); teardown runs pre-destroy."""
+    manager = _instance_manager()
+    owner_id = uuid.uuid4()
+    instance = manager.create_instance("tutorial_sanitarium", owner_id)
+    drops = RoomSubscriptionManager()
+    drops.room_drops = {next(iter(instance.rooms)): [_stack("lantern")]}
+    amulet = {**_stack("jade_amulet"), "flags": [INSTANCE_BOUND_FLAG]}
+    content = FakeContent(manager, [_stack("sword"), amulet])
+    persistence = FakeBankPersistence()
+    flusher = InstanceFlushService(manager, drops, persistence)
+    flusher.attach_content(content)
+
+    moved = await flusher.flush(instance.instance_id)
+
+    assert content.torn_down == [(instance.instance_id, True)]  # ran while the instance still existed
+    assert manager.get_instance(instance.instance_id) is None
+    assert moved == 2
+    [(_, items)] = persistence.writes
+    assert items == [_stack("lantern"), _stack("sword")]
+
+
+@pytest.mark.asyncio
+async def test_flush_of_an_unknown_instance_skips_content_teardown() -> None:
+    manager = _instance_manager()
+    content = FakeContent(manager, [_stack("sword")])
+    flusher = InstanceFlushService(manager, RoomSubscriptionManager(), FakeBankPersistence())
+    flusher.attach_content(content)
+
+    assert await flusher.flush("instance_ghost") == 0
+    assert content.torn_down == []
 
 
 @pytest.mark.asyncio
