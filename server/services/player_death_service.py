@@ -10,9 +10,10 @@ All persistence calls wrapped in asyncio.to_thread() to prevent event loop block
 """
 
 import uuid
+from collections.abc import Sequence
 from typing import Any, cast
 
-from sqlalchemy import select
+from sqlalchemy import select, text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -28,6 +29,29 @@ logger = get_logger(__name__)
 # Mirrored in player_respawn_service — room of death for interstitial / login UI.
 DEATH_ROOM_ID_STAT = "death_room_id"
 DEATH_LOCATION_STAT = "death_location"
+
+
+# Per-tick prefilter lives in Postgres (db/procedures/players.sql): it returns every player whose
+# stats.current_dp is NOT a JSON number > 0 -- normally no rows. It is a deliberate superset of
+# "dead or mortally wounded" (odd stored values come back too), so the Python predicates
+# (Player.is_dead / is_mortally_wounded, via coerce_int) keep the final say. from_statement() maps the
+# rows onto session-attached Player entities, which the tick code needs (session.refresh(player)).
+_DP_CHECK_CANDIDATES = select(Player).from_statement(
+    text(  # ADR-015: explicit column list -- the lint guard forbids `SELECT *`.
+        """
+        SELECT player_id, user_id, name, inventory, status_effects, current_room_id,
+               respawn_room_id, experience_points, level, is_admin, profession_id,
+               created_at, last_active, stats, is_deleted, deleted_at, tutorial_instance_id
+        FROM get_players_not_clearly_alive()
+        """
+    )
+)
+
+
+async def _load_dp_check_candidates(session: AsyncSession) -> Sequence[Player]:
+    """Run the prefilter; the cast is the typed seam, since from_statement() yields an untyped Result."""
+    result = await session.execute(_DP_CHECK_CANDIDATES)
+    return cast("Sequence[Player]", result.scalars().all())
 
 
 class PlayerDeathService:
@@ -83,9 +107,8 @@ class PlayerDeathService:
             List of Player objects that are mortally wounded
         """
         try:
-            # Query all players from the database using async API
-            result = await session.execute(select(Player))
-            all_players = result.scalars().all()
+            # Runs every game-second: let Postgres drop the (normally all) healthy players.
+            all_players = await _load_dp_check_candidates(session)
 
             # Filter for mortally wounded players using Player domain logic
             mortally_wounded = [p for p in all_players if p.is_mortally_wounded()]
@@ -120,9 +143,8 @@ class PlayerDeathService:
             List of Player objects that are dead
         """
         try:
-            # Query all players from the database using async API
-            result = await session.execute(select(Player))
-            all_players = result.scalars().all()
+            # Runs every tick while players are online: let Postgres drop the healthy players.
+            all_players = await _load_dp_check_candidates(session)
 
             # Filter for dead players using Player domain logic
             dead_players = [p for p in all_players if p.is_dead()]
