@@ -85,14 +85,18 @@ class CombatAttackHandler:
     def _cap_damage_for_no_death_room(
         self, target: CombatParticipant, damage: int, combat: CombatInstance | None
     ) -> tuple[int, bool]:
-        """Cap damage in no_death rooms; return (damage, skip_apply_when_zero_cap)."""
+        """Cap damage in no_death rooms; return (damage, skip_apply_when_zero_cap).
+
+        Floors DP at 1, not 0: at 0 DP the player is mortally wounded and the bleed-out tick
+        would still kill them at -10, so "no_death" must never leave them there.
+        """
         if not (
             combat
             and target.participant_type == CombatParticipantType.PLAYER
             and self._room_has_no_death(combat.room_id)
         ):
             return damage, False
-        cap_damage = max(0, target.current_dp)
+        cap_damage = max(0, target.current_dp - 1)
         damage = min(damage, cap_damage)
         return damage, damage <= 0
 

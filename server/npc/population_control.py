@@ -36,6 +36,7 @@ from .npc_utils import (
     extract_npc_metadata,
     extract_room_id_from_npc,
     get_zone_key_from_room_id,
+    is_instance_room_id,
 )
 from .population_stats import PopulationStats
 from .spawn_validator import should_spawn_npc
@@ -320,6 +321,9 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
         Args:
             room_id: The room identifier
         """
+        if is_instance_room_id(room_id):
+            # An instance room resolves to its template's sub-zone, but it is a private space that owns its NPCs.
+            return
         logger.info("Checking spawn requirements for room", room_id=room_id)
         zone_key = get_zone_key_from_room_id(room_id)
         logger.info("Generated zone key", zone_key=zone_key)

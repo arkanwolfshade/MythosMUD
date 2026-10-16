@@ -34,6 +34,57 @@ _PYGTEST_SERVICE_FIXTURES: tuple[object, ...] = (
 )
 
 
+def _wire_npc_aggro_mocks(
+    service: "NPCCombatIntegrationService",
+    *,
+    npc_id: str,
+    room_id: str,
+    npc_definition: object | None,
+) -> tuple[MagicMock, AsyncMock, AsyncMock]:
+    """Wire the service so handle_npc_attack_on_player reaches the damage step with no existing combat.
+
+    Returns (npc_instance, start_combat mock, process_attack mock).
+    """
+    npc_instance = MagicMock()
+    npc_instance.current_room = room_id
+    npc_instance.is_alive = True
+
+    # Configure data provider for player and NPC data
+    mock_data_provider = MagicMock()
+    mock_data_provider.get_npc_instance = MagicMock(return_value=npc_instance)
+    mock_data_provider.get_npc_definition = AsyncMock(return_value=npc_definition)
+    mock_data_provider.get_player_name = AsyncMock(return_value="TestPlayer")
+    mock_data_provider.get_npc_combat_data = MagicMock(return_value={})
+    mock_data_provider.get_player_combat_data = AsyncMock(return_value={})
+    service._data_provider = mock_data_provider
+
+    # UUID mapping for NPC attacker and player target
+    npc_uuid = uuid.uuid4()
+    player_uuid = uuid.uuid4()
+    service._uuid_mapping = MagicMock()
+
+    def _mock_convert_to_uuid(entity_id: str) -> uuid.UUID:
+        return npc_uuid if entity_id == npc_id else player_uuid
+
+    service._uuid_mapping.convert_to_uuid = MagicMock(side_effect=_mock_convert_to_uuid)
+    service._uuid_mapping.is_valid_uuid = MagicMock(return_value=False)
+    service._uuid_mapping.store_string_id_mapping = MagicMock()
+
+    # Combat service: no existing combat, start new combat and process attack
+    mock_combat_result = MagicMock()
+    mock_combat_result.success = True
+    mock_start_combat = AsyncMock()
+    mock_process_attack = AsyncMock(return_value=mock_combat_result)
+    service._combat_service = MagicMock()
+    service._combat_service.get_combat_by_participant = AsyncMock(return_value=None)
+    service._combat_service.start_combat = mock_start_combat
+    service._combat_service.process_attack = mock_process_attack
+
+    # Skip full location validation details here; covered in dedicated tests
+    service._validate_combat_location = AsyncMock(return_value=True)
+    return npc_instance, mock_start_combat, mock_process_attack
+
+
 @pytest.mark.asyncio
 async def test_handle_npc_attack_on_player_happy_path(integration_service: "NPCCombatIntegrationService"):
     """Test handle_npc_attack_on_player starts combat and processes attack on happy path."""
@@ -42,42 +93,9 @@ async def test_handle_npc_attack_on_player_happy_path(integration_service: "NPCC
     room_id = "room_001"
     attack_damage = 10
 
-    npc_instance = MagicMock()
-    npc_instance.current_room = room_id
-    npc_instance.is_alive = True
-
-    # Configure data provider for player and NPC data
-    mock_data_provider = MagicMock()
-    mock_data_provider.get_npc_instance = MagicMock(return_value=npc_instance)
-    mock_data_provider.get_player_name = AsyncMock(return_value="TestPlayer")
-    mock_data_provider.get_npc_combat_data = MagicMock(return_value={})
-    mock_data_provider.get_player_combat_data = AsyncMock(return_value={})
-    integration_service._data_provider = mock_data_provider
-
-    # UUID mapping for NPC attacker and player target
-    npc_uuid = uuid.uuid4()
-    player_uuid = uuid.uuid4()
-    integration_service._uuid_mapping = MagicMock()
-
-    def _mock_convert_to_uuid(entity_id: str) -> uuid.UUID:
-        return npc_uuid if entity_id == npc_id else player_uuid
-
-    integration_service._uuid_mapping.convert_to_uuid = MagicMock(side_effect=_mock_convert_to_uuid)
-    integration_service._uuid_mapping.is_valid_uuid = MagicMock(return_value=False)
-    integration_service._uuid_mapping.store_string_id_mapping = MagicMock()
-
-    # Combat service: no existing combat, start new combat and process attack
-    mock_combat_result = MagicMock()
-    mock_combat_result.success = True
-    mock_start_combat = AsyncMock()
-    mock_process_attack = AsyncMock(return_value=mock_combat_result)
-    integration_service._combat_service = MagicMock()
-    integration_service._combat_service.get_combat_by_participant = AsyncMock(return_value=None)
-    integration_service._combat_service.start_combat = mock_start_combat
-    integration_service._combat_service.process_attack = mock_process_attack
-
-    # Skip full location validation details here; covered in dedicated tests
-    integration_service._validate_combat_location = AsyncMock(return_value=True)
+    npc_instance, mock_start_combat, mock_process_attack = _wire_npc_aggro_mocks(
+        integration_service, npc_id=npc_id, room_id=room_id, npc_definition=None
+    )
 
     with patch("server.services.npc_combat_integration_combat_mixin.get_current_tick", return_value=1):
         result = await integration_service.handle_npc_attack_on_player(
@@ -91,6 +109,37 @@ async def test_handle_npc_attack_on_player_happy_path(integration_service: "NPCC
     assert result is True
     mock_start_combat.assert_awaited_once()
     mock_process_attack.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_handle_npc_attack_on_player_applies_encounter_lucidity_once(
+    integration_service: "NPCCombatIntegrationService",
+):
+    """An aggro-started fight shocks the target once on first sight, not again on later attacks."""
+    npc_id = "npc_001"
+    target_id = str(uuid.uuid4())
+    room_id = "room_001"
+    npc_definition = MagicMock()
+
+    npc_instance, _start, _process = _wire_npc_aggro_mocks(
+        integration_service, npc_id=npc_id, room_id=room_id, npc_definition=npc_definition
+    )
+    apply_effect = AsyncMock()
+    integration_service._lucidity = MagicMock()
+    integration_service._lucidity.apply_encounter_lucidity_effect = apply_effect
+
+    with patch("server.services.npc_combat_integration_combat_mixin.get_current_tick", return_value=1):
+        for _ in range(2):
+            attacked = await integration_service.handle_npc_attack_on_player(
+                npc_id=npc_id,
+                target_id=target_id,
+                room_id=room_id,
+                attack_damage=10,
+                npc_instance=npc_instance,
+            )
+            assert attacked is True
+
+    apply_effect.assert_awaited_once_with(target_id, npc_id, npc_definition, room_id)
 
 
 @pytest.mark.asyncio

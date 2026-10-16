@@ -500,3 +500,18 @@ def test_check_spawn_requirements_for_room_with_definitions(population_controlle
             mock_should.assert_called()
             # Should spawn if conditions met
             mock_spawn.assert_called()
+
+
+def test_check_spawn_requirements_for_room_skips_instance_rooms(population_controller: NPCPopulationController):
+    """A per-player instance room is never populated by sub-zone spawn rules; instances own their NPCs."""
+    population_controller.zone_configurations["arkhamcity/downtown"] = ZoneConfiguration({})
+    definition = MagicMock(spec=NPCDefinition)
+    definition.id = 1
+    definition.name = "Test NPC"
+    definition.sub_zone_id = "downtown"
+    population_controller.npc_definitions = {1: definition}
+    instance_room = "instance_e4857769-81a3-40dd-bf65-b1811a1904ee_earth_arkhamcity_downtown_001"
+    with patch.object(population_controller, "_should_spawn_npc", return_value=True):
+        with patch.object(population_controller, "_spawn_npc") as mock_spawn:
+            population_controller._check_spawn_requirements_for_room(instance_room)  # pyright: ignore[reportPrivateUsage]
+            mock_spawn.assert_not_called()

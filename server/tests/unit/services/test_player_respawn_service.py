@@ -19,6 +19,7 @@ from server.models.game import PositionState
 from server.models.lucidity import PlayerLucidity
 from server.models.player import Player
 from server.models.room import Room
+from server.services.lucidity_service import resolve_tier
 from server.services.player_respawn_service import (
     DEFAULT_RESPAWN_ROOM,
     LIMBO_ROOM_ID,
@@ -343,7 +344,8 @@ async def test_respawn_player_from_delirium_success(respawn_service, mock_sessio
 
     assert result is True
     assert lucidity_record.current_lcd == 10
-    assert lucidity_record.current_tier == "lucid"
+    # Tier is derived from the restored value (10 is "deranged"), not hardcoded.
+    assert lucidity_record.current_tier == resolve_tier(10) == "deranged"
     assert sample_player.current_room_id == DEFAULT_RESPAWN_ROOM
     # Health and posture restored via Player domain method (ADR-001 / anemic model remediation)
     sample_player.restore_to_full_health.assert_called_once()

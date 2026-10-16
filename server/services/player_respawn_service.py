@@ -28,7 +28,7 @@ from ..models.room import Room
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
 from ..utils.liability_types import DecodeLiabilitiesFn, EncodeLiabilitiesFn
-from .lucidity_service import LucidityService
+from .lucidity_service import LucidityService, resolve_tier
 from .player_respawn_state import (
     apply_sanitarium_player_state,
     apply_standard_respawn_state,
@@ -238,7 +238,7 @@ class PlayerRespawnService:
         old_lucidity = lucidity_record.current_lcd
         new_lucidity = 10  # Restore to 10 lucidity after delirium respawn
         lucidity_record.current_lcd = new_lucidity
-        lucidity_record.current_tier = "lucid"  # Reset tier to lucid
+        lucidity_record.current_tier = resolve_tier(new_lucidity)
         lucidity_record.last_updated_at = _utc_now()
 
         respawn_room = DEFAULT_RESPAWN_ROOM
@@ -255,7 +255,6 @@ class PlayerRespawnService:
             LIABILITY_CATALOG,
             decode_liabilities,
             encode_liabilities,
-            resolve_tier,
         )
 
         lucidity_row = await session.get(PlayerLucidity, player_id)

@@ -12,6 +12,7 @@ from server.npc.npc_utils import (
     extract_room_id_from_lifecycle_record,
     extract_room_id_from_npc,
     get_zone_key_from_room_id,
+    is_instance_room_id,
     spawn_npc_via_population_controller,
 )
 
@@ -264,6 +265,13 @@ def test_get_zone_key_from_room_id_instanced() -> None:
     room_id = "instance_e4857769-81a3-40dd-bf65-b1811a1904ee_earth_arkhamcity_sanitarium_room_tutorial_bedroom_001"
     result = get_zone_key_from_room_id(room_id)
     assert result == "arkhamcity/sanitarium"
+
+
+def test_is_instance_room_id() -> None:
+    """Only instance_<uuid>_<stable_id> ids are instance rooms; world and template ids are not."""
+    assert is_instance_room_id("instance_e4857769-81a3-40dd-bf65-b1811a1904ee_earth_arkhamcity_downtown_001")
+    assert not is_instance_room_id("earth_arkhamcity_downtown_001")
+    assert not is_instance_room_id("instance_")  # prefix alone carries no instance id or stable id
 
 
 def test_spawn_npc_via_population_controller_routes_through_controller() -> None:

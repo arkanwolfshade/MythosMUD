@@ -48,7 +48,8 @@ Combat and death should be disabled in tutorial instances.
    clear `tutorial_instance_id`, destroy instance, persist player.
 
 6. **Combat/death guards**: Rooms with `no_combat` block player-initiated combat;
-   rooms with `no_death` cap damage so player DP never goes below 0.
+   rooms with `no_death` cap damage so player DP never goes below 0. (Amended by ADR-028: the
+   floor is 1 DP, because 0 DP is the mortally-wounded band and the bleed-out tick still kills.)
 
 ## 4. Alternatives Considered
 
