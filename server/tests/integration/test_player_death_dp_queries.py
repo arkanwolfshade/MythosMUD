@@ -5,6 +5,11 @@ get_dead_players / get_mortally_wounded_players run every game tick, so they pre
 (the `get_players_not_clearly_alive()` function in db/procedures/players.sql) instead of loading the
 whole players table. The prefilter must only ever drop rows the Python predicates would drop anyway;
 this proves that on the real JSONB column, including the odd stored shapes `coerce_int` tolerates.
+
+`make test-playwright` runs this against the live e2e database while its server is ticking, and that
+server bleeds out mortally wounded rows at 1 DP/second (and moves dead ones to limbo). So no wounded row
+sits within one decay step of the dead threshold (-9 would flip to dead mid-test): the -10 boundary is
+pinned from the dead side instead.
 """
 
 import uuid
@@ -28,7 +33,7 @@ _DP_CASES: dict[str, object] = {
     "alive_at_one": 1,
     "boundary_zero": 0,
     "wounded": -3,
-    "wounded_floor": -9,
+    "wounded_deep": -8,
     "dead_boundary": -10,
     "dead_deep": -15,
     "string_dead": "-12",
@@ -41,7 +46,7 @@ _EXPECTED_DEAD = {"dead_boundary", "dead_deep", "string_dead"}
 _EXPECTED_MORTALLY_WOUNDED = {
     "boundary_zero",
     "wounded",
-    "wounded_floor",
+    "wounded_deep",
     "float_wounded",
     "json_null",  # coerce_int(None) -> default 0
     "not_numeric",  # coerce_int("abc") -> default 0
