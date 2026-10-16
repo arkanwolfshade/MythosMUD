@@ -10,7 +10,8 @@ Each entry becomes one environment container in that room, sized by the prototyp
 ``metadata.container`` and named after the prototype. Startup matches existing containers by
 (room_id, prototype_id): missing ones are created, existing ones get their name and capacity
 refreshed from the prototype (the prototype is the source of truth), and their items are never
-touched. Template rooms are skipped -- furniture inside instances needs per-instance containers.
+touched. Template rooms are skipped; an instance's clones get their own containers when the
+instance is created (see instance_content).
 """
 
 from __future__ import annotations

@@ -19,6 +19,7 @@ from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.project_paths import get_project_root
 
 if TYPE_CHECKING:
+    from server.game.instance_manager import InstanceContentLifecycle
     from server.game.skill_service import SkillService
     from server.services.instance_flush_service import InstanceFlushService
 
@@ -62,6 +63,8 @@ class ApplicationContainer:
     room_service: Any
     movement_service: Any
     instance_flush_service: "InstanceFlushService | None"
+    # Built at startup (lifespan_instance.wire_instance_content) once the item and NPC services exist.
+    instance_content_service: "InstanceContentLifecycle | None"
     player_position_service: Any
     follow_service: Any
     party_service: Any
@@ -134,6 +137,7 @@ class ApplicationContainer:
         self.room_service = None
         self.movement_service = None
         self.instance_flush_service = None
+        self.instance_content_service = None
         self.player_position_service = None
         self.follow_service = None
         self.party_service = None

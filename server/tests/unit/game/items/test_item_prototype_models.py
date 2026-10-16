@@ -1,10 +1,16 @@
 """Unit tests for item prototype Pydantic models."""
 
+import json
+from pathlib import Path
+from typing import cast
+
 import pytest
 from pydantic import ValidationError
 
-from server.game.items.constants import ALLOWED_FLAGS, ALLOWED_ITEM_TYPES, ALLOWED_WEAR_SLOTS
+from server.game.items.constants import ALLOWED_FLAGS, ALLOWED_ITEM_TYPES, ALLOWED_WEAR_SLOTS, INSTANCE_BOUND_FLAG
 from server.game.items.models import ItemPrototypeModel
+
+_PROTOTYPE_SCHEMA = Path(__file__).resolve().parents[5] / "schemas" / "items" / "item_prototype.schema.json"
 
 
 def _valid_payload(**overrides: object) -> dict[str, object]:
@@ -40,6 +46,19 @@ def test_item_prototype_accepts_valid_flags() -> None:
     flag = next(iter(ALLOWED_FLAGS))
     model = ItemPrototypeModel.model_validate(_valid_payload(flags=[flag]))
     assert model.flags == [flag]
+
+
+def test_item_prototype_accepts_instance_bound_flag() -> None:
+    model = ItemPrototypeModel.model_validate(_valid_payload(flags=[INSTANCE_BOUND_FLAG]))
+    assert model.flags == [INSTANCE_BOUND_FLAG]
+
+
+def test_prototype_json_schema_flag_enum_matches_allowed_flags() -> None:
+    """The JSON schema and the Python allow-list are separate copies; they must not drift apart."""
+    schema = cast(
+        dict[str, dict[str, dict[str, dict[str, list[str]]]]], json.loads(_PROTOTYPE_SCHEMA.read_text(encoding="utf-8"))
+    )
+    assert set(schema["properties"]["flags"]["items"]["enum"]) == ALLOWED_FLAGS
 
 
 def test_item_prototype_rejects_invalid_wear_slots() -> None:

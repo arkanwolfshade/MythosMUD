@@ -13,7 +13,7 @@ from __future__ import annotations
 import threading
 import uuid
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Protocol, cast
 
 from ..constants.spawn_defaults import DEFAULT_EXIT_ROOM_ID
 from ..models.room import Room
@@ -71,6 +71,22 @@ class Instance:
     template_id: str
     owner_player_id: str
     rooms: dict[str, Room] = field(default_factory=dict)
+
+
+class InstanceContentLifecycle(Protocol):
+    """Fills an instance once it is created and empties it before it is destroyed (InstanceContentService).
+
+    Declared here, import-light, so the app container and the flush service can hold the content
+    service by this type without importing its item and NPC dependencies (an import cycle).
+    """
+
+    async def populate(self, instance: Instance) -> None:
+        """Create the instance rooms' furniture containers, floor items and NPCs."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stub body
+
+    async def teardown(self, instance: Instance) -> list[dict[str, object]]:
+        """Despawn the instance's NPCs, delete its containers, and return the stacks they held."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stub body
 
 
 class InstanceManager:
@@ -240,14 +256,18 @@ class InstanceManager:
 
     def get_first_room_id(self, instance_id: str) -> str | None:
         """
-        Return the first room ID of the instance (for spawn placement).
+        Return the room ID where players enter the instance (for spawn placement).
 
-        Order is undefined but stable for a given instance.
+        The template's room with ``instance_start: true`` wins. Templates that name none fall back
+        to the first room, whose order is undefined but stable for a given instance.
         """
         with self._lock:
             instance = self._instances.get(instance_id)
             if not instance or not instance.rooms:
                 return None
+            for room_id, room in instance.rooms.items():
+                if room.attributes.get("instance_start") is True:
+                    return room_id
             return next(iter(instance.rooms), None)
 
     def get_exit_room_id(self, instance_id: str) -> str:
