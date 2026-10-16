@@ -9,6 +9,7 @@ Tests the game tick processing logic including status effects, combat, and maint
 
 from __future__ import annotations
 
+import asyncio
 import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -41,6 +42,7 @@ from server.app.game_tick_processing import (
     process_player_effects_expiration,
     process_status_effects,
     reset_current_tick,
+    update_world_presence,
 )
 
 JsonMap = dict[str, object]
@@ -343,6 +345,73 @@ async def test_process_npc_maintenance_runs_on_interval() -> None:
     app.state.container = container
     with patch("server.app.game_tick_processing.NPCMaintenanceConfig.should_run_maintenance", return_value=True):
         await process_npc_maintenance(app, tick_count=60)
+    periodic_maintenance.assert_called_once()
+
+
+def _world_app(*, online: bool, awake: bool) -> tuple[FastAPI, asyncio.Event, MagicMock]:
+    """App whose NPC thread manager carries a real players_present Event (a mock Event proves nothing).
+
+    Returns (app, players_present, periodic_maintenance).
+    """
+    players_present = asyncio.Event()
+    if awake:
+        players_present.set()
+    periodic_maintenance: MagicMock = MagicMock(return_value={"respawned_npcs": 1})
+    thread_manager: MagicMock = MagicMock(players_present=players_present)
+    lifecycle: MagicMock = MagicMock(thread_manager=thread_manager, periodic_maintenance=periodic_maintenance)
+    connection_manager: MagicMock = MagicMock(online_players={uuid.uuid4(): {}} if online else {})
+    app = FastAPI()
+    app.state = MagicMock()
+    app.state.container = MagicMock(npc_lifecycle_manager=lifecycle, connection_manager=connection_manager)
+    return app, players_present, periodic_maintenance
+
+
+def test_update_world_presence_wakes_world_and_catches_up_once() -> None:
+    app, players_present, periodic_maintenance = _world_app(online=True, awake=False)
+    _ = update_world_presence(app)
+    assert players_present.is_set()
+    periodic_maintenance.assert_called_once()
+    # Still online on the next tick: no edge, so no second catch-up.
+    _ = update_world_presence(app)
+    periodic_maintenance.assert_called_once()
+
+
+def test_update_world_presence_pauses_when_last_player_leaves() -> None:
+    app, players_present, periodic_maintenance = _world_app(online=False, awake=True)
+    _ = update_world_presence(app)
+    assert not players_present.is_set()
+    periodic_maintenance.assert_not_called()
+
+
+def test_update_world_presence_empty_world_stays_paused() -> None:
+    app, players_present, periodic_maintenance = _world_app(online=False, awake=False)
+    _ = update_world_presence(app)
+    assert not players_present.is_set()
+    periodic_maintenance.assert_not_called()
+
+
+def test_update_world_presence_wake_survives_catch_up_failure() -> None:
+    app, players_present, periodic_maintenance = _world_app(online=True, awake=False)
+    periodic_maintenance.side_effect = RuntimeError("boom")
+    _ = update_world_presence(app)  # must not raise
+    assert players_present.is_set()
+
+
+def test_update_world_presence_without_container_is_noop() -> None:
+    app = FastAPI()
+    app.state = MagicMock()
+    app.state.container = None
+    _ = update_world_presence(app)  # must not raise
+
+
+@pytest.mark.asyncio
+async def test_process_npc_maintenance_skipped_while_world_is_paused() -> None:
+    app, players_present, periodic_maintenance = _world_app(online=False, awake=False)
+    with patch("server.app.game_tick_processing.NPCMaintenanceConfig.should_run_maintenance", return_value=True):
+        await process_npc_maintenance(app, tick_count=600)
+        periodic_maintenance.assert_not_called()
+        players_present.set()
+        await process_npc_maintenance(app, tick_count=600)
     periodic_maintenance.assert_called_once()
 
 

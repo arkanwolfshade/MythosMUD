@@ -34,6 +34,7 @@ from .game_tick_death import (
     _process_single_player_mp_regeneration,
     _process_single_player_room_flux,
     _validate_mp_regeneration_services,
+    is_game_second_tick,
     process_dp_decay_and_death,
 )
 from .game_tick_protocols import _app_container
@@ -134,13 +135,52 @@ async def process_combat_cleanup(app: FastAPI, tick_count: int) -> None:
         logger.error("Error cleaning up stale combats", tick_count=tick_count, error=str(e))
 
 
+def update_world_presence(app: FastAPI) -> bool:
+    """Pause NPC workers while nobody is online; on the first login, catch up once.
+
+    The thread manager's `players_present` event doubles as the previous-tick state, so this
+    is edge-triggered without any extra variable and independent of which code path changed
+    `online_players`. Worst-case wake latency is one tick.
+
+    Returns:
+        True if at least one player is online. True as well when presence can't be determined,
+        so callers never throttle work on a half-built app.
+    """
+    container = _app_container(app)
+    if container is None or container.npc_lifecycle_manager is None or container.connection_manager is None:
+        return True
+
+    players_present = container.npc_lifecycle_manager.thread_manager.players_present
+    present = bool(container.connection_manager.online_players)
+    if present == players_present.is_set():
+        return present
+
+    if not present:
+        players_present.clear()
+        logger.info("World empty; NPC workers paused")
+        return False
+
+    players_present.set()
+    try:
+        # Respawns and optional spawns that came due while the world was paused.
+        results = container.npc_lifecycle_manager.periodic_maintenance()
+        logger.info("World awake; NPC workers resumed", **results)
+    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
+        logger.error("Error during NPC catch-up maintenance", error=str(e))
+    return True
+
+
 async def process_npc_maintenance(app: FastAPI, tick_count: int) -> None:
-    """Process NPC lifecycle maintenance (every 60 ticks = 1 minute)."""
+    """Process NPC lifecycle maintenance (every 600 ticks = 1 minute at the 100 ms tick)."""
     container = _app_container(app)
     if container is None or container.npc_lifecycle_manager is None:
         return
 
     if not NPCMaintenanceConfig.should_run_maintenance(tick_count):
+        return
+
+    # Paused world: update_world_presence runs the catch-up on the first login instead.
+    if not container.npc_lifecycle_manager.thread_manager.players_present.is_set():
         return
 
     try:
@@ -232,13 +272,20 @@ async def game_tick_loop(app: FastAPI) -> None:
 
     while True:
         try:
-            await process_player_effects_expiration(app, tick_count)
+            players_online = update_world_presence(app)
+            # Nobody online: the DB-backed checks (effect expiry, offline bleed-out/death) still run,
+            # but once per game-second instead of every tick. Both tolerate lateness (expiry is
+            # `remaining <= 0`; death is a threshold), and this cuts ~20 idle DB round-trips/s to ~2.
+            db_checks_due = players_online or is_game_second_tick(tick_count)
+            if db_checks_due:
+                await process_player_effects_expiration(app, tick_count)
             await process_status_effects(app, tick_count)
             logger.debug("Game tick", tick_count=tick_count)
             set_current_tick(tick_count)
             await process_combat_tick(app, tick_count)
             await process_casting_progress(app, tick_count)
-            await process_dp_decay_and_death(app, tick_count)
+            if db_checks_due:
+                await process_dp_decay_and_death(app, tick_count)
             await process_combat_cleanup(app, tick_count)
             await process_npc_maintenance(app, tick_count)
             await cleanup_decayed_corpses(app, tick_count)
