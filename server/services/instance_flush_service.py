@@ -9,24 +9,18 @@ items can no longer be taken by anyone else, and a full box never discards them.
 
 from __future__ import annotations
 
-from typing import Protocol, cast
+from typing import Protocol
 from uuid import UUID
 
 from sqlalchemy.exc import SQLAlchemyError
 
 from ..exceptions import DatabaseError
 from ..game.instance_manager import InstanceContentLifecycle, InstanceManager
-from ..game.items.constants import INSTANCE_BOUND_FLAG
+from ..game.items.instance_bound import is_instance_bound_stack
 from ..structured_logging.enhanced_logging_config import get_logger
 from .bank_service import BankBoxPersistence, forward_to_bank_box
 
 logger = get_logger(__name__)
-
-
-def _is_instance_bound(stack: dict[str, object]) -> bool:
-    """True if the floor stack's prototype is flagged INSTANCE_BOUND."""
-    flags = stack.get("flags")
-    return isinstance(flags, list) and INSTANCE_BOUND_FLAG in cast(list[object], flags)
 
 
 class RoomDropStore(Protocol):  # pylint: disable=too-few-public-methods  # Reason: single-method structural type
@@ -65,7 +59,7 @@ class InstanceFlushService:
         if self._content is not None and instance is not None:
             popped = [*popped, *await self._content.teardown(instance)]
         # Instance-bound items (plot tokens) die with the instance; only ordinary stacks are banked.
-        stacks = [stack for stack in popped if not _is_instance_bound(stack)]
+        stacks = [stack for stack in popped if not is_instance_bound_stack(stack)]
         self._instance_manager.destroy_instance(instance_id)
         if not stacks:
             return 0

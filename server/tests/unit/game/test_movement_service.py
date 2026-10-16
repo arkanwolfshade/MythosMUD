@@ -549,6 +549,17 @@ def test_mark_room_explored_with_service(movement_service):
     exploration.mark_room_as_explored_sync.assert_called_once()
 
 
+def test_mark_room_explored_skips_instance_rooms(movement_service: MovementService):
+    """Instance rooms are private copies with no row in the rooms table, so exploring them only logs a warning."""
+    mark_explored: MagicMock = MagicMock()
+    exploration: MagicMock = MagicMock()
+    exploration.mark_room_as_explored_sync = mark_explored
+    movement_service._exploration_service = exploration  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
+    instance_room = f"instance_{uuid.uuid4()}_earth_arkhamcity_downtown_001"
+    movement_service._mark_room_explored(uuid.uuid4(), instance_room)  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
+    mark_explored.assert_not_called()
+
+
 @pytest.mark.asyncio
 async def test_move_player_validation_fails(movement_service, mock_persistence):
     """Test move_player returns False when validation fails."""

@@ -43,7 +43,6 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
         combat_service: Any = None,
         player_combat_service: Any = None,
         item_prototype_registry: Any = None,
-        instance_manager: Any = None,
     ) -> None:
         """Initialize the player service with a persistence layer and optional combat service and prototype registry."""
         self.persistence = persistence
@@ -53,9 +52,7 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
         self._schema_converter = PlayerSchemaConverter(
             persistence, player_combat_service, item_prototype_registry=item_prototype_registry
         )
-        self._creation_service = PlayerCreationService(
-            persistence, self._schema_converter, instance_manager=instance_manager
-        )
+        self._creation_service = PlayerCreationService(persistence, self._schema_converter)
         self._search_service = PlayerSearchService(self)
         self._state_service = PlayerStateService(persistence)
         self._respawn_wrapper = PlayerRespawnWrapper(persistence)

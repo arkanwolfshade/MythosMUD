@@ -15,6 +15,7 @@ import uuid
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Protocol, cast
 
+from ..constants.instance_rooms import INSTANCE_ROOM_PREFIX
 from ..constants.spawn_defaults import DEFAULT_EXIT_ROOM_ID
 from ..models.room import Room
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -25,9 +26,6 @@ if TYPE_CHECKING:
     from ..events import EventBus
 
 logger = get_logger(__name__)
-
-# Instance room ids: instance_{instance_uuid}_{template_stable_id}
-INSTANCE_ROOM_PREFIX = "instance_"
 
 
 def template_id_of(room: Room | None) -> str | None:

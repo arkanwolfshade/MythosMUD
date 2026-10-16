@@ -31,9 +31,16 @@ def test_should_skip_room_validation_instanced_room() -> None:
     assert should_skip_room_validation({"other": MagicMock()}, player) is True
 
 
-def test_should_skip_room_validation_tutorial_bedroom() -> None:
-    player = _player("earth_arkhamcity_sanitarium_room_tutorial_bedroom_001", tutorial_instance_id="tut-1")
-    assert should_skip_room_validation({"other": MagicMock()}, player) is True
+def test_should_skip_room_validation_tutorial_player_whatever_room_was_saved() -> None:
+    """The reconnect path places tutorial players, so a saved room that no longer exists must not relocate them."""
+    for saved_room in ("removed_template_room_001", "earth_arkhamcity_sanitarium_room_tutorial_bedroom_001"):
+        player = _player(saved_room, tutorial_instance_id="tut-1")
+        assert should_skip_room_validation({"other": MagicMock()}, player) is True
+
+
+def test_should_not_skip_room_validation_without_a_tutorial_marker() -> None:
+    player = _player("removed_template_room_001")
+    assert should_skip_room_validation({"other": MagicMock()}, player) is False
 
 
 def test_validate_and_fix_player_room_valid() -> None:

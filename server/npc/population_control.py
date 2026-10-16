@@ -29,6 +29,7 @@ from server.events.event_types import (
 )
 from server.models.npc import NPCDefinition, NPCSpawnRule
 
+from ..constants.instance_rooms import is_instance_room_id
 from ..structured_logging.enhanced_logging_config import get_logger
 from .npc_base import NPCBase
 from .npc_utils import (
@@ -36,7 +37,6 @@ from .npc_utils import (
     extract_npc_metadata,
     extract_room_id_from_npc,
     get_zone_key_from_room_id,
-    is_instance_room_id,
 )
 from .population_stats import PopulationStats
 from .spawn_validator import should_spawn_npc

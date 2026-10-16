@@ -19,6 +19,7 @@ from typing import TYPE_CHECKING, Any, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
+from ..constants.instance_rooms import is_instance_room_id
 from ..events import EventBus
 from ..exceptions import DatabaseError, ValidationError
 from ..models.room import Room
@@ -266,7 +267,9 @@ class MovementService(RoomOccupancyMixin):
         )
 
     def _mark_room_explored(self, resolved_player_id: uuid.UUID | str, to_room_id: str) -> None:
-        """Mark destination room as explored (non-blocking)."""
+        """Mark destination room as explored (non-blocking). Instance rooms are private copies and are skipped."""
+        if is_instance_room_id(to_room_id):
+            return
         try:
             exploration_service = self._exploration_service
             if exploration_service:
