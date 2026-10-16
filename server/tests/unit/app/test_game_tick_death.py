@@ -374,6 +374,44 @@ async def test_game_tick_loop_survives_unanticipated_exception() -> None:
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("players_online", "expected_db_check_ticks"),
+    [
+        (True, list(range(12))),  # someone online: DB-backed checks run every tick
+        (False, [0, 10]),  # idle world: once per game-second (10 ticks at the 100 ms tick)
+    ],
+)
+async def test_game_tick_loop_throttles_db_checks_when_nobody_is_online(
+    players_online: bool, expected_db_check_ticks: list[int]
+) -> None:
+    app = FastAPI()
+    app.state = MagicMock()
+    app.state.container = MagicMock()
+    with (
+        patch("server.app.game_tick_processing.get_tick_interval", return_value=0.01),
+        patch("server.app.game_tick_processing.sleep", side_effect=[None] * 11 + [asyncio.CancelledError]),
+        patch("server.app.game_tick_processing.update_world_presence", return_value=players_online),
+        patch(
+            "server.app.game_tick_processing.process_player_effects_expiration", new_callable=AsyncMock
+        ) as mock_expiry,
+        patch("server.app.game_tick_processing.process_status_effects", new_callable=AsyncMock) as mock_status,
+        patch("server.app.game_tick_processing.process_combat_tick", new_callable=AsyncMock),
+        patch("server.app.game_tick_processing.process_casting_progress", new_callable=AsyncMock),
+        patch("server.app.game_tick_processing.process_dp_decay_and_death", new_callable=AsyncMock) as mock_dp,
+        patch("server.app.game_tick_processing.process_combat_cleanup", new_callable=AsyncMock),
+        patch("server.app.game_tick_processing.process_npc_maintenance", new_callable=AsyncMock),
+        patch("server.app.game_tick_processing.cleanup_decayed_corpses", new_callable=AsyncMock),
+        patch("server.app.game_tick_processing.broadcast_tick_event", new_callable=AsyncMock),
+    ):
+        await game_tick_loop(app)
+
+    assert [call.args[1] for call in mock_expiry.await_args_list] == expected_db_check_ticks
+    assert [call.args[1] for call in mock_dp.await_args_list] == expected_db_check_ticks
+    # Online-player work is not throttled: status effects still run on all 12 ticks.
+    assert mock_status.await_count == 12
+
+
+@pytest.mark.asyncio
 async def test_process_passive_lucidity_flux() -> None:
     process_tick: AsyncMock = AsyncMock()
     passive_lucidity_flux_service: MagicMock = MagicMock()

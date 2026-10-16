@@ -74,6 +74,7 @@ async def test_worker_processes_message_and_executes_behavior_then_stops() -> No
     """_npc_thread_worker drains pending messages and calls _execute_npc_behavior each iteration."""
     manager = NPCThreadManager()
     manager.is_running = True
+    manager.players_present.set()
     manager.active_threads["npc-1"] = MagicMock()
     _ = manager.message_queue.add_message("npc-1", {"type": "test"})
 
@@ -97,6 +98,7 @@ async def test_worker_handles_unexpected_exception() -> None:
     """_npc_thread_worker logs and exits gracefully on an unexpected exception."""
     manager = NPCThreadManager()
     manager.is_running = True
+    manager.players_present.set()
     manager.active_threads["npc-1"] = MagicMock()
 
     with patch.object(manager, "_execute_npc_behavior", new_callable=AsyncMock, side_effect=RuntimeError("boom")):
@@ -108,6 +110,7 @@ async def test_worker_stops_cleanly_on_cancellation() -> None:
     """_npc_thread_worker catches CancelledError and exits via its finally block."""
     manager = NPCThreadManager()
     manager.is_running = True
+    manager.players_present.set()
     manager.active_threads["npc-1"] = MagicMock()
 
     with patch.object(manager, "_execute_npc_behavior", new_callable=AsyncMock):
@@ -116,6 +119,34 @@ async def test_worker_stops_cleanly_on_cancellation() -> None:
         _ = task.cancel()
         await task  # the worker catches CancelledError internally and completes cleanly
     assert task.cancelled() is False
+
+
+@pytest.mark.asyncio
+async def test_worker_is_parked_until_players_present_then_resumes() -> None:
+    """With the world empty the worker never runs behavior; set() wakes it, clear() parks it again."""
+    manager = NPCThreadManager()
+    manager.is_running = True
+    manager.active_threads["npc-1"] = MagicMock()
+
+    with patch.object(manager, "_execute_npc_behavior", new_callable=AsyncMock) as execute_behavior:
+        task = asyncio.create_task(manager._npc_thread_worker("npc-1", MagicMock()))
+        await asyncio.sleep(0.25)  # > 2 worker periods (0.1 s); a polling worker would have run
+        execute_behavior.assert_not_awaited()
+
+        manager.players_present.set()
+        await asyncio.sleep(0.25)
+        woke_calls = execute_behavior.await_count
+        assert woke_calls >= 1
+
+        manager.players_present.clear()
+        await asyncio.sleep(0.15)  # let any in-flight pass finish
+        parked_calls = execute_behavior.await_count
+        await asyncio.sleep(0.25)
+        assert execute_behavior.await_count == parked_calls
+
+        manager.is_running = False
+        _ = task.cancel()
+        await task
 
 
 def test_resolve_wander_npc_no_instance_service() -> None:

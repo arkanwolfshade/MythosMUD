@@ -50,6 +50,9 @@ class NPCThreadManager:
         self.message_queue: NPCMessageQueue = NPCMessageQueue()
         self.is_running: bool = False
         self._lock: Lock = Lock()
+        # Set while at least one player is online (driven by game_tick_loop's edge detector).
+        # Workers park on it while the world is empty: a parked task costs no wake-ups at all.
+        self.players_present: asyncio.Event = asyncio.Event()
 
         logger.info("NPC thread manager initialized")
 
@@ -220,6 +223,9 @@ class NPCThreadManager:
 
         try:
             while self.is_running and npc_id in self.active_threads:
+                # Idle world: park here (zero CPU) until the first player connects.
+                _ = await self.players_present.wait()
+
                 # Process pending messages
                 messages = self.message_queue.get_messages(npc_id)
                 for message in messages:

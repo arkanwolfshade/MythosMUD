@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import uuid
 from collections.abc import Awaitable, Callable, Mapping
 from typing import TYPE_CHECKING, Protocol, cast
@@ -30,6 +31,7 @@ __all__ = [
     "_TickMagicService",
     "_TickMpRegen",
     "_TickNpcLifecycle",
+    "_TickNpcThreadManager",
     "_TickRespawnService",
     "_app_container",
     "_online_player_ids",
@@ -90,8 +92,13 @@ class _TickCorruptionFlux(Protocol):
     async def process_tick_for_player(self, player_id: uuid.UUID, tick_count: int) -> Mapping[str, object]: ...
 
 
+class _TickNpcThreadManager(Protocol):
+    players_present: asyncio.Event
+
+
 class _TickNpcLifecycle(Protocol):
     respawn_queue: dict[str, Mapping[str, object]]
+    thread_manager: _TickNpcThreadManager
 
     def periodic_maintenance(self) -> dict[str, object]: ...
 
