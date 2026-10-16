@@ -10,8 +10,10 @@ import uuid
 from collections.abc import Mapping
 from typing import Any, Protocol, cast
 
+from ..constants.instance_rooms import PENDING_INSTANCE_ID
 from ..exceptions import DatabaseError
-from ..game.instance_manager import template_id_of
+from ..game.instance_manager import Instance, InstanceContentLifecycle, InstanceManager, template_id_of
+from ..game.instance_state import reset_instance_scoped_state
 from ..models.corruption import compute_tier
 from ..models.player import Player
 from ..models.room import Room
@@ -187,45 +189,40 @@ async def _resolve_room_id_for_tutorial_reconnect(player: Any, manager: Any) -> 
     """
     from ..game.player_creation_service import TUTORIAL_TEMPLATE_ID
 
-    instance_id = getattr(player, "tutorial_instance_id", None)
     player_obj = cast(Player, player)
+    instance_id = player_obj.tutorial_instance_id
     rooms = cast(_RoomLookupOwner, manager).async_persistence
     template_id = TUTORIAL_TEMPLATE_ID if player_obj.tutorial_instance_id else _stranded_template_id(player_obj, rooms)
     if not template_id:
         return None
 
-    instance_manager = _get_instance_manager_from_manager(manager)
-    if not instance_manager:
+    services = _container_services(cast(object, manager))
+    if services is None or services.instance_manager is None:
         logger.warning(
             "InstanceManager not available for tutorial reconnect",
             player_id=player.player_id,
         )
         return None
+    instance_manager = services.instance_manager
 
     instance = instance_manager.get_instance(instance_id) if instance_id else None
-    if not instance:
-        logger.info(
-            "Tutorial instance missing on (re)entry, creating a fresh one",
-            player_id=player.player_id,
-            instance_id=instance_id,
-            template_id=template_id,
+    if instance is not None and player_obj.current_room_id in instance.rooms:
+        # Live instance and the player is inside it (a grace-period reconnect): resume where they were.
+        return player_obj.current_room_id
+    if instance is None:
+        instance = await _start_fresh_instance(
+            player_obj, instance_manager, services.instance_content_service, template_id, instance_id
         )
-        instance = instance_manager.create_instance(
-            template_id=template_id,
-            owner_player_id=player.player_id,
-        )
-        instance_id = instance.instance_id
-        setattr(player, "tutorial_instance_id", instance_id)  # noqa: B010  # Reason: SQLAlchemy column
 
-    first_room_id = instance_manager.get_first_room_id(instance_id)
+    first_room_id = instance_manager.get_first_room_id(instance.instance_id)
     if not first_room_id:
-        logger.warning("Tutorial instance has no rooms", instance_id=instance_id)
+        logger.warning("Tutorial instance has no rooms", instance_id=instance.instance_id)
         return None
 
     setattr(player, "current_room_id", first_room_id)  # noqa: B010  # Reason: SQLAlchemy column
     if manager.async_persistence:
         await manager.async_persistence.save_player(player)
-    return cast(str, first_room_id)
+    return first_room_id
 
 
 def _stranded_template_id(player: Player, persistence: RoomLookup | None) -> str | None:
@@ -236,18 +233,50 @@ def _stranded_template_id(player: Player, persistence: RoomLookup | None) -> str
     return template_id_of(persistence.get_room_by_id(room_id))
 
 
-def _get_instance_manager_from_manager(manager: Any) -> Any:
-    """Extract InstanceManager from ConnectionManager via app.container."""
-    app_state = getattr(manager, "app", None)
-    if not app_state:
-        return None
-    app_state = getattr(app_state, "state", None)
-    if not app_state:
-        return None
-    container = getattr(app_state, "container", None)
-    if not container:
-        return None
-    return getattr(container, "instance_manager", None)
+async def _start_fresh_instance(
+    player: Player,
+    instance_manager: InstanceManager,
+    content: InstanceContentLifecycle | None,
+    template_id: str,
+    lost_instance_id: str | None,
+) -> Instance:
+    """Create and populate a new instance for the player and record it on them.
+
+    ``lost_instance_id`` is the instance the player had before, if any. A real one that no longer
+    exists means a restart (logout, server restart), so what the old instance handed the player is
+    cleared; the pending marker (new character) and None (stranded in a template) mean there is
+    nothing to clear.
+    """
+    instance = instance_manager.create_instance(template_id=template_id, owner_player_id=player.player_id)
+    if content is not None:
+        await content.populate(instance)
+    cleared = 0
+    if lost_instance_id and lost_instance_id != PENDING_INSTANCE_ID:
+        cleared = reset_instance_scoped_state(player)
+    logger.info(
+        "Tutorial instance missing on (re)entry, created a fresh one",
+        player_id=player.player_id,
+        lost_instance_id=lost_instance_id,
+        instance_id=instance.instance_id,
+        template_id=template_id,
+        cleared=cleared,
+    )
+    setattr(player, "tutorial_instance_id", instance.instance_id)  # noqa: B010  # Reason: SQLAlchemy column
+    return instance
+
+
+class _InstanceServices(Protocol):  # pylint: disable=too-few-public-methods  # Reason: attribute-only structural type
+    """The slice of the app container the tutorial reconnect path reads."""
+
+    instance_manager: InstanceManager | None
+    instance_content_service: InstanceContentLifecycle | None
+
+
+def _container_services(manager: object) -> _InstanceServices | None:
+    """The app container's instance services, reached through the ConnectionManager (app.state.container), or None."""
+    app = cast(object | None, getattr(manager, "app", None))
+    state = cast(object | None, getattr(app, "state", None))
+    return cast("_InstanceServices | None", getattr(state, "container", None))
 
 
 class _GraceReconnectManager(CatchupManager, Protocol):  # pylint: disable=too-few-public-methods

@@ -8,20 +8,21 @@ from typing import Any
 
 from sqlalchemy import text
 
+from server.constants.instance_rooms import is_instance_room_id
 from server.models.player import Player
 
 
 def should_skip_room_validation(room_cache: dict[str, Any], player: Player) -> bool:
-    """Return True if room validation should be skipped (cache empty, instanced, or tutorial bedroom)."""
+    """Return True if room validation should be skipped (cache empty, in an instance, or in the tutorial).
+
+    A tutorial player (tutorial_instance_id set) is placed by the reconnect path, so whatever room was
+    saved for them (an instance room, a template room, or one since removed) must not relocate them here.
+    """
     if not room_cache:
         return True
-    if player.current_room_id and player.current_room_id.startswith("instance_"):
+    if player.current_room_id and is_instance_room_id(player.current_room_id):
         return True
-    if player.current_room_id == "earth_arkhamcity_sanitarium_room_tutorial_bedroom_001" and getattr(
-        player, "tutorial_instance_id", None
-    ):
-        return True
-    return False
+    return bool(getattr(player, "tutorial_instance_id", None))
 
 
 def validate_and_fix_player_room(room_cache: dict[str, Any], player: Player, logger: Any) -> bool:

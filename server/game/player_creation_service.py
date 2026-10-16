@@ -8,6 +8,7 @@ import datetime
 import uuid
 from typing import TYPE_CHECKING, Any, cast
 
+from ..constants.instance_rooms import PENDING_INSTANCE_ID
 from ..exceptions import ValidationError
 from ..models import Stats
 from ..models.player import Player
@@ -28,39 +29,10 @@ TUTORIAL_TEMPLATE_ID = "tutorial_sanitarium"
 class PlayerCreationService:
     """Service for player creation operations."""
 
-    def __init__(self, persistence: Any, schema_converter: Any, instance_manager: Any = None) -> None:
-        """Initialize with persistence layer, schema converter, and optional instance manager."""
+    def __init__(self, persistence: Any, schema_converter: Any) -> None:
+        """Initialize with persistence layer and schema converter."""
         self.persistence = persistence
         self._schema_converter = schema_converter
-        self._instance_manager = instance_manager
-
-    def _resolve_tutorial_start_room(
-        self, player_id: uuid.UUID, starting_room_id: str, start_in_tutorial: bool
-    ) -> tuple[str, str | None]:
-        """
-        Resolve starting room and tutorial instance ID.
-
-        For tutorial players, returns the stable_id of the tutorial bedroom (not the instanced ID).
-        The stable_id is saved to the database and resolved to the instance on load/reconnect.
-
-        Returns:
-            Tuple of (effective_starting_room_id (stable_id for tutorial), tutorial_instance_id or None)
-        """
-        if not start_in_tutorial or not self._instance_manager:
-            return starting_room_id, None
-        try:
-            instance = self._instance_manager.create_instance(TUTORIAL_TEMPLATE_ID, owner_player_id=player_id)
-            # Return the stable_id of the tutorial bedroom, not the instanced room ID
-            # The stable_id is persistent and will be resolved to the instance on reconnect
-            tutorial_bedroom_stable_id = "earth_arkhamcity_sanitarium_room_tutorial_bedroom_001"
-            return tutorial_bedroom_stable_id, instance.instance_id
-        except (ValueError, AttributeError) as e:
-            logger.warning(
-                "Failed to create tutorial instance, using default starting room",
-                error=str(e),
-                template_id=TUTORIAL_TEMPLATE_ID,
-            )
-        return starting_room_id, None
 
     async def create_player(
         self,
@@ -117,25 +89,21 @@ class PlayerCreationService:
         current_time = datetime.datetime.now(UTC).replace(tzinfo=None)
         player_id = uuid.uuid4()
 
-        effective_starting_room_id, tutorial_instance_id = self._resolve_tutorial_start_room(
-            player_id, starting_room_id, start_in_tutorial
-        )
-
         player = Player(
             player_id=player_id,
             user_id=user_id,
             name=name,
-            current_room_id=effective_starting_room_id,
+            current_room_id=starting_room_id,
             profession_id=profession_id,
             experience_points=0,
             level=1,
             created_at=current_time,
             last_active=current_time,
         )
-        if tutorial_instance_id:
-            player.tutorial_instance_id = tutorial_instance_id
-            # Set respawn_room_id to tutorial bedroom for tutorial players
-            player.respawn_room_id = "earth_arkhamcity_sanitarium_room_tutorial_bedroom_001"
+        if start_in_tutorial:
+            # The tutorial instance is built on first connect (see player_presence_tracker), so the
+            # character is saved in a real world room with the pending marker.
+            player.tutorial_instance_id = PENDING_INSTANCE_ID
 
         # Save player to persistence
         await self.persistence.save_player(player)
@@ -198,25 +166,20 @@ class PlayerCreationService:
         current_time = datetime.datetime.now(UTC).replace(tzinfo=None)
         player_id = uuid.uuid4()
 
-        effective_starting_room_id, tutorial_instance_id = self._resolve_tutorial_start_room(
-            player_id, starting_room_id, start_in_tutorial
-        )
-
         player = Player(
             player_id=player_id,
             user_id=user_id,
             name=name,
-            current_room_id=effective_starting_room_id,
+            current_room_id=starting_room_id,
             profession_id=profession_id,
             experience_points=0,
             level=1,
             created_at=current_time,
             last_active=current_time,
         )
-        if tutorial_instance_id:
-            player.tutorial_instance_id = tutorial_instance_id
-            # Set respawn_room_id to tutorial bedroom for tutorial players
-            player.respawn_room_id = "earth_arkhamcity_sanitarium_room_tutorial_bedroom_001"
+        if start_in_tutorial:
+            # Built on first connect (see player_presence_tracker); the pending marker stands in until then.
+            player.tutorial_instance_id = PENDING_INSTANCE_ID
 
         # Set the player's stats
         if hasattr(stats, "model_dump"):

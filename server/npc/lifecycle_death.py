@@ -14,9 +14,9 @@ from server.events.event_types import NPCDied, RoomOccupantsRefreshRequested
 from server.npc.npc_base import NPCBase
 from server.npc.population_control import NPCPopulationController
 
+from ..constants.instance_rooms import is_instance_room_id
 from ..structured_logging.enhanced_logging_config import get_logger
 from .lifecycle_types import NPCLifecycleEvent, NPCLifecycleRecord, NPCLifecycleState
-from .npc_utils import is_instance_room_id
 
 logger: BoundLogger = get_logger(__name__)
 

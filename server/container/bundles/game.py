@@ -224,7 +224,7 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
         from server.game.room_service import RoomService
         from server.services.user_manager import UserManager
 
-        self.player_service = PlayerService(persistence=persistence, instance_manager=self.instance_manager)
+        self.player_service = PlayerService(persistence=persistence)
         self.room_service = RoomService(persistence=persistence)
         self.user_manager = UserManager(async_persistence=cast("AsyncPersistenceLayer | None", async_persistence))
         self._wire_user_manager_after_init(self.follow_service, container.nats_message_handler, self.user_manager)
