@@ -8,16 +8,21 @@ movement_service.py under file NLOC limits.
 from __future__ import annotations
 
 import uuid
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
 from ..exceptions import DatabaseError
 from ..models.room import Room
+from .quest.collect_inventory import collect_player_stacks, count_prototype_in_stacks
 
 if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
+    from ..models.player import Player
     from ..services.player_combat_service import PlayerCombatService
+
+# Shown when a gated exit names no refusal text of its own.
+DEFAULT_EXIT_REFUSAL = "Something bars the way."
 
 
 def extract_player_id(logger: Any, player_obj: Any, from_room_id: str, to_room_id: str) -> uuid.UUID | None:
@@ -193,3 +198,49 @@ def validate_exit(logger: Any, persistence: AsyncPersistenceLayer, from_room: Ro
         )
 
     return False
+
+
+def _exit_requirement(room: Room, direction: str) -> tuple[str, str] | None:
+    """(required prototype id, refusal text) for a gated exit; None if it is open or its data is malformed.
+
+    Rooms declare ``attributes["exit_requirements"] = {"down": {"item": "<prototype id>", "refusal": "<text>"}}``.
+    Anything that is not that shape is ignored: bad world data must not trap a player behind an exit.
+    """
+    raw = cast(object, room.attributes.get("exit_requirements"))
+    if not isinstance(raw, dict):
+        return None
+    entry = cast(dict[str, object], raw).get(direction)
+    if not isinstance(entry, dict):
+        return None
+    spec = cast(dict[str, object], entry)
+    item = spec.get("item")
+    if not isinstance(item, str) or not item:
+        return None
+    refusal = spec.get("refusal")
+    return item, refusal if isinstance(refusal, str) and refusal else DEFAULT_EXIT_REFUSAL
+
+
+def exit_refusal(player: Player, room: Room, direction: str) -> str | None:
+    """Why the player may not leave ``room`` by ``direction`` (the refusal text), or None if they may.
+
+    An exit is gated when the room's exit_requirements name an item for that direction. The item counts
+    wherever the player holds it: inventory, equipped, or inside a carried container.
+    """
+    requirement = _exit_requirement(room, direction)
+    if requirement is None:
+        return None
+    item, refusal = requirement
+    return None if count_prototype_in_stacks(collect_player_stacks(player), item) > 0 else refusal
+
+
+def room_exit_refusal(player: Player, room: Room, to_room_id: str) -> str | None:
+    """Why the player may not move from ``room`` to ``to_room_id``, or None if they may.
+
+    Used where only the destination is known (flee, follow). Several exits can lead to the same room;
+    the move is allowed if any one of them is open to the player.
+    """
+    exits = cast(dict[str, str], room.exits)
+    refusals = [exit_refusal(player, room, direction) for direction, target in exits.items() if target == to_room_id]
+    if not refusals or None in refusals:
+        return None
+    return refusals[0]

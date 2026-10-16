@@ -20,6 +20,7 @@ from ..commands.ground_channel import cancel_ground_channel
 from ..commands.rest_command import cancel_rest_countdown, is_player_resting
 from ..exceptions import DatabaseError, ValidationError
 from ..game.dialogue import get_dialogue_service
+from ..game.movement_helpers import exit_refusal
 from ..game.movement_service import MovementService
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
@@ -337,6 +338,11 @@ async def handle_go_command(  # pylint: disable=too-many-arguments  # Reason: St
     target_room_id = _validate_exit(direction, room, persistence, player_name, room_id)
     if not target_room_id:
         return {"result": "You can't go that way"}
+
+    # The movement service enforces this too; checking here lets the room explain itself.
+    refusal = exit_refusal(player, room, direction)
+    if refusal is not None:
+        return {"result": refusal}
 
     result = await _execute_movement(player, room_id, target_room_id, app, persistence, player_name, direction)
     if rest_note and isinstance(result.get("result"), str):

@@ -17,6 +17,7 @@ from server.commands.go_command import (
     _validate_player_posture,
     handle_go_command,
 )
+from server.models.room import Room
 
 
 @pytest.mark.asyncio
@@ -440,6 +441,64 @@ async def test_handle_go_command_success():
 
     assert result["room_changed"] is True
     assert result["room_id"] == "north_room"
+
+
+def _gated_go_request(*, holding: bool) -> tuple[MagicMock, AsyncMock]:
+    """A go request from a room whose `down` exit needs the jade amulet; returns (request, move_player mock)."""
+    player: MagicMock = MagicMock()
+    player.current_room_id = "test_room"
+    player.player_id = uuid.uuid4()
+    player.get_stats = MagicMock(return_value={"position": "standing"})
+    player.get_inventory = MagicMock(return_value=[{"prototype_id": "jade_amulet", "quantity": 1}] if holding else [])
+    player.get_equipped_items = MagicMock(return_value={})
+    room = Room(
+        {
+            "id": "test_room",
+            "exits": {"down": "tunnel"},
+            "attributes": {"exit_requirements": {"down": {"item": "jade_amulet", "refusal": "Not with empty hands."}}},
+        }
+    )
+    tunnel: MagicMock = MagicMock()
+
+    def room_for(room_id: str) -> object:
+        return tunnel if room_id == "tunnel" else room
+
+    persistence: AsyncMock = AsyncMock()
+    persistence.get_player_by_name = AsyncMock(return_value=player)
+    persistence.get_room_by_id = MagicMock(side_effect=room_for)
+    move_player: AsyncMock = AsyncMock(return_value=True)
+    movement_service: MagicMock = MagicMock()
+    movement_service.move_player = move_player
+    container: MagicMock = MagicMock()
+    container.async_persistence = persistence
+    container.movement_service = movement_service
+    state: MagicMock = MagicMock()
+    state.container = container
+    app: MagicMock = MagicMock()
+    app.state = state
+    request: MagicMock = MagicMock()
+    request.app = app
+    return request, move_player
+
+
+@pytest.mark.asyncio
+async def test_handle_go_command_shows_the_refusal_for_a_gated_exit():
+    """A gated exit explains itself (the room's own refusal text) and never reaches the movement service."""
+    request, move_player = _gated_go_request(holding=False)
+
+    result = await handle_go_command({"direction": "down"}, {"username": "testuser"}, request, None, "testplayer")
+
+    assert result == {"result": "Not with empty hands."}
+    move_player.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_handle_go_command_lets_a_player_holding_the_item_through_a_gated_exit():
+    request, move_player = _gated_go_request(holding=True)
+
+    _ = await handle_go_command({"direction": "down"}, {"username": "testuser"}, request, None, "testplayer")
+
+    move_player.assert_awaited_once()
 
 
 @pytest.mark.asyncio
