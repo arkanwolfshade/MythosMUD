@@ -5203,6 +5203,28 @@
         "title": "AlertsResponse",
         "description": "Response model for system alerts."
       },
+      "ApplyEffectAction": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "apply_effect",
+            "title": "Type",
+            "default": "apply_effect"
+          },
+          "effect": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Effect"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "effect"
+        ],
+        "title": "ApplyEffectAction",
+        "description": "Add a status effect (any shape the tick loop understands, e.g. heal_over_time) to the player."
+      },
       "AsciiMapResponse": {
         "properties": {
           "map_html": {
@@ -6363,6 +6385,35 @@
           "valid": true
         }
       },
+      "CorruptionAtLeastAction": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "corruption_at_least",
+            "title": "Type",
+            "default": "corruption_at_least"
+          },
+          "value": {
+            "type": "integer",
+            "maximum": 100.0,
+            "minimum": 1.0,
+            "title": "Value"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Reason",
+            "default": "scripted_action"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "title": "CorruptionAtLeastAction",
+        "description": "Raise the player's corruption to ``value`` if it is lower; never adds, so it is idempotent."
+      },
       "CorruptionRequest": {
         "properties": {
           "amount": {
@@ -6929,6 +6980,39 @@
             },
             "type": "array",
             "title": "Options"
+          },
+          "actions": {
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/NarrateAction"
+                },
+                {
+                  "$ref": "#/components/schemas/ApplyEffectAction"
+                },
+                {
+                  "$ref": "#/components/schemas/CorruptionAtLeastAction"
+                },
+                {
+                  "$ref": "#/components/schemas/StartQuestAction"
+                },
+                {
+                  "$ref": "#/components/schemas/QuestActivityAction"
+                }
+              ],
+              "discriminator": {
+                "propertyName": "type",
+                "mapping": {
+                  "apply_effect": "#/components/schemas/ApplyEffectAction",
+                  "corruption_at_least": "#/components/schemas/CorruptionAtLeastAction",
+                  "narrate": "#/components/schemas/NarrateAction",
+                  "quest_activity": "#/components/schemas/QuestActivityAction",
+                  "start_quest": "#/components/schemas/StartQuestAction"
+                }
+              }
+            },
+            "type": "array",
+            "title": "Actions"
           }
         },
         "additionalProperties": false,
@@ -9677,6 +9761,28 @@
           }
         }
       },
+      "NarrateAction": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "narrate",
+            "title": "Type",
+            "default": "narrate"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Text"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "title": "NarrateAction",
+        "description": "Send the player a line of system narration."
+      },
       "NewGameSessionResponse": {
         "properties": {
           "success": {
@@ -10468,6 +10574,28 @@
             }
           ]
         }
+      },
+      "QuestActivityAction": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "quest_activity",
+            "title": "Type",
+            "default": "quest_activity"
+          },
+          "target": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Target"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "target"
+        ],
+        "title": "QuestActivityAction",
+        "description": "Record a complete_activity target for the player's active quests."
       },
       "QuestLogEntryResponse": {
         "properties": {
@@ -11589,6 +11717,28 @@
         ],
         "title": "SkillListResponse",
         "description": "Response model for skills catalog list."
+      },
+      "StartQuestAction": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "start_quest",
+            "title": "Type",
+            "default": "start_quest"
+          },
+          "quest_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Quest Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "quest_id"
+        ],
+        "title": "StartQuestAction",
+        "description": "Start a quest for the player (refused quietly if prerequisites are unmet or it is already active)."
       },
       "StatRequirement": {
         "properties": {
