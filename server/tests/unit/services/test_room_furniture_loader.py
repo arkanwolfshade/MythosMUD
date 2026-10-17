@@ -107,6 +107,47 @@ async def test_creates_missing_furniture_container(registry: PrototypeRegistry) 
     assert params.items_json is None
 
 
+ON_PUT = [{"item": "jade_amulet", "actions": [{"type": "narrate", "text": "The lid settles."}]}]
+COFFIN_FURNITURE = [{"prototype_id": CHEST_ID, "role": "coffin", "on_put": ON_PUT}]
+
+
+@pytest.mark.asyncio
+async def test_declared_on_put_rules_are_stored_in_the_container_metadata(registry: PrototypeRegistry) -> None:
+    persistence = FakePersistence()
+
+    _ = await sync_room_furniture([_foyer(COFFIN_FURNITURE)], registry, persistence)
+
+    [(_, params)] = persistence.created
+    assert params is not None
+    assert params.metadata_json == {
+        "name": "Lost-and-Found Chest",
+        "prototype_id": CHEST_ID,
+        "role": "coffin",
+        "on_put": ON_PUT,
+    }
+
+
+@pytest.mark.asyncio
+async def test_adding_on_put_to_an_existing_container_refreshes_it(registry: PrototypeRegistry) -> None:
+    persistence = FakePersistence(
+        [
+            {
+                "container_id": str(uuid4()),
+                "room_id": FOYER_ID,
+                "source_type": "environment",
+                "capacity_slots": 200,
+                "metadata_json": {"name": "Lost-and-Found Chest", "prototype_id": CHEST_ID, "role": "coffin"},
+            }
+        ]
+    )
+
+    _ = await sync_room_furniture([_foyer(COFFIN_FURNITURE)], registry, persistence)
+
+    [(_, metadata, _, _)] = persistence.updated
+    assert metadata is not None
+    assert metadata["on_put"] == ON_PUT
+
+
 @pytest.mark.asyncio
 async def test_refreshes_existing_container_from_prototype_without_touching_items(
     registry: PrototypeRegistry,

@@ -9,11 +9,13 @@ from typing import cast
 from ..alias_storage import AliasStorage
 from ..game.chat_npc_system import schedule_personal_system
 from ..game.dialogue import DialoguePrompt, format_dialogue_prompt, get_dialogue_service
+from ..game.scripted_actions import run_scripted_actions
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 from .command_results import command_error
 from .communication_commands_support import app_from_request, get_pose_persistence, primary_id
 from .quest_commands import npc_definition_id, resolve_npc_in_player_room
+from .scripted_action_support import action_context
 
 logger = get_logger(__name__)
 
@@ -53,7 +55,18 @@ def _emit_prompt(player_id: uuid.UUID, npc_name: str, prompt: DialoguePrompt) ->
     return body
 
 
-async def _talk_by_option_index(player_id: uuid.UUID, option_index: int) -> dict[str, str]:
+async def _run_prompt_actions(prompt: DialoguePrompt, player: object | None, app: object | None) -> None:
+    """Run the presented node's scripted actions (after its line has been sent)."""
+    if not prompt.actions or player is None:
+        return
+    ctx = action_context(app, player, get_pose_persistence(app))
+    if ctx is not None:
+        await run_scripted_actions(prompt.actions, ctx)
+
+
+async def _talk_by_option_index(
+    player_id: uuid.UUID, option_index: int, *, player: object | None = None, app: object | None = None
+) -> dict[str, str]:
     """Advance an active dialogue by numbered option."""
     service = get_dialogue_service()
     result = await service.choose_option(player_id, option_index)
@@ -63,10 +76,14 @@ async def _talk_by_option_index(player_id: uuid.UUID, option_index: int) -> dict
     npc_name = cursor.npc_name if cursor else "Someone"
     if result.ended:
         service.clear_cursor(player_id)
-    return {"result": _emit_prompt(player_id, npc_name, result)}
+    text = _emit_prompt(player_id, npc_name, result)
+    await _run_prompt_actions(result, player, app)
+    return {"result": text}
 
 
-async def _talk_with_npc(player: object, player_id: uuid.UUID, npc_name_arg: str) -> dict[str, str]:
+async def _talk_with_npc(
+    player: object, player_id: uuid.UUID, npc_name_arg: str, *, app: object | None = None
+) -> dict[str, str]:
     """Start dialogue with a same-room NPC."""
     npc_raw, npc_error = resolve_npc_in_player_room(player, npc_name_arg)
     if npc_error:
@@ -94,7 +111,9 @@ async def _talk_with_npc(player: object, player_id: uuid.UUID, npc_name_arg: str
     )
     if isinstance(result, str):
         return {"result": result}
-    return {"result": _emit_prompt(player_id, npc_name, result)}
+    text = _emit_prompt(player_id, npc_name, result)
+    await _run_prompt_actions(result, player, app)
+    return {"result": text}
 
 
 async def handle_talk_command(
@@ -127,5 +146,5 @@ async def handle_talk_command(
         return command_error("Character id is invalid.")
 
     if remainder.isdigit():
-        return await _talk_by_option_index(player_id, int(remainder))
-    return await _talk_with_npc(player, player_id, remainder)
+        return await _talk_by_option_index(player_id, int(remainder), player=player, app=app)
+    return await _talk_with_npc(player, player_id, remainder, app=app)

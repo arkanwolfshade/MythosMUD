@@ -13,6 +13,7 @@ from ..models.player import Player
 from ..services.inventory_websocket_events import emit_inventory_updated
 from ..structured_logging.enhanced_logging_config import get_logger
 from .command_results import command_error
+from .communication_commands_support import app_from_request
 from .container_helpers_inventory import (
     find_container_in_room,
     find_wearable_container_for_put,
@@ -22,6 +23,7 @@ from .container_helpers_inventory import (
 )
 from .inventory_command_contracts import CommandResponse
 from .inventory_command_helpers import persist_player, remove_item_from_inventory, resolve_state_and_player
+from .scripted_action_support import run_on_put
 
 logger: BoundLogger = get_logger(__name__)
 
@@ -88,6 +90,8 @@ async def _put_transfer_finish(
     item_index: int,
     quantity: object,
     container_name: str,
+    *,
+    request: object | None = None,
 ) -> CommandResponse:
     transfer_result = await transfer_item_to_container(
         container_service, persistence, player, container_id, item_found, quantity
@@ -106,6 +110,15 @@ async def _put_transfer_finish(
         return persist_error
 
     await emit_inventory_updated(connection_manager, UUID(str(player.player_id)), player)
+    if request is not None:
+        prototype_id = item_found.get("prototype_id")
+        await run_on_put(
+            app_from_request(request),
+            persistence,
+            player,
+            container_id,
+            prototype_id if isinstance(prototype_id, str) else None,
+        )
     item_display_name = item_found.get("item_name") or item_found.get("item_id", "item")
     return {
         "result": f"You put {transfer_quantity}x {item_display_name} into {container_name}.",
@@ -156,6 +169,7 @@ async def _put_run_validated(rt: PutCommandRuntime, work: PutValidatedWork) -> C
         work.item_index,
         work.quantity,
         work.container_name,
+        request=rt.request,
     )
 
 
