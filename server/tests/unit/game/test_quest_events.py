@@ -2,12 +2,13 @@
 
 import uuid
 from collections.abc import Awaitable, Callable
+from dataclasses import dataclass, field
 from typing import cast
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from server.events.event_types import NPCDied, PlayerEnteredRoom, PlayerLeftRoom
+from server.events.event_types import NPCDied, PlayerEnteredRoom, PlayerLeftRoom, QuestCompleted
 from server.game.quest import quest_events
 
 
@@ -47,13 +48,13 @@ def test_subscribe_quest_events_no_op_without_dependencies():
 
 
 def test_subscribe_quest_events_registers_handlers():
-    """All three quest handlers are subscribed when deps present."""
+    """All four quest handlers are subscribed when deps present."""
     container = MagicMock()
     event_bus = MagicMock()
     container.event_bus = event_bus
     container.quest_service = MagicMock()
     quest_events.subscribe_quest_events(container)
-    assert event_bus.subscribe.call_count == 3
+    assert event_bus.subscribe.call_count == 4
 
 
 @pytest.mark.asyncio
@@ -132,3 +133,53 @@ async def test_npc_died_no_killer_skips():
     event = NPCDied(npc_id="npc_goblin_1", room_id="room_a", killer_id=None)
     await handler(event)
     quest_service.record_kill.assert_not_awaited()
+
+
+@dataclass
+class FakeChaining:
+    started: list[tuple[uuid.UUID, str, str]] = field(
+        default_factory=lambda: cast(list[tuple[uuid.UUID, str, str]], [])
+    )
+    fail: bool = False
+
+    async def start_quest_by_trigger(self, player_id: uuid.UUID, trigger_type: str, entity_id: str) -> object:
+        if self.fail:
+            raise RuntimeError("quest store down")
+        self.started.append((player_id, trigger_type, entity_id))
+        return []
+
+
+@pytest.mark.asyncio
+async def test_quest_completed_starts_the_quests_that_the_finished_quest_unlocks():
+    """Completing a quest triggers quests offered by entity ("quest", <completed id>): chains need no room entry."""
+    quests = FakeChaining()
+    player_id = uuid.uuid4()
+
+    await quest_events._make_on_quest_completed(quests)(  # pyright: ignore[reportPrivateUsage]
+        QuestCompleted(player_id=str(player_id), quest_id="act_one")
+    )
+
+    assert quests.started == [(player_id, "quest", "act_one")]
+
+
+@pytest.mark.asyncio
+async def test_quest_completed_with_an_invalid_player_id_skips():
+    quests = FakeChaining()
+
+    await quest_events._make_on_quest_completed(quests)(  # pyright: ignore[reportPrivateUsage]
+        QuestCompleted(player_id="bad-id", quest_id="act_one")
+    )
+
+    assert quests.started == []
+
+
+@pytest.mark.asyncio
+async def test_quest_completed_chain_failure_does_not_propagate():
+    """A failing follow-up start must not break the completion that published the event."""
+    quests = FakeChaining(fail=True)
+
+    await quest_events._make_on_quest_completed(quests)(  # pyright: ignore[reportPrivateUsage]
+        QuestCompleted(player_id=str(uuid.uuid4()), quest_id="act_one")
+    )
+
+    assert quests.started == []

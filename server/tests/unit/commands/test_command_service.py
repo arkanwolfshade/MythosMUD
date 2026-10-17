@@ -4,7 +4,7 @@ Unit tests for command service.
 Tests the CommandService class which handles command routing, validation, and execution.
 """
 
-from typing import Any
+from typing import Any, cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -12,6 +12,7 @@ import pytest
 from server.commands.command_service import CommandService
 from server.constants.message_category import MessageCategory
 from server.exceptions import ValidationError as MythosValidationError
+from server.models.command import Command
 
 
 @pytest.fixture
@@ -356,3 +357,74 @@ async def test_execute_command_handler_returns_non_dict(command_service, mock_re
     )
 
     assert "Error processing command" in result["result"]
+
+
+@pytest.fixture(name="recorded")
+def _recorded(monkeypatch: pytest.MonkeyPatch) -> list[str]:
+    """Replace the quest-activity hook with a recorder of the command names it was asked to record."""
+    from server.commands import command_service as module
+
+    recorded: list[str] = []
+
+    async def fake_record(command: str, player_name: str, request: object) -> None:
+        _ = player_name, request
+        recorded.append(command)
+
+    monkeypatch.setattr(module, "record_command_activity", fake_record)
+    return recorded
+
+
+USER: dict[str, object] = {"username": "testuser", "id": "user-id"}
+
+
+@pytest.mark.asyncio
+async def test_a_successful_validated_command_is_recorded_for_quests(recorded: list[str]) -> None:
+    service = CommandService()
+    service.command_handlers["look"] = AsyncMock(return_value={"result": "A damp cellar."})
+
+    _ = await service.process_validated_command(
+        {"command_type": "look", "args": []}, USER, object(), None, "TestPlayer"
+    )
+
+    assert recorded == ["look"]
+
+
+@pytest.mark.asyncio
+async def test_a_command_that_errors_is_not_recorded_for_quests(recorded: list[str]) -> None:
+    service = CommandService()
+    service.command_handlers["look"] = AsyncMock(
+        return_value={"result": "No.", "category": MessageCategory.SYSTEM_ERROR}
+    )
+    service.command_handlers["boom"] = AsyncMock(side_effect=ValueError("bad"))
+
+    _ = await service.process_validated_command(
+        {"command_type": "look", "args": []}, USER, object(), None, "TestPlayer"
+    )
+    _ = await service.process_validated_command(
+        {"command_type": "boom", "args": []}, USER, object(), None, "TestPlayer"
+    )
+
+    assert recorded == []
+
+
+@pytest.mark.asyncio
+async def test_a_successful_raw_command_is_recorded_for_quests(
+    monkeypatch: pytest.MonkeyPatch, recorded: list[str]
+) -> None:
+    service = CommandService()
+    service.command_handlers["look"] = AsyncMock(return_value={"result": "A damp cellar."})
+
+    def fake_parse(command: str, player_name: str) -> tuple[Command, str, list[object]]:
+        _ = command, player_name
+        return cast(Command, object()), "look", []
+
+    def fake_prepare(parsed: Command, cmd: str, args: list[object], player_name: str) -> dict[str, object]:
+        _ = parsed, cmd, args, player_name
+        return {"args": []}
+
+    monkeypatch.setattr(service, "_parse_command_string", fake_parse)
+    monkeypatch.setattr(service, "_prepare_command_data", fake_prepare)
+
+    _ = await service.process_command("look", USER, object(), None, "TestPlayer")
+
+    assert recorded == ["look"]

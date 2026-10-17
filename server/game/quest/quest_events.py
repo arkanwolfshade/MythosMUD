@@ -1,5 +1,5 @@
 """
-Quest event subscriptions: room entry (trigger start), room exit (complete_activity progress).
+Quest event subscriptions: room entry (trigger start), room exit (complete_activity progress), quest chaining.
 
 Room-based quests are offered in two cases:
 - Entering via exit: MovementService calls Room.player_entered() -> PlayerEnteredRoom event
@@ -7,15 +7,17 @@ Room-based quests are offered in two cases:
 - Spawning in room: Connection setup does not emit PlayerEnteredRoom; see
   player_connection_setup._trigger_quests_for_room_on_spawn() for the explicit spawn path.
 
-Also wires PlayerLeftRoom (complete_activity) and NPCDied (kill_n). NPC/item triggers TBD.
+Also wires PlayerLeftRoom (complete_activity), NPCDied (kill_n) and QuestCompleted (quest chaining: a quest offered
+by entity ("quest", <completed quest id>) starts when that quest completes). NPC/item triggers TBD.
 """
 
 from __future__ import annotations
 
 import uuid
-from typing import Any
+from collections.abc import Awaitable, Callable
+from typing import Any, Protocol, cast
 
-from server.events.event_types import NPCDied, PlayerEnteredRoom, PlayerLeftRoom
+from server.events.event_types import NPCDied, PlayerEnteredRoom, PlayerLeftRoom, QuestCompleted
 from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -25,6 +27,18 @@ EXIT_ACTIVITY_PREFIX = "exit_"
 
 # Instanced room id format: instance_<uuid>_<stable_room_id>; quest_offers use stable id
 INSTANCE_ROOM_PREFIX = "instance_"
+
+
+class _EventSubscriber(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    def subscribe(
+        self, event_type: type[QuestCompleted], handler: Callable[[QuestCompleted], Awaitable[None]], *, service_id: str
+    ) -> None:
+        """Subscribe ``handler`` to ``event_type``."""
+
+
+class _QuestChaining(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    async def start_quest_by_trigger(self, player_id: uuid.UUID, trigger_type: str, entity_id: str) -> object:
+        """Start the quests offered by (trigger_type, entity_id)."""
 
 
 def _entity_id_for_quest_offer(room_id: str) -> str:
@@ -43,6 +57,7 @@ def subscribe_quest_events(container: Any) -> None:  # noqa: ANN001
     - PlayerEnteredRoom: try to start quests offered by this room (trigger type "room").
     - PlayerLeftRoom: record complete_activity for target "exit_<room_id>".
     - NPCDied: when killer_id is set, record kill for kill_N goals (npc_id as target).
+    - QuestCompleted: try to start quests offered by trigger type "quest" with the completed quest's id.
 
     Requires container.event_bus and container.quest_service. No-op if either is missing.
     """
@@ -71,7 +86,12 @@ def subscribe_quest_events(container: Any) -> None:  # noqa: ANN001
         _make_on_npc_died(quest_service),
         service_id="quest_subsystem",
     )
-    logger.info("Quest subsystem subscribed to PlayerEnteredRoom, PlayerLeftRoom, NPCDied")
+    cast(_EventSubscriber, event_bus).subscribe(
+        QuestCompleted,
+        _make_on_quest_completed(cast(_QuestChaining, quest_service)),
+        service_id="quest_subsystem",
+    )
+    logger.info("Quest subsystem subscribed to PlayerEnteredRoom, PlayerLeftRoom, NPCDied, QuestCompleted")
 
 
 def _make_on_player_entered(quest_service: Any) -> Any:  # noqa: ANN401
@@ -118,6 +138,26 @@ def _make_on_player_left(quest_service: Any) -> Any:  # noqa: ANN401
             )
 
     return _on_player_left_room
+
+
+def _make_on_quest_completed(quest_service: _QuestChaining) -> Callable[[QuestCompleted], Awaitable[None]]:
+    """Return an async handler for QuestCompleted that starts the quests the finished quest unlocks."""
+
+    async def _on_quest_completed(event: QuestCompleted) -> None:
+        try:
+            player_id = _parse_player_id(event.player_id)
+            if not player_id:
+                return
+            _ = await quest_service.start_quest_by_trigger(player_id, "quest", event.quest_id)
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: A failing follow-up start must not break the completion that published the event; log and continue
+            logger.warning(
+                "Quest trigger (quest completed) failed",
+                player_id=event.player_id,
+                quest_id=event.quest_id,
+                error=str(e),
+            )
+
+    return _on_quest_completed
 
 
 def _make_on_npc_died(quest_service: Any) -> Any:  # noqa: ANN401
