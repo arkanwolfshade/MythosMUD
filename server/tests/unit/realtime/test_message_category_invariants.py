@@ -402,6 +402,7 @@ async def _drive_combat_messaging() -> list[Emitted]:
     integration = CombatMessagingIntegration(connection_manager=transport)
     _ = await integration.broadcast_combat_attack(ROOM_ID, "Alice", "Ghoul", 4, "punch", "c1", "alice-id")
     _ = await integration.broadcast_combat_target_switch(ROOM_ID, "c1", "Ghoul", "Bob")
+    _ = await integration.broadcast_npc_disengage(ROOM_ID, "c1", "Ghoul", "withdraws.")
     _ = await integration.broadcast_player_joined_combat(ROOM_ID, "c1", "Bob", "Ghoul", "bob-id")
     _ = await integration.broadcast_taunt_result(ROOM_ID, "c1", "Bob taunts the Ghoul.")
     _ = await integration.broadcast_protect_result(ROOM_ID, "c1", "Bob shields Alice.")
@@ -539,7 +540,14 @@ INVENTORY: tuple[Emitter, ...] = (
     Emitter(
         "combat messaging",
         frozenset(
-            {"combat_attack", "combat_target_switch", "combat_participant_joined", "combat_taunt", "combat_protect"}
+            {
+                "combat_attack",
+                "combat_target_switch",
+                "combat_npc_disengage",
+                "combat_participant_joined",
+                "combat_taunt",
+                "combat_protect",
+            }
         ),
         _drive_combat_messaging,
     ),

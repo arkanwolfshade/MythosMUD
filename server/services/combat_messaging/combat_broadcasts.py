@@ -1,4 +1,4 @@
-"""Combat event broadcasts (start, attack, death, end, error, target switch)."""
+"""Combat event broadcasts (start, attack, death, end, error, target switch, NPC disengage)."""
 
 from typing import Any, cast
 
@@ -190,6 +190,24 @@ class CombatBroadcastMixin(HasConnectionManager):
             room_id,
             {"combat_id": combat_id, "npc_name": npc_name, "new_target_name": new_target_name, **line},
             "Combat target switch broadcast",
+            MessageCategory.COMBAT_STATUS,
+        )
+
+    async def broadcast_npc_disengage(
+        self,
+        room_id: str,
+        combat_id: str,
+        npc_name: str,
+        clause: str,
+        npc_disposition: NpcDisposition | None = None,
+    ) -> dict[str, object]:
+        """Broadcast one room line when an NPC breaks off a fight: its name, then ``clause`` (e.g. "withdraws.")."""
+        line = _line_fields([_npc_part(npc_name, npc_disposition), f" {clause}"])
+        return await self._broadcast_combat_event(
+            "combat_npc_disengage",
+            room_id,
+            {"combat_id": combat_id, "npc_name": npc_name, **line},
+            "NPC disengage broadcast",
             MessageCategory.COMBAT_STATUS,
         )
 

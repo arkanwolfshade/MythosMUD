@@ -116,6 +116,7 @@ describe('client-composed combat lines', () => {
 describe('combat status lines (#1036)', () => {
   it.each([
     ['combat_target_switch', 'Ghoul turns its gaze to Ashcroft.', [0, 'Ghoul']],
+    ['combat_npc_disengage', 'Ghoul melts into the dark.', [0, 'Ghoul']],
     ['combat_participant_joined', 'Blackwood joins the fight against Ghoul!', [1, 'Ghoul']],
     ['combat_taunt', 'Tank bellows a challenge at Ghoul!', [1, 'Ghoul']],
   ] as const)('%s carries the server segments next to its text', (eventType, message, [index, name]) => {

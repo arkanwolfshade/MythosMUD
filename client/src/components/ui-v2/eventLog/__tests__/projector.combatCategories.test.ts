@@ -45,16 +45,19 @@ describe('projector combat and status categories', () => {
     expect(projectEvent(getInitialGameState(), event('combat_death', data)).messages[0].category).toBe('combat.death');
   });
 
-  it.each(['combat_target_switch', 'combat_participant_joined', 'combat_taunt', 'combat_protect'])(
-    '%s passes combat.status through and stays a combat message',
-    eventType => {
-      const next = projectEvent(
-        getInitialGameState(),
-        event(eventType, { message: 'The Ghoul turns its gaze.', category: 'combat.status' })
-      );
-      expect(next.messages[0].category).toBe('combat.status');
-    }
-  );
+  it.each([
+    'combat_target_switch',
+    'combat_npc_disengage',
+    'combat_participant_joined',
+    'combat_taunt',
+    'combat_protect',
+  ])('%s passes combat.status through and stays a combat message', eventType => {
+    const next = projectEvent(
+      getInitialGameState(),
+      event(eventType, { message: 'The Ghoul turns its gaze.', category: 'combat.status' })
+    );
+    expect(next.messages[0].category).toBe('combat.status');
+  });
 
   it('combat_ended passes combat.status through for its reason line', () => {
     const next = projectEvent(
