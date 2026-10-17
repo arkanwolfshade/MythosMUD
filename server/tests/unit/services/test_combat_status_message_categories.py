@@ -96,6 +96,7 @@ async def test_combat_attack_categories_follow_each_recipients_perspective(
     ("send", "expected"),
     [
         ("broadcast_combat_target_switch", MessageCategory.COMBAT_STATUS),
+        ("broadcast_npc_disengage", MessageCategory.COMBAT_STATUS),
         ("broadcast_player_joined_combat", MessageCategory.COMBAT_STATUS),
         ("broadcast_taunt_result", MessageCategory.COMBAT_STATUS),
         ("broadcast_protect_result", MessageCategory.COMBAT_STATUS),
@@ -111,6 +112,7 @@ async def test_combat_state_notices_are_combat_status(
         "broadcast_combat_target_switch": lambda: integration.broadcast_combat_target_switch(
             "r1", "c1", "Ghoul", "Bob"
         ),
+        "broadcast_npc_disengage": lambda: integration.broadcast_npc_disengage("r1", "c1", "Ghoul", "withdraws."),
         "broadcast_player_joined_combat": lambda: integration.broadcast_player_joined_combat(
             "r1", "c1", "Bob", "Ghoul", "bob-id"
         ),

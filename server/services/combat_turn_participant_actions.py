@@ -22,6 +22,7 @@ from server.game.player_service import PlayerService
 from server.game.weapons import resolve_weapon_attack_from_equipped
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType
 from server.services.aggro_threat import get_npc_current_target, update_aggro
+from server.services.combat_npc_disengage import disengage, npc_lifecycle_manager, should_disengage
 from server.services.nats_exceptions import NATSError
 from server.structured_logging.enhanced_logging_config import get_logger
 
@@ -268,6 +269,9 @@ async def process_npc_turn(
             # Everyone left is incapacitated or gone (#1058): nobody to fight, so end it and let the bleed-out run.
             logger.info("No target found for NPC; ending combat", npc_name=npc.name, combat_id=combat.combat_id)
             await combat_service.end_combat(combat.combat_id, "No remaining targets")
+            return
+        if should_disengage(npc, target):
+            await disengage(combat_service, combat, npc, npc_lifecycle_manager(get_config()))
             return
         logger.debug("NPC performing automatic attack", npc_name=npc.name, target_name=target.name)
         await _execute_npc_attack(combat_service, npc, target, current_tick)

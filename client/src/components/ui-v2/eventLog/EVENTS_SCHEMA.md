@@ -38,6 +38,7 @@ Event types and their `data` shapes as received over the WebSocket. Used by the 
 | `combat_ended`              | Combat ended          | outcome                            |
 | `npc_died` / `combat_death` | NPC/combat death      | target, room                       |
 | `combat_target_switch`      | NPC aggro switch      | message, npc_name, new_target_name |
+| `combat_npc_disengage`      | NPC broke off a fight | message, npc_name                  |
 | `combat_participant_joined` | Player joined a fight | message, player_name, npc_name     |
 | `combat_taunt`              | Taunt resolved        | message                            |
 | `combat_protect`            | Protect resolved      | message                            |
@@ -119,9 +120,9 @@ styled, with `category: 'npc.<disposition>'`.
   `test_message_category_invariants.py` checks the join for every emitter that attaches `segments`.
 - **Where the server sends them:** `room_message` (NPC enters, leaves or moves, and the default appear/leave lines;
   authored `behavior_config` text has no name placeholder and stays plain), `npc_died` / `combat_death` ("The X has been
-  slain."), the combat status lines `combat_target_switch`, `combat_participant_joined` and `combat_taunt`, the
-  `command_response` of `look` (the whole result text, with the "Also here: ..." names styled) and of the attack
-  command ("You attack X!"), and `chat_message` lines
+  slain."), the combat status lines `combat_target_switch`, `combat_npc_disengage`, `combat_participant_joined` and
+  `combat_taunt`, the `command_response` of `look` (the whole result text, with the "Also here: ..." names styled) and
+  of the attack command ("You attack X!"), and `chat_message` lines
   from an NPC speaker (`speaker_disposition`) and system narration whose content names a phantom (the spans inside the
   content are framed by the channel prefix, e.g. the `[SYSTEM]` tag and the space after it).
 - **Client-composed combat lines** (`npc_attacked`, `npc_took_damage`, `player_attacked`) are worded in the client, so the

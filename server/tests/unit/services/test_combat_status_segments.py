@@ -63,6 +63,25 @@ async def test_target_switch_without_a_disposition_stays_plain() -> None:
 
 
 @pytest.mark.asyncio
+async def test_disengage_styles_the_npc_and_appends_its_clause() -> None:
+    out = _Broadcaster()
+    _ = await out.broadcast_npc_disengage(
+        "r1", "c1", "Ghoul", "melts into the dark.", npc_disposition=NpcDisposition.AGGRESSIVE_MOB
+    )
+    data = out.sent()
+    assert data["message"] == "Ghoul melts into the dark."
+    assert data["segments"] == [GHOUL, {"text": " melts into the dark."}]
+
+
+@pytest.mark.asyncio
+async def test_disengage_without_a_disposition_stays_plain() -> None:
+    out = _Broadcaster()
+    _ = await out.broadcast_npc_disengage("r1", "c1", "Ghoul", "withdraws.")
+    assert out.sent()["message"] == "Ghoul withdraws."
+    assert "segments" not in out.sent()
+
+
+@pytest.mark.asyncio
 async def test_join_styles_the_foe_not_the_joiner() -> None:
     out = _Broadcaster()
     _ = await out.broadcast_player_joined_combat(

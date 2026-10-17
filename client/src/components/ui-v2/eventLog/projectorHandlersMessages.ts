@@ -312,6 +312,9 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     });
     return { ...prevState, messages: appendMessage(prevState.messages, msg) };
   },
+  combat_npc_disengage(prevState, event) {
+    return messageHandlers.combat_target_switch!(prevState, event);
+  },
   combat_participant_joined(prevState, event) {
     return messageHandlers.combat_target_switch!(prevState, event);
   },
