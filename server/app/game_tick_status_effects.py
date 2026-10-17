@@ -13,6 +13,7 @@ from ..realtime.login_grace_period import handle_login_grace_period_expiration, 
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
 from .game_tick_death import is_game_second_tick
+from .game_tick_lucidity_drain import LUCIDITY_DRAIN_EFFECT, process_lucidity_drain
 from .game_tick_protocols import (
     _app_container,
     _online_player_ids,
@@ -144,14 +145,17 @@ async def _process_single_effect(
     """Process a single status effect.
 
     heal_over_time counts duration in game seconds: it only heals and burns duration when ``second_tick`` is true
-    (ticks run at 10 Hz, so per-tick healing would be ten times the stated rate).
+    (ticks run at 10 Hz, so per-tick healing would be ten times the stated rate). lucidity_drain_over_time is gated the
+    same way and owns its own lifetime (see game_tick_lucidity_drain).
 
     Returns:
         Tuple of (updated_effect_dict or None if expired, effect_applied) where effect_applied indicates if the effect had an impact.
     """
     effect_type = str(effect.get("type", ""))
-    if effect_type == "heal_over_time" and not second_tick:
+    if effect_type in ("heal_over_time", LUCIDITY_DRAIN_EFFECT) and not second_tick:
         return effect, False
+    if effect_type == LUCIDITY_DRAIN_EFFECT:
+        return await process_lucidity_drain(container, player, effect)
     duration = coerce_int(effect.get("duration", 0), default=0)
     remaining = coerce_int(effect.get("remaining", duration), default=duration) - 1
     effect_applied = False
