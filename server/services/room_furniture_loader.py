@@ -6,7 +6,8 @@ World data declares furniture per room:
     rooms.attributes.furniture = [{"prototype_id": "furniture.sanitarium.lost_and_found_chest",
                                    "role": "lost_and_found"}]
 
-Each entry becomes one environment container in that room, sized by the prototype's
+An entry may also carry ``on_put`` rules (scripted actions run when a given item is put in the container; see
+schemas.scripted_actions); they are stored in the container's metadata. Each entry becomes one environment container in that room, sized by the prototype's
 ``metadata.container`` and named after the prototype. Startup matches existing containers by
 (room_id, prototype_id): missing ones are created, existing ones get their name and capacity
 refreshed from the prototype (the prototype is the source of truth), and their items are never
@@ -17,7 +18,7 @@ instance is created (see instance_content).
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import Protocol, cast
+from typing import NamedTuple, Protocol, cast
 from uuid import UUID
 
 from pydantic import ValidationError as PydanticValidationError
@@ -72,15 +73,21 @@ class FurnitureStartupPersistence(FurniturePersistence, Protocol):
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body (not just a docstring) for a non-None Protocol return type
 
 
-def _furniture_entries(room_id: str, attributes: dict[str, object]) -> list[tuple[str, str | None]]:
-    """(prototype_id, role) pairs from room attributes["furniture"]; malformed entries are skipped."""
+class _FurnitureEntry(NamedTuple):
+    prototype_id: str
+    role: str | None
+    on_put: object | None  # raw rules, validated when they run (see schemas.scripted_actions.on_put_actions)
+
+
+def _furniture_entries(room_id: str, attributes: dict[str, object]) -> list[_FurnitureEntry]:
+    """Declared furniture from room attributes["furniture"]; malformed entries are skipped."""
     raw = attributes.get("furniture")
     if raw is None:
         return []
     if not isinstance(raw, list):
         logger.warning("Room furniture must be a list; ignored", room_id=room_id)
         return []
-    entries: list[tuple[str, str | None]] = []
+    entries: list[_FurnitureEntry] = []
     for item in cast(list[object], raw):
         entry = _as_entry(item)
         prototype_id = entry.get("prototype_id")
@@ -88,7 +95,7 @@ def _furniture_entries(room_id: str, attributes: dict[str, object]) -> list[tupl
         if not isinstance(prototype_id, str) or not prototype_id or not isinstance(role, str | None):
             logger.warning("Malformed room furniture entry ignored", room_id=room_id, entry=repr(item))
             continue
-        entries.append((prototype_id, role))
+        entries.append(_FurnitureEntry(prototype_id, role, entry.get("on_put")))
     return entries
 
 
@@ -150,21 +157,25 @@ async def _refresh_container(
     logger.info("Room furniture container refreshed from prototype", metadata=new_metadata, capacity_slots=capacity)
 
 
-async def _sync_entry(  # pylint: disable=too-many-arguments  # Reason: one furniture entry needs its room, declaration, existing row, and both collaborators
+async def _sync_entry(
     room_id: str,
-    prototype_id: str,
-    role: str | None,
+    entry: _FurnitureEntry,
     existing: dict[str, object] | None,
     registry: PrototypeRegistry,
     persistence: FurniturePersistence,
 ) -> bool:
     """Create or refresh one furniture container. Returns True if it now exists."""
+    prototype_id = entry.prototype_id
     found = _furniture_spec(prototype_id, registry)
     if found is None:
         return False
     name, spec = found
     capacity = cast(int, spec["capacity_slots"])
-    metadata: dict[str, object] = {"name": name, "prototype_id": prototype_id, "role": role}
+    metadata: dict[str, object] = {"name": name, "prototype_id": prototype_id, "role": entry.role}
+    # ponytail: only declared on_put is written, so dropping a declaration leaves the old rules on the row
+    # (the refresh merges); clearing needs an explicit empty list, "on_put": [].
+    if entry.on_put is not None:
+        metadata["on_put"] = entry.on_put
     if existing is not None:
         await _refresh_container(persistence, existing, metadata, capacity)
         return True
@@ -196,9 +207,9 @@ async def sync_room_furniture(
             logger.warning("Furniture on an instance template room is not supported; ignored", room_id=room_id)
             continue
         existing = _furniture_containers(await persistence.get_containers_by_room_id(room_id))
-        declared = {prototype_id for prototype_id, _ in entries}
-        for prototype_id, role in entries:
-            if await _sync_entry(room_id, prototype_id, role, existing.get(prototype_id), registry, persistence):
+        declared = {entry.prototype_id for entry in entries}
+        for entry in entries:
+            if await _sync_entry(room_id, entry, existing.get(entry.prototype_id), registry, persistence):
                 synced += 1
         # Rows are kept (they may hold items); undeclared ones only get a warning.
         # ponytail: only rooms that still declare some furniture are checked for orphans; finding

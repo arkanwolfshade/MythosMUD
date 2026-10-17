@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import uuid
+from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -114,6 +115,51 @@ async def test_put_transfer_finish_success() -> None:
             MagicMock(), MagicMock(), MagicMock(), player, uuid.uuid4(), item, 0, 2, "chest"
         )
     assert "You put 2x Coin into chest" in command_result_text(result)
+
+
+@pytest.mark.asyncio
+async def test_put_transfer_finish_runs_on_put_rules_for_the_item_put() -> None:
+    player = MagicMock(spec=Player)
+    player.name = "Alice"
+    player.player_id = uuid.uuid4()
+    container_id = uuid.uuid4()
+    item: dict[str, object] = {"item_name": "Jade Amulet", "item_id": "x", "prototype_id": "jade_amulet"}
+    app = object()
+    request = SimpleNamespace(app=app)
+    persistence = MagicMock()
+    on_put = AsyncMock()
+    with (
+        patch(
+            "server.commands.inventory_put_command.transfer_item_to_container",
+            new=AsyncMock(return_value={"success": True, "transfer_quantity": 1}),
+        ),
+        patch("server.commands.inventory_put_command.remove_item_from_inventory"),
+        patch("server.commands.inventory_put_command.persist_player", new=AsyncMock(return_value=None)),
+        patch("server.commands.inventory_put_command.run_on_put", on_put),
+    ):
+        _ = await _put_transfer_finish(
+            MagicMock(), persistence, MagicMock(), player, container_id, item, 0, 1, "coffin", request=request
+        )
+
+    on_put.assert_awaited_once_with(app, persistence, player, container_id, "jade_amulet")
+
+
+@pytest.mark.asyncio
+async def test_put_transfer_finish_skips_on_put_when_the_transfer_fails() -> None:
+    player = MagicMock(spec=Player)
+    on_put = AsyncMock()
+    with (
+        patch(
+            "server.commands.inventory_put_command.transfer_item_to_container",
+            new=AsyncMock(return_value={"error": "locked"}),
+        ),
+        patch("server.commands.inventory_put_command.run_on_put", on_put),
+    ):
+        _ = await _put_transfer_finish(
+            MagicMock(), MagicMock(), MagicMock(), player, uuid.uuid4(), {}, 0, 1, "coffin", request=MagicMock()
+        )
+
+    on_put.assert_not_awaited()
 
 
 @pytest.mark.asyncio
