@@ -13,6 +13,7 @@ import pytest
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from server.constants.spawn_defaults import RECOVERY_WARD_ROOM_ID
 from server.events.event_types import PlayerDeliriumRespawnedEvent, PlayerRespawnedEvent
 from server.exceptions import DatabaseError
 from server.models.game import PositionState
@@ -361,7 +362,7 @@ async def test_respawn_player_from_delirium_success(respawn_service, mock_sessio
     assert lucidity_record.current_lcd == 10
     # Tier is derived from the restored value (10 is "deranged"), not hardcoded.
     assert lucidity_record.current_tier == resolve_tier(10) == "deranged"
-    assert sample_player.current_room_id == DEFAULT_RESPAWN_ROOM
+    assert sample_player.current_room_id == RECOVERY_WARD_ROOM_ID
     # Health and posture restored via Player domain method (ADR-001 / anemic model remediation)
     sample_player.restore_to_full_health.assert_called_once()
     mock_session.commit.assert_awaited_once()
@@ -510,7 +511,7 @@ async def test_respawn_player_from_sanitarium_success(respawn_service, mock_sess
     assert result is True
     assert lucidity_record.current_lcd == 1
     assert stats["position"] == PositionState.STANDING
-    assert sample_player.current_room_id == DEFAULT_RESPAWN_ROOM
+    assert sample_player.current_room_id == RECOVERY_WARD_ROOM_ID
     mock_session.commit.assert_awaited_once()
     mock_event_bus.publish.assert_called_once()
     published_event = mock_event_bus.publish.call_args[0][0]

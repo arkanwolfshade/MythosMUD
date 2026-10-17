@@ -18,7 +18,7 @@ from typing import Protocol, cast
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..constants.spawn_defaults import DEFAULT_RESPAWN_ROOM, LIMBO_ROOM_ID
+from ..constants.spawn_defaults import DEFAULT_RESPAWN_ROOM, LIMBO_ROOM_ID, RECOVERY_WARD_ROOM_ID
 from ..events.event_types import BaseEvent, PlayerDeliriumRespawnedEvent, PlayerRespawnedEvent
 from ..exceptions import DatabaseError
 from ..game.instance_manager import is_template_room, template_exit_room_id
@@ -249,7 +249,7 @@ class PlayerRespawnService:
 
         await self._mark_debrief_pending(LucidityService(session), player_id)
 
-        respawn_room = DEFAULT_RESPAWN_ROOM
+        respawn_room = RECOVERY_WARD_ROOM_ID
         _ = player.restore_to_full_health()
         old_room = player.current_room_id
         player.current_room_id = respawn_room
@@ -288,7 +288,7 @@ class PlayerRespawnService:
             random_module=random,
         )
 
-        respawn_room = DEFAULT_RESPAWN_ROOM
+        respawn_room = RECOVERY_WARD_ROOM_ID
         stats, old_room = apply_sanitarium_player_state(player, respawn_room)
         await self._mark_debrief_pending(lucidity_service, player_id)
 
@@ -458,11 +458,11 @@ class PlayerRespawnService:
 
     async def respawn_player_from_delirium(self, player_id: uuid.UUID, session: AsyncSession) -> bool:
         """
-        Respawn a delirious player at the Sanitarium with restored lucidity.
+        Respawn a delirious player in the Sanitarium Recovery Ward with restored lucidity.
 
         This method:
         1. Sets player lucidity to 10
-        2. Moves player to Sanitarium (default respawn room)
+        2. Moves player to the Recovery Ward (RECOVERY_WARD_ROOM_ID) and leaves a pending debrief
         3. Publishes delirium respawn event for UI updates
 
         Args:
@@ -519,7 +519,7 @@ class PlayerRespawnService:
 
         This method:
         1. Sets player lucidity to 1 (Deranged tier)
-        2. Moves player to Sanitarium (default respawn room)
+        2. Moves player to the Recovery Ward (RECOVERY_WARD_ROOM_ID) and leaves a pending debrief
         3. Increases liability stages (or adds one if none exist)
         4. Publishes sanitarium respawn event for UI updates
 

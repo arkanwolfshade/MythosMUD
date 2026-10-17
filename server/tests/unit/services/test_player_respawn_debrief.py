@@ -10,6 +10,7 @@ from typing import cast
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from server.constants.spawn_defaults import DEFAULT_RESPAWN_ROOM, RECOVERY_WARD_ROOM_ID
 from server.models.lucidity import LucidityActionCode, PlayerLucidity
 from server.models.player import Player
 from server.services import player_respawn_service as module
@@ -92,3 +93,30 @@ async def test_a_sanitarium_respawn_still_leaves_a_pending_debrief(rig: Rig) -> 
 
     assert respawned is True
     assert [code for _, code, _ in rig.cooldowns] == [LucidityActionCode.DEBRIEF_PENDING]
+
+
+@pytest.mark.asyncio
+async def test_a_delirium_respawn_wakes_the_player_in_the_recovery_ward(rig: Rig) -> None:
+    respawned = await PlayerRespawnService().respawn_player_from_delirium(
+        uuid.UUID(str(rig.player.player_id)), _session(rig)
+    )
+
+    assert respawned is True
+    assert rig.player.current_room_id == RECOVERY_WARD_ROOM_ID
+
+
+@pytest.mark.asyncio
+async def test_a_sanitarium_respawn_wakes_the_player_in_the_recovery_ward(rig: Rig) -> None:
+    rig.lucidity.current_lcd = -100
+
+    respawned = await PlayerRespawnService().respawn_player_from_sanitarium(
+        uuid.UUID(str(rig.player.player_id)), _session(rig)
+    )
+
+    assert respawned is True
+    assert rig.player.current_room_id == RECOVERY_WARD_ROOM_ID
+
+
+def test_death_still_respawns_at_the_main_foyer_not_the_ward() -> None:
+    assert DEFAULT_RESPAWN_ROOM != RECOVERY_WARD_ROOM_ID
+    assert DEFAULT_RESPAWN_ROOM.endswith("foyer_001")
