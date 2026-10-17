@@ -15,12 +15,15 @@ from ..models.player import Player
 from ..schemas.scripted_actions import (
     ApplyEffectAction,
     CorruptionAtLeastAction,
+    DebriefAction,
     NarrateAction,
     QuestActivityAction,
     ScriptedAction,
     StartQuestAction,
 )
 from ..services.corruption_service import CorruptionPersistenceProtocol, CorruptionService
+from ..services.debrief_service import perform_debrief
+from ..services.lucidity_service import CatatoniaObserverProtocol
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
 from .chat_npc_system import deliver_personal_system
@@ -46,6 +49,7 @@ class ScriptedActionContext:
     player: Player
     persistence: CorruptionPersistenceProtocol
     quest_service: QuestActionService | None = None
+    catatonia_observer: CatatoniaObserverProtocol | None = None
 
 
 async def _apply_effect(action: ApplyEffectAction, ctx: ScriptedActionContext) -> None:
@@ -69,6 +73,11 @@ async def _corruption_at_least(action: CorruptionAtLeastAction, ctx: ScriptedAct
     ctx.player.set_stats(stats)
 
 
+async def _debrief(action: DebriefAction, ctx: ScriptedActionContext) -> None:
+    outcome = await perform_debrief(ctx.player, wants_therapy=action.therapy, catatonia_observer=ctx.catatonia_observer)
+    _ = await deliver_personal_system(uuid.UUID(str(ctx.player.player_id)), outcome.message)
+
+
 async def _run_one(action: ScriptedAction, ctx: ScriptedActionContext) -> None:
     player_id = uuid.UUID(str(ctx.player.player_id))
     match action:
@@ -84,6 +93,8 @@ async def _run_one(action: ScriptedAction, ctx: ScriptedActionContext) -> None:
         case QuestActivityAction():
             if ctx.quest_service is not None:
                 await ctx.quest_service.record_complete_activity(player_id, action.target)
+        case DebriefAction():
+            await _debrief(action, ctx)
 
 
 async def run_scripted_actions(actions: Sequence[ScriptedAction], ctx: ScriptedActionContext) -> None:

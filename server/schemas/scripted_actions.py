@@ -64,8 +64,20 @@ class QuestActivityAction(SecureBaseModel):
     target: str = Field(min_length=1)
 
 
+class DebriefAction(SecureBaseModel):
+    """Run the player's pending debrief (recap, optional immediate therapy) and clear DEBRIEF_PENDING."""
+
+    type: Literal["debrief"] = "debrief"
+    therapy: bool = False
+
+
 ScriptedAction = Annotated[
-    NarrateAction | ApplyEffectAction | CorruptionAtLeastAction | StartQuestAction | QuestActivityAction,
+    NarrateAction
+    | ApplyEffectAction
+    | CorruptionAtLeastAction
+    | StartQuestAction
+    | QuestActivityAction
+    | DebriefAction,
     Field(discriminator="type"),
 ]
 

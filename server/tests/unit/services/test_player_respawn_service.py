@@ -32,6 +32,21 @@ from server.services.player_respawn_state import normalize_current_dp
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
 
 
+class _StubLucidityService:
+    """Stands in for LucidityService in respawn paths that only need to leave a DEBRIEF_PENDING flag."""
+
+    def __init__(self, session: object) -> None:
+        _ = session
+
+    async def set_cooldown(self, player_id: object, action_code: str, expires_at: object) -> None:
+        _ = player_id, action_code, expires_at
+
+
+@pytest.fixture(autouse=True)
+def _stub_lucidity_service(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("server.services.player_respawn_service.LucidityService", _StubLucidityService)
+
+
 @pytest.fixture
 def mock_event_bus():
     """Create a mock event bus."""

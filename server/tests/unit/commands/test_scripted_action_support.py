@@ -40,8 +40,9 @@ def _player() -> Player:
     return Player(player_id=str(uuid.uuid4()), name="Tester")
 
 
-def _app(quest_service: object | None) -> object:
-    return SimpleNamespace(state=SimpleNamespace(container=SimpleNamespace(quest_service=quest_service)))
+def _app(quest_service: object | None, registry: object | None = None) -> object:
+    container = SimpleNamespace(quest_service=quest_service, catatonia_registry=registry)
+    return SimpleNamespace(state=SimpleNamespace(container=container))
 
 
 def test_action_context_wires_the_player_persistence_and_quest_service() -> None:
@@ -55,6 +56,15 @@ def test_action_context_wires_the_player_persistence_and_quest_service() -> None
     assert ctx.player is player
     assert ctx.persistence is persistence
     assert ctx.quest_service is quests
+
+
+def test_action_context_wires_the_catatonia_registry_for_debriefs() -> None:
+    registry = SimpleNamespace()
+
+    ctx = support.action_context(_app(None, registry), _player(), FakePersistence())
+
+    assert ctx is not None
+    assert ctx.catatonia_observer is registry
 
 
 def test_action_context_tolerates_an_app_without_a_quest_service() -> None:

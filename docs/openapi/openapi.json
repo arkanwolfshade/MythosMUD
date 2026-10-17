@@ -6829,6 +6829,25 @@
         "title": "DatabaseComponent",
         "description": "Database component health status and metrics."
       },
+      "DebriefAction": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "debrief",
+            "title": "Type",
+            "default": "debrief"
+          },
+          "therapy": {
+            "type": "boolean",
+            "title": "Therapy",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "DebriefAction",
+        "description": "Run the player's pending debrief (recap, optional immediate therapy) and clear DEBRIEF_PENDING."
+      },
       "DeleteCharacterResponse": {
         "properties": {
           "success": {
@@ -6998,6 +7017,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/QuestActivityAction"
+                },
+                {
+                  "$ref": "#/components/schemas/DebriefAction"
                 }
               ],
               "discriminator": {
@@ -7005,6 +7027,7 @@
                 "mapping": {
                   "apply_effect": "#/components/schemas/ApplyEffectAction",
                   "corruption_at_least": "#/components/schemas/CorruptionAtLeastAction",
+                  "debrief": "#/components/schemas/DebriefAction",
                   "narrate": "#/components/schemas/NarrateAction",
                   "quest_activity": "#/components/schemas/QuestActivityAction",
                   "start_quest": "#/components/schemas/StartQuestAction"

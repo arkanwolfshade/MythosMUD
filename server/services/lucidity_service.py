@@ -357,6 +357,10 @@ class LucidityService:
         """Set or update an action cooldown."""
         return await self._repo.set_cooldown(player_id, action_code, expires_at)
 
+    async def clear_cooldown(self, player_id: uuid.UUID, action_code: str) -> int:
+        """Delete the player's cooldown rows whose action code matches ``action_code`` (a SQL LIKE pattern)."""
+        return await self._repo.delete_cooldowns_by_action_code_pattern(player_id, action_code)
+
     async def clear_hallucination_timers(self, player_id: uuid.UUID) -> int:
         """
         Clear all hallucination timer cooldowns for a player.
