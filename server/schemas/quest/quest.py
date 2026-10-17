@@ -40,10 +40,10 @@ class QuestRewardSchema(BaseModel):
 
 
 class QuestTriggerSchema(BaseModel):
-    """Single trigger that can start a quest (room, npc, item)."""
+    """Single trigger that can start a quest (room, npc, item, quest)."""
 
-    type: str = Field(..., description="Trigger type: room, npc, item")
-    entity_id: str = Field(..., description="Entity identifier (room id, npc def id, item id)")
+    type: str = Field(..., description="Trigger type: room, npc, item, quest (starts when that quest completes)")
+    entity_id: str = Field(..., description="Entity identifier (room id, npc def id, item id, quest id)")
 
     model_config = ConfigDict(extra="allow")
 

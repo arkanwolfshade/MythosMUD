@@ -12,6 +12,7 @@ from collections.abc import Awaitable, Callable, Mapping
 from typing import cast
 
 from ..alias_storage import AliasStorage
+from ..constants.message_category import MessageCategory
 from ..exceptions import ValidationError as MythosValidationError
 from ..models.command import Command
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -47,6 +48,7 @@ from .combat import (
     handle_strike_command,
     handle_taunt_command,
 )
+from .command_quest_activity import record_command_activity
 from .command_results import command_error
 from .communication_commands import (
     handle_global_command,
@@ -210,6 +212,12 @@ _COMMAND_HANDLERS: dict[str, CommandHandler] = {
 }
 
 
+async def _record_quest_activity(command: str, player_name: str, request: object, result: dict[str, object]) -> None:
+    """Count a command that did not fail toward cmd_<name> quest goals (see command_quest_activity)."""
+    if result.get("category") != MessageCategory.SYSTEM_ERROR:
+        await record_command_activity(command, player_name, request)
+
+
 class CommandService:
     """
     Main command processing service for MythosMUD.
@@ -266,6 +274,7 @@ class CommandService:
             logger.debug(
                 "Command processed successfully with command_data", player=player_name, command_type=command_type
             )
+            await _record_quest_activity(command_type, player_name, request, dict(result))
             return dict(result)
         except (ValueError, TypeError, AttributeError, KeyError, RuntimeError, MythosValidationError) as e:
             # Format exception traceback and sanitize ANSI codes for Windows compatibility
@@ -483,6 +492,7 @@ class CommandService:
         try:
             result = await handler(command_data, current_user, request, alias_storage, player_name)
             logger.debug("Command processed successfully with command_data", player=player_name, command=cmd)
+            await _record_quest_activity(cmd, player_name, request, dict(result))
             return dict(result)
         except (ValueError, TypeError, AttributeError, KeyError, RuntimeError, MythosValidationError) as e:
             logger.error(
