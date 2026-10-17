@@ -10,6 +10,7 @@ from ..game.scripted_actions import QuestActionService, ScriptedActionContext, r
 from ..models.player import Player
 from ..schemas.scripted_actions import on_put_actions
 from ..services.corruption_service import CorruptionPersistenceProtocol
+from ..services.lucidity_service import CatatoniaObserverProtocol
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -27,6 +28,12 @@ def _quest_service(app: object | None) -> QuestActionService | None:
     return cast(QuestActionService | None, getattr(container, "quest_service", None))
 
 
+def _catatonia_observer(app: object | None) -> CatatoniaObserverProtocol | None:
+    state = cast(object | None, getattr(app, "state", None))
+    container = cast(object | None, getattr(state, "container", None))
+    return cast(CatatoniaObserverProtocol | None, getattr(container, "catatonia_registry", None))
+
+
 def action_context(app: object | None, player: object, persistence: object | None) -> ScriptedActionContext | None:
     """Context for running scripted actions on ``player``; None if the player or persistence is not usable."""
     if not isinstance(player, Player) or persistence is None:
@@ -35,6 +42,7 @@ def action_context(app: object | None, player: object, persistence: object | Non
         player=player,
         persistence=cast(CorruptionPersistenceProtocol, persistence),
         quest_service=_quest_service(app),
+        catatonia_observer=_catatonia_observer(app),
     )
 
 

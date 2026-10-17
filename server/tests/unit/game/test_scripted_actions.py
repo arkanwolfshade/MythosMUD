@@ -15,6 +15,7 @@ from server.models.player import Player
 from server.schemas.scripted_actions import (
     ApplyEffectAction,
     CorruptionAtLeastAction,
+    DebriefAction,
     NarrateAction,
     QuestActivityAction,
     StartQuestAction,
@@ -22,6 +23,8 @@ from server.schemas.scripted_actions import (
     parse_scripted_actions,
 )
 from server.services.corruption_service import CorruptionPersistencePlayer
+from server.services.debrief_service import DebriefOutcome
+from server.services.lucidity_service import CatatoniaObserverProtocol
 
 HOT_EFFECT: dict[str, object] = {"type": "heal_over_time", "healing": 4, "duration": 5}
 
@@ -62,6 +65,7 @@ class Rig:
     quests: FakeQuests
     narrated: list[str]
     adjustments: list[int]
+    debriefs: list[tuple[Player, bool, object | None]]
 
     def context(self, *, with_quests: bool = True) -> ScriptedActionContext:
         return ScriptedActionContext(
@@ -97,7 +101,16 @@ def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
 
     monkeypatch.setattr(runner, "deliver_personal_system", fake_deliver)
     monkeypatch.setattr(runner, "CorruptionService", FakeCorruptionService)
-    return Rig(_player(), FakePersistence(), FakeQuests(), narrated, adjustments)
+    debriefs: list[tuple[Player, bool, object | None]] = []
+
+    async def fake_debrief(
+        player: Player, *, wants_therapy: bool = False, catatonia_observer: object | None = None
+    ) -> DebriefOutcome:
+        debriefs.append((player, wants_therapy, catatonia_observer))
+        return DebriefOutcome("The staff recap.", completed=True)
+
+    monkeypatch.setattr(runner, "perform_debrief", fake_debrief)
+    return Rig(_player(), FakePersistence(), FakeQuests(), narrated, adjustments, debriefs)
 
 
 # --- vocabulary -------------------------------------------------------------------------------------------------
@@ -111,6 +124,7 @@ def test_parse_builds_each_action_type_from_plain_json() -> None:
             {"type": "corruption_at_least", "value": 1},
             {"type": "start_quest", "quest_id": "act_two"},
             {"type": "quest_activity", "target": "cmd_look"},
+            {"type": "debrief"},
         ]
     )
 
@@ -120,6 +134,7 @@ def test_parse_builds_each_action_type_from_plain_json() -> None:
         CorruptionAtLeastAction,
         StartQuestAction,
         QuestActivityAction,
+        DebriefAction,
     ]
 
 
@@ -246,3 +261,24 @@ async def test_a_failing_action_does_not_stop_the_rest_of_the_script(rig: Rig) -
     await run_scripted_actions([StartQuestAction(quest_id="act_two"), NarrateAction(text="after")], rig.context())
 
     assert rig.narrated == ["after"]
+
+
+def test_debrief_action_defaults_to_no_therapy() -> None:
+    assert DebriefAction().therapy is False
+    assert DebriefAction.model_validate({"type": "debrief", "therapy": True}).therapy is True
+
+
+@pytest.mark.asyncio
+async def test_debrief_runs_the_service_and_narrates_its_message(rig: Rig) -> None:
+    observer = object()
+    ctx = ScriptedActionContext(
+        player=rig.player,
+        persistence=rig.persistence,
+        quest_service=rig.quests,
+        catatonia_observer=cast(CatatoniaObserverProtocol, observer),
+    )
+
+    await run_scripted_actions([DebriefAction(therapy=True)], ctx)
+
+    assert rig.debriefs == [(rig.player, True, observer)]
+    assert rig.narrated == ["The staff recap."]

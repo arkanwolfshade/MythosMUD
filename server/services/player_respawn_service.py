@@ -225,6 +225,12 @@ class PlayerRespawnService:
         )
         self._event_bus.publish(event)
 
+    @staticmethod
+    async def _mark_debrief_pending(lucidity_service: LucidityService, player_id: uuid.UUID) -> None:
+        """Leave a long-lived DEBRIEF_PENDING flag; the debrief (Dr. Morgan) clears it."""
+        debrief_expires_at = _utc_now() + timedelta(days=365)  # Far future expiration
+        _ = await lucidity_service.set_cooldown(player_id, LucidityActionCode.DEBRIEF_PENDING, debrief_expires_at)
+
     async def _prepare_delirium_respawn(
         self, player_id: uuid.UUID, player: Player, session: AsyncSession
     ) -> tuple[str, str, int, int] | None:
@@ -240,6 +246,8 @@ class PlayerRespawnService:
         lucidity_record.current_lcd = new_lucidity
         lucidity_record.current_tier = resolve_tier(new_lucidity)
         lucidity_record.last_updated_at = _utc_now()
+
+        await self._mark_debrief_pending(LucidityService(session), player_id)
 
         respawn_room = DEFAULT_RESPAWN_ROOM
         _ = player.restore_to_full_health()
@@ -282,8 +290,7 @@ class PlayerRespawnService:
 
         respawn_room = DEFAULT_RESPAWN_ROOM
         stats, old_room = apply_sanitarium_player_state(player, respawn_room)
-        debrief_expires_at = _utc_now() + timedelta(days=365)  # Far future expiration
-        _ = await lucidity_service.set_cooldown(player_id, LucidityActionCode.DEBRIEF_PENDING, debrief_expires_at)
+        await self._mark_debrief_pending(lucidity_service, player_id)
 
         return respawn_room, stats, old_room, old_lucidity, new_lucidity
 
