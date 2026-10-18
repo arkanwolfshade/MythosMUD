@@ -2,6 +2,9 @@
 """
 Move one E2E character to a room (for Playwright setup). Only valid while they are logged out.
 
+Placing a character in the ordinary world also takes them out of the First Exposure tutorial (it clears
+tutorial_instance_id); otherwise the server would put them back in a fresh tutorial instance on login.
+
 Usage: uv run python scripts/e2e_place_player.py <character name> <room stable id>
 
 The server keeps a logged-in player's room in memory and saves it back on logout, so this must run
@@ -31,7 +34,9 @@ async def _place(name: str, room_id: str) -> None:
             print(f"[ERROR] No room with stable id {room_id}", file=sys.stderr)
             sys.exit(1)
         updated = await conn.fetchval(
-            "UPDATE players SET current_room_id = $2 WHERE name = $1 RETURNING player_id", name, room_id
+            "UPDATE players SET current_room_id = $2, tutorial_instance_id = NULL WHERE name = $1 RETURNING player_id",
+            name,
+            room_id,
         )
     finally:
         await conn.close()

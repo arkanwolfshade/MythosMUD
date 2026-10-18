@@ -1,11 +1,11 @@
 /**
- * Tutorial-instance fixtures for the E2ETutorial character.
+ * First Exposure fixtures for the E2ETutorial character.
  *
- * Leaving the tutorial is one-way, so every tutorial test starts from a reset:
- * `scripts/e2e_reset_players.py --tutorial` saves E2ETutorial in the bedroom template with no
- * instance, one Sling in its inventory and no quest rows, and empties the lost-and-found chest and
- * E2ETutorial's bank deposit box (what the tutorial leaves behind lands in the box).
- * Logging in then goes through the server's re-entry repair, which builds a brand new instance.
+ * Finishing the tutorial is one-way, so every tutorial test starts from a reset:
+ * `scripts/e2e_reset_players.py --tutorial` saves E2ETutorial in the Main Foyer with the pending-instance
+ * marker, one Sling in its inventory, full DP, lucidity 100, corruption 0 and no quest rows, and empties the
+ * lost-and-found chest and E2ETutorial's bank deposit box (what an instance leaves behind lands in the box).
+ * Logging in then goes through the server's tutorial connect path, which builds a brand new instance.
  */
 
 import { spawnSync } from 'child_process';
@@ -19,10 +19,21 @@ import type { PlayerContext } from './multiplayer-contexts';
 export const TUTORIAL_USERNAME = 'E2ETutorial';
 
 /**
- * `look` in the tutorial bedroom (any instance of it). The room name ("Patient Bedroom") is only
+ * `look` in Independence Square, the tutorial's first room (any instance of it). The room name is only
  * in the Location header; the look message carries the description.
  */
-export const TUTORIAL_BEDROOM_LOOK_CUE = /small, spartan room|narrow bed and a nightstand/i;
+export const TUTORIAL_SQUARE_LOOK_CUE = /last of the light lies along the roofs of Arkham/i;
+
+/** `look` in the Recovery Ward, where a tutorial delirium wakes the player. */
+export const RECOVERY_WARD_LOOK_CUE = /eight iron cots/i;
+
+/** The Recovery Ward's stable id (server/constants/spawn_defaults.RECOVERY_WARD_ROOM_ID). */
+export const RECOVERY_WARD_ROOM_ID = 'earth_arkhamcity_sanitarium_room_recovery_ward_001';
+
+/** The room id of a First Exposure template room as it appears in an instance: `instance_<uuid>_<stable id>`. */
+export function tutorialRoomPattern(name: string): RegExp {
+  return new RegExp(`^instance_.+_earth_arkhamcity_first_exposure_room_${name}_001$`);
+}
 
 /** What `look` says about a floor with nothing on it. */
 export const EMPTY_FLOOR_CUE = /The floor bears no abandoned curios/i;
@@ -39,6 +50,16 @@ export interface E2ePlayerState {
   tutorial_instance_id: string | null;
   /** Names of the stacks in the character's bank deposit box (empty when they have none). */
   bank_items: string[];
+  current_dp: number | null;
+  corruption: number | null;
+  /** Lucidity (LCD); null when the character has no lucidity record yet. */
+  current_lcd: number | null;
+  /** Names of the stacks in the character's inventory. */
+  inventory_items: string[];
+  /** Quest id -> instance state (`active` / `completed`). */
+  quests: Record<string, string>;
+  /** True while a debrief (delirium or sanitarium respawn) is waiting for Dr. Morgan. */
+  debrief_pending: boolean;
 }
 
 function runE2eScript(script: string, args: string[]): string {
@@ -57,7 +78,7 @@ function runE2eScript(script: string, args: string[]): string {
   return result.stdout;
 }
 
-/** Put E2ETutorial back at the start of the tutorial (only while it is logged out). */
+/** Put E2ETutorial back at the very start of First Exposure (only while it is logged out). */
 export function resetTutorialCharacterInDatabase(): void {
   runE2eScript('e2e_reset_players.py', ['--tutorial']);
 }
@@ -79,9 +100,9 @@ async function clearStoredSession(page: Page): Promise<void> {
 
 /**
  * Log E2ETutorial out (a real departure: its instance is flushed) and back in (a fresh instance).
- * With `placeAt` it logs back in standing in that room instead (only meaningful once the tutorial is
- * over, e.g. at the bank): the move is written between logout and login, because the server keeps a
- * logged-in player's room in memory and would overwrite it.
+ * With `placeAt` it logs back in standing in that room instead, out of the tutorial (e.g. at the bank):
+ * the move, which also clears the tutorial marker, is written between logout and login, because the
+ * server keeps a logged-in player's room in memory and would overwrite it.
  */
 export async function relogTutorialCharacter(
   tutorial: PlayerContext,
@@ -101,9 +122,9 @@ export async function relogTutorialCharacter(
   await waitForPlayableSession(tutorial.page, 30000);
 }
 
-/** Start a test with E2ETutorial in a brand new tutorial bedroom, holding its Sling. */
+/** Start a test with E2ETutorial in a brand new tutorial, standing in Independence Square holding its Sling. */
 export async function startFreshTutorial(tutorial: PlayerContext): Promise<void> {
   await relogTutorialCharacter(tutorial, true);
   await executeCommand(tutorial.page, 'look');
-  await waitForMessage(tutorial.page, TUTORIAL_BEDROOM_LOOK_CUE, 20000);
+  await waitForMessage(tutorial.page, TUTORIAL_SQUARE_LOOK_CUE, 20000);
 }

@@ -247,8 +247,8 @@ class MovementService(RoomOccupancyMixin):
         if to_room_id != exit_room_id:
             return
         tutorial_player.tutorial_instance_id = None
-        # Safety net: the leave_the_tutorial quest reward normally moves respawn to the exit room, but
-        # a player whose quest is not active must never keep respawning into the template.
+        # Safety net: a player whose respawn point is a template room (an old tutorial, an unfinished quest
+        # reward) must never keep respawning into the template.
         respawn_room_id = tutorial_player.respawn_room_id
         if respawn_room_id and is_template_room(self._persistence.get_room_by_id(respawn_room_id)):
             tutorial_player.respawn_room_id = exit_room_id

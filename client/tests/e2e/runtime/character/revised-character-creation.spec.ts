@@ -325,7 +325,7 @@ test.describe('Revised Character Creation', () => {
     await expect(page.getByRole('alert')).toContainText(/letter|hyphens/i);
   });
 
-  test('should complete stats → profession → skills → name → create, enter game, and go down', async ({ page }) => {
+  test('should complete stats → profession → skills → name → create, enter game, and go east', async ({ page }) => {
     const creationCharName = uniqueE2eCharName('E2ER_');
     // Already logged in by beforeEach's cleanupE2ECharacters -- see its comment.
     await openStatsRollingFromLogin(page);
@@ -335,9 +335,10 @@ test.describe('Revised Character Creation', () => {
     await assertCharacterVisibleOnList(page, creationCharName);
     await enterGameWithCharacter(page, creationCharName);
     const { executeCommand, waitForMessage, getMessages } = await import('../fixtures/auth');
-    await executeCommand(page, 'go down');
-    await waitForMessage(page, /You go down|You move down|You head down|down/i, TEST_TIMEOUTS.MESSAGE);
-    expect((await getMessages(page)).join('\n')).toMatch(/down/i);
+    // A new character starts in the First Exposure tutorial at Independence Square, whose only exit is east.
+    await executeCommand(page, 'go east');
+    await waitForMessage(page, /You go east/i, TEST_TIMEOUTS.MESSAGE);
+    expect((await getMessages(page)).join('\n')).toMatch(/You go east/i);
   });
 
   test('should complete stats → profession → skills → name → create and show character', async ({ page }) => {

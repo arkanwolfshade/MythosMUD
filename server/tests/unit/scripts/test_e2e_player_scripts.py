@@ -20,11 +20,15 @@ PROJECT_ROOT = Path(__file__).resolve().parents[4]
 SCRIPTS = PROJECT_ROOT / "scripts"
 
 PLAYER_ID = uuid.uuid4()
+FOYER = "earth_arkhamcity_sanitarium_room_foyer_001"
+STACKS = [{"item_name": "Sling", "quantity": 1}, {"item_name": "Oil Lamp", "quantity": 2}]
 ROW: dict[str, object] = {
     "player_id": PLAYER_ID,
-    "current_room_id": "earth_arkhamcity_sanitarium_room_foyer_001",
-    "respawn_room_id": "earth_arkhamcity_sanitarium_room_foyer_001",
+    "current_room_id": FOYER,
+    "respawn_room_id": FOYER,
     "tutorial_instance_id": None,
+    "inventory": json.dumps([{"item_id": "sling", "item_name": "Sling", "quantity": 1}]),
+    "stats": json.dumps({"current_dp": 12, "max_dp": 20, "corruption": 1}),
 }
 
 
@@ -59,11 +63,17 @@ class _FakeConnection:
         contents: str | None = None,
         room_exists: bool = True,
         player_exists: bool = True,
+        lcd: int | None = 100,
+        quests: list[dict[str, object]] | None = None,
+        debrief_pending: bool = False,
     ) -> None:
         self.row: dict[str, object] | None = row
         self.contents: str | None = contents
         self.room_exists: bool = room_exists
         self.player_exists: bool = player_exists
+        self.lcd: int | None = lcd
+        self.quests: list[dict[str, object]] = quests or []
+        self.debrief_pending: bool = debrief_pending
         self.queries: list[tuple[str, tuple[object, ...]]] = []
         self.closed: bool = False
 
@@ -71,11 +81,19 @@ class _FakeConnection:
         self.queries.append((" ".join(query.split()), args))
         return self.row
 
+    async def fetch(self, query: str, *args: object) -> list[dict[str, object]]:
+        self.queries.append((" ".join(query.split()), args))
+        return self.quests
+
     async def fetchval(self, query: str, *args: object) -> object:
         flat = " ".join(query.split())
         self.queries.append((flat, args))
         if "get_container_contents_json" in flat:
             return self.contents
+        if "FROM player_lucidity" in flat:
+            return self.lcd
+        if "FROM lucidity_cooldowns" in flat:
+            return 1 if self.debrief_pending else None
         if flat.startswith("SELECT 1 FROM rooms"):
             return 1 if self.room_exists else None
         if flat.startswith("UPDATE players"):
@@ -93,22 +111,33 @@ def _connect_to(monkeypatch: pytest.MonkeyPatch, conn: _FakeConnection) -> None:
     monkeypatch.setattr("asyncpg.connect", fake_connect)
 
 
-async def test_state_reports_location_and_what_is_in_the_bank_box(
+async def test_state_reports_location_character_and_what_is_in_the_bank_box(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     script = cast(_StateScript, _load("e2e_player_state"))
-    stacks = [{"item_name": "Sling", "quantity": 1}, {"item_name": "Oil Lamp", "quantity": 2}]
-    conn = _FakeConnection(row=ROW, contents=json.dumps(stacks))
+    conn = _FakeConnection(
+        row=ROW,
+        contents=json.dumps(STACKS),
+        lcd=70,
+        quests=[{"quest_id": "first_exposure_dusk", "state": "completed"}],
+        debrief_pending=True,
+    )
     _connect_to(monkeypatch, conn)
 
     await script._print_state("E2ETutorial")
 
     state = cast(dict[str, object], json.loads(capsys.readouterr().out))
     assert state == {
-        "current_room_id": ROW["current_room_id"],
-        "respawn_room_id": ROW["respawn_room_id"],
+        "current_room_id": FOYER,
+        "respawn_room_id": FOYER,
         "tutorial_instance_id": None,
         "bank_items": ["Sling", "Oil Lamp"],
+        "current_dp": 12,
+        "corruption": 1,
+        "current_lcd": 70,
+        "inventory_items": ["Sling"],
+        "quests": {"first_exposure_dusk": "completed"},
+        "debrief_pending": True,
     }
     # The box is looked up by this player's id, never by name or room.
     bank_query = next(query for query in conn.queries if "get_container_contents_json" in query[0])
@@ -125,7 +154,10 @@ async def test_state_reports_an_empty_list_when_the_character_has_no_box(
 
     await script._print_state("E2ETutorial")
 
-    assert cast(dict[str, object], json.loads(capsys.readouterr().out))["bank_items"] == []
+    state = cast(dict[str, object], json.loads(capsys.readouterr().out))
+    assert state["bank_items"] == []
+    assert state["quests"] == {}
+    assert state["debrief_pending"] is False
 
 
 async def test_state_exits_nonzero_for_an_unknown_character(
@@ -146,7 +178,9 @@ async def test_state_exits_nonzero_for_an_unknown_character(
     )  # no box lookup without a player
 
 
-async def test_place_moves_the_named_character_to_the_room(monkeypatch: pytest.MonkeyPatch) -> None:
+async def test_place_moves_the_named_character_to_the_room_and_out_of_the_tutorial(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     script = cast(_PlaceScript, _load("e2e_place_player"))
     conn = _FakeConnection()
     _connect_to(monkeypatch, conn)
@@ -155,6 +189,7 @@ async def test_place_moves_the_named_character_to_the_room(monkeypatch: pytest.M
 
     [update] = [query for query in conn.queries if query[0].startswith("UPDATE players")]
     assert "current_room_id = $2" in update[0]
+    assert "tutorial_instance_id = NULL" in update[0]  # else login would rebuild a tutorial instance
     assert update[1] == ("E2ETutorial", "earth_arkhamcity_downtown_room_arkham_savings_001")
     assert conn.closed
 

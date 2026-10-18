@@ -14,6 +14,7 @@ from server.constants.instance_rooms import PENDING_INSTANCE_ID
 from server.exceptions import DatabaseError
 from server.game.instance_manager import InstanceManager
 from server.game.items.constants import INSTANCE_BOUND_FLAG
+from server.game.player_creation_service import TUTORIAL_TEMPLATE_ID
 from server.models.corruption import CorruptionTier
 from server.models.player import Player
 from server.models.room import Room
@@ -821,7 +822,7 @@ def _template_bedroom() -> Room:
     return Room(
         {
             "id": BEDROOM_ID,
-            "attributes": {"instance_template_id": "tutorial_sanitarium", "instance_exit_room_id": FOYER_ID},
+            "attributes": {"instance_template_id": TUTORIAL_TEMPLATE_ID, "instance_exit_room_id": FOYER_ID},
         }
     )
 
@@ -874,7 +875,7 @@ WALK_ID = "earth_demo_zone_room_walk_001"
 
 def _two_room_tutorial() -> dict[str, Room]:
     """A two-room tutorial template whose entry room (start) is deliberately second in cache order."""
-    attributes: dict[str, object] = {"instance_template_id": "tutorial_sanitarium", "instance_exit_room_id": FOYER_ID}
+    attributes: dict[str, object] = {"instance_template_id": TUTORIAL_TEMPLATE_ID, "instance_exit_room_id": FOYER_ID}
     return {
         WALK_ID: Room({"id": WALK_ID, "attributes": dict(attributes)}),
         START_ID: Room({"id": START_ID, "attributes": {**attributes, "instance_start": True}}),
@@ -894,7 +895,7 @@ async def test_live_instance_keeps_the_players_room_when_it_is_inside_it():
     """A grace-period reconnect resumes where the player was, not at the instance start."""
     rooms = _two_room_tutorial()
     instance_manager = InstanceManager(room_cache=rooms)
-    instance = instance_manager.create_instance("tutorial_sanitarium", uuid.uuid4())
+    instance = instance_manager.create_instance(TUTORIAL_TEMPLATE_ID, uuid.uuid4())
     walk_room = f"{instance.instance_id}_{WALK_ID}"
     save_player = AsyncMock()
     content, populate = _content()
@@ -915,7 +916,7 @@ async def test_live_instance_keeps_the_players_room_when_it_is_inside_it():
 async def test_live_instance_places_a_player_whose_room_is_elsewhere_at_the_instance_start():
     rooms = _two_room_tutorial()
     instance_manager = InstanceManager(room_cache=rooms)
-    instance = instance_manager.create_instance("tutorial_sanitarium", uuid.uuid4())
+    instance = instance_manager.create_instance(TUTORIAL_TEMPLATE_ID, uuid.uuid4())
     manager = _manager_with(instance_manager, rooms, AsyncMock())
     player = Player(
         player_id=str(uuid.uuid4()), name="Lost", current_room_id=FOYER_ID, tutorial_instance_id=instance.instance_id
