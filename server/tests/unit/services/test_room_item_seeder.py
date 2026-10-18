@@ -9,6 +9,7 @@ from server.game.items.item_factory import ItemFactory
 from server.game.items.models import ItemPrototypeModel
 from server.game.items.prototype_registry import PrototypeRegistry
 from server.models.room import Room
+from server.services import room_item_seeder
 from server.services.room_item_seeder import initialize_room_items, seed_room_items
 
 TONIC_ID = "consumable.folk_tonic"
@@ -112,12 +113,40 @@ def test_one_bad_entry_does_not_block_the_rest(factory: ItemFactory) -> None:
     assert seed_room_items([room], factory, manager) == 1
 
 
+class _RecordingLogger:
+    """Records the levels the seeder logs at."""
+
+    def __init__(self) -> None:
+        self.levels: list[str] = []
+
+    def debug(self, _event: str, **_fields: object) -> None:
+        self.levels.append("debug")
+
+    def warning(self, _event: str, **_fields: object) -> None:
+        self.levels.append("warning")
+
+    def info(self, _event: str, **_fields: object) -> None:
+        self.levels.append("info")
+
+
 def test_template_rooms_are_skipped(factory: ItemFactory) -> None:
     manager = FakeRoomManager()
     room = _room(NURSES_ID, {"instance_template_id": "tutorial", "items": [{"prototype_id": TONIC_ID}]})
 
     assert seed_room_items([room], factory, manager) == 0
     assert manager.drops == []
+
+
+def test_skipping_a_template_room_is_not_a_warning(factory: ItemFactory, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Templates declare items for their instances, so warning about them on every startup would be noise."""
+    recorder = _RecordingLogger()
+    monkeypatch.setattr(room_item_seeder, "logger", recorder)
+    room = _room(NURSES_ID, {"instance_template_id": "tutorial", "items": [{"prototype_id": TONIC_ID}]})
+
+    _ = seed_room_items([room], factory, FakeRoomManager())
+
+    assert "debug" in recorder.levels
+    assert "warning" not in recorder.levels
 
 
 def test_rooms_without_items_are_ignored(factory: ItemFactory) -> None:

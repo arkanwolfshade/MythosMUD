@@ -23,7 +23,7 @@ logger = get_logger(__name__)
 
 
 # Tutorial template ID for instanced rooms
-TUTORIAL_TEMPLATE_ID = "tutorial_sanitarium"
+TUTORIAL_TEMPLATE_ID = "first_exposure"
 
 
 class PlayerCreationService:

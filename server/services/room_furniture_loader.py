@@ -204,7 +204,8 @@ async def sync_room_furniture(
         if not entries:
             continue
         if is_template_room(room):
-            logger.warning("Furniture on an instance template room is not supported; ignored", room_id=room_id)
+            # A template declares furniture for its instances (InstanceContentService.populate), not for itself.
+            logger.debug("Template room furniture is placed per instance, not at startup; skipped", room_id=room_id)
             continue
         existing = _furniture_containers(await persistence.get_containers_by_room_id(room_id))
         declared = {entry.prototype_id for entry in entries}

@@ -88,7 +88,8 @@ def seed_room_items(rooms: Iterable[Room], factory: ItemFactory, room_manager: R
         if not entries:
             continue
         if is_template_room(room):
-            logger.warning("Items on an instance template room are not supported; ignored", room_id=room_id)
+            # A template declares items for its instances (InstanceContentService.populate), not for itself.
+            logger.debug("Template room items are placed per instance, not at startup; skipped", room_id=room_id)
             continue
         for prototype_id, quantity in entries:
             try:

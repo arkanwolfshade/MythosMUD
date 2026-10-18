@@ -124,7 +124,7 @@ class InstanceManager:
         Create an instance from room templates with the given template_id.
 
         Args:
-            template_id: Value of instance_template_id in room attributes (e.g. tutorial_sanitarium)
+            template_id: Value of instance_template_id in room attributes (e.g. first_exposure)
             owner_player_id: Owner of the instance (for per-player instancing)
             group_ids: Optional set of player IDs for group instancing (reserved for future use)
 

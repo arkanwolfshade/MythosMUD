@@ -9,6 +9,7 @@ from server.game.items.models import ItemPrototypeModel
 from server.game.items.prototype_registry import PrototypeRegistry
 from server.models.room import Room
 from server.persistence.container_create_params import ContainerCreateParams
+from server.services import room_furniture_loader
 from server.services.room_furniture_loader import initialize_room_furniture, sync_room_furniture
 
 CHEST_ID = "furniture.sanitarium.lost_and_found_chest"
@@ -222,6 +223,37 @@ async def test_skips_template_rooms_bad_entries_and_non_container_prototypes(reg
     assert count == 0
     assert persistence.created == []
     assert persistence.updated == []
+
+
+class _RecordingLogger:
+    """Records the levels the loader logs at."""
+
+    def __init__(self) -> None:
+        self.levels: list[str] = []
+
+    def debug(self, _event: str, **_fields: object) -> None:
+        self.levels.append("debug")
+
+    def warning(self, _event: str, **_fields: object) -> None:
+        self.levels.append("warning")
+
+    def info(self, _event: str, **_fields: object) -> None:
+        self.levels.append("info")
+
+
+@pytest.mark.asyncio
+async def test_skipping_a_template_room_is_not_a_warning(
+    registry: PrototypeRegistry, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Templates declare furniture for their instances, so warning about them on every startup would be noise."""
+    recorder = _RecordingLogger()
+    monkeypatch.setattr(room_furniture_loader, "logger", recorder)
+    template = _room("template_room", {"instance_template_id": "first_exposure", "furniture": CHEST_FURNITURE})
+
+    _ = await sync_room_furniture([template], registry, FakePersistence())
+
+    assert "debug" in recorder.levels
+    assert "warning" not in recorder.levels
 
 
 @pytest.mark.asyncio

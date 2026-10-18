@@ -1,4 +1,4 @@
-"""Tests for scripts/e2e_reset_players.py --tutorial (puts E2ETutorial back at the start of the tutorial)."""
+"""Tests for scripts/e2e_reset_players.py --tutorial (puts E2ETutorial back at the very start of First Exposure)."""
 
 # pylint: disable=protected-access
 # pyright: reportPrivateUsage=false
@@ -16,6 +16,8 @@ from typing import Protocol, cast
 
 import pytest
 
+from server.constants.spawn_defaults import DEFAULT_RESPAWN_ROOM
+
 PROJECT_ROOT = Path(__file__).resolve().parents[4]
 SCRIPTS = PROJECT_ROOT / "scripts"
 
@@ -23,7 +25,7 @@ SCRIPTS = PROJECT_ROOT / "scripts"
 class _ResetScript(Protocol):
     """Attributes of scripts/e2e_reset_players.py read after dynamic import."""
 
-    TUTORIAL_BEDROOM: str
+    PENDING_INSTANCE_ID: str
     TUTORIAL_ITEM_PROTOTYPE: str
     FOLK_TONIC_COOLDOWN_KEY: str
     _reset_tutorial_character: Callable[[object], Awaitable[None]]
@@ -73,12 +75,18 @@ async def test_reset_tutorial_character_restores_tutorial_start_state() -> None:
 
     await script._reset_tutorial_character(conn)
 
-    [player_update, quest_delete, inventory, chest_clear, bank_clear] = conn.executed
-    assert "tutorial_instance_id = NULL" in player_update[0]
-    assert player_update[1][:2] == (player_id, script.TUTORIAL_BEDROOM)
+    [player_update, quest_delete, lucidity, cooldowns, inventory, chest_clear, bank_clear] = conn.executed
+    # Saved in the Main Foyer with the pending marker: the next login builds a brand new tutorial instance.
+    assert "tutorial_instance_id = $3" in player_update[0]
+    assert player_update[1][:3] == (player_id, DEFAULT_RESPAWN_ROOM, script.PENDING_INSTANCE_ID)
+    assert script.PENDING_INSTANCE_ID == "pending"
+    assert "status_effects = '[]'" in player_update[0]
+    assert "'{corruption}'" in player_update[0]  # corruption starts again at 0
     # Player.get_inventory() reads players.inventory: both copies must carry the same Sling.
-    assert player_update[1][2] == inventory[1][1]
+    assert player_update[1][3] == inventory[1][1]
     assert quest_delete == ("DELETE FROM quest_instances WHERE player_id = $1", (player_id,))
+    assert "player_lucidity" in lucidity[0] and "current_lcd = 100" in lucidity[0] and lucidity[1] == (player_id,)
+    assert cooldowns == ("DELETE FROM lucidity_cooldowns WHERE player_id = $1", (player_id,))  # incl. the debrief flag
     stacks = cast(list[dict[str, object]], json.loads(cast(str, inventory[1][1])))
     assert [stack["item_id"] for stack in stacks] == [script.TUTORIAL_ITEM_PROTOTYPE]
     assert "clear_container_contents" in chest_clear[0]

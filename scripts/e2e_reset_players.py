@@ -2,7 +2,7 @@
 """
 E2E test teardown: reset ArkanWolfshade and Ithaqua to starting room and set current_dp to 50.
 
-With --tutorial it also puts E2ETutorial back at the start of the tutorial (see
+With --tutorial it also puts E2ETutorial back at the very start of the First Exposure tutorial (see
 _reset_tutorial_character), empties the lost-and-found chest and E2ETutorial's bank deposit box;
 the tutorial specs call that.
 
@@ -43,21 +43,24 @@ def _load_default_respawn_room() -> str:
 
 
 TUTORIAL_CHARACTER = "E2ETutorial"
-TUTORIAL_BEDROOM = "earth_arkhamcity_sanitarium_room_tutorial_bedroom_001"
+# server/constants/instance_rooms.PENDING_INSTANCE_ID: "this character has a tutorial but no instance yet".
+PENDING_INSTANCE_ID = "pending"
 TUTORIAL_ITEM_PROTOTYPE = "pack_dark_ages.weapon.sling"
 
 
 async def _reset_tutorial_character(conn: asyncpg.Connection) -> None:
-    """Put E2ETutorial back at the start of the tutorial, holding one Sling, with nothing banked.
+    """Put E2ETutorial back at the very start of First Exposure, as a character who has not met it yet.
 
-    Saved in the bedroom template with no instance, so login goes through the re-entry repair and
-    gets a fresh instance; quest rows are deleted so leave_the_tutorial starts again on spawn.
-    Both the shared lost-and-found chest and E2ETutorial's deposit box are emptied: what the tutorial
-    leaves behind lands in the box, and it would otherwise carry over into the next test.
+    Saved in the Main Foyer with the pending-instance marker, so the next login goes through the server's tutorial
+    connect path and builds a brand new instance at Independence Square. DP, lucidity and corruption are reset, the
+    character holds one Sling (the generic instance-flush-to-bank tests drop it), status effects are emptied, quest
+    rows deleted (the first quest starts again on spawn) and the debrief flag cleared. Both the shared lost-and-found chest and E2ETutorial's deposit box are emptied as well, so nothing
+    carries over into the next test.
     """
     player_id: object = await conn.fetchval("SELECT player_id FROM players WHERE name = $1", TUTORIAL_CHARACTER)
     if player_id is None:
         raise RuntimeError(f"{TUTORIAL_CHARACTER} is not seeded; run scripts/seed_e2e_users.py first")
+    room_id = _load_default_respawn_room()
     sling = {
         "item_id": TUTORIAL_ITEM_PROTOTYPE,
         "prototype_id": TUTORIAL_ITEM_PROTOTYPE,
@@ -67,28 +70,47 @@ async def _reset_tutorial_character(conn: asyncpg.Connection) -> None:
         "quantity": 1,
     }
     inventory = json.dumps([sling])
-    # Both inventory copies, as upsert_player writes them: Player.get_inventory() reads the
-    # players.inventory column, while player_inventories.inventory_json is the row joined on load.
     _ = await conn.execute(
         """
         UPDATE players
         SET
             current_room_id = $2,
             respawn_room_id = $2,
-            tutorial_instance_id = NULL,
-            inventory = $3,
+            tutorial_instance_id = $3,
+            inventory = $4,
+            status_effects = '[]',
             stats = jsonb_set(
-                jsonb_set(COALESCE(stats, '{}'::jsonb), '{current_dp}', '50'::jsonb),
+                jsonb_set(
+                    jsonb_set(
+                        COALESCE(stats, '{}'::jsonb),
+                        '{current_dp}',
+                        COALESCE(stats -> 'max_dp', '100'::jsonb)
+                    ),
+                    '{corruption}',
+                    '0'::jsonb
+                ),
                 '{position}',
                 '"standing"'::jsonb
             )
         WHERE player_id = $1
         """,
         player_id,
-        TUTORIAL_BEDROOM,
+        room_id,
+        PENDING_INSTANCE_ID,
         inventory,
     )
     _ = await conn.execute("DELETE FROM quest_instances WHERE player_id = $1", player_id)
+    _ = await conn.execute(
+        """
+        UPDATE player_lucidity
+        SET current_lcd = 100, current_tier = 'lucid', liabilities = '[]'
+        WHERE player_id = $1
+        """,
+        player_id,
+    )
+    _ = await conn.execute("DELETE FROM lucidity_cooldowns WHERE player_id = $1", player_id)
+    # Both inventory copies, as upsert_player writes them: Player.get_inventory() reads the
+    # players.inventory column, while player_inventories.inventory_json is the row joined on load.
     _ = await conn.execute(
         """
         INSERT INTO player_inventories (player_id, inventory_json, equipped_json)

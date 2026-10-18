@@ -16,9 +16,6 @@
 /** Matches server.constants.spawn_defaults.DEFAULT_RESPAWN_ROOM (sanitarium foyer / Morgan). */
 export const DEFAULT_RESPAWN_ROOM = 'earth_arkhamcity_sanitarium_room_foyer_001' as const;
 
-/** The tutorial bedroom instance template (stable id; players are only ever in clones of it). */
-const TUTORIAL_BEDROOM_ROOM = 'earth_arkhamcity_sanitarium_room_tutorial_bedroom_001' as const;
-
 /**
  * After `look`, foyer prose shows in Location / Room Description (not always Game Info).
  * Use for spawn-room assertions against the default (foyer) respawn room -- the gladiator arena
@@ -75,7 +72,7 @@ export const TEST_PLAYERS: TestPlayer[] = [
     email: 'e2etutorial@test.local',
     isAdmin: false,
     isSuperuser: false,
-    startingRoom: TUTORIAL_BEDROOM_ROOM,
+    startingRoom: DEFAULT_RESPAWN_ROOM,
   },
 ];
 
