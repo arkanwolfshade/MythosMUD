@@ -268,12 +268,11 @@ class InventoryCommandFactory:
     def create_read_command(args: list[str]) -> ReadCommand:
         """Create ReadCommand from arguments.
 
-        Item name/spell name parsing and the "usage" message for missing args
-        are handled by handle_read_command itself, so this takes any args
-        (including none) and builds a bare command.
+        Item name/spell name parsing and the "usage" message for missing args are handled by
+        handle_read_command itself, which reads them from command_data["args"]; so the command
+        must carry the args (including none) through untouched.
         """
-        del args  # Reason: handle_read_command parses args from command_data directly
-        return ReadCommand()
+        return ReadCommand(args=args or [])
 
     @staticmethod
     def create_pickup_command(args: list[str]) -> PickupCommand:

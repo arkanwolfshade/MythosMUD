@@ -445,15 +445,17 @@ def test_create_unequip_command_all_slots():
 
 
 def test_create_read_command_no_args():
-    """Test create_read_command() creates a bare ReadCommand with no args."""
+    """Test create_read_command() with no args creates a ReadCommand with an empty args list."""
     command = InventoryCommandFactory.create_read_command([])
     assert command.command_type == "read"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+    assert command.args == []
 
 
 def test_create_read_command_with_args():
-    """Test create_read_command() ignores args at the model level (handler parses command_data['args'])."""
+    """create_read_command() keeps its args: handle_read_command reads them from command_data['args']."""
     command = InventoryCommandFactory.create_read_command(["spellbook", "fireball"])
     assert command.command_type == "read"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+    assert command.args == ["spellbook", "fireball"]
 
 
 @pytest.mark.parametrize("preposition", ["in", "into", "INTO"])

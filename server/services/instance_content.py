@@ -23,7 +23,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from ..exceptions import DatabaseError, ValidationError
 from ..game.instance_manager import Instance
 from ..game.items.item_factory import ItemFactory
-from ..game.items.prototype_registry import PrototypeRegistry
+from ..game.items.prototype_registry import PrototypeRegistry, PrototypeRegistryError
 from ..models.room import Room
 from ..structured_logging.enhanced_logging_config import get_logger
 from .room_furniture_loader import FurniturePersistence, sync_room_furniture
@@ -108,6 +108,19 @@ class InstanceContentService:
                         "Instance NPC could not be spawned", instance_id=instance.instance_id, room_id=room_id, npc=name
                     )
 
+    def _with_prototype_flags(self, stack: dict[str, object]) -> dict[str, object]:
+        """The stack with its prototype's flags: container rows do not store them, and the flush needs INSTANCE_BOUND."""
+        if stack.get("flags"):
+            return stack
+        prototype_id = stack.get("prototype_id") or stack.get("item_id")
+        if not isinstance(prototype_id, str):
+            return stack
+        try:
+            prototype = self._registry.get(prototype_id)
+        except PrototypeRegistryError:
+            return stack
+        return {**stack, "flags": list(prototype.flags)} if prototype.flags else stack
+
     async def teardown(self, instance: Instance) -> list[dict[str, object]]:
         """Despawn the instance's NPCs and delete its containers; returns the stacks those containers held.
 
@@ -121,7 +134,7 @@ class InstanceContentService:
             try:
                 for container in await self._persistence.get_containers_by_room_id(room_id):
                     if await self._persistence.delete_container(UUID(str(container["container_id"]))):
-                        recovered.extend(_container_stacks(container))
+                        recovered.extend(self._with_prototype_flags(stack) for stack in _container_stacks(container))
             except (DatabaseError, SQLAlchemyError, ValueError) as e:
                 logger.error(
                     "Instance containers could not be cleared",

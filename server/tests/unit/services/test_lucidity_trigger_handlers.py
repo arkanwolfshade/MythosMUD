@@ -44,6 +44,51 @@ async def test_handle_catatonia_transitions_enters_catatonia(lucidity_record: Ma
     send_event.assert_awaited_once()
 
 
+class _RecordingLogger:
+    """Records (level, event) for the levels the handlers log at."""
+
+    def __init__(self) -> None:
+        self.calls: list[tuple[str, str]] = []
+
+    def debug(self, event: str, **_fields: object) -> None:
+        self.calls.append(("debug", event))
+
+    def warning(self, event: str, **_fields: object) -> None:
+        self.calls.append(("warning", event))
+
+
+@pytest.mark.asyncio
+async def test_entering_catatonia_is_logged_at_debug_not_warning(
+    lucidity_record: MagicMock, player_id: uuid.UUID
+) -> None:
+    """Routine gameplay transitions must not reach warnings.log (the e2e run fails on a non-clean log)."""
+    recorder = _RecordingLogger()
+    with (
+        patch("server.services.lucidity_trigger_handlers.send_catatonia_event", new=AsyncMock()),
+        patch.object(handlers, "logger", recorder),
+    ):
+        await handle_catatonia_transitions(
+            record=lucidity_record,
+            player_id=player_id,
+            new_tier="catatonic",
+            previous_tier="disturbed",
+            new_lcd=0,
+            catatonia_observer=MagicMock(),
+        )
+    assert recorder.calls == [("debug", "Player entered catatonia")]
+
+
+@pytest.mark.asyncio
+async def test_the_delirium_threshold_is_logged_at_debug_not_warning(player_id: uuid.UUID) -> None:
+    recorder = _RecordingLogger()
+    with (
+        patch("server.services.lucidity_trigger_handlers.send_rescue_update_event", new=AsyncMock()),
+        patch.object(handlers, "logger", recorder),
+    ):
+        await handle_delirium_trigger(player_id, new_lcd=-10, previous_lcd=-8)
+    assert recorder.calls == [("debug", "Delirium respawn threshold reached")]
+
+
 @pytest.mark.asyncio
 async def test_handle_catatonia_transitions_resolves_catatonia(
     lucidity_record: MagicMock, player_id: uuid.UUID

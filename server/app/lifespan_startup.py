@@ -19,6 +19,7 @@ from fastapi import FastAPI
 
 from ..container import ApplicationContainer
 from ..game.chat_service import ChatService
+from ..game.first_exposure import make_first_exposure_finish
 from ..npc.lifecycle_manager import NPCLifecycleManager
 from ..npc.population_control import NPCPopulationController, _PopulationLifecycleManager
 from ..npc.spawning_service import NPCSpawningService
@@ -280,6 +281,7 @@ async def initialize_combat_services(app: FastAPI, container: ApplicationContain
         event_bus=container.event_bus,
         player_combat_service=app.state.player_combat_service,
         room_lookup=container.async_persistence.get_room_by_id if container.async_persistence else None,
+        first_exposure_finish=make_first_exposure_finish(container),
     )
     logger.info("Player respawn service initialized")
 

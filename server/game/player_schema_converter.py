@@ -26,6 +26,27 @@ if TYPE_CHECKING:
     pass
 
 
+def status_effect_models(effects: object) -> list[StatusEffect]:
+    """Typed StatusEffect models for the effects PlayerRead carries.
+
+    The game tick loop keeps its own effects (heal_over_time, damage_over_time, lucidity_drain_over_time) in the same
+    list as ``{"type": ...}`` dicts. They have no StatusEffect shape (no effect_type or intensity), so they are not
+    part of the typed view; converting them would fail every command that reads the player while one is running.
+    """
+    if not isinstance(effects, list):
+        return []
+    models: list[StatusEffect] = []
+    for effect in cast(list[object], effects):
+        if isinstance(effect, StatusEffect):
+            models.append(effect)
+        elif isinstance(effect, dict):
+            fields = cast(dict[str, object], effect)
+            if "type" in fields and "effect_type" not in fields:
+                continue
+            models.append(StatusEffect.model_validate(fields))
+    return models
+
+
 def _weapon_from_prototype_registry(registry: Any, prototype_id: str) -> WeaponStats | None:
     """Resolve metadata.weapon from prototype registry for a given prototype_id.
 
@@ -213,11 +234,7 @@ class PlayerSchemaConverter:
             if isinstance(inventory, list)
             else inventory
         )
-        status_effects_models = (
-            [StatusEffect(**effect) if isinstance(effect, dict) else effect for effect in status_effects]
-            if isinstance(status_effects, list)
-            else status_effects
-        )
+        status_effects_models = status_effect_models(status_effects)
 
         return PlayerRead(
             id=player.player_id,
@@ -268,11 +285,7 @@ class PlayerSchemaConverter:
             if isinstance(player["inventory"], list)
             else player["inventory"]
         )
-        status_effects_models = (
-            [StatusEffect(**effect) if isinstance(effect, dict) else effect for effect in player["status_effects"]]
-            if isinstance(player["status_effects"], list)
-            else player["status_effects"]
-        )
+        status_effects_models = status_effect_models(cast(object, player["status_effects"]))
 
         return PlayerRead(
             id=player["player_id"],

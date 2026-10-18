@@ -270,6 +270,42 @@ async def test_execute_round_with_participants(
 
 
 @pytest.mark.asyncio
+async def test_execute_round_stops_once_a_turn_ends_the_combat(
+    combat_turn_processor: CombatTurnProcessor, mock_combat: MagicMock
+) -> None:  # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter injection - parameter names must match fixture names
+    """An NPC breaking off ends the fight mid-round: the player's turn after it must not run (no ghost attack)."""
+    npc = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.NPC,
+        name="Ghoul",
+        current_dp=50,
+        max_dp=100,
+        dexterity=90,
+    )
+    player = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="Player1",
+        current_dp=50,
+        max_dp=100,
+        dexterity=50,
+    )
+    mock_combat.get_participants_by_initiative = MagicMock(return_value=[npc, player])
+    mock_combat.round_actions = {}
+
+    async def _npc_breaks_off(_combat: CombatInstance, participant: CombatParticipant, *_rest: int) -> None:
+        if participant is npc:
+            mock_combat.status = CombatStatus.ENDED
+
+    combat_turn_processor._execute_participant_action = AsyncMock(side_effect=_npc_breaks_off)  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test setup requires access to protected member for mock injection
+
+    await combat_turn_processor._execute_round(mock_combat, 100)  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test requires direct access to protected method for unit testing
+
+    acted = [call.args[1] for call in combat_turn_processor._execute_participant_action.call_args_list]  # pylint: disable=protected-access  # noqa: SLF001  # Reason: Test assertion requires access to protected member
+    assert acted == [npc]
+
+
+@pytest.mark.asyncio
 async def test_execute_round_stale_queued_attack_uses_default_action(
     combat_turn_processor: CombatTurnProcessor, mock_combat: MagicMock
 ) -> None:  # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter injection
