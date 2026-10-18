@@ -197,6 +197,10 @@ class CombatTurnProcessor:
         )
 
         for participant in participants_by_initiative:
+            # An earlier turn this round may have ended the combat (an NPC breaking off, a kill); the initiative
+            # list is a snapshot, so nobody else acts in a fight that no longer exists.
+            if combat.status != CombatStatus.ACTIVE:
+                return
             # CRITICAL: Use is_dead() instead of is_alive() to ensure mortally wounded players
             # (0 DP) remain in combat and can be attacked until -10 DP
             # is_alive() requires is_active=True, which might be False for incapacitated players

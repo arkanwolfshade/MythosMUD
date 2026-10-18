@@ -105,6 +105,7 @@ class CombatBundle:
 
         logger.debug("Initializing combat services...")
 
+        from server.game.first_exposure import make_first_exposure_finish
         from server.services.catatonia_registry import CatatoniaRegistry
         from server.services.passive_lucidity_flux_service import PassiveLucidityFluxService
         from server.services.player_combat_service import PlayerCombatService
@@ -137,6 +138,7 @@ class CombatBundle:
             event_bus=container.event_bus,
             player_combat_service=respawn_combat,
             room_lookup=respawn_rooms.get_room_by_id if respawn_rooms else None,
+            first_exposure_finish=make_first_exposure_finish(container),
         )
         logger.info("Player respawn service initialized")
 

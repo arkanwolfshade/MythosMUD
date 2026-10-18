@@ -7,6 +7,7 @@ import pytest
 
 from server.exceptions import DatabaseError
 from server.game.instance_manager import Instance, InstanceManager
+from server.game.items.instance_bound import is_instance_bound_stack
 from server.game.items.item_factory import ItemFactory
 from server.game.items.models import ItemPrototypeModel
 from server.game.items.prototype_registry import PrototypeRegistry
@@ -16,6 +17,7 @@ from server.services.instance_content import InstanceContentService
 
 CHEST_ID = "furniture.demo.chest"
 TONIC_ID = "consumable.folk_tonic"
+AMULET_ID = "quest.demo.amulet"
 TEMPLATE_ID = "demo"
 SQUARE_ID = "earth_demo_zone_room_square_001"
 WALK_ID = "earth_demo_zone_room_walk_001"
@@ -97,7 +99,9 @@ class FakeNpcHost:
         return 1
 
 
-def _prototype(prototype_id: str, name: str, item_type: str, metadata: dict[str, object]) -> ItemPrototypeModel:
+def _prototype(
+    prototype_id: str, name: str, item_type: str, metadata: dict[str, object], flags: list[str] | None = None
+) -> ItemPrototypeModel:
     return ItemPrototypeModel.model_validate(
         {
             "prototype_id": prototype_id,
@@ -108,6 +112,7 @@ def _prototype(prototype_id: str, name: str, item_type: str, metadata: dict[str,
             "weight": 1.0,
             "base_value": 0,
             "metadata": metadata,
+            "flags": flags or [],
         }
     )
 
@@ -118,6 +123,7 @@ def registry() -> PrototypeRegistry:
         {
             CHEST_ID: _prototype(CHEST_ID, "Chest", "container", {"container": {"capacity_slots": 20}}),
             TONIC_ID: _prototype(TONIC_ID, "Folk Tonic", "consumable", {}),
+            AMULET_ID: _prototype(AMULET_ID, "Jade Amulet", "quest", {}, ["INSTANCE_BOUND"]),
         },
         [],
     )
@@ -224,6 +230,23 @@ async def test_teardown_despawns_npcs_deletes_containers_and_returns_their_conte
     assert recovered == [kept]
     assert [row["room_id"] for row in persistence.rows] == [f"{other.instance_id}_{SQUARE_ID}"]
     assert len(persistence.deleted) == 1
+
+
+@pytest.mark.asyncio
+async def test_teardown_gives_recovered_stacks_their_prototype_flags(registry: PrototypeRegistry) -> None:
+    """Container rows lose flags; without them the flush would bank an instance-bound item (seen in e2e)."""
+    instance = _instance()
+    persistence = FakeContainerPersistence()
+    service = _service(registry, persistence, FakeDrops(), FakeNpcHost())
+    await service.populate(instance)
+    amulet = {"item_id": AMULET_ID, "item_name": "Jade Amulet", "quantity": 1}
+    for row in persistence.rows:
+        row["items_json"] = [amulet]
+
+    [recovered] = await service.teardown(instance)
+
+    assert is_instance_bound_stack(recovered)
+    assert "flags" not in amulet  # the stored row is not edited in place
 
 
 @pytest.mark.asyncio

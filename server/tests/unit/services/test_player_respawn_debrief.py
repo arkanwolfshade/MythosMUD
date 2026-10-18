@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import uuid
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import cast
@@ -33,8 +34,8 @@ class FakeSession:
     def __init__(self, rig: Rig) -> None:
         self._rig = rig
 
-    async def get(self, model: type[object], player_id: uuid.UUID) -> object | None:
-        _ = player_id
+    async def get(self, model: type[object], player_id: uuid.UUID, options: Sequence[object] = ()) -> object | None:
+        _ = (player_id, options)
         return self._rig.player if model is Player else self._rig.lucidity
 
     async def commit(self) -> None:

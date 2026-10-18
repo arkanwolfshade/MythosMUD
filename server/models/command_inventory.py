@@ -184,9 +184,10 @@ class UseCommand(BaseCommand):
 
 
 class ReadCommand(BaseCommand):
-    """Command for reading an item (e.g. a spellbook) from inventory."""
+    """Command for reading an item (a spellbook, or any item with readable text) from inventory."""
 
     command_type: Literal[CommandType.READ] = CommandType.READ
+    args: list[str] = Field(default_factory=list, description="Item name, then an optional spell name")
 
 
 class UnequipCommand(BaseCommand):

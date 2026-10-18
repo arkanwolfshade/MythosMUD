@@ -14,6 +14,7 @@ from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.command_parser import get_username_from_user
 
 from .command_results import command_error
+from .read_text import readable_result
 
 logger = get_logger(__name__)
 
@@ -202,6 +203,10 @@ async def handle_read_command(  # pylint: disable=too-many-arguments,too-many-lo
     args = command_data.get("args", [])
     if not args:
         return command_error("Usage: /read <item_name> [spell_name]")
+
+    readable = readable_result(cast(object, player), cast(list[object], args))
+    if readable is not None:
+        return readable
 
     item_name = args[0]
     spell_name = args[1] if len(args) > 1 else None

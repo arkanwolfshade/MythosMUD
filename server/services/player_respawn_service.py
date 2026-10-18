@@ -17,10 +17,12 @@ from typing import Protocol, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from ..constants.spawn_defaults import DEFAULT_RESPAWN_ROOM, LIMBO_ROOM_ID, RECOVERY_WARD_ROOM_ID
 from ..events.event_types import BaseEvent, PlayerDeliriumRespawnedEvent, PlayerRespawnedEvent
 from ..exceptions import DatabaseError
+from ..game.first_exposure import FinishFirstExposure, apply_first_exposure_end_state, tutorial_instance_of
 from ..game.instance_manager import is_template_room, template_exit_room_id
 from ..models.lucidity import LucidityActionCode, PlayerLucidity
 from ..models.player import Player
@@ -92,6 +94,7 @@ class PlayerRespawnService:
         event_bus: _RespawnEventPublisher | None = None,
         player_combat_service: _PlayerCombatClearing | None = None,
         room_lookup: Callable[[str], Room | None] | None = None,
+        first_exposure_finish: FinishFirstExposure | None = None,
     ) -> None:
         """
         Initialize the player respawn service.
@@ -101,10 +104,13 @@ class PlayerRespawnService:
             player_combat_service: Optional player combat service for clearing combat state
             room_lookup: Optional room-by-id lookup; lets a respawn room that is an instance
                 template be redirected to that template's exit room
+            first_exposure_finish: Optional post-commit hook that finishes the First Exposure tutorial
+                (corruption floor, epilogue quest, instance flush) for a player who was inside it
         """
         self._event_bus: _RespawnEventPublisher | None = event_bus
         self._player_combat_service: _PlayerCombatClearing | None = player_combat_service
         self._room_lookup: Callable[[str], Room | None] | None = room_lookup
+        self._first_exposure_finish: FinishFirstExposure | None = first_exposure_finish
         logger.info(
             "PlayerRespawnService initialized",
             event_bus_available=bool(event_bus),
@@ -253,6 +259,8 @@ class PlayerRespawnService:
         _ = player.restore_to_full_health()
         old_room = player.current_room_id
         player.current_room_id = respawn_room
+        if apply_first_exposure_end_state(player, lucidity_record):
+            new_lucidity = lucidity_record.current_lcd
         return respawn_room, old_room, old_lucidity, new_lucidity
 
     async def _prepare_sanitarium_respawn(
@@ -456,6 +464,15 @@ class PlayerRespawnService:
             await session.rollback()
             return False
 
+    async def _finish_first_exposure(self, player_id: uuid.UUID, instance_id: str | None) -> None:
+        """After the respawn committed: finish the tutorial the player just left. Never fails the respawn."""
+        if not instance_id or self._first_exposure_finish is None:
+            return
+        try:
+            await self._first_exposure_finish(player_id, instance_id)
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: the respawn already committed; a failed finish must not turn it into an error
+            logger.error("First Exposure finish failed", player_id=player_id, instance_id=instance_id, error=str(e))
+
     async def respawn_player_from_delirium(self, player_id: uuid.UUID, session: AsyncSession) -> bool:
         """
         Respawn a delirious player in the Sanitarium Recovery Ward with restored lucidity.
@@ -473,12 +490,14 @@ class PlayerRespawnService:
             True if respawn was successful, False otherwise
         """
         try:
-            # Retrieve player from database using async API
-            player = await session.get(Player, player_id)
+            # inventory_record is loaded up front: the end of the tutorial reads equipment, and a lazy load of that
+            # relationship fails inside the async session.
+            player = await session.get(Player, player_id, options=[selectinload(Player.inventory_record)])
             if not player:
                 logger.warning("Player not found for delirium respawn", player_id=player_id)
                 return False
 
+            first_exposure_instance = tutorial_instance_of(player)
             prepared = await self._prepare_delirium_respawn(player_id, player, session)
             if not prepared:
                 return False
@@ -500,6 +519,7 @@ class PlayerRespawnService:
                 old_room=old_room,
             )
 
+            await self._finish_first_exposure(player_id, first_exposure_instance)
             return True
 
         except (DatabaseError, SQLAlchemyError) as e:

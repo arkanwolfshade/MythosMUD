@@ -43,7 +43,7 @@ async def handle_catatonia_transitions(
         if record.catatonia_entered_at is None:
             entered_at = utc_now()
             record.catatonia_entered_at = entered_at
-            logger.warning("Player entered catatonia", player_id=player_id, previous_tier=previous_tier, lcd=new_lcd)
+            logger.debug("Player entered catatonia", player_id=player_id, previous_tier=previous_tier, lcd=new_lcd)
             if catatonia_observer:
                 catatonia_observer.on_catatonia_entered(player_id=player_id, entered_at=entered_at, current_lcd=new_lcd)
             await send_catatonia_event(
@@ -84,7 +84,7 @@ async def handle_delirium_trigger(player_id: uuid.UUID, new_lcd: int, previous_l
             if elapsed < DELIRIUM_DEBOUNCE_SECONDS:
                 return
         _last_delirium_trigger[player_id_str] = now
-    logger.warning("Delirium respawn threshold reached", player_id=player_id, previous_lcd=previous_lcd, lcd=new_lcd)
+    logger.debug("Delirium respawn threshold reached", player_id=player_id, previous_lcd=previous_lcd, lcd=new_lcd)
     await send_rescue_update_event(
         player_id=player_id_str,
         status="delirium",
