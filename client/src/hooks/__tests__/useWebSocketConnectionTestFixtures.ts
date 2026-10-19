@@ -200,6 +200,7 @@ export const wsTestState = {
 
 export const defaultOptions = {
   authToken: 'test-token',
+  characterId: 'test-character-id',
   sessionId: 'test-session-id',
 };
 

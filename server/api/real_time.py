@@ -41,8 +41,6 @@ class _PlayerLookupPersistence(Protocol):  # pylint: disable=too-few-public-meth
 
     async def get_player_by_id(self, player_id: uuid.UUID) -> Player | None: ...
 
-    async def get_player_by_user_id(self, user_id: str) -> Player | None: ...
-
 
 class _RealtimeConnectionManager(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """Connection manager API used by realtime HTTP/WebSocket routes."""
@@ -280,63 +278,31 @@ async def _resolve_player_id_from_test(_websocket: WebSocket, player_id_str: str
 
 async def _resolve_player_id_from_token(websocket: WebSocket, payload: dict[str, object]) -> uuid.UUID:
     """
-    Resolve player ID from JWT token payload.
-    Validates that the user has a player record before returning.
+    Resolve player ID from JWT token payload and the required character_id query param.
 
-    MULTI-CHARACTER: If character_id is provided in query params, use that character.
-    Otherwise, fall back to first active character (backward compatibility).
+    MULTI-CHARACTER: an account can own several characters, so the connection must name one.
+    The character must exist, belong to the token's account, and not be deleted (#1097).
     """
     user_id = str(payload["sub"]).strip()
     from ..container.async_persistence_access import get_container_async_persistence
 
-    async_persistence = get_container_async_persistence()
-
-    # MULTI-CHARACTER: Check if character_id is provided in query params
-    character_id_str = websocket.query_params.get("character_id")
-    if character_id_str:
-        try:
-            character_uuid = uuid.UUID(character_id_str)
-            # Validate the character belongs to the user
-            player = await async_persistence.get_player_by_id(character_uuid)
-            if not player:
-                raise LoggedHTTPException(
-                    status_code=404,
-                    detail="Character not found",
-                    user_id=user_id,
-                )
-            # Validate character belongs to user
-            if str(player.user_id) != user_id:
-                raise LoggedHTTPException(
-                    status_code=403,
-                    detail="Character does not belong to user",
-                    user_id=user_id,
-                )
-            # Validate character is not deleted
-            if player.is_deleted:
-                raise LoggedHTTPException(
-                    status_code=404,
-                    detail="Character has been deleted",
-                    user_id=user_id,
-                )
-            # Use the specified character
-            player_id_value = cast(uuid.UUID | str, player.player_id)
-            return uuid.UUID(str(player_id_value))
-        except ValueError:
-            # Invalid UUID format, fall through to default behavior
-            pass
-
-    # Fallback: Get first active character (backward compatibility)
-    player = await async_persistence.get_player_by_user_id(user_id)
-
-    if not player:
+    try:
+        character_uuid = uuid.UUID(websocket.query_params.get("character_id") or "")
+    except ValueError as e:
         raise LoggedHTTPException(
-            status_code=401,
-            detail="User has no player record",
+            status_code=400,
+            detail="A valid character_id is required",
             user_id=user_id,
-        )
+        ) from e
+
+    player = await get_container_async_persistence().get_player_by_id(character_uuid)
+    if not player:
+        raise LoggedHTTPException(status_code=404, detail="Character not found", user_id=user_id)
+    if str(player.user_id) != user_id:
+        raise LoggedHTTPException(status_code=403, detail="Character does not belong to user", user_id=user_id)
+    if player.is_deleted:
+        raise LoggedHTTPException(status_code=404, detail="Character has been deleted", user_id=user_id)
     # player.player_id is a SQLAlchemy Column[str] but returns UUID at runtime
-    # Convert to UUID for type safety - always convert to string first
-    # Cast to tell type checker that at runtime this is UUID or str, not Column
     player_id_value = cast(uuid.UUID | str, player.player_id)
     return uuid.UUID(str(player_id_value))
 
@@ -512,106 +478,3 @@ async def get_connection_statistics(request: Request) -> ConnectionStatisticsRes
 
     logger.info("Connection statistics requested")
     return statistics
-
-
-async def _validate_websocket_connection_manager(websocket: WebSocket) -> _RealtimeConnectionManager | None:
-    """
-    Validate and resolve connection manager for WebSocket.
-
-    Args:
-        websocket: WebSocket connection object
-
-    Returns:
-        Connection manager instance or None if unavailable
-    """
-    websocket_state = _app_state_from_websocket(websocket)
-    connection_manager = _resolve_connection_manager_from_state(websocket_state)
-    if connection_manager is None or connection_manager.async_persistence is None:
-        await websocket.accept()
-        await websocket.send_json({"type": "error", "message": "Service temporarily unavailable"})
-        await websocket.close(code=1013)
-        return None
-    return connection_manager
-
-
-async def _resolve_player_id_from_path_or_token(
-    player_id: str,
-    token: str | None,
-    async_persistence: _PlayerLookupPersistence | None = None,
-) -> uuid.UUID | None:
-    """
-    Resolve player ID from a valid JWT. Path UUID is an identity check, not a credential.
-
-    Args:
-        player_id: Player ID from path parameter
-        token: JWT token from query parameters or subprotocol
-        async_persistence: Async persistence layer. Required.
-
-    Returns:
-        Resolved player UUID or None if authentication fails
-    """
-    if not token or async_persistence is None:
-        return None
-    payload = decode_access_token(token)
-    if not payload or "sub" not in payload:
-        return None
-    user_id = str(payload["sub"]).strip()
-    player = await async_persistence.get_player_by_user_id(user_id)
-    if not player:
-        return None
-    resolved = uuid.UUID(str(player.player_id))
-    try:
-        path_uuid = uuid.UUID(player_id)
-    except ValueError, AttributeError, TypeError:
-        return resolved
-    if path_uuid != resolved:
-        return None
-    return resolved
-
-
-@realtime_router.websocket("/ws/{player_id}")
-async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None:  # pylint: disable=too-many-locals  # Reason: WebSocket endpoint requires many intermediate variables for connection management
-    """
-    Deprecated. Backward-compatible WebSocket endpoint that accepts a path player_id
-    but prefers JWT token identity when provided. Supports session tracking.
-
-    **Deprecation**: Use GET /api/ws with JWT (query param or subprotocol) instead.
-    This route will be removed in a future release. Migrate clients to /api/ws.
-    """
-    from ..structured_logging.enhanced_logging_config import get_logger
-
-    logger = get_logger(__name__)
-
-    # Get session parameter
-    session_id = websocket.query_params.get("session_id")
-    logger.info("WebSocket (compat) connection attempt", player_id=player_id, session_id=session_id)
-    # Deprecation notice: prefer /api/ws with JWT via subprotocols
-    logger.warning(
-        "Deprecated WebSocket route in use; migrate clients to /api/ws with JWT via subprotocols",
-        player_id=player_id,
-    )
-
-    try:
-        connection_manager = await _validate_websocket_connection_manager(websocket)
-        if connection_manager is None:
-            return
-
-        token = _parse_websocket_token(websocket, logger)
-        resolved_player_id = await _resolve_player_id_from_path_or_token(
-            player_id, token, async_persistence=connection_manager.async_persistence
-        )
-
-        if not resolved_player_id:
-            raise LoggedHTTPException(status_code=401, detail="Unable to resolve player ID")
-
-        await _invoke_handle_websocket_connection(
-            websocket,
-            resolved_player_id,
-            session_id,
-            connection_manager,
-            token,
-        )
-    except Exception as e:
-        # Structlog handles UUID objects automatically, no need to convert to string
-        logger.error("Error in WebSocket endpoint", player_id=player_id, error=str(e), exc_info=True)
-        raise
