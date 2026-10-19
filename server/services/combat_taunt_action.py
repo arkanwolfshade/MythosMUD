@@ -118,7 +118,13 @@ async def resolve_taunt_action(
         npc_name_segment(npc.name, integration.get_npc_disposition(npc.participant_id)) if integration else npc.name
     )
     await _announce(combat_service, combat, taunt_outcome_parts(level, taunter.name, npc_part))
+    await _broadcast_aggro_switch(combat_service, combat, npc)
 
+
+async def _broadcast_aggro_switch(
+    combat_service: CombatService, combat: CombatInstance, npc: CombatParticipant
+) -> None:
+    """Re-evaluate the NPC's target after the hate-list change and broadcast it if it switched."""
     new_target_id, did_switch = update_aggro(combat, npc, combat.room_id, combat.participants)
     if did_switch and new_target_id:
         new_target = combat.participants.get(new_target_id)

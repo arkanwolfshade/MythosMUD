@@ -9,7 +9,13 @@ from collections.abc import Mapping, Sequence
 from typing import Any, cast
 
 from ..constants.message_category import MessageCategory
-from ..constants.message_segments import SegmentPart, join_parts, message_with_segments, npc_name_segment
+from ..constants.message_segments import (
+    MessageSegment,
+    SegmentPart,
+    join_parts,
+    message_with_segments,
+    npc_name_segment,
+)
 from ..realtime.occupant_display import format_occupant_display_name
 from ..services.exit_hallucination import get_hallucinated_exits
 from ..services.lucidity_tier_cache import lucidity_tier_cache
@@ -189,6 +195,28 @@ def _format_exits_list(exits: dict[str, Any]) -> str:
     return "none"
 
 
+def _room_exit_list(exits: dict[str, object], room_id: str | None, viewer_id_str: str | None) -> str:
+    """The rendered exit list; a deranged viewer gets the seeded hallucinated set (#626/#714)."""
+    # #626/#714: a deranged viewer sees the same seeded, hallucinated exit set here as in the
+    # room_update/game_state payloads -- server-authoritative, so /look can no longer contradict
+    # the client's Location panel the way #626's client-side-only version did.
+    if room_id and viewer_id_str and lucidity_tier_cache.is_deranged(viewer_id_str):
+        return ", ".join(get_hallucinated_exits(room_id, viewer_id_str)) or "none"
+    return _format_exits_list(exits)
+
+
+def _room_look_segments(
+    lines: list[str], npc_start: int, npc_end: int, npc_parts: list[SegmentPart], rendered: str
+) -> dict[str, list[MessageSegment]]:
+    """``{"segments": ...}`` for the room text with NPC names styled (#1036), or ``{}`` when there is nothing to style."""
+    if not npc_parts:
+        return {}
+    head: list[list[SegmentPart]] = [[line] for line in lines[:npc_start]]
+    tail: list[list[SegmentPart]] = [[line] for line in lines[npc_end:]]
+    built = message_with_segments(_joined_with_newlines([*head, npc_parts, [""], *tail]))
+    return {"segments": built["segments"]} if built["message"] == rendered else {}
+
+
 async def _handle_room_look(
     room: Any,
     room_drops: list[dict[str, Any]],
@@ -204,13 +232,7 @@ async def _handle_room_look(
     # throughout); narrow it once, here, rather than passing Any into is_deranged/
     # get_hallucinated_exits below.
     viewer_id_str = str(cast("object", viewer_player_id)) if viewer_player_id is not None else None
-    # #626/#714: a deranged viewer sees the same seeded, hallucinated exit set here as in the
-    # room_update/game_state payloads -- server-authoritative, so /look can no longer contradict
-    # the client's Location panel the way #626's client-side-only version did.
-    if room_id and viewer_id_str and lucidity_tier_cache.is_deranged(viewer_id_str):
-        exit_list = ", ".join(get_hallucinated_exits(room_id, viewer_id_str)) or "none"
-    else:
-        exit_list = _format_exits_list(cast("dict[str, object]", room.exits))
+    exit_list = _room_exit_list(cast("dict[str, object]", room.exits), room_id, viewer_id_str)
 
     logger.debug(
         "Looked at current room",
@@ -236,7 +258,7 @@ async def _handle_room_look(
     # 6. Players
     players_in_room = await _get_players_in_room(room, persistence)
     # Get connection_manager for grace period check
-    app = getattr(request, "app", None) if "request" in locals() else None
+    app = getattr(request, "app", None)
     connection_manager = getattr(app.state, "connection_manager", None) if app else None
     player_names = await _filter_other_players(players_in_room, player_name, connection_manager)
     lines.extend(_format_players_section(player_names))
@@ -244,17 +266,11 @@ async def _handle_room_look(
     # 9. Exits
     lines.append(f"Exits: {exit_list}")
     rendered = "\n".join(lines)
-    # #1036: the same text as ``rendered``, with the NPC names in it as styled spans.
-    head: list[list[SegmentPart]] = [[line] for line in lines[:npc_start]]
-    npc_entries: list[list[SegmentPart]] = [npc_parts, [""]] if npc_parts else []
-    tail: list[list[SegmentPart]] = [[line] for line in lines[npc_end:]]
-    entries = [*head, *npc_entries, *tail]
-    built = message_with_segments(_joined_with_newlines(entries))
     drop_lines = format_room_drop_lines(room_drops)
     return {
         "result": rendered,
         "category": MessageCategory.ROOM_DESCRIPTION,
-        **({"segments": built["segments"]} if npc_parts and built["message"] == rendered else {}),
+        **_room_look_segments(lines, npc_start, npc_end, npc_parts, rendered),
         "drop_summary": "\n".join(drop_lines),  # Keep for backward compatibility
         "room_drops": room_drops,  # Keep for backward compatibility
     }

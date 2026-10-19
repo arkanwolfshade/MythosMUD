@@ -297,24 +297,27 @@ class GameStateProvider:
             npc_names_dict = self.get_npcs_batch(npc_ids)
             npc_occupants: list[NpcOccupant] = []
             for npc_id in npc_ids:
-                npc_name = npc_names_dict.get(npc_id)
-                if npc_name and isinstance(npc_name, str) and npc_name.strip():
-                    # Validate name is not an ID (check if it looks like an ID with underscores)
-                    # NPC IDs typically have format like "npc_type_location_timestamp_instance"
-                    # If the "name" is the same as the ID, skip it
-                    if npc_name != npc_id:
-                        display_name: str | None = npc_name
-                    else:
-                        # Fallback: Generate name from ID if name resolution failed
-                        # This should rarely happen, but provides a safety net
-                        fallback_name = npc_id.split("_")[0].replace("_", " ").title()
-                        display_name = fallback_name if fallback_name and fallback_name != npc_id else None
-                    if display_name:
-                        npc_occupants.append(npc_occupant(display_name, get_npc_disposition_from_instance(npc_id)))
+                if display_name := self._npc_display_name(npc_id, npc_names_dict.get(npc_id)):
+                    npc_occupants.append(npc_occupant(display_name, get_npc_disposition_from_instance(npc_id)))
             # Replace NPC IDs with name + disposition entries
             room_data["npcs"] = npc_occupants
 
         return room_data
+
+    @staticmethod
+    def _npc_display_name(npc_id: str, npc_name: str | None) -> str | None:
+        """The name to show for an NPC, or None when no usable name resolved."""
+        if not (npc_name and npc_name.strip()):
+            return None
+        # Validate name is not an ID (check if it looks like an ID with underscores)
+        # NPC IDs typically have format like "npc_type_location_timestamp_instance"
+        # If the "name" is the same as the ID, skip it
+        if npc_name != npc_id:
+            return npc_name
+        # Fallback: Generate name from ID if name resolution failed
+        # This should rarely happen, but provides a safety net
+        fallback_name = npc_id.split("_")[0].replace("_", " ").title()
+        return fallback_name if fallback_name and fallback_name != npc_id else None
 
     async def get_room_occupants(
         self, room_id: str, online_players: dict[uuid.UUID, dict[str, Any]]

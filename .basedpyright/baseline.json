@@ -66812,14 +66812,6 @@
                 }
             },
             {
-                "code": "reportUnnecessaryIsInstance",
-                "range": {
-                    "startColumn": 32,
-                    "endColumn": 57,
-                    "lineCount": 1
-                }
-            },
-            {
                 "code": "reportExplicitAny",
                 "range": {
                     "startColumn": 70,
@@ -73610,14 +73602,6 @@
                 "range": {
                     "startColumn": 72,
                     "endColumn": 75,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 22,
-                    "endColumn": 38,
                     "lineCount": 1
                 }
             },
