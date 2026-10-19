@@ -677,6 +677,13 @@ class PlayerRoomEventHandler:
                 room_id=processed_event.room_id,
             )
 
+            # Subscribe before anything that can suspend. NPCs react to this same event (a greeting, an opening
+            # line) by broadcasting to the room; a broadcast that lands before the subscription skips the player
+            # who just arrived. Subscribing is in-memory, so as the first await it always wins.
+            _, room_to_join = self.utils.normalize_event_ids(processed_event.player_id, processed_event.room_id)
+            if room_to_join is not None:
+                await self.subscribe_player_to_room(processed_event.player_id, room_to_join)
+
             result = await self._process_player_entered_event(processed_event)
             if not result:
                 return
@@ -696,7 +703,6 @@ class PlayerRoomEventHandler:
             if send_occupants_update is not None:
                 await send_occupants_update(room_id_str, exclude_player=exclude_player_id)
 
-            await self.subscribe_player_to_room(processed_event.player_id, room_id_str)
             await self.send_room_updates_to_entering_player(processed_event.player_id, player_name, room_id_str)
 
             self._logger.info(

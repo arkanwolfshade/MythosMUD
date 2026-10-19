@@ -12,6 +12,7 @@ import pytest
 from sqlalchemy.exc import SQLAlchemyError
 
 from server.events.event_types import PlayerEnteredRoom
+from server.realtime.player_event_handlers_room import PlayerRoomEventHandler
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
@@ -472,6 +473,37 @@ async def test_handle_player_entered_success(player_room_event_handler, mock_roo
             player_room_event_handler.broadcast_player_entered_message.assert_awaited_once()
             player_room_event_handler.subscribe_player_to_room.assert_awaited_once()
             player_room_event_handler.send_room_updates_to_entering_player.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_the_entering_player_is_subscribed_before_anything_that_can_suspend(
+    player_room_event_handler: PlayerRoomEventHandler,
+) -> None:
+    """Regression: an NPC greeting raised by the same PlayerEnteredRoom was broadcast to the room before the player
+    was subscribed (the subscription came after the player lookup and the room broadcasts), so it never arrived."""
+    player_id = uuid.uuid4()
+    event = PlayerEnteredRoom(player_id=str(player_id), room_id="room_001")
+    player_room_event_handler.room_sync_service = MagicMock(process_event_with_ordering=MagicMock(return_value=event))
+    order: list[str] = []
+
+    def _step(name: str, result: object = None) -> AsyncMock:
+        async def _record(*_args: object, **_kwargs: object) -> object:
+            order.append(name)
+            return result
+
+        return AsyncMock(side_effect=_record)
+
+    player_room_event_handler.subscribe_player_to_room = _step("subscribe")
+    player_room_event_handler.log_player_movement = _step("log")
+    player_room_event_handler.broadcast_player_entered_message = _step("broadcast")
+    player_room_event_handler.send_room_updates_to_entering_player = _step("room_updates")
+    player_room_event_handler.message_builder.create_player_entered_message = MagicMock(return_value={})
+    with patch.object(
+        player_room_event_handler.utils, "get_player_info", new=_step("player_lookup", (MagicMock(), "TestPlayer"))
+    ):
+        await player_room_event_handler.handle_player_entered(event, _step("occupants"))
+
+    assert order == ["subscribe", "player_lookup", "log", "broadcast", "occupants", "room_updates"]
 
 
 @pytest.mark.asyncio
