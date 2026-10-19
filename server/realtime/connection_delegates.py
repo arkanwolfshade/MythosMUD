@@ -24,13 +24,14 @@ class _PlayerIdCarrier(Protocol):  # pylint: disable=too-few-public-methods  # R
     """Minimal player shape for token validation."""
 
     player_id: uuid.UUID
+    user_id: uuid.UUID | str
 
 
 class _TokenPersistence(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """Persistence surface used by validate_token_impl."""
 
-    async def get_player_by_user_id(self, user_id: str) -> _PlayerIdCarrier | None:
-        """Look up a player by auth user id."""
+    async def get_player_by_id(self, player_id: uuid.UUID) -> _PlayerIdCarrier | None:
+        """Look up a character by its player id."""
 
 
 class _WebsocketCleanupManager(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
@@ -219,8 +220,10 @@ async def validate_token_impl(token: str, player_id: uuid.UUID, manager: _TokenV
             logger.warning("Cannot validate token: persistence not available", player_id=player_id)
             return False
 
-        player = await persistence.get_player_by_user_id(user_id)
-        if not player or str(player.player_id) != str(player_id):
+        # An account can have several characters, so ask whose this connection's character is rather than
+        # which single character the account has.
+        player = await persistence.get_player_by_id(player_id)
+        if not player or str(player.user_id) != user_id:
             logger.warning(
                 "Token validation failed: player mismatch",
                 player_id=player_id,

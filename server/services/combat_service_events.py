@@ -12,6 +12,7 @@ from uuid import UUID
 from structlog.stdlib import BoundLogger
 
 from server.events.combat_events import CombatTargetSwitchEvent, NPCDiedEvent, NPCTookDamageEvent
+from server.models.combat import CombatParticipantType
 from server.realtime.connection_utils import get_npc_disposition_from_instance
 from server.services.nats_exceptions import NATSError
 from server.structured_logging.enhanced_logging_config import get_logger
@@ -94,6 +95,16 @@ async def publish_npc_died_event(
         return False
 
 
+def _player_named(combat: CombatInstance | None, name: str) -> str | None:
+    """Id of the player participant called ``name`` in this combat (so they can be told in the second person)."""
+    if combat is None:
+        return None
+    for participant in combat.participants.values():
+        if participant.participant_type == CombatParticipantType.PLAYER and participant.name == name:
+            return str(participant.participant_id)
+    return None
+
+
 async def broadcast_aggro_target_switches(
     service: CombatService,
     room_id: str,
@@ -111,6 +122,7 @@ async def broadcast_aggro_target_switches(
     if not npc_svc:
         return
     mi = npc_svc.get_messaging_integration()
+    combat = service.get_combat(combat_id)
     for npc_participant_id, npc_name, new_target_name in switches:
         _ = await mi.broadcast_combat_target_switch(
             room_id,
@@ -118,6 +130,7 @@ async def broadcast_aggro_target_switches(
             npc_name,
             new_target_name,
             npc_disposition=npc_svc.get_npc_disposition(npc_participant_id),
+            new_target_player_id=_player_named(combat, new_target_name),
         )
         # NATS-consumable in addition to the direct room broadcast above (#634)
         _ = await service.publish_combat_target_switch_event_to_nats(
@@ -128,4 +141,5 @@ async def broadcast_aggro_target_switches(
 
 
 if TYPE_CHECKING:
+    from server.models.combat import CombatInstance
     from server.services.combat_service import CombatService

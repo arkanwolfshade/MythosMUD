@@ -11,6 +11,7 @@ from server.game.chat_message import ChatMessage
 from server.game.chat_npc_system import (
     deliver_fake_npc_whisper,
     deliver_npc_room_speech,
+    deliver_personal_quest,
     deliver_personal_system,
     npc_sender_id,
     reset_npc_spoke_subscription_for_tests,
@@ -166,6 +167,24 @@ async def test_send_fake_npc_whisper_targets_player_as_whisper():
 
 
 @pytest.mark.asyncio
+async def test_a_quest_line_goes_to_one_player_on_the_quest_channel():
+    """Quest notices and narration are personal like system lines, but on their own channel."""
+    chat_service = _mock_chat_service()
+    player_id = uuid.uuid4()
+
+    with patch(
+        "server.game.chat_npc_system.publish_chat_message_to_nats",
+        new_callable=AsyncMock,
+        return_value=True,
+    ):
+        result = await send_personal_system_message(chat_service, player_id, "Quest started: Fetch", channel="quest")
+
+    message = cast(dict[str, object], result["message"])
+    assert message["channel"] == "quest"
+    assert message["target_id"] == str(player_id)
+
+
+@pytest.mark.asyncio
 async def test_send_fake_npc_whisper_rejects_empty():
     """Fake NPC whisper fails closed on empty content, same as a real whisper would."""
     result = await send_fake_npc_whisper(_mock_chat_service(), uuid.uuid4(), "The Whisperer", "")
@@ -177,6 +196,8 @@ async def test_deliver_when_chat_service_unwired():
     """Delivery helpers no-op when ChatService is not wired."""
     npc = await deliver_npc_room_speech(npc_id="n1", room_id="r1", message="Hi", npc_name="N")
     system = await deliver_personal_system(uuid.uuid4(), "Quest started: X")
+    quest = await deliver_personal_quest(uuid.uuid4(), "The bones rattle.")
+    assert quest["success"] is False
     fake_whisper = await deliver_fake_npc_whisper(uuid.uuid4(), "The Whisperer", "They're watching you...")
     assert npc["success"] is False
     assert system["success"] is False
@@ -236,10 +257,10 @@ def test_resolve_npc_display_name():
     assert resolve_npc_display_name("missing") == "Someone"
 
 
-def test_notify_quest_lifecycle_schedules_personal_system():
-    """Quest notify helpers schedule personal system chat with expected text."""
+def test_notify_quest_lifecycle_schedules_quest_channel_lines():
+    """Quest notify helpers schedule quest-channel lines with the expected text."""
     player_id = uuid.uuid4()
-    with patch("server.game.quest.quest_chat_notify.schedule_personal_system") as schedule:
+    with patch("server.game.quest.quest_chat_notify.schedule_personal_quest") as schedule:
         notify_quest_started(player_id, "Fetch")
         notify_quest_progress(player_id, "Fetch")
         notify_quest_completed(player_id, "Fetch")

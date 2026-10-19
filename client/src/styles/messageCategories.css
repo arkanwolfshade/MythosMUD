@@ -25,7 +25,7 @@
  *   alert   system.error system.warning combat.hurt combat.death combat.status status.*
  *   private chat.whisper
  *   action  chat.emote combat.hit combat.miss
- *   meta    system.info chat.admin
+ *   meta    system.info quest.info chat.admin
  *   plain   chat.say/local/global/party/shout room.description room.exits room.movement command.output npc.*
  *   heading room.name
  * The TS twin of this table is messageCategoryStyle.ts (CATEGORY_REGISTER); a test keeps them honest.
@@ -78,6 +78,8 @@
   --cat-system-info: #6ea0ff;
   --cat-system-warning: #ffcd00;
   --cat-system-error: #ff6b5c;
+  /* quest: aged-parchment amber, apart from the quest giver's brass and the admin gold */
+  --cat-quest-info: #e6b673;
   /* status */
   --cat-status-lucidity: #a569ff;
   --cat-status-health: #ff9e7a;
@@ -115,6 +117,7 @@ html.high-contrast {
   --cat-system-info: #9abcff;
   --cat-system-warning: #ffdc4c;
   --cat-system-error: #ff9a8e;
+  --cat-quest-info: #f2cf96;
   --cat-status-lucidity: #c096ff;
   --cat-status-health: #ffbfa6;
   --cat-status-rescue: #ff8fe0;
@@ -181,6 +184,12 @@ html.text-labels .cat::before {
   --cat-glyph: '\2139';
   --cat-glyph-alt: 'system';
   --cat-text-label: '[System] ';
+}
+.cat-quest {
+  --cat-ink: var(--cat-quest-info);
+  --cat-glyph: '\2726';
+  --cat-glyph-alt: 'quest';
+  --cat-text-label: '[Quest] ';
 }
 .cat-status {
   --cat-ink: var(--cat-status-lucidity);
@@ -324,6 +333,13 @@ html.text-labels .cat::before {
   --cat-glyph: '\2716';
   --cat-glyph-alt: 'error';
   --cat-text-label: '[Error] ';
+}
+
+.cat-quest-info {
+  --cat-ink: var(--cat-quest-info);
+  --cat-glyph: '\2726';
+  --cat-glyph-alt: 'quest';
+  --cat-text-label: '[Quest] ';
 }
 
 .cat-status-lucidity {

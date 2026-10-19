@@ -150,10 +150,15 @@ async def setup_connection_manager(app: FastAPI, container: ApplicationContainer
     logger.info("Cleared stale pending messages from previous server sessions")
     await container.connection_manager.memory_monitor.start_idle_sampler()
 
-    from .lifespan_event_subscriptions import subscribe_quest_events, subscribe_room_occupants_refresh
+    from .lifespan_event_subscriptions import (
+        subscribe_npc_dialogue_events,
+        subscribe_quest_events,
+        subscribe_room_occupants_refresh,
+    )
 
     subscribe_room_occupants_refresh(container)
     subscribe_quest_events(container)
+    subscribe_npc_dialogue_events(container)
 
 
 def _validate_npc_services_prerequisites(container: ApplicationContainer) -> None:

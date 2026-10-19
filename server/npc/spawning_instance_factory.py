@@ -114,6 +114,10 @@ def _instantiate_by_type(
 def _set_spawn_room(npc: NPCBase, room_id: str) -> None:
     npc.current_room = room_id
     npc.spawn_room_id = room_id
+    # Reactions match on the context's room, which the constructor took from the definition. An NPC spawned anywhere
+    # else (every instance NPC: their definitions have no room) would otherwise never react to a player entering.
+    if npc.event_reaction_system is not None:
+        npc.event_reaction_system.set_npc_context(npc.npc_id, current_room=room_id)
 
 
 def create_npc_instance(

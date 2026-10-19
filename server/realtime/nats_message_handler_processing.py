@@ -73,6 +73,7 @@ _CHANNEL_CATEGORY: dict[str, MessageCategory] = {
     "pose": MessageCategory.CHAT_EMOTE,
     "admin": MessageCategory.CHAT_ADMIN,
     "system": MessageCategory.SYSTEM_INFO,
+    "quest": MessageCategory.QUEST_INFO,
 }
 
 
@@ -270,8 +271,8 @@ class NATSMessageProcessingMixin(  # pylint: disable=too-few-public-methods  # R
         target_player_id = _optional_str(message_data.get("target_player_id"))
         target_id = _optional_str(message_data.get("target_id"))
 
-        # Whisper / personal system publish "target_id"; broadcasting expects "target_player_id".
-        if channel in ("whisper", "system") and target_id and not target_player_id:
+        # Whisper / personal system / quest publish "target_id"; broadcasting expects "target_player_id".
+        if channel in ("whisper", "system", "quest") and target_id and not target_player_id:
             target_player_id = target_id
 
         return {

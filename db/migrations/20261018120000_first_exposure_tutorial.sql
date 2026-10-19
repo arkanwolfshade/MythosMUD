@@ -272,7 +272,7 @@ INSERT INTO npc_definitions (
     0,
     0.0,
     '{"determination_points":80,"max_dp":80,"xp_value":0,"strength":60,"constitution":70,"size":55,"dexterity":45,"intelligence":70,"power":65,"catalog":{"namespace":"first_exposure","canonical_id":"first_exposure.npc.pale_ghoul","era":"1920s","source_key":"first_exposure_original"}}',
-    '{"attack_damage":1,"aggression_level":"passive"}',
+    '{"initiates_dialogue":true,"attack_damage":1,"aggression_level":"passive"}',
     '{}',
     NOW(),
     NOW()

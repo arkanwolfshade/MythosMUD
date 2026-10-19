@@ -60,6 +60,12 @@ test.describe.serial('First Exposure: the whole tutorial', () => {
     await test.step('Act I, Dusk: the square, the lamplighter, the newspaper, the lane', async () => {
       await startFreshTutorial(tutorial);
       await expect.poll(() => state().quests, { timeout: 15000 }).toMatchObject({ first_exposure_dusk: 'active' });
+      // Quest notices arrive on the quest channel, not the system channel.
+      await waitForMessage(tutorial.page, /\[QUEST\] Quest started: An Evening Walk/, 20000);
+      // The Journal refreshes on progress without the player typing `journal`: the opening `look` met cmd_look.
+      await expect(tutorial.page.getByTestId('game-panel-questLog')).toContainText('cmd_look: done', {
+        timeout: 15000,
+      });
 
       await walk(tutorial, 'east', tutorialRoomPattern('gravel_walk'));
       await say(tutorial, 'talk lamplighter', /Mind the gravel/i);
@@ -88,7 +94,8 @@ test.describe.serial('First Exposure: the whole tutorial', () => {
       expect(hurt.corruption).toBe(0); // only the friendly ghoul touches corruption
 
       await walk(tutorial, 'east', tutorialRoomPattern('old_yew'));
-      await say(tutorial, 'talk ghoul', /lifts one hand, slowly/i);
+      // The Pale Ghoul speaks first (behavior_config.initiates_dialogue): no `talk ghoul` needed.
+      await waitForMessage(tutorial.page, /lifts one hand, slowly/i, 20000);
       await say(tutorial, 'talk 1', /Its long fingers close over your wrist/i);
       await expect.poll(() => state().corruption, { timeout: 15000 }).toBe(1);
       await expect

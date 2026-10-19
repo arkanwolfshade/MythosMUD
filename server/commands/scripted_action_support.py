@@ -22,28 +22,24 @@ class _ContainerReader(Protocol):  # pylint: disable=too-few-public-methods  # R
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
 
 
-def _quest_service(app: object | None) -> QuestActionService | None:
-    state = cast(object | None, getattr(app, "state", None))
-    container = cast(object | None, getattr(state, "container", None))
-    return cast(QuestActionService | None, getattr(container, "quest_service", None))
-
-
-def _catatonia_observer(app: object | None) -> CatatoniaObserverProtocol | None:
-    state = cast(object | None, getattr(app, "state", None))
-    container = cast(object | None, getattr(state, "container", None))
-    return cast(CatatoniaObserverProtocol | None, getattr(container, "catatonia_registry", None))
-
-
-def action_context(app: object | None, player: object, persistence: object | None) -> ScriptedActionContext | None:
+def container_context(
+    container: object | None, player: object, persistence: object | None
+) -> ScriptedActionContext | None:
     """Context for running scripted actions on ``player``; None if the player or persistence is not usable."""
     if not isinstance(player, Player) or persistence is None:
         return None
     return ScriptedActionContext(
         player=player,
         persistence=cast(CorruptionPersistenceProtocol, persistence),
-        quest_service=_quest_service(app),
-        catatonia_observer=_catatonia_observer(app),
+        quest_service=cast(QuestActionService | None, getattr(container, "quest_service", None)),
+        catatonia_observer=cast(CatatoniaObserverProtocol | None, getattr(container, "catatonia_registry", None)),
     )
+
+
+def action_context(app: object | None, player: object, persistence: object | None) -> ScriptedActionContext | None:
+    """``container_context`` for the container on a request's app."""
+    state = cast(object | None, getattr(app, "state", None))
+    return container_context(cast(object | None, getattr(state, "container", None)), player, persistence)
 
 
 async def run_on_put(

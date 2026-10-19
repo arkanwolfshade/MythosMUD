@@ -1,6 +1,7 @@
 """Combat event broadcasts (start, attack, death, end, error, target switch, NPC disengage)."""
 
-from typing import Any, cast
+import uuid
+from typing import Any, Protocol, cast
 
 from server.constants.message_category import MessageCategory
 from server.constants.message_segments import SegmentPart, message_with_segments, npc_name_segment
@@ -10,6 +11,14 @@ from server.services.combat_messaging.base import HasConnectionManager, log_room
 from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
+
+
+class _PersonalSender(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    """The one ConnectionManager method the target-switch line needs (connection_manager is untyped on the mixin)."""
+
+    async def send_personal_message(self, player_id: uuid.UUID | str, event: dict[str, object]) -> object:
+        """Send one event to one player."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
 
 
 def _npc_part(name: str, disposition: NpcDisposition | None) -> SegmentPart:
@@ -182,16 +191,45 @@ class CombatBroadcastMixin(HasConnectionManager):
         npc_name: str,
         new_target_name: str,
         npc_disposition: NpcDisposition | None = None,
+        new_target_player_id: str | None = None,
     ) -> dict[str, object]:
-        """Broadcast one short room message when an NPC switches aggro target (ADR-016)."""
-        line = _line_fields([_npc_part(npc_name, npc_disposition), f" turns its gaze to {new_target_name}."])
-        return await self._broadcast_combat_event(
+        """
+        Broadcast one short room message when an NPC switches aggro target (ADR-016).
+
+        When the new target is a player, they are told "turns its gaze to you" and the rest of the room
+        reads their name: each viewer sees the line from their own point of view.
+        """
+        npc_part = _npc_part(npc_name, npc_disposition)
+        line = _line_fields([npc_part, f" turns its gaze to {new_target_name}."])
+        stats = await self._broadcast_combat_event(
             "combat_target_switch",
             room_id,
             {"combat_id": combat_id, "npc_name": npc_name, "new_target_name": new_target_name, **line},
             "Combat target switch broadcast",
             MessageCategory.COMBAT_STATUS,
+            exclude_player=new_target_player_id,
         )
+        if new_target_player_id:
+            personal = build_event(
+                "combat_target_switch",
+                {
+                    "combat_id": combat_id,
+                    "npc_name": npc_name,
+                    "new_target_name": new_target_name,
+                    **_line_fields([npc_part, " turns its gaze to you."]),
+                    "category": MessageCategory.COMBAT_STATUS.value,
+                },
+                room_id=room_id,
+                player_id=new_target_player_id,
+            )
+            try:
+                sender = cast(_PersonalSender, self.connection_manager)
+                _ = await sender.send_personal_message(new_target_player_id, personal)
+            except (ConnectionError, OSError, RuntimeError, ValueError) as e:
+                logger.warning(
+                    "Failed to send personal target switch message", player_id=new_target_player_id, error=str(e)
+                )
+        return stats
 
     async def broadcast_npc_disengage(
         self,

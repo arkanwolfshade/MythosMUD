@@ -31,6 +31,7 @@ _CHANNEL_PARTS: dict[str, "Callable[[SegmentPart, list[SegmentPart]], list[Segme
     "emote": lambda sender, content: [sender, " ", *content],
     "pose": lambda sender, content: [sender, " ", *content],
     "system": lambda _sender, content: ["[SYSTEM] ", *content],
+    "quest": lambda _sender, content: ["[QUEST] ", *content],
     "admin": lambda sender, content: ["[ADMIN] ", sender, ": ", *content],
 }
 

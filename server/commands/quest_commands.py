@@ -8,7 +8,7 @@ offered quests; turns in at NPC when goals are met.
 from __future__ import annotations
 
 import uuid
-from typing import Any
+from typing import Any, cast
 
 from ..alias_storage import AliasStorage
 from ..game.quest import QuestService
@@ -161,6 +161,16 @@ def _active_npc_ids_in_room(lifecycle: Any, room_id: Any) -> list[Any]:
         for npc_id, npc_instance in (lifecycle.active_npcs or {}).items()
         if _get_npc_room_id(npc_instance) == room_id and _should_include_npc(npc_instance)
     ]
+
+
+def npc_instance_in_room(npc_id: str, room_id: str) -> object | None:
+    """The live NPC with this id if it is currently in ``room_id``, else None."""
+    lifecycle = cast(object | None, _get_lifecycle_manager())
+    active = cast(dict[str, object] | None, getattr(lifecycle, "active_npcs", None)) or {}
+    npc = active.get(npc_id)
+    if npc is None or _get_npc_room_id(npc) != room_id or not _should_include_npc(npc):
+        return None
+    return npc
 
 
 def resolve_npc_in_player_room(player: Any, npc_name: str) -> tuple[Any | None, str | None]:

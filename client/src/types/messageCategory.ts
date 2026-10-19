@@ -25,6 +25,7 @@ export const MESSAGE_CATEGORIES = [
   'system.info',
   'system.warning',
   'system.error',
+  'quest.info',
   'status.lucidity',
   'status.health',
   'status.rescue',

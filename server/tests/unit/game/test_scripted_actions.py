@@ -99,7 +99,8 @@ def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
             adjustments.append(delta)
             return type("Result", (), {"new_value": max(1, delta)})()
 
-    monkeypatch.setattr(runner, "deliver_personal_system", fake_deliver)
+    monkeypatch.setattr(runner, "deliver_personal_system", fake_deliver)  # the debrief's staff recap
+    monkeypatch.setattr(runner, "deliver_personal_quest", fake_deliver)  # `narrate`: quest narration
     monkeypatch.setattr(runner, "CorruptionService", FakeCorruptionService)
     debriefs: list[tuple[Player, bool, object | None]] = []
 

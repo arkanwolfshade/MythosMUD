@@ -79,6 +79,7 @@ class ChatMessageSchema(BaseMessageSchema):
             "emote",
             "pose",
             "system",
+            "quest",
             "admin",
             "party",
         }

@@ -26,7 +26,7 @@ from ..services.debrief_service import perform_debrief
 from ..services.lucidity_service import CatatoniaObserverProtocol
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
-from .chat_npc_system import deliver_personal_system
+from .chat_npc_system import deliver_personal_quest, deliver_personal_system
 
 logger = get_logger(__name__)
 
@@ -82,7 +82,7 @@ async def _run_one(action: ScriptedAction, ctx: ScriptedActionContext) -> None:
     player_id = uuid.UUID(str(ctx.player.player_id))
     match action:
         case NarrateAction():
-            _ = await deliver_personal_system(player_id, action.text)
+            _ = await deliver_personal_quest(player_id, action.text)
         case ApplyEffectAction():
             await _apply_effect(action, ctx)
         case CorruptionAtLeastAction():

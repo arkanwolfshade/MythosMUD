@@ -119,6 +119,28 @@ def test_chat_message_schema_accepts_speaker_kind_and_party_id():
     assert message.channel == "system"
 
 
+def test_chat_message_schema_accepts_the_quest_channel():
+    """Regression: quest lines were dead-lettered because the inbound schema did not know the quest channel."""
+    message = ChatMessageSchema(
+        message_id="msg_quest_narration",
+        timestamp=datetime.now(UTC).isoformat(),
+        sender_id=None,
+        sender_name="System",
+        channel="quest",
+        content="The bones in the walls rattle in their niches.",
+        room_id=None,
+        subzone=None,
+        target_id=None,
+        target_name=None,
+        party_id=None,
+        speaker_kind="system",
+        speaker_disposition=None,
+        content_segments=None,
+    )
+
+    assert message.channel == "quest"
+
+
 def test_event_message_schema():
     """Test EventMessageSchema can be instantiated."""
     timestamp = datetime.now(UTC).isoformat()

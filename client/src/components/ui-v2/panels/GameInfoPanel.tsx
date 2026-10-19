@@ -27,6 +27,7 @@ const MESSAGE_FILTERS: ReadonlyArray<{ value: string; label: string }> = [
   { value: 'combat', label: 'Combat' },
   { value: 'status', label: 'Status' },
   { value: 'system', label: 'System' },
+  { value: 'quest', label: 'Quest' },
   { value: 'room', label: 'Room' },
   { value: 'chat', label: 'Chat' },
   { value: 'command', label: 'Commands' },
