@@ -8,8 +8,8 @@ router and NATS for server-to-server and room events.
 
 - **API routes**: [server/api/real_time.py](../api/real_time.py) defines the WebSocket
   endpoints:
-  - `GET /api/ws` — primary endpoint (JWT via query or subprotocol; session_id optional)
-  - `GET /api/ws/{player_id}` — deprecated; prefer `/api/ws` with JWT
+  - `GET /api/ws` — the only endpoint (JWT via query or subprotocol; `character_id` required, and
+    it must belong to the token's account; `session_id` optional)
 - Incoming client connections are accepted, validated (token, persistence), then
   handed to `handle_websocket_connection` in `websocket_handler`.
 

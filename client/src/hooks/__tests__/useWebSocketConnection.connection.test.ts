@@ -132,8 +132,8 @@ describe('useWebSocketConnection - Connection Management', () => {
   it('should not connect without auth token', async () => {
     const { result } = renderHook(() =>
       useWebSocketConnection({
+        ...defaultOptions,
         authToken: '',
-        sessionId: 'test-session-id',
       })
     );
 
@@ -141,14 +141,30 @@ describe('useWebSocketConnection - Connection Management', () => {
       result.current.connect();
     });
 
-    expect(wsTestState.mockWebSocketInstance).toBeNull();
+    expect(latestWebSocketInstance).toBeNull();
+    expect(result.current.isConnected).toBe(false);
+  });
+
+  it('should not connect without character ID (server requires character_id, #1097)', async () => {
+    const { result } = renderHook(() =>
+      useWebSocketConnection({
+        ...defaultOptions,
+        characterId: '',
+      })
+    );
+
+    await act(() => {
+      result.current.connect();
+    });
+
+    expect(latestWebSocketInstance).toBeNull();
     expect(result.current.isConnected).toBe(false);
   });
 
   it('should not connect without session ID', async () => {
     const { result } = renderHook(() =>
       useWebSocketConnection({
-        authToken: 'test-token',
+        ...defaultOptions,
         sessionId: null,
       })
     );
@@ -157,7 +173,7 @@ describe('useWebSocketConnection - Connection Management', () => {
       result.current.connect();
     });
 
-    expect(wsTestState.mockWebSocketInstance).toBeNull();
+    expect(latestWebSocketInstance).toBeNull();
     expect(result.current.isConnected).toBe(false);
   });
 
