@@ -295,13 +295,15 @@ class TestCreateCharacterWithStats:
         with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=True):
             with patch("server.commands.admin_shutdown_command.get_shutdown_blocking_message", return_value="Shutdown"):
                 with pytest.raises(LoggedHTTPException) as exc_info:
-                    await create_character_with_stats(
+                    _ = await create_character_with_stats(
                         request_data=request_data,
                         request=mock_request,
                         current_user=mock_user,
                         player_service=mock_player_service,
                         profession_service=AsyncMock(),
                         skill_service=AsyncMock(),
+                        persistence=AsyncMock(),
+                        quest_service=AsyncMock(),
                     )
                 assert exc_info.value.status_code == 503
 
@@ -328,7 +330,7 @@ class TestCreateCharacterWithStats:
 
         with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
             with pytest.raises(LoggedHTTPException) as exc_info:
-                await create_character_with_stats(
+                _ = await create_character_with_stats(
                     request_data=request_data,
                     request=mock_request,
                     # Reason: Intentionally passing None to test unauthenticated scenario
@@ -336,6 +338,8 @@ class TestCreateCharacterWithStats:
                     player_service=mock_player_service,
                     profession_service=AsyncMock(),
                     skill_service=AsyncMock(),
+                    persistence=AsyncMock(),
+                    quest_service=AsyncMock(),
                 )
                 assert exc_info.value.status_code == 401
 
@@ -364,13 +368,15 @@ class TestCreateCharacterWithStats:
             with patch("server.api.character_creation.character_creation_limiter") as mock_limiter:
                 mock_limiter.enforce_rate_limit.side_effect = RateLimitError("Rate limit exceeded", retry_after=300)
                 with pytest.raises(LoggedHTTPException) as exc_info:
-                    await create_character_with_stats(
+                    _ = await create_character_with_stats(
                         request_data=request_data,
                         request=mock_request,
                         current_user=mock_user,
                         player_service=mock_player_service,
                         profession_service=AsyncMock(),
                         skill_service=AsyncMock(),
+                        persistence=AsyncMock(),
+                        quest_service=AsyncMock(),
                     )
                 assert exc_info.value.status_code == 429
 
@@ -434,6 +440,8 @@ class TestCreateCharacterWithStats:
                         player_service=mock_player_service,
                         profession_service=AsyncMock(),
                         skill_service=AsyncMock(),
+                        persistence=AsyncMock(),
+                        quest_service=AsyncMock(),
                     )
 
                     assert result.player is not None

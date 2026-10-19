@@ -5,6 +5,7 @@ from __future__ import annotations
 import uuid
 from collections.abc import AsyncIterator
 from dataclasses import dataclass, field
+from datetime import UTC, datetime
 from types import SimpleNamespace
 from typing import cast
 
@@ -14,6 +15,7 @@ from server.models.lucidity import LucidityActionCode
 from server.models.player import Player
 from server.services import debrief_service as service
 from server.services.active_lucidity_service import LucidityActionOnCooldownError
+from server.services.lucidity_service import LucidityService
 
 
 @dataclass
@@ -186,3 +188,23 @@ async def test_a_failure_while_completing_rolls_back_and_reports_complications(r
     assert outcome.completed is False
     assert "complications" in outcome.message
     assert rig.rollbacks == 1
+
+
+@pytest.mark.asyncio
+async def test_marking_a_debrief_pending_sets_a_long_lived_flag() -> None:
+    """The flag waits for Dr. Morgan: set for about a year, on the DEBRIEF_PENDING action code."""
+    set_calls: list[tuple[uuid.UUID, str, object]] = []
+
+    class RecordingLucidityService:
+        async def set_cooldown(self, player_id: uuid.UUID, action_code: str, expires_at: object) -> object:
+            set_calls.append((player_id, action_code, expires_at))
+            return object()
+
+    player_id = uuid.uuid4()
+    await service.mark_debrief_pending(cast(LucidityService, cast(object, RecordingLucidityService())), player_id)
+
+    [(marked, code, expires_at)] = set_calls
+    assert (marked, code) == (player_id, LucidityActionCode.DEBRIEF_PENDING)
+    assert isinstance(expires_at, datetime)
+    days_left = (expires_at - datetime.now(UTC).replace(tzinfo=None)).days
+    assert service.DEBRIEF_PENDING_DAYS - 1 <= days_left <= service.DEBRIEF_PENDING_DAYS

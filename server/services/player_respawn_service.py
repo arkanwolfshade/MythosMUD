@@ -12,7 +12,7 @@ from __future__ import annotations
 import random
 import uuid
 from collections.abc import Callable, Mapping, Sequence
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime
 from typing import Protocol, cast
 
 from sqlalchemy.exc import SQLAlchemyError
@@ -24,12 +24,13 @@ from ..events.event_types import BaseEvent, PlayerDeliriumRespawnedEvent, Player
 from ..exceptions import DatabaseError
 from ..game.first_exposure import FinishFirstExposure, apply_first_exposure_end_state, tutorial_instance_of
 from ..game.instance_manager import is_template_room, template_exit_room_id
-from ..models.lucidity import LucidityActionCode, PlayerLucidity
+from ..models.lucidity import PlayerLucidity
 from ..models.player import Player
 from ..models.room import Room
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
 from ..utils.liability_types import DecodeLiabilitiesFn, EncodeLiabilitiesFn
+from .debrief_service import mark_debrief_pending
 from .lucidity_service import LucidityService, resolve_tier
 from .player_respawn_state import (
     apply_sanitarium_player_state,
@@ -231,12 +232,6 @@ class PlayerRespawnService:
         )
         self._event_bus.publish(event)
 
-    @staticmethod
-    async def _mark_debrief_pending(lucidity_service: LucidityService, player_id: uuid.UUID) -> None:
-        """Leave a long-lived DEBRIEF_PENDING flag; the debrief (Dr. Morgan) clears it."""
-        debrief_expires_at = _utc_now() + timedelta(days=365)  # Far future expiration
-        _ = await lucidity_service.set_cooldown(player_id, LucidityActionCode.DEBRIEF_PENDING, debrief_expires_at)
-
     async def _prepare_delirium_respawn(
         self, player_id: uuid.UUID, player: Player, session: AsyncSession
     ) -> tuple[str, str, int, int] | None:
@@ -253,7 +248,7 @@ class PlayerRespawnService:
         lucidity_record.current_tier = resolve_tier(new_lucidity)
         lucidity_record.last_updated_at = _utc_now()
 
-        await self._mark_debrief_pending(LucidityService(session), player_id)
+        await mark_debrief_pending(LucidityService(session), player_id)
 
         respawn_room = RECOVERY_WARD_ROOM_ID
         _ = player.restore_to_full_health()
@@ -298,7 +293,7 @@ class PlayerRespawnService:
 
         respawn_room = RECOVERY_WARD_ROOM_ID
         stats, old_room = apply_sanitarium_player_state(player, respawn_room)
-        await self._mark_debrief_pending(lucidity_service, player_id)
+        await mark_debrief_pending(lucidity_service, player_id)
 
         return respawn_room, stats, old_room, old_lucidity, new_lucidity
 

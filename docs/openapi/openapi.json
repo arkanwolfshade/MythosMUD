@@ -641,6 +641,33 @@
         ]
       }
     },
+    "/v1/api/players/characters/tutorial-skip": {
+      "get": {
+        "tags": [
+          "players"
+        ],
+        "summary": "Tutorial Skip Eligibility",
+        "description": "Whether a new character may skip the First Exposure tutorial (the client shows the option only then).",
+        "operationId": "tutorial_skip_eligibility_v1_api_players_characters_tutorial_skip_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TutorialSkipEligibilityResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
     "/v1/api/players/roll-stats": {
       "post": {
         "tags": [
@@ -694,7 +721,7 @@
           "players"
         ],
         "summary": "Create Character With Stats",
-        "description": "Create a new character with specific stats.\n\nThis endpoint creates a new player character with the provided stats\nand automatically logs the user in with the new character.\nServer applies profession stat_modifiers to rolled stats; if occupation_slots\nand personal_interest are provided, sets player skills.\n\nRate limited to 5 creations per 5 minutes per user.",
+        "description": "Create a new character with specific stats.\n\n``start_in_tutorial: false`` skips First Exposure. The server allows it only once some character on the account\nhas finished the tutorial (403 otherwise), and the new character starts in the state a finished run leaves.\n\nThis endpoint creates a new player character with the provided stats\nand automatically logs the user in with the new character.\nServer applies profession stat_modifiers to rolled stats; if occupation_slots\nand personal_interest are provided, sets player skills.\n\nRate limited to 5 creations per 5 minutes per user.",
         "operationId": "create_character_with_stats_v1_api_players_create_character_post",
         "requestBody": {
           "content": {
@@ -12316,6 +12343,21 @@
         ],
         "title": "TransferContainerRequest",
         "description": "Request model for transferring items to/from container."
+      },
+      "TutorialSkipEligibilityResponse": {
+        "properties": {
+          "eligible": {
+            "type": "boolean",
+            "title": "Eligible",
+            "description": "True once some character on the account (deleted ones included) has finished First Exposure"
+          }
+        },
+        "type": "object",
+        "required": [
+          "eligible"
+        ],
+        "title": "TutorialSkipEligibilityResponse",
+        "description": "Whether a new character on this account may skip the First Exposure tutorial."
       },
       "UserCreate": {
         "properties": {

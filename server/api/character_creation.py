@@ -5,16 +5,27 @@ This module handles endpoints for rolling stats, creating characters,
 and validating character stats.
 """
 
+import uuid
 from typing import Annotated, NoReturn, cast
 
 from fastapi import Depends, FastAPI, HTTPException, Request
 
+from ..async_persistence import AsyncPersistenceLayer
 from ..auth.users import get_current_user
-from ..dependencies import get_player_service, get_profession_service, get_skill_service, get_stats_generator
+from ..constants.spawn_defaults import RECOVERY_WARD_ROOM_ID
+from ..dependencies import (
+    get_async_persistence,
+    get_player_service,
+    get_profession_service,
+    get_quest_service,
+    get_skill_service,
+    get_stats_generator,
+)
 from ..error_types import ErrorMessages
 from ..exceptions import LoggedHTTPException, RateLimitError, ValidationError
 from ..game.player_service import PlayerService
 from ..game.profession_service import ProfessionService
+from ..game.quest import QuestService
 from ..game.skill_service import SkillService
 from ..game.stats_generator import StatsGenerator
 from ..models import Stats
@@ -32,6 +43,7 @@ from ..schemas.players.stat_values import RolledStats
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.rate_limiter import character_creation_limiter, stats_roll_limiter
 from .player_router import player_router
+from .tutorial_skip import apply_tutorial_skip, refuse_ineligible_skip
 
 logger = get_logger(__name__)
 
@@ -240,8 +252,13 @@ async def _execute_create_character(
         occ, pers = skills_payload
         await _validate_skills_payload(request_data, current_user, skill_service, occ, pers)
 
-    starting_room_id = player_service.get_default_starting_room(getattr(request_data, "starting_room_id", None))
     start_in_tutorial = getattr(request_data, "start_in_tutorial", True)
+    # A skip starts where a finished run ends: the Recovery Ward (the rest of that state follows creation).
+    starting_room_id = (
+        player_service.get_default_starting_room(getattr(request_data, "starting_room_id", None))
+        if start_in_tutorial
+        else RECOVERY_WARD_ROOM_ID
+    )
     player = await player_service.create_player_with_stats(
         name=request_data.name,
         stats=stats_obj,
@@ -442,9 +459,14 @@ async def create_character_with_stats(
     player_service: Annotated[PlayerService, Depends(get_player_service)],
     profession_service: Annotated[ProfessionService, Depends(get_profession_service)],
     skill_service: Annotated[SkillService, Depends(get_skill_service)],
+    persistence: Annotated[AsyncPersistenceLayer, Depends(get_async_persistence)],
+    quest_service: Annotated[QuestService, Depends(get_quest_service)],
 ) -> CreateCharacterResponse:
     """
     Create a new character with specific stats.
+
+    ``start_in_tutorial: false`` skips First Exposure. The server allows it only once some character on the account
+    has finished the tutorial (403 otherwise), and the new character starts in the state a finished run leaves.
 
     This endpoint creates a new player character with the provided stats
     and automatically logs the user in with the new character.
@@ -454,11 +476,17 @@ async def create_character_with_stats(
     Rate limited to 5 creations per 5 minutes per user.
     """
     _prepare_create_character_request(request, current_user)
+    skipping = not request_data.start_in_tutorial
+    if skipping:
+        await refuse_ineligible_skip(current_user, persistence, quest_service)
 
     try:
-        return await _execute_create_character(
+        response = await _execute_create_character(
             request_data, current_user, player_service, profession_service, skill_service
         )
+        if skipping:
+            await apply_tutorial_skip(uuid.UUID(str(response.player.id)), persistence, quest_service)
+        return response
     except HTTPException:
         raise
     except ValueError as e:

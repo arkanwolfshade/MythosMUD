@@ -11,12 +11,16 @@ Ending the tutorial is two steps, because the respawn commits through its own da
 
 Anyone not in the tutorial is untouched: ``apply_first_exposure_end_state`` does nothing without a
 ``tutorial_instance_id``.
+
+A character can skip the tutorial at creation once some character on the account has finished it (#1081, ADR-028
+D22/D24). ``account_completed_first_exposure`` is that check, and ``skip_first_exposure`` gives the new character the
+same end state a finished run leaves.
 """
 
 from __future__ import annotations
 
 import uuid
-from collections.abc import Awaitable, Callable
+from collections.abc import Awaitable, Callable, Iterable, Mapping, Sequence
 from typing import Protocol, cast
 
 from ..constants.spawn_defaults import RECOVERY_WARD_ROOM_ID
@@ -33,6 +37,8 @@ logger = get_logger(__name__)
 
 EPILOGUE_QUEST_ID = "first_exposure_sanitarium"
 RESTORED_LCD = 70
+# Finishing the Below act (the amulet returned to the Owner) is finishing the tutorial: what earns the skip.
+COMPLETION_QUEST_ID = "first_exposure_below"
 
 FINISH_ACTIONS: tuple[ScriptedAction, ...] = (
     CorruptionAtLeastAction(value=1, reason="first_exposure"),
@@ -53,6 +59,53 @@ class InstanceFlush(Protocol):  # pylint: disable=too-few-public-methods  # Reas
 
 
 FinishFirstExposure = Callable[[uuid.UUID, str], Awaitable[None]]
+
+
+class QuestLogReader(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    """The slice of QuestService the skip check reads."""
+
+    async def get_quest_log(
+        self, player_id: uuid.UUID, include_completed: bool = True
+    ) -> Sequence[Mapping[str, object]]:
+        """Quest log entries (quest_id, state, ...) for one character."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
+
+
+async def account_completed_first_exposure(characters: Iterable[Player], quests: QuestLogReader) -> bool:
+    """True if any of the account's characters (deleted ones included) has finished First Exposure."""
+    for character in characters:
+        log = await quests.get_quest_log(uuid.UUID(str(character.player_id)), include_completed=True)
+        if any(entry.get("quest_id") == COMPLETION_QUEST_ID and entry.get("state") == "completed" for entry in log):
+            return True
+    return False
+
+
+async def skip_first_exposure(
+    player_id: uuid.UUID, persistence: FinishPersistence, quest_service: QuestActionService | None
+) -> None:
+    """Give a character created with the tutorial skipped the state a finished run leaves (ADR-028 D22/D24).
+
+    The character is created in the Recovery Ward at full health. This adds the rest: lucidity 70 and Dr. Morgan's
+    debrief pending (one session), then the same finish actions the ending runs (the corruption floor and the
+    epilogue quest).
+    """
+    # Imported here: the database module pulls in the app's engine setup, which this module must not need to import.
+    from ..database import get_async_session
+    from ..services.debrief_service import mark_debrief_pending
+    from ..services.lucidity_repository import LucidityRepository
+    from ..services.lucidity_service import LucidityService
+
+    async for session in get_async_session():
+        lucidity = await LucidityRepository(session).get_or_create_player_lucidity(player_id)
+        lucidity.current_lcd = RESTORED_LCD
+        lucidity.current_tier = resolve_tier(RESTORED_LCD)
+        await mark_debrief_pending(LucidityService(session), player_id)
+        await session.commit()
+    player = cast(Player | None, await persistence.get_player_by_id(player_id))
+    if player is None:
+        logger.warning("Tutorial skip: the new character could not be loaded", player_id=str(player_id))
+        return
+    await run_scripted_actions(FINISH_ACTIONS, ScriptedActionContext(player, persistence, quest_service))
 
 
 def tutorial_instance_of(player: Player) -> str | None:
