@@ -77,7 +77,8 @@ def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
 
     monkeypatch.setattr(drain, "get_async_session", fake_sessions)
     monkeypatch.setattr(drain, "LucidityService", FakeLucidityService)
-    monkeypatch.setattr("server.game.chat_npc_system.deliver_personal_system", fake_deliver)
+    # Authored drain narration is quest content: it goes out on the quest channel.
+    monkeypatch.setattr("server.game.chat_npc_system.deliver_personal_quest", fake_deliver)
     return rig
 
 

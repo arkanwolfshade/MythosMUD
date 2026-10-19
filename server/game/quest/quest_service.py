@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import UTC, datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any, cast
 
 from server.game.quest.collect_inventory import (
     collect_player_stacks,
@@ -29,6 +29,9 @@ from server.game.quest.quest_rewards import QuestRewardsMixin
 from server.models.quest import QuestInstance
 from server.schemas.quest import QuestDefinitionSchema
 from server.structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from server.events.event_bus import EventBus
 
 logger = get_logger(__name__)
 
@@ -140,6 +143,14 @@ class QuestService(QuestRewardsMixin):
         self._async_persistence = async_persistence
         logger.info("QuestService initialized")
 
+    def _publish_log_changed(self, player_id: uuid.UUID) -> None:
+        """Tell subscribers the player's quest log changed, so their Journal panel can refresh."""
+        bus = cast("EventBus | None", self._event_bus)
+        if bus is not None:
+            from server.events.event_types import QuestLogChanged
+
+            bus.publish(QuestLogChanged(player_id=str(player_id)))
+
     def set_spell_learning_service(self, service: Any) -> None:
         """Set the spell learning service (e.g. when wired after construction by the container)."""
         self._spell_learning_service = service
@@ -197,12 +208,14 @@ class QuestService(QuestRewardsMixin):
             if _has_collect_n_goals(definition):
                 await self.sync_collect_progress(player_id)
             notify_quest_started(player_id, definition.title)
+            self._publish_log_changed(player_id)
             return {"success": True, "message": f"Quest started: {definition.title}", "title": definition.title}
         await self._instance_repo.create(player_id, quest_id, state="active", progress={})
         logger.info("Quest started", player_id=pid, quest_id=quest_id, quest_name=definition.name)
         if _has_collect_n_goals(definition):
             await self.sync_collect_progress(player_id)
         notify_quest_started(player_id, definition.title)
+        self._publish_log_changed(player_id)
         return {"success": True, "message": f"Quest started: {definition.title}", "title": definition.title}
 
     async def _all_required_completed(self, player_id: uuid.UUID, quest_ids: list[str]) -> bool:
@@ -290,7 +303,9 @@ class QuestService(QuestRewardsMixin):
             if should_notify_quest_progress(old_progress, new_progress, definition, will_complete=will_complete):
                 notify_quest_progress(player_id, definition.title)
             if will_complete:
-                await self._complete_instance(player_id, instance, definition)
+                await self._complete_instance(player_id, instance, definition)  # announces the log itself
+            else:
+                self._publish_log_changed(player_id)
             return True
         return False
 
@@ -350,7 +365,9 @@ class QuestService(QuestRewardsMixin):
         if should_notify_quest_progress(old_progress, new_progress, definition, will_complete=will_complete):
             notify_quest_progress(player_id, definition.title)
         if will_complete:
-            await self._complete_instance(player_id, instance, definition)
+            await self._complete_instance(player_id, instance, definition)  # announces the log itself
+        elif new_progress != old_progress:
+            self._publish_log_changed(player_id)
 
     async def sync_collect_progress(self, player_id: uuid.UUID) -> None:
         """
@@ -422,6 +439,7 @@ class QuestService(QuestRewardsMixin):
             from server.events.event_types import QuestCompleted
 
             self._event_bus.publish(QuestCompleted(player_id=str(player_id), quest_id=instance.quest_id))
+        self._publish_log_changed(player_id)
 
     def _turn_in_validation_error(
         self,
@@ -520,6 +538,7 @@ class QuestService(QuestRewardsMixin):
             definition = _parse_definition(dict(definition_row.definition))
             title = definition.title
         notify_quest_abandoned(player_id, title)
+        self._publish_log_changed(player_id)
         return {"success": True, "message": "Quest abandoned."}
 
     async def get_quest_log(self, player_id: uuid.UUID, include_completed: bool = True) -> list[dict[str, Any]]:

@@ -4,6 +4,10 @@ Unit tests for connection delegates.
 Tests the connection_delegates module functions.
 """
 
+# pyright: reportAny=false
+# Reason: unittest.mock.MagicMock/AsyncMock inherit Any in typeshed (NonCallableMock(Base, Any)); these tests
+# drive the code through mocked sessions, services and connection managers, so mock attribute access is Any.
+
 import uuid
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -156,18 +160,21 @@ async def test_validate_token_impl_success():
     """Test validate_token_impl() successfully validates token."""
     token = "valid_token"
     player_id = uuid.uuid4()
+    user_id = uuid.uuid4()
     mock_manager = MagicMock()
     mock_player = MagicMock()
     mock_player.player_id = player_id
+    mock_player.user_id = user_id
     mock_manager.async_persistence = AsyncMock()
-    mock_manager.async_persistence.get_player_by_user_id = AsyncMock(return_value=mock_player)
+    mock_manager.async_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
 
     with patch("server.auth_utils.decode_access_token") as mock_decode:
-        mock_decode.return_value = {"sub": str(player_id)}
+        mock_decode.return_value = {"sub": str(user_id)}
 
         result = await validate_token_impl(token, player_id, mock_manager)
 
         assert result is True
+        mock_manager.async_persistence.get_player_by_id.assert_awaited_once_with(player_id)
 
 
 @pytest.mark.asyncio
@@ -204,19 +211,33 @@ async def test_validate_token_impl_player_mismatch():
     """Test validate_token_impl() returns False for player mismatch."""
     token = "valid_token"
     player_id = uuid.uuid4()
-    other_player_id = uuid.uuid4()
     mock_manager = MagicMock()
     mock_player = MagicMock()
-    mock_player.player_id = other_player_id
+    mock_player.player_id = player_id
+    mock_player.user_id = uuid.uuid4()  # someone else's character
     mock_manager.async_persistence = AsyncMock()
-    mock_manager.async_persistence.get_player_by_user_id = AsyncMock(return_value=mock_player)
+    mock_manager.async_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
 
     with patch("server.auth_utils.decode_access_token") as mock_decode:
-        mock_decode.return_value = {"sub": str(player_id)}
+        mock_decode.return_value = {"sub": str(uuid.uuid4())}
 
         result = await validate_token_impl(token, player_id, mock_manager)
 
         assert result is False
+
+
+@pytest.mark.asyncio
+async def test_validate_token_impl_accepts_any_of_the_users_characters():
+    """Regression: the check used the account's first character, so a second character failed it every time."""
+    user_id = uuid.uuid4()
+    second_character = uuid.uuid4()
+    mock_manager = MagicMock()
+    mock_player = MagicMock(player_id=second_character, user_id=user_id)
+    mock_manager.async_persistence = AsyncMock()
+    mock_manager.async_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
+
+    with patch("server.auth_utils.decode_access_token", return_value={"sub": str(user_id)}):
+        assert await validate_token_impl("token", second_character, mock_manager) is True
 
 
 @pytest.mark.asyncio
@@ -228,7 +249,7 @@ async def test_validate_token_impl_database_error():
     player_id = uuid.uuid4()
     mock_manager = MagicMock()
     mock_manager.async_persistence = AsyncMock()
-    mock_manager.async_persistence.get_player_by_user_id = AsyncMock(side_effect=DatabaseError("Database error"))
+    mock_manager.async_persistence.get_player_by_id = AsyncMock(side_effect=DatabaseError("Database error"))
 
     with patch("server.auth_utils.decode_access_token") as mock_decode:
         mock_decode.return_value = {"sub": str(player_id)}

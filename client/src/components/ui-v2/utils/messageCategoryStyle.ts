@@ -30,6 +30,7 @@ const CATEGORY_REGISTER: Record<MessageCategory, MessageRegister> = {
   'system.info': 'meta',
   'system.warning': 'alert',
   'system.error': 'alert',
+  'quest.info': 'meta',
   'status.lucidity': 'alert',
   'status.health': 'alert',
   'status.rescue': 'alert',

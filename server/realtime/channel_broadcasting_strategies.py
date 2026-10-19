@@ -253,6 +253,7 @@ class ChannelBroadcastingStrategyFactory:
             "whisper": WhisperChannelStrategy(),
             # System/Admin channels
             "system": SystemAdminChannelStrategy("system"),
+            "quest": SystemAdminChannelStrategy("quest"),
             "admin": SystemAdminChannelStrategy("admin"),
         }
 

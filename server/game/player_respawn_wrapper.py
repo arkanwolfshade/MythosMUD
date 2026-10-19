@@ -171,38 +171,26 @@ class PlayerRespawnWrapper:
     async def _load_player_for_delirium_respawn(
         self, session: "AsyncSession", user_id: str
     ) -> tuple[Player, "PlayerLucidity"]:
-        """Load the user's character and validate delirium eligibility (lucidity <= -10)."""
-        from sqlalchemy import select
-        from sqlalchemy.orm import selectinload
-
+        """Pick the user's delirious character (lucidity <= -10); an account can have several characters."""
         from ..models.lucidity import PlayerLucidity
 
-        stmt = select(Player).options(selectinload(Player.user)).where(Player.user_id == user_id)
-        result = await session.execute(stmt)
-        player = result.scalar_one_or_none()
-        if not player:
-            log_and_raise_enhanced(
-                ValidationError,
-                "Player not found for delirium respawn",
-                operation="respawn_player_from_delirium_by_user_id",
-                user_id=user_id,
-                details={"user_id": user_id},
-                user_friendly="Player not found",
-            )
-
-        lucidity_record = await session.get(PlayerLucidity, player.player_id)
-        if not lucidity_record or lucidity_record.current_lcd > -10:
-            current_lucidity = lucidity_record.current_lcd if lucidity_record else None
+        players = await self._load_active_players(session, user_id)
+        delirious: list[tuple[Player, PlayerLucidity]] = []
+        for candidate in players:
+            record = await session.get(PlayerLucidity, candidate.player_id)
+            if record is not None and record.current_lcd <= -10:
+                delirious.append((candidate, record))
+        if not delirious:
             log_and_raise_enhanced(
                 ValidationError,
                 "Player must be delirious to respawn (lucidity must be -10 or below)",
                 operation="respawn_player_from_delirium_by_user_id",
                 user_id=user_id,
-                player_lucidity=current_lucidity,
-                details={"user_id": user_id, "player_lucidity": current_lucidity},
+                details={"user_id": user_id, "characters": len(players)},
                 user_friendly="Player must be delirious to respawn",
             )
-        return player, lucidity_record
+        # The one that just fell is the one the player is looking at: the most recently active.
+        return max(delirious, key=lambda pair: pair[0].last_active)
 
     async def respawn_player_from_delirium_by_user_id(
         self,

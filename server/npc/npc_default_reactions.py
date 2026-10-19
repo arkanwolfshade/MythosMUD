@@ -23,6 +23,7 @@ def register_default_reactions_for_npc(
     """Build and register default event reactions for this NPC (greeting, farewell, etc.)."""
     try:
         from .corruption_reactions import build_corruption_aware_greeting
+        from .dialogue_reactions import build_dialogue_opening
         from .event_reaction_system import NPCEventReaction, NPCEventReactionTemplates
 
         reactions: list[NPCEventReaction] = []
@@ -31,10 +32,14 @@ def register_default_reactions_for_npc(
         # the ten seeded NPCs (data/db/seed.sql) sets its own greeting_message/
         # farewell_message, so these are rarely reached in practice. Kept in-tone regardless.
         if npc_type in ["shopkeeper", "passive_mob"]:
-            greeting = str(behavior_config.get("greeting_message", "A wary nod is offered in greeting."))
-            # #815 PR-4: the greeting reaction is corruption-aware -- a variant, not an addition.
-            npc_corruption = coerce_int((stats or {}).get("corruption", 0), default=0)
-            reactions.append(build_corruption_aware_greeting(npc_id, npc_corruption, greeting))
+            if behavior_config.get("initiates_dialogue") is True:
+                # An NPC that speaks first: opening the conversation IS its greeting (a variant, not an addition).
+                reactions.append(build_dialogue_opening(npc_id, event_reaction_system.event_bus))
+            else:
+                greeting = str(behavior_config.get("greeting_message", "A wary nod is offered in greeting."))
+                # #815 PR-4: the greeting reaction is corruption-aware -- a variant, not an addition.
+                npc_corruption = coerce_int((stats or {}).get("corruption", 0), default=0)
+                reactions.append(build_corruption_aware_greeting(npc_id, npc_corruption, greeting))
 
         if npc_type in ["shopkeeper", "passive_mob"]:
             farewell = str(behavior_config.get("farewell_message", "A wary nod, and nothing more, marks your leaving."))

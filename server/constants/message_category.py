@@ -47,6 +47,9 @@ class MessageCategory(StrEnum):
     SYSTEM_WARNING = "system.warning"
     SYSTEM_ERROR = "system.error"
 
+    # Quest lifecycle notices and quest narration (scripted `narrate`, authored effect beats), on the quest channel.
+    QUEST_INFO = "quest.info"
+
     STATUS_LUCIDITY = "status.lucidity"
     STATUS_HEALTH = "status.health"
     STATUS_RESCUE = "status.rescue"

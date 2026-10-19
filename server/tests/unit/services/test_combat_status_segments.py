@@ -17,6 +17,7 @@ import pytest
 from server.constants.message_segments import MessageSegment, SegmentPart
 from server.constants.npc_disposition import DEFAULT_NPC_DISPOSITION, NpcDisposition
 from server.game.skill_service import SuccessLevel
+from server.models.combat import CombatParticipant, CombatParticipantType
 from server.services import combat_service_events
 from server.services.combat_messaging.combat_broadcasts import CombatBroadcastMixin
 from server.services.combat_taunt_action import taunt_outcome_line, taunt_outcome_parts
@@ -29,11 +30,13 @@ class _Broadcaster(CombatBroadcastMixin):
     """The mixin over a mocked connection manager; ``sent()`` is the data of the last room event."""
 
     broadcast: AsyncMock
+    personal: AsyncMock
     connection_manager: MagicMock
 
     def __init__(self) -> None:
         self.broadcast = AsyncMock(return_value={"successful_deliveries": 1})
-        self.connection_manager = MagicMock(broadcast_to_room=self.broadcast)
+        self.personal = AsyncMock()
+        self.connection_manager = MagicMock(broadcast_to_room=self.broadcast, send_personal_message=self.personal)
 
     def sent(self) -> dict[str, object]:
         args = self.broadcast.await_args
@@ -60,6 +63,36 @@ async def test_target_switch_without_a_disposition_stays_plain() -> None:
     _ = await out.broadcast_combat_target_switch("r1", "c1", "Ghoul", "Ashcroft")
     assert out.sent()["message"] == "Ghoul turns its gaze to Ashcroft."
     assert "segments" not in out.sent()
+
+
+@pytest.mark.asyncio
+async def test_a_player_who_becomes_the_target_reads_the_line_in_the_second_person() -> None:
+    """Everyone else in the room reads the name; the target is excluded from that and told "to you"."""
+    out = _Broadcaster()
+    _ = await out.broadcast_combat_target_switch(
+        "r1", "c1", "Ghoul", "Ashcroft", npc_disposition=NpcDisposition.AGGRESSIVE_MOB, new_target_player_id="p1"
+    )
+
+    room_call = out.broadcast.await_args
+    assert room_call is not None
+    assert room_call.kwargs["exclude_player"] == "p1"
+    assert out.sent()["message"] == "Ghoul turns its gaze to Ashcroft."
+
+    out.personal.assert_awaited_once()
+    recipient, event = out.personal.await_args.args
+    assert recipient == "p1"
+    assert event["event_type"] == "combat_target_switch"
+    assert event["data"]["message"] == "Ghoul turns its gaze to you."
+    assert event["data"]["segments"] == [GHOUL, {"text": " turns its gaze to you."}]
+
+
+@pytest.mark.asyncio
+async def test_a_target_that_is_not_a_player_gets_no_personal_message() -> None:
+    out = _Broadcaster()
+    _ = await out.broadcast_combat_target_switch("r1", "c1", "Ghoul", "Watchman")
+
+    out.personal.assert_not_awaited()
+    assert out.broadcast.await_args.kwargs["exclude_player"] is None
 
 
 @pytest.mark.asyncio
@@ -131,6 +164,47 @@ async def test_aggro_switches_look_up_each_npcs_disposition() -> None:
     args = switch.await_args
     assert args is not None
     assert args.kwargs["npc_disposition"] is NpcDisposition.SHOPKEEPER
+
+
+@pytest.mark.asyncio
+async def test_aggro_switches_tell_the_targeted_player_by_id_not_name() -> None:
+    """The switch carries a target name; the broadcaster finds the player participant of that name."""
+    player = CombatParticipant(
+        participant_id=uuid.uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="Ashcroft",
+        current_dp=20,
+        max_dp=20,
+        dexterity=50,
+    )
+    npc = CombatParticipant(
+        participant_id=uuid.uuid4(),
+        participant_type=CombatParticipantType.NPC,
+        name="Ashcroft",  # an NPC sharing the name must not be mistaken for the player
+        current_dp=20,
+        max_dp=20,
+        dexterity=50,
+    )
+    switch = AsyncMock()
+    integration = MagicMock(
+        get_messaging_integration=MagicMock(return_value=MagicMock(broadcast_combat_target_switch=switch)),
+        get_npc_disposition=MagicMock(return_value=NpcDisposition.AGGRESSIVE_MOB),
+    )
+    service = MagicMock(
+        get_npc_combat_integration_service=MagicMock(return_value=integration),
+        get_combat=MagicMock(
+            return_value=MagicMock(participants={npc.participant_id: npc, player.participant_id: player})
+        ),
+        publish_combat_target_switch_event_to_nats=AsyncMock(),
+    )
+
+    await combat_service_events.broadcast_aggro_target_switches(
+        service, "r1", uuid.uuid4(), [(uuid.uuid4(), "Ghoul", "Ashcroft")]
+    )
+
+    args = switch.await_args
+    assert args is not None
+    assert args.kwargs["new_target_player_id"] == str(player.participant_id)
 
 
 def test_integration_disposition_lookup_reads_the_mapped_live_instance() -> None:

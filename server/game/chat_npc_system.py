@@ -100,15 +100,17 @@ async def send_personal_system_message(
     player_id: uuid.UUID | str,
     message: str,
     content_segments: list[MessageSegment] | None = None,
+    *,
+    channel: str = "system",
 ) -> dict[str, object]:
-    """Send a system-channel message to one player (whisper subject); ``content_segments`` describe ``message``."""
+    """Send a personal message to one player on ``channel`` ("system" or "quest"); segments describe ``message``."""
     if not message or not message.strip():
         return {"success": False, "error": "Message cannot be empty"}
     player_id_str = str(player_id)
     chat_message = ChatMessage(
         sender_id=_SYSTEM_SENDER_ID,
         sender_name="System",
-        channel="system",
+        channel=channel,
         content=message.strip(),
         target_id=player_id_str,
     )
@@ -206,6 +208,19 @@ def schedule_npc_room_speech(
 def schedule_personal_system(player_id: uuid.UUID | str, message: str) -> None:
     """Schedule personal system chat from sync or async callers."""
     schedule_coro(deliver_personal_system(player_id, message))
+
+
+async def deliver_personal_quest(player_id: uuid.UUID | str, message: str) -> dict[str, object]:
+    """Send one player a quest-channel line: quest lifecycle notices and quest narration."""
+    if _chat_service is None:
+        logger.debug("ChatService not wired; quest chat skipped", player_id=str(player_id))
+        return {"success": False, "error": "ChatService unavailable"}
+    return await send_personal_system_message(_chat_service, player_id, message, channel="quest")
+
+
+def schedule_personal_quest(player_id: uuid.UUID | str, message: str) -> None:
+    """Schedule a quest-channel line from sync or async callers."""
+    schedule_coro(deliver_personal_quest(player_id, message))
 
 
 _npc_spoke_subscribed = False  # pylint: disable=invalid-name  # Reason: Module-level one-shot guard, underscore prefix marks private mutable state (not a constant)

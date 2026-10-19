@@ -9,7 +9,7 @@ from typing import cast
 from ..alias_storage import AliasStorage
 from ..game.chat_npc_system import schedule_personal_system
 from ..game.dialogue import DialoguePrompt, format_dialogue_prompt, get_dialogue_service
-from ..game.scripted_actions import run_scripted_actions
+from ..game.scripted_actions import ScriptedActionContext, run_scripted_actions
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 from .command_results import command_error
@@ -55,13 +55,34 @@ def _emit_prompt(player_id: uuid.UUID, npc_name: str, prompt: DialoguePrompt) ->
     return body
 
 
-async def _run_prompt_actions(prompt: DialoguePrompt, player: object | None, app: object | None) -> None:
+async def _run_prompt_actions(prompt: DialoguePrompt, ctx: ScriptedActionContext | None) -> None:
     """Run the presented node's scripted actions (after its line has been sent)."""
-    if not prompt.actions or player is None:
-        return
-    ctx = action_context(app, player, get_pose_persistence(app))
-    if ctx is not None:
+    if prompt.actions and ctx is not None:
         await run_scripted_actions(prompt.actions, ctx)
+
+
+async def open_dialogue(
+    player_id: uuid.UUID,
+    *,
+    npc_id: str,
+    npc_name: str,
+    definition_id: int,
+    ctx: ScriptedActionContext | None,
+) -> str:
+    """
+    Start the NPC's dialogue for a player: send its first line and run that node's actions.
+
+    Shared by `talk <npc>` (the player speaks first) and NPCs that open the conversation themselves.
+    Returns the text shown, or the reason there was nothing to say.
+    """
+    result = await get_dialogue_service().start_with_npc(
+        player_id, npc_id=npc_id, npc_name=npc_name, npc_definition_id=definition_id
+    )
+    if isinstance(result, str):
+        return result
+    text = _emit_prompt(player_id, npc_name, result)
+    await _run_prompt_actions(result, ctx)
+    return text
 
 
 async def _talk_by_option_index(
@@ -77,7 +98,8 @@ async def _talk_by_option_index(
     if result.ended:
         service.clear_cursor(player_id)
     text = _emit_prompt(player_id, npc_name, result)
-    await _run_prompt_actions(result, player, app)
+    ctx = action_context(app, player, get_pose_persistence(app)) if player is not None else None
+    await _run_prompt_actions(result, ctx)
     return {"result": text}
 
 
@@ -103,16 +125,8 @@ async def _talk_with_npc(
     npc_name_raw = cast(object | None, getattr(npc, "name", None))
     npc_id = str(npc_id_raw or definition_id)
     npc_name = str(npc_name_raw or "Someone")
-    result = await get_dialogue_service().start_with_npc(
-        player_id,
-        npc_id=npc_id,
-        npc_name=npc_name,
-        npc_definition_id=definition_id,
-    )
-    if isinstance(result, str):
-        return {"result": result}
-    text = _emit_prompt(player_id, npc_name, result)
-    await _run_prompt_actions(result, player, app)
+    ctx = action_context(app, player, get_pose_persistence(app))
+    text = await open_dialogue(player_id, npc_id=npc_id, npc_name=npc_name, definition_id=definition_id, ctx=ctx)
     return {"result": text}
 
 

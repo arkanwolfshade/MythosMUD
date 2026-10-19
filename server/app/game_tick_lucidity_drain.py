@@ -59,9 +59,10 @@ class LucidityDrainParams(BaseModel):
 
 async def _narrate(player_id: uuid.UUID, text: str) -> None:
     # Imported here: chat_npc_system's import chain loops back through server.services at import time.
-    from ..game.chat_npc_system import deliver_personal_system
+    from ..game.chat_npc_system import deliver_personal_quest
 
-    _ = await deliver_personal_system(player_id, text)
+    # Authored narration beats are quest content, so they read on the quest channel.
+    _ = await deliver_personal_quest(player_id, text)
 
 
 def _no_liability(player_id: str, previous_lcd: int, new_lcd: int, reason_code: str) -> None:
