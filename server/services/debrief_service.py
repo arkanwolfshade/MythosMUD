@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass
+from datetime import UTC, datetime, timedelta
 from typing import cast
 
 from sqlalchemy import desc, select
@@ -29,6 +30,16 @@ NOT_AVAILABLE_MESSAGE = (
 )
 COMPLICATIONS_MESSAGE = "The debrief session encountered complications. Please try again."
 NO_SESSION_MESSAGE = "The sanitarium records could not be accessed. Please try again."
+
+# How long a pending debrief waits for Dr. Morgan: effectively until the player talks to him.
+DEBRIEF_PENDING_DAYS = 365
+
+
+async def mark_debrief_pending(lucidity_service: LucidityService, player_id: uuid.UUID) -> None:
+    """Leave the long-lived DEBRIEF_PENDING flag that ``perform_debrief`` spends (delirium respawns, a tutorial skip)."""
+    expires_at = datetime.now(UTC).replace(tzinfo=None) + timedelta(days=DEBRIEF_PENDING_DAYS)
+    _ = await lucidity_service.set_cooldown(player_id, LucidityActionCode.DEBRIEF_PENDING, expires_at)
+
 
 _NO_RECORDS_RECAP = (
     "The sanitarium staff notes your arrival but records are incomplete. "

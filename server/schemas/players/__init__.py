@@ -4,6 +4,7 @@ from .character_creation import (
     CreateCharacterResponse,
     RollStatsResponse,
     StatSummary,
+    TutorialSkipEligibilityResponse,
     ValidateStatsResponse,
 )
 from .player import (
@@ -44,6 +45,7 @@ __all__ = [
     "CharacterInfo",
     "CreateCharacterRequest",
     "CreateCharacterResponse",
+    "TutorialSkipEligibilityResponse",
     "CorruptionRequest",
     "DamageRequest",
     "DeleteCharacterResponse",
