@@ -196,23 +196,17 @@ async def _resolve_room_id_for_tutorial_reconnect(player: Any, manager: Any) -> 
     if not template_id:
         return None
 
-    services = _container_services(cast(object, manager))
-    if services is None or services.instance_manager is None:
-        logger.warning(
-            "InstanceManager not available for tutorial reconnect",
-            player_id=player.player_id,
-        )
+    services = _tutorial_instance_services(player_obj, cast(object, manager))
+    if services is None:
         return None
-    instance_manager = services.instance_manager
+    instance_manager, content_service = services
 
     instance = instance_manager.get_instance(instance_id) if instance_id else None
     if instance is not None and player_obj.current_room_id in instance.rooms:
         # Live instance and the player is inside it (a grace-period reconnect): resume where they were.
         return player_obj.current_room_id
     if instance is None:
-        instance = await _start_fresh_instance(
-            player_obj, instance_manager, services.instance_content_service, template_id, instance_id
-        )
+        instance = await _start_fresh_instance(player_obj, instance_manager, content_service, template_id, instance_id)
 
     first_room_id = instance_manager.get_first_room_id(instance.instance_id)
     if not first_room_id:
@@ -223,6 +217,17 @@ async def _resolve_room_id_for_tutorial_reconnect(player: Any, manager: Any) -> 
     if manager.async_persistence:
         await manager.async_persistence.save_player(player)
     return first_room_id
+
+
+def _tutorial_instance_services(
+    player: Player, manager: object
+) -> tuple[InstanceManager, InstanceContentLifecycle | None] | None:
+    """The container's InstanceManager and content service for a tutorial (re)entry, or None (logged) if missing."""
+    services = _container_services(manager)
+    if services is None or services.instance_manager is None:
+        logger.warning("InstanceManager not available for tutorial reconnect", player_id=player.player_id)
+        return None
+    return services.instance_manager, services.instance_content_service
 
 
 def _stranded_template_id(player: Player, persistence: RoomLookup | None) -> str | None:

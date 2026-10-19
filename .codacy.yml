@@ -205,6 +205,11 @@ engines:
 # Assert and test passwords are standard in pytest; bandit.yml skips them but Codacy
 # may still report - these patterns suppress for all pytest-related paths.
 ignore_patterns:
+  # False positive: USER_RULES.md exists at the repo root and is tracked in git, but Agentlinter's
+  # workspace view does not include it. The other file links in AGENTS.md resolve fine.
+  - pattern_id: "Agentlinter_consistency_referenced-files-exist"
+    file_paths:
+      - "AGENTS.md"
   # Mixin extracted from container_service; Codacy R0801 is a false positive (no twin block).
   - pattern_id: "PyLintPython3_R0801"
     file_paths:
