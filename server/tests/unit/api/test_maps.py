@@ -459,3 +459,49 @@ async def test_set_map_origin_success(mock_request: MagicMock) -> None:
         )
     assert response.room_id == "room-a"
     assert response.coordinates_generated == 2
+
+
+_INSTANCE_ID = "instance_e4857769-81a3-40dd-bf65-b1811a1904ee"
+_TEMPLATE_ROOM = "earth_arkhamcity_first_exposure_room_vault_of_the_owner_001"
+
+
+@pytest.mark.asyncio
+async def test_the_map_resolves_an_instance_room_to_its_template_room(mock_request: MagicMock) -> None:
+    """A player in an instance stands in a clone the database has no row for, so the map was blank (#1108)."""
+    mock_request.query_params = QueryParams(f"current_room_id={_INSTANCE_ID}_{_TEMPLATE_ROOM}")
+
+    out = await _get_current_room_id(mock_request, MagicMock(spec=User), MagicMock())
+
+    assert out == _TEMPLATE_ROOM
+
+
+@pytest.mark.asyncio
+async def test_the_minimap_resolves_the_players_instance_room_to_its_template_room(mock_request: MagicMock) -> None:
+    mock_request.query_params = QueryParams()
+    user = MagicMock(spec=User)
+    user.id = uuid.uuid4()
+    player = MagicMock()
+    player.current_room_id = f"{_INSTANCE_ID}_{_TEMPLATE_ROOM}"
+    persistence = MagicMock()
+    persistence.get_player_by_user_id = AsyncMock(return_value=player)
+
+    room_id = (await _get_minimap_player_and_room_id(mock_request, user, persistence))[1]
+
+    assert room_id == _TEMPLATE_ROOM
+
+
+@pytest.mark.asyncio
+async def test_the_minimap_leaves_a_world_room_and_a_missing_room_alone(mock_request: MagicMock) -> None:
+    user = MagicMock(spec=User)
+    user.id = uuid.uuid4()
+    player = MagicMock()
+    player.current_room_id = None
+    persistence = MagicMock()
+    persistence.get_player_by_user_id = AsyncMock(return_value=player)
+
+    nowhere = (await _get_minimap_player_and_room_id(mock_request, user, persistence))[1]
+    mock_request.query_params = QueryParams("current_room_id=earth_arkhamcity_downtown_001")
+    world = (await _get_minimap_player_and_room_id(mock_request, user, persistence))[1]
+
+    assert nowhere is None
+    assert world == "earth_arkhamcity_downtown_001"

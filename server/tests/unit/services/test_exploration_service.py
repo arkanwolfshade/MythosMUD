@@ -507,3 +507,26 @@ async def test_mark_room_as_explored_commits_session(
     exploration_service._mark_explored_in_session = AsyncMock(return_value=True)
     _ = await exploration_service.mark_room_as_explored(player_id, room_id)
     commit_mock.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_an_instance_room_is_explored_as_the_template_room_it_was_cloned_from(
+    exploration_service: ExplorationService,
+) -> None:
+    """The rooms table only has the template row, so an instance room id used to log "Room not found" and record
+    nothing: a tutorial player's minimap could never show where they had been (#1108)."""
+    player_id = uuid.uuid4()
+    template_id = "earth_arkhamcity_first_exposure_room_vault_of_the_owner_001"
+    instance_room_id = f"instance_e4857769-81a3-40dd-bf65-b1811a1904ee_{template_id}"
+    mock_session = AsyncMock()
+    room_uuid = uuid.uuid4()
+    lookup: AsyncMock = AsyncMock(return_value=room_uuid)
+    mark: AsyncMock = AsyncMock(return_value=True)
+    exploration_service._get_room_uuid_by_stable_id = lookup
+    exploration_service._mark_explored_in_session = mark
+
+    result: bool = await exploration_service.mark_room_as_explored(player_id, instance_room_id, mock_session)
+
+    assert result is True
+    lookup.assert_awaited_once_with(template_id, mock_session)
+    mark.assert_awaited_once_with(mock_session, player_id, room_uuid)

@@ -142,7 +142,8 @@ function MinimapContent(props: {
     );
   }
   if (!mapHtml) {
-    return null;
+    // An empty map is an answer, not a loading state: say so rather than leave the panel blank (#1108).
+    return <div className="text-xs text-mythos-terminal-text/80 p-2">No map for this location</div>;
   }
   return (
     <SafeHtml
