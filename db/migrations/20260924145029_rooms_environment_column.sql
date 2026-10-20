@@ -3,22 +3,14 @@
 -- chk_subzones_environment). Replaces the expression CHECK added by #623
 -- (chk_rooms_environment, over attributes->>'environment').
 --
+-- DDL half. The data half, which backfills the column from the JSONB key, is
+-- data/db/migrations/20260924145030_rooms_environment_backfill.sql and runs right after this one.
+--
 -- Idempotent: safe to run against a database that already has the column (fresh baseline +
--- replay), and against mythos_dev, which this only moves data within -- no rows are dropped.
+-- replay), and against mythos_dev. Re-running it on a database that applied the pre-split migration is harmless.
 
 -- migrate:up
 ALTER TABLE rooms ADD COLUMN IF NOT EXISTS environment text;
-
--- Backfill from the JSONB key wherever the column hasn't already been populated.
-UPDATE rooms
-SET environment = attributes ->> 'environment'
-WHERE environment IS NULL
-  AND attributes ? 'environment';
-
--- The column is now the sole source of truth; drop the JSONB copy.
-UPDATE rooms
-SET attributes = attributes - 'environment'
-WHERE attributes ? 'environment';
 
 ALTER TABLE rooms DROP CONSTRAINT IF EXISTS chk_rooms_environment;
 
@@ -40,9 +32,5 @@ ALTER TABLE rooms ADD CONSTRAINT chk_rooms_environment
         'indoors'::text, 'outdoors'::text, 'underwater'::text, 'intersection'::text,
         'street_paved'::text, 'arena'::text, 'void'::text
     ]))));
-
-UPDATE rooms
-SET attributes = JSONB_SET(attributes, '{environment}', TO_JSONB(environment), TRUE)
-WHERE environment IS NOT NULL;
 
 ALTER TABLE rooms DROP COLUMN IF EXISTS environment;

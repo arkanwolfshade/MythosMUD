@@ -11,7 +11,8 @@
 # db/schema.sql and data/db/seed.sql (the schema-agnostic baseline) are NOT applied by this
 # script -- they are loaded once, outside dbmate, when a database is first provisioned (see
 # db/databases/databases.sql and scripts/load_world_seed.py). dbmate only tracks and applies
-# db/migrations/*.sql from db/migrations/20260915000000_baseline.sql onward.
+# the migrations from db/migrations/20260915000000_baseline.sql onward: DDL in db/migrations/ and DML
+# (world content) in data/db/migrations/, merged into one ledger by version.
 #
 # Usage:
 #   .\scripts\migrate.ps1 -Environment unit
@@ -75,12 +76,13 @@ if ($urlDbName -ne $DbName) {
 }
 
 $dbmateUrl = "postgres://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${DbName}?sslmode=disable&search_path=$searchPath"
-$migrationsDir = Join-Path $ProjectRoot "db\migrations"
+# DDL lives in db/migrations, DML in data/db/migrations (the data repo); dbmate merges both by version.
+$migrationsArgs = @("db\migrations", "data\db\migrations") | ForEach-Object { "--migrations-dir"; (Join-Path $ProjectRoot $_) }
 
 Write-Host "Running dbmate $Verb against $DbName (search_path=$searchPath)..." -ForegroundColor Green
 Push-Location $ProjectRoot
 try {
-    & npx dbmate --url $dbmateUrl --migrations-dir $migrationsDir --no-dump-schema $Verb
+    & npx dbmate --url $dbmateUrl @migrationsArgs --no-dump-schema $Verb
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[ERROR] dbmate $Verb failed for $DbName (exit $LASTEXITCODE)" -ForegroundColor Red
         exit $LASTEXITCODE

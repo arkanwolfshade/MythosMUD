@@ -1,8 +1,22 @@
 # dbmate migrations (#811)
 
-This directory is the **dbmate** migrations directory (`--migrations-dir db/migrations`), run via
+This directory is one of the **dbmate** migrations directories, run via
 `scripts/migrate.ps1 -Environment <dev|unit|e2e>`. It replaces the hand-copied per-environment
 migration triplets and per-feature apply scripts this project used previously.
+
+## DDL here, DML in the data repo
+
+dbmate is given two directories and merges them into **one ledger, ordered by version**:
+
+| Directory | Holds | Why |
+| --- | --- | --- |
+| `db/migrations/` (this one) | **DDL only**: `CREATE` / `ALTER` / `DROP` / `COMMENT` / `GRANT` | The schema is code. |
+| `data/db/migrations/` | **DML only**: `INSERT` / `UPDATE` / `DELETE` (rooms, items, NPCs, quests, dialogue) | World content lives in the data repo, beside the seed it extends. |
+
+`scripts/lint_sql_guardrails.py` (part of `make lint`) fails a migration that sits in the wrong directory, or whose
+version is used twice across the two. A change that needs both (a new column *and* a backfill) is two migrations: the
+DDL one gets the earlier version, so it runs first on a fresh database. Keep DDL idempotent (`IF NOT EXISTS`,
+`DROP ... IF EXISTS`) and DML replay-safe, since dbmate runs any migration the ledger has not seen.
 
 ## What lives here
 
@@ -30,7 +44,9 @@ outside dbmate, when a database is first provisioned (see `db/databases/database
 npx dbmate new <description> --migrations-dir db/migrations
 ```
 
-Then edit the generated file and run `scripts/migrate.ps1 -Environment <env>` to apply it. Only
+For a content change use the data directory instead (`npx dbmate new <description> --migrations-dir
+data/db/migrations`); it is committed in the data repo, and the parent repo bumps its pointer. Then edit the
+generated file and run `scripts/migrate.ps1 -Environment <env>` to apply it. Only
 `up` and `status` are reachable through that wrapper — `drop`/`down` are never exposed, and
 `mythos_dev` (PROTECTED, see `.claude/rules/database.md`) can only ever be targeted by those two.
 

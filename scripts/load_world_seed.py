@@ -285,7 +285,7 @@ async def _reset_migration_ledger(database_url: str, search_path: str) -> None:
 
 
 def _replay_migrations(database_url: str, search_path: str) -> None:
-    """Run `dbmate up` so db/migrations/*.sql (everything after the baseline) reapplies.
+    """Run `dbmate up` so db/migrations/*.sql (DDL) and data/db/migrations/*.sql (DML) reapply after the baseline.
 
     Same `npx dbmate ... up` invocation scripts/migrate.ps1 uses, built directly from
     DATABASE_URL instead of a fixed per-environment .env file -- this script already resolved
@@ -300,21 +300,17 @@ def _replay_migrations(database_url: str, search_path: str) -> None:
     if not npx_exe:
         msg = "npx not found on PATH. Install Node.js (dbmate is a pinned root devDependency, #811)."
         raise FileNotFoundError(msg)
-    cmd = [
-        npx_exe,
-        "dbmate",
-        "--migrations-dir",
-        str(project_root / "db" / "migrations"),
-        "--no-dump-schema",
-        "up",
-    ]
+    cmd = [npx_exe, "dbmate"]
+    for migrations_dir in (project_root / "db" / "migrations", project_root / "data" / "db" / "migrations"):
+        cmd += ["--migrations-dir", str(migrations_dir)]
+    cmd += ["--no-dump-schema", "up"]
     # DATABASE_URL via the environment, not a --url argv entry: Windows can only launch npx's
     # .cmd wrapper through cmd.exe even with shell=False, which re-interprets '&' (present in
     # dbmate_url's query string) as its own command separator. The env block bypasses cmd.exe's
     # command-line parsing entirely.
     env = os.environ.copy()
     env["DATABASE_URL"] = dbmate_url
-    print("\nReplaying dbmate migrations (db/migrations/*.sql)...")
+    print("\nReplaying dbmate migrations (db/migrations/*.sql, data/db/migrations/*.sql)...")
     result = subprocess.run(  # nosec B603 B607: argv list, no shell; npx/dbmate are pinned devDependencies (#811)
         cmd, cwd=project_root, env=env, check=False
     )

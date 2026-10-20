@@ -34,7 +34,7 @@ from server.schemas.scripted_actions import (
 from server.utils.project_paths import get_project_root
 
 ROOT = get_project_root()
-MIGRATION = ROOT / "db" / "migrations" / "20261018120000_first_exposure_tutorial.sql"
+MIGRATION = ROOT / "data" / "db" / "migrations" / "20261018120000_first_exposure_tutorial.sql"
 ITEM_CATALOG = ROOT / "data" / "item_catalog" / "catalog" / "first_exposure_items.json"
 NPC_CATALOG = ROOT / "data" / "npc_catalog" / "catalog" / "first_exposure_npcs.json"
 

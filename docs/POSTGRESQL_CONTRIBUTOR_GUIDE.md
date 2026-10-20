@@ -58,9 +58,11 @@ rationale, see [.cursor/rules/postgresql.mdc](../.cursor/rules/postgresql.mdc).
 
 - Run **`make sqlfluff`** (and optionally **`make lint-sql-guardrails`**) before committing SQL
   changes.
-- Hand-maintained SQL lives in `db/schema/`, `db/verification/`, `db/migrations/`, and
-  `server/scripts/`. The schema-agnostic DDL baseline is `db/schema.sql` (#811, generated from
-  `mythos_dev`); `db/migrations/` holds dbmate migrations layered on top of it.
+- Hand-maintained SQL lives in `db/schema/`, `db/verification/`, `db/migrations/`,
+  `data/db/migrations/`, and `server/scripts/`. The schema-agnostic DDL baseline is `db/schema.sql` (#811,
+  generated from `mythos_dev`); `db/migrations/` holds dbmate **DDL** migrations layered on top of it and
+  `data/db/migrations/` the **DML** (world content) ones, one ledger over both. The guardrail linter rejects a
+  migration in the wrong directory.
 
 ## 7. References
 

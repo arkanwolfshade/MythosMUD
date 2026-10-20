@@ -819,8 +819,11 @@ jobs:
   if missing
 - Schema and seed are `db/schema.sql` and `data/db/seed.sql` — the single, schema-agnostic baseline for all three
   environments (#811), loaded with `search_path` set to the target schema. Post-baseline migrations are tracked by
-  **dbmate** (`db/migrations/`, run via `scripts/migrate.ps1 -Environment <dev|unit|e2e>`) — never edit a migration
-  that's already been applied; add a new one instead (`npx dbmate new <description> --migrations-dir db/migrations`)
+  **dbmate** as one ledger over two directories, run via `scripts/migrate.ps1 -Environment <dev|unit|e2e>`:
+  **DDL only** in `db/migrations/`, **DML only** (world content) in `data/db/migrations/` (the data repo).
+  `scripts/lint_sql_guardrails.py` fails a migration in the wrong directory, so a change that needs both is two files,
+  the DDL one first (earlier version). Never edit a migration that's already been applied; add a new one instead
+  (`npx dbmate new <description> --migrations-dir db/migrations`, or `data/db/migrations` for data)
 
 ## Cursor Cloud specific instructions
 

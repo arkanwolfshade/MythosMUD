@@ -245,3 +245,20 @@ def test_replay_migrations_passes_url_via_env_not_argv(world_seed_api: LoadWorld
         kwargs["env"]["DATABASE_URL"]
         == "postgresql://u:p@localhost/mythos_unit?sslmode=disable&search_path=mythos_unit"
     )
+
+
+@pytest.mark.regression
+def test_replay_migrations_reads_the_ddl_and_the_data_directories(world_seed_api: LoadWorldSeedTestApi) -> None:
+    """DDL lives in db/migrations and DML in data/db/migrations; dbmate must be given both, as one ledger."""
+    with (
+        patch.object(world_seed_api.module.shutil, "which", return_value="C:/npx.cmd"),
+        patch.object(world_seed_api.module.subprocess, "run", return_value=MagicMock(returncode=0)) as mock_run,
+    ):
+        world_seed_api.replay_migrations("postgresql://u:p@localhost/mythos_unit", "mythos_unit")
+
+    cmd = [str(part) for part in mock_run.call_args.args[0]]
+    migration_dirs = [Path(cmd[i + 1]).as_posix() for i, part in enumerate(cmd) if part == "--migrations-dir"]
+    assert [path.removeprefix(PROJECT_ROOT.as_posix() + "/") for path in migration_dirs] == [
+        "db/migrations",
+        "data/db/migrations",
+    ]

@@ -31,7 +31,7 @@ sql_files = []
 exclude_patterns = [
     "db/databases/databases.sql",  # Contains psql meta-commands (\connect, \gexec)
     "db/schema.sql",  # Large generated DDL (#811), skipped by SQLFluff
-    "data/db/",  # pg_dump DML (COPY ... FROM stdin); not parseable as SQL by sqlfluff
+    "data/db/seed.sql",  # pg_dump DML (COPY ... FROM stdin); not parseable as SQL by sqlfluff
 ]
 for sql_dir in sql_dirs:
     sql_path = Path(sql_dir)

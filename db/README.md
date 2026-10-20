@@ -44,8 +44,9 @@ migration currency is enforced separately at server start -- see `migrations/REA
 
 **`schema.sql`** - The single authoritative baseline DDL (committed to git).
 
-**`migrations/`** - dbmate migrations directory (`scripts/migrate.ps1`), for schema/seed changes
-made *after* the baseline. See `migrations/README.md`.
+**`migrations/`** - dbmate migrations directory (`scripts/migrate.ps1`), for **schema (DDL)** changes
+made *after* the baseline. World-content (DML) migrations live in `data/db/migrations/` instead; dbmate reads
+both as one ledger. See `migrations/README.md`.
 
 **`procedures/`** - Stored procedures/functions, applied separately via
 `scripts/apply_procedures.ps1` (idempotent `CREATE OR REPLACE`, not part of the versioned

@@ -31,7 +31,8 @@ per-environment DDL files (`mythos_dev_ddl.sql` etc.) retired by #811 — see
 | Path | Role | Versioned as |
 | --- | --- | --- |
 | `db/schema.sql` | The DDL baseline — all 45 tables, indexes, constraints. Object names unqualified; loader must `SET search_path` first. | Committed, regenerated wholesale via `scripts/generate_schema_from_dev.ps1` |
-| `db/migrations/` | dbmate migrations applied **after** the baseline, in filename order, tracked per-database in `schema_migrations` | Incremental ledger, via `scripts/migrate.ps1` |
+| `db/migrations/` | dbmate **DDL** migrations applied **after** the baseline, in filename order, tracked per-database in `schema_migrations` | Incremental ledger, via `scripts/migrate.ps1` |
+| `data/db/migrations/` | dbmate **DML** (world-content) migrations, in the data repo; read as one ledger with `db/migrations/`, ordered by version | Same ledger and script; `scripts/lint_sql_guardrails.py` keeps DDL and DML apart |
 | `db/procedures/*.sql` | Stored procedures/functions — the intended sole path for Python↔PostgreSQL data access (ADR-015) | Idempotent `CREATE OR REPLACE`, reapplied wholesale, not incremental history |
 | `db/databases/databases.sql` | Creates the three databases, `pgcrypto`, UTC timezone, access grants | Run once per environment, idempotent |
 | `db/roles/roles.sql` | Creates the PostgreSQL roles/owners per environment | Run once per environment, idempotent |
@@ -48,7 +49,7 @@ Execution order (`db/databases/README.md`'s "Execution Order", `db/README.md` §
 3. db/schema.sql                — apply DDL (search_path set)  (fresh DB only, destructive re-apply)
 4. data/db/seed.sql              — apply static world seed      (fresh DB only, destructive re-apply)
 5. db/procedures/*.sql           — apply stored procs/funcs     (every build/test run — make apply-procedures)
-6. db/migrations/                — apply dbmate ledger          (every run — see §4)
+6. db/migrations/ + data/db/migrations/ — apply dbmate ledger   (every run — see §4)
 ```
 
 Steps 1–2 are idempotent and safe to re-run. Steps 3–4 are **not** — `load_world_seed.py`'s own
