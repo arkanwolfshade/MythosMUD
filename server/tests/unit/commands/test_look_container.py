@@ -18,6 +18,7 @@ import pytest
 from server.commands.look_container import (
     ContainerLookArgs,
     JsonMap,
+    _containers_in_room,
     _find_container_in_room,
     _find_container_in_room_or_equipped,
     _find_container_via_inner_container,
@@ -28,6 +29,7 @@ from server.commands.look_container import (
     _handle_container_look,
     _try_lookup_container_implicit,
 )
+from server.exceptions import DatabaseError
 
 
 def _result_text(response: Mapping[str, object]) -> str:
@@ -545,3 +547,102 @@ async def test_find_container_in_room_or_equipped_no_get_equipped_items() -> Non
     )
     assert container_found is None
     assert container_item is None
+
+
+# --- containers that exist only in persistence (#1109) ---------------------------------------------------------------
+
+
+def _chest_row(container_id: str | None = None, name: str = "Lost-and-Found Chest") -> JsonMap:
+    """A container as persistence returns it: the ``items`` / ``metadata`` columns are renamed ``*_json``."""
+    return {
+        "container_id": container_id or str(uuid4()),
+        "source_type": "environment",
+        "metadata_json": {"name": name},
+        "items_json": [{"item_name": "Rusty Key", "quantity": 1}],
+        "capacity_slots": 200,
+        "lock_state": "unlocked",
+    }
+
+
+def _room_holding(live: list[JsonMap]) -> MagicMock:
+    room: MagicMock = MagicMock()
+    room.id = "foyer"
+    room.get_containers = MagicMock(return_value=live)
+    return room
+
+
+def _persistence_returning(rows: list[JsonMap]) -> MagicMock:
+    persistence: MagicMock = MagicMock()
+    persistence.get_containers_by_room_id = AsyncMock(return_value=rows)
+    return persistence
+
+
+def _bare_player() -> MagicMock:
+    player: MagicMock = MagicMock()
+    player.get_equipped_items = MagicMock(return_value={})
+    return player
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("target", ["chest", "lost", "lost-and-found"])
+async def test_a_container_that_only_persistence_knows_is_found_and_displayed(target: str) -> None:
+    """The room listing reads persistence, so `look chest` must too: the furniture chest is not in Room._containers."""
+    fetch: AsyncMock = AsyncMock(return_value=[_chest_row()])
+    persistence: MagicMock = MagicMock()
+    persistence.get_containers_by_room_id = fetch
+
+    found, item = await _find_container_in_room_or_equipped(
+        target, None, _room_holding([]), _bare_player(), persistence, None, "TestPlayer"
+    )
+
+    assert found is not None
+    assert item is None
+    fetch.assert_awaited_once_with("foyer")
+    shown = _format_container_display(found, None, {"look_in": True})
+    assert "Lost-and-Found Chest" in shown  # the *_json columns were mapped back to metadata / items
+    assert "Rusty Key" in shown
+    assert "Capacity: 1/200 slots" in shown
+
+
+@pytest.mark.asyncio
+async def test_the_implicit_look_finds_a_persisted_container_too() -> None:
+    response = await _try_lookup_container_implicit(
+        "chest", "chest", None, _room_holding([]), _bare_player(), _persistence_returning([_chest_row()]), "TestPlayer"
+    )
+
+    assert response is not None
+    assert "Lost-and-Found Chest" in _result_text(response)
+
+
+@pytest.mark.asyncio
+async def test_a_container_in_both_places_is_listed_once_and_the_live_one_wins() -> None:
+    """A corpse is added to the room when it drops and also stored; looking must not see it twice (or ask which)."""
+    shared_id = str(uuid4())
+    live: JsonMap = {"container_id": shared_id, "metadata": {"name": "corpse of Arkan"}, "items": []}
+
+    containers = await _containers_in_room(
+        _room_holding([live]), _persistence_returning([_chest_row(shared_id, "stale persisted copy")])
+    )
+
+    assert containers == [live]
+
+
+@pytest.mark.asyncio
+async def test_live_containers_still_work_when_persistence_fails() -> None:
+    live: JsonMap = {"container_id": str(uuid4()), "metadata": {"name": "corpse of Arkan"}, "items": []}
+    persistence: MagicMock = MagicMock()
+    persistence.get_containers_by_room_id = AsyncMock(side_effect=DatabaseError("db down"))
+
+    containers = await _containers_in_room(_room_holding([live]), persistence)
+
+    assert containers == [live]
+
+
+@pytest.mark.asyncio
+async def test_a_room_without_an_id_or_persistence_uses_only_the_live_list() -> None:
+    live: JsonMap = {"container_id": str(uuid4()), "metadata": {"name": "backpack"}, "items": []}
+    room: MagicMock = MagicMock()
+    room.get_containers = MagicMock(return_value=[live])  # room.id is a MagicMock, not a str
+
+    assert await _containers_in_room(room, _persistence_returning([_chest_row()])) == [live]
+    assert await _containers_in_room(_room_holding([live]), object()) == [live]

@@ -13,6 +13,7 @@ from collections.abc import Mapping
 from typing import NamedTuple, Protocol, TypeVar, cast
 from uuid import UUID
 
+from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
 from .inventory_command_contracts import CommandResponse
@@ -49,6 +50,7 @@ class _LookRoom(Protocol):
 
 class _ContainerPersistence(Protocol):
     async def get_container(self, container_id: UUID) -> Mapping[str, object] | None: ...
+    async def get_containers_by_room_id(self, room_id: str) -> list[dict[str, object]]: ...
 
 
 class _WearableContainer(Protocol):
@@ -112,6 +114,33 @@ def _room_container_maps(room: object) -> list[JsonMap]:
     if not hasattr(room, "get_containers"):
         return []
     return _as_map_list(cast(_LookRoom, room).get_containers())
+
+
+def _as_live_container(row: JsonMap) -> JsonMap:
+    """A persisted container row (``items_json`` / ``metadata_json``) in the shape live room containers use."""
+    live = dict(row)
+    for stored, key in (("items_json", "items"), ("metadata_json", "metadata")):
+        if stored in live:
+            _ = live.setdefault(key, live.pop(stored))
+    return live
+
+
+async def _containers_in_room(room: object, persistence: object) -> list[JsonMap]:
+    """Every container the room listing shows: live ones (corpses) plus persisted rows, once per container_id.
+
+    The in-memory list misses furniture such as the lost-and-found chest, which was listed but not lookable (#1109).
+    """
+    containers = _room_container_maps(room)
+    room_id = getattr(room, "id", None)
+    if not isinstance(room_id, str) or not hasattr(persistence, "get_containers_by_room_id"):
+        return containers
+    try:
+        rows = _as_map_list(await cast(_ContainerPersistence, persistence).get_containers_by_room_id(room_id))
+    except (AttributeError, TypeError, DatabaseError) as exc:
+        logger.debug("Could not load persisted room containers", room_id=room_id, error=str(exc))
+        return containers
+    known = {str(container.get("container_id")) for container in containers}
+    return [*containers, *(row for row in map(_as_live_container, rows) if str(row.get("container_id")) not in known)]
 
 
 def _player_equipped(player: object) -> dict[str, object]:
@@ -335,7 +364,7 @@ async def _find_container_in_room_or_equipped(  # pylint: disable=too-many-argum
     Returns:
         tuple: (container_found, container_item) - container_item is the equipped item if found
     """
-    room_containers = _room_container_maps(room)
+    room_containers = await _containers_in_room(room, persistence)
     container_found = _find_container_in_room(room_containers, target_lower, instance_number)
     container_item: JsonMap | None = None
 
@@ -474,7 +503,7 @@ async def _try_lookup_container_implicit(  # pylint: disable=too-many-arguments,
     player_name: str,
 ) -> CommandResponse | None:
     """Try to find and display a container in implicit lookup."""
-    room_containers = _room_container_maps(room)
+    room_containers = await _containers_in_room(room, persistence)
     container_found = _find_container_in_room(room_containers, target_lower, instance_number)
 
     if not container_found:
