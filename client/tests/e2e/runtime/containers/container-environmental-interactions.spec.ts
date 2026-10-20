@@ -43,6 +43,20 @@ test.describe('Environmental Container Interactions', () => {
     expect((await getMessages(awContext.page)).some(message => /Lost-and-Found Chest/i.test(message))).toBe(true);
   });
 
+  test('the listed chest can be looked at, by any word of its name', async () => {
+    const awContext = contexts[0];
+
+    // The listing and `look <container>` once read different sources, so a listed furniture chest answered
+    // "You don't see any 'chest' here." (#1109).
+    await executeCommand(awContext.page, 'look chest');
+    await waitForMessage(awContext.page, /Capacity: \d+\/200 slots/i, 15000);
+    await executeCommand(awContext.page, 'look lost');
+    await waitForMessage(awContext.page, /Lost-and-Found Chest/i, 15000);
+    expect(
+      (await getMessages(awContext.page)).some(message => /You don't see any '(chest|lost)' here/i.test(message))
+    ).toBe(false);
+  });
+
   test('one player can put an item in the chest and another can take it out', async () => {
     const [awContext, ithaquaContext] = contexts;
 
