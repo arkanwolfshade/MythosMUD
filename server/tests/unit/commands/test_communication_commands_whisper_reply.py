@@ -271,3 +271,33 @@ async def test_handle_whisper_command_chat_service_failure():
     )
 
     assert "Error" in result["result"] or "error" in result["result"].lower()
+
+
+@pytest.mark.asyncio
+async def test_handle_reply_command_answers_a_conversation_instead_of_whispering():
+    """`reply 2` during an NPC conversation picks answer 2 and sends no whisper (#1105)."""
+    with (
+        patch(
+            "server.commands.communication_commands.reply_to_dialogue", AsyncMock(return_value={"result": "Strays."})
+        ),
+        patch("server.commands.communication_commands.flow_reply_command", AsyncMock()) as whisper,
+    ):
+        result = await handle_reply_command({"message": "2"}, {}, MagicMock(), None, "TestPlayer")
+
+    assert result == {"result": "Strays."}
+    whisper.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_handle_reply_command_whispers_when_it_is_not_a_conversation_answer():
+    with (
+        patch("server.commands.communication_commands.reply_to_dialogue", AsyncMock(return_value=None)),
+        patch(
+            "server.commands.communication_commands.flow_reply_command",
+            AsyncMock(return_value={"result": "You reply."}),
+        ) as whisper,
+    ):
+        result = await handle_reply_command({"message": "The seal is cracked."}, {}, MagicMock(), None, "TestPlayer")
+
+    assert result == {"result": "You reply."}
+    whisper.assert_awaited_once()

@@ -7,6 +7,7 @@ from collections.abc import Mapping
 from typing import cast
 
 from ..alias_storage import AliasStorage
+from ..exceptions import DatabaseError
 from ..game.chat_npc_system import schedule_personal_system
 from ..game.dialogue import DialoguePrompt, format_dialogue_prompt, get_dialogue_service
 from ..game.scripted_actions import ScriptedActionContext, run_scripted_actions
@@ -101,6 +102,32 @@ async def _talk_by_option_index(
     ctx = action_context(app, player, get_pose_persistence(app)) if player is not None else None
     await _run_prompt_actions(result, ctx)
     return {"result": text}
+
+
+async def reply_to_dialogue(
+    command_data: Mapping[str, object], request: object | None, player_name: str
+) -> dict[str, str] | None:
+    """`reply <n>` during a conversation picks answer n, exactly like `talk <n>` (#1105).
+
+    None when it is not that (no number, or the player is not in a conversation), so the caller falls through to
+    the ordinary whisper reply.
+    """
+    message = command_data.get("message")
+    if not isinstance(message, str) or not message.strip().isdigit():
+        return None
+    app = app_from_request(request)
+    persistence = get_pose_persistence(app)
+    if not persistence:
+        return None
+    try:
+        player = await persistence.get_player_by_name(player_name)
+    except DatabaseError as e:
+        logger.debug("Reply could not load the player to check for a conversation", player=player_name, error=str(e))
+        return None
+    player_id = _resolve_player_id(player) if player else None
+    if player_id is None or get_dialogue_service().get_cursor(player_id) is None:
+        return None
+    return await _talk_by_option_index(player_id, int(message.strip()), player=player, app=app)
 
 
 async def _talk_with_npc(

@@ -345,6 +345,7 @@
         "<ul>",
         "<li><strong>talk &lt;npc&gt;</strong> - Start (or restart) dialogue with an NPC in your room</li>",
         "<li><strong>talk &lt;number&gt;</strong> - Choose a numbered reply from the current options</li>",
+        "<li><strong>reply &lt;number&gt;</strong> - The same, read more naturally mid-conversation</li>",
         "</ul>",
         "<p class=\"help-subhead\"><strong>Notes:</strong></p>",
         "<ul>",
@@ -1004,24 +1005,29 @@
     {
       "name": "reply",
       "category": "Communication",
-      "summary": "Answer the last player who whispered to you.",
+      "summary": "Answer the last player who whispered to you, or pick an answer in an NPC conversation.",
       "usage": [
-        "reply <message>"
+        "reply <message>",
+        "reply <number>"
       ],
       "arguments": [
         {
           "name": "message",
           "required": true,
-          "description": "Your answer."
+          "description": "Your answer. While you are in an NPC conversation, a number picks that numbered answer (the same as talk <number>)."
         }
       ],
       "examples": [
         {
           "input": "reply I will meet you at the library."
+        },
+        {
+          "input": "reply 2"
         }
       ],
       "see_also": [
-        "whisper"
+        "whisper",
+        "talk"
       ]
     },
     {
