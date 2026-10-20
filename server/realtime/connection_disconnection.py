@@ -31,6 +31,7 @@ class _DisconnectConnectionManager(Protocol):
     active_websockets: dict[str, WebSocket]
     connection_metadata: dict[str, ConnectionMetadata]
     player_websockets: dict[uuid.UUID, list[str]]
+    online_players: dict[uuid.UUID, dict[str, object]]
     player_sessions: dict[uuid.UUID, str]
     session_connections: dict[str, list[str]]
     rate_limiter: RateLimiter
@@ -296,8 +297,11 @@ async def cleanup_websocket_disconnect(
             )
 
             if player_id not in manager.player_websockets:
-                # Intentional logout can race with on-close clearing sockets; still track leave.
-                if player_id in manager.intentional_disconnects:
+                # Intentional logout can race with on-close clearing sockets; still track leave. So can any drop: a
+                # send to the closing socket runs the dead-connection cleanup first, which clears the sockets but
+                # never starts the grace period or removes the player from online_players. Skipping here left a ghost
+                # whose next login counted as a second connection: no enter setup, no tutorial placement (#1104).
+                if player_id in manager.intentional_disconnects or player_id in manager.online_players:
                     should_track_disconnect = await _apply_disconnect_side_effects(
                         player_id, manager, is_force_disconnect
                     )

@@ -149,6 +149,86 @@ async def test_cleanup_websocket_disconnect_intentional_without_sockets(
     remove_player_from_all_rooms_mock.assert_called_once_with(str(player_id))
 
 
+def _after_the_dead_connection_cleanup(
+    mock_manager: MagicMock, player_id: uuid.UUID, *, online: bool, reconnected: bool = False
+) -> set[uuid.UUID]:
+    """Manager state when a send to the closing socket already ran the dead-connection cleanup (#1104).
+
+    That cleanup empties player_websockets but never starts the grace period or leaves online_players.
+    Returns the (empty) processed_disconnects set.
+    """
+    import asyncio
+
+    mock_manager.player_websockets = {}
+    mock_manager.intentional_disconnects = set()
+    mock_manager.online_players = {player_id: {}} if online else {}
+    processed_disconnects: set[uuid.UUID] = set()
+    mock_manager.processed_disconnects = processed_disconnects
+    mock_manager.has_websocket_connection = MagicMock(return_value=reconnected)
+    mock_manager.disconnect_lock = asyncio.Lock()
+    mock_manager.processed_disconnect_lock = asyncio.Lock()
+    return processed_disconnects
+
+
+@pytest.mark.asyncio
+async def test_a_drop_the_dead_connection_cleanup_got_to_first_is_still_tracked_while_the_player_is_online(
+    mock_manager: MagicMock,
+    remove_player_from_all_rooms_mock: MagicMock,
+):
+    """Skipping it left a ghost in online_players: no grace period, and the next login counted as a second connection."""
+    from server.realtime.connection_disconnection import cleanup_websocket_disconnect
+
+    player_id = uuid.uuid4()
+    processed_disconnects = _after_the_dead_connection_cleanup(mock_manager, player_id, online=True)
+
+    result = await cleanup_websocket_disconnect(player_id, mock_manager)
+
+    assert result is True  # the caller starts the disconnect grace period
+    assert player_id in processed_disconnects
+    remove_player_from_all_rooms_mock.assert_called_once_with(str(player_id))
+
+
+@pytest.mark.asyncio
+async def test_a_drop_for_a_player_who_is_not_online_is_not_tracked(
+    mock_manager: MagicMock,
+    remove_player_from_all_rooms_mock: MagicMock,
+):
+    from server.realtime.connection_disconnection import cleanup_websocket_disconnect
+
+    player_id = uuid.uuid4()
+    processed_disconnects = _after_the_dead_connection_cleanup(mock_manager, player_id, online=False)
+
+    assert await cleanup_websocket_disconnect(player_id, mock_manager) is False
+    assert processed_disconnects == set()
+    remove_player_from_all_rooms_mock.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_a_drop_that_was_already_processed_is_not_tracked_twice(mock_manager: MagicMock):
+    from server.realtime.connection_disconnection import cleanup_websocket_disconnect
+
+    player_id = uuid.uuid4()
+    processed_disconnects = _after_the_dead_connection_cleanup(mock_manager, player_id, online=True)
+    processed_disconnects.add(player_id)
+
+    assert await cleanup_websocket_disconnect(player_id, mock_manager) is False
+
+
+@pytest.mark.asyncio
+async def test_a_player_who_has_already_reconnected_is_left_alone(
+    mock_manager: MagicMock,
+    remove_player_from_all_rooms_mock: MagicMock,
+):
+    from server.realtime.connection_disconnection import cleanup_websocket_disconnect
+
+    player_id = uuid.uuid4()
+    processed_disconnects = _after_the_dead_connection_cleanup(mock_manager, player_id, online=True, reconnected=True)
+
+    assert await cleanup_websocket_disconnect(player_id, mock_manager) is False
+    assert processed_disconnects == set()
+    remove_player_from_all_rooms_mock.assert_not_called()
+
+
 @pytest.mark.asyncio
 async def test_force_disconnect_player_impl_intentional_without_sockets():
     """force_disconnect with no sockets must still track intentional leave."""
