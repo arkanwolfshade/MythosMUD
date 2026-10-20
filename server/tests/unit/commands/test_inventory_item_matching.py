@@ -1,4 +1,4 @@
-"""Tests for item-name matching order: exact -> whole word (name) -> prefix -> substring (#870).
+"""Tests for item-name matching order: exact -> whole word (name) -> keyword -> prefix -> substring (#870, #1106).
 
 The same ladder serves room drops (pickup/get), inventory (equip/use) and equipped items (unequip), so every
 case runs against all three.
@@ -31,6 +31,11 @@ TONIC: Stack = {
 def _stack(name: str, prototype_id: str | None = None) -> Stack:
     identifier = prototype_id or f"test.{name.lower().replace(' ', '_')}"
     return {"item_name": name, "item_id": identifier, "prototype_id": identifier}
+
+
+def _keyworded(name: str, keywords: object) -> Stack:
+    """A stack minted from a prototype whose metadata lists ``keywords`` (copied onto every stack)."""
+    return {**_stack(name), "metadata": {"keywords": keywords}}
 
 
 def _room(stacks: list[Stack], term: str) -> int | None:
@@ -130,3 +135,34 @@ def test_no_match_and_blank_terms(match: Callable[[list[Stack], str], int | None
 def test_regex_metacharacters_in_the_term_are_literal(match: Callable[[list[Stack], str], int | None]) -> None:
     assert match([_stack("Brass Key"), _stack("Key (cracked)")], "(cracked)") == 1
     assert match([_stack("Brass Key")], ".*") is None
+
+
+ADVERTISER = _keyworded("Arkham Advertiser", ["newspaper", "Paper"])
+
+
+@ALL_FAMILIES
+def test_an_authored_keyword_finds_the_item(match: Callable[[list[Stack], str], int | None]) -> None:
+    """The tutorial says `read newspaper`; the item is named "Arkham Advertiser" (#1106)."""
+    assert match([_stack("Brass Key"), ADVERTISER], "newspaper") == 1
+    assert match([_stack("Brass Key"), ADVERTISER], "paper") == 1  # keywords are case-insensitive
+
+
+@ALL_FAMILIES
+def test_a_keyword_ranks_below_exact_and_whole_word_name_matches(
+    match: Callable[[list[Stack], str], int | None],
+) -> None:
+    noisy = _keyworded("Ledger", ["key"])
+
+    assert match([noisy, _stack("Brass Key")], "key") == 1  # whole word in a name
+    assert match([noisy, _stack("Key")], "key") == 1  # exact name
+
+
+@ALL_FAMILIES
+def test_a_keyword_beats_a_prefix_or_substring_guess(match: Callable[[list[Stack], str], int | None]) -> None:
+    assert match([_stack("Paperweight"), ADVERTISER], "paper") == 1
+
+
+@ALL_FAMILIES
+@pytest.mark.parametrize("keywords", ["newspaper", 7, None, [3, None, "  "], {"newspaper": 1}])
+def test_malformed_keywords_are_ignored(match: Callable[[list[Stack], str], int | None], keywords: object) -> None:
+    assert match([_keyworded("Arkham Advertiser", keywords)], "newspaper") is None

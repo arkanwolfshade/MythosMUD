@@ -72,9 +72,9 @@ test.describe.serial('First Exposure: the whole tutorial', () => {
       await say(tutorial, 'talk 1', /Strays, the constable says/i);
 
       await walk(tutorial, 'east', tutorialRoomPattern('beneath_the_limes'));
-      await executeCommand(tutorial.page, 'get advertiser');
+      await executeCommand(tutorial.page, 'get newspaper');
       await expect.poll(() => state().inventory_items, { timeout: 15000 }).toContain('Arkham Advertiser');
-      await say(tutorial, 'read advertiser', /GRAVES OPENED AGAIN/i);
+      await say(tutorial, 'read newspaper', /GRAVES OPENED AGAIN/i);
 
       await walk(tutorial, 'east', tutorialRoomPattern('lane_off_the_square'));
       await walk(tutorial, 'east', tutorialRoomPattern('burying_ground_gate'));

@@ -35,6 +35,7 @@ from server.utils.project_paths import get_project_root
 
 ROOT = get_project_root()
 MIGRATION = ROOT / "data" / "db" / "migrations" / "20261018120000_first_exposure_tutorial.sql"
+CONVERGENCE = ROOT / "data" / "db" / "migrations" / "20261020100000_first_exposure_content_convergence.sql"
 ITEM_CATALOG = ROOT / "data" / "item_catalog" / "catalog" / "first_exposure_items.json"
 NPC_CATALOG = ROOT / "data" / "npc_catalog" / "catalog" / "first_exposure_npcs.json"
 
@@ -423,8 +424,9 @@ _HAVE_DATA = ITEM_CATALOG.is_file() and NPC_CATALOG.is_file()
 
 
 @pytest.mark.skipif(not _HAVE_DATA, reason="the private data/ submodule is not checked out")
-def test_the_migration_embeds_exactly_what_the_item_pipeline_generates() -> None:
-    text = _up()
+def test_the_latest_item_rows_embed_exactly_what_the_item_pipeline_generates() -> None:
+    """The convergence migration restates the items (adding keywords, #1106); it is current, the original is not."""
+    text = CONVERGENCE.read_text(encoding="utf-8").partition("-- migrate:down")[0]
     for row in cast(list[dict[str, object]], json.loads(ITEM_CATALOG.read_text(encoding="utf-8"))):
         assert f"'{row['prototype_id']}'" in text
         for key in ("flags", "stacking_rules", "metadata", "tags"):

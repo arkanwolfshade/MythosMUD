@@ -10,6 +10,7 @@ This module handles looking at items, including finding items in various locatio
 from typing import Any
 
 from ..structured_logging.enhanced_logging_config import get_logger
+from .inventory_item_matching import stack_keywords
 
 logger = get_logger(__name__)
 
@@ -36,7 +37,12 @@ def _find_item_in_room_drops(
         prototype_id = str(drop.get("prototype_id", "")).lower()
         item_id = str(drop.get("item_id", "")).lower()
 
-        if target_lower in item_name or target_lower in prototype_id or target_lower in item_id:
+        if (
+            target_lower in item_name
+            or target_lower in prototype_id
+            or target_lower in item_id
+            or target_lower in stack_keywords(drop)
+        ):
             matching_items.append(drop)
 
     if not matching_items:
@@ -76,7 +82,12 @@ def _find_item_in_inventory(
         prototype_id = str(item.get("prototype_id", item.get("item_id", ""))).lower()
         item_id = str(item.get("item_id", "")).lower()
 
-        if target_lower in item_name or target_lower in prototype_id or target_lower in item_id:
+        if (
+            target_lower in item_name
+            or target_lower in prototype_id
+            or target_lower in item_id
+            or target_lower in stack_keywords(item)
+        ):
             matching_items.append(item)
 
     if not matching_items:
@@ -116,7 +127,12 @@ def _find_item_in_equipped(
         prototype_id = str(item.get("prototype_id", item.get("item_id", ""))).lower()
         item_id = str(item.get("item_id", "")).lower()
 
-        if target_lower in item_name or target_lower in prototype_id or target_lower in item_id:
+        if (
+            target_lower in item_name
+            or target_lower in prototype_id
+            or target_lower in item_id
+            or target_lower in stack_keywords(item)
+        ):
             matching_items.append((slot, item))
 
     if not matching_items:

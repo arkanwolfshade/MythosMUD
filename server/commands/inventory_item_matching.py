@@ -2,6 +2,7 @@
 
 import re
 from collections.abc import Iterable, Mapping
+from typing import cast
 
 
 def extract_item_identifier(stack: dict[str, object], key: str) -> str | None:
@@ -11,6 +12,24 @@ def extract_item_identifier(stack: dict[str, object], key: str) -> str | None:
         stripped = value.strip()
         return stripped if stripped else None
     return None
+
+
+def stack_keywords(stack: Mapping[str, object]) -> list[str]:
+    """Lowercased ``metadata.keywords`` of a stack: the extra nouns a player may use for the item.
+
+    A prototype's metadata is copied onto every stack minted from it, so keywords are plain item data
+    (the Arkham Advertiser answers to "newspaper" and "paper" as well as its name).
+    """
+    metadata = stack.get("metadata")
+    raw = cast(dict[str, object], metadata).get("keywords") if isinstance(metadata, dict) else None
+    if not isinstance(raw, list):
+        return []
+    return [word.strip().lower() for word in cast(list[object], raw) if isinstance(word, str) and word.strip()]
+
+
+def _first_with_keyword[K](stacks: Iterable[tuple[K, Mapping[str, object]]], term: str) -> K | None:
+    """Key of the first stack that lists ``term`` as one of its keywords."""
+    return next((key for key, stack in stacks if term in stack_keywords(stack)), None)
 
 
 def build_drop_candidates(drop_list: list[dict[str, object]]) -> list[tuple[int, str | None, str | None, str | None]]:
@@ -84,8 +103,8 @@ def match_room_drop_by_name(drop_list: list[dict[str, object]], search_term: str
     """
     Resolve a room drop index using Lovecraftian-grade fuzzy matching heuristics.
 
-    Human collaborators: we prefer exact identifiers, then whole-word matches in the item name, then courteous
-    prefix matches, before falling back to substring containment—echoing the cataloguing rites described in
+    Human collaborators: we prefer exact identifiers, then whole-word matches in the item name, then authored
+    keywords, then courteous prefix matches, before falling back to substring containment—echoing the cataloguing rites described in
     Dr. Wilmarth's Restricted Archives.
     Agentic aides: return a zero-based index for the best candidate or None if no alignment is found.
     """
@@ -102,6 +121,11 @@ def match_room_drop_by_name(drop_list: list[dict[str, object]], search_term: str
 
     # Whole word in the name beats a longer word that merely starts with the term
     match = match_word_drop(candidates, normalized)
+    if match is not None:
+        return match
+
+    # An authored keyword ("newspaper") beats a prefix or substring guess
+    match = _first_with_keyword(enumerate(drop_list), normalized)
     if match is not None:
         return match
 
@@ -148,6 +172,11 @@ def match_inventory_item_by_name(inventory: list[dict[str, object]], search_term
 
     # Whole word in the name beats a longer word that merely starts with the term
     match = match_word_drop(candidates, normalized)
+    if match is not None:
+        return match
+
+    # An authored keyword ("newspaper") beats a prefix or substring guess
+    match = _first_with_keyword(enumerate(inventory), normalized)
     if match is not None:
         return match
 
@@ -260,6 +289,10 @@ def match_equipped_item_by_name(equipped: Mapping[str, Mapping[str, object]], se
     result = search_word_match(candidates, normalized_term)
     if result:
         return result
+
+    keyword_slot = _first_with_keyword(equipped.items(), normalized_term)
+    if keyword_slot is not None:
+        return normalize_slot_name(keyword_slot) or keyword_slot
 
     result = search_prefix_match(candidates, normalized_term)
     if result:
