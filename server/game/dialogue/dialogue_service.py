@@ -49,7 +49,7 @@ def format_dialogue_prompt(npc_name: str, node_text: str, option_labels: list[st
         for i, label in enumerate(option_labels, start=1):
             lines.append(f"{i}. {label}")
         lines.append("")
-        lines.append("Use: talk <number>")
+        lines.append("Use: talk <number> (or reply <number>)")
     return "\n".join(lines)
 
 

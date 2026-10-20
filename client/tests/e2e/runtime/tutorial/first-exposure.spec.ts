@@ -69,7 +69,7 @@ test.describe.serial('First Exposure: the whole tutorial', () => {
 
       await walk(tutorial, 'east', tutorialRoomPattern('gravel_walk'));
       await say(tutorial, 'talk lamplighter', /Mind the gravel/i);
-      await say(tutorial, 'talk 1', /Strays, the constable says/i);
+      await say(tutorial, 'reply 1', /Strays, the constable says/i);
 
       await walk(tutorial, 'east', tutorialRoomPattern('beneath_the_limes'));
       await executeCommand(tutorial.page, 'get newspaper');

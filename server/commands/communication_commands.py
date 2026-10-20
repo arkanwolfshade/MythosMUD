@@ -29,6 +29,7 @@ from .communication_commands_support import (
     app_from_request,
     get_pose_persistence,
 )
+from .talk_command import reply_to_dialogue
 
 logger: BoundLogger = get_logger(__name__)
 
@@ -144,5 +145,8 @@ async def handle_reply_command(
     _alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, str]:
-    """Reply to last whisper sender."""
+    """Pick answer N in an NPC conversation (`reply <n>`), else reply to the last whisper sender."""
+    answered = await reply_to_dialogue(command_data, request, player_name)
+    if answered is not None:
+        return answered
     return await flow_reply_command(command_data, request, player_name)

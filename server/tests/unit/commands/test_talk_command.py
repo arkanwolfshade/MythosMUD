@@ -11,6 +11,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.commands import talk_command as cmd
+from server.exceptions import DatabaseError
 from server.game.dialogue.dialogue_service import DialoguePrompt
 from server.game.scripted_actions import ScriptedActionContext
 from server.models.player import Player
@@ -221,3 +222,85 @@ async def test_talk_with_npc_success() -> None:
                 with patch("server.commands.talk_command._emit_prompt", return_value="formatted"):
                     result = await cmd._talk_with_npc(player, player_id, "Librarian")
     assert result["result"] == "formatted"
+
+
+# --- reply <n> answers a conversation (#1105) -------------------------------------------------------------------
+
+
+def _conversation(*, active: bool) -> MagicMock:
+    """A dialogue service that does (or does not) have a conversation open for the player."""
+    service: MagicMock = MagicMock()
+    service.get_cursor = MagicMock(return_value=object() if active else None)
+    return service
+
+
+async def _reply(
+    message: object, *, active: bool = True, lookup: AsyncMock | None = None
+) -> tuple[dict[str, str] | None, AsyncMock, AsyncMock]:
+    """Run reply_to_dialogue; returns (result, the talk-option stand-in, the player lookup)."""
+    player_id = uuid.uuid4()
+    find_player: AsyncMock = lookup if lookup is not None else AsyncMock(return_value=MagicMock(player_id=player_id))
+    persistence: MagicMock = MagicMock()
+    persistence.get_player_by_name = find_player
+    option: AsyncMock = AsyncMock(return_value={"result": "Strays, the constable says."})
+    with (
+        patch("server.commands.talk_command.app_from_request", return_value=MagicMock()),
+        patch("server.commands.talk_command.get_pose_persistence", return_value=persistence),
+        patch("server.commands.talk_command.primary_id", return_value=player_id),
+        patch("server.commands.talk_command.get_dialogue_service", return_value=_conversation(active=active)),
+        patch("server.commands.talk_command._talk_by_option_index", option),
+    ):
+        result = await cmd.reply_to_dialogue({"message": message}, MagicMock(), "Alice")
+    return result, option, find_player
+
+
+@pytest.mark.asyncio
+async def test_reply_with_a_number_in_a_conversation_picks_that_answer() -> None:
+    result, option, _ = await _reply("2")
+
+    assert result == {"result": "Strays, the constable says."}
+    option.assert_awaited_once()
+    assert option.await_args is not None
+    assert option.await_args.args[1] == 2
+
+
+@pytest.mark.asyncio
+async def test_reply_ignores_the_spaces_around_the_number() -> None:
+    _, option, _ = await _reply("  3 ")
+
+    assert option.await_args is not None
+    assert option.await_args.args[1] == 3
+
+
+@pytest.mark.asyncio
+async def test_reply_with_a_number_outside_a_conversation_is_left_for_the_whisper_reply() -> None:
+    result, option, _ = await _reply("2", active=False)
+
+    assert result is None
+    option.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("message", ["The seal is cracked.", "2 or 3", "", "   ", None, 2])
+async def test_reply_that_is_not_a_bare_number_is_left_for_the_whisper_reply(message: object) -> None:
+    result, option, find_player = await _reply(message)
+
+    assert result is None
+    option.assert_not_awaited()
+    find_player.assert_not_awaited()  # no database work for ordinary whispers
+
+
+@pytest.mark.asyncio
+async def test_reply_without_persistence_or_when_it_fails_is_left_for_the_whisper_reply() -> None:
+    request = MagicMock()
+    with (
+        patch("server.commands.talk_command.app_from_request", return_value=MagicMock()),
+        patch("server.commands.talk_command.get_pose_persistence", return_value=None),
+    ):
+        assert await cmd.reply_to_dialogue({"message": "1"}, request, "Alice") is None
+
+    failing: AsyncMock = AsyncMock(side_effect=DatabaseError("db down"))
+    result, option, _ = await _reply("1", lookup=failing)
+
+    assert result is None
+    option.assert_not_awaited()
