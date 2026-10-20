@@ -20,6 +20,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ..constants.instance_rooms import template_room_id_of
 from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -68,8 +69,9 @@ class ExplorationService:
         """
         try:
             # Look up the room UUID by stable_id (hierarchical room ID)
-            # Rooms table uses UUID as primary key, but game code uses hierarchical string IDs
-            room_uuid = await self._get_room_uuid_by_stable_id(room_id, session)
+            # Rooms table uses UUID as primary key, but game code uses hierarchical string IDs.
+            # An instance room is explored as the template room it was cloned from (#1108).
+            room_uuid = await self._get_room_uuid_by_stable_id(template_room_id_of(room_id), session)
 
             if not room_uuid:
                 logger.warning("Room not found in database", player_id=player_id, room_id=room_id)
