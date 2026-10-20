@@ -10,6 +10,7 @@ fall out of alignment with the eldritch record.
 
 from __future__ import annotations
 
+import uuid
 from typing import Protocol, TypedDict
 
 from ..alias_storage import AliasStorage
@@ -61,7 +62,7 @@ class SupportsPlayerPersistence(Protocol):  # pylint: disable=too-few-public-met
 class SupportsConnectionManager(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """Live presence surface used to mirror posture into online player records."""
 
-    online_players: dict[str, dict[str, object]]
+    online_players: dict[uuid.UUID, dict[str, object]]
 
     def get_online_player_by_display_name(self, display_name: str) -> dict[str, object] | None: ...
 
@@ -240,18 +241,12 @@ class PlayerPositionService:
             return
 
         try:
-            key = str(player.player_id)
-            online_players = connection_manager.online_players
-            existing = online_players.get(key)
-            if existing is None:
-                created: dict[str, object] = {}
-                created["player_id"] = key
-                created["player_name"] = player.name or player_name
-                created["connection_types"] = set[str]()
-                created["total_connections"] = 0
-                online_players[key] = created
-                existing = created
-            existing["position"] = position
+            # online_players is keyed by uuid.UUID and owned by the presence tracker. Only mirror posture onto an
+            # entry that is already there: creating one here (it once did, under a str key) left a permanent
+            # phantom "online" player that no disconnect ever removed (#1115).
+            existing = connection_manager.online_players.get(uuid.UUID(str(player.player_id)))
+            if existing is not None:
+                existing["position"] = position
 
             getter_info = connection_manager.get_online_player_by_display_name(player_name)
             if getter_info is not None:
