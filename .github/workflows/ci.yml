@@ -323,9 +323,10 @@ jobs:
             { echo "ERROR: Failed to apply procedure $f"; exit 1; }
           done
           echo "✓ Procedures applied successfully"
-          # dbmate migrations (#811): tracks db/migrations/*.sql beyond the baseline in schema.sql/seed.sql.
+          # dbmate migrations (#811): tracks db/migrations/*.sql (DDL) and data/db/migrations/*.sql (DML, the
+          # data repo) beyond the baseline in schema.sql/seed.sql, as one ledger.
           npx dbmate --url "postgres://postgres:Cthulhu1@localhost:5432/mythos_unit?sslmode=disable&search_path=mythos_unit" \
-            --migrations-dir "$WORKSPACE_PATH/db/migrations" --no-dump-schema up
+            --migrations-dir "$WORKSPACE_PATH/db/migrations" --migrations-dir "$WORKSPACE_PATH/data/db/migrations" --no-dump-schema up
       - name: Set up test environment file
         run: |
           # Create .env.unit_test at project root from example for CI

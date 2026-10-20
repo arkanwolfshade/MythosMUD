@@ -19,7 +19,7 @@ from server.schemas.scripted_actions import DebriefAction
 from server.utils.project_paths import get_project_root
 
 ROOT = get_project_root()
-MIGRATION = ROOT / "db" / "migrations" / "20261017120000_recovery_ward_wing.sql"
+MIGRATION = ROOT / "data" / "db" / "migrations" / "20261017120000_recovery_ward_wing.sql"
 SEED = ROOT / "data" / "db" / "seed.sql"
 
 _OPPOSITE = {"north": "south", "south": "north", "east": "west", "west": "east", "up": "down", "down": "up"}

@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import cast
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
-MIGRATION = REPO_ROOT / "db" / "migrations" / "20261018140000_pale_ghoul_initiates_dialogue.sql"
+MIGRATION = REPO_ROOT / "data" / "db" / "migrations" / "20261018140000_pale_ghoul_initiates_dialogue.sql"
 CATALOG = REPO_ROOT / "data" / "npc_catalog" / "catalog" / "first_exposure_npcs.json"
 
 
