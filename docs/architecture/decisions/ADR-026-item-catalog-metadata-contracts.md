@@ -73,6 +73,7 @@ Documented optional `metadata` objects:
 | `tome`      | Sanity / Mythos-knowledge style numbers (Mythos-tuned)          |
 | `equipment` | Skill or other mechanical bonuses                               |
 | `catalog`   | Namespace, canonical/variant linkage, era, opaque `source_key`  |
+| `keywords`  | Extra nouns a player may type (`read newspaper`); open key      |
 
 ### 3.4 Coexistence and dedupe
 
