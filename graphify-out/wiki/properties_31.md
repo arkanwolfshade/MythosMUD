@@ -1,34 +1,32 @@
 # properties
 
-> 13 nodes
+> 11 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **properties** (7 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **down** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **east** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **north** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **south** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **up** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **west** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\The Grand Grimoire of Cthulhu Mythos Magic  (2026-08-12)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
+- **the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
+- **Ambiguous Edges - Review These** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
 
 ## Relationships
 
-- [exits](exits.md) (1 shared connections)
+- [PlayerService](PlayerService.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

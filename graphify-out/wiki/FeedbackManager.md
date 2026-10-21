@@ -1,48 +1,50 @@
 # FeedbackManager
 
-> 25 nodes
+> 24 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **FeedbackManager** (21 connections) — `client/src/utils/feedbackManager.ts`
-- **useFeedbackManager()** (13 connections) — `client/src/utils/feedbackManager.ts`
-- **.saveFeedback()** (6 connections) — `client/src/utils/feedbackManager.ts`
-- **feedbackManager.ts** (5 connections) — `client/src/utils/feedbackManager.ts`
-- **.addFeedback()** (4 connections) — `client/src/utils/feedbackManager.ts`
-- **feedbackManager.test.ts** (4 connections) — `client/src/utils/__tests__/feedbackManager.test.ts`
-- **.clearFeedback()** (3 connections) — `client/src/utils/feedbackManager.ts`
-- **.deleteFeedback()** (3 connections) — `client/src/utils/feedbackManager.ts`
-- **.importFeedback()** (3 connections) — `client/src/utils/feedbackManager.ts`
-- **.updateFeedback()** (3 connections) — `client/src/utils/feedbackManager.ts`
-- **FeedbackData** (2 connections) — `client/src/utils/feedbackManager.ts`
-- **.constructor()** (2 connections) — `client/src/utils/feedbackManager.ts`
-- **.exportFeedback()** (2 connections) — `client/src/utils/feedbackManager.ts`
-- **.generateId()** (2 connections) — `client/src/utils/feedbackManager.ts`
-- **.getAllFeedback()** (2 connections) — `client/src/utils/feedbackManager.ts`
-- **.getFeedbackByComponent()** (2 connections) — `client/src/utils/feedbackManager.ts`
-- **.getFeedbackByType()** (2 connections) — `client/src/utils/feedbackManager.ts`
-- **.getStats()** (2 connections) — `client/src/utils/feedbackManager.ts`
-- **.loadFeedback()** (2 connections) — `client/src/utils/feedbackManager.ts`
-- **.searchFeedback()** (2 connections) — `client/src/utils/feedbackManager.ts`
-- **FeedbackStats** (1 connections) — `client/src/utils/feedbackManager.ts`
-- **.getFeedback()** (1 connections) — `client/src/utils/feedbackManager.ts`
-- **.getFeedbackByPriority()** (1 connections) — `client/src/utils/feedbackManager.ts`
-- **.getFeedbackByStatus()** (1 connections) — `client/src/utils/feedbackManager.ts`
-- **.getTrends()** (1 connections) — `client/src/utils/feedbackManager.ts`
+- **test_security_headers.py** (20 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **asyncio** (5 connections)
+- **test_security_headers_middleware_error_handling()** (5 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_dispatch_method_error_handling()** (4 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_security_headers_middleware_adds_headers()** (4 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_security_headers_middleware_non_http_scope()** (4 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **mock_app()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_dispatch_method()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_security_headers_middleware_init_with_env_vars()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **fixture** (2 connections)
+- **test_add_security_headers_to_response()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_add_security_headers_to_response_hsts_with_subdomains()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_add_security_headers_to_response_hsts_without_subdomains()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Unit tests for security headers middleware. Tests the SecurityHeadersMiddleware…** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test middleware error handling.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test _add_security_headers_to_response adds headers to Response.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test _add_security_headers_to_response includes subdomains in HSTS.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test _add_security_headers_to_response without subdomains in HSTS.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Create a mock ASGI app.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test dispatch method (backward compatibility).** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test dispatch method error handling.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test SecurityHeadersMiddleware initialization with environment variables.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test middleware passes through non-HTTP connections.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test middleware adds security headers to HTTP responses.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [TestDepartures](TestDepartures.md) (5 shared connections)
+- [test_player_repository_room.py](test_player_repository_room.py.md) (5 shared connections)
+- [_WearablePersistence](_WearablePersistence.md) (3 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (2 shared connections)
+- [Room](Room.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/utils/__tests__/feedbackManager.test.ts`
-- `client/src/utils/feedbackManager.ts`
+- `server/tests/unit/middleware/test_security_headers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 41 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

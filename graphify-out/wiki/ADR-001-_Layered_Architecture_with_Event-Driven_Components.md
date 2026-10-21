@@ -1,12 +1,11 @@
 # ADR-001: Layered Architecture with Event-Driven Components
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **ADR-001: Layered Architecture with Event-Driven Components** (2 connections) — `docs/architecture/decisions/ADR-001-layered-architecture-event-driven.md`
-- **ADR-002: ApplicationContainer for Dependency Injection** (1 connections) — `docs/architecture/decisions/ADR-002-application-container-dependency-injection.md`
-- **ADR-003: Dual Event Systems (EventBus + NATS)** (1 connections) — `docs/architecture/decisions/ADR-003-dual-event-systems-eventbus-nats.md`
+- **Chat Messages Not Displayed to Sender (Bug #2)** (1 connections) — `e2e-tests/BUGS_FOUND.md`
+- **Player ID Format Mismatch** (1 connections) — `e2e-tests/BUGS_FOUND.md`
 
 ## Relationships
 
@@ -14,13 +13,11 @@
 
 ## Source Files
 
-- `docs/architecture/decisions/ADR-001-layered-architecture-event-driven.md`
-- `docs/architecture/decisions/ADR-002-application-container-dependency-injection.md`
-- `docs/architecture/decisions/ADR-003-dual-event-systems-eventbus-nats.md`
+- `e2e-tests/BUGS_FOUND.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,43 +1,41 @@
 # TestPathValidator
 
-> 21 nodes
+> 18 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **TestPathValidator** (11 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.validator()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.zone_transition_rooms()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **test_path_validator.py** (3 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_broken_zone_transition()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_get_room_zone()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_mismatched_return_path()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_missing_zone_info()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_one_way_zone_transition()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_zone_transition_detection()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **fixture** (2 connections)
-- **Tests for path validator functionality. Validates room connectivity analysis…** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test detection of mismatched return paths across zones.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test suite for path validation functionality.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Create a path validator instance.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Sample rooms with zone transitions.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test detection of zone transitions in room connections.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test detection of broken zone transitions.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test extraction of zone information from room data.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test handling of rooms with missing zone information.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test one-way exits across zone boundaries.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Gladiator Ring (Arena) Implementation Plan** (8 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **Todos (detailed)** (5 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **Gladiator Ring (Arena) — Implementation Todos** (4 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **gladiator-ring-arena-implementation-todos.md** (2 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **gladiator_ring_arena_plan.md** (2 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **Phase 1: Schema and world data (Codebase Explorer for DML/schema pattern discovery) — DONE** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **Phase 2: Tutorial exit and respawn (main agent)** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **Phase 3: NPC startup — also spawn in arena (main agent) — DONE** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **Phase 4: Tests and validation (main agent / Test Suite Analyzer) — DONE** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **Plan frontmatter todos (for Cursor plan file)** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **Subagent usage** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **1. Schema and data: zone, subzone, rooms, links** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **2. Tutorial exit and respawn** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **3. NPCs also spawn in arena** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **4. Tests and validation** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **Frontmatter todos (for Cursor plan file)** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **Implementation references** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **Plan summary** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
 
 ## Relationships
 
-- [RoomLoader](RoomLoader.md) (3 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- `docs/archive/plans/gladiator_ring_arena_plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 17 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

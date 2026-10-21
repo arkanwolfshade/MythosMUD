@@ -1,10 +1,10 @@
 # Bug Report issue template
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Bug Report issue template** (0 connections) — `.github/ISSUE_TEMPLATE/bug_report.yml`
+- **quick_metrics_check.ps1** (0 connections) — `scripts/quick_metrics_check.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.github/ISSUE_TEMPLATE/bug_report.yml`
+- `scripts/quick_metrics_check.ps1`
 
 ## Audit Trail
 

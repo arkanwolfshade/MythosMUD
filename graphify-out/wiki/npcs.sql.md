@@ -1,38 +1,36 @@
 # npcs.sql
 
-> 16 nodes
+> 15 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **npcs.sql** (10 connections) — `db/procedures/npcs.sql`
-- **npc_definitions** (6 connections) — `db/schema.sql`
-- **npc_spawn_rules** (4 connections) — `db/schema.sql`
-- **schema_name.get_npc_system_statistics()** (3 connections) — `db/procedures/npcs.sql`
-- **get_npc_system_statistics()** (3 connections) — `db/schema.sql`
-- **dialogue_definitions** (2 connections) — `db/schema.sql`
-- **npc_relationships** (2 connections) — `db/schema.sql`
-- **schema_name.create_npc_definition()** (1 connections) — `db/procedures/npcs.sql`
-- **schema_name.get_npc_definition()** (1 connections) — `db/procedures/npcs.sql`
-- **schema_name.get_npc_definitions()** (1 connections) — `db/procedures/npcs.sql`
-- **schema_name.get_npc_definitions_by_sub_zone()** (1 connections) — `db/procedures/npcs.sql`
-- **schema_name.get_spawn_rule()** (1 connections) — `db/procedures/npcs.sql`
-- **schema_name.get_spawn_rules()** (1 connections) — `db/procedures/npcs.sql`
-- **schema_name.get_subzone_configs()** (1 connections) — `db/procedures/npcs.sql`
-- **schema_name.get_zone_configs()** (1 connections) — `db/procedures/npcs.sql`
-- **schema_name.update_npc_definition()** (1 connections) — `db/procedures/npcs.sql`
+- **test_hallucination_category_ban.py** (9 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
+- **category_violations()** (6 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
+- **_import_violations()** (5 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
+- **test_scanner_flags_each_way_of_choosing_a_category()** (4 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
+- **test_hallucination_module_never_chooses_a_category()** (3 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
+- **parametrize** (2 connections)
+- **test_every_hallucination_named_module_is_listed()** (2 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
+- **test_scanner_ignores_ordinary_code()** (2 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
+- **Import** (1 connections)
+- **ImportFrom** (1 connections)
+- **ADR-024: hallucination code never chooses a message category. A hallucinated…** (1 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
+- **What an import statement pulls in that chooses a message category.** (1 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
+- **What in ``source`` chooses or names a message category: imports of it, or…** (1 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
+- **A new module named for hallucination or phantoms must be added to the audited…** (1 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
+- **Guard the scanner itself so the ban cannot pass vacuously.** (1 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
 
 ## Relationships
 
-- [schema.sql](schema.sql.md) (5 shared connections)
+- [look_container.py](look_container.py.md) (2 shared connections)
 
 ## Source Files
 
-- `db/procedures/npcs.sql`
-- `db/schema.sql`
+- `server/tests/unit/services/test_hallucination_category_ban.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

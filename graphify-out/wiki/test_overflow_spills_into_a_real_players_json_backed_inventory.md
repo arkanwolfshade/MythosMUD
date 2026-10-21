@@ -1,27 +1,24 @@
 # test_overflow_spills_into_a_real_players_json_backed_inventory
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_overflow_spills_into_a_real_players_json_backed_inventory()** (5 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Player.inventory is a JSON string column; spilling must go through…** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_create_reply_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_reply_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_wearable_container_service.py](test_wearable_container_service.py.md) (1 shared connections)
-- [WearableContainerService](WearableContainerService.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [test_who_commands.py](test_who_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (60%)
-- INFERRED: 2 (40%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

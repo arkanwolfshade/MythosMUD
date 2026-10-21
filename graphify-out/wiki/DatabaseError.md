@@ -2,7 +2,7 @@
 
 > God node · 297 connections · `server/exceptions.py`
 
-**Community:** [get_logger](get_logger.md)
+**Community:** [LoggingPatternLinter](LoggingPatternLinter.md)
 
 ## Connections by Relation
 

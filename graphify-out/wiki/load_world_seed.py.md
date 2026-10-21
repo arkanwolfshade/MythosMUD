@@ -1,48 +1,49 @@
 # load_world_seed.py
 
-> 35 nodes
+> 34 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **load_world_seed.py** (16 connections) — `scripts/load_world_seed.py`
-- **main()** (10 connections) — `scripts/load_world_seed.py`
-- **_run_psql_file()** (9 connections) — `scripts/load_world_seed.py`
-- **Path** (7 connections)
-- **_apply_schema()** (5 connections) — `scripts/load_world_seed.py`
-- **_apply_schema_with_psql()** (5 connections) — `scripts/load_world_seed.py`
-- **_load_dml_with_psql()** (5 connections) — `scripts/load_world_seed.py`
-- **_parse_pg_url_for_psql()** (5 connections) — `scripts/load_world_seed.py`
-- **_replay_migrations()** (5 connections) — `scripts/load_world_seed.py`
-- **_database_url_for_cli()** (4 connections) — `scripts/load_world_seed.py`
-- **_print_current_table_counts()** (4 connections) — `scripts/load_world_seed.py`
-- **_print_final_table_counts()** (4 connections) — `scripts/load_world_seed.py`
-- **_resolve_psql_executable()** (4 connections) — `scripts/load_world_seed.py`
-- **_validate_environment_and_files()** (4 connections) — `scripts/load_world_seed.py`
-- **_asyncpg_server_settings()** (3 connections) — `scripts/load_world_seed.py`
-- **_psql_exit_code_extra()** (3 connections) — `scripts/load_world_seed.py`
-- **_psql_heartbeat_wait()** (3 connections) — `scripts/load_world_seed.py`
-- **_reset_migration_ledger()** (3 connections) — `scripts/load_world_seed.py`
-- **Connection** (2 connections)
-- **Popen** (1 connections)
-- **Normalize SQLAlchemy/async driver URLs to a plain postgresql:// form for tools.** (1 connections) — `scripts/load_world_seed.py`
-- **Return (host, port, user, password, dbname) from DATABASE_URL. Password may be…** (1 connections) — `scripts/load_world_seed.py`
-- **Locate psql for DDL (pg_dump files are meant for psql, not one asyncpg.execute…** (1 connections) — `scripts/load_world_seed.py`
-- **Match app/e2e search_path: tables live in schema mythos_*; default public would…** (1 connections) — `scripts/load_world_seed.py`
-- **Human hint when psql exits with code 3 (common for interrupt / server error).** (1 connections) — `scripts/load_world_seed.py`
-- *... and 10 more nodes in this community*
+- **properties** (10 connections) — `schemas/calendar/schedule.schema.json`
+- **applies_to** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **days** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **end_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **id** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **start_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **items** (3 connections) — `schemas/calendar/schedule.schema.json`
+- **items** (3 connections) — `schemas/calendar/schedule.schema.json`
+- **items** (3 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (3 connections) — `schemas/calendar/schedule.schema.json`
+- **category** (3 connections) — `schemas/calendar/schedule.schema.json`
+- **effects** (3 connections) — `schemas/calendar/schedule.schema.json`
+- **name** (3 connections) — `schemas/calendar/schedule.schema.json`
+- **pattern** (2 connections) — `schemas/calendar/schedule.schema.json`
+- **notes** (2 connections) — `schemas/calendar/schedule.schema.json`
+- **minItems** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minItems** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **maximum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minimum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [ValueError](ValueError.md) (1 shared connections)
+- [gen_arkham_grid_migration.py](gen_arkham_grid_migration.py.md) (1 shared connections)
+- [Execution Steps](Execution_Steps.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/load_world_seed.py`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 58 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 38 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

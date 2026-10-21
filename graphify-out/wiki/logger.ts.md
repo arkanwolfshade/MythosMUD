@@ -1,78 +1,55 @@
 # logger.ts
 
-> 110 nodes
+> 98 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **logger.ts** (36 connections) — `client/src/utils/logger.ts`
-- **projectorHandlersMessages.ts** (35 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
-- **logger** (32 connections) — `client/src/utils/logger.ts`
-- **projectorMessageUtils.ts** (30 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- **messageCategory.ts** (23 connections) — `client/src/types/messageCategory.ts`
-- **GameInfoPanel.tsx** (21 connections) — `client/src/components/ui-v2/panels/GameInfoPanel.tsx`
-- **messageMapper.ts** (19 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
-- **messageCategoryStyle.ts** (19 connections) — `client/src/components/ui-v2/utils/messageCategoryStyle.ts`
-- **ChatMessage** (18 connections) — `client/src/components/ui-v2/types.ts`
-- **messageSegments.ts** (18 connections) — `client/src/components/ui-v2/utils/messageSegments.ts`
-- **OccupantsPanel.tsx** (17 connections) — `client/src/components/ui-v2/panels/OccupantsPanel.tsx`
-- **segmentsRendering.test.tsx** (13 connections) — `client/src/components/ui-v2/panels/__tests__/segmentsRendering.test.tsx`
-- **getMessageCategoryClass()** (11 connections) — `client/src/components/ui-v2/utils/messageCategoryStyle.ts`
-- **useGameConnectionManagement.ts** (11 connections) — `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
-- **MessageCategory** (10 connections) — `client/src/types/messageCategory.ts`
-- **messageUtils.ts** (9 connections) — `client/src/components/ui-v2/utils/messageUtils.ts`
-- **messageCategoryPalette.test.ts** (9 connections) — `client/src/components/ui-v2/utils/__tests__/messageCategoryPalette.test.ts`
-- **appendMessage()** (8 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- **buildChatMessage()** (8 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- **SegmentedText.tsx** (8 connections) — `client/src/components/ui-v2/components/SegmentedText.tsx`
-- **logger.test.ts** (8 connections) — `client/src/utils/logger.test.ts`
-- **GameInfoPanel()** (7 connections) — `client/src/components/ui-v2/panels/GameInfoPanel.tsx`
-- **buildLine()** (7 connections) — `client/src/components/ui-v2/utils/messageSegments.ts`
-- **sanitizeChatMessageForState()** (7 connections) — `client/src/components/ui-v2/utils/messageUtils.ts`
-- **messageMapper.test.ts** (7 connections) — `client/src/components/ui-v2/eventLog/__tests__/messageMapper.test.ts`
-- *... and 85 more nodes in this community*
+- **RoomLoader** (58 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **TestRoomLoader** (19 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
+- **temp_dir()** (12 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **.load_room_data()** (11 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **Path** (8 connections)
+- **TestValidatorEdgeCases** (8 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **._load_referenced_intersections()** (7 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **.build_room_database()** (6 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **.discover_room_files()** (5 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **._validate_or_update_room_id()** (5 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **.test_room_with_nonexistent_exit_targets()** (5 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **.discover_config_files()** (4 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **.load_config_file()** (4 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **._validate_required_fields()** (4 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **._validate_room_structure()** (4 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **test_room_loader.py** (4 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
+- **.test_build_room_database_empty_directory()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
+- **.test_build_room_database_with_errors()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
+- **.test_empty_room_directory()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **.test_room_with_malformed_json()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **.test_room_with_missing_required_fields()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **._add_intersection_to_database()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **._add_location_fields()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **._check_intersection_references_rooms()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **.count_config_subzones()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- *... and 73 more nodes in this community*
 
 ## Relationships
 
-- [stateUpdateUtils.ts](stateUpdateUtils.ts.md) (27 shared connections)
-- [projectorRoom.ts](projectorRoom.ts.md) (22 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (20 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (18 shared connections)
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (17 shared connections)
-- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (10 shared connections)
-- [HeaderBar.tsx](HeaderBar.tsx.md) (7 shared connections)
-- [security.ts](security.ts.md) (6 shared connections)
-- [CharacterNameScreen.tsx](CharacterNameScreen.tsx.md) (6 shared connections)
-- [Profession](Profession.md) (6 shared connections)
-- [useGameClientV2ContainerNetworkPhase.ts](useGameClientV2ContainerNetworkPhase.ts.md) (4 shared connections)
-- [CatalogPage.tsx](CatalogPage.tsx.md) (4 shared connections)
+- [asyncio](asyncio.md) (13 shared connections)
+- [Mypy Remediation](Mypy_Remediation.md) (3 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (3 shared connections)
+- [test_status_commands.py](test_status_commands.py.md) (2 shared connections)
+- [SessionManager](SessionManager.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/components/SegmentedText.tsx`
-- `client/src/components/ui-v2/eventLog/__tests__/messageMapper.test.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/projectorMessageUtils.buildChatMessage.test.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/projectorMessageUtils.readCategory.test.ts`
-- `client/src/components/ui-v2/eventLog/messageMapper.ts`
-- `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
-- `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
-- `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
-- `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
-- `client/src/components/ui-v2/panels/GameInfoPanel.tsx`
-- `client/src/components/ui-v2/panels/OccupantsPanel.tsx`
-- `client/src/components/ui-v2/panels/__tests__/GameInfoPanel.test.tsx`
-- `client/src/components/ui-v2/panels/__tests__/OccupantsPanel.test.tsx`
-- `client/src/components/ui-v2/panels/__tests__/segmentsRendering.test.tsx`
-- `client/src/components/ui-v2/types.ts`
-- `client/src/components/ui-v2/utils/__tests__/messageCategoryPalette.test.ts`
-- `client/src/components/ui-v2/utils/__tests__/messageCategoryStyle.test.ts`
-- `client/src/components/ui-v2/utils/__tests__/messageSegments.test.ts`
+- `server/tests/unit/structured_logging/test_logging_utilities.py`
+- `tools/room_toolkit/room_validator/core/room_loader.py`
+- `tools/room_toolkit/room_validator/tests/test_room_loader.py`
+- `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 386 (100%)
-- INFERRED: 1 (0%)
+- EXTRACTED: 148 (89%)
+- INFERRED: 19 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

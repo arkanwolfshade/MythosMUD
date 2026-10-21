@@ -1,52 +1,47 @@
 # quality_fragmentation_ai_guardrails.py
 
-> 27 nodes
+> 25 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **quality_fragmentation_ai_guardrails.py** (30 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **_collect_python_public_defs_and_tiny()** (8 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **nloc_for_text()** (7 connections) — `scripts/ci/quality_fragmentation_core.py`
-- **_is_public_function_stmt()** (6 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **_process_added_file_checks()** (6 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **collect_repo_texts()** (6 connections) — `scripts/ci/quality_fragmentation_core.py`
-- **_is_test_file_path()** (5 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **_build_python_call_usage_map()** (4 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **_check_exports_and_tiny_functions()** (4 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **_check_single_use_file()** (4 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **_guardrail_scan_inputs()** (4 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **_is_single_use_small_file()** (4 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **_python_export_and_tiny()** (4 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **imported_by_count()** (4 connections) — `scripts/ci/quality_fragmentation_usage.py`
-- **is_single_use_small_file()** (4 connections) — `scripts/ci/quality_fragmentation_usage.py`
-- **_call_target_name()** (3 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **_collect_code_texts()** (3 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **_is_tiny_single_use()** (3 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **quality_fragmentation_usage.py** (3 connections) — `scripts/ci/quality_fragmentation_usage.py`
-- **AST** (2 connections)
-- **AsyncFunctionDef** (2 connections)
-- **FunctionDef** (2 connections)
-- **Call** (1 connections)
-- **Module** (1 connections)
-- **stmt** (1 connections)
-- *... and 2 more nodes in this community*
+- **Feature Requirements Document: Random Stats Generator** (12 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Implementation Phases** (5 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Technical Requirements** (4 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **User Flow** (4 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **UI/UX Requirements** (3 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **FRD_random_stats_generator.md** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **1. Registration Process** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **2. Stats Rolling Process** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **3. Error Handling** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Acceptance Criteria** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Backend Requirements** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Dependencies** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Frontend Requirements** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Future Enhancements** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Overview** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Phase 1: Core Stats Rolling** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Phase 2: Integration** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Phase 3: Error Handling & Polish** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Phase 4: Testing & Validation** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Risks & Mitigation** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Security Requirements** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Success Metrics** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **User Experience** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **User Story** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Visual Design** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
 
 ## Relationships
 
-- [quality_fragmentation_lizard.py](quality_fragmentation_lizard.py.md) (14 shared connections)
-- [test_quality_fragmentation_guard.py](test_quality_fragmentation_guard.py.md) (5 shared connections)
-- [quality_fragmentation_graph.py](quality_fragmentation_graph.py.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- `scripts/ci/quality_fragmentation_core.py`
-- `scripts/ci/quality_fragmentation_usage.py`
+- `docs/archive/FRD_random_stats_generator.md`
 
 ## Audit Trail
 
-- EXTRACTED: 71 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 24 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,13 +1,11 @@
 # WebSocket and SSE Dual Connections
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **WebSocket and SSE Dual Connections** (3 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Dual Connection API Reference** (1 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Dual Connection Client Guide** (1 connections) — `docs/archive/DUAL_CONNECTION_CLIENT_GUIDE.md`
-- **Dual Connection Deployment Guide** (1 connections) — `docs/archive/DUAL_CONNECTION_DEPLOYMENT_GUIDE.md`
+- **Mypy Remediation Skill** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **MythosMUD Pre-Commit Checklist** (1 connections) — `.cursor/skills/mythosmud-pre-commit-checklist/SKILL.md`
 
 ## Relationships
 
@@ -15,14 +13,13 @@
 
 ## Source Files
 
-- `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- `docs/archive/DUAL_CONNECTION_CLIENT_GUIDE.md`
-- `docs/archive/DUAL_CONNECTION_DEPLOYMENT_GUIDE.md`
+- `.cursor/commands/mypy-remediation.md`
+- `.cursor/skills/mythosmud-pre-commit-checklist/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (33%)
-- INFERRED: 2 (67%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

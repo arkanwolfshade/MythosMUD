@@ -1,34 +1,49 @@
 # UUID
 
-> 11 nodes
+> 29 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **UUID** (10 connections)
-- **.check_all_connections_health()** (6 connections) — `server/realtime/monitoring/health_monitor.py`
-- **.periodic_health_check_task()** (5 connections) — `server/realtime/monitoring/health_monitor.py`
-- **.start_periodic_checks()** (5 connections) — `server/realtime/monitoring/health_monitor.py`
-- **._cleanup_stale_connections()** (4 connections) — `server/realtime/monitoring/health_monitor.py`
-- **.__init__()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Clean up stale connections.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Check health of all connections and clean up stale/dead ones. This method: -…** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Periodic health check task that runs continuously. This task: - Runs health…** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Start the periodic health check task. This should be called during application…** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Initialize the health monitor. Args: is_websocket_open_callback: Callback to…** (1 connections) — `server/realtime/monitoring/health_monitor.py`
+- **Test Suite Quality Audit - Executive Summary** (13 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Recommended Decision** (7 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Financial Impact (If You're Tracking Dev Time)** (5 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- ****25-30% (~1,250-1,500 tests) provide CRITICAL regression protection**** (3 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Final Recommendation** (3 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Answer to Original Question** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Deliverables Summary** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Key Findings** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Test Value Distribution** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **TL;DR - Answer to Your Question** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **"What percentage of tests provide critical coverage?"** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Breakdown** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **By Category** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **CI/CD Time Saved** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Commit to full 2-month optimization plan** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Comparison to Industry Benchmarks** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Created Documents** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Developer Time Saved** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Implement gap filling only (skip pruning)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Implement only Phase 1 (Quick Wins)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Maintenance Time Saved** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Option A: Full Optimization (Recommended)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Option B: Quick Wins Only** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Option C: Strategic Focus** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Start with Option B (Quick Wins) Immediately** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [HealthMonitor](HealthMonitor.md) (7 shared connections)
-- [._process_single_connection](_process_single_connection.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [extract_player_name](extract_player_name.md) (1 shared connections)
+- [handle_teach_command](handle_teach_command.md) (1 shared connections)
+- [test_persistence_container_persistence.py](test_persistence_container_persistence.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/monitoring/health_monitor.py`
+- `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 32 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

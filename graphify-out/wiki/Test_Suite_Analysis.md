@@ -1,27 +1,25 @@
 # Test Suite Analysis
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Test Suite Analysis** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Current Test Organization** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Dependency Access Patterns** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Pattern 1: Direct app.state Access (Broken - 445 instances)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Pattern 2: Using Real Lifespan (Works - Limited)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Pattern 3: Fixture-Based Mocking (Mixed)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 3: Real-Time Communication Protection** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **3.1 NATS Integration** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **3.2 WebSocket Protection** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **3.3 Configuration** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- [MythosMUD Test Suite Modernization Plan](MythosMUD_Test_Suite_Modernization_Plan.md) (1 shared connections)
+- [TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md](TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

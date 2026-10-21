@@ -1,10 +1,10 @@
 # Client message handling and GameState projection
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Client message handling and GameState projection** (0 connections) — `docs/client-message-handling.md`
+- **MythosMUD Worktree Workflow** (0 connections) — `.cursor/skills/mythosmud-worktree-workflow/SKILL.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/client-message-handling.md`
+- `.cursor/skills/mythosmud-worktree-workflow/SKILL.md`
 
 ## Audit Trail
 

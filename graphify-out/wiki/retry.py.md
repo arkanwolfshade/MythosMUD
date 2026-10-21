@@ -1,51 +1,51 @@
 # retry.py
 
-> 49 nodes
+> 39 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **retry.py** (18 connections) — `server/utils/retry.py`
-- **retry_with_backoff()** (14 connections) — `server/utils/retry.py`
-- **is_transient_error()** (13 connections) — `server/utils/retry.py`
-- **test_retry.py** (13 connections) — `server/tests/unit/utils/test_retry.py`
-- **Exception** (9 connections)
-- **test_is_transient_error_cause_chain_connection_closed()** (4 connections) — `server/tests/unit/utils/test_retry.py`
-- **test_is_transient_error_non_transient()** (4 connections) — `server/tests/unit/utils/test_retry.py`
-- **test_is_transient_error_wrapped_connection_closed()** (4 connections) — `server/tests/unit/utils/test_retry.py`
-- **test_retry_retries_wrapped_connection_closed_then_succeeds()** (4 connections) — `server/tests/unit/utils/test_retry.py`
-- **test_retry_with_backoff_async_failure_then_success()** (4 connections) — `server/tests/unit/utils/test_retry.py`
-- **test_retry_with_backoff_async_success()** (4 connections) — `server/tests/unit/utils/test_retry.py`
-- **_create_async_wrapper()** (4 connections) — `server/utils/retry.py`
-- **_create_sync_wrapper()** (4 connections) — `server/utils/retry.py`
-- **_is_psycopg2_transient()** (4 connections) — `server/utils/retry.py`
-- **_is_wrapped_transient_message()** (4 connections) — `server/utils/retry.py`
-- **_iter_exception_chain()** (4 connections) — `server/utils/retry.py`
-- **_should_retry_error()** (4 connections) — `server/utils/retry.py`
-- **test_is_transient_error_transient()** (3 connections) — `server/tests/unit/utils/test_retry.py`
-- **test_retry_with_backoff_failure_then_success()** (3 connections) — `server/tests/unit/utils/test_retry.py`
-- **test_retry_with_backoff_success()** (3 connections) — `server/tests/unit/utils/test_retry.py`
-- **_is_asyncpg_transient()** (3 connections) — `server/utils/retry.py`
-- **asyncio** (3 connections)
-- **_calculate_retry_delay()** (2 connections) — `server/utils/retry.py`
-- **_log_retry_attempt()** (2 connections) — `server/utils/retry.py`
-- **_log_retry_failure()** (2 connections) — `server/utils/retry.py`
-- *... and 24 more nodes in this community*
+- **CorruptionRepository** (18 connections) — `server/services/corruption_repository.py`
+- **test_corruption_repository.py** (14 connections) — `server/tests/unit/services/test_corruption_repository.py`
+- **corruption_repository.py** (10 connections) — `server/services/corruption_repository.py`
+- **_MockAsyncSession** (10 connections) — `server/tests/unit/services/test_corruption_repository.py`
+- **test_get_cooldown_returns_record()** (7 connections) — `server/tests/unit/services/test_corruption_repository.py`
+- **test_set_cooldown_updates_existing()** (7 connections) — `server/tests/unit/services/test_corruption_repository.py`
+- **.set_cooldown()** (6 connections) — `server/services/corruption_repository.py`
+- **_scalar_result()** (6 connections) — `server/tests/unit/services/test_corruption_repository.py`
+- **test_get_cooldown_returns_none_when_absent()** (6 connections) — `server/tests/unit/services/test_corruption_repository.py`
+- **test_set_cooldown_creates_when_absent()** (6 connections) — `server/tests/unit/services/test_corruption_repository.py`
+- **.add_adjustment_log()** (5 connections) — `server/services/corruption_repository.py`
+- **.get_cooldown()** (5 connections) — `server/services/corruption_repository.py`
+- **asyncio** (5 connections)
+- **repo()** (5 connections) — `server/tests/unit/services/test_corruption_repository.py`
+- **test_add_adjustment_log()** (5 connections) — `server/tests/unit/services/test_corruption_repository.py`
+- **UUID** (4 connections)
+- **_utc_now()** (4 connections) — `server/services/corruption_repository.py`
+- **mock_session()** (4 connections) — `server/tests/unit/services/test_corruption_repository.py`
+- **datetime** (3 connections)
+- **.__init__()** (2 connections) — `server/services/corruption_repository.py`
+- **fixture** (2 connections)
+- **AsyncSession** (1 connections)
+- **Repository layer for corruption ledger and cooldown persistence (#804).** (1 connections) — `server/services/corruption_repository.py`
+- **Return naive UTC timestamp suitable for PostgreSQL TIMESTAMP WITHOUT TIME ZONE.** (1 connections) — `server/services/corruption_repository.py`
+- **Data-access helpers for corruption persistence. Mirrors `LucidityRepository`.** (1 connections) — `server/services/corruption_repository.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (7 shared connections)
-- [session](session.md) (3 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (8 shared connections)
+- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (4 shared connections)
+- [reset_database](reset_database.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_retry.py`
-- `server/utils/retry.py`
+- `server/services/corruption_repository.py`
+- `server/tests/unit/services/test_corruption_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 83 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 76 (90%)
+- INFERRED: 8 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

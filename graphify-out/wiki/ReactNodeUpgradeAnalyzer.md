@@ -1,35 +1,35 @@
 # ReactNodeUpgradeAnalyzer
 
-> 31 nodes
+> 30 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **ReactNodeUpgradeAnalyzer** (16 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **.generate_react_node_upgrade_plan()** (9 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **.analyze_node_ecosystem()** (6 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **.analyze_react_ecosystem()** (6 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **._categorize_update()** (6 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **.analyze_build_tools()** (5 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **._assess_node_risk()** (4 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **._assess_react_risk()** (4 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **main()** (3 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **._calculate_priority()** (3 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **._format_build_tools_priority()** (3 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **._format_node_features()** (3 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **._format_react_features()** (3 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **._format_upgrade_opportunities()** (3 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **Any** (3 connections)
-- **react_node_upgrade_analyzer.py** (2 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **.__init__()** (1 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **Analyze Node.js ecosystem upgrade opportunities** (1 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **Specialized analyzer for React/Node.js ecosystem upgrades** (1 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **Analyze build tools and development dependencies** (1 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **Categorize update by semver** (1 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **Assess risk for React ecosystem updates** (1 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **Assess risk for Node.js ecosystem updates** (1 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **Calculate priority score for updates** (1 connections) — `scripts/react_node_upgrade_analyzer.py`
-- **Generate comprehensive React/Node upgrade plan** (1 connections) — `scripts/react_node_upgrade_analyzer.py`
-- *... and 6 more nodes in this community*
+- **NATS Code Review - Branch: feature/sqlite-to-postgresql** (10 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Positive Findings ✅** (5 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Critical Issues 🔴** (4 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **High Priority Issues 🟡** (4 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Medium Priority Issues 🟢** (4 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Recommendations Summary** (4 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Code Quality Issues** (3 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **NATS Code Review** (2 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **10. **Inconsistent Error Handling**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **11. **Missing Input Validation**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **1. **Blocking Operations in Message Handlers** (Anti-pattern violation)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **1. **Excellent Error Boundary Implementation**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **2. **Good Connection State Management**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **2. **Missing Message Acknowledgment** (Anti-pattern violation)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **3. **Connection Pool Not Used by Default** (Inefficiency)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **3. **Proper Async/Await Usage**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **4. **Subject Manager Pattern**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **4. **Subject Naming Inconsistency** (Anti-pattern risk)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **5. **No TLS Configuration** (Security concern)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **6. **Error Handler May Block** (Anti-pattern risk)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **7. **Batch Flush Uses Deprecated Event Loop Method**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **8. **No Connection Health Monitoring**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **9. **Memory Leak Risk in Metrics**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Conclusion** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Executive Summary** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
@@ -37,11 +37,11 @@
 
 ## Source Files
 
-- `scripts/react_node_upgrade_analyzer.py`
+- `docs/archive/NATS_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

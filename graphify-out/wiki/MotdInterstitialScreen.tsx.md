@@ -1,38 +1,40 @@
 # MotdInterstitialScreen.tsx
 
-> 13 nodes
+> 19 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **MotdInterstitialScreen.tsx** (8 connections) — `client/src/components/MotdInterstitialScreen.tsx`
-- **MotdContent.tsx** (7 connections) — `client/src/components/MotdContent.tsx`
-- **MotdContent()** (3 connections) — `client/src/components/MotdContent.tsx`
-- **MotdInterstitialScreen()** (2 connections) — `client/src/components/MotdInterstitialScreen.tsx`
-- **MotdContent.test.tsx** (2 connections) — `client/src/components/__tests__/MotdContent.test.tsx`
-- **MotdInterstitialScreen.test.tsx** (2 connections) — `client/src/components/__tests__/MotdInterstitialScreen.test.tsx`
-- **MotdInterstitialScreen** (2 connections) — `client/src/mythosApp/appLazyScreens.tsx`
-- **MotdInterstitialScreenProps** (1 connections) — `client/src/components/MotdInterstitialScreen.tsx`
-- **MotdCommandsList()** (1 connections) — `client/src/components/MotdContent.tsx`
-- **MotdWelcomeIntro()** (1 connections) — `client/src/components/MotdContent.tsx`
-- **MotdYellowSign()** (1 connections) — `client/src/components/MotdContent.tsx`
-- **YELLOW_SIGN_ASCII** (1 connections) — `client/src/components/MotdContent.tsx`
-- **MOTD_BUTTON_STYLE** (1 connections) — `client/src/components/MotdInterstitialScreen.tsx`
+- **fixtures/shared/__init__.py** (6 connections) — `server/tests/fixtures/shared/__init__.py`
+- **StubPersistence** (6 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Any** (4 connections)
+- **stub_persistence()** (4 connections) — `server/tests/fixtures/shared/__init__.py`
+- **fake_clock()** (3 connections) — `server/tests/fixtures/shared/__init__.py`
+- **make_player_dict()** (3 connections) — `server/tests/fixtures/shared/__init__.py`
+- **make_user_dict()** (3 connections) — `server/tests/fixtures/shared/__init__.py`
+- **.add_player()** (3 connections) — `server/tests/fixtures/shared/__init__.py`
+- **.get_player_by_name()** (3 connections) — `server/tests/fixtures/shared/__init__.py`
+- **fixture** (2 connections)
+- **Shared fixtures and builders for all test tiers.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Create a user dictionary for testing.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Create a player dictionary for testing.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Provide a monotonic counter for time-based tests.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Stub persistence layer for unit tests.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Get a player by name.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Add a player to the stub.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Provide a stub persistence layer.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **.__init__()** (1 connections) — `server/tests/fixtures/shared/__init__.py`
 
 ## Relationships
 
-- [CharacterNameScreen.tsx](CharacterNameScreen.tsx.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/src/components/MotdContent.tsx`
-- `client/src/components/MotdInterstitialScreen.tsx`
-- `client/src/components/__tests__/MotdContent.test.tsx`
-- `client/src/components/__tests__/MotdInterstitialScreen.test.tsx`
-- `client/src/mythosApp/appLazyScreens.tsx`
+- `server/tests/fixtures/shared/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

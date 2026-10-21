@@ -1,12 +1,11 @@
 # emotes.sql
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **emotes.sql** (2 connections) — `db/procedures/emotes.sql`
-- **schema_name.get_emote_aliases()** (1 connections) — `db/procedures/emotes.sql`
-- **schema_name.get_emotes()** (1 connections) — `db/procedures/emotes.sql`
+- **schemas/__init__.py** (1 connections) — `schemas/__init__.py`
+- **Shared JSON schemas for MythosMUD room validation. This package contains JSON…** (1 connections) — `schemas/__init__.py`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `db/procedures/emotes.sql`
+- `schemas/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

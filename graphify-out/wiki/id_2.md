@@ -1,21 +1,21 @@
 # id
 
-> 4 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **id** (4 connections) — `schemas/room_schema.json`
-- **description** (1 connections) — `schemas/room_schema.json`
-- **pattern** (1 connections) — `schemas/room_schema.json`
-- **type** (1 connections) — `schemas/room_schema.json`
+- **Berlin - The Wicked City (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Berlin - The Wicked City.md`
+- **Berlin - The Wicked City.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Berlin - The Wicked City.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Berlin - The Wicked City.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Berlin - The Wicked City.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [test_inventory_commands_helpers.py](test_inventory_commands_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/room_schema.json`
+- `data/MythosMUD-Obsidian/wiki/sources/Berlin - The Wicked City.md`
 
 ## Audit Trail
 

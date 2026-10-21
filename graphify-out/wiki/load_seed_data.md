@@ -1,24 +1,24 @@
 # load_seed_data
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **load_seed_data()** (2 connections) — `scripts/load_seed_via_asyncpg.py`
-- **load_seed_via_asyncpg.py** (1 connections) — `scripts/load_seed_via_asyncpg.py`
-- **Load all seed data files.** (1 connections) — `scripts/load_seed_via_asyncpg.py`
+- **test_validate_room_exists_with_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test validate_room_exists() uses cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [ApplicationContainer Structure Analysis and Domain-Specific Split Proposal](ApplicationContainer_Structure_Analysis_and_Domain-Specific_Split_Proposal.md) (1 shared connections)
+- [test_request_schema_security.py](test_request_schema_security.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/load_seed_via_asyncpg.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

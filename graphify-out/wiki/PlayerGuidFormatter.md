@@ -1,54 +1,51 @@
 # PlayerGuidFormatter
 
-> 57 nodes
+> 60 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **PlayerGuidFormatter** (33 connections) — `server/structured_logging/player_guid_formatter.py`
-- **test_player_guid_formatter.py** (24 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **_player_service_mock()** (11 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **formatter()** (5 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_guid_at_end()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_guid_at_start()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_guid_in_middle()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_guid_with_hyphens()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_multiple_guids()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_player_service_error()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_with_different_log_levels()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_with_guid_player_found()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **player_guid_formatter.py** (4 connections) — `server/structured_logging/player_guid_formatter.py`
-- **._convert_player_guids()** (3 connections) — `server/structured_logging/player_guid_formatter.py`
-- **mock_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_empty_message()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_invalid_guid_format()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_message_with_special_characters()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_no_guids()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_with_guid_no_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_player_guid_formatter_init()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_player_guid_formatter_init_with_format()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_uuid_pattern_case_insensitive()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_uuid_pattern_matching()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_uuid_pattern_not_matching_partial()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- *... and 32 more nodes in this community*
+- **test_windows_safe_rotation.py** (23 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
+- **WindowsSafeRotatingFileHandler** (19 connections) — `server/structured_logging/windows_safe_rotation.py`
+- **Path** (12 connections)
+- **WindowsSafeTimedRotatingFileHandler** (11 connections) — `server/structured_logging/windows_safe_rotation.py`
+- **windows_safe_rotation.py** (7 connections) — `server/structured_logging/windows_safe_rotation.py`
+- **temp_log_dir()** (4 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
+- **temp_log_file()** (4 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
+- **test_windows_safe_rotating_file_handler_do_rollover_no_backup()** (4 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
+- **test_windows_safe_rotating_file_handler_do_rollover_rotates_existing_backups()** (4 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
+- **test_windows_safe_rotating_file_handler_do_rollover_with_backup()** (4 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
+- **test_windows_safe_timed_rotating_file_handler_rotate_fallback_on_error()** (4 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
+- **test_windows_safe_timed_rotating_file_handler_rotate_non_windows_platform()** (4 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
+- **test_windows_safe_timed_rotating_file_handler_rotate_windows_platform()** (4 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
+- **_copy_then_truncate()** (3 connections) — `server/structured_logging/windows_safe_rotation.py`
+- **.doRollover()** (3 connections) — `server/structured_logging/windows_safe_rotation.py`
+- **._rotate_current_log_to_backup_one()** (3 connections) — `server/structured_logging/windows_safe_rotation.py`
+- **._shift_backup_files()** (3 connections) — `server/structured_logging/windows_safe_rotation.py`
+- **test_copy_then_truncate_creates_directory()** (3 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
+- **test_copy_then_truncate_raises_after_retries()** (3 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
+- **test_copy_then_truncate_retries_on_failure()** (3 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
+- **test_copy_then_truncate_success()** (3 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
+- **test_windows_safe_rotating_file_handler_do_rollover_handles_os_error()** (3 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
+- **test_windows_safe_rotating_file_handler_do_rollover_no_stream()** (3 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
+- **test_windows_safe_rotating_file_handler_do_rollover_non_windows_platform()** (3 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
+- **test_windows_safe_rotating_file_handler_do_rollover_windows_platform()** (3 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [test_logging_utilities.py](test_logging_utilities.py.md) (2 shared connections)
-- [auth_rate_limit.py](auth_rate_limit.py.md) (2 shared connections)
-- [test_logging_handlers.py](test_logging_handlers.py.md) (2 shared connections)
-- [lifespan.py](lifespan.py.md) (1 shared connections)
-- [logging_file_setup.py](logging_file_setup.py.md) (1 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
+- [CatalogPage.tsx](CatalogPage.tsx.md) (3 shared connections)
+- [GameClientV2.tsx](GameClientV2.tsx.md) (2 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/player_guid_formatter.py`
-- `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- `server/structured_logging/windows_safe_rotation.py`
+- `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 74 (78%)
-- INFERRED: 21 (22%)
+- EXTRACTED: 92 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

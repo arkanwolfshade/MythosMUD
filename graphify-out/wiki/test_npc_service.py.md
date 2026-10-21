@@ -1,51 +1,35 @@
 # test_npc_service.py
 
-> 88 nodes
+> 13 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **test_npc_service.py** (49 connections) — `server/tests/unit/services/test_npc_service.py`
-- **asyncio** (35 connections)
-- **_mock_result_mappings_all()** (29 connections) — `server/tests/unit/services/test_npc_service.py`
-- **_def_row()** (18 connections) — `server/tests/unit/services/test_npc_service.py`
-- **_spawn_rule_row()** (6 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_spawn_rule_success()** (6 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_npc_definition_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_npc_definition_with_base_stats()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_spawn_rule_invalid_max_population()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_spawn_rule_invalid_min_population()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_delete_npc_definition_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_delete_spawn_rule_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definition_by_name_case_insensitive()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definition_by_name_found()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definition_by_name_not_found()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definition_found()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definitions_by_sub_zone()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definitions_by_type()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definitions_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_spawn_rule_found()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_spawn_rules_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_update_npc_definition_invalid_probability()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_update_npc_definition_invalid_type()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_update_npc_definition_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **npc_service()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- *... and 63 more nodes in this community*
+- **main()** (7 connections) — `scripts/fix_markdownlint_errors.py`
+- **fix_markdownlint_errors.py** (6 connections) — `scripts/fix_markdownlint_errors.py`
+- **fix_md001_heading_increment()** (3 connections) — `scripts/fix_markdownlint_errors.py`
+- **fix_md013_line_length()** (3 connections) — `scripts/fix_markdownlint_errors.py`
+- **fix_md041_first_line_heading()** (3 connections) — `scripts/fix_markdownlint_errors.py`
+- **fix_md051_link_fragments()** (3 connections) — `scripts/fix_markdownlint_errors.py`
+- **parse_errors()** (3 connections) — `scripts/fix_markdownlint_errors.py`
+- **Fix MD001: Heading levels should only increment by one level at a time.** (1 connections) — `scripts/fix_markdownlint_errors.py`
+- **Parse markdownlint output file and extract errors.** (1 connections) — `scripts/fix_markdownlint_errors.py`
+- **Fix MD013: Line length issues by wrapping long lines.** (1 connections) — `scripts/fix_markdownlint_errors.py`
+- **Fix MD051: Link fragments should be valid.** (1 connections) — `scripts/fix_markdownlint_errors.py`
+- **Main function to fix markdownlint errors.** (1 connections) — `scripts/fix_markdownlint_errors.py`
+- **Fix MD041: First line should be a top-level heading.** (1 connections) — `scripts/fix_markdownlint_errors.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [NPCService](NPCService.md) (3 shared connections)
-- [EventBus](EventBus.md) (2 shared connections)
-- [NPCSpawnRule](NPCSpawnRule.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_service.py`
+- `scripts/fix_markdownlint_errors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 179 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 17 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

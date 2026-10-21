@@ -1,28 +1,25 @@
 # test_lint_imports.py
 
-> 19 nodes
+> 16 nodes · cohesion 0.14
 
 ## Key Concepts
 
-- **test_lint_imports.py** (11 connections) — `server/tests/unit/scripts/test_lint_imports.py`
-- **_LintImportsModule** (7 connections) — `server/tests/unit/scripts/test_lint_imports.py`
-- **_load_module()** (7 connections) — `server/tests/unit/scripts/test_lint_imports.py`
-- **test_broken_contract_count_parses_summary()** (2 connections) — `server/tests/unit/scripts/test_lint_imports.py`
-- **test_broken_contract_names_parses_broken_lines()** (2 connections) — `server/tests/unit/scripts/test_lint_imports.py`
-- **test_lint_imports_failed_on_broken_summary_even_with_zero_exit()** (2 connections) — `server/tests/unit/scripts/test_lint_imports.py`
-- **test_lint_imports_failed_on_nonzero_exit()** (2 connections) — `server/tests/unit/scripts/test_lint_imports.py`
-- **test_lint_imports_ok_on_kept_contracts()** (2 connections) — `server/tests/unit/scripts/test_lint_imports.py`
-- **test_lint_imports_subprocess_calls_decode_as_utf8()** (2 connections) — `server/tests/unit/scripts/test_lint_imports.py`
-- **test_utf8_env_forces_child_encoding_regardless_of_host_console()** (2 connections) — `server/tests/unit/scripts/test_lint_imports.py`
-- **.broken_contract_count()** (1 connections) — `server/tests/unit/scripts/test_lint_imports.py`
-- **.broken_contract_names()** (1 connections) — `server/tests/unit/scripts/test_lint_imports.py`
-- **.lint_imports_failed()** (1 connections) — `server/tests/unit/scripts/test_lint_imports.py`
-- **test_makefile_runs_lint_imports_early_in_all()** (1 connections) — `server/tests/unit/scripts/test_lint_imports.py`
-- **Protocol** (1 connections)
-- **Tests for scripts/lint_imports.py ADR-001 wrapper.** (1 connections) — `server/tests/unit/scripts/test_lint_imports.py`
-- **Shape of scripts/lint_imports.py, loaded dynamically below (not a static…** (1 connections) — `server/tests/unit/scripts/test_lint_imports.py`
-- **import-linter's rich progress spinner renders emoji; on a non-UTF-8 Windows…** (1 connections) — `server/tests/unit/scripts/test_lint_imports.py`
-- **The parent must decode the child's output as UTF-8 too --…** (1 connections) — `server/tests/unit/scripts/test_lint_imports.py`
+- **Codebase Explorer Subagent** (10 connections) — `.claude/agents/codebase-explorer.md`
+- **Capabilities** (5 connections) — `.claude/agents/codebase-explorer.md`
+- **Example Scenarios** (4 connections) — `.claude/agents/codebase-explorer.md`
+- **Architecture Analysis** (2 connections) — `.claude/agents/codebase-explorer.md`
+- **Dependency Research** (2 connections) — `.claude/agents/codebase-explorer.md`
+- **codebase-explorer.md** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Best Practices** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Finding All Implementations** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Integration** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Methodology** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Notes** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Output Format** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Parallel Exploration** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Pattern Discovery** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Purpose** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Usage** (1 connections) — `.claude/agents/codebase-explorer.md`
 
 ## Relationships
 
@@ -30,11 +27,11 @@
 
 ## Source Files
 
-- `server/tests/unit/scripts/test_lint_imports.py`
+- `.claude/agents/codebase-explorer.md`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

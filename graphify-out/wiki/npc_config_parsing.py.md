@@ -1,52 +1,41 @@
 # npc_config_parsing.py
 
-> 40 nodes
+> 20 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **npc_config_parsing.py** (14 connections) — `server/npc/npc_config_parsing.py`
-- **.__init__()** (11 connections) — `server/npc/npc_base.py`
-- **get_combat_stats_dict()** (7 connections) — `server/npc/npc_config_parsing.py`
-- **to_int_or_default()** (7 connections) — `server/npc/npc_config_parsing.py`
-- **._register_reactions_and_chat_name()** (5 connections) — `server/npc/npc_base.py`
-- **normalize_determination_points()** (5 connections) — `server/npc/npc_config_parsing.py`
-- **parse_behavior_config()** (5 connections) — `server/npc/npc_config_parsing.py`
-- **_safe_stat_int()** (5 connections) — `server/npc/npc_config_parsing.py`
-- **._apply_definition_attributes()** (4 connections) — `server/npc/npc_base.py`
-- **.heal()** (4 connections) — `server/npc/npc_base.py`
-- **._safe_get()** (4 connections) — `server/npc/npc_base.py`
-- **_compute_max_dp()** (4 connections) — `server/npc/npc_config_parsing.py`
-- **parse_ai_config()** (4 connections) — `server/npc/npc_config_parsing.py`
-- **parse_stats()** (4 connections) — `server/npc/npc_config_parsing.py`
-- **.get_combat_stats()** (3 connections) — `server/npc/npc_base.py`
-- **._safe_stat_int()** (3 connections) — `server/npc/npc_base.py`
-- **._setup_base_behavior_rules()** (3 connections) — `server/npc/npc_base.py`
-- **._sync_dp_stats()** (3 connections) — `server/npc/npc_base.py`
-- **apply_dp_from_source()** (3 connections) — `server/npc/npc_config_parsing.py`
-- **apply_idle_movement_defaults()** (3 connections) — `server/npc/npc_config_parsing.py`
-- **Get attribute from obj with default to avoid lazy-loading issues.** (1 connections) — `server/npc/npc_base.py`
-- **Set npc_type, name, current_room, spawn_room_id from definition.** (1 connections) — `server/npc/npc_base.py`
-- **Setup base behavior rules common to all NPCs.** (1 connections) — `server/npc/npc_base.py`
-- **Return stats[key] as int, or default if missing/None.** (1 connections) — `server/npc/npc_base.py`
-- **Return current_dp, max_dp, dexterity for CombatParticipantData.** (1 connections) — `server/npc/npc_base.py`
-- *... and 15 more nodes in this community*
+- **Phase 2: Qualitative Analysis Results** (30 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **2.1 Regression Test Audit (★★★★★ HIGH VALUE)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **2.2 Integration Test Analysis (★★★★☆ HIGH-MEDIUM VALUE)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **2.3 Coverage Test Review (★★☆☆☆ MEDIUM-LOW VALUE)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **2.4 Unit Test Pattern Analysis (★★★☆☆ MIXED VALUE)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **2.5 Infrastructure Test Review (★☆☆☆☆ LOW VALUE)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **2.6 E2E Test Analysis (★★★★★ HIGH VALUE)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **2.7 Security Test Analysis (★★★★★ HIGH VALUE)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Assessment** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Breakdown by Subdomain** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Estimated Value:****100% HIGH-VALUE** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Estimated Value:****20% MEDIUM-VALUE, 80% LOW-VALUE** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Estimated Value:****30% MEDIUM-VALUE, 70% LOW-VALUE** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Estimated Value:****70% HIGH-VALUE, 30% MEDIUM-VALUE** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Example Low-Value Tests** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Explicit Coverage Goals** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Files Audited** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **High-Value Integration Tests (Est. 390 tests)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Medium-Value Integration Tests (Est. 164 tests)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Pattern Analysis** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Relationships
 
-- [EventBus](EventBus.md) (16 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [BehaviorEngine](BehaviorEngine.md) (1 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (1 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (1 shared connections)
+- [✨ Key Achievements](✨_Key_Achievements.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/npc_base.py`
-- `server/npc/npc_config_parsing.py`
+- `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 71 (100%)
+- EXTRACTED: 30 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

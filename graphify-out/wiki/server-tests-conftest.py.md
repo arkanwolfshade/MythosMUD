@@ -1,49 +1,53 @@
 # server/tests/conftest.py
 
-> 31 nodes
+> 31 nodes · cohesion 0.14
 
 ## Key Concepts
 
-- **server/tests/conftest.py** (15 connections) — `server/tests/conftest.py`
-- **pytest_asyncio_loop_factories()** (6 connections) — `server/tests/conftest.py`
-- **_apply_path_based_markers()** (5 connections) — `server/tests/conftest.py`
-- **test_logger()** (5 connections) — `server/tests/conftest.py`
-- **_abortive_close_socketpair()** (4 connections) — `server/tests/conftest.py`
-- **_create_test_event_loop()** (4 connections) — `server/tests/conftest.py`
-- **pytest_collection_modifyitems()** (4 connections) — `server/tests/conftest.py`
-- **reset_config_singleton()** (4 connections) — `server/tests/conftest.py`
-- **fixture** (4 connections)
-- **deterministic_random_seed()** (3 connections) — `server/tests/conftest.py`
-- **ensure_test_environment_variables()** (3 connections) — `server/tests/conftest.py`
-- **_test_file_in_category()** (3 connections) — `server/tests/conftest.py`
-- **Item** (3 connections)
-- **_get_db_name_from_url()** (2 connections) — `server/tests/conftest.py`
-- **AbstractEventLoop** (2 connections)
-- **Config** (1 connections)
-- **P** (1 connections)
-- **BoundLogger** (1 connections)
-- **_SocketPair** (1 connections)
-- **Test configuration and fixtures for MythosMUD greenfield test suite. This…** (1 connections) — `server/tests/conftest.py`
-- **Reset config singleton before and after each test. In test mode, get_config()…** (1 connections) — `server/tests/conftest.py`
-- **Set deterministic random seed for reproducible tests.** (1 connections) — `server/tests/conftest.py`
-- **Wrap socket.socketpair() so both ends close with an RST (no TIME_WAIT); the…** (1 connections) — `server/tests/conftest.py`
-- **Create an event loop suitable for MythosMUD tests. CRITICAL: On Windows,…** (1 connections) — `server/tests/conftest.py`
-- **Register platform-appropriate loop factories for pytest-asyncio (Python 3.14+…** (1 connections) — `server/tests/conftest.py`
+- **PlayerPreferencesService** (19 connections) — `server/services/player_preferences_service.py`
+- **._is_valid_player_id()** (11 connections) — `server/services/player_preferences_service.py`
+- **UUID** (10 connections)
+- **player_preferences_service.py** (9 connections) — `server/services/player_preferences_service.py`
+- **Any** (8 connections)
+- **AsyncSession** (8 connections)
+- **.create_player_preferences()** (7 connections) — `server/services/player_preferences_service.py`
+- **.is_channel_muted()** (7 connections) — `server/services/player_preferences_service.py`
+- **.mute_channel()** (7 connections) — `server/services/player_preferences_service.py`
+- **.unmute_channel()** (7 connections) — `server/services/player_preferences_service.py`
+- **.update_default_channel()** (7 connections) — `server/services/player_preferences_service.py`
+- **.delete_player_preferences()** (6 connections) — `server/services/player_preferences_service.py`
+- **.get_muted_channels()** (6 connections) — `server/services/player_preferences_service.py`
+- **.get_player_preferences()** (6 connections) — `server/services/player_preferences_service.py`
+- **._is_valid_channel()** (6 connections) — `server/services/player_preferences_service.py`
+- **.__init__()** (2 connections) — `server/services/player_preferences_service.py`
+- **._is_valid_json_array()** (2 connections) — `server/services/player_preferences_service.py`
+- **Player Preferences Service for Advanced Chat Channels. This module provides…** (1 connections) — `server/services/player_preferences_service.py`
+- **Get preferences for a player. Args: session: Database session player_id: The…** (1 connections) — `server/services/player_preferences_service.py`
+- **Update a player's default channel. Args: session: Database session player_id:…** (1 connections) — `server/services/player_preferences_service.py`
+- **Mute a channel for a player. Args: session: Database session player_id: The…** (1 connections) — `server/services/player_preferences_service.py`
+- **Unmute a channel for a player. Args: session: Database session player_id: The…** (1 connections) — `server/services/player_preferences_service.py`
+- **Service for managing player channel preferences. This service handles: - Player…** (1 connections) — `server/services/player_preferences_service.py`
+- **Get list of muted channels for a player. Args: session: Database session…** (1 connections) — `server/services/player_preferences_service.py`
+- **Check if a specific channel is muted for a player. Args: session: Database…** (1 connections) — `server/services/player_preferences_service.py`
 - *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
+- [test_connection_event_helpers.py](test_connection_event_helpers.py.md) (3 shared connections)
+- [correct_patterns.py](correct_patterns.py.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [MessageQueue](MessageQueue.md) (2 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (1 shared connections)
+- [compilerOptions](compilerOptions.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/conftest.py`
+- `server/services/player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 75 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

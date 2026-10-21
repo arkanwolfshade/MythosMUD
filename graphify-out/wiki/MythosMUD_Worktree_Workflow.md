@@ -1,10 +1,10 @@
 # MythosMUD Worktree Workflow
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **MythosMUD Worktree Workflow** (0 connections) — `.cursor/skills/mythosmud-worktree-workflow/SKILL.md`
+- **start_monitoring.ps1** (0 connections) — `scripts/start_monitoring.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-worktree-workflow/SKILL.md`
+- `scripts/start_monitoring.ps1`
 
 ## Audit Trail
 

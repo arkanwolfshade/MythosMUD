@@ -1,44 +1,43 @@
 # Documentation Updates - ConnectionManager Refactoring
 
-> 23 nodes
+> 22 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **Documentation Updates - ConnectionManager Refactoring** (9 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
-- **Documents Updated** (7 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
-- **Benefits of Documentation Updates** (5 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
-- **Files NOT Requiring Updates** (4 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
-- **Next Steps** (2 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
-- **1. **Accurate Reference Material**** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
-- **✅ 1. `REAL_TIME_ARCHITECTURE.md`** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
-- **✅ 2. `CONNECTION_MANAGER_ARCHITECTURE.md` (NEW)** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
-- **2. **Reduced Confusion**** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
-- **3. **Better Onboarding**** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
-- **✅ 3. `WEBSOCKET_CODE_REVIEW.md`** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
-- **✅ 4. `DEVELOPMENT_AI.md`** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
-- **4. **Historical Record**** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
-- **✅ 5. `REFACTORING_SUMMARY.md` (Created Earlier)** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
-- **✅ 6. `.cursor/plans/connection-manager-refactor_b94299a2.plan.md`** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
-- **Documentation Structure** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
-- **ℹ️ Archive Documents** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
-- **ℹ️ Other Architecture Docs** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
-- **ℹ️ Test Documentation** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
-- **Optional Future Documentation Work** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
-- **References** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
-- **Summary** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
-- **Validation** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **test_logging_file_categories.py** (14 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
+- **_reset_logger()** (5 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
+- **test_combat_loggers_still_get_debug_level_in_e2e_test()** (4 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
+- **test_npc_loggers_keep_debug_level_in_local_environment()** (4 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
+- **test_npc_loggers_suppressed_to_info_in_e2e_test_regardless_of_debug_level()** (4 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
+- **test_inventory_category_also_catches_equip_unequip_command_logs()** (3 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
+- **test_inventory_category_covers_every_container_and_inventory_service_module()** (3 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
+- **test_realtime_module_loggers_match_communications_category()** (3 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
+- **test_infrastructure_category_removed()** (2 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
+- **test_no_category_still_references_infrastructure_module()** (2 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
+- **test_persistence_category_does_not_reference_deleted_persistence_layer_class()** (2 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
+- **Unit tests for DEFAULT_LOG_CATEGORIES. Regression coverage for #687: the…** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
+- **Undo add_handler_to_loggers' effects on both loggers it touches for a given…** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
+- **#297/#610: NPC behavior-engine/threading debug lines fire continuously enough…** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
+- **The e2e-only suppression must not leak into local development, where full NPC…** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
+- **Regression guard: the new npc-specific e2e branch must not shadow the existing…** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
+- **No "infrastructure" category: server/infrastructure/ (its only logger source)…** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
+- **No surviving category's logger-name list should point at the deleted…** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
+- **#60 audit: the sync `PersistenceLayer` class was deleted 2025-12-08…** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
+- **#297: get_logger(__name__) in server/realtime/*.py produces…** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
+- **#688: DEFAULT_LOG_CATEGORIES["inventory"] must list every server/services/…** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
+- **#688: server/commands/inventory_equip_command.py and…** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
 
 ## Relationships
 
-- [DOCUMENTATION_AUDIT.md](DOCUMENTATION_AUDIT.md.md) (1 shared connections)
+- [GameClientV2.tsx](GameClientV2.tsx.md) (9 shared connections)
 
 ## Source Files
 
-- `docs/archive/DOCUMENTATION_UPDATES.md`
+- `server/tests/unit/structured_logging/test_logging_file_categories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

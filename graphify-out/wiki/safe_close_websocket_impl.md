@@ -1,51 +1,35 @@
 # safe_close_websocket_impl
 
-> 24 nodes
+> 12 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **safe_close_websocket_impl()** (13 connections) — `server/realtime/connection_websocket_close.py`
-- **is_websocket_open_impl()** (7 connections) — `server/realtime/connection_websocket_close.py`
-- **connection_websocket_close.py** (7 connections) — `server/realtime/connection_websocket_close.py`
-- **_CloseableWebSocketManager** (5 connections) — `server/realtime/connection_websocket_close.py`
-- **.connect_websocket()** (5 connections) — `server/realtime/connection_manager.py`
-- **._is_websocket_open()** (4 connections) — `server/realtime/connection_manager.py`
-- **._safe_close_websocket()** (4 connections) — `server/realtime/connection_manager.py`
-- **WebSocket** (4 connections)
-- **.get_connection_id_from_websocket()** (3 connections) — `server/realtime/connection_manager.py`
-- **test_safe_close_websocket_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
-- **.is_websocket_closed()** (2 connections) — `server/realtime/connection_websocket_close.py`
-- **.mark_websocket_closed()** (2 connections) — `server/realtime/connection_websocket_close.py`
-- **test_is_websocket_open_impl()** (2 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
-- **WebSocket** (2 connections)
-- **Protocol** (1 connections)
-- **Check if a WebSocket is open.** (1 connections) — `server/realtime/connection_manager.py`
-- **Safely close a WebSocket connection.** (1 connections) — `server/realtime/connection_manager.py`
-- **Connect a WebSocket for a player.** (1 connections) — `server/realtime/connection_manager.py`
-- **Get connection ID from a WebSocket instance.** (1 connections) — `server/realtime/connection_manager.py`
-- **Safe WebSocket close helpers for connection management. Leaf module: no imports…** (1 connections) — `server/realtime/connection_websocket_close.py`
-- **Return True if this WebSocket id was already marked closed.** (1 connections) — `server/realtime/connection_websocket_close.py`
-- **Record that this WebSocket id has been closed.** (1 connections) — `server/realtime/connection_websocket_close.py`
-- **Check if a WebSocket is open.** (1 connections) — `server/realtime/connection_websocket_close.py`
-- **Safely close a WebSocket connection.** (1 connections) — `server/realtime/connection_websocket_close.py`
+- **Complexity Checking Alignment: Ruff C901 vs Pylint** (9 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Recommended Strategy** (4 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Current State Analysis** (3 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Key Differences** (2 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **1. Use Ruff for Cyclomatic Complexity ✅** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **2. Suppress Pylint Complexity Metrics ✅** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **3. Align Inline Suppressions** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Conclusion** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Example Comparison** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Executive Summary** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Pylint R0911-R0915 Findings** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Ruff C901 Findings** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
 
 ## Relationships
 
-- [MessageQueue](MessageQueue.md) (6 shared connections)
-- [ConnectionManager](ConnectionManager.md) (5 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [test_connection_establishment.py](test_connection_establishment.py.md) (1 shared connections)
+- [CatatoniaRegistry](CatatoniaRegistry.md) (2 shared connections)
+- [required](required.md) (1 shared connections)
+- [holiday](holiday.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_manager.py`
-- `server/realtime/connection_websocket_close.py`
-- `server/tests/unit/realtime/test_connection_manager_methods.py`
+- `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

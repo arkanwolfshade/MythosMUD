@@ -1,46 +1,34 @@
 # enum
 
-> 23 nodes
+> 13 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **enum** (21 connections) — `schemas/items/item_prototype.schema.json`
-- **flags** (4 connections) — `schemas/items/item_prototype.schema.json`
-- **items** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **uniqueItems** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **ACCESSORY** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **AMULET** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **BELT** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **CURSED** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **FEET** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **GLOW** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **HANDS** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **HEAD** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **LEGS** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **MAGICAL** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **MAIN_HAND** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **NO_DROP** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **NO_SALE** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **OFF_HAND** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **QUEST_ITEM** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **RING** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **SOULBOUND** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **TORSO** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **compilerOptions** (11 connections) — `client/tests/e2e/tsconfig.json`
+- **typeRoots** (2 connections) — `client/tests/e2e/tsconfig.json`
+- **types** (2 connections) — `client/tests/e2e/tsconfig.json`
+- **allowImportingTsExtensions** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **composite** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **declarationDir** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **emitDeclarationOnly** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **noEmit** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **noUnusedLocals** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **rootDir** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **tsBuildInfoFile** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **node** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **../../node_modules/@types** (1 connections) — `client/tests/e2e/tsconfig.json`
 
 ## Relationships
 
-- [type](type.md) (2 shared connections)
-- [enum](enum_2.md) (1 shared connections)
-- [properties](properties.md) (1 shared connections)
+- [Phase 2: High Priority Fixes (Week 2-3) - PERFORMANCE](Phase_2-_High_Priority_Fixes_Week_2-3_-_PERFORMANCE.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/items/item_prototype.schema.json`
+- `client/tests/e2e/tsconfig.json`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

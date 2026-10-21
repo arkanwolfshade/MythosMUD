@@ -1,34 +1,32 @@
 # Easy Coverage Wins - Quick Analysis
 
-> 13 nodes
+> 11 nodes · cohesion 0.27
 
 ## Key Concepts
 
-- **Easy Coverage Wins - Quick Analysis** (9 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **📊 Recommended Priority Order** (4 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **🎉 Summary** (2 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **🚀 Next Steps** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **Phase 1: Quick Wins (Tier 1 + Tier 2) ✅ COMPLETED** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **Phase 2: Medium Effort (Tier 3) ✅ COMPLETED** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **Phase 3: New Small Files (Tier 4) ✅ COMPLETED** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **Phase 4: Additional Realtime Files 🔄 IN PROGRESS** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **🎯 Tier 1: 0% Coverage - Small Files (Easiest Wins) ✅ COMPLETED** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **🎯 Tier 2: Close to 70% (Quick Top-Ups) ✅ COMPLETED** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **🎯 Tier 3: Medium Files with Low Coverage ✅ COMPLETED** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **🎯 Tier 4: New Easy Wins (Small Realtime Files) ✅ COMPLETED** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **💡 Why These Are Easy Wins** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
+- **main()** (6 connections) — `.cursor/hooks/trigger_test_agent.py`
+- **.cursor/hooks/trigger_test_agent.py** (4 connections) — `.cursor/hooks/trigger_test_agent.py`
+- **_exit_empty()** (4 connections) — `.cursor/hooks/trigger_test_agent.py`
+- **_load_state()** (4 connections) — `.cursor/hooks/trigger_test_agent.py`
+- **_write_state_atomic()** (4 connections) — `.cursor/hooks/trigger_test_agent.py`
+- **Path** (3 connections)
+- **NoReturn** (1 connections)
+- **Print empty JSON and exit successfully (no followup).** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
+- **Load and validate edited-files state. Returns None if missing or invalid.** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
+- **Write state via a same-directory temp file + os.replace. See…** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
+- **Entry point: read hook payload from stdin, check edited-files state, and…** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
 
 ## Relationships
 
-- [Easy Coverage Wins](Easy_Coverage_Wins.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/EASY_COVERAGE_WINS.md`
+- `.cursor/hooks/trigger_test_agent.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

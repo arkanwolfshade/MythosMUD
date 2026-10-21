@@ -1,58 +1,64 @@
 # combat_taunt.py
 
-> 65 nodes
+> 76 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **combat_taunt.py** (29 connections) — `server/commands/combat_taunt.py`
-- **TauntCommandHandler** (28 connections) — `server/commands/combat_taunt.py`
-- **test_combat_taunt.py** (27 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **run_handle_taunt_command()** (13 connections) — `server/commands/combat_taunt.py`
-- **_validate_taunt_context()** (12 connections) — `server/commands/combat_taunt.py`
-- **_queue_taunt()** (10 connections) — `server/commands/combat_taunt.py`
-- **_resolve_taunt_combat_and_participant()** (9 connections) — `server/commands/combat_taunt.py`
-- **_validate_taunt_target()** (8 connections) — `server/commands/combat_taunt.py`
-- **test_run_handle_taunt_success_queues_the_taunt_as_the_rounds_action()** (8 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **_ghoul_fight()** (7 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_queue_taunt_replaces_whatever_was_already_queued_for_the_round()** (7 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **_resolve_taunt_room_and_player()** (6 connections) — `server/commands/combat_taunt.py`
-- **test_run_handle_taunt_no_combat_service()** (6 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_run_handle_taunt_not_in_combat()** (6 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **asyncio** (6 connections)
-- **_validate_taunt_target_name()** (5 connections) — `server/commands/combat_taunt.py`
-- **_handler_with()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_queue_taunt_reports_a_failed_queue()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_queue_taunt_without_a_combat_service()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_validate_taunt_target_dead()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_validate_taunt_target_not_npc()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **UUID** (5 connections)
-- **_RoomWithIdOnly** (4 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **mock_handler()** (4 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_resolve_taunt_room_and_player_falls_back_to_id()** (4 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- *... and 40 more nodes in this community*
+- **database.py** (89 connections) — `server/database.py`
+- **database_config_helpers.py** (24 connections) — `server/database_config_helpers.py`
+- **fixtures/integration/__init__.py** (23 connections) — `server/tests/fixtures/integration/__init__.py`
+- **._initialize_database()** (15 connections) — `server/database.py`
+- **generate_invites_db.py** (14 connections) — `tools/invite_tools/generate_invites_db.py`
+- **db_cleanup()** (13 connections) — `server/tests/fixtures/integration/__init__.py`
+- **get_postgres_connect_args()** (9 connections) — `server/database_config_helpers.py`
+- **set_test_database_url()** (9 connections) — `server/database_config_helpers.py`
+- **_create_engine_or_raise()** (8 connections) — `server/database.py`
+- **_delete_mutable_integration_test_rows()** (8 connections) — `server/tests/fixtures/integration/__init__.py`
+- **test_cleanup_deletes_rows_from_mutable_tables()** (8 connections) — `server/tests/integration/test_integration_cleanup.py`
+- **load_database_url()** (7 connections) — `server/database_config_helpers.py`
+- **_assert_allowed_integration_test_db()** (7 connections) — `server/tests/fixtures/integration/__init__.py`
+- **integration_engine()** (7 connections) — `server/tests/fixtures/integration/__init__.py`
+- **main()** (7 connections) — `tools/invite_tools/generate_invites_db.py`
+- **get_test_database_url()** (6 connections) — `server/database_config_helpers.py`
+- **normalize_database_url()** (6 connections) — `server/database_config_helpers.py`
+- **validate_database_url()** (6 connections) — `server/database_config_helpers.py`
+- **db.py** (6 connections) — `server/tests/fixtures/integration/db.py`
+- **integration_db_url()** (6 connections) — `server/tests/fixtures/integration/__init__.py`
+- **create_invite_in_db()** (6 connections) — `tools/invite_tools/generate_invites_db.py`
+- **configure_pool_settings()** (5 connections) — `server/database_config_helpers.py`
+- **.get_session_maker()** (5 connections) — `server/database.py`
+- **_sync_test_url_state()** (5 connections) — `server/database.py`
+- **fresh_database_manager()** (5 connections) — `server/tests/fixtures/integration/__init__.py`
+- *... and 51 more nodes in this community*
 
 ## Relationships
 
-- [CombatService](CombatService.md) (12 shared connections)
-- [TargetMatch](TargetMatch.md) (11 shared connections)
-- [CombatParticipant](CombatParticipant.md) (9 shared connections)
-- [CombatInstance](CombatInstance.md) (7 shared connections)
-- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (5 shared connections)
-- [TargetType](TargetType.md) (4 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
-- [AliasStorage](AliasStorage.md) (3 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (2 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
+- [endpoints.py](endpoints.py.md) (23 shared connections)
+- [ItemFactory](ItemFactory.md) (12 shared connections)
+- [AttributeError](AttributeError.md) (9 shared connections)
+- [CombatBroadcastMixin](CombatBroadcastMixin.md) (8 shared connections)
+- [RateLimiter](RateLimiter.md) (7 shared connections)
+- [Room](Room.md) (6 shared connections)
+- [🔴 CRITICAL ISSUES](🔴_CRITICAL_ISSUES.md) (6 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (5 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (5 shared connections)
+- [InventoryPanel.tsx](InventoryPanel.tsx.md) (5 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (4 shared connections)
+- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (4 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_taunt.py`
-- `server/tests/unit/commands/test_combat_taunt.py`
+- `server/database.py`
+- `server/database_config_helpers.py`
+- `server/tests/fixtures/integration/__init__.py`
+- `server/tests/fixtures/integration/db.py`
+- `server/tests/integration/test_integration_cleanup.py`
+- `tools/invite_tools/generate_invites_db.py`
 
 ## Audit Trail
 
-- EXTRACTED: 151 (88%)
-- INFERRED: 21 (12%)
+- EXTRACTED: 263 (96%)
+- INFERRED: 11 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

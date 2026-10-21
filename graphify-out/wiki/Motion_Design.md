@@ -1,29 +1,27 @@
 # Motion Design
 
-> 8 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **Motion Design** (8 connections) — `.claude/skills/frontend-design/reference/motion-design.md`
-- **Duration: The 100/300/500 Rule** (1 connections) — `.claude/skills/frontend-design/reference/motion-design.md`
-- **Easing: Pick the Right Curve** (1 connections) — `.claude/skills/frontend-design/reference/motion-design.md`
-- **Perceived Performance** (1 connections) — `.claude/skills/frontend-design/reference/motion-design.md`
-- **Performance** (1 connections) — `.claude/skills/frontend-design/reference/motion-design.md`
-- **Reduced Motion** (1 connections) — `.claude/skills/frontend-design/reference/motion-design.md`
-- **Staggered Animations** (1 connections) — `.claude/skills/frontend-design/reference/motion-design.md`
-- **The Only Two Properties You Should Animate** (1 connections) — `.claude/skills/frontend-design/reference/motion-design.md`
+- **player_aliases.sql** (5 connections) — `db/procedures/player_aliases.sql`
+- **schema_name.upsert_player_alias()** (2 connections) — `db/procedures/player_aliases.sql`
+- **schema_name.delete_player_alias()** (1 connections) — `db/procedures/player_aliases.sql`
+- **schema_name.delete_player_aliases_by_id()** (1 connections) — `db/procedures/player_aliases.sql`
+- **schema_name.get_player_alias()** (1 connections) — `db/procedures/player_aliases.sql`
+- **schema_name.get_player_aliases()** (1 connections) — `db/procedures/player_aliases.sql`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- [packages/README.md](packages-README.md.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/frontend-design/reference/motion-design.md`
+- `db/procedures/player_aliases.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,10 +1,10 @@
 # Client Layout Baseline
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Client Layout Baseline** (0 connections) — `docs/CLIENT_LAYOUT_BASELINE.md`
+- **MythosMUD Full-Stack Feature** (0 connections) — `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/CLIENT_LAYOUT_BASELINE.md`
+- `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
 
 ## Audit Trail
 

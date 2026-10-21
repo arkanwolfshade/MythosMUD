@@ -1,61 +1,65 @@
 # test_container_persistence_extended_row_helpers.py
 
-> 80 nodes
+> 204 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **test_container_persistence_extended_row_helpers.py** (55 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
-- **container_persistence.py** (54 connections) — `server/persistence/container_persistence.py`
-- **persistence/container_helpers.py** (24 connections) — `server/persistence/container_helpers.py`
-- **_container_data_from_row()** (20 connections) — `server/persistence/container_persistence.py`
-- **delete_container()** (13 connections) — `server/persistence/container_persistence.py`
-- **parse_jsonb_column()** (11 connections) — `server/persistence/container_helpers.py`
-- **_insert_container_row()** (10 connections) — `server/persistence/container_persistence.py`
-- **UUID** (10 connections)
-- **fetch_container_items()** (9 connections) — `server/persistence/container_helpers.py`
-- **_seed_new_container_items()** (9 connections) — `server/persistence/container_persistence.py`
-- **update_container_items()** (8 connections) — `server/persistence/container_helpers.py`
-- **_run_container_update_execute()** (8 connections) — `server/persistence/container_persistence.py`
-- **_InsertBindSource** (7 connections) — `server/persistence/container_persistence.py`
-- **_coerce_row_quantity()** (7 connections) — `server/persistence/container_helpers.py`
-- **_CreateOutcome** (6 connections) — `server/persistence/container_persistence.py`
-- **_as_opt_datetime()** (6 connections) — `server/persistence/container_persistence.py`
-- **_as_uuid()** (6 connections) — `server/persistence/container_persistence.py`
-- **_metadata_from_row()** (6 connections) — `server/persistence/container_persistence.py`
-- **_validate_new_container_params()** (6 connections) — `server/persistence/container_persistence.py`
-- **_item_dict_from_contents_row()** (5 connections) — `server/persistence/container_helpers.py`
-- **_allowed_roles_from_row()** (5 connections) — `server/persistence/container_persistence.py`
-- **_as_opt_uuid()** (5 connections) — `server/persistence/container_persistence.py`
-- **_fetch_container_row_dict()** (5 connections) — `server/persistence/container_persistence.py`
-- **_insert_bind_tuple()** (5 connections) — `server/persistence/container_persistence.py`
-- **test_insert_container_row_raises_when_no_row_returned()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
-- *... and 55 more nodes in this community*
+- **test_movement_service.py** (72 connections) — `server/tests/unit/game/test_movement_service.py`
+- **movement_service.py** (47 connections) — `server/game/movement_service.py`
+- **InstanceManager** (41 connections) — `server/game/instance_manager.py`
+- **instance_manager.py** (30 connections) — `server/game/instance_manager.py`
+- **asyncio** (29 connections)
+- **test_instance_manager.py** (25 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **instance_flush_service.py** (20 connections) — `server/services/instance_flush_service.py`
+- **is_template_room()** (19 connections) — `server/game/instance_manager.py`
+- **movement_helpers.py** (17 connections) — `server/game/movement_helpers.py`
+- **TemplateRoomEntryError** (15 connections) — `server/game/instance_manager.py`
+- **_exit_hook_setup()** (13 connections) — `server/tests/unit/game/test_movement_service.py`
+- **validate_exit()** (11 connections) — `server/game/movement_helpers.py`
+- **validate_player_room_membership()** (11 connections) — `server/game/movement_helpers.py`
+- **check_combat_state()** (10 connections) — `server/game/movement_helpers.py`
+- **.create_instance()** (8 connections) — `server/game/instance_manager.py`
+- **Room** (8 connections)
+- **template_id_of()** (8 connections) — `server/game/instance_manager.py`
+- **check_player_posture()** (8 connections) — `server/game/movement_helpers.py`
+- **template_exit_room_id()** (7 connections) — `server/game/instance_manager.py`
+- **instance_manager()** (7 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **test_template_id_of_and_exit_room()** (7 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **._build_instance_rooms()** (6 connections) — `server/game/instance_manager.py`
+- **.__init__()** (6 connections) — `server/game/instance_manager.py`
+- **extract_player_id()** (6 connections) — `server/game/movement_helpers.py`
+- **Room** (6 connections)
+- *... and 179 more nodes in this community*
 
 ## Relationships
 
-- [ContainerData](ContainerData.md) (49 shared connections)
-- [get_logger](get_logger.md) (24 shared connections)
-- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (7 shared connections)
-- [server/persistence/__init__.py](server-persistence-__init__.py.md) (6 shared connections)
-- [container_query_helpers.py](container_query_helpers.py.md) (5 shared connections)
-- [ValidationError](ValidationError.md) (4 shared connections)
-- [ContainerCreateParams](ContainerCreateParams.md) (4 shared connections)
-- [coerce_int](coerce_int.md) (3 shared connections)
-- [container_query_helpers_async.py](container_query_helpers_async.py.md) (3 shared connections)
-- [test_persistence_container_persistence.py](test_persistence_container_persistence.py.md) (1 shared connections)
-- [test_container_persistence_sql_injection.py](test_container_persistence_sql_injection.py.md) (1 shared connections)
+- [_find_item_in_equipped](_find_item_in_equipped.md) (19 shared connections)
+- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (16 shared connections)
+- [Room](Room.md) (12 shared connections)
+- [container_helpers_inventory_ops.py](container_helpers_inventory_ops.py.md) (10 shared connections)
+- [BaseEvent](BaseEvent.md) (7 shared connections)
+- [setup_jwt_secret](setup_jwt_secret.md) (6 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (6 shared connections)
+- [FollowService](FollowService.md) (5 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (5 shared connections)
+- [AttributeError](AttributeError.md) (5 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (4 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (4 shared connections)
 
 ## Source Files
 
-- `server/persistence/container_helpers.py`
-- `server/persistence/container_persistence.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
+- `server/game/instance_manager.py`
+- `server/game/movement_helpers.py`
+- `server/game/movement_service.py`
+- `server/game/player_service.py`
+- `server/services/instance_flush_service.py`
+- `server/tests/unit/game/test_instance_manager.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 259 (97%)
-- INFERRED: 8 (3%)
+- EXTRACTED: 451 (94%)
+- INFERRED: 30 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

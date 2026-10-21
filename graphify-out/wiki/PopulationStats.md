@@ -1,56 +1,67 @@
 # PopulationStats
 
-> 65 nodes
+> 172 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **PopulationStats** (40 connections) — `server/npc/population_stats.py`
-- **test_population_stats.py** (23 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **.get_population_stats()** (4 connections) — `server/npc/population_control.py`
-- **test_should_spawn_npc()** (4 connections) — `server/tests/unit/npc/test_population_control.py`
-- **.to_dict()** (3 connections) — `server/npc/population_stats.py`
-- **.get_population_stats()** (3 connections) — `server/npc/spawning_service.py`
-- **test_clear_population_stats()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_despawn_npc_success()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_get_population_stats_existing()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_get_zone_population_summary_with_stats()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_add_npc_multiple_same_room()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_add_npc_multiple_same_type()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_add_npc_optional()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_add_npc_required()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_add_npc_updates_timestamp()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_add_npc_without_definition_id()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_mixed_required_optional()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_multiple_definitions_same_type()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_population_stats_init()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_remove_npc_different_definition()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_remove_npc_not_found()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_remove_npc_optional()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_remove_npc_partial()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_remove_npc_prevents_negative()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_remove_npc_required()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- *... and 40 more nodes in this community*
+- **LucidityService** (86 connections) — `server/services/lucidity_service.py`
+- **PlayerLucidity** (76 connections) — `server/models/lucidity.py`
+- **lucidity_service.py** (56 connections) — `server/services/lucidity_service.py`
+- **lucidity_helpers.py** (28 connections) — `server/services/lucidity_helpers.py`
+- **test_lucidity_service.py** (27 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **CatatoniaObserverProtocol** (24 connections) — `server/services/lucidity_helpers.py`
+- **lucidity_trigger_handlers.py** (19 connections) — `server/services/lucidity_trigger_handlers.py`
+- **test_lucidity_trigger_handlers.py** (18 connections) — `server/tests/unit/services/test_lucidity_trigger_handlers.py`
+- **LucidityUpdateResult** (17 connections) — `server/services/lucidity_helpers.py`
+- **asyncio** (16 connections)
+- **handle_catatonia_transitions()** (14 connections) — `server/services/lucidity_trigger_handlers.py`
+- **encode_liabilities()** (12 connections) — `server/services/lucidity_helpers.py`
+- **UUID** (12 connections)
+- **test_lucidity_round_trip.py** (12 connections) — `server/tests/integration/test_lucidity_round_trip.py`
+- **test_lucidity_adjustment_round_trip()** (12 connections) — `server/tests/integration/test_lucidity_round_trip.py`
+- **decode_liabilities()** (11 connections) — `server/services/lucidity_helpers.py`
+- **UUID** (11 connections)
+- **._finalize_lucidity_adjustment()** (10 connections) — `server/services/lucidity_service.py`
+- **._send_lucidity_change_event_if_needed()** (10 connections) — `server/services/lucidity_service.py`
+- **handle_delirium_and_sanitarium_triggers()** (10 connections) — `server/services/lucidity_trigger_handlers.py`
+- **.apply_lucidity_adjustment()** (9 connections) — `server/services/lucidity_service.py`
+- **handle_delirium_trigger()** (9 connections) — `server/services/lucidity_trigger_handlers.py`
+- **handle_sanitarium_trigger()** (9 connections) — `server/services/lucidity_trigger_handlers.py`
+- **asyncio** (9 connections)
+- **._apply_delta_to_record()** (8 connections) — `server/services/lucidity_service.py`
+- *... and 147 more nodes in this community*
 
 ## Relationships
 
-- [EventBus](EventBus.md) (7 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (6 shared connections)
-- [NPCPopulationController](NPCPopulationController.md) (3 shared connections)
-- [ZoneConfiguration](ZoneConfiguration.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [test_command_registry_consistency.py](test_command_registry_consistency.py.md) (30 shared connections)
+- [FollowService](FollowService.md) (20 shared connections)
+- [test_connection_establishment.py](test_connection_establishment.py.md) (17 shared connections)
+- [test_database_extended.py](test_database_extended.py.md) (15 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (11 shared connections)
+- [test_combat_service_modules.py](test_combat_service_modules.py.md) (9 shared connections)
+- [test_security_headers.py](test_security_headers.py.md) (8 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (8 shared connections)
+- [Room](Room.md) (7 shared connections)
+- [test_command_communication.py](test_command_communication.py.md) (6 shared connections)
+- [test_websocket_handler_commands.py](test_websocket_handler_commands.py.md) (6 shared connections)
+- [Hardening Dimensions](Hardening_Dimensions.md) (5 shared connections)
 
 ## Source Files
 
-- `server/npc/population_control.py`
-- `server/npc/population_stats.py`
-- `server/npc/spawning_service.py`
-- `server/tests/unit/npc/test_population_control.py`
-- `server/tests/unit/npc/test_population_stats.py`
+- `server/models/lucidity.py`
+- `server/services/lucidity_helpers.py`
+- `server/services/lucidity_service.py`
+- `server/services/lucidity_trigger_handlers.py`
+- `server/tests/integration/test_lucidity_round_trip.py`
+- `server/tests/unit/services/test_lucidity_service.py`
+- `server/tests/unit/services/test_lucidity_trigger_handlers.py`
+- `server/tests/unit/test_lucidity_service_smoke.py`
+- `server/utils/liability_types.py`
 
 ## Audit Trail
 
-- EXTRACTED: 100 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 481 (87%)
+- INFERRED: 69 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

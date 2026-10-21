@@ -1,14 +1,12 @@
 # report_any_baseline.py
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **main()** (4 connections) — `scripts/report_any_baseline.py`
-- **report_any_baseline.py** (4 connections) — `scripts/report_any_baseline.py`
-- **_group_of()** (2 connections) — `scripts/report_any_baseline.py`
-- **_load()** (2 connections) — `scripts/report_any_baseline.py`
-- **_rule_of()** (2 connections) — `scripts/report_any_baseline.py`
+- **Chaosium graphify snapshot - Pulp Cthulhu (7th edition Call of Cthulhu)** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/MANIFEST.md`
+- **pulp-cthulhu-7th-edition-call-of-cthulhu/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/MANIFEST.md`
 
 ## Relationships
 
@@ -16,11 +14,11 @@
 
 ## Source Files
 
-- `scripts/report_any_baseline.py`
+- `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

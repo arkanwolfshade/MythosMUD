@@ -1,59 +1,54 @@
 # catalog_commands.py
 
-> 28 nodes
+> 31 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **catalog_commands.py** (40 connections) — `server/commands/catalog_commands.py`
-- **handle_catalog_command()** (15 connections) — `server/commands/catalog_commands.py`
-- **resolve_is_admin()** (12 connections) — `server/commands/catalog_commands.py`
-- **Protocol** (6 connections)
-- **_append_admin_rows()** (5 connections) — `server/commands/catalog_commands.py`
-- **_CatalogPersistence** (4 connections) — `server/commands/catalog_commands.py`
-- **_CatalogPlayer** (4 connections) — `server/commands/catalog_commands.py`
-- **_CatalogRequest** (4 connections) — `server/commands/catalog_commands.py`
-- **_append_player_rows()** (4 connections) — `server/commands/catalog_commands.py`
-- **_as_catalog_request()** (4 connections) — `server/commands/catalog_commands.py`
-- **.app()** (4 connections) — `server/commands/catalog_commands.py`
-- **_get_catalog_service()** (4 connections) — `server/commands/catalog_commands.py`
-- **_CatalogApp** (3 connections) — `server/commands/catalog_commands.py`
-- **_CatalogContainer** (3 connections) — `server/commands/catalog_commands.py`
-- **.get_player_by_name()** (3 connections) — `server/commands/catalog_commands.py`
-- **_truncate()** (3 connections) — `server/commands/catalog_commands.py`
-- **_user_flag_true()** (3 connections) — `server/commands/catalog_commands.py`
-- **_CatalogAppState** (2 connections) — `server/commands/catalog_commands.py`
-- **_format_jsonish()** (2 connections) — `server/commands/catalog_commands.py`
-- **/catalog command: paginated text table of item prototypes.** (1 connections) — `server/commands/catalog_commands.py`
-- **Read a boolean flag from a dict-shaped user or attribute-bearing object…** (1 connections) — `server/commands/catalog_commands.py`
-- **True when the active character has admin privileges.** (1 connections) — `server/commands/catalog_commands.py`
-- **Handle /catalog: print a paginated prototype table (text only).** (1 connections) — `server/commands/catalog_commands.py`
-- **Player fields used for admin projection checks.** (1 connections) — `server/commands/catalog_commands.py`
-- **Async persistence surface for admin lookup.** (1 connections) — `server/commands/catalog_commands.py`
-- *... and 3 more nodes in this community*
+- **damage_expr_to_min_max()** (14 connections) — `server/game/dice_expr.py`
+- **dice_expr.py** (13 connections) — `server/game/dice_expr.py`
+- **roll_damage_expr()** (11 connections) — `server/game/dice_expr.py`
+- **test_dice_expr.py** (10 connections) — `server/tests/unit/game/test_dice_expr.py`
+- **_parse_terms()** (5 connections) — `server/game/dice_expr.py`
+- **_term_roll()** (5 connections) — `server/game/dice_expr.py`
+- **damage_expr.py** (5 connections) — `server/game/items/damage_expr.py`
+- **_term_minmax()** (4 connections) — `server/game/dice_expr.py`
+- **_strip_trailing_alpha()** (3 connections) — `server/game/dice_expr.py`
+- **test_damage_expr.py** (3 connections) — `server/tests/unit/game/items/test_damage_expr.py`
+- **test_damage_expr_to_min_max()** (3 connections) — `server/tests/unit/game/test_dice_expr.py`
+- **test_roll_damage_expr_within_bounds()** (3 connections) — `server/tests/unit/game/test_dice_expr.py`
+- **Random** (2 connections)
+- **_secrets_roll()** (2 connections) — `server/game/dice_expr.py`
+- **test_items_damage_expr_reexports_shared_helper()** (2 connections) — `server/tests/unit/game/items/test_damage_expr.py`
+- **test_damage_expr_rejects_empty()** (2 connections) — `server/tests/unit/game/test_dice_expr.py`
+- **test_damage_expr_rejects_unparseable()** (2 connections) — `server/tests/unit/game/test_dice_expr.py`
+- **test_roll_damage_expr_deterministic()** (2 connections) — `server/tests/unit/game/test_dice_expr.py`
+- **test_roll_damage_expr_rejects_empty()** (2 connections) — `server/tests/unit/game/test_dice_expr.py`
+- **_RollInt** (1 connections)
+- **Shared damage_expr helpers for catalog dual-write and combat rolls. Used by…** (1 connections) — `server/game/dice_expr.py`
+- **Inclusive lo..hi using secrets (avoids Bandit/Codacy B311 on random).** (1 connections) — `server/game/dice_expr.py`
+- **Roll a dice expression once and return a non-negative integer. Args: expr: Dice…** (1 connections) — `server/game/dice_expr.py`
+- **Drop trailing +DB / -flavor suffixes until none remain.** (1 connections) — `server/game/dice_expr.py`
+- **Return (min, max) contribution for one signed term.** (1 connections) — `server/game/dice_expr.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [ItemCatalogService](ItemCatalogService.md) (15 shared connections)
-- [ItemCatalogResponse](ItemCatalogResponse.md) (10 shared connections)
-- [item_catalog_repository.py](item_catalog_repository.py.md) (4 shared connections)
-- [system_commands.py](system_commands.py.md) (4 shared connections)
-- [command_error](command_error.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [command_service.py](command_service.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [coerce_int](coerce_int.md) (2 shared connections)
-- [alias_storage.py](alias_storage.py.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
-- [test_item_catalog.py](test_item_catalog.py.md) (1 shared connections)
+- [asyncio](asyncio.md) (3 shared connections)
+- [test_inventory_use_command.py](test_inventory_use_command.py.md) (3 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (3 shared connections)
+- [UserManager](UserManager.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/catalog_commands.py`
+- `server/game/dice_expr.py`
+- `server/game/items/damage_expr.py`
+- `server/tests/unit/game/items/test_damage_expr.py`
+- `server/tests/unit/game/test_dice_expr.py`
 
 ## Audit Trail
 
-- EXTRACTED: 88 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 53 (91%)
+- INFERRED: 5 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

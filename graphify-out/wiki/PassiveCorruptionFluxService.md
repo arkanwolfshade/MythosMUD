@@ -1,63 +1,58 @@
 # PassiveCorruptionFluxService
 
-> 42 nodes
+> 33 nodes · cohesion 0.14
 
 ## Key Concepts
 
-- **PassiveCorruptionFluxService** (28 connections) — `server/services/passive_corruption_flux/service.py`
-- **.process_tick_for_player()** (12 connections) — `server/services/passive_corruption_flux/service.py`
-- **PassiveCorruptionFluxContext** (11 connections) — `server/services/passive_corruption_flux/models.py`
-- **FluxRoom** (11 connections) — `server/services/passive_corruption_flux/service.py`
-- **._resolve_context()** (10 connections) — `server/services/passive_corruption_flux/service.py`
-- **._resolve_player_and_context()** (10 connections) — `server/services/passive_corruption_flux/service.py`
-- **.__init__()** (7 connections) — `server/services/passive_corruption_flux/service.py`
-- **lookup_profile()** (7 connections) — `server/services/passive_lucidity_flux/config.py`
-- **passive_corruption_flux/models.py** (7 connections) — `server/services/passive_corruption_flux/models.py`
-- **_as_str_attr()** (6 connections) — `server/services/passive_corruption_flux/service.py`
-- **._lookup_db_override()** (6 connections) — `server/services/passive_corruption_flux/service.py`
-- **test_package_reexports_public_surface()** (6 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- **._lookup_rate_for_room()** (5 connections) — `server/services/passive_corruption_flux/service.py`
-- **._lookup_target_for_room()** (5 connections) — `server/services/passive_corruption_flux/service.py`
-- **._tier_floor()** (5 connections) — `server/services/passive_corruption_flux/service.py`
-- **passive_corruption_flux/__init__.py** (5 connections) — `server/services/passive_corruption_flux/__init__.py`
-- **._bound_delta()** (4 connections) — `server/services/passive_corruption_flux/service.py`
-- **._signed_flux_toward_target()** (4 connections) — `server/services/passive_corruption_flux/service.py`
-- **datetime** (4 connections)
-- **_as_float()** (3 connections) — `server/services/passive_corruption_flux/service.py`
-- **._apply_residual()** (3 connections) — `server/services/passive_corruption_flux/service.py`
-- **._get_room()** (3 connections) — `server/services/passive_corruption_flux/service.py`
-- **_profile_map()** (3 connections) — `server/services/passive_corruption_flux/service.py`
-- **test_signed_flux_direction_derived_from_current_vs_target()** (3 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- **test_tier_floor_boundaries()** (3 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- *... and 17 more nodes in this community*
+- **e2e-bootstrap.ts** (25 connections) — `client/src/test/e2e-bootstrap.ts`
+- **collect-n-daisy-quest.spec.ts** (21 connections) — `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
+- **loadE2eEnv()** (18 connections) — `client/src/test/e2e-bootstrap.ts`
+- **global-setup.ts** (16 connections) — `client/tests/e2e/runtime/global-setup.ts`
+- **failBootstrap()** (10 connections) — `client/src/test/e2e-bootstrap.ts`
+- **verifyServerBootstrap()** (7 connections) — `client/tests/e2e/runtime/global-setup.ts`
+- **globalSetup()** (6 connections) — `client/tests/e2e/runtime/global-setup.ts`
+- **formatLoginFailure()** (5 connections) — `client/src/test/e2e-bootstrap.ts`
+- **spawnOutputDetail()** (5 connections) — `client/src/test/e2e-bootstrap.ts`
+- **e2e-bootstrap.test.ts** (5 connections) — `client/src/test/e2e-bootstrap.test.ts`
+- **EASTERN_HALLWAY_LOOK_CUE** (5 connections) — `client/tests/e2e/runtime/fixtures/test-data.ts`
+- **runE2ePlayerRoomReset()** (5 connections) — `client/tests/e2e/runtime/global-setup.ts`
+- **runE2eSeed()** (5 connections) — `client/tests/e2e/runtime/global-setup.ts`
+- **verifyE2eUsersInDatabase()** (5 connections) — `client/tests/e2e/runtime/global-setup.ts`
+- **spawnMorgan()** (5 connections) — `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
+- **redactDatabaseUrl()** (4 connections) — `client/src/test/e2e-bootstrap.ts`
+- **countProfessionsPayload()** (3 connections) — `client/src/test/e2e-bootstrap.ts`
+- **parseE2eEnvContent()** (3 connections) — `client/src/test/e2e-bootstrap.ts`
+- **verifyClientAccessible()** (3 connections) — `client/tests/e2e/runtime/global-setup.ts`
+- **appendBootstrapFailureLog()** (2 connections) — `client/src/test/e2e-bootstrap.ts`
+- **E2E_CLIENT_URL** (2 connections) — `client/src/test/e2e-bootstrap.ts`
+- **E2E_ENV_DEFAULTS** (2 connections) — `client/src/test/e2e-bootstrap.ts`
+- **E2E_SERVER_URL** (2 connections) — `client/src/test/e2e-bootstrap.ts`
+- **fetchResponseBodyText()** (2 connections) — `client/tests/e2e/runtime/global-setup.ts`
+- **assertMorganVisible()** (2 connections) — `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (12 shared connections)
-- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (12 shared connections)
-- [passive_corruption_flux/config.py](passive_corruption_flux-config.py.md) (5 shared connections)
-- [passive_lucidity_flux/service.py](passive_lucidity_flux-service.py.md) (4 shared connections)
-- [test_passive_corruption_flux_rate_overrides.py](test_passive_corruption_flux_rate_overrides.py.md) (3 shared connections)
-- [PlayerDeathService](PlayerDeathService.md) (1 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
-- [test_rate_overrides.py](test_rate_overrides.py.md) (1 shared connections)
-- [coerce_int](coerce_int.md) (1 shared connections)
-- [CorruptionService](CorruptionService.md) (1 shared connections)
+- [look_command.py](look_command.py.md) (9 shared connections)
+- [CorpseLifecycleService](CorpseLifecycleService.md) (9 shared connections)
+- [Test Pruning Candidates - Detailed List](Test_Pruning_Candidates_-_Detailed_List.md) (8 shared connections)
+- [NPCMovementIntegration](NPCMovementIntegration.md) (6 shared connections)
+- [ChatModeration](ChatModeration.md) (3 shared connections)
 
 ## Source Files
 
-- `server/services/passive_corruption_flux/__init__.py`
-- `server/services/passive_corruption_flux/models.py`
-- `server/services/passive_corruption_flux/service.py`
-- `server/services/passive_lucidity_flux/config.py`
-- `server/tests/unit/services/test_passive_corruption_flux_service.py`
+- `@playwright/test`
+- `client/src/test/e2e-bootstrap.test.ts`
+- `client/src/test/e2e-bootstrap.ts`
+- `client/tests/e2e/runtime/fixtures/test-data.ts`
+- `client/tests/e2e/runtime/global-setup.ts`
+- `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
+- `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 103 (87%)
-- INFERRED: 15 (13%)
+- EXTRACTED: 107 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

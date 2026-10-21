@@ -1,35 +1,31 @@
 # _occupation_slots_9
 
-> 12 nodes
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **_occupation_slots_9()** (11 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_duplicate_occupation_skill_ids_raises()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_cthulhu_mythos_in_personal_rejected()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_duplicate_personal_skill_ids_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_overlap_occupation_and_personal_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_personal_interest_not_four_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Valid 9 slots: one 70, two 60, three 50, three 40; 9 distinct skill_ids (no…** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Personal interest with Cthulhu Mythos raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **personal_interest must have exactly 4 entries.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **occupation_slots with duplicate skill_id raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **personal_interest with duplicate skill_id raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Occupation and personal interest sharing a skill_id raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **`docs/**/*` files: Multiple rules** (6 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Per-File Ignores (pyproject.toml)** (5 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **B904 - Broad except** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **E402 - Module level import not at top** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **F811 - Redefined name** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **F821 - Undefined name** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **F841 - Unused variable** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **`__init__.py` files: F401 (unused import)** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **`server/stubs/**/*.pyi` files: UP046 (old Generic syntax)** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **`tests/**/*` files: B011 (assert on exception)** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
 
 ## Relationships
 
-- [test_skill_service.py](test_skill_service.py.md) (6 shared connections)
-- [_personal_interest_4](_personal_interest_4.md) (5 shared connections)
-- [asyncio](asyncio.md) (5 shared connections)
+- [_end_combat_for_grace_period](_end_combat_for_grace_period.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_skill_service.py`
+- `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

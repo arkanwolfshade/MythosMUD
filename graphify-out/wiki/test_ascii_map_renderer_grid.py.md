@@ -1,35 +1,41 @@
 # test_ascii_map_renderer_grid.py
 
-> 12 nodes
+> 19 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **test_ascii_map_renderer_grid.py** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
-- **TestBuildGridPlayerMarker** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
-- **renderer()** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
-- **test_render_map_empty_and_connected_rooms()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
-- **.test_player_marker_preserved_when_player_room_not_last_at_same_coords()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
-- **test_determine_map_style_and_symbols()** (2 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
-- **fixture** (1 connections)
-- **Unit tests for AsciiMapRenderer grid building. Guards against regressions in…** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
-- **Return a fresh AsciiMapRenderer instance for each test.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
-- **Tests for _build_grid player marker when multiple rooms share coordinates.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
-- **Multiple rooms at same (x,y): cell keeps player marker even if player room is…** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
-- **render_map covers empty map, styles, exits, and row rendering.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
+- **test_run_make_stages.py** (11 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **_load_module()** (8 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **_RunMakeStages** (6 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **test_stage_failed_from_output_node_fatal_crash_fails_despite_exit_zero()** (3 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **test_stage_failed_from_output_server_fatal_log_line_is_not_a_crash()** (3 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **test_keep_going_requested()** (2 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **test_stage_failed_from_output_nonzero()** (2 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **test_stage_failed_from_output_ok()** (2 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **test_stage_failed_from_output_traceback()** (2 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **test_windows_npm_recipe_does_not_reference_pwsh_variables_inside_shell_quotes()** (2 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **Protocol** (1 connections)
+- **Tests for scripts/run_make_stages.py fail-fast helpers.** (1 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **The functions these tests call on scripts/run_make_stages.py (loaded by path,…** (1 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **A crashed vitest that still left exit 0 must fail the stage (#950); this is the…** (1 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **The server's own "FATAL ERROR: ..." log line must not be mistaken for a V8…** (1 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **#950: Make's recipe shell (Git sh) expands $LASTEXITCODE inside the double-…** (1 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **.keep_going_requested()** (1 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **.stage_failed_from_output()** (1 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **test_makefile_composites_use_fail_fast_runner()** (1 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
 
 ## Relationships
 
-- [AsciiMapRenderer](AsciiMapRenderer.md) (6 shared connections)
-- [RoomService](RoomService.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_ascii_map_renderer_grid.py`
+- `server/tests/unit/scripts/test_run_make_stages.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (83%)
-- INFERRED: 3 (17%)
+- EXTRACTED: 25 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

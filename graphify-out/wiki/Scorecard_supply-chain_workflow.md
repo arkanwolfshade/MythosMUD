@@ -1,12 +1,11 @@
 # Scorecard supply-chain workflow
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Scorecard supply-chain workflow** (2 connections) — `.github/workflows/scorecards.yml`
-- **CodeQL workflow** (1 connections) — `.github/workflows/codeql.yml`
-- **Dependency Review workflow** (1 connections) — `.github/workflows/dependency-review.yml`
+- **persistence/utils/__init__.py** (1 connections) — `server/persistence/utils/__init__.py`
+- **Utility modules for persistence layer.** (1 connections) — `server/persistence/utils/__init__.py`
 
 ## Relationships
 
@@ -14,14 +13,12 @@
 
 ## Source Files
 
-- `.github/workflows/codeql.yml`
-- `.github/workflows/dependency-review.yml`
-- `.github/workflows/scorecards.yml`
+- `server/persistence/utils/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 2 (100%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

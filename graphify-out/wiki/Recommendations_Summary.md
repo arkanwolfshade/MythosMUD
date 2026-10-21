@@ -1,25 +1,27 @@
 # Recommendations Summary
 
-> 4 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **Recommendations Summary** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **High Priority Decisions** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Low Priority (Future Considerations)** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Medium Priority Enhancements** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **other_message** (6 connections) — `schemas/emote_schema.json`
+- **description** (1 connections) — `schemas/emote_schema.json`
+- **maxLength** (1 connections) — `schemas/emote_schema.json`
+- **minLength** (1 connections) — `schemas/emote_schema.json`
+- **pattern** (1 connections) — `schemas/emote_schema.json`
+- **type** (1 connections) — `schemas/emote_schema.json`
 
 ## Relationships
 
-- [MUD Disconnect Grace Period & Rest Command: Industry Comparison](MUD_Disconnect_Grace_Period_&_Rest_Command-_Industry_Comparison.md) (1 shared connections)
+- [main](main.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/disconnect_grace_period_comparison.md`
+- `schemas/emote_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

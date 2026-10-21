@@ -1,23 +1,23 @@
 # unit/realtime/monitoring/__init__.py
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **unit/realtime/monitoring/__init__.py** (1 connections) — `server/tests/unit/realtime/monitoring/__init__.py`
-- **Realtime monitoring unit tests.** (1 connections) — `server/tests/unit/realtime/monitoring/__init__.py`
+- **test_validate_combat_command_no_target()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_combat_command with no target.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [🔍 Specific File Reviews](🔍_Specific_File_Reviews.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/monitoring/__init__.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

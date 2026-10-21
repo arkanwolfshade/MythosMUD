@@ -1,45 +1,43 @@
 # Phase 2 Async Persistence Migration - Status Update
 
-> 21 nodes
+> 21 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **Phase 2 Async Persistence Migration - Status Update** (7 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **PHASE2_MIGRATION_COMPLETE.md** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **🎯 Decision Point** (4 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **PHASE2_MIGRATION_STATUS.md** (3 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **✅ Completed Today** (3 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **📊 Effort Analysis** (3 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **PassiveLucidityFluxService Tick Blocking** (3 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **Awaiting Your Direction, Professor Wolfshade** (2 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **🚦 Current Status** (2 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **Room Cache 60s TTL** (2 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **adjusts spectacles and awaits instruction** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **Critical Phase 1 Fixes (100% Complete)** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **My Recommendation** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **Option A: Deploy Critical Fixes Now (RECOMMENDED)** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **Option B: Complete Full Migration First** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **Option C: Hybrid Approach** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **Phase 2 Migration Progress (17% Complete - 2/12 files)** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **Remaining Estimate** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **Time Invested** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **📝 What Needs Your Decision** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **Option A Deploy Critical Fixes Now** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **scripts** (21 connections) — `client/package.json`
+- **build** (1 connections) — `client/package.json`
+- **dead-code** (1 connections) — `client/package.json`
+- **dev** (1 connections) — `client/package.json`
+- **format** (1 connections) — `client/package.json`
+- **knip** (1 connections) — `client/package.json`
+- **lint** (1 connections) — `client/package.json`
+- **postinstall** (1 connections) — `client/package.json`
+- **preview** (1 connections) — `client/package.json`
+- **test** (1 connections) — `client/package.json`
+- **test:coverage** (1 connections) — `client/package.json`
+- **test:e2e:runtime** (1 connections) — `client/package.json`
+- **test:e2e:runtime:debug** (1 connections) — `client/package.json`
+- **test:e2e:runtime:headed** (1 connections) — `client/package.json`
+- **test:e2e:runtime:ui** (1 connections) — `client/package.json`
+- **test:headed** (1 connections) — `client/package.json`
+- **test:ui** (1 connections) — `client/package.json`
+- **test:unit** (1 connections) — `client/package.json`
+- **test:unit:run** (1 connections) — `client/package.json`
+- **test:unit:watch** (1 connections) — `client/package.json`
+- **typecheck** (1 connections) — `client/package.json`
 
 ## Relationships
 
-- [✅ Phase 2 Async Persistence Migration - COMPLETE](✅_Phase_2_Async_Persistence_Migration_-_COMPLETE.md) (1 shared connections)
-- [Async Persistence Migration Tracker](Async_Persistence_Migration_Tracker.md) (1 shared connections)
+- [bonus_tags](bonus_tags.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- `client/package.json`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 21 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,56 +1,50 @@
 # RoomCacheLoader
 
-> 76 nodes
+> 28 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **RoomCacheLoader** (26 connections) — `server/async_persistence_room_loader.py`
-- **ProcessedRoomData** (21 connections) — `server/async_persistence_room_loader.py`
-- **AsyncPersistenceRoomFacade** (16 connections) — `server/async_persistence_room_facade.py`
-- **RoomLoadResult** (13 connections) — `server/async_persistence_room_loader.py`
-- **test_async_persistence_room_rest_location.py** (12 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_rest_location.py`
-- **ExitJsonEntry** (10 connections) — `server/async_persistence_room_loader.py`
-- **RoomInitPayload** (9 connections) — `server/async_persistence_room_loader.py`
-- **.load()** (9 connections) — `server/async_persistence_room_loader.py`
-- **._process_combined_rows()** (9 connections) — `server/async_persistence_room_loader.py`
-- **._build_room_data_from_row()** (8 connections) — `server/async_persistence_room_loader.py`
-- **_AsyncPersistenceRoomFacadeBase** (7 connections) — `server/async_persistence_room_facade.py`
-- **._generate_room_id_from_zone_data()** (7 connections) — `server/async_persistence_room_loader.py`
-- **test_build_room_objects_carries_display_names()** (6 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_rest_location.py`
-- **test_build_room_objects_carries_map_coordinates()** (6 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_rest_location.py`
-- **test_build_room_objects_defaults_rest_location_false()** (6 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_rest_location.py`
-- **test_build_room_objects_promotes_rest_location_from_attributes()** (6 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_rest_location.py`
-- **test_build_room_objects_tolerates_missing_coordinates()** (6 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_rest_location.py`
-- **._build_room_objects()** (5 connections) — `server/async_persistence_room_loader.py`
-- **._build_room_objects()** (4 connections) — `server/async_persistence_room_facade.py`
-- **.__init__()** (4 connections) — `server/async_persistence_room_loader.py`
-- **._parse_exits_json()** (4 connections) — `server/async_persistence_room_loader.py`
-- **._parse_zone_parts()** (4 connections) — `server/async_persistence_room_loader.py`
-- **._process_exit_rows()** (4 connections) — `server/async_persistence_room_loader.py`
-- **._process_exits_for_room()** (4 connections) — `server/async_persistence_room_loader.py`
-- **_row_optional_float()** (4 connections) — `server/async_persistence_room_loader.py`
-- *... and 51 more nodes in this community*
+- **test_lru_cache.py** (16 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **cache_with_ttl()** (4 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **cache_without_ttl()** (4 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_expiration_performance_impact()** (4 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **fixture** (2 connections)
+- **test_cache_expiration_check_only_when_ttl_enabled()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_expiration_rate_calculated()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_expired_count_tracked_in_stats()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_expired_entries_not_counted_in_evictions()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_expired_entries_removed_efficiently()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_mixed_expired_and_valid_entries()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_put_expired_entries_removed_before_capacity_check()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_put_expired_entries_removed_before_lru_eviction()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_size_stays_within_bounds_after_expiration()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **asyncio** (1 connections)
+- **Unit tests for LRU cache expiration and eviction. Tests the LRUCache class,…** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Test that expired entry count is tracked in cache stats.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Test that expiration rate is calculated in stats.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Test that cache size stays within bounds after expiration cleanup.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Test that expiration checking doesn't significantly impact performance.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Create an LRUCache with TTL enabled.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Test that expired entries are removed efficiently in bulk.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Test cache behavior with mix of expired and valid entries.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Create an LRUCache without TTL.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Test that expired entries are removed before LRU eviction.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (23 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (8 shared connections)
-- [test_async_persistence_room_loading.py](test_async_persistence_room_loading.py.md) (1 shared connections)
-- [test_build_room_objects_with_dict_attributes](test_build_room_objects_with_dict_attributes.md) (1 shared connections)
-- [test_build_room_objects_without_environment_in_attributes](test_build_room_objects_without_environment_in_attributes.md) (1 shared connections)
-- [session](session.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [.get_upcoming_holidays](get_upcoming_holidays.md) (4 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (1 shared connections)
+- [LucidityTierCache](LucidityTierCache.md) (1 shared connections)
 
 ## Source Files
 
-- `server/async_persistence_room_facade.py`
-- `server/async_persistence_room_loader.py`
-- `server/tests/unit/infrastructure/test_async_persistence_room_rest_location.py`
+- `server/tests/unit/caching/test_lru_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 141 (83%)
-- INFERRED: 29 (17%)
+- EXTRACTED: 31 (91%)
+- INFERRED: 3 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

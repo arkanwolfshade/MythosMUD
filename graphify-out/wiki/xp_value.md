@@ -1,21 +1,21 @@
 # xp_value
 
-> 4 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **xp_value** (4 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **description** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **minimum** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **Alone against the Tide (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone against the Tide.md`
+- **Alone against the Tide.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone against the Tide.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone against the Tide.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone against the Tide.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [test_inventory_commands_helpers.py](test_inventory_commands_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/npcs/npc_base_stats.schema.json`
+- `data/MythosMUD-Obsidian/wiki/sources/Alone against the Tide.md`
 
 ## Audit Trail
 

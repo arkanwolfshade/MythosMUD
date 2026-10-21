@@ -1,50 +1,49 @@
 # test_combat_persistence_handler_events.py
 
-> 44 nodes
+> 33 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **test_combat_persistence_handler_events.py** (25 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **asyncio** (18 connections)
-- **persistence_handler()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_error()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_outer_exception()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_error()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_event_bus_publish_error()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_nats_error()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **mock_combat_service()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_all_parameters()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_all_parameters_new()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_no_event_bus()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_publish_error_new()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_success_new()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_all_parameters()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_legacy_subject()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_no_event_bus()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_no_nats()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_with_nats()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **fixture** (2 connections)
-- **Unit tests for combat persistence handler - event publishing. Tests DP update…** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **Test _publish_player_dp_update_event_impl handles NATS errors gracefully.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- *... and 19 more nodes in this community*
+- **test_room_write_procedures.py** (14 connections) — `server/tests/integration/test_room_write_procedures.py`
+- **AsyncSession** (13 connections)
+- **async_sessionmaker** (12 connections)
+- **asyncio** (11 connections)
+- **integration** (11 connections)
+- **test_update_room_properties_clears_environment_to_null()** (9 connections) — `server/tests/integration/test_room_write_procedures.py`
+- **test_update_room_properties_leaves_environment_alone_when_not_set()** (9 connections) — `server/tests/integration/test_room_write_procedures.py`
+- **test_update_room_properties_unknown_room_returns_false()** (9 connections) — `server/tests/integration/test_room_write_procedures.py`
+- **test_update_room_properties_writes_and_reads_back()** (9 connections) — `server/tests/integration/test_room_write_procedures.py`
+- **_call_update_room_properties()** (7 connections) — `server/tests/integration/test_room_write_procedures.py`
+- **test_create_room_link_duplicate_direction_raises_integrity_error()** (7 connections) — `server/tests/integration/test_room_write_procedures.py`
+- **test_create_room_link_unknown_room_returns_false()** (7 connections) — `server/tests/integration/test_room_write_procedures.py`
+- **test_create_room_link_writes_a_single_row()** (7 connections) — `server/tests/integration/test_room_write_procedures.py`
+- **test_delete_room_link_missing_exit_returns_false()** (7 connections) — `server/tests/integration/test_room_write_procedures.py`
+- **test_delete_room_link_removes_the_row()** (7 connections) — `server/tests/integration/test_room_write_procedures.py`
+- **test_update_room_link_changes_target_and_attributes()** (7 connections) — `server/tests/integration/test_room_write_procedures.py`
+- **test_update_room_link_missing_exit_returns_false()** (7 connections) — `server/tests/integration/test_room_write_procedures.py`
+- **room_pair()** (6 connections) — `server/tests/integration/test_room_write_procedures.py`
+- **fixture** (1 connections)
+- **Integration tests for the room-editor write procedures…** (1 connections) — `server/tests/integration/test_room_write_procedures.py`
+- **update_room_properties() updates name/description/environment and can be read…** (1 connections) — `server/tests/integration/test_room_write_procedures.py`
+- **update_room_properties() with p_set_environment=TRUE and NULL clears the…** (1 connections) — `server/tests/integration/test_room_write_procedures.py`
+- **p_set_environment=FALSE leaves rooms.environment untouched, regardless of…** (1 connections) — `server/tests/integration/test_room_write_procedures.py`
+- **update_room_properties() on a nonexistent stable_id returns FALSE, no exception.** (1 connections) — `server/tests/integration/test_room_write_procedures.py`
+- **create_room_link() writes exactly one room_links row for the given direction.** (1 connections) — `server/tests/integration/test_room_write_procedures.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [ValueError](ValueError.md) (4 shared connections)
-- [CombatPersistenceHandler](CombatPersistenceHandler.md) (3 shared connections)
-- [NATSError](NATSError.md) (3 shared connections)
+- [CombatBroadcastMixin](CombatBroadcastMixin.md) (12 shared connections)
+- [endpoints.py](endpoints.py.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- `server/tests/integration/test_room_write_procedures.py`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (92%)
-- INFERRED: 6 (8%)
+- EXTRACTED: 79 (83%)
+- INFERRED: 16 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

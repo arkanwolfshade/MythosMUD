@@ -1,58 +1,56 @@
 # test_movement_service.py
 
-> 50 nodes
+> 72 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **test_movement_service.py** (72 connections) — `server/tests/unit/game/test_movement_service.py`
-- **_exit_hook_setup()** (13 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_validate_movement_rooms_refuses_instance_template()** (6 connections) — `server/tests/unit/game/test_movement_service.py`
-- **_foyer()** (5 connections) — `server/tests/unit/game/test_movement_service.py`
-- **_template_bedroom()** (5 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_tutorial_exit_flushes_instance_and_moves_template_respawn()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_tutorial_exit_keeps_a_normal_respawn_room()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_check_combat_state_allows_without_service()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_check_combat_state_blocks_when_in_combat()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_check_player_posture_blocks_sitting()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_remove_player_invalid_params()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_tutorial_exit_hook_ignores_other_destinations()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_tutorial_exit_is_silent_when_nothing_was_left_behind()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_tutorial_exit_tells_the_player_their_things_are_in_the_deposit_box()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_validate_exit_found()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_validate_exit_no_exits()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_validate_exit_target_missing_in_persistence()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_get_room_players()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_get_room_players_room_not_found()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_mark_room_explored_with_service()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_remove_player_from_room_room_not_found()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_remove_player_from_room_success()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_set_player_combat_service()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_validate_move_params_same_room()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_validate_player_location_false()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- *... and 25 more nodes in this community*
+- **TestHelperFunctions** (33 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **asyncio** (21 connections)
+- **_process_alias_expansion()** (17 connections) — `server/command_handler_unified.py`
+- **_validate_command_basics()** (15 connections) — `server/command_handler_unified.py`
+- **test_command_handler_unified_helpers.py** (13 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **TestHandleSpecialCommandRouting** (7 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **TestValidateCommandBasics** (7 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_handle_special_command_routing_alias_command()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_handle_special_command_routing_alias_storage_none()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_handle_special_command_routing_emote_conversion()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_handle_special_command_routing_returns_none()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_all_command_blocks_casting()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_all_command_blocks_catatonia()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_all_command_blocks_grace_period()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_process_alias_expansion_invalid_expanded()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_process_alias_expansion_no_alias()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_process_alias_expansion_no_storage()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_process_alias_expansion_unsafe_alias()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_casting_state_allowed_commands()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_casting_state_error_handling()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_casting_state_is_casting()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_casting_state_no_magic_service()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_casting_state_not_casting()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_grace_period_block_in_grace_period()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_grace_period_block_no_connection_manager()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- *... and 47 more nodes in this community*
 
 ## Relationships
 
-- [asyncio](asyncio.md) (29 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (11 shared connections)
-- [MovementService](MovementService.md) (5 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [Room](Room.md) (3 shared connections)
-- [movement_service](movement_service.md) (3 shared connections)
-- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (2 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) (2 shared connections)
-- [ValidationError](ValidationError.md) (2 shared connections)
-- [test_movement_service_init](test_movement_service_init.md) (1 shared connections)
+- [QuestService](QuestService.md) (18 shared connections)
+- [DialogueService](DialogueService.md) (9 shared connections)
+- [go_command.py](go_command.py.md) (6 shared connections)
+- [look_container.py](look_container.py.md) (5 shared connections)
+- [command_parser.py](command_parser.py.md) (3 shared connections)
+- [test_container_websocket_events.py](test_container_websocket_events.py.md) (2 shared connections)
+- [test_passive_corruption_flux_rate_overrides.py](test_passive_corruption_flux_rate_overrides.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/command_handler_unified.py`
+- `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- `server/tests/unit/commands/test_command_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 121 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 144 (97%)
+- INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

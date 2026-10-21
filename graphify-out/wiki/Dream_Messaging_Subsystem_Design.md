@@ -1,49 +1,52 @@
 # Dream Messaging Subsystem Design
 
-> 24 nodes
+> 28 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **Dream Messaging Subsystem Design** (10 connections) — `docs/subsystems/SUBSYSTEM_DREAM_MESSAGING_DESIGN.md`
-- **Entity Contact Subsystem Design** (9 connections) — `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
-- **SUBSYSTEM_DREAM_MESSAGING_DESIGN.md** (3 connections) — `docs/subsystems/SUBSYSTEM_DREAM_MESSAGING_DESIGN.md`
-- **SUBSYSTEM_ENTITY_CONTACT_DESIGN.md** (3 connections) — `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
-- **Lucidity Subsystem Design** (2 connections) — `docs/subsystems/SUBSYSTEM_LUCIDITY_DESIGN.md`
-- **Rest Subsystem Design** (2 connections) — `docs/subsystems/SUBSYSTEM_REST_DESIGN.md`
-- **1. Overview** (1 connections) — `docs/subsystems/SUBSYSTEM_DREAM_MESSAGING_DESIGN.md`
-- **2. Architecture — Phase 1 (`/sleep`)** (1 connections) — `docs/subsystems/SUBSYSTEM_DREAM_MESSAGING_DESIGN.md`
-- **3. Key design decisions** (1 connections) — `docs/subsystems/SUBSYSTEM_DREAM_MESSAGING_DESIGN.md`
-- **4. Constraints** (1 connections) — `docs/subsystems/SUBSYSTEM_DREAM_MESSAGING_DESIGN.md`
-- **5. Roadmap — Phase 2: Dreamlands plane** (1 connections) — `docs/subsystems/SUBSYSTEM_DREAM_MESSAGING_DESIGN.md`
-- **6. Roadmap — Phase 3: status-effect-driven waking dreams** (1 connections) — `docs/subsystems/SUBSYSTEM_DREAM_MESSAGING_DESIGN.md`
-- **7. Related docs** (1 connections) — `docs/subsystems/SUBSYSTEM_DREAM_MESSAGING_DESIGN.md`
-- **8. Changelog** (1 connections) — `docs/subsystems/SUBSYSTEM_DREAM_MESSAGING_DESIGN.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/subsystems/SUBSYSTEM_DREAM_MESSAGING_DESIGN.md`
-- **1. Overview** (1 connections) — `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
-- **2. Architecture** (1 connections) — `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
-- **3. Key design decisions** (1 connections) — `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
-- **4. Alternatives Considered** (1 connections) — `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
-- **5. Consequences** (1 connections) — `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
-- **6. Related docs** (1 connections) — `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
-- **7. Changelog** (1 connections) — `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
-- **Server-authoritative hallucinations (#714)** (1 connections) — `docs/subsystems/SUBSYSTEM_LUCIDITY_DESIGN.md`
+- **CommandService** (20 connections) — `server/commands/command_service.py`
+- **._extract_parsed_fields()** (7 connections) — `server/commands/command_service.py`
+- **.process_command()** (7 connections) — `server/commands/command_service.py`
+- **._execute_command_handler()** (6 connections) — `server/commands/command_service.py`
+- **._parse_command_string()** (6 connections) — `server/commands/command_service.py`
+- **._prepare_command_data()** (5 connections) — `server/commands/command_service.py`
+- **Command** (5 connections)
+- **._fallback_parsed_fields()** (4 connections) — `server/commands/command_service.py`
+- **._log_parsed_command_inspection()** (4 connections) — `server/commands/command_service.py`
+- **._log_model_dump_result()** (3 connections) — `server/commands/command_service.py`
+- **.register_command_handler()** (3 connections) — `server/commands/command_service.py`
+- **CommandHandler** (2 connections)
+- **.get_available_commands()** (2 connections) — `server/commands/command_service.py`
+- **.__init__()** (2 connections) — `server/commands/command_service.py`
+- **.unregister_command_handler()** (2 connections) — `server/commands/command_service.py`
+- **Main command processing service for MythosMUD. This service handles command…** (1 connections) — `server/commands/command_service.py`
+- **Initialize the command service.** (1 connections) — `server/commands/command_service.py`
+- **Parse and validate command string. Returns: tuple of (parsed_command, cmd,…** (1 connections) — `server/commands/command_service.py`
+- **Prepare command_data dictionary by merging parsed command fields. Returns:…** (1 connections) — `server/commands/command_service.py`
+- **Extract non-private, non-callable attributes from parsed_command, excluding…** (1 connections) — `server/commands/command_service.py`
+- **Extract fields from parsed_command using model_dump or fallback method.…** (1 connections) — `server/commands/command_service.py`
+- **Log parsed command object inspection details.** (1 connections) — `server/commands/command_service.py`
+- **Log model_dump result details.** (1 connections) — `server/commands/command_service.py`
+- **Execute command handler with error handling. Returns: dict: Command result** (1 connections) — `server/commands/command_service.py`
+- **Process a command with full validation and routing. Args: command: The raw…** (1 connections) — `server/commands/command_service.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [ADR-024: Server-Authoritative Perceived Reality for Hallucinations](ADR-024-_Server-Authoritative_Perceived_Reality_for_Hallucinations.md) (1 shared connections)
+- [command_parser.py](command_parser.py.md) (8 shared connections)
+- [test_combat_handler.py](test_combat_handler.py.md) (2 shared connections)
+- [ChatChannelLoggerMixin](ChatChannelLoggerMixin.md) (1 shared connections)
+- [QuestService](QuestService.md) (1 shared connections)
+- [CommandFactory](CommandFactory.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/subsystems/SUBSYSTEM_DREAM_MESSAGING_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_LUCIDITY_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_REST_DESIGN.md`
+- `server/commands/command_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 51 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

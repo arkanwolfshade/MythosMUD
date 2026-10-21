@@ -1,35 +1,34 @@
 # SkillUseLog
 
-> 12 nodes
+> 10 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **SkillUseLog** (9 connections) — `server/models/skill_use_log.py`
-- **test_skill_use_log.py** (6 connections) — `server/tests/unit/models/test_skill_use_log.py`
-- **test_skill_use_log_creation()** (3 connections) — `server/tests/unit/models/test_skill_use_log.py`
-- **test_skill_use_log_repr()** (3 connections) — `server/tests/unit/models/test_skill_use_log.py`
-- **test_skill_use_log_table_name()** (3 connections) — `server/tests/unit/models/test_skill_use_log.py`
-- **.__repr__()** (1 connections) — `server/models/skill_use_log.py`
-- **Base** (1 connections)
-- **One recorded successful use of a skill by a character at a given level.…** (1 connections) — `server/models/skill_use_log.py`
-- **Unit tests for SkillUseLog ORM model.** (1 connections) — `server/tests/unit/models/test_skill_use_log.py`
-- **SkillUseLog can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_skill_use_log.py`
-- **SkillUseLog maps to the expected table.** (1 connections) — `server/tests/unit/models/test_skill_use_log.py`
-- **SkillUseLog __repr__ includes key identifiers.** (1 connections) — `server/tests/unit/models/test_skill_use_log.py`
+- **enum** (5 connections) — `db/static/schemas/holidays.schema.json`
+- **enum** (5 connections) — `schemas/calendar/holiday.schema.json`
+- **season** (3 connections) — `schemas/calendar/holiday.schema.json`
+- **autumn** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **summer** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **autumn** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **spring** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **summer** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **winter** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
+- [identify_critical_code.py](identify_critical_code.py.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/skill_use_log.py`
-- `server/tests/unit/models/test_skill_use_log.py`
+- `db/static/schemas/holidays.schema.json`
+- `schemas/calendar/holiday.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (88%)
-- INFERRED: 2 (12%)
+- EXTRACTED: 12 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,47 +1,52 @@
 # lint_optional_auth_no_guard.py
 
-> 33 nodes
+> 32 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **lint_optional_auth_no_guard.py** (16 connections) — `scripts/lint_optional_auth_no_guard.py`
-- **_find_unguarded()** (8 connections) — `scripts/lint_optional_auth_no_guard.py`
-- **_is_guarded()** (8 connections) — `scripts/lint_optional_auth_no_guard.py`
-- **_auth_posture()** (6 connections) — `scripts/lint_optional_auth_no_guard.py`
-- **_sibling_module_funcs()** (6 connections) — `scripts/lint_optional_auth_no_guard.py`
-- **_body_has_direct_guard()** (5 connections) — `scripts/lint_optional_auth_no_guard.py`
-- **scan()** (5 connections) — `scripts/lint_optional_auth_no_guard.py`
-- **_dep_names_in_default()** (4 connections) — `scripts/lint_optional_auth_no_guard.py`
-- **_guard_call_name()** (4 connections) — `scripts/lint_optional_auth_no_guard.py`
-- **_is_current_user_name()** (4 connections) — `scripts/lint_optional_auth_no_guard.py`
-- **_route_decorators()** (4 connections) — `scripts/lint_optional_auth_no_guard.py`
-- **_called_helper_names()** (3 connections) — `scripts/lint_optional_auth_no_guard.py`
-- **_collect_files()** (3 connections) — `scripts/lint_optional_auth_no_guard.py`
-- **main()** (3 connections) — `scripts/lint_optional_auth_no_guard.py`
-- **AST** (3 connections)
-- **AsyncFunctionDef** (3 connections)
-- **FunctionDef** (3 connections)
-- **Path** (3 connections)
-- **AllowlistEntry** (2 connections) — `scripts/lint_optional_auth_no_guard.py`
-- **expr** (2 connections)
-- **Module** (2 connections)
-- **stmt** (2 connections)
-- **Call** (1 connections)
-- **Guard against unguarded optional-authentication route handlers. See issue #734.…** (1 connections) — `scripts/lint_optional_auth_no_guard.py`
-- **Return 'required', 'optional', or 'anonymous' from the handler's Depends()…** (1 connections) — `scripts/lint_optional_auth_no_guard.py`
-- *... and 8 more nodes in this community*
+- **item_prototype.schema.json** (7 connections) — `schemas/items/item_prototype.schema.json`
+- **definitions** (7 connections) — `schemas/items/item_prototype.schema.json`
+- **weaponMetadata** (5 connections) — `schemas/items/item_prototype.schema.json`
+- **properties** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **armorMetadata** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **equipmentMetadata** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **coverage** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **notes** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **properties** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **armor_points** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **skill_bonuses** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **items** (2 connections) — `schemas/items/item_prototype.schema.json`
+- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **$ref** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
+- [test_validate_codacy_coverage_gate.py](test_validate_codacy_coverage_gate.py.md) (1 shared connections)
+- [test_exploration_procedures.py](test_exploration_procedures.py.md) (1 shared connections)
+- [CombatEventPublisherProtocol](CombatEventPublisherProtocol.md) (1 shared connections)
+- [format_metadata](format_metadata.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/lint_optional_auth_no_guard.py`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 55 (100%)
+- EXTRACTED: 38 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

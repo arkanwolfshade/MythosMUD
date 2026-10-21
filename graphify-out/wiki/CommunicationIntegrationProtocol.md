@@ -1,37 +1,35 @@
 # CommunicationIntegrationProtocol
 
-> 15 nodes
+> 13 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **CommunicationIntegrationProtocol** (8 connections) — `server/npc/npc_protocols.py`
-- **CombatIntegrationProtocol** (6 connections) — `server/npc/npc_protocols.py`
-- **npc_protocols.py** (4 connections) — `server/npc/npc_protocols.py`
-- **.handle_npc_death()** (2 connections) — `server/npc/npc_protocols.py`
-- **.handle_player_message()** (2 connections) — `server/npc/npc_protocols.py`
-- **.send_message_to_room()** (2 connections) — `server/npc/npc_protocols.py`
-- **.send_whisper_to_player()** (2 connections) — `server/npc/npc_protocols.py`
-- **Protocol** (2 connections)
-- **Protocols for NPC combat and communication integration (used by NPCBase).** (1 connections) — `server/npc/npc_protocols.py`
-- **Handle NPC death in the combat integration layer.** (1 connections) — `server/npc/npc_protocols.py`
-- **Protocol for communication integration (whisper, room message, handle player…** (1 connections) — `server/npc/npc_protocols.py`
-- **Send a private whisper from this NPC to a single player.** (1 connections) — `server/npc/npc_protocols.py`
-- **Send a message from this NPC to all players in a room.** (1 connections) — `server/npc/npc_protocols.py`
-- **Handle an incoming player message directed at this NPC.** (1 connections) — `server/npc/npc_protocols.py`
-- **Protocol for combat integration handle_npc_death.** (1 connections) — `server/npc/npc_protocols.py`
+- **P4 · Intent Sweep — FRD/SPEC Documents** (12 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-FRD-Specs.md`
+- **P4-Intent-FRD-Specs.md** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-FRD-Specs.md`
+- **Correction to the core-issues sweep — verified directly** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-FRD-Specs.md`
+- **Corroborations from a second source** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-FRD-Specs.md`
+- **Deliberately superseded — and one of them is more interesting than a blanket ruling** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-FRD-Specs.md`
+- **HIGH · Phantom hostiles spawn but cannot be fought** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-FRD-Specs.md`
+- **HIGH · Reversed compass directions — never implemented, with a trap** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-FRD-Specs.md`
+- **MEDIUM · Admin teleport audit trail uses the wrong mechanism** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-FRD-Specs.md`
+- **MEDIUM · Room `environment` enum has drifted in production data** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-FRD-Specs.md`
+- **New undocumented items** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-FRD-Specs.md`
+- **Scope caveat** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-FRD-Specs.md`
+- **Specified but not built — remainder** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-FRD-Specs.md`
+- **Two one-line doc inconsistencies** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-FRD-Specs.md`
 
 ## Relationships
 
-- [EventBus](EventBus.md) (5 shared connections)
+- [SpellMaterialsService](SpellMaterialsService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/npc_protocols.py`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-FRD-Specs.md`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (90%)
-- INFERRED: 2 (10%)
+- EXTRACTED: 13 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,33 +1,30 @@
 # _AllowlistChecker
 
-> 11 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **_AllowlistChecker** (8 connections) — `server/tests/unit/help/test_help_docs.py`
-- **test_every_rendered_entry_uses_only_what_the_client_sanitizer_keeps()** (4 connections) — `server/tests/unit/help/test_help_docs.py`
-- **_violations()** (4 connections) — `server/tests/unit/help/test_help_docs.py`
-- **test_details_html_uses_only_what_the_client_sanitizer_keeps()** (3 connections) — `server/tests/unit/help/test_help_docs.py`
-- **parametrize** (2 connections)
-- **.handle_data()** (1 connections) — `server/tests/unit/help/test_help_docs.py`
-- **.handle_endtag()** (1 connections) — `server/tests/unit/help/test_help_docs.py`
-- **.handle_starttag()** (1 connections) — `server/tests/unit/help/test_help_docs.py`
-- **.__init__()** (1 connections) — `server/tests/unit/help/test_help_docs.py`
-- **HTMLParser** (1 connections)
-- **Collect every tag or attribute the client sanitizer would remove, and text left…** (1 connections) — `server/tests/unit/help/test_help_docs.py`
+- **🟢 MEDIUM PRIORITY IMPROVEMENTS** (15 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **15. Hardcoded Connection Pool Sizes** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **16. Deprecated asyncio.get_event_loop() Usage** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **17. Inconsistent Error Handling Patterns** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **18. Memory Leak Risk in Metrics Collection** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **19. Missing Message Acknowledgment in NATS** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **20. Subject Naming Inconsistency** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **21. No Connection Health Monitoring** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Priority**: 🟢**MEDIUM** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- [test_help_docs.py](test_help_docs.py.md) (4 shared connections)
-- [get_help_content](get_help_content.md) (1 shared connections)
+- [Common Patterns](Common_Patterns.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/help/test_help_docs.py`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

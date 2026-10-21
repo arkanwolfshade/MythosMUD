@@ -1,41 +1,39 @@
 # test_inventory_mutation_guard_error_handling.py
 
-> 18 nodes
+> 13 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **test_inventory_mutation_guard_error_handling.py** (10 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **guard()** (4 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **asyncio** (4 connections)
-- **test_acquire_async_record_custom_alert_type_error_fallback()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **test_acquire_async_record_custom_alert_with_message_param()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **test_cleanup_async_state_lock_attribute_error()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **test_cleanup_async_state_lock_runtime_error()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **test_acquire_record_custom_alert_type_error_fallback()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **test_acquire_record_custom_alert_with_message_param()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **fixture** (1 connections)
-- **Unit tests for inventory mutation guard - error handling and monitoring. Tests…** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **Test acquire_async handles record_custom_alert with message parameter.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **Test acquire handles TypeError from record_custom_alert and uses fallback.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **Test acquire_async handles TypeError from record_custom_alert and uses fallback.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **Test _cleanup_async_state handles AttributeError from lock.locked().** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **Test _cleanup_async_state handles RuntimeError from lock.locked().** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **Test acquire handles record_custom_alert with message parameter.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **stats_generator_summary.py** (9 connections) — `server/game/stats_generator_summary.py`
+- **build_stat_summary()** (8 connections) — `server/game/stats_generator_summary.py`
+- **.get_stat_summary()** (4 connections) — `server/game/stats_generator.py`
+- **_build_attribute_summary()** (4 connections) — `server/game/stats_generator_summary.py`
+- **_core_stat_values_by_field()** (4 connections) — `server/game/stats_generator_summary.py`
+- **Stats** (3 connections)
+- **_stat_value_for_summary()** (3 connections) — `server/game/stats_generator_summary.py`
+- **Get a summary of the character's stats including modifiers and totals. Args:…** (1 connections) — `server/game/stats_generator.py`
+- **Stat summary helpers for StatsGenerator (keeps stats_generator under module…** (1 connections) — `server/game/stats_generator_summary.py`
+- **Coerce optional stat ints for summary totals (matches legacy ``or 50``…** (1 connections) — `server/game/stats_generator_summary.py`
+- **Map core stat field names to current values (typed access, no getattr).** (1 connections) — `server/game/stats_generator_summary.py`
+- **Build per-attribute value and modifier entries for stat summary.** (1 connections) — `server/game/stats_generator_summary.py`
+- **Build full stat summary dict including modifiers, derived stats, and totals.** (1 connections) — `server/game/stats_generator_summary.py`
 
 ## Relationships
 
-- [InventoryMutationGuard](InventoryMutationGuard.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [testing_examples.py](testing_examples.py.md) (4 shared connections)
+- [test_rate_limiter.py](test_rate_limiter.py.md) (1 shared connections)
+- [Improve Layout Systematically](Improve_Layout_Systematically.md) (1 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- `server/game/stats_generator.py`
+- `server/game/stats_generator_summary.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 24 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

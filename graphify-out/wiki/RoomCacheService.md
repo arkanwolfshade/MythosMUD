@@ -1,61 +1,44 @@
 # RoomCacheService
 
-> 28 nodes
+> 22 nodes · cohesion 0.16
 
 ## Key Concepts
 
-- **RoomCacheService** (29 connections) — `server/caching/cache_service.py`
-- **get_cache_manager()** (21 connections) — `server/caching/lru_cache.py`
-- **TestRoomCacheService** (14 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.__init__()** (7 connections) — `server/caching/cache_service.py`
-- **_RoomObj** (5 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.__init__()** (4 connections) — `server/caching/cache_service.py`
-- **.test_init_concurrent_create_uses_existing()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.persistence()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_room_cache_hit()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_room_miss_returns_none()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_room_miss_with_to_dict()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_room_sync_miss_with_to_dict()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_init_lazy_creates_rooms_cache()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_init_uses_existing_rooms_cache()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_rooms()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.invalidate_room()** (2 connections) — `server/caching/cache_service.py`
-- **.preload_rooms()** (2 connections) — `server/caching/cache_service.py`
-- **.to_dict()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_room_sync_cache_hit()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_room_sync_miss_caches_dict()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_invalidate_room()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **Any** (1 connections)
-- **Service for caching room data.** (1 connections) — `server/caching/cache_service.py`
-- **Initialize the room cache service. Args: persistence: Persistence layer instance** (1 connections) — `server/caching/cache_service.py`
-- **Invalidate cached room data. Args: room_id: The room ID to invalidate** (1 connections) — `server/caching/cache_service.py`
-- *... and 3 more nodes in this community*
+- **fix_suppression_alignment.py** (10 connections) — `scripts/fix_suppression_alignment.py`
+- **parse_alignment_report()** (8 connections) — `scripts/fix_suppression_alignment.py`
+- **fix_file()** (7 connections) — `scripts/fix_suppression_alignment.py`
+- **_apply_fixes_to_line()** (6 connections) — `scripts/fix_suppression_alignment.py`
+- **Any** (5 connections)
+- **_group_fixes_by_line()** (4 connections) — `scripts/fix_suppression_alignment.py`
+- **main()** (4 connections) — `scripts/fix_suppression_alignment.py`
+- **_parse_missing_rules()** (4 connections) — `scripts/fix_suppression_alignment.py`
+- **add_pylint_suppression()** (3 connections) — `scripts/fix_suppression_alignment.py`
+- **add_ruff_suppression()** (3 connections) — `scripts/fix_suppression_alignment.py`
+- **_parse_file_line_pattern()** (3 connections) — `scripts/fix_suppression_alignment.py`
+- **_parse_issue_type_header()** (3 connections) — `scripts/fix_suppression_alignment.py`
+- **Path** (3 connections)
+- **Parse the alignment report to extract misaligned suppressions.** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Add ruff noqa comment to a line that has pylint disable.** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Add pylint disable comment to a line that has noqa.** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Group fixes by line number.** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Apply all fixes for a single line.** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Apply fixes to a file.** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Parse issue type header (MISSING RUFF or MISSING PYLINT).** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Parse file:line pattern from a line. Returns (file, line) or None.** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Parse missing rules from a line. Returns misaligned dict or None.** (1 connections) — `scripts/fix_suppression_alignment.py`
 
 ## Relationships
 
-- [NPCCacheService](NPCCacheService.md) (8 shared connections)
-- [ProfessionCacheService](ProfessionCacheService.md) (7 shared connections)
-- [Any](Any.md) (6 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (4 shared connections)
-- [bench_cache.py](bench_cache.py.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [cached](cached.md) (2 shared connections)
-- [RoomService](RoomService.md) (1 shared connections)
-- [LRUCache](LRUCache.md) (1 shared connections)
-- [CacheService](CacheService.md) (1 shared connections)
-- [CacheManager](CacheManager.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/caching/cache_service.py`
-- `server/caching/lru_cache.py`
-- `server/tests/unit/caching/test_cache_service.py`
+- `scripts/fix_suppression_alignment.py`
 
 ## Audit Trail
 
-- EXTRACTED: 79 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 36 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

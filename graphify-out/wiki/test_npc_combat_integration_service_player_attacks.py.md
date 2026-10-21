@@ -1,54 +1,51 @@
 # test_npc_combat_integration_service_player_attacks.py
 
-> 87 nodes
+> 79 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **test_npc_combat_integration_service_player_attacks.py** (22 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **test_npc_combat_integration_service_npc_aggro.py** (19 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **asyncio** (14 connections)
-- **test_npc_combat_integration_service_aggro_logging.py** (13 connections) — `server/tests/unit/services/test_npc_combat_integration_service_aggro_logging.py`
-- **_RecordingLogger** (9 connections) — `server/tests/unit/services/test_npc_combat_integration_service_aggro_logging.py`
-- **asyncio** (9 connections)
-- **integration_service()** (8 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **_attack_raising()** (6 connections) — `server/tests/unit/services/test_npc_combat_integration_service_aggro_logging.py`
-- **mock_async_persistence()** (6 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **mock_combat_service()** (6 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **mock_connection_manager()** (6 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_already_dead_is_a_debug_skip_not_an_error()** (5 connections) — `server/tests/unit/services/test_npc_combat_integration_service_aggro_logging.py`
-- **test_already_in_combat_is_a_debug_skip_not_an_error()** (5 connections) — `server/tests/unit/services/test_npc_combat_integration_service_aggro_logging.py`
-- **test_unexpected_value_error_is_still_logged_as_error()** (5 connections) — `server/tests/unit/services/test_npc_combat_integration_service_aggro_logging.py`
-- **fixture** (5 connections)
-- **test_handle_npc_attack_on_player_skips_already_dead_target()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_handle_player_attack_on_npc_error_handling()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **test_handle_player_attack_on_npc_grace_period_check_fails()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **test_setup_combat_uuids_and_mappings_value_error()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **MonkeyPatch** (4 connections)
-- **mock_messaging_integration()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_handle_npc_attack_on_player_existing_combat_with_other_npc()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_handle_npc_attack_on_player_existing_combat_with_same_npc()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_handle_npc_attack_on_player_grace_period_blocked()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_handle_npc_attack_on_player_happy_path()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- *... and 62 more nodes in this community*
+- **test_npc_event_handlers.py** (45 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **asyncio** (16 connections)
+- **npc_event_handler()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **fixture** (4 connections)
+- **test_handle_npc_entered_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_no_persistence()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_room()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_room_not_found()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_room_with_npc_instance()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_no_persistence()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_room()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_room_not_found()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_room_with_npc_instance()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_schedule_room_occupants_update_does_not_leak_coro_when_register_fails()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **mock_message_builder()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **mock_send_occupants_update()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_determine_direction_from_rooms_no_match()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_determine_direction_from_rooms_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_determine_direction_from_rooms_room_not_found()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_send_room_message_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_send_room_message_no_room_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_get_behavior_config_from_instance_method()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_get_behavior_config_from_instance_none()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- *... and 54 more nodes in this community*
 
 ## Relationships
 
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (13 shared connections)
-- [ValueError](ValueError.md) (4 shared connections)
-- [CombatService](CombatService.md) (3 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [CombatInstance](CombatInstance.md) (6 shared connections)
+- [ADR-023: Package Ownership (`game/` vs `services/` vs `npc/`) and Fan-Out Watch List](ADR-023-_Package_Ownership_`game-`_vs_`services-`_vs_`npc-`_and_Fan-Out_Watch_List.md) (6 shared connections)
+- [look_container.py](look_container.py.md) (4 shared connections)
+- [BaseEvent](BaseEvent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_combat_integration_service.py`
-- `server/tests/unit/services/test_npc_combat_integration_service_aggro_logging.py`
-- `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 130 (89%)
-- INFERRED: 16 (11%)
+- EXTRACTED: 104 (90%)
+- INFERRED: 12 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

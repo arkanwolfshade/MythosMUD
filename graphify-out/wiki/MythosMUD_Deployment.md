@@ -1,10 +1,10 @@
 # MythosMUD Deployment
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **MythosMUD Deployment** (0 connections) — `docs/deployment.md`
+- **Code Practice Rules Reference Doc** (0 connections) — `.cursor/plans/code_practice_rules_reference_doc.plan.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/deployment.md`
+- `.cursor/plans/code_practice_rules_reference_doc.plan.md`
 
 ## Audit Trail
 

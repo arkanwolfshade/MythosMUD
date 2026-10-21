@@ -1,53 +1,47 @@
 # ADR-024: Server-Authoritative Perceived Reality for Hallucinations
 
-> 33 nodes
+> 33 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **ADR-024: Server-Authoritative Perceived Reality for Hallucinations** (12 connections) — `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
-- **ADR-025: Corruption as a Global Perceptual Filter, Not Per-Message Styling** (12 connections) — `docs/architecture/decisions/ADR-025-corruption-perceptual-filter.md`
-- **Chat Effect Accessibility Floor Design** (9 connections) — `docs/subsystems/SUBSYSTEM_CHAT_EFFECT_ACCESSIBILITY_DESIGN.md`
-- **ADR-024-server-authoritative-perceived-reality.md** (5 connections) — `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
-- **Subsystem Chat Effect Accessibility Design** (5 connections) — `docs/subsystems/SUBSYSTEM_CHAT_EFFECT_ACCESSIBILITY_DESIGN.md`
-- **ADR-025-corruption-perceptual-filter.md** (4 connections) — `docs/architecture/decisions/ADR-025-corruption-perceptual-filter.md`
-- **SUBSYSTEM_CORRUPTION_DESIGN.md** (4 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
-- **1. Overview** (1 connections) — `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
-- **2. Context** (1 connections) — `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
-- **3. Decision** (1 connections) — `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
-- **4. Alternatives Considered** (1 connections) — `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
-- **5. Consequences** (1 connections) — `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
-- **6. Related ADRs** (1 connections) — `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
-- **7. Related docs** (1 connections) — `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
-- **8. Changelog** (1 connections) — `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
-- **1. Overview** (1 connections) — `docs/architecture/decisions/ADR-025-corruption-perceptual-filter.md`
-- **2. Context** (1 connections) — `docs/architecture/decisions/ADR-025-corruption-perceptual-filter.md`
-- **3. Decision** (1 connections) — `docs/architecture/decisions/ADR-025-corruption-perceptual-filter.md`
-- **4. Alternatives Considered** (1 connections) — `docs/architecture/decisions/ADR-025-corruption-perceptual-filter.md`
-- **5. Consequences** (1 connections) — `docs/architecture/decisions/ADR-025-corruption-perceptual-filter.md`
-- **6. Related ADRs** (1 connections) — `docs/architecture/decisions/ADR-025-corruption-perceptual-filter.md`
-- **7. Related docs** (1 connections) — `docs/architecture/decisions/ADR-025-corruption-perceptual-filter.md`
-- **8. Changelog** (1 connections) — `docs/architecture/decisions/ADR-025-corruption-perceptual-filter.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/architecture/decisions/ADR-025-corruption-perceptual-filter.md`
+- **test_lint_pyright_suppressions.py** (22 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
+- **LintTestApi** (18 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
+- **Path** (15 connections)
+- **_problems()** (13 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
+- **_write()** (7 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
+- **test_justification_below_the_suppression_is_accepted()** (5 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
+- **test_non_any_rule_needs_no_justification()** (5 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
+- **test_short_appropriate_because_is_rejected()** (5 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
+- **lint_api_module_scope()** (4 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
+- **test_any_rule_without_justification_is_rejected()** (4 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
+- **test_bare_ignore_is_rejected()** (4 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
+- **test_clean_file_reports_nothing()** (4 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
+- **test_empty_bracket_ignore_is_rejected()** (4 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
+- **test_justification_above_the_suppression_is_accepted()** (4 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
+- **test_multi_rule_suppression_reports_every_rule()** (4 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
+- **test_prefix_category_requires_a_suffix()** (4 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
+- **test_reason_without_appropriate_because_is_rejected()** (4 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
+- **test_sqlalchemy_style_suppression_still_passes()** (4 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
+- **test_unknown_category_is_rejected()** (4 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
+- **_Failure** (3 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
+- **_LintModule** (3 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
+- **_load_script_module()** (3 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
+- **Protocol** (3 connections)
+- **_Suppression** (3 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
+- **fixture** (1 connections)
 - *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [ADR-026: Item Catalog Metadata Contracts](ADR-026-_Item_Catalog_Metadata_Contracts.md) (2 shared connections)
-- [Dream Messaging Subsystem Design](Dream_Messaging_Subsystem_Design.md) (1 shared connections)
-- [Corruption Subsystem Design](Corruption_Subsystem_Design.md) (1 shared connections)
-- [packages/README.md](packages-README.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
-- `docs/architecture/decisions/ADR-025-corruption-perceptual-filter.md`
-- `docs/subsystems/SUBSYSTEM_CHAT_EFFECT_ACCESSIBILITY_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
+- `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (100%)
+- EXTRACTED: 79 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

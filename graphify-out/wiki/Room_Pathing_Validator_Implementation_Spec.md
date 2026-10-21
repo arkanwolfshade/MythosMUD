@@ -1,32 +1,28 @@
 # Room Pathing Validator Implementation Spec
 
-> 9 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **Room Pathing Validator Implementation Spec** (3 connections) — `tools/room_toolkit/room_validator/room_validator_instructions.md`
-- **Connectivity Analysis** (2 connections) — `tools/room_toolkit/room_validator/README.md`
-- **Legacy string exit format** (2 connections) — `tools/room_toolkit/room_validator/README.md`
-- **Object exit format with flags** (2 connections) — `tools/room_toolkit/room_validator/README.md`
-- **Legacy exit format migration support** (2 connections) — `tools/room_toolkit/room_validator/room_validator_instructions.md`
-- **earth_arkhamcity_intersection_derby_high start room** (2 connections) — `tools/room_toolkit/room_validator/room_validator_instructions.md`
-- **Bidirectional Path Validation** (1 connections) — `tools/room_toolkit/room_validator/README.md`
-- **Exit Flags (one_way, self_reference)** (1 connections) — `tools/room_toolkit/room_validator/README.md`
-- **ValidationRule abstract base** (1 connections) — `tools/room_toolkit/room_validator/room_validator_instructions.md`
+- **Common Test Failure Categories** (6 connections) — `.cursor/commands/server-test-remediation.md`
+- **1. Database Test Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **2. Authentication Test Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **3. WebSocket Test Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **4. Game Logic Test Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **5. Integration Test Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [generate_sql.mjs](generate_sql.mjs.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/README.md`
-- `tools/room_toolkit/room_validator/room_validator_instructions.md`
+- `.cursor/commands/server-test-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (75%)
-- INFERRED: 2 (25%)
+- EXTRACTED: 6 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

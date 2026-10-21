@@ -1,11 +1,11 @@
 # Requests Best Practices Remediation
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Unused requests Dependency** (1 connections) — `.cursor/plans/requests_best_practices_remediation_plan.md`
-- **Requests Best Practices Remediation** (1 connections) — `.cursor/plans/requests_best_practices_remediation_plan.md`
+- **unit/realtime/monitoring/__init__.py** (1 connections) — `server/tests/unit/realtime/monitoring/__init__.py`
+- **Realtime monitoring unit tests.** (1 connections) — `server/tests/unit/realtime/monitoring/__init__.py`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `.cursor/plans/requests_best_practices_remediation_plan.md`
+- `server/tests/unit/realtime/monitoring/__init__.py`
 
 ## Audit Trail
 

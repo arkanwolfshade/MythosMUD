@@ -1,78 +1,59 @@
 # ui-v2/types.ts
 
-> 136 nodes
+> 92 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **ui-v2/types.ts** (89 connections) — `client/src/components/ui-v2/types.ts`
-- **PanelState** (25 connections) — `client/src/components/ui-v2/types.ts`
-- **panelReducerHandlers.ts** (24 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
-- **panelManagerReducer.ts** (20 connections) — `client/src/components/ui-v2/PanelSystem/panelManagerReducer.ts`
-- **panelReducerHandlers.test.ts** (19 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts`
-- **GameClientV2MinimapSection.tsx** (18 connections) — `client/src/components/ui-v2/GameClientV2MinimapSection.tsx`
-- **PanelPosition** (16 connections) — `client/src/components/ui-v2/types.ts`
-- **panelMinimizeDock.ts** (16 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
-- **PanelSize** (14 connections) — `client/src/components/ui-v2/types.ts`
-- **@testing-library/jest-dom/vitest** (14 connections) — `client/tsconfig.test.json`
-- **savePanelLayout()** (13 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
-- **usePanelContainerView.ts** (13 connections) — `client/src/components/ui-v2/PanelSystem/usePanelContainerView.ts`
-- **usePanelManagerProviderState.ts** (13 connections) — `client/src/components/ui-v2/PanelSystem/usePanelManagerProviderState.ts`
-- **PanelLayoutHandlers** (12 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutTypes.ts`
-- **ExpandedPanelRnd.tsx** (12 connections) — `client/src/components/ui-v2/PanelSystem/ExpandedPanelRnd.tsx`
-- **PanelContainer.tsx** (12 connections) — `client/src/components/ui-v2/PanelSystem/PanelContainer.tsx`
-- **panelLayoutBootstrap.ts** (12 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutBootstrap.ts`
-- **PanelManagerContext.tsx** (12 connections) — `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
-- **panelMinimizeDock.test.ts** (12 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelMinimizeDock.test.ts`
-- **MinimizedPanelRnd.tsx** (11 connections) — `client/src/components/ui-v2/PanelSystem/MinimizedPanelRnd.tsx`
-- **panelLayoutClamp.ts** (11 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutClamp.ts`
-- **panelLayoutValidationTypeCheck.ts** (11 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheck.ts`
-- **PanelSystem/__tests__/PanelManager.test.tsx** (11 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/PanelManager.test.tsx`
-- **PanelManagerContextValue** (10 connections) — `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
-- **PanelSystem/PanelManager.tsx** (10 connections) — `client/src/components/ui-v2/PanelSystem/PanelManager.tsx`
-- *... and 111 more nodes in this community*
+- **test_player_respawn_service.py** (63 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **asyncio** (29 connections)
+- **test_get_respawn_room_redirects_template_to_exit_room()** (9 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **test_get_respawn_room_keeps_normal_custom_room()** (8 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **fixture** (7 connections)
+- **_session_returning()** (6 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **_foyer()** (5 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **test_respawn_player_from_delirium_combat_clear_error()** (5 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **test_respawn_player_from_delirium_database_error()** (5 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **test_respawn_player_from_delirium_success()** (5 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **test_respawn_player_from_sanitarium_success()** (5 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **respawn_service()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **respawn_service_no_deps()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **sample_dead_player()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **sample_player()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **_template_bedroom()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **test_get_respawn_room_custom()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **test_get_respawn_room_database_error()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **test_get_respawn_room_default()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **test_get_respawn_room_player_not_found()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **test_move_player_to_limbo_database_error()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **test_move_player_to_limbo_player_not_found()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **test_move_player_to_limbo_refused_when_not_dead()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **test_move_player_to_limbo_success()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **test_respawn_player_combat_clear_error()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- *... and 67 more nodes in this community*
 
 ## Relationships
 
-- [GameClientV2.tsx](GameClientV2.tsx.md) (38 shared connections)
-- [logger.ts](logger.ts.md) (18 shared connections)
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (11 shared connections)
-- [InventoryPanel.tsx](InventoryPanel.tsx.md) (9 shared connections)
-- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (8 shared connections)
-- [projectorRoom.ts](projectorRoom.ts.md) (5 shared connections)
-- [useAsciiMapState.ts](useAsciiMapState.ts.md) (2 shared connections)
-- [HeaderBar.tsx](HeaderBar.tsx.md) (2 shared connections)
-- [stateUpdateUtils.ts](stateUpdateUtils.ts.md) (2 shared connections)
-- [TabbedInterfaceOverlay.tsx](TabbedInterfaceOverlay.tsx.md) (2 shared connections)
-- [useGameClientV2ContainerNetworkPhase.ts](useGameClientV2ContainerNetworkPhase.ts.md) (1 shared connections)
-- [include](include.md) (1 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (12 shared connections)
+- [FollowService](FollowService.md) (11 shared connections)
+- [PopulationStats](PopulationStats.md) (8 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (7 shared connections)
+- [test_command_admin.py](test_command_admin.py.md) (3 shared connections)
+- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (3 shared connections)
+- [look_container.py](look_container.py.md) (2 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (2 shared connections)
+- [BaseEvent](BaseEvent.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
+- [test_command_registry_consistency.py](test_command_registry_consistency.py.md) (1 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/PanelManager.tsx`
-- `client/src/components/__tests__/PanelManager.test.tsx`
-- `client/src/components/ui-v2/GameClientV2Minimap.tsx`
-- `client/src/components/ui-v2/GameClientV2MinimapSection.tsx`
-- `client/src/components/ui-v2/PanelSystem/ExpandedPanelBody.tsx`
-- `client/src/components/ui-v2/PanelSystem/ExpandedPanelHeader.tsx`
-- `client/src/components/ui-v2/PanelSystem/ExpandedPanelRnd.tsx`
-- `client/src/components/ui-v2/PanelSystem/MinimizedPanelHeader.tsx`
-- `client/src/components/ui-v2/PanelSystem/MinimizedPanelRnd.tsx`
-- `client/src/components/ui-v2/PanelSystem/PanelContainer.tsx`
-- `client/src/components/ui-v2/PanelSystem/PanelManager.tsx`
-- `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
-- `client/src/components/ui-v2/PanelSystem/PanelSolidUnderlay.tsx`
-- `client/src/components/ui-v2/PanelSystem/__tests__/PanelContainer.test.tsx`
-- `client/src/components/ui-v2/PanelSystem/__tests__/PanelManager.test.tsx`
-- `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutBootstrap.test.ts`
-- `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutClamp.test.ts`
-- `client/src/components/ui-v2/PanelSystem/__tests__/panelMinimizeDock.test.ts`
-- `client/src/components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts`
-- `client/src/components/ui-v2/PanelSystem/__tests__/usePanelManager.test.ts`
+- `server/tests/unit/services/test_player_respawn_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 466 (100%)
-- INFERRED: 2 (0%)
+- EXTRACTED: 155 (83%)
+- INFERRED: 31 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

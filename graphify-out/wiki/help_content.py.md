@@ -1,54 +1,53 @@
 # help_content.py
 
-> 28 nodes
+> 52 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **help_content.py** (38 connections) — `server/help/help_content.py`
-- **CommandDoc** (12 connections) — `server/help/help_content.py`
-- **GuideDoc** (9 connections) — `server/help/help_content.py`
-- **_e()** (9 connections) — `server/help/help_content.py`
-- **_format_command()** (9 connections) — `server/help/help_content.py`
-- **_format_index()** (7 connections) — `server/help/help_content.py`
-- **TypedDict** (7 connections)
-- **_format_guide()** (5 connections) — `server/help/help_content.py`
-- **_see_also_html()** (5 connections) — `server/help/help_content.py`
-- **_subhead()** (5 connections) — `server/help/help_content.py`
-- **HelpArgument** (4 connections) — `server/help/help_content.py`
-- **HelpExample** (4 connections) — `server/help/help_content.py`
-- **_RawCommand** (4 connections) — `server/help/help_content.py`
-- **_RawGuide** (4 connections) — `server/help/help_content.py`
-- **_argument_html()** (4 connections) — `server/help/help_content.py`
-- **_complete_command()** (4 connections) — `server/help/help_content.py`
-- **_complete_guide()** (4 connections) — `server/help/help_content.py`
-- **_example_html()** (4 connections) — `server/help/help_content.py`
-- **_visible_names()** (4 connections) — `server/help/help_content.py`
-- **_format_not_found()** (3 connections) — `server/help/help_content.py`
-- **_ul()** (3 connections) — `server/help/help_content.py`
-- **Help content for MythosMUD. The documentation itself lives in ``commands.json``…** (1 connections) — `server/help/help_content.py`
-- **One documented command argument.** (1 connections) — `server/help/help_content.py`
-- **One example invocation with an optional explanation.** (1 connections) — `server/help/help_content.py`
-- **Documentation for one player-facing command. Optional authored fields are…** (1 connections) — `server/help/help_content.py`
-- *... and 3 more nodes in this community*
+- **test_connection_statistics.py** (24 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **connection_statistics.py** (11 connections) — `server/realtime/connection_statistics.py`
+- **validate_player_presence_impl()** (11 connections) — `server/realtime/connection_statistics.py`
+- **get_online_player_by_display_name_impl()** (10 connections) — `server/realtime/connection_statistics.py`
+- **get_player_presence_info_impl()** (9 connections) — `server/realtime/connection_statistics.py`
+- **get_session_stats_impl()** (9 connections) — `server/realtime/connection_statistics.py`
+- **get_presence_statistics_impl()** (8 connections) — `server/realtime/connection_statistics.py`
+- **Any** (5 connections)
+- **.get_presence_statistics()** (3 connections) — `server/realtime/connection_manager.py`
+- **.get_session_stats()** (3 connections) — `server/realtime/connection_manager.py`
+- **test_get_online_player_by_display_name_impl_case_insensitive()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_get_online_player_by_display_name_impl_found()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_get_online_player_by_display_name_impl_no_name()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_get_online_player_by_display_name_impl_not_found()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_get_player_presence_info_impl_no_websockets()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_get_player_presence_info_impl_not_online()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_get_player_presence_info_impl_online()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_get_presence_statistics_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_get_presence_statistics_impl_no_players()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_get_session_stats_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_get_session_stats_impl_empty()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_get_session_stats_impl_empty_sessions()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_validate_player_presence_impl_connection_count_mismatch()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_validate_player_presence_impl_connections_but_not_online()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_validate_player_presence_impl_consistent()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [test_help_docs.py](test_help_docs.py.md) (16 shared connections)
-- [get_help_content](get_help_content.md) (9 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (3 shared connections)
-- [command_parser.py](command_parser.py.md) (2 shared connections)
-- [system_commands.py](system_commands.py.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
-- [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (1 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (7 shared connections)
+- [connection_initialization.py](connection_initialization.py.md) (3 shared connections)
+- [ChatService](ChatService.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
 
 ## Source Files
 
-- `server/help/help_content.py`
+- `server/realtime/connection_manager.py`
+- `server/realtime/connection_statistics.py`
+- `server/tests/unit/realtime/test_connection_statistics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 88 (94%)
-- INFERRED: 6 (6%)
+- EXTRACTED: 92 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

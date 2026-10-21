@@ -1,19 +1,17 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu Investigator Handbook 7th Edition  (2026-08-12)
 
-> 10 nodes
+> 8 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu Investigator Handbook 7th Edition  (2026-08-12)** (9 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
-- **call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
-- **Communities (1 total, 1 thin omitted)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
+- **usePerformanceMonitor.ts** (6 connections) — `client/src/hooks/usePerformanceMonitor.ts`
+- **usePerformanceMonitor.test.ts** (3 connections) — `client/src/hooks/__tests__/usePerformanceMonitor.test.ts`
+- **usePerformanceMonitor()** (2 connections) — `client/src/hooks/usePerformanceMonitor.ts`
+- **ExtendedPerformance** (1 connections) — `client/src/hooks/__tests__/usePerformanceMonitor.test.ts`
+- **ExtendedPerformance** (1 connections) — `client/src/hooks/usePerformanceMonitor.ts`
+- **PerformanceMemory** (1 connections) — `client/src/hooks/usePerformanceMonitor.ts`
+- **PerformanceMetrics** (1 connections) — `client/src/hooks/usePerformanceMonitor.ts`
+- **UsePerformanceMonitorOptions** (1 connections) — `client/src/hooks/usePerformanceMonitor.ts`
 
 ## Relationships
 
@@ -21,11 +19,12 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
+- `client/src/hooks/__tests__/usePerformanceMonitor.test.ts`
+- `client/src/hooks/usePerformanceMonitor.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

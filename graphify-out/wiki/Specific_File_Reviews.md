@@ -1,26 +1,26 @@
 # Specific File Reviews
 
-> 9 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **Specific File Reviews** (9 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
-- **`server/api/players.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
-- **`server/auth/endpoints.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
-- **`server/config/models.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
-- **`server/models/command.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
-- **`server/models/game.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
-- **`server/schemas/invite.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
-- **`server/schemas/player.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
-- **`server/schemas/user.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **additionalProperties** (5 connections) — `db/static/schemas/emotes.schema.json`
+- **emotes** (4 connections) — `db/static/schemas/emotes.schema.json`
+- **properties** (2 connections) — `db/static/schemas/emotes.schema.json`
+- **additionalProperties** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **type** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **minProperties** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **type** (1 connections) — `db/static/schemas/emotes.schema.json`
 
 ## Relationships
 
-- [Pydantic Code Review - feature/sqlite-to-postgresql Branch](Pydantic_Code_Review_-_feature-sqlite-to-postgresql_Branch.md) (1 shared connections)
+- [effects](effects.md) (1 shared connections)
+- [Python Code Coverage Status](Python_Code_Coverage_Status.md) (1 shared connections)
+- [2. Model Updates Verified](2._Model_Updates_Verified.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- `db/static/schemas/emotes.schema.json`
 
 ## Audit Trail
 

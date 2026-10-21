@@ -1,10 +1,10 @@
 # Test Refactoring Executive Summary
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Test Refactoring Executive Summary** (0 connections) — `docs/archive/TEST_REFACTORING_SUMMARY.md`
+- **Gladiator Ring Arena Plan** (0 connections) — `.cursor/plans/gladiator_ring_arena_6a674c58.plan.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/TEST_REFACTORING_SUMMARY.md`
+- `.cursor/plans/gladiator_ring_arena_6a674c58.plan.md`
 
 ## Audit Trail
 

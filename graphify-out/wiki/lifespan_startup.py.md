@@ -1,62 +1,65 @@
 # lifespan_startup.py
 
-> 106 nodes
+> 97 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **lifespan_startup.py** (66 connections) — `server/app/lifespan_startup.py`
-- **test_lifespan_startup.py** (42 connections) — `server/tests/unit/app/test_lifespan_startup.py`
-- **asyncio** (18 connections)
-- **FastAPI** (16 connections)
-- **initialize_container_and_legacy_services()** (15 connections) — `server/app/lifespan_startup.py`
-- **FastAPI** (15 connections)
-- **test_combat_skill_wiring.py** (14 connections) — `server/tests/unit/container/test_combat_skill_wiring.py`
-- **initialize_combat_services()** (12 connections) — `server/app/lifespan_startup.py`
-- **_attach_combat_service()** (11 connections) — `server/app/lifespan_startup.py`
-- **setup_connection_manager()** (11 connections) — `server/app/lifespan_startup.py`
-- **_create_npc_services_on_app()** (10 connections) — `server/app/lifespan_startup.py`
-- **initialize_npc_services()** (10 connections) — `server/app/lifespan_startup.py`
-- **initialize_chat_service()** (9 connections) — `server/app/lifespan_startup.py`
-- **initialize_mythos_time_consumer()** (9 connections) — `server/app/lifespan_startup.py`
-- **initialize_nats_and_combat_services()** (9 connections) — `server/app/lifespan_startup.py`
-- **initialize_npc_startup_spawning()** (9 connections) — `server/app/lifespan_startup.py`
-- **_get_item_prototype_entries()** (7 connections) — `server/app/lifespan_startup.py`
-- **_validate_npc_services_prerequisites()** (7 connections) — `server/app/lifespan_startup.py`
-- **_get_item_prototype_count()** (6 connections) — `server/app/lifespan_startup.py`
-- **_load_npc_definitions_and_rules()** (6 connections) — `server/app/lifespan_startup.py`
-- **_set_legacy_services()** (6 connections) — `server/app/lifespan_startup.py`
-- **test_setup_connection_manager()** (6 connections) — `server/tests/unit/app/test_lifespan_startup.py`
-- **nats_is_connected()** (5 connections) — `server/app/lifespan_protocols.py`
-- **_log_npc_startup_errors()** (5 connections) — `server/app/lifespan_startup.py`
-- **_start_nats_message_handler()** (5 connections) — `server/app/lifespan_startup.py`
-- *... and 81 more nodes in this community*
+- **get_help_content()** (40 connections) — `server/help/help_content.py`
+- **help_content.py** (38 connections) — `server/help/help_content.py`
+- **test_help_docs.py** (29 connections) — `server/tests/unit/help/test_help_docs.py`
+- **load_help_docs()** (22 connections) — `server/help/help_content.py`
+- **test_bank_wiring.py** (19 connections) — `server/tests/unit/commands/test_bank_wiring.py`
+- **get_manual()** (15 connections) — `server/help/help_content.py`
+- **CommandDoc** (12 connections) — `server/help/help_content.py`
+- **HelpDocs** (12 connections) — `server/help/help_content.py`
+- **_e()** (9 connections) — `server/help/help_content.py`
+- **_format_command()** (9 connections) — `server/help/help_content.py`
+- **GuideDoc** (9 connections) — `server/help/help_content.py`
+- **_AllowlistChecker** (8 connections) — `server/tests/unit/help/test_help_docs.py`
+- **_format_index()** (7 connections) — `server/help/help_content.py`
+- **TypedDict** (7 connections)
+- **_all_topics()** (6 connections) — `server/tests/unit/help/test_help_docs.py`
+- **test_hidden_admin_commands_are_not_offered_as_suggestions_or_see_also()** (6 connections) — `server/tests/unit/help/test_help_docs.py`
+- **test_websocket_handler_help.py** (6 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
+- **_format_guide()** (5 connections) — `server/help/help_content.py`
+- **_see_also_html()** (5 connections) — `server/help/help_content.py`
+- **_subhead()** (5 connections) — `server/help/help_content.py`
+- **server/help/__init__.py** (5 connections) — `server/help/__init__.py`
+- **test_see_also_only_points_at_documented_topics()** (5 connections) — `server/tests/unit/help/test_help_docs.py`
+- **test_the_docs_do_not_describe_diagonal_movement()** (5 connections) — `server/tests/unit/help/test_help_docs.py`
+- **_argument_html()** (4 connections) — `server/help/help_content.py`
+- **_complete_command()** (4 connections) — `server/help/help_content.py`
+- *... and 72 more nodes in this community*
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (17 shared connections)
-- [CombatService](CombatService.md) (12 shared connections)
-- [get_logger](get_logger.md) (11 shared connections)
-- [lifespan.py](lifespan.py.md) (7 shared connections)
-- [EventBus](EventBus.md) (6 shared connections)
-- [test_lifespan_shutdown.py](test_lifespan_shutdown.py.md) (4 shared connections)
-- [NPCPopulationController](NPCPopulationController.md) (4 shared connections)
-- [test_lifespan_event_subscriptions.py](test_lifespan_event_subscriptions.py.md) (4 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (3 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (3 shared connections)
-- [LucidityService](LucidityService.md) (3 shared connections)
-- [npc_database.py](npc_database.py.md) (3 shared connections)
+- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (6 shared connections)
+- [CommandFactory](CommandFactory.md) (6 shared connections)
+- [command_parser.py](command_parser.py.md) (4 shared connections)
+- [NATSService](NATSService.md) (4 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (3 shared connections)
+- [QuestService](QuestService.md) (3 shared connections)
+- [RoomBasedChannelStrategy](RoomBasedChannelStrategy.md) (3 shared connections)
+- [MemoryMonitor](MemoryMonitor.md) (3 shared connections)
+- [deprecated_patterns.py](deprecated_patterns.py.md) (3 shared connections)
+- [Communities (10 total, 2 thin omitted)](Communities_10_total,_2_thin_omitted.md) (1 shared connections)
+- [event_handler.py](event_handler.py.md) (1 shared connections)
+- [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/lifespan_protocols.py`
-- `server/app/lifespan_startup.py`
-- `server/tests/unit/app/test_lifespan_startup.py`
-- `server/tests/unit/container/test_combat_skill_wiring.py`
+- `server/help/__init__.py`
+- `server/help/help_content.py`
+- `server/tests/unit/api/test_help_api.py`
+- `server/tests/unit/commands/test_bank_wiring.py`
+- `server/tests/unit/help/test_help_docs.py`
+- `server/tests/unit/realtime/test_websocket_handler_core.py`
+- `server/tests/unit/realtime/test_websocket_handler_help.py`
 
 ## Audit Trail
 
-- EXTRACTED: 299 (97%)
-- INFERRED: 8 (3%)
+- EXTRACTED: 231 (95%)
+- INFERRED: 11 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

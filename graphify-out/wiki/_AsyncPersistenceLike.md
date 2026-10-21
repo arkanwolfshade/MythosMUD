@@ -1,31 +1,26 @@
 # _AsyncPersistenceLike
 
-> 7 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **_AsyncPersistenceLike** (4 connections) — `server/realtime/integration/game_state_provider.py`
-- **_PlayerServiceLike** (4 connections) — `server/realtime/integration/game_state_provider.py`
-- **.convert_player_to_schema()** (3 connections) — `server/realtime/integration/game_state_provider.py`
-- **Protocol** (2 connections)
-- **Minimal duck-type for the app's PlayerService (issue #787: avoid Any at the…** (1 connections) — `server/realtime/integration/game_state_provider.py`
-- **Convert a Player model to its client-facing schema representation.** (1 connections) — `server/realtime/integration/game_state_provider.py`
-- **Minimal duck-type for the async persistence layer's player lookup.** (1 connections) — `server/realtime/integration/game_state_provider.py`
+- **Call of Cthulhu Starter Set (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Starter Set.md`
+- **Call of Cthulhu Starter Set.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Starter Set.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Starter Set.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Starter Set.md`
 
 ## Relationships
 
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (2 shared connections)
-- [GameStateProvider](GameStateProvider.md) (1 shared connections)
-- [websocket_helpers.py](websocket_helpers.py.md) (1 shared connections)
+- [test_inventory_commands_helpers.py](test_inventory_commands_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/integration/game_state_provider.py`
+- `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Starter Set.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (90%)
-- INFERRED: 1 (10%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,21 +1,22 @@
 # month
 
-> 4 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **month** (4 connections) — `schemas/calendar/holiday.schema.json`
-- **maximum** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **minimum** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **Mythos Holiday Candidates** (3 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
+- **Implementation Notes** (2 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
+- **Canonical and Derived Observances** (1 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
+- **Narrative Flavor Seeds** (1 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
+- **Opportunities for Expansion** (1 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/calendar/holiday.schema.json`
+- `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
 
 ## Audit Trail
 

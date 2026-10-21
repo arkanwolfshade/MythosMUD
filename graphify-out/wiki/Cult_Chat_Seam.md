@@ -1,10 +1,10 @@
 # Cult Chat Seam
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Cult Chat Seam** (0 connections) — `docs/subsystems/SUBSYSTEM_CULT_CHAT_DESIGN.md`
+- **cursor-cli-test-fix.ps1** (0 connections) — `scripts/cursor-cli-test-fix.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/subsystems/SUBSYSTEM_CULT_CHAT_DESIGN.md`
+- `scripts/cursor-cli-test-fix.ps1`
 
 ## Audit Trail
 

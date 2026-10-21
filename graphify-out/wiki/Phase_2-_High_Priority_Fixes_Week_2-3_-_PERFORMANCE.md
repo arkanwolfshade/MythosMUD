@@ -1,30 +1,28 @@
 # Phase 2: High Priority Fixes (Week 2-3) - PERFORMANCE
 
-> 9 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **Phase 2: High Priority Fixes (Week 2-3) - PERFORMANCE** (9 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.1: Add Room Lookup Caching** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.2: Complete Async Persistence Migration** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.3: Optimize Database Flush Operations** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.4: Load Only Active Players** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.5: Use NATS Connection Pool by Default** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.6: Add TLS Configuration** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.7: Improve Event Loop Change Detection** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.8: Review Transaction Error Handling** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **e2e/tsconfig.json** (5 connections) — `client/tests/e2e/tsconfig.json`
+- **include** (4 connections) — `client/tests/e2e/tsconfig.json`
+- **extends** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **references** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **./**/*.d.ts** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **../../src/test/e2e-bootstrap.ts** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **./**/*.ts** (1 connections) — `client/tests/e2e/tsconfig.json`
 
 ## Relationships
 
-- [Phase 1: Critical Fixes (Week 1) - BLOCKING ISSUES](Phase_1-_Critical_Fixes_Week_1_-_BLOCKING_ISSUES.md) (1 shared connections)
+- [enum](enum.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- `client/tests/e2e/tsconfig.json`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,50 +1,55 @@
 # get_cached_player
 
-> 25 nodes
+> 23 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **get_cached_player()** (15 connections) — `server/utils/player_cache.py`
-- **cache_player()** (13 connections) — `server/utils/player_cache.py`
-- **test_player_cache.py** (11 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **player_cache.py** (7 connections) — `server/utils/player_cache.py`
-- **_get_request_state()** (6 connections) — `server/utils/player_cache.py`
-- **test_cache_and_get_player()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_cache_player_multiple()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_cache_player_overwrite()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_cache_player_no_state()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_get_cached_player_no_state()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_get_cached_player_none()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_get_cached_player_nonexistent()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Any** (3 connections)
-- **Unit tests for player_cache utilities. Tests the player caching functions for…** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test get_cached_player() returns None when no cache exists.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test cache_player() and get_cached_player() operations.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test get_cached_player() returns None for nonexistent key.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test cache_player() can cache multiple players.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test cache_player() overwrites existing entries.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test get_cached_player() handles missing state.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test cache_player() handles missing state gracefully.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Helpers for caching player objects during a single command request. This avoids…** (1 connections) — `server/utils/player_cache.py`
-- **Safely extract the state object from a FastAPI/Starlette request.** (1 connections) — `server/utils/player_cache.py`
-- **Return a cached player object for this request if one exists.** (1 connections) — `server/utils/player_cache.py`
-- **Cache a player object on the request for reuse within the command.** (1 connections) — `server/utils/player_cache.py`
+- **who_commands.py** (18 connections) — `server/commands/who_commands.py`
+- **handle_who_command()** (15 connections) — `server/commands/who_commands.py`
+- **filter_players_by_name()** (14 connections) — `server/commands/who_commands.py`
+- **filter_online_players()** (10 connections) — `server/commands/who_commands.py`
+- **get_players_for_who()** (8 connections) — `server/commands/who_commands.py`
+- **Any** (6 connections)
+- **test_filter_players_by_name_case_insensitive()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_filter_players_by_name_exact_match()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_filter_players_by_name_no_filter()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_filter_players_by_name_partial_match()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_get_players_for_who_no_filter()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_get_players_for_who_with_filter()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Who command handlers and utilities for MythosMUD. This module contains the who…** (1 connections) — `server/commands/who_commands.py`
+- **Filter players to only those who are online (active within threshold). Args:…** (1 connections) — `server/commands/who_commands.py`
+- **Get the list of players to show and the effective filter term. Args:…** (1 connections) — `server/commands/who_commands.py`
+- **Filter players by case-insensitive partial name matching. Args: players: List…** (1 connections) — `server/commands/who_commands.py`
+- **Handle the who command for listing online players. Args: command_data: Command…** (1 connections) — `server/commands/who_commands.py`
+- **Test filtering players with no filter term.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test get_players_for_who without filter.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test get_players_for_who with filter.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test filtering players with exact match.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test filtering players with partial match.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test filtering players is case-insensitive.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
 
 ## Relationships
 
-- [catatonia_check.py](catatonia_check.py.md) (5 shared connections)
-- [test_logout_commands.py](test_logout_commands.py.md) (5 shared connections)
-- [.state](state.md) (1 shared connections)
+- [Phase 2: Qualitative Analysis Results](Phase_2-_Qualitative_Analysis_Results.md) (14 shared connections)
+- [PlayerCreationService](PlayerCreationService.md) (9 shared connections)
+- [NpcDisposition](NpcDisposition.md) (6 shared connections)
+- [command_parser.py](command_parser.py.md) (4 shared connections)
+- [test_player_event_handlers_utils.py](test_player_event_handlers_utils.py.md) (3 shared connections)
+- [HallucinationRng](HallucinationRng.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (1 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (1 shared connections)
+- [RoomRepository](RoomRepository.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_player_cache.py`
-- `server/utils/player_cache.py`
+- `server/commands/who_commands.py`
+- `server/tests/unit/commands/test_who_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 50 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 71 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

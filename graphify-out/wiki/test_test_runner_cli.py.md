@@ -1,32 +1,30 @@
 # test_test_runner_cli.py
 
-> 11 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **_run()** (8 connections) — `server/tests/unit/scripts/test_test_runner_cli.py`
-- **test_test_runner_cli.py** (8 connections) — `server/tests/unit/scripts/test_test_runner_cli.py`
-- **test_missing_pyproject_exits_nonzero()** (3 connections) — `server/tests/unit/scripts/test_test_runner_cli.py`
-- **test_mode_flags_select_runner_method()** (3 connections) — `server/tests/unit/scripts/test_test_runner_cli.py`
-- **test_project_root_override_is_passed_to_runner()** (3 connections) — `server/tests/unit/scripts/test_test_runner_cli.py`
-- **Path** (3 connections)
-- **test_no_flags_runs_all_tests()** (2 connections) — `server/tests/unit/scripts/test_test_runner_cli.py`
-- **test_paths_markers_and_pytest_args_are_forwarded()** (2 connections) — `server/tests/unit/scripts/test_test_runner_cli.py`
-- **test_project_root_defaults_to_nearest_pyproject()** (2 connections) — `server/tests/unit/scripts/test_test_runner_cli.py`
-- **parametrize** (1 connections)
-- **Tests for scripts/test_runner.py CLI parsing (typed argparse namespace).…** (1 connections) — `server/tests/unit/scripts/test_test_runner_cli.py`
+- **fixture** (4 connections)
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **mock_player()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **mock_request()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **Create a mock request object.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **Create a mock connection manager.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **Create a mock player object.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [ConnectionErrorHandler](ConnectionErrorHandler.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/scripts/test_test_runner_cli.py`
+- `server/tests/unit/commands/test_logout_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

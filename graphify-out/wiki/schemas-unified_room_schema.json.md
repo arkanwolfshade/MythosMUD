@@ -1,36 +1,25 @@
 # schemas/unified_room_schema.json
 
-> 15 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **schemas/unified_room_schema.json** (8 connections) — `schemas/unified_room_schema.json`
-- **required** (8 connections) — `schemas/unified_room_schema.json`
-- **additionalProperties** (1 connections) — `schemas/unified_room_schema.json`
-- **allOf** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **$schema** (1 connections) — `schemas/unified_room_schema.json`
-- **title** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **exits** (1 connections) — `schemas/unified_room_schema.json`
-- **id** (1 connections) — `schemas/unified_room_schema.json`
-- **name** (1 connections) — `schemas/unified_room_schema.json`
-- **plane** (1 connections) — `schemas/unified_room_schema.json`
-- **sub_zone** (1 connections) — `schemas/unified_room_schema.json`
-- **zone** (1 connections) — `schemas/unified_room_schema.json`
+- **Alone Against the Dark (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Dark.md`
+- **Alone Against the Dark.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Dark.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Dark.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Dark.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [test_inventory_commands_helpers.py](test_inventory_commands_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Dark.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

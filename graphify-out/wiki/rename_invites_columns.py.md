@@ -1,27 +1,26 @@
 # rename_invites_columns.py
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **rename_invites_columns.py** (4 connections) — `server/scripts/rename_invites_columns.py`
-- **apply_migration()** (3 connections) — `server/scripts/rename_invites_columns.py`
-- **main()** (3 connections) — `server/scripts/rename_invites_columns.py`
-- **Apply the migration to rename columns. Args: database_url: PostgreSQL database…** (1 connections) — `server/scripts/rename_invites_columns.py`
-- **Main entry point for the migration script.** (1 connections) — `server/scripts/rename_invites_columns.py`
+- **Single Session Per User** (2 connections) — `docs/archive/connection_termination_demo.md`
+- **force_disconnect_player** (1 connections) — `docs/archive/connection_termination_demo.md`
+- **Player Spawn Protection** (1 connections) — `docs/archive/player_protection_system_dec_21.plan.md`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/scripts/rename_invites_columns.py`
+- `docs/archive/connection_termination_demo.md`
+- `docs/archive/player_protection_system_dec_21.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1 (50%)
+- INFERRED: 1 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,49 +1,51 @@
 # test_room_subscription_manager_helpers.py
 
-> 41 nodes
+> 39 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **test_room_subscription_manager_helpers.py** (22 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **subscription_manager()** (4 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_canonical_room_id()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_canonical_room_id_empty_string()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_canonical_room_id_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_canonical_room_id_no_persistence()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_canonical_room_id_no_room_id_attr()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_canonical_room_id_none()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_canonical_room_id_with_persistence()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_get_stats()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_get_stats_empty()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_get_stats_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_get_stats_with_data()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_reconcile_room_presence()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_reconcile_room_presence_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_reconcile_room_presence_no_online_players()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_remove_player_from_all_rooms()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_remove_player_from_all_rooms_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_remove_player_from_all_rooms_no_subscriptions()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_remove_player_from_all_rooms_with_subscriptions()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **fixture** (1 connections)
-- **Unit tests for room subscription manager helper functions. Tests the helper…** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **Test reconcile_room_presence() handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **Test _canonical_room_id() with None.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **Test _canonical_room_id() with empty string.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- *... and 16 more nodes in this community*
+- **test_rate_limiter_utils.py** (30 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **character_creation_rate_limit_settings()** (7 connections) — `server/utils/rate_limiter.py`
+- **test_character_creation_rate_limit_settings_defaults()** (3 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_character_creation_rate_limit_settings_from_env()** (3 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_enforce_rate_limit_includes_retry_after()** (3 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_enforce_rate_limit_raises_when_exceeded()** (3 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **MonkeyPatch** (2 connections)
+- **test_character_creation_limiter_initialized()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_character_creation_limiter_matches_settings()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_different_users()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_exceeds_limit()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_first_request()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_multiple_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_removes_old_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_enforce_rate_limit_allows_request()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_calculates_reset_time()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_calculates_retry_after()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_filters_old_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_no_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_with_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_rate_limiter_initialization()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_stats_roll_limiter_initialized()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **Unit tests for rate limiting utilities. Tests the simple in-memory rate limiter…** (1 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **Test get_rate_limit_info calculates reset time correctly.** (1 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **Test get_rate_limit_info calculates retry_after correctly.** (1 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) (2 shared connections)
-- [connection_initialization.py](connection_initialization.py.md) (1 shared connections)
+- [Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\character_sheets  (2026-08-12)](Graph_Report_-_C-_Users_arkan_Proton_Drive_arkanwolfshade_My_files_Chaosium_character_sheets__2026-08-12.md) (7 shared connections)
+- [AttributeError](AttributeError.md) (4 shared connections)
+- [process_room_files](process_room_files.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
+- `server/tests/unit/utils/test_rate_limiter_utils.py`
+- `server/utils/rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 54 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

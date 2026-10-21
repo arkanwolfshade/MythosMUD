@@ -1,28 +1,30 @@
 # test_event_publisher_init_with_initial_sequence
 
-> 6 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **test_event_publisher_init_with_initial_sequence()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_get_async_persistence_returns_none_when_unset()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_event_publisher_init()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test EventPublisher initialization with initial sequence.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **#679: async_persistence is injected at construction (no container lookup at all…** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test EventPublisher initialization.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Entity Contact Subsystem Design** (9 connections) — `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
+- **1. Overview** (1 connections) — `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
+- **2. Architecture** (1 connections) — `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
+- **3. Key design decisions** (1 connections) — `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
+- **4. Alternatives Considered** (1 connections) — `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
+- **5. Consequences** (1 connections) — `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
+- **6. Related docs** (1 connections) — `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
+- **7. Changelog** (1 connections) — `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
+- **AI READING INSTRUCTION** (1 connections) — `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
 
 ## Relationships
 
-- [test_event_publisher.py](test_event_publisher.py.md) (3 shared connections)
-- [EventPublisher](EventPublisher.md) (2 shared connections)
+- [Findings](Findings.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_event_publisher.py`
+- `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,10 +1,10 @@
 # NPC Catalog Pipeline README
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **NPC Catalog Pipeline README** (0 connections) — `data/npc_catalog/README.md`
+- **Simultaneous WebSocket and SSE** (0 connections) — `docs/archive/DUAL_CONNECTION_SYSTEM_SPEC.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `data/npc_catalog/README.md`
+- `docs/archive/DUAL_CONNECTION_SYSTEM_SPEC.md`
 
 ## Audit Trail
 

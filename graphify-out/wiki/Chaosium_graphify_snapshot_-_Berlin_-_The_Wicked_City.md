@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - Berlin - The Wicked City
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Berlin - The Wicked City** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/MANIFEST.md`
-- **berlin-the-wicked-city/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/MANIFEST.md`
+- **passive_lucidity_flux_tick Performance Alert** (1 connections) — `investigations/sessions/2025-01-29_session-001_warnings-log-investigation.md`
+- **Warnings Log Investigation** (1 connections) — `investigations/sessions/2025-01-29_session-001_warnings-log-investigation.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/MANIFEST.md`
+- `investigations/sessions/2025-01-29_session-001_warnings-log-investigation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

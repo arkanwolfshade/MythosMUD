@@ -1,27 +1,27 @@
 # add_fastapi_users_columns.py
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **add_fastapi_users_columns.py** (4 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **apply_migration()** (3 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **main()** (3 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **Main entry point for the migration script.** (1 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **Apply the migration to add FastAPI Users columns. Args: database_url:…** (1 connections) — `server/scripts/add_fastapi_users_columns.py`
+- **Comprehensive System Audit** (2 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
+- **CI/CD Enhanced Logging Validation** (1 connections) — `docs/archive/CI_CD_LOGGING_VALIDATION.md`
+- **Database Migration Guide** (1 connections) — `docs/archive/DATABASE_MIGRATION.md`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/scripts/add_fastapi_users_columns.py`
+- `docs/archive/CI_CD_LOGGING_VALIDATION.md`
+- `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
+- `docs/archive/DATABASE_MIGRATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

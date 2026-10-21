@@ -1,44 +1,39 @@
 # _format_npc_description
 
-> 20 nodes
+> 18 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **_format_npc_description()** (15 connections) — `server/commands/look_npc.py`
-- **test_format_npc_description()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_npc_description_fallback()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_npc_description_no_description()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_npc_description_empty_string()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_npc_description_fallback_desc()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_npc_description_fallback_long_description()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_npc_description_fallback_short_description()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_npc_description_no_description()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_npc_description_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Format NPC description with fallback.** (1 connections) — `server/commands/look_npc.py`
-- **Test _format_npc_description() returns description from definition.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _format_npc_description() uses fallback when description is empty.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _format_npc_description() uses alternative attributes.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test formatting NPC description successfully.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test formatting NPC description with long_description fallback.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test formatting NPC description with short_description fallback.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test formatting NPC description with desc fallback.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test formatting NPC description when no description available.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test formatting NPC description when description is empty string.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_e2e_reset_players.py** (11 connections) — `server/tests/unit/scripts/test_e2e_reset_players.py`
+- **_RecordingConnection** (8 connections) — `server/tests/unit/scripts/test_e2e_reset_players.py`
+- **_load()** (5 connections) — `server/tests/unit/scripts/test_e2e_reset_players.py`
+- **Protocol** (3 connections)
+- **UUID** (3 connections)
+- **_ResetScript** (3 connections) — `server/tests/unit/scripts/test_e2e_reset_players.py`
+- **test_clear_folk_tonic_cooldowns_targets_the_shared_players_only()** (3 connections) — `server/tests/unit/scripts/test_e2e_reset_players.py`
+- **test_reset_tutorial_character_requires_the_seeded_character()** (3 connections) — `server/tests/unit/scripts/test_e2e_reset_players.py`
+- **test_reset_tutorial_character_restores_tutorial_start_state()** (3 connections) — `server/tests/unit/scripts/test_e2e_reset_players.py`
+- **.fetchval()** (2 connections) — `server/tests/unit/scripts/test_e2e_reset_players.py`
+- **.__init__()** (2 connections) — `server/tests/unit/scripts/test_e2e_reset_players.py`
+- **_SeedScript** (2 connections) — `server/tests/unit/scripts/test_e2e_reset_players.py`
+- **_SeedSpec** (2 connections) — `server/tests/unit/scripts/test_e2e_reset_players.py`
+- **test_seed_includes_the_tutorial_account()** (2 connections) — `server/tests/unit/scripts/test_e2e_reset_players.py`
+- **Tests for scripts/e2e_reset_players.py --tutorial (puts E2ETutorial back at the…** (1 connections) — `server/tests/unit/scripts/test_e2e_reset_players.py`
+- **Attributes of scripts/e2e_reset_players.py read after dynamic import.** (1 connections) — `server/tests/unit/scripts/test_e2e_reset_players.py`
+- **Stands in for asyncpg.Connection: returns a player id (or None) and records…** (1 connections) — `server/tests/unit/scripts/test_e2e_reset_players.py`
+- **.execute()** (1 connections) — `server/tests/unit/scripts/test_e2e_reset_players.py`
 
 ## Relationships
 
-- [test_look_npc.py](test_look_npc.py.md) (10 shared connections)
-- [test_look_npc_helpers.py](test_look_npc_helpers.py.md) (4 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/commands/look_npc.py`
-- `server/tests/unit/commands/test_look_npc.py`
-- `server/tests/unit/commands/test_look_npc_helpers.py`
+- `server/tests/unit/scripts/test_e2e_reset_players.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 28 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

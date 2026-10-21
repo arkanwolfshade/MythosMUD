@@ -1,46 +1,47 @@
 # Feature Requirements Document: Random Stats Generator
 
-> 25 nodes
+> 28 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **Feature Requirements Document: Random Stats Generator** (12 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Implementation Phases** (5 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Technical Requirements** (4 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **User Flow** (4 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **UI/UX Requirements** (3 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **FRD_random_stats_generator.md** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **1. Registration Process** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **2. Stats Rolling Process** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **3. Error Handling** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Backend Requirements** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Dependencies** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Frontend Requirements** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Future Enhancements** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Overview** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Phase 1: Core Stats Rolling** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Phase 2: Integration** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Phase 3: Error Handling & Polish** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Phase 4: Testing & Validation** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Risks & Mitigation** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Security Requirements** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Success Metrics** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **User Experience** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **User Story** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Visual Design** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Any** (10 connections)
+- **._setup_task_tracking()** (9 connections) — `server/app/task_registry.py`
+- **Task** (8 connections)
+- **TaskMetadata** (7 connections) — `server/app/task_registry.py`
+- **.register_task()** (7 connections) — `server/app/task_registry.py`
+- **._create_task_completion_callback()** (5 connections) — `server/app/task_registry.py`
+- **.__init__()** (4 connections) — `server/app/task_registry.py`
+- **.cancel_task()** (4 connections) — `server/app/task_registry.py`
+- **.unregister_task()** (4 connections) — `server/app/task_registry.py`
+- **._ensure_unique_task_name()** (3 connections) — `server/app/task_registry.py`
+- **._extract_service_name()** (3 connections) — `server/app/task_registry.py`
+- **.get_registry_info()** (3 connections) — `server/app/task_registry.py`
+- **.list_active_tasks()** (3 connections) — `server/app/task_registry.py`
+- **._track_task_creation_metrics()** (3 connections) — `server/app/task_registry.py`
+- **.__repr__()** (2 connections) — `server/app/task_registry.py`
+- **Create callback function for task completion cleanup.** (1 connections) — `server/app/task_registry.py`
+- **Set up tracking for a newly created task.** (1 connections) — `server/app/task_registry.py`
+- **Register and create a tracked asyncio.Task. Args: coro: The coroutine to wrap…** (1 connections) — `server/app/task_registry.py`
+- **Unregister task from tracking, optionally force-cancelling. Args: task: Task…** (1 connections) — `server/app/task_registry.py`
+- **Cancel specific task with logical timeout boundaries. Args: task: Task…** (1 connections) — `server/app/task_registry.py`
+- **Metadata for tracked asyncio.Tasks.** (1 connections) — `server/app/task_registry.py`
+- **Initialize task metadata. Args: task: The asyncio.Task instance to track…** (1 connections) — `server/app/task_registry.py`
+- **Return list of currently registered TaskMetadata.** (1 connections) — `server/app/task_registry.py`
+- **Return comprehensive registry state information.** (1 connections) — `server/app/task_registry.py`
+- **String representation of task metadata for logging.** (1 connections) — `server/app/task_registry.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [command_error](command_error.md) (16 shared connections)
 
 ## Source Files
 
-- `docs/archive/FRD_random_stats_generator.md`
+- `server/app/task_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 52 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

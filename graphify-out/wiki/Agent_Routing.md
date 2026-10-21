@@ -1,10 +1,10 @@
 # Agent Routing
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Agent Routing** (0 connections) — `.claude/rules/agent-routing.md`
+- **users_players.sql** (0 connections) — `db/verification/users_players.sql`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.claude/rules/agent-routing.md`
+- `db/verification/users_players.sql`
 
 ## Audit Trail
 

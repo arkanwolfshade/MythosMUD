@@ -1,64 +1,53 @@
 # RoomNodeData
 
-> 53 nodes
+> 63 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **RoomNodeData** (32 connections) — `client/src/components/map/types.ts`
-- **edgeModalLogic.ts** (26 connections) — `client/src/components/map/edgeModalLogic.ts`
-- **ExitEdgeData** (22 connections) — `client/src/components/map/types.ts`
-- **EdgeCreationModalParts.tsx** (21 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
-- **useMapEditing.ts** (20 connections) — `client/src/components/map/hooks/useMapEditing.ts`
-- **useEdgeCreationModal.ts** (19 connections) — `client/src/components/map/useEdgeCreationModal.ts`
-- **useEdgeCreationModal()** (16 connections) — `client/src/components/map/useEdgeCreationModal.ts`
-- **EdgeCreationModal.tsx** (13 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **EdgeValidationResult** (9 connections) — `client/src/components/map/hooks/useMapEditing.ts`
-- **EdgeCreationData** (7 connections) — `client/src/components/map/hooks/useMapEditing.ts`
-- **EdgeCreationModal.test.tsx** (7 connections) — `client/src/components/map/__tests__/EdgeCreationModal.test.tsx`
-- **EdgeCreationModalProps** (5 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **MapEditingChanges** (5 connections) — `client/src/components/map/hooks/useMapEditing.ts`
-- **getInitialEdgeFormState()** (5 connections) — `client/src/components/map/edgeModalLogic.ts`
-- **useMapEditing.test.ts** (5 connections) — `client/src/components/map/hooks/__tests__/useMapEditing.test.ts`
-- **EdgeCreationModal()** (4 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **filterNodesForTargetSelection()** (4 connections) — `client/src/components/map/edgeModalLogic.ts`
-- **EdgeCreationModalViewProps** (3 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
-- **HistoryEntry** (3 connections) — `client/src/components/map/hooks/useMapEditing.ts`
-- **UseMapEditingOptions** (3 connections) — `client/src/components/map/hooks/useMapEditing.ts`
-- **UseMapEditingResult** (3 connections) — `client/src/components/map/hooks/useMapEditing.ts`
-- **RoomMapData** (3 connections) — `client/src/components/map/utils/mapUtils.ts`
-- **applyModalBodyScrollLock()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
-- **deriveEdgeCreationData()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
-- **edgeFormCanSubmit()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
-- *... and 28 more nodes in this community*
+- **test_container_websocket_events.py** (32 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **container_websocket_events.py** (19 connections) — `server/services/container_websocket_events.py`
+- **asyncio** (16 connections)
+- **emit_container_opened()** (14 connections) — `server/services/container_websocket_events.py`
+- **_async_attr()** (14 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **emit_container_updated()** (13 connections) — `server/services/container_websocket_events.py`
+- **ContainerConnectionManagerLike** (12 connections) — `server/services/container_websocket_events.py`
+- **emit_container_closed()** (11 connections) — `server/services/container_websocket_events.py`
+- **emit_container_opened_to_room()** (11 connections) — `server/services/container_websocket_events.py`
+- **emit_container_decayed()** (8 connections) — `server/services/container_websocket_events.py`
+- **emit_container_created()** (7 connections) — `server/services/container_websocket_events.py`
+- **UUID** (7 connections)
+- **test_emit_container_created()** (6 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_created_payload_is_json_serializable()** (6 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened()** (6 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_to_room()** (6 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_to_room_with_owner()** (6 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_updated()** (6 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_updated_no_room_id()** (6 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_updated_payload_is_json_serializable()** (6 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_closed()** (5 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_closed_no_room_id()** (5 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_closed_returns_stats()** (5 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_decayed()** (5 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_returns_delivery_status()** (5 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (14 shared connections)
-- [saveMapChanges.ts](saveMapChanges.ts.md) (8 shared connections)
-- [map/types.ts](map-types.ts.md) (8 shared connections)
-- [mapUtils.ts](mapUtils.ts.md) (7 shared connections)
-- [ExitEdge.tsx](ExitEdge.tsx.md) (7 shared connections)
-- [utils/layout.ts](utils-layout.ts.md) (6 shared connections)
-- [EdgeDetailsPanel.tsx](EdgeDetailsPanel.tsx.md) (4 shared connections)
-- [useRoomEditModal.ts](useRoomEditModal.ts.md) (2 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (24 shared connections)
+- [test_logging_handlers.py](test_logging_handlers.py.md) (10 shared connections)
+- [.publish_with_pool](publish_with_pool.md) (5 shared connections)
+- [CombatService](CombatService.md) (4 shared connections)
+- [Room](Room.md) (2 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/EdgeCreationModal.tsx`
-- `client/src/components/map/EdgeCreationModalParts.tsx`
-- `client/src/components/map/__tests__/EdgeCreationModal.test.tsx`
-- `client/src/components/map/edgeModalLogic.ts`
-- `client/src/components/map/hooks/__tests__/useMapEditing.test.ts`
-- `client/src/components/map/hooks/useMapEditing.ts`
-- `client/src/components/map/hooks/useMapLayout.ts`
-- `client/src/components/map/types.ts`
-- `client/src/components/map/useEdgeCreationModal.ts`
-- `client/src/components/map/utils/mapUtils.ts`
+- `server/services/container_websocket_events.py`
+- `server/tests/unit/services/test_container_websocket_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 175 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 161 (94%)
+- INFERRED: 11 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

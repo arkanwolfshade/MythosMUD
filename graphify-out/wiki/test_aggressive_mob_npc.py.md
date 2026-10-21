@@ -1,41 +1,52 @@
 # test_aggressive_mob_npc.py
 
-> 15 nodes
+> 27 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **test_aggressive_mob_npc.py** (23 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **_make_aggro()** (13 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **test_attack_via_create_task_with_running_loop()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **test_flee_error_returns_false()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **test_attack_target_error_returns_false()** (2 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **test_attack_target_fallback_publishes_event()** (2 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **test_attack_via_combat_integration_none_when_missing()** (2 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **test_attack_via_dropped_without_loop_or_bus()** (2 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **test_attack_via_event_bus_without_running_loop()** (2 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **test_compute_player_context_without_service()** (2 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **test_flee_and_patrol_and_handlers()** (2 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **test_get_attack_damage_bool_and_float()** (2 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **test_get_behavior_rules_returns_engine_rules()** (2 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **asyncio** (2 connections)
-- **Unit tests for AggressiveMobNPC. Regression test: aggressive mobs must have…** (1 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **quality_fragmentation_ai_guardrails.py** (30 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **_collect_python_public_defs_and_tiny()** (8 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **nloc_for_text()** (7 connections) — `scripts/ci/quality_fragmentation_core.py`
+- **_is_public_function_stmt()** (6 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **_process_added_file_checks()** (6 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **collect_repo_texts()** (6 connections) — `scripts/ci/quality_fragmentation_core.py`
+- **_is_test_file_path()** (5 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **_build_python_call_usage_map()** (4 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **_check_exports_and_tiny_functions()** (4 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **_check_single_use_file()** (4 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **_guardrail_scan_inputs()** (4 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **_is_single_use_small_file()** (4 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **_python_export_and_tiny()** (4 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **imported_by_count()** (4 connections) — `scripts/ci/quality_fragmentation_usage.py`
+- **is_single_use_small_file()** (4 connections) — `scripts/ci/quality_fragmentation_usage.py`
+- **_call_target_name()** (3 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **_collect_code_texts()** (3 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **_is_tiny_single_use()** (3 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **quality_fragmentation_usage.py** (3 connections) — `scripts/ci/quality_fragmentation_usage.py`
+- **AST** (2 connections)
+- **AsyncFunctionDef** (2 connections)
+- **FunctionDef** (2 connections)
+- **Call** (1 connections)
+- **Module** (1 connections)
+- **stmt** (1 connections)
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [AggressiveMobNPC](AggressiveMobNPC.md) (7 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
-- [test_get_attack_damage_from_behavior_config](test_get_attack_damage_from_behavior_config.md) (1 shared connections)
-- [test_enrich_behavior_context_sets_player_in_range_when_players_in_room](test_enrich_behavior_context_sets_player_in_range_when_players_in_room.md) (1 shared connections)
+- [Test Suite Refactoring Plan](Test_Suite_Refactoring_Plan.md) (14 shared connections)
+- [EventPublisher](EventPublisher.md) (5 shared connections)
+- [CorruptionTierCache](CorruptionTierCache.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- `scripts/ci/quality_fragmentation_core.py`
+- `scripts/ci/quality_fragmentation_usage.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 71 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,23 +1,24 @@
 # wearable_service
 
-> 5 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **wearable_service()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **fixture** (2 connections)
-- **Create mock persistence layer.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Create WearableContainerService instance.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **gh-stack (MythosMUD)** (7 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **Automatic decision tree** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **Forbidden (hangs non-interactive agents)** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **Full skill body** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **Integration with other skills** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **Mythos defaults** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **One-liner status check (PowerShell)** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
 
 ## Relationships
 
-- [test_wearable_container_service.py](test_wearable_container_service.py.md) (2 shared connections)
-- [WearableContainerService](WearableContainerService.md) (1 shared connections)
+- [P4 · Intent Sweep — Plan Documents](P4_·_Intent_Sweep_—_Plan_Documents.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `.claude/skills/gh-stack/SKILL.md`
 
 ## Audit Trail
 

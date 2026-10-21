@@ -1,27 +1,26 @@
 # Test File Migration Mapping
 
-> 3 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Test File Migration Mapping** (2 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **Test Suite Hierarchical Migration** (1 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **Test Suite Refactoring Deliverables** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
+- **Context Management** (4 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Request Context** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **System Context** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **User Context** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [system_commands.py](system_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- `docs/archive/TEST_MIGRATION_MAPPING.md`
-- `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (50%)
-- INFERRED: 1 (50%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

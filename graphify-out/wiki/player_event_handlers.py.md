@@ -1,61 +1,60 @@
 # player_event_handlers.py
 
-> 135 nodes
+> 66 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **player_event_handlers.py** (41 connections) — `server/realtime/player_event_handlers.py`
-- **PlayerRoomEventHandler** (34 connections) — `server/realtime/player_event_handlers_room.py`
-- **PlayerEventHandler** (32 connections) — `server/realtime/player_event_handlers.py`
-- **player_event_handlers_room.py** (31 connections) — `server/realtime/player_event_handlers_room.py`
-- **realtime/conftest.py** (23 connections) — `server/tests/unit/realtime/conftest.py`
-- **UUID** (17 connections)
-- **fixture** (15 connections)
-- **PlayerRoomEventHandlerDeps** (12 connections) — `server/realtime/player_event_handlers_room.py`
-- **RoomConnectionManager** (10 connections) — `server/realtime/player_event_handlers_room.py`
-- **.__init__()** (10 connections) — `server/realtime/player_event_handlers.py`
-- **_as_map()** (10 connections) — `server/realtime/player_event_handlers_room.py`
-- **.handle_player_entered()** (10 connections) — `server/realtime/player_event_handlers_room.py`
-- **_snapshot_payload()** (10 connections) — `server/realtime/player_event_handlers_room.py`
-- **JsonMap** (10 connections)
-- **OccupantsUpdateFn** (9 connections) — `server/realtime/player_event_handlers_room.py`
-- **._initialize_handlers()** (8 connections) — `server/realtime/player_event_handlers.py`
-- **._build_room_update_data()** (8 connections) — `server/realtime/player_event_handlers_room.py`
-- **.handle_player_left()** (8 connections) — `server/realtime/player_event_handlers_room.py`
-- **._prepare_room_data()** (8 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_occupants_snapshot_to_player()** (8 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_room_update_to_player()** (8 connections) — `server/realtime/player_event_handlers_room.py`
-- **_NamedRoom** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **.get_room_state_event()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_room_state_to_player()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_room_updates_to_entering_player()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- *... and 110 more nodes in this community*
+- **test_admin_teleport_commands.py** (42 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **patch** (32 connections)
+- **admin_confirm_teleport_commands.py** (28 connections) — `server/commands/admin_confirm_teleport_commands.py`
+- **asyncio** (28 connections)
+- **handle_teleport_command()** (25 connections) — `server/commands/admin_teleport_commands.py`
+- **handle_goto_command()** (21 connections) — `server/commands/admin_teleport_commands.py`
+- **handle_confirm_goto_command()** (17 connections) — `server/commands/admin_confirm_teleport_commands.py`
+- **handle_confirm_teleport_command()** (17 connections) — `server/commands/admin_confirm_teleport_commands.py`
+- **_request_with_services()** (17 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **log_failed_admin_move()** (13 connections) — `server/commands/admin_teleport_utils.py`
+- **Any** (8 connections)
+- **_execute_confirm_goto_move()** (7 connections) — `server/commands/admin_confirm_teleport_commands.py`
+- **_execute_confirm_teleport_move()** (7 connections) — `server/commands/admin_confirm_teleport_commands.py`
+- **_resolve_connection_manager()** (7 connections) — `server/commands/admin_confirm_teleport_commands.py`
+- **_resolve_confirm_goto_target()** (6 connections) — `server/commands/admin_confirm_teleport_commands.py`
+- **_resolve_confirm_teleport_targets()** (6 connections) — `server/commands/admin_confirm_teleport_commands.py`
+- **test_handle_confirm_goto_exception()** (6 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **test_handle_confirm_teleport_exception()** (6 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **test_handle_goto_exception_logs_failure()** (6 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **_resolve_request_app_service()** (5 connections) — `server/commands/admin_confirm_teleport_commands.py`
+- **test_handle_confirm_goto_context_error()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **test_handle_confirm_goto_missing_target()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **test_handle_confirm_goto_same_room()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **test_handle_confirm_goto_success()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **test_handle_confirm_teleport_context_error()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- *... and 41 more nodes in this community*
 
 ## Relationships
 
-- [PlayerDPUpdated](PlayerDPUpdated.md) (11 shared connections)
-- [event_handler.py](event_handler.py.md) (10 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (10 shared connections)
-- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (9 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (8 shared connections)
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (8 shared connections)
-- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (6 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [NpcDisposition](NpcDisposition.md) (5 shared connections)
-- [ChatMessage](ChatMessage.md) (3 shared connections)
-- [build_event](build_event.md) (3 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (3 shared connections)
+- [command_parser.py](command_parser.py.md) (21 shared connections)
+- [ErrorContext](ErrorContext.md) (20 shared connections)
+- [Async Code Review - Post Phase 2 Migration](Async_Code_Review_-_Post_Phase_2_Migration.md) (11 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (8 shared connections)
+- [MagicCommandHandler](MagicCommandHandler.md) (6 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
+- [test_shopkeeper_npc.py](test_shopkeeper_npc.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_event_handlers.py`
-- `server/realtime/player_event_handlers_room.py`
-- `server/tests/unit/realtime/conftest.py`
+- `server/commands/admin_confirm_teleport_commands.py`
+- `server/commands/admin_teleport_commands.py`
+- `server/commands/admin_teleport_utils.py`
+- `server/tests/unit/commands/test_admin_teleport_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 313 (92%)
-- INFERRED: 29 (8%)
+- EXTRACTED: 252 (96%)
+- INFERRED: 11 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,10 +1,10 @@
 # Documentation Issue Template
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Documentation Issue Template** (0 connections) — `.github/ISSUE_TEMPLATE/documentation.yml`
+- **run_integration_tests_playwright.ps1** (0 connections) — `scripts/run_integration_tests_playwright.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.github/ISSUE_TEMPLATE/documentation.yml`
+- `scripts/run_integration_tests_playwright.ps1`
 
 ## Audit Trail
 

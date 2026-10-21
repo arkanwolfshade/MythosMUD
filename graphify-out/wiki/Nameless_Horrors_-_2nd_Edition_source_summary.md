@@ -1,25 +1,24 @@
 # Nameless Horrors - 2nd Edition (source summary)
 
-> 4 nodes
+> 3 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Nameless Horrors - 2nd Edition (source summary)** (4 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
-- **External live graph** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
-- **Key extractions pages** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
+- **apply_account_sanctions_migration.py** (2 connections) — `scripts/apply_account_sanctions_migration.py`
+- **apply_to()** (2 connections) — `scripts/apply_account_sanctions_migration.py`
+- **main()** (2 connections) — `scripts/apply_account_sanctions_migration.py`
 
 ## Relationships
 
-- [Cosmic Horror.md](Cosmic_Horror.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
+- `scripts/apply_account_sanctions_migration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,19 +1,17 @@
 # Dialogue Content Tools (Content Creators)
 
-> 10 nodes
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **Dialogue Content Tools (Content Creators)** (9 connections) — `docs/runbooks/DIALOGUE_CONTENT_TOOLS.md`
-- **DIALOGUE_CONTENT_TOOLS.md** (1 connections) — `docs/runbooks/DIALOGUE_CONTENT_TOOLS.md`
-- **1. Overview** (1 connections) — `docs/runbooks/DIALOGUE_CONTENT_TOOLS.md`
-- **2. Open the editor** (1 connections) — `docs/runbooks/DIALOGUE_CONTENT_TOOLS.md`
-- **3. Tree shape (nav-only)** (1 connections) — `docs/runbooks/DIALOGUE_CONTENT_TOOLS.md`
-- **4. Editor workflow** (1 connections) — `docs/runbooks/DIALOGUE_CONTENT_TOOLS.md`
-- **5. Player verification** (1 connections) — `docs/runbooks/DIALOGUE_CONTENT_TOOLS.md`
-- **6. Seed and API reference** (1 connections) — `docs/runbooks/DIALOGUE_CONTENT_TOOLS.md`
-- **7. Related docs** (1 connections) — `docs/runbooks/DIALOGUE_CONTENT_TOOLS.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/runbooks/DIALOGUE_CONTENT_TOOLS.md`
+- **Multiplayer Architecture Planning** (3 connections) — `docs/archive/PLANNING_multiplayer.md`
+- **Chat System Implementation Plan** (2 connections) — `docs/archive/PLANNING_chat_system.md`
+- **Planning Completion Summary** (2 connections) — `docs/archive/PLANNING_COMPLETION_SUMMARY.md`
+- **NATS Service** (2 connections) — `docs/archive/PLANNING_redis_to_nats_migration.md`
+- **Redis to NATS Migration Plan** (2 connections) — `docs/archive/PLANNING_redis_to_nats_migration.md`
+- **Performance Optimization Summary** (1 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
+- **Alias System Implementation Plan** (1 connections) — `docs/archive/PLANNING_aliases.md`
+- **Movement System Planning** (1 connections) — `docs/archive/PLANNING_movement_system.md`
 
 ## Relationships
 
@@ -21,12 +19,18 @@
 
 ## Source Files
 
-- `docs/runbooks/DIALOGUE_CONTENT_TOOLS.md`
+- `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
+- `docs/archive/PLANNING_COMPLETION_SUMMARY.md`
+- `docs/archive/PLANNING_aliases.md`
+- `docs/archive/PLANNING_chat_system.md`
+- `docs/archive/PLANNING_movement_system.md`
+- `docs/archive/PLANNING_multiplayer.md`
+- `docs/archive/PLANNING_redis_to_nats_migration.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1 (14%)
+- INFERRED: 6 (86%)
 - AMBIGUOUS: 0 (0%)
 
 ---

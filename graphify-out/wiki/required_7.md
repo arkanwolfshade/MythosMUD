@@ -1,30 +1,35 @@
 # required
 
-> 9 nodes
+> 14 nodes · cohesion 0.14
 
 ## Key Concepts
 
-- **required** (9 connections) — `schemas/calendar/holiday.schema.json`
-- **bonus_tags** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **day** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **duration_hours** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **id** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **month** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **name** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **season** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **tradition** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **test_persistence_container_persistence.py** (8 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_dict()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_empty_string()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_invalid_json()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_list()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_none()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_string()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Unit tests for persistence.container_persistence module. This module tests the…** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing None JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing string JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing dict JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing empty string JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing list JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing invalid JSON string.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
 
 ## Relationships
 
-- [holiday](holiday.md) (1 shared connections)
+- [.profession_to_dict](profession_to_dict.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/holiday.schema.json`
+- `server/tests/unit/persistence/test_persistence_container_persistence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

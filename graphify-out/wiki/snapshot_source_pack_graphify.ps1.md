@@ -1,14 +1,12 @@
 # snapshot_source_pack_graphify.ps1
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **snapshot_source_pack_graphify.ps1** (4 connections) — `scripts/snapshot_source_pack_graphify.ps1`
-- **Export-PackSnapshot()** (4 connections) — `scripts/snapshot_source_pack_graphify.ps1`
-- **Get-GraphCount()** (2 connections) — `scripts/snapshot_source_pack_graphify.ps1`
-- **Get-HonestyNote()** (2 connections) — `scripts/snapshot_source_pack_graphify.ps1`
-- **Get-SourcePackSlug()** (2 connections) — `scripts/snapshot_source_pack_graphify.ps1`
+- **Chaosium graphify snapshot - Reign of Terror** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/MANIFEST.md`
+- **reign-of-terror/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/MANIFEST.md`
 
 ## Relationships
 
@@ -16,11 +14,11 @@
 
 ## Source Files
 
-- `scripts/snapshot_source_pack_graphify.ps1`
+- `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,25 +1,26 @@
 # zone
 
-> 4 nodes
+> 5 nodes · cohesion 0.60
 
 ## Key Concepts
 
-- **zone** (4 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **pattern** (1 connections) — `schemas/intersection_schema.json`
-- **type** (1 connections) — `schemas/intersection_schema.json`
+- **fix_file()** (4 connections) — `scripts/batch_fix_suppressions.py`
+- **main()** (3 connections) — `scripts/batch_fix_suppressions.py`
+- **batch_fix_suppressions.py** (2 connections) — `scripts/batch_fix_suppressions.py`
+- **Path** (2 connections)
+- **Fix suppressions in a file. Returns: (number_fixed, list of changes)** (1 connections) — `scripts/batch_fix_suppressions.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/intersection_schema.json`
+- `scripts/batch_fix_suppressions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

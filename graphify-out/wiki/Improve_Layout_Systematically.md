@@ -1,34 +1,43 @@
 # Improve Layout Systematically
 
-> 13 nodes
+> 17 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **Improve Layout Systematically** (8 connections) — `.claude/skills/arrange/SKILL.md`
-- **Arrange Skill** (6 connections) — `.claude/skills/arrange/SKILL.md`
-- **Assess Current Layout** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Break Card Grid Monotony** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Choose the Right Layout Tool** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Create Visual Rhythm** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Establish a Spacing System** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Manage Depth & Elevation** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Optical Adjustments** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Plan Layout Improvements** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Strengthen Visual Hierarchy** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Verify Layout Improvements** (1 connections) — `.claude/skills/arrange/SKILL.md`
+- **test_game_enums.py** (11 connections) — `server/tests/unit/models/test_game_enums.py`
+- **AttributeType** (9 connections) — `server/models/game.py`
+- **StrEnum** (3 connections)
+- **.get_attribute_modifier()** (3 connections) — `server/models/game.py`
+- **test_attribute_type_enum_all_types()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
+- **test_attribute_type_enum_values()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
+- **test_position_state_enum_all_states()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
+- **test_position_state_enum_values()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
+- **test_status_effect_type_enum_all_types()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
+- **test_status_effect_type_enum_values()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
+- **Get the modifier for a given attribute (standard D&D-style calculation).** (1 connections) — `server/models/game.py`
+- **Core attribute types for the character system .** (1 connections) — `server/models/game.py`
+- **Unit tests for game model enums. Tests AttributeType, StatusEffectType, and…** (1 connections) — `server/tests/unit/models/test_game_enums.py`
+- **Test PositionState enum contains all expected states.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
+- **Test AttributeType enum contains expected values.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
+- **Test StatusEffectType enum contains expected values.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
+- **Test PositionState enum contains expected values.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (4 shared connections)
+- [testing_examples.py](testing_examples.py.md) (3 shared connections)
+- [AsciiMapRenderer](AsciiMapRenderer.md) (2 shared connections)
+- [test_inventory_mutation_guard_error_handling.py](test_inventory_mutation_guard_error_handling.py.md) (1 shared connections)
+- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/arrange/SKILL.md`
+- `server/models/game.py`
+- `server/tests/unit/models/test_game_enums.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

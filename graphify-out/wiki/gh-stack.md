@@ -1,32 +1,27 @@
 # gh-stack
 
-> 8 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **gh-stack** (11 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Agent rules** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Exit codes and error recovery** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Known limitations** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Output conventions** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Prerequisites** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Quick reference** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **When to use this skill** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **P8 · Action plan** (6 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
+- **Documentation edits** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
+- **Issues to reopen — **C7**** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
+- **New ADRs (next free numbers, index updated in `decisions/README.md`)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
+- **Remediation plans to draft (not execute)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
+- **Verification before closing P8** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
 
 ## Relationships
 
-- [gh-stack (MythosMUD)](gh-stack_MythosMUD.md) (1 shared connections)
-- [Workflows](Workflows.md) (1 shared connections)
-- [Commands](Commands.md) (1 shared connections)
-- [Thinking about stack structure](Thinking_about_stack_structure.md) (1 shared connections)
+- [SpellMaterialsService](SpellMaterialsService.md) (1 shared connections)
 
 ## Source Files
 
-- `.agents/skills/gh-stack/SKILL.md`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

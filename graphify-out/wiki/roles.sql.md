@@ -1,10 +1,10 @@
 # roles.sql
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **roles.sql** (0 connections) — `db/roles/roles.sql`
+- **Legacy Test File Consolidation** (0 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `db/roles/roles.sql`
+- `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
 
 ## Audit Trail
 

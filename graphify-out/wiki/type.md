@@ -1,29 +1,35 @@
 # type
 
-> 7 nodes
+> 14 nodes · cohesion 0.14
 
 ## Key Concepts
 
-- **type** (4 connections) — `server/help/help_schema.json`
-- **usage** (4 connections) — `server/help/help_schema.json`
-- **items** (3 connections) — `server/help/help_schema.json`
-- **items** (3 connections) — `server/help/help_schema.json`
-- **minLength** (2 connections) — `server/help/help_schema.json`
-- **minItems** (1 connections) — `server/help/help_schema.json`
-- **type** (1 connections) — `server/help/help_schema.json`
+- **Generate Comprehensive Report** (8 connections) — `.claude/skills/audit/SKILL.md`
+- **Detailed Findings by Severity** (5 connections) — `.claude/skills/audit/SKILL.md`
+- **Audit Skill** (3 connections) — `.claude/skills/audit/SKILL.md`
+- **Anti-Patterns Verdict** (1 connections) — `.claude/skills/audit/SKILL.md`
+- **Critical Issues** (1 connections) — `.claude/skills/audit/SKILL.md`
+- **Diagnostic Scan** (1 connections) — `.claude/skills/audit/SKILL.md`
+- **Executive Summary** (1 connections) — `.claude/skills/audit/SKILL.md`
+- **High-Severity Issues** (1 connections) — `.claude/skills/audit/SKILL.md`
+- **Low-Severity Issues** (1 connections) — `.claude/skills/audit/SKILL.md`
+- **Medium-Severity Issues** (1 connections) — `.claude/skills/audit/SKILL.md`
+- **Patterns & Systemic Issues** (1 connections) — `.claude/skills/audit/SKILL.md`
+- **Positive Findings** (1 connections) — `.claude/skills/audit/SKILL.md`
+- **Recommendations by Priority** (1 connections) — `.claude/skills/audit/SKILL.md`
+- **Suggested Commands for Fixes** (1 connections) — `.claude/skills/audit/SKILL.md`
 
 ## Relationships
 
-- [properties](properties.md) (3 shared connections)
-- [help_schema.json](help_schema.json.md) (1 shared connections)
+- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/help/help_schema.json`
+- `.claude/skills/audit/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

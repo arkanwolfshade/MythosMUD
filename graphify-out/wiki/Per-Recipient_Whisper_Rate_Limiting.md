@@ -1,13 +1,11 @@
 # Per-Recipient Whisper Rate Limiting
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Per-Recipient Whisper Rate Limiting** (2 connections) — `e2e-tests/SCENARIO_15_BLOCKED_SUMMARY.md`
-- **Scenario 15 Rate Limiting Blocked** (2 connections) — `e2e-tests/SCENARIO_15_RATE_LIMITING_BLOCKED.md`
-- **Whisper System Remediation** (1 connections) — `e2e-tests/REMAINING_WORK_SUMMARY.md`
-- **Global Whisper Rate Limit** (1 connections) — `e2e-tests/SCENARIO_15_RATE_LIMITING_BLOCKED.md`
+- **API OpenAPI Specification** (1 connections) — `docs/architecture/API_OPENAPI_SPECIFICATION.md`
+- **OpenAPI/Swagger specification** (1 connections) — `docs/architecture/API_OPENAPI_SPECIFICATION.md`
 
 ## Relationships
 
@@ -15,13 +13,11 @@
 
 ## Source Files
 
-- `e2e-tests/REMAINING_WORK_SUMMARY.md`
-- `e2e-tests/SCENARIO_15_BLOCKED_SUMMARY.md`
-- `e2e-tests/SCENARIO_15_RATE_LIMITING_BLOCKED.md`
+- `docs/architecture/API_OPENAPI_SPECIFICATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

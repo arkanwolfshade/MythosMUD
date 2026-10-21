@@ -1,13 +1,12 @@
 # Historical DDL Final Status
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Historical DDL Final Status** (2 connections) — `db/verification/ddl_final_status.md`
-- **Historical DDL Verification Summary** (2 connections) — `db/verification/ddl_verification_summary.md`
-- **mythos_dev players UUID Schema Variation** (1 connections) — `db/verification/ddl_verification_summary.md`
-- **Historical DDL Partial Status** (1 connections) — `db/verification/ddl_status.md`
+- **load_seed_data()** (2 connections) — `scripts/load_seed_via_asyncpg.py`
+- **load_seed_via_asyncpg.py** (1 connections) — `scripts/load_seed_via_asyncpg.py`
+- **Load all seed data files.** (1 connections) — `scripts/load_seed_via_asyncpg.py`
 
 ## Relationships
 
@@ -15,14 +14,12 @@
 
 ## Source Files
 
-- `db/verification/ddl_final_status.md`
-- `db/verification/ddl_status.md`
-- `db/verification/ddl_verification_summary.md`
+- `scripts/load_seed_via_asyncpg.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (33%)
-- INFERRED: 2 (67%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

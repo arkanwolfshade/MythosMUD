@@ -1,43 +1,53 @@
 # Communities (11 total, 0 thin omitted)
 
-> 21 nodes
+> 23 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **Communities (11 total, 0 thin omitted)** (12 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Pulp Cthulhu (7th edition Call of Cthulhu)  (2026-08-12)** (9 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community 0 - "Pandora's Box / Pandora Handout 10"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community 10 - "Chapter 6: Pulp Magic, Psychic Powers, and Weird S / Psychic Powers"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community 1 - "Disintegrator device / Handout: Disintegrator 1"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community 2 - "Chapter 1: The Pulps / Chapter 7: Running Pulp Games"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community 3 - "Avoiding Certain Death / Call of Cthulhu 7th Edition"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community 4 - "Cthulhu Mythos / Deep One"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community 5 - "Seekers of Eternal Wisdom / Handout: Pandora's Box 12"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community 6 - "Pandora Handout 9 / Hyperborea"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community 7 - "Augmented Skills / Chapter 5: Pulp Sanity"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community 8 - "Caduceus / Chapter 3: Pulp Organizations"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community 9 - "Chapter 2: Creating Pulp Heroes / Pulp Archetypes"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- **PlayerSchemaConverter** (16 connections) — `server/game/player_schema_converter.py`
+- **.create_player_read_from_object()** (12 connections) — `server/game/player_schema_converter.py`
+- **Any** (11 connections)
+- **.create_player_read_from_dict()** (10 connections) — `server/game/player_schema_converter.py`
+- **.convert_player_to_schema()** (8 connections) — `server/game/player_schema_converter.py`
+- **.get_position_state()** (6 connections) — `server/game/player_schema_converter.py`
+- **.item_prototype_registry()** (5 connections) — `server/commands/combat_handler.py`
+- **.check_player_combat_state()** (4 connections) — `server/game/player_schema_converter.py`
+- **.compute_derived_stats_fields()** (4 connections) — `server/game/player_schema_converter.py`
+- **.get_player_data_methods()** (4 connections) — `server/game/player_schema_converter.py`
+- **.get_profession_details()** (4 connections) — `server/game/player_schema_converter.py`
+- **.__init__()** (3 connections) — `server/game/player_schema_converter.py`
+- **Item prototype registry for command modules.** (1 connections) — `server/commands/combat_handler.py`
+- **Get stats, inventory, and status_effects from player, handling async methods.** (1 connections) — `server/game/player_schema_converter.py`
+- **Compute derived stats fields (max_dp, max_magic_points, max_lucidity). Returns…** (1 connections) — `server/game/player_schema_converter.py`
+- **Get PositionState from position value, with fallback to STANDING.** (1 connections) — `server/game/player_schema_converter.py`
+- **Create PlayerRead schema from player object.** (1 connections) — `server/game/player_schema_converter.py`
+- **Create PlayerRead schema from player dictionary.** (1 connections) — `server/game/player_schema_converter.py`
+- **Convert a player object to PlayerRead schema. Args: player: Player object or…** (1 connections) — `server/game/player_schema_converter.py`
+- **Utility class for converting Player objects to PlayerRead schemas.** (1 connections) — `server/game/player_schema_converter.py`
+- **Initialize the converter with persistence, optional combat service, and…** (1 connections) — `server/game/player_schema_converter.py`
+- **Check if player is in combat.** (1 connections) — `server/game/player_schema_converter.py`
+- **Get profession information for player.** (1 connections) — `server/game/player_schema_converter.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (6 shared connections)
+- [UtilityCommandFactory](UtilityCommandFactory.md) (6 shared connections)
+- [testing_examples.py](testing_examples.py.md) (2 shared connections)
+- [test_inventory_mutation_guard_internal.py](test_inventory_mutation_guard_internal.py.md) (2 shared connections)
+- [test_help_docs.py](test_help_docs.py.md) (1 shared connections)
+- [command_parser.py](command_parser.py.md) (1 shared connections)
+- [game_tick_processing.py](game_tick_processing.py.md) (1 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- `server/commands/combat_handler.py`
+- `server/game/player_schema_converter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 54 (92%)
+- INFERRED: 5 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

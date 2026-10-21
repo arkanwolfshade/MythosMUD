@@ -1,15 +1,13 @@
 # dialogues.sql
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **dialogues.sql** (5 connections) — `db/procedures/dialogues.sql`
-- **schema_name.delete_dialogue_definition()** (1 connections) — `db/procedures/dialogues.sql`
-- **schema_name.get_dialogue_definition_by_id()** (1 connections) — `db/procedures/dialogues.sql`
-- **schema_name.get_dialogue_definition_by_npc_definition_id()** (1 connections) — `db/procedures/dialogues.sql`
-- **schema_name.list_dialogue_definitions()** (1 connections) — `db/procedures/dialogues.sql`
-- **schema_name.upsert_dialogue_definition()** (1 connections) — `db/procedures/dialogues.sql`
+- **player_mutes.sql** (3 connections) — `db/procedures/player_mutes.sql`
+- **schema_name.delete_player_mute()** (1 connections) — `db/procedures/player_mutes.sql`
+- **schema_name.get_active_player_mutes()** (1 connections) — `db/procedures/player_mutes.sql`
+- **schema_name.upsert_player_mute()** (1 connections) — `db/procedures/player_mutes.sql`
 
 ## Relationships
 
@@ -17,11 +15,11 @@
 
 ## Source Files
 
-- `db/procedures/dialogues.sql`
+- `db/procedures/player_mutes.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

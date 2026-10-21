@@ -1,61 +1,63 @@
 # test_container_helpers_inventory_ops.py
 
-> 56 nodes
+> 126 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **test_container_helpers_inventory_ops.py** (62 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **object** (55 connections)
-- **transfer_item_to_container()** (24 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **asyncio** (22 connections)
-- **transfer_item_from_container()** (21 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **_player_with_inventory()** (20 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **_coerce_transfer_quantity()** (8 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **_int_transfer_qty()** (8 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **test_transfer_item_from_container_inventory_rows_fallback_non_dict_result()** (7 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **patch** (7 connections)
-- **_ContainerSvcTokenOnly** (6 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_from_container_closes_session_it_opened()** (6 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_from_container_no_transfer_from()** (6 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_from_container_persist_failure_returns_error()** (6 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_from_container_success_updates_inventory()** (6 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_from_container_transfer_raises()** (6 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_to_container_no_transfer_to_method()** (6 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_from_container_rejects_non_positive_quantity()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_to_container_awaits_async_ensure_item_instance()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_to_container_closes_session_it_opened()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_to_container_coerces_string_quantity()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_to_container_missing_item_identifiers()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_to_container_open_container_when_no_token()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_to_container_rejects_non_positive_quantity()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_to_container_reused_session_stays_open()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- *... and 31 more nodes in this community*
+- **test_admin_setlucidity_command.py** (44 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **.state()** (42 connections) — `server/realtime/connection_state_machine.py`
+- **admin_setlucidity_command.py** (39 connections) — `server/commands/admin_setlucidity_command.py`
+- **admin_hallucinate_command.py** (34 connections) — `server/commands/admin_hallucinate_command.py`
+- **asyncio** (24 connections)
+- **_handle_admin_hallucinate_command()** (22 connections) — `server/commands/admin_hallucinate_command.py`
+- **test_admin_hallucinate_command.py** (19 connections) — `server/tests/unit/commands/test_admin_hallucinate_command.py`
+- **_handle_admin_set_lucidity_command()** (18 connections) — `server/commands/admin_setlucidity_command.py`
+- **_execute_lucidity_change()** (15 connections) — `server/commands/admin_setlucidity_command.py`
+- **asyncio** (14 connections)
+- **deliver_forced_hallucination()** (12 connections) — `server/commands/admin_hallucinate_command.py`
+- **resolve_hallucinate_target()** (11 connections) — `server/commands/admin_hallucinate_command.py`
+- **check_admin_permissions()** (11 connections) — `server/commands/admin_setlucidity_command.py`
+- **get_current_lcd()** (11 connections) — `server/commands/admin_setlucidity_command.py`
+- **resolve_target_player()** (11 connections) — `server/commands/admin_setlucidity_command.py`
+- **get_player_service_from_app()** (10 connections) — `server/commands/admin_setlucidity_command.py`
+- **get_current_lcd_or_error()** (9 connections) — `server/commands/admin_hallucinate_command.py`
+- **_apply_lucidity_change()** (9 connections) — `server/commands/admin_setlucidity_command.py`
+- **Any** (9 connections)
+- **_setup_command_execution()** (9 connections) — `server/commands/admin_setlucidity_command.py`
+- **_validate_command_context()** (9 connections) — `server/commands/admin_setlucidity_command.py`
+- **_validate_lcd_value()** (9 connections) — `server/commands/admin_setlucidity_command.py`
+- **_extract_command_args()** (8 connections) — `server/commands/admin_setlucidity_command.py`
+- **_get_catatonia_registry_from_app()** (8 connections) — `server/commands/admin_setlucidity_command.py`
+- **LucidityChangeCtx** (8 connections) — `server/commands/admin_setlucidity_command.py`
+- *... and 101 more nodes in this community*
 
 ## Relationships
 
-- [container_helpers_inventory_ops.py](container_helpers_inventory_ops.py.md) (42 shared connections)
-- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (4 shared connections)
-- [alias_storage.py](alias_storage.py.md) (3 shared connections)
-- [ContainerComponent](ContainerComponent.md) (3 shared connections)
-- [MessageCategory](MessageCategory.md) (3 shared connections)
-- [.__init__](__init__.md) (3 shared connections)
-- [command_result_text](command_result_text.md) (2 shared connections)
-- [test_combat_death_handler.py](test_combat_death_handler.py.md) (2 shared connections)
-- [command_error](command_error.md) (2 shared connections)
-- [ground_channel.py](ground_channel.py.md) (2 shared connections)
-- [test_shutdown_sequence.py](test_shutdown_sequence.py.md) (2 shared connections)
-- [Player](Player.md) (2 shared connections)
+- [command_parser.py](command_parser.py.md) (31 shared connections)
+- [PopulationStats](PopulationStats.md) (11 shared connections)
+- [test_shopkeeper_npc.py](test_shopkeeper_npc.py.md) (7 shared connections)
+- [ItemFactory](ItemFactory.md) (4 shared connections)
+- [Room](Room.md) (4 shared connections)
+- [test_config_models.py](test_config_models.py.md) (4 shared connections)
+- [test_command_communication.py](test_command_communication.py.md) (4 shared connections)
+- [asyncio](asyncio.md) (4 shared connections)
+- [inventory_item_matching.py](inventory_item_matching.py.md) (4 shared connections)
+- [look_container.py](look_container.py.md) (3 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (3 shared connections)
+- [test_database_helpers.py](test_database_helpers.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/container_helpers_inventory_ops.py`
-- `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- `server/tests/unit/realtime/test_memory_monitor.py`
+- `server/commands/admin_hallucinate_command.py`
+- `server/commands/admin_setlucidity_command.py`
+- `server/realtime/connection_state_machine.py`
+- `server/tests/unit/commands/test_admin_hallucinate_command.py`
+- `server/tests/unit/commands/test_admin_setlucidity_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 178 (75%)
-- INFERRED: 60 (25%)
+- EXTRACTED: 345 (88%)
+- INFERRED: 48 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,52 +1,48 @@
 # LRUCache
 
-> 36 nodes
+> 35 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **LRUCache** (29 connections) — `server/caching/lru_cache.py`
-- **K** (7 connections)
-- **.get_or_set()** (6 connections) — `server/caching/lru_cache.py`
-- **.put()** (6 connections) — `server/caching/lru_cache.py`
-- **.get()** (5 connections) — `server/caching/lru_cache.py`
-- **V** (5 connections)
-- **.get_stats()** (4 connections) — `server/caching/lru_cache.py`
-- **.items()** (4 connections) — `server/caching/lru_cache.py`
-- **.__contains__()** (3 connections) — `server/caching/lru_cache.py`
-- **.delete()** (3 connections) — `server/caching/lru_cache.py`
-- **._evict_expired_entries()** (3 connections) — `server/caching/lru_cache.py`
-- **.keys()** (3 connections) — `server/caching/lru_cache.py`
-- **.__len__()** (3 connections) — `server/caching/lru_cache.py`
-- **.__repr__()** (3 connections) — `server/caching/lru_cache.py`
-- **.size()** (3 connections) — `server/caching/lru_cache.py`
-- **.values()** (3 connections) — `server/caching/lru_cache.py`
-- **.clear()** (2 connections) — `server/caching/lru_cache.py`
-- **.__init__()** (2 connections) — `server/caching/lru_cache.py`
-- **.is_full()** (2 connections) — `server/caching/lru_cache.py`
-- **Put an item into the cache. Args: key: The key to store value: The value to…** (1 connections) — `server/caching/lru_cache.py`
-- **Delete an item from the cache. Args: key: The key to delete Returns: True if…** (1 connections) — `server/caching/lru_cache.py`
-- **Clear all items from the cache.** (1 connections) — `server/caching/lru_cache.py`
-- **Get the current number of items in the cache.** (1 connections) — `server/caching/lru_cache.py`
-- **Check if the cache is at maximum capacity.** (1 connections) — `server/caching/lru_cache.py`
-- **Get cache statistics. Returns: Dictionary containing cache statistics** (1 connections) — `server/caching/lru_cache.py`
-- *... and 11 more nodes in this community*
+- **File-by-File Changes** (11 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Pydantic Anti-Patterns Remediation Plan** (8 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Critical Issues Identified** (6 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Phase 1: Critical Security Fixes (High Priority)** (4 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Remediation Strategy** (4 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Phase 2: Type Safety Improvements (Medium Priority)** (3 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Phase 3: Code Organization (Low Priority)** (3 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Implementation Details** (2 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **pydantic_anti-patterns_remediation_5139237e.plan.md** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **1. Mutable Default Values (Rule 3 Violation)** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **2. Unsafe `dict[str, Any]` Types (Rule 2 Violation)** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **3. Old-Style model_config (Rule 1 Violation)** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **4. Missing Security Configuration** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **5. Missing model_config Entirely** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Executive Summary** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Risk Assessment** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **`server/api/admin/npc.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **`server/models/alias.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **`server/models/command_base.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **`server/models/container.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **`server/models/game.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **`server/schemas/calendar.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **`server/schemas/nats_messages.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **`server/schemas/player.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **`server/schemas/profession.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [ProfessionCacheService](ProfessionCacheService.md) (4 shared connections)
-- [test_lru_cache.py](test_lru_cache.py.md) (4 shared connections)
-- [CacheManager](CacheManager.md) (3 shared connections)
-- [NPCCacheService](NPCCacheService.md) (1 shared connections)
-- [RoomCacheService](RoomCacheService.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/caching/lru_cache.py`
+- `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (90%)
-- INFERRED: 6 (10%)
+- EXTRACTED: 34 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

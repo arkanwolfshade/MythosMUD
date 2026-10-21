@@ -1,27 +1,25 @@
 # Extract Skill
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Extract Skill** (5 connections) — `.claude/skills/extract/SKILL.md`
-- **Discover** (1 connections) — `.claude/skills/extract/SKILL.md`
-- **Document** (1 connections) — `.claude/skills/extract/SKILL.md`
-- **Extract & Enrich** (1 connections) — `.claude/skills/extract/SKILL.md`
-- **Migrate** (1 connections) — `.claude/skills/extract/SKILL.md`
-- **Plan Extraction** (1 connections) — `.claude/skills/extract/SKILL.md`
+- **Gateways to Terror (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
+- **Gateways to Terror.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_inventory_commands_helpers.py](test_inventory_commands_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/extract/SKILL.md`
+- `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

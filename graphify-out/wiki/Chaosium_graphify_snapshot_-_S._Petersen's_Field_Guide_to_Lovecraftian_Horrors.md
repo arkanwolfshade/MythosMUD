@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - S. Petersen's Field Guide to Lovecraftian Horrors
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - S. Petersen's Field Guide to Lovecraftian Horrors** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/MANIFEST.md`
-- **s-petersen-s-field-guide-to-lovecraftian-horrors/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/MANIFEST.md`
+- **Codacy 8100+ Remediation** (1 connections) — `.cursor/plans/mythosmud-codacy-8100-remediation_0edb4b92.plan.md`
+- **Python Best Practices Remediation** (1 connections) — `.cursor/plans/python_best_practices_remediation_a91aade4.plan.md`
 
 ## Relationships
 
@@ -14,12 +13,13 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/MANIFEST.md`
+- `.cursor/plans/mythosmud-codacy-8100-remediation_0edb4b92.plan.md`
+- `.cursor/plans/python_best_practices_remediation_a91aade4.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

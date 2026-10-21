@@ -1,10 +1,10 @@
 # setup_postgresql_test_db.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **setup_postgresql_test_db.ps1** (0 connections) — `scripts/setup_postgresql_test_db.ps1`
+- **Arrange Skill** (0 connections) — `.cursor/skills/arrange/SKILL.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/setup_postgresql_test_db.ps1`
+- `.cursor/skills/arrange/SKILL.md`
 
 ## Audit Trail
 

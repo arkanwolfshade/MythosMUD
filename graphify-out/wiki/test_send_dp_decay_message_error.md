@@ -1,24 +1,22 @@
 # test_send_dp_decay_message_error
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_send_dp_decay_message_error()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test send_dp_decay_message handles errors gracefully.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Bug Investigator Agent** (0 connections) — `.claude/agents/bug-investigator.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `.claude/agents/bug-investigator.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,58 +1,60 @@
 # .initialize
 
-> 23 nodes
+> 38 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **.initialize()** (12 connections) — `server/container/bundles/core.py`
-- **asyncio** (12 connections)
-- **init_db()** (10 connections) — `server/database.py`
-- **test_get_async_session_rollback_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_get_async_session_rollback_on_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_close_db_error()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_close_db_success()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_get_async_session_http_exception_re_raised()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_get_async_session_success()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_init_db_connection_error()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_init_db_import_error()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_init_db_success()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **Initialize core services. No dependencies.** (1 connections) — `server/container/bundles/core.py`
-- **Initialize the database (deprecated - kept for backward compatibility). This…** (1 connections) — `server/database.py`
-- **Test get_async_session creates and yields session successfully.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **Test get_async_session re-raises HTTPException.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **Test get_async_session rolls back on error.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **Test get_async_session handles rollback errors.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **Test init_db initializes database successfully.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **Test init_db handles import errors.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **Test init_db handles connection errors.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **Test close_db closes database successfully.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **Test close_db raises RuntimeError on error.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **follow_movement.py** (29 connections) — `server/game/follow_movement.py`
+- **_FollowMovementHost** (20 connections) — `server/game/follow_movement.py`
+- **test_follow_movement.py** (14 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **propagate_follower_move()** (11 connections) — `server/game/follow_movement.py`
+- **_host()** (9 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **asyncio** (8 connections)
+- **ensure_follower_standing()** (7 connections) — `server/game/follow_movement.py`
+- **stand_follower_for_move()** (7 connections) — `server/game/follow_movement.py`
+- **follower_already_in_room()** (6 connections) — `server/game/follow_movement.py`
+- **on_npc_entered_room()** (6 connections) — `server/game/follow_movement.py`
+- **follower_needs_stand()** (5 connections) — `server/game/follow_movement.py`
+- **on_player_entered_room()** (5 connections) — `server/game/follow_movement.py`
+- **test_ensure_follower_standing_swallows_lookup_errors()** (5 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **test_on_npc_entered_room_skips_without_movement_service()** (5 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **drop_follower()** (4 connections) — `server/game/follow_movement.py`
+- **test_follower_already_in_room_missing_persistence()** (4 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **test_follower_already_in_room_true_and_false()** (4 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **test_propagate_exception_drops_follower()** (4 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **test_propagate_skips_when_already_in_room()** (4 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **test_propagate_unfollow_when_cannot_stand()** (4 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **test_stand_follower_no_position_service_returns_true()** (4 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **.unfollow()** (3 connections) — `server/game/follow_movement.py`
+- **UUID** (2 connections)
+- **test_follower_needs_stand_rejects_non_string_position()** (2 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **.get_followers()** (1 connections) — `server/game/follow_movement.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [test_database_extended.py](test_database_extended.py.md) (13 shared connections)
-- [get_logger](get_logger.md) (7 shared connections)
-- [DatabaseManager](DatabaseManager.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [ValueError](ValueError.md) (2 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
-- [validate_calendar.py](validate_calendar.py.md) (1 shared connections)
-- [npc_database.py](npc_database.py.md) (1 shared connections)
-- [TaskRegistry](TaskRegistry.md) (1 shared connections)
-- [TrackedTaskManager](TrackedTaskManager.md) (1 shared connections)
-- [DistributedEventBus](DistributedEventBus.md) (1 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
+- [_CombatServiceDeps](_CombatServiceDeps.md) (10 shared connections)
+- [CombatInstance](CombatInstance.md) (4 shared connections)
+- [BaseEvent](BaseEvent.md) (4 shared connections)
+- [WearableContainerServiceError](WearableContainerServiceError.md) (3 shared connections)
+- [ManualPage.tsx](ManualPage.tsx.md) (3 shared connections)
+- [_find_item_in_equipped](_find_item_in_equipped.md) (2 shared connections)
+- [ChatService](ChatService.md) (2 shared connections)
+- [RoomDataCache](RoomDataCache.md) (2 shared connections)
+- [test_container_persistence_extended_row_helpers.py](test_container_persistence_extended_row_helpers.py.md) (1 shared connections)
+- [connection_initialization.py](connection_initialization.py.md) (1 shared connections)
+- [LoggingConfig](LoggingConfig.md) (1 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/core.py`
-- `server/database.py`
-- `server/tests/unit/infrastructure/test_database_extended.py`
+- `server/game/follow_movement.py`
+- `server/tests/unit/game/test_follow_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 98 (89%)
+- INFERRED: 12 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

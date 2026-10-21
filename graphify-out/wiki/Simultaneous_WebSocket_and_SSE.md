@@ -1,10 +1,10 @@
 # Simultaneous WebSocket and SSE
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Simultaneous WebSocket and SSE** (0 connections) — `docs/archive/DUAL_CONNECTION_SYSTEM_SPEC.md`
+- **Scenario 22 Administrative Summon** (0 connections) — `e2e-tests/scenarios/scenario-22-summon-command.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/DUAL_CONNECTION_SYSTEM_SPEC.md`
+- `e2e-tests/scenarios/scenario-22-summon-command.md`
 
 ## Audit Trail
 

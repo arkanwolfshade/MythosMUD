@@ -1,53 +1,58 @@
 # test_look_item.py
 
-> 28 nodes
+> 45 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **test_look_item.py** (55 connections) — `server/tests/unit/commands/test_look_item.py`
-- **_get_item_description_from_prototype()** (12 connections) — `server/commands/look_item.py`
-- **test_check_equipped_item_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_item_in_location_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_item_in_location_with_location_name()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_equipped_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_equipped_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_exception_handling()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_fallback()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_fallback_no_prototype()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_no_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_no_registry()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_with_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Get item description from prototype registry. Returns: Formatted result string…** (1 connections) — `server/commands/look_item.py`
-- **Unit tests for item look functionality. Tests the helper functions for looking…** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in equipped items by name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in equipped items when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test getting item description from prototype.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test getting item description when prototype registry is None.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test getting item description when prototype_id is missing.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test getting item description with fallback name when prototype exists.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test getting item description with fallback name when prototype doesn't exist.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking item in location with location name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking item in location when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- *... and 3 more nodes in this community*
+- **subject_controller.py** (31 connections) — `server/api/admin/subject_controller.py`
+- **test_subject_controller.py** (24 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
+- **register_pattern()** (11 connections) — `server/api/admin/subject_controller.py`
+- **validate_subject()** (11 connections) — `server/api/admin/subject_controller.py`
+- **get_patterns()** (9 connections) — `server/api/admin/subject_controller.py`
+- **get_subject_statistics()** (9 connections) — `server/api/admin/subject_controller.py`
+- **RegisterPatternRequest** (8 connections) — `server/api/admin/subject_controller.py`
+- **_register_pattern_try()** (7 connections) — `server/api/admin/subject_controller.py`
+- **require_admin_user()** (7 connections) — `server/api/admin/subject_controller.py`
+- **ValidateSubjectRequest** (7 connections) — `server/api/admin/subject_controller.py`
+- **_admin_user()** (7 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
+- **test_register_pattern_invalid()** (7 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
+- **asyncio** (6 connections)
+- **RegisterPatternResponse** (5 connections) — `server/api/admin/subject_controller.py`
+- **test_register_pattern_success()** (5 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
+- **test_validate_subject_invalid()** (5 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
+- **test_validate_subject_valid()** (5 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
+- **PatternsResponse** (4 connections) — `server/api/admin/subject_controller.py`
+- **BaseModel** (4 connections)
+- **SubjectStatisticsResponse** (4 connections) — `server/api/admin/subject_controller.py`
+- **ValidateSubjectResponse** (4 connections) — `server/api/admin/subject_controller.py`
+- **test_get_patterns()** (4 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
+- **test_request_schemas_reject_unknown_field()** (4 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
+- **get_subject_manager_dependency()** (3 connections) — `server/api/admin/subject_controller.py`
+- **test_get_subject_statistics()** (3 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [_find_item_in_equipped](_find_item_in_equipped.md) (20 shared connections)
-- [asyncio](asyncio.md) (12 shared connections)
-- [test_look_item_helpers.py](test_look_item_helpers.py.md) (8 shared connections)
-- [_find_item_in_inventory](_find_item_in_inventory.md) (5 shared connections)
-- [fixture](fixture.md) (4 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (12 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (9 shared connections)
+- [AttributeError](AttributeError.md) (8 shared connections)
+- [test_npc_startup_service.py](test_npc_startup_service.py.md) (5 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (1 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (1 shared connections)
+- [schema.sql](schema.sql.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_item.py`
-- `server/tests/unit/commands/test_look_item.py`
+- `server/api/admin/subject_controller.py`
+- `server/tests/unit/api/admin/test_subject_controller.py`
 
 ## Audit Trail
 
-- EXTRACTED: 83 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 126 (95%)
+- INFERRED: 6 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

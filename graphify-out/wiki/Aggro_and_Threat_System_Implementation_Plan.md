@@ -1,16 +1,14 @@
 # Aggro and Threat System Implementation Plan
 
-> 7 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **Aggro and Threat System Implementation Plan** (6 connections) — `docs/archive/aggro-threat-implementation-plan.md`
-- **aggro-threat-implementation-plan.md** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
-- **Constants (locked)** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
-- **Integration with NPC static data (behavior_config / npc_type)** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
-- **Key Modules and Files** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
-- **References** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
-- **Status** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
+- **test_grype.py** (4 connections) — `server/tests/unit/scripts/test_grype.py`
+- **Regression tests for scripts/grype.py project-root anchoring and scan config.** (1 connections) — `server/tests/unit/scripts/test_grype.py`
+- **test_grype_config_excludes_e2e_harness_paths()** (1 connections) — `server/tests/unit/scripts/test_grype.py`
+- **test_grype_script_defines_repo_root_next_to_makefile()** (1 connections) — `server/tests/unit/scripts/test_grype.py`
+- **test_makefile_codacy_tools_does_not_invoke_grype()** (1 connections) — `server/tests/unit/scripts/test_grype.py`
 
 ## Relationships
 
@@ -18,11 +16,11 @@
 
 ## Source Files
 
-- `docs/archive/aggro-threat-implementation-plan.md`
+- `server/tests/unit/scripts/test_grype.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

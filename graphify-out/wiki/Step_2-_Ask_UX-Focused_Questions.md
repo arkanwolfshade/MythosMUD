@@ -1,29 +1,27 @@
 # Step 2: Ask UX-Focused Questions
 
-> 8 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **Step 2: Ask UX-Focused Questions** (5 connections) — `.claude/skills/teach-impeccable/SKILL.md`
-- **Teach Impeccable Skill** (3 connections) — `.claude/skills/teach-impeccable/SKILL.md`
-- **Accessibility & Inclusion** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
-- **Aesthetic Preferences** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
-- **Brand & Personality** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
-- **Step 1: Explore the Codebase** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
-- **Step 3: Write Design Context** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
-- **Users & Purpose** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
+- **3. Decision** (6 connections) — `docs/architecture/decisions/ADR-027-npc-catalog-base-stats-contracts.md`
+- **3.1 Phased delivery** (1 connections) — `docs/architecture/decisions/ADR-027-npc-catalog-base-stats-contracts.md`
+- **3.2 Storage and placement** (1 connections) — `docs/architecture/decisions/ADR-027-npc-catalog-base-stats-contracts.md`
+- **3.3 Rich `base_stats` shape** (1 connections) — `docs/architecture/decisions/ADR-027-npc-catalog-base-stats-contracts.md`
+- **3.4 Dice and dual-write** (1 connections) — `docs/architecture/decisions/ADR-027-npc-catalog-base-stats-contracts.md`
+- **3.5 Explicitly out of scope (this ADR / epic)** (1 connections) — `docs/architecture/decisions/ADR-027-npc-catalog-base-stats-contracts.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Migration 019 Verification Report](Migration_019_Verification_Report.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/teach-impeccable/SKILL.md`
+- `docs/architecture/decisions/ADR-027-npc-catalog-base-stats-contracts.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

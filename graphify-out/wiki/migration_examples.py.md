@@ -1,6 +1,6 @@
 # migration_examples.py
 
-> 38 nodes
+> 38 nodes · cohesion 0.06
 
 ## Key Concepts
 
@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [PerformanceMonitor](PerformanceMonitor.md) (1 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
-- [Result](Result.md) (1 shared connections)
+- [test_chat_validator.py](test_chat_validator.py.md) (1 shared connections)
+- [_prepare_command_for_processing](_prepare_command_for_processing.md) (1 shared connections)
+- [verify_enhanced_logging_compliance.py](verify_enhanced_logging_compliance.py.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,60 +1,59 @@
 # npc_database.py
 
-> 111 nodes
+> 53 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **npc_database.py** (31 connections) — `server/npc_database.py`
-- **test_npc_database.py** (26 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **patch** (25 connections)
-- **get_npc_session()** (24 connections) — `server/npc_database.py`
-- **get_npc_engine()** (14 connections) — `server/npc_database.py`
-- **_initialize_npc_database()** (13 connections) — `server/npc_database.py`
-- **init_npc_db()** (11 connections) — `server/npc_database.py`
-- **get_npc_database_path()** (10 connections) — `server/npc_database.py`
-- **_build_npc_connect_args()** (9 connections) — `server/npc_database.py`
-- **close_npc_db()** (9 connections) — `server/npc_database.py`
-- **asyncio** (9 connections)
-- **TestNPCDatabaseInitialization** (8 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **get_npc_session_maker()** (8 connections) — `server/npc_database.py`
-- **_build_npc_pool_kwargs()** (7 connections) — `server/npc_database.py`
-- **TestBuildNpcConnectArgs** (6 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **ensure_npc_database_directory()** (6 connections) — `server/npc_database.py`
-- **_resolve_npc_database_url()** (6 connections) — `server/npc_database.py`
-- **.test_close_npc_db_disposes_engine()** (6 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **.test_get_npc_session_rollback_on_error()** (6 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **TestCloseNpcDb** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **TestGetNPCDatabasePath** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **TestInitNpcDb** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **TestNPCSession** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **reset_npc_database()** (5 connections) — `server/npc_database.py`
-- **.test_close_npc_db_handles_closed_loop()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- *... and 86 more nodes in this community*
+- **admin_summon_command.py** (37 connections) — `server/commands/admin_summon_command.py`
+- **test_admin_summon_command.py** (33 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **_resolve_summon_context()** (15 connections) — `server/commands/admin_summon_command.py`
+- **handle_summon_command()** (14 connections) — `server/commands/admin_summon_command.py`
+- **asyncio** (13 connections)
+- **_complete_summon()** (11 connections) — `server/commands/admin_summon_command.py`
+- **_parse_summon_command_data()** (11 connections) — `server/commands/admin_summon_command.py`
+- **Any** (10 connections)
+- **_validate_summon_prerequisites()** (9 connections) — `server/commands/admin_summon_command.py`
+- **_broadcast_and_log_summon_success()** (8 connections) — `server/commands/admin_summon_command.py`
+- **_create_summon_item_instance()** (7 connections) — `server/commands/admin_summon_command.py`
+- **_persist_summoned_item()** (6 connections) — `server/commands/admin_summon_command.py`
+- **_summon_npc_stub_response()** (6 connections) — `server/commands/admin_summon_command.py`
+- **_log_summon_success()** (5 connections) — `server/commands/admin_summon_command.py`
+- **test_complete_summon_factory_error()** (4 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_persist_summoned_item_swallows_db_error()** (4 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_broadcast_and_log_summon_success()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_complete_summon_no_instance_without_error()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_complete_summon_success()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_create_summon_item_instance_factory_error()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_handle_summon_command_context_error()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_handle_summon_command_context_none()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_handle_summon_command_parse_error()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_handle_summon_command_success()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_persist_summoned_item_success()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (13 shared connections)
-- [ValidationError](ValidationError.md) (9 shared connections)
-- [EventBus](EventBus.md) (4 shared connections)
-- [CombatService](CombatService.md) (3 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (3 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (3 shared connections)
-- [AliasStorage](AliasStorage.md) (3 shared connections)
-- [migrate_combat_data.py](migrate_combat_data.py.md) (3 shared connections)
-- [NPCStartupService](NPCStartupService.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [NPCService](NPCService.md) (1 shared connections)
+- [command_parser.py](command_parser.py.md) (15 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (7 shared connections)
+- [test_shopkeeper_npc.py](test_shopkeeper_npc.py.md) (6 shared connections)
+- [test_metrics.py](test_metrics.py.md) (6 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (3 shared connections)
+- [.publish_with_pool](publish_with_pool.md) (3 shared connections)
+- [Room](Room.md) (3 shared connections)
+- [ValueError](ValueError.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (2 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (1 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc_database.py`
-- `server/tests/unit/infrastructure/test_npc_database.py`
+- `server/commands/admin_summon_command.py`
+- `server/tests/unit/commands/test_admin_summon_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 238 (97%)
-- INFERRED: 8 (3%)
+- EXTRACTED: 154 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,10 +1,10 @@
 # Dual Connection Troubleshooting Guide
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Dual Connection Troubleshooting Guide** (0 connections) — `docs/archive/DUAL_CONNECTION_TROUBLESHOOTING_GUIDE.md`
+- **Whisper System Investigation Report** (0 connections) — `e2e-tests/WHISPER_SYSTEM_INVESTIGATION_REPORT.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/DUAL_CONNECTION_TROUBLESHOOTING_GUIDE.md`
+- `e2e-tests/WHISPER_SYSTEM_INVESTIGATION_REPORT.md`
 
 ## Audit Trail
 

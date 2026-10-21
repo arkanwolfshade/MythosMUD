@@ -1,35 +1,35 @@
 # _CoordsModule
 
-> 30 nodes
+> 28 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **_CoordsModule** (13 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
-- **test_author_sanitarium_coords.py** (8 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
-- **Path** (6 connections)
-- **_rows()** (5 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
-- **.test_rewriting_the_last_column_does_not_mix_endings()** (5 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
-- **TestDmlPath** (4 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
-- **TestLayoutInvariants** (4 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
-- **TestLineEndingRoundTrip** (4 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
-- **.test_crlf_file_survives_read_and_write()** (4 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
-- **.test_lf_file_survives_read_and_write()** (4 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
-- **TestCheckFlag** (3 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
-- **coords()** (3 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
-- **.test_seed_path_is_the_single_schema_agnostic_seed()** (3 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
-- **.test_the_seed_file_actually_exists()** (3 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
-- **.test_rooms_are_one_cell_apart()** (3 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
-- **.test_vertical_moves_clear_the_side_room_row()** (3 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
-- **._read_dml()** (2 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
-- **._write_dml()** (2 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
-- **.test_cardinal_moves_are_single_steps()** (2 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
-- **.test_check_leaves_the_seed_file_byte_identical()** (1 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
-- **fixture** (1 connections)
-- **Protocol** (1 connections)
-- **Line-ending safety for `scripts/author_sanitarium_coords.py` (#829). The DML…** (1 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
-- **Catches a rename of the seed file, which would otherwise surface as the script…** (1 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
-- **`--check` is the only thing standing between a dry run and rewriting the seed…** (1 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
-- *... and 5 more nodes in this community*
+- **lint_pyright_suppressions.py** (14 connections) — `scripts/lint_pyright_suppressions.py`
+- **scan_file()** (11 connections) — `scripts/lint_pyright_suppressions.py`
+- **_parse_rules()** (6 connections) — `scripts/lint_pyright_suppressions.py`
+- **Failure** (5 connections) — `scripts/lint_pyright_suppressions.py`
+- **_justification_failures()** (5 connections) — `scripts/lint_pyright_suppressions.py`
+- **Path** (5 connections)
+- **_collect_context()** (4 connections) — `scripts/lint_pyright_suppressions.py`
+- **_extract_field()** (4 connections) — `scripts/lint_pyright_suppressions.py`
+- **_iter_target_files()** (4 connections) — `scripts/lint_pyright_suppressions.py`
+- **main()** (4 connections) — `scripts/lint_pyright_suppressions.py`
+- **_print_report()** (4 connections) — `scripts/lint_pyright_suppressions.py`
+- **Suppression** (4 connections) — `scripts/lint_pyright_suppressions.py`
+- **_comment_text()** (3 connections) — `scripts/lint_pyright_suppressions.py`
+- **_join_continuation()** (3 connections) — `scripts/lint_pyright_suppressions.py`
+- **_should_skip()** (3 connections) — `scripts/lint_pyright_suppressions.py`
+- **_validate_category()** (3 connections) — `scripts/lint_pyright_suppressions.py`
+- **Pattern** (1 connections)
+- **Match** (1 connections)
+- **Gather the comment lines that may hold the justification for the suppression at…** (1 connections) — `scripts/lint_pyright_suppressions.py`
+- **Text of a field, including any following ``#``-prefixed continuation lines.** (1 connections) — `scripts/lint_pyright_suppressions.py`
+- **Return ``(category, error)`` for the ``Reason:`` field's leading category token.** (1 connections) — `scripts/lint_pyright_suppressions.py`
+- **The rules named in brackets, or the Failure explaining why none could be read.** (1 connections) — `scripts/lint_pyright_suppressions.py`
+- **Check the two mandatory fields. Only reached for reportAny / reportExplicitAny.** (1 connections) — `scripts/lint_pyright_suppressions.py`
+- **Parse one file's suppressions and report any that violate the standard.** (1 connections) — `scripts/lint_pyright_suppressions.py`
+- **Inventory grouped by rule and category. A category that repeats across many…** (1 connections) — `scripts/lint_pyright_suppressions.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
@@ -37,11 +37,11 @@
 
 ## Source Files
 
-- `server/tests/unit/scripts/test_author_sanitarium_coords.py`
+- `scripts/lint_pyright_suppressions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (100%)
+- EXTRACTED: 47 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

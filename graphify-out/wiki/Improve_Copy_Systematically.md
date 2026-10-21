@@ -1,37 +1,43 @@
 # Improve Copy Systematically
 
-> 16 nodes
+> 15 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **Improve Copy Systematically** (10 connections) — `.claude/skills/clarify/SKILL.md`
-- **Clarify Skill** (7 connections) — `.claude/skills/clarify/SKILL.md`
-- **Apply Clarity Principles** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Assess Current Copy** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Button & CTA Text** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Confirmation Dialogs** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Empty States** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Error Messages** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Form Labels & Instructions** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Help Text & Tooltips** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Loading States** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Navigation & Wayfinding** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Plan Copy Improvements** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Success Messages** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Verify Improvements** (1 connections) — `.claude/skills/clarify/SKILL.md`
+- **NPCService** (14 connections) — `server/services/npc_service/__init__.py`
+- **npc_service()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **fixture** (4 connections)
+- **test_npc_service_init()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **mock_session()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
+- **sample_npc_definition()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
+- **sample_spawn_rule()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
+- **.__init__()** (2 connections) — `server/services/npc_service/__init__.py`
+- **Comprehensive NPC management service. Handles CRUD operations for NPC…** (1 connections) — `server/services/npc_service/__init__.py`
+- **Initialize the NPC service.** (1 connections) — `server/services/npc_service/__init__.py`
+- **Test NPCService initialization.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Create a mock AsyncSession.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Create NPCService instance.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Create a sample NPC definition.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Create a sample spawn rule.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- [cross-env](cross-env.md) (6 shared connections)
+- [rescue_commands.py](rescue_commands.py.md) (2 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [ErrorType](ErrorType.md) (2 shared connections)
+- [TargetMatch](TargetMatch.md) (1 shared connections)
+- [fix_markdown_common_issues.py](fix_markdown_common_issues.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/clarify/SKILL.md`
+- `server/services/npc_service/__init__.py`
+- `server/tests/unit/services/test_npc_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 30 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

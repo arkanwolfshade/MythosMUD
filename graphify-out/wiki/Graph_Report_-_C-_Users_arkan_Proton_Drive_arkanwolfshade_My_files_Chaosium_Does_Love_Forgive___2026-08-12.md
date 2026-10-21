@@ -1,36 +1,36 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Does Love Forgive_  (2026-08-12)
 
-> 15 nodes
+> 14 nodes · cohesion 0.16
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Does Love Forgive_  (2026-08-12)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Communities (4 total, 1 thin omitted)** (4 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **does-love-forgive/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Community 0 - "Scenario Handouts"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Community 1 - "Anna Konrad; Lucas Reston"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Community 2 - "Does Love Forgive"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Import Cycles** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
+- **.__call__()** (8 connections) — `server/middleware/comprehensive_logging.py`
+- **.dispatch()** (7 connections) — `server/middleware/comprehensive_logging.py`
+- **._log_request_error()** (5 connections) — `server/middleware/comprehensive_logging.py`
+- **._log_request_start()** (5 connections) — `server/middleware/comprehensive_logging.py`
+- **._log_request_success_with_status()** (5 connections) — `server/middleware/comprehensive_logging.py`
+- **Any** (1 connections)
+- **Exception** (1 connections)
+- **Receive** (1 connections)
+- **Scope** (1 connections)
+- **Send** (1 connections)
+- **Log request start information.** (1 connections) — `server/middleware/comprehensive_logging.py`
+- **Log successful request completion.** (1 connections) — `server/middleware/comprehensive_logging.py`
+- **ASGI application interface. Args: scope: ASGI connection scope receive: ASGI…** (1 connections) — `server/middleware/comprehensive_logging.py`
+- **Backward-compatible dispatch method for BaseHTTPMiddleware interface. This…** (1 connections) — `server/middleware/comprehensive_logging.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [AliasGraph](AliasGraph.md) (5 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (4 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
+- `server/middleware/comprehensive_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

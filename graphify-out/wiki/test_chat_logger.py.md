@@ -1,58 +1,48 @@
 # test_chat_logger.py
 
-> 40 nodes
+> 67 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **test_chat_logger.py** (20 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **chat_logger()** (8 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **.__init__()** (5 connections) — `server/services/user_manager.py`
-- **.__init__()** (4 connections) — `server/services/rate_limiter.py`
-- **temp_log_dir()** (3 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_chat_logger_initialization_with_directory()** (3 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_channel_log_stats_and_cleanup()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_get_log_file_paths()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_get_log_stats()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_log_chat_message()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_log_local_global_system_channel_messages()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_log_moderation_event()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_log_player_joined_room()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_log_player_muted()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_log_player_unmuted()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_log_rate_limit_violation()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_log_system_event()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_log_whisper_channel_message()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_shutdown()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **fixture** (2 connections)
-- **test_log_message_flagged_and_player_left()** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **Initialize the rate limiter with configuration-based limits.** (1 connections) — `server/services/rate_limiter.py`
-- **Initialize the user manager. Mutes live in the player_mutes table (#681). The…** (1 connections) — `server/services/user_manager.py`
-- **Unit tests for chat logger service. Tests the ChatLogger class for structured…** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **Test log_player_muted writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
-- *... and 15 more nodes in this community*
+- **_SpecModule** (32 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- **test_arkham_grid_spec.py** (18 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- **_VoicesModule** (9 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- **TestVoices** (8 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- **Protocol** (6 connections)
+- **TestExtras** (6 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- **_room_cells()** (5 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- **TestStreets** (5 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- **_Seg** (4 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- **spec()** (4 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- **_Street** (4 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- **TestCoordinates** (4 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- **.test_no_two_rooms_share_a_cell()** (4 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- **.test_every_extra_attaches_to_a_real_room()** (4 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- **TestRiver** (4 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- **TestSubZones** (4 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- **.test_long_streets_have_enough_variants()** (4 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- **voices()** (4 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- **_load()** (3 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- **.test_every_segment_lies_between_its_own_crossings()** (3 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- **.test_extra_directions_are_supported()** (3 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- **.test_extras_do_not_attach_to_each_other_in_a_cycle()** (3 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- **.test_only_the_island_uses_a_vertical_exit()** (3 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- **.test_exactly_three_streets_cross_the_miskatonic()** (3 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- **TestSanitarium** (3 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
+- *... and 42 more nodes in this community*
 
 ## Relationships
 
-- [ChatLogger](ChatLogger.md) (3 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
-- [RateLimiter](RateLimiter.md) (1 shared connections)
-- [PlayerMute](PlayerMute.md) (1 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
-- [UserManager](UserManager.md) (1 shared connections)
-- [ChatPoseManager](ChatPoseManager.md) (1 shared connections)
-- [event_handler.py](event_handler.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/rate_limiter.py`
-- `server/services/user_manager.py`
-- `server/tests/unit/services/test_chat_logger.py`
+- `server/tests/unit/data/test_arkham_grid_spec.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (90%)
-- INFERRED: 5 (10%)
+- EXTRACTED: 112 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

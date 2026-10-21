@@ -1,10 +1,10 @@
 # Tailwind CSS Anti-Pattern Remediation
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Tailwind CSS Anti-Pattern Remediation** (0 connections) — `.cursor/plans/tailwind_css_anti-pattern_remediation_af2debc7.plan.md`
+- **temp_verify_invites.py** (0 connections) — `scripts/temp_verify_invites.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.cursor/plans/tailwind_css_anti-pattern_remediation_af2debc7.plan.md`
+- `scripts/temp_verify_invites.py`
 
 ## Audit Trail
 

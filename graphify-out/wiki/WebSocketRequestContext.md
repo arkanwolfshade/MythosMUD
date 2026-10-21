@@ -1,52 +1,59 @@
 # WebSocketRequestContext
 
-> 41 nodes
+> 42 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **WebSocketRequestContext** (26 connections) — `server/realtime/request_context.py`
-- **test_request_context.py** (16 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **Any** (7 connections)
-- **.get_event_bus()** (4 connections) — `server/realtime/request_context.py`
-- **test_create_websocket_request_context()** (4 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_create_websocket_request_context_no_user()** (4 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **.get_alias_storage()** (3 connections) — `server/realtime/request_context.py`
-- **.get_persistence()** (3 connections) — `server/realtime/request_context.py`
-- **.__init__()** (3 connections) — `server/realtime/request_context.py`
-- **.set_alias_storage()** (3 connections) — `server/realtime/request_context.py`
-- **.set_app_state_services()** (3 connections) — `server/realtime/request_context.py`
-- **test_websocket_request_context_get_alias_storage()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_get_alias_storage_not_set()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_get_event_bus()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_get_event_bus_none()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_get_persistence()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_init()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_init_no_user()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_set_alias_storage()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_set_app_state_services()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_set_app_state_services_none()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **Get the event bus from the request context.** (1 connections) — `server/realtime/request_context.py`
-- **Get the alias storage from the request context.** (1 connections) — `server/realtime/request_context.py`
-- **Creates FastAPI Request-like objects for WebSocket commands. This allows…** (1 connections) — `server/realtime/request_context.py`
-- **Initialize the WebSocket request context. Args: app_state: Real application…** (1 connections) — `server/realtime/request_context.py`
-- *... and 16 more nodes in this community*
+- **WearableContainerService** (37 connections) — `server/services/wearable_container_service.py`
+- **wearable_container_service.py** (27 connections) — `server/services/wearable_container_service.py`
+- **UUID** (18 connections)
+- **Any** (11 connections)
+- **._load_player_wearable_container()** (9 connections) — `server/services/wearable_container_service.py`
+- **_filter_container_data()** (8 connections) — `server/services/wearable_container_service.py`
+- **_get_enum_value()** (8 connections) — `server/services/wearable_container_service.py`
+- **.handle_container_overflow()** (8 connections) — `server/services/wearable_container_service.py`
+- **.handle_equip_wearable_container()** (8 connections) — `server/services/wearable_container_service.py`
+- **.add_items_to_wearable_container()** (7 connections) — `server/services/wearable_container_service.py`
+- **.handle_unequip_wearable_container()** (7 connections) — `server/services/wearable_container_service.py`
+- **._update_container_items_or_raise()** (7 connections) — `server/services/wearable_container_service.py`
+- **.update_wearable_container_items()** (7 connections) — `server/services/wearable_container_service.py`
+- **._create_equipment_container_record()** (6 connections) — `server/services/wearable_container_service.py`
+- **._drop_overflow_to_ground()** (6 connections) — `server/services/wearable_container_service.py`
+- **._find_existing_equipment_container()** (6 connections) — `server/services/wearable_container_service.py`
+- **._validate_inner_container_capacity()** (6 connections) — `server/services/wearable_container_service.py`
+- **_row_metadata()** (5 connections) — `server/services/wearable_container_service.py`
+- **.get_wearable_containers_for_player()** (5 connections) — `server/services/wearable_container_service.py`
+- **._save_overflow_inventory()** (5 connections) — `server/services/wearable_container_service.py`
+- **._split_overflow_items()** (4 connections) — `server/services/wearable_container_service.py`
+- **.__init__()** (3 connections) — `server/services/wearable_container_service.py`
+- **Wearable container service for unified container system. As documented in the…** (1 connections) — `server/services/wearable_container_service.py`
+- **A container row's metadata, whichever key it arrived under (metadata_json from…** (1 connections) — `server/services/wearable_container_service.py`
+- **Service for managing wearable container operations. Handles container creation…** (1 connections) — `server/services/wearable_container_service.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [test_websocket_handler_commands.py](test_websocket_handler_commands.py.md) (5 shared connections)
-- [command_guards.py](command_guards.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (1 shared connections)
+- [TargetMatch](TargetMatch.md) (9 shared connections)
+- [endpoints.py](endpoints.py.md) (8 shared connections)
+- [Decisions required](Decisions_required.md) (7 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (5 shared connections)
+- [HolidayService](HolidayService.md) (5 shared connections)
+- [DOCUMENTATION_AUDIT.md](DOCUMENTATION_AUDIT.md.md) (5 shared connections)
+- [✅ Best Practices Compliance](✅_Best_Practices_Compliance.md) (4 shared connections)
+- [AttributeError](AttributeError.md) (3 shared connections)
+- [.profession_to_dict](profession_to_dict.md) (3 shared connections)
+- [asyncio](asyncio.md) (3 shared connections)
+- [fixture](fixture.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/request_context.py`
-- `server/tests/unit/realtime/test_request_context.py`
+- `server/services/wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 66 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 136 (93%)
+- INFERRED: 10 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

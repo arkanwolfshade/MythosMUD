@@ -1,10 +1,10 @@
 # tailwind.config.js
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **tailwind.config.js** (0 connections) — `client/tailwind.config.js`
+- **2. Context** (0 connections) — `docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `client/tailwind.config.js`
+- `docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md`
 
 ## Audit Trail
 

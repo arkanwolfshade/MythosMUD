@@ -1,34 +1,32 @@
 # db/ Package Design
 
-> 13 nodes
+> 11 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **db/ Package Design** (13 connections) — `docs/packages/PACKAGE_DB_DESIGN.md`
-- **10. Related docs** (1 connections) — `docs/packages/PACKAGE_DB_DESIGN.md`
-- **11. Changelog** (1 connections) — `docs/packages/PACKAGE_DB_DESIGN.md`
-- **1. Overview** (1 connections) — `docs/packages/PACKAGE_DB_DESIGN.md`
-- **2. Members** (1 connections) — `docs/packages/PACKAGE_DB_DESIGN.md`
-- **3. Composition — how a database gets built** (1 connections) — `docs/packages/PACKAGE_DB_DESIGN.md`
-- **4. Migration currency by environment** (1 connections) — `docs/packages/PACKAGE_DB_DESIGN.md`
-- **5. Data model** (1 connections) — `docs/packages/PACKAGE_DB_DESIGN.md`
-- **6. Invariants and where they live** (1 connections) — `docs/packages/PACKAGE_DB_DESIGN.md`
-- **7. Developer guide** (1 connections) — `docs/packages/PACKAGE_DB_DESIGN.md`
-- **8. Roster gate** (1 connections) — `docs/packages/PACKAGE_DB_DESIGN.md`
-- **9. Troubleshooting** (1 connections) — `docs/packages/PACKAGE_DB_DESIGN.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/packages/PACKAGE_DB_DESIGN.md`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Dead Light and Other Dark Turns  (2026-08-12)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- **dead-light-and-other-dark-turns/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- **Communities (2 total, 2 thin omitted)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
 
 ## Relationships
 
-- [packages/README.md](packages-README.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/packages/PACKAGE_DB_DESIGN.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

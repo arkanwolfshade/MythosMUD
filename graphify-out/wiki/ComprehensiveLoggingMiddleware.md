@@ -1,54 +1,50 @@
 # ComprehensiveLoggingMiddleware
 
-> 29 nodes
+> 29 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **ComprehensiveLoggingMiddleware** (16 connections) — `server/middleware/comprehensive_logging.py`
-- **test_comprehensive_logging.py** (9 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
-- **.__call__()** (8 connections) — `server/middleware/comprehensive_logging.py`
-- **.dispatch()** (7 connections) — `server/middleware/comprehensive_logging.py`
-- **._log_request_error()** (5 connections) — `server/middleware/comprehensive_logging.py`
-- **._log_request_start()** (5 connections) — `server/middleware/comprehensive_logging.py`
-- **._log_request_success_with_status()** (5 connections) — `server/middleware/comprehensive_logging.py`
-- **asyncio** (5 connections)
-- **test_comprehensive_logging_dispatch_error()** (4 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
-- **test_comprehensive_logging_passes_non_http()** (4 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
-- **test_comprehensive_logging_reraises_exception()** (4 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
-- **test_comprehensive_logging_successful_request()** (4 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
-- **.__init__()** (3 connections) — `server/middleware/comprehensive_logging.py`
-- **test_comprehensive_logging_dispatch_success()** (3 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
-- **test_log_request_start_long_auth_header()** (3 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
-- **.default()** (2 connections) — `server/realtime/envelope.py`
-- **Any** (1 connections)
-- **ASGIApp** (1 connections)
-- **Exception** (1 connections)
-- **Receive** (1 connections)
-- **Scope** (1 connections)
-- **Send** (1 connections)
-- **Log request start information.** (1 connections) — `server/middleware/comprehensive_logging.py`
-- **Log successful request completion.** (1 connections) — `server/middleware/comprehensive_logging.py`
-- **Pure ASGI middleware that combines access, error, and request logging. This…** (1 connections) — `server/middleware/comprehensive_logging.py`
+- **test_inventory_mutation_guard.py** (17 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **guard()** (4 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **asyncio** (4 connections)
+- **test_acquire_async_different_players_same_token()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_async_with_duplicate_token()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_async_with_unique_token()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_async_without_token()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_inventory_mutation_guard_init_custom_params()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_mutation_decision_duplicate()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_mutation_decision_init()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_different_players_same_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_with_duplicate_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_with_unique_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_without_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_inventory_mutation_guard_init()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **fixture** (1 connections)
+- **Unit tests for inventory mutation guard - core functionality. Tests…** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test acquire_async without token allows mutation.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test acquire_async with duplicate token suppresses mutation.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test acquire_async allows same token for different players.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test MutationDecision initialization.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test MutationDecision for duplicate.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test InventoryMutationGuard initialization.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test InventoryMutationGuard initialization with custom parameters.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
 - *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (5 shared connections)
-- [test_security_headers.py](test_security_headers.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [build_event](build_event.md) (1 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
+- [test_metadata.py](test_metadata.py.md) (3 shared connections)
+- [logging_file_setup.py](logging_file_setup.py.md) (3 shared connections)
+- [Room](Room.md) (1 shared connections)
 
 ## Source Files
 
-- `server/middleware/comprehensive_logging.py`
-- `server/realtime/envelope.py`
-- `server/tests/unit/middleware/test_comprehensive_logging.py`
+- `server/tests/unit/services/test_inventory_mutation_guard.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (82%)
-- INFERRED: 10 (18%)
+- EXTRACTED: 38 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,33 +1,31 @@
 # preferences_service
 
-> 9 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **preferences_service()** (4 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **sample_preferences()** (4 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **fixture** (4 connections)
-- **mock_session()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **sample_player_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Create a PlayerPreferencesService instance.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Create a mock async session.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Create a sample player ID.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Create sample player preferences.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **asyncio** (4 connections)
+- **test_get_player_info_invalid_player_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_get_player_info_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_get_player_info_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_get_player_info_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test get_player_info() returns None for invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test get_player_info() returns None when player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test get_player_info() successfully retrieves player info.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test get_player_info() returns None when connection manager not available.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [test_player_preferences_service.py](test_player_preferences_service.py.md) (4 shared connections)
-- [PlayerPreferencesService](PlayerPreferencesService.md) (1 shared connections)
-- [PlayerInventory](PlayerInventory.md) (1 shared connections)
+- [TaskRegistry](TaskRegistry.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (86%)
-- INFERRED: 2 (14%)
+- EXTRACTED: 12 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

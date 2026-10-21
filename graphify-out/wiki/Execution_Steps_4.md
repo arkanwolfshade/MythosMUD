@@ -1,43 +1,41 @@
 # Execution Steps
 
-> 22 nodes
+> 20 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **Execution Steps** (10 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Scenario 3: Movement Between Rooms **[REQUIRES MULTI-PLAYER]**** (9 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Status** (2 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **scenario-03-movement-between-rooms.md** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Cleanup** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Expected Results** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **✅ READY FOR TESTING** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Step 1: Both Players in Main Foyer** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Step 2: AW Moves East** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Step 3: Verify Ithaqua Sees AW Leave** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Step 4: Verify AW Sees No Self-Movement Messages** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Step 5: Ithaqua Moves East to Join AW** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Step 6: Verify AW Sees Ithaqua Enter** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Step 7: Verify Ithaqua Sees No Self-Movement Messages** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Step 8: Test Return Movement** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Step 9: Complete Scenario and Proceed** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Success Criteria Checklist** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Design Critique** (11 connections) — `.claude/skills/critique/SKILL.md`
+- **Generate Critique Report** (7 connections) — `.claude/skills/critique/SKILL.md`
+- **Critique Skill** (4 connections) — `.claude/skills/critique/SKILL.md`
+- **10. Microcopy & Voice** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **1. AI Slop Detection (CRITICAL)** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **2. Visual Hierarchy** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **3. Information Architecture** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **4. Emotional Resonance** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **5. Discoverability & Affordance** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **6. Composition & Balance** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **7. Typography as Communication** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **8. Color with Purpose** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **9. States & Edge Cases** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **Anti-Patterns Verdict** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **Minor Observations** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **Overall Impression** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **Priority Issues** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **Questions to Consider** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **What's Working** (1 connections) — `.claude/skills/critique/SKILL.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- `.claude/skills/critique/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

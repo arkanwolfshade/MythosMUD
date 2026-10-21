@@ -1,58 +1,49 @@
 # test_admin_summon_command.py
 
-> 50 nodes
+> 29 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **test_admin_summon_command.py** (33 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **_resolve_summon_context()** (15 connections) — `server/commands/admin_summon_command.py`
-- **handle_summon_command()** (14 connections) — `server/commands/admin_summon_command.py`
-- **asyncio** (13 connections)
-- **_complete_summon()** (11 connections) — `server/commands/admin_summon_command.py`
-- **_parse_summon_command_data()** (11 connections) — `server/commands/admin_summon_command.py`
-- **Any** (10 connections)
-- **_validate_summon_prerequisites()** (9 connections) — `server/commands/admin_summon_command.py`
-- **_broadcast_and_log_summon_success()** (8 connections) — `server/commands/admin_summon_command.py`
-- **_create_summon_item_instance()** (7 connections) — `server/commands/admin_summon_command.py`
-- **_persist_summoned_item()** (6 connections) — `server/commands/admin_summon_command.py`
-- **_summon_npc_stub_response()** (6 connections) — `server/commands/admin_summon_command.py`
-- **_log_summon_success()** (5 connections) — `server/commands/admin_summon_command.py`
-- **test_complete_summon_factory_error()** (4 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **test_persist_summoned_item_swallows_db_error()** (4 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **test_broadcast_and_log_summon_success()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **test_complete_summon_no_instance_without_error()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **test_complete_summon_success()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **test_handle_summon_command_context_error()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **test_handle_summon_command_context_none()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **test_handle_summon_command_parse_error()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **test_handle_summon_command_success()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **test_persist_summoned_item_success()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **test_resolve_summon_context_permission_denied()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **test_resolve_summon_context_player_error()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- *... and 25 more nodes in this community*
+- **TestLogoutCommand** (13 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Any** (8 connections)
+- **asyncio** (8 connections)
+- **.test_logout_command_connection_error()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.test_logout_command_general_error_handling()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.test_logout_command_no_persistence()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.test_logout_command_persistence_error()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.test_logout_command_persists_position()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.test_logout_command_player_not_found()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.test_logout_command_success()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.test_logout_command_with_args()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **test_logout_command.py** (3 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **fixture** (3 connections)
+- **.mock_alias_storage()** (3 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.mock_current_user()** (3 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.mock_request()** (3 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Unit tests for the logout command handler.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Test logout command when persistence is not available.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Test logout command when persistence operations fail.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Test cases for the logout command handler.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Test logout command when connection cleanup fails.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Create a mock request object.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Test logout command with arguments (should be ignored).** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Test logout command when player is not found in persistence.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Test logout command with general error handling.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [alias_storage.py](alias_storage.py.md) (14 shared connections)
-- [command_error](command_error.md) (8 shared connections)
-- [test_item_factory.py](test_item_factory.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [build_event](build_event.md) (1 shared connections)
-- [test_alias_commands.py](test_alias_commands.py.md) (1 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
-- [command_service.py](command_service.py.md) (1 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [.state](state.md) (1 shared connections)
+- [ConnectionErrorHandler](ConnectionErrorHandler.md) (8 shared connections)
+- [test_player_event_handlers_utils.py](test_player_event_handlers_utils.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_summon_command.py`
-- `server/tests/unit/commands/test_admin_summon_command.py`
+- `server/tests/unit/commands/test_logout_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 127 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 45 (85%)
+- INFERRED: 8 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

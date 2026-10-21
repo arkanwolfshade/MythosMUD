@@ -1,34 +1,37 @@
 # test_monitoring_init.py
 
-> 12 nodes
+> 10 nodes · cohesion 0.27
 
 ## Key Concepts
 
-- **test_monitoring_init.py** (6 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
-- **test_monitoring_eager_imports()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
-- **test_monitoring_getattr_direct_call()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
-- **test_monitoring_getattr_lazy_dashboard_symbols()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
-- **test_monitoring_getattr_lazy_performance_symbols()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
-- **test_monitoring_getattr_unknown_raises()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
-- **Unit tests for server.monitoring lazy __getattr__ re-exports.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
-- **Exception tracker symbols import without triggering numpy lazy paths.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
-- **__getattr__ resolves MonitoringDashboard and get_monitoring_dashboard.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
-- **__getattr__ resolves PerformanceStats and get_performance_monitor.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
-- **Unknown attribute names raise AttributeError.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
-- **Direct __getattr__ covers both branch returns for dashboard imports.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **POSTGRESQL_AUDIT_REPORT_2026.md** (7 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **bigint generated always as identity** (5 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **PYTHON_MODEL_UPDATES_REQUIRED.md** (4 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **Migration 019 PostgreSQL Anti-patterns Fixes** (3 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **SELECT * Anti-pattern** (2 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **varchar(n) Prefer text** (2 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **Integer to BigInteger Column Mapping** (2 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **String(n) to Text Column Mapping** (2 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **Schema Drift player_id uuid vs varchar** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **players.current_room_id Index Gap** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Path](Path.md) (2 shared connections)
+- [Execution Steps](Execution_Steps.md) (1 shared connections)
+- [container_helpers_inventory_display.py](container_helpers_inventory_display.py.md) (1 shared connections)
+- [Design Critique](Design_Critique.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/monitoring/test_monitoring_init.py`
+- `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- `docs/archive/POSTGRESQL_CODE_REVIEW.md`
+- `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 16 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

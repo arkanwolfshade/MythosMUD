@@ -1,51 +1,52 @@
 # test_nats_messages.py
 
-> 55 nodes
+> 66 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **test_nats_messages.py** (23 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **ChatMessageSchema** (13 connections) — `server/schemas/realtime/nats_messages.py`
-- **validate_message()** (13 connections) — `server/schemas/realtime/nats_messages.py`
-- **BaseMessageSchema** (11 connections) — `server/schemas/realtime/nats_messages.py`
-- **EventMessageSchema** (11 connections) — `server/schemas/realtime/nats_messages.py`
-- **nats_messages.py** (9 connections) — `server/schemas/realtime/nats_messages.py`
-- **validate_chat_message()** (7 connections) — `server/schemas/realtime/nats_messages.py`
-- **validate_event_message()** (7 connections) — `server/schemas/realtime/nats_messages.py`
-- **.validate_timestamp()** (4 connections) — `server/schemas/realtime/nats_messages.py`
-- **.validate_channel()** (4 connections) — `server/schemas/realtime/nats_messages.py`
-- **.validate_event_type()** (4 connections) — `server/schemas/realtime/nats_messages.py`
-- **test_validate_chat_message()** (4 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **test_validate_event_message()** (4 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **test_validate_message_chat()** (4 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **test_validate_message_event()** (4 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **test_base_message_schema()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **test_base_message_schema_invalid_timestamp()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **test_base_message_schema_validate_timestamp()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **test_chat_message_schema()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **test_chat_message_schema_accepts_speaker_kind_and_party_id()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **test_chat_message_schema_content_validation()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **test_chat_message_schema_invalid_channel()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **test_chat_message_schema_validate_channel()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **test_event_message_schema()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **test_event_message_schema_empty_event_type()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- *... and 30 more nodes in this community*
+- **test_command_moderation.py** (38 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **MuteCommand** (18 connections) — `server/models/command_moderation.py`
+- **AdminCommand** (15 connections) — `server/models/command_moderation.py`
+- **.validate_subcommand()** (4 connections) — `server/models/command_moderation.py`
+- **test_add_admin_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_add_admin_command_validate_player_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_admin_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_admin_command_subcommand_max_length()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_admin_command_subcommand_min_length()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_admin_command_validate_subcommand_case_insensitive()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_admin_command_validate_subcommand_invalid()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_admin_command_validate_subcommand_valid()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_admin_command_with_args()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_command_duration_validation_max()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_command_duration_validation_min()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_command_reason_max_length()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_command_validate_player_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_command_validate_reason_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_command_validate_reason_none()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_command_with_duration()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_command_with_reason()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_global_command_duration_validation_max()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_global_command_duration_validation_min()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_global_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- *... and 41 more nodes in this community*
 
 ## Relationships
 
-- [ValueError](ValueError.md) (4 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
-- [test_message_handlers.py](test_message_handlers.py.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (27 shared connections)
+- [test_look_item_helpers.py](test_look_item_helpers.py.md) (3 shared connections)
+- [SecureBaseModel](SecureBaseModel.md) (2 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/realtime/nats_messages.py`
-- `server/tests/unit/schemas/test_nats_messages.py`
+- `server/models/command_moderation.py`
+- `server/tests/unit/models/test_command_moderation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (92%)
-- INFERRED: 8 (8%)
+- EXTRACTED: 111 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

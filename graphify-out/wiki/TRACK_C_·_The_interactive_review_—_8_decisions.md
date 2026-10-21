@@ -1,33 +1,35 @@
 # TRACK C · The interactive review — 8 decisions
 
-> 12 nodes
+> 11 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **TRACK C · The interactive review — 8 decisions** (12 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
-- **C1 · What are the ADRs *for*?** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
-- **C2 · Who owns query construction?** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
-- **C3 · Layer boundaries: enforce or amend?** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
-- **C4 · Is `APPLICATION_CONTAINER_ANALYSIS.md` restored or left archived?** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
-- **C5 · Four doc↔doc contradictions** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
-- **C6 · Contract drift from one unrecorded decision** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
-- **C7 · Closed-but-not-built — six features** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
-- **C8 · Undocumented systems worth an ADR** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
-- **C9 · The effects ADR and its number collision** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
-- **Caveats carried into review** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
-- **Deliberately not findings** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
+- **_spawn_rule_row()** (6 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_create_spawn_rule_success()** (6 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_delete_spawn_rule_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_get_spawn_rule_found()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_get_spawn_rules_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_get_spawn_rule_not_found()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test get_spawn_rules() successfully retrieves rules.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test get_spawn_rule() returns rule when found.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test create_spawn_rule() successfully creates rule.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test delete_spawn_rule() successfully deletes rule.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Build procedure result row for NPCSpawnRule.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
 
 ## Relationships
 
-- [INDEX.md](INDEX.md.md) (1 shared connections)
+- [cross-env](cross-env.md) (6 shared connections)
+- [Memory Leak Audit Report](Memory_Leak_Audit_Report.md) (5 shared connections)
+- [fix_markdown_common_issues.py](fix_markdown_common_issues.py.md) (5 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
+- `server/tests/unit/services/test_npc_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 27 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,56 +1,60 @@
 # fastapi_integration.py
 
-> 50 nodes
+> 49 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **fastapi_integration.py** (27 connections) — `docs/examples/logging/fastapi_integration.py`
-- **player_service()** (7 connections) — `docs/examples/logging/fastapi_integration.py`
-- **http_exception_handler()** (7 connections) — `docs/examples/logging/fastapi_integration.py`
-- **update_player_background_task()** (7 connections) — `docs/examples/logging/fastapi_integration.py`
-- **general_exception_handler()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
-- **upload_avatar()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
-- **websocket_endpoint()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
-- **HTTPException** (6 connections)
-- **WebSocket** (5 connections) — `docs/examples/logging/fastapi_integration.py`
-- **create_player()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
-- **list_players()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
-- **update_player_background()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
-- **get_player()** (4 connections) — `docs/examples/logging/fastapi_integration.py`
-- **auth_service()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
-- **BackgroundTasks** (3 connections) — `docs/examples/logging/fastapi_integration.py`
-- **UploadFile** (3 connections) — `docs/examples/logging/fastapi_integration.py`
-- **process_websocket_message()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
-- **post** (3 connections)
-- **File** (2 connections) — `docs/examples/logging/fastapi_integration.py`
-- **WebSocketDisconnect** (2 connections) — `docs/examples/logging/fastapi_integration.py`
-- **.verify_token()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
-- **Exception** (2 connections)
-- **get** (2 connections)
-- **exception_handler** (2 connections)
-- **oauth2_scheme** (1 connections) — `docs/examples/logging/fastapi_integration.py`
-- *... and 25 more nodes in this community*
+- **SpellLearningService** (49 connections) — `server/game/magic/spell_learning_service.py`
+- **spell_learning_service.py** (25 connections) — `server/game/magic/spell_learning_service.py`
+- **test_spell_learning_service.py** (16 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **Any** (12 connections)
+- **.learn_spell()** (12 connections) — `server/game/magic/spell_learning_service.py`
+- **asyncio** (12 connections)
+- **UUID** (10 connections)
+- **._validate_prerequisites()** (9 connections) — `server/game/magic/spell_learning_service.py`
+- **._load_spell_learn_context()** (6 connections) — `server/game/magic/spell_learning_service.py`
+- **._apply_mythos_corruption_on_learn()** (5 connections) — `server/game/magic/spell_learning_service.py`
+- **._check_required_spell_prerequisites()** (5 connections) — `server/game/magic/spell_learning_service.py`
+- **.__init__()** (5 connections) — `server/game/magic/spell_learning_service.py`
+- **.learn_spell_from_book()** (5 connections) — `server/game/magic/spell_learning_service.py`
+- **.learn_spell_from_npc()** (5 connections) — `server/game/magic/spell_learning_service.py`
+- **.learn_spell_from_quest()** (5 connections) — `server/game/magic/spell_learning_service.py`
+- **._persist_spell_learning()** (5 connections) — `server/game/magic/spell_learning_service.py`
+- **test_learn_mythos_spell_applies_corruption()** (5 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **._check_intelligence_requirement()** (4 connections) — `server/game/magic/spell_learning_service.py`
+- **._check_power_requirement()** (4 connections) — `server/game/magic/spell_learning_service.py`
+- **._spell_learn_success_response()** (4 connections) — `server/game/magic/spell_learning_service.py`
+- **.increase_mastery_on_cast()** (3 connections) — `server/game/magic/spell_learning_service.py`
+- **._resolve_spell()** (3 connections) — `server/game/magic/spell_learning_service.py`
+- **learning_service()** (3 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_increase_mastery_on_cast()** (3 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_learn_spell_already_known()** (3 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [PerformanceMonitor](PerformanceMonitor.md) (6 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (5 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (3 shared connections)
-- [ErrorType](ErrorType.md) (3 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (3 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (2 shared connections)
-- [test_error_handling_middleware.py](test_error_handling_middleware.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [test_security_headers.py](test_security_headers.py.md) (1 shared connections)
+- [test_nats_message_handler.py](test_nats_message_handler.py.md) (14 shared connections)
+- [test_event_bus_lifecycle.py](test_event_bus_lifecycle.py.md) (6 shared connections)
+- [reset_database](reset_database.md) (5 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (4 shared connections)
+- [CORSConfig](CORSConfig.md) (4 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (3 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [test_item.py](test_item.py.md) (2 shared connections)
+- [_str_id](_str_id.md) (2 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (2 shared connections)
+- [endpoints.py](endpoints.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/fastapi_integration.py`
+- `server/game/magic/spell_learning_service.py`
+- `server/tests/unit/game/magic/test_spell_learning_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 80 (92%)
-- INFERRED: 7 (8%)
+- EXTRACTED: 133 (86%)
+- INFERRED: 22 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

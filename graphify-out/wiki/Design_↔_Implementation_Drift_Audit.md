@@ -1,28 +1,26 @@
 # Design ↔ Implementation Drift Audit
 
-> 7 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **Design ↔ Implementation Drift Audit** (6 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
-- **Headline finding · the design record was largely built from the code** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
-- **Correction · the "back-dated ADRs" evidence was wrong** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
-- **Notes** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
-- **P8 progress** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
-- **Rulings — all 8 complete** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
-- **Scope boundary** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
+- **worktree-manager.ps1** (4 connections) — `scripts/worktree-manager.ps1`
+- **Remove-LegacyBranch()** (1 connections) — `scripts/worktree-manager.ps1`
+- **Show-WorktreeInfo()** (1 connections) — `scripts/worktree-manager.ps1`
+- **Show-WorktreeStatus()** (1 connections) — `scripts/worktree-manager.ps1`
+- **Switch-ToWorktree()** (1 connections) — `scripts/worktree-manager.ps1`
 
 ## Relationships
 
-- [INDEX.md](INDEX.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
+- `scripts/worktree-manager.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,54 +1,54 @@
 # ExperienceRepository
 
-> 27 nodes
+> 31 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **ExperienceRepository** (23 connections) — `server/persistence/repositories/experience_repository.py`
-- **test_experience_repository.py** (16 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **asyncio** (9 connections)
-- **.award_player_xp()** (7 connections) — `server/persistence/repositories/experience_repository.py`
-- **._persist_stat_field_delta()** (7 connections) — `server/persistence/repositories/experience_repository.py`
-- **.update_player_stat_field()** (5 connections) — `server/persistence/repositories/experience_repository.py`
-- **.__init__()** (4 connections) — `server/persistence/repositories/experience_repository.py`
-- **_row()** (4 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **test_award_player_xp_db_error()** (4 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **test_award_player_xp_publishes_event()** (4 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **test_award_player_xp_success()** (4 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **test_update_player_stat_field_db_error()** (4 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **UUID** (4 connections)
-- **repo()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **test_award_player_xp_negative_delta()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **test_award_player_xp_player_not_found()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **test_update_player_stat_field_invalid_delta_type()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **test_update_player_stat_field_invalid_name()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **test_update_player_stat_field_success()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **fixture** (1 connections)
-- **Run update_player_stat_field stored procedure and log success.** (1 connections) — `server/persistence/repositories/experience_repository.py`
-- **Update a specific numeric field in player stats atomically. Args: player_id:…** (1 connections) — `server/persistence/repositories/experience_repository.py`
-- **Repository for player experience and stats persistence operations. Handles XP…** (1 connections) — `server/persistence/repositories/experience_repository.py`
-- **Initialize the experience repository. Args: event_bus: Optional EventBus for…** (1 connections) — `server/persistence/repositories/experience_repository.py`
-- **Award XP and recompute level atomically via the award_player_xp stored…** (1 connections) — `server/persistence/repositories/experience_repository.py`
-- *... and 2 more nodes in this community*
+- **run_flee_effect()** (25 connections) — `server/game/magic/spell_effect_flee.py`
+- **spell_effect_flee.py** (18 connections) — `server/game/magic/spell_effect_flee.py`
+- **test_spell_effect_flee.py** (17 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **Any** (10 connections)
+- **_flee_effect_validate_room_exits()** (7 connections) — `server/game/magic/spell_effect_flee.py`
+- **_player_target()** (7 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **_flee_effect_services_available()** (6 connections) — `server/game/magic/spell_effect_flee.py`
+- **asyncio** (6 connections)
+- **_flee_effect_failure_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_not_in_combat_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_success_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
+- **test_run_flee_effect_invalid_target_type()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_run_flee_effect_invalid_uuid()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_run_flee_effect_not_in_combat()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_run_flee_effect_room_error()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_run_flee_effect_services_unavailable()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_run_flee_effect_success_and_failure()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **_flee_effect_invalid_target_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_invalid_target_type_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_room_error_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_services_unavailable_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **.get_room_by_id()** (3 connections) — `server/game/magic/spell_effects.py`
+- **UUID** (2 connections)
+- **test_flee_effect_services_available()** (2 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_flee_effect_validate_room_exits()** (2 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (15 shared connections)
-- [ValueError](ValueError.md) (3 shared connections)
-- [PlayerDPUpdated](PlayerDPUpdated.md) (2 shared connections)
-- [session](session.md) (1 shared connections)
-- [server/persistence/__init__.py](server-persistence-__init__.py.md) (1 shared connections)
-- [BaseEvent](BaseEvent.md) (1 shared connections)
+- [RoomService](RoomService.md) (12 shared connections)
+- [CorruptionRepository](CorruptionRepository.md) (3 shared connections)
+- [AsciiMapRenderer](AsciiMapRenderer.md) (3 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (2 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/repositories/experience_repository.py`
-- `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- `server/game/magic/spell_effect_flee.py`
+- `server/game/magic/spell_effects.py`
+- `server/tests/unit/game/magic/test_spell_effect_flee.py`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (79%)
-- INFERRED: 15 (21%)
+- EXTRACTED: 89 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

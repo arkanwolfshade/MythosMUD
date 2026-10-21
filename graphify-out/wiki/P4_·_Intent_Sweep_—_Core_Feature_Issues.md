@@ -1,36 +1,39 @@
 # P4 · Intent Sweep — Core Feature Issues
 
-> 15 nodes
+> 14 nodes · cohesion 0.14
 
 ## Key Concepts
 
-- **P4 · Intent Sweep — Core Feature Issues** (9 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **CLOSED BUT NOT BUILT** (6 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **P4-Intent-Core-Issues.md** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **#17 · Party — one of three bullets built** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **#21 · Admin commands — "ban" was in the issue title and never built** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **#29 · Cultist faction and PvP — zero implementation** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **#30 · Branching quests and morality — two of three bullets absent** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **#62 · Tick-rate validation — not built** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **#9 · The xterm.js substitution — real, user-facing, unrecorded** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **Conforming, worth recording** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **CRITICAL · Authentication has no brute-force protection** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **Out-of-corpus (design exists, outside the audited 29)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **Partial deliveries** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **Silent renames — features built under different names than requested** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **Undocumented systems (no design doc anywhere in `docs/`)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
+- **_clear_corrupted_cache_entry()** (12 connections) — `server/commands/logout_commands.py`
+- **test_clear_corrupted_cache_entry()** (3 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
+- **test_clear_corrupted_cache_entry_no_request()** (3 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
+- **test_clear_corrupted_cache_entry_no_state()** (3 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
+- **test_clear_corrupted_cache_entry_no_cache()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_clear_corrupted_cache_entry_no_request()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_clear_corrupted_cache_entry_with_cache()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **Clear a corrupted cache entry if it exists. Args: request: FastAPI request…** (1 connections) — `server/commands/logout_commands.py`
+- **Test _clear_corrupted_cache_entry() clears cache entry.** (1 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
+- **Test _clear_corrupted_cache_entry() handles None request.** (1 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
+- **Test _clear_corrupted_cache_entry() handles request without state.** (1 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
+- **Test _clear_corrupted_cache_entry clears entry from cache.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **Test _clear_corrupted_cache_entry handles missing cache gracefully.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **Test _clear_corrupted_cache_entry handles None request.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
 
 ## Relationships
 
-- [INDEX.md](INDEX.md.md) (1 shared connections)
+- [ConnectionErrorHandler](ConnectionErrorHandler.md) (5 shared connections)
+- [Any](Any.md) (4 shared connections)
+- [test_players_procedures.py](test_players_procedures.py.md) (2 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
+- `server/commands/logout_commands.py`
+- `server/tests/unit/commands/test_logout_commands.py`
+- `server/tests/unit/commands/test_logout_commands_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

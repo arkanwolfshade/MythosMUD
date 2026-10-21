@@ -1,45 +1,54 @@
 # ApplicationContainer Structure Analysis and Domain-Specific Split Proposal
 
-> 23 nodes
+> 22 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **ApplicationContainer Structure Analysis and Domain-Specific Split Proposal** (11 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **2. Current Structure Analysis** (5 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **3. Proposed Domain-Specific Split** (4 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **4. Migration Path** (4 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **APPLICATION_CONTAINER_ANALYSIS.md** (2 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **1. Executive Summary** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **2.1 Attribute Inventory by Domain** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **2.2 Initialization Order and Dependencies** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **2.3 Private Initializers and Helpers** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **2.4 Public API and Consumers** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **3.1 Option A: Internal Bundles (Recommended)** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **3.2 Option B: Composed Sub-Containers (Alternative)** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **3.3 Dependency Flow Between Bundles** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **5. Backward Compatibility** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **6. Success Criteria** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **7. References** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **8. Changelog** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **Current state (architecture-cleanup)** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **Phase 1: Extract bundles without changing behavior [COMPLETE]** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **Phase 2: Reduce ApplicationContainer to orchestrator [COMPLETE]** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **Phase 3: (Optional) Extract service factories** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md** (1 connections) — `docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md`
+- **asyncio** (38 connections)
+- **test_get_adjacent_rooms_null_exit()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_local_chat_scope()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_exits_success()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_info_success()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_occupants_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_occupants_with_cache_dict()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_list_rooms_with_plane_zone()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_list_rooms_with_sub_zone()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_lookup_explored_stable_ids_calls_procedure_and_binds_uuid_list()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_room_service_init_with_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_adjacent_rooms() skips null exits.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_local_chat_scope() returns current room and adjacent rooms.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room_occupants() handles room dict.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room_occupants() returns empty list when room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room_exits() returns exits dictionary.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test list_rooms() filters by plane and zone.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room_info() returns comprehensive room information.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test _lookup_explored_stable_ids() calls get_room_stable_ids_by_uuids with the…** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test RoomService initialization with cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room() returns None when room not in cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_request_schema_security.py](test_request_schema_security.py.md) (11 shared connections)
+- [🚀 DEPLOYMENT STRATEGY](🚀_DEPLOYMENT_STRATEGY.md) (2 shared connections)
+- [remove_dir](remove_dir.md) (1 shared connections)
+- [check_postgresql.sh](check_postgresql.sh.md) (1 shared connections)
+- [apply_account_sanctions_migration.py](apply_account_sanctions_migration.py.md) (1 shared connections)
+- [e2e_place_player.py](e2e_place_player.py.md) (1 shared connections)
+- [e2e_player_state.py](e2e_player_state.py.md) (1 shared connections)
+- [@testing-library/react](@testing-library-react.md) (1 shared connections)
+- [@testing-library/jest-dom](@testing-library-jest-dom.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [patch-package](patch-package.md) (1 shared connections)
+- [@stoplight/spectral-cli](@stoplight-spectral-cli.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- `docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 60 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

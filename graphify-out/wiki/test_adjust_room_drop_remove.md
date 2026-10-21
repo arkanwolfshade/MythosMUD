@@ -1,23 +1,22 @@
 # test_adjust_room_drop_remove
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_adjust_room_drop_remove()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test adjust_room_drop() removes stack when quantity is 0.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **20261005120000_folk_tonic_consumable.sql** (0 connections) — `db/migrations/20261005120000_folk_tonic_consumable.sql`
 
 ## Relationships
 
-- [test_room_subscription_manager_drops.py](test_room_subscription_manager_drops.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `db/migrations/20261005120000_folk_tonic_consumable.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

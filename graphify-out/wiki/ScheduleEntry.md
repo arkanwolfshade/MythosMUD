@@ -1,57 +1,54 @@
 # ScheduleEntry
 
-> 67 nodes
+> 68 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **ScheduleEntry** (29 connections) — `server/schemas/calendar/calendar.py`
-- **TestScheduleService** (21 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **test_schedule_service.py** (12 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **_schedule_entry_from_row()** (10 connections) — `server/services/schedule_service.py`
-- **_fetch_schedule_entries()** (6 connections) — `server/services/schedule_service.py`
-- **_lower_string_list_from_row()** (6 connections) — `server/services/schedule_service.py`
-- **_string_list_from_row()** (6 connections) — `server/services/schedule_service.py`
-- **normalize_weekday_names()** (5 connections) — `server/services/schedule_service.py`
-- **.test_async_load_from_database_passes_search_path_for_mythos_e2e()** (5 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_init_loads_from_database()** (5 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_load_from_database_success()** (5 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **test_schedule_collection()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **.test_entries_property()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_entry_count_property()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_boundary_conditions()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_with_matches()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_wrong_day()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_init_database_load_failure_raises()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_normalize_weekday_names_latin_to_standard()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_resolve_asyncpg_database_url()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_resolve_asyncpg_database_url_missing()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.apply_schedule_state()** (3 connections) — `server/npc/lifecycle_manager.py`
-- **.entries()** (3 connections) — `server/services/schedule_service.py`
-- **test_schedule_entry()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_schedule_entry_validation_days()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- *... and 42 more nodes in this community*
+- **SchemaValidator** (55 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **TestSchemaValidator** (28 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **schema_validator.py** (8 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **test_hierarchical_schema.py** (5 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.get_exit_flags()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **test_schema_validator.py** (4 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.is_one_way_exit()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **.is_self_reference_exit()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **.test_get_exit_flags_missing_flags()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_get_exit_flags_object_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_get_exit_flags_string_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_get_exit_target_invalid_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_get_exit_target_object_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_get_exit_target_string_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_init_invalid_schema_file()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_init_schema_file_not_found()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_init_with_custom_schema()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_init_with_default_schema()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_is_one_way_exit_false()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_is_one_way_exit_true()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_is_self_reference_exit_false()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_is_self_reference_exit_true()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_normalize_exits_legacy_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_normalize_exits_new_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_validate_room_database()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- *... and 43 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (27 shared connections)
-- [HolidayEntry](HolidayEntry.md) (9 shared connections)
-- [field_validator](field_validator.md) (3 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
+- [asyncio](asyncio.md) (8 shared connections)
+- [CombatEventHandler](CombatEventHandler.md) (7 shared connections)
+- [test_message_broadcaster.py](test_message_broadcaster.py.md) (4 shared connections)
+- [Mypy Remediation](Mypy_Remediation.md) (4 shared connections)
+- [MythosTickScheduler](MythosTickScheduler.md) (3 shared connections)
 
 ## Source Files
 
-- `server/npc/lifecycle_manager.py`
-- `server/schemas/calendar/calendar.py`
-- `server/services/schedule_service.py`
-- `server/tests/unit/schemas/test_calendar_schemas.py`
-- `server/tests/unit/services/test_schedule_service.py`
+- `tools/room_toolkit/room_validator/core/schema_validator.py`
+- `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 131 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 119 (95%)
+- INFERRED: 6 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,35 +1,40 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\A Cold Fire Within  (2026-08-11)
 
-> 14 nodes
+> 13 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\A Cold Fire Within  (2026-08-11)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/GRAPH_REPORT.md`
-- **Communities (16 total, 14 thin omitted)** (3 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/GRAPH_REPORT.md`
-- **a-cold-fire-within/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/GRAPH_REPORT.md`
-- **Community 0 - "Open Mind Circle"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/GRAPH_REPORT.md`
-- **Community 1 - "Campaign Materials"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/GRAPH_REPORT.md`
-- **Import Cycles** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/GRAPH_REPORT.md`
+- **asyncio** (12 connections)
+- **test_get_players_batch_empty_list()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_get_user_by_username_case_insensitive_no_session()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_load_room_cache_async_other_error_raises()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_load_room_cache_async_rooms_none()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_load_room_cache_async_success_with_rooms_logs_sample_ids()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_load_room_cache_async_warning_logging()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test get_user_by_username_case_insensitive when no session is yielded.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test get_players_batch with empty list.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _load_room_cache_async handles case when rooms is None.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _load_room_cache_async logs warning when table not found.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _load_room_cache_async logs sample room IDs when rooms are loaded…** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _load_room_cache_async raises other errors.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [PanelContextRuntime.tsx](PanelContextRuntime.tsx.md) (6 shared connections)
+- [test_get_player_preferences_invalid_id](test_get_player_preferences_invalid_id.md) (1 shared connections)
+- [Mypy Remediation Skill](Mypy_Remediation_Skill.md) (1 shared connections)
+- [Environment Configuration Refactoring](Environment_Configuration_Refactoring.md) (1 shared connections)
+- [Graceful Degradation Planning](Graceful_Degradation_Planning.md) (1 shared connections)
+- [container_test_client Fixture](container_test_client_Fixture.md) (1 shared connections)
+- [React Node Upgrade Plan](React_Node_Upgrade_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/GRAPH_REPORT.md`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

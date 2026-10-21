@@ -1,67 +1,63 @@
 # RoomLoader
 
-> 121 nodes
+> 112 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **RoomLoader** (58 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **PathValidator** (27 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **room_validator/validator.py** (21 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **RoomFixer** (20 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **TestRoomLoader** (19 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
-- **main()** (19 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **MinimapRenderer** (17 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **temp_dir()** (12 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- **TestValidatorComponents** (11 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **core/__init__.py** (11 connections) — `tools/room_toolkit/room_validator/core/__init__.py`
-- **_initialize_validator_components()** (9 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **test_validator_integration.py** (9 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **TestValidatorEdgeCases** (8 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **_validate_config_files()** (7 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **_validate_room_connectivity()** (7 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **Any** (7 connections)
-- **.test_full_validation_pipeline()** (6 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **_apply_automatic_fixes()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **_generate_minimap()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **_load_and_filter_rooms()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **_report_results()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **.test_room_with_nonexistent_exit_targets()** (5 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **_collect_parsing_errors()** (5 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **reporter.py** (5 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **room_loader.py** (5 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- *... and 96 more nodes in this community*
+- **NPCSpawningService** (69 connections) — `server/npc/spawning_service.py`
+- **test_spawning_modules.py** (47 connections) — `server/tests/unit/npc/test_spawning_modules.py`
+- **spawning_service.py** (40 connections) — `server/npc/spawning_service.py`
+- **spawning_request_execution.py** (21 connections) — `server/npc/spawning_request_execution.py`
+- **create_npc_instance()** (19 connections) — `server/npc/spawning_instance_factory.py`
+- **NPCSpawnRequest** (19 connections) — `server/npc/spawning_models.py`
+- **SimpleNPCDefinition** (19 connections) — `server/npc/spawning_models.py`
+- **spawn_npc_from_request()** (18 connections) — `server/npc/spawning_request_execution.py`
+- **NPCSpawnResult** (15 connections) — `server/npc/spawning_models.py`
+- **spawning_models.py** (14 connections) — `server/npc/spawning_models.py`
+- **generate_npc_id()** (10 connections) — `server/npc/spawning_instance_factory.py`
+- **_spawn_success()** (8 connections) — `server/npc/spawning_request_execution.py`
+- **._evaluate_spawn_requirements()** (8 connections) — `server/npc/spawning_service.py`
+- **.__init__()** (8 connections) — `server/npc/spawning_service.py`
+- **._evaluate_spawn_rules()** (7 connections) — `server/npc/spawning_service.py`
+- **_room_from_persistence()** (6 connections) — `server/npc/spawning_request_execution.py`
+- **._calculate_spawn_priority()** (6 connections) — `server/npc/spawning_service.py`
+- **._create_npc_instance()** (6 connections) — `server/npc/spawning_service.py`
+- **._maybe_add_required_npc_request()** (6 connections) — `server/npc/spawning_service.py`
+- **._spawn_npc_from_request()** (6 connections) — `server/npc/spawning_service.py`
+- **_coerce_simple_definition()** (5 connections) — `server/npc/spawning_instance_factory.py`
+- **._check_spawn_requirements_for_room()** (5 connections) — `server/npc/spawning_service.py`
+- **._generate_npc_id()** (5 connections) — `server/npc/spawning_service.py`
+- **.get_spawn_statistics()** (5 connections) — `server/npc/spawning_service.py`
+- **NPCSpawnRequest** (5 connections)
+- *... and 87 more nodes in this community*
 
 ## Relationships
 
-- [.load_room_data](load_room_data.md) (18 shared connections)
-- [Path](Path.md) (13 shared connections)
-- [Reporter](Reporter.md) (12 shared connections)
-- [SchemaValidator](SchemaValidator.md) (12 shared connections)
-- [._create_grid_map](_create_grid_map.md) (11 shared connections)
-- [.check_bidirectional_connections](check_bidirectional_connections.md) (9 shared connections)
-- [TestValidatorIntegration](TestValidatorIntegration.md) (7 shared connections)
-- [TestPathValidator](TestPathValidator.md) (3 shared connections)
-- [test_logging_utilities.py](test_logging_utilities.py.md) (2 shared connections)
-- [room_validator/tests/conftest.py](room_validator-tests-conftest.py.md) (1 shared connections)
-- [command](command.md) (1 shared connections)
+- [BaseEvent](BaseEvent.md) (44 shared connections)
+- [get_username_from_user](get_username_from_user.md) (27 shared connections)
+- [CombatInstance](CombatInstance.md) (22 shared connections)
+- [ErrorType](ErrorType.md) (17 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (5 shared connections)
+- [ValidationError](ValidationError.md) (5 shared connections)
+- [Room](Room.md) (5 shared connections)
+- [ADR-023: Package Ownership (`game/` vs `services/` vs `npc/`) and Fan-Out Watch List](ADR-023-_Package_Ownership_`game-`_vs_`services-`_vs_`npc-`_and_Fan-Out_Watch_List.md) (5 shared connections)
+- [aggro_threat.py](aggro_threat.py.md) (5 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (4 shared connections)
+- [rescue_commands.py](rescue_commands.py.md) (3 shared connections)
+- [test_message_category_invariants.py](test_message_category_invariants.py.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/structured_logging/test_logging_utilities.py`
-- `tools/room_toolkit/room_validator/core/__init__.py`
-- `tools/room_toolkit/room_validator/core/fixer.py`
-- `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- `tools/room_toolkit/room_validator/core/path_validator.py`
-- `tools/room_toolkit/room_validator/core/reporter.py`
-- `tools/room_toolkit/room_validator/core/room_loader.py`
-- `tools/room_toolkit/room_validator/tests/test_room_loader.py`
-- `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- `tools/room_toolkit/room_validator/validator.py`
+- `server/npc/spawning_instance_factory.py`
+- `server/npc/spawning_models.py`
+- `server/npc/spawning_request_execution.py`
+- `server/npc/spawning_service.py`
+- `server/tests/unit/npc/test_spawning_modules.py`
 
 ## Audit Trail
 
-- EXTRACTED: 250 (88%)
-- INFERRED: 34 (12%)
+- EXTRACTED: 320 (89%)
+- INFERRED: 39 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

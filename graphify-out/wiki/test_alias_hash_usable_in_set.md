@@ -1,23 +1,22 @@
 # test_alias_hash_usable_in_set
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_alias_hash_usable_in_set()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **Test __hash__ allows aliases to be used in sets.** (1 connections) — `server/tests/unit/models/test_alias.py`
+- **ADR-010: Quest Subsystem Architecture** (0 connections) — `docs/architecture/decisions/ADR-010-quest-subsystem.md`
 
 ## Relationships
 
-- [Alias](Alias.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/models/test_alias.py`
+- `docs/architecture/decisions/ADR-010-quest-subsystem.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

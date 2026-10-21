@@ -1,10 +1,10 @@
 # load_seed_direct.py
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **load_seed_direct.py** (0 connections) — `scripts/load_seed_direct.py`
+- **unit/npc/__init__.py** (0 connections) — `server/tests/unit/npc/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/load_seed_direct.py`
+- `server/tests/unit/npc/__init__.py`
 
 ## Audit Trail
 

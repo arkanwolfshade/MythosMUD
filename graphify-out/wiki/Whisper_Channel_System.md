@@ -1,31 +1,26 @@
 # Whisper Channel System
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Whisper Channel System** (4 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
-- **Scenario 13 Whisper Basic** (2 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
-- **Scenario 16 Whisper Movement** (2 connections) — `e2e-tests/scenarios/scenario-16-whisper-movement.md`
-- **Scenario 18 Whisper Logging** (2 connections) — `e2e-tests/scenarios/scenario-18-whisper-logging.md`
-- **Scenario 14 Whisper Errors** (1 connections) — `e2e-tests/scenarios/scenario-14-whisper-errors.md`
-- **Whisper Moderation Logging** (1 connections) — `e2e-tests/scenarios/scenario-18-whisper-logging.md`
+- **Monitoring and Alerting** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Alerting Rules** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Health Checks** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Metrics to Monitor** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [lint_imports.py](lint_imports.py.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-13-whisper-basic.md`
-- `e2e-tests/scenarios/scenario-14-whisper-errors.md`
-- `e2e-tests/scenarios/scenario-16-whisper-movement.md`
-- `e2e-tests/scenarios/scenario-18-whisper-logging.md`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (83%)
-- INFERRED: 1 (17%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

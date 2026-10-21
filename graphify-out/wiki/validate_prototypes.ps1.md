@@ -1,10 +1,10 @@
 # validate_prototypes.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **validate_prototypes.ps1** (0 connections) — `scripts/items/validate_prototypes.ps1`
+- **unit/game/__init__.py** (0 connections) — `server/tests/unit/game/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/items/validate_prototypes.ps1`
+- `server/tests/unit/game/__init__.py`
 
 ## Audit Trail
 

@@ -1,44 +1,56 @@
 # _ScalarResult
 
-> 19 nodes
+> 31 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **_ScalarResult** (7 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **_session_maker_double()** (7 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_clear_player_inventory_calls_only_the_narrow_procedure()** (7 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **_SessionCM** (6 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_save_player_allows_new_player()** (6 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_save_player_refuses_deleted_player()** (6 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_clear_player_inventory_database_error()** (5 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **.__init__()** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **.scalar()** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **.__aenter__()** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **.__aexit__()** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **.__init__()** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **parametrize** (1 connections)
-- **Minimal typed stand-in for the sqlalchemy Result returned by session.execute()…** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **save_player must not resurrect a soft-deleted row (#777): when…** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **save_player must still upsert a not-yet-inserted player, where…** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Death clears gear via clear_player_inventory, never upsert_player: the upsert…** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Typed async context manager stand-in for `async with session_maker() as…** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Build the `session_maker` callable that `get_session_maker()` returns: calling…** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **PlayerRespawnWrapper** (18 connections) — `server/game/player_respawn_wrapper.py`
+- **test_player_respawn_wrapper.py** (14 connections) — `server/tests/unit/game/test_player_respawn_wrapper.py`
+- **.respawn_player_by_user_id()** (7 connections) — `server/game/player_respawn_wrapper.py`
+- **asyncio** (7 connections)
+- **.respawn_player_from_delirium_by_user_id()** (6 connections) — `server/game/player_respawn_wrapper.py`
+- **_select_dead_player_for_respawn()** (6 connections) — `server/game/player_respawn_wrapper.py`
+- **._load_active_players()** (5 connections) — `server/game/player_respawn_wrapper.py`
+- **._load_player_for_delirium_respawn()** (5 connections) — `server/game/player_respawn_wrapper.py`
+- **_resolve_respawn_room_data()** (5 connections) — `server/game/player_respawn_wrapper.py`
+- **_is_eligible_for_respawn()** (4 connections) — `server/game/player_respawn_wrapper.py`
+- **Any** (4 connections)
+- **Player** (4 connections)
+- **_dead_player()** (4 connections) — `server/tests/unit/game/test_player_respawn_wrapper.py`
+- **test_respawn_from_delirium_not_delirious()** (4 connections) — `server/tests/unit/game/test_player_respawn_wrapper.py`
+- **test_respawn_from_delirium_player_not_found()** (4 connections) — `server/tests/unit/game/test_player_respawn_wrapper.py`
+- **test_respawn_from_delirium_success()** (4 connections) — `server/tests/unit/game/test_player_respawn_wrapper.py`
+- **test_respawn_player_by_user_id_multiple_dead_picks_most_recent()** (4 connections) — `server/tests/unit/game/test_player_respawn_wrapper.py`
+- **test_respawn_player_by_user_id_no_players()** (4 connections) — `server/tests/unit/game/test_player_respawn_wrapper.py`
+- **test_respawn_player_by_user_id_not_dead()** (4 connections) — `server/tests/unit/game/test_player_respawn_wrapper.py`
+- **test_respawn_player_by_user_id_success()** (4 connections) — `server/tests/unit/game/test_player_respawn_wrapper.py`
+- **.__init__()** (3 connections) — `server/game/player_respawn_wrapper.py`
+- **Respawn a dead player by user ID. This method handles the complete respawn…** (1 connections) — `server/game/player_respawn_wrapper.py`
+- **Load the user's character and validate delirium eligibility (lucidity <= -10).** (1 connections) — `server/game/player_respawn_wrapper.py`
+- **Respawn a delirious player by user ID. This method handles the complete…** (1 connections) — `server/game/player_respawn_wrapper.py`
+- **A player is eligible for respawn if dead, or stranded in limbo.** (1 connections) — `server/game/player_respawn_wrapper.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [test_player_repository.py](test_player_repository.py.md) (7 shared connections)
-- [asyncio](asyncio.md) (4 shared connections)
-- [session](session.md) (4 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [Room](Room.md) (5 shared connections)
+- [SecureBaseModel](SecureBaseModel.md) (5 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (5 shared connections)
+- [game_tick_processing.py](game_tick_processing.py.md) (1 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (1 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
+- [FollowService](FollowService.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `server/game/player_respawn_wrapper.py`
+- `server/tests/unit/game/test_player_respawn_wrapper.py`
 
 ## Audit Trail
 
-- EXTRACTED: 31 (86%)
-- INFERRED: 5 (14%)
+- EXTRACTED: 63 (84%)
+- INFERRED: 12 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

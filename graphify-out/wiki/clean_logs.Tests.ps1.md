@@ -1,10 +1,10 @@
 # clean_logs.Tests.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **clean_logs.Tests.ps1** (0 connections) — `scripts/tests/clean_logs.Tests.ps1`
+- **tailwindcss** (0 connections) — `tailwindcss`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/tests/clean_logs.Tests.ps1`
+- `tailwindcss`
 
 ## Audit Trail
 

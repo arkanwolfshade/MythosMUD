@@ -1,30 +1,34 @@
 # fixture
 
-> 9 nodes
+> 13 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **fixture** (4 connections)
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **mock_player()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **mock_request()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **Create a mock request object.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **Create a mock connection manager.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **Create a mock player object.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **Execution Timeline** (13 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Month 1: Pruning Phase** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Month 2: Consolidation + Gap Filling** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Month 3+: Continuous Improvement** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Ongoing Tasks** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Week 1: Quick Wins** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Week 2: Infrastructure Reduction** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Week 3: Coverage Test Optimization** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Week 4: Verification and Validation** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Week 5: Parametrization (Part 1)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Week 6: Parametrization (Part 2)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Week 7: Critical Gap Tests (Part 1)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Week 8: Critical Gap Tests (Part 2)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
 
 ## Relationships
 
-- [test_logout_commands.py](test_logout_commands.py.md) (4 shared connections)
+- [test_alias_storage.py](test_alias_storage.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_logout_commands.py`
+- `docs/archive/TEST_VALUE_DISTRIBUTION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

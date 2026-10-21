@@ -1,10 +1,10 @@
 # AI Development Workflow
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **AI Development Workflow** (0 connections) — `docs/AI_DEVELOPMENT_WORKFLOW.md`
+- **Async Anti-Patterns Quick Reference** (0 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/AI_DEVELOPMENT_WORKFLOW.md`
+- `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
 
 ## Audit Trail
 

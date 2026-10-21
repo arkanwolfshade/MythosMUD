@@ -1,24 +1,24 @@
 # id
 
-> 3 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **id** (3 connections) — `db/static/schemas/room.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **professions.sql** (2 connections) — `db/procedures/professions.sql`
+- **schema_name.get_all_professions()** (1 connections) — `db/procedures/professions.sql`
+- **schema_name.get_profession_by_id()** (1 connections) — `db/procedures/professions.sql`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `db/static/schemas/room.schema.json`
+- `db/procedures/professions.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

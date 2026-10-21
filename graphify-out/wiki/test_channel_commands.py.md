@@ -1,56 +1,70 @@
 # test_channel_commands.py
 
-> 42 nodes
+> 109 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **test_channel_commands.py** (20 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **channel_commands.py** (19 connections) — `server/commands/channel_commands.py`
-- **handle_channel_command()** (15 connections) — `server/commands/channel_commands.py`
-- **_handle_default_channel_setting()** (11 connections) — `server/commands/channel_commands.py`
-- **asyncio** (9 connections)
-- **_extract_channel_from_command()** (8 connections) — `server/commands/channel_commands.py`
-- **_get_persistence_and_player()** (8 connections) — `server/commands/channel_commands.py`
-- **_validate_channel_name()** (6 connections) — `server/commands/channel_commands.py`
-- **test_get_persistence_and_player_no_persistence()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_get_persistence_and_player_not_found()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_channel_command_default_subcommand()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_channel_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_channel_command_switch_valid_channel()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_channel_command_usage_when_channel_missing()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_default_channel_setting_invalid_channel()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_default_channel_setting_sqlalchemy_error()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_default_channel_setting_success()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **Any** (4 connections)
-- **test_extract_channel_from_command_direct()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_extract_channel_from_command_missing()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_extract_channel_from_command_parsed_fallback()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_validate_channel_name_invalid()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **Channel management commands for Advanced Chat Channels. This module provides…** (1 connections) — `server/commands/channel_commands.py`
-- **Validate channel name. Returns error dict if invalid, None if valid.** (1 connections) — `server/commands/channel_commands.py`
-- **Handle the channel command for switching channels or setting default channel.…** (1 connections) — `server/commands/channel_commands.py`
-- *... and 17 more nodes in this community*
+- **Base** (65 connections) — `server/models/base.py`
+- **test_world.py** (27 connections) — `server/tests/unit/models/test_world.py`
+- **models/base.py** (24 connections) — `server/models/base.py`
+- **world.py** (13 connections) — `server/models/world.py`
+- **test_metadata.py** (12 connections) — `server/tests/unit/test_metadata.py`
+- **RoomLink** (11 connections) — `server/models/world.py`
+- **player_skill.py** (10 connections) — `server/models/player_skill.py`
+- **RoomModel** (10 connections) — `server/models/world.py`
+- **Subzone** (10 connections) — `server/models/world.py`
+- **Zone** (10 connections) — `server/models/world.py`
+- **SkillUseLog** (9 connections) — `server/models/skill_use_log.py`
+- **SpellDB** (9 connections) — `server/models/spell_db.py`
+- **ZoneConfigurationMapping** (9 connections) — `server/models/world.py`
+- **spell_db.py** (8 connections) — `server/models/spell_db.py`
+- **dialogue.py** (6 connections) — `server/models/dialogue.py`
+- **test_skill_use_log.py** (6 connections) — `server/tests/unit/models/test_skill_use_log.py`
+- **skill_use_log.py** (5 connections) — `server/models/skill_use_log.py`
+- **Base** (5 connections)
+- **test_spell_db.py** (4 connections) — `server/tests/unit/models/test_spell_db.py`
+- **metadata.py** (3 connections) — `server/metadata.py`
+- **npc_metadata.py** (3 connections) — `server/npc_metadata.py`
+- **test_skill_use_log_creation()** (3 connections) — `server/tests/unit/models/test_skill_use_log.py`
+- **test_skill_use_log_repr()** (3 connections) — `server/tests/unit/models/test_skill_use_log.py`
+- **test_skill_use_log_table_name()** (3 connections) — `server/tests/unit/models/test_skill_use_log.py`
+- **test_spell_db_repr()** (3 connections) — `server/tests/unit/models/test_spell_db.py`
+- *... and 84 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
-- [command_error](command_error.md) (4 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [command_service.py](command_service.py.md) (2 shared connections)
-- [PlayerPreferencesService](PlayerPreferencesService.md) (2 shared connections)
-- [alias_storage.py](alias_storage.py.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
-- [command_parser.py](command_parser.py.md) (1 shared connections)
+- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (12 shared connections)
+- [endpoints.py](endpoints.py.md) (8 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (8 shared connections)
+- [fixture](fixture.md) (6 shared connections)
+- [test_player_event_handlers_room_left.py](test_player_event_handlers_room_left.py.md) (5 shared connections)
+- [test_command_registry_consistency.py](test_command_registry_consistency.py.md) (5 shared connections)
+- [Security Auditor Subagent](Security_Auditor_Subagent.md) (4 shared connections)
+- [PlayerInventory](PlayerInventory.md) (4 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (4 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (3 shared connections)
+- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (3 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (3 shared connections)
 
 ## Source Files
 
-- `server/commands/channel_commands.py`
-- `server/tests/unit/commands/test_channel_commands.py`
+- `server/metadata.py`
+- `server/models/base.py`
+- `server/models/dialogue.py`
+- `server/models/player_skill.py`
+- `server/models/skill_use_log.py`
+- `server/models/spell_db.py`
+- `server/models/world.py`
+- `server/npc_metadata.py`
+- `server/tests/unit/models/test_skill_use_log.py`
+- `server/tests/unit/models/test_spell_db.py`
+- `server/tests/unit/models/test_world.py`
+- `server/tests/unit/test_metadata.py`
 
 ## Audit Trail
 
-- EXTRACTED: 92 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 200 (81%)
+- INFERRED: 46 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

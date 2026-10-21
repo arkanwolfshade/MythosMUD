@@ -1,26 +1,29 @@
 # zone
 
-> 4 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **zone** (4 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **pattern** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **Main Foyer Starting Room** (2 connections) — `e2e-tests/scenarios/scenario-01-basic-connection.md`
+- **Wrong Starting Room Bug** (2 connections) — `e2e-tests/TEST_RESULTS_scenario-01-rerun.md`
+- **Scenario 2 Clean Game State** (1 connections) — `e2e-tests/scenarios/scenario-02-clean-game-state.md`
+- **Players Start in Different Rooms** (1 connections) — `e2e-tests/TEST_RESULTS_scenario-01.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `e2e-tests/TEST_RESULTS_scenario-01-rerun.md`
+- `e2e-tests/TEST_RESULTS_scenario-01.md`
+- `e2e-tests/scenarios/scenario-01-basic-connection.md`
+- `e2e-tests/scenarios/scenario-02-clean-game-state.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 2 (67%)
+- INFERRED: 1 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

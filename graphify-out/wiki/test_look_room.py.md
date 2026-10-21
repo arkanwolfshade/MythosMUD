@@ -1,62 +1,73 @@
 # test_look_room.py
 
-> 125 nodes
+> 91 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **test_look_room.py** (45 connections) — `server/tests/unit/commands/test_look_room.py`
-- **look_room.py** (44 connections) — `server/commands/look_room.py`
-- **_handle_room_look()** (25 connections) — `server/commands/look_room.py`
-- **test_look_room_helpers.py** (21 connections) — `server/tests/unit/commands/test_look_room_helpers.py`
-- **asyncio** (18 connections)
-- **_filter_other_players()** (17 connections) — `server/commands/look_room.py`
-- **_format_containers_section()** (11 connections) — `server/commands/look_room.py`
-- **_format_items_section()** (11 connections) — `server/commands/look_room.py`
-- **_format_exits_list()** (10 connections) — `server/commands/look_room.py`
-- **_format_npcs_section()** (10 connections) — `server/commands/look_room.py`
-- **_get_room_description()** (10 connections) — `server/commands/look_room.py`
-- **_get_room_id()** (10 connections) — `server/commands/look_room.py`
-- **Any** (10 connections)
-- **_format_players_section()** (9 connections) — `server/commands/look_room.py`
-- **_handle_direction_look()** (9 connections) — `server/commands/look_room.py`
-- **_try_lookup_phantom_implicit()** (9 connections) — `server/commands/look_room.py`
-- **_npc_section_lines()** (5 connections) — `server/commands/look_room.py`
-- **test_format_npcs_section_includes_viewer_phantom()** (5 connections) — `server/tests/unit/commands/test_look_room.py`
-- **test_format_npcs_section_with_npcs()** (5 connections) — `server/tests/unit/commands/test_look_room.py`
-- **test_handle_direction_look_success()** (5 connections) — `server/tests/unit/commands/test_look_room.py`
-- **test_handle_room_look_hallucinates_exits_for_deranged_viewer()** (5 connections) — `server/tests/unit/commands/test_look_room.py`
-- **test_handle_room_look_success()** (5 connections) — `server/tests/unit/commands/test_look_room.py`
-- **_classify_containers_and_corpses()** (4 connections) — `server/commands/look_room.py`
-- **test_filter_other_players()** (4 connections) — `server/tests/unit/commands/test_look_room_helpers.py`
-- **test_filter_other_players_all_filtered()** (4 connections) — `server/tests/unit/commands/test_look_room_helpers.py`
-- *... and 100 more nodes in this community*
+- **security.ts** (42 connections) — `client/src/utils/security.ts`
+- **ManualPage.tsx** (29 connections) — `client/src/pages/ManualPage.tsx`
+- **secureTokenStorage** (15 connections) — `client/src/utils/security.ts`
+- **domPurifyClient.ts** (14 connections) — `client/src/utils/domPurifyClient.ts`
+- **setup.ts** (13 connections) — `client/src/test/setup.ts`
+- **SafeHtml.tsx** (12 connections) — `client/src/components/common/SafeHtml.tsx`
+- **SessionManager** (12 connections) — `client/src/utils/security.ts`
+- **SafeHtml()** (8 connections) — `client/src/components/common/SafeHtml.tsx`
+- **ManualPage.test.tsx** (7 connections) — `client/src/pages/__tests__/ManualPage.test.tsx`
+- **CSRFProtection** (7 connections) — `client/src/utils/security.ts`
+- **inputSanitizer** (7 connections) — `client/src/utils/security.ts`
+- **AppSessionOutroViews.tsx** (5 connections) — `client/src/mythosApp/AppSessionOutroViews.tsx`
+- **getDomPurify()** (5 connections) — `client/src/utils/domPurifyClient.ts`
+- **resolveSanitizeWindow()** (5 connections) — `client/src/utils/domPurifyClient.ts`
+- **localStorageShim.ts** (5 connections) — `client/src/utils/localStorageShim.ts`
+- **installLocalStorageShim()** (5 connections) — `client/src/utils/localStorageShim.ts`
+- **domPurifyClient.test.ts** (5 connections) — `client/src/utils/__tests__/domPurifyClient.test.ts`
+- **secureTokenStorage.test.ts** (5 connections) — `client/src/utils/__tests__/secureTokenStorage.test.ts`
+- **ManualPage()** (4 connections) — `client/src/pages/ManualPage.tsx`
+- **resolveVitestSanitizeWindow()** (4 connections) — `client/src/utils/domPurifyClient.ts`
+- **sanitizeWithDomPurify()** (4 connections) — `client/src/utils/domPurifyClient.ts`
+- **.generateToken()** (4 connections) — `client/src/utils/security.ts`
+- **csrfProtection.test.ts** (4 connections) — `client/src/utils/__tests__/csrfProtection.test.ts`
+- **localStorageShim.test.ts** (4 connections) — `client/src/utils/__tests__/localStorageShim.test.ts`
+- **security.test-utils.ts** (4 connections) — `client/src/utils/__tests__/security.test-utils.ts`
+- *... and 66 more nodes in this community*
 
 ## Relationships
 
-- [NpcDisposition](NpcDisposition.md) (17 shared connections)
-- [test_look_player.py](test_look_player.py.md) (7 shared connections)
-- [look_command.py](look_command.py.md) (7 shared connections)
-- [MessageCategory](MessageCategory.md) (7 shared connections)
-- [test_room_renderer.py](test_room_renderer.py.md) (4 shared connections)
-- [format_occupant_display_name](format_occupant_display_name.md) (3 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
-- [get_hallucinated_exits](get_hallucinated_exits.md) (3 shared connections)
-- [AttributeError](AttributeError.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [_get_npc_occupants_in_room](_get_npc_occupants_in_room.md) (1 shared connections)
-- [LucidityTierCache](LucidityTierCache.md) (1 shared connections)
+- [test_admin_auth_service.py](test_admin_auth_service.py.md) (14 shared connections)
+- [talk_command.py](talk_command.py.md) (8 shared connections)
+- [vim Best Practices and Coding Standards](vim_Best_Practices_and_Coding_Standards.md) (8 shared connections)
+- [test_n_player_combat.py](test_n_player_combat.py.md) (6 shared connections)
+- [party_commands.py](party_commands.py.md) (5 shared connections)
+- [test_command_combat.py](test_command_combat.py.md) (5 shared connections)
+- [WebSocketMessageValidator](WebSocketMessageValidator.md) (3 shared connections)
+- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (3 shared connections)
+- [RoomSubscriptionManager](RoomSubscriptionManager.md) (2 shared connections)
+- [PartyService](PartyService.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/look_room.py`
-- `server/tests/unit/commands/test_look_room.py`
-- `server/tests/unit/commands/test_look_room_helpers.py`
-- `server/tests/unit/realtime/test_visual_indicator.py`
+- `client/src/components/common/SafeHtml.tsx`
+- `client/src/components/common/__tests__/SafeHtml.test.tsx`
+- `client/src/mythosApp/AppSessionOutroViews.tsx`
+- `client/src/pages/ManualPage.tsx`
+- `client/src/pages/__tests__/ManualPage.test.tsx`
+- `client/src/test/domPurifyTestWindow.ts`
+- `client/src/test/setup.ts`
+- `client/src/utils/__tests__/csrfProtection.test.ts`
+- `client/src/utils/__tests__/domPurifyClient.test.ts`
+- `client/src/utils/__tests__/inputSanitizer.test.ts`
+- `client/src/utils/__tests__/localStorageShim.test.ts`
+- `client/src/utils/__tests__/secureTokenStorage.test.ts`
+- `client/src/utils/__tests__/security.test-utils.ts`
+- `client/src/utils/__tests__/sessionManager.test.ts`
+- `client/src/utils/domPurifyClient.ts`
+- `client/src/utils/localStorageShim.ts`
+- `client/src/utils/security.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 277 (98%)
-- INFERRED: 5 (2%)
+- EXTRACTED: 195 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

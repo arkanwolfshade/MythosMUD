@@ -1,23 +1,23 @@
 # apply_container_migrations.py
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **apply_container_migrations.py** (1 connections) — `scripts/apply_container_migrations.py`
-- **Apply container schema normalization migrations to mythos_dev database. This…** (1 connections) — `scripts/apply_container_migrations.py`
+- **test_get_user_manager_custom()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test _get_user_manager() returns custom user manager.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Chaosium CoC Catalog](Chaosium_CoC_Catalog.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/apply_container_migrations.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

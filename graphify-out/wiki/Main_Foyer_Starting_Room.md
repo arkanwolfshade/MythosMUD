@@ -1,13 +1,11 @@
 # Main Foyer Starting Room
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Main Foyer Starting Room** (2 connections) — `e2e-tests/scenarios/scenario-01-basic-connection.md`
-- **Wrong Starting Room Bug** (2 connections) — `e2e-tests/TEST_RESULTS_scenario-01-rerun.md`
-- **Scenario 2 Clean Game State** (1 connections) — `e2e-tests/scenarios/scenario-02-clean-game-state.md`
-- **Players Start in Different Rooms** (1 connections) — `e2e-tests/TEST_RESULTS_scenario-01.md`
+- **lucidity.sql** (1 connections) — `db/procedures/lucidity.sql`
+- **schema_name.get_lucidity_rate_overrides()** (1 connections) — `db/procedures/lucidity.sql`
 
 ## Relationships
 
@@ -15,15 +13,12 @@
 
 ## Source Files
 
-- `e2e-tests/TEST_RESULTS_scenario-01-rerun.md`
-- `e2e-tests/TEST_RESULTS_scenario-01.md`
-- `e2e-tests/scenarios/scenario-01-basic-connection.md`
-- `e2e-tests/scenarios/scenario-02-clean-game-state.md`
+- `db/procedures/lucidity.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (67%)
-- INFERRED: 1 (33%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

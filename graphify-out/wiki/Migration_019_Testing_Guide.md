@@ -1,10 +1,10 @@
 # Migration 019 Testing Guide
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Migration 019 Testing Guide** (0 connections) — `docs/archive/MIGRATION_019_TESTING_GUIDE.md`
+- **gh-stack Skill** (0 connections) — `.cursor/skills/gh-stack/SKILL.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/MIGRATION_019_TESTING_GUIDE.md`
+- `.cursor/skills/gh-stack/SKILL.md`
 
 ## Audit Trail
 

@@ -1,52 +1,54 @@
 # StatisticsAggregator
 
-> 50 nodes
+> 46 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **StatisticsAggregator** (31 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._build_connection_stats()** (10 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **.get_connection_health_stats()** (9 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._compose_memory_stats()** (7 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **MemoryStatsSnapshot** (6 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._memory_connections_section()** (6 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **UUID** (6 connections)
-- **._memory_sessions_section()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._safe_ratio()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._analyze_connection_ages()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._analyze_connection_health()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._build_health_stats_response()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._build_health_trends()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._count_orphaned_connections()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **.get_connection_stats()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **.get_memory_stats()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **HealthStatsInputs** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._analyze_connection_types()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._analyze_session_health()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._calculate_session_health_percentages()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._connection_age_extrema()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._memory_monitor_config_section()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._session_connection_distribution()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **.get_memory_alerts()** (2 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **.__init__()** (2 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- *... and 25 more nodes in this community*
+- **test_npc_threading_messages.py** (23 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
+- **NPCMessageQueue** (17 connections) — `server/npc/threading_messages.py`
+- **NPCCommunicationBridge** (15 connections) — `server/npc/threading.py`
+- **asyncio** (11 connections)
+- **test_bridge_broadcast_failure()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
+- **test_bridge_receive_message_failure()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
+- **test_npc_communication_bridge_messages()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
+- **test_npc_thread_manager_restart_npc_thread()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
+- **test_npc_thread_manager_start_stop()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
+- **test_npc_thread_manager_start_stop_npc_thread()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
+- **test_npc_thread_manager_stop_cancels_running_task()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
+- **test_process_npc_message_dispatches_wander()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
+- **test_process_npc_message_handles_errors()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
+- **test_thread_stop_and_shutdown_drop_pending_keys()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
+- **.add_message()** (2 connections) — `server/npc/threading_messages.py`
+- **.clear_all_messages()** (2 connections) — `server/npc/threading_messages.py`
+- **.clear_messages()** (2 connections) — `server/npc/threading_messages.py`
+- **.get_messages()** (2 connections) — `server/npc/threading_messages.py`
+- **.get_queue_size()** (2 connections) — `server/npc/threading_messages.py`
+- **.get_total_queue_size()** (2 connections) — `server/npc/threading_messages.py`
+- **.__init__()** (2 connections) — `server/npc/threading_messages.py`
+- **.broadcast_to_all_npcs()** (2 connections) — `server/npc/threading.py`
+- **.get_messages_for_npc()** (2 connections) — `server/npc/threading.py`
+- **.get_pending_messages()** (2 connections) — `server/npc/threading.py`
+- **.receive_message_from_npc()** (2 connections) — `server/npc/threading.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [connection_initialization.py](connection_initialization.py.md) (6 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (2 shared connections)
-- [PerformanceTracker](PerformanceTracker.md) (2 shared connections)
-- [test_statistics_aggregator.py](test_statistics_aggregator.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (11 shared connections)
+- [dependencies](dependencies.md) (4 shared connections)
+- [Room](Room.md) (3 shared connections)
+- [Domain Model Anemic Anti-Pattern Audit](Domain_Model_Anemic_Anti-Pattern_Audit.md) (2 shared connections)
+- [BaseEvent](BaseEvent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/monitoring/statistics_aggregator.py`
+- `server/npc/threading.py`
+- `server/npc/threading_messages.py`
+- `server/tests/unit/npc/test_npc_threading_messages.py`
 
 ## Audit Trail
 
-- EXTRACTED: 86 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 66 (80%)
+- INFERRED: 17 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

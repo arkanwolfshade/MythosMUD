@@ -1,54 +1,43 @@
 # magic_service_completion.py
 
-> 25 nodes
+> 22 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **magic_service_completion.py** (25 connections) — `server/game/magic/magic_service_completion.py`
-- **MagicServiceCompletionMixin** (12 connections) — `server/game/magic/magic_service_completion.py`
-- **UUID** (12 connections)
-- **Any** (11 connections)
-- **._execute_casting_immediately()** (9 connections) — `server/game/magic/magic_service_completion.py`
-- **._complete_casting()** (8 connections) — `server/game/magic/magic_service_completion.py`
-- **._recreate_target_from_state()** (7 connections) — `server/game/magic/magic_service_completion.py`
-- **._try_complete_casting_via_combat()** (6 connections) — `server/game/magic/magic_service_completion.py`
-- **._try_queue_spell_for_combat()** (6 connections) — `server/game/magic/magic_service_completion.py`
-- **._apply_spell_costs_and_effects()** (5 connections) — `server/game/magic/magic_service_completion.py`
-- **._get_player_and_room()** (5 connections) — `server/game/magic/magic_service_completion.py`
-- **._parse_casting_target_id()** (5 connections) — `server/game/magic/magic_service_completion.py`
-- **_is_heal_other_target()** (4 connections) — `server/game/magic/magic_service_completion.py`
-- **_send_healing_update_event()** (4 connections) — `server/game/magic/magic_service_completion.py`
-- **_send_spell_completion_message()** (4 connections) — `server/game/magic/magic_service_completion.py`
-- **Casting completion flow for spellcasting. Mixin that handles completing a…** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Apply spell costs and process effects. Args: player_id: Player ID spell: Spell…** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Parse target_id from casting state. Returns None if missing or invalid.** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Apply costs and queue spell for next combat round. Returns True if queued,…** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Apply spell costs/effects, send completion message and healing event.** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **If in combat, try to queue spell for next round. Return True if queued, False…** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Complete a casting and apply spell effects. In combat, spells are queued for…** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Mixin for MagicService: complete casting (player/room, target, costs/effects,…** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Get player and room_id for casting completion. Returns: Tuple of (player,…** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Recreate target from stored casting state. Args: casting_state: The casting…** (1 connections) — `server/game/magic/magic_service_completion.py`
+- **identify_critical_code.py** (9 connections) — `scripts/identify_critical_code.py`
+- **analyze_function()** (8 connections) — `scripts/identify_critical_code.py`
+- **analyze_file()** (7 connections) — `scripts/identify_critical_code.py`
+- **process_ast_functions()** (6 connections) — `scripts/identify_critical_code.py`
+- **calculate_complexity()** (4 connections) — `scripts/identify_critical_code.py`
+- **calculate_priority()** (4 connections) — `scripts/identify_critical_code.py`
+- **check_file_keywords()** (4 connections) — `scripts/identify_critical_code.py`
+- **main()** (4 connections) — `scripts/identify_critical_code.py`
+- **Any** (4 connections)
+- **check_function_keywords()** (3 connections) — `scripts/identify_critical_code.py`
+- **AST** (3 connections)
+- **Path** (2 connections)
+- **AsyncFunctionDef** (1 connections)
+- **FunctionDef** (1 connections)
+- **Check file path and name for keyword matches. Args: file_path: Path to file to…** (1 connections) — `scripts/identify_critical_code.py`
+- **Check function name for keyword matches. Args: func_name: Function name to…** (1 connections) — `scripts/identify_critical_code.py`
+- **Analyze a single function node for critical indicators. Args: node: Function…** (1 connections) — `scripts/identify_critical_code.py`
+- **Process all functions in the AST and identify critical ones. Args: tree: AST…** (1 connections) — `scripts/identify_critical_code.py`
+- **Analyze a file for critical code indicators. Args: file_path: Path to file to…** (1 connections) — `scripts/identify_critical_code.py`
+- **Calculate priority score for a file (higher = more critical). Args: analysis:…** (1 connections) — `scripts/identify_critical_code.py`
+- **Main entry point for critical code identification.** (1 connections) — `scripts/identify_critical_code.py`
+- **Calculate cyclomatic complexity of an AST node. Args: node: AST node to analyze…** (1 connections) — `scripts/identify_critical_code.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [magic_service.py](magic_service.py.md) (4 shared connections)
-- [TargetMatch](TargetMatch.md) (3 shared connections)
-- [SpellEffects](SpellEffects.md) (3 shared connections)
-- [TargetType](TargetType.md) (2 shared connections)
-- [test_magic_service.py](test_magic_service.py.md) (2 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
-- [SpellLearningService](SpellLearningService.md) (1 shared connections)
-- [PlayerService](PlayerService.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/game/magic/magic_service_completion.py`
+- `scripts/identify_critical_code.py`
 
 ## Audit Trail
 
-- EXTRACTED: 78 (100%)
+- EXTRACTED: 34 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

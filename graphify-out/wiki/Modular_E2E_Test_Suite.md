@@ -1,14 +1,12 @@
 # Modular E2E Test Suite
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Modular E2E Test Suite** (4 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **E2E Validation Passed** (1 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **AI Context Limit 20KB** (1 connections) — `e2e-tests/FILE_SIZE_ANALYSIS.md`
-- **MULTIPLAYER_SCENARIOS_PLAYBOOK** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **E2E Test Suite README** (1 connections) — `e2e-tests/README.md`
+- **Chaosium graphify snapshot - Call of Cthulhu Investigator Handbook 7th Edition** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/MANIFEST.md`
+- **call-of-cthulhu-investigator-handbook-7th-edition/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/MANIFEST.md`
 
 ## Relationships
 
@@ -16,14 +14,11 @@
 
 ## Source Files
 
-- `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- `e2e-tests/END_TO_END_VALIDATION.md`
-- `e2e-tests/FILE_SIZE_ANALYSIS.md`
-- `e2e-tests/README.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

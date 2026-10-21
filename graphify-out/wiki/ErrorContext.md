@@ -1,64 +1,64 @@
 # ErrorContext
 
-> 108 nodes
+> 130 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **ErrorContext** (40 connections) — `server/exceptions.py`
-- **subject_controller.py** (31 connections) — `server/api/admin/subject_controller.py`
-- **create_error_context()** (30 connections) — `server/exceptions.py`
-- **test_subject_controller.py** (24 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **.__init__()** (15 connections) — `server/exceptions.py`
-- **Any** (13 connections)
-- **register_pattern()** (11 connections) — `server/api/admin/subject_controller.py`
-- **validate_subject()** (11 connections) — `server/api/admin/subject_controller.py`
-- **create_error_context()** (10 connections) — `server/api/player_helpers.py`
-- **get_patterns()** (9 connections) — `server/api/admin/subject_controller.py`
-- **get_subject_statistics()** (9 connections) — `server/api/admin/subject_controller.py`
-- **RegisterPatternRequest** (8 connections) — `server/api/admin/subject_controller.py`
-- **._extract_context_from_request()** (8 connections) — `server/error_handlers/standardized_responses.py`
-- **ValidateSubjectRequest** (7 connections) — `server/api/admin/subject_controller.py`
-- **_register_pattern_try()** (7 connections) — `server/api/admin/subject_controller.py`
-- **require_admin_user()** (7 connections) — `server/api/admin/subject_controller.py`
-- **.__init__()** (7 connections) — `server/exceptions.py`
-- **_admin_user()** (7 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **test_register_pattern_invalid()** (7 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **asyncio** (6 connections)
-- **RegisterPatternResponse** (5 connections) — `server/api/admin/subject_controller.py`
-- **.mark_logged()** (5 connections) — `server/exceptions.py`
-- **test_register_pattern_success()** (5 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **test_validate_subject_invalid()** (5 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **test_validate_subject_valid()** (5 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- *... and 83 more nodes in this community*
+- **admin_teleport_commands.py** (37 connections) — `server/commands/admin_teleport_commands.py`
+- **test_teleport_helpers.py** (31 connections) — `server/tests/unit/commands/test_teleport_helpers.py`
+- **teleport_helpers.py** (28 connections) — `server/commands/teleport_helpers.py`
+- **admin_teleport_utils.py** (24 connections) — `server/commands/admin_teleport_utils.py`
+- **broadcast_teleport_effects()** (21 connections) — `server/commands/admin_teleport_utils.py`
+- **notify_player_of_teleport()** (21 connections) — `server/commands/admin_teleport_utils.py`
+- **test_admin_commands_helpers.py** (20 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
+- **test_admin_teleport_utils.py** (18 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
+- **create_teleport_effect_message()** (16 connections) — `server/commands/admin_teleport_utils.py`
+- **get_online_player_by_display_name()** (15 connections) — `server/commands/admin_teleport_utils.py`
+- **asyncio** (12 connections)
+- **_execute_teleport_move()** (11 connections) — `server/commands/admin_teleport_commands.py`
+- **execute_confirm_teleport()** (10 connections) — `server/commands/teleport_helpers.py`
+- **Any** (10 connections)
+- **resolve_target_player()** (10 connections) — `server/commands/teleport_helpers.py`
+- **update_player_room_location()** (10 connections) — `server/commands/teleport_helpers.py`
+- **update_teleport_location()** (10 connections) — `server/commands/teleport_helpers.py`
+- **asyncio** (10 connections)
+- **_resolve_teleport_execution_context()** (9 connections) — `server/commands/admin_teleport_commands.py`
+- **broadcast_teleport_updates()** (9 connections) — `server/commands/teleport_helpers.py`
+- **resolve_target_player_for_teleport()** (9 connections) — `server/commands/teleport_helpers.py`
+- **resolve_teleport_direction()** (9 connections) — `server/commands/teleport_helpers.py`
+- **resolve_teleport_services()** (9 connections) — `server/commands/teleport_helpers.py`
+- **validate_confirm_teleport_context()** (9 connections) — `server/commands/teleport_helpers.py`
+- **_announce_confirm_teleport()** (7 connections) — `server/commands/teleport_helpers.py`
+- *... and 105 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (54 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (20 shared connections)
-- [ErrorType](ErrorType.md) (12 shared connections)
-- [NATSSubjectManager](NATSSubjectManager.md) (12 shared connections)
-- [SecureBaseModel](SecureBaseModel.md) (7 shared connections)
-- [log_and_raise_enhanced](log_and_raise_enhanced.md) (1 shared connections)
-- [PlayerDeathService](PlayerDeathService.md) (1 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
+- [player_event_handlers.py](player_event_handlers.py.md) (20 shared connections)
+- [Async Code Review - Post Phase 2 Migration](Async_Code_Review_-_Post_Phase_2_Migration.md) (18 shared connections)
+- [command_parser.py](command_parser.py.md) (17 shared connections)
+- [test_shopkeeper_npc.py](test_shopkeeper_npc.py.md) (11 shared connections)
+- [Room](Room.md) (6 shared connections)
+- [look_container.py](look_container.py.md) (5 shared connections)
+- [WearableContainerServiceError](WearableContainerServiceError.md) (5 shared connections)
+- [.publish_with_pool](publish_with_pool.md) (4 shared connections)
+- [test_command_admin.py](test_command_admin.py.md) (2 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
+- [MagicCommandHandler](MagicCommandHandler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/admin/subject_controller.py`
-- `server/api/player_helpers.py`
-- `server/error_handlers/pydantic_error_handler.py`
-- `server/error_handlers/standardized_responses.py`
-- `server/exceptions.py`
-- `server/tests/unit/api/admin/test_subject_controller.py`
-- `server/tests/unit/api/test_player_helpers.py`
-- `server/tests/unit/test_exceptions.py`
-- `server/tests/unit/test_exceptions_comprehensive.py`
-- `server/tests/unit/utils/test_error_logging.py`
+- `server/commands/admin_teleport_commands.py`
+- `server/commands/admin_teleport_utils.py`
+- `server/commands/teleport_helpers.py`
+- `server/tests/unit/commands/test_admin_commands_helpers.py`
+- `server/tests/unit/commands/test_admin_teleport_utils.py`
+- `server/tests/unit/commands/test_teleport_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 281 (97%)
-- INFERRED: 9 (3%)
+- EXTRACTED: 347 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

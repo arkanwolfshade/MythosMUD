@@ -1,30 +1,33 @@
 # event_publisher
 
-> 7 nodes
+> 11 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **event_publisher()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **mock_nats_service()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **mock_subject_manager()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **fixture** (3 connections)
-- **Create a mock NATS service.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Create a mock subject manager.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Create an EventPublisher instance.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Corruption Subsystem Design** (11 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
+- **1. Overview** (1 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
+- **2. Architecture** (1 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
+- **3. Key design decisions** (1 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
+- **4. Constraints** (1 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
+- **5. Component interactions** (1 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
+- **6. Developer guide** (1 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
+- **7. Troubleshooting** (1 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
+- **8. Related docs** (1 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
+- **9. Changelog** (1 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
+- **AI READING INSTRUCTION** (1 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
 
 ## Relationships
 
-- [test_event_publisher.py](test_event_publisher.py.md) (3 shared connections)
-- [EventPublisher](EventPublisher.md) (1 shared connections)
+- [Findings](Findings.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_event_publisher.py`
+- `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (90%)
-- INFERRED: 1 (10%)
+- EXTRACTED: 11 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

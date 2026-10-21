@@ -1,39 +1,45 @@
 # _DyingPlayer
 
-> 16 nodes
+> 24 nodes · cohesion 0.16
 
 ## Key Concepts
 
-- **_DyingPlayer** (7 connections) — `server/services/corpse_lifecycle_service.py`
-- **_RoomContainers** (5 connections) — `server/services/corpse_lifecycle_service.py`
-- **Protocol** (5 connections)
-- **_SyncRoomLookup** (4 connections) — `server/services/corpse_lifecycle_service.py`
-- **.get_equipped_items()** (2 connections) — `server/services/corpse_lifecycle_service.py`
-- **.add_container()** (2 connections) — `server/services/corpse_lifecycle_service.py`
-- **.remove_container()** (2 connections) — `server/services/corpse_lifecycle_service.py`
-- **.get_room_by_id()** (2 connections) — `server/services/corpse_lifecycle_service.py`
-- **.get_inventory()** (1 connections) — `server/services/corpse_lifecycle_service.py`
-- **The in-memory Room's container registry (server/models/room.py::Room). An…** (1 connections) — `server/services/corpse_lifecycle_service.py`
-- **Register a runtime-created container so room_state carries it.** (1 connections) — `server/services/corpse_lifecycle_service.py`
-- **Drop a container from the room.** (1 connections) — `server/services/corpse_lifecycle_service.py`
-- **The synchronous room lookup _live_room needs from a persistence layer.** (1 connections) — `server/services/corpse_lifecycle_service.py`
-- **Return the in-memory Room for room_id (may be an awaitable on async-only…** (1 connections) — `server/services/corpse_lifecycle_service.py`
-- **The slice of Player that moving a dead player's gear onto a corpse reads (#917).** (1 connections) — `server/services/corpse_lifecycle_service.py`
-- **Equipped stacks keyed by slot.** (1 connections) — `server/services/corpse_lifecycle_service.py`
+- **multiplayer-browser-helpers.bundle.js** (23 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **isElementVisible()** (10 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasCommandInputInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasGameInfoAnyMessageInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasGameInfoPanelInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasLoginSubmitButtonInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasPrimaryGameUiMarkersInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **elementTextIncludesGameInfo()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasUsernameInputInBrowser()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **isLoginFormVisibleInBrowser()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **presenceEventFrom()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **buttonHasLoginSubmitLabel()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **coalesce()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **computedStyleHidesElement()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **fieldHasCommandPlaceholder()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **getBodyInnerText()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasRoomStateIndicatorsInBrowser()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasTickMessageInBrowser()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **isEmptyGameInfoPanelText()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **isValidElement()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **recordPresenceEvent()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **elementShowsConnectedStatus()** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasBodyTextGameUiIndicators()** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **installPresenceRecorder()** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
 
 ## Relationships
 
-- [UUID](UUID.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/corpse_lifecycle_service.py`
+- `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 44 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,10 +1,10 @@
 # 20260924145030_rooms_environment_column.sql
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **20260924145030_rooms_environment_column.sql** (0 connections) — `db/migrations/20260924145030_rooms_environment_column.sql`
+- **player_lucidity Index Name Fix** (0 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `db/migrations/20260924145030_rooms_environment_column.sql`
+- `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
 
 ## Audit Trail
 

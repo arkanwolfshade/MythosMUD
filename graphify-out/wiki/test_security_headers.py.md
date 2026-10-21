@@ -1,57 +1,52 @@
 # test_security_headers.py
 
-> 85 nodes
+> 42 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **test_security_headers.py** (20 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **middleware()** (17 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **CorrelationMiddleware** (13 connections) — `server/middleware/correlation_middleware.py`
-- **SecurityHeadersMiddleware** (12 connections) — `server/middleware/security_headers.py`
-- **test_correlation_middleware.py** (12 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
-- **.__call__()** (8 connections) — `server/middleware/correlation_middleware.py`
-- **correlation_middleware.py** (8 connections) — `server/middleware/correlation_middleware.py`
-- **create_correlation_middleware()** (6 connections) — `server/middleware/correlation_middleware.py`
-- **_get_header()** (6 connections) — `server/middleware/correlation_middleware.py`
-- **MutableHeaders** (6 connections)
-- **.__call__()** (5 connections) — `server/middleware/security_headers.py`
-- **.dispatch()** (5 connections) — `server/middleware/security_headers.py`
-- **test_correlation_middleware_reraises_exception()** (5 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
-- **test_security_headers_middleware_error_handling()** (5 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **asyncio** (5 connections)
-- **asyncio** (5 connections)
-- **log_api_requests()** (4 connections) — `docs/examples/logging/fastapi_integration.py`
-- **._add_security_headers_to_response()** (4 connections) — `server/middleware/security_headers.py`
-- **test_correlation_middleware_adds_response_header()** (4 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
-- **test_correlation_middleware_generates_correlation_id()** (4 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
-- **test_correlation_middleware_passes_non_http()** (4 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
-- **test_correlation_middleware_uses_existing_header()** (4 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
-- **test_dispatch_method_error_handling()** (4 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_security_headers_middleware_adds_headers()** (4 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_security_headers_middleware_non_http_scope()** (4 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- *... and 60 more nodes in this community*
+- **LucidityFluxService** (33 connections) — `server/services/passive_lucidity_flux/service.py`
+- **.process_tick()** (15 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._process_single_player()** (11 connections) — `server/services/passive_lucidity_flux/service.py`
+- **Player** (10 connections)
+- **PlayerFluxCtx** (9 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._apply_player_flux_adjustment()** (8 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._filter_active_players()** (8 connections) — `server/services/passive_lucidity_flux/service.py`
+- **datetime** (8 connections)
+- **._evaluate_players_tick()** (7 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._build_room_cache()** (6 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._is_player_active()** (6 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._companion_modifier()** (5 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._count_companion_tiers()** (5 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._get_room_cached()** (5 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._load_players()** (5 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._normalize_datetime_timezone()** (5 connections) — `server/services/passive_lucidity_flux/service.py`
+- **AsyncSession** (5 connections)
+- **._commit_flux_adjustments()** (4 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._load_lucidity_records()** (4 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._parse_last_active()** (4 connections) — `server/services/passive_lucidity_flux/service.py`
+- **_PlayerFluxComputation** (4 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._apply_adaptive_resistance()** (2 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._apply_residual()** (2 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._emit_telemetry()** (2 connections) — `server/services/passive_lucidity_flux/service.py`
+- **.get_flux_runtime_status()** (2 connections) — `server/services/passive_lucidity_flux/service.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (5 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (3 shared connections)
-- [ValueError](ValueError.md) (3 shared connections)
-- [ComprehensiveLoggingMiddleware](ComprehensiveLoggingMiddleware.md) (3 shared connections)
-- [fastapi_integration.py](fastapi_integration.py.md) (1 shared connections)
+- [ExitEdge.tsx](ExitEdge.tsx.md) (23 shared connections)
+- [PopulationStats](PopulationStats.md) (8 shared connections)
+- [properties](properties.md) (3 shared connections)
+- [_prepare_command_for_processing](_prepare_command_for_processing.md) (1 shared connections)
+- [test_config_models.py](test_config_models.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/fastapi_integration.py`
-- `server/middleware/correlation_middleware.py`
-- `server/middleware/security_headers.py`
-- `server/tests/unit/middleware/test_correlation_middleware.py`
-- `server/tests/unit/middleware/test_security_headers.py`
+- `server/services/passive_lucidity_flux/service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 118 (83%)
-- INFERRED: 25 (17%)
+- EXTRACTED: 111 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

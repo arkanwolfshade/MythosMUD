@@ -1,56 +1,55 @@
 # RoomEventHandler
 
-> 44 nodes
+> 31 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **RoomEventHandler** (27 connections) — `server/realtime/integration/room_event_handler.py`
-- **test_room_event_handler.py** (15 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
-- **room_event_handler.py** (13 connections) — `server/realtime/integration/room_event_handler.py`
-- **asyncio** (11 connections)
-- **._broadcast_room_occupants_update()** (8 connections) — `server/realtime/integration/room_event_handler.py`
-- **server/realtime/integration/__init__.py** (5 connections) — `server/realtime/integration/__init__.py`
-- **._extract_valid_occupant_names()** (4 connections) — `server/realtime/integration/room_event_handler.py`
-- **.handle_player_entered_room()** (4 connections) — `server/realtime/integration/room_event_handler.py`
-- **.handle_player_left_room()** (4 connections) — `server/realtime/integration/room_event_handler.py`
-- **.__init__()** (4 connections) — `server/realtime/integration/room_event_handler.py`
-- **test_handle_player_entered_room_occupant_lookup_error_is_caught()** (4 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
-- **test_handle_player_left_room_missing_room_id()** (4 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
-- **Any** (4 connections)
-- **._looks_like_uuid()** (3 connections) — `server/realtime/integration/room_event_handler.py`
-- **._publish_room_movement_nats_event()** (3 connections) — `server/realtime/integration/room_event_handler.py`
-- **room_handler()** (3 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
-- **test_handle_player_entered_nats_publish_failure()** (3 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
-- **test_handle_player_entered_room_broadcasts()** (3 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
-- **test_handle_player_entered_room_missing_room_id()** (3 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
-- **test_handle_player_entered_skips_uuid_player_names()** (3 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
-- **test_handle_player_left_room_broadcasts()** (3 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
-- **test_subscribe_handles_exception()** (3 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
-- **test_subscribe_to_events()** (3 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
-- **test_subscribe_to_events_no_bus()** (3 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
-- **test_unsubscribe_from_events()** (3 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
-- *... and 19 more nodes in this community*
+- **emit_inventory_updated()** (26 connections) — `server/services/inventory_websocket_events.py`
+- **test_inventory_websocket_events.py** (9 connections) — `server/tests/unit/services/test_inventory_websocket_events.py`
+- **_Owner** (8 connections) — `server/tests/unit/services/test_inventory_websocket_events.py`
+- **_InventoryOwner** (6 connections) — `server/services/inventory_websocket_events.py`
+- **test_emit_inventory_updated_emission_error_is_swallowed()** (5 connections) — `server/tests/unit/services/test_inventory_websocket_events.py`
+- **test_emit_inventory_updated_no_connection_manager_is_noop()** (5 connections) — `server/tests/unit/services/test_inventory_websocket_events.py`
+- **test_emit_inventory_updated_sends_personal_message()** (5 connections) — `server/tests/unit/services/test_inventory_websocket_events.py`
+- **_ConnectionManagerLike** (4 connections) — `server/services/inventory_websocket_events.py`
+- **.send_personal_message()** (3 connections) — `server/services/inventory_websocket_events.py`
+- **UUID** (3 connections)
+- **_async_attr()** (3 connections) — `server/tests/unit/services/test_inventory_websocket_events.py`
+- **asyncio** (3 connections)
+- **.get_equipped_items()** (2 connections) — `server/services/inventory_websocket_events.py`
+- **.get_inventory()** (2 connections) — `server/services/inventory_websocket_events.py`
+- **Protocol** (2 connections)
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/services/test_inventory_websocket_events.py`
+- **Minimal shape emit_inventory_updated needs from a player.** (1 connections) — `server/services/inventory_websocket_events.py`
+- **Return the player's carried inventory stacks.** (1 connections) — `server/services/inventory_websocket_events.py`
+- **Return the player's equipped-slot items.** (1 connections) — `server/services/inventory_websocket_events.py`
+- **Minimal shape emit_inventory_updated needs from a connection manager.…** (1 connections) — `server/services/inventory_websocket_events.py`
+- **Send event to a single player; returns delivery status.** (1 connections) — `server/services/inventory_websocket_events.py`
+- **Emit inventory_updated to the player personally. connection_manager is typed as…** (1 connections) — `server/services/inventory_websocket_events.py`
+- **.get_equipped_items()** (1 connections) — `server/tests/unit/services/test_inventory_websocket_events.py`
+- **.get_inventory()** (1 connections) — `server/tests/unit/services/test_inventory_websocket_events.py`
+- **.__init__()** (1 connections) — `server/tests/unit/services/test_inventory_websocket_events.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [connection_initialization.py](connection_initialization.py.md) (4 shared connections)
-- [build_event](build_event.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (2 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (1 shared connections)
-- [GameStateProvider](GameStateProvider.md) (1 shared connections)
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) (1 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (13 shared connections)
+- [deprecated_patterns.py](deprecated_patterns.py.md) (2 shared connections)
+- [TargetMatch](TargetMatch.md) (2 shared connections)
+- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (2 shared connections)
+- [test_nats_message_handler_subzone_events.py](test_nats_message_handler_subzone_events.py.md) (2 shared connections)
+- [Protocol](Protocol.md) (1 shared connections)
+- [.publish_with_pool](publish_with_pool.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/integration/__init__.py`
-- `server/realtime/integration/room_event_handler.py`
-- `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- `server/services/inventory_websocket_events.py`
+- `server/tests/unit/services/test_inventory_websocket_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 80 (90%)
-- INFERRED: 9 (10%)
+- EXTRACTED: 63 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

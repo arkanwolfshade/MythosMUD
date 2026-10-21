@@ -1,61 +1,59 @@
 # SuccessLevel
 
-> 92 nodes
+> 94 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **SuccessLevel** (53 connections) — `server/game/skill_service.py`
-- **test_combat_protect_action.py** (38 connections) — `server/tests/unit/services/test_combat_protect_action.py`
-- **test_combat_taunt_action.py** (35 connections) — `server/tests/unit/services/test_combat_taunt_action.py`
-- **combat_protect_action.py** (28 connections) — `server/services/combat_protect_action.py`
-- **resolve_protect_action()** (22 connections) — `server/services/combat_protect_action.py`
-- **resolve_taunt_action()** (21 connections) — `server/services/combat_taunt_action.py`
-- **_doubles()** (21 connections) — `server/tests/unit/services/test_combat_protect_action.py`
-- **asyncio** (20 connections)
-- **intercept_for_guard()** (18 connections) — `server/services/combat_protect_action.py`
-- **_doubles()** (14 connections) — `server/tests/unit/services/test_combat_taunt_action.py`
-- **_hate()** (14 connections) — `server/tests/unit/services/test_combat_taunt_action.py`
-- **asyncio** (12 connections)
-- **taunt_outcome_line()** (8 connections) — `server/services/combat_taunt_action.py`
-- **_covered_fight()** (8 connections) — `server/tests/unit/services/test_combat_protect_action.py`
-- **_hate()** (8 connections) — `server/tests/unit/services/test_combat_protect_action.py`
-- **test_failure_and_fumble_do_nothing_but_still_announce()** (8 connections) — `server/tests/unit/services/test_combat_protect_action.py`
-- **_Fight** (7 connections) — `server/tests/unit/services/test_combat_protect_action.py`
-- **_broadcast_switches()** (7 connections) — `server/services/combat_protect_action.py`
-- **_cover()** (7 connections) — `server/services/combat_protect_action.py`
-- **_share_threat()** (7 connections) — `server/services/combat_protect_action.py`
-- **taunt_outcome_parts()** (7 connections) — `server/services/combat_taunt_action.py`
-- **test_a_redirect_happens_once_it_never_chains_to_the_protectors_own_guardian()** (7 connections) — `server/tests/unit/services/test_combat_protect_action.py`
-- **test_an_intercepted_blow_earns_the_protector_threat_with_the_guarding_multiplier()** (7 connections) — `server/tests/unit/services/test_combat_protect_action.py`
-- **test_a_fumble_by_the_current_tank_hands_the_npc_to_the_next_in_line()** (7 connections) — `server/tests/unit/services/test_combat_taunt_action.py`
-- **test_hard_and_extreme_successes_double_the_lead()** (7 connections) — `server/tests/unit/services/test_combat_taunt_action.py`
-- *... and 67 more nodes in this community*
+- **test_container_helpers_inventory_find.py** (56 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **container_helpers_inventory_find.py** (33 connections) — `server/commands/container_helpers_inventory_find.py`
+- **asyncio** (25 connections)
+- **find_wearable_container()** (17 connections) — `server/commands/container_helpers_inventory_find.py`
+- **UUID** (16 connections)
+- **find_container_in_room()** (15 connections) — `server/commands/container_helpers_inventory_find.py`
+- **try_wearable_container_service()** (14 connections) — `server/commands/container_helpers_inventory_find.py`
+- **try_wearable_container_service_by_instance_id()** (13 connections) — `server/commands/container_helpers_inventory_find.py`
+- **create_wearable_container()** (12 connections) — `server/commands/container_helpers_inventory_find.py`
+- **find_item_in_inventory()** (12 connections) — `server/commands/container_helpers_inventory_find.py`
+- **try_inner_container()** (12 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_player_for_wearable()** (12 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **try_inner_container_by_id()** (11 connections) — `server/commands/container_helpers_inventory_find.py`
+- **try_wearable_container_service_by_name()** (11 connections) — `server/commands/container_helpers_inventory_find.py`
+- **find_wearable_container_for_put()** (10 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_get_container_pair()** (10 connections) — `server/commands/container_helpers_inventory_find.py`
+- **find_matching_equipped_containers()** (9 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_try_put_container_for_equipped_item()** (9 connections) — `server/commands/container_helpers_inventory_find.py`
+- **patch** (8 connections)
+- **check_item_matches_target()** (7 connections) — `server/commands/container_helpers_inventory_find.py`
+- **container_id()** (6 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **_container_uuid()** (5 connections) — `server/commands/container_helpers_inventory_find.py`
+- **Player** (5 connections)
+- **test_create_wearable_container_fallback_when_equip_returns_non_dict()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_create_wearable_container_uses_equip_dict_branch()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- *... and 69 more nodes in this community*
 
 ## Relationships
 
-- [CombatService](CombatService.md) (27 shared connections)
-- [CombatParticipant](CombatParticipant.md) (24 shared connections)
-- [aggro_threat.py](aggro_threat.py.md) (17 shared connections)
-- [CombatInstance](CombatInstance.md) (12 shared connections)
-- [NpcDisposition](NpcDisposition.md) (9 shared connections)
-- [get_logger](get_logger.md) (7 shared connections)
-- [test_skill_service_graded.py](test_skill_service_graded.py.md) (4 shared connections)
-- [test_combat_service_modules.py](test_combat_service_modules.py.md) (3 shared connections)
-- [.set_player_skills](set_player_skills.md) (2 shared connections)
+- [inventory_item_matching.py](inventory_item_matching.py.md) (16 shared connections)
+- [TargetMatch](TargetMatch.md) (5 shared connections)
+- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (2 shared connections)
+- [test_nats_message_handler_subzone_events.py](test_nats_message_handler_subzone_events.py.md) (2 shared connections)
+- [look_helpers.py](look_helpers.py.md) (2 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (1 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (1 shared connections)
+- [Room](Room.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/skill_service.py`
-- `server/services/combat_protect_action.py`
-- `server/services/combat_taunt_action.py`
-- `server/tests/unit/services/test_combat_protect_action.py`
-- `server/tests/unit/services/test_combat_status_segments.py`
-- `server/tests/unit/services/test_combat_taunt_action.py`
+- `server/commands/container_helpers_inventory_find.py`
+- `server/commands/look_container.py`
+- `server/tests/unit/api/test_container_exception_handlers.py`
+- `server/tests/unit/commands/test_container_helpers_inventory_find.py`
 
 ## Audit Trail
 
-- EXTRACTED: 313 (86%)
-- INFERRED: 51 (14%)
+- EXTRACTED: 259 (96%)
+- INFERRED: 10 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

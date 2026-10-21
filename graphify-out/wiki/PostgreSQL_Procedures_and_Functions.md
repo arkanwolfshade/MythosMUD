@@ -1,10 +1,10 @@
 # PostgreSQL Procedures and Functions
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **PostgreSQL Procedures and Functions** (0 connections) — `db/procedures/README.md`
+- **Dual Command Processing Architecture** (0 connections) — `docs/archive/PLANNING_unified_command_handler.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `db/procedures/README.md`
+- `docs/archive/PLANNING_unified_command_handler.md`
 
 ## Audit Trail
 

@@ -1,10 +1,10 @@
 # MythosMUD — AI Agent On-Ramp
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **MythosMUD — AI Agent On-Ramp** (0 connections) — `docs/DEVELOPMENT_AI.md`
+- **GitHub Actions Remediation** (0 connections) — `.cursor/plans/github-actions-remediation.plan.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/DEVELOPMENT_AI.md`
+- `.cursor/plans/github-actions-remediation.plan.md`
 
 ## Audit Trail
 

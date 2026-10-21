@@ -1,53 +1,39 @@
 # LevelService
 
-> 26 nodes
+> 17 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **LevelService** (13 connections) — `server/game/level_service.py`
-- **test_level_service.py** (11 connections) — `server/tests/unit/game/test_level_service.py`
-- **asyncio** (6 connections)
-- **.__init__()** (4 connections) — `server/game/level_service.py`
-- **level_service()** (4 connections) — `server/tests/unit/game/test_level_service.py`
-- **test_grant_xp_level_up_calls_hook()** (4 connections) — `server/tests/unit/game/test_level_service.py`
-- **test_grant_xp_no_level_change_does_not_call_hook()** (4 connections) — `server/tests/unit/game/test_level_service.py`
-- **test_grant_xp_player_not_found_propagates()** (4 connections) — `server/tests/unit/game/test_level_service.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/game/test_level_service.py`
-- **test_grant_xp_negative_raises()** (3 connections) — `server/tests/unit/game/test_level_service.py`
-- **test_grant_xp_without_hook_does_not_raise_on_level_up()** (3 connections) — `server/tests/unit/game/test_level_service.py`
-- **test_grant_xp_zero_no_op()** (3 connections) — `server/tests/unit/game/test_level_service.py`
-- **fixture** (2 connections)
-- **LevelUpHook** (1 connections)
-- **Any** (1 connections)
-- **Service for character level and XP: grant XP, recompute level from curve, run…** (1 connections) — `server/game/level_service.py`
-- **Initialize the level service. Args: async_persistence: Async persistence for…** (1 connections) — `server/game/level_service.py`
-- **Unit tests for LevelService: grant_xp and the level-up hook. Character creation…** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- **Mock async persistence with award_player_xp returning (new_xp, old_level,…** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- **LevelService with mocked persistence.** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- **grant_xp(amount=0) does not call persistence.** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- **grant_xp(amount < 0) raises ValueError.** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- **grant_xp propagates persistence's ValueError when player not found.** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- **When persistence reports old_level == new_level, the level-up hook is not…** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- **When persistence reports a level increase, the level-up hook is invoked with…** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- *... and 1 more nodes in this community*
+- **Communities (10 total, 2 thin omitted)** (9 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Reign of Terror  (2026-08-12)** (9 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community 0 - "Azotottal (fallen angel beyond the stars) / Captain Louis Malon"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community 1 - "Charenton (Paris district / asylum) / Christophe Pressi — Soldat (Soldier), age 20"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community 2 - "Dreamlands / Fenalik's Mansion (Poissy)"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community 3 - "Reign of Terror / Call of Cthulhu 7th Edition"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community 4 - "Bastille / James Coquillat"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community 5 - "Azathoth / Celine Bessette"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community 6 - "Christophe Pressi / Comte Benoit"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community 7 - "Comte Fenalik / Horror on the Orient Express"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
-- [.grant_xp](grant_xp.md) (1 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
+- [test_inventory_commands_helpers.py](test_inventory_commands_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/level_service.py`
-- `server/tests/unit/game/test_level_service.py`
+- `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (88%)
-- INFERRED: 5 (12%)
+- EXTRACTED: 17 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

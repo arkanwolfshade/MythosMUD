@@ -1,30 +1,28 @@
 # run_make_stages.py
 
-> 9 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **main()** (5 connections) — `scripts/run_make_stages.py`
-- **run_make_stages.py** (5 connections) — `scripts/run_make_stages.py`
-- **keep_going_requested()** (3 connections) — `scripts/run_make_stages.py`
-- **run_stage()** (3 connections) — `scripts/run_make_stages.py`
-- **stage_failed_from_output()** (3 connections) — `scripts/run_make_stages.py`
-- **_print_fail()** (2 connections) — `scripts/run_make_stages.py`
-- **Return True when Make was invoked with -k / --keep-going.** (1 connections) — `scripts/run_make_stages.py`
-- **Return a short failure reason, or None if the stage is OK.** (1 connections) — `scripts/run_make_stages.py`
-- **Run `make <stage>`, stream output, return (exit_code, captured_output).** (1 connections) — `scripts/run_make_stages.py`
+- **Migration Workflow (Per File)** (7 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Step 1: Pre-Migration Assessment** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Step 2: Create Async Repository Instances** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Step 3: Convert Methods to Async** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Step 4: Update All Callers** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Step 5: Test Migration** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Step 6: Validate Performance** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/run_make_stages.py`
+- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

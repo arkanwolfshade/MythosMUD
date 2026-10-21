@@ -1,50 +1,60 @@
 # ChatChannelLoggerMixin
 
-> 34 nodes
+> 33 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **ChatChannelLoggerMixin** (19 connections) — `server/services/chat_channel_logger.py`
-- **Path** (8 connections)
-- **._queue_log_entry()** (7 connections) — `server/services/chat_channel_logger.py`
-- **.log_local_channel_message()** (6 connections) — `server/services/chat_channel_logger.py`
-- **Any** (6 connections)
-- **.get_global_channel_log_stats()** (5 connections) — `server/services/chat_channel_logger.py`
-- **.get_local_channel_log_stats()** (5 connections) — `server/services/chat_channel_logger.py`
-- **.log_global_channel_message()** (5 connections) — `server/services/chat_channel_logger.py`
-- **.log_system_channel_message()** (5 connections) — `server/services/chat_channel_logger.py`
-- **.log_whisper_channel_message()** (5 connections) — `server/services/chat_channel_logger.py`
-- **.cleanup_old_global_channel_logs()** (4 connections) — `server/services/chat_channel_logger.py`
-- **._get_global_channel_log_file()** (4 connections) — `server/services/chat_channel_logger.py`
-- **.get_global_channel_log_files()** (4 connections) — `server/services/chat_channel_logger.py`
-- **._get_local_channel_log_file()** (4 connections) — `server/services/chat_channel_logger.py`
-- **._get_system_channel_log_file()** (4 connections) — `server/services/chat_channel_logger.py`
-- **._get_whisper_channel_log_file()** (4 connections) — `server/services/chat_channel_logger.py`
-- **.get_local_channel_log_files()** (3 connections) — `server/services/chat_channel_logger.py`
-- **.cleanup_old_local_channel_logs()** (2 connections) — `server/services/chat_channel_logger.py`
-- **Log a global channel message to global.log file. Args: message_data: Global…** (1 connections) — `server/services/chat_channel_logger.py`
-- **Get the global channel log file path. Returns: Path to the global channel log…** (1 connections) — `server/services/chat_channel_logger.py`
-- **Log a system channel message to system.log file. Args: message_data: System…** (1 connections) — `server/services/chat_channel_logger.py`
-- **Log a whisper channel message to whisper.log file. Args: message_data: Whisper…** (1 connections) — `server/services/chat_channel_logger.py`
-- **Channel log paths, writers, stats, and cleanup. Requires ChatLogger attrs.** (1 connections) — `server/services/chat_channel_logger.py`
-- **Get the whisper channel log file path. Returns: Path to the whisper channel log…** (1 connections) — `server/services/chat_channel_logger.py`
-- **Get the system channel log file path. Returns: Path to the system channel log…** (1 connections) — `server/services/chat_channel_logger.py`
-- *... and 9 more nodes in this community*
+- **processing.py** (28 connections) — `server/command_handler/processing.py`
+- **test_command_processing.py** (17 connections) — `server/tests/unit/commands/test_command_processing.py`
+- **process_command_with_validation()** (13 connections) — `server/command_handler/processing.py`
+- **_dispatch_parsed_command()** (8 connections) — `server/command_handler/processing.py`
+- **_handle_processing_error()** (7 connections) — `server/command_handler/processing.py`
+- **_log_security_sensitive_command()** (7 connections) — `server/command_handler/processing.py`
+- **_run_command_service_for_validated()** (7 connections) — `server/command_handler/processing.py`
+- **_handle_validation_error()** (6 connections) — `server/command_handler/processing.py`
+- **_parse_command_line_or_client_error()** (6 connections) — `server/command_handler/processing.py`
+- **asyncio** (5 connections)
+- **test_process_command_with_validation_validation_error()** (5 connections) — `server/tests/unit/commands/test_command_processing.py`
+- **CommandExecutionRequest** (4 connections)
+- **test_handle_validation_error_security_sensitive()** (4 connections) — `server/tests/unit/commands/test_command_processing.py`
+- **test_process_command_with_validation_generic_error()** (4 connections) — `server/tests/unit/commands/test_command_processing.py`
+- **test_dispatch_parsed_command_client_error()** (3 connections) — `server/tests/unit/commands/test_command_processing.py`
+- **test_dispatch_parsed_command_success()** (3 connections) — `server/tests/unit/commands/test_command_processing.py`
+- **test_handle_processing_error()** (3 connections) — `server/tests/unit/commands/test_command_processing.py`
+- **test_parse_command_line_or_client_error_no_validated()** (3 connections) — `server/tests/unit/commands/test_command_processing.py`
+- **test_parse_command_line_or_client_error_with_message()** (3 connections) — `server/tests/unit/commands/test_command_processing.py`
+- **test_run_command_service_security_sensitive_audit()** (3 connections) — `server/tests/unit/commands/test_command_processing.py`
+- **test_log_security_sensitive_command_no_session()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
+- **test_parse_command_line_or_client_error_success()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
+- **Exception** (1 connections)
+- **ValidationError** (1 connections)
+- **Command Processing Logic for MythosMUD. This module contains the core command…** (1 connections) — `server/command_handler/processing.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
-- [ChatLogger](ChatLogger.md) (1 shared connections)
-- [test_room_utils.py](test_room_utils.py.md) (1 shared connections)
+- [look_container.py](look_container.py.md) (10 shared connections)
+- [test_container_websocket_events.py](test_container_websocket_events.py.md) (6 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (4 shared connections)
+- [Room](Room.md) (3 shared connections)
+- [test_look_item_helpers.py](test_look_item_helpers.py.md) (3 shared connections)
+- [command_parser.py](command_parser.py.md) (3 shared connections)
+- [MemoryMonitor](MemoryMonitor.md) (2 shared connections)
+- [CommandFactory](CommandFactory.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (2 shared connections)
+- [test_passive_corruption_flux_rate_overrides.py](test_passive_corruption_flux_rate_overrides.py.md) (2 shared connections)
+- [QuestService](QuestService.md) (2 shared connections)
+- [Dream Messaging Subsystem Design](Dream_Messaging_Subsystem_Design.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/chat_channel_logger.py`
+- `server/command_handler/processing.py`
+- `server/tests/unit/commands/test_command_processing.py`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 90 (92%)
+- INFERRED: 8 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

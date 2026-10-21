@@ -1,27 +1,33 @@
 # name
 
-> 5 nodes
+> 7 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **name** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **maxLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **E2E Tests Playwright** (3 connections) — `client/tests/e2e/README.md`
+- **Playwright storageState Session Sharing** (3 connections) — `client/tests/e2e/SESSION_SHARING_IMPLEMENTATION.md`
+- **Runtime Auth Isolation** (2 connections) — `client/tests/e2e/README.md`
+- **E2E Login Timeout Issue** (2 connections) — `client/tests/e2e/TEST_EXECUTION_STATUS.md`
+- **authenticatedTest Fixture** (2 connections) — `client/tests/e2e/TIMEOUT_ANALYSIS.md`
+- **E2E Timeout Analysis and Fixes** (2 connections) — `client/tests/e2e/TIMEOUT_ANALYSIS.md`
+- **Playwright E2E Runtime Tests** (1 connections) — `client/README.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [Middleware Package Design](Middleware_Package_Design.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- `client/README.md`
+- `client/tests/e2e/README.md`
+- `client/tests/e2e/SESSION_SHARING_IMPLEMENTATION.md`
+- `client/tests/e2e/TEST_EXECUTION_STATUS.md`
+- `client/tests/e2e/TIMEOUT_ANALYSIS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (38%)
+- INFERRED: 5 (62%)
 - AMBIGUOUS: 0 (0%)
 
 ---

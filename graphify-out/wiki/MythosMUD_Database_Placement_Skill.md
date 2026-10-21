@@ -1,11 +1,10 @@
 # MythosMUD Database Placement Skill
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **player_id is UUID** (1 connections) — `.cursor/skills/mythosmud-database-placement/SKILL.md`
-- **MythosMUD Database Placement Skill** (1 connections) — `.cursor/skills/mythosmud-database-placement/SKILL.md`
+- **20260914_npc_catalog_core_era_dev.sql** (0 connections) — `data/npc_catalog/generated/20260914_npc_catalog_core_era_dev.sql`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-database-placement/SKILL.md`
+- `data/npc_catalog/generated/20260914_npc_catalog_core_era_dev.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

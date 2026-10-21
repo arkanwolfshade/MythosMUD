@@ -1,35 +1,33 @@
 # test_emote_repository.py
 
-> 13 nodes
+> 11 nodes · cohesion 0.27
 
 ## Key Concepts
 
-- **test_emote_repository.py** (14 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
-- **asyncio** (5 connections)
-- **_mock_session()** (4 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
-- **test_get_emote_aliases()** (4 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
-- **test_get_emotes()** (4 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
-- **repo()** (3 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
-- **test_get_emote_aliases_db_error()** (3 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
-- **test_get_emotes_db_error()** (3 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
-- **test_get_emotes_empty()** (3 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
-- **_alias_row()** (2 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
-- **_emote_row()** (2 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
-- **fixture** (1 connections)
-- **Unit tests for EmoteRepository (#624).** (1 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
+- **e2e_reset_players.py** (5 connections) — `scripts/e2e_reset_players.py`
+- **_reset_e2e_players()** (5 connections) — `scripts/e2e_reset_players.py`
+- **_clear_folk_tonic_cooldowns()** (4 connections) — `scripts/e2e_reset_players.py`
+- **_reset_tutorial_character()** (4 connections) — `scripts/e2e_reset_players.py`
+- **_load_default_respawn_room()** (3 connections) — `scripts/e2e_reset_players.py`
+- **main()** (3 connections) — `scripts/e2e_reset_players.py`
+- **Connection** (2 connections)
+- **Forget the folk tonic cooldown (30 min) for the shared E2E players, so reruns…** (1 connections) — `scripts/e2e_reset_players.py`
+- **Entry point: run E2E player reset via anyio.** (1 connections) — `scripts/e2e_reset_players.py`
+- **Load DEFAULT_RESPAWN_ROOM from disk so analyzers do not need to resolve the…** (1 connections) — `scripts/e2e_reset_players.py`
+- **Put E2ETutorial back at the start of the tutorial, holding one Sling, with…** (1 connections) — `scripts/e2e_reset_players.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (7 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/persistence/repositories/test_emote_repository.py`
+- `scripts/e2e_reset_players.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (89%)
-- INFERRED: 3 (11%)
+- EXTRACTED: 14 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

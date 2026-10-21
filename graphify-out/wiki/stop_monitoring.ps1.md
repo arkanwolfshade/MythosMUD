@@ -1,10 +1,10 @@
 # stop_monitoring.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **stop_monitoring.ps1** (0 connections) — `scripts/stop_monitoring.ps1`
+- **Distill Skill** (0 connections) — `.cursor/skills/distill/SKILL.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/stop_monitoring.ps1`
+- `.cursor/skills/distill/SKILL.md`
 
 ## Audit Trail
 

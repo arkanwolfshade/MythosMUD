@@ -1,55 +1,54 @@
 # CombatConfiguration
 
-> 92 nodes
+> 73 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **CombatConfiguration** (26 connections) — `server/services/combat_configuration_service.py`
-- **TestCombatConfigurationService** (26 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **CombatConfigurationService** (18 connections) — `server/services/combat_configuration_service.py`
-- **combat_configuration_service.py** (17 connections) — `server/services/combat_configuration_service.py`
-- **CombatConfigurationScope** (8 connections) — `server/services/combat_configuration_service.py`
-- **.update_combat_configuration()** (8 connections) — `server/services/combat_configuration_service.py`
-- **test_combat_configuration_service.py** (8 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **CombatConfigurationError** (7 connections) — `server/services/combat_configuration_service.py`
-- **.get_combat_configuration_for_scope()** (7 connections) — `server/services/combat_configuration_service.py`
-- **get_combat_configuration()** (7 connections) — `server/services/combat_configuration_service.py`
-- **.get_combat_settings_summary()** (6 connections) — `server/services/combat_configuration_service.py`
-- **.validate_configuration()** (6 connections) — `server/services/combat_configuration_service.py`
-- **.from_dict()** (5 connections) — `server/services/combat_configuration_service.py`
-- **.is_combat_available()** (5 connections) — `server/services/combat_configuration_service.py`
-- **get_combat_config()** (5 connections) — `server/services/combat_configuration_service.py`
-- **Any** (5 connections)
-- **.clear_scope_override()** (4 connections) — `server/services/combat_configuration_service.py`
-- **.get_active_overrides()** (4 connections) — `server/services/combat_configuration_service.py`
-- **.service()** (4 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.to_dict()** (3 connections) — `server/services/combat_configuration_service.py`
-- **.get_combat_configuration()** (3 connections) — `server/services/combat_configuration_service.py`
-- **.refresh_configuration()** (3 connections) — `server/services/combat_configuration_service.py`
-- **.mock_config()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_configuration_custom()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.clear_all_overrides()** (2 connections) — `server/services/combat_configuration_service.py`
-- *... and 67 more nodes in this community*
+- **Alias** (51 connections) — `server/models/alias.py`
+- **test_alias.py** (29 connections) — `server/tests/unit/models/test_alias.py`
+- **alias.py** (7 connections) — `server/models/alias.py`
+- **test_alias_default_id()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- **test_alias_default_timestamps()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- **test_alias_default_version()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- **test_alias_equality_different_command()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- **test_alias_equality_different_ids()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- **test_alias_equality_different_name()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- **test_alias_equality_same_name_and_command()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- **test_alias_equality_with_non_alias()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- **test_alias_get_expanded_command_no_args()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- **test_alias_get_expanded_command_with_args()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- **test_alias_hash_different_command()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- **test_alias_hash_different_name()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- **test_alias_hash_same_name_and_command()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- **test_alias_hash_usable_in_set()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- **test_alias_is_reserved_command_case_insensitive()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- **test_alias_is_reserved_command_false()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- **test_alias_is_reserved_command_true()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- **test_alias_model_dump()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- **test_alias_model_dump_timestamps_isoformat()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- **test_alias_rejects_extra_fields()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- **test_alias_repr()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- **test_alias_update_timestamp()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- *... and 48 more nodes in this community*
 
 ## Relationships
 
-- [TestCombatConfiguration](TestCombatConfiguration.md) (15 shared connections)
-- [FeatureFlagService](FeatureFlagService.md) (3 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
-- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [test_help_docs.py](test_help_docs.py.md) (1 shared connections)
-- [CombatMonitoringService](CombatMonitoringService.md) (1 shared connections)
+- [command_parser.py](command_parser.py.md) (7 shared connections)
+- [QuestService](QuestService.md) (3 shared connections)
+- [asyncio](asyncio.md) (3 shared connections)
+- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (2 shared connections)
+- [InventoryService](InventoryService.md) (2 shared connections)
+- [test_game.py](test_game.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_configuration_service.py`
-- `server/tests/unit/services/test_combat_configuration_service.py`
+- `server/models/alias.py`
+- `server/tests/unit/models/test_alias.py`
 
 ## Audit Trail
 
-- EXTRACTED: 149 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 115 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

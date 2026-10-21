@@ -1,39 +1,53 @@
 # _StubPlayerRepo
 
-> 17 nodes
+> 27 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **_StubPlayerRepo** (17 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **UUID** (7 connections)
-- **.clear_player_inventory()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.delete_player()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_player_by_id()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_players_batch()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.soft_delete_player()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.update_player_last_active()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_active_players_by_user_id()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_player_by_name()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_player_by_user_id()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_players_by_user_id()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_players_in_room()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.list_players()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.save_player()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.save_players()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.validate_and_fix_player_room()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **RateLimiter** (17 connections) — `server/services/rate_limiter.py`
+- **._cleanup_old_entries()** (6 connections) — `server/services/rate_limiter.py`
+- **.get_limit()** (6 connections) — `server/services/rate_limiter.py`
+- **.check_rate_limit()** (5 connections) — `server/services/rate_limiter.py`
+- **.get_player_stats()** (5 connections) — `server/services/rate_limiter.py`
+- **.get_remaining_messages()** (4 connections) — `server/services/rate_limiter.py`
+- **.record_message()** (4 connections) — `server/services/rate_limiter.py`
+- **test_rate_limiter_initialization()** (4 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_rate_limiter_legacy_config()** (4 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **.get_system_stats()** (3 connections) — `server/services/rate_limiter.py`
+- **.is_player_rate_limited()** (3 connections) — `server/services/rate_limiter.py`
+- **Any** (2 connections)
+- **.reset_player_limits()** (2 connections) — `server/services/rate_limiter.py`
+- **.set_limit()** (2 connections) — `server/services/rate_limiter.py`
+- **Remove timestamps older than the window size. Args: player_id: Player ID…** (1 connections) — `server/services/rate_limiter.py`
+- **Check if a player is within rate limits for a channel. Args: player_id: Player…** (1 connections) — `server/services/rate_limiter.py`
+- **Record a message for rate limiting. Args: player_id: Player ID channel: Channel…** (1 connections) — `server/services/rate_limiter.py`
+- **Sliding window rate limiter for chat channels. Implements per-user, per-channel…** (1 connections) — `server/services/rate_limiter.py`
+- **Get rate limiting statistics for a player. Args: player_id: Player ID Returns:…** (1 connections) — `server/services/rate_limiter.py`
+- **Reset rate limiting for a player. Args: player_id: Player ID channel: Specific…** (1 connections) — `server/services/rate_limiter.py`
+- **Get system-wide rate limiting statistics. Returns: Dictionary with system…** (1 connections) — `server/services/rate_limiter.py`
+- **Check if a player is currently rate limited on a channel. Args: player_id:…** (1 connections) — `server/services/rate_limiter.py`
+- **Get the number of remaining messages a player can send on a channel. Args:…** (1 connections) — `server/services/rate_limiter.py`
+- **Set a custom rate limit for a channel. Args: channel: Channel name limit:…** (1 connections) — `server/services/rate_limiter.py`
+- **Get the current rate limit for a channel. Args: channel: Channel name Returns:…** (1 connections) — `server/services/rate_limiter.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) (3 shared connections)
+- [debugLogger](debugLogger.md) (3 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (2 shared connections)
+- [🔴 CRITICAL ISSUES](🔴_CRITICAL_ISSUES.md) (1 shared connections)
+- [Room](Room.md) (1 shared connections)
+- [HolidayEntry](HolidayEntry.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_protocols.py`
+- `server/services/rate_limiter.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 42 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

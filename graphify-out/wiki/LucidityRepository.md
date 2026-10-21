@@ -1,57 +1,53 @@
 # LucidityRepository
 
-> 73 nodes
+> 78 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **LucidityRepository** (27 connections) — `server/services/lucidity_repository.py`
-- **LucidityExposureState** (24 connections) — `server/models/lucidity.py`
-- **test_lucidity_repository.py** (24 connections) — `server/tests/unit/services/test_lucidity_repository.py`
-- **_MockAsyncSession** (16 connections) — `server/tests/unit/services/test_lucidity_repository.py`
-- **lucidity_repository.py** (12 connections) — `server/services/lucidity_repository.py`
-- **_scalar_result()** (11 connections) — `server/tests/unit/services/test_lucidity_repository.py`
-- **asyncio** (11 connections)
-- **UUID** (9 connections)
-- **_utc_now()** (7 connections) — `server/services/lucidity_repository.py`
-- **test_get_cooldown()** (7 connections) — `server/tests/unit/services/test_lucidity_repository.py`
-- **test_get_exposure_state()** (7 connections) — `server/tests/unit/services/test_lucidity_repository.py`
-- **test_get_or_create_player_lucidity_existing()** (7 connections) — `server/tests/unit/services/test_lucidity_repository.py`
-- **test_get_player_lucidity_returns_record()** (7 connections) — `server/tests/unit/services/test_lucidity_repository.py`
-- **test_increment_exposure_state_existing()** (7 connections) — `server/tests/unit/services/test_lucidity_repository.py`
-- **test_set_cooldown_update()** (7 connections) — `server/tests/unit/services/test_lucidity_repository.py`
-- **.increment_exposure_state()** (6 connections) — `server/services/lucidity_repository.py`
-- **.set_cooldown()** (6 connections) — `server/services/lucidity_repository.py`
-- **test_get_or_create_player_lucidity_creates()** (6 connections) — `server/tests/unit/services/test_lucidity_repository.py`
-- **test_increment_exposure_state_new()** (6 connections) — `server/tests/unit/services/test_lucidity_repository.py`
-- **test_set_cooldown_new()** (6 connections) — `server/tests/unit/services/test_lucidity_repository.py`
-- **.add_adjustment_log()** (5 connections) — `server/services/lucidity_repository.py`
-- **.get_cooldown()** (5 connections) — `server/services/lucidity_repository.py`
-- **.get_exposure_state()** (5 connections) — `server/services/lucidity_repository.py`
-- **.get_or_create_player_lucidity()** (5 connections) — `server/services/lucidity_repository.py`
-- **.get_player_lucidity()** (5 connections) — `server/services/lucidity_repository.py`
-- *... and 48 more nodes in this community*
+- **test_command_admin.py** (42 connections) — `server/tests/unit/models/test_command_admin.py`
+- **SummonCommand** (20 connections) — `server/models/command_admin.py`
+- **TeleportCommand** (18 connections) — `server/models/command_admin.py`
+- **ShutdownCommand** (11 connections) — `server/models/command_admin.py`
+- **.validate_direction_field()** (5 connections) — `server/models/command_admin.py`
+- **.validate_player_name_field()** (4 connections) — `server/models/command_admin.py`
+- **field_validator** (4 connections)
+- **.validate_prototype_id()** (4 connections) — `server/models/command_admin.py`
+- **.validate_player_name_field()** (4 connections) — `server/models/command_admin.py`
+- **test_teleport_command_validate_direction_valid()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_teleport_command_with_direction()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_goto_command_player_name_max_length()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_goto_command_player_name_min_length()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_goto_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_goto_command_validate_player_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_npc_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_npc_command_subcommand_max_length()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_npc_command_subcommand_min_length()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_npc_command_with_args()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_npc_command_with_subcommand()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_shutdown_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_shutdown_command_with_args()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_shutdown_command_with_cancel()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_shutdown_command_with_multiple_args()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_prototype_id_max_length()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- *... and 53 more nodes in this community*
 
 ## Relationships
 
-- [lucidity.py](lucidity.py.md) (18 shared connections)
-- [LucidityService](LucidityService.md) (12 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [test_database_helpers.py](test_database_helpers.py.md) (1 shared connections)
-- [active_lucidity_service.py](active_lucidity_service.py.md) (1 shared connections)
-- [.__init__](__init__.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (26 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (5 shared connections)
+- [test_message_filtering.py](test_message_filtering.py.md) (3 shared connections)
+- [test_look_item_helpers.py](test_look_item_helpers.py.md) (2 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/lucidity.py`
-- `server/services/lucidity_repository.py`
-- `server/tests/unit/models/test_lucidity_models.py`
-- `server/tests/unit/services/test_lucidity_repository.py`
+- `server/models/command_admin.py`
+- `server/tests/unit/models/test_command_admin.py`
 
 ## Audit Trail
 
-- EXTRACTED: 156 (88%)
-- INFERRED: 21 (12%)
+- EXTRACTED: 138 (95%)
+- INFERRED: 8 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

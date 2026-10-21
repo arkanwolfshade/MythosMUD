@@ -1,41 +1,35 @@
 # test_ascii_map_renderer_exits.py
 
-> 15 nodes
+> 13 nodes · cohesion 0.27
 
 ## Key Concepts
 
-- **test_ascii_map_renderer_exits.py** (9 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **TestGetExitEntriesForRoom** (5 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **TestGetHorizontalExitCharViewportBounds** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **renderer()** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_returns_entries_for_valid_exits()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_skips_exit_with_missing_target()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_returns_none_when_next_x_at_or_past_viewport_right()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **fixture** (1 connections)
-- **Unit tests for AsciiMapRenderer exit character and exit resolution. Guards…** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **Tests for _get_exit_entries_for_room.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **Valid exits for a room produce one entry with correct direction and coordinates.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **Exits whose targets are missing are skipped when building exit entries.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **Viewport bounds: return None when next cell is outside viewport.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **Returns None when the next horizontal cell lies at or beyond the viewport's…** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **Return a fresh AsciiMapRenderer instance for each test.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **analyze_idle_memory_samples.py** (8 connections) — `scripts/analyze_idle_memory_samples.py`
+- **JsonSample** (6 connections) — `scripts/analyze_idle_memory_samples.py`
+- **analyze()** (5 connections) — `scripts/analyze_idle_memory_samples.py`
+- **_append_qualname_deltas()** (5 connections) — `scripts/analyze_idle_memory_samples.py`
+- **_append_slope_rows()** (4 connections) — `scripts/analyze_idle_memory_samples.py`
+- **_qualname_counts()** (4 connections) — `scripts/analyze_idle_memory_samples.py`
+- **_slope_per_hour()** (3 connections) — `scripts/analyze_idle_memory_samples.py`
+- **main()** (2 connections) — `scripts/analyze_idle_memory_samples.py`
+- **Path** (1 connections)
+- **Analyze idle memory JSONL samples (warmup + measurement windows).** (1 connections) — `scripts/analyze_idle_memory_samples.py`
+- **JSONL row with numeric fields used for slope analysis.** (1 connections) — `scripts/analyze_idle_memory_samples.py`
+- **Read the `task_qualnames` histogram out of one sample row. `JsonSample` is…** (1 connections) — `scripts/analyze_idle_memory_samples.py`
+- **Report which coroutine qualnames grew between the first and last measurement…** (1 connections) — `scripts/analyze_idle_memory_samples.py`
 
 ## Relationships
 
-- [AsciiMapRenderer](AsciiMapRenderer.md) (7 shared connections)
-- [RoomService](RoomService.md) (1 shared connections)
-- [TestHorizontalExitCharBetween](TestHorizontalExitCharBetween.md) (1 shared connections)
-- [TestVerticalExitCharBetween](TestVerticalExitCharBetween.md) (1 shared connections)
-- [TestResolveExitTarget](TestResolveExitTarget.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- `scripts/analyze_idle_memory_samples.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (92%)
-- INFERRED: 2 (8%)
+- EXTRACTED: 21 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

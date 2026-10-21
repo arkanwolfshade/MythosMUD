@@ -1,31 +1,27 @@
 # AuthRateLimitMiddleware
 
-> 8 nodes
+> 6 nodes · cohesion 0.47
 
 ## Key Concepts
 
-- **AuthRateLimitMiddleware** (5 connections) — `server/middleware/auth_rate_limit.py`
-- **.__call__()** (5 connections) — `server/middleware/auth_rate_limit.py`
-- **.__init__()** (2 connections) — `server/middleware/auth_rate_limit.py`
-- **ASGIApp** (1 connections)
-- **Receive** (1 connections)
-- **Scope** (1 connections)
-- **Send** (1 connections)
-- **Pure ASGI middleware; HTTP POST login/register only.** (1 connections) — `server/middleware/auth_rate_limit.py`
+- **add_suppression_to_file()** (4 connections) — `scripts/fix_psscriptanalyzer.py`
+- **main()** (4 connections) — `scripts/fix_psscriptanalyzer.py`
+- **fix_psscriptanalyzer.py** (2 connections) — `scripts/fix_psscriptanalyzer.py`
+- **Path** (2 connections)
+- **Add suppression comment to a PowerShell file if it uses Write-Host and doesn't…** (1 connections) — `scripts/fix_psscriptanalyzer.py`
+- **Process all PowerShell scripts in the scripts directory.** (1 connections) — `scripts/fix_psscriptanalyzer.py`
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [auth_rate_limit.py](auth_rate_limit.py.md) (1 shared connections)
-- [test_auth_rate_limit.py](test_auth_rate_limit.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/middleware/auth_rate_limit.py`
+- `scripts/fix_psscriptanalyzer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

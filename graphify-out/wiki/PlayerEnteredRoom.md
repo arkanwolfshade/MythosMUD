@@ -1,74 +1,63 @@
 # PlayerEnteredRoom
 
-> 197 nodes
+> 282 nodes · cohesion 0.01
 
 ## Key Concepts
 
-- **PlayerEnteredRoom** (91 connections) — `server/events/event_types.py`
-- **test_population_control.py** (65 connections) — `server/tests/unit/npc/test_population_control.py`
-- **PlayerLeftRoom** (56 connections) — `server/events/event_types.py`
-- **NPCEventReaction** (23 connections) — `server/npc/event_reaction_system.py`
-- **test_event_reaction_speech.py** (22 connections) — `server/tests/unit/npc/test_event_reaction_speech.py`
-- **register_default_reactions_for_npc()** (20 connections) — `server/npc/npc_default_reactions.py`
-- **test_quest_events.py** (17 connections) — `server/tests/unit/game/test_quest_events.py`
-- **test_reaction_revival_integration.py** (17 connections) — `server/tests/unit/npc/test_reaction_revival_integration.py`
-- **subscribe_quest_events()** (15 connections) — `server/game/quest/quest_events.py`
-- **quest_events.py** (15 connections) — `server/game/quest/quest_events.py`
-- **NPCEventReactionTemplates** (14 connections) — `server/npc/event_reaction_system.py`
-- **test_npc_default_reactions.py** (11 connections) — `server/tests/unit/npc/test_npc_default_reactions.py`
-- **build_corruption_aware_greeting()** (10 connections) — `server/npc/corruption_reactions.py`
-- **_shopkeeper()** (9 connections) — `server/tests/unit/npc/test_reaction_revival_integration.py`
-- **_make_on_player_entered()** (8 connections) — `server/game/quest/quest_events.py`
-- **_make_on_npc_died()** (7 connections) — `server/game/quest/quest_events.py`
-- **_make_on_player_left()** (7 connections) — `server/game/quest/quest_events.py`
-- **test_farewell_and_spoke_reactions_schedule_speech()** (7 connections) — `server/tests/unit/npc/test_event_reaction_speech.py`
-- **test_greeting_respects_the_per_npc_per_event_cooldown()** (6 connections) — `server/tests/unit/npc/test_reaction_revival_integration.py`
-- **test_no_reactions_registered_without_a_reaction_system()** (6 connections) — `server/tests/unit/npc/test_reaction_revival_integration.py`
-- **asyncio** (6 connections)
-- **.npc_attacked_retaliation()** (5 connections) — `server/npc/event_reaction_system.py`
-- **.player_entered_room_greeting()** (5 connections) — `server/npc/event_reaction_system.py`
-- **.player_left_room_farewell()** (5 connections) — `server/npc/event_reaction_system.py`
-- **.player_spoke_response()** (5 connections) — `server/npc/event_reaction_system.py`
-- *... and 172 more nodes in this community*
+- **connection_manager_methods.py** (95 connections) — `server/realtime/connection_manager_methods.py`
+- **ConnectionManager** (64 connections) — `server/realtime/connection_manager_methods.py`
+- **test_connection_manager_methods.py** (52 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_connection_delegates.py** (51 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
+- **connection_delegates.py** (38 connections) — `server/realtime/connection_delegates.py`
+- **asyncio** (27 connections)
+- **UUID** (24 connections)
+- **asyncio** (18 connections)
+- **cleanup_dead_websocket_impl()** (14 connections) — `server/realtime/connection_delegates.py`
+- **validate_token_impl()** (13 connections) — `server/realtime/connection_delegates.py`
+- **connection_models.py** (13 connections) — `server/realtime/connection_models.py`
+- **delegate_game_state_provider()** (12 connections) — `server/realtime/connection_delegates.py`
+- **delegate_message_broadcaster()** (12 connections) — `server/realtime/connection_delegates.py`
+- **delegate_connection_cleaner()** (11 connections) — `server/realtime/connection_delegates.py`
+- **delegate_health_monitor()** (11 connections) — `server/realtime/connection_delegates.py`
+- **delegate_personal_message_sender()** (11 connections) — `server/realtime/connection_delegates.py`
+- **delegate_health_monitor_sync()** (10 connections) — `server/realtime/connection_delegates.py`
+- **UUID** (10 connections)
+- **delegate_connection_cleaner_sync()** (9 connections) — `server/realtime/connection_delegates.py`
+- **delegate_personal_message_sender_sync()** (9 connections) — `server/realtime/connection_delegates.py`
+- **delegate_room_event_handler()** (9 connections) — `server/realtime/connection_delegates.py`
+- **_async_callable()** (8 connections) — `server/realtime/connection_delegates.py`
+- **delegate_game_state_provider_sync()** (8 connections) — `server/realtime/connection_delegates.py`
+- **_close_dead_websocket_if_open()** (7 connections) — `server/realtime/connection_delegates.py`
+- **_WebsocketCleanupManager** (7 connections) — `server/realtime/connection_delegates.py`
+- *... and 257 more nodes in this community*
 
 ## Relationships
 
-- [EventBus](EventBus.md) (75 shared connections)
-- [event_handler.py](event_handler.py.md) (10 shared connections)
-- [player_event_handlers.py](player_event_handlers.py.md) (10 shared connections)
-- [FollowService](FollowService.md) (9 shared connections)
-- [test_player_event_handlers_room.py](test_player_event_handlers_room.py.md) (8 shared connections)
-- [NPCPopulationController](NPCPopulationController.md) (8 shared connections)
-- [PlayerDPUpdated](PlayerDPUpdated.md) (7 shared connections)
-- [CorruptionTier](CorruptionTier.md) (6 shared connections)
-- [NpcDisposition](NpcDisposition.md) (6 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [test_event_handler.py](test_event_handler.py.md) (6 shared connections)
-- [test_player_event_handlers_room_left.py](test_player_event_handlers_room_left.py.md) (6 shared connections)
+- [connection_initialization.py](connection_initialization.py.md) (22 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (15 shared connections)
+- [NATSConnectionStateMachine](NATSConnectionStateMachine.md) (8 shared connections)
+- [help_content.py](help_content.py.md) (7 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (4 shared connections)
+- [Room](Room.md) (4 shared connections)
+- [test_quest_service_collect.py](test_quest_service_collect.py.md) (4 shared connections)
+- [SpellEffects](SpellEffects.md) (4 shared connections)
+- [.publish_with_pool](publish_with_pool.md) (3 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (3 shared connections)
+- [test_quest_service.py](test_quest_service.py.md) (3 shared connections)
+- [test_look_container.py](test_look_container.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/events/event_types.py`
-- `server/game/follow_service.py`
-- `server/game/quest/quest_events.py`
-- `server/npc/corruption_reactions.py`
-- `server/npc/event_reaction_system.py`
-- `server/npc/npc_default_reactions.py`
-- `server/npc/spawning_service.py`
-- `server/realtime/player_event_handlers_room.py`
-- `server/tests/unit/game/test_quest_events.py`
-- `server/tests/unit/npc/test_corruption_reactions.py`
-- `server/tests/unit/npc/test_event_reaction_speech.py`
-- `server/tests/unit/npc/test_npc_default_reactions.py`
-- `server/tests/unit/npc/test_population_control.py`
-- `server/tests/unit/npc/test_reaction_revival_integration.py`
-- `server/tests/unit/realtime/test_message_category_invariants.py`
-- `server/tests/unit/realtime/test_room_system_message_categories.py`
+- `server/realtime/connection_delegates.py`
+- `server/realtime/connection_manager_methods.py`
+- `server/realtime/connection_models.py`
+- `server/tests/unit/realtime/test_connection_delegates.py`
+- `server/tests/unit/realtime/test_connection_manager_methods.py`
 
 ## Audit Trail
 
-- EXTRACTED: 451 (89%)
-- INFERRED: 57 (11%)
+- EXTRACTED: 643 (99%)
+- INFERRED: 8 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

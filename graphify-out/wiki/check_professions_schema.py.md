@@ -1,10 +1,10 @@
 # check_professions_schema.py
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **check_professions_schema.py** (0 connections) — `scripts/check_professions_schema.py`
+- **run_tests.ps1** (0 connections) — `scripts/tests/run_tests.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/check_professions_schema.py`
+- `scripts/tests/run_tests.ps1`
 
 ## Audit Trail
 

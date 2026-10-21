@@ -1,52 +1,70 @@
 # format_occupant_display_name
 
-> 24 nodes
+> 54 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **format_occupant_display_name()** (20 connections) — `server/realtime/occupant_display.py`
-- **occupant_display.py** (16 connections) — `server/realtime/occupant_display.py`
-- **test_occupant_display.py** (16 connections) — `server/tests/unit/realtime/test_occupant_display.py`
-- **_reset_cache()** (9 connections) — `server/tests/unit/realtime/test_occupant_display.py`
-- **_no_grace_patches()** (7 connections) — `server/tests/unit/realtime/test_occupant_display.py`
-- **_apply_grace_badges()** (6 connections) — `server/realtime/occupant_display.py`
-- **test_format_occupant_display_name_no_badge_when_touched()** (6 connections) — `server/tests/unit/realtime/test_occupant_display.py`
-- **test_format_occupant_display_name_badge_defiled()** (5 connections) — `server/tests/unit/realtime/test_occupant_display.py`
-- **test_format_occupant_display_name_badge_from_marked()** (5 connections) — `server/tests/unit/realtime/test_occupant_display.py`
-- **test_format_occupant_display_name_badge_warped()** (5 connections) — `server/tests/unit/realtime/test_occupant_display.py`
-- **test_format_occupant_display_name_no_connection_manager_returns_name_unchanged()** (5 connections) — `server/tests/unit/realtime/test_occupant_display.py`
-- **UUID** (5 connections)
-- **_apply_corruption_badge()** (4 connections) — `server/realtime/occupant_display.py`
-- **test_format_occupant_display_name_combines_grace_and_corruption_badges()** (4 connections) — `server/tests/unit/realtime/test_occupant_display.py`
-- **test_format_occupant_display_name_no_badge_when_pure()** (4 connections) — `server/tests/unit/realtime/test_occupant_display.py`
-- **test_format_occupant_display_name_unparseable_player_id_returns_name_unchanged()** (4 connections) — `server/tests/unit/realtime/test_occupant_display.py`
-- **_parse_occupant_player_id()** (3 connections) — `server/realtime/occupant_display.py`
-- **Any** (2 connections)
-- **Shared occupant display names for look text and Occupants panel events.** (1 connections) — `server/realtime/occupant_display.py`
-- **Append a corruption badge for a `marked`-or-worse tier. Cache-only (#815's…** (1 connections) — `server/realtime/occupant_display.py`
-- **Format an in-room player's Occupants/look name: grace badges plus a corruption…** (1 connections) — `server/realtime/occupant_display.py`
-- **Unit tests for shared occupant display name formatting. Tests…** (1 connections) — `server/tests/unit/realtime/test_occupant_display.py`
-- **#815: the permanent scar is deliberately invisible in the room -- only a…** (1 connections) — `server/tests/unit/realtime/test_occupant_display.py`
-- **No connection_manager means no grace/corruption lookup is even attempted.** (1 connections) — `server/tests/unit/realtime/test_occupant_display.py`
+- **safe_run_static()** (35 connections) — `scripts/utils/safe_subprocess.py`
+- **safe_subprocess.py** (22 connections) — `scripts/utils/safe_subprocess.py`
+- **safe_run()** (22 connections) — `scripts/utils/safe_subprocess.py`
+- **worktree-ops.py** (11 connections) — `scripts/worktree-ops.py`
+- **get_project_root()** (8 connections) — `scripts/worktree-ops.py`
+- **run_test_ci.py** (7 connections) — `scripts/run_test_ci.py`
+- **get_current_worktree()** (7 connections) — `scripts/worktree-ops.py`
+- **validate_path()** (6 connections) — `scripts/utils/safe_subprocess.py`
+- **install_dependencies()** (6 connections) — `scripts/worktree-ops.py`
+- **main()** (6 connections) — `scripts/worktree-ops.py`
+- **run_format()** (6 connections) — `scripts/worktree-ops.py`
+- **run_lint()** (6 connections) — `scripts/worktree-ops.py`
+- **run_tests()** (6 connections) — `scripts/worktree-ops.py`
+- **show_status()** (6 connections) — `scripts/worktree-ops.py`
+- **sqlint.py** (5 connections) — `scripts/sqlint.py`
+- **validate_command()** (5 connections) — `scripts/utils/safe_subprocess.py`
+- **run_psql_command()** (4 connections) — `scripts/load_seed_data.py`
+- **_resolve_sqlint_cmd()** (4 connections) — `scripts/sqlint.py`
+- **run_command()** (4 connections) — `scripts/worktree-ops.py`
+- **install.py** (3 connections) — `scripts/install.py`
+- **main()** (3 connections) — `scripts/load_seed_data.py`
+- **load_seed_data.py** (3 connections) — `scripts/load_seed_data.py`
+- **_is_tool_crash()** (3 connections) — `scripts/sqlint.py`
+- **Path** (3 connections)
+- **bandit.py** (2 connections) — `scripts/bandit.py`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [CorruptionTier](CorruptionTier.md) (10 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
-- [test_look_room.py](test_look_room.py.md) (3 shared connections)
-- [AttributeError](AttributeError.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (2 shared connections)
+- [check_no_production_assert.py](check_no_production_assert.py.md) (6 shared connections)
+- [get_engine](get_engine.md) (5 shared connections)
+- [Test Suite Refactoring Plan](Test_Suite_Refactoring_Plan.md) (4 shared connections)
+- [test_game_state_provider.py](test_game_state_provider.py.md) (4 shared connections)
+- [Test Value Distribution Chart](Test_Value_Distribution_Chart.md) (3 shared connections)
+- [asyncio](asyncio.md) (3 shared connections)
+- [environment](environment.md) (3 shared connections)
+- [test_quest_instance_repository.py](test_quest_instance_repository.py.md) (3 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (2 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (1 shared connections)
+- [GameClientV2.tsx](GameClientV2.tsx.md) (1 shared connections)
+- [Room](Room.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/occupant_display.py`
-- `server/tests/unit/realtime/test_occupant_display.py`
+- `scripts/bandit.py`
+- `scripts/build.py`
+- `scripts/format.py`
+- `scripts/install.py`
+- `scripts/lint.py`
+- `scripts/load_seed_data.py`
+- `scripts/run.py`
+- `scripts/run_test_ci.py`
+- `scripts/sqlfluff.py`
+- `scripts/sqlint.py`
+- `scripts/utils/safe_subprocess.py`
+- `scripts/worktree-ops.py`
 
 ## Audit Trail
 
-- EXTRACTED: 72 (92%)
-- INFERRED: 6 (8%)
+- EXTRACTED: 132 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

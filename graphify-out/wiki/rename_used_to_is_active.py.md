@@ -1,26 +1,24 @@
 # rename_used_to_is_active.py
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **rename_used_to_is_active.py** (4 connections) — `server/scripts/rename_used_to_is_active.py`
-- **apply_migration()** (3 connections) — `server/scripts/rename_used_to_is_active.py`
-- **main()** (3 connections) — `server/scripts/rename_used_to_is_active.py`
-- **Main entry point for the migration script.** (1 connections) — `server/scripts/rename_used_to_is_active.py`
-- **Apply the migration to rename used back to is_active. Args: database_url:…** (1 connections) — `server/scripts/rename_used_to_is_active.py`
+- **🎯 Next Steps** (3 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **Future Enhancements** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **Immediate Actions** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
+- [author_sanitarium_coords.py](author_sanitarium_coords.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/scripts/rename_used_to_is_active.py`
+- `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

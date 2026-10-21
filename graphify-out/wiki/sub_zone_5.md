@@ -1,25 +1,24 @@
 # sub_zone
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **sub_zone** (4 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **pattern** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **Chaosium graphify snapshot - Petersen's Abominations** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/MANIFEST.md`
+- **petersen-s-abominations/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/MANIFEST.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,44 +1,62 @@
 # test_logging_file_categories.py
 
-> 22 nodes
+> 56 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **test_logging_file_categories.py** (14 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
-- **_reset_logger()** (5 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
-- **test_combat_loggers_still_get_debug_level_in_e2e_test()** (4 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
-- **test_npc_loggers_keep_debug_level_in_local_environment()** (4 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
-- **test_npc_loggers_suppressed_to_info_in_e2e_test_regardless_of_debug_level()** (4 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
-- **test_inventory_category_also_catches_equip_unequip_command_logs()** (3 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
-- **test_inventory_category_covers_every_container_and_inventory_service_module()** (3 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
-- **test_realtime_module_loggers_match_communications_category()** (3 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
-- **test_infrastructure_category_removed()** (2 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
-- **test_no_category_still_references_infrastructure_module()** (2 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
-- **test_persistence_category_does_not_reference_deleted_persistence_layer_class()** (2 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
-- **Unit tests for DEFAULT_LOG_CATEGORIES. Regression coverage for #687: the…** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
-- **Undo add_handler_to_loggers' effects on both loggers it touches for a given…** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
-- **#297/#610: NPC behavior-engine/threading debug lines fire continuously enough…** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
-- **The e2e-only suppression must not leak into local development, where full NPC…** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
-- **Regression guard: the new npc-specific e2e branch must not shadow the existing…** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
-- **No "infrastructure" category: server/infrastructure/ (its only logger source)…** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
-- **No surviving category's logger-name list should point at the deleted…** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
-- **#60 audit: the sync `PersistenceLayer` class was deleted 2025-12-08…** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
-- **#297: get_logger(__name__) in server/realtime/*.py produces…** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
-- **#688: DEFAULT_LOG_CATEGORIES["inventory"] must list every server/services/…** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
-- **#688: server/commands/inventory_equip_command.py and…** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_categories.py`
+- **WebSocketRequestContext** (26 connections) — `server/realtime/request_context.py`
+- **command_request_app_state()** (16 connections) — `server/command_handler/command_execution_request.py`
+- **test_request_context.py** (16 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **command_execution_request.py** (12 connections) — `server/command_handler/command_execution_request.py`
+- **create_websocket_request_context()** (11 connections) — `server/realtime/request_context.py`
+- **request_context.py** (10 connections) — `server/realtime/request_context.py`
+- **test_command_execution_request.py** (8 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
+- **Any** (7 connections)
+- **.get_event_bus()** (4 connections) — `server/realtime/request_context.py`
+- **test_command_request_app_state_from_http_request_like_object()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
+- **test_command_request_app_state_from_websocket_request_context()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
+- **test_create_websocket_request_context()** (4 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_create_websocket_request_context_no_user()** (4 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **.get_alias_storage()** (3 connections) — `server/realtime/request_context.py`
+- **.get_persistence()** (3 connections) — `server/realtime/request_context.py`
+- **.__init__()** (3 connections) — `server/realtime/request_context.py`
+- **.set_alias_storage()** (3 connections) — `server/realtime/request_context.py`
+- **.set_app_state_services()** (3 connections) — `server/realtime/request_context.py`
+- **test_command_request_app_state_missing_app_or_state_returns_none()** (3 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
+- **test_websocket_request_context_get_alias_storage()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_get_alias_storage_not_set()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_get_event_bus()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_get_event_bus_none()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_get_persistence()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_init()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
-- [logging_file_setup.py](logging_file_setup.py.md) (9 shared connections)
+- [mapUtils.ts](mapUtils.ts.md) (6 shared connections)
+- [go_command.py](go_command.py.md) (3 shared connections)
+- [MemoryMonitor](MemoryMonitor.md) (3 shared connections)
+- [_RecordingRoom](_RecordingRoom.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [ContainerCreateParams](ContainerCreateParams.md) (2 shared connections)
+- [look_container.py](look_container.py.md) (2 shared connections)
+- [test_passive_corruption_flux_rate_overrides.py](test_passive_corruption_flux_rate_overrides.py.md) (1 shared connections)
+- [ChatChannelLoggerMixin](ChatChannelLoggerMixin.md) (1 shared connections)
+- [QuestService](QuestService.md) (1 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
+- [test_player_event_handlers_room.py](test_player_event_handlers_room.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/structured_logging/test_logging_file_categories.py`
+- `server/command_handler/command_execution_request.py`
+- `server/realtime/request_context.py`
+- `server/tests/unit/command_handler/test_command_execution_request.py`
+- `server/tests/unit/realtime/test_request_context.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 110 (96%)
+- INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

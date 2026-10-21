@@ -1,60 +1,63 @@
 # HolidayEntry
 
-> 46 nodes
+> 101 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **HolidayEntry** (31 connections) — `server/schemas/calendar/calendar.py`
-- **test_calendar_schemas.py** (21 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **ScheduleCollection** (12 connections) — `server/schemas/calendar/calendar.py`
-- **calendar/__init__.py** (11 connections) — `server/schemas/calendar/__init__.py`
-- **calendar/calendar.py** (9 connections) — `server/schemas/calendar/calendar.py`
-- **extract_observance_ids()** (8 connections) — `server/schemas/calendar/calendar.py`
-- **load_schedule_directory()** (8 connections) — `server/schemas/calendar/calendar.py`
-- **slugify_observance()** (6 connections) — `server/schemas/calendar/calendar.py`
-- **.load_file()** (5 connections) — `server/schemas/calendar/calendar.py`
-- **.load_file()** (5 connections) — `server/schemas/calendar/calendar.py`
-- **test_holiday_collection()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_holiday_collection_ensure_unique_ids()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_holiday_collection_id_map()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **BaseModel** (4 connections)
-- **.id_map()** (3 connections) — `server/schemas/calendar/calendar.py`
-- **test_extract_observance_ids()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_holiday_collection_load_file()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_holiday_entry()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_holiday_entry_validation_bonus_tags()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_holiday_entry_validation_season()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_holiday_entry_validation_tradition()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_schedule_collection_load_file()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_slugify_observance()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **Path** (3 connections)
-- **Calendar ingestion schemas for MythosMUD. These models provide a typed wrapper…** (1 connections) — `server/schemas/calendar/calendar.py`
-- *... and 21 more nodes in this community*
+- **test_room_sync_service.py** (40 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **RoomSyncService** (22 connections) — `server/services/room_sync_service.py`
+- **asyncio** (14 connections)
+- **.__init__()** (9 connections) — `server/realtime/event_handler.py`
+- **get_room_sync_service()** (8 connections) — `server/services/room_sync_service.py`
+- **chat_logger()** (8 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Any** (7 connections)
+- **._handle_stale_room_data()** (6 connections) — `server/services/room_sync_service.py`
+- **.__init__()** (6 connections) — `server/services/room_sync_service.py`
+- **room_sync_service()** (5 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **.__init__()** (4 connections) — `server/services/rate_limiter.py`
+- **._fetch_fresh_room_data()** (4 connections) — `server/services/room_sync_service.py`
+- **._process_room_update_with_validation()** (4 connections) — `server/services/room_sync_service.py`
+- **fixture** (4 connections)
+- **room_sync_service_with_room_service()** (4 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **sample_event()** (4 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_fetch_fresh_room_data_handles_error()** (4 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_room_update_with_validation_handles_error()** (4 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **.get_room_data_cache_stats()** (3 connections) — `server/services/room_sync_service.py`
+- **._invalidate_stale_cache()** (3 connections) — `server/services/room_sync_service.py`
+- **.process_event_with_ordering()** (3 connections) — `server/services/room_sync_service.py`
+- **._process_room_transition()** (3 connections) — `server/services/room_sync_service.py`
+- **.set_room_service()** (3 connections) — `server/services/room_sync_service.py`
+- **mock_room_service()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_fetch_fresh_room_data_no_room_service()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- *... and 76 more nodes in this community*
 
 ## Relationships
 
-- [HolidayService](HolidayService.md) (11 shared connections)
-- [ScheduleEntry](ScheduleEntry.md) (9 shared connections)
-- [.get_upcoming_holidays](get_upcoming_holidays.md) (5 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (5 shared connections)
-- [validate_calendar.py](validate_calendar.py.md) (5 shared connections)
-- [test_game.py](test_game.py.md) (3 shared connections)
-- [field_validator](field_validator.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [_holiday_entry_from_row](_holiday_entry_from_row.md) (1 shared connections)
-- [.sample_holidays](sample_holidays.md) (1 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
+- [Room](Room.md) (6 shared connections)
+- [get_username_from_user](get_username_from_user.md) (3 shared connections)
+- [security.ts](security.ts.md) (3 shared connections)
+- [PlayerRespawnWrapper](PlayerRespawnWrapper.md) (2 shared connections)
+- [ZoneConfiguration](ZoneConfiguration.md) (2 shared connections)
+- [test_room_renderer.py](test_room_renderer.py.md) (2 shared connections)
+- [WearableContainerService](WearableContainerService.md) (2 shared connections)
+- [test_npc_threading_messages.py](test_npc_threading_messages.py.md) (2 shared connections)
+- [test_utility_threat.py](test_utility_threat.py.md) (2 shared connections)
+- [look_container.py](look_container.py.md) (1 shared connections)
+- [test_player_combat_service.py](test_player_combat_service.py.md) (1 shared connections)
+- [_StubPlayerRepo](_StubPlayerRepo.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/calendar/__init__.py`
-- `server/schemas/calendar/calendar.py`
-- `server/tests/unit/schemas/test_calendar_schemas.py`
+- `server/realtime/event_handler.py`
+- `server/services/rate_limiter.py`
+- `server/services/room_sync_service.py`
+- `server/tests/unit/services/test_chat_logger.py`
+- `server/tests/unit/services/test_room_sync_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 115 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 148 (91%)
+- INFERRED: 14 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

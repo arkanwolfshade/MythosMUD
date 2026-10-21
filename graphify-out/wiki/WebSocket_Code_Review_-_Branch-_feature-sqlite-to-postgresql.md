@@ -1,35 +1,35 @@
 # WebSocket Code Review - Branch: feature/sqlite-to-postgresql
 
-> 30 nodes
+> 29 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **WebSocket Code Review - Branch: feature/sqlite-to-postgresql** (10 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **🟡 Anti-Patterns and Code Smells** (5 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **🔴 Critical Issues** (5 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **✅ Positive Findings** (5 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **📋 Recommendations Summary** (4 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **🟢 Performance Concerns** (3 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **🔵 Security Considerations** (3 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **WEBSOCKET_CODE_REVIEW.md** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **10. **No Message Batching**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **11. **Missing Rate Limiting on WebSocket Messages**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **12. **Insufficient Authentication Validation**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **1. **Dependency Injection Pattern**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **1. **Event Loop Anti-Pattern in Connection Manager**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **2. **Missing Input Validation on Server Side**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **2. **Modern Async Patterns**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **3. **Error Boundaries**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **3. **Synchronous Blocking Operations in Async Context**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **4. **Large Payload Risk in Room Updates**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **4. **Security**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **5. **Complex Event Handlers**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **6. **Tight Coupling Between Components**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **7. **Missing Reconnection Logic on Server**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **8. **Error Handling Gaps**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **9. **Inefficient Room Occupant Lookups**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- **Conclusion** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
-- *... and 5 more nodes in this community*
+- **🔴 CRITICAL ISSUES** (9 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **PostgreSQL Anti-Patterns Code Review** (9 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **🟡 HIGH PRIORITY ISSUES** (6 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **🟢 MEDIUM PRIORITY ISSUES** (4 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **📋 SUMMARY OF RECOMMENDATIONS** (4 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **POSTGRESQL_ANTI_PATTERNS_REVIEW.md** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **10. Use of `BETWEEN` with Integer Ranges** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **11. Missing Indexes on Foreign Keys** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **12. Inconsistent Constraint Naming** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **13. Mixed Case in Table/Column Names** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **14. Missing `UNIQUE` Constraints Where Appropriate** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **15. Inconsistent Use of `NOT NULL` Constraints** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **16. Missing Documentation for Complex Constraints** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **1. Use of `serial`/`SERIAL` Instead of `bigint generated always as identity`** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **2. Use of `INTEGER` Instead of `bigint` for Primary Keys** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **3. Inconsistent SQL Keyword Formatting** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **4. Use of `varchar(n)` Where `text` Would Be Appropriate** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **5. Missing Table and Column Comments** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **6. Mixed Naming Conventions (snake_case vs UPPER_CASE)** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **7. Use of Quoted Identifiers (Double Quotes)** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **8. Missing Explicit `AS` Keywords in Aliases** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **9. Inconsistent Primary Key Types (UUID vs varchar vs integer)** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **Executive Summary** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **🔍 FILES REQUIRING IMMEDIATE ATTENTION** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **✅ GOOD PRACTICES FOUND** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
@@ -37,11 +37,11 @@
 
 ## Source Files
 
-- `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
+- EXTRACTED: 28 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

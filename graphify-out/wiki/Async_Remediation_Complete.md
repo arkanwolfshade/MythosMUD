@@ -1,40 +1,37 @@
 # Async Remediation Complete
 
-> 17 nodes
+> 16 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **Async Remediation Complete** (11 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **🚀 Next Steps** (4 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **🎯 What Was Done** (4 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **🎓 Key Takeaway** (3 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **Status**: ✅**COMPLETE AND READY FOR DEPLOYMENT** (2 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **Adjusts spectacles with scholarly satisfaction** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **Critical Fixes Implemented (4 Code Changes)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **December 3, 2025** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **Documentation Created (5 Documents, ~2,500 lines)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **📚 Key Documents** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **Mission Accomplished** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **Next Sprint (Optional)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **📊 Results Summary** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **Tests Created (1 Comprehensive Suite)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **This Week** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **Today** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **test_async_audit_compliance.py** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **test_check_pr_issue_references.py** (15 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
+- **Tests for scripts/check_pr_issue_references.py. Covers the closing-keyword…** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
+- **test_bare_reference_is_not_linked()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
+- **test_closes_keyword_links_the_issue()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
+- **test_closes_links_multiple_comma_separated_issues()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
+- **test_fixes_and_resolved_keywords_link_case_insensitively()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
+- **test_get_open_issue_numbers_empty_candidates_short_circuits()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
+- **test_get_open_issue_numbers_filters_to_open_only()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
+- **test_get_open_issue_numbers_returns_none_on_lookup_failure()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
+- **test_keyword_linked_and_bare_reference_coexist()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
+- **test_main_clean_when_no_references()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
+- **test_main_degrades_gracefully_when_gh_lookup_fails()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
+- **test_main_emits_github_annotation_in_ci()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
+- **test_main_silent_when_referenced_issue_already_closed()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
+- **test_main_warns_on_open_bare_reference()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
+- **test_no_references_at_all()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
 
 ## Relationships
 
-- [Async Persistence Migration Tracker](Async_Persistence_Migration_Tracker.md) (2 shared connections)
-- [Async Audit Executive Summary](Async_Audit_Executive_Summary.md) (1 shared connections)
-- [Async Remediation Final Report](Async_Remediation_Final_Report.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- `server/tests/unit/scripts/test_check_pr_issue_references.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

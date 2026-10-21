@@ -1,10 +1,10 @@
 # Whisper System Investigation Report
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Whisper System Investigation Report** (0 connections) — `e2e-tests/WHISPER_SYSTEM_INVESTIGATION_REPORT.md`
+- **load_seed_data.ps1** (0 connections) — `scripts/load_seed_data.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `e2e-tests/WHISPER_SYSTEM_INVESTIGATION_REPORT.md`
+- `scripts/load_seed_data.ps1`
 
 ## Audit Trail
 

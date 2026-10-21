@@ -1,53 +1,58 @@
 # test_look_npc_helpers.py
 
-> 36 nodes
+> 51 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **test_look_npc_helpers.py** (34 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **_parse_stat_datetime()** (16 connections) — `server/commands/look_npc.py`
-- **test_format_core_attributes()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_core_attributes_empty()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_lifecycle_info()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_lifecycle_info_no_lifecycle_state()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_other_stats()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_other_stats_empty()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_parse_stat_datetime_from_datetime()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_parse_stat_datetime_from_iso_string()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_parse_stat_datetime_from_timestamp()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_parse_stat_datetime_invalid()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_parse_stat_datetime_none()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_parse_stat_datetime_from_datetime()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_parse_stat_datetime_from_iso_string()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_parse_stat_datetime_from_timestamp()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_parse_stat_datetime_invalid()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_parse_stat_datetime_none()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Parse datetime value from various formats and return formatted string.** (1 connections) — `server/commands/look_npc.py`
-- **Unit tests for look_npc helper functions. Tests the helper functions in…** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _format_other_stats() returns empty list when no other stats.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _parse_stat_datetime() handles datetime object.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _parse_stat_datetime() handles timestamp.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _parse_stat_datetime() handles ISO string.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _parse_stat_datetime() returns 'Unknown' for None.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- *... and 11 more nodes in this community*
+- **test_rest_and_grace_period.py** (25 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **is_player_in_grace_period()** (24 connections) — `server/realtime/disconnect_grace_period.py`
+- **MockPersistenceFull** (14 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **asyncio** (13 connections)
+- **test_intentional_disconnect_no_grace_period()** (5 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **test_rest_command_blocks_during_combat()** (5 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **test_rest_command_starts_countdown_not_in_combat()** (5 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **test_rest_countdown_completes_disconnect()** (5 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **test_rest_location_blocked_during_combat()** (5 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **test_rest_location_instant_disconnect()** (5 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **test_unintentional_disconnect_starts_grace_period()** (5 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **mock_persistence_full()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **test_grace_period_player_can_auto_attack()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **test_grace_period_player_cannot_use_commands()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **test_reconnection_cancels_grace_period()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **test_rest_interrupts_combat_action()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **test_visual_indicator_in_grace_period()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **mock_app_with_services()** (3 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **mock_connection_manager_full()** (3 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **fixture** (3 connections)
+- **test_is_player_in_grace_period_false()** (3 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **test_is_player_in_grace_period_no_manager_attribute()** (3 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **test_is_player_in_grace_period_true()** (3 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **.get_player_by_name()** (2 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **.get_room_by_id()** (2 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [test_look_npc.py](test_look_npc.py.md) (19 shared connections)
-- [_parse_npc_stats_dict](_parse_npc_stats_dict.md) (5 shared connections)
-- [_format_npc_description](_format_npc_description.md) (4 shared connections)
-- [_get_npc_room_id](_get_npc_room_id.md) (4 shared connections)
-- [_should_include_npc](_should_include_npc.md) (4 shared connections)
+- [player_connection_setup.py](player_connection_setup.py.md) (10 shared connections)
+- [asyncio](asyncio.md) (7 shared connections)
+- [test_follow_commands.py](test_follow_commands.py.md) (4 shared connections)
+- [setup_jwt_secret](setup_jwt_secret.md) (3 shared connections)
+- [mapUtils.ts](mapUtils.ts.md) (2 shared connections)
+- [FeatureFlagService](FeatureFlagService.md) (2 shared connections)
+- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (2 shared connections)
+- [ResourceManager](ResourceManager.md) (2 shared connections)
+- [ChatLogger](ChatLogger.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_npc.py`
-- `server/tests/unit/commands/test_look_npc.py`
-- `server/tests/unit/commands/test_look_npc_helpers.py`
+- `server/realtime/disconnect_grace_period.py`
+- `server/tests/integration/test_rest_and_grace_period.py`
+- `server/tests/unit/realtime/test_disconnect_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 76 (100%)
+- EXTRACTED: 109 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

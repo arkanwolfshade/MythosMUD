@@ -1,29 +1,34 @@
 # environment
 
-> 8 nodes
+> 13 nodes · cohesion 0.27
 
 ## Key Concepts
 
-- **environment** (5 connections) — `schemas/room_schema.json`
-- **enum** (4 connections) — `schemas/room_schema.json`
-- **default** (1 connections) — `schemas/room_schema.json`
-- **description** (1 connections) — `schemas/room_schema.json`
-- **type** (1 connections) — `schemas/room_schema.json`
-- **indoors** (1 connections) — `schemas/room_schema.json`
-- **outdoors** (1 connections) — `schemas/room_schema.json`
-- **underwater** (1 connections) — `schemas/room_schema.json`
+- **lint_imports.py** (10 connections) — `scripts/lint_imports.py`
+- **main()** (6 connections) — `scripts/lint_imports.py`
+- **lint_imports_failed()** (5 connections) — `scripts/lint_imports.py`
+- **broken_contract_count()** (4 connections) — `scripts/lint_imports.py`
+- **broken_contract_names()** (4 connections) — `scripts/lint_imports.py`
+- **_print_failure()** (4 connections) — `scripts/lint_imports.py`
+- **_contracts_summary_message()** (3 connections) — `scripts/lint_imports.py`
+- **_print_success()** (3 connections) — `scripts/lint_imports.py`
+- **_resolve_lint_imports_cmd()** (2 connections) — `scripts/lint_imports.py`
+- **Return contract names marked BROKEN in import-linter output.** (1 connections) — `scripts/lint_imports.py`
+- **Parse ``Contracts: N kept, M broken`` summary; None if summary line missing.** (1 connections) — `scripts/lint_imports.py`
+- **True when import-linter reported broken contracts or exited non-zero.** (1 connections) — `scripts/lint_imports.py`
+- **Human-readable contracts summary from import-linter output.** (1 connections) — `scripts/lint_imports.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [format_occupant_display_name](format_occupant_display_name.md) (3 shared connections)
 
 ## Source Files
 
-- `schemas/room_schema.json`
+- `scripts/lint_imports.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

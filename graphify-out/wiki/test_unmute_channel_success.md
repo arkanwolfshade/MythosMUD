@@ -1,24 +1,22 @@
 # test_unmute_channel_success
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_unmute_channel_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test unmuting a channel successfully.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Languages Config** (0 connections) — `.codacy/tools-configs/languages-config.yaml`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_player_preferences_service.py](test_player_preferences_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `.codacy/tools-configs/languages-config.yaml`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,25 +1,25 @@
 # Magic Subsystem Design
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Magic Subsystem Design** (1 connections) — `docs/subsystems/SUBSYSTEM_MAGIC_DESIGN.md`
-- **Skills / Level Subsystem Design** (1 connections) — `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
+- **test_evaluate_equality_false()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_equality() returns False for non-matching condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [TestValidatorIntegration](TestValidatorIntegration.md) (1 shared connections)
+- [.cursor/hooks/record_edited_file.py](cursor-hooks-record_edited_file.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/subsystems/SUBSYSTEM_MAGIC_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

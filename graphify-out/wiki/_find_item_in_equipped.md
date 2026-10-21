@@ -1,53 +1,60 @@
 # _find_item_in_equipped
 
-> 25 nodes
+> 48 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **_find_item_in_equipped()** (17 connections) — `server/commands/look_item.py`
-- **_handle_item_look()** (17 connections) — `server/commands/look_item.py`
-- **_try_lookup_item_implicit()** (15 connections) — `server/commands/look_item.py`
-- **look_item.py** (14 connections) — `server/commands/look_item.py`
-- **_check_item_in_location()** (13 connections) — `server/commands/look_item.py`
-- **_check_equipped_item()** (10 connections) — `server/commands/look_item.py`
-- **Any** (8 connections)
-- **test_check_equipped_item_no_get_equipped_items_method()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_equipped_item_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_item_in_location_fallback_name()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_item_in_location_no_prototype()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_item_in_location_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_equipped_by_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Item look functionality for MythosMUD. This module handles looking at items,…** (1 connections) — `server/commands/look_item.py`
-- **Find an item in equipped items by name or prototype_id. Args: equipped:…** (1 connections) — `server/commands/look_item.py`
-- **Check if item found in a location and return formatted result.** (1 connections) — `server/commands/look_item.py`
-- **Check if item is equipped and return formatted result.** (1 connections) — `server/commands/look_item.py`
-- **Handle looking at a specific item.** (1 connections) — `server/commands/look_item.py`
-- **Try to find and display an item in implicit lookup.** (1 connections) — `server/commands/look_item.py`
-- **Test checking item in location successfully.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking item in location when prototype not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking equipped item successfully.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in equipped by prototype_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking item in location uses fallback when no prototype.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking equipped item when player has no get_equipped_items method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **MovementService** (47 connections) — `server/game/movement_service.py`
+- **._execute_move_locked()** (14 connections) — `server/game/movement_service.py`
+- **UUID** (13 connections)
+- **.move_player()** (8 connections) — `server/game/movement_service.py`
+- **._validate_movement()** (8 connections) — `server/game/movement_service.py`
+- **._handle_movement_error()** (7 connections) — `server/game/movement_service.py`
+- **._validate_movement_rooms()** (7 connections) — `server/game/movement_service.py`
+- **Any** (7 connections)
+- **._get_rooms_for_movement()** (6 connections) — `server/game/movement_service.py`
+- **._handle_tutorial_exit_if_applicable()** (6 connections) — `server/game/movement_service.py`
+- **.__init__()** (6 connections) — `server/game/movement_service.py`
+- **._maybe_trigger_room_entry_hallucination()** (6 connections) — `server/game/movement_service.py`
+- **._resolve_player_for_movement()** (6 connections) — `server/game/movement_service.py`
+- **._execute_room_transfer()** (5 connections) — `server/game/movement_service.py`
+- **._resolve_posture_player()** (5 connections) — `server/game/movement_service.py`
+- **._validate_move_params()** (5 connections) — `server/game/movement_service.py`
+- **._log_successful_move_timing()** (4 connections) — `server/game/movement_service.py`
+- **._mark_room_explored()** (4 connections) — `server/game/movement_service.py`
+- **._persist_player_location()** (4 connections) — `server/game/movement_service.py`
+- **._record_move_validation_failure()** (4 connections) — `server/game/movement_service.py`
+- **test_movement_service_init()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_movement_service_init_no_persistence()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_room_transfer_tells_the_source_room_where_the_player_went()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **.set_player_combat_service()** (2 connections) — `server/game/movement_service.py`
+- **Room** (2 connections)
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [test_look_item.py](test_look_item.py.md) (20 shared connections)
-- [test_look_item_helpers.py](test_look_item_helpers.py.md) (13 shared connections)
-- [asyncio](asyncio.md) (12 shared connections)
-- [look_command.py](look_command.py.md) (5 shared connections)
-- [_find_item_in_inventory](_find_item_in_inventory.md) (4 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [test_container_persistence_extended_row_helpers.py](test_container_persistence_extended_row_helpers.py.md) (19 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (3 shared connections)
+- [test_follow_commands.py](test_follow_commands.py.md) (2 shared connections)
+- [.initialize](initialize.md) (2 shared connections)
+- [_CombatServiceDeps](_CombatServiceDeps.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (2 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [endpoints.py](endpoints.py.md) (2 shared connections)
+- [test_process_mortally_wounded_tick_changes_posture_to_lying](test_process_mortally_wounded_tick_changes_posture_to_lying.md) (1 shared connections)
+- [RoomService](RoomService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_item.py`
-- `server/tests/unit/commands/test_look_item.py`
+- `server/game/movement_service.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 118 (92%)
+- INFERRED: 10 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

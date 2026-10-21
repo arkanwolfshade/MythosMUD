@@ -1,31 +1,29 @@
 # load_test_10_players.spec.ts
 
-> 10 nodes
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **load_test_10_players.spec.ts** (9 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **generateLoadTestCredential()** (2 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **registerPlayer()** (2 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **PlayerConfig** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **analyzeLogFiles()** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **executeCommand()** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **selectProfessionAndCreateCharacter()** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **INVITE_CODES** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **PLAYER_CONFIGS** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **NOTE: This test is designed to be executed using Playwright MCP tools for** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- **API Endpoints (Phase 2)** (4 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Detailed File Migration Instructions** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Services (Phase 4)** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **`server/api/containers.py`** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **`server/api/players.py`** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **`server/api/rooms.py`** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **`server/services/combat_service.py`** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **`server/services/user_manager.py`** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,20 +1,19 @@
 # test_warmup_room_cache
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_warmup_room_cache()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test warmup_room_cache calls _ensure_room_cache_loaded.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_update_wearable_container_items()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test update_wearable_container_items updates items.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_async_persistence_room_cache.py](test_async_persistence_room_cache.py.md) (1 shared connections)
+- [HolidayService](HolidayService.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 

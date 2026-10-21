@@ -1,6 +1,6 @@
 # rooms
 
-> 38 nodes
+> 38 nodes · cohesion 0.07
 
 ## Key Concepts
 
@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [schema.sql](schema.sql.md) (11 shared connections)
-- [players](players.md) (1 shared connections)
+- [test_connection_delegates.py](test_connection_delegates.py.md) (11 shared connections)
+- [packages/README.md](packages-README.md.md) (1 shared connections)
 
 ## Source Files
 

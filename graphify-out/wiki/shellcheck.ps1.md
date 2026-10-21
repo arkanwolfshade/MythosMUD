@@ -1,10 +1,10 @@
 # shellcheck.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **shellcheck.ps1** (0 connections) — `scripts/shellcheck.ps1`
+- **Bolder Skill** (0 connections) — `.cursor/skills/bolder/SKILL.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/shellcheck.ps1`
+- `.cursor/skills/bolder/SKILL.md`
 
 ## Audit Trail
 

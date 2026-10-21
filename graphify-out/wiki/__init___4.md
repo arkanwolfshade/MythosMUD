@@ -1,19 +1,19 @@
 # .__init__
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **.__init__()** (2 connections) — `server/app/memory_cleanup_service.py`
-- **Initialize the memory threshold monitoring service. Args: memory_threshold_mb:…** (1 connections) — `server/app/memory_cleanup_service.py`
+- **test_add_room_drop_invalid_quantity()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test add_room_drop() raises error for invalid quantity.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [MemoryThresholdMonitor](MemoryThresholdMonitor.md) (1 shared connections)
+- [Teach Impeccable Skill](Teach_Impeccable_Skill.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/memory_cleanup_service.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 

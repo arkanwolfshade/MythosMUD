@@ -1,36 +1,33 @@
 # load_motd
 
-> 12 nodes
+> 10 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **load_motd()** (8 connections) — `server/utils/motd_loader.py`
-- **test_motd_loader.py** (7 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **test_load_motd_empty_file()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **test_load_motd_file_exists()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **test_load_motd_file_not_exists()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **test_load_motd_file_read_error()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Unit tests for motd_loader utilities. Tests the MOTD loading functions.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Test load_motd() loads MOTD from file.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Test load_motd() returns default when file doesn't exist.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Test load_motd() handles file read errors.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Test load_motd() handles empty file.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Load the Message of the Day from the configured file. Returns: str: The MOTD…** (1 connections) — `server/utils/motd_loader.py`
+- **MythosMUD Testing Strategy (Greenfield Suite)** (9 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **TESTING_GREENFIELD.md** (3 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **Coverage policy** (3 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **Fixtures/layout** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **Isolation rules** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **Logging and diagnostics** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **Markers** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **Mocking standards** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **Tiers and commands** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **What to run when** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
+- [Middleware Package Design](Middleware_Package_Design.md) (1 shared connections)
+- [test_websocket_handler_validation.py](test_websocket_handler_validation.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_motd_loader.py`
-- `server/utils/motd_loader.py`
+- `docs/archive/TESTING_GREENFIELD.md`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 11 (92%)
+- INFERRED: 1 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

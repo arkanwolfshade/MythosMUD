@@ -1,46 +1,39 @@
 # CoordinateValidator
 
-> 21 nodes
+> 17 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **CoordinateValidator** (13 connections) — `server/services/coordinate_validator.py`
-- **coordinate_validator.py** (9 connections) — `server/services/coordinate_validator.py`
-- **.validate_coordinates()** (6 connections) — `server/services/coordinate_validator.py`
-- **test_coordinate_validator.py** (6 connections) — `server/tests/unit/services/test_coordinate_validator.py`
-- **._fetch_conflicts()** (4 connections) — `server/services/coordinate_validator.py`
-- **_conflict_from_row()** (3 connections) — `server/services/coordinate_validator.py`
-- **.__init__()** (3 connections) — `server/services/coordinate_validator.py`
-- **validator()** (3 connections) — `server/tests/unit/services/test_coordinate_validator.py`
-- **Any** (3 connections)
-- **._count_coordinated_rooms()** (2 connections) — `server/services/coordinate_validator.py`
-- **_zone_pattern()** (2 connections) — `server/services/coordinate_validator.py`
-- **test_validate_coordinates_no_conflicts()** (2 connections) — `server/tests/unit/services/test_coordinate_validator.py`
-- **test_validate_coordinates_reports_conflicts()** (2 connections) — `server/tests/unit/services/test_coordinate_validator.py`
-- **asyncio** (2 connections)
-- **AsyncSession** (1 connections)
-- **fixture** (1 connections)
-- **Coordinate validation service for ASCII maps. This module provides conflict…** (1 connections) — `server/services/coordinate_validator.py`
-- **Validates room coordinates and detects conflicts. A conflict occurs when…** (1 connections) — `server/services/coordinate_validator.py`
-- **Initialize coordinate validator. Args: session: Database session for coordinate…** (1 connections) — `server/services/coordinate_validator.py`
-- **Validate coordinates for rooms in a zone/subzone and detect conflicts. Args:…** (1 connections) — `server/services/coordinate_validator.py`
-- **Unit tests for coordinate validation.** (1 connections) — `server/tests/unit/services/test_coordinate_validator.py`
+- **test_analyze_idle_memory_samples.py** (10 connections) — `server/tests/unit/scripts/test_analyze_idle_memory_samples.py`
+- **_load_script()** (6 connections) — `server/tests/unit/scripts/test_analyze_idle_memory_samples.py`
+- **Path** (6 connections)
+- **test_qualname_delta_names_the_growing_coroutine()** (6 connections) — `server/tests/unit/scripts/test_analyze_idle_memory_samples.py`
+- **test_warmup_defaults_to_module_constant()** (6 connections) — `server/tests/unit/scripts/test_analyze_idle_memory_samples.py`
+- **_write_samples()** (6 connections) — `server/tests/unit/scripts/test_analyze_idle_memory_samples.py`
+- **_AnalyzeIdleMemorySamplesModule** (5 connections) — `server/tests/unit/scripts/test_analyze_idle_memory_samples.py`
+- **_base_row()** (5 connections) — `server/tests/unit/scripts/test_analyze_idle_memory_samples.py`
+- **test_qualname_delta_reports_no_change_when_flat()** (5 connections) — `server/tests/unit/scripts/test_analyze_idle_memory_samples.py`
+- **test_warmup_zero_uses_all_samples_as_measurement()** (5 connections) — `server/tests/unit/scripts/test_analyze_idle_memory_samples.py`
+- **.analyze()** (2 connections) — `server/tests/unit/scripts/test_analyze_idle_memory_samples.py`
+- **Protocol** (1 connections)
+- **Unit tests for scripts/analyze_idle_memory_samples.py. Covers the `--warmup`…** (1 connections) — `server/tests/unit/scripts/test_analyze_idle_memory_samples.py`
+- **Typed surface of the loaded script, for the parts these tests exercise.** (1 connections) — `server/tests/unit/scripts/test_analyze_idle_memory_samples.py`
+- **Passing no warmup_seconds keeps existing callers' behavior unchanged.** (1 connections) — `server/tests/unit/scripts/test_analyze_idle_memory_samples.py`
+- **The leaking coroutine's qualname is named with its start/end/delta, sorted…** (1 connections) — `server/tests/unit/scripts/test_analyze_idle_memory_samples.py`
+- **test_script_exists()** (1 connections) — `server/tests/unit/scripts/test_analyze_idle_memory_samples.py`
 
 ## Relationships
 
-- [RoomService](RoomService.md) (4 shared connections)
-- [test_exploration_procedures.py](test_exploration_procedures.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/coordinate_validator.py`
-- `server/tests/unit/services/test_coordinate_validator.py`
+- `server/tests/unit/scripts/test_analyze_idle_memory_samples.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 34 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

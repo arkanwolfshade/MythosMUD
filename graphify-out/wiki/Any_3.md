@@ -1,46 +1,23 @@
 # Any
 
-> 21 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Any** (13 connections)
-- **.__init__()** (4 connections) — `server/caching/cache_service.py`
-- **.__init__()** (4 connections) — `server/caching/cache_service.py`
-- **.get_cache_stats()** (3 connections) — `server/caching/cache_service.py`
-- **.get_npc_definition()** (3 connections) — `server/caching/cache_service.py`
-- **.get_npc_definitions()** (3 connections) — `server/caching/cache_service.py`
-- **.get_spawn_rules()** (3 connections) — `server/caching/cache_service.py`
-- **.get_all_professions()** (3 connections) — `server/caching/cache_service.py`
-- **.get_profession_by_id()** (3 connections) — `server/caching/cache_service.py`
-- **.get_room()** (3 connections) — `server/caching/cache_service.py`
-- **.get_room_sync()** (3 connections) — `server/caching/cache_service.py`
-- **Get room data with caching. Args: room_id: The room ID Returns: Room data…** (1 connections) — `server/caching/cache_service.py`
-- **Get room data with caching (synchronous version). Args: room_id: The room ID…** (1 connections) — `server/caching/cache_service.py`
-- **Initialize the NPC cache service. Args: npc_service: NPC service instance** (1 connections) — `server/caching/cache_service.py`
-- **Get NPC definitions with caching. Args: session: Database session Returns: List…** (1 connections) — `server/caching/cache_service.py`
-- **Get a specific NPC definition with caching. Args: session: Database session…** (1 connections) — `server/caching/cache_service.py`
-- **Get NPC spawn rules with caching. Args: session: Database session Returns: List…** (1 connections) — `server/caching/cache_service.py`
-- **Initialize the profession cache service. Args: persistence: Persistence layer…** (1 connections) — `server/caching/cache_service.py`
-- **Get all professions with caching. Returns: List of profession objects** (1 connections) — `server/caching/cache_service.py`
-- **Get a specific profession by ID with caching. Args: profession_id: The…** (1 connections) — `server/caching/cache_service.py`
-- **Get statistics for all caches. Returns: Dictionary containing cache statistics** (1 connections) — `server/caching/cache_service.py`
+- **test_is_player_disconnecting_no_disconnecting_players_attr()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test is_player_disconnecting() handles missing disconnecting_players attribute.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [RoomCacheService](RoomCacheService.md) (6 shared connections)
-- [NPCCacheService](NPCCacheService.md) (4 shared connections)
-- [ProfessionCacheService](ProfessionCacheService.md) (3 shared connections)
-- [CacheService](CacheService.md) (1 shared connections)
-- [cached](cached.md) (1 shared connections)
+- [TaskRegistry](TaskRegistry.md) (1 shared connections)
 
 ## Source Files
 
-- `server/caching/cache_service.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

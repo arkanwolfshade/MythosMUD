@@ -1,32 +1,29 @@
 # ._process_single_connection
 
-> 10 nodes
+> 8 nodes · cohesion 0.36
 
 ## Key Concepts
 
-- **._process_single_connection()** (8 connections) — `server/realtime/monitoring/health_monitor.py`
-- **._find_player_id_for_cleanup()** (4 connections) — `server/realtime/monitoring/health_monitor.py`
-- **._check_connection_stale()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
-- **._check_websocket_open()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
-- **._validate_and_update_token()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Find player_id for cleanup when metadata is missing.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Check if connection is stale based on timeout.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Check if WebSocket is actually open.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Validate token and update last validation time if needed.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Process health check for a single connection.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
+- **migrate_file()** (5 connections) — `scripts/migrate_async_persistence.py`
+- **MigrationResult** (4 connections) — `scripts/migrate_async_persistence.py`
+- **migrate_async_persistence.py** (3 connections) — `scripts/migrate_async_persistence.py`
+- **main()** (3 connections) — `scripts/migrate_async_persistence.py`
+- **Path** (2 connections)
+- **NamedTuple** (1 connections)
+- **Result of a file migration.** (1 connections) — `scripts/migrate_async_persistence.py`
+- **Migrate a single file to use async persistence patterns. Args: file_path: Path…** (1 connections) — `scripts/migrate_async_persistence.py`
 
 ## Relationships
 
-- [HealthMonitor](HealthMonitor.md) (5 shared connections)
-- [UUID](UUID.md) (3 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/monitoring/health_monitor.py`
+- `scripts/migrate_async_persistence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

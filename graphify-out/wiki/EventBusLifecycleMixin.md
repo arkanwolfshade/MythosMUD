@@ -1,48 +1,47 @@
 # EventBusLifecycleMixin
 
-> 30 nodes
+> 31 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **EventBusLifecycleMixin** (18 connections) — `server/events/event_bus_lifecycle.py`
-- **._cancel_task_quietly()** (7 connections) — `server/events/event_bus_lifecycle.py`
-- **._stop_processing()** (7 connections) — `server/events/event_bus_lifecycle.py`
-- **.shutdown()** (6 connections) — `server/events/event_bus_lifecycle.py`
-- **._abandon_pending_tasks()** (5 connections) — `server/events/event_bus_lifecycle.py`
-- **._cancel_and_wait_for_active_tasks()** (5 connections) — `server/events/event_bus_lifecycle.py`
-- **._cancel_active_tasks_best_effort()** (4 connections) — `server/events/event_bus_lifecycle.py`
-- **._warn_shutdown_error()** (4 connections) — `server/events/event_bus_lifecycle.py`
-- **._cancel_processing_task()** (3 connections) — `server/events/event_bus_lifecycle.py`
-- **._cleanup_tracked_subscriptions()** (3 connections) — `server/events/event_bus_lifecycle.py`
-- **.__del__()** (3 connections) — `server/events/event_bus_lifecycle.py`
-- **._finalize_shutdown()** (3 connections) — `server/events/event_bus_lifecycle.py`
-- **._signal_shutdown()** (3 connections) — `server/events/event_bus_lifecycle.py`
-- **._ensure_async_processing()** (2 connections) — `server/events/event_bus_lifecycle.py`
-- **Task** (2 connections)
-- **Exception** (1 connections)
-- **Cancel leftover tasks after the grace wait, then give them a short drain.** (1 connections) — `server/events/event_bus_lifecycle.py`
-- **Cancel all active tasks and wait for graceful shutdown.** (1 connections) — `server/events/event_bus_lifecycle.py`
-- **Finalize shutdown by clearing tasks and logging.** (1 connections) — `server/events/event_bus_lifecycle.py`
-- **Stop pure async event processing gracefully.** (1 connections) — `server/events/event_bus_lifecycle.py`
-- **Unsubscribe every tracked service. No-op when none are registered.** (1 connections) — `server/events/event_bus_lifecycle.py`
-- **Log a non-fatal shutdown error without letting logging fail the process.** (1 connections) — `server/events/event_bus_lifecycle.py`
-- **Shutdown the pure asyncio event bus with proper grace period coordination. This…** (1 connections) — `server/events/event_bus_lifecycle.py`
-- **Mixin: on-demand processing start, graceful stop, and destruction.** (1 connections) — `server/events/event_bus_lifecycle.py`
-- **Cancel subscriber tasks if a loop is still running; always clear the set.** (1 connections) — `server/events/event_bus_lifecycle.py`
-- *... and 5 more nodes in this community*
+- **test_run_test_ci.py** (17 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **_script_source()** (6 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **_workflow_source()** (6 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **test_ci_workflow_applies_procedures_via_stdin_not_dash_f()** (3 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **test_ci_workflow_does_not_install_pytest_xdist()** (3 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **test_coverage_step_has_pipefail()** (3 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **test_dockerfile_applies_procedures_via_stdin_not_dash_f()** (3 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **test_excessive_warnings_step_no_longer_deselects_the_flaky_module()** (3 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **test_excessive_warnings_step_preserves_the_731_timeout_override()** (3 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **test_run_test_ci_checks_for_the_single_schema_agnostic_seed_file()** (3 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **test_run_test_ci_coverage_file_is_the_default()** (3 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **test_run_test_ci_does_not_install_pytest_xdist()** (3 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **test_run_test_ci_never_passes_an_xdist_worker_count()** (3 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **test_run_test_ci_no_longer_splits_coverage_into_two_runs()** (3 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **_dockerfile_source()** (2 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **test_install_ci_dependencies_does_not_install_pytest_xdist()** (2 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **test_playwright_integration_runner_does_not_pass_xdist_worker_count()** (2 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **Regression tests for scripts/run_test_ci.py's CI-gating pytest invocation, the…** (1 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **pytest-xdist is removed from the project (#724); no CI step should reinstall it…** (1 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **Same guarantee as the CI workflow check, for the local Docker branch of this…** (1 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **scripts/install_ci_dependencies.sh is the shared installer Dockerfile.github-…** (1 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **run_integration_tests_playwright.ps1 used to force -n 1 to keep integration…** (1 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **Since #811, data/db/seed.sql is the single seed source for all three…** (1 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **#811's stored-procedure apply loop failed in CI with 'psql: error:…** (1 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **Same fix, same guard, for the equivalent loop in Dockerfile.github-runner…** (1 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [EventBus](EventBus.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/events/event_bus_lifecycle.py`
+- `server/tests/unit/scripts/test_run_test_ci.py`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (100%)
+- EXTRACTED: 41 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

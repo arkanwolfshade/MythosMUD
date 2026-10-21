@@ -1,33 +1,30 @@
 # schedule_end_combat_if_npc_died_best_effort
 
-> 9 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **schedule_end_combat_if_npc_died_best_effort()** (8 connections) — `server/npc/npc_combat_schedule.py`
-- **test_npc_combat_schedule.py** (5 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **test_schedule_end_combat_if_npc_died_no_running_loop()** (4 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **test_schedule_end_combat_if_npc_died_no_service()** (4 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **patch** (2 connections)
-- **Schedule end_combat_if_npc_died so the slain NPC no longer gets combat turns…** (1 connections) — `server/npc/npc_combat_schedule.py`
-- **Unit tests for best-effort NPC combat cleanup scheduling.** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **When combat service is missing, scheduling is a no-op.** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **Without a running asyncio loop, scheduling fails quietly (RuntimeError path).** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **Security Implementation** (4 connections) — `docs/archive/SECURITY.md`
+- **Argon2 Password Hashing** (2 connections) — `docs/archive/PLANNING_users_db.md`
+- **FastAPI Users Migration** (2 connections) — `docs/archive/PLANNING_users_db.md`
+- **Invite System** (1 connections) — `docs/archive/PLANNING_users_db.md`
+- **Secure Path Validation** (1 connections) — `docs/archive/SECURITY.md`
+- **Client XSS Protection** (1 connections) — `docs/archive/SECURITY.md`
+- **SSE Authentication System** (1 connections) — `docs/archive/SSE_AUTHENTICATION.md`
 
 ## Relationships
 
-- [EventBus](EventBus.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [TargetMatch](TargetMatch.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/npc/npc_combat_schedule.py`
-- `server/tests/unit/npc/test_npc_combat_schedule.py`
+- `docs/archive/PLANNING_users_db.md`
+- `docs/archive/SECURITY.md`
+- `docs/archive/SSE_AUTHENTICATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

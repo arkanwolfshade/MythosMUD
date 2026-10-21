@@ -1,10 +1,10 @@
 # MythosMUD Code Quality for AI
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **MythosMUD Code Quality for AI** (0 connections) — `.cursor/skills/mythosmud-code-quality-ai/SKILL.md`
+- **start_client.ps1** (0 connections) — `scripts/start_client.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-code-quality-ai/SKILL.md`
+- `scripts/start_client.ps1`
 
 ## Audit Trail
 

@@ -1,56 +1,54 @@
 # quest_rewards.py
 
-> 61 nodes
+> 65 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **quest_rewards.py** (18 connections) — `server/game/quest/quest_rewards.py`
-- **test_quest_rewards.py** (15 connections) — `server/tests/unit/game/test_quest_rewards.py`
-- **QuestRewardsMixin** (13 connections) — `server/game/quest/quest_rewards.py`
-- **UUID** (11 connections)
-- **QuestRewardSchema** (10 connections) — `server/schemas/quest/quest.py`
-- **_Host** (9 connections) — `server/tests/unit/game/test_quest_rewards.py`
-- **._apply_item_reward()** (8 connections) — `server/game/quest/quest_rewards.py`
-- **._apply_rewards()** (8 connections) — `server/game/quest/quest_rewards.py`
-- **test_malformed_or_unservable_rewards_are_skipped()** (8 connections) — `server/tests/unit/game/test_quest_rewards.py`
-- **SpellLearner** (7 connections) — `server/game/quest/quest_rewards.py`
-- **XpGranter** (7 connections) — `server/game/quest/quest_rewards.py`
-- **_Inventory** (7 connections) — `server/tests/unit/game/test_quest_rewards.py`
-- **_config_value()** (7 connections) — `server/game/quest/quest_rewards.py`
-- **test_rewards_grant_xp_spell_and_item()** (7 connections) — `server/tests/unit/game/test_quest_rewards.py`
-- **PlayerStore** (6 connections) — `server/game/quest/quest_rewards.py`
-- **._apply_respawn_room_reward()** (6 connections) — `server/game/quest/quest_rewards.py`
-- **._apply_spell_reward()** (6 connections) — `server/game/quest/quest_rewards.py`
-- **._apply_xp_reward()** (6 connections) — `server/game/quest/quest_rewards.py`
-- **_Levels** (5 connections) — `server/tests/unit/game/test_quest_rewards.py`
-- **_Spells** (5 connections) — `server/tests/unit/game/test_quest_rewards.py`
-- **_inventory_has_slot()** (5 connections) — `server/game/quest/quest_rewards.py`
-- **._turn_in_inventory_full_error()** (5 connections) — `server/game/quest/quest_rewards.py`
-- **_definition()** (5 connections) — `server/tests/unit/game/test_quest_rewards.py`
-- **UUID** (5 connections)
-- **.get_player_by_id()** (4 connections) — `server/game/quest/quest_rewards.py`
-- *... and 36 more nodes in this community*
+- **AggressiveMobNPC** (31 connections) — `server/npc/aggressive_mob_npc.py`
+- **test_aggressive_mob_npc.py** (23 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **_make_aggro()** (13 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **._attack_target_impl()** (6 connections) — `server/npc/aggressive_mob_npc.py`
+- **._compute_player_context()** (5 connections) — `server/npc/aggressive_mob_npc.py`
+- **.attack_target()** (4 connections) — `server/npc/aggressive_mob_npc.py`
+- **._attack_via_combat_integration()** (4 connections) — `server/npc/aggressive_mob_npc.py`
+- **._enrich_behavior_context()** (4 connections) — `server/npc/aggressive_mob_npc.py`
+- **._get_attack_damage()** (4 connections) — `server/npc/aggressive_mob_npc.py`
+- **.flee()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._handle_attack_target()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._handle_flee()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._handle_hunt_target()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._handle_patrol_territory()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **.hunt_target()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **.__init__()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._log_context_enriched()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **.patrol_territory()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._setup_aggressive_mob_behavior_rules()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **test_attack_via_create_task_with_running_loop()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_enrich_behavior_context_handles_no_current_room()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_enrich_behavior_context_sets_false_when_no_players_in_room()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_enrich_behavior_context_sets_player_in_range_when_players_in_room()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_enrich_behavior_context_swallows_compute_errors()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_flee_error_returns_false()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- *... and 40 more nodes in this community*
 
 ## Relationships
 
-- [QuestService](QuestService.md) (8 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (3 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [quest_service.py](quest_service.py.md) (2 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [BaseEvent](BaseEvent.md) (5 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (2 shared connections)
+- [command_parser.py](command_parser.py.md) (1 shared connections)
+- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (1 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
+- [security.ts](security.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/quest/quest_rewards.py`
-- `server/npc/npc_base.py`
-- `server/schemas/quest/quest.py`
-- `server/tests/unit/game/test_quest_rewards.py`
+- `server/npc/aggressive_mob_npc.py`
+- `server/tests/unit/npc/test_aggressive_mob_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 129 (95%)
-- INFERRED: 7 (5%)
+- EXTRACTED: 102 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

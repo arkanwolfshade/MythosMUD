@@ -1,51 +1,48 @@
 # AuditLogger
 
-> 52 nodes
+> 24 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **AuditLogger** (17 connections) — `server/utils/audit_logger.py`
-- **test_audit_logger.py** (16 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **_logger()** (13 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **._write_entry()** (10 connections) — `server/utils/audit_logger.py`
-- **._entries_from_log_file()** (7 connections) — `server/utils/audit_logger.py`
-- **._matching_entry_from_line()** (6 connections) — `server/utils/audit_logger.py`
-- **JsonMap** (6 connections)
-- **.get_recent_entries()** (5 connections) — `server/utils/audit_logger.py`
-- **._get_log_file_path()** (4 connections) — `server/utils/audit_logger.py`
-- **.get_statistics()** (4 connections) — `server/utils/audit_logger.py`
-- **.__init__()** (4 connections) — `server/utils/audit_logger.py`
-- **_json_map_from_line()** (4 connections) — `server/utils/audit_logger.py`
-- **test_audit_logger_get_recent_entries()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_get_recent_entries_filters_and_bad_lines()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_get_statistics()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_init()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_log_command()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_log_container_interaction()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_log_permission_change()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_log_player_action()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **.log_alias_expansion()** (3 connections) — `server/utils/audit_logger.py`
-- **.log_command()** (3 connections) — `server/utils/audit_logger.py`
-- **.log_container_interaction()** (3 connections) — `server/utils/audit_logger.py`
-- **.log_permission_change()** (3 connections) — `server/utils/audit_logger.py`
-- **.log_player_action()** (3 connections) — `server/utils/audit_logger.py`
-- *... and 27 more nodes in this community*
+- **test_npc_combat_integration_service_npc_aggro.py** (19 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **asyncio** (9 connections)
+- **test_handle_npc_attack_on_player_skips_already_dead_target()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_existing_combat_with_other_npc()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_existing_combat_with_same_npc()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_grace_period_blocked()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_happy_path()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_invalid_location()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_no_combat_service()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_npc_dead()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_npc_not_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_setup_combat_uuids_npc_attacker_value_error()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_setup_combat_uuids_npc_attacker_valid()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **Unit tests for NPC combat integration service - NPC-initiated aggro combat…** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **Test handle_npc_attack_on_player returns False when NPC instance cannot be…** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **Test handle_npc_attack_on_player returns False when NPC is dead.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **Test handle_npc_attack_on_player returns False when combat service is missing.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **Test handle_npc_attack_on_player returns True when combat already exists with…** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **Test handle_npc_attack_on_player returns False when player is in combat with…** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **ValueError from combat path when player is dead must not log as error.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **Test _setup_combat_uuids_npc_attacker with valid UUID mapping.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **Test _setup_combat_uuids_npc_attacker falls back to random UUIDs on ValueError.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **Test handle_npc_attack_on_player starts combat and processes attack on happy…** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **Test handle_npc_attack_on_player blocks attack when player is in login grace…** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (6 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
+- [_complete_tutorial_with_rewards](_complete_tutorial_with_rewards.md) (4 shared connections)
+- [ValidationError](ValidationError.md) (3 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_audit_logger.py`
-- `server/utils/audit_logger.py`
+- `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
 
 ## Audit Trail
 
-- EXTRACTED: 89 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 35 (85%)
+- INFERRED: 6 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

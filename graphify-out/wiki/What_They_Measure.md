@@ -1,34 +1,41 @@
 # What They Measure
 
-> 12 nodes
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **What They Measure** (6 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Ruff C901: McCabe Cyclomatic Complexity** (5 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Pylint Complexity Metrics (R0911-R0915)** (3 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Configuration** (2 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Example** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **R0911: Too Many Return Statements** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **R0912: Too Many Branches** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **R0913: Too Many Arguments** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **R0914: Too Many Local Variables** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **R0915: Too Many Statements** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **What It Measures** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Why It's Useful** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Cursor Subagents Overview** (5 connections) — `.cursor/agents/README.md`
+- **Bug Investigator Subagent** (3 connections) — `.cursor/agents/bug-investigator.md`
+- **Security Auditor Subagent** (2 connections) — `.cursor/agents/security-auditor.md`
+- **Address Semgrep Security Findings Plan** (2 connections) — `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
+- **Codebase Explorer Subagent** (1 connections) — `.cursor/agents/codebase-explorer.md`
+- **Performance Profiler Subagent** (1 connections) — `.cursor/agents/performance-profiler.md`
+- **Subagent Automatic Discovery** (1 connections) — `.cursor/agents/QUICK_START.md`
+- **Test Suite Analyzer Subagent** (1 connections) — `.cursor/agents/test-analyzer.md`
+- **Official Test Credentials** (1 connections) — `.cursor/commands/investigate-bug.md`
+- **Codacy High/Critical Issues Remediation** (1 connections) — `.cursor/plans/codacy-high-critical-issues-remediation_f14ea647.plan.md`
 
 ## Relationships
 
-- [Complexity Checking Alignment: Ruff C901 vs Pylint](Complexity_Checking_Alignment-_Ruff_C901_vs_Pylint.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- `.cursor/agents/QUICK_START.md`
+- `.cursor/agents/README.md`
+- `.cursor/agents/bug-investigator.md`
+- `.cursor/agents/codebase-explorer.md`
+- `.cursor/agents/performance-profiler.md`
+- `.cursor/agents/security-auditor.md`
+- `.cursor/agents/test-analyzer.md`
+- `.cursor/commands/investigate-bug.md`
+- `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
+- `.cursor/plans/codacy-high-critical-issues-remediation_f14ea647.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 7 (78%)
+- INFERRED: 2 (22%)
 - AMBIGUOUS: 0 (0%)
 
 ---

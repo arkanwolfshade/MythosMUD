@@ -1,72 +1,70 @@
 # security.ts
 
-> 61 nodes
+> 174 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **security.ts** (42 connections) — `client/src/utils/security.ts`
-- **logoutHandler.ts** (27 connections) — `client/src/utils/logoutHandler.ts`
-- **secureTokenStorage** (15 connections) — `client/src/utils/security.ts`
-- **domPurifyClient.ts** (14 connections) — `client/src/utils/domPurifyClient.ts`
-- **SafeHtml.tsx** (12 connections) — `client/src/components/common/SafeHtml.tsx`
-- **logoutHandler()** (9 connections) — `client/src/utils/logoutHandler.ts`
-- **SafeHtml()** (8 connections) — `client/src/components/common/SafeHtml.tsx`
-- **App.logout.test.tsx** (8 connections) — `client/src/__tests__/App.logout.test.tsx`
-- **src/__tests__/LogoutFlow.integration.test.tsx** (8 connections) — `client/src/__tests__/LogoutFlow.integration.test.tsx`
-- **CSRFProtection** (7 connections) — `client/src/utils/security.ts`
-- **inputSanitizer** (7 connections) — `client/src/utils/security.ts`
-- **getDomPurify()** (5 connections) — `client/src/utils/domPurifyClient.ts`
-- **resolveSanitizeWindow()** (5 connections) — `client/src/utils/domPurifyClient.ts`
-- **readLogoutErrorMessage()** (5 connections) — `client/src/utils/logoutHandler.ts`
-- **sendLogoutCommandToServer()** (5 connections) — `client/src/utils/logoutHandler.ts`
-- **AppSessionOutroViews.tsx** (5 connections) — `client/src/mythosApp/AppSessionOutroViews.tsx`
-- **domPurifyClient.test.ts** (5 connections) — `client/src/utils/__tests__/domPurifyClient.test.ts`
-- **logoutHandler.test.ts** (5 connections) — `client/src/utils/__tests__/logoutHandler.test.ts`
-- **secureTokenStorage.test.ts** (5 connections) — `client/src/utils/__tests__/secureTokenStorage.test.ts`
-- **resolveVitestSanitizeWindow()** (4 connections) — `client/src/utils/domPurifyClient.ts`
-- **sanitizeWithDomPurify()** (4 connections) — `client/src/utils/domPurifyClient.ts`
-- **processLogoutHttpResponse()** (4 connections) — `client/src/utils/logoutHandler.ts`
-- **runLogoutServerPipeline()** (4 connections) — `client/src/utils/logoutHandler.ts`
-- **.generateToken()** (4 connections) — `client/src/utils/security.ts`
-- **csrfProtection.test.ts** (4 connections) — `client/src/utils/__tests__/csrfProtection.test.ts`
-- *... and 36 more nodes in this community*
+- **AttributeError** (47 connections)
+- **websocket_room_updates.py** (40 connections) — `server/realtime/websocket_room_updates.py`
+- **test_websocket_room_updates.py** (37 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **broadcast_room_update()** (30 connections) — `server/realtime/websocket_room_updates.py`
+- **room_update_event_builder.py** (25 connections) — `server/realtime/room_update_event_builder.py`
+- **build_room_update_event()** (22 connections) — `server/realtime/room_update_event_builder.py`
+- **room_viewer_fanout.py** (22 connections) — `server/realtime/room_viewer_fanout.py`
+- **asyncio** (21 connections)
+- **phantom_visibility.py** (15 connections) — `server/services/phantom_visibility.py`
+- **get_viewer_phantom_occupants()** (15 connections) — `server/services/phantom_visibility.py`
+- **test_npc_disposition_wire.py** (15 connections) — `server/tests/unit/realtime/test_npc_disposition_wire.py`
+- **get_npc_occupants()** (14 connections) — `server/realtime/websocket_room_updates.py`
+- **send_personalized_room_events()** (12 connections) — `server/realtime/room_viewer_fanout.py`
+- **get_player_occupants()** (12 connections) — `server/realtime/websocket_room_updates.py`
+- **test_websocket_room_updates_fanout.py** (12 connections) — `server/tests/unit/realtime/test_websocket_room_updates_fanout.py`
+- **room_has_hallucinating_viewer()** (10 connections) — `server/services/phantom_visibility.py`
+- **RoomOccupancyPayload** (9 connections) — `server/realtime/room_update_event_builder.py`
+- **send_personalized_occupants_update()** (9 connections) — `server/realtime/room_viewer_fanout.py`
+- **test_phantom_visibility.py** (9 connections) — `server/tests/unit/services/test_phantom_visibility.py`
+- **connection_manager_from_running_app()** (8 connections) — `server/realtime/running_app.py`
+- **_looks_like_player_uuid()** (8 connections) — `server/realtime/websocket_room_updates.py`
+- **test_websocket_room_updates_build_event.py** (8 connections) — `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
+- **test_broadcast_room_update_personalizes_for_hallucinating_viewer()** (8 connections) — `server/tests/unit/realtime/test_websocket_room_updates_fanout.py`
+- **_broadcast_full_room_update()** (7 connections) — `server/realtime/websocket_room_updates.py`
+- **update_player_room_subscription()** (7 connections) — `server/realtime/websocket_room_updates.py`
+- *... and 149 more nodes in this community*
 
 ## Relationships
 
-- [CatalogPage.tsx](CatalogPage.tsx.md) (8 shared connections)
-- [App.tsx](App.tsx.md) (7 shared connections)
-- [logger.ts](logger.ts.md) (6 shared connections)
-- [ManualPage.tsx](ManualPage.tsx.md) (5 shared connections)
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (5 shared connections)
-- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (5 shared connections)
-- [useAsciiMapState.ts](useAsciiMapState.ts.md) (4 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (4 shared connections)
-- [submitAuth.ts](submitAuth.ts.md) (4 shared connections)
-- [stateUpdateUtils.ts](stateUpdateUtils.ts.md) (3 shared connections)
-- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (3 shared connections)
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (2 shared connections)
+- [look_container.py](look_container.py.md) (23 shared connections)
+- [alias_storage.py](alias_storage.py.md) (11 shared connections)
+- [Room](Room.md) (10 shared connections)
+- [.publish_with_pool](publish_with_pool.md) (9 shared connections)
+- [test_game.py](test_game.py.md) (6 shared connections)
+- [ChatService](ChatService.md) (6 shared connections)
+- [test_logout_commands.py](test_logout_commands.py.md) (5 shared connections)
+- [ChatLogger](ChatLogger.md) (5 shared connections)
+- [session](session.md) (4 shared connections)
+- [test_look_container.py](test_look_container.py.md) (3 shared connections)
+- [HolidayEntry](HolidayEntry.md) (3 shared connections)
+- [required](required.md) (3 shared connections)
 
 ## Source Files
 
-- `client/src/__tests__/App.logout.test.tsx`
-- `client/src/__tests__/LogoutFlow.integration.test.tsx`
-- `client/src/components/common/SafeHtml.tsx`
-- `client/src/components/common/__tests__/SafeHtml.test.tsx`
-- `client/src/mythosApp/AppSessionOutroViews.tsx`
-- `client/src/utils/__tests__/csrfProtection.test.ts`
-- `client/src/utils/__tests__/domPurifyClient.test.ts`
-- `client/src/utils/__tests__/inputSanitizer.test.ts`
-- `client/src/utils/__tests__/logoutHandler.test.ts`
-- `client/src/utils/__tests__/secureTokenStorage.test.ts`
-- `client/src/utils/__tests__/security.test-utils.ts`
-- `client/src/utils/domPurifyClient.ts`
-- `client/src/utils/logoutHandler.ts`
-- `client/src/utils/security.ts`
+- `server/realtime/room_update_event_builder.py`
+- `server/realtime/room_viewer_fanout.py`
+- `server/realtime/running_app.py`
+- `server/realtime/websocket_room_updates.py`
+- `server/services/phantom_visibility.py`
+- `server/tests/unit/realtime/test_npc_disposition_wire.py`
+- `server/tests/unit/realtime/test_websocket_room_updates.py`
+- `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
+- `server/tests/unit/realtime/test_websocket_room_updates_fanout.py`
+- `server/tests/unit/services/test_phantom_visibility.py`
+- `server/tests/unit/services/test_room_sync_service.py`
+- `server/tests/unit/utils/test_command_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 174 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 384 (85%)
+- INFERRED: 67 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

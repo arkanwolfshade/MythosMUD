@@ -1,10 +1,10 @@
 # users_players.sql
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **users_players.sql** (0 connections) — `db/verification/users_players.sql`
+- **Test Migration Validation** (0 connections) — `docs/archive/TEST_REFACTORING_STATUS.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `db/verification/users_players.sql`
+- `docs/archive/TEST_REFACTORING_STATUS.md`
 
 ## Audit Trail
 

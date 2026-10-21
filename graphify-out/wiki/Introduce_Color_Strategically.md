@@ -1,38 +1,42 @@
 # Introduce Color Strategically
 
-> 17 nodes
+> 16 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **Introduce Color Strategically** (8 connections) — `.claude/skills/colorize/SKILL.md`
-- **Colorize Skill** (7 connections) — `.claude/skills/colorize/SKILL.md`
-- **Balance & Refinement** (4 connections) — `.claude/skills/colorize/SKILL.md`
-- **Accent Color Application** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Accessibility** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Assess Color Opportunity** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Background & Surfaces** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Borders & Accents** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Cohesion** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Data Visualization** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Decorative Elements** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Maintain Hierarchy** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Plan Color Strategy** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Semantic Color** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Typography Color** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Verify Color Addition** (1 connections) — `.claude/skills/colorize/SKILL.md`
+- **help_schema.json** (8 connections) — `server/help/help_schema.json`
+- **command** (6 connections) — `server/help/help_schema.json`
+- **$defs** (5 connections) — `server/help/help_schema.json`
+- **htmlLines** (3 connections) — `server/help/help_schema.json`
+- **topicName** (3 connections) — `server/help/help_schema.json`
+- **additionalProperties** (1 connections) — `server/help/help_schema.json`
+- **additionalProperties** (1 connections) — `server/help/help_schema.json`
+- **type** (1 connections) — `server/help/help_schema.json`
+- **description** (1 connections) — `server/help/help_schema.json`
+- **type** (1 connections) — `server/help/help_schema.json`
+- **$id** (1 connections) — `server/help/help_schema.json`
+- **$schema** (1 connections) — `server/help/help_schema.json`
+- **title** (1 connections) — `server/help/help_schema.json`
+- **pattern** (1 connections) — `server/help/help_schema.json`
+- **type** (1 connections) — `server/help/help_schema.json`
+- **type** (1 connections) — `server/help/help_schema.json`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- [Lint Remediation](Lint_Remediation.md) (1 shared connections)
+- [_EventBusPublishPort](_EventBusPublishPort.md) (1 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
+- [Party](Party.md) (1 shared connections)
+- [Bug Investigator Subagent](Bug_Investigator_Subagent.md) (1 shared connections)
+- [ItemCatalogResponse](ItemCatalogResponse.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/colorize/SKILL.md`
+- `server/help/help_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

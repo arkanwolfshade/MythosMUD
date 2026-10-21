@@ -1,33 +1,31 @@
 # Migration Roadmap
 
-> 12 nodes
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **Migration Roadmap** (6 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Phase 5: Game & NPC Systems (Priority 4) 🎮** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Phase 2: API Endpoints (Priority 1) 🎯** (2 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Phase 3: Real-Time Handlers (Priority 2) 🚀** (2 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Phase 4: High-Impact Services (Priority 3) ⚡** (2 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Phase 6: Test Migration (Priority 5) 🧪** (2 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Files to Migrate (11 total)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Files to Migrate (2 total)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Files to Migrate (6 total)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Game Systems (3 files)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **NPC Systems (7 files)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Test Files (17 total)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **P3 · realtime-connection + events-nats** (6 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Realtime-Events.md`
+- **High risk — require P5 refutation before ruling** (4 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Realtime-Events.md`
+- **P3-Cluster-Realtime-Events.md** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Realtime-Events.md`
+- **CONFORMS worth recording** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Realtime-Events.md`
+- **H1 · DLQ automatic cleanup is not wired — unbounded disk growth** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Realtime-Events.md`
+- **H2 · ADR-003 is self-contradictory about the EventBus being networked** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Realtime-Events.md`
+- **H3 · ADR-003 quotes deprecated NATS subject forms as current** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Realtime-Events.md`
+- **Low / STALE** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Realtime-Events.md`
+- **Medium risk** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Realtime-Events.md`
+- **Meta-finding** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Realtime-Events.md`
 
 ## Relationships
 
-- [Persistence Layer Async Migration Plan](Persistence_Layer_Async_Migration_Plan.md) (1 shared connections)
+- [SpellMaterialsService](SpellMaterialsService.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Realtime-Events.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

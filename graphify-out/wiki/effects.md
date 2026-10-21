@@ -1,26 +1,28 @@
 # effects
 
-> 4 nodes
+> 5 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **effects** (5 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **minItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **uniqueItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **required** (4 connections) — `db/static/schemas/emotes.schema.json`
+- **required** (3 connections) — `schemas/emote_schema.json`
+- **aliases** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **other_message** (1 connections) — `schemas/emote_schema.json`
+- **self_message** (1 connections) — `schemas/emote_schema.json`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
-- [applies_to](applies_to.md) (1 shared connections)
+- [Specific File Reviews](Specific_File_Reviews.md) (1 shared connections)
+- [main](main.md) (1 shared connections)
 
 ## Source Files
 
-- `db/static/schemas/npc_schedules.schema.json`
+- `db/static/schemas/emotes.schema.json`
+- `schemas/emote_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

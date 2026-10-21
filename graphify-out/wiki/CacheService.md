@@ -1,38 +1,38 @@
 # CacheService
 
-> 12 nodes
+> 16 nodes · cohesion 0.30
 
 ## Key Concepts
 
-- **CacheService** (15 connections) — `server/caching/cache_service.py`
-- **TestCacheService** (9 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.preload_frequently_accessed_data()** (2 connections) — `server/caching/cache_service.py`
-- **.test_get_cache_stats_and_clear()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_init_with_npc_service()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_init_without_npc_service()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_frequently_accessed_data()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_handles_profession_failure()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_handles_room_failure()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.clear_all_caches()** (1 connections) — `server/caching/cache_service.py`
-- **Main cache service that coordinates all caching operations. This service…** (1 connections) — `server/caching/cache_service.py`
-- **Preload frequently accessed data into caches. This method loads commonly used…** (1 connections) — `server/caching/cache_service.py`
+- **generate_sql.mjs** (15 connections) — `scripts/static_data/generate_sql.mjs`
+- **main()** (7 connections) — `scripts/static_data/generate_sql.mjs`
+- **generateRooms()** (6 connections) — `scripts/static_data/generate_sql.mjs`
+- **v5()** (6 connections) — `scripts/static_data/generate_sql.mjs`
+- **generateEmotes()** (5 connections) — `scripts/static_data/generate_sql.mjs`
+- **generateHolidays()** (5 connections) — `scripts/static_data/generate_sql.mjs`
+- **generateNpcSchedules()** (5 connections) — `scripts/static_data/generate_sql.mjs`
+- **ql()** (5 connections) — `scripts/static_data/generate_sql.mjs`
+- **readJson()** (5 connections) — `scripts/static_data/generate_sql.mjs`
+- **generateZoneConfigs()** (4 connections) — `scripts/static_data/generate_sql.mjs`
+- **walk()** (3 connections) — `scripts/static_data/generate_sql.mjs`
+- **ensureDir()** (2 connections) — `scripts/static_data/generate_sql.mjs`
+- **ajv** (1 connections) — `scripts/static_data/generate_sql.mjs`
+- **__dirname** (1 connections) — `scripts/static_data/generate_sql.mjs`
+- **__filename** (1 connections) — `scripts/static_data/generate_sql.mjs`
+- **root** (1 connections) — `scripts/static_data/generate_sql.mjs`
 
 ## Relationships
 
-- [ProfessionCacheService](ProfessionCacheService.md) (3 shared connections)
-- [NPCCacheService](NPCCacheService.md) (2 shared connections)
-- [RoomCacheService](RoomCacheService.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/caching/cache_service.py`
-- `server/tests/unit/caching/test_cache_service.py`
+- `scripts/static_data/generate_sql.mjs`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 34 (94%)
+- INFERRED: 2 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

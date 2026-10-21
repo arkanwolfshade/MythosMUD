@@ -1,26 +1,30 @@
 # Real-World Impact for MythosMUD
 
-> 4 nodes
+> 6 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **Real-World Impact for MythosMUD** (4 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **Current Stack Compatibility** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **Migration Complexity** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **Performance Considerations** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **_AsyncPersistenceRoomFacadeBase** (7 connections) — `server/async_persistence_room_facade.py`
+- **._ensure_room_cache_loaded()** (3 connections) — `server/async_persistence_room_facade.py`
+- **._load_room_cache_async()** (3 connections) — `server/async_persistence_room_facade.py`
+- **Attrs provided by AsyncPersistenceLayer when mixed in.** (1 connections) — `server/async_persistence_room_facade.py`
+- **Ensure room cache is loaded (lazy loading with lock).** (1 connections) — `server/async_persistence_room_facade.py`
+- **Load rooms from PostgreSQL via RoomCacheLoader.** (1 connections) — `server/async_persistence_room_facade.py`
 
 ## Relationships
 
-- [AnyIO vs Asyncio: High-Level Comparison and Decision Guide](AnyIO_vs_Asyncio-_High-Level_Comparison_and_Decision_Guide.md) (1 shared connections)
+- [FastAPI Code Review - Anti-Patterns and Best Practices](FastAPI_Code_Review_-_Anti-Patterns_and_Best_Practices.md) (2 shared connections)
+- [Async Remediation Final Report](Async_Remediation_Final_Report.md) (1 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/anyio_vs_asyncio_comparison.md`
+- `server/async_persistence_room_facade.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 8 (80%)
+- INFERRED: 2 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,41 +1,45 @@
 # ConnectionManager Refactoring Summary
 
-> 20 nodes
+> 20 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **ConnectionManager Refactoring Summary** (9 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **Extracted Modules** (8 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **Architecture Improvements** (3 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **Refactoring Results** (3 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **1. Statistics & Monitoring (`realtime/monitoring/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **2. Error Handling (`realtime/errors/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **3. Health Monitoring (`realtime/monitoring/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **4. Cleanup & Maintenance (`realtime/maintenance/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **5. Game State Management (`realtime/integration/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **6. Room Event Integration (`realtime/integration/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **7. Message Broadcasting (`realtime/messaging/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **After** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **Before** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **Benefits Achieved** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **Conclusion** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **File Size Reduction** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **Future Refactoring Opportunities** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **Overview** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **Remaining Core Responsibilities** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **Test Coverage** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **Any** (13 connections)
+- **.__init__()** (7 connections) — `server/caching/cache_service.py`
+- **.__init__()** (4 connections) — `server/caching/cache_service.py`
+- **.__init__()** (4 connections) — `server/caching/cache_service.py`
+- **.get_npc_definition()** (3 connections) — `server/caching/cache_service.py`
+- **.get_npc_definitions()** (3 connections) — `server/caching/cache_service.py`
+- **.get_spawn_rules()** (3 connections) — `server/caching/cache_service.py`
+- **.get_all_professions()** (3 connections) — `server/caching/cache_service.py`
+- **.get_profession_by_id()** (3 connections) — `server/caching/cache_service.py`
+- **.get_room()** (3 connections) — `server/caching/cache_service.py`
+- **.get_room_sync()** (3 connections) — `server/caching/cache_service.py`
+- **Initialize the room cache service. Args: persistence: Persistence layer instance** (1 connections) — `server/caching/cache_service.py`
+- **Get room data with caching. Args: room_id: The room ID Returns: Room data…** (1 connections) — `server/caching/cache_service.py`
+- **Get room data with caching (synchronous version). Args: room_id: The room ID…** (1 connections) — `server/caching/cache_service.py`
+- **Initialize the NPC cache service. Args: npc_service: NPC service instance** (1 connections) — `server/caching/cache_service.py`
+- **Get NPC definitions with caching. Args: session: Database session Returns: List…** (1 connections) — `server/caching/cache_service.py`
+- **Get a specific NPC definition with caching. Args: session: Database session…** (1 connections) — `server/caching/cache_service.py`
+- **Get NPC spawn rules with caching. Args: session: Database session Returns: List…** (1 connections) — `server/caching/cache_service.py`
+- **Get all professions with caching. Returns: List of profession objects** (1 connections) — `server/caching/cache_service.py`
+- **Get a specific profession by ID with caching. Args: profession_id: The…** (1 connections) — `server/caching/cache_service.py`
 
 ## Relationships
 
-- [TEST_AUDIT_EXECUTIVE_SUMMARY.md](TEST_AUDIT_EXECUTIVE_SUMMARY.md.md) (1 shared connections)
+- [Persistence Layer Extraction - COMPLETE ✅](Persistence_Layer_Extraction_-_COMPLETE_✅.md) (5 shared connections)
+- [fixture](fixture.md) (4 shared connections)
+- [Test Coverage Summary: Disconnect Grace Period & Rest Command](Test_Coverage_Summary-_Disconnect_Grace_Period_&_Rest_Command.md) (4 shared connections)
+- [LucidityTierCache](LucidityTierCache.md) (4 shared connections)
+- [Skill: Create a New Worktree for a Task](Skill-_Create_a_New_Worktree_for_a_Task.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/REFACTORING_SUMMARY.md`
+- `server/caching/cache_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

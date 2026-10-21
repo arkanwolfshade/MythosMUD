@@ -1,54 +1,51 @@
 # damage_expr_to_min_max
 
-> 31 nodes
+> 31 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **damage_expr_to_min_max()** (14 connections) — `server/game/dice_expr.py`
-- **dice_expr.py** (13 connections) — `server/game/dice_expr.py`
-- **roll_damage_expr()** (11 connections) — `server/game/dice_expr.py`
-- **test_dice_expr.py** (10 connections) — `server/tests/unit/game/test_dice_expr.py`
-- **_parse_terms()** (5 connections) — `server/game/dice_expr.py`
-- **_term_roll()** (5 connections) — `server/game/dice_expr.py`
-- **damage_expr.py** (5 connections) — `server/game/items/damage_expr.py`
-- **_term_minmax()** (4 connections) — `server/game/dice_expr.py`
-- **_strip_trailing_alpha()** (3 connections) — `server/game/dice_expr.py`
-- **test_damage_expr_to_min_max()** (3 connections) — `server/tests/unit/game/test_dice_expr.py`
-- **test_roll_damage_expr_within_bounds()** (3 connections) — `server/tests/unit/game/test_dice_expr.py`
-- **test_damage_expr.py** (3 connections) — `server/tests/unit/game/items/test_damage_expr.py`
-- **_secrets_roll()** (2 connections) — `server/game/dice_expr.py`
-- **test_items_damage_expr_reexports_shared_helper()** (2 connections) — `server/tests/unit/game/items/test_damage_expr.py`
-- **test_damage_expr_rejects_empty()** (2 connections) — `server/tests/unit/game/test_dice_expr.py`
-- **test_damage_expr_rejects_unparseable()** (2 connections) — `server/tests/unit/game/test_dice_expr.py`
-- **test_roll_damage_expr_deterministic()** (2 connections) — `server/tests/unit/game/test_dice_expr.py`
-- **test_roll_damage_expr_rejects_empty()** (2 connections) — `server/tests/unit/game/test_dice_expr.py`
-- **Random** (2 connections)
-- **_RollInt** (1 connections)
-- **parametrize** (1 connections)
-- **Shared damage_expr helpers for catalog dual-write and combat rolls. Used by…** (1 connections) — `server/game/dice_expr.py`
-- **Inclusive lo..hi using secrets (avoids Bandit/Codacy B311 on random).** (1 connections) — `server/game/dice_expr.py`
-- **Roll a dice expression once and return a non-negative integer. Args: expr: Dice…** (1 connections) — `server/game/dice_expr.py`
-- **Drop trailing +DB / -flavor suffixes until none remain.** (1 connections) — `server/game/dice_expr.py`
+- **test_npc_combat_integration_service_player_attacks.py** (22 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **asyncio** (14 connections)
+- **test_handle_player_attack_on_npc_error_handling()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_handle_player_attack_on_npc_grace_period_check_fails()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_setup_combat_uuids_and_mappings_value_error()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_handle_player_attack_on_npc_login_grace_period_blocked()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_handle_player_attack_on_npc_npc_not_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_handle_player_attack_on_npc_with_existing_combat()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_process_combat_attack_queue_failure()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_process_combat_attack_start_new_combat()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_setup_combat_uuids_and_mappings_valid_uuid()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_store_npc_xp_mapping_first_engagement()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_store_npc_xp_mapping_no_definition()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_store_npc_xp_mapping_no_xp_value()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_store_npc_xp_mapping_non_dict_base_stats()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_validate_and_get_npc_instance_not_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Unit tests for NPC combat integration service - player-initiated combat paths.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test handle_player_attack_on_npc returns False when NPC not found.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test handle_player_attack_on_npc handles exceptions gracefully.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test _setup_combat_uuids_and_mappings handles ValueError.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test _setup_combat_uuids_and_mappings with valid UUID.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test store_npc_xp_mapping_for_mixin when NPC definition is not found.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test store_npc_xp_mapping_for_mixin when base_stats is not a dict.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test store_npc_xp_mapping_for_mixin applies lucidity effect on first engagement.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test store_npc_xp_mapping_for_mixin defaults to 0 when xp_value not in…** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
 - *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [npcs/catalog_dml.py](npcs-catalog_dml.py.md) (3 shared connections)
-- [ValueError](ValueError.md) (3 shared connections)
-- [resolve_npc_attack_damage](resolve_npc_attack_damage.md) (3 shared connections)
-- [items/catalog_dml.py](items-catalog_dml.py.md) (2 shared connections)
+- [_complete_tutorial_with_rewards](_complete_tutorial_with_rewards.md) (4 shared connections)
+- [ValidationError](ValidationError.md) (3 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (2 shared connections)
+- [security.ts](security.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/dice_expr.py`
-- `server/game/items/damage_expr.py`
-- `server/tests/unit/game/items/test_damage_expr.py`
-- `server/tests/unit/game/test_dice_expr.py`
+- `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
 
 ## Audit Trail
 
-- EXTRACTED: 53 (91%)
-- INFERRED: 5 (9%)
+- EXTRACTED: 46 (87%)
+- INFERRED: 7 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

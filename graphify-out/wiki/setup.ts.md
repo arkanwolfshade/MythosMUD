@@ -1,42 +1,47 @@
 # setup.ts
 
-> 17 nodes
+> 28 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **setup.ts** (13 connections) — `client/src/test/setup.ts`
-- **installLocalStorageShim()** (5 connections) — `client/src/utils/localStorageShim.ts`
-- **localStorageShim.ts** (5 connections) — `client/src/utils/localStorageShim.ts`
-- **localStorageShim.test.ts** (4 connections) — `client/src/utils/__tests__/localStorageShim.test.ts`
-- **installDomPurifyTestWindow()** (3 connections) — `client/src/test/domPurifyTestWindow.ts`
-- **domPurifyTestWindow.ts** (3 connections) — `client/src/test/domPurifyTestWindow.ts`
-- **createDomPurifyTestWindow()** (2 connections) — `client/src/test/domPurifyTestWindow.ts`
-- **isUsableStorage()** (2 connections) — `client/src/utils/localStorageShim.ts`
-- **peekExistingLocalStorage()** (2 connections) — `client/src/utils/localStorageShim.ts`
-- **constructor()** (1 connections) — `client/src/test/setup.ts`
-- **disconnect()** (1 connections) — `client/src/test/setup.ts`
-- **observe()** (1 connections) — `client/src/test/setup.ts`
-- **takeRecords()** (1 connections) — `client/src/test/setup.ts`
-- **unobserve()** (1 connections) — `client/src/test/setup.ts`
-- **deleteProp()** (1 connections) — `client/src/utils/__tests__/localStorageShim.test.ts`
-- **get()** (1 connections) — `client/src/utils/__tests__/localStorageShim.test.ts`
-- **defaultFetchMock** (1 connections) — `client/src/test/setup.ts`
+- **1. Quick Start** (10 connections) — `docs/TESTING.md`
+- **Testing Guide for MythosMUD** (8 connections) — `docs/TESTING.md`
+- **2. bcrypt PyO3 Limitation - Technical Details** (7 connections) — `docs/TESTING.md`
+- **4. Common Issues** (5 connections) — `docs/TESTING.md`
+- **docs/TESTING.md** (1 connections) — `docs/TESTING.md`
+- **3. Test Organization** (1 connections) — `docs/TESTING.md`
+- **5. Markers and isolation (greenfield)** (1 connections) — `docs/TESTING.md`
+- **6. Changelog** (1 connections) — `docs/TESTING.md`
+- **Affected Modules** (1 connections) — `docs/TESTING.md`
+- **AI READING INSTRUCTION** (1 connections) — `docs/TESTING.md`
+- **Coverage Requirements** (1 connections) — `docs/TESTING.md`
+- **Debugging Tests** (1 connections) — `docs/TESTING.md`
+- **Fresh Session Testing (For bcrypt-dependent modules)** (1 connections) — `docs/TESTING.md`
+- **Issue: Database connection errors** (1 connections) — `docs/TESTING.md`
+- **Issue: Import errors** (1 connections) — `docs/TESTING.md`
+- **Issue: Slow test runs** (1 connections) — `docs/TESTING.md`
+- **Issue: Tests hang indefinitely** (1 connections) — `docs/TESTING.md`
+- **Makefile Targets** (1 connections) — `docs/TESTING.md`
+- **Option 1: Fresh Terminal (Simplest)** (1 connections) — `docs/TESTING.md`
+- **Option 2: Run Specific Tests First (In New Session)** (1 connections) — `docs/TESTING.md`
+- **Option 3: Use CI-style suite (Most Isolated)** (1 connections) — `docs/TESTING.md`
+- **Prevention During Development** (1 connections) — `docs/TESTING.md`
+- **Running Individual Test Files** (1 connections) — `docs/TESTING.md`
+- **Running Tests** (1 connections) — `docs/TESTING.md`
+- **Solution: Run tests in a fresh terminal session** (1 connections) — `docs/TESTING.md`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [security.ts](security.ts.md) (2 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/src/test/domPurifyTestWindow.ts`
-- `client/src/test/setup.ts`
-- `client/src/utils/__tests__/localStorageShim.test.ts`
-- `client/src/utils/localStorageShim.ts`
+- `docs/TESTING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 27 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

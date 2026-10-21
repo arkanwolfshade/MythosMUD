@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - Petersen's Abominations
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Petersen's Abominations** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/MANIFEST.md`
-- **petersen-s-abominations/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/MANIFEST.md`
+- **Eliminate Raw CRUD SQL** (1 connections) — `.cursor/plans/eliminate-raw-crud-sql_1bc86515.plan.md`
+- **Procedures-First PostgreSQL CRUD** (1 connections) — `.cursor/plans/eliminate-raw-crud-sql_1bc86515.plan.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/MANIFEST.md`
+- `.cursor/plans/eliminate-raw-crud-sql_1bc86515.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,12 +1,11 @@
 # Archive Directory README
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Archive Directory README** (2 connections) — `docs/archive/README.md`
-- **HADS Archive Exclusion** (1 connections) — `docs/archive/README.md`
-- **PLANNING.md Single Source of Truth** (1 connections) — `docs/archive/README.md`
+- **_scan_dml_blank_before_terminator.py** (1 connections) — `scripts/_scan_dml_blank_before_terminator.py`
+- **One-off scan: blank line immediately before \\. in data/db DML (invalid COPY…** (1 connections) — `scripts/_scan_dml_blank_before_terminator.py`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `docs/archive/README.md`
+- `scripts/_scan_dml_blank_before_terminator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

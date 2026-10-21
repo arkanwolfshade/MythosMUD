@@ -1,23 +1,23 @@
 # ensure_uv_ci.sh
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **ensure_uv_ci.sh** (1 connections) — `scripts/ensure_uv_ci.sh`
-- **ensure_uv_ci.sh script** (1 connections) — `scripts/ensure_uv_ci.sh`
+- **test_extract_chat_event_info()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test extract_chat_event_info() extracts event info.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Chaosium CoC Catalog](Chaosium_CoC_Catalog.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/ensure_uv_ci.sh`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

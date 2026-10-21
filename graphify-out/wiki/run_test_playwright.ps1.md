@@ -1,10 +1,10 @@
 # run_test_playwright.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **run_test_playwright.ps1** (0 connections) — `scripts/run_test_playwright.ps1`
+- **Animate Skill** (0 connections) — `.cursor/skills/animate/SKILL.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/run_test_playwright.ps1`
+- `.cursor/skills/animate/SKILL.md`
 
 ## Audit Trail
 

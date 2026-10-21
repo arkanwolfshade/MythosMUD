@@ -1,51 +1,60 @@
 # _str_id
 
-> 31 nodes
+> 41 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **_str_id()** (16 connections) — `server/game/party_service.py`
-- **UUID** (15 connections)
-- **.accept_party_invite()** (8 connections) — `server/game/party_service.py`
-- **.get_party_for_player()** (8 connections) — `server/game/party_service.py`
-- **.remove_member()** (8 connections) — `server/game/party_service.py`
-- **._send_result_to_player()** (8 connections) — `server/game/party_service.py`
-- **.add_member()** (7 connections) — `server/game/party_service.py`
-- **.create_party()** (7 connections) — `server/game/party_service.py`
-- **.decline_party_invite()** (7 connections) — `server/game/party_service.py`
-- **._expire_pending_invites()** (7 connections) — `server/game/party_service.py`
-- **.request_party_invite()** (7 connections) — `server/game/party_service.py`
-- **.on_player_disconnect()** (6 connections) — `server/game/party_service.py`
-- **.is_in_same_party()** (5 connections) — `server/game/party_service.py`
-- **.is_leader()** (5 connections) — `server/game/party_service.py`
-- **._cancel_pending_invites_for()** (4 connections) — `server/game/party_service.py`
-- **.get_party_members()** (4 connections) — `server/game/party_service.py`
-- **Create a new party with the given player as leader. Returns dict with success…** (1 connections) — `server/game/party_service.py`
-- **Add a player to a party. Fails if party does not exist or player is already in…** (1 connections) — `server/game/party_service.py`
-- **Remove expired pending invites and notify inviters.** (1 connections) — `server/game/party_service.py`
-- **Send a command_response-style message to a single player.** (1 connections) — `server/game/party_service.py`
-- **Normalize ID to string for dict keys and membership sets.** (1 connections) — `server/game/party_service.py`
-- **Create a pending party invite and send party_invite event to target. Target…** (1 connections) — `server/game/party_service.py`
-- **Accept a party invite. Target is the player who accepted (the invitee).** (1 connections) — `server/game/party_service.py`
-- **Decline a party invite.** (1 connections) — `server/game/party_service.py`
-- **Remove a player from a party (leave or internal remove). If leader leaves,…** (1 connections) — `server/game/party_service.py`
-- *... and 6 more nodes in this community*
+- **magic_service_completion.py** (25 connections) — `server/game/magic/magic_service_completion.py`
+- **SpellCostsService** (19 connections) — `server/game/magic/spell_costs.py`
+- **MagicServiceCompletionMixin** (12 connections) — `server/game/magic/magic_service_completion.py`
+- **UUID** (12 connections)
+- **Any** (11 connections)
+- **._execute_casting_immediately()** (9 connections) — `server/game/magic/magic_service_completion.py`
+- **._complete_casting()** (8 connections) — `server/game/magic/magic_service_completion.py`
+- **._recreate_target_from_state()** (7 connections) — `server/game/magic/magic_service_completion.py`
+- **.apply_costs()** (7 connections) — `server/game/magic/spell_costs.py`
+- **._notify_mp_update()** (7 connections) — `server/game/magic/spell_costs.py`
+- **._try_complete_casting_via_combat()** (6 connections) — `server/game/magic/magic_service_completion.py`
+- **._try_queue_spell_for_combat()** (6 connections) — `server/game/magic/magic_service_completion.py`
+- **UUID** (6 connections)
+- **._apply_corruption_if_mythos()** (6 connections) — `server/game/magic/spell_costs.py`
+- **._spend_lucidity_if_required()** (6 connections) — `server/game/magic/spell_costs.py`
+- **._apply_spell_costs_and_effects()** (5 connections) — `server/game/magic/magic_service_completion.py`
+- **._get_player_and_room()** (5 connections) — `server/game/magic/magic_service_completion.py`
+- **._parse_casting_target_id()** (5 connections) — `server/game/magic/magic_service_completion.py`
+- **_is_heal_other_target()** (4 connections) — `server/game/magic/magic_service_completion.py`
+- **_send_healing_update_event()** (4 connections) — `server/game/magic/magic_service_completion.py`
+- **_send_spell_completion_message()** (4 connections) — `server/game/magic/magic_service_completion.py`
+- **.restore_mp()** (4 connections) — `server/game/magic/spell_costs.py`
+- **Any** (3 connections)
+- **.__init__()** (3 connections) — `server/game/magic/spell_costs.py`
+- **Casting completion flow for spellcasting. Mixin that handles completing a…** (1 connections) — `server/game/magic/magic_service_completion.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (17 shared connections)
-- [PartyService](PartyService.md) (17 shared connections)
-- [Party](Party.md) (2 shared connections)
-- [magic_service.py](magic_service.py.md) (1 shared connections)
+- [test_nats_message_handler.py](test_nats_message_handler.py.md) (10 shared connections)
+- [test_item.py](test_item.py.md) (5 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (4 shared connections)
+- [RoomService](RoomService.md) (3 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (3 shared connections)
+- [reset_database](reset_database.md) (3 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [fastapi_integration.py](fastapi_integration.py.md) (2 shared connections)
+- [handle_whisper_command](handle_whisper_command.md) (2 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/party_service.py`
+- `server/game/magic/magic_service_completion.py`
+- `server/game/magic/spell_costs.py`
 
 ## Audit Trail
 
-- EXTRACTED: 87 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 114 (94%)
+- INFERRED: 7 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,13 +1,11 @@
 # Scenario Group Execution
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Scenario Group Execution** (3 connections) — `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
-- **Local Channel Scenario Group (8-12)** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Logout Scenario Group (19-21)** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Whisper Channel Scenario Group (13-18)** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
+- **item_catalog.sql** (1 connections) — `db/procedures/item_catalog.sql`
+- **schema_name.list_item_prototypes_page()** (1 connections) — `db/procedures/item_catalog.sql`
 
 ## Relationships
 
@@ -15,12 +13,11 @@
 
 ## Source Files
 
-- `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
-- `e2e-tests/EXECUTION_VALIDATION.md`
+- `db/procedures/item_catalog.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,42 +1,40 @@
 # Findings by Category
 
-> 21 nodes
+> 19 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **Findings by Category** (8 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **1. Connection Management Leaks** (4 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **2. Event System Leaks** (3 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **3. Async Task and Background Task Leaks** (3 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **4. Cache and In-Memory Data Structure Leaks** (3 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **5. Client-Side Memory Leaks** (3 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **6. File Handle and I/O Leaks** (2 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **7. Circular Reference Leaks** (2 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **1.1 Database Connection Pools** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **1.2 WebSocket Connection Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **1.3 NATS Connection and Subscription Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **2.1 EventBus Subscriber Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **2.2 Client-Side Event Handler Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **3.1 Task Registry Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **3.2 Background Service Task Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **4.1 LRU Cache Growth** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **4.2 Dictionary and Set Growth** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **5.1 React Hook Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **5.2 Zustand Store Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **6.1 File Handle Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **7.1 Object Reference Cycles** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **Delight Techniques** (9 connections) — `.claude/skills/delight/SKILL.md`
+- **Delight Skill** (7 connections) — `.claude/skills/delight/SKILL.md`
+- **Delight Principles** (5 connections) — `.claude/skills/delight/SKILL.md`
+- **Appropriate to Context** (1 connections) — `.claude/skills/delight/SKILL.md`
+- **Assess Delight Opportunities** (1 connections) — `.claude/skills/delight/SKILL.md`
+- **Celebration Moments** (1 connections) — `.claude/skills/delight/SKILL.md`
+- **Compound Over Time** (1 connections) — `.claude/skills/delight/SKILL.md`
+- **Delight Amplifies, Never Blocks** (1 connections) — `.claude/skills/delight/SKILL.md`
+- **Easter Eggs & Hidden Delights** (1 connections) — `.claude/skills/delight/SKILL.md`
+- **Illustrations & Visual Personality** (1 connections) — `.claude/skills/delight/SKILL.md`
+- **Implementation Patterns** (1 connections) — `.claude/skills/delight/SKILL.md`
+- **Loading & Waiting States** (1 connections) — `.claude/skills/delight/SKILL.md`
+- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/delight/SKILL.md`
+- **Micro-interactions & Animation** (1 connections) — `.claude/skills/delight/SKILL.md`
+- **Personality in Copy** (1 connections) — `.claude/skills/delight/SKILL.md`
+- **Satisfying Interactions** (1 connections) — `.claude/skills/delight/SKILL.md`
+- **Sound Design** (1 connections) — `.claude/skills/delight/SKILL.md`
+- **Surprise and Discovery** (1 connections) — `.claude/skills/delight/SKILL.md`
+- **Verify Delight Quality** (1 connections) — `.claude/skills/delight/SKILL.md`
 
 ## Relationships
 
-- [Memory Leak Audit Report](Memory_Leak_Audit_Report.md) (1 shared connections)
+- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- `.claude/skills/delight/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,40 +1,37 @@
 # test_player_spell_repository.py
 
-> 17 nodes
+> 15 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **test_player_spell_repository.py** (19 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **_mock_session_with_rows()** (9 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **asyncio** (9 connections)
-- **_spell_row()** (6 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_get_player_spell_found()** (4 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_get_player_spells()** (4 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_learn_spell()** (4 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_learn_spell_no_row_raises()** (4 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_record_spell_cast()** (4 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_update_mastery()** (4 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **repo()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_get_player_spell_missing()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_get_player_spells_db_error()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_update_mastery_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_row_to_player_spell_maps_fields()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **fixture** (1 connections)
-- **Unit tests for PlayerSpellRepository.** (1 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **properties** (6 connections) — `schemas/items/item_prototype.schema.json`
+- **metadata** (5 connections) — `schemas/items/item_prototype.schema.json`
+- **armor** (2 connections) — `schemas/items/item_prototype.schema.json`
+- **catalog** (2 connections) — `schemas/items/item_prototype.schema.json`
+- **equipment** (2 connections) — `schemas/items/item_prototype.schema.json`
+- **tome** (2 connections) — `schemas/items/item_prototype.schema.json`
+- **weapon** (2 connections) — `schemas/items/item_prototype.schema.json`
+- **$ref** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **$ref** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **$ref** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **description** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **$ref** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **$ref** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (7 shared connections)
-- [SpellEffects](SpellEffects.md) (2 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_spell_repository.py`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (93%)
-- INFERRED: 3 (7%)
+- EXTRACTED: 15 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

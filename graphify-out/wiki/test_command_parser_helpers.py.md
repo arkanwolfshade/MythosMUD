@@ -1,51 +1,53 @@
 # test_command_parser_helpers.py
 
-> 35 nodes
+> 59 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **test_command_parser_helpers.py** (21 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **command_parser()** (4 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_value_error()** (4 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_pydantic_validation_error()** (3 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_unsupported_command()** (3 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_empty_raises()** (3 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_whitespace_only_raises()** (3 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_with_alias_g()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_with_alias_l()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_with_alias_w()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_normalize_command_cleans_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_normalize_command_no_slash()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_normalize_command_removes_slash_prefix()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_normalize_command_strips_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_lowercases_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_simple()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_with_args()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **fixture** (1 connections)
-- **Unit tests for command_parser helper methods. Tests the helper methods in…** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _create_command_object() raises error for unsupported command.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _create_command_object() handles PydanticValidationError.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _create_command_object() handles ValueError.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Create a CommandParser instance.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _normalize_command() removes leading slash.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _normalize_command() cleans multiple whitespace.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- *... and 10 more nodes in this community*
+- **test_combat_handler.py** (39 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **_handler_with_persistence()** (22 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **asyncio** (14 connections)
+- **_as_app_with_state()** (9 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_get_player_and_room_no_current_room()** (7 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_get_player_and_room_success()** (7 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_get_player_and_room_unknown_player()** (7 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_get_player_and_room_unknown_room()** (7 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_resolve_combat_target_accepts_live_phantom()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_resolve_combat_target_rejects_dead_npc()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_resolve_combat_target_rejects_dissipated_phantom()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_resolve_combat_target_rejects_non_npc()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **_AppStatePersistence** (5 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **_AppWithPersistence** (5 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_get_player_and_room_no_persistence_on_app()** (5 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_resolve_combat_target_failure_message()** (5 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_combat_command_handler_extras_optional()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_handle_flee_command_delegates()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_handle_taunt_command_delegates()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_validate_combat_action()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_validate_combat_action_empty_name()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **_CmdType** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_combat_command_handler_requires_async_persistence()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_extract_combat_command_data_enum_value()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (6 shared connections)
-- [command_parser.py](command_parser.py.md) (3 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [NPCCombatLucidity](NPCCombatLucidity.md) (6 shared connections)
+- [RoomService](RoomService.md) (5 shared connections)
+- [PlayerPositionService](PlayerPositionService.md) (4 shared connections)
+- [test_help_docs.py](test_help_docs.py.md) (4 shared connections)
+- [command_parser.py](command_parser.py.md) (2 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_parser_helpers.py`
+- `server/tests/unit/commands/test_combat_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (84%)
-- INFERRED: 7 (16%)
+- EXTRACTED: 118 (92%)
+- INFERRED: 10 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

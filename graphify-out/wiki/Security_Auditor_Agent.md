@@ -1,10 +1,10 @@
 # Security Auditor Agent
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Security Auditor Agent** (0 connections) — `.claude/agents/security-auditor.md`
+- **verify_ddl.sql** (0 connections) — `db/verification/verify_ddl.sql`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.claude/agents/security-auditor.md`
+- `db/verification/verify_ddl.sql`
 
 ## Audit Trail
 

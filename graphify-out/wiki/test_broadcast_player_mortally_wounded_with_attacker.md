@@ -1,24 +1,22 @@
 # test_broadcast_player_mortally_wounded_with_attacker
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_broadcast_player_mortally_wounded_with_attacker()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_player_mortally_wounded with attacker name.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **20261007120000_bank_deposit_boxes.sql** (0 connections) — `db/migrations/20261007120000_bank_deposit_boxes.sql`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `db/migrations/20261007120000_bank_deposit_boxes.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

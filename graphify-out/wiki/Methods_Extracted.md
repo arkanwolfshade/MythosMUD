@@ -1,29 +1,27 @@
 # Methods Extracted
 
-> 7 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Methods Extracted** (7 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Group 1: Player Operations (~800 lines → ~80 lines)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Group 2: Health & XP Operations (~400 lines → ~40 lines)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Group 3: Container Operations (~300 lines → ~30 lines)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Group 4: Item Operations (~200 lines → ~20 lines)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Group 5: Profession Operations (~100 lines → ~20 lines)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Group 6: Room Operations (~100 lines → ~20 lines)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Tiered Test Coverage Strategy** (3 connections) — `client/docs/TEST_COVERAGE_STRATEGY.md`
+- **Critical Code 90% Coverage** (1 connections) — `client/docs/TEST_COVERAGE_STRATEGY.md`
+- **Global 70% Coverage Threshold** (1 connections) — `client/docs/TEST_COVERAGE_STRATEGY.md`
+- **Vitest Unit Tests** (1 connections) — `client/README.md`
 
 ## Relationships
 
-- [Persistence Layer Extraction - COMPLETE ✅](Persistence_Layer_Extraction_-_COMPLETE_✅.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- `client/README.md`
+- `client/docs/TEST_COVERAGE_STRATEGY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 2 (67%)
+- INFERRED: 1 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

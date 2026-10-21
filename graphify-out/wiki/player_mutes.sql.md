@@ -1,13 +1,12 @@
 # player_mutes.sql
 
-> 4 nodes
+> 3 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **player_mutes.sql** (3 connections) — `db/procedures/player_mutes.sql`
-- **schema_name.delete_player_mute()** (1 connections) — `db/procedures/player_mutes.sql`
-- **schema_name.get_active_player_mutes()** (1 connections) — `db/procedures/player_mutes.sql`
-- **schema_name.upsert_player_mute()** (1 connections) — `db/procedures/player_mutes.sql`
+- **e2e_place_player.py** (2 connections) — `scripts/e2e_place_player.py`
+- **main()** (2 connections) — `scripts/e2e_place_player.py`
+- **_place()** (2 connections) — `scripts/e2e_place_player.py`
 
 ## Relationships
 
@@ -15,12 +14,12 @@
 
 ## Source Files
 
-- `db/procedures/player_mutes.sql`
+- `scripts/e2e_place_player.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 2 (67%)
+- INFERRED: 1 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

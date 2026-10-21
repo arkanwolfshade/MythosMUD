@@ -1,26 +1,27 @@
 # enabled
 
-> 4 nodes
+> 4 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **enabled** (4 connections) — `schemas/unified_room_schema.json`
-- **default** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **Aggro and Threat System Design** (4 connections) — `docs/architecture/aggro-threat-system.md`
+- **Stability margin (10% target-switch threshold)** (2 connections) — `docs/architecture/aggro-threat-system.md`
+- **ADR-016 Aggro and Threat Management** (2 connections) — `docs/architecture/decisions/ADR-016-aggro-threat-management.md`
+- **Hate list (per-mob threat map)** (1 connections) — `docs/architecture/aggro-threat-system.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `docs/architecture/aggro-threat-system.md`
+- `docs/architecture/decisions/ADR-016-aggro-threat-management.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 4 (80%)
+- INFERRED: 1 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

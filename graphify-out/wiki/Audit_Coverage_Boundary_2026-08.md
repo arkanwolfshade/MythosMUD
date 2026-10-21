@@ -1,52 +1,49 @@
 # Audit Coverage Boundary 2026-08
 
-> 32 nodes
+> 31 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **Audit Coverage Boundary 2026-08** (11 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
-- **4. Coverage ledger** (9 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
-- **Critical State Handoffs** (5 connections) — `client/src/components/ui-v2/eventLog/HANDOFFS.md`
-- **Client Event Schema** (4 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
-- **Real-Time Architecture** (3 connections) — `docs/REAL_TIME_ARCHITECTURE.md`
-- **Container/inventory events (#711)** (2 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
-- **Container open/transfer/close/loot-all handoff (#711)** (2 connections) — `client/src/components/ui-v2/eventLog/HANDOFFS.md`
-- **Client Server-Authority Register 2026-09** (2 connections) — `docs/architecture/CLIENT_SERVER_AUTHORITY_REGISTER_2026-09.md`
-- **Server authority principle (client is not authoritative)** (2 connections) — `docs/architecture/CLIENT_SERVER_AUTHORITY_REGISTER_2026-09.md`
-- **WebSocket-only real-time design** (2 connections) — `docs/REAL_TIME_ARCHITECTURE.md`
-- **1. Purpose** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
-- **2. Scope for the immediate next step: verifying #625–#628** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
-- **3. Enumeration method** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
-- **4.1 Documents — the audited 29, recovered from the audit's own claim registers** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
-- **4.2 Documents — the residual 74, conservative default** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
-- **4.3 Code — method fact, not a directory checklist** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
-- **4.4 `docs/subsystems/` — staleness, not conformance** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
-- **4.5 Security — a boundary issue #639 does not mention** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
-- **4.6 Questions never asked** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
-- **4.7 Verification debt — irrecoverable, must be re-run wholesale** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
-- **4.8 Unmerged remediation — the audit's own output was never verified against `main`** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
-- **5. Close rule** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
-- **6. Deferred register — no phase in the 618–639 ranking** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
-- **7. Explicitly out of scope** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
-- **8. Follow-up** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
-- *... and 7 more nodes in this community*
+- **server/tests/conftest.py** (15 connections) — `server/tests/conftest.py`
+- **pytest_asyncio_loop_factories()** (6 connections) — `server/tests/conftest.py`
+- **_apply_path_based_markers()** (5 connections) — `server/tests/conftest.py`
+- **test_logger()** (5 connections) — `server/tests/conftest.py`
+- **_abortive_close_socketpair()** (4 connections) — `server/tests/conftest.py`
+- **_create_test_event_loop()** (4 connections) — `server/tests/conftest.py`
+- **fixture** (4 connections)
+- **pytest_collection_modifyitems()** (4 connections) — `server/tests/conftest.py`
+- **reset_config_singleton()** (4 connections) — `server/tests/conftest.py`
+- **Item** (3 connections)
+- **deterministic_random_seed()** (3 connections) — `server/tests/conftest.py`
+- **ensure_test_environment_variables()** (3 connections) — `server/tests/conftest.py`
+- **_test_file_in_category()** (3 connections) — `server/tests/conftest.py`
+- **_get_db_name_from_url()** (2 connections) — `server/tests/conftest.py`
+- **AbstractEventLoop** (2 connections)
+- **Config** (1 connections)
+- **P** (1 connections)
+- **BoundLogger** (1 connections)
+- **Test configuration and fixtures for MythosMUD greenfield test suite. This…** (1 connections) — `server/tests/conftest.py`
+- **Reset config singleton before and after each test. In test mode, get_config()…** (1 connections) — `server/tests/conftest.py`
+- **Set deterministic random seed for reproducible tests.** (1 connections) — `server/tests/conftest.py`
+- **Wrap socket.socketpair() so both ends close with an RST (no TIME_WAIT); the…** (1 connections) — `server/tests/conftest.py`
+- **Create an event loop suitable for MythosMUD tests. CRITICAL: On Windows,…** (1 connections) — `server/tests/conftest.py`
+- **Register platform-appropriate loop factories for pytest-asyncio (Python 3.14+…** (1 connections) — `server/tests/conftest.py`
+- **Provide a logger for tests.** (1 connections) — `server/tests/conftest.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Room](Room.md) (3 shared connections)
+- [test_player_combat_service.py](test_player_combat_service.py.md) (2 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
-- `client/src/components/ui-v2/eventLog/HANDOFFS.md`
-- `docs/REAL_TIME_ARCHITECTURE.md`
-- `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
-- `docs/architecture/CLIENT_SERVER_AUTHORITY_REGISTER_2026-09.md`
+- `server/tests/conftest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (84%)
-- INFERRED: 5 (16%)
+- EXTRACTED: 43 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

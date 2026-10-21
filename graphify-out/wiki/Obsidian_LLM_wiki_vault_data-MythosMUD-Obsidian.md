@@ -1,23 +1,23 @@
 # Obsidian LLM wiki vault (data/MythosMUD-Obsidian)
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Obsidian LLM wiki vault (data/MythosMUD-Obsidian)** (1 connections) — `.cursor/skills/mythosmud-llm-wiki/SKILL.md`
-- **mythosmud-llm-wiki skill** (1 connections) — `.cursor/skills/mythosmud-llm-wiki/SKILL.md`
+- **test_generate_room_id_from_zone_data_none_values()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _generate_room_id_from_zone_data with None values.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [PanelContextRuntime.tsx](PanelContextRuntime.tsx.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-llm-wiki/SKILL.md`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

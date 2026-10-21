@@ -1,39 +1,37 @@
 # Animate Skill
 
-> 18 nodes
+> 16 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **Implement Animations** (7 connections) — `.claude/skills/animate/SKILL.md`
-- **Animate Skill** (7 connections) — `.claude/skills/animate/SKILL.md`
-- **Technical Implementation** (6 connections) — `.claude/skills/animate/SKILL.md`
-- **Accessibility** (1 connections) — `.claude/skills/animate/SKILL.md`
-- **Assess Animation Opportunities** (1 connections) — `.claude/skills/animate/SKILL.md`
-- **CSS Animations** (1 connections) — `.claude/skills/animate/SKILL.md`
-- **Delight Moments** (1 connections) — `.claude/skills/animate/SKILL.md`
-- **Entrance Animations** (1 connections) — `.claude/skills/animate/SKILL.md`
-- **Feedback & Guidance** (1 connections) — `.claude/skills/animate/SKILL.md`
-- **JavaScript Animation** (1 connections) — `.claude/skills/animate/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/animate/SKILL.md`
-- **Micro-interactions** (1 connections) — `.claude/skills/animate/SKILL.md`
-- **Navigation & Flow** (1 connections) — `.claude/skills/animate/SKILL.md`
-- **Performance** (1 connections) — `.claude/skills/animate/SKILL.md`
-- **Plan Animation Strategy** (1 connections) — `.claude/skills/animate/SKILL.md`
-- **State Transitions** (1 connections) — `.claude/skills/animate/SKILL.md`
-- **Timing & Easing** (1 connections) — `.claude/skills/animate/SKILL.md`
-- **Verify Quality** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **overrides** (14 connections) — `client/package.json`
+- **@stoplight/spectral-core** (2 connections) — `client/package.json`
+- **@stoplight/spectral-ruleset-bundler** (2 connections) — `client/package.json`
+- **@asyncapi/specs** (1 connections) — `client/package.json`
+- **fast-uri** (1 connections) — `client/package.json`
+- **flatted** (1 connections) — `client/package.json`
+- **glob** (1 connections) — `client/package.json`
+- **js-yaml** (1 connections) — `client/package.json`
+- **katex** (1 connections) — `client/package.json`
+- **linkify-it** (1 connections) — `client/package.json`
+- **lodash** (1 connections) — `client/package.json`
+- **magic-string** (1 connections) — `client/package.json`
+- **smol-toml** (1 connections) — `client/package.json`
+- **undici** (1 connections) — `client/package.json`
+- **minimatch** (1 connections) — `client/package.json`
+- **rollup** (1 connections) — `client/package.json`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- [bonus_tags](bonus_tags.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/animate/SKILL.md`
+- `client/package.json`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,13 +1,11 @@
 # Vite Best-Practices Remediation
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Vite Best-Practices Remediation** (2 connections) — `.cursor/plans/vite_best-practices_remediation_abfe0fbe.plan.md`
-- **Vitest Best-Practices Remediation** (2 connections) — `.cursor/plans/vitest_best-practices_remediation_f589ee02.plan.md`
-- **import.meta.env (Vite)** (1 connections) — `.cursor/plans/vite_best-practices_remediation_abfe0fbe.plan.md`
-- **Test Suite Improvement** (1 connections) — `.cursor/plans/test_suite_improvement_f5a4acf1.plan.md`
+- **Environment Configuration Refactoring** (1 connections) — `docs/archive/ENVIRONMENT_CONFIGURATION_REFACTORING.md`
+- **Explicit Configuration Migration** (1 connections) — `docs/archive/EXPLICIT_CONFIGURATION_MIGRATION.md`
 
 ## Relationships
 
@@ -15,14 +13,13 @@
 
 ## Source Files
 
-- `.cursor/plans/test_suite_improvement_f5a4acf1.plan.md`
-- `.cursor/plans/vite_best-practices_remediation_abfe0fbe.plan.md`
-- `.cursor/plans/vitest_best-practices_remediation_f589ee02.plan.md`
+- `docs/archive/ENVIRONMENT_CONFIGURATION_REFACTORING.md`
+- `docs/archive/EXPLICIT_CONFIGURATION_MIGRATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (33%)
-- INFERRED: 2 (67%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,10 +1,10 @@
 # Argon2 Security Review
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Argon2 Security Review** (0 connections) — `docs/archive/ARGON2_SECURITY_REVIEW.md`
+- **Entity Contact Subsystem** (0 connections) — `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/ARGON2_SECURITY_REVIEW.md`
+- `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
 
 ## Audit Trail
 

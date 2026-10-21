@@ -1,50 +1,55 @@
 # correct_patterns.py
 
-> 24 nodes
+> 42 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **correct_patterns.py** (20 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_async_logging()** (5 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_performance_logging()** (4 connections) — `docs/examples/logging/correct_patterns.py`
-- **risky_operation()** (4 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_error_handling()** (3 connections) — `docs/examples/logging/correct_patterns.py`
-- **process_data()** (3 connections) — `docs/examples/logging/correct_patterns.py`
-- **async_work()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_api_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_basic_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_batch_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_database_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_security_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_websocket_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct database operation logging.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct API request/response logging.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct WebSocket logging patterns.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct basic logging patterns.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct batch operation logging.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Simulate a risky operation.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Simulate data processing.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct error handling with logging.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct performance logging patterns.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct security logging patterns.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct async logging patterns.** (1 connections) — `docs/examples/logging/correct_patterns.py`
+- **test_channel_commands.py** (20 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **channel_commands.py** (19 connections) — `server/commands/channel_commands.py`
+- **handle_channel_command()** (15 connections) — `server/commands/channel_commands.py`
+- **_handle_default_channel_setting()** (11 connections) — `server/commands/channel_commands.py`
+- **asyncio** (9 connections)
+- **_extract_channel_from_command()** (8 connections) — `server/commands/channel_commands.py`
+- **_get_persistence_and_player()** (8 connections) — `server/commands/channel_commands.py`
+- **_validate_channel_name()** (6 connections) — `server/commands/channel_commands.py`
+- **Any** (4 connections)
+- **test_get_persistence_and_player_no_persistence()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_get_persistence_and_player_not_found()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_handle_channel_command_default_subcommand()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_handle_channel_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_handle_channel_command_switch_valid_channel()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_handle_channel_command_usage_when_channel_missing()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_handle_default_channel_setting_invalid_channel()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_handle_default_channel_setting_sqlalchemy_error()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_handle_default_channel_setting_success()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_extract_channel_from_command_direct()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_extract_channel_from_command_missing()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_extract_channel_from_command_parsed_fallback()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_validate_channel_name_invalid()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **Channel management commands for Advanced Chat Channels. This module provides…** (1 connections) — `server/commands/channel_commands.py`
+- **Validate channel name. Returns error dict if invalid, None if valid.** (1 connections) — `server/commands/channel_commands.py`
+- **Handle the channel command for switching channels or setting default channel.…** (1 connections) — `server/commands/channel_commands.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [ExceptionTracker](ExceptionTracker.md) (4 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (3 shared connections)
-- [PerformanceMonitor](PerformanceMonitor.md) (3 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [Result](Result.md) (1 shared connections)
+- [command_parser.py](command_parser.py.md) (10 shared connections)
+- [server/tests/conftest.py](server-tests-conftest.py.md) (3 shared connections)
+- [ItemFactory](ItemFactory.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (1 shared connections)
+- [CommandFactory](CommandFactory.md) (1 shared connections)
+- [.load_room_data](load_room_data.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/correct_patterns.py`
+- `server/commands/channel_commands.py`
+- `server/tests/unit/commands/test_channel_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 92 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

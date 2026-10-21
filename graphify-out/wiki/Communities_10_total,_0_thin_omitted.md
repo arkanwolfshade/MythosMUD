@@ -1,41 +1,39 @@
 # Communities (10 total, 0 thin omitted)
 
-> 20 nodes
+> 18 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **Communities (10 total, 0 thin omitted)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Petersen's Abominations  (2026-08-12)** (9 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **petersen-s-abominations/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Community 0 - "Hotel Hell"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Community 1 - "Petersen's Abominations"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Community 2 - "Hotel Hell"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Community 3 - "Voice on the Phone"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Community 4 - "Mohole"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Community 5 - "Panacea"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Community 6 - "Panacea"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Community 7 - "Petersen's Abominations Pre-Generated Investigators v2"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Community 8 - "Voice on the Phone"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Community 9 - "The Derelict"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Critical Coverage Gaps** (15 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Missing Test Scenarios** (4 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Database Connection Loss** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 10: Configuration Edge Cases** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 1: Domain Layer (NEW ARCHITECTURE)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 2: Message Broker Abstraction** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 3: ApplicationContainer Lifecycle** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 4: Error Recovery Paths** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 5: Async/Await Pattern Verification** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 6: Rate Limiting and Throttling** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 7: WebSocket Connection Edge Cases** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 8: Combat System Integration** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 9: Database Migration and Schema Evolution** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap Description** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Missing Tests** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **NATS Unavailability** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Room Data Corruption** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Specific Test Cases Needed** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [compilerOptions](compilerOptions.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- `docs/archive/TEST_COVERAGE_GAPS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

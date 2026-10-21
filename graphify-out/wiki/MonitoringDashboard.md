@@ -1,58 +1,54 @@
 # MonitoringDashboard
 
-> 64 nodes
+> 83 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **MonitoringDashboard** (35 connections) — `server/monitoring/monitoring_dashboard.py`
-- **test_monitoring_dashboard.py** (17 connections) — `server/tests/unit/monitoring/test_monitoring_dashboard.py`
-- **Alert** (12 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.get_system_health()** (11 connections) — `server/monitoring/monitoring_dashboard.py`
-- **_dashboard()** (11 connections) — `server/tests/unit/monitoring/test_monitoring_dashboard.py`
-- **LogAggregationStats** (10 connections) — `server/structured_logging/log_aggregator.py`
-- **.record_custom_alert()** (9 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.check_alerts()** (7 connections) — `server/monitoring/monitoring_dashboard.py`
-- **._generate_recommendations()** (7 connections) — `server/monitoring/monitoring_dashboard.py`
-- **MonitoringSummary** (6 connections) — `server/monitoring/monitoring_dashboard.py`
-- **SystemHealth** (6 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.get_monitoring_summary()** (6 connections) — `server/monitoring/monitoring_dashboard.py`
-- **Any** (6 connections)
-- **.export_monitoring_data()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.record_durability_anomaly()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.record_registry_failure()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.record_summon_quantity_spike()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
-- **._calculate_performance_score()** (4 connections) — `server/monitoring/monitoring_dashboard.py`
-- **._get_memory_leak_metrics()** (4 connections) — `server/monitoring/monitoring_dashboard.py`
-- **._determine_health_status()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
-- **._get_active_users()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.get_alert_history()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
-- **._get_disk_usage()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
-- **._get_memory_usage()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
-- **._get_system_load()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
-- *... and 39 more nodes in this community*
+- **CircuitBreaker** (43 connections) — `server/realtime/circuit_breaker.py`
+- **test_circuit_breaker.py** (32 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **CircuitState** (25 connections) — `server/realtime/circuit_breaker.py`
+- **CircuitBreakerOpen** (12 connections) — `server/realtime/circuit_breaker.py`
+- **asyncio** (8 connections)
+- **test_call_rejects_when_open()** (7 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **._transition_to()** (6 connections) — `server/realtime/circuit_breaker.py`
+- **test_call_closes_from_half_open_on_success()** (6 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_failure_closed_state()** (6 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_opens_circuit_after_threshold()** (6 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_reopens_from_half_open_on_failure()** (6 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_transitions_to_half_open_after_timeout()** (6 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **.get_stats()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **._on_failure()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **._on_success()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **._time_until_retry()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **test_call_success_closed_state()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_circuit_breaker_init()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_get_state()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_on_failure_opens_circuit_at_threshold()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_on_failure_resets_success_count()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_on_success_increments_success_count_half_open()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_reset()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_should_attempt_reset_returns_false_before_timeout()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_should_attempt_reset_returns_false_when_not_open()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- *... and 58 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
-- [LogAggregator](LogAggregator.md) (5 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (4 shared connections)
-- [PerformanceMonitor](PerformanceMonitor.md) (3 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (3 shared connections)
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [InventoryMutationGuard](InventoryMutationGuard.md) (1 shared connections)
+- [Room](Room.md) (10 shared connections)
+- [look_container.py](look_container.py.md) (8 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (6 shared connections)
+- [NPCPopulationController](NPCPopulationController.md) (3 shared connections)
+- [_handle_admin_hallucinate_command](_handle_admin_hallucinate_command.md) (1 shared connections)
+- [deque](deque.md) (1 shared connections)
 
 ## Source Files
 
-- `server/monitoring/monitoring_dashboard.py`
-- `server/structured_logging/log_aggregator.py`
-- `server/tests/unit/monitoring/test_monitoring_dashboard.py`
+- `server/realtime/circuit_breaker.py`
+- `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 124 (90%)
-- INFERRED: 14 (10%)
+- EXTRACTED: 131 (78%)
+- INFERRED: 38 (22%)
 - AMBIGUOUS: 0 (0%)
 
 ---

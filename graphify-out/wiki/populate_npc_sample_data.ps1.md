@@ -1,10 +1,10 @@
 # populate_npc_sample_data.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **populate_npc_sample_data.ps1** (0 connections) — `scripts/populate_npc_sample_data.ps1`
+- **unit/services/__init__.py** (0 connections) — `server/tests/unit/services/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/populate_npc_sample_data.ps1`
+- `server/tests/unit/services/__init__.py`
 
 ## Audit Trail
 

@@ -1,41 +1,34 @@
 # _get_npc_room_id
 
-> 14 nodes
+> 13 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **_get_npc_room_id()** (14 connections) — `server/commands/look_npc.py`
-- **test_get_npc_room_id_from_current_room()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_get_npc_room_id_from_current_room_id()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_get_npc_room_id_none()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_get_npc_room_id_from_current_room()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_get_npc_room_id_from_current_room_id()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_get_npc_room_id_none()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Get the room ID from an NPC instance, checking both current_room and…** (1 connections) — `server/commands/look_npc.py`
-- **Test _get_npc_room_id() returns current_room_id when available.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _get_npc_room_id() returns current_room when current_room_id is None.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _get_npc_room_id() returns None when both are None.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test getting NPC room ID from current_room_id.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test getting NPC room ID from current_room when current_room_id is None.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test getting NPC room ID when both are None.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Distill Skill** (7 connections) — `.claude/skills/distill/SKILL.md`
+- **Simplify the Design** (7 connections) — `.claude/skills/distill/SKILL.md`
+- **Assess Current State** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Code Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Content Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Document Removed Complexity** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Information Architecture** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Interaction Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Layout Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Plan Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Verify Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Visual Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
 
 ## Relationships
 
-- [test_look_npc.py](test_look_npc.py.md) (6 shared connections)
-- [test_look_npc_helpers.py](test_look_npc_helpers.py.md) (4 shared connections)
-- [_get_npc_occupants_in_room](_get_npc_occupants_in_room.md) (1 shared connections)
-- [_should_include_npc](_should_include_npc.md) (1 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_npc.py`
-- `server/tests/unit/commands/test_look_npc.py`
-- `server/tests/unit/commands/test_look_npc_helpers.py`
+- `.claude/skills/distill/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,10 +1,10 @@
 # apply-patches.js
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **apply-patches.js** (0 connections) — `client/scripts/apply-patches.js`
+- **6. Related ADRs** (0 connections) — `docs/architecture/decisions/ADR-019-player-effects-system.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `client/scripts/apply-patches.js`
+- `docs/architecture/decisions/ADR-019-player-effects-system.md`
 
 ## Audit Trail
 

@@ -1,55 +1,60 @@
 # PlayerRepositoryProtocol
 
-> 51 nodes
+> 71 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **PlayerRepositoryProtocol** (26 connections) — `server/persistence/protocols.py`
-- **test_protocol_ellipsis_bodies_via_unbound_methods()** (22 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **RoomRepositoryProtocol** (11 connections) — `server/persistence/protocols.py`
-- **Player** (11 connections)
-- **test_protocols.py** (10 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **UUID** (7 connections)
-- **.get_players_batch()** (5 connections) — `server/persistence/protocols.py`
-- **.update_player_last_active()** (5 connections) — `server/persistence/protocols.py`
-- **test_player_repository_protocol_stub()** (5 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **_StubRoomRepo** (4 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.delete_player()** (4 connections) — `server/persistence/protocols.py`
-- **.get_active_players_by_user_id()** (4 connections) — `server/persistence/protocols.py`
-- **.get_player_by_id()** (4 connections) — `server/persistence/protocols.py`
-- **.get_player_by_name()** (4 connections) — `server/persistence/protocols.py`
-- **.get_player_by_user_id()** (4 connections) — `server/persistence/protocols.py`
-- **.get_players_by_user_id()** (4 connections) — `server/persistence/protocols.py`
-- **.get_players_in_room()** (4 connections) — `server/persistence/protocols.py`
-- **.save_player()** (4 connections) — `server/persistence/protocols.py`
-- **.save_players()** (4 connections) — `server/persistence/protocols.py`
-- **.soft_delete_player()** (4 connections) — `server/persistence/protocols.py`
-- **.validate_and_fix_player_room()** (4 connections) — `server/persistence/protocols.py`
-- **.get_room_by_id()** (4 connections) — `server/persistence/protocols.py`
-- **.list_rooms()** (4 connections) — `server/persistence/protocols.py`
-- **.clear_player_inventory()** (3 connections) — `server/persistence/protocols.py`
-- **.list_players()** (3 connections) — `server/persistence/protocols.py`
-- *... and 26 more nodes in this community*
+- **test_look_npc_helpers.py** (34 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **look_npc.py** (30 connections) — `server/commands/look_npc.py`
+- **_parse_stat_datetime()** (16 connections) — `server/commands/look_npc.py`
+- **_format_npc_description()** (15 connections) — `server/commands/look_npc.py`
+- **_parse_npc_stats_dict()** (14 connections) — `server/commands/look_npc.py`
+- **Any** (14 connections)
+- **_should_include_npc()** (14 connections) — `server/commands/look_npc.py`
+- **_format_npc_stats_for_admin()** (12 connections) — `server/commands/look_npc.py`
+- **_try_lookup_npc_implicit()** (12 connections) — `server/commands/look_npc.py`
+- **_find_matching_npcs()** (11 connections) — `server/commands/look_npc.py`
+- **_format_lifecycle_info()** (11 connections) — `server/commands/look_npc.py`
+- **_format_core_attributes()** (10 connections) — `server/commands/look_npc.py`
+- **_format_other_stats()** (10 connections) — `server/commands/look_npc.py`
+- **_format_single_npc_result()** (9 connections) — `server/commands/look_npc.py`
+- **_format_multiple_npcs_result()** (6 connections) — `server/commands/look_npc.py`
+- **test_format_core_attributes()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_format_core_attributes_empty()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_format_lifecycle_info()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_format_lifecycle_info_no_lifecycle_state()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_format_npc_description()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_format_npc_description_fallback()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_format_npc_description_no_description()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_format_other_stats()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_format_other_stats_empty()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_parse_npc_stats_dict_from_dict()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- *... and 46 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (7 shared connections)
-- [_StubPlayerRepo](_StubPlayerRepo.md) (3 shared connections)
-- [test_logout_commands.py](test_logout_commands.py.md) (2 shared connections)
-- [server/persistence/__init__.py](server-persistence-__init__.py.md) (2 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (2 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [Room](Room.md) (1 shared connections)
+- [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (50 shared connections)
+- [Commands](Commands.md) (6 shared connections)
+- [PassiveMobNPC](PassiveMobNPC.md) (5 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [command_parser.py](command_parser.py.md) (3 shared connections)
+- [_RecordingRoom](_RecordingRoom.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [session](session.md) (1 shared connections)
+- [look_container.py](look_container.py.md) (1 shared connections)
+- [alias_storage.py](alias_storage.py.md) (1 shared connections)
+- [CombatInstance](CombatInstance.md) (1 shared connections)
+- [player_presence_tracker.py](player_presence_tracker.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/protocols.py`
-- `server/tests/unit/persistence/test_protocols.py`
+- `server/commands/look_npc.py`
+- `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 99 (93%)
-- INFERRED: 8 (7%)
+- EXTRACTED: 197 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

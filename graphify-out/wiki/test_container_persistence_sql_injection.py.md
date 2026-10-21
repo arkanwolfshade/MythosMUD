@@ -1,37 +1,34 @@
 # test_container_persistence_sql_injection.py
 
-> 15 nodes
+> 13 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **TestContainerPersistenceSQLInjection** (6 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **_create_mock_container_row()** (6 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **test_container_persistence_sql_injection.py** (6 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **.test_update_container_safe_column_names()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **.test_update_container_sql_injection_in_metadata()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **.test_update_container_uses_parameterized_queries()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **.test_update_container_sql_injection_in_lock_state()** (3 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **UUID** (2 connections)
-- **Tests for SQL injection protection in container persistence operations. These…** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Test that update_container uses parameterized queries, not string concatenation.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Test that column names are hardcoded, not from user input.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Create a complete mock container row with all required columns.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Test SQL injection protection in container persistence.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Test that SQL injection in lock_state is prevented.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Test that SQL injection in metadata_json is prevented.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **SyntaxErrorFixer** (7 connections) — `scripts/fix_syntax_errors.py`
+- **.fix_specific_file()** (5 connections) — `scripts/fix_syntax_errors.py`
+- **main()** (4 connections) — `scripts/fix_syntax_errors.py`
+- **.process_files()** (4 connections) — `scripts/fix_syntax_errors.py`
+- **Path** (3 connections)
+- **.fix_malformed_logger_calls()** (3 connections) — `scripts/fix_syntax_errors.py`
+- **fix_syntax_errors.py** (2 connections) — `scripts/fix_syntax_errors.py`
+- **Process multiple files and return statistics.** (1 connections) — `scripts/fix_syntax_errors.py`
+- **Main function to run the syntax error fixer.** (1 connections) — `scripts/fix_syntax_errors.py`
+- **Tool to fix syntax errors introduced by automated f-string remediation.** (1 connections) — `scripts/fix_syntax_errors.py`
+- **Fix malformed logger calls with broken syntax.** (1 connections) — `scripts/fix_syntax_errors.py`
+- **Fix syntax errors in a specific file.** (1 connections) — `scripts/fix_syntax_errors.py`
+- **.__init__()** (1 connections) — `scripts/fix_syntax_errors.py`
 
 ## Relationships
 
-- [ContainerData](ContainerData.md) (5 shared connections)
-- [test_container_persistence_extended_row_helpers.py](test_container_persistence_extended_row_helpers.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/test_container_persistence_sql_injection.py`
+- `scripts/fix_syntax_errors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

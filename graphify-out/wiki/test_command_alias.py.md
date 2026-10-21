@@ -1,51 +1,58 @@
 # test_command_alias.py
 
-> 37 nodes
+> 40 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **test_command_alias.py** (18 connections) — `server/tests/unit/models/test_command_alias.py`
-- **AliasCommand** (17 connections) — `server/models/command_alias.py`
-- **.validate_alias_name_field()** (4 connections) — `server/models/command_alias.py`
-- **.validate_command()** (4 connections) — `server/models/command_alias.py`
-- **.validate_alias_name_field()** (4 connections) — `server/models/command_alias.py`
-- **test_alias_command_alias_name_max_length()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_alias_name_min_length()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_command_max_length()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_validate_alias_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_validate_command_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_validate_command_none()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_with_command()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_aliases_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_unalias_command_alias_name_max_length()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_unalias_command_alias_name_min_length()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_unalias_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_unalias_command_validate_alias_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **field_validator** (3 connections)
-- **Command for creating or viewing command aliases.** (1 connections) — `server/models/command_alias.py`
-- **Validate alias name format using centralized validation.** (1 connections) — `server/models/command_alias.py`
-- **Validate command content for security using centralized validation.** (1 connections) — `server/models/command_alias.py`
-- **Validate alias name format using centralized validation.** (1 connections) — `server/models/command_alias.py`
-- **Unit tests for alias command models. Tests the alias command models and their…** (1 connections) — `server/tests/unit/models/test_command_alias.py`
-- **Test UnaliasCommand requires alias_name.** (1 connections) — `server/tests/unit/models/test_command_alias.py`
-- *... and 12 more nodes in this community*
+- **equipment_helpers.py** (32 connections) — `server/commands/equipment_helpers.py`
+- **test_equipment_helpers.py** (27 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
+- **resolve_equip_item_index()** (16 connections) — `server/commands/equipment_helpers.py`
+- **resolve_unequip_slot()** (15 connections) — `server/commands/equipment_helpers.py`
+- **normalize_equipped_items()** (10 connections) — `server/commands/equipment_helpers.py`
+- **find_equipped_item_after_equip()** (9 connections) — `server/commands/equipment_helpers.py`
+- **_player()** (8 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
+- **handle_wearable_container_on_unequip()** (7 connections) — `server/commands/equipment_helpers.py`
+- **_equip_stack_from_inventory_index()** (4 connections) — `server/commands/equipment_helpers.py`
+- **InventoryStack** (4 connections)
+- **test_handle_wearable_container_on_equip_creates()** (4 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
+- **test_handle_wearable_container_on_equip_no_inner()** (4 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
+- **test_resolve_equip_usage()** (4 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
+- **_find_equipped_by_item_id()** (3 connections) — `server/commands/equipment_helpers.py`
+- **Player** (3 connections)
+- **_try_resolve_unequip_by_search()** (3 connections) — `server/commands/equipment_helpers.py`
+- **test_resolve_equip_by_index()** (3 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
+- **test_resolve_equip_by_search_term()** (3 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
+- **test_resolve_equip_index_out_of_range()** (3 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
+- **test_resolve_equip_search_no_match()** (3 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
+- **test_resolve_unequip_usage()** (3 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
+- **_try_resolve_unequip_slot_key()** (2 connections) — `server/commands/equipment_helpers.py`
+- **_unequip_usage_missing_slot()** (2 connections) — `server/commands/equipment_helpers.py`
+- **asyncio** (2 connections)
+- **test_find_equipped_item_after_equip_by_item_id()** (2 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (13 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (3 shared connections)
-- [UtilityCommandFactory](UtilityCommandFactory.md) (1 shared connections)
+- [TargetMatch](TargetMatch.md) (19 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (10 shared connections)
+- [TargetType](TargetType.md) (9 shared connections)
+- [command_parser.py](command_parser.py.md) (4 shared connections)
+- [look_container.py](look_container.py.md) (4 shared connections)
+- [Protocol](Protocol.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (1 shared connections)
+- [ExplorationCommandFactory](ExplorationCommandFactory.md) (1 shared connections)
+- [TestMonitoringEndpoints](TestMonitoringEndpoints.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_alias.py`
-- `server/tests/unit/models/test_command_alias.py`
+- `server/commands/equipment_helpers.py`
+- `server/tests/unit/commands/test_equipment_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 61 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 124 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,40 +1,49 @@
 # .check_bidirectional_connections
 
-> 18 nodes
+> 29 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **.check_bidirectional_connections()** (6 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **.build_graph()** (5 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **._get_exit_target()** (5 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **.find_dead_ends()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **.find_self_references()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **.generate_minimap_graph()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **._get_opposite_direction()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **._get_room_zone()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **._is_one_way_exit()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Get the opposite direction for bidirectional checking.** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Find rooms with no exits (dead ends). Args: room_database: Dictionary mapping…** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Find rooms that reference themselves in exits. Args: room_database: Dictionary…** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Generate minimap graph data for visualization. Args: room_database: Dictionary…** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Build adjacency graph from room database. Args: room_database: Dictionary…** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Get target room ID from exit data.** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Check if exit is marked as one-way.** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Extract zone and sub_zone from room data. Args: room_id: Room identifier…** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Check for bidirectional connections between rooms, accounting for zone…** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
+- **test_chat_moderation.py** (30 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **asyncio** (14 connections)
+- **moderation()** (3 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **fixture** (3 connections)
+- **player_service()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_add_admin_returns_true()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_get_mute_status_handles_internal_error()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_get_mute_status_includes_player_name()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_get_mute_status_invalid_player_id()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_get_mute_status_player_not_found()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_get_mute_status_with_personal_mutes()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_mute_channel_delegates_to_user_manager()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_mute_global_success()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_mute_player_returns_false_when_target_missing()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_mute_player_success()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_remove_admin()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_unmute_channel()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_unmute_global_success()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_unmute_player_success()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **user_manager()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **Unit tests for chat moderation operations.** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_can_send_message()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_format_mute_duration_expired()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_format_mute_duration_permanent()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_format_mute_duration_remaining_minutes()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [RoomLoader](RoomLoader.md) (9 shared connections)
+- [UUID](UUID.md) (4 shared connections)
+- [Room](Room.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/core/path_validator.py`
+- `server/tests/unit/game/test_chat_moderation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 47 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

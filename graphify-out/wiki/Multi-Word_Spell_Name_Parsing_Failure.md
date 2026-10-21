@@ -1,32 +1,26 @@
 # Multi-Word Spell Name Parsing Failure
 
-> 7 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Multi-Word Spell Name Parsing Failure** (3 connections) — `investigations/sessions/2025-12-14_session-002_spell-cast-failure.md`
-- **Spell Slash Commands Missing From Validation** (2 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- **Missing async_heal_player Method** (2 connections) — `investigations/sessions/2025-12-14_session-003_minor-heal-casting-delay.md`
-- **Heal Spell SQLAlchemy Session Boundary Error** (2 connections) — `investigations/sessions/2025-12-14_session-004_heal-spell-casting-failure.md`
-- **Missing cast spell spells Pydantic Models** (1 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- **create_cast_command First-Word-Only Parse** (1 connections) — `investigations/sessions/2025-12-14_session-002_spell-cast-failure.md`
-- **record_spell_cast Cross-Session Object Use** (1 connections) — `investigations/sessions/2025-12-14_session-004_heal-spell-casting-failure.md`
+- **A Cold Fire Within (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/A Cold Fire Within.md`
+- **A Cold Fire Within.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/A Cold Fire Within.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/A Cold Fire Within.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/A Cold Fire Within.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_inventory_commands_helpers.py](test_inventory_commands_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- `investigations/sessions/2025-12-14_session-002_spell-cast-failure.md`
-- `investigations/sessions/2025-12-14_session-003_minor-heal-casting-delay.md`
-- `investigations/sessions/2025-12-14_session-004_heal-spell-casting-failure.md`
+- `data/MythosMUD-Obsidian/wiki/sources/A Cold Fire Within.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (50%)
-- INFERRED: 3 (50%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

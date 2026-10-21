@@ -1,26 +1,25 @@
 # .model_dump
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **.model_dump()** (4 connections) — `server/models/alias.py`
-- **Any** (1 connections)
-- **Convert alias to dictionary for JSON serialization.** (1 connections) — `server/models/alias.py`
+- **Panel Layout Libraries Spec** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
+- **Client Architecture Improvements Plan** (1 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
 
 ## Relationships
 
-- [Alias](Alias.md) (1 shared connections)
-- [websocket_helpers.py](websocket_helpers.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/models/alias.py`
+- `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
+- `docs/archive/PLANNING_client_architecture_improvements.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

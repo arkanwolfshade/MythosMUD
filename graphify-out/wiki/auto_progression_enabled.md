@@ -1,28 +1,32 @@
 # .auto_progression_enabled
 
-> 7 nodes
+> 11 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **.auto_progression_enabled()** (4 connections) — `server/services/combat_service.py`
-- **.turn_interval_seconds()** (4 connections) — `server/services/combat_service.py`
-- **setter** (2 connections)
-- **Return whether auto-progression is enabled.** (1 connections) — `server/services/combat_service.py`
-- **Enable or disable combat auto-progression.** (1 connections) — `server/services/combat_service.py`
-- **Return the turn interval in seconds.** (1 connections) — `server/services/combat_service.py`
-- **Set the turn interval in seconds.** (1 connections) — `server/services/combat_service.py`
+- **UI Primitives Package Design** (11 connections) — `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
+- **1. Overview** (1 connections) — `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
+- **2. Members** (1 connections) — `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
+- **3. Boundary contract** (1 connections) — `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
+- **4. Key design decisions** (1 connections) — `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
+- **5. Constraints** (1 connections) — `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
+- **6. Developer guide** (1 connections) — `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
+- **7. Troubleshooting** (1 connections) — `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
+- **8. Related docs** (1 connections) — `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
+- **9. Changelog** (1 connections) — `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
+- **AI READING INSTRUCTION** (1 connections) — `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
 
 ## Relationships
 
-- [CombatService](CombatService.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/combat_service.py`
+- `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

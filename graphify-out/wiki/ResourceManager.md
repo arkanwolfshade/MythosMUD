@@ -1,53 +1,56 @@
 # ResourceManager
 
-> 46 nodes
+> 64 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **ResourceManager** (19 connections) — `client/src/utils/resourceCleanup.ts`
-- **resourceCleanup.ts** (9 connections) — `client/src/utils/resourceCleanup.ts`
-- **clientMetricsCollector.ts** (8 connections) — `client/src/utils/clientMetricsCollector.ts`
-- **ClientMetricsCollector** (7 connections) — `client/src/utils/clientMetricsCollector.ts`
-- **MockWebSocket** (7 connections) — `client/src/utils/__tests__/resourceCleanup.test.ts`
-- **resourceCleanup.test.ts** (7 connections) — `client/src/utils/__tests__/resourceCleanup.test.ts`
-- **useResourceCleanup()** (6 connections) — `client/src/utils/resourceCleanup.ts`
-- **useComponentLifecycleTracking.ts** (5 connections) — `client/src/hooks/useComponentLifecycleTracking.ts`
-- **getClientMetricsCollector()** (4 connections) — `client/src/utils/clientMetricsCollector.ts`
-- **createTimerCleanup()** (4 connections) — `client/src/utils/resourceCleanup.ts`
-- **useComponentLifecycleTracking.test.ts** (4 connections) — `client/src/hooks/__tests__/useComponentLifecycleTracking.test.ts`
-- **useComponentLifecycleTracking()** (3 connections) — `client/src/hooks/useComponentLifecycleTracking.ts`
-- **.getMetrics()** (3 connections) — `client/src/utils/clientMetricsCollector.ts`
-- **createCustomResourceCleanup()** (3 connections) — `client/src/utils/resourceCleanup.ts`
-- **createWebSocketCleanup()** (3 connections) — `client/src/utils/resourceCleanup.ts`
-- **.getResourceStats()** (3 connections) — `client/src/utils/resourceCleanup.ts`
-- **.logMetrics()** (2 connections) — `client/src/utils/clientMetricsCollector.ts`
-- **.setResourceManager()** (2 connections) — `client/src/utils/clientMetricsCollector.ts`
-- **.cleanup()** (2 connections) — `client/src/utils/resourceCleanup.ts`
-- **.registerCustomResource()** (2 connections) — `client/src/utils/resourceCleanup.ts`
-- **.registerInterval()** (2 connections) — `client/src/utils/resourceCleanup.ts`
-- **.registerTimer()** (2 connections) — `client/src/utils/resourceCleanup.ts`
-- **.registerWebSocket()** (2 connections) — `client/src/utils/resourceCleanup.ts`
-- **clientMetricsCollector.test.ts** (2 connections) — `client/src/utils/__tests__/clientMetricsCollector.test.ts`
-- **UseComponentLifecycleTrackingOptions** (1 connections) — `client/src/hooks/useComponentLifecycleTracking.ts`
-- *... and 21 more nodes in this community*
+- **test_player_occupant_processor.py** (26 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **PlayerOccupantProcessor** (21 connections) — `server/realtime/player_occupant_processor.py`
+- **player_occupant_processor.py** (15 connections) — `server/realtime/player_occupant_processor.py`
+- **._create_player_occupant_info()** (7 connections) — `server/realtime/player_occupant_processor.py`
+- **.process_players_for_occupants()** (7 connections) — `server/realtime/player_occupant_processor.py`
+- **.__init__()** (5 connections) — `server/realtime/player_occupant_processor.py`
+- **UUID** (5 connections)
+- **._convert_player_ids_to_uuids()** (4 connections) — `server/realtime/player_occupant_processor.py`
+- **._ensure_player_included_in_list()** (4 connections) — `server/realtime/player_occupant_processor.py`
+- **processor()** (4 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **asyncio** (4 connections)
+- **Any** (3 connections)
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **mock_name_extractor()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **fixture** (3 connections)
+- **test_create_player_occupant_info_grace_period_exception()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_process_players_for_occupants()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_process_players_for_occupants_with_invalid_name()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_process_players_for_occupants_with_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_process_players_for_occupants_with_uuid_ensure_player()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_convert_player_ids_to_uuids()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_convert_player_ids_to_uuids_already_uuid()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_convert_player_ids_to_uuids_mixed_types()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_convert_player_ids_to_uuids_value_error()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (3 shared connections)
+- [ChatLogger](ChatLogger.md) (9 shared connections)
+- [Communities (355 total, 223 thin omitted)](Communities_355_total,_223_thin_omitted.md) (4 shared connections)
+- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (4 shared connections)
+- [FeatureFlagService](FeatureFlagService.md) (4 shared connections)
+- [Room](Room.md) (3 shared connections)
+- [test_look_npc_helpers.py](test_look_npc_helpers.py.md) (2 shared connections)
+- [player_connection_setup.py](player_connection_setup.py.md) (1 shared connections)
+- [security.ts](security.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/hooks/__tests__/useComponentLifecycleTracking.test.ts`
-- `client/src/hooks/useComponentLifecycleTracking.ts`
-- `client/src/utils/__tests__/clientMetricsCollector.test.ts`
-- `client/src/utils/__tests__/resourceCleanup.test.ts`
-- `client/src/utils/clientMetricsCollector.ts`
-- `client/src/utils/resourceCleanup.ts`
+- `server/realtime/player_occupant_processor.py`
+- `server/tests/unit/realtime/test_player_occupant_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 67 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 101 (93%)
+- INFERRED: 8 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

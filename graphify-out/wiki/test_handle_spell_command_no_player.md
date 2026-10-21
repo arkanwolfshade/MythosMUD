@@ -1,24 +1,23 @@
 # test_handle_spell_command_no_player
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_handle_spell_command_no_player()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test spell command when player is not found.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **unit/services/nats_subject_manager/__init__.py** (1 connections) — `server/tests/unit/services/nats_subject_manager/__init__.py`
+- **NATS subject manager unit tests.** (1 connections) — `server/tests/unit/services/nats_subject_manager/__init__.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_magic_commands.py](test_magic_commands.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/services/nats_subject_manager/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

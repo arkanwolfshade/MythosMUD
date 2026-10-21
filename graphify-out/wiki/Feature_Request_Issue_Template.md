@@ -1,10 +1,10 @@
 # Feature Request Issue Template
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Feature Request Issue Template** (0 connections) — `.github/ISSUE_TEMPLATE/feature_request.yml`
+- **run_test_playwright.ps1** (0 connections) — `scripts/run_test_playwright.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.github/ISSUE_TEMPLATE/feature_request.yml`
+- `scripts/run_test_playwright.ps1`
 
 ## Audit Trail
 

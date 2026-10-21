@@ -1,71 +1,69 @@
 # NPCCombatIntegrationService
 
-> 306 nodes
+> 217 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **NPCCombatIntegrationService** (100 connections) — `server/services/npc_combat_integration_service.py`
-- **test_npc_combat_integration_service.py** (47 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **NPCCombatUUIDMapping** (40 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **NPCCombatMemory** (28 connections) — `server/services/npc_combat_memory.py`
-- **asyncio** (25 connections)
-- **TestNPCCombatUUIDMapping** (22 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **test_npc_combat_handlers.py** (22 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **NPCCombatHandlers** (18 connections) — `server/services/npc_combat_handlers.py`
-- **TestNPCCombatMemory** (16 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **npc_combat_handlers.py** (16 connections) — `server/services/npc_combat_handlers.py`
-- **NPCCombatLifecycle** (15 connections) — `server/services/npc_combat_lifecycle.py`
-- **NPCCombatRewards** (13 connections) — `server/services/npc_combat_rewards.py`
-- **.__init__()** (13 connections) — `server/services/npc_combat_integration_service.py`
-- **CombatResultCtx** (12 connections) — `server/services/npc_combat_handlers.py`
-- **._init_npc_submodules()** (9 connections) — `server/services/npc_combat_integration_service.py`
-- **asyncio** (9 connections)
-- **TestNPCCombatRewards** (8 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **fixture** (8 connections)
-- **._handle_npc_death_on_combat_end()** (7 connections) — `server/services/npc_combat_handlers.py`
-- **.__init__()** (7 connections) — `server/services/npc_combat_handlers.py`
-- **npc_combat_memory.py** (7 connections) — `server/services/npc_combat_memory.py`
-- **UUID** (7 connections)
-- **._init_messaging_handlers_and_publisher()** (6 connections) — `server/services/npc_combat_integration_service.py`
-- **_StubConfigRoot** (5 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **.is_alive()** (5 connections) — `server/models/combat.py`
-- *... and 281 more nodes in this community*
+- **ValidationError** (325 connections) — `server/exceptions.py`
+- **InventoryCommandFactory** (98 connections) — `server/utils/command_factories_inventory.py`
+- **test_command_factories_inventory.py** (70 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_command_factories_inventory_helpers.py** (22 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **.create_get_command()** (20 connections) — `server/utils/command_factories_inventory.py`
+- **.create_pickup_command()** (19 connections) — `server/utils/command_factories_inventory.py`
+- **.create_put_command()** (19 connections) — `server/utils/command_factories_inventory.py`
+- **command_factories_inventory.py** (17 connections) — `server/utils/command_factories_inventory.py`
+- **.create_equip_command()** (16 connections) — `server/utils/command_factories_inventory.py`
+- **.create_unequip_command()** (14 connections) — `server/utils/command_factories_inventory.py`
+- **MythosValidationError** (10 connections)
+- **.create_drop_command()** (9 connections) — `server/utils/command_factories_inventory.py`
+- **WithdrawCommand** (7 connections) — `server/models/command_inventory.py`
+- **.create_use_command()** (7 connections) — `server/utils/command_factories_inventory.py`
+- **parametrize** (6 connections)
+- **test_create_get_command_separator_needs_both_sides()** (6 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_put_command_separator_needs_both_sides()** (6 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_use_command_rejects_missing_or_zero_selector()** (6 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_deposit_and_withdraw_share_item_and_quantity_parsing()** (6 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **.create_inventory_command()** (6 connections) — `server/utils/command_factories_inventory.py`
+- **_pop_trailing_quantity()** (6 connections) — `server/utils/command_factories_inventory.py`
+- **_split_item_container()** (6 connections) — `server/utils/command_factories_inventory.py`
+- **test_create_drop_command_invalid_index()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **test_create_inventory_command_with_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **test_create_pickup_command_invalid_index()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- *... and 192 more nodes in this community*
 
 ## Relationships
 
-- [CombatService](CombatService.md) (26 shared connections)
-- [test_npc_combat_integration_service_player_attacks.py](test_npc_combat_integration_service_player_attacks.py.md) (13 shared connections)
-- [NPCCombatDataProvider](NPCCombatDataProvider.md) (9 shared connections)
-- [test_npc_combat_integration_join.py](test_npc_combat_integration_join.py.md) (9 shared connections)
-- [EventBus](EventBus.md) (9 shared connections)
-- [get_logger](get_logger.md) (8 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (7 shared connections)
-- [NpcDisposition](NpcDisposition.md) (4 shared connections)
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (4 shared connections)
-- [ValueError](ValueError.md) (4 shared connections)
-- [combat_taunt.py](combat_taunt.py.md) (3 shared connections)
-- [NPCCombatLucidity](NPCCombatLucidity.md) (3 shared connections)
+- [SecureBaseModel](SecureBaseModel.md) (44 shared connections)
+- [CommandFactory](CommandFactory.md) (29 shared connections)
+- [AttributeError](AttributeError.md) (23 shared connections)
+- [test_message_filtering.py](test_message_filtering.py.md) (19 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (17 shared connections)
+- [PrototypeRegistry](PrototypeRegistry.md) (16 shared connections)
+- [command_service.py](command_service.py.md) (15 shared connections)
+- [MemoryProfiler](MemoryProfiler.md) (11 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (9 shared connections)
+- [resolve_lazy_attr](resolve_lazy_attr.md) (9 shared connections)
+- [ContainerComponent](ContainerComponent.md) (9 shared connections)
+- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (9 shared connections)
 
 ## Source Files
 
-- `server/models/combat.py`
-- `server/services/npc_combat_handlers.py`
-- `server/services/npc_combat_integration_service.py`
-- `server/services/npc_combat_lifecycle.py`
-- `server/services/npc_combat_memory.py`
-- `server/services/npc_combat_rewards.py`
-- `server/services/npc_combat_uuid_mapping.py`
-- `server/services/player_combat_service_support.py`
-- `server/tests/unit/services/test_npc_combat_handlers.py`
-- `server/tests/unit/services/test_npc_combat_integration_service.py`
-- `server/tests/unit/services/test_npc_combat_memory.py`
-- `server/tests/unit/services/test_npc_combat_rewards.py`
-- `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- `server/exceptions.py`
+- `server/game/profession_service.py`
+- `server/models/command_inventory.py`
+- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/test_exceptions.py`
+- `server/tests/unit/test_exceptions_comprehensive.py`
+- `server/tests/unit/utils/test_command_factories_inventory.py`
+- `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- `server/tests/unit/utils/test_command_parser.py`
+- `server/tests/unit/utils/test_command_processor.py`
+- `server/utils/command_factories_inventory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 503 (86%)
-- INFERRED: 80 (14%)
+- EXTRACTED: 484 (63%)
+- INFERRED: 289 (37%)
 - AMBIGUOUS: 0 (0%)
 
 ---

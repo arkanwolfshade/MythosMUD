@@ -1,31 +1,29 @@
 # `docs/**/*` files: Multiple rules
 
-> 10 nodes
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **`docs/**/*` files: Multiple rules** (6 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **Per-File Ignores (pyproject.toml)** (5 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **B904 - Broad except** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **E402 - Module level import not at top** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **F811 - Redefined name** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **F821 - Undefined name** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **F841 - Unused variable** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **`__init__.py` files: F401 (unused import)** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **`server/stubs/**/*.pyi` files: UP046 (old Generic syntax)** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **`tests/**/*` files: B011 (assert on exception)** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **spells.sql** (7 connections) — `db/procedures/spells.sql`
+- **schema_name.get_all_spells()** (1 connections) — `db/procedures/spells.sql`
+- **schema_name.get_player_spell()** (1 connections) — `db/procedures/spells.sql`
+- **schema_name.get_player_spells()** (1 connections) — `db/procedures/spells.sql`
+- **schema_name.get_spell_by_id()** (1 connections) — `db/procedures/spells.sql`
+- **schema_name.learn_spell()** (1 connections) — `db/procedures/spells.sql`
+- **schema_name.record_spell_cast()** (1 connections) — `db/procedures/spells.sql`
+- **schema_name.update_player_spell_mastery()** (1 connections) — `db/procedures/spells.sql`
 
 ## Relationships
 
-- [Ruff to Pylint Rule Mapping](Ruff_to_Pylint_Rule_Mapping.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- `db/procedures/spells.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

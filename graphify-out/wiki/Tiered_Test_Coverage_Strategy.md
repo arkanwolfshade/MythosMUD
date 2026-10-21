@@ -1,13 +1,12 @@
 # Tiered Test Coverage Strategy
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Tiered Test Coverage Strategy** (3 connections) — `client/docs/TEST_COVERAGE_STRATEGY.md`
-- **Critical Code 90% Coverage** (1 connections) — `client/docs/TEST_COVERAGE_STRATEGY.md`
-- **Global 70% Coverage Threshold** (1 connections) — `client/docs/TEST_COVERAGE_STRATEGY.md`
-- **Vitest Unit Tests** (1 connections) — `client/README.md`
+- **Structured Error Logging** (2 connections) — `docs/archive/STRUCTURED_ERROR_LOGGING_SPEC.md`
+- **log_and_raise Utilities** (1 connections) — `docs/archive/STRUCTURED_ERROR_LOGGING_TASKS.md`
+- **Test/Production Environment Separation** (1 connections) — `docs/archive/TEST_PROD_SEPARATION.md`
 
 ## Relationships
 
@@ -15,13 +14,14 @@
 
 ## Source Files
 
-- `client/README.md`
-- `client/docs/TEST_COVERAGE_STRATEGY.md`
+- `docs/archive/STRUCTURED_ERROR_LOGGING_SPEC.md`
+- `docs/archive/STRUCTURED_ERROR_LOGGING_TASKS.md`
+- `docs/archive/TEST_PROD_SEPARATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (67%)
-- INFERRED: 1 (33%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

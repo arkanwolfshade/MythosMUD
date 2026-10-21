@@ -1,12 +1,11 @@
 # calendar.sql
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **calendar.sql** (2 connections) — `db/procedures/calendar.sql`
-- **schema_name.get_calendar_holidays()** (1 connections) — `db/procedures/calendar.sql`
-- **schema_name.get_calendar_npc_schedules()** (1 connections) — `db/procedures/calendar.sql`
+- **app.state Global State Anti-Pattern** (1 connections) — `.cursor/plans/uvicorn_best_practices_remediation_plan.md`
+- **Uvicorn Best Practices Remediation** (1 connections) — `.cursor/plans/uvicorn_best_practices_remediation_plan.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `db/procedures/calendar.sql`
+- `.cursor/plans/uvicorn_best_practices_remediation_plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

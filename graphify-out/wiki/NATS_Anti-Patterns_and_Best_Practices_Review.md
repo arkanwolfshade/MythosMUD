@@ -1,46 +1,45 @@
 # NATS Anti-Patterns and Best Practices Review
 
-> 24 nodes
+> 22 nodes · cohesion 0.21
 
 ## Key Concepts
 
-- **NATS Anti-Patterns and Best Practices Review** (10 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **High Priority Issues 🟡** (4 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **Medium Priority Issues 🟢** (4 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **Recommendations Summary** (4 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **Code Quality Issues** (3 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **Conclusion** (3 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **Critical Anti-Patterns 🔴** (3 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **10. **Missing Connection Health Monitoring in Broker** (Observability)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **1. **Synchronous Operations in Non-Handler Context** (Low Priority)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **2. **Event Handler Callbacks May Block** (Anti-pattern)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **3. **Inconsistent Error Handling Patterns** (Code Quality)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **4. **Missing Input Validation in Some Methods** (Security/Reliability)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **5. **Subject Naming: Potential for Too Broad Wildcards** (Anti-pattern)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **6. **Connection Pool Error Handling** (Resilience)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **7. **Message Acknowledgment: Manual Ack Not Default** (Reliability)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **8. **Batch Flush Error Recovery** (Resilience)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **9. **Inconsistent Use of Subject Manager** (Maintainability)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **All Issues Completed ✅** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **Completed Improvements ✅** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **Executive Summary** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **Immediate Actions (High Priority) - COMPLETED ✅** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **Long-term (Low Priority) - COMPLETED ✅** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **Short-term (Medium Priority) - COMPLETED ✅** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **Testing Recommendations** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **edgeModalLogic.ts** (26 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **useEdgeCreationModal.ts** (19 connections) — `client/src/components/map/useEdgeCreationModal.ts`
+- **useEdgeCreationModal()** (16 connections) — `client/src/components/map/useEdgeCreationModal.ts`
+- **getInitialEdgeFormState()** (5 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **filterNodesForTargetSelection()** (4 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **applyModalBodyScrollLock()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **deriveEdgeCreationData()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **edgeFormCanSubmit()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **edgeFormStateFromExisting()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **findRoomNodeById()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **resetEdgeFormFields()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **runValidationAndPreviewSync()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **STANDARD_DIRECTIONS** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **submitValidatedEdge()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **subscribeEscapeToClose()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **toggleStringFlag()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **emptyEdgeFormState()** (2 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **isStandardExitDirection()** (2 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **roomNodeMatchesSearchQuery()** (2 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **EdgeFormFields** (1 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **EdgeFormResetters** (1 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **STANDARD_DIRECTION_SET** (1 connections) — `client/src/components/map/edgeModalLogic.ts`
 
 ## Relationships
 
-- [NATS Anti-Patterns Review 2026-01-13](NATS_Anti-Patterns_Review_2026-01-13.md) (1 shared connections)
-- [Positive Findings ✅](Positive_Findings_✅.md) (1 shared connections)
+- [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (14 shared connections)
+- [properties](properties.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- `client/src/components/map/edgeModalLogic.ts`
+- `client/src/components/map/useEdgeCreationModal.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 64 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,26 +1,36 @@
 # fix_file
 
-> 5 nodes
+> 15 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **fix_file()** (4 connections) — `scripts/batch_fix_suppressions.py`
-- **main()** (3 connections) — `scripts/batch_fix_suppressions.py`
-- **batch_fix_suppressions.py** (2 connections) — `scripts/batch_fix_suppressions.py`
-- **Path** (2 connections)
-- **Fix suppressions in a file. Returns: (number_fixed, list of changes)** (1 connections) — `scripts/batch_fix_suppressions.py`
+- **Typography** (6 connections) — `.claude/skills/frontend-design/reference/typography.md`
+- **Classic Typography Principles** (4 connections) — `.claude/skills/frontend-design/reference/typography.md`
+- **Font Selection & Pairing** (4 connections) — `.claude/skills/frontend-design/reference/typography.md`
+- **typography.md** (3 connections) — `.claude/skills/frontend-design/reference/typography.md`
+- **Modern Web Typography** (3 connections) — `.claude/skills/frontend-design/reference/typography.md`
+- **Accessibility Considerations** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
+- **Choosing Distinctive Fonts** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
+- **Fluid Type** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
+- **Modular Scale & Hierarchy** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
+- **OpenType Features** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
+- **Pairing Principles** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
+- **Readability & Measure** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
+- **Typography System Architecture** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
+- **Vertical Rhythm** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
+- **Web Font Loading** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (2 shared connections)
 
 ## Source Files
 
-- `scripts/batch_fix_suppressions.py`
+- `.claude/skills/frontend-design/reference/typography.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

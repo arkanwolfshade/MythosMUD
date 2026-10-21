@@ -1,27 +1,31 @@
 # container
 
-> 6 nodes
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **container** (6 connections) — `schemas/unified_room_schema.json`
-- **required** (2 connections) — `schemas/unified_room_schema.json`
-- **additionalProperties** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
-- **enabled** (1 connections) — `schemas/unified_room_schema.json`
+- **Dialogue Content Tools (Content Creators)** (9 connections) — `docs/runbooks/DIALOGUE_CONTENT_TOOLS.md`
+- **DIALOGUE_CONTENT_TOOLS.md** (1 connections) — `docs/runbooks/DIALOGUE_CONTENT_TOOLS.md`
+- **1. Overview** (1 connections) — `docs/runbooks/DIALOGUE_CONTENT_TOOLS.md`
+- **2. Open the editor** (1 connections) — `docs/runbooks/DIALOGUE_CONTENT_TOOLS.md`
+- **3. Tree shape (nav-only)** (1 connections) — `docs/runbooks/DIALOGUE_CONTENT_TOOLS.md`
+- **4. Editor workflow** (1 connections) — `docs/runbooks/DIALOGUE_CONTENT_TOOLS.md`
+- **5. Player verification** (1 connections) — `docs/runbooks/DIALOGUE_CONTENT_TOOLS.md`
+- **6. Seed and API reference** (1 connections) — `docs/runbooks/DIALOGUE_CONTENT_TOOLS.md`
+- **7. Related docs** (1 connections) — `docs/runbooks/DIALOGUE_CONTENT_TOOLS.md`
+- **AI READING INSTRUCTION** (1 connections) — `docs/runbooks/DIALOGUE_CONTENT_TOOLS.md`
 
 ## Relationships
 
-- [properties](properties.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `docs/runbooks/DIALOGUE_CONTENT_TOOLS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

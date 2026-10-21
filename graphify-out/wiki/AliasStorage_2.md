@@ -2,7 +2,7 @@
 
 > God node · 248 connections · `server/alias_storage.py`
 
-**Community:** [AliasStorage](AliasStorage.md)
+**Community:** [command_parser.py](command_parser.py.md)
 
 ## Connections by Relation
 

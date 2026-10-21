@@ -1,10 +1,10 @@
 # check_postgresql.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **check_postgresql.ps1** (0 connections) — `scripts/check_postgresql.ps1`
+- **nats_manager.Tests.ps1** (0 connections) — `scripts/tests/nats_manager.Tests.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/check_postgresql.ps1`
+- `scripts/tests/nats_manager.Tests.ps1`
 
 ## Audit Trail
 

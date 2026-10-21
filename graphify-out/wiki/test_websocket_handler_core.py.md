@@ -1,58 +1,53 @@
 # test_websocket_handler_core.py
 
-> 68 nodes
+> 84 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **test_websocket_handler_core.py** (47 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **asyncio** (28 connections)
-- **handle_websocket_message()** (11 connections) — `server/realtime/websocket_handler.py`
-- **test_handle_websocket_message()** (6 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_websocket_message_chat()** (6 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_websocket_message_command()** (6 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_generic_exception()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_generic_exception_should_break()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_chat_message()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_game_command()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_game_command_empty_command()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_game_command_single_word_no_args()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_game_command_whitespace_only()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_game_command_with_provided_args()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command_no_aliases_dir()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command_no_app_in_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command_no_app_state()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command_no_player()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command_type_error()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_send_error_response()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_send_system_message()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **WebSocket** (4 connections)
-- **test_cleanup_connection()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_json_decode_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- *... and 43 more nodes in this community*
+- **test_look_npc.py** (59 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **_get_lifecycle_manager()** (11 connections) — `server/commands/look_npc.py`
+- **asyncio** (7 connections)
+- **test_format_npc_stats_for_admin_no_npc_id()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_npc_stats_for_admin_success()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_single_npc_result_success()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_single_npc_result_with_admin_stats()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_try_lookup_npc_implicit_multiple_matches()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_try_lookup_npc_implicit_no_npcs()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_try_lookup_npc_implicit_success()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **mock_lifecycle_manager()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_find_matching_npcs_no_lifecycle_manager()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_find_matching_npcs_no_match()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_find_matching_npcs_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_core_attributes_empty()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_core_attributes_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_lifecycle_info_empty()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_lifecycle_info_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_multiple_npcs_result()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_npc_description_empty_string()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_npc_description_fallback_desc()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_npc_description_fallback_long_description()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_npc_description_fallback_short_description()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_npc_description_no_description()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_npc_description_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
-- [test_websocket_handler_commands.py](test_websocket_handler_commands.py.md) (11 shared connections)
-- [test_message_handlers.py](test_message_handlers.py.md) (11 shared connections)
-- [ErrorType](ErrorType.md) (6 shared connections)
-- [test_websocket_handler_app_state_connection.py](test_websocket_handler_app_state_connection.py.md) (4 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (3 shared connections)
-- [send_system_message](send_system_message.md) (3 shared connections)
-- [get_help_content](get_help_content.md) (3 shared connections)
-- [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (2 shared connections)
-- [ValueError](ValueError.md) (2 shared connections)
-- [help_content.py](help_content.py.md) (1 shared connections)
+- [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) (50 shared connections)
+- [Commands](Commands.md) (4 shared connections)
+- [PassiveMobNPC](PassiveMobNPC.md) (2 shared connections)
+- [command_parser.py](command_parser.py.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_handler.py`
-- `server/tests/unit/realtime/test_websocket_handler_core.py`
+- `server/commands/look_npc.py`
+- `server/tests/unit/commands/test_look_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 121 (85%)
-- INFERRED: 22 (15%)
+- EXTRACTED: 152 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

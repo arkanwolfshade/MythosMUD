@@ -1,51 +1,54 @@
 # Prometheus Configuration
 
-> 31 nodes
+> 31 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **Prometheus Configuration** (9 connections) — `monitoring/prometheus.yml`
-- **Alertmanager Configuration** (8 connections) — `monitoring/alertmanager.yml`
-- **MythosMUD Prometheus Alert Rules** (8 connections) — `monitoring/mythos_alerts.yml`
-- **MythosMUD Monitoring Stack** (7 connections) — `monitoring/docker-compose.monitoring.yml`
-- **mythos_connection_alerts group** (4 connections) — `monitoring/mythos_alerts.yml`
-- **connection-alerts receiver** (3 connections) — `monitoring/alertmanager.yml`
-- **Alertmanager service** (3 connections) — `monitoring/docker-compose.monitoring.yml`
-- **Prometheus service** (3 connections) — `monitoring/docker-compose.monitoring.yml`
-- **ServiceDown alert** (3 connections) — `monitoring/mythos_alerts.yml`
-- **mythos_system_alerts group** (3 connections) — `monitoring/mythos_alerts.yml`
-- **performance-alerts receiver** (2 connections) — `monitoring/alertmanager.yml`
-- **system-alerts receiver** (2 connections) — `monitoring/alertmanager.yml`
-- **Node Exporter** (2 connections) — `monitoring/docker-compose.monitoring.yml`
-- **mythos_memory_leak_alerts group** (2 connections) — `monitoring/mythos_alerts.yml`
-- **mythos_performance_alerts group** (2 connections) — `monitoring/mythos_alerts.yml`
-- **/monitoring/dual-connections endpoint** (2 connections) — `monitoring/prometheus.yml`
-- **/monitoring/memory-leaks endpoint** (2 connections) — `monitoring/prometheus.yml`
-- **mythos-server scrape job** (2 connections) — `monitoring/prometheus.yml`
-- **critical-alerts receiver** (1 connections) — `monitoring/alertmanager.yml`
-- **Critical inhibits warning alerts** (1 connections) — `monitoring/alertmanager.yml`
-- **maintenance-window time interval** (1 connections) — `monitoring/alertmanager.yml`
-- **warning-alerts receiver** (1 connections) — `monitoring/alertmanager.yml`
-- **Grafana service** (1 connections) — `monitoring/docker-compose.monitoring.yml`
-- **PostgreSQL Exporter** (1 connections) — `monitoring/docker-compose.monitoring.yml`
-- **Redis Exporter** (1 connections) — `monitoring/docker-compose.monitoring.yml`
+- **test_combat_death_handler.py** (33 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **asyncio** (12 connections)
+- **patch** (10 connections)
+- **test_death_location_uses_display_names_never_room_id()** (9 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **fixture** (5 connections)
+- **handler()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **npc_target()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **player_target()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_create_corpse_service_error()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_create_corpse_skips_without_persistence()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_create_corpse_success()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_handle_npc_death()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_handle_player_death_events_broadcast_error()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_handle_player_death_events_success()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_handle_target_state_mortally_wounded()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_handle_target_state_mortally_wounded_error()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_handle_target_state_player_death()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **combat()** (2 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **combat_service()** (2 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_log_room_subscribers()** (2 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_log_room_subscribers_error()** (2 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_publish_npc_death_event_error()** (2 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_publish_npc_death_event_success()** (2 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **parametrize** (1 connections)
+- **Unit tests for CombatDeathHandler.** (1 connections) — `server/tests/unit/services/test_combat_death_handler.py`
 - *... and 6 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_npc_combat_integration_join.py](test_npc_combat_integration_join.py.md) (4 shared connections)
+- [DatabaseManager](DatabaseManager.md) (4 shared connections)
+- [test_player_combat_service.py](test_player_combat_service.py.md) (2 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (2 shared connections)
+- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (2 shared connections)
+- [inventory_item_matching.py](inventory_item_matching.py.md) (2 shared connections)
+- [BaseEvent](BaseEvent.md) (1 shared connections)
 
 ## Source Files
 
-- `monitoring/alertmanager.yml`
-- `monitoring/docker-compose.monitoring.yml`
-- `monitoring/mythos_alerts.yml`
-- `monitoring/prometheus.yml`
+- `server/tests/unit/services/test_combat_death_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (80%)
-- INFERRED: 8 (20%)
+- EXTRACTED: 69 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

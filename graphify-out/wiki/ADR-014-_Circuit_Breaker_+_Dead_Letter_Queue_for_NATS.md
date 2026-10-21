@@ -1,10 +1,10 @@
 # ADR-014: Circuit Breaker + Dead Letter Queue for NATS
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **ADR-014: Circuit Breaker + Dead Letter Queue for NATS** (0 connections) — `docs/architecture/decisions/ADR-014-nats-error-boundaries.md`
+- **Database Provisioning README** (0 connections) — `db/databases/README.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/architecture/decisions/ADR-014-nats-error-boundaries.md`
+- `db/databases/README.md`
 
 ## Audit Trail
 

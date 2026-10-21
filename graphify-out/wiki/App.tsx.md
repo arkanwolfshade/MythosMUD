@@ -1,70 +1,47 @@
 # App.tsx
 
-> 45 nodes
+> 46 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **App.tsx** (22 connections) — `client/src/App.tsx`
-- **App()** (21 connections) — `client/src/App.tsx`
-- **app.test.helpers.ts** (15 connections) — `client/src/__tests__/app.test.helpers.ts`
-- **ProfessionSystemErrorHandling.test.tsx** (14 connections) — `client/src/__tests__/ProfessionSystemErrorHandling.test.tsx`
-- **professionSystemErrorHandling.test.helpers.ts** (13 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
-- **createMockLoginResponse()** (12 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
-- **app.test.mocks.tsx** (12 connections) — `client/src/__tests__/app.test.mocks.tsx`
-- **registerAppTestHooks()** (11 connections) — `client/src/__tests__/app.test.helpers.ts`
-- **fetchSpy** (10 connections) — `client/src/__tests__/app.test.mocks.tsx`
-- **App.logoutError.test.tsx** (8 connections) — `client/src/__tests__/App.logoutError.test.tsx`
-- **components/__tests__/LogoutFlow.integration.test.tsx** (7 connections) — `client/src/components/__tests__/LogoutFlow.integration.test.tsx`
-- **App.keyboard.test.tsx** (7 connections) — `client/src/__tests__/App.keyboard.test.tsx`
-- **App.loading.test.tsx** (7 connections) — `client/src/__tests__/App.loading.test.tsx`
-- **App.login.test.tsx** (7 connections) — `client/src/__tests__/App.login.test.tsx`
-- **App.motd.test.tsx** (7 connections) — `client/src/__tests__/App.motd.test.tsx`
-- **App.registration.test.tsx** (7 connections) — `client/src/__tests__/App.registration.test.tsx`
-- **App.statsRolling.test.tsx** (7 connections) — `client/src/__tests__/App.statsRolling.test.tsx`
-- **App.tokenValidation.test.tsx** (7 connections) — `client/src/__tests__/App.tokenValidation.test.tsx`
-- **setupBasicMocks()** (5 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
-- **App.demo.test.tsx** (5 connections) — `client/src/__tests__/App.demo.test.tsx`
-- **App.formState.test.tsx** (5 connections) — `client/src/__tests__/App.formState.test.tsx`
-- **StatRollingWithProfessionRequirements.test.tsx** (5 connections) — `client/src/__tests__/StatRollingWithProfessionRequirements.test.tsx`
-- **createDefaultRollStatsFetchResponse()** (3 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
-- **createDefaultRollStatsResponseBody()** (3 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
-- **createMockProfessions()** (3 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
-- *... and 20 more nodes in this community*
+- **Test Suite Refactoring Plan** (14 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Migration Strategy** (7 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Testing Standards and Best Practices** (6 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Test Organization Principles** (5 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Appendix B: Test Categories Reference** (4 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Current State Analysis** (4 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Success Criteria** (4 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Risk Mitigation** (3 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Tooling Updates** (3 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Migration File Mapping** (2 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Proposed Structure** (2 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Timeline and Milestones** (2 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **TEST_SUITE_REFACTORING_PLAN.md** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **1. Test Independence** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **2. Mock Usage** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **3. Assertion Quality** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **4. Test Data Management** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **5. Performance** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **6-Week Timeline** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Appendix A: Full File Mapping** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Coverage Strategy** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Current Issues** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Detailed Mapping (Sample)** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Directory Hierarchy** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Documentation Deliverables** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [security.ts](security.ts.md) (7 shared connections)
-- [CatalogPage.tsx](CatalogPage.tsx.md) (2 shared connections)
-- [CharacterNameScreen.tsx](CharacterNameScreen.tsx.md) (2 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (1 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/src/App.integration.test.tsx`
-- `client/src/App.tsx`
-- `client/src/__tests__/App.demo.test.tsx`
-- `client/src/__tests__/App.formState.test.tsx`
-- `client/src/__tests__/App.keyboard.test.tsx`
-- `client/src/__tests__/App.loading.test.tsx`
-- `client/src/__tests__/App.login.test.tsx`
-- `client/src/__tests__/App.logoutError.test.tsx`
-- `client/src/__tests__/App.motd.test.tsx`
-- `client/src/__tests__/App.registration.test.tsx`
-- `client/src/__tests__/App.statsRolling.test.tsx`
-- `client/src/__tests__/App.tokenValidation.test.tsx`
-- `client/src/__tests__/CharacterCreationNavigation.test.tsx`
-- `client/src/__tests__/ProfessionPersistence.test.tsx`
-- `client/src/__tests__/ProfessionSelectionVariants.test.tsx`
-- `client/src/__tests__/ProfessionSystemErrorHandling.test.tsx`
-- `client/src/__tests__/StatRollingWithProfessionRequirements.test.tsx`
-- `client/src/__tests__/app.test.helpers.ts`
-- `client/src/__tests__/app.test.mocks.tsx`
-- `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
+- `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 134 (100%)
+- EXTRACTED: 45 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

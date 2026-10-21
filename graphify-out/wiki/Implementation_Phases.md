@@ -1,31 +1,29 @@
 # Implementation Phases
 
-> 10 nodes
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **Implementation Phases** (10 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Deliverables** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Phase 0: Foundation (Week 1) - 40 hours** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Phase 1: Fix Failing Tests (Week 1-2) - 40 hours** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Phase 2: Unit Test Modernization (Week 3-4) - 80 hours** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Phase 2A: Service Layer Tests (Week 3)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Phase 2B: Infrastructure Tests (Week 4)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Phase 3: Test Pattern Modernization (Week 5) - 40 hours** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Phase 4: Add Coverage for New Architecture (Week 6) - 40 hours** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Tasks** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **3. REFACTOR Findings (935 findings)** (8 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **3.1 Too Many Instance Attributes (R0902)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **3.2 Too Many Arguments (R0913, R0917)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **3.3 Too Many Local Variables (R0914)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **3.4 Too Many Statements (R0915)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **3.5 Too Many Return Statements (R0911)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **3.6 Too Many Public Methods (R0904)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **3.7 No-Else-Return (R1705)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
 
 ## Relationships
 
-- [MythosMUD Test Suite Modernization Plan](MythosMUD_Test_Suite_Modernization_Plan.md) (1 shared connections)
+- [required](required.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

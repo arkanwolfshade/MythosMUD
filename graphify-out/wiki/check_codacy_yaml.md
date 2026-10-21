@@ -1,14 +1,12 @@
 # check_codacy_yaml
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **check_codacy_yaml()** (3 connections) — `scripts/check_codacy_yaml.py`
-- **_content_is_valid()** (3 connections) — `scripts/check_codacy_yaml.py`
-- **check_codacy_yaml.py** (2 connections) — `scripts/check_codacy_yaml.py`
-- **Return (valid, list of reasons if invalid).** (1 connections) — `scripts/check_codacy_yaml.py`
-- **Warn if .codacy/codacy.yaml is missing or invalid; never fail the commit.** (1 connections) — `scripts/check_codacy_yaml.py`
+- **Chaosium graphify snapshot - Mansions of Madness_ Vol 1 - Behind Closed Doors** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/MANIFEST.md`
+- **mansions-of-madness-vol-1-behind-closed-doors/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/MANIFEST.md`
 
 ## Relationships
 
@@ -16,11 +14,11 @@
 
 ## Source Files
 
-- `scripts/check_codacy_yaml.py`
+- `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,32 +1,29 @@
 # bench_cache.py
 
-> 9 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **bench_cache.py** (6 connections) — `scripts/bench_cache.py`
-- **_FakePersistence** (5 connections) — `scripts/bench_cache.py`
-- **bench_room_cache()** (5 connections) — `scripts/bench_cache.py`
-- **.async_get_room()** (2 connections) — `scripts/bench_cache.py`
-- **main()** (2 connections) — `scripts/bench_cache.py`
-- **Any** (2 connections)
-- **.__init__()** (1 connections) — `scripts/bench_cache.py`
-- **Lightweight cache benchmark for CI artifacts. Measures miss vs. hit timings for…** (1 connections) — `scripts/bench_cache.py`
-- **Fake persistence layer providing async_get_room with simulated latency.** (1 connections) — `scripts/bench_cache.py`
+- **Aggro and Threat System Implementation Plan** (6 connections) — `docs/archive/aggro-threat-implementation-plan.md`
+- **aggro-threat-implementation-plan.md** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
+- **Constants (locked)** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
+- **Integration with NPC static data (behavior_config / npc_type)** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
+- **Key Modules and Files** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
+- **References** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
+- **Status** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
 
 ## Relationships
 
-- [RoomCacheService](RoomCacheService.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `scripts/bench_cache.py`
+- `docs/archive/aggro-threat-implementation-plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 6 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

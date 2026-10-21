@@ -1,58 +1,62 @@
 # test_room_utils.py
 
-> 49 nodes
+> 38 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **test_room_utils.py** (24 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **extract_subzone_from_room_id()** (15 connections) — `server/utils/room_utils.py`
-- **room_utils.py** (13 connections) — `server/utils/room_utils.py`
-- **format_room_location()** (12 connections) — `server/utils/room_utils.py`
-- **get_local_channel_subject()** (6 connections) — `server/utils/room_utils.py`
-- **get_plane_from_room_id()** (6 connections) — `server/utils/room_utils.py`
-- **get_subzone_local_channel_subject()** (6 connections) — `server/utils/room_utils.py`
-- **get_zone_from_room_id()** (6 connections) — `server/utils/room_utils.py`
-- **is_valid_room_id_format()** (5 connections) — `server/utils/room_utils.py`
-- **test_extract_subzone_from_room_id()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **test_extract_subzone_from_room_id_downtown()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **test_extract_subzone_from_room_id_invalid()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **test_format_room_location_full_and_degraded()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **test_get_local_channel_subject()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **test_get_local_channel_subject_invalid()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **test_get_plane_from_room_id()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **test_get_plane_from_room_id_dream()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **test_get_plane_from_room_id_invalid()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **test_get_subzone_local_channel_subject()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **test_get_subzone_local_channel_subject_invalid()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **test_get_zone_from_room_id()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **test_get_zone_from_room_id_innsmouth()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **test_get_zone_from_room_id_invalid()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **test_is_valid_room_id_format()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **_display_text()** (2 connections) — `server/utils/room_utils.py`
-- *... and 24 more nodes in this community*
+- **ExitEdge.tsx** (14 connections) — `client/src/components/map/edges/ExitEdge.tsx`
+- **map/config.ts** (13 connections) — `client/src/components/map/config.ts`
+- **RoomNode.tsx** (13 connections) — `client/src/components/map/nodes/RoomNode.tsx`
+- **IntersectionNode.tsx** (11 connections) — `client/src/components/map/nodes/IntersectionNode.tsx`
+- **ReactFlowConfig.test.tsx** (9 connections) — `client/src/components/map/__tests__/ReactFlowConfig.test.tsx`
+- **DepartureMarkers.tsx** (7 connections) — `client/src/components/map/nodes/DepartureMarkers.tsx`
+- **ExitEdge** (6 connections) — `client/src/components/map/edges/ExitEdge.tsx`
+- **ExitEdge.rendering.test.tsx** (6 connections) — `client/src/components/map/edges/__tests__/ExitEdge.rendering.test.tsx`
+- **ExitEdge.test-fixtures.tsx** (6 connections) — `client/src/components/map/edges/__tests__/ExitEdge.test-fixtures.tsx`
+- **RoomNode** (5 connections) — `client/src/components/map/nodes/RoomNode.tsx`
+- **RoomNode.test.tsx** (5 connections) — `client/src/components/map/nodes/__tests__/RoomNode.test.tsx`
+- **ExitEdge.edge-creation.test.tsx** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.edge-creation.test.tsx`
+- **ExitEdge.interactions.test.tsx** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.interactions.test.tsx`
+- **defaultExitEdgeProps** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.test-fixtures.tsx`
+- **DepartureMarkers()** (4 connections) — `client/src/components/map/nodes/DepartureMarkers.tsx`
+- **IntersectionNode** (4 connections) — `client/src/components/map/nodes/IntersectionNode.tsx`
+- **IntersectionNode.test.tsx** (4 connections) — `client/src/components/map/nodes/__tests__/IntersectionNode.test.tsx`
+- **nodeTypes** (3 connections) — `client/src/components/map/config.ts`
+- **getEdgeStrokeStyle()** (3 connections) — `client/src/components/map/edges/ExitEdge.tsx`
+- **getNodeClasses()** (3 connections) — `client/src/components/map/nodes/RoomNode.tsx`
+- **getEdgeTypes()** (2 connections) — `client/src/components/map/config.ts`
+- **getNodeTypes()** (2 connections) — `client/src/components/map/config.ts`
+- **ExitEdgeBody()** (2 connections) — `client/src/components/map/edges/ExitEdge.tsx`
+- **ExitEdgeLabels()** (2 connections) — `client/src/components/map/edges/ExitEdge.tsx`
+- **exitFlags()** (2 connections) — `client/src/components/map/edges/ExitEdge.tsx`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
-- [websocket_initial_state.py](websocket_initial_state.py.md) (3 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
-- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (1 shared connections)
-- [NPCMovementIntegration](NPCMovementIntegration.md) (1 shared connections)
-- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (1 shared connections)
-- [ChatChannelLoggerMixin](ChatChannelLoggerMixin.md) (1 shared connections)
-- [ChatMessage](ChatMessage.md) (1 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
-- [PlayerDeathService](PlayerDeathService.md) (1 shared connections)
+- [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (14 shared connections)
+- [properties](properties.md) (3 shared connections)
+- [.set_player_skills](set_player_skills.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_room_utils.py`
-- `server/utils/room_utils.py`
+- `client/src/components/map/__tests__/ReactFlowConfig.test.tsx`
+- `client/src/components/map/config.ts`
+- `client/src/components/map/edges/ExitEdge.tsx`
+- `client/src/components/map/edges/__tests__/ExitEdge.edge-creation.test.tsx`
+- `client/src/components/map/edges/__tests__/ExitEdge.interactions.test.tsx`
+- `client/src/components/map/edges/__tests__/ExitEdge.rendering.test.tsx`
+- `client/src/components/map/edges/__tests__/ExitEdge.test-fixtures.tsx`
+- `client/src/components/map/nodes/DepartureMarkers.tsx`
+- `client/src/components/map/nodes/IntersectionNode.tsx`
+- `client/src/components/map/nodes/RoomNode.tsx`
+- `client/src/components/map/nodes/__tests__/DepartureMarkers.test.tsx`
+- `client/src/components/map/nodes/__tests__/IntersectionNode.test.tsx`
+- `client/src/components/map/nodes/__tests__/RoomNode.test.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 91 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 84 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

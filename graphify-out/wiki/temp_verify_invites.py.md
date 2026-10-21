@@ -1,10 +1,10 @@
 # temp_verify_invites.py
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **temp_verify_invites.py** (0 connections) — `scripts/temp_verify_invites.py`
+- **Worktree Plan Metadata** (0 connections) — `.cursor/templates/worktree-plan-template.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/temp_verify_invites.py`
+- `.cursor/templates/worktree-plan-template.md`
 
 ## Audit Trail
 

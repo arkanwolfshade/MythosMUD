@@ -1,42 +1,39 @@
 # RoomOccupancyMixin
 
-> 19 nodes
+> 15 nodes · cohesion 0.28
 
 ## Key Concepts
 
-- **RoomOccupancyMixin** (12 connections) — `server/game/movement_room_occupancy.py`
-- **UUID** (7 connections)
-- **.add_player_to_room()** (6 connections) — `server/game/movement_room_occupancy.py`
-- **.remove_player_from_room()** (5 connections) — `server/game/movement_room_occupancy.py`
-- **._validate_add_player_ids()** (5 connections) — `server/game/movement_room_occupancy.py`
-- **._validate_remove_player_params()** (5 connections) — `server/game/movement_room_occupancy.py`
-- **.get_player_room()** (4 connections) — `server/game/movement_room_occupancy.py`
-- **._persist_added_player_room()** (4 connections) — `server/game/movement_room_occupancy.py`
-- **.get_room_players()** (3 connections) — `server/game/movement_room_occupancy.py`
-- **.validate_player_location()** (3 connections) — `server/game/movement_room_occupancy.py`
-- **Validate parameters for remove_player_from_room operation.** (1 connections) — `server/game/movement_room_occupancy.py`
-- **Remove a player from a room (for logout, teleportation, etc.). Args: player_id:…** (1 connections) — `server/game/movement_room_occupancy.py`
-- **Get the room ID where a player is currently located. Args: player_id: The ID of…** (1 connections) — `server/game/movement_room_occupancy.py`
-- **Get all players currently in a room. Args: room_id: The ID of the room to check…** (1 connections) — `server/game/movement_room_occupancy.py`
-- **Validate that a player is in the specified room. Args: player_id: The ID of the…** (1 connections) — `server/game/movement_room_occupancy.py`
-- **Room occupancy API; the host (MovementService) provides _persistence, _lock and…** (1 connections) — `server/game/movement_room_occupancy.py`
-- **Validate player and room IDs for add_player_to_room.** (1 connections) — `server/game/movement_room_occupancy.py`
-- **Update player current_room_id in persistence after room add.** (1 connections) — `server/game/movement_room_occupancy.py`
-- **Add a player to a room (for initial placement, teleportation, etc.). Args:…** (1 connections) — `server/game/movement_room_occupancy.py`
+- **test_superseded_connection_cleanup.py** (12 connections) — `server/tests/unit/realtime/test_superseded_connection_cleanup.py`
+- **_cleanup()** (10 connections) — `server/tests/unit/realtime/test_superseded_connection_cleanup.py`
+- **_FakeManager** (9 connections) — `server/tests/unit/realtime/test_superseded_connection_cleanup.py`
+- **test_a_handler_with_no_live_socket_left_still_cleans_up()** (5 connections) — `server/tests/unit/realtime/test_superseded_connection_cleanup.py`
+- **asyncio** (4 connections)
+- **UUID** (4 connections)
+- **test_a_handler_whose_own_socket_is_still_registered_tears_the_player_down()** (4 connections) — `server/tests/unit/realtime/test_superseded_connection_cleanup.py`
+- **test_a_superseded_handler_leaves_the_live_session_alone()** (4 connections) — `server/tests/unit/realtime/test_superseded_connection_cleanup.py`
+- **test_callers_without_a_connection_id_keep_the_legacy_behaviour()** (4 connections) — `server/tests/unit/realtime/test_superseded_connection_cleanup.py`
+- **.has_websocket_connection()** (2 connections) — `server/tests/unit/realtime/test_superseded_connection_cleanup.py`
+- **.__init__()** (2 connections) — `server/tests/unit/realtime/test_superseded_connection_cleanup.py`
+- **A WebSocket handler that ends after a newer session has replaced its socket…** (1 connections) — `server/tests/unit/realtime/test_superseded_connection_cleanup.py`
+- **Just the surface cleanup consults, with real dictionary semantics (a MagicMock…** (1 connections) — `server/tests/unit/realtime/test_superseded_connection_cleanup.py`
+- **Run the real cleanup against the fake manager; return the follow and party…** (1 connections) — `server/tests/unit/realtime/test_superseded_connection_cleanup.py`
+- **Nothing newer exists, so this is an ordinary disconnect and must run the usual…** (1 connections) — `server/tests/unit/realtime/test_superseded_connection_cleanup.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (10 shared connections)
-- [MovementService](MovementService.md) (1 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
+- [ChatService](ChatService.md) (2 shared connections)
+- [connection_initialization.py](connection_initialization.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/movement_room_occupancy.py`
+- `server/tests/unit/realtime/test_superseded_connection_cleanup.py`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 34 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

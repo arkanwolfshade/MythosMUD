@@ -1,10 +1,10 @@
 # load_graphify_env.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **load_graphify_env.ps1** (0 connections) — `scripts/load_graphify_env.ps1`
+- **unit/help/__init__.py** (0 connections) — `server/tests/unit/help/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/load_graphify_env.ps1`
+- `server/tests/unit/help/__init__.py`
 
 ## Audit Trail
 

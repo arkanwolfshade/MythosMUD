@@ -1,50 +1,49 @@
 # NPCCommunicationIntegration
 
-> 31 nodes
+> 39 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **NPCCommunicationIntegration** (24 connections) — `server/npc/communication_integration.py`
-- **test_communication_integration.py** (16 connections) — `server/tests/unit/npc/test_communication_integration.py`
-- **.handle_player_message()** (4 connections) — `server/npc/communication_integration.py`
-- **.__init__()** (4 connections) — `server/npc/communication_integration.py`
-- **._process_message_for_response()** (4 connections) — `server/npc/communication_integration.py`
-- **.send_message_to_room()** (4 connections) — `server/npc/communication_integration.py`
-- **.send_whisper_to_player()** (3 connections) — `server/npc/communication_integration.py`
-- **.subscribe_to_room_messages()** (2 connections) — `server/npc/communication_integration.py`
-- **.unsubscribe_from_room_messages()** (2 connections) — `server/npc/communication_integration.py`
-- **test_handle_player_message_error_returns_false()** (2 connections) — `server/tests/unit/npc/test_communication_integration.py`
-- **test_handle_player_message_triggers_greeting_response()** (2 connections) — `server/tests/unit/npc/test_communication_integration.py`
-- **test_init_without_event_bus_uses_default()** (2 connections) — `server/tests/unit/npc/test_communication_integration.py`
-- **test_process_message_default_response()** (2 connections) — `server/tests/unit/npc/test_communication_integration.py`
-- **test_process_message_help_and_thanks_responses()** (2 connections) — `server/tests/unit/npc/test_communication_integration.py`
-- **test_process_message_question_response()** (2 connections) — `server/tests/unit/npc/test_communication_integration.py`
-- **test_send_message_error_returns_false()** (2 connections) — `server/tests/unit/npc/test_communication_integration.py`
-- **test_send_message_to_room_publishes_event()** (2 connections) — `server/tests/unit/npc/test_communication_integration.py`
-- **test_send_whisper_to_player_publishes_event()** (2 connections) — `server/tests/unit/npc/test_communication_integration.py`
-- **test_subscribe_and_unsubscribe_room_messages()** (2 connections) — `server/tests/unit/npc/test_communication_integration.py`
-- **test_subscribe_error_returns_false()** (2 connections) — `server/tests/unit/npc/test_communication_integration.py`
-- **test_unsubscribe_error_returns_false()** (2 connections) — `server/tests/unit/npc/test_communication_integration.py`
-- **test_whisper_error_returns_false()** (2 connections) — `server/tests/unit/npc/test_communication_integration.py`
-- **Handle a message received by an NPC from a player. Args: npc_id: ID of the NPC…** (1 connections) — `server/npc/communication_integration.py`
-- **Process a message to determine if the NPC should respond. Args: npc_id: ID of…** (1 connections) — `server/npc/communication_integration.py`
-- **Subscribe an NPC to messages in a specific room. Args: npc_id: ID of the NPC to…** (1 connections) — `server/npc/communication_integration.py`
-- *... and 6 more nodes in this community*
+- **properties** (12 connections) — `schemas/intersection_schema.json`
+- **intersection_schema.json** (7 connections) — `schemas/intersection_schema.json`
+- **description** (5 connections) — `schemas/intersection_schema.json`
+- **name** (5 connections) — `schemas/intersection_schema.json`
+- **id** (4 connections) — `schemas/intersection_schema.json`
+- **plane** (4 connections) — `schemas/intersection_schema.json`
+- **sub_zone** (4 connections) — `schemas/intersection_schema.json`
+- **zone** (4 connections) — `schemas/intersection_schema.json`
+- **field1** (2 connections) — `schemas/intersection_schema.json`
+- **field2** (2 connections) — `schemas/intersection_schema.json`
+- **field3** (2 connections) — `schemas/intersection_schema.json`
+- **additionalProperties** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **maxLength** (1 connections) — `schemas/intersection_schema.json`
+- **minLength** (1 connections) — `schemas/intersection_schema.json`
+- **type** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **pattern** (1 connections) — `schemas/intersection_schema.json`
+- **type** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **maxLength** (1 connections) — `schemas/intersection_schema.json`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [EventBus](EventBus.md) (5 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (2 shared connections)
-- [ChatService](ChatService.md) (1 shared connections)
+- [Phase 3, Task 3.2: NATS Subject Manager Usage Review](Phase_3,_Task_3.2-_NATS_Subject_Manager_Usage_Review.md) (1 shared connections)
+- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- [knip.json](knip.json.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/communication_integration.py`
-- `server/tests/unit/npc/test_communication_integration.py`
+- `schemas/intersection_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 53 (100%)
+- EXTRACTED: 41 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

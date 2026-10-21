@@ -1,36 +1,35 @@
 # Spatial Design
 
-> 15 nodes
+> 14 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **Spatial Design** (7 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **Visual Hierarchy** (4 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **spatial-design.md** (3 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **Spacing Systems** (3 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **Grid Systems** (2 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **Optical Adjustments** (2 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **Cards Are Not Required** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **Container Queries** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **Depth & Elevation** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **Hierarchy Through Multiple Dimensions** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **Name Tokens Semantically** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **The Self-Adjusting Grid** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **The Squint Test** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **Touch Targets vs Visual Size** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **Use 4pt Base, Not 8pt** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **check_pr_issue_references.py** (7 connections) — `scripts/check_pr_issue_references.py`
+- **main()** (5 connections) — `scripts/check_pr_issue_references.py`
+- **find_bare_references()** (4 connections) — `scripts/check_pr_issue_references.py`
+- **get_open_issue_numbers()** (4 connections) — `scripts/check_pr_issue_references.py`
+- **_extract_numbers()** (3 connections) — `scripts/check_pr_issue_references.py`
+- **_format_message()** (3 connections) — `scripts/check_pr_issue_references.py`
+- **_run_gh()** (3 connections) — `scripts/check_pr_issue_references.py`
+- **Warn when a PR references an open issue without a GitHub closing keyword. This…** (1 connections) — `scripts/check_pr_issue_references.py`
+- **Return issue numbers referenced in text that are NOT preceded by a closing…** (1 connections) — `scripts/check_pr_issue_references.py`
+- **Return every #NNN issue number appearing in text, as an int set.** (1 connections) — `scripts/check_pr_issue_references.py`
+- **Run a `gh` subcommand, returning stripped stdout, or None on any failure.** (1 connections) — `scripts/check_pr_issue_references.py`
+- **Return the subset of candidates that are currently open. None means the lookup…** (1 connections) — `scripts/check_pr_issue_references.py`
+- **Format as a GitHub Actions annotation in CI, plain text locally.** (1 connections) — `scripts/check_pr_issue_references.py`
+- **Warn about open issues referenced without a closing keyword. Always returns 0.** (1 connections) — `scripts/check_pr_issue_references.py`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/skills/frontend-design/reference/spatial-design.md`
+- `scripts/check_pr_issue_references.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

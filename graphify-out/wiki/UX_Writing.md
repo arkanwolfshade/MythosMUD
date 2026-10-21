@@ -1,38 +1,37 @@
 # UX Writing
 
-> 16 nodes
+> 15 nodes · cohesion 0.23
 
 ## Key Concepts
 
-- **UX Writing** (12 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Error Messages: The Formula** (3 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Writing for Translation** (3 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Avoid Redundant Copy** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Confirmation Dialogs: Use Sparingly** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Consistency: The Terminology Problem** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Don't Blame the User** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Empty States Are Opportunities** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Error Message Templates** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Form Instructions** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Loading States** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Plan for Expansion** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **The Button Label Problem** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Translation-Friendly Patterns** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Voice vs Tone** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Writing for Accessibility** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
+- **test_update_container_found_returns_the_id()** (7 connections) — `server/tests/integration/test_containers_procedures.py`
+- **test_update_container_null_fields_leave_them_unchanged()** (7 connections) — `server/tests/integration/test_containers_procedures.py`
+- **test_containers_procedures.py** (6 connections) — `server/tests/integration/test_containers_procedures.py`
+- **container_row()** (6 connections) — `server/tests/integration/test_containers_procedures.py`
+- **test_update_container_missing_container_returns_null()** (6 connections) — `server/tests/integration/test_containers_procedures.py`
+- **async_sessionmaker** (4 connections)
+- **AsyncSession** (4 connections)
+- **asyncio** (3 connections)
+- **UUID** (3 connections)
+- **fixture** (1 connections)
+- **Integration tests for db/procedures/containers.sql's update_container() return-…** (1 connections) — `server/tests/integration/test_containers_procedures.py`
+- **Create one container row. Yields its container_instance_id.** (1 connections) — `server/tests/integration/test_containers_procedures.py`
+- **update_container() on an existing container returns its id, and the row is…** (1 connections) — `server/tests/integration/test_containers_procedures.py`
+- **update_container() on a nonexistent container_instance_id returns NULL, no…** (1 connections) — `server/tests/integration/test_containers_procedures.py`
+- **NULL p_lock_state/p_metadata_json leave the existing values alone (COALESCE),…** (1 connections) — `server/tests/integration/test_containers_procedures.py`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- [CombatBroadcastMixin](CombatBroadcastMixin.md) (4 shared connections)
 
 ## Source Files
 
-- `.claude/skills/frontend-design/reference/ux-writing.md`
+- `server/tests/integration/test_containers_procedures.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 24 (86%)
+- INFERRED: 4 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

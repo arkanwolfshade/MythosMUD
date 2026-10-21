@@ -1,14 +1,12 @@
 # Quest System Gap
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Quest System Gap** (2 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
-- **Quest System** (2 connections) — `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
-- **Quest Subsystem Implementation** (2 connections) — `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
-- **MUD Subsystems Gap Analysis** (1 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
-- **Player Skills and Profession Modifiers** (1 connections) — `.cursor/plans/player_skills_and_profession_modifiers_dff11b8d.plan.md`
+- **Chaosium graphify snapshot - Does Love Forgive_** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/MANIFEST.md`
+- **does-love-forgive/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/MANIFEST.md`
 
 ## Relationships
 
@@ -16,14 +14,12 @@
 
 ## Source Files
 
-- `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
-- `.cursor/plans/player_skills_and_profession_modifiers_dff11b8d.plan.md`
-- `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

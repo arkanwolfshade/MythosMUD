@@ -1,25 +1,26 @@
 # id
 
-> 4 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **id** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **pattern** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Code Quality Improvements** (5 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Documentation** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Exception Handling** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Monitoring** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Validation** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [quality_fragmentation_lizard.py](quality_fragmentation_lizard.py.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

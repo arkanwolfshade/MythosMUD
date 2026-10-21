@@ -1,10 +1,10 @@
 # Item System Observability Runbook
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Item System Observability Runbook** (0 connections) — `docs/runbooks/item_system_observability.md`
+- **create_arkan_player.sql** (0 connections) — `scripts/create_arkan_player.sql`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/runbooks/item_system_observability.md`
+- `scripts/create_arkan_player.sql`
 
 ## Audit Trail
 

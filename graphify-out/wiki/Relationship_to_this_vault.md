@@ -1,10 +1,10 @@
 # Relationship to this vault
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Relationship to this vault** (0 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Graphify Code Graph.md`
+- **AI READING INSTRUCTION** (1 connections) — `docs/architecture/decisions/ADR-026-item-catalog-metadata-contracts.md`
 
 ## Relationships
 
@@ -12,11 +12,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/concepts/Graphify Code Graph.md`
+- `docs/architecture/decisions/ADR-026-item-catalog-metadata-contracts.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

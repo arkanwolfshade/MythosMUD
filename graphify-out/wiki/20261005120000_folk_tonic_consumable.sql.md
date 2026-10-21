@@ -1,10 +1,10 @@
 # 20261005120000_folk_tonic_consumable.sql
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **20261005120000_folk_tonic_consumable.sql** (0 connections) — `db/migrations/20261005120000_folk_tonic_consumable.sql`
+- **Phantom Hostile Implementation Requirements** (0 connections) — `docs/archive/phantom-hostile-requirements.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `db/migrations/20261005120000_folk_tonic_consumable.sql`
+- `docs/archive/phantom-hostile-requirements.md`
 
 ## Audit Trail
 

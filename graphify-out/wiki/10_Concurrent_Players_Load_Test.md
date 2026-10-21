@@ -1,26 +1,24 @@
 # 10 Concurrent Players Load Test
 
-> 3 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **10 Concurrent Players Load Test** (2 connections) — `e2e-tests/load-tests/LOAD_TEST_EXECUTION_GUIDE.md`
-- **who Command Unawaited Coroutine Bug** (1 connections) — `e2e-tests/load-tests/load_test_analysis.md`
-- **Load Test Suite** (1 connections) — `e2e-tests/load-tests/README.md`
+- **Security Considerations** (3 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Data Sanitization** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Sensitive Data Protection** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [system_commands.py](system_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/load-tests/LOAD_TEST_EXECUTION_GUIDE.md`
-- `e2e-tests/load-tests/README.md`
-- `e2e-tests/load-tests/load_test_analysis.md`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

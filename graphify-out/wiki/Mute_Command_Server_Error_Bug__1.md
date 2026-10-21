@@ -1,23 +1,24 @@
 # Mute Command Server Error (Bug #1)
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Mute Command Server Error (Bug #1)** (1 connections) — `e2e-tests/BUGS_FOUND.md`
-- **Teleport Command Server Error (Bug #3)** (1 connections) — `e2e-tests/BUGS_FOUND.md`
+- **test_evaluate_equality_boolean_true()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_equality() handles boolean true.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [TestValidatorIntegration](TestValidatorIntegration.md) (1 shared connections)
+- [.cursor/hooks/record_edited_file.py](cursor-hooks-record_edited_file.py.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/BUGS_FOUND.md`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

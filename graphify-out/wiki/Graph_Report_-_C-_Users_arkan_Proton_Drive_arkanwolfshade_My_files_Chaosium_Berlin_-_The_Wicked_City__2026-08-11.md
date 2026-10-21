@@ -1,37 +1,56 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Berlin - The Wicked City  (2026-08-11)
 
-> 15 nodes
+> 28 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Berlin - The Wicked City  (2026-08-11)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Communities (8 total, 5 thin omitted)** (4 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **berlin-the-wicked-city/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Community 0 - "Baron Arthur von Kleist; Pyotr Shabelsky-Bork"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Community 1 - "The Demon-Großmann; Demonic Mutation Table"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Community 2 - "Erwin Kern; Manfred Freiherr von Killinger"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Import Cycles** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **ChatPoseManager** (11 connections) — `server/game/chat_pose_manager.py`
+- **ChatWhisperTracker** (10 connections) — `server/game/chat_whisper_tracker.py`
+- **.__init__()** (8 connections) — `server/game/chat_service.py`
+- **.normalize_player_id()** (5 connections) — `server/game/chat_pose_manager.py`
+- **.clear_pose()** (3 connections) — `server/game/chat_pose_manager.py`
+- **.get_pose()** (3 connections) — `server/game/chat_pose_manager.py`
+- **.set_pose()** (3 connections) — `server/game/chat_pose_manager.py`
+- **.get_all_poses()** (2 connections) — `server/game/chat_pose_manager.py`
+- **.__init__()** (2 connections) — `server/game/chat_pose_manager.py`
+- **.clear_sender()** (2 connections) — `server/game/chat_whisper_tracker.py`
+- **.get_all_trackings()** (2 connections) — `server/game/chat_whisper_tracker.py`
+- **.get_sender()** (2 connections) — `server/game/chat_whisper_tracker.py`
+- **.__init__()** (2 connections) — `server/game/chat_whisper_tracker.py`
+- **.store_sender()** (2 connections) — `server/game/chat_whisper_tracker.py`
+- **Manages in-memory storage of player poses.** (1 connections) — `server/game/chat_pose_manager.py`
+- **Initialize the pose manager.** (1 connections) — `server/game/chat_pose_manager.py`
+- **Normalize player identifiers to string form.** (1 connections) — `server/game/chat_pose_manager.py`
+- **Set a player's pose in memory. Args: player_id: ID of the player pose: Pose…** (1 connections) — `server/game/chat_pose_manager.py`
+- **Get a player's current pose. Args: player_id: ID of the player Returns: Current…** (1 connections) — `server/game/chat_pose_manager.py`
+- **Clear a player's pose. Args: player_id: ID of the player Returns: True if pose…** (1 connections) — `server/game/chat_pose_manager.py`
+- **Get all poses (for testing/debugging). Returns: Dictionary mapping player IDs…** (1 connections) — `server/game/chat_pose_manager.py`
+- **Initialize chat service. Args: persistence: Database persistence layer…** (1 connections) — `server/game/chat_service.py`
+- **Tracks last whisper senders for reply functionality.** (1 connections) — `server/game/chat_whisper_tracker.py`
+- **Initialize the whisper tracker.** (1 connections) — `server/game/chat_whisper_tracker.py`
+- **Store the last whisper sender for a player. Args: receiver_name: Name of the…** (1 connections) — `server/game/chat_whisper_tracker.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [ContainerData](ContainerData.md) (3 shared connections)
+- [test_monitoring_endpoints.py](test_monitoring_endpoints.py.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
+- [UUID](UUID.md) (1 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
+- [HolidayEntry](HolidayEntry.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- `server/game/chat_pose_manager.py`
+- `server/game/chat_service.py`
+- `server/game/chat_whisper_tracker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 38 (93%)
+- INFERRED: 3 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

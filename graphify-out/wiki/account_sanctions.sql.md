@@ -1,14 +1,13 @@
 # account_sanctions.sql
 
-> 5 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **account_sanctions.sql** (4 connections) — `db/procedures/account_sanctions.sql`
-- **schema_name.apply_ban_sanction()** (1 connections) — `db/procedures/account_sanctions.sql`
-- **schema_name.apply_kick_sanction()** (1 connections) — `db/procedures/account_sanctions.sql`
-- **schema_name.get_active_sanction()** (1 connections) — `db/procedures/account_sanctions.sql`
-- **schema_name.lift_ban_sanction()** (1 connections) — `db/procedures/account_sanctions.sql`
+- **test_asyncio_run_guardrails.py** (2 connections) — `server/tests/unit/test_asyncio_run_guardrails.py`
+- **test_no_asyncio_run_in_server_library_code()** (2 connections) — `server/tests/unit/test_asyncio_run_guardrails.py`
+- **Test that server library code does not use asyncio.run() (AnyIO best practice).…** (1 connections) — `server/tests/unit/test_asyncio_run_guardrails.py`
+- **Assert server/ has no asyncio.run() in library code (use anyio.run() at entry…** (1 connections) — `server/tests/unit/test_asyncio_run_guardrails.py`
 
 ## Relationships
 
@@ -16,11 +15,11 @@
 
 ## Source Files
 
-- `db/procedures/account_sanctions.sql`
+- `server/tests/unit/test_asyncio_run_guardrails.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

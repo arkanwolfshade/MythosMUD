@@ -1,17 +1,15 @@
 # validate.mjs
 
-> 8 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **validate.mjs** (7 connections) — `scripts/static_data/validate.mjs`
-- **validateFile()** (3 connections) — `scripts/static_data/validate.mjs`
-- **loadJson()** (2 connections) — `scripts/static_data/validate.mjs`
-- **main()** (2 connections) — `scripts/static_data/validate.mjs`
-- **ajv** (1 connections) — `scripts/static_data/validate.mjs`
-- **__dirname** (1 connections) — `scripts/static_data/validate.mjs`
-- **__filename** (1 connections) — `scripts/static_data/validate.mjs`
-- **root** (1 connections) — `scripts/static_data/validate.mjs`
+- **WebSocket-Only Migration** (3 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
+- **Unify Client Message Handling** (2 connections) — `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
+- **WebSocket-Only Architecture** (2 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
+- **SSE Connection Removal** (1 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
+- **Unified Client Message Pipeline** (1 connections) — `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
+- **WebSocket Best-Practices Remediation** (1 connections) — `.cursor/plans/websocket_best-practices_remediation.plan.md`
 
 ## Relationships
 
@@ -19,12 +17,14 @@
 
 ## Source Files
 
-- `scripts/static_data/validate.mjs`
+- `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
+- `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
+- `.cursor/plans/websocket_best-practices_remediation.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (60%)
+- INFERRED: 2 (40%)
 - AMBIGUOUS: 0 (0%)
 
 ---

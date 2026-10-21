@@ -1,38 +1,50 @@
 # test_event_publisher_helpers.py
 
-> 15 nodes
+> 28 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **test_event_publisher_helpers.py** (9 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **event_publisher()** (4 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **mock_nats_service()** (3 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **test_create_event_message()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **test_get_async_persistence()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **test_get_next_sequence_number()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **test_reset_sequence_number()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **fixture** (2 connections)
-- **Unit tests for event publisher helper functions. Tests the helper functions in…** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **Create a mock NATS service.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **Create an EventPublisher instance.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **Test _create_event_message() creates event message.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **Test get_next_sequence_number() increments sequence.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **Test reset_sequence_number() resets to 0.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **Test _get_async_persistence() returns the injected persistence layer (#679:…** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **npc_base_stats.schema.json** (8 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **definitions** (4 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **npcArmor** (4 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **npcAttack** (4 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **properties** (4 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **coverage** (4 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **required** (4 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **armor_points** (3 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **notes** (3 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **determination_points** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **max_dp** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **xp_value** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **additionalProperties** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **minimum** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **maxLength** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **minLength** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **description** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **maxLength** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **additionalProperties** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **additionalProperties** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [EventPublisher](EventPublisher.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [debrief_command.py](debrief_command.py.md) (1 shared connections)
+- [AggressiveMobNPC](AggressiveMobNPC.md) (1 shared connections)
+- [test_database_config_helpers_asyncpg_settings.py](test_database_config_helpers_asyncpg_settings.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- `schemas/npcs/npc_base_stats.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (94%)
-- INFERRED: 1 (6%)
+- EXTRACTED: 30 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

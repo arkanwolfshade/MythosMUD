@@ -1,15 +1,15 @@
 # test_create_stop_command
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_create_stop_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_stop_command delegates to utility factory (#813).** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_spawn_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_spawn_command produces NPCCommand for npc spawn subcommand.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
+- [test_who_commands.py](test_who_commands.py.md) (1 shared connections)
 
 ## Source Files
 

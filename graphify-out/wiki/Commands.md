@@ -1,33 +1,39 @@
 # Commands
 
-> 12 nodes
+> 13 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **Commands** (12 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Add a branch — `gh stack add`** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Check out a stack — `gh stack checkout`** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Initialize a stack — `gh stack init`** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Link branches as a stack (no local tracking) — `gh stack link`** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Navigate the stack** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Push branches to remote — `gh stack push`** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Rebase the stack — `gh stack rebase`** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Remove a stack — `gh stack unstack`** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Submit branches and create PRs — `gh stack submit`** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Sync the stack — `gh stack sync`** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **View the stack — `gh stack view`** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **_get_npc_room_id()** (14 connections) — `server/commands/look_npc.py`
+- **test_get_npc_room_id_from_current_room()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_get_npc_room_id_from_current_room_id()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_get_npc_room_id_none()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_get_npc_room_id_from_current_room()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_get_npc_room_id_from_current_room_id()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_get_npc_room_id_none()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Get the room ID from an NPC instance, checking both current_room and…** (1 connections) — `server/commands/look_npc.py`
+- **Test _get_npc_room_id() returns current_room_id when available.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _get_npc_room_id() returns current_room when current_room_id is None.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _get_npc_room_id() returns None when both are None.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test getting NPC room ID from current_room_id.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test getting NPC room ID when both are None.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
 
 ## Relationships
 
-- [gh-stack](gh-stack.md) (1 shared connections)
+- [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) (6 shared connections)
+- [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (4 shared connections)
+- [PassiveMobNPC](PassiveMobNPC.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.agents/skills/gh-stack/SKILL.md`
+- `server/commands/look_npc.py`
+- `server/tests/unit/commands/test_look_npc.py`
+- `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 26 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

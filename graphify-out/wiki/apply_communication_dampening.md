@@ -1,47 +1,39 @@
 # apply_communication_dampening
 
-> 23 nodes
+> 15 nodes · cohesion 0.16
 
 ## Key Concepts
 
-- **apply_communication_dampening()** (15 connections) — `server/services/lucidity_communication_dampening.py`
-- **lucidity_communication_dampening.py** (11 connections) — `server/services/lucidity_communication_dampening.py`
-- **test_lucidity_communication_dampening.py** (11 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **DampeningResult** (8 connections) — `server/services/lucidity_communication_dampening.py`
-- **_apply_receiver_effects()** (5 connections) — `server/services/lucidity_communication_dampening.py`
-- **should_block_shout()** (4 connections) — `server/services/lucidity_communication_dampening.py`
-- **patch** (4 connections)
-- **_apply_sender_effects()** (3 connections) — `server/services/lucidity_communication_dampening.py`
-- **_maybe_muffle_fractured_message()** (3 connections) — `server/services/lucidity_communication_dampening.py`
-- **_maybe_scramble_deranged_message()** (3 connections) — `server/services/lucidity_communication_dampening.py`
-- **test_deranged_incoming_scrambles_words()** (3 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_fractured_incoming_strips_punctuation()** (3 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_fractured_outgoing_appends_glyph()** (3 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_fractured_outgoing_no_glyph_when_roll_high()** (3 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_deranged_shout_blocked()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_should_block_shout_deranged()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_whisper_uneasy_adds_strained_tag()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **TypedDict** (1 connections)
-- **Communication dampening utilities for lucidity system. Implements communication…** (1 connections) — `server/services/lucidity_communication_dampening.py`
-- **Check if shout should be blocked based on tier.** (1 connections) — `server/services/lucidity_communication_dampening.py`
-- **Filtered chat payload after lucidity-tier effects.** (1 connections) — `server/services/lucidity_communication_dampening.py`
-- **Apply communication dampening based on lucidity tiers. Args: message: Original…** (1 connections) — `server/services/lucidity_communication_dampening.py`
-- **Unit tests for lucidity communication dampening.** (1 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
+- **format_combat_status()** (6 connections) — `server/commands/combat_helpers.py`
+- **get_combat_target()** (6 connections) — `server/commands/combat_helpers.py`
+- **test_combat_helpers.py** (6 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **test_format_combat_status_in_combat()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **test_format_combat_status_not_in_combat()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **test_get_combat_target()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **test_get_combat_target_not_found()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **Any** (2 connections)
+- **Produce a human-readable combat status string. This helper is retained for…** (1 connections) — `server/commands/combat_helpers.py`
+- **Resolve a combat target by name. The current implementation is intentionally…** (1 connections) — `server/commands/combat_helpers.py`
+- **Unit tests for combat command helper functions. Tests helper functions in…** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **Test format_combat_status() formats combat status.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **Test format_combat_status() handles player not in combat.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **Test get_combat_target() finds target.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **Test get_combat_target() returns None when target not found.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
 
 ## Relationships
 
-- [NATSRetryHandler](NATSRetryHandler.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [command_parser.py](command_parser.py.md) (3 shared connections)
+- [npcs/catalog_dml.py](npcs-catalog_dml.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/lucidity_communication_dampening.py`
-- `server/tests/unit/services/test_lucidity_communication_dampening.py`
+- `server/commands/combat_helpers.py`
+- `server/tests/unit/commands/test_combat_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 18 (82%)
+- INFERRED: 4 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

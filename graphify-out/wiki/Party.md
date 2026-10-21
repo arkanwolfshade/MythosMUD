@@ -1,34 +1,42 @@
 # Party
 
-> 10 nodes
+> 15 nodes · cohesion 0.16
 
 ## Key Concepts
 
-- **Party** (9 connections) — `server/game/party_service.py`
-- **.get_party()** (3 connections) — `server/game/party_service.py`
-- **test_party_post_init_includes_leader_in_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_party_post_init_preserves_other_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **.__post_init__()** (2 connections) — `server/game/party_service.py`
-- **In-memory party model. Ephemeral: not persisted. party_id and member_ids are…** (1 connections) — `server/game/party_service.py`
-- **Return the party by id, or None.** (1 connections) — `server/game/party_service.py`
-- **Ensure leader is in member set.** (1 connections) — `server/game/party_service.py`
-- **Party __post_init__ ensures leader is in member_ids.** (1 connections) — `server/tests/unit/game/test_party_service.py`
-- **Party __post_init__ keeps existing members and adds leader.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **required** (9 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **required** (8 connections) — `schemas/calendar/schedule.schema.json`
+- **required** (5 connections) — `server/help/help_schema.json`
+- **days** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **id** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **name** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **effects** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **usage** (1 connections) — `server/help/help_schema.json`
+- **applies_to** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **days** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **end_hour** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **id** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **name** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **start_hour** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **category** (1 connections) — `server/help/help_schema.json`
 
 ## Relationships
 
-- [test_party_service.py](test_party_service.py.md) (3 shared connections)
-- [_str_id](_str_id.md) (2 shared connections)
-- [PartyService](PartyService.md) (2 shared connections)
+- [HealthErrorResponse](HealthErrorResponse.md) (1 shared connections)
+- [Execution Steps](Execution_Steps.md) (1 shared connections)
+- [_EventBusPublishPort](_EventBusPublishPort.md) (1 shared connections)
+- [ItemCatalogResponse](ItemCatalogResponse.md) (1 shared connections)
+- [Introduce Color Strategically](Introduce_Color_Strategically.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/party_service.py`
-- `server/tests/unit/game/test_party_service.py`
+- `db/static/schemas/npc_schedules.schema.json`
+- `schemas/calendar/schedule.schema.json`
+- `server/help/help_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

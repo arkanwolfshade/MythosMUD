@@ -1,31 +1,29 @@
 # lucidity_migration.py
 
-> 10 nodes
+> 8 nodes · cohesion 0.32
 
 ## Key Concepts
 
-- **lucidity_migration.py** (6 connections) — `server/scripts/lucidity_migration.py`
-- **migrate_lucidity_system()** (4 connections) — `server/scripts/lucidity_migration.py`
-- **migrate_multiple()** (4 connections) — `server/scripts/lucidity_migration.py`
-- **parse_args()** (3 connections) — `server/scripts/lucidity_migration.py`
-- **Path** (2 connections)
-- **Namespace** (1 connections)
-- **Schema migration for the MythosMUD lucidity system tables.** (1 connections) — `server/scripts/lucidity_migration.py`
-- **Run the lucidity migration across multiple database files.** (1 connections) — `server/scripts/lucidity_migration.py`
-- **Parse CLI arguments for the lucidity migration runner.** (1 connections) — `server/scripts/lucidity_migration.py`
-- **Apply lucidity schema migration to a SQLite database. The ritual crafts the new…** (1 connections) — `server/scripts/lucidity_migration.py`
+- **validate.mjs** (7 connections) — `scripts/static_data/validate.mjs`
+- **validateFile()** (3 connections) — `scripts/static_data/validate.mjs`
+- **loadJson()** (2 connections) — `scripts/static_data/validate.mjs`
+- **main()** (2 connections) — `scripts/static_data/validate.mjs`
+- **ajv** (1 connections) — `scripts/static_data/validate.mjs`
+- **__dirname** (1 connections) — `scripts/static_data/validate.mjs`
+- **__filename** (1 connections) — `scripts/static_data/validate.mjs`
+- **root** (1 connections) — `scripts/static_data/validate.mjs`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/scripts/lucidity_migration.py`
+- `scripts/static_data/validate.mjs`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

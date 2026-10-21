@@ -1,34 +1,32 @@
 # Execution Timeline
 
-> 13 nodes
+> 11 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **Execution Timeline** (13 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Month 1: Pruning Phase** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Month 2: Consolidation + Gap Filling** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Month 3+: Continuous Improvement** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Ongoing Tasks** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 1: Quick Wins** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 2: Infrastructure Reduction** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 3: Coverage Test Optimization** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 4: Verification and Validation** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 5: Parametrization (Part 1)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 6: Parametrization (Part 2)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 7: Critical Gap Tests (Part 1)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 8: Critical Gap Tests (Part 2)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu_ The Coloring Book  (2026-08-12)** (9 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- **Communities (1 total, 0 thin omitted)** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- **call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- **Community 0 - "Mythos Subjects"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
 
 ## Relationships
 
-- [Test Value Distribution Chart](Test_Value_Distribution_Chart.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

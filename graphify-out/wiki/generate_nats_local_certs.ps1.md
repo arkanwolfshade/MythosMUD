@@ -1,10 +1,10 @@
 # generate_nats_local_certs.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **generate_nats_local_certs.ps1** (0 connections) — `scripts/generate_nats_local_certs.ps1`
+- **unit/config/__init__.py** (0 connections) — `server/tests/unit/config/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/generate_nats_local_certs.ps1`
+- `server/tests/unit/config/__init__.py`
 
 ## Audit Trail
 

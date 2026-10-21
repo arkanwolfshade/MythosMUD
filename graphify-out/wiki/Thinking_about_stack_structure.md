@@ -1,27 +1,25 @@
 # Thinking about stack structure
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Thinking about stack structure** (6 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Branch naming** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Dependency chain** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **One stack, one story** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Staging changes deliberately** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **When to create a new branch** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Down Darker Trails (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
+- **Down Darker Trails.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
 
 ## Relationships
 
-- [gh-stack](gh-stack.md) (1 shared connections)
+- [test_inventory_commands_helpers.py](test_inventory_commands_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.agents/skills/gh-stack/SKILL.md`
+- `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -2,7 +2,7 @@
 
 > God node · 559 connections · `server/structured_logging/enhanced_logging_config.py`
 
-**Community:** [get_logger](get_logger.md)
+**Community:** [Room](Room.md)
 
 ## Connections by Relation
 

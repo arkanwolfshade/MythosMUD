@@ -1,24 +1,24 @@
 # safe_print
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **safe_print()** (2 connections) — `scripts/markdownlint.py`
-- **markdownlint.py** (1 connections) — `scripts/markdownlint.py`
-- **Print text, handling Unicode encoding errors on Windows.** (1 connections) — `scripts/markdownlint.py`
+- **test_validate_room_exists_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test validate_room_exists() returns False when room not in cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [ApplicationContainer Structure Analysis and Domain-Specific Split Proposal](ApplicationContainer_Structure_Analysis_and_Domain-Specific_Split_Proposal.md) (1 shared connections)
+- [test_request_schema_security.py](test_request_schema_security.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/markdownlint.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

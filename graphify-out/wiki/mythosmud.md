@@ -1,10 +1,10 @@
 # mythosmud
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **mythosmud** (0 connections) — `pyproject.toml`
+- **stylelint.py** (0 connections) — `scripts/stylelint.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `pyproject.toml`
+- `scripts/stylelint.py`
 
 ## Audit Trail
 

@@ -1,51 +1,36 @@
 # E2E Test Suite AI Execution Improvements - Summary
 
-> 44 nodes
+> 12 nodes · cohesion 0.41
 
 ## Key Concepts
 
-- **E2E Test Suite AI Execution Improvements - Summary** (11 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **What Was Done** (7 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **Key Features of Improvements** (5 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **Key Improvements by Failure Mode** (5 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **Next Actions** (5 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **Expected Benefits** (4 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **Files Changed** (4 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **Infinite Loop Prevention** (4 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **Mandatory Execution Protocol** (4 connections) — `e2e-tests/AI_EXECUTION_IMPROVEMENTS.md`
-- **Implementation Status** (3 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **IMPROVEMENTS_SUMMARY.md** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **1. Updated Core Configuration** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **1. Visual Emphasis** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **2. Enhanced Execution Guards** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **2. Multi-Layer Protection** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **3. Created Comprehensive Template** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **3. Psychological Design** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **4. Created Implementation Guide** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **4. Documentation Quality** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **5. Created Quick Reference** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **6. Updated README** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **✅ Completed** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **Conclusion** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **Executive Summary** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **For AI Executors** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- *... and 19 more nodes in this community*
+- **test_combat_guard.py** (15 connections) — `server/tests/unit/models/test_combat_guard.py`
+- **_fight()** (11 connections) — `server/tests/unit/models/test_combat_guard.py`
+- **_player()** (10 connections) — `server/tests/unit/models/test_combat_guard.py`
+- **test_a_protector_covers_one_ally_and_the_latest_wins()** (3 connections) — `server/tests/unit/models/test_combat_guard.py`
+- **test_an_ally_has_one_protector_and_the_latest_wins()** (3 connections) — `server/tests/unit/models/test_combat_guard.py`
+- **test_cover_ends_when_the_ally_leaves_the_fight()** (3 connections) — `server/tests/unit/models/test_combat_guard.py`
+- **test_cover_ends_when_the_protector_drops_to_zero_dp()** (3 connections) — `server/tests/unit/models/test_combat_guard.py`
+- **test_cover_ends_when_the_protector_leaves_the_fight()** (3 connections) — `server/tests/unit/models/test_combat_guard.py`
+- **test_cover_holds_through_its_last_round_then_lapses()** (3 connections) — `server/tests/unit/models/test_combat_guard.py`
+- **test_no_guard_by_default()** (3 connections) — `server/tests/unit/models/test_combat_guard.py`
+- **test_set_guard_covers_the_ally_and_marks_the_protector()** (3 connections) — `server/tests/unit/models/test_combat_guard.py`
+- **#991: Protect cover is checked on read, so it lapses on its own and needs no…** (1 connections) — `server/tests/unit/models/test_combat_guard.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [DatabaseManager](DatabaseManager.md) (3 shared connections)
+- [test_player_combat_service.py](test_player_combat_service.py.md) (2 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (2 shared connections)
 
 ## Source Files
 
-- `e2e-tests/AI_EXECUTION_IMPROVEMENTS.md`
-- `e2e-tests/AI_EXECUTOR_QUICK_REFERENCE.md`
-- `e2e-tests/EXECUTION_GUARDS.md`
-- `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- `server/tests/unit/models/test_combat_guard.py`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 34 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

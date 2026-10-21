@@ -1,16 +1,14 @@
 # MythosMUD Test Writing
 
-> 7 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **MythosMUD Test Writing** (6 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
-- **Coverage** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
-- **How to Run Tests** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
-- **Reference** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
-- **Rules** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
-- **Where Tests Live** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
-- **MythosMUD Test Writing Skill** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
+- **F-String Logging Violations** (3 connections) — `investigations/sessions/2025-01-28_session-enhanced-logging-compliance-audit.md`
+- **Pre-Commit F-String Hook Gaps** (2 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
+- **Enhanced Logging Compliance Audit** (1 connections) — `investigations/sessions/2025-01-28_session-enhanced-logging-compliance-audit.md`
+- **F-String Logging Remediation Complete** (1 connections) — `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
+- **AST-Based F-String Logging Detector** (1 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-fix.md`
 
 ## Relationships
 
@@ -18,11 +16,14 @@
 
 ## Source Files
 
-- `.claude/skills/mythosmud-test-writing/SKILL.md`
+- `investigations/sessions/2025-01-28_session-enhanced-logging-compliance-audit.md`
+- `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
+- `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
+- `investigations/sessions/2025-01-28_session-pre-commit-hook-fix.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

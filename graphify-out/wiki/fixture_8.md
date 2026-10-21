@@ -1,38 +1,29 @@
 # fixture
 
-> 15 nodes
+> 7 nodes · cohesion 0.38
 
 ## Key Concepts
 
-- **fixture** (7 connections)
-- **handler()** (4 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **mock_chat_service()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **mock_magic_service()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **mock_player()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **mock_player_spell_repository()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **mock_spell_learning_service()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **mock_spell_registry()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Create a mock player spell repository.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Create a mock spell learning service.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Create a mock chat service.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Create a MagicCommandHandler instance.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Create a mock magic service.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Create a mock spell registry.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Create a mock player (healthy by default for cast/combat checks).** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **main()** (4 connections) — `scripts/generate_html_visualization_fixed.py`
+- **generate_html_visualization_fixed.py** (3 connections) — `scripts/generate_html_visualization_fixed.py`
+- **generate_html_visualization()** (3 connections) — `scripts/generate_html_visualization_fixed.py`
+- **load_room_data()** (3 connections) — `scripts/generate_html_visualization_fixed.py`
+- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/generate_html_visualization_fixed.py`
+- **Main function to generate the HTML visualization.** (1 connections) — `scripts/generate_html_visualization_fixed.py`
+- **Generate an HTML visualization of the room network.** (1 connections) — `scripts/generate_html_visualization_fixed.py`
 
 ## Relationships
 
-- [test_magic_commands.py](test_magic_commands.py.md) (7 shared connections)
-- [MagicCommandHandler](MagicCommandHandler.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `scripts/generate_html_visualization_fixed.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (95%)
-- INFERRED: 1 (5%)
+- EXTRACTED: 8 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

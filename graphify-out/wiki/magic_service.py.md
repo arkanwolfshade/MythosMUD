@@ -1,63 +1,54 @@
 # magic_service.py
 
-> 72 nodes
+> 28 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **magic_service.py** (48 connections) — `server/game/magic/magic_service.py`
-- **send_game_event()** (33 connections) — `server/realtime/connection_manager_api.py`
-- **test_magic_healing_events.py** (20 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
-- **SpellCostsService** (19 connections) — `server/game/magic/spell_costs.py`
-- **spell_costs.py** (16 connections) — `server/game/magic/spell_costs.py`
-- **magic_healing_events.py** (15 connections) — `server/game/magic/magic_healing_events.py`
-- **MagicServiceHealingMixin** (14 connections) — `server/game/magic/magic_healing_events.py`
-- **_HealingService** (12 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
-- **MagicServiceOptionalDeps** (10 connections) — `server/game/magic/magic_service.py`
-- **_spell()** (8 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
-- **._publish_dp_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
-- **._send_healing_update_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
-- **.apply_costs()** (7 connections) — `server/game/magic/spell_costs.py`
-- **._notify_mp_update()** (7 connections) — `server/game/magic/spell_costs.py`
-- **._publish_or_send_dp_update()** (6 connections) — `server/game/magic/magic_healing_events.py`
-- **._apply_corruption_if_mythos()** (6 connections) — `server/game/magic/spell_costs.py`
-- **._spend_lucidity_if_required()** (6 connections) — `server/game/magic/spell_costs.py`
-- **UUID** (6 connections)
-- **UUID** (6 connections)
-- **asyncio** (6 connections)
-- **_StatsPlayer** (5 connections) — `server/game/magic/magic_service.py`
-- **._is_heal_other_target()** (5 connections) — `server/game/magic/magic_healing_events.py`
-- **._send_instant_heal_event_if_applied()** (5 connections) — `server/game/magic/magic_healing_events.py`
-- **test_send_instant_heal_event_if_applied()** (5 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
-- **Any** (5 connections)
-- *... and 47 more nodes in this community*
+- **test_chat_validator.py** (21 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **validate_chat_message()** (12 connections) — `server/game/chat_validator.py`
+- **chat_validator.py** (10 connections) — `server/game/chat_validator.py`
+- **validate_room_access()** (9 connections) — `server/game/chat_validator.py`
+- **_message()** (8 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **contains_malicious_content()** (7 connections) — `server/game/chat_validator.py`
+- **_chat_passes_nats_validation()** (5 connections) — `server/game/chat_nats_publisher.py`
+- **test_contains_malicious_content_detects_patterns()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_chat_message_accepts_valid_message()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_chat_message_handles_invalid_object()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_chat_message_rejects_empty_content()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_chat_message_rejects_malicious_script()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_chat_message_rejects_missing_sender()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_chat_message_rejects_too_long_content()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_contains_malicious_content_allows_safe_text()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_contains_malicious_content_fails_safe_on_type_error()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_room_access_accepts_valid_room()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_room_access_allows_none_room_for_system()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_room_access_rejects_blank_room_id()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_room_access_rejects_empty_sender()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **Return True when message content and room access checks pass.** (1 connections) — `server/game/chat_nats_publisher.py`
+- **Chat message validation utilities. This module provides validation functions…** (1 connections) — `server/game/chat_validator.py`
+- **Validate chat message before transmission. Args: chat_message: The chat message…** (1 connections) — `server/game/chat_validator.py`
+- **Validate sender has access to the room. Args: sender_id: ID of the message…** (1 connections) — `server/game/chat_validator.py`
+- **Check for malicious content patterns. Args: content: The message content to…** (1 connections) — `server/game/chat_validator.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (23 shared connections)
-- [get_logger](get_logger.md) (18 shared connections)
-- [SpellEffectType](SpellEffectType.md) (15 shared connections)
-- [resolve_lazy_attr](resolve_lazy_attr.md) (8 shared connections)
-- [SpellEffects](SpellEffects.md) (6 shared connections)
-- [test_magic_service.py](test_magic_service.py.md) (6 shared connections)
-- [PlayerService](PlayerService.md) (5 shared connections)
-- [magic_service_completion.py](magic_service_completion.py.md) (4 shared connections)
-- [PlayerDPUpdated](PlayerDPUpdated.md) (3 shared connections)
-- [CombatService](CombatService.md) (3 shared connections)
-- [SpellMaterialsService](SpellMaterialsService.md) (3 shared connections)
-- [CorruptionService](CorruptionService.md) (3 shared connections)
+- [connection_cleanup_methods.py](connection_cleanup_methods.py.md) (5 shared connections)
+- [test_skill_service_graded.py](test_skill_service_graded.py.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [test_monitoring_endpoints.py](test_monitoring_endpoints.py.md) (2 shared connections)
+- [security.ts](security.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/magic_healing_events.py`
-- `server/game/magic/magic_service.py`
-- `server/game/magic/spell_costs.py`
-- `server/realtime/connection_manager_api.py`
-- `server/tests/unit/game/magic/test_magic_healing_events.py`
+- `server/game/chat_nats_publisher.py`
+- `server/game/chat_validator.py`
+- `server/tests/unit/game/test_chat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 230 (92%)
-- INFERRED: 19 (8%)
+- EXTRACTED: 62 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,33 +1,30 @@
 # Ruff to Pylint Rule Mapping
 
-> 11 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **Ruff to Pylint Rule Mapping** (9 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **Global Ignores (pyproject.toml)** (3 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **Complexity Checking** (2 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **B008 - Function calls in argument defaults** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **C901 - Too complex (PRIMARY COMPLEXITY CHECKER)** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **Category Mappings** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **E501 - Line too long** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **Next Steps** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **Purpose** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **Rules with No Direct Pylint Equivalent** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **Rules with Partial Pylint Equivalents** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Workflows** (9 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **End-to-end: create a stack from scratch** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Handle rebase conflicts (agent workflow)** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Making mid-stack changes** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Modify a mid-stack branch and sync** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Parsing `--json` output** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Restructure a stack (remove a branch, reorder, or rename)** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Routine sync after merges** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Squash-merge recovery** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
 
 ## Relationships
 
-- [`docs/**/*` files: Multiple rules](`docs-__-_`_files-_Multiple_rules.md) (1 shared connections)
-- [Unique Pylint Findings Analysis](Unique_Pylint_Findings_Analysis.md) (1 shared connections)
+- [FAILURE PATTERN RECOGNITION](FAILURE_PATTERN_RECOGNITION.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- `.agents/skills/gh-stack/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

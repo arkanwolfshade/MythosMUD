@@ -1,10 +1,10 @@
 # databases.sql
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **databases.sql** (0 connections) — `db/databases/databases.sql`
+- **Dual Connection System Tasks** (0 connections) — `docs/archive/DUAL_CONNECTION_SYSTEM_TASKS.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `db/databases/databases.sql`
+- `docs/archive/DUAL_CONNECTION_SYSTEM_TASKS.md`
 
 ## Audit Trail
 

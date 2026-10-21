@@ -1,35 +1,34 @@
 # Communities (19 total, 4 thin omitted)
 
-> 27 nodes
+> 25 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **Communities (19 total, 4 thin omitted)** (16 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\The Malleus Monstrorum Keeper Deck  (2026-08-12)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Ambiguous Edges - Review These** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 0 - "Yog-Sothoth Keeper Decks"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 10 - "Tsathoggua Formless Spawn"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 11 - "Ygolonac and Xiclotl"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 12 - "Nyogtha Spawn"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 13 - "Hastur Spawn"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 14 - "Fthagghua Fire Vampires"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 1 - "Abhoth Shub-Niggurath"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 2 - "Independent Races"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 3 - "Mind Control Spells"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 4 - "Cthulhu Dagon Hydra"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 5 - "Cult Magic"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 6 - "Deep One Family"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 7 - "Hastur and Ithaqua"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 8 - "Abhoth Atlach-Nacha"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 9 - "Shoggoth Mind Magic"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- *... and 2 more nodes in this community*
+- **.claude/hooks/record_edited_file.py** (11 connections) — `.claude/hooks/record_edited_file.py`
+- **_is_test_file()** (7 connections) — `.claude/hooks/record_edited_file.py`
+- **main()** (7 connections) — `.claude/hooks/record_edited_file.py`
+- **Path** (5 connections)
+- **_should_skip_recording()** (5 connections) — `.claude/hooks/record_edited_file.py`
+- **_is_client_test_path()** (4 connections) — `.claude/hooks/record_edited_file.py`
+- **_load_payload()** (4 connections) — `.claude/hooks/record_edited_file.py`
+- **_load_state()** (4 connections) — `.claude/hooks/record_edited_file.py`
+- **_normalize_path()** (4 connections) — `.claude/hooks/record_edited_file.py`
+- **_rel_path()** (4 connections) — `.claude/hooks/record_edited_file.py`
+- **_write_state_atomic()** (4 connections) — `.claude/hooks/record_edited_file.py`
+- **_is_agent_config_path()** (3 connections) — `.claude/hooks/record_edited_file.py`
+- **_is_server_test_path()** (3 connections) — `.claude/hooks/record_edited_file.py`
+- **Any** (2 connections)
+- **Write state via a same-directory temp file + os.replace so a concurrent…** (1 connections) — `.claude/hooks/record_edited_file.py`
+- **Return True if we should not record (missing data or test file).** (1 connections) — `.claude/hooks/record_edited_file.py`
+- **Entry point: read hook payload from stdin and record non-test edited files to…** (1 connections) — `.claude/hooks/record_edited_file.py`
+- **Normalize path to forward slashes for consistent matching.** (1 connections) — `.claude/hooks/record_edited_file.py`
+- **Return workspace-relative path for pattern matching.** (1 connections) — `.claude/hooks/record_edited_file.py`
+- **True if path is under server/tests/.** (1 connections) — `.claude/hooks/record_edited_file.py`
+- **True if path is in __tests__/ or has client test extension.** (1 connections) — `.claude/hooks/record_edited_file.py`
+- **True if path is under .claude/ or .cursor/ (agent/skill/rule/hook config, not…** (1 connections) — `.claude/hooks/record_edited_file.py`
+- **Return True if the file should NOT trigger the test agent: a test file, or…** (1 connections) — `.claude/hooks/record_edited_file.py`
+- **Load JSON payload from stdin; return None on failure (fail open).** (1 connections) — `.claude/hooks/record_edited_file.py`
+- **Load state from file; return empty dict on failure.** (1 connections) — `.claude/hooks/record_edited_file.py`
 
 ## Relationships
 
@@ -37,11 +36,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
+- `.claude/hooks/record_edited_file.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

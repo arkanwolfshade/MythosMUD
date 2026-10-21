@@ -1,28 +1,26 @@
 # gh-stack (MythosMUD)
 
-> 7 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **gh-stack (MythosMUD)** (7 connections) — `.claude/skills/gh-stack/SKILL.md`
-- **Automatic decision tree** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
-- **Forbidden (hangs non-interactive agents)** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
-- **Full skill body** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
-- **Integration with other skills** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
-- **Mythos defaults** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
-- **One-liner status check (PowerShell)** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **Conclusion** (5 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **~25-30% (1,250-1,500 tests) provide CRITICAL protection** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Answer to Your Question** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Recommended Action** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **The remaining 70-75% provide** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Relationships
 
-- [MythosMUD Commit Messages](MythosMUD_Commit_Messages.md) (1 shared connections)
+- [✨ Key Achievements](✨_Key_Achievements.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/gh-stack/SKILL.md`
+- `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

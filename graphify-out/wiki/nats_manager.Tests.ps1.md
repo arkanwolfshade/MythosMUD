@@ -1,10 +1,10 @@
 # nats_manager.Tests.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **nats_manager.Tests.ps1** (0 connections) — `scripts/tests/nats_manager.Tests.ps1`
+- **Mythos-themed invite codes** (0 connections) — `tools/invite_tools/README.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/tests/nats_manager.Tests.ps1`
+- `tools/invite_tools/README.md`
 
 ## Audit Trail
 

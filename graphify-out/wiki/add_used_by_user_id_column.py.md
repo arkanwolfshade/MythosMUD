@@ -1,27 +1,27 @@
 # add_used_by_user_id_column.py
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **add_used_by_user_id_column.py** (4 connections) — `server/scripts/add_used_by_user_id_column.py`
-- **apply_migration()** (3 connections) — `server/scripts/add_used_by_user_id_column.py`
-- **main()** (3 connections) — `server/scripts/add_used_by_user_id_column.py`
-- **Main entry point for the migration script.** (1 connections) — `server/scripts/add_used_by_user_id_column.py`
-- **Apply the migration to add used_by_user_id column. Args: database_url:…** (1 connections) — `server/scripts/add_used_by_user_id_column.py`
+- **Dead Code Cleanup Completion** (2 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
+- **Legacy Files Cleanup Summary** (1 connections) — `docs/archive/CLEANUP_SUMMARY.md`
+- **Dead Code Cleanup Planning** (1 connections) — `docs/archive/DEAD_CODE_CLEANUP_PLANNING.md`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/scripts/add_used_by_user_id_column.py`
+- `docs/archive/CLEANUP_SUMMARY.md`
+- `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
+- `docs/archive/DEAD_CODE_CLEANUP_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,35 +1,33 @@
 # find_fstring_logging_violations
 
-> 14 nodes
+> 12 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **FStringLoggingDetector** (5 connections) — `scripts/check_logging_patterns.py`
-- **find_fstring_logging_violations()** (5 connections) — `scripts/check_logging_patterns.py`
-- **main()** (5 connections) — `scripts/check_logging_patterns.py`
-- **check_logging_patterns.py** (4 connections) — `scripts/check_logging_patterns.py`
-- **format_violation_report()** (3 connections) — `scripts/check_logging_patterns.py`
-- **.visit_Call()** (3 connections) — `scripts/check_logging_patterns.py`
-- **Path** (3 connections)
-- **.__init__()** (2 connections) — `scripts/check_logging_patterns.py`
-- **Call** (1 connections)
-- **Main function to scan files and report violations.** (1 connections) — `scripts/check_logging_patterns.py`
-- **AST visitor to detect f-string logging violations.** (1 connections) — `scripts/check_logging_patterns.py`
-- **Check for f-string logging patterns.** (1 connections) — `scripts/check_logging_patterns.py`
-- **Find f-string logging violations in a Python file using AST parsing. This…** (1 connections) — `scripts/check_logging_patterns.py`
-- **Format violation report for display. Args: violations: List of (file_path,…** (1 connections) — `scripts/check_logging_patterns.py`
+- **Hardening Dimensions** (8 connections) — `.claude/skills/harden/SKILL.md`
+- **Harden Skill** (5 connections) — `.claude/skills/harden/SKILL.md`
+- **Accessibility Resilience** (1 connections) — `.claude/skills/harden/SKILL.md`
+- **Assess Hardening Needs** (1 connections) — `.claude/skills/harden/SKILL.md`
+- **Edge Cases & Boundary Conditions** (1 connections) — `.claude/skills/harden/SKILL.md`
+- **Error Handling** (1 connections) — `.claude/skills/harden/SKILL.md`
+- **Input Validation & Sanitization** (1 connections) — `.claude/skills/harden/SKILL.md`
+- **Internationalization (i18n)** (1 connections) — `.claude/skills/harden/SKILL.md`
+- **Performance Resilience** (1 connections) — `.claude/skills/harden/SKILL.md`
+- **Testing Strategies** (1 connections) — `.claude/skills/harden/SKILL.md`
+- **Text Overflow & Wrapping** (1 connections) — `.claude/skills/harden/SKILL.md`
+- **Verify Hardening** (1 connections) — `.claude/skills/harden/SKILL.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/check_logging_patterns.py`
+- `.claude/skills/harden/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

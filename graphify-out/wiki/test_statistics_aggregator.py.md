@@ -1,48 +1,45 @@
 # test_statistics_aggregator.py
 
-> 25 nodes
+> 23 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **test_statistics_aggregator.py** (14 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **fixture** (6 connections)
-- **statistics_aggregator()** (4 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **mock_memory_monitor()** (3 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **mock_message_queue()** (3 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **mock_performance_tracker()** (3 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **mock_rate_limiter()** (3 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **mock_room_manager()** (3 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **test_get_connection_health_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **test_get_connection_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **test_get_memory_alerts()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **test_get_memory_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **test_statistics_aggregator_init()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Unit tests for statistics aggregator. Tests the StatisticsAggregator class.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Test get_connection_stats() returns connection statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Test get_connection_health_stats() returns health statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Test get_memory_alerts() returns memory alerts.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a mock memory monitor.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a mock rate limiter.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a mock message queue.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a mock room manager.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a mock performance tracker.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a StatisticsAggregator instance.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Test StatisticsAggregator initialization.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Test get_memory_stats() returns comprehensive statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **lint_container_get_instance.py** (11 connections) — `scripts/lint_container_get_instance.py`
+- **scan()** (6 connections) — `scripts/lint_container_get_instance.py`
+- **_collect_get_instance_counts()** (5 connections) — `scripts/lint_container_get_instance.py`
+- **_find_get_instance_lines()** (5 connections) — `scripts/lint_container_get_instance.py`
+- **_code_tokens()** (4 connections) — `scripts/lint_container_get_instance.py`
+- **_is_application_container_get_instance()** (4 connections) — `scripts/lint_container_get_instance.py`
+- **_allowlist_count_violations()** (3 connections) — `scripts/lint_container_get_instance.py`
+- **_collect_python_files()** (3 connections) — `scripts/lint_container_get_instance.py`
+- **main()** (3 connections) — `scripts/lint_container_get_instance.py`
+- **_stale_allowlist_violations()** (3 connections) — `scripts/lint_container_get_instance.py`
+- **AllowlistEntry** (2 connections) — `scripts/lint_container_get_instance.py`
+- **TokenInfo** (2 connections)
+- **Path** (1 connections)
+- **Guard against new `ApplicationContainer.get_instance()` service-location debt…** (1 connections) — `scripts/lint_container_get_instance.py`
+- **Tokenize Python source, omitting comments, strings, and whitespace tokens.** (1 connections) — `scripts/lint_container_get_instance.py`
+- **True when tokens[index:index+5] is ApplicationContainer.get_instance().** (1 connections) — `scripts/lint_container_get_instance.py`
+- **Return 1-based line numbers of real `ApplicationContainer.get_instance()`…** (1 connections) — `scripts/lint_container_get_instance.py`
+- **Walk server/*.py and count get_instance() hits per file; collect read errors.** (1 connections) — `scripts/lint_container_get_instance.py`
+- **Compare per-file hit counts to allowlist; return violations and confirmed…** (1 connections) — `scripts/lint_container_get_instance.py`
+- **Flag allowlist entries whose file no longer contains any get_instance() call.** (1 connections) — `scripts/lint_container_get_instance.py`
+- **Scan server/ for ApplicationContainer.get_instance() calls. Returns…** (1 connections) — `scripts/lint_container_get_instance.py`
+- **Run the container-injection guard and return 1 if any file's get_instance()…** (1 connections) — `scripts/lint_container_get_instance.py`
+- **One file's confirmed get_instance() call-site count, and why it's there.** (1 connections) — `scripts/lint_container_get_instance.py`
 
 ## Relationships
 
-- [StatisticsAggregator](StatisticsAggregator.md) (2 shared connections)
-- [connection_initialization.py](connection_initialization.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- `scripts/lint_container_get_instance.py`
 
 ## Audit Trail
 
-- EXTRACTED: 31 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 31 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

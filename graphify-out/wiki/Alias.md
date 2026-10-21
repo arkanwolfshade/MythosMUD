@@ -1,59 +1,57 @@
 # Alias
 
-> 65 nodes
+> 62 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **Alias** (51 connections) — `server/models/alias.py`
-- **test_alias.py** (29 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_default_id()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_default_timestamps()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_default_version()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_equality_different_command()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_equality_different_ids()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_equality_different_name()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_equality_same_name_and_command()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_equality_with_non_alias()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_get_expanded_command_no_args()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_get_expanded_command_with_args()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_hash_different_command()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_hash_different_name()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_hash_same_name_and_command()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_is_reserved_command_false()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_is_reserved_command_true()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_model_dump()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_model_dump_timestamps_isoformat()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_rejects_extra_fields()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_repr()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_validate_name_empty()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_validate_name_valid()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_validate_name_whitespace_only()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_validate_name_with_whitespace()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- *... and 40 more nodes in this community*
+- **test_websocket_handler_validation_errors.py** (42 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **asyncio** (25 connections)
+- **handle_chat_message()** (17 connections) — `server/realtime/websocket_handler.py`
+- **test_validate_message_validation_error()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_chat_message_error()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_chat_message_no_player()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_broadcast_no_current_room_id()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_broadcast_no_player()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_error()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_with_args()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_with_broadcast()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_process_exception_in_message_loop()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_process_websocket_command_player_no_current_room_id()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_send_error_response_runtime_error_close_message()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_send_error_response_runtime_error_disconnected()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_send_error_response_runtime_error_other()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_send_error_response_websocket_disconnect()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_send_system_message_error()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_validate_message_restores_csrf_from_message_jwt_when_metadata_token_missing()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_check_rate_limit_exceeded()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_check_rate_limit_no_connection_id()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_check_rate_limit_passed()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_cleanup_connection_exception()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_cleanup_connection_runtime_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_validate_message_passes_expected_token_from_connection_metadata()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [._fetch](_fetch.md) (5 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [test_alias_hash_usable_in_set](test_alias_hash_usable_in_set.md) (2 shared connections)
-- [test_alias_is_reserved_command_case_insensitive](test_alias_is_reserved_command_case_insensitive.md) (2 shared connections)
-- [test_alias_update_timestamp](test_alias_update_timestamp.md) (2 shared connections)
-- [test_alias_commands.py](test_alias_commands.py.md) (2 shared connections)
-- [MemoryProfiler](MemoryProfiler.md) (2 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [MessageCategory](MessageCategory.md) (1 shared connections)
-- [.model_dump](model_dump.md) (1 shared connections)
+- [NATSService](NATSService.md) (10 shared connections)
+- [EventBus](EventBus.md) (8 shared connections)
+- [test_room_subscription_manager_drops.py](test_room_subscription_manager_drops.py.md) (7 shared connections)
+- [test_corpse_lifecycle_decay.py](test_corpse_lifecycle_decay.py.md) (4 shared connections)
+- [useAsciiMapState.ts](useAsciiMapState.ts.md) (4 shared connections)
+- [Codebase Explorer Subagent](Codebase_Explorer_Subagent.md) (3 shared connections)
+- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (2 shared connections)
+- [.publish_with_pool](publish_with_pool.md) (1 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/alias.py`
-- `server/tests/unit/models/test_alias.py`
+- `server/realtime/websocket_handler.py`
+- `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 107 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 113 (89%)
+- INFERRED: 14 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

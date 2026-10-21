@@ -1,30 +1,35 @@
 # required
 
-> 9 nodes
+> 14 nodes · cohesion 0.14
 
 ## Key Concepts
 
-- **required** (9 connections) — `db/static/schemas/holidays.schema.json`
-- **bonus_tags** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **day** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **duration_hours** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **id** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **month** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **name** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **season** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **tradition** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Alone Against the Dark  (2026-08-11)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **Communities (6 total, 4 thin omitted)** (3 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **alone-against-the-dark/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **Community 0 - "Solo Investigators"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **Community 1 - "Design & Authorship"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **Import Cycles** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
 
 ## Relationships
 
-- [items](items.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `db/static/schemas/holidays.schema.json`
+- `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

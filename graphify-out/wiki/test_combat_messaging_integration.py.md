@@ -1,51 +1,43 @@
 # test_combat_messaging_integration.py
 
-> 18 nodes
+> 14 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **test_combat_messaging_integration.py** (31 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_messaging_integration_init_no_connection_manager()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_connection_manager_property_lazy_load()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_connection_manager_setter()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_connection_manager_setter_overrides_lazy_load()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_messaging_integration_init()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_resolve_connection_manager_from_container()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_resolve_connection_manager_from_container_error()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_resolve_connection_manager_from_container_no_manager()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Unit tests for combat messaging integration. Tests the…** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test connection_manager setter updates value.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test connection_manager setter overrides lazy load mechanism.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test CombatMessagingIntegration initialization.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test CombatMessagingIntegration initialization without connection manager.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test connection_manager property lazy loads from container.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test _resolve_connection_manager_from_container resolves manager.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test _resolve_connection_manager_from_container raises when no manager.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test _resolve_connection_manager_from_container handles errors.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Cult Chat Seam Design** (8 connections) — `docs/subsystems/SUBSYSTEM_CULT_CHAT_DESIGN.md`
+- **Event Ownership Matrix** (4 connections) — `docs/EVENT_OWNERSHIP_MATRIX.md`
+- **SUBSYSTEM_MOVEMENT_DESIGN.md** (4 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- **NATS Subject Pattern Management** (3 connections) — `docs/NATS_SUBJECT_PATTERNS.md`
+- **SUBSYSTEM_CULT_CHAT_DESIGN.md** (3 connections) — `docs/subsystems/SUBSYSTEM_CULT_CHAT_DESIGN.md`
+- **Party Subsystem Design** (2 connections) — `docs/subsystems/SUBSYSTEM_PARTY_DESIGN.md`
+- **1. Overview** (1 connections) — `docs/subsystems/SUBSYSTEM_CULT_CHAT_DESIGN.md`
+- **2. Architecture** (1 connections) — `docs/subsystems/SUBSYSTEM_CULT_CHAT_DESIGN.md`
+- **3. Key design decisions** (1 connections) — `docs/subsystems/SUBSYSTEM_CULT_CHAT_DESIGN.md`
+- **4. Constraints** (1 connections) — `docs/subsystems/SUBSYSTEM_CULT_CHAT_DESIGN.md`
+- **5. Related docs** (1 connections) — `docs/subsystems/SUBSYSTEM_CULT_CHAT_DESIGN.md`
+- **6. Changelog** (1 connections) — `docs/subsystems/SUBSYSTEM_CULT_CHAT_DESIGN.md`
+- **AI READING INSTRUCTION** (1 connections) — `docs/subsystems/SUBSYSTEM_CULT_CHAT_DESIGN.md`
+- **Follow Subsystem Design** (1 connections) — `docs/subsystems/SUBSYSTEM_FOLLOW_DESIGN.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (7 shared connections)
-- [log_room_broadcast_result](log_room_broadcast_result.md) (3 shared connections)
-- [messaging_integration](messaging_integration.md) (2 shared connections)
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (1 shared connections)
-- [test_broadcast_player_mortally_wounded](test_broadcast_player_mortally_wounded.md) (1 shared connections)
-- [test_broadcast_player_died](test_broadcast_player_died.md) (1 shared connections)
-- [test_broadcast_player_mortally_wounded_with_attacker](test_broadcast_player_mortally_wounded_with_attacker.md) (1 shared connections)
-- [test_broadcast_player_mortally_wounded_no_attacker](test_broadcast_player_mortally_wounded_no_attacker.md) (1 shared connections)
-- [test_broadcast_combat_attack_no_attacker_id](test_broadcast_combat_attack_no_attacker_id.md) (1 shared connections)
-- [test_broadcast_player_mortally_wounded_personal_message_error](test_broadcast_player_mortally_wounded_personal_message_error.md) (1 shared connections)
-- [test_broadcast_taunt_result](test_broadcast_taunt_result.md) (1 shared connections)
-- [test_broadcast_player_joined_combat](test_broadcast_player_joined_combat.md) (1 shared connections)
+- [properties](properties.md) (2 shared connections)
+- [Python Model Updates Required for Migration 019](Python_Model_Updates_Required_for_Migration_019.md) (1 shared connections)
+- [verify_npc_occupants.py](verify_npc_occupants.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `docs/EVENT_OWNERSHIP_MATRIX.md`
+- `docs/NATS_SUBJECT_PATTERNS.md`
+- `docs/subsystems/SUBSYSTEM_CULT_CHAT_DESIGN.md`
+- `docs/subsystems/SUBSYSTEM_FOLLOW_DESIGN.md`
+- `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- `docs/subsystems/SUBSYSTEM_PARTY_DESIGN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 17 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

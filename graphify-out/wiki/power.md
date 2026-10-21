@@ -1,24 +1,23 @@
 # power
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **power** (3 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **minimum** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **Obsidian LLM wiki vault (data/MythosMUD-Obsidian)** (1 connections) — `.cursor/skills/mythosmud-llm-wiki/SKILL.md`
+- **mythosmud-llm-wiki skill** (1 connections) — `.cursor/skills/mythosmud-llm-wiki/SKILL.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/npcs/npc_base_stats.schema.json`
+- `.cursor/skills/mythosmud-llm-wiki/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

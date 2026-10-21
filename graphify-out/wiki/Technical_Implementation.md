@@ -1,35 +1,38 @@
 # Technical Implementation
 
-> 13 nodes
+> 11 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **Technical Implementation** (5 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **1. Component Refactoring** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **2. Message Routing Logic** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **3. State Management** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **4. Event Handling** (2 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **ChatPanel.tsx Enhancements (New Chat Input Panel)** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Command Routing Logic** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **CommandPanel.tsx Simplifications** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Current Logic (in CommandPanel)** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **GameLogPanel.tsx (Renamed from ChatPanel.tsx)** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **New Logic Distribution** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **New State Structure** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **State Distribution** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **vite.userConfig.ts** (7 connections) — `client/vite.userConfig.ts`
+- **vite.config.ts** (5 connections) — `client/vite.config.ts`
+- **configureForwardAuthorization()** (3 connections) — `client/vite.proxyAuthorization.ts`
+- **createViteUserConfig()** (3 connections) — `client/vite.userConfig.ts`
+- **vite.proxyAuthorization.ts** (2 connections) — `client/vite.proxyAuthorization.ts`
+- **vite.vitestOptions.ts** (2 connections) — `client/vite.vitestOptions.ts`
+- **vitestTestOptions** (2 connections) — `client/vite.vitestOptions.ts`
+- **TODO: Implement AST-based console removal plugin to selectively remove** (1 connections) — `client/vite.config.ts`
+- **TODO: Implement AST-based console removal to preserve console.error/warn** (1 connections) — `client/vite.userConfig.ts`
+- **vitest.config.ts** (1 connections) — `client/vitest.config.ts`
+- **vitest.config.d.ts** (1 connections) — `client/vitest.config.d.ts`
 
 ## Relationships
 
-- [Chat Panel Separation Specification](Chat_Panel_Separation_Specification.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- `client/vite.config.ts`
+- `client/vite.proxyAuthorization.ts`
+- `client/vite.userConfig.ts`
+- `client/vite.vitestOptions.ts`
+- `client/vitest.config.d.ts`
+- `client/vitest.config.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

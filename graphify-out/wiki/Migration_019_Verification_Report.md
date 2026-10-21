@@ -1,36 +1,35 @@
 # Migration 019 Verification Report
 
-> 14 nodes
+> 12 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **Migration 019 Verification Report** (7 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
-- **Files Modified Summary** (5 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
-- **Risk Assessment** (4 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
-- **Next Steps** (2 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
-- **Before Production Deployment** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
-- **Conclusion** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
-- **Documentation (3 files)** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
-- **Low Risk ✅** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
-- **Medium Risk ⚠️** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
-- **Migration Scripts (1 file)** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
-- **Mitigation** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
-- **Python Models (5 files)** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
-- **SQL Schema Files (4 files)** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
-- **Verification Summary** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **ADR-027: NPC Catalog Base Stats Contracts** (10 connections) — `docs/architecture/decisions/ADR-027-npc-catalog-base-stats-contracts.md`
+- **Architecture Decision Records (ADRs)** (4 connections) — `docs/architecture/decisions/README.md`
+- **5. Consequences** (4 connections) — `docs/architecture/decisions/ADR-027-npc-catalog-base-stats-contracts.md`
+- **ADR-027-npc-catalog-base-stats-contracts.md** (1 connections) — `docs/architecture/decisions/ADR-027-npc-catalog-base-stats-contracts.md`
+- **1. Overview** (1 connections) — `docs/architecture/decisions/ADR-027-npc-catalog-base-stats-contracts.md`
+- **2. Context** (1 connections) — `docs/architecture/decisions/ADR-027-npc-catalog-base-stats-contracts.md`
+- **4. Alternatives Considered** (1 connections) — `docs/architecture/decisions/ADR-027-npc-catalog-base-stats-contracts.md`
+- **6. Implementation anchors** (1 connections) — `docs/architecture/decisions/ADR-027-npc-catalog-base-stats-contracts.md`
+- **AI READING INSTRUCTION** (1 connections) — `docs/architecture/decisions/ADR-027-npc-catalog-base-stats-contracts.md`
+- **Negative** (1 connections) — `docs/architecture/decisions/ADR-027-npc-catalog-base-stats-contracts.md`
+- **Neutral** (1 connections) — `docs/architecture/decisions/ADR-027-npc-catalog-base-stats-contracts.md`
+- **Positive** (1 connections) — `docs/architecture/decisions/ADR-027-npc-catalog-base-stats-contracts.md`
 
 ## Relationships
 
-- [Migration 019 Ready for Deployment](Migration_019_Ready_for_Deployment.md) (1 shared connections)
-- [2. Model Updates Verified](2._Model_Updates_Verified.md) (1 shared connections)
+- [items](items.md) (1 shared connections)
+- [Step 2: Ask UX-Focused Questions](Step_2-_Ask_UX-Focused_Questions.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/MIGRATION_019_VERIFICATION.md`
+- `docs/architecture/decisions/ADR-027-npc-catalog-base-stats-contracts.md`
+- `docs/architecture/decisions/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

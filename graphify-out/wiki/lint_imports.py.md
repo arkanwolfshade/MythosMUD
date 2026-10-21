@@ -1,34 +1,38 @@
 # lint_imports.py
 
-> 13 nodes
+> 11 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **lint_imports.py** (10 connections) — `scripts/lint_imports.py`
-- **main()** (6 connections) — `scripts/lint_imports.py`
-- **lint_imports_failed()** (5 connections) — `scripts/lint_imports.py`
-- **broken_contract_count()** (4 connections) — `scripts/lint_imports.py`
-- **broken_contract_names()** (4 connections) — `scripts/lint_imports.py`
-- **_print_failure()** (4 connections) — `scripts/lint_imports.py`
-- **_contracts_summary_message()** (3 connections) — `scripts/lint_imports.py`
-- **_print_success()** (3 connections) — `scripts/lint_imports.py`
-- **_resolve_lint_imports_cmd()** (2 connections) — `scripts/lint_imports.py`
-- **Return contract names marked BROKEN in import-linter output.** (1 connections) — `scripts/lint_imports.py`
-- **Parse ``Contracts: N kept, M broken`` summary; None if summary line missing.** (1 connections) — `scripts/lint_imports.py`
-- **True when import-linter reported broken contracts or exited non-zero.** (1 connections) — `scripts/lint_imports.py`
-- **Human-readable contracts summary from import-linter output.** (1 connections) — `scripts/lint_imports.py`
+- **CircuitBreaker Implementation Planning Document** (14 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Rollback Plan** (3 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Configuration Schema** (2 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Dependencies** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Gradual Rollback** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Immediate Rollback** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Objectives** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Overview** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Server Configuration** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Timeline** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- [safe_run_static](safe_run_static.md) (3 shared connections)
+- [add_hashed_password_column.py](add_hashed_password_column.py.md) (1 shared connections)
+- [8. Grace Period After Intentional Disconnect](8._Grace_Period_After_Intentional_Disconnect.md) (1 shared connections)
+- [TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md](TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md.md) (1 shared connections)
+- [Combat Client Crash](Combat_Client_Crash.md) (1 shared connections)
+- [Whisper Channel System](Whisper_Channel_System.md) (1 shared connections)
+- [NPC Occupants Verification Summary](NPC_Occupants_Verification_Summary.md) (1 shared connections)
+- [Phase 5: Strategic Additions (Week 5)](Phase_5-_Strategic_Additions_Week_5.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/lint_imports.py`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

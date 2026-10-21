@@ -1,24 +1,23 @@
 # auditor
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **auditor()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **fixture** (1 connections)
-- **Auditor with short interval and auto cleanup enabled.** (1 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
+- **MOTD Sacred Styling** (1 connections) — `docs/archive/PLANNING_tailwind.md`
+- **MUI to TailwindCSS Migration** (1 connections) — `docs/archive/PLANNING_tailwind.md`
 
 ## Relationships
 
-- [PeriodicOrphanAuditor](PeriodicOrphanAuditor.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/app/test_memory_lifespan_coordinator.py`
+- `docs/archive/PLANNING_tailwind.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

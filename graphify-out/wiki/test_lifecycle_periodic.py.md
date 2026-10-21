@@ -1,55 +1,73 @@
 # test_lifecycle_periodic.py
 
-> 62 nodes
+> 94 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **test_lifecycle_periodic.py** (42 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
-- **lifecycle_periodic.py** (21 connections) — `server/npc/lifecycle_periodic.py`
-- **check_optional_npc_spawns_impl()** (13 connections) — `server/npc/lifecycle_periodic.py`
-- **_attempt_optional_npc_spawn()** (11 connections) — `server/npc/lifecycle_periodic.py`
-- **run_periodic_maintenance_impl()** (11 connections) — `server/npc/lifecycle_periodic.py`
-- **NPCMaintenanceConfig** (10 connections) — `server/config/npc_config.py`
-- **cleanup_old_records_impl()** (10 connections) — `server/npc/lifecycle_periodic.py`
-- **_check_spawn_conditions_for_optional_npc()** (9 connections) — `server/npc/lifecycle_periodic.py`
-- **get_zone_key_for_definition()** (9 connections) — `server/npc/lifecycle_periodic.py`
-- **_should_skip_optional_npc()** (9 connections) — `server/npc/lifecycle_periodic.py`
-- **get_spawn_room_for_definition()** (8 connections) — `server/npc/lifecycle_periodic.py`
-- **Any** (8 connections)
-- **npc_config.py** (5 connections) — `server/config/npc_config.py`
-- **_make_record()** (4 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
-- **test_cleanup_old_records_removes_stale_despawned()** (4 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
-- **test_cleanup_old_records_removes_stale_error()** (4 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
-- **.get_config_summary()** (3 connections) — `server/config/npc_config.py`
-- **.cleanup_old_records()** (3 connections) — `server/npc/lifecycle_manager.py`
-- **.periodic_maintenance()** (3 connections) — `server/npc/lifecycle_manager.py`
-- **test_attempt_optional_npc_spawn_success_routes_through_population_controller()** (3 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
-- **test_should_not_skip_when_interval_elapsed()** (3 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
-- **.get_respawn_delay()** (2 connections) — `server/config/npc_config.py`
-- **test_attempt_optional_npc_spawn_no_controller()** (2 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
-- **test_attempt_optional_npc_spawn_no_zone_config()** (2 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
-- **test_attempt_optional_npc_spawn_probability_miss()** (2 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
-- *... and 37 more nodes in this community*
+- **primitives/index.ts** (29 connections) — `client/src/components/ui-v2/primitives/index.ts`
+- **MythosIcons** (20 connections) — `client/src/components/ui-v2/primitives/MythosIcons.ts`
+- **EldritchEffectsDemo.tsx** (16 connections) — `client/src/components/ui-v2/demos/EldritchEffectsDemo.tsx`
+- **PanelPosition** (16 connections) — `client/src/components/ui-v2/types.ts`
+- **EldritchIcon()** (14 connections) — `client/src/components/ui-v2/primitives/EldritchIcon.tsx`
+- **PanelSize** (14 connections) — `client/src/components/ui-v2/types.ts`
+- **usePanelContainerView.ts** (13 connections) — `client/src/components/ui-v2/PanelSystem/usePanelContainerView.ts`
+- **CommandInputPanel.tsx** (12 connections) — `client/src/components/ui-v2/panels/CommandInputPanel.tsx`
+- **ExpandedPanelRnd.tsx** (12 connections) — `client/src/components/ui-v2/PanelSystem/ExpandedPanelRnd.tsx`
+- **PanelLayoutHandlers** (12 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutTypes.ts`
+- **MinimizedPanelRnd.tsx** (11 connections) — `client/src/components/ui-v2/PanelSystem/MinimizedPanelRnd.tsx`
+- **ChannelSelector.tsx** (11 connections) — `client/src/components/ui-v2/primitives/ChannelSelector.tsx`
+- **MythosPanel.tsx** (11 connections) — `client/src/components/ui-v2/primitives/MythosPanel.tsx`
+- **EldritchIcon.tsx** (10 connections) — `client/src/components/ui-v2/primitives/EldritchIcon.tsx`
+- **TerminalButton** (10 connections) — `client/src/components/ui-v2/primitives/TerminalButton.tsx`
+- **eldritchEffectsDemoData.ts** (9 connections) — `client/src/components/ui-v2/demos/eldritchEffectsDemoData.ts`
+- **CommandHistoryPanel.tsx** (9 connections) — `client/src/components/ui-v2/panels/CommandHistoryPanel.tsx`
+- **ExpandedPanelBody.tsx** (9 connections) — `client/src/components/ui-v2/PanelSystem/ExpandedPanelBody.tsx`
+- **ExpandedPanelHeader.tsx** (9 connections) — `client/src/components/ui-v2/PanelSystem/ExpandedPanelHeader.tsx`
+- **MinimizedPanelHeader.tsx** (9 connections) — `client/src/components/ui-v2/PanelSystem/MinimizedPanelHeader.tsx`
+- **panelLayoutTypes.ts** (9 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutTypes.ts`
+- **usePanelContainerLayout.ts** (8 connections) — `client/src/components/ui-v2/PanelSystem/usePanelContainerLayout.ts`
+- **LogoutButton.tsx** (7 connections) — `client/src/components/ui-v2/primitives/LogoutButton.tsx`
+- **usePanelContainerView()** (6 connections) — `client/src/components/ui-v2/PanelSystem/usePanelContainerView.ts`
+- **ChannelSelector.test.tsx** (6 connections) — `client/src/components/ui-v2/primitives/__tests__/ChannelSelector.test.tsx`
+- *... and 69 more nodes in this community*
 
 ## Relationships
 
-- [NPCLifecycleManager](NPCLifecycleManager.md) (13 shared connections)
-- [EventBus](EventBus.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [game_tick_processing.py](game_tick_processing.py.md) (3 shared connections)
-- [test_npc_utils.py](test_npc_utils.py.md) (3 shared connections)
+- [test_n_player_combat.py](test_n_player_combat.py.md) (23 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (14 shared connections)
+- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (13 shared connections)
+- [chat_channel_message_senders.py](chat_channel_message_senders.py.md) (5 shared connections)
+- [🧪 MythosMUD E2E Testing Strategy](🧪_MythosMUD_E2E_Testing_Strategy.md) (4 shared connections)
+- [lint_pyright_suppressions.py](lint_pyright_suppressions.py.md) (3 shared connections)
+- [WebSocketMessageValidator](WebSocketMessageValidator.md) (2 shared connections)
 
 ## Source Files
 
-- `server/config/npc_config.py`
-- `server/npc/lifecycle_manager.py`
-- `server/npc/lifecycle_periodic.py`
-- `server/tests/unit/npc/test_lifecycle_periodic.py`
+- `client/src/components/ui-v2/PanelSystem/ExpandedPanelBody.tsx`
+- `client/src/components/ui-v2/PanelSystem/ExpandedPanelHeader.tsx`
+- `client/src/components/ui-v2/PanelSystem/ExpandedPanelRnd.tsx`
+- `client/src/components/ui-v2/PanelSystem/MinimizedPanelHeader.tsx`
+- `client/src/components/ui-v2/PanelSystem/MinimizedPanelRnd.tsx`
+- `client/src/components/ui-v2/PanelSystem/PanelSolidUnderlay.tsx`
+- `client/src/components/ui-v2/PanelSystem/panelLayoutTypes.ts`
+- `client/src/components/ui-v2/PanelSystem/usePanelContainerLayout.ts`
+- `client/src/components/ui-v2/PanelSystem/usePanelContainerView.ts`
+- `client/src/components/ui-v2/demos/EldritchEffectsDemo.test.tsx`
+- `client/src/components/ui-v2/demos/EldritchEffectsDemo.tsx`
+- `client/src/components/ui-v2/demos/eldritchEffectsDemoData.ts`
+- `client/src/components/ui-v2/panels/CommandHistoryPanel.tsx`
+- `client/src/components/ui-v2/panels/CommandInputPanel.tsx`
+- `client/src/components/ui-v2/panels/__tests__/CommandHistoryPanel.test.tsx`
+- `client/src/components/ui-v2/panels/__tests__/CommandInputPanel.test.tsx`
+- `client/src/components/ui-v2/primitives/ChannelSelector.tsx`
+- `client/src/components/ui-v2/primitives/EldritchIcon.tsx`
+- `client/src/components/ui-v2/primitives/LogoutButton.tsx`
+- `client/src/components/ui-v2/primitives/MythosIcons.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 137 (96%)
-- INFERRED: 5 (4%)
+- EXTRACTED: 260 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

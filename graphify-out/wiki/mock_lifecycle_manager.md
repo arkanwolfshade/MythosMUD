@@ -1,26 +1,25 @@
 # mock_lifecycle_manager
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **mock_lifecycle_manager()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **mock_npc()** (2 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **fixture** (2 connections)
-- **Create a mock lifecycle manager.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Hierarchical Test Structure** (1 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
+- **Phased Test Migration** (1 connections) — `docs/archive/TEST_REFACTORING_IMPLEMENTATION_SUMMARY.md`
 
 ## Relationships
 
-- [test_look_npc.py](test_look_npc.py.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_npc.py`
+- `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
+- `docs/archive/TEST_REFACTORING_IMPLEMENTATION_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

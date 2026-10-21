@@ -1,12 +1,11 @@
 # Test Warning Remediation
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Test Warning Remediation** (2 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **Early Logging Initialization** (1 connections) — `docs/archive/early-logging-initialization.plan.md`
-- **datetime.utcnow Deprecation Fix** (1 connections) — `docs/archive/WARNING_FIXES_SESSION_SUMMARY.md`
+- **gen_arena_uuids.py** (1 connections) — `scripts/gen_arena_uuids.py`
+- **Generate deterministic UUIDs for arena zone, subzone, 121 rooms. One-off script.** (1 connections) — `scripts/gen_arena_uuids.py`
 
 ## Relationships
 
@@ -14,14 +13,12 @@
 
 ## Source Files
 
-- `docs/archive/WARNING_FIXES_SESSION_SUMMARY.md`
-- `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- `docs/archive/early-logging-initialization.plan.md`
+- `scripts/gen_arena_uuids.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (50%)
-- INFERRED: 1 (50%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

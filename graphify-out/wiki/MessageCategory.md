@@ -1,72 +1,48 @@
 # MessageCategory
 
-> 283 nodes
+> 39 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **MessageCategory** (135 connections) — `server/constants/message_category.py`
-- **message_category.py** (56 connections) — `server/constants/message_category.py`
-- **test_command_service.py** (38 connections) — `server/tests/unit/commands/test_command_service.py`
-- **communication_commands.py** (35 connections) — `server/commands/communication_commands.py`
-- **TestHelperFunctions** (33 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **request_with_app_container()** (29 connections) — `server/tests/unit/commands/communication_commands_mocks.py`
-- **test_communication_commands_say_me_pose.py** (24 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **asyncio** (21 connections)
-- **test_communication_commands_channels.py** (20 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **process_command_unified()** (19 connections) — `server/command_handler_unified.py`
-- **_handle_special_command_routing()** (17 connections) — `server/command_handler_unified.py`
-- **_process_alias_expansion()** (17 connections) — `server/command_handler_unified.py`
-- **_check_all_command_blocks()** (16 connections) — `server/command_handler_unified.py`
-- **handle_say_command()** (16 connections) — `server/commands/communication_commands.py`
-- **asyncio** (15 connections)
-- **handle_pose_command()** (14 connections) — `server/commands/communication_commands.py`
-- **test_command_handler_unified_helpers.py** (13 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **asyncio** (13 connections)
-- **get_pose_persistence()** (12 connections) — `server/commands/communication_commands_support.py`
-- **player_broadcasts.py** (12 connections) — `server/services/combat_messaging/player_broadcasts.py`
-- **test_command_aliases.py** (12 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **asyncio** (12 connections)
-- **handle_global_command()** (11 connections) — `server/commands/communication_commands.py`
-- **_ensure_alias_storage()** (10 connections) — `server/command_handler_unified.py`
-- **handle_local_command()** (10 connections) — `server/commands/communication_commands.py`
-- *... and 258 more nodes in this community*
+- **world()** (17 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **test_arkham_street_grid.py** (14 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **_arkham()** (9 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **_streets()** (7 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **_read_dml()** (5 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **Room** (5 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **TestMinimapReach** (5 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **TestStreetGeometry** (5 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **TestConnectivity** (4 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **.test_the_whole_arkham_grid_is_one_component()** (4 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **.test_no_arkham_room_lacks_coordinates()** (4 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **.test_stable_id_subzone_matches_the_room_it_is_filed_under()** (4 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **.test_no_room_invents_a_map_symbol_it_does_not_need()** (4 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **.test_the_sanitarium_is_compact_enough_to_navigate()** (4 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **.test_exit_direction_matches_geometry()** (4 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **.test_no_street_exit_passes_through_another_room()** (4 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **_copy_block()** (3 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **.test_innsmouth_is_still_reachable_on_foot()** (3 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **.test_the_sanitarium_opens_onto_derby_and_parsonage()** (3 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **TestCoordinates** (3 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **.test_no_two_arkham_rooms_share_a_cell()** (3 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **.test_connected_rooms_sit_on_adjacent_cells()** (3 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **.test_intersections_have_two_to_four_exits()** (3 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **.test_segments_have_exactly_two_exits_on_one_axis()** (3 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- **TestIdentifiers** (2 connections) — `server/tests/unit/data/test_arkham_street_grid.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (20 shared connections)
-- [AliasStorage](AliasStorage.md) (19 shared connections)
-- [NpcDisposition](NpcDisposition.md) (18 shared connections)
-- [communication_commands_flows.py](communication_commands_flows.py.md) (18 shared connections)
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (17 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (16 shared connections)
-- [build_event](build_event.md) (16 shared connections)
-- [handle_whisper_command](handle_whisper_command.md) (13 shared connections)
-- [test_websocket_handler_commands.py](test_websocket_handler_commands.py.md) (12 shared connections)
-- [processing.py](processing.py.md) (11 shared connections)
-- [command_service.py](command_service.py.md) (11 shared connections)
-- [alias_storage.py](alias_storage.py.md) (10 shared connections)
+- [start_grace_period](start_grace_period.md) (3 shared connections)
 
 ## Source Files
 
-- `server/command_handler_unified.py`
-- `server/commands/communication_commands.py`
-- `server/commands/communication_commands_support.py`
-- `server/constants/message_category.py`
-- `server/services/combat_messaging/player_broadcasts.py`
-- `server/tests/unit/commands/communication_commands_mocks.py`
-- `server/tests/unit/commands/test_command_aliases.py`
-- `server/tests/unit/commands/test_command_handler_unified.py`
-- `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- `server/tests/unit/commands/test_command_results.py`
-- `server/tests/unit/commands/test_command_service.py`
-- `server/tests/unit/commands/test_communication_commands_channels.py`
-- `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- `server/tests/unit/constants/test_message_category.py`
+- `server/tests/unit/data/test_arkham_street_grid.py`
 
 ## Audit Trail
 
-- EXTRACTED: 668 (87%)
-- INFERRED: 102 (13%)
+- EXTRACTED: 71 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

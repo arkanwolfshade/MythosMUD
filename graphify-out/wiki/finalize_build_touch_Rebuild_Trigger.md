@@ -1,10 +1,10 @@
 # finalize_build_touch Rebuild Trigger
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **finalize_build_touch Rebuild Trigger** (0 connections) — `scripts/finalize_build_touch.txt`
+- **unit/auth/__init__.py** (0 connections) — `server/tests/unit/auth/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/finalize_build_touch.txt`
+- `server/tests/unit/auth/__init__.py`
 
 ## Audit Trail
 

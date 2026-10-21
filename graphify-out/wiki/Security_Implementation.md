@@ -1,16 +1,13 @@
 # Security Implementation
 
-> 7 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Security Implementation** (4 connections) — `docs/archive/SECURITY.md`
-- **Argon2 Password Hashing** (2 connections) — `docs/archive/PLANNING_users_db.md`
-- **FastAPI Users Migration** (2 connections) — `docs/archive/PLANNING_users_db.md`
-- **Invite System** (1 connections) — `docs/archive/PLANNING_users_db.md`
-- **Secure Path Validation** (1 connections) — `docs/archive/SECURITY.md`
-- **Client XSS Protection** (1 connections) — `docs/archive/SECURITY.md`
-- **SSE Authentication System** (1 connections) — `docs/archive/SSE_AUTHENTICATION.md`
+- **multiplayer-browser-helpers.d.ts** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
+- **GameUiDiagnostics** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
+- **OccupantsSnapshot** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
+- **PresenceEvent** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
 
 ## Relationships
 
@@ -18,13 +15,11 @@
 
 ## Source Files
 
-- `docs/archive/PLANNING_users_db.md`
-- `docs/archive/SECURITY.md`
-- `docs/archive/SSE_AUTHENTICATION.md`
+- `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

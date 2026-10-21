@@ -1,25 +1,24 @@
 # Detailed Feature Comparison
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Detailed Feature Comparison** (4 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **Entry Points** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **Primitives** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **Task Management** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **.__init__()** (3 connections) — `server/middleware/correlation_middleware.py`
+- **ASGIApp** (1 connections)
+- **Initialize the correlation middleware. Args: app: ASGI application instance…** (1 connections) — `server/middleware/correlation_middleware.py`
 
 ## Relationships
 
-- [AnyIO vs Asyncio: High-Level Comparison and Decision Guide](AnyIO_vs_Asyncio-_High-Level_Comparison_and_Decision_Guide.md) (1 shared connections)
+- [test_player_repository_room.py](test_player_repository_room.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/anyio_vs_asyncio_comparison.md`
+- `server/middleware/correlation_middleware.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

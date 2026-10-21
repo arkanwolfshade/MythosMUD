@@ -1,77 +1,57 @@
 # stateUpdateUtils.ts
 
-> 65 nodes
+> 47 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **stateUpdateUtils.ts** (34 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **GameEvent** (26 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
-- **projector.ts** (26 connections) — `client/src/components/ui-v2/eventLog/projector.ts`
-- **GameState** (25 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **eventHandlers/types.ts** (21 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
-- **useRespawnHandlers.ts** (19 connections) — `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
-- **useCommandHandlers.ts** (14 connections) — `client/src/components/ui-v2/hooks/useCommandHandlers.ts`
-- **useEventProcessing.ts** (13 connections) — `client/src/components/ui-v2/hooks/useEventProcessing.ts`
-- **getInitialGameState()** (11 connections) — `client/src/components/ui-v2/eventLog/projectorConstants.ts`
-- **projector.categories.test.ts** (11 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.categories.test.ts`
-- **projectEvent()** (10 connections) — `client/src/components/ui-v2/eventLog/projector.ts`
-- **projector.projectEvent.test.ts** (10 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.projectEvent.test.ts`
-- **EventStore** (9 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
-- **eventStore.ts** (9 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
-- **projector.containers.test.ts** (9 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.containers.test.ts`
-- **projector.messages.test.ts** (9 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.messages.test.ts`
-- **projectState()** (8 connections) — `client/src/components/ui-v2/eventLog/projector.ts`
-- **buildLocalMessageEvent()** (8 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- **projector.projectState.test.ts** (8 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.projectState.test.ts`
-- **eventLog/types.ts** (8 connections) — `client/src/components/ui-v2/eventLog/types.ts`
-- **EventLog** (7 connections) — `client/src/components/ui-v2/eventLog/types.ts`
-- **projector.segments.test.ts** (7 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.segments.test.ts`
-- **useEventProcessing.test.ts** (7 connections) — `client/src/components/ui-v2/hooks/__tests__/useEventProcessing.test.ts`
-- **useEventProcessing()** (6 connections) — `client/src/components/ui-v2/hooks/useEventProcessing.ts`
-- **runDeathRespawn()** (6 connections) — `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
-- *... and 40 more nodes in this community*
+- **test_n_player_combat.py** (41 connections) — `server/tests/unit/services/test_n_player_combat.py`
+- **_combat()** (26 connections) — `server/tests/unit/services/test_n_player_combat.py`
+- **_p()** (26 connections) — `server/tests/unit/services/test_n_player_combat.py`
+- **combat_service_end.py** (16 connections) — `server/services/combat_service_end.py`
+- **_service_for()** (12 connections) — `server/tests/unit/services/test_n_player_combat.py`
+- **remove_participant()** (10 connections) — `server/services/combat_service_end.py`
+- **_select_player_target()** (9 connections) — `server/services/combat_turn_participant_actions.py`
+- **asyncio** (9 connections)
+- **_xp_recipients()** (8 connections) — `server/services/combat_service_attack.py`
+- **end_combat()** (8 connections) — `server/services/combat_service_end.py`
+- **clear_aggro_for_combat()** (7 connections) — `server/services/aggro_threat.py`
+- **test_join_existing_combat_adds_player_and_rebuilds_initiative()** (7 connections) — `server/tests/unit/services/test_n_player_combat.py`
+- **test_join_existing_combat_refuses_a_player_already_fighting_elsewhere()** (7 connections) — `server/tests/unit/services/test_n_player_combat.py`
+- **test_join_existing_combat_refuses_another_room()** (7 connections) — `server/tests/unit/services/test_n_player_combat.py`
+- **test_join_existing_combat_refuses_phantom_encounters()** (7 connections) — `server/tests/unit/services/test_n_player_combat.py`
+- **test_remove_participant_ends_combat_when_no_other_player_remains()** (7 connections) — `server/tests/unit/services/test_n_player_combat.py`
+- **_data()** (6 connections) — `server/tests/unit/services/test_n_player_combat.py`
+- **test_queue_attack_records_player_target_but_not_npc_target()** (6 connections) — `server/tests/unit/services/test_n_player_combat.py`
+- **test_remove_participant_does_not_count_a_dead_player_as_remaining()** (6 connections) — `server/tests/unit/services/test_n_player_combat.py`
+- **test_remove_participant_drops_only_the_leaver_when_others_remain()** (6 connections) — `server/tests/unit/services/test_n_player_combat.py`
+- **test_remove_participant_ignores_unknown_participant_and_combat()** (6 connections) — `server/tests/unit/services/test_n_player_combat.py`
+- **test_auto_attack_never_picks_an_ally()** (4 connections) — `server/tests/unit/services/test_n_player_combat.py`
+- **test_auto_attack_player_versus_player_keeps_legacy_pick()** (4 connections) — `server/tests/unit/services/test_n_player_combat.py`
+- **test_auto_attack_prefers_the_tracked_target_and_skips_a_dead_one()** (4 connections) — `server/tests/unit/services/test_n_player_combat.py`
+- **test_clear_aggro_for_combat_also_clears_player_targets()** (4 connections) — `server/tests/unit/services/test_n_player_combat.py`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [logger.ts](logger.ts.md) (27 shared connections)
-- [useGameClientV2ContainerNetworkPhase.ts](useGameClientV2ContainerNetworkPhase.ts.md) (20 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (10 shared connections)
-- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (9 shared connections)
-- [projectorRoom.ts](projectorRoom.ts.md) (8 shared connections)
-- [HeaderBar.tsx](HeaderBar.tsx.md) (4 shared connections)
-- [RescueBanner.tsx](RescueBanner.tsx.md) (3 shared connections)
-- [apiTypeGuards.ts](apiTypeGuards.ts.md) (3 shared connections)
-- [security.ts](security.ts.md) (3 shared connections)
-- [InventoryPanel.tsx](InventoryPanel.tsx.md) (2 shared connections)
-- [map/types.ts](map-types.ts.md) (2 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
+- [test_player_combat_service.py](test_player_combat_service.py.md) (15 shared connections)
+- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (15 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (10 shared connections)
+- [DatabaseManager](DatabaseManager.md) (5 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
+- [useThemeContext.ts](useThemeContext.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/eventHandlers/types.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/eventStore.test.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/projector.categories.test.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/projector.combatCategories.test.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/projector.containers.test.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/projector.messages.test.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/projector.projectEvent.test.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/projector.projectState.test.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/projector.segments.test.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/projectorMessageUtils.localEvents.test.ts`
-- `client/src/components/ui-v2/eventLog/eventStore.ts`
-- `client/src/components/ui-v2/eventLog/index.ts`
-- `client/src/components/ui-v2/eventLog/projector.ts`
-- `client/src/components/ui-v2/eventLog/projectorConstants.ts`
-- `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- `client/src/components/ui-v2/eventLog/types.ts`
-- `client/src/components/ui-v2/hooks/__tests__/useCommandHandlers.test.ts`
-- `client/src/components/ui-v2/hooks/__tests__/useEventProcessing.test.ts`
-- `client/src/components/ui-v2/hooks/__tests__/useRespawnHandlers.test.ts`
-- `client/src/components/ui-v2/hooks/useCommandHandlers.ts`
+- `server/services/aggro_threat.py`
+- `server/services/combat_service_attack.py`
+- `server/services/combat_service_end.py`
+- `server/services/combat_turn_participant_actions.py`
+- `server/tests/unit/services/test_n_player_combat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 263 (100%)
+- EXTRACTED: 176 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

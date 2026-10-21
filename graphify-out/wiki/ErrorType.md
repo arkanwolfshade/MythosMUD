@@ -1,71 +1,71 @@
 # ErrorType
 
-> 201 nodes
+> 237 nodes · cohesion 0.01
 
 ## Key Concepts
 
-- **ErrorType** (52 connections) — `server/error_types.py`
-- **StandardizedErrorResponse** (46 connections) — `server/error_handlers/standardized_responses.py`
-- **error_types.py** (36 connections) — `server/error_types.py`
-- **ErrorMessages** (33 connections) — `server/error_types.py`
-- **standardized_responses.py** (32 connections) — `server/error_handlers/standardized_responses.py`
-- **create_websocket_error_response()** (30 connections) — `server/error_types.py`
-- **test_standardized_responses.py** (29 connections) — `server/tests/unit/error_handlers/test_standardized_responses.py`
-- **pydantic_error_handler.py** (24 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **PydanticErrorHandler** (22 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **create_standard_error_response()** (22 connections) — `server/error_types.py`
-- **test_error_types.py** (18 connections) — `server/tests/unit/test_error_types.py`
-- **JSONResponse** (15 connections) — `docs/examples/logging/fastapi_integration.py`
-- **ResourceNotFoundError** (13 connections) — `server/exceptions.py`
-- **.handle_validation_error()** (12 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **ErrorSeverity** (10 connections) — `server/error_types.py`
-- **TestStandardizedResponsesSecurity** (10 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
-- **.handle_exception()** (10 connections) — `server/error_handlers/standardized_responses.py`
-- **._handle_generic_exception()** (10 connections) — `server/error_handlers/standardized_responses.py`
-- **._handle_logged_http_exception()** (10 connections) — `server/error_handlers/standardized_responses.py`
-- **._handle_mythos_error()** (10 connections) — `server/error_handlers/standardized_responses.py`
-- **test_standardized_responses_security.py** (10 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
-- **handle_api_error()** (9 connections) — `server/error_handlers/standardized_responses.py`
-- **error_handlers/__init__.py** (9 connections) — `server/error_handlers/__init__.py`
-- **test_websocket_handler_error_handling.py** (9 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **_ExtractedErrorInfo** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
-- *... and 176 more nodes in this community*
+- **NPCDefinition** (110 connections) — `server/models/npc.py`
+- **NPCSpawnRule** (47 connections) — `server/models/npc.py`
+- **test_npc_models.py** (33 connections) — `server/tests/unit/models/test_npc_models.py`
+- **should_spawn_npc()** (24 connections) — `server/npc/spawn_validator.py`
+- **test_spawn_validator.py** (24 connections) — `server/tests/unit/npc/test_spawn_validator.py`
+- **NPCDefinitionCRUDMixin** (18 connections) — `server/services/npc_service/definition_crud.py`
+- **spawn_validator.py** (14 connections) — `server/npc/spawn_validator.py`
+- **_row_to_npc_definition()** (12 connections) — `server/services/npc_service_models.py`
+- **_JSONDict** (10 connections)
+- **NPCSpawnRuleCRUDMixin** (10 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **NPCRelationship** (9 connections) — `server/models/npc.py`
+- **.update_npc_definition()** (9 connections) — `server/services/npc_service/definition_crud.py`
+- **_try_spawn_rules()** (8 connections) — `server/npc/spawn_validator.py`
+- **.create_npc_definition()** (8 connections) — `server/services/npc_service/definition_crud.py`
+- **._execute_create_npc_definition()** (8 connections) — `server/services/npc_service/definition_crud.py`
+- **._execute_npc_update()** (8 connections) — `server/services/npc_service/definition_crud.py`
+- **AsyncSession** (8 connections)
+- **_row_to_npc_spawn_rule()** (8 connections) — `server/services/npc_service_models.py`
+- **._execute_create_spawn_rule()** (8 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **_loads_json_dict()** (7 connections) — `server/models/npc.py`
+- **._build_npc_update_data()** (7 connections) — `server/services/npc_service/definition_crud.py`
+- **.get_npc_definition()** (7 connections) — `server/services/npc_service/definition_crud.py`
+- **.get_npc_definitions()** (7 connections) — `server/services/npc_service/definition_crud.py`
+- **.create_spawn_rule()** (7 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Base** (6 connections) — `server/models/npc.py`
+- *... and 212 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (29 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (24 shared connections)
-- [test_websocket_handler_helpers_extended.py](test_websocket_handler_helpers_extended.py.md) (17 shared connections)
-- [ErrorContext](ErrorContext.md) (12 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (11 shared connections)
-- [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (7 shared connections)
-- [test_websocket_handler_commands.py](test_websocket_handler_commands.py.md) (6 shared connections)
-- [WebSocketMessageValidator](WebSocketMessageValidator.md) (6 shared connections)
-- [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (6 shared connections)
-- [test_error_handling_middleware.py](test_error_handling_middleware.py.md) (5 shared connections)
-- [PlayerService](PlayerService.md) (5 shared connections)
-- [test_message_handlers.py](test_message_handlers.py.md) (5 shared connections)
+- [CombatInstance](CombatInstance.md) (34 shared connections)
+- [Room](Room.md) (24 shared connections)
+- [RoomLoader](RoomLoader.md) (17 shared connections)
+- [test_message_category_invariants.py](test_message_category_invariants.py.md) (8 shared connections)
+- [Test Suite Quality Audit - Executive Summary](Test_Suite_Quality_Audit_-_Executive_Summary.md) (6 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (6 shared connections)
+- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (5 shared connections)
+- [BaseEvent](BaseEvent.md) (4 shared connections)
+- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (3 shared connections)
+- [SpellEffectType](SpellEffectType.md) (3 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/fastapi_integration.py`
-- `server/error_handlers/__init__.py`
-- `server/error_handlers/pydantic_error_handler.py`
-- `server/error_handlers/standardized_responses.py`
-- `server/error_types.py`
-- `server/exceptions.py`
-- `server/tests/unit/error_handlers/test_standardized_responses.py`
-- `server/tests/unit/error_handlers/test_standardized_responses_security.py`
-- `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- `server/tests/unit/test_error_types.py`
-- `server/tests/unit/test_exceptions.py`
-- `server/tests/unit/test_exceptions_comprehensive.py`
+- `server/models/npc.py`
+- `server/npc/lifecycle_manager.py`
+- `server/npc/lifecycle_types.py`
+- `server/npc/npc_base.py`
+- `server/npc/population_control.py`
+- `server/npc/spawn_validator.py`
+- `server/npc/spawning_models.py`
+- `server/services/npc_service/definition_crud.py`
+- `server/services/npc_service/queries.py`
+- `server/services/npc_service/spawn_rule_crud.py`
+- `server/services/npc_service_models.py`
+- `server/tests/unit/models/test_npc_models.py`
+- `server/tests/unit/npc/test_spawn_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 500 (91%)
-- INFERRED: 50 (9%)
+- EXTRACTED: 489 (98%)
+- INFERRED: 10 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

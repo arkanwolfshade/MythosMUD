@@ -1,47 +1,54 @@
 # test_player_repository_room.py
 
-> 22 nodes
+> 20 nodes · cohesion 0.19
 
 ## Key Concepts
 
-- **test_player_repository_room.py** (14 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **validate_and_fix_player_room()** (13 connections) — `server/persistence/repositories/player_repository_room.py`
-- **should_skip_room_validation()** (10 connections) — `server/persistence/repositories/player_repository_room.py`
-- **validate_and_fix_player_room_with_persistence()** (10 connections) — `server/persistence/repositories/player_repository_room.py`
-- **_player()** (9 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **player_repository_room.py** (8 connections) — `server/persistence/repositories/player_repository_room.py`
-- **test_validate_and_fix_player_room_with_persistence_commits()** (4 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **test_should_skip_room_validation_empty_cache()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **test_should_skip_room_validation_instanced_room()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **test_should_skip_room_validation_tutorial_bedroom()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **test_validate_and_fix_player_room_already_at_fallback()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **test_validate_and_fix_player_room_fallback_missing_in_cache()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **test_validate_and_fix_player_room_moves_to_foyer()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **test_validate_and_fix_player_room_valid()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **Any** (3 connections)
-- **Player** (3 connections)
-- **asyncio** (1 connections)
-- **Player room validation helpers for PlayerRepository. Validates and fixes…** (1 connections) — `server/persistence/repositories/player_repository_room.py`
-- **Return True if room validation should be skipped (cache empty, instanced, or…** (1 connections) — `server/persistence/repositories/player_repository_room.py`
-- **Validate player's current room and fix if invalid. Args: room_cache: Shared…** (1 connections) — `server/persistence/repositories/player_repository_room.py`
-- **Validate and fix player room, persisting the fix if needed. Args: room_cache:…** (1 connections) — `server/persistence/repositories/player_repository_room.py`
-- **Unit tests for player_repository_room helpers.** (1 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **middleware()** (17 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **CorrelationMiddleware** (13 connections) — `server/middleware/correlation_middleware.py`
+- **test_correlation_middleware.py** (12 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **correlation_middleware.py** (8 connections) — `server/middleware/correlation_middleware.py`
+- **create_correlation_middleware()** (6 connections) — `server/middleware/correlation_middleware.py`
+- **asyncio** (5 connections)
+- **test_correlation_middleware_reraises_exception()** (5 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **log_api_requests()** (4 connections) — `docs/examples/logging/fastapi_integration.py`
+- **test_correlation_middleware_adds_response_header()** (4 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **test_correlation_middleware_generates_correlation_id()** (4 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **test_correlation_middleware_passes_non_http()** (4 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **test_correlation_middleware_uses_existing_header()** (4 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **test_create_correlation_middleware_factory()** (3 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **Log API requests with performance metrics.** (1 connections) — `docs/examples/logging/fastapi_integration.py`
+- **Any** (1 connections)
+- **Correlation middleware for request tracing and logging context. This middleware…** (1 connections) — `server/middleware/correlation_middleware.py`
+- **Create a correlation middleware factory. Args: correlation_header: HTTP header…** (1 connections) — `server/middleware/correlation_middleware.py`
+- **Pure ASGI middleware for adding correlation IDs and request context to all…** (1 connections) — `server/middleware/correlation_middleware.py`
+- **Unit tests for correlation ID middleware.** (1 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **Create SecurityHeadersMiddleware instance.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
 
 ## Relationships
 
-- [Player](Player.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [session](session.md) (1 shared connections)
+- [FeedbackManager](FeedbackManager.md) (5 shared connections)
+- [emote_row](emote_row.md) (4 shared connections)
+- [AliasGraph](AliasGraph.md) (3 shared connections)
+- [verify_enhanced_logging_compliance.py](verify_enhanced_logging_compliance.py.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (2 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (1 shared connections)
+- [Detailed Feature Comparison](Detailed_Feature_Comparison.md) (1 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
+- [_WearablePersistence](_WearablePersistence.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/repositories/player_repository_room.py`
-- `server/tests/unit/persistence/test_player_repository_room.py`
+- `docs/examples/logging/fastapi_integration.py`
+- `server/middleware/correlation_middleware.py`
+- `server/tests/unit/middleware/test_correlation_middleware.py`
+- `server/tests/unit/middleware/test_security_headers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (95%)
-- INFERRED: 3 (5%)
+- EXTRACTED: 43 (73%)
+- INFERRED: 16 (27%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,13 +1,11 @@
 # MythosMUD Product Requirements
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **MythosMUD Product Requirements** (2 connections) — `docs/archive/PRD.md`
-- **Room-Based Combat** (2 connections) — `docs/archive/PRD.md`
-- **Aggro System** (1 connections) — `docs/archive/PRD.md`
-- **Lucidity System** (1 connections) — `docs/archive/PRD.md`
+- **Arkham City** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
+- **Miskatonic University** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
 
 ## Relationships
 
@@ -15,11 +13,11 @@
 
 ## Source Files
 
-- `docs/archive/PRD.md`
+- `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,10 +1,10 @@
 # MythosMUD Full-Stack Feature
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **MythosMUD Full-Stack Feature** (0 connections) — `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
+- **start_e2e_test.ps1** (0 connections) — `scripts/start_e2e_test.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
+- `scripts/start_e2e_test.ps1`
 
 ## Audit Trail
 

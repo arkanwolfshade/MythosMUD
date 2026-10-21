@@ -1,46 +1,37 @@
 # passive_corruption_flux/config.py
 
-> 11 nodes
+> 15 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **passive_corruption_flux/config.py** (15 connections) — `server/services/passive_corruption_flux/config.py`
-- **passive_lucidity_flux/config.py** (13 connections) — `server/services/passive_lucidity_flux/config.py`
-- **period_label()** (8 connections) — `server/services/passive_lucidity_flux/config.py`
-- **.__init__()** (8 connections) — `server/services/passive_lucidity_flux/service.py`
-- **normalize_environment_config()** (6 connections) — `server/services/passive_lucidity_flux/config.py`
-- **datetime** (2 connections)
-- **Any** (1 connections)
-- **Configuration for passive corruption flux (#815 PR-5). `period_label`,…** (1 connections) — `server/services/passive_corruption_flux/config.py`
-- **Configuration and normalization for passive lucidity flux.** (1 connections) — `server/services/passive_lucidity_flux/config.py`
-- **Return a coarse period label used for environment profiles.** (1 connections) — `server/services/passive_lucidity_flux/config.py`
-- **Normalize environment config to validated structure.** (1 connections) — `server/services/passive_lucidity_flux/config.py`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Berlin - The Wicked City  (2026-08-11)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Communities (8 total, 5 thin omitted)** (4 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **berlin-the-wicked-city/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Community 0 - "Baron Arthur von Kleist; Pyotr Shabelsky-Bork"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Community 1 - "The Demon-Großmann; Demonic Mutation Table"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Community 2 - "Erwin Kern; Manfred Freiherr von Killinger"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Import Cycles** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
 
 ## Relationships
 
-- [passive_lucidity_flux/service.py](passive_lucidity_flux-service.py.md) (6 shared connections)
-- [PassiveCorruptionFluxService](PassiveCorruptionFluxService.md) (5 shared connections)
-- [test_passive_lucidity_flux_service.py](test_passive_lucidity_flux_service.py.md) (5 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [test_passive_corruption_flux_rate_overrides.py](test_passive_corruption_flux_rate_overrides.py.md) (3 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (2 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
-- [test_rate_overrides.py](test_rate_overrides.py.md) (1 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
-- [PerformanceMonitor](PerformanceMonitor.md) (1 shared connections)
-- [LucidityService](LucidityService.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/passive_corruption_flux/config.py`
-- `server/services/passive_lucidity_flux/config.py`
-- `server/services/passive_lucidity_flux/service.py`
+- `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 14 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

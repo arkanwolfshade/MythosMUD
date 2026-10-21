@@ -1,61 +1,62 @@
 # rescue_commands.py
 
-> 121 nodes
+> 105 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **rescue_commands.py** (45 connections) — `server/commands/rescue_commands.py`
-- **test_rescue_commands.py** (38 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **handle_ground_command()** (30 connections) — `server/commands/rescue_commands.py`
-- **asyncio** (20 connections)
-- **ground_commands_test_support.py** (18 connections) — `server/tests/unit/commands/ground_commands_test_support.py`
-- **_ground_rig()** (15 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **handle_rescue_command()** (14 connections) — `server/commands/rescue_commands.py`
-- **FakeSession** (11 connections) — `server/tests/unit/commands/ground_commands_test_support.py`
-- **_finish_ground()** (10 connections) — `server/commands/rescue_commands.py`
-- **_run_ground()** (10 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **_GroundRig** (9 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **_apply_grounding_adjustment()** (9 connections) — `server/commands/rescue_commands.py`
-- **FakePersistence** (8 connections) — `server/tests/unit/commands/ground_commands_test_support.py`
-- **FakePlayer** (7 connections) — `server/tests/unit/commands/ground_commands_test_support.py`
-- **ground_request()** (7 connections) — `server/tests/unit/commands/ground_commands_test_support.py`
-- **_GroundContext** (6 connections) — `server/commands/rescue_commands.py`
-- **_GroundPersistence** (6 connections) — `server/commands/rescue_commands.py`
-- **_GroundPlayer** (6 connections) — `server/commands/rescue_commands.py`
-- **FakeLucidityService** (6 connections) — `server/tests/unit/commands/ground_commands_test_support.py`
-- **_validate_ground_target()** (6 connections) — `server/commands/rescue_commands.py`
-- **test_handle_ground_command_apply_lucidity_error()** (6 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_ground_command_not_catatonic()** (6 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_ground_command_rejects_while_in_combat()** (6 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **patch** (6 connections)
-- **_check_ground_target_ready()** (5 connections) — `server/commands/rescue_commands.py`
-- *... and 96 more nodes in this community*
+- **lifespan_startup.py** (66 connections) — `server/app/lifespan_startup.py`
+- **test_lifespan_startup.py** (42 connections) — `server/tests/unit/app/test_lifespan_startup.py`
+- **asyncio** (18 connections)
+- **FastAPI** (16 connections)
+- **initialize_container_and_legacy_services()** (15 connections) — `server/app/lifespan_startup.py`
+- **FastAPI** (15 connections)
+- **test_combat_skill_wiring.py** (14 connections) — `server/tests/unit/container/test_combat_skill_wiring.py`
+- **initialize_combat_services()** (12 connections) — `server/app/lifespan_startup.py`
+- **_attach_combat_service()** (11 connections) — `server/app/lifespan_startup.py`
+- **setup_connection_manager()** (11 connections) — `server/app/lifespan_startup.py`
+- **_create_npc_services_on_app()** (10 connections) — `server/app/lifespan_startup.py`
+- **initialize_npc_services()** (10 connections) — `server/app/lifespan_startup.py`
+- **initialize_chat_service()** (9 connections) — `server/app/lifespan_startup.py`
+- **initialize_mythos_time_consumer()** (9 connections) — `server/app/lifespan_startup.py`
+- **initialize_nats_and_combat_services()** (9 connections) — `server/app/lifespan_startup.py`
+- **initialize_npc_startup_spawning()** (9 connections) — `server/app/lifespan_startup.py`
+- **_get_item_prototype_entries()** (7 connections) — `server/app/lifespan_startup.py`
+- **_validate_npc_services_prerequisites()** (7 connections) — `server/app/lifespan_startup.py`
+- **_get_item_prototype_count()** (6 connections) — `server/app/lifespan_startup.py`
+- **_load_npc_definitions_and_rules()** (6 connections) — `server/app/lifespan_startup.py`
+- **_set_legacy_services()** (6 connections) — `server/app/lifespan_startup.py`
+- **test_setup_connection_manager()** (6 connections) — `server/tests/unit/app/test_lifespan_startup.py`
+- **nats_is_connected()** (5 connections) — `server/app/lifespan_protocols.py`
+- **_log_npc_startup_errors()** (5 connections) — `server/app/lifespan_startup.py`
+- **_start_nats_message_handler()** (5 connections) — `server/app/lifespan_startup.py`
+- *... and 80 more nodes in this community*
 
 ## Relationships
 
-- [LucidityService](LucidityService.md) (17 shared connections)
-- [ground_channel.py](ground_channel.py.md) (16 shared connections)
-- [get_logger](get_logger.md) (7 shared connections)
-- [get_username_from_user](get_username_from_user.md) (5 shared connections)
-- [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (5 shared connections)
-- [.state](state.md) (4 shared connections)
-- [test_rest_command.py](test_rest_command.py.md) (3 shared connections)
-- [PlayerPositionService](PlayerPositionService.md) (3 shared connections)
-- [AliasStorage](AliasStorage.md) (3 shared connections)
-- [test_rescue_service.py](test_rescue_service.py.md) (3 shared connections)
-- [lucidity.py](lucidity.py.md) (3 shared connections)
-- [test_alias_commands.py](test_alias_commands.py.md) (2 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (18 shared connections)
+- [CombatInstance](CombatInstance.md) (10 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (8 shared connections)
+- [NPCSpawnRule](NPCSpawnRule.md) (7 shared connections)
+- [Room](Room.md) (5 shared connections)
+- [SpellLearningService](SpellLearningService.md) (4 shared connections)
+- [RoomLoader](RoomLoader.md) (3 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (3 shared connections)
+- [player.ts](player.ts.md) (3 shared connections)
+- [PopulationStats](PopulationStats.md) (3 shared connections)
+- [FollowService](FollowService.md) (3 shared connections)
+- [Communities (11 total, 0 thin omitted)](Communities_11_total,_0_thin_omitted.md) (3 shared connections)
 
 ## Source Files
 
-- `server/commands/rescue_commands.py`
-- `server/tests/unit/commands/ground_commands_test_support.py`
-- `server/tests/unit/commands/test_rescue_commands.py`
+- `server/app/lifespan_protocols.py`
+- `server/app/lifespan_startup.py`
+- `server/tests/unit/app/test_lifespan_startup.py`
+- `server/tests/unit/container/test_combat_skill_wiring.py`
 
 ## Audit Trail
 
-- EXTRACTED: 282 (96%)
-- INFERRED: 12 (4%)
+- EXTRACTED: 299 (97%)
+- INFERRED: 8 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

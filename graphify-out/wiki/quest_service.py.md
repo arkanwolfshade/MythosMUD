@@ -1,60 +1,53 @@
 # quest_service.py
 
-> 57 nodes
+> 49 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **quest_service.py** (33 connections) — `server/game/quest/quest_service.py`
-- **collect_inventory.py** (17 connections) — `server/game/quest/collect_inventory.py`
-- **Any** (14 connections)
-- **consume_prototype_from_player()** (13 connections) — `server/game/quest/collect_inventory.py`
-- **count_prototype_in_stacks()** (12 connections) — `server/game/quest/collect_inventory.py`
-- **test_collect_inventory.py** (10 connections) — `server/tests/unit/game/test_collect_inventory.py`
-- **collect_player_stacks()** (9 connections) — `server/game/quest/collect_inventory.py`
-- **_consume_from_stack_list()** (8 connections) — `server/game/quest/collect_inventory.py`
-- **_build_collect_n_progress()** (7 connections) — `server/game/quest/quest_service.py`
-- **_consume_collect_goals_from_player()** (7 connections) — `server/game/quest/quest_service.py`
-- **_apply_holdings()** (6 connections) — `server/game/quest/collect_inventory.py`
-- **_snapshot_holdings()** (6 connections) — `server/game/quest/collect_inventory.py`
-- **_consume_from_equipped()** (5 connections) — `server/game/quest/collect_inventory.py`
-- **_nested_item_dicts()** (5 connections) — `server/game/quest/collect_inventory.py`
-- **_stack_prototype_id()** (5 connections) — `server/game/quest/collect_inventory.py`
-- **_stack_quantity()** (5 connections) — `server/game/quest/collect_inventory.py`
-- **_collect_goal_prototype_id()** (5 connections) — `server/game/quest/quest_service.py`
-- **_deepcopy_dict_stacks()** (4 connections) — `server/game/quest/collect_inventory.py`
-- **_deepcopy_equipped_map()** (4 connections) — `server/game/quest/collect_inventory.py`
-- **_dict_stacks_from_callable()** (4 connections) — `server/game/quest/collect_inventory.py`
-- **_dict_stacks_from_equipped()** (4 connections) — `server/game/quest/collect_inventory.py`
-- **_collect_goal_required_count()** (4 connections) — `server/game/quest/quest_service.py`
-- **.set_equipped_items()** (3 connections) — `server/models/player.py`
-- **.set_inventory()** (3 connections) — `server/models/player.py`
-- **test_collect_player_stacks_merges_inventory_and_equipped()** (3 connections) — `server/tests/unit/game/test_collect_inventory.py`
-- *... and 32 more nodes in this community*
+- **retry.py** (18 connections) — `server/utils/retry.py`
+- **retry_with_backoff()** (14 connections) — `server/utils/retry.py`
+- **test_retry.py** (13 connections) — `server/tests/unit/utils/test_retry.py`
+- **is_transient_error()** (13 connections) — `server/utils/retry.py`
+- **Exception** (9 connections)
+- **test_is_transient_error_cause_chain_connection_closed()** (4 connections) — `server/tests/unit/utils/test_retry.py`
+- **test_is_transient_error_non_transient()** (4 connections) — `server/tests/unit/utils/test_retry.py`
+- **test_is_transient_error_wrapped_connection_closed()** (4 connections) — `server/tests/unit/utils/test_retry.py`
+- **test_retry_retries_wrapped_connection_closed_then_succeeds()** (4 connections) — `server/tests/unit/utils/test_retry.py`
+- **test_retry_with_backoff_async_failure_then_success()** (4 connections) — `server/tests/unit/utils/test_retry.py`
+- **test_retry_with_backoff_async_success()** (4 connections) — `server/tests/unit/utils/test_retry.py`
+- **_create_async_wrapper()** (4 connections) — `server/utils/retry.py`
+- **_create_sync_wrapper()** (4 connections) — `server/utils/retry.py`
+- **_is_psycopg2_transient()** (4 connections) — `server/utils/retry.py`
+- **_is_wrapped_transient_message()** (4 connections) — `server/utils/retry.py`
+- **_iter_exception_chain()** (4 connections) — `server/utils/retry.py`
+- **_should_retry_error()** (4 connections) — `server/utils/retry.py`
+- **asyncio** (3 connections)
+- **test_is_transient_error_transient()** (3 connections) — `server/tests/unit/utils/test_retry.py`
+- **test_retry_with_backoff_failure_then_success()** (3 connections) — `server/tests/unit/utils/test_retry.py`
+- **test_retry_with_backoff_success()** (3 connections) — `server/tests/unit/utils/test_retry.py`
+- **_is_asyncpg_transient()** (3 connections) — `server/utils/retry.py`
+- **_calculate_retry_delay()** (2 connections) — `server/utils/retry.py`
+- **_log_retry_attempt()** (2 connections) — `server/utils/retry.py`
+- **_log_retry_failure()** (2 connections) — `server/utils/retry.py`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [QuestService](QuestService.md) (16 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (6 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [quest_rewards.py](quest_rewards.py.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [test_quest_instance_repository.py](test_quest_instance_repository.py.md) (1 shared connections)
-- [test_lifespan_event_subscriptions.py](test_lifespan_event_subscriptions.py.md) (1 shared connections)
-- [test_quest_service.py](test_quest_service.py.md) (1 shared connections)
-- [test_quest_service_collect.py](test_quest_service_collect.py.md) (1 shared connections)
+- [endpoints.py](endpoints.py.md) (5 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/quest/collect_inventory.py`
-- `server/game/quest/quest_service.py`
-- `server/models/player.py`
-- `server/tests/unit/game/test_collect_inventory.py`
+- `server/tests/unit/utils/test_retry.py`
+- `server/utils/retry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 133 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 83 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,14 +1,12 @@
 # worktree-manager.ps1
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **worktree-manager.ps1** (4 connections) — `scripts/worktree-manager.ps1`
-- **Remove-LegacyBranch()** (1 connections) — `scripts/worktree-manager.ps1`
-- **Show-WorktreeInfo()** (1 connections) — `scripts/worktree-manager.ps1`
-- **Show-WorktreeStatus()** (1 connections) — `scripts/worktree-manager.ps1`
-- **Switch-ToWorktree()** (1 connections) — `scripts/worktree-manager.ps1`
+- **Chaosium graphify snapshot - S. Petersen's Field Guide to Lovecraftian Horrors** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/MANIFEST.md`
+- **s-petersen-s-field-guide-to-lovecraftian-horrors/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/MANIFEST.md`
 
 ## Relationships
 
@@ -16,11 +14,11 @@
 
 ## Source Files
 
-- `scripts/worktree-manager.ps1`
+- `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

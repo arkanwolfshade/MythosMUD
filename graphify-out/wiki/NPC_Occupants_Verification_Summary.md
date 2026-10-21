@@ -1,30 +1,26 @@
 # NPC Occupants Verification Summary
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **NPC Occupants Verification Summary** (3 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **asyncpg UUID replace AttributeError** (2 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **NPC Display Final Fixes** (2 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
-- **room_update Overwriting NPC Data** (1 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
-- **Legacy Occupants Snapshot Format** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **Rooms API User Object AttributeError** (1 connections) — `investigations/sessions/2025-01-XX_session-rooms-api-user-object-attribute-error.md`
+- **Success Criteria** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Functional Requirements** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Monitoring Requirements** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Performance Requirements** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [lint_imports.py](lint_imports.py.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
-- `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- `investigations/sessions/2025-01-XX_session-rooms-api-user-object-attribute-error.md`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (60%)
-- INFERRED: 2 (40%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

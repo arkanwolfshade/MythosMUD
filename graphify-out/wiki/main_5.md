@@ -1,20 +1,18 @@
 # main
 
-> 11 nodes
+> 9 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **main()** (6 connections) — `scripts/check_coverage_thresholds.py`
-- **check_coverage_thresholds.py** (5 connections) — `scripts/check_coverage_thresholds.py`
-- **_ensure_coverage_xml_or_exit()** (4 connections) — `scripts/check_coverage_thresholds.py`
-- **parse_coverage_xml()** (4 connections) — `scripts/check_coverage_thresholds.py`
-- **check_thresholds()** (3 connections) — `scripts/check_coverage_thresholds.py`
-- **_print_results_and_exit()** (3 connections) — `scripts/check_coverage_thresholds.py`
-- **Path** (3 connections)
-- **Check files against their thresholds. Returns hard-fail messages.** (1 connections) — `scripts/check_coverage_thresholds.py`
-- **Exit if coverage.xml not found. In pre-commit context, exit 0 so commits aren't…** (1 connections) — `scripts/check_coverage_thresholds.py`
-- **Print coverage results and exit with appropriate code.** (1 connections) — `scripts/check_coverage_thresholds.py`
-- **Parse coverage.xml and return file coverage percentages.** (1 connections) — `scripts/check_coverage_thresholds.py`
+- **Ruff C901 McCabe Complexity** (4 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Lizard CCN Threshold** (4 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **Fat Endpoints** (2 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **McCabe Cyclomatic Complexity** (2 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Extract Exception Handling Pattern** (2 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **Service Layer Delegation** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Pylint R0911-R0915 Complexity Metrics** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Ruff-Pylint Rule Parity** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **create_app** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
 
 ## Relationships
 
@@ -22,12 +20,15 @@
 
 ## Source Files
 
-- `scripts/check_coverage_thresholds.py`
+- `docs/archive/FASTAPI_CODE_REVIEW.md`
+- `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 7 (78%)
+- INFERRED: 2 (22%)
 - AMBIGUOUS: 0 (0%)
 
 ---

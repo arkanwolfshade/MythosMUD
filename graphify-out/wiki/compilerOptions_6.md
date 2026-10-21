@@ -1,48 +1,33 @@
 # compilerOptions
 
-> 37 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **compilerOptions** (17 connections) — `client/tsconfig.json`
-- **paths** (8 connections) — `client/tsconfig.json`
-- **lib** (4 connections) — `client/tsconfig.json`
-- **client/tsconfig.json** (3 connections) — `client/tsconfig.json`
-- **@api/*** (2 connections) — `client/tsconfig.json`
-- **@components/*** (2 connections) — `client/tsconfig.json`
-- **@hooks/*** (2 connections) — `client/tsconfig.json`
-- **@lib/*** (2 connections) — `client/tsconfig.json`
-- **@stores/*** (2 connections) — `client/tsconfig.json`
-- **@styles/*** (2 connections) — `client/tsconfig.json`
-- **@utils/*** (2 connections) — `client/tsconfig.json`
-- **allowImportingTsExtensions** (1 connections) — `client/tsconfig.json`
-- **isolatedModules** (1 connections) — `client/tsconfig.json`
-- **jsx** (1 connections) — `client/tsconfig.json`
-- **module** (1 connections) — `client/tsconfig.json`
-- **moduleResolution** (1 connections) — `client/tsconfig.json`
-- **noEmit** (1 connections) — `client/tsconfig.json`
-- **noFallthroughCasesInSwitch** (1 connections) — `client/tsconfig.json`
-- **noUnusedLocals** (1 connections) — `client/tsconfig.json`
-- **noUnusedParameters** (1 connections) — `client/tsconfig.json`
-- **resolveJsonModule** (1 connections) — `client/tsconfig.json`
-- **skipLibCheck** (1 connections) — `client/tsconfig.json`
-- **strict** (1 connections) — `client/tsconfig.json`
-- **target** (1 connections) — `client/tsconfig.json`
-- **useDefineForClassFields** (1 connections) — `client/tsconfig.json`
-- *... and 12 more nodes in this community*
+- **preferences_service()** (4 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **fixture** (4 connections)
+- **sample_preferences()** (4 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **mock_session()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **sample_player_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Create a PlayerPreferencesService instance.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Create a mock async session.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Create a sample player ID.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Create sample player preferences.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [MessageQueue](MessageQueue.md) (4 shared connections)
+- [server/tests/conftest.py](server-tests-conftest.py.md) (1 shared connections)
+- [test_connection_event_helpers.py](test_connection_event_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tsconfig.json`
+- `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 12 (86%)
+- INFERRED: 2 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

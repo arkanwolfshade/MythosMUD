@@ -1,34 +1,35 @@
 # Migration Guide: From Default Logging to Enhanced Logging
 
-> 12 nodes
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **Migration Guide: From Default Logging to Enhanced Logging** (5 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Step-by-Step Migration Process** (5 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Troubleshooting Common Issues** (5 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **1. Update Import Statements** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **2. Migrate Context Parameters** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **3. Convert String Formatting to Structured Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **4. Add Rich Context to Error Messages** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Issue 1: ImportError when using enhanced logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Issue 2: TypeError with context parameter** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Issue 3: Logs not appearing in files** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Issue 4: Sensitive data appearing in logs** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Validation Checklist for Code Reviews** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **REQUIRED TOOL USAGE PATTERN** (9 connections) — `.cursor/commands/server-test-remediation.md`
+- **7. Common Test Failure Solutions** (4 connections) — `.cursor/commands/server-test-remediation.md`
+- **5. Test Environment Setup** (3 connections) — `.cursor/commands/server-test-remediation.md`
+- **10. Final Verification** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **6. Quality Assurance Checklist** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Authentication Test Issues** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Database Connection Issues** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Environment Variables** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Test Configuration** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **WebSocket Test Issues** (1 connections) — `.cursor/commands/server-test-remediation.md`
 
 ## Relationships
 
-- [Enhanced Logging Best Practices for MythosMUD](Enhanced_Logging_Best_Practices_for_MythosMUD.md) (1 shared connections)
-- [Common Mistakes and How to Fix Them](Common_Mistakes_and_How_to_Fix_Them.md) (1 shared connections)
+- [PERSISTENCE_REFACTORING_COMPLETE.md](PERSISTENCE_REFACTORING_COMPLETE.md.md) (1 shared connections)
+- [days](days.md) (1 shared connections)
+- [Code Quality Improvements](Code_Quality_Improvements.md) (1 shared connections)
+- [Attack Command Not Starting Combat](Attack_Command_Not_Starting_Combat.md) (1 shared connections)
+- [generate_sql.mjs](generate_sql.mjs.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/LOGGING_BEST_PRACTICES.md`
+- `.cursor/commands/server-test-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,13 +1,11 @@
 # main
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **main()** (3 connections) — `scripts/e2e_reset_collect_n_quest.py`
-- **_reset_collect_n_quest()** (2 connections) — `scripts/e2e_reset_collect_n_quest.py`
-- **e2e_reset_collect_n_quest.py** (2 connections) — `scripts/e2e_reset_collect_n_quest.py`
-- **Entry point: ensure collect_n quest seed and clear instances via anyio.** (1 connections) — `scripts/e2e_reset_collect_n_quest.py`
+- **Item System Blueprint** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
+- **Item Prototype and Instance Split** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
 
 ## Relationships
 
@@ -15,12 +13,12 @@
 
 ## Source Files
 
-- `scripts/e2e_reset_collect_n_quest.py`
+- `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

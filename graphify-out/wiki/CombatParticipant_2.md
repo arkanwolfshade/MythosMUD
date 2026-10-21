@@ -2,7 +2,7 @@
 
 > God node · 295 connections · `server/models/combat.py`
 
-**Community:** [CombatParticipant](CombatParticipant.md)
+**Community:** [DatabaseManager](DatabaseManager.md)
 
 ## Connections by Relation
 

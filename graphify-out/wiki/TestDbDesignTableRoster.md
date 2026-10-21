@@ -1,22 +1,20 @@
 # TestDbDesignTableRoster
 
-> 13 nodes
+> 11 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **TestDbDesignTableRoster** (6 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
-- **test_db_design_table_roster.py** (5 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
-- **_doc_tables()** (4 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
-- **_schema_tables()** (3 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
-- **.test_roster_matches_schema()** (3 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
-- **.test_schema_has_tables()** (3 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
-- **_doc_section_5()** (2 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
-- **.test_design_doc_exists()** (1 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
-- **.test_schema_file_exists()** (1 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
-- **Table-roster parity check between db/schema.sql and…** (1 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
-- **Table names from §5's domain-grouping markdown table, "Tables" column only.…** (1 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
-- **PACKAGE_DB_DESIGN.md §5 must list exactly the tables db/schema.sql defines.** (1 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
-- **Sanity check the extraction pattern still matches db/schema.sql's CREATE TABLE…** (1 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
+- **main()** (6 connections) — `scripts/check_coverage_thresholds.py`
+- **check_coverage_thresholds.py** (5 connections) — `scripts/check_coverage_thresholds.py`
+- **_ensure_coverage_xml_or_exit()** (4 connections) — `scripts/check_coverage_thresholds.py`
+- **parse_coverage_xml()** (4 connections) — `scripts/check_coverage_thresholds.py`
+- **check_thresholds()** (3 connections) — `scripts/check_coverage_thresholds.py`
+- **_print_results_and_exit()** (3 connections) — `scripts/check_coverage_thresholds.py`
+- **Path** (3 connections)
+- **Check files against their thresholds. Returns hard-fail messages.** (1 connections) — `scripts/check_coverage_thresholds.py`
+- **Exit if coverage.xml not found. In pre-commit context, exit 0 so commits aren't…** (1 connections) — `scripts/check_coverage_thresholds.py`
+- **Print coverage results and exit with appropriate code.** (1 connections) — `scripts/check_coverage_thresholds.py`
+- **Parse coverage.xml and return file coverage percentages.** (1 connections) — `scripts/check_coverage_thresholds.py`
 
 ## Relationships
 
@@ -24,7 +22,7 @@
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_db_design_table_roster.py`
+- `scripts/check_coverage_thresholds.py`
 
 ## Audit Trail
 

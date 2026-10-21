@@ -1,10 +1,10 @@
 # ADR-005: Repository Pattern for Data Access
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **ADR-005: Repository Pattern for Data Access** (0 connections) — `docs/architecture/decisions/ADR-005-repository-pattern-data-access.md`
+- **CI Environment Alignment** (0 connections) — `docs/CI_ENVIRONMENT_ALIGNMENT.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/architecture/decisions/ADR-005-repository-pattern-data-access.md`
+- `docs/CI_ENVIRONMENT_ALIGNMENT.md`
 
 ## Audit Trail
 

@@ -1,25 +1,26 @@
 # description
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **description** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **ADR-001: Layered Architecture with Event-Driven Components** (2 connections) — `docs/architecture/decisions/ADR-001-layered-architecture-event-driven.md`
+- **ADR-002: ApplicationContainer for Dependency Injection** (1 connections) — `docs/architecture/decisions/ADR-002-application-container-dependency-injection.md`
+- **ADR-003: Dual Event Systems (EventBus + NATS)** (1 connections) — `docs/architecture/decisions/ADR-003-dual-event-systems-eventbus-nats.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- `docs/architecture/decisions/ADR-001-layered-architecture-event-driven.md`
+- `docs/architecture/decisions/ADR-002-application-container-dependency-injection.md`
+- `docs/architecture/decisions/ADR-003-dual-event-systems-eventbus-nats.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

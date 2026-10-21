@@ -1,10 +1,10 @@
 # Grype SCA exclude paths
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Grype SCA exclude paths** (0 connections) — `.grype.yaml`
+- **setup_test_environment.ps1** (0 connections) — `scripts/setup_test_environment.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.grype.yaml`
+- `scripts/setup_test_environment.ps1`
 
 ## Audit Trail
 

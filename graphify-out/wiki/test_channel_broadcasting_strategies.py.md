@@ -1,41 +1,50 @@
 # test_channel_broadcasting_strategies.py
 
-> 14 nodes
+> 21 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **test_channel_broadcasting_strategies.py** (26 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **ChannelBroadcastingStrategyFactory** (11 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **test_channel_broadcasting_strategy_factory_get_strategy_known()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_channel_broadcasting_strategy_factory_get_strategy_unknown()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_channel_broadcasting_strategy_factory_init()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_channel_broadcasting_strategy_factory_register_strategy()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_global_channel_strategy_factory_instance()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Factory for creating channel broadcasting strategies.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Unit tests for channel broadcasting strategies. Tests the…** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test ChannelBroadcastingStrategyFactory.__init__() initializes with default…** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test ChannelBroadcastingStrategyFactory.get_strategy() returns known strategy.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test ChannelBroadcastingStrategyFactory.get_strategy() returns…** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test ChannelBroadcastingStrategyFactory.register_strategy() registers new…** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test global channel_strategy_factory instance exists.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **async_persistence_types.py** (7 connections) — `server/async_persistence_types.py`
+- **InstanceRoomLookup** (7 connections) — `server/async_persistence_types.py`
+- **ContainerCreateKwargs** (6 connections) — `server/async_persistence_types.py`
+- **PlayerEffectOptions** (6 connections) — `server/async_persistence_types.py`
+- **.create_container()** (5 connections) — `server/async_persistence.py`
+- **.add_player_effect()** (4 connections) — `server/async_persistence.py`
+- **.ensure_item_instance()** (4 connections) — `server/async_persistence.py`
+- **.set_instance_manager()** (3 connections) — `server/async_persistence.py`
+- **Unpack** (2 connections)
+- **.get_room_by_id()** (2 connections) — `server/async_persistence_types.py`
+- **TypedDict** (2 connections)
+- **Set the instance manager for instanced room lookup (instance-first).** (1 connections) — `server/async_persistence.py`
+- **Add a player effect. Returns effect id.** (1 connections) — `server/async_persistence.py`
+- **Create a new container. Args: source_type: Type of container source (required)…** (1 connections) — `server/async_persistence.py`
+- **Ensure an item instance exists. Delegates to ItemRepository. Accepts keyword…** (1 connections) — `server/async_persistence.py`
+- **Protocol** (1 connections)
+- **Room** (1 connections)
+- **Shared typing helpers for the async persistence facade.** (1 connections) — `server/async_persistence_types.py`
+- **Minimal instance-manager surface used for instanced room lookup.** (1 connections) — `server/async_persistence_types.py`
+- **Backward-compatible kwargs for create_container when params is omitted.** (1 connections) — `server/async_persistence_types.py`
+- **Optional fields for add_player_effect beyond the required scalars.** (1 connections) — `server/async_persistence_types.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (8 shared connections)
-- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (6 shared connections)
-- [UnknownChannelStrategy](UnknownChannelStrategy.md) (4 shared connections)
-- [RoomBasedChannelStrategy](RoomBasedChannelStrategy.md) (4 shared connections)
-- [SystemAdminChannelStrategy](SystemAdminChannelStrategy.md) (3 shared connections)
+- [test_party_service.py](test_party_service.py.md) (7 shared connections)
+- [Room](Room.md) (4 shared connections)
+- [whisper-movement.spec.ts](whisper-movement.spec.ts.md) (1 shared connections)
+- [.profession_to_dict](profession_to_dict.md) (1 shared connections)
+- [command_result_text](command_result_text.md) (1 shared connections)
+- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (1 shared connections)
+- [BaseEvent](BaseEvent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/channel_broadcasting_strategies.py`
-- `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- `server/async_persistence.py`
+- `server/async_persistence_types.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (93%)
-- INFERRED: 3 (7%)
+- EXTRACTED: 34 (92%)
+- INFERRED: 3 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

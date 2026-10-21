@@ -1,13 +1,12 @@
 # multiplayer-browser-helpers.d.ts
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **multiplayer-browser-helpers.d.ts** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
-- **GameUiDiagnostics** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
-- **OccupantsSnapshot** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
-- **PresenceEvent** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
+- **Test File Migration Mapping** (2 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
+- **Test Suite Hierarchical Migration** (1 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
+- **Test Suite Refactoring Deliverables** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
 
 ## Relationships
 
@@ -15,12 +14,14 @@
 
 ## Source Files
 
-- `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
+- `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
+- `docs/archive/TEST_MIGRATION_MAPPING.md`
+- `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1 (50%)
+- INFERRED: 1 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

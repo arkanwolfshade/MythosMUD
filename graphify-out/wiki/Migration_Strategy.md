@@ -1,47 +1,47 @@
 # Migration Strategy
 
-> 25 nodes
+> 24 nodes · cohesion 0.16
 
 ## Key Concepts
 
-- **Migration Strategy** (10 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **App.State to Dependency Injection Migration Plan** (9 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Current State Analysis** (4 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Implementation Guidelines** (4 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **app.state_to_dependency_injection_migration_5749b0cc.plan.md** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Access Patterns** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Dependencies** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Dependency Injection Pattern** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Estimated Effort** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Overview** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Phase 1: Extend ApplicationContainer (8-12 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Phase 2: Create Dependency Injection Functions (4-6 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Phase 3: Migrate Route Handlers and API Endpoints (12-16 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Phase 4: Migrate Background Tasks and Game Tick Processing (8-10 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Phase 5: Migrate Command Handlers (16-20 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Phase 6: Migrate WebSocket and Real-time Handlers (8-10 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Phase 7: Remove Dual Storage Pattern (4-6 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Phase 8: Migrate Test Suite (20-30 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Phase 9: Cleanup and Documentation (4-6 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Risk Mitigation** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Service Initialization Order** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Services Currently ONLY in app.state** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Services in BOTH container and app.state (duplicated)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Success Criteria** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Testing Strategy** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **_room()** (11 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **test_ascii_map_renderer_bridges.py** (9 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **TestDepartureMarkers** (9 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **_plain()** (8 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **._rendered()** (8 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **TestHorizontalBridging** (5 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **.test_adjacent_rooms_still_render_unchanged()** (5 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **.test_an_unconnected_gap_stays_blank()** (5 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **.test_a_west_exit_out_of_the_area_marks_the_empty_cell_beside_it()** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **.test_an_exit_to_a_loaded_room_is_not_marked()** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **.test_an_east_west_exit_spanning_three_cells_is_drawn()** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **TestVerticalBridging** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **.test_a_north_south_exit_spanning_three_cells_is_drawn()** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **.test_an_unconnected_vertical_gap_stays_blank()** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **.test_a_north_exit_out_of_the_area_is_marked()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **.test_a_room_with_no_exits_is_not_marked()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **.test_an_east_exit_out_of_the_area_is_marked()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **The ASCII map draws exits that span more than one grid cell (#829). A grid cell…** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **The map must show that a room has a way out of the area being drawn. Standing…** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **An ordinary exit already draws a connector; it must not also show a marker.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **A room's west-leaving exit is marked in the empty cell to its left, not on the…** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **Strip the HTML spans so the assertions read like the map the player sees.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **The bridge logic must not alter the ordinary one-cell case.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **Two rooms with no exit between them must NOT be joined by a line.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [RoomDataValidator](RoomDataValidator.md) (11 shared connections)
+- [mock_container](mock_container.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 53 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

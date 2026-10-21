@@ -1,10 +1,10 @@
 # gh-stack Skill
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **gh-stack Skill** (0 connections) — `.cursor/skills/gh-stack/SKILL.md`
+- **nats_status.ps1** (0 connections) — `scripts/nats_status.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.cursor/skills/gh-stack/SKILL.md`
+- `scripts/nats_status.ps1`
 
 ## Audit Trail
 

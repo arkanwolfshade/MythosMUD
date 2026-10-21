@@ -1,10 +1,10 @@
 # apply_procedures.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **apply_procedures.ps1** (0 connections) — `scripts/apply_procedures.ps1`
+- **nats_client_port_probe.Tests.ps1** (0 connections) — `scripts/tests/nats_client_port_probe.Tests.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/apply_procedures.ps1`
+- `scripts/tests/nats_client_port_probe.Tests.ps1`
 
 ## Audit Trail
 

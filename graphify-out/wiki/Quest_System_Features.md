@@ -1,10 +1,10 @@
 # Quest System Features
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Quest System Features** (0 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
+- **clean_logs.ps1** (0 connections) — `scripts/clean_logs.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/QUEST_SYSTEM_FEATURES.md`
+- `scripts/clean_logs.ps1`
 
 ## Audit Trail
 

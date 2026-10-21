@@ -1,46 +1,28 @@
 # auth_rate_limit.py
 
-> 17 nodes
+> 4 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **auth_rate_limit.py** (19 connections) — `server/middleware/auth_rate_limit.py`
-- **assert_auth_rate_limit_paths_registered()** (9 connections) — `server/middleware/auth_rate_limit.py`
-- **.format()** (5 connections) — `server/structured_logging/player_guid_formatter.py`
-- **_canonical_ip()** (3 connections) — `server/middleware/auth_rate_limit.py`
-- **_collect_post_paths()** (3 connections) — `server/middleware/auth_rate_limit.py`
-- **Protocol** (3 connections)
-- **_HasPrefix** (2 connections) — `server/middleware/auth_rate_limit.py`
-- **_HasRoutes** (2 connections) — `server/middleware/auth_rate_limit.py`
-- **_IncludedRouterLike** (2 connections) — `server/middleware/auth_rate_limit.py`
-- **_auth_bucket()** (2 connections) — `server/middleware/auth_rate_limit.py`
-- **_join_route_path()** (2 connections) — `server/middleware/auth_rate_limit.py`
-- **test_assert_auth_rate_limit_paths_registered_missing()** (2 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **FastAPI** (2 connections)
-- **LogRecord** (1 connections)
-- **IP-based rate limiting for unauthenticated auth HTTP endpoints.** (1 connections) — `server/middleware/auth_rate_limit.py`
-- **Fail startup if AUTH_RATE_LIMITED_PATHS do not match mounted POST routes.** (1 connections) — `server/middleware/auth_rate_limit.py`
-- **Format a log record with enhanced player GUID display. Args: record: The log…** (1 connections) — `server/structured_logging/player_guid_formatter.py`
+- **Lucidity System Expansion Scenarios** (2 connections) — `e2e-tests/scenarios/lucidity-system-expansion/README.md`
+- **Catatonia Grounding Ritual Scenario** (2 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
+- **player_lucidity Ledger** (2 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
+- **Sanitarium Failover Escalation** (2 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-02-sanitarium-failover.md`
 
 ## Relationships
 
-- [test_auth_rate_limit.py](test_auth_rate_limit.py.md) (9 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (3 shared connections)
-- [PlayerGuidFormatter](PlayerGuidFormatter.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [create_app](create_app.md) (1 shared connections)
-- [AuthRateLimitMiddleware](AuthRateLimitMiddleware.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/middleware/auth_rate_limit.py`
-- `server/structured_logging/player_guid_formatter.py`
-- `server/tests/unit/middleware/test_auth_rate_limit.py`
+- `e2e-tests/scenarios/lucidity-system-expansion/README.md`
+- `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
+- `e2e-tests/scenarios/lucidity-system-expansion/scenario-02-sanitarium-failover.md`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,39 +1,41 @@
 # MythosMUD Database Placement
 
-> 16 nodes
+> 15 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **MythosMUD Database Placement** (7 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
-- **MythosMUD Full-Stack Feature** (7 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
-- **Database Placement Skill** (2 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
-- **Full Stack Feature Skill** (2 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
-- **Allowed Paths Only** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
-- **Data Types** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
-- **Forbidden** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
-- **PostgreSQL Access (Procedures and Functions)** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
-- **Reference** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
-- **When Adding or Moving Persistence** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
-- **Authority** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
-- **Checklist** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
-- **Principle** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
-- **Reference** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
-- **Stack Summary** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
-- **When to Touch Each Layer** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
+- **test_player_aliases_and_mutes_db.py** (14 connections) — `server/tests/integration/test_player_aliases_and_mutes_db.py`
+- **_Players** (12 connections) — `server/tests/integration/test_player_aliases_and_mutes_db.py`
+- **asyncio** (5 connections)
+- **test_global_mute_survives_restart_without_muter_online()** (5 connections) — `server/tests/integration/test_player_aliases_and_mutes_db.py`
+- **test_mute_repository_upsert_replaces_and_filters_expired()** (5 connections) — `server/tests/integration/test_player_aliases_and_mutes_db.py`
+- **test_alias_crud_round_trip()** (4 connections) — `server/tests/integration/test_player_aliases_and_mutes_db.py`
+- **test_alias_rejected_for_unknown_player_and_over_limit()** (4 connections) — `server/tests/integration/test_player_aliases_and_mutes_db.py`
+- **test_aliases_are_per_player_and_deleted_by_id()** (4 connections) — `server/tests/integration/test_player_aliases_and_mutes_db.py`
+- **async_sessionmaker** (1 connections)
+- **AsyncSession** (1 connections)
+- **fixture** (1 connections)
+- **MonkeyPatch** (1 connections)
+- **Integration tests for DB-backed player aliases (#680) and mutes (#681). Drives…** (1 connections) — `server/tests/integration/test_player_aliases_and_mutes_db.py`
+- **Regression: global mutes used to live in the muter's JSON file and vanished…** (1 connections) — `server/tests/integration/test_player_aliases_and_mutes_db.py`
+- **Two fresh players; storage classes are pointed at the integration session…** (1 connections) — `server/tests/integration/test_player_aliases_and_mutes_db.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [command_parser.py](command_parser.py.md) (5 shared connections)
+- [test_aggression.py](test_aggression.py.md) (5 shared connections)
+- [asyncio](asyncio.md) (2 shared connections)
+- [Room](Room.md) (1 shared connections)
+- [CombatBroadcastMixin](CombatBroadcastMixin.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/mythosmud-database-placement/SKILL.md`
-- `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
+- `server/tests/integration/test_player_aliases_and_mutes_db.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 30 (81%)
+- INFERRED: 7 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

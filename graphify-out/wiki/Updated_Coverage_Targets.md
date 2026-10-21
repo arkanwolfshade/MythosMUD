@@ -1,25 +1,25 @@
 # Updated Coverage Targets
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Updated Coverage Targets** (1 connections) — `docs/archive/TEST_OPTIMIZATION_STATUS.md`
-- **Placeholder Test Removal** (1 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
+- **test_profession_get_stat_requirements_invalid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test get_stat_requirements returns empty dict for invalid JSON.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
+- [required](required.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_OPTIMIZATION_STATUS.md`
-- `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

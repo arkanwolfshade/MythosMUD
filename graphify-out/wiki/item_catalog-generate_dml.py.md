@@ -1,27 +1,25 @@
 # item_catalog/generate_dml.py
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **item_catalog/generate_dml.py** (6 connections) — `data/item_catalog/generate_dml.py`
-- **_load_catalog()** (5 connections) — `data/item_catalog/generate_dml.py`
-- **_load_json()** (3 connections) — `data/item_catalog/generate_dml.py`
-- **main()** (3 connections) — `data/item_catalog/generate_dml.py`
-- **_object_dict()** (2 connections) — `data/item_catalog/generate_dml.py`
-- **Path** (2 connections)
+- **Nameless Horrors - 2nd Edition (source summary)** (4 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
+- **External live graph** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
+- **Key extractions pages** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
 
 ## Relationships
 
-- [items/catalog_dml.py](items-catalog_dml.py.md) (3 shared connections)
+- [RescueBanner.tsx](RescueBanner.tsx.md) (1 shared connections)
 
 ## Source Files
 
-- `data/item_catalog/generate_dml.py`
+- `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

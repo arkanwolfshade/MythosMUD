@@ -1,32 +1,34 @@
 # users
 
-> 8 nodes
+> 13 nodes · cohesion 0.36
 
 ## Key Concepts
 
-- **users** (6 connections)
-- **invites** (4 connections) — `db/schema.sql`
-- **account_sanctions** (3 connections) — `db/schema.sql`
-- **schema_name.reserve_invite()** (2 connections) — `db/procedures/players.sql`
-- **get_user_id_by_username_ci()** (2 connections) — `db/schema.sql`
-- **id_map_players** (2 connections) — `db/schema.sql`
-- **muting_rules** (2 connections) — `db/schema.sql`
-- **reserve_invite()** (2 connections) — `db/schema.sql`
+- **ClientLogger** (13 connections) — `client/src/utils/logger.ts`
+- **.info()** (6 connections) — `client/src/utils/logger.ts`
+- **.addToBuffer()** (5 connections) — `client/src/utils/logger.ts`
+- **.createLogEntry()** (5 connections) — `client/src/utils/logger.ts`
+- **.error()** (5 connections) — `client/src/utils/logger.ts`
+- **.initializeLogging()** (5 connections) — `client/src/utils/logger.ts`
+- **.flushLogs()** (4 connections) — `client/src/utils/logger.ts`
+- **.warn()** (4 connections) — `client/src/utils/logger.ts`
+- **.debug()** (3 connections) — `client/src/utils/logger.ts`
+- **.clearLogs()** (2 connections) — `client/src/utils/logger.ts`
+- **.constructor()** (2 connections) — `client/src/utils/logger.ts`
+- **.downloadLogs()** (2 connections) — `client/src/utils/logger.ts`
+- **.getLogBuffer()** (1 connections) — `client/src/utils/logger.ts`
 
 ## Relationships
 
-- [schema.sql](schema.sql.md) (6 shared connections)
-- [players](players.md) (2 shared connections)
-- [players.sql](players.sql.md) (1 shared connections)
+- [party_commands.py](party_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `db/procedures/players.sql`
-- `db/schema.sql`
+- `client/src/utils/logger.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

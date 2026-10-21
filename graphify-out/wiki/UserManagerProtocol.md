@@ -1,48 +1,52 @@
 # UserManagerProtocol
 
-> 24 nodes
+> 42 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **UserManagerProtocol** (19 connections) — `server/game/chat_moderation.py`
-- **.can_send_message()** (2 connections) — `server/game/chat_moderation.py`
-- **.is_admin()** (2 connections) — `server/game/chat_moderation.py`
-- **.is_channel_muted()** (2 connections) — `server/game/chat_moderation.py`
-- **.is_globally_muted()** (2 connections) — `server/game/chat_moderation.py`
-- **.is_player_muted()** (2 connections) — `server/game/chat_moderation.py`
-- **.mute_channel()** (2 connections) — `server/game/chat_moderation.py`
-- **.mute_player()** (2 connections) — `server/game/chat_moderation.py`
-- **.unmute_channel()** (2 connections) — `server/game/chat_moderation.py`
-- **.unmute_player()** (2 connections) — `server/game/chat_moderation.py`
-- **.add_admin()** (1 connections) — `server/game/chat_moderation.py`
-- **.mute_global()** (1 connections) — `server/game/chat_moderation.py`
-- **.remove_admin()** (1 connections) — `server/game/chat_moderation.py`
-- **.unmute_global()** (1 connections) — `server/game/chat_moderation.py`
-- **Protocol for user manager.** (1 connections) — `server/game/chat_moderation.py`
-- **Mute a channel for a player.** (1 connections) — `server/game/chat_moderation.py`
-- **Unmute a channel for a player.** (1 connections) — `server/game/chat_moderation.py`
-- **Check if channel is muted.** (1 connections) — `server/game/chat_moderation.py`
-- **Mute a player for another player.** (1 connections) — `server/game/chat_moderation.py`
-- **Unmute a player for another player.** (1 connections) — `server/game/chat_moderation.py`
-- **Check if player is muted.** (1 connections) — `server/game/chat_moderation.py`
-- **Check if player is globally muted.** (1 connections) — `server/game/chat_moderation.py`
-- **Check if player is admin.** (1 connections) — `server/game/chat_moderation.py`
-- **Check if player can send message.** (1 connections) — `server/game/chat_moderation.py`
+- **CORSConfig** (30 connections) — `server/config/models/cors.py`
+- **test_cors_config.py** (13 connections) — `server/tests/unit/config/test_cors_config.py`
+- **._parse_csv()** (11 connections) — `server/config/models/cors.py`
+- **._validate_non_empty()** (6 connections) — `server/config/models/cors.py`
+- **field_validator** (6 connections)
+- **._clean_list_items()** (5 connections) — `server/config/models/cors.py`
+- **._parse_json_array()** (5 connections) — `server/config/models/cors.py`
+- **.parse_allow_headers()** (4 connections) — `server/config/models/cors.py`
+- **.parse_allow_methods()** (4 connections) — `server/config/models/cors.py`
+- **.parse_allow_origins()** (4 connections) — `server/config/models/cors.py`
+- **._parse_comma_separated()** (4 connections) — `server/config/models/cors.py`
+- **.parse_expose_headers()** (4 connections) — `server/config/models/cors.py`
+- **.validate_max_age()** (4 connections) — `server/config/models/cors.py`
+- **.parse_max_age()** (3 connections) — `server/config/models/cors.py`
+- **._validate_and_warn_wildcards()** (3 connections) — `server/config/models/cors.py`
+- **test_cors_defaults_include_local_dev_origins()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
+- **test_cors_parse_allow_methods_uppercases()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
+- **test_cors_parse_allow_origins_from_comma_separated_string()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
+- **test_cors_parse_allow_origins_from_json_array()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
+- **test_cors_parse_expose_headers_allows_empty()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
+- **test_cors_parse_max_age_from_string()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
+- **test_cors_parse_max_age_invalid_string_uses_default()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
+- **test_cors_rejects_empty_allow_origins()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
+- **test_cors_rejects_negative_max_age()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
+- **test_cors_wildcard_origin_accepted()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (3 shared connections)
-- [ChatMessage](ChatMessage.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [Room](Room.md) (4 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (3 shared connections)
+- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (1 shared connections)
+- [test_windows_safe_rotation.py](test_windows_safe_rotation.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_moderation.py`
+- `server/config/models/cors.py`
+- `server/tests/unit/config/test_cors_config.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 72 (95%)
+- INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

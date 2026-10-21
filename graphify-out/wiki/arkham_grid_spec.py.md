@@ -1,47 +1,49 @@
 # arkham_grid_spec.py
 
-> 23 nodes
+> 38 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **arkham_grid_spec.py** (13 connections) — `scripts/arkham_grid_spec.py`
-- **segments()** (8 connections) — `scripts/arkham_grid_spec.py`
-- **render()** (7 connections) — `scripts/arkham_grid_spec.py`
-- **Street** (6 connections) — `scripts/arkham_grid_spec.py`
-- **crossings()** (6 connections) — `scripts/arkham_grid_spec.py`
-- **Seg** (5 connections) — `scripts/arkham_grid_spec.py`
-- **blocks_between()** (5 connections) — `scripts/arkham_grid_spec.py`
-- **numbered_segments()** (4 connections) — `scripts/arkham_grid_spec.py`
-- **subzone_at()** (4 connections) — `scripts/arkham_grid_spec.py`
-- **summary()** (4 connections) — `scripts/arkham_grid_spec.py`
-- **Extra** (3 connections) — `scripts/arkham_grid_spec.py`
-- **_crossing_points()** (3 connections) — `scripts/arkham_grid_spec.py`
-- **NamedTuple** (3 connections)
-- **Arkham street-grid spec, derived from the canonical map plate (issue #829).…** (1 connections) — `scripts/arkham_grid_spec.py`
-- **City blocks between two adjacent crossings on ``street``.** (1 connections) — `scripts/arkham_grid_spec.py`
-- **A room that is not on the street lattice: a landmark, a road out, the station.** (1 connections) — `scripts/arkham_grid_spec.py`
-- **Which sub-zone a lattice position belongs to. Regional rather than per-street,…** (1 connections) — `scripts/arkham_grid_spec.py`
-- **Every lattice position (col, row) where an EW and an NS street meet.** (1 connections) — `scripts/arkham_grid_spec.py`
-- **One mid-block street room: a single city block of a named street.** (1 connections) — `scripts/arkham_grid_spec.py`
-- **Every city block of every street, one room each.** (1 connections) — `scripts/arkham_grid_spec.py`
-- **Segments grouped by street key, ordered west-to-east / north-to-south. Streets…** (1 connections) — `scripts/arkham_grid_spec.py`
-- **ASCII render of the derived lattice, for comparison against map.png. Letters…** (1 connections) — `scripts/arkham_grid_spec.py`
-- **One named street: a line on the lattice and the span it runs.** (1 connections) — `scripts/arkham_grid_spec.py`
+- **._create_tracked_task()** (7 connections) — `server/services/nats_service.py`
+- **.connect()** (6 connections) — `server/services/nats_service.py`
+- **.disconnect()** (5 connections) — `server/services/nats_service.py`
+- **._on_error()** (5 connections) — `server/services/nats_service.py`
+- **._start_health_monitoring()** (5 connections) — `server/services/nats_service.py`
+- **._cancel_background_tasks()** (4 connections) — `server/services/nats_service.py`
+- **._force_cancel_pending_tasks()** (4 connections) — `server/services/nats_service.py`
+- **._handle_error_async()** (4 connections) — `server/services/nats_service.py`
+- **._health_check_loop()** (4 connections) — `server/services/nats_service.py`
+- **._on_disconnect()** (4 connections) — `server/services/nats_service.py`
+- **._on_reconnect()** (4 connections) — `server/services/nats_service.py`
+- **._check_connection_allowed()** (3 connections) — `server/services/nats_service.py`
+- **._close_nats_connection()** (3 connections) — `server/services/nats_service.py`
+- **._handle_disconnect_async()** (3 connections) — `server/services/nats_service.py`
+- **._handle_reconnect_async()** (3 connections) — `server/services/nats_service.py`
+- **._perform_health_check()** (3 connections) — `server/services/nats_service.py`
+- **._setup_connection_handlers()** (3 connections) — `server/services/nats_service.py`
+- **._stop_health_monitoring()** (3 connections) — `server/services/nats_service.py`
+- **BaseException** (2 connections)
+- **Task** (2 connections)
+- **Check if connection attempt is allowed by state machine.** (1 connections) — `server/services/nats_service.py`
+- **Set up connection event handlers.** (1 connections) — `server/services/nats_service.py`
+- **Connect to NATS server with state machine tracking. Returns: True if connection…** (1 connections) — `server/services/nats_service.py`
+- **Close NATS connection and transition to disconnected state.** (1 connections) — `server/services/nats_service.py`
+- **Disconnect from NATS with graceful shutdown and message draining. AI: State…** (1 connections) — `server/services/nats_service.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [get_help_content](get_help_content.md) (1 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
-- [generate_arkham_grid.py](generate_arkham_grid.py.md) (1 shared connections)
+- [CombatAttackHandler](CombatAttackHandler.md) (18 shared connections)
+- [TestRoomDataFixer](TestRoomDataFixer.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/arkham_grid_spec.py`
+- `server/services/nats_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 56 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

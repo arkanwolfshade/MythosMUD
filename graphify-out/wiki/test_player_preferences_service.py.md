@@ -1,59 +1,51 @@
 # test_player_preferences_service.py
 
-> 36 nodes
+> 32 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **test_player_preferences_service.py** (59 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_create_player_preferences_already_exists()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_create_player_preferences_invalid_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_delete_player_preferences_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_delete_player_preferences_invalid_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_get_player_preferences_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_is_channel_muted_false()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_is_channel_muted_true()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_mute_channel_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_is_valid_channel_invalid()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_is_valid_channel_valid()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_is_valid_json_array_invalid()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_is_valid_json_array_valid()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_is_valid_player_id_empty()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_is_valid_player_id_invalid_string()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_is_valid_player_id_string()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_is_valid_player_id_uuid()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_preferences_service_initialization()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Unit tests for player preferences service. Tests the PlayerPreferencesService…** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test _is_valid_json_array with invalid JSON.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test creating player preferences when they already exist.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test creating player preferences with invalid ID.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test getting player preferences with database error.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test checking if channel is muted (returns True).** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test checking if channel is muted (returns False).** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- *... and 11 more nodes in this community*
+- **AuditLogger** (17 connections) — `server/utils/audit_logger.py`
+- **._write_entry()** (10 connections) — `server/utils/audit_logger.py`
+- **._entries_from_log_file()** (7 connections) — `server/utils/audit_logger.py`
+- **._matching_entry_from_line()** (6 connections) — `server/utils/audit_logger.py`
+- **JsonMap** (6 connections)
+- **.get_recent_entries()** (5 connections) — `server/utils/audit_logger.py`
+- **._get_log_file_path()** (4 connections) — `server/utils/audit_logger.py`
+- **.get_statistics()** (4 connections) — `server/utils/audit_logger.py`
+- **.__init__()** (4 connections) — `server/utils/audit_logger.py`
+- **_json_map_from_line()** (4 connections) — `server/utils/audit_logger.py`
+- **.log_alias_expansion()** (3 connections) — `server/utils/audit_logger.py`
+- **.log_command()** (3 connections) — `server/utils/audit_logger.py`
+- **.log_container_interaction()** (3 connections) — `server/utils/audit_logger.py`
+- **.log_permission_change()** (3 connections) — `server/utils/audit_logger.py`
+- **.log_player_action()** (3 connections) — `server/utils/audit_logger.py`
+- **.log_security_event()** (3 connections) — `server/utils/audit_logger.py`
+- **datetime** (3 connections)
+- **Path** (3 connections)
+- **Get the current audit log file path. Creates daily log files for easier…** (1 connections) — `server/utils/audit_logger.py`
+- **Log security-sensitive command execution. Creates a structured audit log entry…** (1 connections) — `server/utils/audit_logger.py`
+- **Log permission/role changes. Args: admin_name: Admin who made the change…** (1 connections) — `server/utils/audit_logger.py`
+- **Log container interaction events for security and compliance. Args: event: The…** (1 connections) — `server/utils/audit_logger.py`
+- **Log administrative actions against players. Args: admin_name: Admin who…** (1 connections) — `server/utils/audit_logger.py`
+- **Log general security events. Used for rate limit violations, injection…** (1 connections) — `server/utils/audit_logger.py`
+- **Log alias expansions for security monitoring. Tracks alias usage to detect…** (1 connections) — `server/utils/audit_logger.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [asyncio](asyncio.md) (26 shared connections)
-- [preferences_service](preferences_service.md) (4 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [PlayerInventory](PlayerInventory.md) (1 shared connections)
-- [PlayerPreferencesService](PlayerPreferencesService.md) (1 shared connections)
-- [test_create_player_preferences_integrity_error](test_create_player_preferences_integrity_error.md) (1 shared connections)
-- [test_get_player_preferences_not_found](test_get_player_preferences_not_found.md) (1 shared connections)
-- [test_update_default_channel_not_found](test_update_default_channel_not_found.md) (1 shared connections)
-- [test_mute_channel_already_muted](test_mute_channel_already_muted.md) (1 shared connections)
-- [test_unmute_channel_success](test_unmute_channel_success.md) (1 shared connections)
-- [test_get_muted_channels_success](test_get_muted_channels_success.md) (1 shared connections)
-- [test_is_channel_muted_invalid_channel](test_is_channel_muted_invalid_channel.md) (1 shared connections)
+- [Room](Room.md) (3 shared connections)
+- [Execution Steps](Execution_Steps.md) (2 shared connections)
+- [test_player_combat_service.py](test_player_combat_service.py.md) (1 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `server/utils/audit_logger.py`
 
 ## Audit Trail
 
-- EXTRACTED: 84 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 55 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

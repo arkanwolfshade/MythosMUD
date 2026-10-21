@@ -1,35 +1,31 @@
 # Test Timing Analysis - Optimization Targets
 
-> 11 nodes
+> 8 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **Test Timing Analysis - Optimization Targets** (6 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **Recommendations** (5 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **Test Timing Analysis** (3 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **slow Marker Filter Bug** (2 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **1. **Mark Additional Slow Tests**** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **2. **Investigate Heavy Setup Tests**** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **3. **Verify Marker Application**** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **4. **Target Time Budget (5-7 min = 300-420 seconds)**** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **Critical Finding: Tests Still Running Despite Markers** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **Next Actions** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **pytest-xdist Parallel Fast Suite** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Dependency Upgrade** (6 connections) — `.claude/skills/deps-upgrade/SKILL.md`
+- **deps-upgrade/SKILL.md** (2 connections) — `.claude/skills/deps-upgrade/SKILL.md`
+- **Before starting** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
+- **Never** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
+- **Rollback** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
+- **Upgrade procedure** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
+- **Verify** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
+- **.pre-commit-config.yaml** (1 connections) — `.pre-commit-config.yaml`
 
 ## Relationships
 
-- [PARALLEL EXECUTION RESULTS (2025-11-05)](PARALLEL_EXECUTION_RESULTS_2025-11-05.md) (1 shared connections)
-- [Top Time Consumers (>10 seconds)](Top_Time_Consumers__10_seconds.md) (1 shared connections)
-- [mythos_e2e Database](mythos_e2e_Database.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_TIMING_ANALYSIS.md`
+- `.claude/skills/deps-upgrade/SKILL.md`
+- `.pre-commit-config.yaml`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (86%)
+- INFERRED: 1 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

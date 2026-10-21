@@ -1,10 +1,10 @@
 # 20260914_npc_catalog_scaffold_e2e.sql
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **20260914_npc_catalog_scaffold_e2e.sql** (0 connections) — `data/npc_catalog/generated/20260914_npc_catalog_scaffold_e2e.sql`
+- **Dependency Upgrade Implementation Plan** (0 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/upgrade_implementation_plan.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `data/npc_catalog/generated/20260914_npc_catalog_scaffold_e2e.sql`
+- `docs/archive/DEPENDENCY_UPGRADE_SPEC/upgrade_implementation_plan.md`
 
 ## Audit Trail
 

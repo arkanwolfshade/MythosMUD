@@ -1,37 +1,35 @@
 # pylint.py
 
-> 16 nodes
+> 14 nodes · cohesion 0.14
 
 ## Key Concepts
 
-- **pylint.py** (10 connections) — `scripts/pylint.py`
-- **_CompletedProcessLike** (8 connections) — `scripts/pylint.py`
-- **main()** (8 connections) — `scripts/pylint.py`
-- **is_pylint_startup_failure()** (5 connections) — `scripts/pylint.py`
-- **_report_pylint_failure()** (4 connections) — `scripts/pylint.py`
-- **_require_pylint_runnable()** (4 connections) — `scripts/pylint.py`
-- **_resolve_pylint_cmd()** (4 connections) — `scripts/pylint.py`
-- **_write_pylint_output()** (4 connections) — `scripts/pylint.py`
-- **_combined_output()** (3 connections) — `scripts/pylint.py`
-- **Path** (3 connections)
-- **.stderr()** (1 connections) — `scripts/pylint.py`
-- **.stdout()** (1 connections) — `scripts/pylint.py`
-- **Protocol** (1 connections)
-- **Prefer current interpreter -m pylint (works under uv run --no-sync).** (1 connections) — `scripts/pylint.py`
-- **Fail fast before scanning if pylint cannot start (missing package, broken venv).** (1 connections) — `scripts/pylint.py`
-- **True when pylint never ran as a linter (missing module, usage/invocation…** (1 connections) — `scripts/pylint.py`
+- **Semgrep Configuration** (13 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Java Jackson Deserialization Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Java JMS Deserialization Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Java Path Traversal Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Java Unvalidated Redirect Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Java Weak SSL Context Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Java XPath Injection Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Java XSS Response Writer Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Java XXE DocumentBuilderFactory Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Spring SQL Injection Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Express JWT Hardcoded Secret Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Express Object Deserialization Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Express SSRF Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Express XXE Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
 
 ## Relationships
 
-- [safe_run_static](safe_run_static.md) (5 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `scripts/pylint.py`
+- `.codacy/tools-configs/semgrep.yaml`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

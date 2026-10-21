@@ -1,25 +1,24 @@
 # The Malleus Monstrorum Keeper Deck (source summary)
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **The Malleus Monstrorum Keeper Deck (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Malleus Monstrorum Keeper Deck.md`
-- **The Malleus Monstrorum Keeper Deck.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Malleus Monstrorum Keeper Deck.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Malleus Monstrorum Keeper Deck.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Malleus Monstrorum Keeper Deck.md`
+- **remove_dir()** (2 connections) — `scripts/clean.py`
+- **clean.py** (1 connections) — `scripts/clean.py`
+- **Path** (1 connections)
 
 ## Relationships
 
-- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/The Malleus Monstrorum Keeper Deck.md`
+- `scripts/clean.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

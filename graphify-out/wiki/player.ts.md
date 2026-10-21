@@ -1,64 +1,57 @@
 # player.ts
 
-> 72 nodes
+> 66 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **player.ts** (67 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **combat-messages-game-info.spec.ts** (31 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **ensurePlayableAlive()** (30 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **ensureStanding()** (29 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **corruption-cleanse.spec.ts** (27 connections) — `client/tests/e2e/runtime/corruption/corruption-cleanse.spec.ts`
-- **admin-set-stat-command.spec.ts** (25 connections) — `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
-- **room-flux-purification.spec.ts** (24 connections) — `client/tests/e2e/runtime/corruption/room-flux-purification.spec.ts`
-- **despawnSanitariumCultists()** (19 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **container-multi-user-looting.spec.ts** (17 connections) — `client/tests/e2e/runtime/containers/container-multi-user-looting.spec.ts`
-- **container-corpse-looting.spec.ts** (14 connections) — `client/tests/e2e/runtime/containers/container-corpse-looting.spec.ts`
-- **clickWithoutStability()** (13 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **killPlayerViaCombat()** (13 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **dismissDeathInterstitial()** (11 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **goEastFromFoyer()** (11 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **ensureNotInCombat()** (10 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **relogInAtSpawn()** (10 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **tryStartCombat()** (9 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **getPageSessionCredentials()** (9 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **listSanitariumCultistIds()** (9 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **waitUntil()** (9 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **spawnCombatTargetNpc()** (8 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **isPlayerDead()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **killPlayerAndProduceCorpse()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **retryUntilCombatStarted()** (7 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **assertPlayerAlive()** (7 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- *... and 47 more nodes in this community*
+- **CatatoniaRegistry** (42 connections) — `server/services/catatonia_registry.py`
+- **TestCatatoniaRegistry** (26 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **catatonia_registry.py** (12 connections) — `server/services/catatonia_registry.py`
+- **UUID** (6 connections)
+- **test_catatonia_registry.py** (5 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **.is_catatonic()** (4 connections) — `server/services/catatonia_registry.py`
+- **datetime** (4 connections)
+- **.test_on_sanitarium_failover_callback_exception()** (4 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **.test_on_sanitarium_failover_with_async_callback()** (4 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **.get_snapshot()** (3 connections) — `server/services/catatonia_registry.py`
+- **.on_catatonia_cleared()** (3 connections) — `server/services/catatonia_registry.py`
+- **.on_catatonia_entered()** (3 connections) — `server/services/catatonia_registry.py`
+- **.should_trigger_sanitarium_failover()** (3 connections) — `server/services/catatonia_registry.py`
+- **.test_get_snapshot_empty()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **.test_get_snapshot_is_copy()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **.test_get_snapshot_with_players()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **.test_init()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **.test_init_with_failover_callback()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **.test_is_catatonic_after_cleared()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **.test_is_catatonic_with_string()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **.test_is_catatonic_with_uuid()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **.test_multiple_players_catatonic()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **.test_on_catatonia_cleared_not_registered()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **.test_on_catatonia_cleared_with_string()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **.test_on_catatonia_cleared_with_uuid()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- *... and 41 more nodes in this community*
 
 ## Relationships
 
-- [waitForMessage](waitForMessage.md) (102 shared connections)
-- [fixtures/auth.ts](fixtures-auth.ts.md) (45 shared connections)
-- [executeCommand](executeCommand.md) (44 shared connections)
-- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (8 shared connections)
-- [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (7 shared connections)
-- [whisper-movement.spec.ts](whisper-movement.spec.ts.md) (6 shared connections)
-- [tutorial-instance-lifecycle.spec.ts](tutorial-instance-lifecycle.spec.ts.md) (1 shared connections)
+- [Room](Room.md) (3 shared connections)
+- [rescue_commands.py](rescue_commands.py.md) (3 shared connections)
+- [TargetMatch](TargetMatch.md) (2 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (2 shared connections)
+- [PopulationStats](PopulationStats.md) (2 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (2 shared connections)
+- [test_lifecycle_respawn.py](test_lifecycle_respawn.py.md) (1 shared connections)
+- [go_command.py](go_command.py.md) (1 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/utils/__tests__/deathVoidLocation.test.ts`
-- `client/src/utils/deathVoidLocation.ts`
-- `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
-- `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- `client/tests/e2e/runtime/containers/container-corpse-looting.spec.ts`
-- `client/tests/e2e/runtime/containers/container-multi-user-looting.spec.ts`
-- `client/tests/e2e/runtime/corruption/corruption-cleanse.spec.ts`
-- `client/tests/e2e/runtime/corruption/room-flux-purification.spec.ts`
-- `client/tests/e2e/runtime/fixtures/auth.ts`
-- `client/tests/e2e/runtime/fixtures/player.ts`
-- `client/tests/e2e/runtime/fixtures/test-data.ts`
+- `server/services/catatonia_registry.py`
+- `server/tests/unit/services/test_catatonia_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 397 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 113 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

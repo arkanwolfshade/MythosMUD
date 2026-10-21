@@ -1,37 +1,46 @@
 # Phase 1: Core Separation
 
-> 16 nodes
+> 25 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **Phase 1: Core Separation** (6 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Task 1.1: Create Enhanced ChatPanel Component** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Task 1.2: Rename ChatPanel to GameLogPanel** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Task 1.3: Simplify CommandPanel Component** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Task 1.4: Update GameTerminal Component** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Task 1.5: Implement Basic Command Routing** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Migration Strategy** (10 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **App.State to Dependency Injection Migration Plan** (9 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Current State Analysis** (4 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Implementation Guidelines** (4 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **app.state_to_dependency_injection_migration_5749b0cc.plan.md** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Access Patterns** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Dependencies** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Dependency Injection Pattern** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Estimated Effort** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Overview** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Phase 1: Extend ApplicationContainer (8-12 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Phase 2: Create Dependency Injection Functions (4-6 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Phase 3: Migrate Route Handlers and API Endpoints (12-16 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Phase 4: Migrate Background Tasks and Game Tick Processing (8-10 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Phase 5: Migrate Command Handlers (16-20 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Phase 6: Migrate WebSocket and Real-time Handlers (8-10 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Phase 7: Remove Dual Storage Pattern (4-6 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Phase 8: Migrate Test Suite (20-30 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Phase 9: Cleanup and Documentation (4-6 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Risk Mitigation** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Service Initialization Order** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Services Currently ONLY in app.state** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Services in BOTH container and app.state (duplicated)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Success Criteria** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Testing Strategy** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
 
 ## Relationships
 
-- [Chat Panel Separation Implementation Tasks](Chat_Panel_Separation_Implementation_Tasks.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

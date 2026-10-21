@@ -1,12 +1,11 @@
 # mythosTheme.ts
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **mythosTheme.ts** (2 connections) — `client/src/theme/mythosTheme.ts`
-- **mythosTheme** (2 connections) — `client/src/theme/mythosTheme.ts`
-- **mythosTheme.test.ts** (2 connections) — `client/src/theme/__tests__/mythosTheme.test.ts`
+- **Playwright MCP Timing Limitation** (1 connections) — `e2e-tests/SCENARIO_15_TEST_LIMITATION.md`
+- **Whisper Rate Limit Sliding Window** (1 connections) — `e2e-tests/SCENARIO_15_TEST_LIMITATION.md`
 
 ## Relationships
 
@@ -14,12 +13,11 @@
 
 ## Source Files
 
-- `client/src/theme/__tests__/mythosTheme.test.ts`
-- `client/src/theme/mythosTheme.ts`
+- `e2e-tests/SCENARIO_15_TEST_LIMITATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

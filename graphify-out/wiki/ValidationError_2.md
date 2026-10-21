@@ -2,7 +2,7 @@
 
 > God node · 325 connections · `server/exceptions.py`
 
-**Community:** [ValidationError](ValidationError.md)
+**Community:** [NPCCombatIntegrationService](NPCCombatIntegrationService.md)
 
 ## Connections by Relation
 

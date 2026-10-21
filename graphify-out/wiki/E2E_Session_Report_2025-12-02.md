@@ -1,12 +1,11 @@
 # E2E Session Report 2025-12-02
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **E2E Session Report 2025-12-02** (2 connections) — `e2e-tests/SESSION_REPORT_2025-12-02.md`
-- **Admin Teleportation Display Bug** (1 connections) — `e2e-tests/SESSION_REPORT_2025-12-02.md`
-- **Whisper Messages Not Received Bug** (1 connections) — `e2e-tests/SESSION_REPORT_2025-12-02.md`
+- **server/game/magic/__init__.py** (1 connections) — `server/game/magic/__init__.py`
+- **Magic and spellcasting system for MythosMUD. This package contains the core…** (1 connections) — `server/game/magic/__init__.py`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `e2e-tests/SESSION_REPORT_2025-12-02.md`
+- `server/game/magic/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

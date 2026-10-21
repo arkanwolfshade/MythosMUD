@@ -1,63 +1,63 @@
 # is_player_in_login_grace_period
 
-> 103 nodes
+> 157 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **is_player_in_login_grace_period()** (51 connections) — `server/realtime/login_grace_period.py`
-- **login_grace_period.py** (45 connections) — `server/realtime/login_grace_period.py`
-- **start_login_grace_period()** (43 connections) — `server/realtime/login_grace_period.py`
-- **game_state_provider.py** (36 connections) — `server/realtime/integration/game_state_provider.py`
-- **test_login_grace_period_visual_indicator.py** (28 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **get_login_grace_period_remaining()** (22 connections) — `server/realtime/login_grace_period.py`
-- **test_login_grace_period_flow.py** (21 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **FakeGraceManager** (13 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **cancel_login_grace_period()** (13 connections) — `server/realtime/login_grace_period.py`
-- **UUID** (13 connections)
-- **test_combat_grace_period.py** (11 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **handle_login_grace_period_expiration()** (10 connections) — `server/realtime/login_grace_period.py`
-- **_as_grace()** (9 connections) — `server/realtime/login_grace_period.py`
-- **asyncio** (9 connections)
-- **_grace_period_task()** (8 connections) — `server/realtime/login_grace_period.py`
-- **asyncio** (8 connections)
-- **_login_grace_period_seconds()** (7 connections) — `server/realtime/login_grace_period.py`
-- **_remove_from_grace_period_tracking()** (7 connections) — `server/realtime/login_grace_period.py`
-- **_try_start_effect_based_grace()** (7 connections) — `server/realtime/login_grace_period.py`
-- **test_effect_based_grace_start_then_tick_expiration_clears_in_memory()** (7 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_grace_period_can_be_cancelled()** (7 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_grace_period_expires_after_duration()** (7 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_multiple_players_independent_grace_periods()** (7 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_both_linkdead_and_warded_indicators()** (7 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **test_warded_indicator_removed_after_expiration()** (7 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- *... and 78 more nodes in this community*
+- **websocket_initial_state.py** (57 connections) — `server/realtime/websocket_initial_state.py`
+- **test_websocket_initial_state.py** (52 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
+- **asyncio** (26 connections)
+- **websocket_handler_connection.py** (24 connections) — `server/realtime/websocket_handler_connection.py`
+- **get_container_async_persistence()** (21 connections) — `server/container/async_persistence_access.py`
+- **send_initial_room_state()** (21 connections) — `server/realtime/websocket_initial_state.py`
+- **send_initial_game_state()** (20 connections) — `server/realtime/websocket_initial_state.py`
+- **check_and_send_death_notification()** (17 connections) — `server/realtime/websocket_initial_state.py`
+- **get_occupant_names()** (11 connections) — `server/realtime/websocket_helpers.py`
+- **check_and_send_delirium_notification()** (11 connections) — `server/realtime/websocket_initial_state.py`
+- **setup_initial_connection_state()** (10 connections) — `server/realtime/websocket_handler_connection.py`
+- **get_event_handler_for_initial_state()** (10 connections) — `server/realtime/websocket_initial_state.py`
+- **send_game_state_event_safely()** (10 connections) — `server/realtime/websocket_initial_state.py`
+- **prepare_room_data_with_occupants()** (9 connections) — `server/realtime/websocket_initial_state.py`
+- **Protocol** (9 connections)
+- **UUID** (9 connections)
+- **send_occupants_snapshot_if_needed()** (9 connections) — `server/realtime/websocket_initial_state.py`
+- **cleanup_websocket_connection()** (8 connections) — `server/realtime/websocket_handler_connection.py`
+- **add_npc_occupants_to_list()** (8 connections) — `server/realtime/websocket_initial_state.py`
+- **_resolve_stored_death_location()** (7 connections) — `server/realtime/websocket_initial_state.py`
+- **test_check_and_send_death_notification_location_display()** (7 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
+- **UUID** (6 connections)
+- **send_welcome_event()** (6 connections) — `server/realtime/websocket_handler_connection.py`
+- **_get_lucidity_for_client()** (6 connections) — `server/realtime/websocket_initial_state.py`
+- **_RealTimeEventHandlerForInitialState** (6 connections) — `server/realtime/websocket_initial_state.py`
+- *... and 132 more nodes in this community*
 
 ## Relationships
 
-- [test_login_grace_period.py](test_login_grace_period.py.md) (22 shared connections)
-- [get_logger](get_logger.md) (15 shared connections)
-- [GameStateProvider](GameStateProvider.md) (9 shared connections)
-- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (9 shared connections)
-- [CombatService](CombatService.md) (8 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (7 shared connections)
-- [test_look_player.py](test_look_player.py.md) (6 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (6 shared connections)
-- [SpellEffects](SpellEffects.md) (6 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (6 shared connections)
-- [game_tick_processing.py](game_tick_processing.py.md) (5 shared connections)
-- [game_tick_status_effects.py](game_tick_status_effects.py.md) (5 shared connections)
+- [test_game.py](test_game.py.md) (19 shared connections)
+- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (9 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (9 shared connections)
+- [.publish_with_pool](publish_with_pool.md) (8 shared connections)
+- [test_room_system_message_categories.py](test_room_system_message_categories.py.md) (7 shared connections)
+- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (5 shared connections)
+- [test_party_service.py](test_party_service.py.md) (4 shared connections)
+- [Room](Room.md) (4 shared connections)
+- [ChatService](ChatService.md) (4 shared connections)
+- [CombatMonitoringService](CombatMonitoringService.md) (3 shared connections)
+- [BaseEvent](BaseEvent.md) (3 shared connections)
+- [connection_initialization.py](connection_initialization.py.md) (3 shared connections)
 
 ## Source Files
 
-- `server/realtime/integration/game_state_provider.py`
-- `server/realtime/login_grace_period.py`
-- `server/tests/integration/test_login_grace_period_flow.py`
-- `server/tests/unit/commands/test_combat_grace_period.py`
-- `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- `server/container/async_persistence_access.py`
+- `server/realtime/websocket_handler_connection.py`
+- `server/realtime/websocket_helpers.py`
+- `server/realtime/websocket_initial_state.py`
+- `server/tests/unit/realtime/test_websocket_initial_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 356 (96%)
-- INFERRED: 14 (4%)
+- EXTRACTED: 372 (96%)
+- INFERRED: 17 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,10 +1,10 @@
 # 20261002170000_leave_tutorial_respawn_reward.sql
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **20261002170000_leave_tutorial_respawn_reward.sql** (0 connections) — `db/migrations/20261002170000_leave_tutorial_respawn_reward.sql`
+- **Persistence Layer Async Migration Guide** (0 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `db/migrations/20261002170000_leave_tutorial_respawn_reward.sql`
+- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
 
 ## Audit Trail
 

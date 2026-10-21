@@ -1,27 +1,27 @@
 # ensure_database_directory
 
-> 4 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **ensure_database_directory()** (4 connections) — `server/database.py`
-- **test_ensure_database_directory_postgresql()** (3 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **Ensure database directory exists (deprecated for PostgreSQL). This function is…** (1 connections) — `server/database.py`
-- **Test ensure_database_directory is no-op for PostgreSQL.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **Container System** (3 connections) — `e2e-tests/scenarios/scenario-23-container-multi-user-looting.md`
+- **Scenario 23 Multi-User Container Looting** (1 connections) — `e2e-tests/scenarios/scenario-23-container-multi-user-looting.md`
+- **Scenario 24 Environmental Containers** (1 connections) — `e2e-tests/scenarios/scenario-24-container-environmental-interactions.md`
+- **Scenario 26 Corpse Looting Grace Periods** (1 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
 
 ## Relationships
 
-- [test_database_extended.py](test_database_extended.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/database.py`
-- `server/tests/unit/infrastructure/test_database_extended.py`
+- `e2e-tests/scenarios/scenario-23-container-multi-user-looting.md`
+- `e2e-tests/scenarios/scenario-24-container-environmental-interactions.md`
+- `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

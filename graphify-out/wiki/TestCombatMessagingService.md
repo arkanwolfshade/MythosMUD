@@ -1,48 +1,48 @@
 # TestCombatMessagingService
 
-> 35 nodes
+> 40 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **TestCombatMessagingService** (21 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **asyncio** (16 connections)
-- **.test_get_attack_message_attacker_perspective()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_attack_message_custom_action_type()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_attack_message_custom_npc_messages()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_attack_message_defender_perspective()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_attack_message_fallback_to_default()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_attack_message_high_damage()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_attack_message_other_perspective()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_attack_message_zero_damage()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_combat_end_messages()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_combat_end_messages_empty_occupants()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_combat_end_messages_loser_perspective()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_combat_end_messages_winner_perspective()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_combat_start_messages()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_combat_start_messages_single_occupant()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_death_message_custom()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_death_message_default()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **Test get_death_message with custom template.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **Test get_combat_start_messages generates messages for all occupants.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **Test get_combat_start_messages with single occupant.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **Test get_combat_end_messages generates messages for all occupants.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **Test suite for CombatMessagingService class.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **Test get_combat_end_messages from winner perspective.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **Test get_combat_end_messages from loser perspective.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- *... and 10 more nodes in this community*
+- **Memory Leak Prevention System - Implementation Summary** (13 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **🔧 **Key Features Implemented**** (6 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****API Usage Examples**** (4 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **🎉 **Benefits Achieved**** (4 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **📈 **Configuration Options**** (3 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **🚀 **Deployment and Usage**** (3 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **🔮 **Future Enhancements**** (3 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **📋 **Implementation Checklist**** (3 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **📊 **Monitoring Capabilities**** (3 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **🔒 **Security and Performance**** (3 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **🧪 **Testing Coverage**** (3 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **🏗️ **Architecture Overview**** (2 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **MEMORY_LEAK_PREVENTION_SUMMARY.md** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****1. Memory Usage Monitoring**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****2. Automatic Cleanup System**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****3. Connection Management Enhancements**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****4. Data Structure Management**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****5. Comprehensive Alerting**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****Check Memory Status**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****Cleanup Thresholds**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****✅ Completed Tasks**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****Comprehensive Test Suite** (`server/tests/test_memory_leak_prevention.py`)** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **📝 **Conclusion**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****Core Components**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****Dependencies Added**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [CombatMessagingService](CombatMessagingService.md) (4 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_service.py`
+- `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 39 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

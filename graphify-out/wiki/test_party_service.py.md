@@ -1,51 +1,62 @@
 # test_party_service.py
 
-> 50 nodes
+> 82 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **test_party_service.py** (40 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_add_member_already_in_party_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_add_member_no_such_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_add_member_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_create_party_already_in_party_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_create_party_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_disband_party_by_id_without_caller()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_disband_party_by_leader_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_disband_party_by_non_leader_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_get_party_for_player_not_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_get_party_members_empty_when_not_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_get_party_members_includes_self()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_is_in_same_party_false_when_different_parties()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_is_in_same_party_false_when_one_not_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_is_in_same_party_true_when_both_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_is_leader_false_when_member()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_is_leader_false_when_not_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_kick_member_leader_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_kick_member_non_leader_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_kick_self_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_on_player_disconnect_leader_disbands_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_on_player_disconnect_member_removed()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_on_player_disconnect_not_in_party_no_op()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_remove_member_leader_leaves_disbands()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_remove_member_leave_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- *... and 25 more nodes in this community*
+- **AsyncPersistenceLayer** (197 connections) — `server/async_persistence.py`
+- **test_async_persistence_delegates.py** (36 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **asyncio** (24 connections)
+- **.__init__()** (5 connections) — `server/services/user_manager.py`
+- **test_apply_corruption_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_apply_fear_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_apply_lucidity_loss_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_async_damage_player_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_async_heal_player_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_create_container_with_kwargs()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_create_container_with_params()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_damage_player_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_gain_occult_knowledge_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_player_by_user_id_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_heal_player_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **.get_user_by_username_case_insensitive()** (4 connections) — `server/async_persistence.py`
+- **test_create_item_instance_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_delete_container_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_ensure_item_instance_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_bank_container_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_container_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_containers_by_entity_id_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_containers_by_room_id_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_decayed_containers_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_decayed_containers_none_time()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [asyncio](asyncio.md) (7 shared connections)
-- [Party](Party.md) (3 shared connections)
-- [PartyService](PartyService.md) (3 shared connections)
-- [test_lifespan_event_subscriptions.py](test_lifespan_event_subscriptions.py.md) (2 shared connections)
+- [test_quest_start_by_trigger_then_abandon](test_quest_start_by_trigger_then_abandon.md) (17 shared connections)
+- [whisper-movement.spec.ts](whisper-movement.spec.ts.md) (17 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (11 shared connections)
+- [Room](Room.md) (8 shared connections)
+- [FastAPI Code Review - Anti-Patterns and Best Practices](FastAPI_Code_Review_-_Anti-Patterns_and_Best_Practices.md) (7 shared connections)
+- [test_channel_broadcasting_strategies.py](test_channel_broadcasting_strategies.py.md) (7 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (5 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (5 shared connections)
+- [test_chat_npc_system.py](test_chat_npc_system.py.md) (5 shared connections)
+- [test_logging_handlers.py](test_logging_handlers.py.md) (4 shared connections)
+- [test_container_persistence_extended_row_helpers.py](test_container_persistence_extended_row_helpers.py.md) (4 shared connections)
+- [test_player_combat_service.py](test_player_combat_service.py.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_party_service.py`
+- `server/async_persistence.py`
+- `server/services/user_manager.py`
+- `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 
 ## Audit Trail
 
-- EXTRACTED: 64 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 249 (78%)
+- INFERRED: 69 (22%)
 - AMBIGUOUS: 0 (0%)
 
 ---

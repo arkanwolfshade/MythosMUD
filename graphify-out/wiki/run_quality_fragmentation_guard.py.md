@@ -1,34 +1,42 @@
 # run_quality_fragmentation_guard.py
 
-> 13 nodes
+> 20 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **run_quality_fragmentation_guard.py** (12 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **main()** (6 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_resolved_changed_files()** (5 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_run_git()** (5 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_build_guard_command()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_changed_files_between()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_git_executable()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_local_changed_files()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_is_graphify_path()** (3 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_resolve_base_sha()** (3 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_argv_char_len()** (2 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **Path** (1 connections)
-- **Generated graphify trees are not product code; skip guard/lint argv bloat.** (1 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **properties** (10 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **end_hour** (4 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **start_hour** (4 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **category** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **id** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **name** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **notes** (2 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **maximum** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minimum** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **maximum** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minimum** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
 
 ## Relationships
 
-- [safe_run_static](safe_run_static.md) (6 shared connections)
+- [spell_effects_internal.py](spell_effects_internal.py.md) (3 shared connections)
+- [HealthErrorResponse](HealthErrorResponse.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/run_quality_fragmentation_guard.py`
+- `db/static/schemas/npc_schedules.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

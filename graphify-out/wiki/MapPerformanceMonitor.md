@@ -1,33 +1,31 @@
 # MapPerformanceMonitor
 
-> 11 nodes
+> 10 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **MapPerformanceMonitor** (8 connections) — `client/src/components/map/utils/performance.ts`
-- **performance.ts** (5 connections) — `client/src/components/map/utils/performance.ts`
-- **debounce()** (4 connections) — `client/src/components/map/utils/performance.ts`
-- **performance.test.ts** (4 connections) — `client/src/components/map/__tests__/performance.test.ts`
-- **.getAverageRenderTime()** (2 connections) — `client/src/components/map/utils/performance.ts`
-- **.getStats()** (2 connections) — `client/src/components/map/utils/performance.ts`
-- **throttle()** (2 connections) — `client/src/components/map/utils/performance.ts`
-- **.endRender()** (1 connections) — `client/src/components/map/utils/performance.ts`
-- **.getFps()** (1 connections) — `client/src/components/map/utils/performance.ts`
-- **.reset()** (1 connections) — `client/src/components/map/utils/performance.ts`
-- **.startRender()** (1 connections) — `client/src/components/map/utils/performance.ts`
+- **gen_arkham_grid_migration.py** (8 connections) — `scripts/gen_arkham_grid_migration.py`
+- **build()** (7 connections) — `scripts/gen_arkham_grid_migration.py`
+- **lit()** (3 connections) — `scripts/gen_arkham_grid_migration.py`
+- **baseline_dml()** (2 connections) — `scripts/gen_arkham_grid_migration.py`
+- **boolean()** (2 connections) — `scripts/gen_arkham_grid_migration.py`
+- **copy_block()** (2 connections) — `scripts/gen_arkham_grid_migration.py`
+- **main()** (2 connections) — `scripts/gen_arkham_grid_migration.py`
+- **num()** (2 connections) — `scripts/gen_arkham_grid_migration.py`
+- **Generate the #829 Arkham street-grid migration for existing databases. The base…** (1 connections) — `scripts/gen_arkham_grid_migration.py`
+- **A pg_dump COPY field as a SQL literal.** (1 connections) — `scripts/gen_arkham_grid_migration.py`
 
 ## Relationships
 
-- [mapUtils.ts](mapUtils.ts.md) (3 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/src/components/map/__tests__/performance.test.ts`
-- `client/src/components/map/utils/performance.ts`
+- `scripts/gen_arkham_grid_migration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

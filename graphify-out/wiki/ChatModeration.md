@@ -1,56 +1,71 @@
 # ChatModeration
 
-> 32 nodes
+> 85 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **ChatModeration** (27 connections) — `server/game/chat_moderation.py`
-- **normalize_player_id()** (18 connections) — `server/game/chat_moderation.py`
-- **UUID** (17 connections)
-- **.get_player_mutes()** (5 connections) — `server/game/chat_moderation.py`
-- **.add_admin()** (4 connections) — `server/game/chat_moderation.py`
-- **.is_admin()** (4 connections) — `server/game/chat_moderation.py`
-- **.is_channel_muted()** (4 connections) — `server/game/chat_moderation.py`
-- **.is_globally_muted()** (4 connections) — `server/game/chat_moderation.py`
-- **.is_player_muted()** (4 connections) — `server/game/chat_moderation.py`
-- **.mute_channel()** (4 connections) — `server/game/chat_moderation.py`
-- **.mute_global()** (4 connections) — `server/game/chat_moderation.py`
-- **.mute_player()** (4 connections) — `server/game/chat_moderation.py`
-- **.remove_admin()** (4 connections) — `server/game/chat_moderation.py`
-- **.unmute_channel()** (4 connections) — `server/game/chat_moderation.py`
-- **.unmute_global()** (4 connections) — `server/game/chat_moderation.py`
-- **.unmute_player()** (4 connections) — `server/game/chat_moderation.py`
-- **test_normalize_player_id_accepts_uuid()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **Handles chat moderation operations.** (1 connections) — `server/game/chat_moderation.py`
-- **Mute a specific channel for a player.** (1 connections) — `server/game/chat_moderation.py`
-- **Unmute a specific channel for a player.** (1 connections) — `server/game/chat_moderation.py`
-- **Check if a channel is muted for a player.** (1 connections) — `server/game/chat_moderation.py`
-- **Mute a specific player for another player.** (1 connections) — `server/game/chat_moderation.py`
-- **Unmute a specific player for another player.** (1 connections) — `server/game/chat_moderation.py`
-- **Check if a player is muted by another player.** (1 connections) — `server/game/chat_moderation.py`
-- **Apply a global mute to a player (cannot use any chat channels).** (1 connections) — `server/game/chat_moderation.py`
-- *... and 7 more nodes in this community*
+- **multiplayer.ts** (63 connections) — `client/tests/e2e/runtime/fixtures/multiplayer.ts`
+- **ensurePlayerInGame()** (62 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
+- **createMultiPlayerContexts()** (50 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
+- **waitForAllPlayersInGame()** (44 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
+- **getMessages()** (38 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **local-channel-isolation.spec.ts** (31 connections) — `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
+- **cleanupMultiPlayerContexts()** (30 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
+- **shared-session.ts** (30 connections) — `client/tests/e2e/runtime/fixtures/shared-session.ts`
+- **local-channel-basic.spec.ts** (26 connections) — `client/tests/e2e/runtime/communication/local-channel-basic.spec.ts`
+- **PlayerContext** (26 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
+- **ensureMultiplayerCoLocated()** (25 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
+- **chat-messages.spec.ts** (23 connections) — `client/tests/e2e/runtime/communication/chat-messages.spec.ts`
+- **local-channel-integration.spec.ts** (23 connections) — `client/tests/e2e/runtime/communication/local-channel-integration.spec.ts`
+- **local-channel-movement.spec.ts** (23 connections) — `client/tests/e2e/runtime/movement/local-channel-movement.spec.ts`
+- **waitForCrossPlayerMessage()** (22 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
+- **test** (22 connections) — `client/tests/e2e/runtime/fixtures/shared-session.ts`
+- **follow-commands.spec.ts** (22 connections) — `client/tests/e2e/runtime/follow/follow-commands.spec.ts`
+- **movement-between-rooms.spec.ts** (22 connections) — `client/tests/e2e/runtime/movement/movement-between-rooms.spec.ts`
+- **ensurePlayersInSameRoom()** (21 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
+- **adoptSharedPlayers()** (21 connections) — `client/tests/e2e/runtime/fixtures/shared-session.ts`
+- **party-commands.spec.ts** (21 connections) — `client/tests/e2e/runtime/party/party-commands.spec.ts`
+- **admin-teleportation.spec.ts** (20 connections) — `client/tests/e2e/runtime/admin/admin-teleportation.spec.ts`
+- **getPlayerMessages()** (20 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
+- **posture-messages-game-info.spec.ts** (19 connections) — `client/tests/e2e/runtime/commands/posture-messages-game-info.spec.ts`
+- **whisper-basic.spec.ts** (18 connections) — `client/tests/e2e/runtime/communication/whisper-basic.spec.ts`
+- *... and 60 more nodes in this community*
 
 ## Relationships
 
-- [._format_mute_entry](_format_mute_entry.md) (5 shared connections)
-- [test_chat_moderation.py](test_chat_moderation.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [Any](Any.md) (3 shared connections)
-- [.can_send_message](can_send_message.md) (2 shared connections)
-- [ChatPoseManager](ChatPoseManager.md) (1 shared connections)
-- [ChatMessage](ChatMessage.md) (1 shared connections)
-- [ChatService](ChatService.md) (1 shared connections)
+- [CorpseLifecycleService](CorpseLifecycleService.md) (115 shared connections)
+- [look_command.py](look_command.py.md) (104 shared connections)
+- [NPCMovementIntegration](NPCMovementIntegration.md) (87 shared connections)
+- [Test Pruning Candidates - Detailed List](Test_Pruning_Candidates_-_Detailed_List.md) (13 shared connections)
+- [PassiveCorruptionFluxService](PassiveCorruptionFluxService.md) (3 shared connections)
 
 ## Source Files
 
-- `server/game/chat_moderation.py`
-- `server/tests/unit/game/test_chat_moderation.py`
+- `client/tests/e2e/runtime/accessibility/logout-accessibility.spec.ts`
+- `client/tests/e2e/runtime/admin/admin-teleportation.spec.ts`
+- `client/tests/e2e/runtime/admin/summon-command.spec.ts`
+- `client/tests/e2e/runtime/admin/whisper-logging.spec.ts`
+- `client/tests/e2e/runtime/commands/disconnect-grace-period.spec.ts`
+- `client/tests/e2e/runtime/commands/posture-messages-game-info.spec.ts`
+- `client/tests/e2e/runtime/commands/quit-combat-guard.spec.ts`
+- `client/tests/e2e/runtime/commands/rest-command.spec.ts`
+- `client/tests/e2e/runtime/commands/who-command.spec.ts`
+- `client/tests/e2e/runtime/communication/chat-messages.spec.ts`
+- `client/tests/e2e/runtime/communication/local-channel-basic.spec.ts`
+- `client/tests/e2e/runtime/communication/local-channel-integration.spec.ts`
+- `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
+- `client/tests/e2e/runtime/communication/whisper-basic.spec.ts`
+- `client/tests/e2e/runtime/communication/whisper-integration.spec.ts`
+- `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
+- `client/tests/e2e/runtime/connection/clean-game-state.spec.ts`
+- `client/tests/e2e/runtime/connection/new-game-session.spec.ts`
+- `client/tests/e2e/runtime/consumables/folk-tonic-use.spec.ts`
+- `client/tests/e2e/runtime/containers/container-environmental-interactions.spec.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 74 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 718 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

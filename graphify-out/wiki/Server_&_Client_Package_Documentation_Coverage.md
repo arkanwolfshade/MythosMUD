@@ -1,30 +1,28 @@
 # Server & Client Package Documentation Coverage
 
-> 9 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **Server & Client Package Documentation Coverage** (6 connections) — `docs/packages/README.md`
-- **2. Index** (4 connections) — `docs/packages/README.md`
-- **1. Overview** (1 connections) — `docs/packages/README.md`
-- **3. Related documentation** (1 connections) — `docs/packages/README.md`
-- **4. Changelog** (1 connections) — `docs/packages/README.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/packages/README.md`
-- **Documented (20)** (1 connections) — `docs/packages/README.md`
-- **Provisional (2)** (1 connections) — `docs/packages/README.md`
-- **Undocumented (21)** (1 connections) — `docs/packages/README.md`
+- **3. Decision** (7 connections) — `docs/architecture/decisions/ADR-026-item-catalog-metadata-contracts.md`
+- **3.1 Phased delivery** (1 connections) — `docs/architecture/decisions/ADR-026-item-catalog-metadata-contracts.md`
+- **3.2 Inclusion and IP** (1 connections) — `docs/architecture/decisions/ADR-026-item-catalog-metadata-contracts.md`
+- **3.3 Storage shape** (1 connections) — `docs/architecture/decisions/ADR-026-item-catalog-metadata-contracts.md`
+- **3.4 Coexistence and dedupe** (1 connections) — `docs/architecture/decisions/ADR-026-item-catalog-metadata-contracts.md`
+- **3.5 Combat bridge** (1 connections) — `docs/architecture/decisions/ADR-026-item-catalog-metadata-contracts.md`
+- **3.6 Explicitly out of scope (this ADR)** (1 connections) — `docs/architecture/decisions/ADR-026-item-catalog-metadata-contracts.md`
 
 ## Relationships
 
-- [packages/README.md](packages-README.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/packages/README.md`
+- `docs/architecture/decisions/ADR-026-item-catalog-metadata-contracts.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

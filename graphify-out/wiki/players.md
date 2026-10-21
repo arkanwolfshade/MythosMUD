@@ -1,55 +1,51 @@
 # players
 
-> 29 nodes
+> 31 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **players** (27 connections) — `db/schema.sql`
-- **experience.sql** (3 connections) — `db/procedures/experience.sql`
-- **player_skills** (3 connections) — `db/schema.sql`
-- **player_spells** (3 connections) — `db/schema.sql`
-- **quest_definitions** (3 connections) — `db/schema.sql`
-- **quest_instances** (3 connections) — `db/schema.sql`
-- **skill_use_log** (3 connections) — `db/schema.sql`
-- **skills** (3 connections) — `db/schema.sql`
-- **20260928120000_player_aliases_and_mutes.sql** (2 connections) — `db/migrations/20260928120000_player_aliases_and_mutes.sql`
-- **player_aliases** (2 connections) — `db/migrations/20260928120000_player_aliases_and_mutes.sql`
-- **player_mutes** (2 connections) — `db/migrations/20260928120000_player_aliases_and_mutes.sql`
-- **schema_name.award_player_xp()** (2 connections) — `db/procedures/experience.sql`
-- **corruption_adjustment_log** (2 connections) — `db/schema.sql`
-- **corruption_cooldowns** (2 connections) — `db/schema.sql`
-- **lucidity_adjustment_log** (2 connections) — `db/schema.sql`
-- **lucidity_cooldowns** (2 connections) — `db/schema.sql`
-- **lucidity_exposure_state** (2 connections) — `db/schema.sql`
-- **player_aliases** (2 connections) — `db/schema.sql`
-- **player_channel_preferences** (2 connections) — `db/schema.sql`
-- **player_effects** (2 connections) — `db/schema.sql`
-- **player_inventories** (2 connections) — `db/schema.sql`
-- **player_is_deleted()** (2 connections) — `db/schema.sql`
-- **player_lucidity** (2 connections) — `db/schema.sql`
-- **player_mutes** (2 connections) — `db/schema.sql`
-- **quest_offers** (2 connections) — `db/schema.sql`
-- *... and 4 more nodes in this community*
+- **Prometheus Configuration** (9 connections) — `monitoring/prometheus.yml`
+- **Alertmanager Configuration** (8 connections) — `monitoring/alertmanager.yml`
+- **MythosMUD Prometheus Alert Rules** (8 connections) — `monitoring/mythos_alerts.yml`
+- **MythosMUD Monitoring Stack** (7 connections) — `monitoring/docker-compose.monitoring.yml`
+- **mythos_connection_alerts group** (4 connections) — `monitoring/mythos_alerts.yml`
+- **connection-alerts receiver** (3 connections) — `monitoring/alertmanager.yml`
+- **Alertmanager service** (3 connections) — `monitoring/docker-compose.monitoring.yml`
+- **Prometheus service** (3 connections) — `monitoring/docker-compose.monitoring.yml`
+- **ServiceDown alert** (3 connections) — `monitoring/mythos_alerts.yml`
+- **mythos_system_alerts group** (3 connections) — `monitoring/mythos_alerts.yml`
+- **performance-alerts receiver** (2 connections) — `monitoring/alertmanager.yml`
+- **system-alerts receiver** (2 connections) — `monitoring/alertmanager.yml`
+- **Node Exporter** (2 connections) — `monitoring/docker-compose.monitoring.yml`
+- **mythos_memory_leak_alerts group** (2 connections) — `monitoring/mythos_alerts.yml`
+- **mythos_performance_alerts group** (2 connections) — `monitoring/mythos_alerts.yml`
+- **/monitoring/dual-connections endpoint** (2 connections) — `monitoring/prometheus.yml`
+- **/monitoring/memory-leaks endpoint** (2 connections) — `monitoring/prometheus.yml`
+- **mythos-server scrape job** (2 connections) — `monitoring/prometheus.yml`
+- **critical-alerts receiver** (1 connections) — `monitoring/alertmanager.yml`
+- **Critical inhibits warning alerts** (1 connections) — `monitoring/alertmanager.yml`
+- **maintenance-window time interval** (1 connections) — `monitoring/alertmanager.yml`
+- **warning-alerts receiver** (1 connections) — `monitoring/alertmanager.yml`
+- **Grafana service** (1 connections) — `monitoring/docker-compose.monitoring.yml`
+- **PostgreSQL Exporter** (1 connections) — `monitoring/docker-compose.monitoring.yml`
+- **Redis Exporter** (1 connections) — `monitoring/docker-compose.monitoring.yml`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [schema.sql](schema.sql.md) (22 shared connections)
-- [users](users.md) (2 shared connections)
-- [player_aliases.sql](player_aliases.sql.md) (1 shared connections)
-- [players.sql](players.sql.md) (1 shared connections)
-- [containers.sql](containers.sql.md) (1 shared connections)
-- [rooms](rooms.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `db/migrations/20260928120000_player_aliases_and_mutes.sql`
-- `db/procedures/experience.sql`
-- `db/schema.sql`
+- `monitoring/alertmanager.yml`
+- `monitoring/docker-compose.monitoring.yml`
+- `monitoring/mythos_alerts.yml`
+- `monitoring/prometheus.yml`
 
 ## Audit Trail
 
-- EXTRACTED: 58 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 32 (80%)
+- INFERRED: 8 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,11 +1,11 @@
 # unit/services/nats_subject_manager/__init__.py
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **unit/services/nats_subject_manager/__init__.py** (1 connections) — `server/tests/unit/services/nats_subject_manager/__init__.py`
-- **NATS subject manager unit tests.** (1 connections) — `server/tests/unit/services/nats_subject_manager/__init__.py`
+- **ADR Structure (Status/Context/Decision)** (1 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
+- **MythosMUD ADR Authoring Skill** (1 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `server/tests/unit/services/nats_subject_manager/__init__.py`
+- `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
 
 ## Audit Trail
 

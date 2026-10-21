@@ -1,10 +1,10 @@
 # Database Roles
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Database Roles** (0 connections) — `db/roles/README.md`
+- **Semgrep Windows UTF-8 Fix** (0 connections) — `docs/archive/SEMGREP_UNICODE_FIX.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `db/roles/README.md`
+- `docs/archive/SEMGREP_UNICODE_FIX.md`
 
 ## Audit Trail
 

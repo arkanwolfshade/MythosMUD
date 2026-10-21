@@ -1,51 +1,51 @@
 # canonical_room_id_impl
 
-> 27 nodes
+> 28 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **canonical_room_id_impl()** (16 connections) — `server/realtime/connection_room_utils.py`
-- **test_connection_room_utils.py** (16 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **prune_player_from_all_rooms_impl()** (7 connections) — `server/realtime/connection_room_utils.py`
-- **test_canonical_room_id_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_attribute_error()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_empty_string()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_fallback_to_main_persistence()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_no_room_found()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_none()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_room_no_id_attribute()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_success_room_manager()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_prune_player_from_all_rooms_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_reconcile_room_presence_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **Any** (3 connections)
-- **Resolve a room id to the canonical Room.id value. Args: room_id: The room ID to…** (1 connections) — `server/realtime/connection_room_utils.py`
-- **Remove a player from all room subscriptions and occupant lists.** (1 connections) — `server/realtime/connection_room_utils.py`
-- **Unit tests for connection room utils. Tests the connection_room_utils module…** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **Test canonical_room_id_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **Test canonical_room_id_impl() handles AttributeError.** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **Test reconcile_room_presence_impl() calls…** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **Test prune_player_from_all_rooms_impl() calls…** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **Test canonical_room_id_impl() returns None when room_id is None.** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **Test canonical_room_id_impl() returns empty string when room_id is empty.** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **Test canonical_room_id_impl() resolves room ID from room_manager persistence.** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **Test canonical_room_id_impl() falls back to main persistence.** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- *... and 2 more nodes in this community*
+- **Audit Coverage Boundary 2026-08** (11 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **4. Coverage ledger** (9 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **Critical State Handoffs** (5 connections) — `client/src/components/ui-v2/eventLog/HANDOFFS.md`
+- **Real-Time Architecture** (3 connections) — `docs/REAL_TIME_ARCHITECTURE.md`
+- **Container open/transfer/close/loot-all handoff (#711)** (2 connections) — `client/src/components/ui-v2/eventLog/HANDOFFS.md`
+- **Client Server-Authority Register 2026-09** (2 connections) — `docs/architecture/CLIENT_SERVER_AUTHORITY_REGISTER_2026-09.md`
+- **Server authority principle (client is not authoritative)** (2 connections) — `docs/architecture/CLIENT_SERVER_AUTHORITY_REGISTER_2026-09.md`
+- **WebSocket-only real-time design** (2 connections) — `docs/REAL_TIME_ARCHITECTURE.md`
+- **Enter-room movement handoff** (1 connections) — `client/src/components/ui-v2/eventLog/HANDOFFS.md`
+- **Respawn handoff** (1 connections) — `client/src/components/ui-v2/eventLog/HANDOFFS.md`
+- **1. Purpose** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **2. Scope for the immediate next step: verifying #625–#628** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **3. Enumeration method** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **4.1 Documents — the audited 29, recovered from the audit's own claim registers** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **4.2 Documents — the residual 74, conservative default** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **4.3 Code — method fact, not a directory checklist** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **4.4 `docs/subsystems/` — staleness, not conformance** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **4.5 Security — a boundary issue #639 does not mention** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **4.6 Questions never asked** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **4.7 Verification debt — irrecoverable, must be re-run wholesale** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **4.8 Unmerged remediation — the audit's own output was never verified against `main`** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **5. Close rule** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **6. Deferred register — no phase in the 618–639 ranking** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **7. Explicitly out of scope** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **8. Follow-up** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (10 shared connections)
-- [ConnectionManager](ConnectionManager.md) (2 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/connection_room_utils.py`
-- `server/tests/unit/realtime/test_connection_room_utils.py`
+- `client/src/components/ui-v2/eventLog/HANDOFFS.md`
+- `docs/REAL_TIME_ARCHITECTURE.md`
+- `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- `docs/architecture/CLIENT_SERVER_AUTHORITY_REGISTER_2026-09.md`
 
 ## Audit Trail
 
-- EXTRACTED: 50 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 24 (83%)
+- INFERRED: 5 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

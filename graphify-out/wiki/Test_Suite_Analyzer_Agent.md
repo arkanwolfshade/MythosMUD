@@ -1,10 +1,10 @@
 # Test Suite Analyzer Agent
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Test Suite Analyzer Agent** (0 connections) — `.claude/agents/test-analyzer.md`
+- **AI Development Workflow** (0 connections) — `docs/AI_DEVELOPMENT_WORKFLOW.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.claude/agents/test-analyzer.md`
+- `docs/AI_DEVELOPMENT_WORKFLOW.md`
 
 ## Audit Trail
 

@@ -1,38 +1,39 @@
 # Quick Start: Running E2E Tests
 
-> 16 nodes
+> 15 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **Quick Start: Running E2E Tests** (10 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Troubleshooting** (5 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Step 1: Start the E2E Test Server** (3 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Expected Results** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Method A: Use the E2E startup script (Simplest)** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Method B: Manual startup (More control)** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Next Actions** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Prerequisites ✅** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Problem: "element(s) not found" errors** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Problem: Login failed (500)** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Problem: Server won't start** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Problem: Tests timeout waiting for elements** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Step 2: Wait for Server to Start** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Step 3: Run the E2E Tests** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Test Credentials** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Viewing Test Results** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **fixture** (7 connections)
+- **mock_player()** (4 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **player_death_service()** (4 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **player_death_service_no_dependencies()** (4 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **mock_event_bus()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **mock_player_combat_service()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **mock_session()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **sample_player_id()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **Create a mock event bus.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **Create a mock player combat service.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **Create a PlayerDeathService instance.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **Create a PlayerDeathService instance without dependencies.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **Create a mock async session.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **Create a sample player ID.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **Create a mock player.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
 
 ## Relationships
 
-- [mythos_e2e Database](mythos_e2e_Database.md) (1 shared connections)
+- [MythosMUD Dependency Upgrade Strategy - Implementation Summary](MythosMUD_Dependency_Upgrade_Strategy_-_Implementation_Summary.md) (7 shared connections)
+- [test_lifecycle_respawn.py](test_lifecycle_respawn.py.md) (2 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/QUICK_START_E2E_TESTS.md`
+- `server/tests/unit/services/test_player_death_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 21 (88%)
+- INFERRED: 3 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

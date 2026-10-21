@@ -1,48 +1,47 @@
 # Test Value Distribution Chart
 
-> 46 nodes
+> 47 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **Test Value Distribution Chart** (17 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Projected Optimization Impact** (7 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Measurement and Validation** (6 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Risk Assessment and Mitigation** (5 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Detailed Category Value Breakdown** (4 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Time Distribution Analysis** (4 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Appendix: Quick Reference Commands** (3 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Visual Test Value Distribution** (3 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Success Celebration Criteria** (2 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Test Execution Time Efficiency** (2 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Test Removal Workflow** (2 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Test Value Heat Map** (2 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Value Score Distribution** (2 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **After Each Phase** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **After Phase 1-3: Pruning (Month 1)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **After Phase 4: Consolidation (Month 2)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **After Phase 5: Gap Filling (Month 2)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Automatic Rollback If** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Before Starting Optimization** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Capture Baseline** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Coverage vs Value Analysis** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **🔴 CRITICAL VALUE TESTS (1,272 tests = 25.6%)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Current State (Baseline)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Current Time Allocation** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Declare Success When** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- *... and 21 more nodes in this community*
+- **compare_linting_results.py** (21 connections) — `scripts/compare_linting_results.py`
+- **Finding** (18 connections) — `scripts/compare_linting_results.py`
+- **main()** (10 connections) — `scripts/compare_linting_results.py`
+- **compare_findings()** (8 connections) — `scripts/compare_linting_results.py`
+- **generate_report()** (8 connections) — `scripts/compare_linting_results.py`
+- **categorize_findings()** (6 connections) — `scripts/compare_linting_results.py`
+- **_format_findings_section()** (6 connections) — `scripts/compare_linting_results.py`
+- **parse_ruff_json_output()** (5 connections) — `scripts/compare_linting_results.py`
+- **_build_file_line_index()** (4 connections) — `scripts/compare_linting_results.py`
+- **_categorize_pylint_finding()** (4 connections) — `scripts/compare_linting_results.py`
+- **_categorize_ruff_finding()** (4 connections) — `scripts/compare_linting_results.py`
+- **_find_overlapping_findings()** (4 connections) — `scripts/compare_linting_results.py`
+- **_find_unmatched_findings()** (4 connections) — `scripts/compare_linting_results.py`
+- **_format_category_section()** (4 connections) — `scripts/compare_linting_results.py`
+- **_format_overlapping_section()** (4 connections) — `scripts/compare_linting_results.py`
+- **_format_summary_statistics()** (4 connections) — `scripts/compare_linting_results.py`
+- **get_ruff_output()** (4 connections) — `scripts/compare_linting_results.py`
+- **load_pylint_output()** (4 connections) — `scripts/compare_linting_results.py`
+- **parse_pylint_text_output()** (4 connections) — `scripts/compare_linting_results.py`
+- **parse_ruff_text_output()** (4 connections) — `scripts/compare_linting_results.py`
+- **Any** (4 connections)
+- **Path** (3 connections)
+- **.__eq__()** (2 connections) — `scripts/compare_linting_results.py`
+- **.__hash__()** (2 connections) — `scripts/compare_linting_results.py`
+- **.location_key()** (2 connections) — `scripts/compare_linting_results.py`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [TEST_AUDIT_EXECUTIVE_SUMMARY.md](TEST_AUDIT_EXECUTIVE_SUMMARY.md.md) (1 shared connections)
-- [Execution Timeline](Execution_Timeline.md) (1 shared connections)
+- [format_occupant_display_name](format_occupant_display_name.md) (3 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- `scripts/compare_linting_results.py`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (100%)
+- EXTRACTED: 84 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

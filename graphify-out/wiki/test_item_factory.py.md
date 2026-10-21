@@ -1,45 +1,45 @@
 # test_item_factory.py
 
-> 15 nodes
+> 23 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **test_item_factory.py** (14 connections) — `server/tests/unit/game/test_item_factory.py`
-- **ItemFactoryError** (13 connections) — `server/game/items/item_factory.py`
-- **_factory_for()** (5 connections) — `server/tests/unit/game/test_item_factory.py`
-- **SimpleNamespace** (5 connections)
-- **test_create_summon_item_instance_factory_error()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **factory()** (3 connections) — `server/tests/unit/game/test_item_factory.py`
-- **test_create_instance_builds_inner_container_from_prototype()** (3 connections) — `server/tests/unit/game/test_item_factory.py`
-- **test_create_instance_invalid_quantity()** (3 connections) — `server/tests/unit/game/test_item_factory.py`
-- **test_create_instance_success()** (3 connections) — `server/tests/unit/game/test_item_factory.py`
-- **test_create_instance_with_overrides()** (3 connections) — `server/tests/unit/game/test_item_factory.py`
-- **test_create_instance_without_container_has_no_inner_container()** (3 connections) — `server/tests/unit/game/test_item_factory.py`
-- **Exception** (1 connections)
-- **fixture** (1 connections)
-- **Raised when the factory cannot produce a valid instance.** (1 connections) — `server/game/items/item_factory.py`
-- **Unit tests for ItemFactory.** (1 connections) — `server/tests/unit/game/test_item_factory.py`
+- **Execution Steps** (11 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Scenario 4: Muting System and Emotes **[REQUIRES MULTI-PLAYER]**** (9 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Status** (2 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **scenario-04-muting-system-emotes.md** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Cleanup** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Expected Results** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **✅ FIXES IMPLEMENTED - Ready for Testing** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 10: Complete Scenario and Proceed** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 1: Both Players Connected** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 2: AW Mutes Ithaqua** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 3: Ithaqua Uses Dance Emote** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 4: Verify AW Does NOT See Ithaqua's Emote** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 5: Test Other Communication Still Works** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 6: AW Unmutes Ithaqua** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 7: Ithaqua Uses Dance Emote Again** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 8: Verify AW Now Sees Ithaqua's Emote** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 9: Test Multiple Emotes** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Success Criteria Checklist** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
 
 ## Relationships
 
-- [ItemFactory](ItemFactory.md) (6 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [test_admin_summon_command.py](test_admin_summon_command.py.md) (4 shared connections)
-- [PrototypeRegistry](PrototypeRegistry.md) (3 shared connections)
-- [initialize_components](initialize_components.md) (1 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
-- [items/__init__.py](items-__init__.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/game/items/item_factory.py`
-- `server/tests/unit/commands/test_admin_summon_command.py`
-- `server/tests/unit/game/test_item_factory.py`
+- `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (85%)
-- INFERRED: 6 (15%)
+- EXTRACTED: 22 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

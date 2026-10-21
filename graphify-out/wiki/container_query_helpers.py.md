@@ -1,52 +1,51 @@
 # container_query_helpers.py
 
-> 30 nodes
+> 50 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **container_query_helpers.py** (21 connections) — `server/persistence/container_query_helpers.py`
-- **get_decayed_containers()** (13 connections) — `server/persistence/container_query_helpers.py`
-- **_build_container_data_from_row()** (12 connections) — `server/persistence/container_query_helpers.py`
-- **get_containers_by_entity_id()** (12 connections) — `server/persistence/container_query_helpers.py`
-- **get_containers_by_room_id()** (12 connections) — `server/persistence/container_query_helpers.py`
-- **test_get_containers_by_entity_id_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_room_id_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_decayed_containers_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **Any** (4 connections)
-- **ContainerData** (4 connections)
-- **test_get_containers_by_entity_id_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_room_id_empty()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_room_id_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_decayed_containers_none_time()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_decayed_containers_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **datetime** (2 connections)
-- **UUID** (2 connections)
-- **Query helper functions for container persistence operations.** (1 connections) — `server/persistence/container_query_helpers.py`
-- **Get all containers that have decayed (decay_at < current_time). Args: conn:…** (1 connections) — `server/persistence/container_query_helpers.py`
-- **Build ContainerData object from database row. Args: conn: Database connection…** (1 connections) — `server/persistence/container_query_helpers.py`
-- **Get all containers in a room. Args: conn: Database connection room_id: Room…** (1 connections) — `server/persistence/container_query_helpers.py`
-- **Get all containers owned by an entity (player/NPC). Args: conn: Database…** (1 connections) — `server/persistence/container_query_helpers.py`
-- **Test get_containers_by_room_id successfully retrieves containers.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **Test get_containers_by_room_id returns empty list when no containers.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **Test get_containers_by_room_id handles database errors.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- *... and 5 more nodes in this community*
+- **test_command_magic.py** (31 connections) — `server/tests/unit/models/test_command_magic.py`
+- **CastCommand** (20 connections) — `server/models/command_magic.py`
+- **test_cast_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_spell_name_max_length()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_target_max_length()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_validate_spell_name_empty()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_validate_spell_name_valid()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_validate_spell_name_whitespace_only()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_validate_target_empty_string()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_validate_target_strips()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_validate_target_whitespace()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_learn_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_learn_command_spell_name_max_length()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_learn_command_validate_spell_name_empty()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_learn_command_validate_spell_name_valid()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_learn_command_validate_spell_name_whitespace_only()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spell_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spell_command_spell_name_max_length()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spell_command_validate_spell_name_empty()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spell_command_validate_spell_name_valid()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spell_command_validate_spell_name_whitespace_only()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spells_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_stop_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_teach_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [ContainerData](ContainerData.md) (21 shared connections)
-- [get_logger](get_logger.md) (12 shared connections)
-- [test_container_persistence_extended_row_helpers.py](test_container_persistence_extended_row_helpers.py.md) (5 shared connections)
-- [server/persistence/__init__.py](server-persistence-__init__.py.md) (4 shared connections)
+- [ContainerComponent](ContainerComponent.md) (23 shared connections)
+- [test_message_filtering.py](test_message_filtering.py.md) (2 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/persistence/container_query_helpers.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- `server/models/command_magic.py`
+- `server/tests/unit/models/test_command_magic.py`
 
 ## Audit Trail
 
-- EXTRACTED: 76 (93%)
-- INFERRED: 6 (7%)
+- EXTRACTED: 85 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,62 +1,69 @@
 # test_combat_flee_helpers.py
 
-> 75 nodes
+> 85 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **test_combat_flee_helpers.py** (27 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **combat_flee.py** (24 connections) — `server/commands/combat_flee.py`
-- **AppWithState** (21 connections) — `server/commands/combat_app_protocols.py`
-- **_FleeCommandHandlerLike** (16 connections) — `server/commands/combat_flee.py`
-- **_resolve_flee_preconditions()** (16 connections) — `server/commands/combat_flee.py`
-- **_validate_flee_combat_and_room()** (12 connections) — `server/commands/combat_flee.py`
-- **FleePreconditionError** (10 connections) — `server/commands/combat_helpers.py`
-- **_PlayerForFlee** (8 connections) — `server/commands/combat_flee.py`
-- **_ensure_flee_standing()** (8 connections) — `server/commands/combat_flee.py`
-- **_get_flee_player_uuid()** (8 connections) — `server/commands/combat_flee.py`
-- **_get_flee_room_id()** (8 connections) — `server/commands/combat_flee.py`
-- **combat_app_protocols.py** (8 connections) — `server/commands/combat_app_protocols.py`
-- **run_handle_flee_command()** (7 connections) — `server/commands/combat_flee.py`
-- **combat_helpers.py** (7 connections) — `server/commands/combat_helpers.py`
-- **test_validate_flee_combat_and_room_success()** (6 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **asyncio** (6 connections)
-- **test_resolve_flee_preconditions_player_error()** (5 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **test_validate_flee_combat_and_room_no_movement_service()** (5 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **_PlayerPositionServiceLike** (4 connections) — `server/commands/combat_flee.py`
-- **_participant()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **test_ensure_flee_standing_when_already_standing()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **test_ensure_flee_standing_when_sitting()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **test_validate_flee_combat_and_room_no_combat_service()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **UUID** (4 connections)
-- **.check_and_interrupt_rest()** (3 connections) — `server/commands/combat_flee.py`
-- *... and 50 more nodes in this community*
+- **factory.py** (57 connections) — `server/app/factory.py`
+- **test_help_api.py** (21 connections) — `server/tests/unit/api/test_help_api.py`
+- **server/main.py** (19 connections) — `server/main.py`
+- **create_app()** (17 connections) — `server/app/factory.py`
+- **get_help_docs()** (12 connections) — `server/api/help.py`
+- **user_is_admin()** (8 connections) — `server/api/item_catalog.py`
+- **generate_openapi_spec.py** (7 connections) — `scripts/generate_openapi_spec.py`
+- **player_router.py** (7 connections) — `server/api/player_router.py`
+- **CORSConfigDict** (7 connections) — `server/app/factory.py`
+- **api/containers.py** (6 connections) — `server/api/containers.py`
+- **_configure_cors()** (6 connections) — `server/app/factory.py`
+- **_get_cors_config_from_app_config()** (6 connections) — `server/app/factory.py`
+- **_parse_cors_env_vars()** (6 connections) — `server/app/factory.py`
+- **_register_v1_routers()** (6 connections) — `server/app/factory.py`
+- **test_auth()** (6 connections) — `server/main.py`
+- **test_openapi_tags.py** (6 connections) — `server/tests/unit/app/test_openapi_tags.py`
+- **main()** (5 connections) — `scripts/generate_openapi_spec.py`
+- **_render_tag_table()** (5 connections) — `scripts/generate_openapi_spec.py`
+- **_apply_cors_env_overrides()** (5 connections) — `server/app/factory.py`
+- **_user()** (5 connections) — `server/tests/unit/api/test_help_api.py`
+- **_update_tag_table_doc()** (4 connections) — `scripts/generate_openapi_spec.py`
+- **CORSConfigOverrides** (4 connections) — `server/app/factory.py`
+- **_get_default_cors_config()** (4 connections) — `server/app/factory.py`
+- **_parse_cors_origin_list()** (4 connections) — `server/app/factory.py`
+- **_create_get_app()** (4 connections) — `server/main.py`
+- *... and 60 more nodes in this community*
 
 ## Relationships
 
-- [combat_assist.py](combat_assist.py.md) (8 shared connections)
-- [CombatInstance](CombatInstance.md) (8 shared connections)
-- [CombatService](CombatService.md) (7 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (6 shared connections)
-- [combat_taunt.py](combat_taunt.py.md) (5 shared connections)
-- [test_combat_handler.py](test_combat_handler.py.md) (3 shared connections)
-- [command_error](command_error.md) (3 shared connections)
-- [CombatParticipant](CombatParticipant.md) (2 shared connections)
-- [format_combat_status](format_combat_status.md) (2 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [Stats](Stats.md) (1 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (14 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (10 shared connections)
+- [Room](Room.md) (8 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (6 shared connections)
+- [._get_npc_display_name](_get_npc_display_name.md) (4 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (4 shared connections)
+- [test_player_combat_service.py](test_player_combat_service.py.md) (3 shared connections)
+- [Optimize Skill](Optimize_Skill.md) (3 shared connections)
+- [apiTypeGuards.ts](apiTypeGuards.ts.md) (3 shared connections)
+- [NPCSpawnRule](NPCSpawnRule.md) (3 shared connections)
+- [_PlayerCombatClearing](_PlayerCombatClearing.md) (3 shared connections)
+- [test_look_player.py](test_look_player.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_app_protocols.py`
-- `server/commands/combat_flee.py`
-- `server/commands/combat_helpers.py`
-- `server/tests/unit/commands/test_combat_flee_helpers.py`
+- `scripts/generate_openapi_spec.py`
+- `server/api/containers.py`
+- `server/api/help.py`
+- `server/api/item_catalog.py`
+- `server/api/player_router.py`
+- `server/app/factory.py`
+- `server/auth/endpoints.py`
+- `server/main.py`
+- `server/tests/unit/api/test_help_api.py`
+- `server/tests/unit/app/test_openapi_tags.py`
+- `server/tests/unit/middleware/test_auth_rate_limit.py`
 
 ## Audit Trail
 
-- EXTRACTED: 159 (91%)
-- INFERRED: 15 (9%)
+- EXTRACTED: 210 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

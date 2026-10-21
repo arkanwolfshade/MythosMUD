@@ -1,26 +1,23 @@
 # test_broadcast_player_joined_combat
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_broadcast_player_joined_combat()** (4 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **#833: the join line goes to the room as one short message and skips the joiner.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Character Creation Revamp and CoC 7th Ed Skills Plan** (0 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (1 shared connections)
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `docs/archive/character_creation_revamp_coc_skills_plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

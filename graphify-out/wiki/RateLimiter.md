@@ -1,44 +1,61 @@
 # RateLimiter
 
-> 16 nodes
+> 85 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **RateLimiter** (12 connections) — `server/utils/rate_limiter.py`
-- **rate_limiter()** (5 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **.enforce_rate_limit()** (5 connections) — `server/utils/rate_limiter.py`
-- **.get_rate_limit_info()** (4 connections) — `server/utils/rate_limiter.py`
-- **.check_rate_limit()** (3 connections) — `server/utils/rate_limiter.py`
-- **server/utils/__init__.py** (3 connections) — `server/utils/__init__.py`
-- **.__init__()** (2 connections) — `server/utils/rate_limiter.py`
-- **fixture** (1 connections)
-- **Any** (1 connections)
-- **Create a RateLimiter instance for testing.** (1 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **Utility modules for MythosMUD server. This package contains various utility…** (1 connections) — `server/utils/__init__.py`
-- **Enforce rate limiting for a user. Args: user_id: The user's ID Raises:…** (1 connections) — `server/utils/rate_limiter.py`
-- **Simple in-memory rate limiter for API endpoints. This rate limiter tracks…** (1 connections) — `server/utils/rate_limiter.py`
-- **Initialize the rate limiter. Args: max_requests: Maximum number of requests…** (1 connections) — `server/utils/rate_limiter.py`
-- **Check if a user has exceeded the rate limit. Args: user_id: The user's ID…** (1 connections) — `server/utils/rate_limiter.py`
-- **Get rate limit information for a user. Args: user_id: The user's ID Returns:…** (1 connections) — `server/utils/rate_limiter.py`
+- **test_database_helpers.py** (46 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **database_helpers.py** (30 connections) — `server/database_helpers.py`
+- **get_database_path()** (17 connections) — `server/database_helpers.py`
+- **asyncio** (14 connections)
+- **get_async_session()** (12 connections) — `server/database_helpers.py`
+- **get_session_maker()** (10 connections) — `server/database_helpers.py`
+- **get_engine()** (9 connections) — `server/database_helpers.py`
+- **close_db()** (8 connections) — `server/database_helpers.py`
+- **init_db()** (8 connections) — `server/database_helpers.py`
+- **get_database_url()** (7 connections) — `server/database_helpers.py`
+- **ensure_database_directory()** (6 connections) — `server/database_helpers.py`
+- **test_get_engine_raises_validation_error()** (6 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_get_session_maker_raises_validation_error()** (6 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_close_db_engine_initialization_failure()** (5 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_close_db_raises_runtime_error_on_failure()** (5 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_get_async_session_rollback_failure()** (5 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_get_async_session_rollback_on_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_get_async_session_rollback_success()** (5 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_get_database_url()** (5 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_get_database_url_returns_none()** (5 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_get_engine()** (5 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_get_session_maker()** (5 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **_get_database_url_state()** (4 connections) — `server/database.py`
+- **test_close_db_success()** (4 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_get_async_session_finally_block_executes()** (4 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- *... and 60 more nodes in this community*
 
 ## Relationships
 
-- [test_auth_rate_limit.py](test_auth_rate_limit.py.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
-- [test_rate_limiter_utils.py](test_rate_limiter_utils.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [RateLimiter](RateLimiter.md) (1 shared connections)
+- [InventoryPanel.tsx](InventoryPanel.tsx.md) (13 shared connections)
+- [resolve_lazy_attr](resolve_lazy_attr.md) (11 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (8 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (7 shared connections)
+- [🔴 CRITICAL ISSUES](🔴_CRITICAL_ISSUES.md) (5 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (4 shared connections)
+- [test_command_registry_consistency.py](test_command_registry_consistency.py.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (2 shared connections)
+- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (1 shared connections)
+- [PopulationStats](PopulationStats.md) (1 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_rate_limiter_utils.py`
-- `server/utils/__init__.py`
-- `server/utils/rate_limiter.py`
+- `server/database.py`
+- `server/database_helpers.py`
+- `server/tests/unit/infrastructure/test_database_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 181 (91%)
+- INFERRED: 18 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

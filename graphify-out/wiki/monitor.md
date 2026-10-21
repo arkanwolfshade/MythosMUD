@@ -1,25 +1,25 @@
 # monitor
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **monitor()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
-- **fixture** (1 connections)
-- **Monitor with tiny thresholds for easy triggering in tests.** (1 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **Structlog Implementation Plan** (1 connections) — `docs/archive/PLANNING_logging.md`
+- **Main.py Refactoring Plan** (1 connections) — `docs/archive/PLANNING_main_refactor.md`
 
 ## Relationships
 
-- [MemoryThresholdMonitor](MemoryThresholdMonitor.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/app/test_memory_cleanup_service.py`
+- `docs/archive/PLANNING_logging.md`
+- `docs/archive/PLANNING_main_refactor.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

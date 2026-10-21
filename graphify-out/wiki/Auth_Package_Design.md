@@ -1,32 +1,30 @@
 # Auth Package Design
 
-> 11 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **Auth Package Design** (11 connections) — `docs/packages/PACKAGE_AUTH_DESIGN.md`
-- **1. Overview** (1 connections) — `docs/packages/PACKAGE_AUTH_DESIGN.md`
-- **2. Members** (1 connections) — `docs/packages/PACKAGE_AUTH_DESIGN.md`
-- **3. Boundary contract** (1 connections) — `docs/packages/PACKAGE_AUTH_DESIGN.md`
-- **4. Key design decisions** (1 connections) — `docs/packages/PACKAGE_AUTH_DESIGN.md`
-- **5. Constraints** (1 connections) — `docs/packages/PACKAGE_AUTH_DESIGN.md`
-- **6. Developer guide** (1 connections) — `docs/packages/PACKAGE_AUTH_DESIGN.md`
-- **7. Troubleshooting** (1 connections) — `docs/packages/PACKAGE_AUTH_DESIGN.md`
-- **8. Related docs** (1 connections) — `docs/packages/PACKAGE_AUTH_DESIGN.md`
-- **9. Changelog** (1 connections) — `docs/packages/PACKAGE_AUTH_DESIGN.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/packages/PACKAGE_AUTH_DESIGN.md`
+- **run-playwright-tests.js** (8 connections) — `client/scripts/run-playwright-tests.js`
+- **checkBackendServer()** (1 connections) — `client/scripts/run-playwright-tests.js`
+- **clientRoot** (1 connections) — `client/scripts/run-playwright-tests.js`
+- **__dirname** (1 connections) — `client/scripts/run-playwright-tests.js`
+- **E2E_BACKEND_BASE_URL** (1 connections) — `client/scripts/run-playwright-tests.js`
+- **env** (1 connections) — `client/scripts/run-playwright-tests.js`
+- **__filename** (1 connections) — `client/scripts/run-playwright-tests.js`
+- **playwright** (1 connections) — `client/scripts/run-playwright-tests.js`
+- **testsDir** (1 connections) — `client/scripts/run-playwright-tests.js`
 
 ## Relationships
 
-- [packages/README.md](packages-README.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/packages/PACKAGE_AUTH_DESIGN.md`
+- `client/scripts/run-playwright-tests.js`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

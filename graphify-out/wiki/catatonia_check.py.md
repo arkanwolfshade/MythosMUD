@@ -1,60 +1,50 @@
 # catatonia_check.py
 
-> 80 nodes
+> 88 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **catatonia_check.py** (25 connections) — `server/command_handler/catatonia_check.py`
-- **test_command_validation.py** (25 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **asyncio** (24 connections)
-- **TestCatatoniaChecks** (21 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **check_catatonia_block()** (16 connections) — `server/command_handler/catatonia_check.py`
-- **_is_catatonic()** (10 connections) — `server/command_handler/catatonia_check.py`
-- **_load_player_for_catatonia_check()** (10 connections) — `server/command_handler/catatonia_check.py`
-- **_check_catatonia_database()** (9 connections) — `server/command_handler/catatonia_check.py`
-- **_check_catatonia_registry()** (9 connections) — `server/command_handler/catatonia_check.py`
-- **_query_lucidity_record()** (9 connections) — `server/command_handler/catatonia_check.py`
-- **_fetch_lucidity_record()** (8 connections) — `server/command_handler/catatonia_check.py`
-- **TestCheckAllCommandBlocks** (7 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **_registry_player_id_value()** (7 connections) — `server/command_handler/catatonia_check.py`
-- **UUID** (7 connections)
-- **_PersistenceGetPlayerByName** (5 connections) — `server/command_handler/catatonia_check.py`
-- **_convert_player_id_to_uuid()** (4 connections) — `server/command_handler/catatonia_check.py`
-- **.test_check_catatonia_block_allowed_command()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_catatonia_block_no_app_state()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_catatonia_block_uses_string_registry_key_when_player_id_not_uuid_or_str()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_catatonia_database_catatonic()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_catatonia_database_not_catatonic()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_catatonia_registry_catatonic()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_catatonia_registry_not_catatonic()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_fetch_lucidity_record()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_load_player_for_catatonia_check_from_cache()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
-- *... and 55 more nodes in this community*
+- **Reporter** (56 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **TestReporter** (27 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.print_bidirectional_errors()** (5 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_error()** (5 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_parsing_errors()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_room_header()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_summary()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_validation_errors()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **test_reporter.py** (4 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.format_error()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.generate_json_output()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_success()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_validation_warnings()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_warning()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.test_colorize_output_unknown_color()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_colorize_output_with_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_colorize_output_without_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_format_error_with_suggestion()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_format_error_without_suggestion()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_format_warning()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_generate_json_output()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_init_with_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_init_without_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_print_error()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_print_header_custom_title()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- *... and 63 more nodes in this community*
 
 ## Relationships
 
-- [command_guards.py](command_guards.py.md) (12 shared connections)
-- [MessageCategory](MessageCategory.md) (9 shared connections)
-- [get_cached_player](get_cached_player.md) (5 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [TestCheckCastingState](TestCheckCastingState.md) (5 shared connections)
-- [LucidityService](LucidityService.md) (4 shared connections)
-- [_prepare_command_for_processing](_prepare_command_for_processing.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
-- [_check_rate_limit](_check_rate_limit.md) (2 shared connections)
-- [test_command_validator.py](test_command_validator.py.md) (2 shared connections)
-- [CatatoniaRegistry](CatatoniaRegistry.md) (1 shared connections)
-- [lucidity.py](lucidity.py.md) (1 shared connections)
+- [asyncio](asyncio.md) (9 shared connections)
+- [Mypy Remediation](Mypy_Remediation.md) (3 shared connections)
 
 ## Source Files
 
-- `server/command_handler/catatonia_check.py`
-- `server/tests/unit/commands/test_command_validation.py`
+- `tools/room_toolkit/room_validator/core/reporter.py`
+- `tools/room_toolkit/room_validator/tests/test_reporter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 184 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 130 (96%)
+- INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

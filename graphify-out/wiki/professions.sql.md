@@ -1,12 +1,11 @@
 # professions.sql
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **professions.sql** (2 connections) — `db/procedures/professions.sql`
-- **schema_name.get_all_professions()** (1 connections) — `db/procedures/professions.sql`
-- **schema_name.get_profession_by_id()** (1 connections) — `db/procedures/professions.sql`
+- **analyze_markdownlint.py** (1 connections) — `scripts/analyze_markdownlint.py`
+- **main()** (1 connections) — `scripts/analyze_markdownlint.py`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `db/procedures/professions.sql`
+- `scripts/analyze_markdownlint.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

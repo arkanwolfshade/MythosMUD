@@ -1,59 +1,55 @@
 # test_lucidity_event_dispatcher.py
 
-> 87 nodes
+> 79 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **test_lucidity_event_dispatcher.py** (35 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **send_rescue_update_event()** (25 connections) — `server/services/lucidity_event_dispatcher.py`
-- **asyncio** (25 connections)
-- **lucidity_event_dispatcher.py** (22 connections) — `server/services/lucidity_event_dispatcher.py`
-- **send_lucidity_change_event()** (19 connections) — `server/services/lucidity_event_dispatcher.py`
-- **send_catatonia_event()** (14 connections) — `server/services/lucidity_event_dispatcher.py`
-- **LucidityChangeEventExtras** (12 connections) — `server/services/lucidity_event_dispatcher.py`
-- **_lucidity_change_payload_with_liabilities()** (11 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **_dispatch_player_event()** (10 connections) — `server/services/lucidity_event_dispatcher.py`
-- **liability_types.py** (8 connections) — `server/utils/liability_types.py`
-- **DecodeLiabilitiesFn** (6 connections) — `server/utils/liability_types.py`
-- **EncodeLiabilitiesFn** (6 connections) — `server/utils/liability_types.py`
-- **UUID** (6 connections)
-- **test_send_lucidity_change_event_with_liabilities()** (5 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_send_lucidity_change_event_with_max_lcd()** (5 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_send_lucidity_change_event_with_metadata()** (5 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_send_lucidity_change_event_with_reason_and_source()** (5 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **_format_liabilities()** (4 connections) — `server/services/lucidity_event_dispatcher.py`
-- **test_dispatch_player_event_import_error()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_dispatch_player_event_uuid_conversion()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_format_liabilities_empty()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_format_liabilities_empty_code()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_format_liabilities_invalid_stacks()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_format_liabilities_multiple_entries()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_format_liabilities_multiple_stacks()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- *... and 62 more nodes in this community*
+- **CombatConfiguration** (26 connections) — `server/services/combat_configuration_service.py`
+- **CombatConfigurationService** (18 connections) — `server/services/combat_configuration_service.py`
+- **combat_configuration_service.py** (17 connections) — `server/services/combat_configuration_service.py`
+- **TestCombatConfiguration** (16 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **CombatConfigurationScope** (8 connections) — `server/services/combat_configuration_service.py`
+- **.update_combat_configuration()** (8 connections) — `server/services/combat_configuration_service.py`
+- **test_combat_configuration_service.py** (8 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **CombatConfigurationError** (7 connections) — `server/services/combat_configuration_service.py`
+- **.get_combat_configuration_for_scope()** (7 connections) — `server/services/combat_configuration_service.py`
+- **get_combat_configuration()** (7 connections) — `server/services/combat_configuration_service.py`
+- **.get_combat_settings_summary()** (6 connections) — `server/services/combat_configuration_service.py`
+- **.validate_configuration()** (6 connections) — `server/services/combat_configuration_service.py`
+- **.from_dict()** (5 connections) — `server/services/combat_configuration_service.py`
+- **.is_combat_available()** (5 connections) — `server/services/combat_configuration_service.py`
+- **get_combat_config()** (5 connections) — `server/services/combat_configuration_service.py`
+- **Any** (5 connections)
+- **.clear_scope_override()** (4 connections) — `server/services/combat_configuration_service.py`
+- **.get_active_overrides()** (4 connections) — `server/services/combat_configuration_service.py`
+- **.to_dict()** (3 connections) — `server/services/combat_configuration_service.py`
+- **.validate()** (3 connections) — `server/services/combat_configuration_service.py`
+- **.get_combat_configuration()** (3 connections) — `server/services/combat_configuration_service.py`
+- **.refresh_configuration()** (3 connections) — `server/services/combat_configuration_service.py`
+- **.test_from_dict()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_init_custom_values()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_init_defaults()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- *... and 54 more nodes in this community*
 
 ## Relationships
 
-- [LucidityService](LucidityService.md) (17 shared connections)
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (7 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [rescue_commands.py](rescue_commands.py.md) (5 shared connections)
-- [test_message_category_invariants.py](test_message_category_invariants.py.md) (3 shared connections)
-- [magic_service.py](magic_service.py.md) (2 shared connections)
-- [websocket_initial_state.py](websocket_initial_state.py.md) (2 shared connections)
-- [test_rescue_service.py](test_rescue_service.py.md) (2 shared connections)
-- [MessageCategory](MessageCategory.md) (2 shared connections)
-- [_handle_admin_hallucinate_command](_handle_admin_hallucinate_command.md) (2 shared connections)
+- [TestHierarchicalSchema](TestHierarchicalSchema.md) (7 shared connections)
+- [IdleMovementHandler](IdleMovementHandler.md) (3 shared connections)
+- [test_player_combat_service.py](test_player_combat_service.py.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [LucidityService](LucidityService.md) (2 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (1 shared connections)
+- [MythosMUD Test Suite Modernization Plan](MythosMUD_Test_Suite_Modernization_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/lucidity_event_dispatcher.py`
-- `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- `server/utils/liability_types.py`
+- `server/services/combat_configuration_service.py`
+- `server/tests/unit/services/test_combat_configuration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 199 (97%)
-- INFERRED: 6 (3%)
+- EXTRACTED: 134 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

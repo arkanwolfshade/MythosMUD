@@ -1,33 +1,32 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\The Grand Grimoire of Cthulhu Mythos Magic  (2026-08-12)
 
-> 11 nodes
+> 10 nodes · cohesion 0.31
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\The Grand Grimoire of Cthulhu Mythos Magic  (2026-08-12)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Ambiguous Edges - Review These** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
+- **zone_and_subzone()** (6 connections) — `server/tests/integration/test_npcs_zone_config_procedures.py`
+- **test_get_subzone_configs_joins_parent_zone()** (5 connections) — `server/tests/integration/test_npcs_zone_config_procedures.py`
+- **test_get_zone_configs_includes_the_zone()** (5 connections) — `server/tests/integration/test_npcs_zone_config_procedures.py`
+- **test_npcs_zone_config_procedures.py** (4 connections) — `server/tests/integration/test_npcs_zone_config_procedures.py`
+- **async_sessionmaker** (3 connections)
+- **AsyncSession** (3 connections)
+- **asyncio** (2 connections)
+- **fixture** (1 connections)
+- **Integration tests for db/procedures/npcs.sql's zone/subzone config read…** (1 connections) — `server/tests/integration/test_npcs_zone_config_procedures.py`
+- **Create one zone and one subzone with unique stable_ids. Yields (zone_stable_id,…** (1 connections) — `server/tests/integration/test_npcs_zone_config_procedures.py`
 
 ## Relationships
 
-- [Communities (355 total, 223 thin omitted)](Communities_355_total,_223_thin_omitted.md) (1 shared connections)
+- [CombatBroadcastMixin](CombatBroadcastMixin.md) (3 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
+- `server/tests/integration/test_npcs_zone_config_procedures.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 14 (82%)
+- INFERRED: 3 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

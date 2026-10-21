@@ -1,28 +1,31 @@
 # corpse_service
 
-> 5 nodes
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **corpse_service()** (4 connections) — `server/tests/unit/services/test_corpse_lifecycle_decay.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_decay.py`
-- **fixture** (2 connections)
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/services/test_corpse_lifecycle_decay.py`
-- **Create a CorpseLifecycleService instance.** (1 connections) — `server/tests/unit/services/test_corpse_lifecycle_decay.py`
+- **monitoring_service()** (4 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **fixture** (4 connections)
+- **mock_combat_config()** (3 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **mock_feature_flags()** (3 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **mock_config()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **Create mock feature flags.** (1 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **Create mock combat config.** (1 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **Create CombatMonitoringService instance with mocked dependencies.** (1 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
 
 ## Relationships
 
-- [test_corpse_lifecycle_decay.py](test_corpse_lifecycle_decay.py.md) (2 shared connections)
-- [CorpseLifecycleService](CorpseLifecycleService.md) (1 shared connections)
+- [LucidityService](LucidityService.md) (4 shared connections)
+- [MythosMUD Test Suite Modernization Plan](MythosMUD_Test_Suite_Modernization_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_corpse_lifecycle_decay.py`
+- `server/tests/unit/services/test_combat_monitoring_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 11 (92%)
+- INFERRED: 1 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

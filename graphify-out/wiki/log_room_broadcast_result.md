@@ -1,37 +1,36 @@
 # log_room_broadcast_result
 
-> 8 nodes
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **log_room_broadcast_result()** (12 connections) — `server/services/combat_messaging/base.py`
-- **.broadcast_player_death()** (5 connections) — `server/services/combat_messaging/player_broadcasts.py`
-- **test_log_room_broadcast_result_debug_on_success()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_log_room_broadcast_result_error_on_failed_deliveries()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Log a room broadcast's outcome -- error-level on any failed delivery, debug-…** (1 connections) — `server/services/combat_messaging/base.py`
-- **Broadcast player death message to all players in the room.** (1 connections) — `server/services/combat_messaging/player_broadcasts.py`
-- **A room broadcast with failed_deliveries must log at error level, not just debug…** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **A clean room broadcast (no failures) stays at debug level.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **AnyIO vs Asyncio: High-Level Comparison and Decision Guide** (10 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Pros and Cons** (5 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **My Academic Opinion (Mythos Persona)** (2 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Adjusts spectacles and peers at the codebase** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **anyio Cons ❌** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **anyio Pros ✅** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **asyncio Cons ❌** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **asyncio Pros ✅** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Decision Matrix** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Next Steps** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
 
 ## Relationships
 
-- [.connection_manager](connection_manager.md) (4 shared connections)
-- [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (3 shared connections)
-- [CombatBroadcastMixin](CombatBroadcastMixin.md) (2 shared connections)
-- [NpcDisposition](NpcDisposition.md) (1 shared connections)
-- [MessageCategory](MessageCategory.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
+- [fix_markdown_code_block_style.py](fix_markdown_code_block_style.py.md) (1 shared connections)
+- [Common Mistakes and How to Fix Them](Common_Mistakes_and_How_to_Fix_Them.md) (1 shared connections)
+- [Log Levels and Usage](Log_Levels_and_Usage.md) (1 shared connections)
+- [Performance Logging](Performance_Logging.md) (1 shared connections)
+- [_RoomPersistence](_RoomPersistence.md) (1 shared connections)
+- [Enhanced Logging Features](Enhanced_Logging_Features.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_messaging/base.py`
-- `server/services/combat_messaging/player_broadcasts.py`
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `docs/archive/anyio_vs_asyncio_comparison.md`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

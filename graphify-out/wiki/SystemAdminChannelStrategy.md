@@ -1,34 +1,42 @@
 # SystemAdminChannelStrategy
 
-> 8 nodes
+> 15 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **SystemAdminChannelStrategy** (9 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **test_system_admin_channel_strategy_broadcast()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_system_admin_channel_strategy_personal_target()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **.__init__()** (2 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Strategy for system/admin channel broadcasting.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Initialize system/admin channel strategy. Args: channel_type: Type of…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Test SystemAdminChannelStrategy.broadcast() broadcasts globally.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Personal system messages deliver to target_player_id only.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_look_room_segments.py** (17 connections) — `server/tests/unit/commands/test_look_room_segments.py`
+- **_npc_section_parts()** (11 connections) — `server/commands/look_room.py`
+- **test_a_phantom_is_tagged_exactly_like_a_real_hostile()** (6 connections) — `server/tests/unit/commands/test_look_room_segments.py`
+- **test_room_look_carries_segments_that_join_to_the_whole_result()** (6 connections) — `server/tests/unit/commands/test_look_room_segments.py`
+- **asyncio** (5 connections)
+- **test_room_look_with_nobody_here_has_no_segments()** (5 connections) — `server/tests/unit/commands/test_look_room_segments.py`
+- **_persistence()** (3 connections) — `server/tests/unit/commands/test_look_room_segments.py`
+- **_phantom_patches()** (3 connections) — `server/tests/unit/commands/test_look_room_segments.py`
+- **_room()** (3 connections) — `server/tests/unit/commands/test_look_room_segments.py`
+- **test_section_parts_are_empty_without_npcs_or_a_room()** (3 connections) — `server/tests/unit/commands/test_look_room_segments.py`
+- **test_section_parts_style_each_name_by_disposition()** (3 connections) — `server/tests/unit/commands/test_look_room_segments.py`
+- **The "Also here: ..." line as parts, each NPC name styled by its disposition…** (1 connections) — `server/commands/look_room.py`
+- **`look`'s "Also here: ..." line carries each NPC's name as a styled segment…** (1 connections) — `server/tests/unit/commands/test_look_room_segments.py`
+- **Patch the viewer's phantom roster: one phantom named ``name``, or none.** (1 connections) — `server/tests/unit/commands/test_look_room_segments.py`
+- **ADR-024: nothing in the line tells a hallucinated hostile from a real one.** (1 connections) — `server/tests/unit/commands/test_look_room_segments.py`
 
 ## Relationships
 
-- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (3 shared connections)
-- [test_channel_broadcasting_strategies.py](test_channel_broadcasting_strategies.py.md) (3 shared connections)
-- [asyncio](asyncio.md) (2 shared connections)
-- [UUID](UUID.md) (1 shared connections)
+- [player_presence_tracker.py](player_presence_tracker.py.md) (7 shared connections)
+- [look_container.py](look_container.py.md) (7 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [security.ts](security.ts.md) (1 shared connections)
+- [session](session.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/channel_broadcasting_strategies.py`
-- `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- `server/commands/look_room.py`
+- `server/tests/unit/commands/test_look_room_segments.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (88%)
-- INFERRED: 2 (12%)
+- EXTRACTED: 41 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

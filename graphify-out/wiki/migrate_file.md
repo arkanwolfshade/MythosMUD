@@ -1,17 +1,15 @@
 # migrate_file
 
-> 8 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **migrate_file()** (5 connections) — `scripts/migrate_async_persistence.py`
-- **MigrationResult** (4 connections) — `scripts/migrate_async_persistence.py`
-- **main()** (3 connections) — `scripts/migrate_async_persistence.py`
-- **migrate_async_persistence.py** (3 connections) — `scripts/migrate_async_persistence.py`
-- **Path** (2 connections)
-- **NamedTuple** (1 connections)
-- **Result of a file migration.** (1 connections) — `scripts/migrate_async_persistence.py`
-- **Migrate a single file to use async persistence patterns. Args: file_path: Path…** (1 connections) — `scripts/migrate_async_persistence.py`
+- **Round-Based Combat** (3 connections) — `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
+- **Combat Bugs Investigation and Fixes** (2 connections) — `.cursor/plans/combat-bugs-investigation-and-fixes_47c9cae4.plan.md`
+- **Combat Round System Refactor** (2 connections) — `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
+- **Combat Action Queue** (1 connections) — `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
+- **First Weapon Switchblade** (1 connections) — `.cursor/plans/first_weapon_switchblade_85972031.plan.md`
+- **Flee Command and Effect** (1 connections) — `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
 
 ## Relationships
 
@@ -19,12 +17,15 @@
 
 ## Source Files
 
-- `scripts/migrate_async_persistence.py`
+- `.cursor/plans/combat-bugs-investigation-and-fixes_47c9cae4.plan.md`
+- `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
+- `.cursor/plans/first_weapon_switchblade_85972031.plan.md`
+- `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 2 (40%)
+- INFERRED: 3 (60%)
 - AMBIGUOUS: 0 (0%)
 
 ---

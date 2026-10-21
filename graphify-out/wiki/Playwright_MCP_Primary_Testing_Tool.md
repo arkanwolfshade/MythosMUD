@@ -1,12 +1,11 @@
 # Playwright MCP Primary Testing Tool
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Playwright MCP Primary Testing Tool** (2 connections) — `e2e-tests/TESTING_APPROACH.md`
-- **Server Won't Start Troubleshooting** (1 connections) — `e2e-tests/TROUBLESHOOTING.md`
-- **Standard Playwright Unsuitable for Multiplayer** (1 connections) — `e2e-tests/TESTING_APPROACH.md`
+- **server/game/npcs/__init__.py** (1 connections) — `server/game/npcs/__init__.py`
+- **NPC catalog contracts and helpers (ADR-027).** (1 connections) — `server/game/npcs/__init__.py`
 
 ## Relationships
 
@@ -14,13 +13,12 @@
 
 ## Source Files
 
-- `e2e-tests/TESTING_APPROACH.md`
-- `e2e-tests/TROUBLESHOOTING.md`
+- `server/game/npcs/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (50%)
-- INFERRED: 1 (50%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

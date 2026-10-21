@@ -1,24 +1,23 @@
 # P0 · Previously-Known Deviations
 
-> 7 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **P0 · Previously-Known Deviations** (7 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
-- **ACCEPTED — do not re-report as new** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
-- **Contradiction found in prior work** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
-- **Corroboration of the P2 provenance finding** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
-- **Deferred / residual (open by admission)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
-- **PLANNED-NOT-DONE — highest-value rows** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
-- **REMEDIATED — expect CONFORMS; a deviation here is a regression** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
+- **.get_professions()** (4 connections) — `server/async_persistence.py`
+- **.get_profession_by_id()** (3 connections) — `server/async_persistence.py`
+- **Profession** (2 connections)
+- **Get all available professions using SQLAlchemy ORM.** (1 connections) — `server/async_persistence.py`
+- **Get a profession by ID. Delegates to ProfessionRepository.** (1 connections) — `server/async_persistence.py`
 
 ## Relationships
 
-- [INDEX.md](INDEX.md.md) (1 shared connections)
+- [test_party_service.py](test_party_service.py.md) (2 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
+- `server/async_persistence.py`
 
 ## Audit Trail
 

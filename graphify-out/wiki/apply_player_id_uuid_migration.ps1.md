@@ -1,22 +1,23 @@
 # apply_player_id_uuid_migration.ps1
 
-> 1 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **apply_player_id_uuid_migration.ps1** (0 connections) — `server/scripts/apply_player_id_uuid_migration.ps1`
+- **test_create_punch_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_punch_command delegates to combat factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_who_commands.py](test_who_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/scripts/apply_player_id_uuid_migration.ps1`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

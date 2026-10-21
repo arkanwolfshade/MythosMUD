@@ -1,38 +1,47 @@
 # properties
 
-> 10 nodes
+> 31 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **properties** (12 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **id** (3 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **field1** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **field2** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **field3** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **ReactNodeUpgradeAnalyzer** (16 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **.generate_react_node_upgrade_plan()** (9 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **.analyze_node_ecosystem()** (6 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **.analyze_react_ecosystem()** (6 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **._categorize_update()** (6 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **.analyze_build_tools()** (5 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **._assess_node_risk()** (4 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **._assess_react_risk()** (4 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **main()** (3 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **Any** (3 connections)
+- **._calculate_priority()** (3 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **._format_build_tools_priority()** (3 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **._format_node_features()** (3 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **._format_react_features()** (3 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **._format_upgrade_opportunities()** (3 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **react_node_upgrade_analyzer.py** (2 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **Analyze Node.js ecosystem upgrade opportunities** (1 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **Specialized analyzer for React/Node.js ecosystem upgrades** (1 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **Analyze build tools and development dependencies** (1 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **Categorize update by semver** (1 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **Assess risk for React ecosystem updates** (1 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **Assess risk for Node.js ecosystem updates** (1 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **Calculate priority score for updates** (1 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **Generate comprehensive React/Node upgrade plan** (1 connections) — `scripts/react_node_upgrade_analyzer.py`
+- **Format React features for display** (1 connections) — `scripts/react_node_upgrade_analyzer.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [room_validator/schemas/unified_room_schema.json](room_validator-schemas-unified_room_schema.json.md) (1 shared connections)
-- [name](name.md) (1 shared connections)
-- [description](description.md) (1 shared connections)
-- [plane](plane.md) (1 shared connections)
-- [zone](zone.md) (1 shared connections)
-- [sub_zone](sub_zone.md) (1 shared connections)
-- [enum](enum_2.md) (1 shared connections)
-- [exits](exits.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- `scripts/react_node_upgrade_analyzer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 47 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

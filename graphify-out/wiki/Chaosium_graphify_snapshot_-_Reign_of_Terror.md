@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - Reign of Terror
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Reign of Terror** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/MANIFEST.md`
-- **reign-of-terror/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/MANIFEST.md`
+- **10-Second Login Grace Period** (1 connections) — `.cursor/plans/login_grace_period_implementation_32b067c4.plan.md`
+- **Login Grace Period Implementation** (1 connections) — `.cursor/plans/login_grace_period_implementation_32b067c4.plan.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/MANIFEST.md`
+- `.cursor/plans/login_grace_period_implementation_32b067c4.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

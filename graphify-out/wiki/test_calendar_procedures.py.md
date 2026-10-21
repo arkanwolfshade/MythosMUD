@@ -1,32 +1,32 @@
 # test_calendar_procedures.py
 
-> 10 nodes
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **holiday_row()** (5 connections) — `server/tests/integration/test_calendar_procedures.py`
-- **npc_schedule_row()** (5 connections) — `server/tests/integration/test_calendar_procedures.py`
-- **test_get_calendar_holidays_includes_the_new_row()** (5 connections) — `server/tests/integration/test_calendar_procedures.py`
-- **test_get_calendar_npc_schedules_includes_the_new_row()** (5 connections) — `server/tests/integration/test_calendar_procedures.py`
-- **test_calendar_procedures.py** (5 connections) — `server/tests/integration/test_calendar_procedures.py`
-- **async_sessionmaker** (4 connections)
-- **AsyncSession** (4 connections)
-- **asyncio** (2 connections)
-- **fixture** (2 connections)
-- **Integration tests for db/procedures/calendar.sql (#633). Replace raw SQL…** (1 connections) — `server/tests/integration/test_calendar_procedures.py`
+- **AuthRateLimitMiddleware** (5 connections) — `server/middleware/auth_rate_limit.py`
+- **.__call__()** (5 connections) — `server/middleware/auth_rate_limit.py`
+- **.__init__()** (2 connections) — `server/middleware/auth_rate_limit.py`
+- **ASGIApp** (1 connections)
+- **Receive** (1 connections)
+- **Scope** (1 connections)
+- **Send** (1 connections)
+- **Pure ASGI middleware; HTTP POST login/register only.** (1 connections) — `server/middleware/auth_rate_limit.py`
 
 ## Relationships
 
-- [session_factory](session_factory.md) (4 shared connections)
+- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (1 shared connections)
+- [Optimize Skill](Optimize_Skill.md) (1 shared connections)
+- [_PlayerCombatClearing](_PlayerCombatClearing.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/integration/test_calendar_procedures.py`
+- `server/middleware/auth_rate_limit.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (81%)
-- INFERRED: 4 (19%)
+- EXTRACTED: 10 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

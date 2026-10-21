@@ -1,13 +1,11 @@
 # test_asyncio_run_guardrails.py
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_no_asyncio_run_in_server_library_code()** (2 connections) — `server/tests/unit/test_asyncio_run_guardrails.py`
-- **test_asyncio_run_guardrails.py** (2 connections) — `server/tests/unit/test_asyncio_run_guardrails.py`
-- **Test that server library code does not use asyncio.run() (AnyIO best practice).…** (1 connections) — `server/tests/unit/test_asyncio_run_guardrails.py`
-- **Assert server/ has no asyncio.run() in library code (use anyio.run() at entry…** (1 connections) — `server/tests/unit/test_asyncio_run_guardrails.py`
+- **Room Environment Reference** (1 connections) — `docs/ROOM_ENVIRONMENT_REFERENCE.md`
+- **Room environment inheritance** (1 connections) — `docs/ROOM_ENVIRONMENT_REFERENCE.md`
 
 ## Relationships
 
@@ -15,11 +13,11 @@
 
 ## Source Files
 
-- `server/tests/unit/test_asyncio_run_guardrails.py`
+- `docs/ROOM_ENVIRONMENT_REFERENCE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

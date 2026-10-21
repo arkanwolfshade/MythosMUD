@@ -1,10 +1,10 @@
 # verify_schema_match.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **verify_schema_match.ps1** (0 connections) — `scripts/verify_schema_match.ps1`
+- **core/fixer.py** (0 connections) — `tools/room_toolkit/room_validator/README.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/verify_schema_match.ps1`
+- `tools/room_toolkit/room_validator/README.md`
 
 ## Audit Trail
 

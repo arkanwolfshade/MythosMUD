@@ -1,26 +1,24 @@
 # Phase 1: Quantitative Analysis Results
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Phase 1: Quantitative Analysis Results** (5 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **1.1 Test Distribution by Category** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **1.2 Largest Test Files (Splitting/Pruning Candidates)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **1.3 Infrastructure Test Analysis** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Files** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Chaosium graphify snapshot - Berlin - The Wicked City** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/MANIFEST.md`
+- **berlin-the-wicked-city/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/MANIFEST.md`
 
 ## Relationships
 
-- [Test Suite Quality Audit Report](Test_Suite_Quality_Audit_Report.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

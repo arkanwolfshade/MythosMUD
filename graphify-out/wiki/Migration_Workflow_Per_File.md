@@ -1,28 +1,26 @@
 # Migration Workflow (Per File)
 
-> 7 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Migration Workflow (Per File)** (7 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Step 1: Pre-Migration Assessment** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Step 2: Create Async Repository Instances** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Step 3: Convert Methods to Async** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Step 4: Update All Callers** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Step 5: Test Migration** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Step 6: Validate Performance** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **CLAUDE.md router to AGENTS.md** (3 connections) — `CLAUDE.md`
+- **basedpyright no-Any rule** (3 connections) — `.claude/rules/basedpyright.md`
+- **Miskatonic professor persona** (1 connections) — `CLAUDE.md`
+- **.basedpyright/baseline.json (baseline may only shrink)** (1 connections) — `.claude/rules/basedpyright.md`
 
 ## Relationships
 
-- [Persistence Layer Async Migration Plan](Persistence_Layer_Async_Migration_Plan.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- `.claude/rules/basedpyright.md`
+- `CLAUDE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,29 +1,27 @@
 # spells.sql
 
-> 8 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **spells.sql** (7 connections) — `db/procedures/spells.sql`
-- **schema_name.get_all_spells()** (1 connections) — `db/procedures/spells.sql`
-- **schema_name.get_player_spell()** (1 connections) — `db/procedures/spells.sql`
-- **schema_name.get_player_spells()** (1 connections) — `db/procedures/spells.sql`
-- **schema_name.get_spell_by_id()** (1 connections) — `db/procedures/spells.sql`
-- **schema_name.learn_spell()** (1 connections) — `db/procedures/spells.sql`
-- **schema_name.record_spell_cast()** (1 connections) — `db/procedures/spells.sql`
-- **schema_name.update_player_spell_mastery()** (1 connections) — `db/procedures/spells.sql`
+- **Common Patterns** (6 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **API Requests** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Database Operations** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Errors with Context** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Performance Monitoring** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **User Actions** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [._compute_player_context](_compute_player_context.md) (1 shared connections)
 
 ## Source Files
 
-- `db/procedures/spells.sql`
+- `docs/archive/LOGGING_QUICK_REFERENCE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

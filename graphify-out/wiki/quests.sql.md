@@ -1,31 +1,32 @@
 # quests.sql
 
-> 9 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **quests.sql** (8 connections) — `db/procedures/quests.sql`
-- **schema_name.create_quest_instance()** (1 connections) — `db/procedures/quests.sql`
-- **schema_name.get_quest_definition_by_id()** (1 connections) — `db/procedures/quests.sql`
-- **schema_name.get_quest_definition_by_name()** (1 connections) — `db/procedures/quests.sql`
-- **schema_name.get_quest_instance_by_player_and_quest()** (1 connections) — `db/procedures/quests.sql`
-- **schema_name.list_active_quest_instances_by_player()** (1 connections) — `db/procedures/quests.sql`
-- **schema_name.list_completed_quest_instances_by_player()** (1 connections) — `db/procedures/quests.sql`
-- **schema_name.list_quest_ids_offered_by()** (1 connections) — `db/procedures/quests.sql`
-- **schema_name.update_quest_instance_state_and_progress()** (1 connections) — `db/procedures/quests.sql`
+- **player_event_handler_utils()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **fixture** (4 connections)
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **mock_logger()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **mock_name_extractor()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Create a mock name extractor.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Create a mock logger.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Create a PlayerEventHandlerUtils instance.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [TaskRegistry](TaskRegistry.md) (4 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 
 ## Source Files
 
-- `db/procedures/quests.sql`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 12 (92%)
+- INFERRED: 1 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,29 +1,27 @@
 # Top Time Consumers (>10 seconds)
 
-> 8 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **Top Time Consumers (>10 seconds)** (8 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **Argon2 Password Tests (1.4+ seconds)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **Auth & Security Tests (21+ seconds setup each)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **Infrastructure Tests (3.5+ seconds)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **NATS Message Handler Tests (2-3 seconds)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **Performance Tests (still running despite slow marker)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **Rate Limiter Timing Tests (still running)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **SSE Handler Tests (60 seconds total)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Phase 5: Strategic Additions (Week 5)** (6 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 5.1: Add MessageBroker Integration Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 5.2: Add ApplicationContainer Lifecycle Tests (2 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 5.3: Add Database Migration Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 5.4: Add WebSocket Edge Case Tests (4 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 5.5: Add Error Recovery Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Relationships
 
-- [Test Timing Analysis - Optimization Targets](Test_Timing_Analysis_-_Optimization_Targets.md) (1 shared connections)
+- [server/persistence/__init__.py](server-persistence-__init__.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_TIMING_ANALYSIS.md`
+- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,12 +1,11 @@
 # Single Session Per User
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Single Session Per User** (2 connections) — `docs/archive/connection_termination_demo.md`
-- **force_disconnect_player** (1 connections) — `docs/archive/connection_termination_demo.md`
-- **Player Spawn Protection** (1 connections) — `docs/archive/player_protection_system_dec_21.plan.md`
+- **High-Risk Major Package Updates** (1 connections) — `scripts/dependency_upgrade_report.md`
+- **pytest-asyncio Major Upgrade** (1 connections) — `scripts/dependency_upgrade_report.md`
 
 ## Relationships
 
@@ -14,13 +13,12 @@
 
 ## Source Files
 
-- `docs/archive/connection_termination_demo.md`
-- `docs/archive/player_protection_system_dec_21.plan.md`
+- `scripts/dependency_upgrade_report.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (50%)
-- INFERRED: 1 (50%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

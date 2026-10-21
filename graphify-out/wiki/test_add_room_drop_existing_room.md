@@ -1,23 +1,22 @@
 # test_add_room_drop_existing_room
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_add_room_drop_existing_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test add_room_drop() adds drop to existing room.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test Suite Analyzer Agent** (0 connections) — `.claude/agents/test-analyzer.md`
 
 ## Relationships
 
-- [test_room_subscription_manager_drops.py](test_room_subscription_manager_drops.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `.claude/agents/test-analyzer.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

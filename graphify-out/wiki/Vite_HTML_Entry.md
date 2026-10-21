@@ -1,10 +1,10 @@
 # Vite HTML Entry
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Vite HTML Entry** (0 connections) — `client/index.html`
+- **ADR-015: PostgreSQL Procedures and Functions for Data Access** (0 connections) — `docs/architecture/decisions/ADR-015-postgresql-procedures-migration.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `client/index.html`
+- `docs/architecture/decisions/ADR-015-postgresql-procedures-migration.md`
 
 ## Audit Trail
 

@@ -1,48 +1,46 @@
 # attach_compatibility_properties
 
-> 27 nodes
+> 25 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **attach_compatibility_properties()** (14 connections) — `server/realtime/connection_compatibility.py`
-- **test_connection_compatibility.py** (9 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **connection_compatibility.py** (8 connections) — `server/realtime/connection_compatibility.py`
-- **_create_property_with_accessors()** (6 connections) — `server/realtime/connection_compatibility.py`
-- **_attach_connection_properties()** (5 connections) — `server/realtime/connection_compatibility.py`
-- **_attach_message_properties()** (5 connections) — `server/realtime/connection_compatibility.py`
-- **_attach_room_properties()** (5 connections) — `server/realtime/connection_compatibility.py`
-- **Any** (5 connections)
-- **test_attach_compatibility_properties_connection_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **test_attach_compatibility_properties_connection_window()** (3 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **test_attach_compatibility_properties_max_connection_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **test_attach_compatibility_properties_pending_messages()** (3 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **test_attach_compatibility_properties_room_occupants()** (3 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **test_attach_compatibility_properties_room_subscriptions()** (3 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **Compatibility helpers for connection manager. This module provides…** (1 connections) — `server/realtime/connection_compatibility.py`
-- **Create getter, setter, and deleter functions for a property. Args: getter_attr:…** (1 connections) — `server/realtime/connection_compatibility.py`
-- **Attach room-related compatibility properties.** (1 connections) — `server/realtime/connection_compatibility.py`
-- **Attach connection-related compatibility properties.** (1 connections) — `server/realtime/connection_compatibility.py`
-- **Attach message-related compatibility properties.** (1 connections) — `server/realtime/connection_compatibility.py`
-- **Attach compatibility properties to the ConnectionManager class.** (1 connections) — `server/realtime/connection_compatibility.py`
-- **Unit tests for connection compatibility. Tests the connection_compatibility…** (1 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **Test attach_compatibility_properties() attaches pending_messages property.** (1 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **Test attach_compatibility_properties() attaches room_subscriptions property.** (1 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **Test attach_compatibility_properties() attaches max_connection_attempts…** (1 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **Test attach_compatibility_properties() attaches connection_window property.** (1 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- *... and 2 more nodes in this community*
+- **Any** (12 connections)
+- **._try_evaluators()** (7 connections) — `server/npc/behavior_engine.py`
+- **.evaluate_condition()** (6 connections) — `server/npc/behavior_engine.py`
+- **.execute_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
+- **.get_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_boolean_condition()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_equality()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_inequality()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_numeric_comparison()** (4 connections) — `server/npc/behavior_engine.py`
+- **.execute_action()** (4 connections) — `server/npc/behavior_engine.py`
+- **.add_rule()** (3 connections) — `server/npc/behavior_engine.py`
+- **.get_rules()** (3 connections) — `server/npc/behavior_engine.py`
+- **.register_action_handler()** (3 connections) — `server/npc/behavior_engine.py`
+- **Get all behavior rules.** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate equality condition (==). Returns: bool if condition matches, None if…** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate inequality condition (!=). Returns: bool if condition matches, None if…** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate numeric comparison conditions (>=, <=, >, <). Args: condition:…** (1 connections) — `server/npc/behavior_engine.py`
+- **Try multiple evaluator methods in sequence. Args: condition: Condition string…** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate boolean conditions and variable lookups. Args: condition: Condition…** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate a condition string against context. Args: condition: Condition string…** (1 connections) — `server/npc/behavior_engine.py`
+- **Get rules that are applicable given the current context. Args: context: Current…** (1 connections) — `server/npc/behavior_engine.py`
+- **Register an action handler for a specific action. Args: action_name: Name of…** (1 connections) — `server/npc/behavior_engine.py`
+- **Execute a specific action. Args: action_name: Name of the action to execute…** (1 connections) — `server/npc/behavior_engine.py`
+- **Execute all applicable rules based on context. Args: context: Current context…** (1 connections) — `server/npc/behavior_engine.py`
+- **Add a behavior rule to the engine. Args: rule: Rule dictionary with name,…** (1 connections) — `server/npc/behavior_engine.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
+- [TestValidatorIntegration](TestValidatorIntegration.md) (12 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_compatibility.py`
-- `server/tests/unit/realtime/test_connection_compatibility.py`
+- `server/npc/behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (100%)
+- EXTRACTED: 44 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

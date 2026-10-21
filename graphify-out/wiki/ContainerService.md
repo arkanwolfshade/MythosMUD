@@ -1,60 +1,51 @@
 # ContainerService
 
-> 44 nodes
+> 74 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **ContainerService** (98 connections) — `server/services/container_service.py`
-- **test_container_service.py** (80 connections) — `server/tests/unit/services/test_container_service.py`
-- **_container()** (16 connections) — `server/tests/unit/services/test_container_service.py`
-- **_bank_box()** (10 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_validate_ownership_orphaned_bank_box_matches_nobody()** (5 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_can_unlock_container_admin()** (4 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_can_unlock_container_locked_without_key()** (4 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_can_unlock_container_with_key()** (4 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_remove_item_from_container_partial_quantity()** (4 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_validate_container_access_bank_owner_opens_it_anywhere()** (4 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_validate_container_access_success()** (4 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_validate_corpse_grace_period_blocks_non_owner()** (4 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_validate_corpse_grace_period_expired_allows_other_player()** (4 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_validate_ownership_equipment_match()** (4 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_validate_ownership_equipment_mismatch_raises()** (4 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_validate_proximity_different_room_raises()** (4 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_validate_proximity_same_room_passes()** (4 connections) — `server/tests/unit/services/test_container_service.py`
-- **UUID** (4 connections)
-- **service()** (3 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_close_container_audit_failure_still_closes()** (3 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_close_container_success()** (3 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_open_container_not_found()** (3 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_prepare_transfer_item_reduces_quantity()** (3 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_validate_container_access_bank_is_closed_to_other_players_and_admins()** (3 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_validate_ownership_bank_other_player_raises()** (3 connections) — `server/tests/unit/services/test_container_service.py`
-- *... and 19 more nodes in this community*
+- **StatisticsAggregator** (31 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **test_statistics_aggregator.py** (14 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **._build_connection_stats()** (10 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **.get_connection_health_stats()** (9 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._compose_memory_stats()** (7 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **MemoryStatsSnapshot** (6 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **UUID** (6 connections)
+- **._memory_connections_section()** (6 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **fixture** (6 connections)
+- **._memory_sessions_section()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._safe_ratio()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._analyze_connection_ages()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._analyze_connection_health()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._build_health_stats_response()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._build_health_trends()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._count_orphaned_connections()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **.get_connection_stats()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **.get_memory_stats()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **statistics_aggregator()** (4 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **HealthStatsInputs** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._analyze_connection_types()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._analyze_session_health()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._calculate_session_health_percentages()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._connection_age_extrema()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._memory_monitor_config_section()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- *... and 49 more nodes in this community*
 
 ## Relationships
 
-- [asyncio](asyncio.md) (63 shared connections)
-- [ContainerComponent](ContainerComponent.md) (29 shared connections)
-- [LootAllRequest](LootAllRequest.md) (13 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (9 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [MutationDecision](MutationDecision.md) (3 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
-- [alias_storage.py](alias_storage.py.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
-- [InventoryService](InventoryService.md) (1 shared connections)
-- [InventoryMutationGuard](InventoryMutationGuard.md) (1 shared connections)
-- [TestGetContainerService](TestGetContainerService.md) (1 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (9 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (2 shared connections)
+- [connection_initialization.py](connection_initialization.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/container_service.py`
-- `server/tests/unit/services/test_container_service.py`
+- `server/realtime/monitoring/statistics_aggregator.py`
+- `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 141 (63%)
-- INFERRED: 82 (37%)
+- EXTRACTED: 116 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

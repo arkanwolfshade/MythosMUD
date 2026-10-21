@@ -1,42 +1,42 @@
 # _get_enum_value
 
-> 14 nodes
+> 20 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **_get_enum_value()** (10 connections) — `server/services/corpse_lifecycle_service.py`
-- **._require_corpse_container()** (8 connections) — `server/services/corpse_lifecycle_service.py`
-- **_filter_container_data()** (7 connections) — `server/services/corpse_lifecycle_service.py`
-- **.__init__()** (5 connections) — `server/services/corpse_lifecycle_service.py`
-- **_inner_container_of()** (5 connections) — `server/services/corpse_lifecycle_service.py`
-- **Any** (4 connections)
-- **test_get_enum_value_enum()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_get_enum_value_string()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **Safely get enum value, handling both enum instances and string values. When…** (1 connections) — `server/services/corpse_lifecycle_service.py`
-- **Filter out database-specific fields that are not part of the ContainerComponent…** (1 connections) — `server/services/corpse_lifecycle_service.py`
-- **A worn container's live contents as a stack's `inner_container` (same shape…** (1 connections) — `server/services/corpse_lifecycle_service.py`
-- **Initialize the corpse lifecycle service. Args: persistence: Persistence layer…** (1 connections) — `server/services/corpse_lifecycle_service.py`
-- **Test _get_enum_value() with enum instance.** (1 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **Test _get_enum_value() with string.** (1 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **Transaction Boundaries Audit** (12 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Transaction Management Patterns** (4 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Audited Operations** (3 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Recommendations** (3 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Multi-Step Operations** (2 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **✅ AsyncPersistenceLayer (Async)** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Audit Date** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Current State: ✅ GOOD** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Future Improvements** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Notes** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Pattern 1: Connection Context Manager (PersistenceLayer)** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Pattern 2: Explicit Transaction (AsyncPersistenceLayer)** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Pattern 3: SQLAlchemy Session (ORM)** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **✅ PersistenceLayer (Sync)** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Player Save with Inventory** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **PostgresConnection Context Manager** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **References** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **SQLAlchemy Session Transactions** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Summary** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Verification Checklist** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
 
 ## Relationships
 
-- [CorpseLifecycleService](CorpseLifecycleService.md) (7 shared connections)
-- [ContainerComponent](ContainerComponent.md) (5 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [UUID](UUID.md) (3 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
+- [lint_container_get_instance.py](lint_container_get_instance.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/corpse_lifecycle_service.py`
-- `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 20 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

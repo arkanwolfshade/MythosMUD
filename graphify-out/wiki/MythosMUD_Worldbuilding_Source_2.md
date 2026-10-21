@@ -1,10 +1,10 @@
 # MythosMUD Worldbuilding Source
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **MythosMUD Worldbuilding Source** (0 connections) — `data/MythosMUD-Obsidian/wiki/sources/MythosMUD worldbuilding.md`
+- **Admin Teleport Feature** (0 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/MythosMUD worldbuilding.md`
+- `docs/archive/ADMIN_TELEPORT_FRD.md`
 
 ## Audit Trail
 

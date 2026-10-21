@@ -1,24 +1,22 @@
 # test_get_attack_damage_from_behavior_config
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_get_attack_damage_from_behavior_config()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **_get_attack_damage coerces behavior_config attack_damage robustly.** (1 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **ADR-017: AST-Based Console Pruning** (0 connections) — `docs/architecture/decisions/ADR-017-ast-console-pruning-client-build.md`
 
 ## Relationships
 
-- [AggressiveMobNPC](AggressiveMobNPC.md) (1 shared connections)
-- [test_aggressive_mob_npc.py](test_aggressive_mob_npc.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- `docs/architecture/decisions/ADR-017-ast-console-pruning-client-build.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

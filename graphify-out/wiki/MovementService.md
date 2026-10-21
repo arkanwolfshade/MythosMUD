@@ -1,60 +1,48 @@
 # MovementService
 
-> 42 nodes
+> 53 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **MovementService** (47 connections) — `server/game/movement_service.py`
-- **._execute_move_locked()** (14 connections) — `server/game/movement_service.py`
-- **UUID** (13 connections)
-- **.move_player()** (8 connections) — `server/game/movement_service.py`
-- **._handle_movement_error()** (7 connections) — `server/game/movement_service.py`
-- **Any** (7 connections)
-- **._get_rooms_for_movement()** (6 connections) — `server/game/movement_service.py`
-- **._handle_tutorial_exit_if_applicable()** (6 connections) — `server/game/movement_service.py`
-- **.__init__()** (6 connections) — `server/game/movement_service.py`
-- **._maybe_trigger_room_entry_hallucination()** (6 connections) — `server/game/movement_service.py`
-- **._resolve_player_for_movement()** (6 connections) — `server/game/movement_service.py`
-- **._execute_room_transfer()** (5 connections) — `server/game/movement_service.py`
-- **._resolve_posture_player()** (5 connections) — `server/game/movement_service.py`
-- **._validate_move_params()** (5 connections) — `server/game/movement_service.py`
-- **._log_successful_move_timing()** (4 connections) — `server/game/movement_service.py`
-- **._mark_room_explored()** (4 connections) — `server/game/movement_service.py`
-- **._persist_player_location()** (4 connections) — `server/game/movement_service.py`
-- **._record_move_validation_failure()** (4 connections) — `server/game/movement_service.py`
-- **test_movement_service_init_no_persistence()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_room_transfer_tells_the_source_room_where_the_player_went()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **.set_player_combat_service()** (2 connections) — `server/game/movement_service.py`
-- **Room** (2 connections)
-- **Exception** (1 connections)
-- **Validate movement parameters. Returns False if validation fails (same room),…** (1 connections) — `server/game/movement_service.py`
-- **Resolve player by ID or name and return player object and resolved ID.** (1 connections) — `server/game/movement_service.py`
-- *... and 17 more nodes in this community*
+- **✅ Phase 2 Async Persistence Migration - COMPLETE** (18 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **💡 Key Improvements** (6 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **📚 Changes by Category** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **🚀 Deployment Readiness** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **🎓 Lessons Learned** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **🚦 Next Steps** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **✅ Verification Results** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **🎯 Async Compliance Score** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **🔧 Changes Summary** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **🎭 Closing Remarks** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **📊 Final Results** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **📈 Performance Impact** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **Status**: ✅**PHASE 2 COMPLETE - READY FOR TESTING** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **🧪 Testing Status** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **🏆 Achievement Summary** (2 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **1. Eliminated Event Loop Blocking** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **2. Consistent Async Patterns** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **3. Proper Error Handling** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **4. Resource Management** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **5. Performance Optimization** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **Additional Files Updated** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **Adjusts spectacles with profound satisfaction** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **After Migration** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **Async Compliance** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **Automated Tests** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
-- [test_movement_service.py](test_movement_service.py.md) (5 shared connections)
-- [FollowService](FollowService.md) (5 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (5 shared connections)
-- [SpellEffects](SpellEffects.md) (3 shared connections)
-- [asyncio](asyncio.md) (3 shared connections)
-- [go_command.py](go_command.py.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [ValidationError](ValidationError.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
-- [NPCMovementIntegration](NPCMovementIntegration.md) (1 shared connections)
-- [movement_service](movement_service.md) (1 shared connections)
+- [lint_container_get_instance.py](lint_container_get_instance.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/movement_service.py`
-- `server/tests/unit/game/test_movement_service.py`
+- `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 107 (91%)
-- INFERRED: 10 (9%)
+- EXTRACTED: 53 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

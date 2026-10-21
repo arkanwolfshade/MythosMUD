@@ -1,10 +1,10 @@
 # Client Typography and Layout Enhancement Specification
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Client Typography and Layout Enhancement Specification** (0 connections) — `docs/CLIENT_TYPOGRAPHY_LAYOUT_SPEC.md`
+- **NATS Whisper Subject Pattern** (0 connections) — `e2e-tests/WHISPER_SYSTEM_INVESTIGATION_REPORT.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/CLIENT_TYPOGRAPHY_LAYOUT_SPEC.md`
+- `e2e-tests/WHISPER_SYSTEM_INVESTIGATION_REPORT.md`
 
 ## Audit Trail
 

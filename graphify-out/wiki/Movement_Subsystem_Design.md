@@ -1,53 +1,40 @@
 # Movement Subsystem Design
 
-> 25 nodes
+> 17 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **Movement Subsystem Design** (11 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **Cult Chat Seam Design** (8 connections) — `docs/subsystems/SUBSYSTEM_CULT_CHAT_DESIGN.md`
-- **SUBSYSTEM_MOVEMENT_DESIGN.md** (4 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **Event Ownership Matrix** (4 connections) — `docs/EVENT_OWNERSHIP_MATRIX.md`
-- **SUBSYSTEM_CULT_CHAT_DESIGN.md** (3 connections) — `docs/subsystems/SUBSYSTEM_CULT_CHAT_DESIGN.md`
-- **NATS Subject Pattern Management** (3 connections) — `docs/NATS_SUBJECT_PATTERNS.md`
-- **Party Subsystem Design** (2 connections) — `docs/subsystems/SUBSYSTEM_PARTY_DESIGN.md`
-- **1. Overview** (1 connections) — `docs/subsystems/SUBSYSTEM_CULT_CHAT_DESIGN.md`
-- **2. Architecture** (1 connections) — `docs/subsystems/SUBSYSTEM_CULT_CHAT_DESIGN.md`
-- **3. Key design decisions** (1 connections) — `docs/subsystems/SUBSYSTEM_CULT_CHAT_DESIGN.md`
-- **4. Constraints** (1 connections) — `docs/subsystems/SUBSYSTEM_CULT_CHAT_DESIGN.md`
-- **5. Related docs** (1 connections) — `docs/subsystems/SUBSYSTEM_CULT_CHAT_DESIGN.md`
-- **6. Changelog** (1 connections) — `docs/subsystems/SUBSYSTEM_CULT_CHAT_DESIGN.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/subsystems/SUBSYSTEM_CULT_CHAT_DESIGN.md`
-- **1. Overview** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **2. Architecture** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **3. Key design decisions** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **4. Constraints** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **5. Component interactions** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **6. Developer guide** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **7. Troubleshooting** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **8. Related docs** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **9. Changelog** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **Follow Subsystem Design** (1 connections) — `docs/subsystems/SUBSYSTEM_FOLLOW_DESIGN.md`
+- **.validate_current_vs_max_stats()** (6 connections) — `server/models/game.py`
+- **._calculate_max_lucidity()** (4 connections) — `server/models/game.py`
+- **._calculate_max_magic_points()** (4 connections) — `server/models/game.py`
+- **._compute_max_dp_if_missing()** (4 connections) — `server/models/game.py`
+- **.max_lucidity()** (4 connections) — `server/models/game.py`
+- **.max_magic_points()** (4 connections) — `server/models/game.py`
+- **_coerce_stat_int()** (3 connections) — `server/models/game.py`
+- **model_validator** (3 connections)
+- **._calculate_max_dp()** (3 connections) — `server/models/game.py`
+- **computed_field** (2 connections)
+- **Convert persisted stat values to int with a safe fallback.** (1 connections) — `server/models/game.py`
+- **Populate max_dp from (CON+SIZ)/5 when not provided (stored value takes…** (1 connections) — `server/models/game.py`
+- **Calculate max magic points (MP) using formula: 20% of Power (ceiling rounded).…** (1 connections) — `server/models/game.py`
+- **Calculate max lucidity based on education. AI: This computed field uses the…** (1 connections) — `server/models/game.py`
+- **Calculate max determination points (DP) using formula: (CON + SIZ) / 5. AI:…** (1 connections) — `server/models/game.py`
+- **Calculate max lucidity based on education. AI: Helper method to calculate…** (1 connections) — `server/models/game.py`
+- **Ensure current_dp (DP), magic_points (MP), and lucidity don't exceed their max…** (1 connections) — `server/models/game.py`
 
 ## Relationships
 
-- [packages/README.md](packages-README.md.md) (2 shared connections)
-- [ADR-023: Package Ownership (`game/` vs `services/` vs `npc/`) and Fan-Out Watch List](ADR-023-_Package_Ownership_`game-`_vs_`services-`_vs_`npc-`_and_Fan-Out_Watch_List.md) (1 shared connections)
+- [testing_examples.py](testing_examples.py.md) (8 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/EVENT_OWNERSHIP_MATRIX.md`
-- `docs/NATS_SUBJECT_PATTERNS.md`
-- `docs/subsystems/SUBSYSTEM_CULT_CHAT_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_FOLLOW_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_PARTY_DESIGN.md`
+- `server/models/game.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 27 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

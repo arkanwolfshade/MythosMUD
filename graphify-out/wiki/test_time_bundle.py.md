@@ -1,52 +1,49 @@
 # test_time_bundle.py
 
-> 31 nodes
+> 28 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **test_time_bundle.py** (21 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **isolated_chronicle()** (5 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_get_mythos_chronicle_singleton()** (5 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_time_bundle_initialize_missing_dependencies()** (5 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **_season_for_month()** (5 connections) — `server/time/time_service.py`
-- **test_time_bundle_initialize_with_dependencies()** (4 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **.reset_instance()** (4 connections) — `server/time/time_service.py`
-- **test_ensure_utc_naive_datetime()** (3 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_season_for_month()** (3 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **_time_bundle_container()** (3 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_chronicle_advance_and_freeze()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_chronicle_advance_rejects_negative_delta()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_chronicle_calendar_and_dayparts()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_chronicle_format_clock()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_chronicle_time_conversion()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **asyncio** (2 connections)
-- **test_time_bundle_attrs()** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **fixture** (1 connections)
-- **Unit tests for TimeBundle container wiring.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **Calendar components and daypart helpers.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **Real/Mythos datetime conversion round-trips approximately.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **Advance and freeze update persisted state.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **Clock formatting includes Mythos suffix.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **get_mythos_chronicle returns the same instance.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **advance_mythos rejects negative hours.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
-- *... and 6 more nodes in this community*
+- **test_quest_service_collect.py** (15 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **_make_collect_quest_row()** (9 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **_quest_service_with_persistence()** (8 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **_make_inventory_player()** (7 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **asyncio** (7 connections)
+- **test_collect_n_auto_complete_keeps_items()** (6 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **test_start_quest_collect_n_seeds_progress_from_holdings()** (6 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **test_sync_collect_progress_nested_container()** (6 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **test_sync_collect_progress_updates_on_inventory_change()** (6 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **test_turn_in_collect_n_consumes_items()** (6 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **test_start_quest_rejects_auto_complete_with_turn_in()** (5 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **test_start_quest_rejects_turn_in_without_entities()** (5 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **mock_def_repo()** (3 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **mock_instance_repo()** (3 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **fixture** (2 connections)
+- **Unit tests for QuestService collect_n sync, auto-complete, and turn-in…** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **sync_collect_progress reflects increased and decreased holdings.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **Nested inner_container items count toward collect_n progress.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **Auto-complete collect_n quest does not consume inventory.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **Mock QuestDefinitionRepository.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **Turn-in consumes required collect_n items before completion.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **Validation rejects auto_complete true combined with turn_in_entities.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **Validation rejects non-auto-complete quest without turn_in_entities.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **Mock QuestInstanceRepository.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **Definition with collect_n goal.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [MythosTickScheduler](MythosTickScheduler.md) (7 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [test_lifespan_shutdown.py](test_lifespan_shutdown.py.md) (2 shared connections)
+- [item_catalog_repository.py](item_catalog_repository.py.md) (4 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/container/test_time_bundle.py`
-- `server/time/time_service.py`
+- `server/tests/unit/game/test_quest_service_collect.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (92%)
-- INFERRED: 4 (8%)
+- EXTRACTED: 56 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

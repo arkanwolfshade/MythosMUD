@@ -1,33 +1,32 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Dead Light and Other Dark Turns  (2026-08-12)
 
-> 11 nodes
+> 10 nodes · cohesion 0.31
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Dead Light and Other Dark Turns  (2026-08-12)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
-- **dead-light-and-other-dark-turns/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
-- **Communities (2 total, 2 thin omitted)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- **emote_row()** (6 connections) — `server/tests/integration/test_emotes_procedures.py`
+- **test_get_emote_aliases_joins_owning_emote()** (5 connections) — `server/tests/integration/test_emotes_procedures.py`
+- **test_get_emotes_includes_the_new_row()** (5 connections) — `server/tests/integration/test_emotes_procedures.py`
+- **test_emotes_procedures.py** (4 connections) — `server/tests/integration/test_emotes_procedures.py`
+- **async_sessionmaker** (3 connections)
+- **AsyncSession** (3 connections)
+- **asyncio** (2 connections)
+- **fixture** (1 connections)
+- **Integration tests for db/procedures/emotes.sql (#633). Replace raw SQL…** (1 connections) — `server/tests/integration/test_emotes_procedures.py`
+- **Create one emote with one alias. Yields (stable_id, alias).** (1 connections) — `server/tests/integration/test_emotes_procedures.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [CombatBroadcastMixin](CombatBroadcastMixin.md) (3 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- `server/tests/integration/test_emotes_procedures.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 14 (82%)
+- INFERRED: 3 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

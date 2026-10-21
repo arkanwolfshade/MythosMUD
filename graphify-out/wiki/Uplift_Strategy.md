@@ -1,47 +1,47 @@
 # Uplift Strategy
 
-> 46 nodes
+> 47 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **Uplift Strategy** (33 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Files to Update** (4 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **AFTER** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Category D: API Endpoint Tests (App State)** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Critical Discovery & Fix** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Files Affected** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **New Tests to Add** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Phase 1: Fix Failing Integration Tests (Week 1-2) 🚧 **IN PROGRESS**** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Phase 2: Modernize Unit Test Patterns (Week 3-4)** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Phase 3: Modernize Test Patterns (Week 5)** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Phase 4: Add Container Integration Tests (Week 6)** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Success Criteria:**✅**ALL MET** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **0.1 Create Container Test Fixtures ✅** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **0.2 Update conftest.py ✅** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **1.1 Identify All Failing Tests ✅** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **1.2 Fix Integration Test Fixtures ✅ **INFRASTRUCTURE COMPLETE**** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **2.1 Categorize Unit Tests by Dependency Pattern** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **2.2 Update Category B: Service Layer Tests** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **2.3 Update Category C: Infrastructure Tests** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **2.4 Update Category D: API Tests** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **3.1 Adopt Modern pytest Patterns** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **3.2 Eliminate Global State Dependencies** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **3.3 Consolidate Duplicate Test Fixtures** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **4.1 Test ApplicationContainer Itself** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **4.2 Test Dependency Injection** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- *... and 21 more nodes in this community*
+- **verify_enhanced_logging_compliance.py** (14 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **LoggingComplianceChecker** (12 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **Path** (10 connections)
+- **check_file()** (8 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **main()** (7 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **.visit_Call()** (6 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **_print_violations_report()** (6 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **_check_all_files()** (5 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **_print_violations_for_file()** (5 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **_read_and_parse()** (5 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **_run_regex_checks()** (5 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **_find_python_files()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **._check_deprecated_context_param()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **._check_fstring_logging()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **._check_getlogger_call()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **Call** (4 connections)
+- **_should_skip_file()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **_group_violations_by_type()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **.visit_Assign()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **.visit_Import()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **.visit_ImportFrom()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **_print_compliance_success()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **_print_fix_instructions()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **.__init__()** (2 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **AST** (2 connections)
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [MythosMUD Test Suite Modernization Plan](MythosMUD_Test_Suite_Modernization_Plan.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- `scripts/verify_enhanced_logging_compliance.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (100%)
+- EXTRACTED: 76 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

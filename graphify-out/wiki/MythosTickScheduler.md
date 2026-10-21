@@ -1,62 +1,60 @@
 # MythosTickScheduler
 
-> 93 nodes
+> 78 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **MythosTickScheduler** (32 connections) — `server/time/tick_scheduler.py`
-- **MythosChronicle** (30 connections) — `server/time/time_service.py`
-- **test_tick_scheduler.py** (18 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **tick_scheduler.py** (16 connections) — `server/time/tick_scheduler.py`
-- **datetime** (15 connections)
-- **_ensure_utc()** (13 connections) — `server/time/time_service.py`
-- **.get_calendar_components()** (10 connections) — `server/time/time_service.py`
-- **ChronicleState** (9 connections) — `server/time/time_service.py`
-- **.get_current_mythos_datetime()** (9 connections) — `server/time/time_service.py`
-- **asyncio** (9 connections)
-- **.get_daypart()** (8 connections) — `server/time/time_service.py`
-- **time/__init__.py** (8 connections) — `server/time/__init__.py`
-- **.__init__()** (7 connections) — `server/time/tick_scheduler.py`
-- **.is_daytime()** (7 connections) — `server/time/time_service.py`
-- **.is_witching_hour()** (7 connections) — `server/time/time_service.py`
-- **._load_state()** (7 connections) — `server/time/time_service.py`
-- **._persist_state()** (7 connections) — `server/time/time_service.py`
-- **.to_mythos_datetime()** (7 connections) — `server/time/time_service.py`
-- **._migrate_old_state_file()** (6 connections) — `server/time/time_service.py`
-- **._emit_pending_ticks()** (5 connections) — `server/time/tick_scheduler.py`
-- **._publish_tick()** (5 connections) — `server/time/tick_scheduler.py`
-- **._run()** (5 connections) — `server/time/tick_scheduler.py`
-- **._truncate_to_hour()** (5 connections) — `server/time/tick_scheduler.py`
-- **.advance_mythos()** (5 connections) — `server/time/time_service.py`
-- **.freeze()** (5 connections) — `server/time/time_service.py`
-- *... and 68 more nodes in this community*
+- **SchemaValidator** (29 connections) — `schemas/validator.py`
+- **validate_room_data()** (17 connections) — `server/world_loader.py`
+- **emote_service.py** (16 connections) — `server/game/emote_service.py`
+- **test_schemas_validator.py** (16 connections) — `server/tests/unit/test_schemas_validator.py`
+- **world_loader.py** (13 connections) — `server/world_loader.py`
+- **create_validator()** (12 connections) — `schemas/validator.py`
+- **TestValidateRoomData** (11 connections) — `server/tests/unit/test_world_loader.py`
+- **SchemaValidator** (10 connections)
+- **test_world_loader.py** (8 connections) — `server/tests/unit/test_world_loader.py`
+- **patch** (8 connections)
+- **schemas/validator.py** (7 connections) — `schemas/validator.py`
+- **Any** (6 connections)
+- **.validate_room()** (6 connections) — `schemas/validator.py`
+- **.validate_data()** (5 connections) — `schemas/validator.py`
+- **validator()** (5 connections) — `server/tests/unit/test_schemas_validator.py`
+- **.__init__()** (4 connections) — `schemas/validator.py`
+- **._load_schema()** (4 connections) — `schemas/validator.py`
+- **.validate_emote_file()** (4 connections) — `schemas/validator.py`
+- **.validate_room_database()** (4 connections) — `schemas/validator.py`
+- **.validate_room_file()** (4 connections) — `schemas/validator.py`
+- **_get_emote_validator()** (4 connections) — `server/game/emote_service.py`
+- **Path** (4 connections)
+- **test_invalid_schema_file_raises()** (4 connections) — `server/tests/unit/test_schemas_validator.py`
+- **test_is_room_id_valid()** (4 connections) — `server/tests/unit/test_schemas_validator.py`
+- **test_missing_schema_file_raises()** (4 connections) — `server/tests/unit/test_schemas_validator.py`
+- *... and 53 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (11 shared connections)
-- [test_time_bundle.py](test_time_bundle.py.md) (7 shared connections)
-- [test_lifespan_shutdown.py](test_lifespan_shutdown.py.md) (6 shared connections)
-- [EventBus](EventBus.md) (5 shared connections)
-- [MythosTimeEventConsumer](MythosTimeEventConsumer.md) (4 shared connections)
-- [TaskRegistry](TaskRegistry.md) (3 shared connections)
-- [HolidayService](HolidayService.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
-- [MetricsCollector](MetricsCollector.md) (1 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
-- [NATSService](NATSService.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (6 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (5 shared connections)
+- [test_game_tick_processing_async.py](test_game_tick_processing_async.py.md) (5 shared connections)
+- [Room](Room.md) (4 shared connections)
+- [ScheduleEntry](ScheduleEntry.md) (3 shared connections)
+- [compilerOptions](compilerOptions.md) (3 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (2 shared connections)
+- [SecureBaseModel](SecureBaseModel.md) (2 shared connections)
+- [endpoints.py](endpoints.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/time/test_tick_scheduler.py`
-- `server/time/__init__.py`
-- `server/time/tick_scheduler.py`
-- `server/time/time_service.py`
+- `schemas/validator.py`
+- `server/game/emote_service.py`
+- `server/tests/unit/test_schemas_validator.py`
+- `server/tests/unit/test_world_loader.py`
+- `server/world_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 196 (91%)
-- INFERRED: 19 (9%)
+- EXTRACTED: 157 (92%)
+- INFERRED: 14 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

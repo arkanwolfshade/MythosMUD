@@ -1,33 +1,38 @@
 # GameClientV2Dock.test.tsx
 
-> 11 nodes
+> 17 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **GameClientV2Dock.test.tsx** (13 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- **mockPanelRecord()** (4 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- **mockUsePanelManagerValue()** (3 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- **mockPanelRecordCore()** (2 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- **mockPanelRecordFlags()** (2 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- **mockUsePanelManagerNoops()** (2 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- **mockDefaultPanelLayout()** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- **chatHistoryLayoutIdentity** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- **chatHistoryLayoutState** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- **defaultChatHistoryLayoutKey** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- **dockTest** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **_StubPlayerRepo** (17 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **UUID** (7 connections)
+- **.clear_player_inventory()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **.delete_player()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **.get_player_by_id()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **.get_players_batch()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **.soft_delete_player()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **.update_player_last_active()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **.get_active_players_by_user_id()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **.get_player_by_name()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **.get_player_by_user_id()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **.get_players_by_user_id()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **.get_players_in_room()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **.list_players()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **.save_player()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **.save_players()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **.validate_and_fix_player_room()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
 
 ## Relationships
 
-- [GameClientV2.tsx](GameClientV2.tsx.md) (2 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (1 shared connections)
+- [test_player_respawn_service.py](test_player_respawn_service.py.md) (3 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- `server/tests/unit/persistence/test_protocols.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

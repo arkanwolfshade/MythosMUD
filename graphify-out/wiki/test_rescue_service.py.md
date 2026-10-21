@@ -1,57 +1,57 @@
 # test_rescue_service.py
 
-> 80 nodes
+> 91 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **test_rescue_service.py** (32 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **rescue_service.py** (19 connections) — `server/services/rescue_service.py`
-- **asyncio** (17 connections)
-- **RescueService** (12 connections) — `server/services/rescue_service.py`
-- **fixture** (10 connections)
-- **.rescue()** (8 connections) — `server/services/rescue_service.py`
-- **.__init__()** (7 connections) — `server/services/rescue_service.py`
-- **Any** (7 connections)
-- **_load_rescue_participants()** (6 connections) — `server/services/rescue_service.py`
-- **_ensure_uuid()** (5 connections) — `server/services/rescue_service.py`
-- **._apply_rescue_adjustment()** (5 connections) — `server/services/rescue_service.py`
-- **_dispatch_rescue_events()** (4 connections) — `server/services/rescue_service.py`
-- **_maybe_await()** (4 connections) — `server/services/rescue_service.py`
-- **async_session_factory()** (4 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **lucidity_service_factory()** (4 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **rescue_service()** (4 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **sample_lucidity_record()** (4 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_no_persistence()** (4 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **_rescue_success_payload()** (3 connections) — `server/services/rescue_service.py`
-- **mock_event_dispatcher()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **mock_lucidity_service()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **mock_session()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **sample_rescuer()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **sample_target()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- *... and 55 more nodes in this community*
+- **test_npc_utils.py** (37 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **get_zone_key_from_room_id()** (17 connections) — `server/npc/npc_utils.py`
+- **extract_room_id_from_npc()** (15 connections) — `server/npc/npc_utils.py`
+- **npc_utils.py** (14 connections) — `server/npc/npc_utils.py`
+- **extract_definition_id_from_npc()** (12 connections) — `server/npc/npc_utils.py`
+- **extract_npc_metadata()** (12 connections) — `server/npc/npc_utils.py`
+- **spawn_npc_via_population_controller()** (11 connections) — `server/npc/npc_utils.py`
+- **extract_room_id_from_lifecycle_record()** (8 connections) — `server/npc/npc_utils.py`
+- **.despawn_npc()** (8 connections) — `server/npc/population_control.py`
+- **Any** (6 connections)
+- **._get_active_npcs_from_lifecycle_manager()** (6 connections) — `server/npc/population_control.py`
+- **.cleanup_inactive_npcs()** (5 connections) — `server/npc/population_control.py`
+- **._should_remove_inactive_npc()** (5 connections) — `server/npc/population_control.py`
+- **.is_required()** (4 connections) — `server/models/npc.py`
+- **_room_id_from_lifecycle_event()** (4 connections) — `server/npc/npc_utils.py`
+- **._update_population_stats_for_despawn()** (4 connections) — `server/npc/population_control.py`
+- **_stable_room_id_for_zone()** (3 connections) — `server/npc/npc_utils.py`
+- **.get_zone_population_summary()** (3 connections) — `server/npc/population_control.py`
+- **test_extract_definition_id_from_npc_from_lifecycle_manager()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_definition_id_from_npc_has_definition_id()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_definition_id_from_npc_lifecycle_manager_no_definition()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_definition_id_from_npc_lifecycle_manager_no_record()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_definition_id_from_npc_no_manager()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_definition_id_from_npc_non_int()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_defaults()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- *... and 66 more nodes in this community*
 
 ## Relationships
 
-- [LucidityService](LucidityService.md) (9 shared connections)
-- [rescue_commands.py](rescue_commands.py.md) (3 shared connections)
-- [ItemFactory](ItemFactory.md) (2 shared connections)
-- [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [lucidity.py](lucidity.py.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
-- [session](session.md) (1 shared connections)
-- [command_parser.py](command_parser.py.md) (1 shared connections)
+- [CombatInstance](CombatInstance.md) (14 shared connections)
+- [ADR-023: Package Ownership (`game/` vs `services/` vs `npc/`) and Fan-Out Watch List](ADR-023-_Package_Ownership_`game-`_vs_`services-`_vs_`npc-`_and_Fan-Out_Watch_List.md) (5 shared connections)
+- [SpellEffectType](SpellEffectType.md) (3 shared connections)
+- [test_combat_integration_base.py](test_combat_integration_base.py.md) (3 shared connections)
+- [BaseEvent](BaseEvent.md) (2 shared connections)
+- [ErrorType](ErrorType.md) (1 shared connections)
+- [aggro_threat.py](aggro_threat.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/rescue_service.py`
-- `server/tests/unit/services/test_rescue_service.py`
+- `server/models/npc.py`
+- `server/npc/npc_utils.py`
+- `server/npc/population_control.py`
+- `server/tests/unit/npc/test_npc_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 136 (94%)
-- INFERRED: 9 (6%)
+- EXTRACTED: 164 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,58 +1,50 @@
 # ProfessionCacheService
 
-> 22 nodes
+> 38 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **ProfessionCacheService** (20 connections) — `server/caching/cache_service.py`
-- **cache_service.py** (14 connections) — `server/caching/cache_service.py`
-- **lru_cache.py** (13 connections) — `server/caching/lru_cache.py`
-- **server/caching/__init__.py** (12 connections) — `server/caching/__init__.py`
-- **TestProfessionCacheService** (7 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **reset_cache_manager()** (5 connections) — `server/caching/lru_cache.py`
-- **fixture** (5 connections)
-- **_Profession** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **_reset_cache_manager()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.persistence()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.persistence()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_profession_by_id_hit_and_miss()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.invalidate_professions()** (2 connections) — `server/caching/cache_service.py`
-- **.test_get_all_professions_hit_and_miss()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_profession_by_id_not_found()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_invalidate_professions()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **Cache service for MythosMUD server. This module provides caching services that…** (1 connections) — `server/caching/cache_service.py`
-- **Service for caching profession data.** (1 connections) — `server/caching/cache_service.py`
-- **Invalidate all profession caches.** (1 connections) — `server/caching/cache_service.py`
-- **Caching module for MythosMUD server. This module provides comprehensive caching…** (1 connections) — `server/caching/__init__.py`
-- **LRU Cache implementation for MythosMUD server. This module provides thread-safe…** (1 connections) — `server/caching/lru_cache.py`
-- **Reset the global cache manager (for testing).** (1 connections) — `server/caching/lru_cache.py`
+- **properties** (12 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **room_hierarchy_schema.json** (8 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **id** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **name** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **plane** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **sub_zone** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **zone** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **field1** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **field2** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **field3** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **anyOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **pattern** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [NPCCacheService](NPCCacheService.md) (10 shared connections)
-- [RoomCacheService](RoomCacheService.md) (7 shared connections)
-- [get_logger](get_logger.md) (7 shared connections)
-- [LRUCache](LRUCache.md) (4 shared connections)
-- [Any](Any.md) (3 shared connections)
-- [CacheService](CacheService.md) (3 shared connections)
-- [bench_cache_professions.py](bench_cache_professions.py.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [cached](cached.md) (2 shared connections)
-- [CacheManager](CacheManager.md) (2 shared connections)
-- [RoomService](RoomService.md) (1 shared connections)
-- [test_lru_cache.py](test_lru_cache.py.md) (1 shared connections)
+- [Phase 3, Task 3.2: NATS Subject Manager Usage Review](Phase_3,_Task_3.2-_NATS_Subject_Manager_Usage_Review.md) (1 shared connections)
+- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- [test_audit_suppressions.py](test_audit_suppressions.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/caching/__init__.py`
-- `server/caching/cache_service.py`
-- `server/caching/lru_cache.py`
-- `server/tests/unit/caching/test_cache_service.py`
+- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 72 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 40 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

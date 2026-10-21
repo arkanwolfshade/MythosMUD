@@ -1,45 +1,43 @@
 # Dependency Upgrade Strategy Specification
 
-> 24 nodes
+> 22 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **Dependency Upgrade Strategy Specification** (12 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Critical Dependencies Requiring Special Attention** (4 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Implementation Phases** (4 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Safety Measures** (4 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Monitoring and Validation** (3 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **DEPENDENCY_UPGRADE_SPEC.md** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **argon2-cffi (23.1.0 → 25.1.0)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Automated Testing** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Deliverables** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **During Upgrade** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Manual Validation** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Overview** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Phase 1: Patch Updates (Low Risk)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Phase 2: Minor Updates (Medium Risk)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Phase 3: Major Updates (High Risk)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Post-Upgrade** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Pre-Upgrade** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **protobuf (4.25.8 → 6.32.0)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **pytest-asyncio (0.24.0 → 1.1.0)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Risk Assessment** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Rollback Procedures** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Scope** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Success Criteria** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Timeline** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **The Toolkit** (8 connections) — `.claude/skills/overdrive/SKILL.md`
+- **Overdrive Skill** (6 connections) — `.claude/skills/overdrive/SKILL.md`
+- **Assess What "Extraordinary" Means Here** (5 connections) — `.claude/skills/overdrive/SKILL.md`
+- **Implement with Discipline** (4 connections) — `.claude/skills/overdrive/SKILL.md`
+- **MANDATORY PREPARATION** (3 connections) — `.claude/skills/overdrive/SKILL.md`
+- **Animate complex properties** (1 connections) — `.claude/skills/overdrive/SKILL.md`
+- **For data-heavy interfaces** (1 connections) — `.claude/skills/overdrive/SKILL.md`
+- **For functional UI** (1 connections) — `.claude/skills/overdrive/SKILL.md`
+- **For performance-critical UI** (1 connections) — `.claude/skills/overdrive/SKILL.md`
+- **For visual/marketing surfaces** (1 connections) — `.claude/skills/overdrive/SKILL.md`
+- **Interact with the device** (1 connections) — `.claude/skills/overdrive/SKILL.md`
+- **Iterate with Browser Automation** (1 connections) — `.claude/skills/overdrive/SKILL.md`
+- **Make data feel alive** (1 connections) — `.claude/skills/overdrive/SKILL.md`
+- **Make transitions feel cinematic** (1 connections) — `.claude/skills/overdrive/SKILL.md`
+- **Performance rules** (1 connections) — `.claude/skills/overdrive/SKILL.md`
+- **Polish is the difference** (1 connections) — `.claude/skills/overdrive/SKILL.md`
+- **Progressive enhancement is non-negotiable** (1 connections) — `.claude/skills/overdrive/SKILL.md`
+- **Propose Before Building** (1 connections) — `.claude/skills/overdrive/SKILL.md`
+- **Push performance boundaries** (1 connections) — `.claude/skills/overdrive/SKILL.md`
+- **Render beyond CSS** (1 connections) — `.claude/skills/overdrive/SKILL.md`
+- **Tie animation to scroll position** (1 connections) — `.claude/skills/overdrive/SKILL.md`
+- **Verify the Result** (1 connections) — `.claude/skills/overdrive/SKILL.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- `.claude/skills/overdrive/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,34 +1,33 @@
 # subzone_with_override
 
-> 12 nodes
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **subzone_with_override()** (6 connections) — `server/tests/integration/test_lucidity_procedures.py`
-- **zone_with_override_and_subzone_without()** (6 connections) — `server/tests/integration/test_lucidity_procedures.py`
-- **test_get_lucidity_rate_overrides_includes_subzone_row()** (5 connections) — `server/tests/integration/test_lucidity_procedures.py`
-- **test_get_lucidity_rate_overrides_includes_zone_and_excludes_null_subzone()** (5 connections) — `server/tests/integration/test_lucidity_procedures.py`
-- **test_lucidity_procedures.py** (5 connections) — `server/tests/integration/test_lucidity_procedures.py`
-- **async_sessionmaker** (4 connections)
-- **AsyncSession** (4 connections)
-- **asyncio** (2 connections)
-- **fixture** (2 connections)
-- **Integration test for db/procedures/lucidity.sql's get_lucidity_rate_overrides()…** (1 connections) — `server/tests/integration/test_lucidity_procedures.py`
-- **A zone with special_rules set, and a subzone under it with special_rules NULL…** (1 connections) — `server/tests/integration/test_lucidity_procedures.py`
-- **A zone with NO override, and a subzone under it WITH special_rules set. Yields…** (1 connections) — `server/tests/integration/test_lucidity_procedures.py`
+- **Phase 1: Critical Fixes (Week 1) - BLOCKING ISSUES** (7 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **📋 REMEDIATION PLAN** (4 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Phase 3: Medium Priority Improvements (Week 4) - POLISH** (2 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 1.1: Fix Synchronous Blocking in Passive Lucidity Flux Service** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 1.2: Eliminate asyncio.run() from Library Code** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 1.3: Ensure Connection Pool Cleanup** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 1.4: Add Exception Handling to Pool Creation** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 1.5: Fix Blocking Operations in NATS Message Handlers** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 1.6: Audit and Fix F-String Logging** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Tasks 3.1-3.7: Medium Priority Fixes** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- [session_factory](session_factory.md) (4 shared connections)
+- [Common Patterns](Common_Patterns.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/integration/test_lucidity_procedures.py`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (83%)
-- INFERRED: 4 (17%)
+- EXTRACTED: 11 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

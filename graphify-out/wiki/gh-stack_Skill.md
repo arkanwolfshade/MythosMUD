@@ -1,10 +1,10 @@
 # gh-stack Skill
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **gh-stack Skill** (0 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **20261002170000_leave_tutorial_respawn_reward.sql** (0 connections) — `db/migrations/20261002170000_leave_tutorial_respawn_reward.sql`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.agents/skills/gh-stack/SKILL.md`
+- `db/migrations/20261002170000_leave_tutorial_respawn_reward.sql`
 
 ## Audit Trail
 

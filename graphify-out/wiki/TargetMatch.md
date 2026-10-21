@@ -1,68 +1,68 @@
 # TargetMatch
 
-> 193 nodes
+> 151 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **TargetMatch** (173 connections) — `server/schemas/shared/target_resolution.py`
-- **Spell** (141 connections) — `server/models/spell.py`
-- **_MagicServiceCore** (44 connections) — `server/game/magic/magic_service.py`
-- **spell_effects_heal.py** (41 connections) — `server/game/magic/spell_effects_heal.py`
-- **test_spell_effects_heal.py** (28 connections) — `server/tests/unit/game/magic/test_spell_effects_heal.py`
-- **run_heal_effect()** (26 connections) — `server/game/magic/spell_effects_heal.py`
-- **spell_effects_status.py** (24 connections) — `server/game/magic/spell_effects_status.py`
-- **UUID** (21 connections)
-- **StatusEffectType** (18 connections) — `server/models/game.py`
-- **NpcSpellDamageTarget** (17 connections) — `server/game/magic/spell_effect_types.py`
-- **._dispatch_effect()** (15 connections) — `server/game/magic/spell_effects.py`
-- **SpellEffectsEngineHealPort** (12 connections) — `server/game/magic/spell_effect_types.py`
-- **JsonMap** (12 connections)
-- **asyncio** (12 connections)
-- **get_npc_instance_for_steal_life()** (11 connections) — `server/game/magic/spell_effects_heal.py`
-- **_run_steal_life()** (11 connections) — `server/game/magic/spell_effects_heal.py`
-- **_steal_life_apply_target_damage()** (11 connections) — `server/game/magic/spell_effects_heal.py`
-- **.can_cast_spell()** (10 connections) — `server/game/magic/magic_service.py`
-- **.cast_spell()** (10 connections) — `server/game/magic/magic_service.py`
-- **._execute_instant_or_delayed_cast()** (10 connections) — `server/game/magic/magic_service.py`
-- **_run_standard_heal_after_validation()** (10 connections) — `server/game/magic/spell_effects_heal.py`
-- **_steal_life_resolve_target_dp()** (10 connections) — `server/game/magic/spell_effects_heal.py`
-- **_apply_player_status_with_grace_check()** (10 connections) — `server/game/magic/spell_effects_status.py`
-- **run_status_effect()** (10 connections) — `server/game/magic/spell_effects_status.py`
-- **UUID** (10 connections)
-- *... and 168 more nodes in this community*
+- **command_result_text()** (52 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
+- **inventory_equip_command.py** (50 connections) — `server/commands/inventory_equip_command.py`
+- **server/services/__init__.py** (43 connections) — `server/services/__init__.py`
+- **test_inventory_equip_command.py** (36 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
+- **equipment_service.py** (23 connections) — `server/services/equipment_service.py`
+- **test_equipment_service.py** (22 connections) — `server/tests/unit/services/test_equipment_service.py`
+- **get_shared_services()** (21 connections) — `server/commands/inventory_service_helpers.py`
+- **SlotValidationError** (21 connections) — `server/services/equipment_service.py`
+- **test_inventory_commands.py** (21 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **EquipmentService** (18 connections) — `server/services/equipment_service.py`
+- **handle_equip_command()** (16 connections) — `server/commands/inventory_equip_command.py`
+- **inventory_service_helpers.py** (16 connections) — `server/commands/inventory_service_helpers.py`
+- **asyncio** (15 connections)
+- **_equip_build_work()** (14 connections) — `server/commands/inventory_equip_command.py`
+- **_sample_work()** (13 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
+- **_equip_run_mutation()** (12 connections) — `server/commands/inventory_equip_command.py`
+- **EquipmentCapacityError** (11 connections) — `server/services/equipment_service.py`
+- **handle_wearable_container_on_equip()** (10 connections) — `server/commands/equipment_helpers.py`
+- **normalize_inventory_slots()** (10 connections) — `server/commands/equipment_helpers.py`
+- **_equip_success_payload()** (10 connections) — `server/commands/inventory_equip_command.py`
+- **.equip_from_inventory()** (10 connections) — `server/services/equipment_service.py`
+- **asyncio** (10 connections)
+- **_equip_target_slot_or_error()** (9 connections) — `server/commands/inventory_equip_command.py`
+- **_ensure_shared_services_initialized()** (9 connections) — `server/commands/inventory_service_helpers.py`
+- **_equip_persist_or_rollback()** (8 connections) — `server/commands/inventory_equip_command.py`
+- *... and 126 more nodes in this community*
 
 ## Relationships
 
-- [SpellEffects](SpellEffects.md) (70 shared connections)
-- [SpellEffectType](SpellEffectType.md) (31 shared connections)
-- [TargetType](TargetType.md) (28 shared connections)
-- [magic_service.py](magic_service.py.md) (23 shared connections)
-- [CombatService](CombatService.md) (22 shared connections)
-- [test_magic_service.py](test_magic_service.py.md) (20 shared connections)
-- [spell_effects_support.py](spell_effects_support.py.md) (17 shared connections)
-- [run_flee_effect](run_flee_effect.md) (13 shared connections)
-- [SpellTargetingService](SpellTargetingService.md) (12 shared connections)
-- [SpellLearningService](SpellLearningService.md) (11 shared connections)
-- [combat_taunt.py](combat_taunt.py.md) (11 shared connections)
-- [get_logger](get_logger.md) (9 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (37 shared connections)
+- [test_command_alias.py](test_command_alias.py.md) (19 shared connections)
+- [ExplorationCommandFactory](ExplorationCommandFactory.md) (16 shared connections)
+- [test_nats_message_handler_subzone_events.py](test_nats_message_handler_subzone_events.py.md) (14 shared connections)
+- [validate_calendar.py](validate_calendar.py.md) (13 shared connections)
+- [command_parser.py](command_parser.py.md) (11 shared connections)
+- [deprecated_patterns.py](deprecated_patterns.py.md) (11 shared connections)
+- [WebSocketRequestContext](WebSocketRequestContext.md) (9 shared connections)
+- [Protocol](Protocol.md) (8 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (7 shared connections)
+- [Room](Room.md) (6 shared connections)
+- [SuccessLevel](SuccessLevel.md) (5 shared connections)
 
 ## Source Files
 
-- `server/game/magic/magic_service.py`
-- `server/game/magic/spell_effect_types.py`
-- `server/game/magic/spell_effects.py`
-- `server/game/magic/spell_effects_heal.py`
-- `server/game/magic/spell_effects_status.py`
-- `server/models/game.py`
-- `server/models/spell.py`
-- `server/schemas/shared/target_resolution.py`
-- `server/services/combat_service_state.py`
-- `server/tests/unit/game/magic/test_spell_effects_heal.py`
+- `server/commands/equipment_helpers.py`
+- `server/commands/inventory_equip_command.py`
+- `server/commands/inventory_service_helpers.py`
+- `server/services/__init__.py`
+- `server/services/equipment_service.py`
+- `server/tests/unit/commands/inventory_commands_test_support.py`
+- `server/tests/unit/commands/test_inventory_commands.py`
+- `server/tests/unit/commands/test_inventory_equip_command.py`
+- `server/tests/unit/commands/test_inventory_service_helpers.py`
+- `server/tests/unit/services/test_equipment_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 688 (87%)
-- INFERRED: 107 (13%)
+- EXTRACTED: 472 (92%)
+- INFERRED: 41 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

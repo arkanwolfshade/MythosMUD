@@ -1,26 +1,30 @@
 # max_dp
 
-> 4 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **max_dp** (4 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **description** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **minimum** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **quest_seed_data()** (8 connections) — `server/tests/integration/test_quest_flow.py`
+- **async_sessionmaker** (1 connections)
+- **AsyncSession** (1 connections)
+- **fixture** (1 connections)
+- **Create User, Player, leave_the_tutorial QuestDefinition and QuestOffer. Quest…** (1 connections) — `server/tests/integration/test_quest_flow.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (1 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (1 shared connections)
+- [endpoints.py](endpoints.py.md) (1 shared connections)
+- [CombatBroadcastMixin](CombatBroadcastMixin.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/npcs/npc_base_stats.schema.json`
+- `server/tests/integration/test_quest_flow.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 7 (88%)
+- INFERRED: 1 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,34 +1,32 @@
 # main
 
-> 13 nodes
+> 11 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **main()** (7 connections) — `scripts/fix_markdownlint_errors.py`
-- **fix_markdownlint_errors.py** (6 connections) — `scripts/fix_markdownlint_errors.py`
-- **fix_md001_heading_increment()** (3 connections) — `scripts/fix_markdownlint_errors.py`
-- **fix_md013_line_length()** (3 connections) — `scripts/fix_markdownlint_errors.py`
-- **fix_md041_first_line_heading()** (3 connections) — `scripts/fix_markdownlint_errors.py`
-- **fix_md051_link_fragments()** (3 connections) — `scripts/fix_markdownlint_errors.py`
-- **parse_errors()** (3 connections) — `scripts/fix_markdownlint_errors.py`
-- **Fix MD001: Heading levels should only increment by one level at a time.** (1 connections) — `scripts/fix_markdownlint_errors.py`
-- **Parse markdownlint output file and extract errors.** (1 connections) — `scripts/fix_markdownlint_errors.py`
-- **Fix MD013: Line length issues by wrapping long lines.** (1 connections) — `scripts/fix_markdownlint_errors.py`
-- **Fix MD051: Link fragments should be valid.** (1 connections) — `scripts/fix_markdownlint_errors.py`
-- **Main function to fix markdownlint errors.** (1 connections) — `scripts/fix_markdownlint_errors.py`
-- **Fix MD041: First line should be a top-level heading.** (1 connections) — `scripts/fix_markdownlint_errors.py`
+- **✅ Best Practices Compliance** (11 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **10. Exception Handling in Async Operations (asyncio.mdc Section 2.5)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **1. Blocking the Event Loop (asyncio.mdc Section 2.3)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **2. Async/Await Usage (anyio.mdc Section 2.2)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **3. Method Signature Consistency (asyncio.mdc Section 2.1)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **4. Error Handling (asyncio.mdc Section 2.5)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **5. Resource Management (anyio.mdc Section 2.1)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **6. Task Groups / Structured Concurrency (anyio.mdc Section 2.1)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **7. Avoiding asyncio.run() in Library Code (asyncio.mdc Section 6.1)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **8. State Management (asyncio.mdc Section 2.4)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **9. Connection Pooling (anyio.mdc Section 3.1)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [HealthService](HealthService.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/fix_markdownlint_errors.py`
+- `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

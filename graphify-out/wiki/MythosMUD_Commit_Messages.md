@@ -1,30 +1,27 @@
 # MythosMUD Commit Messages
 
-> 8 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **MythosMUD Commit Messages** (6 connections) — `.claude/skills/mythosmud-commit-messages/SKILL.md`
-- **GH Stack Skill** (3 connections) — `.claude/skills/gh-stack/SKILL.md`
-- **Commit Messages Skill** (2 connections) — `.claude/skills/mythosmud-commit-messages/SKILL.md`
-- **Examples** (1 connections) — `.claude/skills/mythosmud-commit-messages/SKILL.md`
-- **Format** (1 connections) — `.claude/skills/mythosmud-commit-messages/SKILL.md`
-- **Rules** (1 connections) — `.claude/skills/mythosmud-commit-messages/SKILL.md`
-- **Template** (1 connections) — `.claude/skills/mythosmud-commit-messages/SKILL.md`
-- **Types** (1 connections) — `.claude/skills/mythosmud-commit-messages/SKILL.md`
+- **player_effects.sql** (5 connections) — `db/procedures/player_effects.sql`
+- **schema_name.add_player_effect()** (1 connections) — `db/procedures/player_effects.sql`
+- **schema_name.delete_player_effect()** (1 connections) — `db/procedures/player_effects.sql`
+- **schema_name.expire_effects_for_tick()** (1 connections) — `db/procedures/player_effects.sql`
+- **schema_name.get_active_effects_for_player()** (1 connections) — `db/procedures/player_effects.sql`
+- **schema_name.get_effects_expiring_this_tick()** (1 connections) — `db/procedures/player_effects.sql`
 
 ## Relationships
 
-- [gh-stack (MythosMUD)](gh-stack_MythosMUD.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/skills/gh-stack/SKILL.md`
-- `.claude/skills/mythosmud-commit-messages/SKILL.md`
+- `db/procedures/player_effects.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

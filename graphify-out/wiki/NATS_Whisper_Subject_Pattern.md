@@ -1,10 +1,10 @@
 # NATS Whisper Subject Pattern
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **NATS Whisper Subject Pattern** (0 connections) — `e2e-tests/WHISPER_SYSTEM_INVESTIGATION_REPORT.md`
+- **generate_sql.mjs Path Resolution Failure** (0 connections) — `scripts/static_data/temp_debug.txt`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `e2e-tests/WHISPER_SYSTEM_INVESTIGATION_REPORT.md`
+- `scripts/static_data/temp_debug.txt`
 
 ## Audit Trail
 

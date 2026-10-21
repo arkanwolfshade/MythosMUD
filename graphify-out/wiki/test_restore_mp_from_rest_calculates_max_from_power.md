@@ -1,20 +1,20 @@
 # test_restore_mp_from_rest_calculates_max_from_power
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_restore_mp_from_rest_calculates_max_from_power()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test restore_mp_from_rest() calculates max_mp from power if not present.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_ensure_player_posture_lying_already_lying()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **Test _ensure_player_posture_lying() does nothing when already lying.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_mp_regeneration_service.py](test_mp_regeneration_service.py.md) (1 shared connections)
+- [Test Suite Analyzer Subagent](Test_Suite_Analyzer_Subagent.md) (1 shared connections)
+- [MythosMUD Dependency Upgrade Strategy - Implementation Summary](MythosMUD_Dependency_Upgrade_Strategy_-_Implementation_Summary.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- `server/tests/unit/services/test_player_death_service.py`
 
 ## Audit Trail
 

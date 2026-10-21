@@ -1,24 +1,23 @@
 # test_update_default_channel_invalid_id
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_update_default_channel_invalid_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test updating default channel with invalid ID.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **persistence()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **fixture** (1 connections)
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_player_preferences_service.py](test_player_preferences_service.py.md) (1 shared connections)
+- [StatusEffect](StatusEffect.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `server/tests/unit/npc/test_movement_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

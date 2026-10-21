@@ -1,32 +1,30 @@
 # App Package Design
 
-> 11 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **App Package Design** (11 connections) — `docs/packages/PACKAGE_APP_DESIGN.md`
-- **1. Overview** (1 connections) — `docs/packages/PACKAGE_APP_DESIGN.md`
-- **2. Members** (1 connections) — `docs/packages/PACKAGE_APP_DESIGN.md`
-- **3. Boundary contract** (1 connections) — `docs/packages/PACKAGE_APP_DESIGN.md`
-- **4. Key design decisions** (1 connections) — `docs/packages/PACKAGE_APP_DESIGN.md`
-- **5. Constraints** (1 connections) — `docs/packages/PACKAGE_APP_DESIGN.md`
-- **6. Developer guide** (1 connections) — `docs/packages/PACKAGE_APP_DESIGN.md`
-- **7. Troubleshooting** (1 connections) — `docs/packages/PACKAGE_APP_DESIGN.md`
-- **8. Related docs** (1 connections) — `docs/packages/PACKAGE_APP_DESIGN.md`
-- **9. Changelog** (1 connections) — `docs/packages/PACKAGE_APP_DESIGN.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/packages/PACKAGE_APP_DESIGN.md`
+- **Frontend Aesthetics Guidelines** (9 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **Color & Theme** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **Interaction** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **Layout & Space** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **Motion** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **Responsive** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **Typography** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **UX Writing** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **Visual Details** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
 
 ## Relationships
 
-- [packages/README.md](packages-README.md.md) (1 shared connections)
+- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/packages/PACKAGE_APP_DESIGN.md`
+- `.claude/skills/frontend-design/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

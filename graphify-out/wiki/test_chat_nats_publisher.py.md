@@ -1,56 +1,48 @@
 # test_chat_nats_publisher.py
 
-> 53 nodes
+> 40 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **test_chat_nats_publisher.py** (35 connections) — `server/tests/unit/game/test_chat_nats_publisher.py`
-- **publish_chat_message_to_nats()** (31 connections) — `server/game/chat_nats_publisher.py`
-- **_message()** (24 connections) — `server/tests/unit/game/test_chat_nats_publisher.py`
-- **build_nats_subject()** (13 connections) — `server/game/chat_nats_publisher.py`
-- **_build_legacy_subject()** (11 connections) — `server/game/chat_nats_publisher.py`
-- **_build_nats_message_data()** (8 connections) — `server/game/chat_nats_publisher.py`
-- **_build_standardized_subject()** (8 connections) — `server/game/chat_nats_publisher.py`
-- **_nats_service_ready()** (8 connections) — `server/game/chat_nats_publisher.py`
-- **Any** (8 connections)
-- **_extract_subzone_from_room()** (7 connections) — `server/game/chat_nats_publisher.py`
-- **_subject_system_standardized()** (5 connections) — `server/game/chat_nats_publisher.py`
-- **_subject_whisper_standardized()** (5 connections) — `server/game/chat_nats_publisher.py`
-- **test_publish_chat_message_to_nats_handles_publish_error()** (5 connections) — `server/tests/unit/game/test_chat_nats_publisher.py`
-- **asyncio** (5 connections)
-- **_log_nats_unexpected_error()** (4 connections) — `server/game/chat_nats_publisher.py`
-- **_subject_party_standardized()** (4 connections) — `server/game/chat_nats_publisher.py`
-- **test_publish_chat_message_to_nats_room_access_failure()** (4 connections) — `server/tests/unit/game/test_chat_nats_publisher.py`
-- **test_publish_chat_message_to_nats_success()** (4 connections) — `server/tests/unit/game/test_chat_nats_publisher.py`
-- **test_publish_chat_message_to_nats_unexpected_error()** (4 connections) — `server/tests/unit/game/test_chat_nats_publisher.py`
-- **test_publish_chat_message_to_nats_validation_failure()** (4 connections) — `server/tests/unit/game/test_chat_nats_publisher.py`
-- **test_chat_message_and_payload_carry_the_two_inputs_only_when_set()** (4 connections) — `server/tests/unit/realtime/test_chat_segments.py`
-- **test_build_legacy_subject_global()** (3 connections) — `server/tests/unit/game/test_chat_nats_publisher.py`
-- **test_build_legacy_subject_local_uses_subzone()** (3 connections) — `server/tests/unit/game/test_chat_nats_publisher.py`
-- **test_build_legacy_subject_party_with_id()** (3 connections) — `server/tests/unit/game/test_chat_nats_publisher.py`
-- **test_build_legacy_subject_party_without_id()** (3 connections) — `server/tests/unit/game/test_chat_nats_publisher.py`
-- *... and 28 more nodes in this community*
+- **TestCombatMessagingService** (21 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **asyncio** (16 connections)
+- **.service()** (4 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_attack_message_attacker_perspective()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_attack_message_custom_action_type()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_attack_message_custom_npc_messages()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_attack_message_defender_perspective()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_attack_message_fallback_to_default()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_attack_message_high_damage()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_attack_message_other_perspective()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_attack_message_zero_damage()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_combat_end_messages()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_combat_end_messages_empty_occupants()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_combat_end_messages_loser_perspective()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_combat_end_messages_winner_perspective()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_combat_start_messages()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_combat_start_messages_single_occupant()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_death_message_custom()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_death_message_default()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_init()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **fixture** (1 connections)
+- **Test get_death_message with custom template.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **Test get_combat_start_messages generates messages for all occupants.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **Test get_combat_start_messages with single occupant.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **Test get_combat_end_messages generates messages for all occupants.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [ChatMessage](ChatMessage.md) (24 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (5 shared connections)
-- [chat_channel_message_senders.py](chat_channel_message_senders.py.md) (4 shared connections)
-- [NATSError](NATSError.md) (3 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
-- [test_chat_message_senders.py](test_chat_message_senders.py.md) (2 shared connections)
-- [test_room_utils.py](test_room_utils.py.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (4 shared connections)
 
 ## Source Files
 
-- `server/game/chat_nats_publisher.py`
-- `server/tests/unit/game/test_chat_nats_publisher.py`
-- `server/tests/unit/realtime/test_chat_segments.py`
+- `server/tests/unit/services/test_combat_messaging_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 153 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 57 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,37 +1,35 @@
 # validate_codacy_coverage_gate.py
 
-> 15 nodes
+> 13 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **validate_python_gate()** (7 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **validate_codacy_coverage_gate.py** (7 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **cobertura_root_line_rate()** (6 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **validate_lcov_gate()** (6 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **Path** (6 connections)
-- **cobertura_has_server_sources()** (5 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **_parse_cobertura_xml()** (5 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **lcov_aggregate_hits()** (4 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **main()** (3 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **Parse Cobertura XML with defusedxml (lazy import: LCOV-only runs skip this…** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **Return root line-rate from Cobertura XML (0.0--1.0).** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **True if report lists at least one instrumented class. `coverage xml…** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **Sum LH (lines hit) and LF (lines found) across all LCOV records.** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **Fail fast if Python Cobertura aggregate or server scope is insufficient.** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **Fail fast if LCOV aggregate line rate is below minimum.** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **Improve Layout Systematically** (8 connections) — `.claude/skills/arrange/SKILL.md`
+- **Arrange Skill** (6 connections) — `.claude/skills/arrange/SKILL.md`
+- **Assess Current Layout** (1 connections) — `.claude/skills/arrange/SKILL.md`
+- **Break Card Grid Monotony** (1 connections) — `.claude/skills/arrange/SKILL.md`
+- **Choose the Right Layout Tool** (1 connections) — `.claude/skills/arrange/SKILL.md`
+- **Create Visual Rhythm** (1 connections) — `.claude/skills/arrange/SKILL.md`
+- **Establish a Spacing System** (1 connections) — `.claude/skills/arrange/SKILL.md`
+- **Manage Depth & Elevation** (1 connections) — `.claude/skills/arrange/SKILL.md`
+- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/arrange/SKILL.md`
+- **Optical Adjustments** (1 connections) — `.claude/skills/arrange/SKILL.md`
+- **Plan Layout Improvements** (1 connections) — `.claude/skills/arrange/SKILL.md`
+- **Strengthen Visual Hierarchy** (1 connections) — `.claude/skills/arrange/SKILL.md`
+- **Verify Layout Improvements** (1 connections) — `.claude/skills/arrange/SKILL.md`
 
 ## Relationships
 
-- [ValueError](ValueError.md) (3 shared connections)
+- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/validate_codacy_coverage_gate.py`
+- `.claude/skills/arrange/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (90%)
-- INFERRED: 3 (10%)
+- EXTRACTED: 13 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,56 +1,55 @@
 # skills_commands.py
 
-> 24 nodes
+> 44 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **skills_commands.py** (18 connections) — `server/commands/skills_commands.py`
-- **handle_skills_command()** (13 connections) — `server/commands/skills_commands.py`
-- **test_skills_commands.py** (11 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **_get_container_services()** (9 connections) — `server/commands/skills_commands.py`
-- **_resolve_player_id()** (6 connections) — `server/commands/skills_commands.py`
-- **_format_skills_output()** (5 connections) — `server/commands/skills_commands.py`
-- **_resolve_user_id()** (5 connections) — `server/commands/skills_commands.py`
-- **Any** (5 connections)
-- **test_get_container_services_ok()** (3 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **test_handle_skills_command_no_services()** (3 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **test_handle_skills_command_success()** (3 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **test_format_skills_output()** (2 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **test_get_container_services_missing()** (2 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **test_resolve_player_id_from_string()** (2 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **test_resolve_user_id_from_dict()** (2 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **UUID** (2 connections)
-- **asyncio** (2 connections)
-- **Skills command handler (plan 10.7 V4). Returns the active character's skills as…** (1 connections) — `server/commands/skills_commands.py`
-- **Get container, persistence, and skill_service from request, or None if…** (1 connections) — `server/commands/skills_commands.py`
-- **Extract and validate player_id from player object, returning UUID or None.** (1 connections) — `server/commands/skills_commands.py`
-- **Resolve user_id from current_user (auth user) or fallback to player.user_id.** (1 connections) — `server/commands/skills_commands.py`
-- **Format skills list as text output lines.** (1 connections) — `server/commands/skills_commands.py`
-- **Handle the /skills command: return the active character's skills as text.…** (1 connections) — `server/commands/skills_commands.py`
-- **Unit tests for skills command helpers.** (1 connections) — `server/tests/unit/commands/test_skills_commands.py`
+- **NATSMessageBroadcastMixin** (26 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._broadcast_to_room_with_filtering()** (10 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._send_messages_to_players()** (8 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._apply_dampening_and_send_message()** (7 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **Any** (7 connections)
+- **._apply_receiver_segments()** (6 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._filter_target_players()** (6 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._get_player_lucidity_tier()** (6 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._format_message_for_receiver()** (5 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._check_player_mute_status()** (4 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._echo_message_to_sender()** (4 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._extract_chat_event_info()** (4 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._get_user_manager()** (4 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **UserManager** (4 connections)
+- **._collect_room_targets()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._is_player_muted_by_receiver()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._is_player_muted_by_receiver_with_user_manager()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._should_echo_to_sender()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._compare_canonical_rooms()** (2 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._get_player_room_from_online_players()** (2 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._get_player_room_from_persistence()** (2 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._is_player_in_room()** (2 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._should_apply_mute_check()** (2 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **Determine if message should be echoed to sender. Args: channel: Channel type…** (1 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **Echo message back to sender. Args: sender_id: Sender player ID chat_event: Chat…** (1 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [command_error](command_error.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [command_service.py](command_service.py.md) (2 shared connections)
-- [alias_storage.py](alias_storage.py.md) (2 shared connections)
-- [test_rest_command.py](test_rest_command.py.md) (1 shared connections)
-- [fixture](fixture.md) (1 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
-- [command_parser.py](command_parser.py.md) (1 shared connections)
+- [Room](Room.md) (3 shared connections)
+- [look_container.py](look_container.py.md) (3 shared connections)
+- [mp_regeneration_service](mp_regeneration_service.md) (2 shared connections)
+- [ValidationRule](ValidationRule.md) (2 shared connections)
+- [deque](deque.md) (1 shared connections)
+- [ItemFactory](ItemFactory.md) (1 shared connections)
+- [PopulationStats](PopulationStats.md) (1 shared connections)
+- [WebSocketManager](WebSocketManager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/skills_commands.py`
-- `server/tests/unit/commands/test_skills_commands.py`
+- `server/realtime/nats_message_handler_broadcast.py`
 
 ## Audit Trail
 
-- EXTRACTED: 55 (92%)
-- INFERRED: 5 (8%)
+- EXTRACTED: 77 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,21 +1,21 @@
 # rest_location
 
-> 4 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **rest_location** (4 connections) — `schemas/room_schema.json`
-- **default** (1 connections) — `schemas/room_schema.json`
-- **description** (1 connections) — `schemas/room_schema.json`
-- **type** (1 connections) — `schemas/room_schema.json`
+- **Call of Cthulhu Keeper Tips (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Keeper Tips.md`
+- **Call of Cthulhu Keeper Tips.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Keeper Tips.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Keeper Tips.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Keeper Tips.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [test_inventory_commands_helpers.py](test_inventory_commands_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/room_schema.json`
+- `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Keeper Tips.md`
 
 ## Audit Trail
 

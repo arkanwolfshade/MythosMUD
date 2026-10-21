@@ -1,24 +1,23 @@
 # ADR-018: New Game Session vs Grace Reconnect
 
-> 15 nodes
+> 14 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **ADR-018: New Game Session vs Grace Reconnect** (11 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- **ADR-018-new-game-session-replacement.md** (3 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- **ADR-004: WebSocket-Only Real-Time Architecture** (2 connections) — `docs/architecture/decisions/ADR-004-websocket-only-realtime.md`
-- **1. Overview** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- **2. Context** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- **3. Decision** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- **4. Alternatives Considered** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- **5. Consequences** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- **6. Related ADRs** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- **7. References** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- **8. Changelog** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- **ADR-020: WebSocket Authentication and CSRF** (1 connections) — `docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md`
-- **Debugging Mid-Run Drops** (1 connections) — `docs/debugging-mid-run-drops.md`
-- **Memory Leak Metrics Usage Guide** (1 connections) — `docs/MEMORY_LEAK_METRICS_USAGE_GUIDE.md`
+- **find_fstring_logging_violations()** (5 connections) — `scripts/check_logging_patterns.py`
+- **FStringLoggingDetector** (5 connections) — `scripts/check_logging_patterns.py`
+- **main()** (5 connections) — `scripts/check_logging_patterns.py`
+- **check_logging_patterns.py** (4 connections) — `scripts/check_logging_patterns.py`
+- **format_violation_report()** (3 connections) — `scripts/check_logging_patterns.py`
+- **.visit_Call()** (3 connections) — `scripts/check_logging_patterns.py`
+- **Path** (3 connections)
+- **.__init__()** (2 connections) — `scripts/check_logging_patterns.py`
+- **Call** (1 connections)
+- **Main function to scan files and report violations.** (1 connections) — `scripts/check_logging_patterns.py`
+- **AST visitor to detect f-string logging violations.** (1 connections) — `scripts/check_logging_patterns.py`
+- **Check for f-string logging patterns.** (1 connections) — `scripts/check_logging_patterns.py`
+- **Find f-string logging violations in a Python file using AST parsing. This…** (1 connections) — `scripts/check_logging_patterns.py`
+- **Format violation report for display. Args: violations: List of (file_path,…** (1 connections) — `scripts/check_logging_patterns.py`
 
 ## Relationships
 
@@ -26,15 +25,11 @@
 
 ## Source Files
 
-- `docs/MEMORY_LEAK_METRICS_USAGE_GUIDE.md`
-- `docs/architecture/decisions/ADR-004-websocket-only-realtime.md`
-- `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- `docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md`
-- `docs/debugging-mid-run-drops.md`
+- `scripts/check_logging_patterns.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

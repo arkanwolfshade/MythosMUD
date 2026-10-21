@@ -1,24 +1,26 @@
 # .get_combat_stats
 
-> 6 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **.get_combat_stats()** (4 connections) — `server/npc/combat_integration.py`
-- **._get_player_combat_stats()** (4 connections) — `server/npc/combat_integration.py`
-- **._normalize_npc_stats()** (3 connections) — `server/npc/combat_integration.py`
-- **Get combat stats for a player.** (1 connections) — `server/npc/combat_integration.py`
-- **Normalize NPC stats to include 'hp' for backward compatibility.** (1 connections) — `server/npc/combat_integration.py`
-- **Get combat-relevant stats for an entity. Args: entity_id: ID of the entity…** (1 connections) — `server/npc/combat_integration.py`
+- **Server & Client Package Documentation Coverage** (6 connections) — `docs/packages/README.md`
+- **2. Index** (4 connections) — `docs/packages/README.md`
+- **1. Overview** (1 connections) — `docs/packages/README.md`
+- **3. Related documentation** (1 connections) — `docs/packages/README.md`
+- **4. Changelog** (1 connections) — `docs/packages/README.md`
+- **AI READING INSTRUCTION** (1 connections) — `docs/packages/README.md`
+- **Documented (20)** (1 connections) — `docs/packages/README.md`
+- **Provisional (2)** (1 connections) — `docs/packages/README.md`
+- **Undocumented (21)** (1 connections) — `docs/packages/README.md`
 
 ## Relationships
 
-- [NPCCombatIntegration](NPCCombatIntegration.md) (3 shared connections)
-- [._build_player_attacked_event](_build_player_attacked_event.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/combat_integration.py`
+- `docs/packages/README.md`
 
 ## Audit Trail
 

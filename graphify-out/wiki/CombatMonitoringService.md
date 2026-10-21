@@ -1,54 +1,60 @@
 # CombatMonitoringService
 
-> 62 nodes
+> 62 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **CombatMonitoringService** (32 connections) — `server/services/combat_monitoring_service.py`
-- **._generate_alert()** (9 connections) — `server/services/combat_monitoring_service.py`
-- **Any** (9 connections)
-- **.__init__()** (7 connections) — `server/services/combat_monitoring_service.py`
-- **Alert** (5 connections) — `server/services/combat_monitoring_service.py`
-- **._check_error_threshold()** (4 connections) — `server/services/combat_monitoring_service.py`
-- **._check_resource_thresholds()** (4 connections) — `server/services/combat_monitoring_service.py`
-- **.record_combat_error()** (4 connections) — `server/services/combat_monitoring_service.py`
-- **.to_dict()** (3 connections) — `server/services/combat_monitoring_service.py`
-- **.to_dict()** (3 connections) — `server/services/combat_monitoring_service.py`
-- **.add_alert_callback()** (3 connections) — `server/services/combat_monitoring_service.py`
-- **._check_performance_threshold()** (3 connections) — `server/services/combat_monitoring_service.py`
-- **.end_combat_monitoring()** (3 connections) — `server/services/combat_monitoring_service.py`
-- **.end_turn_monitoring()** (3 connections) — `server/services/combat_monitoring_service.py`
-- **.get_active_alerts()** (3 connections) — `server/services/combat_monitoring_service.py`
-- **.get_all_alerts()** (3 connections) — `server/services/combat_monitoring_service.py`
-- **.get_current_metrics()** (3 connections) — `server/services/combat_monitoring_service.py`
-- **.get_metrics_history()** (3 connections) — `server/services/combat_monitoring_service.py`
-- **.get_monitoring_summary()** (3 connections) — `server/services/combat_monitoring_service.py`
-- **.refresh_configuration()** (3 connections) — `server/services/combat_monitoring_service.py`
-- **.remove_alert_callback()** (3 connections) — `server/services/combat_monitoring_service.py`
-- **._save_metrics_snapshot()** (3 connections) — `server/services/combat_monitoring_service.py`
-- **.update_resource_metrics()** (3 connections) — `server/services/combat_monitoring_service.py`
-- **._update_timing_metrics()** (3 connections) — `server/services/combat_monitoring_service.py`
-- **._update_turn_timing_metrics()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **real_time.py** (51 connections) — `server/api/real_time.py`
+- **_RealtimeConnectionManager** (16 connections) — `server/api/real_time.py`
+- **UUID** (14 connections)
+- **_resolve_player_id()** (14 connections) — `server/api/real_time.py`
+- **handle_new_game_session()** (12 connections) — `server/api/real_time.py`
+- **_ensure_connection_manager()** (11 connections) — `server/api/real_time.py`
+- **get_player_connections()** (10 connections) — `server/api/real_time.py`
+- **_parse_websocket_token()** (10 connections) — `server/api/real_time.py`
+- **WebSocket** (10 connections)
+- **websocket_endpoint()** (10 connections) — `server/api/real_time.py`
+- **websocket_endpoint_route()** (10 connections) — `server/api/real_time.py`
+- **_resolve_player_id_from_test()** (9 connections) — `server/api/real_time.py`
+- **_resolve_player_id_from_token()** (9 connections) — `server/api/real_time.py`
+- **get_connection_statistics()** (8 connections) — `server/api/real_time.py`
+- **_validate_websocket_connection_manager()** (8 connections) — `server/api/real_time.py`
+- **_resolve_connection_manager_from_state()** (7 connections) — `server/api/real_time.py`
+- **_validate_and_accept_websocket()** (7 connections) — `server/api/real_time.py`
+- **NewGameSessionResponse** (7 connections) — `server/schemas/realtime/realtime.py`
+- **PlayerConnectionsResponse** (7 connections) — `server/schemas/realtime/realtime.py`
+- **_app_state_from_websocket()** (6 connections) — `server/api/real_time.py`
+- **_invoke_handle_websocket_connection()** (6 connections) — `server/api/real_time.py`
+- **BaseModel** (6 connections)
+- **SessionInfo** (6 connections) — `server/schemas/realtime/realtime.py`
+- **_app_state_from_request()** (5 connections) — `server/api/real_time.py`
+- **websocket_player_id_fallback_allowed()** (4 connections) — `server/api/real_time.py`
 - *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (14 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
-- [monitoring_service](monitoring_service.md) (1 shared connections)
-- [FeatureFlagService](FeatureFlagService.md) (1 shared connections)
-- [CombatConfiguration](CombatConfiguration.md) (1 shared connections)
-- [deque](deque.md) (1 shared connections)
+- [compare_linting_results.py](compare_linting_results.py.md) (40 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (7 shared connections)
+- [Room](Room.md) (6 shared connections)
+- [vite.userConfig.ts](vite.userConfig.ts.md) (5 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (5 shared connections)
+- [NATSService](NATSService.md) (4 shared connections)
+- [test_look_container.py](test_look_container.py.md) (3 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
+- [4. Rest/Quit Command During Combat](4._Rest-Quit_Command_During_Combat.md) (3 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_monitoring_service.py`
-- `server/tests/unit/services/test_combat_monitoring_service.py`
+- `server/api/real_time.py`
+- `server/schemas/realtime/realtime.py`
 
 ## Audit Trail
 
-- EXTRACTED: 93 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 198 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

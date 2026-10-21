@@ -1,45 +1,57 @@
 # test_combat_validator.py
 
-> 12 nodes
+> 96 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **test_combat_validator.py** (51 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_combat_result_message_success_with_damage()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_random_error_message()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_random_error_message_unknown_type()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_attack_strength_success()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_combat_command_valid()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Unit tests for combat validator. Tests the CombatValidator class for combat…** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_attack_strength with successful validation.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_command with valid command.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test _get_random_error_message returns error message.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test _get_random_error_message with unknown error type.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test get_combat_result_message with successful attack and damage.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **ConnectionCleaner** (27 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **test_connection_cleaner.py** (26 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **connection_cleaner.py** (22 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Any** (14 connections)
+- **UUID** (10 connections)
+- **CleanupContext** (8 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.cleanup_ghost_players()** (8 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **fixture** (8 connections)
+- **.prune_stale_players()** (7 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.check_and_cleanup()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.cleanup_dead_connections()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._cleanup_dead_connections_for_player()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.cleanup_orphaned_data()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **asyncio** (6 connections)
+- **._close_and_remove_stale_websocket()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_online_player_ids()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._remove_stale_player_data()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **_stale_prune_max_age_seconds()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._filter_actual_ghost_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.force_cleanup()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_player_id_from_metadata()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_players_to_check()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_potential_ghost_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._identify_stale_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.__init__()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- *... and 71 more nodes in this community*
 
 ## Relationships
 
-- [PlayerCombatService](PlayerCombatService.md) (2 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
-- [test_validate_combat_command_target_too_long](test_validate_combat_command_target_too_long.md) (1 shared connections)
-- [test_validate_combat_command_rate_limited](test_validate_combat_command_rate_limited.md) (1 shared connections)
-- [test_validate_combat_command_exception_handling](test_validate_combat_command_exception_handling.md) (1 shared connections)
-- [test_validate_target_exists_exact_match](test_validate_target_exists_exact_match.md) (1 shared connections)
-- [test_validate_target_exists_case_insensitive](test_validate_target_exists_case_insensitive.md) (1 shared connections)
-- [test_validate_target_exists_partial_match](test_validate_target_exists_partial_match.md) (1 shared connections)
-- [test_validate_target_exists_no_match](test_validate_target_exists_no_match.md) (1 shared connections)
-- [test_validate_target_exists_no_target_name](test_validate_target_exists_no_target_name.md) (1 shared connections)
-- [combat_validator](combat_validator.md) (1 shared connections)
-- [test_validate_target_alive_alive](test_validate_target_alive_alive.md) (1 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (8 shared connections)
+- [connection_initialization.py](connection_initialization.py.md) (3 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (2 shared connections)
+- [test_quest_service.py](test_quest_service.py.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
+- [_find_item_in_inventory](_find_item_in_inventory.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/realtime/maintenance/__init__.py`
+- `server/realtime/maintenance/connection_cleaner.py`
+- `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 
 ## Audit Trail
 
-- EXTRACTED: 56 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 170 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

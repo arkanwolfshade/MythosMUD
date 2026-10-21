@@ -1,26 +1,24 @@
 # Common Conversion Patterns
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Common Conversion Patterns** (5 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Pattern 1: Simple Query** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Pattern 2: Batch Operations** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Pattern 3: Health Operations** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Pattern 4: FastAPI Dependency Injection** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Chaosium graphify snapshot - A Cold Fire Within** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/MANIFEST.md`
+- **a-cold-fire-within/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/MANIFEST.md`
 
 ## Relationships
 
-- [Persistence Layer Async Migration Plan](Persistence_Layer_Async_Migration_Plan.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

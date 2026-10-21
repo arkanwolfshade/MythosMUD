@@ -1,28 +1,25 @@
 # TestGetContainerService
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **TestGetContainerService** (4 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **.test_get_container_service_returns_service()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **Test get_container_service function.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **Test get_container_service returns ContainerService instance.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **Updated Coverage Targets** (1 connections) — `docs/archive/TEST_OPTIMIZATION_STATUS.md`
+- **Placeholder Test Removal** (1 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [ContainerService](ContainerService.md) (1 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/api/test_container_helpers.py`
+- `docs/archive/TEST_OPTIMIZATION_STATUS.md`
+- `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (83%)
-- INFERRED: 1 (17%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

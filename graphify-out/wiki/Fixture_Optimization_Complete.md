@@ -1,12 +1,11 @@
 # Fixture Optimization Complete
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Fixture Optimization Complete** (2 connections) — `docs/archive/FIXTURE_OPTIMIZATION_COMPLETE.md`
-- **E2E Testing Setup Status** (1 connections) — `docs/archive/E2E_TESTING_SETUP_STATUS.md`
-- **Test Suite Post-Merge Refactoring** (1 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
+- **ensure_uv_ci.sh** (1 connections) — `scripts/ensure_uv_ci.sh`
+- **ensure_uv_ci.sh script** (1 connections) — `scripts/ensure_uv_ci.sh`
 
 ## Relationships
 
@@ -14,14 +13,12 @@
 
 ## Source Files
 
-- `docs/archive/E2E_TESTING_SETUP_STATUS.md`
-- `docs/archive/FIXTURE_OPTIMIZATION_COMPLETE.md`
-- `docs/archive/MERGE_REFACTORING_SUMMARY.md`
+- `scripts/ensure_uv_ci.sh`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 2 (100%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

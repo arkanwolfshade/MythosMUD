@@ -1,61 +1,68 @@
 # SpellLearningService
 
-> 46 nodes
+> 98 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **SpellLearningService** (49 connections) — `server/game/magic/spell_learning_service.py`
-- **test_spell_learning_service.py** (16 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **.learn_spell()** (12 connections) — `server/game/magic/spell_learning_service.py`
-- **Any** (12 connections)
-- **asyncio** (12 connections)
-- **UUID** (10 connections)
-- **._validate_prerequisites()** (9 connections) — `server/game/magic/spell_learning_service.py`
-- **.__init__()** (8 connections) — `server/commands/magic_commands.py`
-- **._load_spell_learn_context()** (6 connections) — `server/game/magic/spell_learning_service.py`
-- **._apply_mythos_corruption_on_learn()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **._check_required_spell_prerequisites()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **.__init__()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **.learn_spell_from_book()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **.learn_spell_from_npc()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **.learn_spell_from_quest()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **._persist_spell_learning()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **test_learn_mythos_spell_applies_corruption()** (5 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **._check_intelligence_requirement()** (4 connections) — `server/game/magic/spell_learning_service.py`
-- **._check_power_requirement()** (4 connections) — `server/game/magic/spell_learning_service.py`
-- **._spell_learn_success_response()** (4 connections) — `server/game/magic/spell_learning_service.py`
-- **.increase_mastery_on_cast()** (3 connections) — `server/game/magic/spell_learning_service.py`
-- **._resolve_spell()** (3 connections) — `server/game/magic/spell_learning_service.py`
-- **learning_service()** (3 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **test_increase_mastery_on_cast()** (3 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **test_learn_spell_already_known()** (3 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- *... and 21 more nodes in this community*
+- **NPCDied** (29 connections) — `server/events/event_types.py`
+- **lifecycle_death.py** (24 connections) — `server/npc/lifecycle_death.py`
+- **test_quest_events.py** (17 connections) — `server/tests/unit/game/test_quest_events.py`
+- **NPCLifecycleRecord** (16 connections) — `server/npc/lifecycle_types.py`
+- **test_lifespan_event_subscriptions.py** (16 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **test_lifecycle_death.py** (16 connections) — `server/tests/unit/npc/test_lifecycle_death.py`
+- **quest_events.py** (15 connections) — `server/game/quest/quest_events.py`
+- **subscribe_quest_events()** (15 connections) — `server/game/quest/quest_events.py`
+- **RoomOccupantsRefreshRequested** (14 connections) — `server/events/event_types.py`
+- **lifespan_event_subscriptions.py** (13 connections) — `server/app/lifespan_event_subscriptions.py`
+- **subscribe_quest_events()** (13 connections) — `server/app/lifespan_event_subscriptions.py`
+- **QuestCompleted** (13 connections) — `server/events/event_types.py`
+- **_LifecycleManagerForDeath** (12 connections) — `server/npc/lifecycle_death.py`
+- **subscribe_room_occupants_refresh()** (11 connections) — `server/app/lifespan_event_subscriptions.py`
+- **handle_npc_died_impl()** (11 connections) — `server/npc/lifecycle_death.py`
+- **_mark_despawned_and_queue_respawn()** (10 connections) — `server/npc/lifecycle_death.py`
+- **_make_on_player_entered()** (8 connections) — `server/game/quest/quest_events.py`
+- **_remove_active_npc_and_notify()** (8 connections) — `server/npc/lifecycle_death.py`
+- **_make_on_npc_died()** (7 connections) — `server/game/quest/quest_events.py`
+- **_make_on_player_left()** (7 connections) — `server/game/quest/quest_events.py`
+- **test_quest_log_updated_event_envelope_shape()** (6 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **asyncio** (6 connections)
+- **test_handle_npc_died_impl_full_path()** (6 connections) — `server/tests/unit/npc/test_lifecycle_death.py`
+- **test_mark_despawned_logs_failure()** (6 connections) — `server/tests/unit/npc/test_lifecycle_death.py`
+- **.add_event()** (5 connections) — `server/npc/lifecycle_types.py`
+- *... and 73 more nodes in this community*
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (11 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (5 shared connections)
-- [MagicCommandHandler](MagicCommandHandler.md) (4 shared connections)
-- [SpellEffects](SpellEffects.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [magic_service.py](magic_service.py.md) (2 shared connections)
-- [PlayerService](PlayerService.md) (2 shared connections)
-- [CorruptionService](CorruptionService.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [magic_service_completion.py](magic_service_completion.py.md) (1 shared connections)
-- [ChatService](ChatService.md) (1 shared connections)
+- [BaseEvent](BaseEvent.md) (27 shared connections)
+- [CombatInstance](CombatInstance.md) (17 shared connections)
+- [ADR-023: Package Ownership (`game/` vs `services/` vs `npc/`) and Fan-Out Watch List](ADR-023-_Package_Ownership_`game-`_vs_`services-`_vs_`npc-`_and_Fan-Out_Watch_List.md) (8 shared connections)
+- [Room](Room.md) (7 shared connections)
+- [SpellEffectType](SpellEffectType.md) (6 shared connections)
+- [get_username_from_user](get_username_from_user.md) (5 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (4 shared connections)
+- [rescue_commands.py](rescue_commands.py.md) (4 shared connections)
+- [test_passive_lucidity_flux_service.py](test_passive_lucidity_flux_service.py.md) (3 shared connections)
+- [LogAggregator](LogAggregator.md) (3 shared connections)
+- [security.ts](security.ts.md) (2 shared connections)
+- [.publish_with_pool](publish_with_pool.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/magic_commands.py`
-- `server/game/magic/spell_learning_service.py`
-- `server/tests/unit/game/magic/test_spell_learning_service.py`
+- `server/app/lifespan_event_subscriptions.py`
+- `server/events/event_types.py`
+- `server/game/follow_service.py`
+- `server/game/quest/quest_events.py`
+- `server/npc/lifecycle_death.py`
+- `server/npc/lifecycle_manager.py`
+- `server/npc/lifecycle_types.py`
+- `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- `server/tests/unit/game/test_quest_events.py`
+- `server/tests/unit/npc/test_lifecycle_death.py`
 
 ## Audit Trail
 
-- EXTRACTED: 118 (84%)
-- INFERRED: 22 (16%)
+- EXTRACTED: 243 (86%)
+- INFERRED: 39 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

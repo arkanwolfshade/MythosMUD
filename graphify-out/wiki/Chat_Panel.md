@@ -1,33 +1,28 @@
 # Chat Panel
 
-> 7 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **Chat Panel** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DOCUMENTATION.md`
-- **Game Log Panel** (2 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DOCUMENTATION.md`
-- **Chat Message Routing Bug Fix** (2 connections) — `docs/archive/BUG_FIX_CHAT_MESSAGE_ROUTING.md`
-- **Chat Message Type Categorization Bug** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DEBUG_PLANNING.md`
-- **Commands Panel** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DOCUMENTATION.md`
-- **Room Description Routing Bug Fix** (1 connections) — `docs/archive/BUG_FIX_ROOM_DESCRIPTION_ROUTING.md`
-- **Bug Prevention Testing Strategy** (1 connections) — `docs/archive/BUG_PREVENTION_TESTING_STRATEGY.md`
+- **message_filtering_helper()** (4 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **fixture** (2 connections)
+- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Create a MessageFilteringHelper instance.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Chaosium CoC Catalog](Chaosium_CoC_Catalog.md) (2 shared connections)
+- [WebSocketManager](WebSocketManager.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DEBUG_PLANNING.md`
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DOCUMENTATION.md`
-- `docs/archive/BUG_FIX_CHAT_MESSAGE_ROUTING.md`
-- `docs/archive/BUG_FIX_ROOM_DESCRIPTION_ROUTING.md`
-- `docs/archive/BUG_PREVENTION_TESTING_STRATEGY.md`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (83%)
-- INFERRED: 1 (17%)
+- EXTRACTED: 7 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

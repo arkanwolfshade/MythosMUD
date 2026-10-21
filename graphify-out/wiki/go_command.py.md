@@ -1,60 +1,61 @@
 # go_command.py
 
-> 82 nodes
+> 80 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **go_command.py** (34 connections) — `server/commands/go_command.py`
-- **test_go_command.py** (33 connections) — `server/tests/unit/commands/test_go_command.py`
-- **handle_go_command()** (22 connections) — `server/commands/go_command.py`
-- **asyncio** (16 connections)
-- **_setup_go_command()** (13 connections) — `server/commands/go_command.py`
-- **Any** (12 connections)
-- **_execute_movement()** (11 connections) — `server/commands/go_command.py`
-- **_validate_exit()** (10 connections) — `server/commands/go_command.py`
-- **_validate_player_posture()** (10 connections) — `server/commands/go_command.py`
-- **_cancel_rest_if_moving()** (8 connections) — `server/commands/go_command.py`
-- **_movement_combat_and_event_bus_from_go_app()** (6 connections) — `server/commands/go_command.py`
-- **_movement_service_for_go_command()** (6 connections) — `server/commands/go_command.py`
-- **test_execute_movement_error_handling()** (5 connections) — `server/tests/unit/commands/test_go_command.py`
-- **_canonical_room_id_for_go()** (4 connections) — `server/commands/go_command.py`
-- **_connection_manager_from_go_app()** (4 connections) — `server/commands/go_command.py`
-- **_resolve_async_persistence_from_go_app()** (4 connections) — `server/commands/go_command.py`
-- **_resolved_direction_for_go_command()** (4 connections) — `server/commands/go_command.py`
-- **test_execute_movement_failure()** (4 connections) — `server/tests/unit/commands/test_go_command.py`
-- **test_execute_movement_fallback_service()** (4 connections) — `server/tests/unit/commands/test_go_command.py`
-- **test_execute_movement_success()** (4 connections) — `server/tests/unit/commands/test_go_command.py`
-- **test_handle_go_command_invalid_posture()** (4 connections) — `server/tests/unit/commands/test_go_command.py`
-- **test_handle_go_command_no_direction()** (4 connections) — `server/tests/unit/commands/test_go_command.py`
-- **test_handle_go_command_no_exit()** (4 connections) — `server/tests/unit/commands/test_go_command.py`
-- **test_handle_go_command_rest_interrupt_still_moves()** (4 connections) — `server/tests/unit/commands/test_go_command.py`
-- **test_handle_go_command_setup_failure()** (4 connections) — `server/tests/unit/commands/test_go_command.py`
-- *... and 57 more nodes in this community*
+- **catatonia_check.py** (25 connections) — `server/command_handler/catatonia_check.py`
+- **test_command_validation.py** (25 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **asyncio** (24 connections)
+- **TestCatatoniaChecks** (21 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **check_catatonia_block()** (16 connections) — `server/command_handler/catatonia_check.py`
+- **_check_all_command_blocks()** (16 connections) — `server/command_handler_unified.py`
+- **_is_catatonic()** (10 connections) — `server/command_handler/catatonia_check.py`
+- **_load_player_for_catatonia_check()** (10 connections) — `server/command_handler/catatonia_check.py`
+- **_check_catatonia_database()** (9 connections) — `server/command_handler/catatonia_check.py`
+- **_check_catatonia_registry()** (9 connections) — `server/command_handler/catatonia_check.py`
+- **_query_lucidity_record()** (9 connections) — `server/command_handler/catatonia_check.py`
+- **_fetch_lucidity_record()** (8 connections) — `server/command_handler/catatonia_check.py`
+- **UUID** (7 connections)
+- **_registry_player_id_value()** (7 connections) — `server/command_handler/catatonia_check.py`
+- **TestCheckAllCommandBlocks** (7 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **_PersistenceGetPlayerByName** (5 connections) — `server/command_handler/catatonia_check.py`
+- **_convert_player_id_to_uuid()** (4 connections) — `server/command_handler/catatonia_check.py`
+- **.test_check_catatonia_block_allowed_command()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_catatonia_block_no_app_state()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_catatonia_block_uses_string_registry_key_when_player_id_not_uuid_or_str()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_catatonia_database_catatonic()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_catatonia_database_not_catatonic()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_catatonia_registry_catatonic()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_catatonia_registry_not_catatonic()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_fetch_lucidity_record()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [test_rest_command.py](test_rest_command.py.md) (5 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [alias_storage.py](alias_storage.py.md) (4 shared connections)
-- [ground_channel.py](ground_channel.py.md) (3 shared connections)
-- [command_error](command_error.md) (3 shared connections)
-- [talk_command.py](talk_command.py.md) (3 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (2 shared connections)
-- [MovementService](MovementService.md) (2 shared connections)
-- [command_service.py](command_service.py.md) (1 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
+- [mapUtils.ts](mapUtils.ts.md) (16 shared connections)
+- [test_movement_service.py](test_movement_service.py.md) (6 shared connections)
+- [session_factory](session_factory.md) (5 shared connections)
+- [QuestService](QuestService.md) (5 shared connections)
+- [PopulationStats](PopulationStats.md) (4 shared connections)
+- [test_logging_file_categories.py](test_logging_file_categories.py.md) (3 shared connections)
+- [look_container.py](look_container.py.md) (3 shared connections)
+- [MemoryMonitor](MemoryMonitor.md) (2 shared connections)
+- [ItemFactory](ItemFactory.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [DialogueService](DialogueService.md) (2 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/go_command.py`
-- `server/tests/unit/commands/test_go_command.py`
+- `server/command_handler/catatonia_check.py`
+- `server/command_handler_unified.py`
+- `server/tests/unit/commands/test_command_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 178 (97%)
-- INFERRED: 6 (3%)
+- EXTRACTED: 194 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

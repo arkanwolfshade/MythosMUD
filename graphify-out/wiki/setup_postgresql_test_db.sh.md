@@ -1,24 +1,24 @@
 # setup_postgresql_test_db.sh
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **setup_postgresql_test_db.sh** (2 connections) — `scripts/setup_postgresql_test_db.sh`
-- **PGPASSWORD** (1 connections) — `scripts/setup_postgresql_test_db.sh`
-- **setup_postgresql_test_db.sh script** (1 connections) — `scripts/setup_postgresql_test_db.sh`
+- **test_validate_exit_exists_success()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test validate_exit_exists() returns True for valid exit.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [ApplicationContainer Structure Analysis and Domain-Specific Split Proposal](ApplicationContainer_Structure_Analysis_and_Domain-Specific_Split_Proposal.md) (1 shared connections)
+- [test_request_schema_security.py](test_request_schema_security.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/setup_postgresql_test_db.sh`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

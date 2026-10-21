@@ -1,36 +1,33 @@
 # skill
 
-> 14 nodes
+> 12 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **skill** (6 connections) — `schemas/items/item_prototype.schema.json`
-- **equipmentBonus** (5 connections) — `schemas/items/item_prototype.schema.json`
-- **properties** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **required** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **bonus** (2 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **description** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **bonus** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **skill** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **Interaction Design** (10 connections) — `.claude/skills/frontend-design/reference/interaction-design.md`
+- **Keyboard Navigation Patterns** (3 connections) — `.claude/skills/frontend-design/reference/interaction-design.md`
+- **Destructive Actions: Undo > Confirm** (1 connections) — `.claude/skills/frontend-design/reference/interaction-design.md`
+- **Focus Rings: Do Them Right** (1 connections) — `.claude/skills/frontend-design/reference/interaction-design.md`
+- **Form Design: The Non-Obvious** (1 connections) — `.claude/skills/frontend-design/reference/interaction-design.md`
+- **Gesture Discoverability** (1 connections) — `.claude/skills/frontend-design/reference/interaction-design.md`
+- **Loading States** (1 connections) — `.claude/skills/frontend-design/reference/interaction-design.md`
+- **Modals: The Inert Approach** (1 connections) — `.claude/skills/frontend-design/reference/interaction-design.md`
+- **Roving Tabindex** (1 connections) — `.claude/skills/frontend-design/reference/interaction-design.md`
+- **Skip Links** (1 connections) — `.claude/skills/frontend-design/reference/interaction-design.md`
+- **The Eight Interactive States** (1 connections) — `.claude/skills/frontend-design/reference/interaction-design.md`
+- **The Popover API** (1 connections) — `.claude/skills/frontend-design/reference/interaction-design.md`
 
 ## Relationships
 
-- [item_prototype.schema.json](item_prototype.schema.json.md) (1 shared connections)
-- [properties](properties.md) (1 shared connections)
+- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/items/item_prototype.schema.json`
+- `.claude/skills/frontend-design/reference/interaction-design.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,32 +1,26 @@
 # Attack Command Not Starting Combat
 
-> 7 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Target Resolution via Lifecycle Manager** (2 connections) — `investigations/sessions/2025-01-28_session-attack-command-not-starting-combat.md`
-- **Stale Room.get_npcs After Persistence Reload** (2 connections) — `investigations/sessions/2025-01-29_session-001_npc-occupants-display-issue.md`
-- **Attack Command Not Starting Combat** (2 connections) — `investigations/sessions/2025-01-28_session-attack-command-not-starting-combat.md`
-- **NPC Dual Tracking System Issue** (2 connections) — `investigations/sessions/2025-01-29_session-001_npc-occupants-display-issue.md`
-- **NPC Spawning vs Occupants Display Issue** (2 connections) — `investigations/sessions/2025-01-XX_session-npc-spawning-occupants-issue.md`
-- **CommandType Enum vs String Comparison** (1 connections) — `investigations/sessions/2025-01-28_session-attack-command-not-starting-combat.md`
-- **Flattened Occupants Losing Player NPC Distinction** (1 connections) — `investigations/sessions/2025-01-XX_session-occupants-npc-display.md`
+- **9. Test Maintenance Best Practices** (4 connections) — `.cursor/commands/server-test-remediation.md`
+- **Performance Considerations** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Test Data Management** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Test Isolation** (1 connections) — `.cursor/commands/server-test-remediation.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Migration Guide: From Default Logging to Enhanced Logging](Migration_Guide-_From_Default_Logging_to_Enhanced_Logging.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-01-28_session-attack-command-not-starting-combat.md`
-- `investigations/sessions/2025-01-29_session-001_npc-occupants-display-issue.md`
-- `investigations/sessions/2025-01-XX_session-npc-spawning-occupants-issue.md`
-- `investigations/sessions/2025-01-XX_session-occupants-npc-display.md`
+- `.cursor/commands/server-test-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (50%)
-- INFERRED: 3 (50%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

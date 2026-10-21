@@ -1,12 +1,11 @@
 # Client Security and Privacy Policies
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Client Security and Privacy Policies** (2 connections) — `client/README.md`
-- **DOMPurify Sanitization** (1 connections) — `client/README.md`
-- **WebSocket Subprotocol Auth** (1 connections) — `client/README.md`
+- **Playwright MCP core-tabs Capability** (1 connections) — `e2e-tests/MCP_TAB_MANAGEMENT_ISSUE.md`
+- **MCP Tab Management Issue** (1 connections) — `e2e-tests/MCP_TAB_MANAGEMENT_ISSUE.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `client/README.md`
+- `e2e-tests/MCP_TAB_MANAGEMENT_ISSUE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

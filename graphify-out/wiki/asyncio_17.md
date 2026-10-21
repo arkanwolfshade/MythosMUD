@@ -1,52 +1,33 @@
 # asyncio
 
-> 23 nodes
+> 11 nodes · cohesion 0.27
 
 ## Key Concepts
 
-- **asyncio** (28 connections)
-- **test_get_player_by_name_database_error()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_list_players_database_error()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_save_players_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_delete_player_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_delete_player_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_get_player_by_id_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_get_player_by_name_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_get_player_by_user_id_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_save_player_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_soft_delete_player_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_update_player_last_active_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test get_player_by_name returns None when player not found.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test get_player_by_name handles database errors.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test save_player successfully saves player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test list_players handles database errors.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test get_player_by_id returns None when player not found.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test get_player_by_user_id returns None when no players.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test save_players successfully saves multiple players.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test soft_delete_player returns False when player not found.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test delete_player successfully deletes player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test delete_player returns False when player not found.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test update_player_last_active successfully updates timestamp.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **author_sanitarium_coords.py** (6 connections) — `scripts/author_sanitarium_coords.py`
+- **main()** (5 connections) — `scripts/author_sanitarium_coords.py`
+- **assign()** (4 connections) — `scripts/author_sanitarium_coords.py`
+- **_read_dml()** (4 connections) — `scripts/author_sanitarium_coords.py`
+- **_write_dml()** (4 connections) — `scripts/author_sanitarium_coords.py`
+- **parse_block()** (2 connections) — `scripts/author_sanitarium_coords.py`
+- **Path** (2 connections)
+- **Give the Sanitarium's interior rooms map coordinates (#829). Not cosmetic.…** (1 connections) — `scripts/author_sanitarium_coords.py`
+- **Walk the Sanitarium's own exit graph and hand every room a unique cell.** (1 connections) — `scripts/author_sanitarium_coords.py`
+- **Read a seed file, returning its text with LF endings and whether it was CRLF.…** (1 connections) — `scripts/author_sanitarium_coords.py`
+- **Write back in whatever ending the file already used.** (1 connections) — `scripts/author_sanitarium_coords.py`
 
 ## Relationships
 
-- [test_player_repository.py](test_player_repository.py.md) (14 shared connections)
-- [_make_mock_row](_make_mock_row.md) (7 shared connections)
-- [_ScalarResult](_ScalarResult.md) (4 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [test_list_players_empty](test_list_players_empty.md) (1 shared connections)
-- [test_soft_delete_player_success](test_soft_delete_player_success.md) (1 shared connections)
-- [test_update_player_last_active_with_timestamp](test_update_player_last_active_with_timestamp.md) (1 shared connections)
+- [test_quest_service.py](test_quest_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `scripts/author_sanitarium_coords.py`
 
 ## Audit Trail
 
-- EXTRACTED: 50 (94%)
-- INFERRED: 3 (6%)
+- EXTRACTED: 15 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

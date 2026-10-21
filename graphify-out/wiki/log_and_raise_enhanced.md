@@ -1,72 +1,61 @@
 # log_and_raise_enhanced
 
-> 221 nodes
+> 53 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **log_and_raise_enhanced()** (113 connections) — `server/utils/enhanced_error_logging.py`
-- **CommunicationCommandFactory** (42 connections) — `server/utils/command_factories_communication.py`
-- **ModerationCommandFactory** (37 connections) — `server/utils/command_factories_moderation.py`
-- **test_command_factories_communication.py** (31 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **CombatCommandFactory** (29 connections) — `server/utils/command_factories_combat.py`
-- **test_command_factories_moderation.py** (29 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **command_factories.py** (21 connections) — `server/utils/command_factories.py`
-- **test_command_factories_combat.py** (14 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **command_factories_communication.py** (11 connections) — `server/utils/command_factories_communication.py`
-- **command_factories_exploration.py** (11 connections) — `server/utils/command_factories_exploration.py`
-- **command_factories_moderation.py** (11 connections) — `server/utils/command_factories_moderation.py`
-- **command_factories_player_state.py** (11 connections) — `server/utils/command_factories_player_state.py`
-- **command_factories_utility.py** (11 connections) — `server/utils/command_factories_utility.py`
-- **.__init__()** (9 connections) — `server/utils/command_factories.py`
-- **.create_mute_command()** (9 connections) — `server/utils/command_factories_moderation.py`
-- **.create_mute_global_command()** (9 connections) — `server/utils/command_factories_moderation.py`
-- **command_factories_combat.py** (9 connections) — `server/utils/command_factories_combat.py`
-- **.create_channel_command()** (8 connections) — `server/utils/command_factories_communication.py`
-- **.create_local_command()** (8 connections) — `server/utils/command_factories_communication.py`
-- **.create_whisper_command()** (8 connections) — `server/utils/command_factories_communication.py`
-- **.create_reply_command()** (7 connections) — `server/utils/command_factories_communication.py`
-- **.create_add_admin_command()** (7 connections) — `server/utils/command_factories_moderation.py`
-- **.create_admin_command()** (7 connections) — `server/utils/command_factories_moderation.py`
-- **.create_unmute_command()** (7 connections) — `server/utils/command_factories_moderation.py`
-- **.create_unmute_global_command()** (7 connections) — `server/utils/command_factories_moderation.py`
-- *... and 196 more nodes in this community*
+- **NPCCombatLucidity** (33 connections) — `server/services/npc_combat_lucidity.py`
+- **ActiveLucidityService** (28 connections) — `server/services/active_lucidity_service.py`
+- **TestNPCCombatLucidity** (17 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.apply_encounter_lucidity_effect()** (9 connections) — `server/services/npc_combat_lucidity.py`
+- **._apply_loss_with_fallback()** (8 connections) — `server/services/npc_combat_lucidity.py`
+- **_EncounterCtx** (7 connections) — `server/services/npc_combat_lucidity.py`
+- **._apply_disturbing_fallback()** (7 connections) — `server/services/npc_combat_lucidity.py`
+- **._commit_loss()** (7 connections) — `server/services/npc_combat_lucidity.py`
+- **Any** (6 connections)
+- **._archetype_from_definition()** (4 connections) — `server/services/npc_combat_lucidity.py`
+- **._resolve_lucidity_category()** (4 connections) — `server/services/npc_combat_lucidity.py`
+- **test_npc_combat_lucidity.py** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_apply_encounter_lucidity_effect_success()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_apply_encounter_lucidity_effect_with_npc_name()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_apply_encounter_lucidity_effect_without_npc_name()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_get_base_stats_exception()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_get_behavior_config_exception()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **asyncio** (3 connections)
+- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_aggressive_mob()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_default()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_from_base_stats()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_from_behavior_config()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_from_mythos_tier()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_non_dict_stats()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (52 shared connections)
-- [get_logger](get_logger.md) (51 shared connections)
-- [BaseCommand](BaseCommand.md) (33 shared connections)
-- [UtilityCommandFactory](UtilityCommandFactory.md) (14 shared connections)
-- [ExplorationCommandFactory](ExplorationCommandFactory.md) (13 shared connections)
-- [PlayerStateCommandFactory](PlayerStateCommandFactory.md) (13 shared connections)
-- [command_parser.py](command_parser.py.md) (11 shared connections)
-- [CommandFactory](CommandFactory.md) (5 shared connections)
-- [PlayerRespawnWrapper](PlayerRespawnWrapper.md) (5 shared connections)
-- [PlayerCreationService](PlayerCreationService.md) (3 shared connections)
-- [CorruptionService](CorruptionService.md) (1 shared connections)
-- [test_command_communication.py](test_command_communication.py.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (9 shared connections)
+- [scripts](scripts.md) (7 shared connections)
+- [gen_arena_migration_sql.py](gen_arena_migration_sql.py.md) (5 shared connections)
+- [test_websocket_handler_commands.py](test_websocket_handler_commands.py.md) (2 shared connections)
+- [test_look_npc.py](test_look_npc.py.md) (2 shared connections)
+- [items/catalog_dml.py](items-catalog_dml.py.md) (2 shared connections)
+- [.get_memory_status_report](get_memory_status_report.md) (2 shared connections)
+- [PostgreSQL & SQL Audit Report](PostgreSQL_&_SQL_Audit_Report.md) (2 shared connections)
+- [TargetMatch](TargetMatch.md) (1 shared connections)
+- [PopulationStats](PopulationStats.md) (1 shared connections)
+- [ItemFactory](ItemFactory.md) (1 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/player_state_service.py`
-- `server/tests/unit/commands/test_assist_wiring.py`
-- `server/tests/unit/commands/test_protect_wiring.py`
-- `server/tests/unit/utils/test_command_factories_combat.py`
-- `server/tests/unit/utils/test_command_factories_communication.py`
-- `server/tests/unit/utils/test_command_factories_moderation.py`
-- `server/utils/command_factories.py`
-- `server/utils/command_factories_combat.py`
-- `server/utils/command_factories_communication.py`
-- `server/utils/command_factories_exploration.py`
-- `server/utils/command_factories_moderation.py`
-- `server/utils/command_factories_player_state.py`
-- `server/utils/command_factories_utility.py`
-- `server/utils/enhanced_error_logging.py`
+- `server/services/active_lucidity_service.py`
+- `server/services/npc_combat_lucidity.py`
+- `server/tests/unit/services/test_npc_combat_lucidity.py`
 
 ## Audit Trail
 
-- EXTRACTED: 501 (84%)
-- INFERRED: 93 (16%)
+- EXTRACTED: 111 (90%)
+- INFERRED: 12 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

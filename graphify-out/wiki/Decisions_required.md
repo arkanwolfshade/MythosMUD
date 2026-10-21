@@ -1,35 +1,35 @@
 # Decisions required
 
-> 14 nodes
+> 13 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **Decisions required** (8 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
-- **P6 · Review Clusters (draft — P4 findings still to fold in)** (4 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
-- **Proposed for bulk confirmation (mechanical, no judgement needed)** (4 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
-- **A · Hard-coded metrics in documents** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
-- **B · Migration scaffolding that outlived its migration** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
-- **C · Broken links to archived documents** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
-- **D · The design record was built from the code** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
-- **E · Who owns query construction?** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
-- **F · Layer boundaries: enforce or amend?** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
-- **G · Doc ↔ doc contradictions** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
-- **H · Contract/path drift, rooted in one unrecorded decision** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
-- **I · Undocumented systems** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
-- **J · Operational defects — recommend removing from this audit entirely** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
-- **Not findings — recorded so they are not re-litigated** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **_WearablePersistence** (9 connections) — `server/services/wearable_container_service.py`
+- **Player** (4 connections)
+- **.create_container()** (3 connections) — `server/services/wearable_container_service.py`
+- **.get_containers_by_entity_id()** (3 connections) — `server/services/wearable_container_service.py`
+- **.get_player_by_id()** (3 connections) — `server/services/wearable_container_service.py`
+- **.update_container()** (3 connections) — `server/services/wearable_container_service.py`
+- **.get_container()** (2 connections) — `server/services/wearable_container_service.py`
+- **.save_player()** (2 connections) — `server/services/wearable_container_service.py`
+- **Protocol** (1 connections)
+- **The async persistence calls this service makes (AsyncPersistenceLayer satisfies…** (1 connections) — `server/services/wearable_container_service.py`
+- **Containers owned by an entity.** (1 connections) — `server/services/wearable_container_service.py`
+- **Create a container row.** (1 connections) — `server/services/wearable_container_service.py`
+- **Replace a container's items; None if the container is gone.** (1 connections) — `server/services/wearable_container_service.py`
 
 ## Relationships
 
-- [INDEX.md](INDEX.md.md) (1 shared connections)
+- [WebSocketRequestContext](WebSocketRequestContext.md) (7 shared connections)
+- [.profession_to_dict](profession_to_dict.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- `server/services/wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

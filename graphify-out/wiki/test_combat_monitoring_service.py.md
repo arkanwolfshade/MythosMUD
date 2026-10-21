@@ -1,54 +1,61 @@
 # test_combat_monitoring_service.py
 
-> 93 nodes
+> 114 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **test_combat_monitoring_service.py** (52 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **combat_monitoring_service.py** (21 connections) — `server/services/combat_monitoring_service.py`
-- **AlertType** (15 connections) — `server/services/combat_monitoring_service.py`
-- **AlertSeverity** (12 connections) — `server/services/combat_monitoring_service.py`
-- **CombatMetrics** (11 connections) — `server/services/combat_monitoring_service.py`
-- **get_combat_metrics()** (5 connections) — `server/services/combat_monitoring_service.py`
-- **get_combat_monitoring()** (5 connections) — `server/services/combat_monitoring_service.py`
-- **test_alert_to_dict()** (4 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **test_clear_resolved_alerts()** (4 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **test_generate_alert()** (4 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **test_generate_alert_callback_error()** (4 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **test_get_active_alerts()** (4 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **test_get_all_alerts()** (4 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **test_get_combat_metrics()** (4 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **test_get_combat_monitoring()** (4 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **test_resolve_alert()** (4 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **test_check_error_threshold()** (3 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **test_check_resource_thresholds_cpu()** (3 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **test_check_resource_thresholds_memory()** (3 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **test_combat_monitoring_service_init()** (3 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **test_get_current_metrics()** (3 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **Enum** (3 connections)
-- **end_combat_monitoring()** (2 connections) — `server/services/combat_monitoring_service.py`
-- **start_combat_monitoring()** (2 connections) — `server/services/combat_monitoring_service.py`
-- **test_add_alert_callback()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- *... and 68 more nodes in this community*
+- **Room** (132 connections) — `server/models/room.py`
+- **test_room_class.py** (34 connections) — `server/tests/unit/models/test_room_class.py`
+- **test_tutorial_reentry_gives_stranded_player_a_fresh_instance()** (9 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_tutorial_reentry_ignores_players_outside_templates()** (9 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **.to_dict()** (8 connections) — `server/models/room.py`
+- **UUID** (6 connections)
+- **.player_entered()** (6 connections) — `server/models/room.py`
+- **_manager_with()** (6 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **.player_left()** (5 connections) — `server/models/room.py`
+- **_foyer()** (5 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **_template_bedroom()** (5 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **.add_player_silently()** (4 connections) — `server/models/room.py`
+- **._container_id_of()** (4 connections) — `server/models/room.py`
+- **.get_containers()** (4 connections) — `server/models/room.py`
+- **.get_npcs()** (4 connections) — `server/models/room.py`
+- **.get_occupant_count()** (4 connections) — `server/models/room.py`
+- **.get_players()** (4 connections) — `server/models/room.py`
+- **.has_player()** (4 connections) — `server/models/room.py`
+- **.remove_player_silently()** (4 connections) — `server/models/room.py`
+- **Any** (3 connections)
+- **.add_container()** (3 connections) — `server/models/room.py`
+- **.get_objects()** (3 connections) — `server/models/room.py`
+- **.is_empty()** (3 connections) — `server/models/room.py`
+- **.remove_container()** (3 connections) — `server/models/room.py`
+- **test_room_add_container_appears_in_to_dict()** (3 connections) — `server/tests/unit/models/test_room_class.py`
+- *... and 89 more nodes in this community*
 
 ## Relationships
 
-- [CombatMonitoringService](CombatMonitoringService.md) (14 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [monitoring_service](monitoring_service.md) (4 shared connections)
-- [CombatConfiguration](CombatConfiguration.md) (2 shared connections)
-- [FeatureFlagService](FeatureFlagService.md) (2 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
+- [test_container_persistence_extended_row_helpers.py](test_container_persistence_extended_row_helpers.py.md) (16 shared connections)
+- [setup_jwt_secret](setup_jwt_secret.md) (11 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (7 shared connections)
+- [BaseEvent](BaseEvent.md) (5 shared connections)
+- [useGameClientV2ContainerNetworkPhase.ts](useGameClientV2ContainerNetworkPhase.ts.md) (5 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (5 shared connections)
+- [TabbedInterfaceOverlay.tsx](TabbedInterfaceOverlay.tsx.md) (4 shared connections)
+- [MemoryProfiler](MemoryProfiler.md) (3 shared connections)
+- [waitForMessage](waitForMessage.md) (3 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (3 shared connections)
+- [PlayerDeathService](PlayerDeathService.md) (3 shared connections)
+- [security.ts](security.ts.md) (3 shared connections)
 
 ## Source Files
 
-- `server/services/combat_monitoring_service.py`
-- `server/tests/unit/services/test_combat_monitoring_service.py`
+- `server/models/room.py`
+- `server/tests/unit/models/test_room_class.py`
+- `server/tests/unit/realtime/test_player_presence_tracker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 128 (86%)
-- INFERRED: 21 (14%)
+- EXTRACTED: 238 (89%)
+- INFERRED: 29 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

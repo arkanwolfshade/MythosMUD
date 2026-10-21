@@ -1,11 +1,10 @@
 # JSON Schema Validation
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **JSON Schema Validation** (1 connections) — `tools/room_toolkit/room_validator/README.md`
-- **schemas/room_schema.json** (1 connections) — `tools/room_toolkit/room_validator/README.md`
+- **20260914_npc_catalog_scaffold_dev.sql** (0 connections) — `data/npc_catalog/generated/20260914_npc_catalog_scaffold_dev.sql`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/README.md`
+- `data/npc_catalog/generated/20260914_npc_catalog_scaffold_dev.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,32 +1,30 @@
 # Corruption Subsystem Design
 
-> 11 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **Corruption Subsystem Design** (11 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
-- **1. Overview** (1 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
-- **2. Architecture** (1 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
-- **3. Key design decisions** (1 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
-- **4. Constraints** (1 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
-- **5. Component interactions** (1 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
-- **6. Developer guide** (1 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
-- **7. Troubleshooting** (1 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
-- **8. Related docs** (1 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
-- **9. Changelog** (1 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
+- **🟡 HIGH PRIORITY ISSUES** (9 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **10. Loading All Players Instead of Active Only** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **11. NATS Connection Pool Not Used by Default** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **12. No TLS Configuration for NATS** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **13. Event Loop Change Detection Edge Cases** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **14. Missing Transaction Rollback on Critical Failures** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **7. Missing Room Lookup Caching** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **8. Incomplete Migration to Async Persistence** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **9. Multiple Database Flushes Before Commit** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- [ADR-024: Server-Authoritative Perceived Reality for Hallucinations](ADR-024-_Server-Authoritative_Perceived_Reality_for_Hallucinations.md) (1 shared connections)
+- [Common Patterns](Common_Patterns.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

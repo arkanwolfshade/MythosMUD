@@ -1,64 +1,57 @@
 # admin_setstat_command.py
 
-> 150 nodes
+> 96 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **admin_setstat_command.py** (62 connections) — `server/commands/admin_setstat_command.py`
-- **admin_setstat_support.py** (38 connections) — `server/commands/admin_setstat_support.py`
-- **_handle_admin_set_stat_command()** (33 connections) — `server/commands/admin_setstat_command.py`
-- **test_admin_setstat_command.py** (20 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **SetStatTargetPlayer** (14 connections) — `server/commands/admin_setstat_support.py`
-- **asyncio** (14 connections)
-- **_apply_lucidity_via_service()** (13 connections) — `server/commands/admin_setstat_command.py`
-- **_apply_stat_change_and_build_result()** (12 connections) — `server/commands/admin_setstat_command.py`
-- **normalize_posture()** (12 connections) — `server/realtime/posture_notify.py`
-- **_apply_corruption_via_service()** (11 connections) — `server/commands/admin_setstat_command.py`
-- **_notify_player_stat_change()** (11 connections) — `server/commands/admin_setstat_command.py`
-- **test_admin_setstat_command_context.py** (11 connections) — `server/tests/unit/commands/test_admin_setstat_command_context.py`
-- **AdminSetStatApplyContext** (10 connections) — `server/commands/admin_setstat_support.py`
-- **_maybe_attach_dp_posture_message()** (10 connections) — `server/commands/admin_setstat_command.py`
-- **_finish_occult_stat_change()** (9 connections) — `server/commands/admin_setstat_command.py`
-- **Protocol** (9 connections)
-- **SetStatConnectionManager** (8 connections) — `server/commands/admin_setstat_support.py`
-- **_execute_admin_set_stat()** (8 connections) — `server/commands/admin_setstat_command.py`
-- **build_set_stat_error_response()** (8 connections) — `server/commands/admin_setstat_support.py`
-- **calculate_stat_warnings()** (8 connections) — `server/commands/admin_setstat_support.py`
-- **get_app_or_error()** (8 connections) — `server/commands/admin_setstat_support.py`
-- **log_admin_set_stat()** (8 connections) — `server/commands/admin_setstat_support.py`
-- **parse_set_stat_args()** (8 connections) — `server/commands/admin_setstat_support.py`
-- **resolve_admin_services_and_permissions()** (8 connections) — `server/commands/admin_setstat_support.py`
-- **AdminSetStatLogContext** (7 connections) — `server/commands/admin_setstat_support.py`
-- *... and 125 more nodes in this community*
+- **IdleMovementHandler** (56 connections) — `server/npc/idle_movement.py`
+- **test_idle_movement.py** (35 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **.execute_idle_movement()** (8 connections) — `server/npc/idle_movement.py`
+- **._should_idle_move_inner()** (8 connections) — `server/npc/idle_movement.py`
+- **patch** (8 connections)
+- **_npc_id_str()** (7 connections) — `server/npc/idle_movement.py`
+- **.select_exit()** (6 connections) — `server/npc/idle_movement.py`
+- **._calculate_exit_weights()** (5 connections) — `server/npc/idle_movement.py`
+- **.should_idle_move()** (5 connections) — `server/npc/idle_movement.py`
+- **._is_npc_in_combat()** (4 connections) — `server/npc/idle_movement.py`
+- **._try_idle_room_change()** (4 connections) — `server/npc/idle_movement.py`
+- **_passes_movement_probability()** (4 connections) — `server/npc/idle_movement.py`
+- **idle_movement_handler()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_is_npc_in_combat_true()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_should_idle_move_false_when_registered_in_combat()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_should_idle_move_not_active()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_should_idle_move_not_alive()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_should_idle_move_probability_check()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_should_idle_move_probability_fails_when_random_above_threshold()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_should_idle_move_probability_passes_when_random_below_threshold()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_should_idle_move_true_when_not_in_combat_and_probability_succeeds()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **_cfg_bool()** (3 connections) — `server/npc/idle_movement.py`
+- **._calculate_distance_to_room()** (3 connections) — `server/npc/idle_movement.py`
+- **._calculate_exit_weight()** (3 connections) — `server/npc/idle_movement.py`
+- **.get_valid_exits()** (3 connections) — `server/npc/idle_movement.py`
+- *... and 71 more nodes in this community*
 
 ## Relationships
 
-- [build_event](build_event.md) (13 shared connections)
-- [command_error](command_error.md) (12 shared connections)
-- [get_logger](get_logger.md) (11 shared connections)
-- [test_message_category_invariants.py](test_message_category_invariants.py.md) (10 shared connections)
-- [LucidityService](LucidityService.md) (6 shared connections)
-- [coerce_int](coerce_int.md) (3 shared connections)
-- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (3 shared connections)
-- [command_service.py](command_service.py.md) (3 shared connections)
-- [PlayerDPUpdated](PlayerDPUpdated.md) (3 shared connections)
-- [alias_storage.py](alias_storage.py.md) (3 shared connections)
-- [CorruptionService](CorruptionService.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [Room](Room.md) (8 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (4 shared connections)
+- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (2 shared connections)
+- [dependencies](dependencies.md) (1 shared connections)
+- [BaseEvent](BaseEvent.md) (1 shared connections)
+- [._publish_attack_event](_publish_attack_event.md) (1 shared connections)
+- [StatusEffect](StatusEffect.md) (1 shared connections)
+- [executeCommand](executeCommand.md) (1 shared connections)
+- [Client Test Remediation](Client_Test_Remediation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_setstat_command.py`
-- `server/commands/admin_setstat_support.py`
-- `server/realtime/posture_notify.py`
-- `server/tests/unit/commands/test_admin_setstat_command.py`
-- `server/tests/unit/commands/test_admin_setstat_command_context.py`
-- `server/tests/unit/realtime/test_message_category_invariants.py`
+- `server/npc/idle_movement.py`
+- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 352 (95%)
-- INFERRED: 18 (5%)
+- EXTRACTED: 140 (81%)
+- INFERRED: 32 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

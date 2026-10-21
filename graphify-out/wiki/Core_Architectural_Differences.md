@@ -1,26 +1,25 @@
 # Core Architectural Differences
 
-> 4 nodes
+> 3 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Core Architectural Differences** (4 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **1. **Structured Concurrency**** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **2. **Backend Abstraction**** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **3. **API Design Philosophy**** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **verify_e2e_users_seeded.py** (2 connections) — `scripts/verify_e2e_users_seeded.py`
+- **main()** (2 connections) — `scripts/verify_e2e_users_seeded.py`
+- **_verify()** (2 connections) — `scripts/verify_e2e_users_seeded.py`
 
 ## Relationships
 
-- [AnyIO vs Asyncio: High-Level Comparison and Decision Guide](AnyIO_vs_Asyncio-_High-Level_Comparison_and_Decision_Guide.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/anyio_vs_asyncio_comparison.md`
+- `scripts/verify_e2e_users_seeded.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 2 (67%)
+- INFERRED: 1 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

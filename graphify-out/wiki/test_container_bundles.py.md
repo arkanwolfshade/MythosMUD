@@ -1,71 +1,70 @@
 # test_container_bundles.py
 
-> 155 nodes
+> 83 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **test_container_bundles.py** (72 connections) — `server/tests/unit/container/test_container_bundles.py`
-- **GameBundle** (61 connections) — `server/container/bundles/game.py`
-- **container/main.py** (42 connections) — `server/container/main.py`
-- **CombatBundle** (36 connections) — `server/container/bundles/combat.py`
-- **RealtimeBundle** (33 connections) — `server/container/bundles/realtime.py`
-- **asyncio** (25 connections)
-- **NPCBundle** (21 connections) — `server/container/bundles/npc.py`
-- **TimeBundle** (21 connections) — `server/container/bundles/time.py`
-- **core.py** (19 connections) — `server/container/bundles/core.py`
-- **bundles/__init__.py** (19 connections) — `server/container/bundles/__init__.py`
-- **CoreBundle** (18 connections) — `server/container/bundles/core.py`
-- **MonitoringBundle** (17 connections) — `server/container/bundles/monitoring.py`
-- **bundles/monitoring.py** (14 connections) — `server/container/bundles/monitoring.py`
-- **bundles/realtime.py** (14 connections) — `server/container/bundles/realtime.py`
-- **MagicBundle** (13 connections) — `server/container/bundles/magic.py`
-- **._init_movement_layer()** (11 connections) — `server/container/bundles/game.py`
-- **.initialize()** (11 connections) — `server/container/bundles/game.py`
-- **_create_learning_mp_regen_and_magic()** (11 connections) — `server/container/bundles/magic.py`
-- **chat.py** (11 connections) — `server/container/bundles/chat.py`
-- **ChatBundle** (10 connections) — `server/container/bundles/chat.py`
-- **._initialize_primary_bundles()** (10 connections) — `server/container/main.py`
-- **test_realtime_bundle_nats.py** (10 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
-- **_flatten_bundle()** (9 connections) — `server/container/main.py`
-- **._initialize_item_services()** (8 connections) — `server/container/bundles/game.py`
-- **.initialize()** (8 connections) — `server/container/bundles/realtime.py`
-- *... and 130 more nodes in this community*
+- **PanelState** (25 connections) — `client/src/components/ui-v2/types.ts`
+- **panelReducerHandlers.ts** (24 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
+- **panelManagerReducer.ts** (20 connections) — `client/src/components/ui-v2/PanelSystem/panelManagerReducer.ts`
+- **panelReducerHandlers.test.ts** (19 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts`
+- **panelMinimizeDock.ts** (16 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
+- **savePanelLayout()** (13 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
+- **usePanelManagerProviderState.ts** (13 connections) — `client/src/components/ui-v2/PanelSystem/usePanelManagerProviderState.ts`
+- **panelLayoutBootstrap.ts** (12 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutBootstrap.ts`
+- **PanelManagerContext.tsx** (12 connections) — `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
+- **panelMinimizeDock.test.ts** (12 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelMinimizeDock.test.ts`
+- **panelLayoutClamp.ts** (11 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutClamp.ts`
+- **panelLayoutValidationTypeCheck.ts** (11 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheck.ts`
+- **PanelSystem/__tests__/PanelManager.test.tsx** (11 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/PanelManager.test.tsx`
+- **PanelSystem/PanelManager.tsx** (10 connections) — `client/src/components/ui-v2/PanelSystem/PanelManager.tsx`
+- **PanelManagerContextValue** (10 connections) — `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
+- **resolveInitialPanelLayout()** (9 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutBootstrap.ts`
+- **panelLayoutValidation.ts** (9 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
+- **relayoutMinimizedDock()** (8 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
+- **handleToggleMinimize()** (8 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
+- **panelLayoutValidationTypeCheckGuards.ts** (7 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheckGuards.ts`
+- **handleToggleMaximize()** (7 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
+- **panelLayoutBootstrap.test.ts** (7 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutBootstrap.test.ts`
+- **panelLayoutClamp.test.ts** (7 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutClamp.test.ts`
+- **usePanelManagerProviderState.test.ts** (7 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/usePanelManagerProviderState.test.ts`
+- **usePanelManager.ts** (7 connections) — `client/src/components/ui-v2/PanelSystem/usePanelManager.ts`
+- *... and 58 more nodes in this community*
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (45 shared connections)
-- [get_logger](get_logger.md) (39 shared connections)
-- [SpellEffects](SpellEffects.md) (11 shared connections)
-- [EventBus](EventBus.md) (8 shared connections)
-- [CombatService](CombatService.md) (4 shared connections)
-- [PlayerMute](PlayerMute.md) (4 shared connections)
-- [validate_calendar.py](validate_calendar.py.md) (4 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (3 shared connections)
-- [RoomService](RoomService.md) (3 shared connections)
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) (3 shared connections)
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (3 shared connections)
-- [NPCService](NPCService.md) (3 shared connections)
+- [test_n_player_combat.py](test_n_player_combat.py.md) (18 shared connections)
+- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (15 shared connections)
+- [test_lifecycle_periodic.py](test_lifecycle_periodic.py.md) (14 shared connections)
+- [WebSocketMessageValidator](WebSocketMessageValidator.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/__init__.py`
-- `server/container/bundles/chat.py`
-- `server/container/bundles/combat.py`
-- `server/container/bundles/core.py`
-- `server/container/bundles/game.py`
-- `server/container/bundles/magic.py`
-- `server/container/bundles/monitoring.py`
-- `server/container/bundles/npc.py`
-- `server/container/bundles/realtime.py`
-- `server/container/bundles/time.py`
-- `server/container/main.py`
-- `server/tests/unit/container/test_container_bundles.py`
-- `server/tests/unit/container/test_realtime_bundle_nats.py`
+- `client/src/components/PanelManager.tsx`
+- `client/src/components/__tests__/PanelManager.test.tsx`
+- `client/src/components/ui-v2/PanelSystem/PanelManager.tsx`
+- `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
+- `client/src/components/ui-v2/PanelSystem/__tests__/PanelManager.test.tsx`
+- `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutBootstrap.test.ts`
+- `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutClamp.test.ts`
+- `client/src/components/ui-v2/PanelSystem/__tests__/panelMinimizeDock.test.ts`
+- `client/src/components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts`
+- `client/src/components/ui-v2/PanelSystem/__tests__/usePanelManager.test.ts`
+- `client/src/components/ui-v2/PanelSystem/__tests__/usePanelManagerProviderState.test.ts`
+- `client/src/components/ui-v2/PanelSystem/panelLayoutBootstrap.ts`
+- `client/src/components/ui-v2/PanelSystem/panelLayoutClamp.ts`
+- `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
+- `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheck.ts`
+- `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheckGuards.ts`
+- `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheckImpl.ts`
+- `client/src/components/ui-v2/PanelSystem/panelManagerReducer.ts`
+- `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
+- `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 433 (80%)
-- INFERRED: 107 (20%)
+- EXTRACTED: 257 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

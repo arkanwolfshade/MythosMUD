@@ -1,63 +1,65 @@
 # FollowService
 
-> 207 nodes
+> 112 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **FollowService** (81 connections) — `server/game/follow_service.py`
-- **test_follow_service.py** (55 connections) — `server/tests/unit/game/test_follow_service.py`
-- **follow_service.py** (31 connections) — `server/game/follow_service.py`
-- **follow_movement.py** (29 connections) — `server/game/follow_movement.py`
-- **asyncio** (22 connections)
-- **_FollowMovementHost** (20 connections) — `server/game/follow_movement.py`
-- **FollowActionResult** (15 connections) — `server/game/follow_types.py`
-- **str_id()** (15 connections) — `server/game/follow_types.py`
-- **test_follow_movement.py** (14 connections) — `server/tests/unit/game/test_follow_movement.py`
-- **FollowPersistence** (12 connections) — `server/game/follow_types.py`
-- **follow_types.py** (12 connections) — `server/game/follow_types.py`
-- **FollowStatePayload** (11 connections) — `server/game/follow_types.py`
-- **propagate_follower_move()** (11 connections) — `server/game/follow_movement.py`
-- **.request_follow()** (10 connections) — `server/game/follow_service.py`
-- **_host()** (9 connections) — `server/tests/unit/game/test_follow_movement.py`
-- **UUID** (9 connections)
-- **FollowPlayerView** (8 connections) — `server/game/follow_types.py`
-- **.get_following_display()** (8 connections) — `server/game/follow_service.py`
-- **.__init__()** (8 connections) — `server/game/follow_service.py`
-- **._send_result_to_player()** (8 connections) — `server/game/follow_service.py`
-- **is_npc_follow_value()** (8 connections) — `server/game/follow_types.py`
-- **asyncio** (8 connections)
-- **PendingFollowRequest** (7 connections) — `server/game/follow_types.py`
-- **ensure_follower_standing()** (7 connections) — `server/game/follow_movement.py`
-- **stand_follower_for_move()** (7 connections) — `server/game/follow_movement.py`
-- *... and 182 more nodes in this community*
+- **coerce_int()** (70 connections) — `server/utils/int_coercion.py`
+- **player_respawn_service.py** (51 connections) — `server/services/player_respawn_service.py`
+- **PlayerRespawnService** (33 connections) — `server/services/player_respawn_service.py`
+- **int_coercion.py** (26 connections) — `server/utils/int_coercion.py`
+- **player_respawn_state.py** (22 connections) — `server/services/player_respawn_state.py`
+- **_stats_int()** (14 connections) — `server/models/player.py`
+- **UUID** (14 connections)
+- **._prepare_sanitarium_respawn()** (13 connections) — `server/services/player_respawn_service.py`
+- **test_inventory_command_coercion.py** (12 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
+- **._apply_sanitarium_liability_update()** (11 connections) — `server/services/player_respawn_service.py`
+- **test_player_respawn_death_room.py** (10 connections) — `server/tests/unit/services/test_player_respawn_death_room.py`
+- **.respawn_player()** (9 connections) — `server/services/player_respawn_service.py`
+- **record_death_room_on_player()** (9 connections) — `server/services/player_respawn_state.py`
+- **.respawn_player_from_delirium()** (8 connections) — `server/services/player_respawn_service.py`
+- **.respawn_player_from_sanitarium()** (8 connections) — `server/services/player_respawn_service.py`
+- **._prepare_delirium_respawn()** (7 connections) — `server/services/player_respawn_service.py`
+- **._publish_standard_respawn_event()** (7 connections) — `server/services/player_respawn_service.py`
+- **AsyncSession** (7 connections)
+- **_utc_now()** (7 connections) — `server/services/player_respawn_service.py`
+- **apply_standard_respawn_state()** (7 connections) — `server/services/player_respawn_state.py`
+- **Player** (7 connections)
+- **_player_with_stats()** (7 connections) — `server/tests/unit/services/test_player_respawn_death_room.py`
+- **._clear_respawn_combat_state()** (6 connections) — `server/services/player_respawn_service.py`
+- **.get_respawn_room()** (6 connections) — `server/services/player_respawn_service.py`
+- **.move_player_to_limbo()** (6 connections) — `server/services/player_respawn_service.py`
+- *... and 87 more nodes in this community*
 
 ## Relationships
 
-- [EventBus](EventBus.md) (17 shared connections)
-- [get_logger](get_logger.md) (10 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (9 shared connections)
-- [PlayerPositionService](PlayerPositionService.md) (7 shared connections)
-- [MovementService](MovementService.md) (5 shared connections)
-- [build_event](build_event.md) (5 shared connections)
-- [ConnectionManager](ConnectionManager.md) (4 shared connections)
-- [test_follow_flow.py](test_follow_flow.py.md) (3 shared connections)
-- [TargetType](TargetType.md) (3 shared connections)
-- [magic_service.py](magic_service.py.md) (3 shared connections)
-- [test_lifespan_event_subscriptions.py](test_lifespan_event_subscriptions.py.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [PopulationStats](PopulationStats.md) (20 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (13 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (13 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (11 shared connections)
+- [CombatService](CombatService.md) (11 shared connections)
+- [Room](Room.md) (6 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (6 shared connections)
+- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (6 shared connections)
+- [test_container_persistence_extended_row_helpers.py](test_container_persistence_extended_row_helpers.py.md) (5 shared connections)
+- [BaseEvent](BaseEvent.md) (5 shared connections)
+- [look_helpers.py](look_helpers.py.md) (5 shared connections)
+- [look_container.py](look_container.py.md) (4 shared connections)
 
 ## Source Files
 
-- `server/game/follow_movement.py`
-- `server/game/follow_service.py`
-- `server/game/follow_types.py`
-- `server/tests/unit/game/test_follow_movement.py`
-- `server/tests/unit/game/test_follow_service.py`
+- `server/models/player.py`
+- `server/services/player_respawn_service.py`
+- `server/services/player_respawn_state.py`
+- `server/tests/unit/commands/test_inventory_command_coercion.py`
+- `server/tests/unit/services/test_player_respawn_death_room.py`
+- `server/utils/int_coercion.py`
+- `server/utils/liability_types.py`
 
 ## Audit Trail
 
-- EXTRACTED: 403 (86%)
-- INFERRED: 67 (14%)
+- EXTRACTED: 348 (95%)
+- INFERRED: 18 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,35 +1,35 @@
 # test_dependency_analysis.py
 
-> 38 nodes
+> 37 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **test_dependency_analysis.py** (21 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
-- **DependencyAnalyzerTestApi** (10 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
-- **DependencyRiskTestApi** (6 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
-- **analyzer_api_module_scope()** (5 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
-- **risk_api_module_scope()** (5 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
-- **_load_dependency_analyzer_script()** (4 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
-- **test_analyze_npm_dependencies_parses_stdout_from_expected_outdated_exit_code()** (4 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
-- **test_analyze_python_dependencies_parses_outdated_table_output()** (4 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
-- **test_categorize_update_handles_semver_and_invalid_input()** (4 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
-- **_load_dependency_risk_script()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
-- **test_assess_npm_risk_uses_update_type_and_package_tiers()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
-- **test_assess_python_risk_uses_update_type_and_package_tiers()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
-- **test_assess_risks_maps_breaking_change_counts_to_overall_risk()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
-- **test_dep_info_from_npm_row_coerces_types_and_applies_defaults()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
-- **test_determine_strategy_covers_incremental_batched_and_immediate_paths()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
-- **test_parse_npm_outdated_json_handles_non_object_and_valid_payload()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
-- **test_prioritize_updates_scores_and_sorts_descending()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
-- **_DependencyAnalyzerScriptInternals** (2 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
-- **_DependencyRiskScriptInternals** (2 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
-- **_scripts_path_on_syspath()** (2 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
-- **fixture** (2 connections)
-- **MonkeyPatch** (2 connections)
-- **Protocol** (2 connections)
-- **_FakeCompletedProcess** (1 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
-- **parametrize** (1 connections)
-- *... and 13 more nodes in this community*
+- **Execution Steps** (18 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **Scenario 25: Wearable Container Management **[REQUIRES MULTI-PLAYER]**** (11 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **🤖 MANDATORY AI EXECUTION CONTRACT 🤖** (5 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **Status** (2 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **Testing Approach Rationale** (2 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **scenario-25-container-wearable-management.md** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **BEFORE EXECUTING THIS SCENARIO, YOU MUST** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **Cleanup** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **CONFIRMATION CHECKLIST** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **EXECUTION AFFIRMATION (Type this before proceeding)** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **🛑 EXECUTION ENDS HERE - DO NOT PROCEED FURTHER** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **Expected Results** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **✅ Scenario Completion Verification** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **✅ SCENARIO FILE CREATED** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **✅ Step 1 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **STEP 1 of 8: Setup - Player Connected** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **✅ Step 2 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **STEP 2 of 8: Check Inventory for Wearable Container** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **✅ Step 3 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **STEP 3 of 8: Equip Wearable Container** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **✅ Step 4 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
@@ -37,11 +37,11 @@
 
 ## Source Files
 
-- `server/tests/unit/scripts/test_dependency_analysis.py`
+- `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (100%)
+- EXTRACTED: 36 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

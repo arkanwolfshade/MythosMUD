@@ -1,55 +1,57 @@
 # test_player_death_service.py
 
-> 22 nodes
+> 36 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **test_player_death_service.py** (57 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **_player()** (5 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_publish_death_event_with_event_bus()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_get_room_name_for_death_empty_location()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_get_room_name_for_death_no_container()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_get_room_name_for_death_no_room()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_get_room_name_for_death_with_room()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_player_death_service_init()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_player_death_service_init_no_dependencies()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_publish_death_event_no_event_bus()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_publish_death_event_with_killer_info()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **UUID** (2 connections)
-- **Unit tests for player death service. Tests the PlayerDeathService class for…** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test _get_room_name_for_death() returns room name when available.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test _get_room_name_for_death() never leaks the room_id when room not found…** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test _get_room_name_for_death() returns 'Unknown Location' for empty location.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test _get_room_name_for_death() never leaks the room_id when async_persistence…** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test _publish_death_event() publishes event when event bus available.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test _publish_death_event() includes killer information.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test _publish_death_event() does nothing when event bus unavailable.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test PlayerDeathService initialization.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test PlayerDeathService initialization without dependencies.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **spell_effects_support.py** (20 connections) — `server/game/magic/spell_effects_support.py`
+- **test_spell_effects_support.py** (13 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **process_create_object_effect()** (11 connections) — `server/game/magic/spell_effects_support.py`
+- **process_stat_modify_effect()** (11 connections) — `server/game/magic/spell_effects_support.py`
+- **apply_stat_modifications()** (10 connections) — `server/game/magic/spell_effects_stats.py`
+- **_apply_stat_modify_to_player()** (8 connections) — `server/game/magic/spell_effects_support.py`
+- **test_spell_effects_stats.py** (8 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- **_spell()** (8 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **_build_stat_modifications()** (7 connections) — `server/game/magic/spell_effects_support.py`
+- **_create_object_for_room()** (7 connections) — `server/game/magic/spell_effects_support.py`
+- **_target()** (7 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **Any** (6 connections)
+- **_create_object_for_player()** (5 connections) — `server/game/magic/spell_effects_support.py`
+- **test_process_create_object_for_player()** (5 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_process_create_object_missing_prototype()** (5 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_process_stat_modify_rejects_non_player()** (5 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_process_stat_modify_success()** (5 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **asyncio** (4 connections)
+- **test_create_object_for_room_placeholder()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_build_stat_modifications_missing()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_build_stat_modifications_shorthand()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_apply_stat_modifications_bad_string_skipped()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- **test_apply_stat_modifications_basic()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- **test_apply_stat_modifications_clamps_to_bounds()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- **test_apply_stat_modifications_skips_invalid_stat()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [asyncio](asyncio.md) (11 shared connections)
-- [fixture](fixture.md) (7 shared connections)
-- [test_get_dead_players_debug_only_when_found](test_get_dead_players_debug_only_when_found.md) (5 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (1 shared connections)
-- [PlayerDeathService](PlayerDeathService.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
-- [Stats](Stats.md) (1 shared connections)
-- [test_get_mortally_wounded_players_finds_mortally_wounded](test_get_mortally_wounded_players_finds_mortally_wounded.md) (1 shared connections)
-- [test_get_mortally_wounded_players_excludes_dead](test_get_mortally_wounded_players_excludes_dead.md) (1 shared connections)
+- [RoomService](RoomService.md) (13 shared connections)
+- [test_nats_message_handler.py](test_nats_message_handler.py.md) (7 shared connections)
+- [Room](Room.md) (5 shared connections)
+- [test_inventory_mutation_guard_internal.py](test_inventory_mutation_guard_internal.py.md) (2 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (2 shared connections)
+- [AsciiMapRenderer](AsciiMapRenderer.md) (1 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_death_service.py`
+- `server/game/magic/spell_effects_stats.py`
+- `server/game/magic/spell_effects_support.py`
+- `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- `server/tests/unit/game/magic/test_spell_effects_support.py`
 
 ## Audit Trail
 
-- EXTRACTED: 69 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 98 (95%)
+- INFERRED: 5 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

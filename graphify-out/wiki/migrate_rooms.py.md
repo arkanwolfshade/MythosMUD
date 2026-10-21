@@ -1,33 +1,31 @@
 # migrate_rooms.py
 
-> 24 nodes
+> 22 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **migrate_rooms.py** (12 connections) — `scripts/migrate_rooms.py`
-- **migrate_rooms()** (10 connections) — `scripts/migrate_rooms.py`
-- **_create_subzone_structure()** (4 connections) — `scripts/migrate_rooms.py`
-- **_create_zone_structure()** (4 connections) — `scripts/migrate_rooms.py`
-- **_load_and_validate_rooms()** (4 connections) — `scripts/migrate_rooms.py`
-- **_create_backup()** (3 connections) — `scripts/migrate_rooms.py`
-- **create_subzone_config()** (3 connections) — `scripts/migrate_rooms.py`
-- **create_zone_config()** (3 connections) — `scripts/migrate_rooms.py`
-- **determine_zone_type()** (3 connections) — `scripts/migrate_rooms.py`
-- **load_existing_rooms()** (3 connections) — `scripts/migrate_rooms.py`
-- **main()** (3 connections) — `scripts/migrate_rooms.py`
-- **_migrate_room_file()** (3 connections) — `scripts/migrate_rooms.py`
-- **_group_rooms_by_zone()** (2 connections) — `scripts/migrate_rooms.py`
-- **Determine the zone type based on the zone name. Args: zone_name: Name of the…** (1 connections) — `scripts/migrate_rooms.py`
-- **Load existing rooms and validate.** (1 connections) — `scripts/migrate_rooms.py`
-- **Create backup if requested.** (1 connections) — `scripts/migrate_rooms.py`
-- **Create zone directory and config. Returns zone_path.** (1 connections) — `scripts/migrate_rooms.py`
-- **Create sub-zone directory and config. Returns subzone_path.** (1 connections) — `scripts/migrate_rooms.py`
-- **Load all existing room files from the flat structure. Args: rooms_path: Path to…** (1 connections) — `scripts/migrate_rooms.py`
-- **Migrate a single room file.** (1 connections) — `scripts/migrate_rooms.py`
-- **Migrate existing rooms to the new hierarchical structure. Args: rooms_path:…** (1 connections) — `scripts/migrate_rooms.py`
-- **Main entry point for the migration script.** (1 connections) — `scripts/migrate_rooms.py`
-- **Create a default zone configuration. Args: zone_name: Name of the zone…** (1 connections) — `scripts/migrate_rooms.py`
-- **Create a default sub-zone configuration. Args: subzone_name: Name of the sub-…** (1 connections) — `scripts/migrate_rooms.py`
+- **Execution Steps** (10 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Scenario 3: Movement Between Rooms **[REQUIRES MULTI-PLAYER]**** (9 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Status** (2 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **scenario-03-movement-between-rooms.md** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Cleanup** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Expected Results** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **✅ READY FOR TESTING** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Step 1: Both Players in Main Foyer** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Step 2: AW Moves East** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Step 3: Verify Ithaqua Sees AW Leave** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Step 4: Verify AW Sees No Self-Movement Messages** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Step 5: Ithaqua Moves East to Join AW** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Step 6: Verify AW Sees Ithaqua Enter** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Step 7: Verify Ithaqua Sees No Self-Movement Messages** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Step 8: Test Return Movement** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Step 9: Complete Scenario and Proceed** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Success Criteria Checklist** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
 
 ## Relationships
 
@@ -35,11 +33,11 @@
 
 ## Source Files
 
-- `scripts/migrate_rooms.py`
+- `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

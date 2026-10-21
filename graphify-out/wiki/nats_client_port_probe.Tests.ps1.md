@@ -1,10 +1,10 @@
 # nats_client_port_probe.Tests.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **nats_client_port_probe.Tests.ps1** (0 connections) — `scripts/tests/nats_client_port_probe.Tests.ps1`
+- **invites table** (0 connections) — `tools/invite_tools/README.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/tests/nats_client_port_probe.Tests.ps1`
+- `tools/invite_tools/README.md`
 
 ## Audit Trail
 

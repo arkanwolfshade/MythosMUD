@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - Gateways to Terror
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Gateways to Terror** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/MANIFEST.md`
-- **gateways-to-terror/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/MANIFEST.md`
+- **Convert E2E Scenarios to Playwright CLI** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
+- **Fix Code Review Findings Issue 353** (1 connections) — `.cursor/plans/fix_code_review_findings_issue_353_f59f87dc.plan.md`
 
 ## Relationships
 
@@ -14,12 +13,13 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/MANIFEST.md`
+- `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
+- `.cursor/plans/fix_code_review_findings_issue_353_f59f87dc.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

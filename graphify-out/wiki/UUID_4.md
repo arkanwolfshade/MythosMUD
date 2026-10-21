@@ -1,41 +1,30 @@
 # UUID
 
-> 16 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **UUID** (8 connections)
-- **Any** (7 connections)
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast party message to party members only, with dampening and mute checks.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Send whisper message to specific player with communication dampening.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast system/admin message; personal when target_player_id is set.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Handle unknown channel type.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast message according to channel strategy. Args: chat_event: WebSocket…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast room-based message with server-side filtering.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast global message to all connected players.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **emote_schema.json** (8 connections) — `schemas/emote_schema.json`
+- **required** (2 connections) — `schemas/emote_schema.json`
+- **additionalProperties** (1 connections) — `schemas/emote_schema.json`
+- **description** (1 connections) — `schemas/emote_schema.json`
+- **$id** (1 connections) — `schemas/emote_schema.json`
+- **emotes** (1 connections) — `schemas/emote_schema.json`
+- **$schema** (1 connections) — `schemas/emote_schema.json`
+- **title** (1 connections) — `schemas/emote_schema.json`
+- **type** (1 connections) — `schemas/emote_schema.json`
 
 ## Relationships
 
-- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (4 shared connections)
-- [asyncio](asyncio.md) (1 shared connections)
-- [RoomBasedChannelStrategy](RoomBasedChannelStrategy.md) (1 shared connections)
-- [SystemAdminChannelStrategy](SystemAdminChannelStrategy.md) (1 shared connections)
-- [UnknownChannelStrategy](UnknownChannelStrategy.md) (1 shared connections)
+- [9. Command Blocking During Grace Period](9._Command_Blocking_During_Grace_Period.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/channel_broadcasting_strategies.py`
+- `schemas/emote_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

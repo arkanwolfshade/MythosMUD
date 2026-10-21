@@ -1,16 +1,14 @@
 # MythosMUD Server Runbook
 
-> 7 nodes
+> 5 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **MythosMUD Server Runbook** (6 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
-- **Commands** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
-- **Critical Rules** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
-- **ONE SERVER ONLY RULE** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
-- **Pre-Start Checklist** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
-- **Reference** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
-- **Server Runbook Skill** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **Container Contents Synchronization Bug** (3 connections) — `investigations/remediation-plans/2025-01-27_container-sync-remediation.md`
+- **slot_type backpack Assignment** (2 connections) — `investigations/remediation-plans/2025-01-27_container-sync-remediation.md`
+- **Dual Inventory Storage Architecture** (2 connections) — `investigations/sessions/2025-01-27_session-001_inventory-slot-calculation-bug.md`
+- **Inventory Slot Calculation Bug** (2 connections) — `investigations/sessions/2025-01-27_session-001_inventory-slot-calculation-bug.md`
+- **Fail-Fast Container Error Philosophy** (1 connections) — `investigations/remediation-plans/2025-01-27_container-sync-remediation.md`
 
 ## Relationships
 
@@ -18,12 +16,13 @@
 
 ## Source Files
 
-- `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- `investigations/remediation-plans/2025-01-27_container-sync-remediation.md`
+- `investigations/sessions/2025-01-27_session-001_inventory-slot-calculation-bug.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 4 (80%)
+- INFERRED: 1 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

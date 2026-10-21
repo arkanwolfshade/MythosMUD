@@ -1,14 +1,12 @@
 # Playwright MCP Scenarios
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Playwright MCP Scenarios** (3 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **Hybrid E2E Testing Approach** (2 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **Automated Playwright CLI Tests** (1 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **Mandatory Execution Order** (1 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **Room Occupants Fix** (1 connections) — `e2e-tests/OCCUPANT_FIX_VERIFICATION.md`
+- **Chaosium graphify snapshot - Call of Cthulhu Keeper Tips** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/MANIFEST.md`
+- **call-of-cthulhu-keeper-tips/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/MANIFEST.md`
 
 ## Relationships
 
@@ -16,12 +14,11 @@
 
 ## Source Files
 
-- `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- `e2e-tests/OCCUPANT_FIX_VERIFICATION.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,60 +1,49 @@
 # CorruptionService
 
-> 33 nodes
+> 28 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **CorruptionService** (42 connections) — `server/services/corruption_service.py`
-- **test_corruption_service.py** (25 connections) — `server/tests/unit/services/test_corruption_service.py`
-- **_async_session_gen()** (14 connections) — `server/tests/unit/services/test_corruption_service.py`
-- **_player()** (13 connections) — `server/tests/unit/services/test_corruption_service.py`
-- **asyncio** (13 connections)
-- **test_apply_corruption_adjustment_bypass_permanence_floor_allows_zero()** (7 connections) — `server/tests/unit/services/test_corruption_service.py`
-- **test_apply_corruption_adjustment_floors_at_1_once_touched()** (7 connections) — `server/tests/unit/services/test_corruption_service.py`
-- **test_apply_corruption_adjustment_notifies_on_first_taint()** (7 connections) — `server/tests/unit/services/test_corruption_service.py`
-- **test_apply_corruption_adjustment_notifies_on_tier_crossing()** (6 connections) — `server/tests/unit/services/test_corruption_service.py`
-- **test_apply_corruption_adjustment_pushes_a_player_update_event()** (6 connections) — `server/tests/unit/services/test_corruption_service.py`
-- **test_apply_corruption_adjustment_stays_at_0_when_never_touched()** (6 connections) — `server/tests/unit/services/test_corruption_service.py`
-- **test_apply_corruption_adjustment_writes_through_the_tier_cache()** (6 connections) — `server/tests/unit/services/test_corruption_service.py`
-- **test_apply_corruption_adjustment_clamps_to_100()** (5 connections) — `server/tests/unit/services/test_corruption_service.py`
-- **test_apply_corruption_adjustment_no_notification_within_a_tier()** (5 connections) — `server/tests/unit/services/test_corruption_service.py`
-- **test_apply_corruption_adjustment_positive_delta()** (5 connections) — `server/tests/unit/services/test_corruption_service.py`
-- **test_perform_recovery_action_allows_after_cooldown_expires()** (5 connections) — `server/tests/unit/services/test_corruption_service.py`
-- **test_perform_recovery_action_cleanse_reduces_corruption()** (5 connections) — `server/tests/unit/services/test_corruption_service.py`
-- **test_perform_recovery_action_rejects_on_cooldown()** (5 connections) — `server/tests/unit/services/test_corruption_service.py`
-- **_clear_tier_cache()** (3 connections) — `server/tests/unit/services/test_corruption_service.py`
-- **fixture** (3 connections)
-- **.__init__()** (2 connections) — `server/services/corruption_service.py`
-- **mock_repo()** (2 connections) — `server/tests/unit/services/test_corruption_service.py`
-- **persistence()** (2 connections) — `server/tests/unit/services/test_corruption_service.py`
-- **parametrize** (1 connections)
-- **High-level operations for corruption adjustments. The single write path for…** (1 connections) — `server/services/corruption_service.py`
-- *... and 8 more nodes in this community*
+- **ErrorMonitor** (13 connections) — `scripts/error_monitoring.py`
+- **.calculate_error_rate()** (9 connections) — `scripts/error_monitoring.py`
+- **._parse_recent_errors()** (7 connections) — `scripts/error_monitoring.py`
+- **Any** (7 connections)
+- **.check_alerts()** (6 connections) — `scripts/error_monitoring.py`
+- **.detect_error_trends()** (5 connections) — `scripts/error_monitoring.py`
+- **._find_recent_error_logs()** (5 connections) — `scripts/error_monitoring.py`
+- **.monitor_continuously()** (5 connections) — `scripts/error_monitoring.py`
+- **error_monitoring.py** (4 connections) — `scripts/error_monitoring.py`
+- **._categorize_error()** (4 connections) — `scripts/error_monitoring.py`
+- **._determine_severity()** (4 connections) — `scripts/error_monitoring.py`
+- **.__init__()** (4 connections) — `scripts/error_monitoring.py`
+- **._parse_log_line()** (4 connections) — `scripts/error_monitoring.py`
+- **main()** (4 connections) — `scripts/error_monitoring.py`
+- **Path** (4 connections)
+- **datetime** (3 connections)
+- **Detect error trends over time. Returns trend analysis results.** (1 connections) — `scripts/error_monitoring.py`
+- **Check for alert conditions. Returns list of active alerts.** (1 connections) — `scripts/error_monitoring.py`
+- **Monitor errors continuously for a specified duration. Args: log_dir: Directory…** (1 connections) — `scripts/error_monitoring.py`
+- **Real-time error monitoring system for MythosMUD. This monitor can track error…** (1 connections) — `scripts/error_monitoring.py`
+- **Find error log files that have been modified since the given time.** (1 connections) — `scripts/error_monitoring.py`
+- **Parse recent errors from a log file.** (1 connections) — `scripts/error_monitoring.py`
+- **Parse a single log line and extract error information.** (1 connections) — `scripts/error_monitoring.py`
+- **Categorize an error based on its content.** (1 connections) — `scripts/error_monitoring.py`
+- **Initialize the error monitor. Args: log_dir: Directory containing log files…** (1 connections) — `scripts/error_monitoring.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
-- [.apply_corruption_adjustment](apply_corruption_adjustment.md) (5 shared connections)
-- [CorruptionTier](CorruptionTier.md) (5 shared connections)
-- [handle_cleanse_command](handle_cleanse_command.md) (3 shared connections)
-- [magic_service.py](magic_service.py.md) (3 shared connections)
-- [admin_setstat_command.py](admin_setstat_command.py.md) (2 shared connections)
-- [SpellLearningService](SpellLearningService.md) (2 shared connections)
-- [SpellEffects](SpellEffects.md) (2 shared connections)
-- [TargetMatch](TargetMatch.md) (1 shared connections)
-- [GameMechanicsService](GameMechanicsService.md) (1 shared connections)
-- [log_and_raise_enhanced](log_and_raise_enhanced.md) (1 shared connections)
-- [PassiveCorruptionFluxService](PassiveCorruptionFluxService.md) (1 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (1 shared connections)
+- [test_quest_service.py](test_quest_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/corruption_service.py`
-- `server/tests/unit/services/test_corruption_service.py`
+- `scripts/error_monitoring.py`
 
 ## Audit Trail
 
-- EXTRACTED: 99 (82%)
-- INFERRED: 21 (18%)
+- EXTRACTED: 50 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

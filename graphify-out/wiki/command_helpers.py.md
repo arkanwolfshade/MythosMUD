@@ -1,34 +1,34 @@
 # command_helpers.py
 
-> 8 nodes
+> 12 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **command_helpers.py** (16 connections) — `server/utils/command_helpers.py`
-- **_username_from_dict()** (3 connections) — `server/utils/command_helpers.py`
-- **Protocol** (3 connections)
-- **_HasName** (2 connections) — `server/utils/command_helpers.py`
-- **_HasNameAndPlayerId** (2 connections) — `server/utils/command_helpers.py`
-- **_HasUsername** (2 connections) — `server/utils/command_helpers.py`
-- **Helper functions for command parsing and validation. This module contains…** (1 connections) — `server/utils/command_helpers.py`
-- **Extract username or name from a dict; return None if neither key present.** (1 connections) — `server/utils/command_helpers.py`
+- **subzone_with_override()** (6 connections) — `server/tests/integration/test_lucidity_procedures.py`
+- **zone_with_override_and_subzone_without()** (6 connections) — `server/tests/integration/test_lucidity_procedures.py`
+- **test_lucidity_procedures.py** (5 connections) — `server/tests/integration/test_lucidity_procedures.py`
+- **test_get_lucidity_rate_overrides_includes_subzone_row()** (5 connections) — `server/tests/integration/test_lucidity_procedures.py`
+- **test_get_lucidity_rate_overrides_includes_zone_and_excludes_null_subzone()** (5 connections) — `server/tests/integration/test_lucidity_procedures.py`
+- **async_sessionmaker** (4 connections)
+- **AsyncSession** (4 connections)
+- **asyncio** (2 connections)
+- **fixture** (2 connections)
+- **Integration test for db/procedures/lucidity.sql's get_lucidity_rate_overrides()…** (1 connections) — `server/tests/integration/test_lucidity_procedures.py`
+- **A zone with special_rules set, and a subzone under it with special_rules NULL…** (1 connections) — `server/tests/integration/test_lucidity_procedures.py`
+- **A zone with NO override, and a subzone under it WITH special_rules set. Yields…** (1 connections) — `server/tests/integration/test_lucidity_procedures.py`
 
 ## Relationships
 
-- [get_username_from_user](get_username_from_user.md) (5 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
-- [log_and_raise_enhanced](log_and_raise_enhanced.md) (1 shared connections)
-- [command_parser.py](command_parser.py.md) (1 shared connections)
+- [CombatBroadcastMixin](CombatBroadcastMixin.md) (4 shared connections)
 
 ## Source Files
 
-- `server/utils/command_helpers.py`
+- `server/tests/integration/test_lucidity_procedures.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 19 (83%)
+- INFERRED: 4 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

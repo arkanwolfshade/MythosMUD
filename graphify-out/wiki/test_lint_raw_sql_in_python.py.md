@@ -1,47 +1,51 @@
 # test_lint_raw_sql_in_python.py
 
-> 29 nodes
+> 27 nodes · cohesion 0.16
 
 ## Key Concepts
 
-- **test_lint_raw_sql_in_python.py** (16 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **_load_script()** (14 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **_LintRawSqlModule** (6 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_raw_sql_site_is_reported()** (4 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_current_codebase_has_no_raw_sql()** (3 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_does_not_flag_comment_mentioning_select_star()** (3 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_does_not_flag_docstring_prose_with_select_from()** (3 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_does_not_flag_procedure_call_no_from()** (3 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_does_not_flag_procedure_call_with_from()** (3 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_flags_bare_table_select_from_split_across_lines()** (3 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_flags_bare_table_select_from()** (2 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_flags_raw_delete_from()** (2 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_flags_raw_insert_into()** (2 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_flags_raw_select_star()** (2 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_flags_raw_update_set()** (2 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **._find_raw_sql_lines()** (1 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **.scan()** (1 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_script_exists()** (1 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **MonkeyPatch** (1 connections)
-- **Path** (1 connections)
-- **Protocol** (1 connections)
-- **Unit tests for scripts/lint_raw_sql_in_python.py. Verifies the detection logic…** (1 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **server/ must have zero raw-SQL sites -- the migration completed under #633.** (1 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **Typed surface of the loaded script, for the parts these tests exercise.** (1 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **Regression test for the gap #624 found: a naive per-line matcher can't see…** (1 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- *... and 4 more nodes in this community*
+- **test_chat_pose_helpers.py** (17 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **chat_pose_helpers.py** (15 connections) — `server/game/chat_pose_helpers.py`
+- **set_player_pose()** (15 connections) — `server/game/chat_pose_helpers.py`
+- **clear_player_pose()** (7 connections) — `server/game/chat_pose_helpers.py`
+- **get_player_pose()** (7 connections) — `server/game/chat_pose_helpers.py`
+- **asyncio** (7 connections)
+- **get_room_poses()** (6 connections) — `server/game/chat_pose_helpers.py`
+- **normalize_player_id()** (6 connections) — `server/game/chat_pose_helpers.py`
+- **Any** (5 connections)
+- **UUID** (4 connections)
+- **test_get_room_poses()** (4 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_get_and_clear_player_pose()** (3 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_set_player_pose_empty()** (3 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_set_player_pose_nats_failure()** (3 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_set_player_pose_no_room()** (3 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_set_player_pose_player_not_found()** (3 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_set_player_pose_success()** (3 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_set_player_pose_too_long()** (3 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **_player()** (2 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_normalize_player_id()** (2 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **Pose management helpers for chat service.** (1 connections) — `server/game/chat_pose_helpers.py`
+- **Clear a player's pose. Args: player_id: ID of the player pose_manager: Pose…** (1 connections) — `server/game/chat_pose_helpers.py`
+- **Get all poses for players in a room. Args: room_id: ID of the room…** (1 connections) — `server/game/chat_pose_helpers.py`
+- **Normalize player identifiers to string form.** (1 connections) — `server/game/chat_pose_helpers.py`
+- **Set a player's pose (temporary, in-memory only). Args: player_id: ID of the…** (1 connections) — `server/game/chat_pose_helpers.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_monitoring_endpoints.py](test_monitoring_endpoints.py.md) (6 shared connections)
+- [connection_cleanup_methods.py](connection_cleanup_methods.py.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [test_skill_service_graded.py](test_skill_service_graded.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- `server/game/chat_pose_helpers.py`
+- `server/tests/unit/game/test_chat_pose_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (100%)
+- EXTRACTED: 69 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

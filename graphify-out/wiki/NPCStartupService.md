@@ -1,56 +1,50 @@
 # NPCStartupService
 
-> 36 nodes
+> 60 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **NPCStartupService** (54 connections) — `server/services/npc_startup_service.py`
-- **npc_startup_service.py** (17 connections) — `server/services/npc_startup_service.py`
-- **Any** (17 connections)
-- **._determine_spawn_room()** (8 connections) — `server/services/npc_startup_service.py`
-- **._spawn_required_npcs()** (8 connections) — `server/services/npc_startup_service.py`
-- **._run_startup_pass()** (7 connections) — `server/services/npc_startup_service.py`
-- **._spawn_arena_npcs()** (7 connections) — `server/services/npc_startup_service.py`
-- **._spawn_optional_npcs()** (7 connections) — `server/services/npc_startup_service.py`
-- **.spawn_npcs_on_startup()** (6 connections) — `server/services/npc_startup_service.py`
-- **_new_spawn_results()** (5 connections) — `server/services/npc_startup_service.py`
-- **._try_spawn_npc()** (5 connections) — `server/services/npc_startup_service.py`
-- **._spawn_one_arena_npc()** (4 connections) — `server/services/npc_startup_service.py`
-- **._try_sub_zone_room()** (4 connections) — `server/services/npc_startup_service.py`
-- **_record_spawned_npc()** (4 connections) — `server/services/npc_startup_service.py`
-- **npc_startup_service()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **_merge_phase_into_startup()** (3 connections) — `server/services/npc_startup_service.py`
-- **._get_default_room_for_sub_zone()** (3 connections) — `server/services/npc_startup_service.py`
-- **._get_persistence_for_spawn()** (3 connections) — `server/services/npc_startup_service.py`
-- **._handle_required_no_room()** (3 connections) — `server/services/npc_startup_service.py`
-- **.__init__()** (3 connections) — `server/services/npc_startup_service.py`
-- **._try_fallback_room()** (3 connections) — `server/services/npc_startup_service.py`
-- **._try_specific_room()** (3 connections) — `server/services/npc_startup_service.py`
-- **._warmup_room_cache_for_arena()** (3 connections) — `server/services/npc_startup_service.py`
-- **test_npc_startup_service_accepts_injected_async_persistence()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **fixture** (1 connections)
-- *... and 11 more nodes in this community*
+- **devDependencies** (36 connections) — `client/package.json`
+- **autoprefixer** (2 connections) — `client/package.json`
+- **esbuild** (2 connections) — `client/package.json`
+- **@eslint/js** (2 connections) — `client/package.json`
+- **eslint-plugin-jsx-a11y** (2 connections) — `client/package.json`
+- **eslint-plugin-playwright** (2 connections) — `client/package.json`
+- **eslint-plugin-react-hooks** (2 connections) — `client/package.json`
+- **eslint-plugin-react-refresh** (2 connections) — `client/package.json`
+- **globals** (2 connections) — `client/package.json`
+- **happy-dom** (2 connections) — `client/package.json`
+- **jsdom** (2 connections) — `client/package.json`
+- **knip** (2 connections) — `client/package.json`
+- **patch-package** (2 connections) — `client/package.json`
+- **@playwright/test** (2 connections) — `client/package.json`
+- **postcss** (2 connections) — `client/package.json`
+- **prettier** (2 connections) — `client/package.json`
+- **tailwindcss** (2 connections) — `client/package.json`
+- **@tailwindcss/postcss** (2 connections) — `client/package.json`
+- **@testing-library/dom** (2 connections) — `client/package.json`
+- **@testing-library/jest-dom** (2 connections) — `client/package.json`
+- **@testing-library/react** (2 connections) — `client/package.json`
+- **@types/jsdom** (2 connections) — `client/package.json`
+- **@types/node** (2 connections) — `client/package.json`
+- **@types/react** (2 connections) — `client/package.json`
+- **@types/react-dom** (2 connections) — `client/package.json`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [test_npc_startup_service.py](test_npc_startup_service.py.md) (34 shared connections)
-- [EventBus](EventBus.md) (4 shared connections)
-- [npc_database.py](npc_database.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [NPCPopulationController](NPCPopulationController.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
-- [PlayerInventory](PlayerInventory.md) (1 shared connections)
+- [Complexity Checking Alignment: Ruff C901 vs Pylint](Complexity_Checking_Alignment-_Ruff_C901_vs_Pylint.md) (4 shared connections)
+- [bonus_tags](bonus_tags.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_startup_service.py`
-- `server/tests/unit/services/test_npc_startup_service.py`
+- `client/package.json`
 
 ## Audit Trail
 
-- EXTRACTED: 92 (75%)
-- INFERRED: 31 (25%)
+- EXTRACTED: 66 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

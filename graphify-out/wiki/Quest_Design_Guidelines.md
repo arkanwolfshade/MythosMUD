@@ -1,10 +1,10 @@
 # Quest Design Guidelines
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Quest Design Guidelines** (0 connections) — `docs/QUEST_DESIGN_GUIDELINES.md`
+- **check_professions_structure.py** (0 connections) — `scripts/check_professions_structure.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/QUEST_DESIGN_GUIDELINES.md`
+- `scripts/check_professions_structure.py`
 
 ## Audit Trail
 

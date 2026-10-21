@@ -1,55 +1,41 @@
 # ConnectionCleaner
 
-> 48 nodes
+> 19 nodes · cohesion 0.19
 
 ## Key Concepts
 
-- **ConnectionCleaner** (27 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **connection_cleaner.py** (22 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Any** (14 connections)
-- **UUID** (10 connections)
-- **.cleanup_ghost_players()** (8 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **.prune_stale_players()** (7 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **.check_and_cleanup()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **.cleanup_dead_connections()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._cleanup_dead_connections_for_player()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **.cleanup_orphaned_data()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._close_and_remove_stale_websocket()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._get_online_player_ids()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._remove_stale_player_data()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **_stale_prune_max_age_seconds()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._filter_actual_ghost_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **.force_cleanup()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._get_player_id_from_metadata()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._get_players_to_check()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._get_potential_ghost_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._identify_stale_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **.__init__()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._remove_ghost_players_from_room()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._identify_stale_connections()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._is_websocket_dead()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **server/realtime/maintenance/__init__.py** (3 connections) — `server/realtime/maintenance/__init__.py`
-- *... and 23 more nodes in this community*
+- **_GenerateOpenapiSpecModule** (14 connections) — `server/tests/unit/scripts/test_generate_openapi_spec.py`
+- **test_generate_openapi_spec.py** (11 connections) — `server/tests/unit/scripts/test_generate_openapi_spec.py`
+- **_spec()** (7 connections) — `server/tests/unit/scripts/test_generate_openapi_spec.py`
+- **script()** (4 connections) — `server/tests/unit/scripts/test_generate_openapi_spec.py`
+- **_load_script()** (3 connections) — `server/tests/unit/scripts/test_generate_openapi_spec.py`
+- **test_render_tag_table_orders_by_description_block_and_matches_route_tags()** (3 connections) — `server/tests/unit/scripts/test_generate_openapi_spec.py`
+- **test_render_tag_table_raises_when_metadata_tag_has_no_route()** (3 connections) — `server/tests/unit/scripts/test_generate_openapi_spec.py`
+- **test_render_tag_table_raises_when_route_tag_has_no_description()** (3 connections) — `server/tests/unit/scripts/test_generate_openapi_spec.py`
+- **test_route_declared_tags_dedupes_and_preserves_first_seen_order()** (3 connections) — `server/tests/unit/scripts/test_generate_openapi_spec.py`
+- **test_tag_descriptions_reads_top_level_tags_block()** (3 connections) — `server/tests/unit/scripts/test_generate_openapi_spec.py`
+- **test_route_declared_tags_ignores_non_string_and_malformed_entries()** (2 connections) — `server/tests/unit/scripts/test_generate_openapi_spec.py`
+- **._render_tag_table()** (1 connections) — `server/tests/unit/scripts/test_generate_openapi_spec.py`
+- **._route_declared_tags()** (1 connections) — `server/tests/unit/scripts/test_generate_openapi_spec.py`
+- **._tag_descriptions()** (1 connections) — `server/tests/unit/scripts/test_generate_openapi_spec.py`
+- **fixture** (1 connections)
+- **Protocol** (1 connections)
+- **Unit tests for scripts/generate_openapi_spec.py's tag-table generation logic.…** (1 connections) — `server/tests/unit/scripts/test_generate_openapi_spec.py`
+- **Typed surface of the loaded script, for the parts these tests exercise.** (1 connections) — `server/tests/unit/scripts/test_generate_openapi_spec.py`
+- **Build a minimal OpenAPI-shaped dict: one operation per tag list in paths_tags.** (1 connections) — `server/tests/unit/scripts/test_generate_openapi_spec.py`
 
 ## Relationships
 
-- [connection_initialization.py](connection_initialization.py.md) (6 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [test_connection_cleaner.py](test_connection_cleaner.py.md) (4 shared connections)
-- [connection_cleanup_methods.py](connection_cleanup_methods.py.md) (3 shared connections)
-- [MessageQueue](MessageQueue.md) (3 shared connections)
-- [RateLimiter](RateLimiter.md) (1 shared connections)
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/maintenance/__init__.py`
-- `server/realtime/maintenance/connection_cleaner.py`
+- `server/tests/unit/scripts/test_generate_openapi_spec.py`
 
 ## Audit Trail
 
-- EXTRACTED: 108 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 32 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

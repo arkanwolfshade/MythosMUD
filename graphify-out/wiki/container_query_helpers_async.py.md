@@ -1,56 +1,48 @@
 # container_query_helpers_async.py
 
-> 37 nodes
+> 33 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **container_query_helpers_async.py** (25 connections) — `server/persistence/container_query_helpers_async.py`
-- **container_repository.py** (25 connections) — `server/persistence/repositories/container_repository.py`
-- **test_container_query_helpers_async.py** (22 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **_build_container_data_from_row_async()** (15 connections) — `server/persistence/container_query_helpers_async.py`
-- **get_bank_container_async()** (14 connections) — `server/persistence/container_query_helpers_async.py`
-- **get_decayed_containers_async()** (14 connections) — `server/persistence/container_query_helpers_async.py`
-- **get_containers_by_entity_id_async()** (13 connections) — `server/persistence/container_query_helpers_async.py`
-- **get_containers_by_room_id_async()** (12 connections) — `server/persistence/container_query_helpers_async.py`
-- **asyncio** (10 connections)
-- **_parse_jsonb()** (6 connections) — `server/persistence/container_query_helpers_async.py`
-- **test_get_bank_container_returns_the_owners_box()** (5 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **AsyncSession** (5 connections)
-- **ContainerData** (5 connections)
-- **_sample_row()** (4 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **_session_whose_fetchone_is()** (4 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **test_get_bank_container_db_error()** (4 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **test_get_bank_container_is_none_when_the_player_has_no_box()** (4 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **test_get_containers_by_entity_id_db_error()** (4 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **test_get_containers_by_entity_id_success()** (4 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **test_get_containers_by_room_id_db_error()** (4 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **test_get_containers_by_room_id_success()** (4 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **test_get_decayed_containers_db_error()** (4 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **UUID** (4 connections)
-- **test_get_decayed_containers_default_time()** (3 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **test_get_decayed_containers_naive_time_normalized()** (3 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- *... and 12 more nodes in this community*
+- **FStringLoggingFixer** (16 connections) — `scripts/automated_fstring_fixer.py`
+- **.fix_fstring_logging_in_file()** (7 connections) — `scripts/automated_fstring_fixer.py`
+- **Path** (6 connections)
+- **.extract_variables_from_fstring()** (5 connections) — `scripts/automated_fstring_fixer.py`
+- **._handle_complex_pattern_replacement()** (5 connections) — `scripts/automated_fstring_fixer.py`
+- **.process_files()** (5 connections) — `scripts/automated_fstring_fixer.py`
+- **.fix_simple_pattern()** (4 connections) — `scripts/automated_fstring_fixer.py`
+- **._read_file_content()** (4 connections) — `scripts/automated_fstring_fixer.py`
+- **._validate_file()** (4 connections) — `scripts/automated_fstring_fixer.py`
+- **._write_file_if_changed()** (4 connections) — `scripts/automated_fstring_fixer.py`
+- **main()** (4 connections) — `scripts/automated_fstring_fixer.py`
+- **._build_complex_params()** (3 connections) — `scripts/automated_fstring_fixer.py`
+- **.create_structured_message()** (3 connections) — `scripts/automated_fstring_fixer.py`
+- **.fix_complex_pattern()** (3 connections) — `scripts/automated_fstring_fixer.py`
+- **.generate_report()** (3 connections) — `scripts/automated_fstring_fixer.py`
+- **automated_fstring_fixer.py** (2 connections) — `scripts/automated_fstring_fixer.py`
+- **Any** (2 connections)
+- **.__init__()** (1 connections) — `scripts/automated_fstring_fixer.py`
+- **Match** (1 connections)
+- **Validate that file exists and is a Python file.** (1 connections) — `scripts/automated_fstring_fixer.py`
+- **Read file content with error handling.** (1 connections) — `scripts/automated_fstring_fixer.py`
+- **Build parameters list for complex patterns.** (1 connections) — `scripts/automated_fstring_fixer.py`
+- **Handle replacement for complex f-string patterns with additional parameters.** (1 connections) — `scripts/automated_fstring_fixer.py`
+- **Write file if content has changed.** (1 connections) — `scripts/automated_fstring_fixer.py`
+- **Fix f-string logging violations in a single file.** (1 connections) — `scripts/automated_fstring_fixer.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (21 shared connections)
-- [ContainerData](ContainerData.md) (13 shared connections)
-- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (8 shared connections)
-- [ContainerRepository](ContainerRepository.md) (8 shared connections)
-- [test_container_persistence_extended_row_helpers.py](test_container_persistence_extended_row_helpers.py.md) (3 shared connections)
-- [ContainerCreateParams](ContainerCreateParams.md) (2 shared connections)
-- [session](session.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/persistence/container_query_helpers_async.py`
-- `server/persistence/repositories/container_repository.py`
-- `server/tests/unit/persistence/test_container_query_helpers_async.py`
+- `scripts/automated_fstring_fixer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 136 (94%)
-- INFERRED: 8 (6%)
+- EXTRACTED: 48 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

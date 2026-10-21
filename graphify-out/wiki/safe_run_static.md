@@ -1,70 +1,44 @@
 # safe_run_static
 
-> 54 nodes
+> 19 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **safe_run_static()** (35 connections) — `scripts/utils/safe_subprocess.py`
-- **safe_run()** (22 connections) — `scripts/utils/safe_subprocess.py`
-- **safe_subprocess.py** (22 connections) — `scripts/utils/safe_subprocess.py`
-- **worktree-ops.py** (11 connections) — `scripts/worktree-ops.py`
-- **get_project_root()** (8 connections) — `scripts/worktree-ops.py`
-- **get_current_worktree()** (7 connections) — `scripts/worktree-ops.py`
-- **run_test_ci.py** (7 connections) — `scripts/run_test_ci.py`
-- **validate_path()** (6 connections) — `scripts/utils/safe_subprocess.py`
-- **install_dependencies()** (6 connections) — `scripts/worktree-ops.py`
-- **main()** (6 connections) — `scripts/worktree-ops.py`
-- **run_format()** (6 connections) — `scripts/worktree-ops.py`
-- **run_lint()** (6 connections) — `scripts/worktree-ops.py`
-- **run_tests()** (6 connections) — `scripts/worktree-ops.py`
-- **show_status()** (6 connections) — `scripts/worktree-ops.py`
-- **validate_command()** (5 connections) — `scripts/utils/safe_subprocess.py`
-- **sqlint.py** (5 connections) — `scripts/sqlint.py`
-- **run_psql_command()** (4 connections) — `scripts/load_seed_data.py`
-- **_resolve_sqlint_cmd()** (4 connections) — `scripts/sqlint.py`
-- **run_command()** (4 connections) — `scripts/worktree-ops.py`
-- **main()** (3 connections) — `scripts/load_seed_data.py`
-- **_is_tool_crash()** (3 connections) — `scripts/sqlint.py`
-- **install.py** (3 connections) — `scripts/install.py`
-- **load_seed_data.py** (3 connections) — `scripts/load_seed_data.py`
-- **Path** (3 connections)
-- **get_project_root()** (2 connections) — `scripts/install.py`
-- *... and 29 more nodes in this community*
+- **RoomOccupancyMixin** (12 connections) — `server/game/movement_room_occupancy.py`
+- **UUID** (7 connections)
+- **.add_player_to_room()** (6 connections) — `server/game/movement_room_occupancy.py`
+- **.remove_player_from_room()** (5 connections) — `server/game/movement_room_occupancy.py`
+- **._validate_add_player_ids()** (5 connections) — `server/game/movement_room_occupancy.py`
+- **._validate_remove_player_params()** (5 connections) — `server/game/movement_room_occupancy.py`
+- **.get_player_room()** (4 connections) — `server/game/movement_room_occupancy.py`
+- **._persist_added_player_room()** (4 connections) — `server/game/movement_room_occupancy.py`
+- **.get_room_players()** (3 connections) — `server/game/movement_room_occupancy.py`
+- **.validate_player_location()** (3 connections) — `server/game/movement_room_occupancy.py`
+- **Validate parameters for remove_player_from_room operation.** (1 connections) — `server/game/movement_room_occupancy.py`
+- **Remove a player from a room (for logout, teleportation, etc.). Args: player_id:…** (1 connections) — `server/game/movement_room_occupancy.py`
+- **Get the room ID where a player is currently located. Args: player_id: The ID of…** (1 connections) — `server/game/movement_room_occupancy.py`
+- **Get all players currently in a room. Args: room_id: The ID of the room to check…** (1 connections) — `server/game/movement_room_occupancy.py`
+- **Validate that a player is in the specified room. Args: player_id: The ID of the…** (1 connections) — `server/game/movement_room_occupancy.py`
+- **Room occupancy API; the host (MovementService) provides _persistence, _lock and…** (1 connections) — `server/game/movement_room_occupancy.py`
+- **Validate player and room IDs for add_player_to_room.** (1 connections) — `server/game/movement_room_occupancy.py`
+- **Update player current_room_id in persistence after room add.** (1 connections) — `server/game/movement_room_occupancy.py`
+- **Add a player to a room (for initial placement, teleportation, etc.). Args:…** (1 connections) — `server/game/movement_room_occupancy.py`
 
 ## Relationships
 
-- [run_quality_fragmentation_guard.py](run_quality_fragmentation_guard.py.md) (6 shared connections)
-- [pylint.py](pylint.py.md) (5 shared connections)
-- [quality_fragmentation_lizard.py](quality_fragmentation_lizard.py.md) (4 shared connections)
-- [manual_dependency_analysis.py](manual_dependency_analysis.py.md) (4 shared connections)
-- [TestRunner](TestRunner.md) (3 shared connections)
-- [compare_linting_results.py](compare_linting_results.py.md) (3 shared connections)
-- [grype.py](grype.py.md) (3 shared connections)
-- [lint_imports.py](lint_imports.py.md) (3 shared connections)
-- [ValueError](ValueError.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [logging_file_setup.py](logging_file_setup.py.md) (1 shared connections)
-- [Result](Result.md) (1 shared connections)
+- [endpoints.py](endpoints.py.md) (7 shared connections)
+- [AttributeError](AttributeError.md) (2 shared connections)
+- [test_container_persistence_extended_row_helpers.py](test_container_persistence_extended_row_helpers.py.md) (1 shared connections)
+- [_find_item_in_equipped](_find_item_in_equipped.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/bandit.py`
-- `scripts/build.py`
-- `scripts/format.py`
-- `scripts/install.py`
-- `scripts/lint.py`
-- `scripts/load_seed_data.py`
-- `scripts/run.py`
-- `scripts/run_test_ci.py`
-- `scripts/sqlfluff.py`
-- `scripts/sqlint.py`
-- `scripts/utils/safe_subprocess.py`
-- `scripts/worktree-ops.py`
+- `server/game/movement_room_occupancy.py`
 
 ## Audit Trail
 
-- EXTRACTED: 132 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 37 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

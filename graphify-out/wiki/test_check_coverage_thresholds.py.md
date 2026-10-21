@@ -1,45 +1,50 @@
 # test_check_coverage_thresholds.py
 
-> 23 nodes
+> 21 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **test_check_coverage_thresholds.py** (14 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
-- **_load_script()** (11 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
-- **_fully_covered()** (7 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
-- **_CheckCoverageThresholdsModule** (6 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
-- **test_known_coverage_debt_lowers_a_critical_files_floor()** (4 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
-- **test_known_coverage_debt_lowers_a_normal_files_floor()** (4 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
-- **test_known_coverage_debt_is_empty()** (3 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
-- **test_missing_file_is_treated_as_zero_coverage()** (3 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
-- **test_normal_file_at_blanket_threshold_passes()** (3 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
-- **test_test_files_are_never_checked()** (3 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
-- **test_critical_file_at_its_own_threshold_passes()** (2 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
-- **test_critical_file_below_its_own_threshold_fails()** (2 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
-- **test_normal_file_below_blanket_threshold_fails()** (2 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
-- **.check_thresholds()** (1 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
-- **test_script_exists()** (1 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
-- **Protocol** (1 connections)
-- **Unit tests for scripts/check_coverage_thresholds.py. Covers `check_thresholds`'…** (1 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
-- **A KNOWN_COVERAGE_DEBT entry lowers the blanket 70% normal-file floor (#677).** (1 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
-- **A file present in CRITICAL_FILES but absent from the coverage.xml data (e.g.…** (1 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
-- **Typed surface of the loaded script, for the parts these tests exercise.** (1 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
-- **check_thresholds evaluates every CRITICAL_FILES entry regardless of what's…** (1 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
-- **#677 paid down every entry that was in KNOWN_COVERAGE_DEBT -- it should stay…** (1 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
-- **A KNOWN_COVERAGE_DEBT entry lowers a CRITICAL_FILES floor, not just replaces it…** (1 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
+- **get_database_path()** (12 connections) — `server/database.py`
+- **get_database_url()** (6 connections) — `server/database.py`
+- **test_get_database_path_none_url()** (6 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **.get_database_path()** (5 connections) — `server/database.py`
+- **test_get_database_url_initializes_database()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_get_database_path_module_level_none()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_get_database_path_module_level_postgresql()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_get_database_path_module_level_unsupported()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_get_database_path_unsupported()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_get_database_path_postgresql()** (3 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **Path** (2 connections)
+- **Get the database file path. DEPRECATED: PostgreSQL does not use file paths.…** (1 connections) — `server/database.py`
+- **Get the database file path (deprecated for PostgreSQL). Returns: Path | None:…** (1 connections) — `server/database.py`
+- **Get the database URL from DatabaseManager. Returns: str | None: The database URL** (1 connections) — `server/database.py`
+- **Test get_database_path returns None for PostgreSQL.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **Test get_database_path raises for unsupported URL.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **Test get_database_path raises for None URL.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **Test get_database_url initializes database if not already initialized.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **Test get_database_path handles module-level empty URL.** (1 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **Test get_database_path returns None for module-level PostgreSQL URL.** (1 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **Test get_database_path raises for module-level unsupported URL.** (1 connections) — `server/tests/unit/infrastructure/test_database_init.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [InventoryPanel.tsx](InventoryPanel.tsx.md) (10 shared connections)
+- [resolve_lazy_attr](resolve_lazy_attr.md) (7 shared connections)
+- [ItemFactory](ItemFactory.md) (6 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (2 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
+- [endpoints.py](endpoints.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/scripts/test_check_coverage_thresholds.py`
+- `server/database.py`
+- `server/tests/unit/infrastructure/test_database_extended.py`
+- `server/tests/unit/infrastructure/test_database_init.py`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 42 (88%)
+- INFERRED: 6 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

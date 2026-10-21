@@ -1,34 +1,29 @@
 # properties
 
-> 17 nodes
+> 11 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **properties** (7 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **exits** (5 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **down** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **east** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **north** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **south** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **up** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **west** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **GameClientV2Dock.test.tsx** (13 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **mockPanelRecord()** (4 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **mockUsePanelManagerValue()** (3 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **mockPanelRecordCore()** (2 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **mockPanelRecordFlags()** (2 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **mockUsePanelManagerNoops()** (2 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **chatHistoryLayoutIdentity** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **chatHistoryLayoutState** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **defaultChatHistoryLayoutKey** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **dockTest** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **mockDefaultPanelLayout()** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (2 shared connections)
+- [WebSocketMessageValidator](WebSocketMessageValidator.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
 
 ## Audit Trail
 

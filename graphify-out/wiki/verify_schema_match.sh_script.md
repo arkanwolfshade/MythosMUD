@@ -1,13 +1,11 @@
 # verify_schema_match.sh script
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **verify_schema_match.sh script** (3 connections) — `scripts/verify_schema_match.sh`
-- **verify_schema_match.sh** (3 connections) — `scripts/verify_schema_match.sh`
-- **find_pg_dump()** (2 connections) — `scripts/verify_schema_match.sh`
-- **find_pg_isready()** (2 connections) — `scripts/verify_schema_match.sh`
+- **Migration Final Report** (1 connections) — `docs/archive/MIGRATION_FINAL_REPORT.md`
+- **Argon2 Implementation Plan** (1 connections) — `docs/archive/PLANNING_argon2.md`
 
 ## Relationships
 
@@ -15,12 +13,13 @@
 
 ## Source Files
 
-- `scripts/verify_schema_match.sh`
+- `docs/archive/MIGRATION_FINAL_REPORT.md`
+- `docs/archive/PLANNING_argon2.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

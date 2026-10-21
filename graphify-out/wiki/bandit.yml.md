@@ -1,10 +1,10 @@
 # bandit.yml
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **bandit.yml** (0 connections) — `bandit.yml`
+- **dbmate migrations (#811)** (0 connections) — `db/migrations/README.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `bandit.yml`
+- `db/migrations/README.md`
 
 ## Audit Trail
 

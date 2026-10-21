@@ -1,21 +1,21 @@
 # sub_zone
 
-> 4 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **sub_zone** (4 connections) — `schemas/room_schema.json`
-- **description** (1 connections) — `schemas/room_schema.json`
-- **pattern** (1 connections) — `schemas/room_schema.json`
-- **type** (1 connections) — `schemas/room_schema.json`
+- **Call of Cthulhu_ The Coloring Book (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu_ The Coloring Book.md`
+- **Call of Cthulhu_ The Coloring Book.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu_ The Coloring Book.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu_ The Coloring Book.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu_ The Coloring Book.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [test_inventory_commands_helpers.py](test_inventory_commands_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/room_schema.json`
+- `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu_ The Coloring Book.md`
 
 ## Audit Trail
 

@@ -1,52 +1,61 @@
 # CORSConfig
 
-> 42 nodes
+> 133 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **CORSConfig** (30 connections) — `server/config/models/cors.py`
-- **test_cors_config.py** (13 connections) — `server/tests/unit/config/test_cors_config.py`
-- **._parse_csv()** (11 connections) — `server/config/models/cors.py`
-- **._validate_non_empty()** (6 connections) — `server/config/models/cors.py`
-- **field_validator** (6 connections)
-- **._clean_list_items()** (5 connections) — `server/config/models/cors.py`
-- **._parse_json_array()** (5 connections) — `server/config/models/cors.py`
-- **.parse_allow_headers()** (4 connections) — `server/config/models/cors.py`
-- **.parse_allow_methods()** (4 connections) — `server/config/models/cors.py`
-- **.parse_allow_origins()** (4 connections) — `server/config/models/cors.py`
-- **._parse_comma_separated()** (4 connections) — `server/config/models/cors.py`
-- **.parse_expose_headers()** (4 connections) — `server/config/models/cors.py`
-- **.validate_max_age()** (4 connections) — `server/config/models/cors.py`
-- **.parse_max_age()** (3 connections) — `server/config/models/cors.py`
-- **._validate_and_warn_wildcards()** (3 connections) — `server/config/models/cors.py`
-- **test_cors_defaults_include_local_dev_origins()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_parse_allow_methods_uppercases()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_parse_allow_origins_from_comma_separated_string()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_parse_allow_origins_from_json_array()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_parse_expose_headers_allows_empty()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_parse_max_age_from_string()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_parse_max_age_invalid_string_uses_default()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_rejects_empty_allow_origins()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_rejects_negative_max_age()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_wildcard_origin_accepted()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- *... and 17 more nodes in this community*
+- **test_magic_commands.py** (49 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **MagicCommandHandler** (30 connections) — `server/commands/magic_commands.py`
+- **asyncio** (29 connections)
+- **magic_commands.py** (28 connections) — `server/commands/magic_commands.py`
+- **Any** (19 connections)
+- **magic_service()** (13 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **handle_cast_command()** (9 connections) — `server/commands/magic_commands.py`
+- **handle_learn_command()** (9 connections) — `server/commands/magic_commands.py`
+- **handle_spell_command()** (9 connections) — `server/commands/magic_commands.py`
+- **handle_spells_command()** (9 connections) — `server/commands/magic_commands.py`
+- **handle_stop_command()** (9 connections) — `server/commands/magic_commands.py`
+- **.__init__()** (8 connections) — `server/commands/magic_commands.py`
+- **.handle_cast_command()** (7 connections) — `server/commands/magic_commands.py`
+- **._interrupt_rest_for_cast()** (7 connections) — `server/commands/magic_commands.py`
+- **fixture** (7 connections)
+- **._build_cast_response()** (6 connections) — `server/commands/magic_commands.py`
+- **.handle_learn_command()** (6 connections) — `server/commands/magic_commands.py`
+- **.handle_spell_command()** (6 connections) — `server/commands/magic_commands.py`
+- **SpellCommandError** (6 connections) — `server/commands/magic_commands.py`
+- **._resolve_learn_context()** (5 connections) — `server/commands/magic_commands.py`
+- **._resolve_spell_context()** (5 connections) — `server/commands/magic_commands.py`
+- **Enum** (5 connections)
+- **._announce_spell_cast()** (4 connections) — `server/commands/magic_commands.py`
+- **._build_cast_success_message()** (4 connections) — `server/commands/magic_commands.py`
+- **._build_learn_response()** (4 connections) — `server/commands/magic_commands.py`
+- *... and 108 more nodes in this community*
 
 ## Relationships
 
-- [NATSService](NATSService.md) (3 shared connections)
-- [ValueError](ValueError.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
+- [command_parser.py](command_parser.py.md) (19 shared connections)
+- [test_item.py](test_item.py.md) (9 shared connections)
+- [test_follow_commands.py](test_follow_commands.py.md) (5 shared connections)
+- [fastapi_integration.py](fastapi_integration.py.md) (4 shared connections)
+- [websocket_helpers.py](websocket_helpers.py.md) (3 shared connections)
+- [test_event_bus_lifecycle.py](test_event_bus_lifecycle.py.md) (3 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (3 shared connections)
+- [ContainerData](ContainerData.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [test_nats_message_handler.py](test_nats_message_handler.py.md) (2 shared connections)
+- [endpoints.py](endpoints.py.md) (1 shared connections)
+- [test_monitoring_endpoints.py](test_monitoring_endpoints.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/config/models/cors.py`
-- `server/tests/unit/config/test_cors_config.py`
+- `server/commands/magic_commands.py`
+- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/game/magic/test_magic_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 72 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 253 (91%)
+- INFERRED: 26 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

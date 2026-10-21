@@ -1,38 +1,34 @@
 # Test Suite Quality Audit Report
 
-> 11 nodes
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **Test Suite Quality Audit Report** (9 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Conclusion** (5 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Specific Actionable Recommendations** (4 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **TEST_QUALITY_AUDIT_REPORT.md** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **~25-30% (1,250-1,500 tests) provide CRITICAL protection** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Answer to Your Question** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Phase A: Quick Wins (1-2 hours effort)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Phase B: Medium Effort (4-8 hours effort)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Phase C: Strategic Enhancements (8-16 hours effort)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Recommended Action** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **The remaining 70-75% provide** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **LOGGING_BEST_PRACTICES.md** (3 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **LOGGING_QUICK_REFERENCE.md** (3 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Structured Logging** (2 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **measure_performance** (2 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **NumPy Code Review** (2 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **roll_4d6_drop_lowest** (2 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **NumPy Vectorized Statistics** (2 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **enhanced_logging_config.get_logger** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- [Executive Summary](Executive_Summary.md) (1 shared connections)
-- [3.3 Value Distribution Calculation](3.3_Value_Distribution_Calculation.md) (1 shared connections)
-- [Phase 1: Quantitative Analysis Results](Phase_1-_Quantitative_Analysis_Results.md) (1 shared connections)
-- [Phase 4: Recommendations](Phase_4-_Recommendations.md) (1 shared connections)
-- [Summary: Test Quality Metrics](Summary-_Test_Quality_Metrics.md) (1 shared connections)
-- [Phase 2: Qualitative Analysis Results](Phase_2-_Qualitative_Analysis_Results.md) (1 shared connections)
+- [system_commands.py](system_commands.py.md) (1 shared connections)
+- [._compute_player_context](_compute_player_context.md) (1 shared connections)
+- [MythosMUD Testing Strategy (Greenfield Suite)](MythosMUD_Testing_Strategy_Greenfield_Suite.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
+- `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- `docs/archive/NUMPY_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 8 (80%)
+- INFERRED: 2 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

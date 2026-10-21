@@ -1,46 +1,49 @@
 # format_metadata
 
-> 20 nodes
+> 32 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **format_metadata()** (20 connections) — `server/commands/inventory_display_helpers.py`
-- **test_inventory_commands_format_helpers.py** (6 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **test_format_metadata_nested_dict()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_format_metadata_none()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_format_metadata_empty()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
-- **test_format_metadata_exception_returns_empty()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
-- **test_format_metadata_nested_dict()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
-- **test_format_metadata_sorted_keys()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
-- **Format metadata for display.** (1 connections) — `server/commands/inventory_display_helpers.py`
-- **Unit tests for inventory command formatting helper functions. Tests the…** (1 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **Test _format_metadata() returns empty string for None.** (1 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **Test _format_metadata() formats simple metadata.** (1 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **Test _format_metadata() formats nested dict.** (1 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **Test _format_metadata with None.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Test format_metadata with empty dict.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Test format_metadata with simple metadata.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **properties** (12 connections) — `schemas/items/item_prototype.schema.json`
+- **damage_expr** (5 connections) — `schemas/items/item_prototype.schema.json`
+- **range** (5 connections) — `schemas/items/item_prototype.schema.json`
+- **ammo** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **attacks** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **max_damage** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **min_damage** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **skill_bonus** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **magical** (2 connections) — `schemas/items/item_prototype.schema.json`
+- **modifier** (2 connections) — `schemas/items/item_prototype.schema.json`
+- **description** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **description** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **description** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [test_inventory_display_helpers.py](test_inventory_display_helpers.py.md) (10 shared connections)
-- [test_inventory_helpers.py](test_inventory_helpers.py.md) (5 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [lint_optional_auth_no_guard.py](lint_optional_auth_no_guard.py.md) (1 shared connections)
+- [test_inventory_mutation_guard_sync.py](test_inventory_mutation_guard_sync.py.md) (1 shared connections)
+- [test_validate_codacy_coverage_gate.py](test_validate_codacy_coverage_gate.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/inventory_display_helpers.py`
-- `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- `server/tests/unit/commands/test_inventory_display_helpers.py`
-- `server/tests/unit/commands/test_inventory_helpers.py`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
+- EXTRACTED: 34 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

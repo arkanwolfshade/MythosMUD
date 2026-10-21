@@ -1,25 +1,23 @@
 # .force_single_audit_cycle
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **.force_single_audit_cycle()** (4 connections) — `server/app/memory_lifespan_coordinator.py`
-- **Any** (1 connections)
-- **Execute a single investigation loop synchronously producing operator summary.…** (1 connections) — `server/app/memory_lifespan_coordinator.py`
+- **NATS JetStream** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **NATS Message Acknowledgment** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (1 shared connections)
-- [PeriodicOrphanAuditor](PeriodicOrphanAuditor.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/app/memory_lifespan_coordinator.py`
+- `docs/archive/NATS_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

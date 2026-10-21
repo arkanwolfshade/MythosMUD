@@ -1,42 +1,51 @@
 # Actionable Recommendations
 
-> 20 nodes
+> 23 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **Actionable Recommendations** (13 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- ****~25-30% provide CRITICAL coverage**** (4 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Next Steps** (4 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Immediate (This Week)** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Specifically** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Add Missing Integration Tests (70 tests, 0% risk, 10 hours effort)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Command** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Critical Gap Action (Month 2)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Files** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **High-Priority Action (Next 2 Weeks)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Medium-Term (Next Month)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Parametrize Repetitive Tests (170 → 50, 0% risk, 8 hours effort)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Priorities** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Prune Infrastructure Tests (60 tests, 5% risk, 4 hours effort)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Quick Reference** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Remove Placeholder Tests (40 tests, 0% risk, 30 min effort)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Short-Term (This Month)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Strategic Action (Next Month)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Targets** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **The other 70-75%** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **_find_item_in_inventory()** (18 connections) — `server/commands/look_item.py`
+- **_handle_item_look()** (17 connections) — `server/commands/look_item.py`
+- **_try_lookup_item_implicit()** (15 connections) — `server/commands/look_item.py`
+- **look_item.py** (14 connections) — `server/commands/look_item.py`
+- **_check_item_in_location()** (13 connections) — `server/commands/look_item.py`
+- **_check_equipped_item()** (10 connections) — `server/commands/look_item.py`
+- **Any** (8 connections)
+- **test_find_item_in_inventory_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Item look functionality for MythosMUD. This module handles looking at items,…** (1 connections) — `server/commands/look_item.py`
+- **Check if item found in a location and return formatted result.** (1 connections) — `server/commands/look_item.py`
+- **Check if item is equipped and return formatted result.** (1 connections) — `server/commands/look_item.py`
+- **Handle looking at a specific item.** (1 connections) — `server/commands/look_item.py`
+- **Try to find and display an item in implicit lookup.** (1 connections) — `server/commands/look_item.py`
+- **Find an item in player inventory by name or prototype_id. Args: inventory: List…** (1 connections) — `server/commands/look_item.py`
+- **Test _find_item_in_inventory() with no matching items.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with multiple matches (ambiguous).** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with instance number out of range.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() finds item by name.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Relationships
 
-- [TEST_AUDIT_EXECUTIVE_SUMMARY.md](TEST_AUDIT_EXECUTIVE_SUMMARY.md.md) (1 shared connections)
-- [Test Suite Quality Audit - Executive Summary](Test_Suite_Quality_Audit_-_Executive_Summary.md) (1 shared connections)
+- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (18 shared connections)
+- [lucidity.py](lucidity.py.md) (13 shared connections)
+- [compilerOptions](compilerOptions.md) (12 shared connections)
+- [_RecordingRoom](_RecordingRoom.md) (5 shared connections)
+- [resolve_npc_attack_damage](resolve_npc_attack_damage.md) (4 shared connections)
+- [Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Malleus Monstrorum - Cthulhu Mythos Bestiary  (2026-08-12)](Graph_Report_-_C-_Users_arkan_Proton_Drive_arkanwolfshade_My_files_Chaosium_Malleus_Monstrorum_-_Cthulhu_Mythos_Bestiary__2026-08-12.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- `server/commands/look_item.py`
+- `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 89 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

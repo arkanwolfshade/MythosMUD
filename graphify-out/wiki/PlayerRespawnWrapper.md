@@ -1,52 +1,60 @@
 # PlayerRespawnWrapper
 
-> 31 nodes
+> 44 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **PlayerRespawnWrapper** (18 connections) — `server/game/player_respawn_wrapper.py`
-- **test_player_respawn_wrapper.py** (14 connections) — `server/tests/unit/game/test_player_respawn_wrapper.py`
-- **.respawn_player_by_user_id()** (7 connections) — `server/game/player_respawn_wrapper.py`
-- **asyncio** (7 connections)
-- **.respawn_player_from_delirium_by_user_id()** (6 connections) — `server/game/player_respawn_wrapper.py`
-- **_select_dead_player_for_respawn()** (6 connections) — `server/game/player_respawn_wrapper.py`
-- **._load_active_players()** (5 connections) — `server/game/player_respawn_wrapper.py`
-- **._load_player_for_delirium_respawn()** (5 connections) — `server/game/player_respawn_wrapper.py`
-- **_resolve_respawn_room_data()** (5 connections) — `server/game/player_respawn_wrapper.py`
-- **_is_eligible_for_respawn()** (4 connections) — `server/game/player_respawn_wrapper.py`
-- **_dead_player()** (4 connections) — `server/tests/unit/game/test_player_respawn_wrapper.py`
-- **test_respawn_from_delirium_not_delirious()** (4 connections) — `server/tests/unit/game/test_player_respawn_wrapper.py`
-- **test_respawn_from_delirium_player_not_found()** (4 connections) — `server/tests/unit/game/test_player_respawn_wrapper.py`
-- **test_respawn_from_delirium_success()** (4 connections) — `server/tests/unit/game/test_player_respawn_wrapper.py`
-- **test_respawn_player_by_user_id_multiple_dead_picks_most_recent()** (4 connections) — `server/tests/unit/game/test_player_respawn_wrapper.py`
-- **test_respawn_player_by_user_id_no_players()** (4 connections) — `server/tests/unit/game/test_player_respawn_wrapper.py`
-- **test_respawn_player_by_user_id_not_dead()** (4 connections) — `server/tests/unit/game/test_player_respawn_wrapper.py`
-- **test_respawn_player_by_user_id_success()** (4 connections) — `server/tests/unit/game/test_player_respawn_wrapper.py`
-- **Any** (4 connections)
-- **Player** (4 connections)
-- **.__init__()** (3 connections) — `server/game/player_respawn_wrapper.py`
-- **Respawn a dead player by user ID. This method handles the complete respawn…** (1 connections) — `server/game/player_respawn_wrapper.py`
-- **Load the user's character and validate delirium eligibility (lucidity <= -10).** (1 connections) — `server/game/player_respawn_wrapper.py`
-- **Respawn a delirious player by user ID. This method handles the complete…** (1 connections) — `server/game/player_respawn_wrapper.py`
-- **A player is eligible for respawn if dead, or stranded in limbo.** (1 connections) — `server/game/player_respawn_wrapper.py`
-- *... and 6 more nodes in this community*
+- **RealTimeEventHandler** (35 connections) — `server/realtime/event_handler.py`
+- **._send_room_occupants_update_internal()** (5 connections) — `server/realtime/event_handler.py`
+- **._create_player_entered_message()** (3 connections) — `server/realtime/event_handler.py`
+- **._create_player_left_message()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_npc_entered()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_npc_left()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_player_delirium_respawned()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_player_died()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_player_dp_decay()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_player_dp_updated()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_player_entered()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_player_left()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_player_respawned()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_player_xp_awarded()** (3 connections) — `server/realtime/event_handler.py`
+- **._send_occupants_snapshot_to_player()** (3 connections) — `server/realtime/event_handler.py`
+- **.send_room_occupants_update()** (3 connections) — `server/realtime/event_handler.py`
+- **._subscribe_to_events()** (3 connections) — `server/realtime/event_handler.py`
+- **test_event_handler_init()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_init_no_event_bus()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **UUID** (2 connections)
+- **._get_next_sequence()** (2 connections) — `server/realtime/event_handler.py`
+- **._get_room_occupants()** (2 connections) — `server/realtime/event_handler.py`
+- **.shutdown()** (2 connections) — `server/realtime/event_handler.py`
+- **Get the next sequence number for events.** (1 connections) — `server/realtime/event_handler.py`
+- **Subscribe to relevant game events.** (1 connections) — `server/realtime/event_handler.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
-- [log_and_raise_enhanced](log_and_raise_enhanced.md) (5 shared connections)
-- [ValidationError](ValidationError.md) (5 shared connections)
-- [PlayerService](PlayerService.md) (2 shared connections)
+- [._bind_event_type](_bind_event_type.md) (4 shared connections)
+- [look_container.py](look_container.py.md) (4 shared connections)
+- [BaseEvent](BaseEvent.md) (4 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (3 shared connections)
+- [ConnectionManager](ConnectionManager.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [HolidayEntry](HolidayEntry.md) (2 shared connections)
+- [security.ts](security.ts.md) (2 shared connections)
+- [Communities (355 total, 223 thin omitted)](Communities_355_total,_223_thin_omitted.md) (1 shared connections)
+- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (1 shared connections)
+- [ZoneConfiguration](ZoneConfiguration.md) (1 shared connections)
+- [CombatInstance](CombatInstance.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/player_respawn_wrapper.py`
-- `server/tests/unit/game/test_player_respawn_wrapper.py`
+- `server/realtime/event_handler.py`
+- `server/tests/unit/realtime/test_event_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 63 (84%)
-- INFERRED: 12 (16%)
+- EXTRACTED: 69 (91%)
+- INFERRED: 7 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

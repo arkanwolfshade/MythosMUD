@@ -1,32 +1,37 @@
 # Services Package Design
 
-> 11 nodes
+> 16 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **Services Package Design** (11 connections) — `docs/packages/PACKAGE_SERVICES_DESIGN.md`
-- **1. Overview** (1 connections) — `docs/packages/PACKAGE_SERVICES_DESIGN.md`
-- **2. Members** (1 connections) — `docs/packages/PACKAGE_SERVICES_DESIGN.md`
-- **3. Boundary contract** (1 connections) — `docs/packages/PACKAGE_SERVICES_DESIGN.md`
-- **4. Key design decisions** (1 connections) — `docs/packages/PACKAGE_SERVICES_DESIGN.md`
-- **5. Constraints** (1 connections) — `docs/packages/PACKAGE_SERVICES_DESIGN.md`
-- **6. Developer guide** (1 connections) — `docs/packages/PACKAGE_SERVICES_DESIGN.md`
-- **7. Troubleshooting** (1 connections) — `docs/packages/PACKAGE_SERVICES_DESIGN.md`
-- **8. Related docs** (1 connections) — `docs/packages/PACKAGE_SERVICES_DESIGN.md`
-- **9. Changelog** (1 connections) — `docs/packages/PACKAGE_SERVICES_DESIGN.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/packages/PACKAGE_SERVICES_DESIGN.md`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu 7th Edition - Keeper's Rulebook  (2026-08-11)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Communities (17 total, 12 thin omitted)** (6 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Community 0 - "Character and Skills"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Community 1 - "Character and Skills (1)"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Community 2 - "Core Rules"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Community 3 - "Core Rules (3)"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Community 4 - "Character Sheets"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
 
 ## Relationships
 
-- [ADR-023: Package Ownership (`game/` vs `services/` vs `npc/`) and Fan-Out Watch List](ADR-023-_Package_Ownership_`game-`_vs_`services-`_vs_`npc-`_and_Fan-Out_Watch_List.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/packages/PACKAGE_SERVICES_DESIGN.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

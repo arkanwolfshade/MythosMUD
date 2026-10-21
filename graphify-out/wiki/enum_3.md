@@ -1,28 +1,42 @@
 # enum
 
-> 7 nodes
+> 21 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **enum** (5 connections) — `schemas/calendar/holiday.schema.json`
-- **season** (3 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **autumn** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **spring** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **summer** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **winter** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **Environment Contamination Audit Report** (9 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **2. **ACCEPTABLE PATTERNS: Environment Variable Usage**** (5 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **Remediation Plan** (4 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **Analysis** (3 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **Critical Violations Found** (3 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **ENVIRONMENT_CONTAMINATION_AUDIT.md** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **1. **CRITICAL VIOLATION: `server/logging_config.py`**** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **Compliance Status** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **Conclusion** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **Executive Summary** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **Phase 1: Critical Fix (Immediate)** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **Phase 2: Configuration Standardization** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **Phase 3: Testing Strategy Update** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **Recommendations** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **Security Implications** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **`server/alias_storage.py` (Line 29)** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **`server/auth/users.py` (Line 42)** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **`server/config_loader.py` (Lines 236, 242)** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **`server/persistence.py` (Line 68)** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **What Constitutes Environment Contamination** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **What Is Acceptable** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/calendar/holiday.schema.json`
+- `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

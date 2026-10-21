@@ -1,57 +1,59 @@
 # RoomDataValidator
 
-> 73 nodes
+> 32 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **RoomDataValidator** (30 connections) — `server/services/room_data_validator.py`
-- **RoomSyncService** (22 connections) — `server/services/room_sync_service.py`
-- **test_room_data_validator.py** (16 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **.validate_room_data()** (10 connections) — `server/services/room_data_validator.py`
-- **Any** (8 connections)
-- **.validate_room_consistency()** (7 connections) — `server/services/room_data_validator.py`
-- **Any** (7 connections)
-- **.check_duplicate_occupants()** (6 connections) — `server/services/room_data_validator.py`
-- **.validate_field_types()** (6 connections) — `server/services/room_data_validator.py`
-- **.validate_required_fields()** (6 connections) — `server/services/room_data_validator.py`
-- **._handle_stale_room_data()** (6 connections) — `server/services/room_sync_service.py`
-- **.__init__()** (6 connections) — `server/services/room_sync_service.py`
-- **.check_empty_room_with_occupants()** (5 connections) — `server/services/room_data_validator.py`
-- **.check_occupant_count_consistency()** (5 connections) — `server/services/room_data_validator.py`
-- **.is_valid_room_id()** (5 connections) — `server/services/room_data_validator.py`
-- **.validate_occupant_consistency()** (4 connections) — `server/services/room_data_validator.py`
-- **._fetch_fresh_room_data()** (4 connections) — `server/services/room_sync_service.py`
-- **._process_room_update_with_validation()** (4 connections) — `server/services/room_sync_service.py`
-- **test_check_duplicate_occupants()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_check_duplicate_occupants_no_duplicates()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_check_empty_room_with_occupants()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_check_occupant_count_consistency()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_is_valid_room_id()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_field_types()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_field_types_valid()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- *... and 48 more nodes in this community*
+- **AsciiMapRenderer** (81 connections) — `server/services/ascii_map_renderer.py`
+- **TestVerticalExitCharBetween** (9 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **TestRendererDelegation** (7 connections) — `server/tests/unit/services/test_ascii_map_exits.py`
+- **TestBridgeComputation** (6 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **.test_a_diagonal_target_is_ignored()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **.test_only_interior_cells_are_bridged()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **.test_westward_and_northward_spans_are_bridged_too()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **.test_bidirectional_returns_pipe()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_no_exit_returns_none()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_one_way_north_and_one_way_south_assign_caret_and_v_by_target()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_one_way_north_returns_caret()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_one_way_north_uses_caret_bidirectional_uses_pipe()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_one_way_south_returns_v()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.__init__()** (2 connections) — `server/services/ascii_map_renderer.py`
+- **.test_bridges_delegate()** (2 connections) — `server/tests/unit/services/test_ascii_map_exits.py`
+- **.test_horizontal_char_delegates()** (2 connections) — `server/tests/unit/services/test_ascii_map_exits.py`
+- **.test_reverse_direction_delegates()** (2 connections) — `server/tests/unit/services/test_ascii_map_exits.py`
+- **.test_vertical_char_delegates()** (2 connections) — `server/tests/unit/services/test_ascii_map_exits.py`
+- **.test_adjacent_rooms_produce_no_bridge_cells()** (2 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **Renders ASCII maps from room coordinate data. Supports multiple map styles…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Initialize the ASCII map renderer.** (1 connections) — `server/services/ascii_map_renderer.py`
+- **The renderer's methods must stay equivalent to the functions they delegate to.** (1 connections) — `server/tests/unit/services/test_ascii_map_exits.py`
+- **The endpoints are rooms; only the cells strictly between them are filled.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **Only axis-aligned spans can be drawn; a diagonal would fill the wrong cells.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- **Spans are directional; the lower endpoint is not always the source.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [test_room_sync_service.py](test_room_sync_service.py.md) (6 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [player_event_handlers.py](player_event_handlers.py.md) (2 shared connections)
-- [RoomDataCache](RoomDataCache.md) (2 shared connections)
-- [TestRoomDataFixer](TestRoomDataFixer.md) (2 shared connections)
-- [event_handler.py](event_handler.py.md) (1 shared connections)
-- [NPCCombatDataProvider](NPCCombatDataProvider.md) (1 shared connections)
+- [ItemCatalogService](ItemCatalogService.md) (20 shared connections)
+- [Migration Strategy](Migration_Strategy.md) (11 shared connections)
+- [ClientLogger](ClientLogger.md) (8 shared connections)
+- [field_validator](field_validator.md) (6 shared connections)
+- [POSTGRESQL_AUDIT_REPORT_2026.md](POSTGRESQL_AUDIT_REPORT_2026.md.md) (5 shared connections)
+- [client/package.json](client-package.json.md) (5 shared connections)
+- [active_lucidity_service.py](active_lucidity_service.py.md) (4 shared connections)
+- [mock_container](mock_container.md) (4 shared connections)
+- [NATS Complete Remediation Summary](NATS_Complete_Remediation_Summary.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/room_data_validator.py`
-- `server/services/room_sync_service.py`
-- `server/tests/unit/services/test_room_data_validator.py`
+- `server/services/ascii_map_renderer.py`
+- `server/tests/unit/services/test_ascii_map_exits.py`
+- `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 
 ## Audit Trail
 
-- EXTRACTED: 121 (86%)
-- INFERRED: 19 (14%)
+- EXTRACTED: 96 (87%)
+- INFERRED: 14 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

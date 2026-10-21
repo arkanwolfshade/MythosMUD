@@ -1,26 +1,27 @@
 # .__init__
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **._setup_aggressive_mob_behavior_rules()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **Initialize aggressive mob NPC.** (1 connections) — `server/npc/aggressive_mob_npc.py`
-- **Setup aggressive mob-specific behavior rules.** (1 connections) — `server/npc/aggressive_mob_npc.py`
+- **Fixture Optimization Complete** (2 connections) — `docs/archive/FIXTURE_OPTIMIZATION_COMPLETE.md`
+- **E2E Testing Setup Status** (1 connections) — `docs/archive/E2E_TESTING_SETUP_STATUS.md`
+- **Test Suite Post-Merge Refactoring** (1 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
 
 ## Relationships
 
-- [AggressiveMobNPC](AggressiveMobNPC.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/npc/aggressive_mob_npc.py`
+- `docs/archive/E2E_TESTING_SETUP_STATUS.md`
+- `docs/archive/FIXTURE_OPTIMIZATION_COMPLETE.md`
+- `docs/archive/MERGE_REFACTORING_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

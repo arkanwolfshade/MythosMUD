@@ -1,60 +1,62 @@
 # ground_channel.py
 
-> 55 nodes
+> 80 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **cancel_ground_channel()** (23 connections) — `server/commands/ground_channel.py`
-- **ground_channel.py** (23 connections) — `server/commands/ground_channel.py`
-- **test_ground_channel.py** (23 connections) — `server/tests/unit/commands/test_ground_channel.py`
-- **RescueEventRecorder** (20 connections) — `server/tests/unit/commands/ground_commands_test_support.py`
-- **FakeConnectionManager** (19 connections) — `server/tests/unit/commands/ground_commands_test_support.py`
-- **start_ground_channel()** (15 connections) — `server/commands/ground_channel.py`
-- **_start()** (14 connections) — `server/tests/unit/commands/test_ground_channel.py`
-- **GroundChannel** (11 connections) — `server/commands/ground_channel.py`
-- **_FinishSpy** (10 connections) — `server/tests/unit/commands/test_ground_channel.py`
-- **asyncio** (10 connections)
-- **is_player_grounding()** (9 connections) — `server/commands/ground_channel.py`
-- **test_cancel_from_either_side_interrupts_both_and_clears_registry()** (9 connections) — `server/tests/unit/commands/test_ground_channel.py`
-- **test_cancel_is_ignored_once_committing()** (9 connections) — `server/tests/unit/commands/test_ground_channel.py`
-- **test_manager_without_registries_is_a_noop()** (8 connections) — `server/tests/unit/commands/test_ground_channel.py`
-- **_find_channel()** (7 connections) — `server/commands/ground_channel.py`
-- **_registries()** (7 connections) — `server/commands/ground_channel.py`
-- **_channel_task()** (7 connections) — `server/tests/unit/commands/test_ground_channel.py`
-- **test_completion_runs_finish_and_clears_registry()** (7 connections) — `server/tests/unit/commands/test_ground_channel.py`
-- **test_finish_interrupted_outcome_notifies_both()** (7 connections) — `server/tests/unit/commands/test_ground_channel.py`
-- **test_start_registers_channel_and_notifies_both_with_eta()** (7 connections) — `server/tests/unit/commands/test_ground_channel.py`
-- **UUID** (7 connections)
-- **_run_channel()** (6 connections) — `server/commands/ground_channel.py`
-- **test_rescuer_cannot_channel_two_rituals()** (6 connections) — `server/tests/unit/commands/test_ground_channel.py`
-- **test_resting_rescuer_cannot_start()** (6 connections) — `server/tests/unit/commands/test_ground_channel.py`
-- **test_second_rescuer_for_same_target_is_rejected()** (6 connections) — `server/tests/unit/commands/test_ground_channel.py`
-- *... and 30 more nodes in this community*
+- **NPCCombatDataProvider** (44 connections) — `server/services/npc_combat_data_provider.py`
+- **test_npc_combat_data_provider.py** (21 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
+- **_NPCCombatIntegrationDeps** (19 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.join_player_to_combat()** (10 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **UUID** (10 connections)
+- **.get_npc_combat_data()** (9 connections) — `server/services/npc_combat_data_provider.py`
+- **.join_existing_combat_for_mixin()** (9 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **._process_combat_attack()** (9 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.start_new_combat_for_mixin()** (8 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.get_combat_service()** (8 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **asyncio** (8 connections)
+- **._apply_npc_attack_damage_for_npc_initiated_combat()** (7 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.get_player_combat_data()** (6 connections) — `server/services/npc_combat_data_provider.py`
+- **Any** (6 connections)
+- **._broadcast_room_after_npc_death()** (6 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.get_data_provider()** (6 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **._resolve_npc_behavior_snapshot()** (5 connections) — `server/services/npc_combat_data_provider.py`
+- **.get_messaging_integration()** (5 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.get_npc_disposition()** (5 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.join_existing_combat_for_mixin()** (5 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.get_npc_definition()** (4 connections) — `server/services/npc_combat_data_provider.py`
+- **.get_npc_instance()** (4 connections) — `server/services/npc_combat_data_provider.py`
+- **._resolve_npc_combat_stats()** (4 connections) — `server/services/npc_combat_data_provider.py`
+- **.join_player_to_combat()** (4 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.start_new_combat_for_mixin()** (4 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [rescue_commands.py](rescue_commands.py.md) (16 shared connections)
-- [go_command.py](go_command.py.md) (3 shared connections)
-- [CombatService](CombatService.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [TaskRegistry](TaskRegistry.md) (2 shared connections)
-- [test_rest_command.py](test_rest_command.py.md) (2 shared connections)
-- [player_presence_tracker.py](player_presence_tracker.py.md) (2 shared connections)
-- [MagicCommandHandler](MagicCommandHandler.md) (2 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (2 shared connections)
-- [test_combat_service_modules.py](test_combat_service_modules.py.md) (1 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (15 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (11 shared connections)
+- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (10 shared connections)
+- [test_player_combat_service.py](test_player_combat_service.py.md) (4 shared connections)
+- [PostgreSQL & SQL Audit Report](PostgreSQL_&_SQL_Audit_Report.md) (2 shared connections)
+- [FollowService](FollowService.md) (2 shared connections)
+- [command_parser.py](command_parser.py.md) (2 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
+- [saveMapChanges.ts](saveMapChanges.ts.md) (1 shared connections)
+- [security.ts](security.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/ground_channel.py`
-- `server/tests/unit/commands/ground_commands_test_support.py`
-- `server/tests/unit/commands/test_ground_channel.py`
+- `server/services/npc_combat_data_provider.py`
+- `server/services/npc_combat_integration_combat_mixin.py`
+- `server/services/npc_combat_integration_service.py`
+- `server/tests/unit/services/test_npc_combat_data_provider.py`
 
 ## Audit Trail
 
-- EXTRACTED: 168 (91%)
-- INFERRED: 16 (9%)
+- EXTRACTED: 169 (91%)
+- INFERRED: 17 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

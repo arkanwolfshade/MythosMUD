@@ -1,39 +1,46 @@
 # properties
 
-> 16 nodes
+> 25 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **properties** (7 connections) — `server/help/help_schema.json`
-- **required** (6 connections) — `server/help/help_schema.json`
-- **items** (5 connections) — `server/help/help_schema.json`
-- **items** (5 connections) — `server/help/help_schema.json`
-- **examples** (3 connections) — `server/help/help_schema.json`
-- **name** (3 connections) — `server/help/help_schema.json`
-- **additionalProperties** (2 connections) — `server/help/help_schema.json`
-- **type** (1 connections) — `server/help/help_schema.json`
-- **$ref** (1 connections) — `server/help/help_schema.json`
-- **description** (1 connections) — `server/help/help_schema.json`
-- **input** (1 connections) — `server/help/help_schema.json`
-- **note** (1 connections) — `server/help/help_schema.json`
-- **required** (1 connections) — `server/help/help_schema.json`
-- **input** (1 connections) — `server/help/help_schema.json`
-- **required** (1 connections) — `server/help/help_schema.json`
-- **description** (1 connections) — `server/help/help_schema.json`
+- **.cursor/hooks/record_edited_file.py** (11 connections) — `.cursor/hooks/record_edited_file.py`
+- **_is_test_file()** (7 connections) — `.cursor/hooks/record_edited_file.py`
+- **main()** (7 connections) — `.cursor/hooks/record_edited_file.py`
+- **Path** (5 connections)
+- **_should_skip_recording()** (5 connections) — `.cursor/hooks/record_edited_file.py`
+- **_is_client_test_path()** (4 connections) — `.cursor/hooks/record_edited_file.py`
+- **_load_payload()** (4 connections) — `.cursor/hooks/record_edited_file.py`
+- **_load_state()** (4 connections) — `.cursor/hooks/record_edited_file.py`
+- **_normalize_path()** (4 connections) — `.cursor/hooks/record_edited_file.py`
+- **_rel_path()** (4 connections) — `.cursor/hooks/record_edited_file.py`
+- **_write_state_atomic()** (4 connections) — `.cursor/hooks/record_edited_file.py`
+- **_is_agent_config_path()** (3 connections) — `.cursor/hooks/record_edited_file.py`
+- **_is_server_test_path()** (3 connections) — `.cursor/hooks/record_edited_file.py`
+- **Any** (2 connections)
+- **Return True if we should not record (missing data or test file).** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **Entry point: read hook payload from stdin and record non-test edited files to…** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **Normalize path to forward slashes for consistent matching.** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **Return workspace-relative path for pattern matching.** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **True if path is under server/tests/.** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **True if path is in __tests__/ or has client test extension.** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **True if path is under .claude/ or .cursor/ (agent/skill/rule/hook config, not…** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **Return True if the file should NOT trigger the test agent: a test file, or…** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **Load JSON payload from stdin; return None on failure (fail open).** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **Load state from file; return empty dict on failure.** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **Write state via a same-directory temp file + os.replace so a concurrent…** (1 connections) — `.cursor/hooks/record_edited_file.py`
 
 ## Relationships
 
-- [properties](properties.md) (3 shared connections)
-- [type](type.md) (2 shared connections)
-- [command](command.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/help/help_schema.json`
+- `.cursor/hooks/record_edited_file.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

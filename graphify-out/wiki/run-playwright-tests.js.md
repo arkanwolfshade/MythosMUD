@@ -1,18 +1,16 @@
 # run-playwright-tests.js
 
-> 9 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **run-playwright-tests.js** (8 connections) — `client/scripts/run-playwright-tests.js`
-- **checkBackendServer()** (1 connections) — `client/scripts/run-playwright-tests.js`
-- **clientRoot** (1 connections) — `client/scripts/run-playwright-tests.js`
-- **__dirname** (1 connections) — `client/scripts/run-playwright-tests.js`
-- **E2E_BACKEND_BASE_URL** (1 connections) — `client/scripts/run-playwright-tests.js`
-- **env** (1 connections) — `client/scripts/run-playwright-tests.js`
-- **__filename** (1 connections) — `client/scripts/run-playwright-tests.js`
-- **playwright** (1 connections) — `client/scripts/run-playwright-tests.js`
-- **testsDir** (1 connections) — `client/scripts/run-playwright-tests.js`
+- **MythosMUD Server Runbook** (6 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **Server Runbook Skill** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **Commands** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **Critical Rules** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **ONE SERVER ONLY RULE** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **Pre-Start Checklist** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **Reference** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
 
 ## Relationships
 
@@ -20,11 +18,11 @@
 
 ## Source Files
 
-- `client/scripts/run-playwright-tests.js`
+- `.claude/skills/mythosmud-server-runbook/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

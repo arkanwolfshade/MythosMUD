@@ -1,46 +1,45 @@
 # Migration 019: Complete Implementation Summary
 
-> 25 nodes
+> 23 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **Migration 019: Complete Implementation Summary** (10 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **What Was Done** (5 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **Files Summary** (4 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **Risk Assessment** (4 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **Tables Affected** (4 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **Next Steps** (3 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **1. Database Schema Updates ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **2. Python Model Updates ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **3. Migration Script Created ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **4. Testing Infrastructure ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **Before Production** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **Conclusion** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **Created Files (5)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **Documentation Files (4)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **Executive Summary** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **Foreign Key Type Updates (integer → bigint)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **Immediate (Testing Phase)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **Low Risk ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **Medium Risk ⚠️** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **Mitigation ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **Modified Files (10)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **Primary Key Conversions (serial → bigint identity)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **Success Metrics** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **Text Column Conversions (varchar → text)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **Verification Status** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **ADR-012: python-statemachine for Backend Connection FSM** (14 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **4. Considered Options** (4 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **7. Consequences** (4 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **6. Implementation Details** (3 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **ADR-011: XState for Frontend Connection State Machine** (1 connections) — `docs/architecture/decisions/ADR-011-xstate-frontend-fsm.md`
+- **ADR-012-python-statemachine-backend.md** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **10. Related ADRs** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **11. Changelog** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **1. Overview** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **2. Context and Problem Statement** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **3. Decision Drivers** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **5. Decision Outcome** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **8. Validation** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **9. References** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **AI READING INSTRUCTION** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Integration with NATS Service** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Negative** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Neutral** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Option 1: python-statemachine** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Option 2: transitions** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Option 3: Manual Implementation** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Positive** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **State Machine Definition** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
 
 ## Relationships
 
-- [Migration 019 Ready for Deployment](Migration_019_Ready_for_Deployment.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- `docs/architecture/decisions/ADR-011-xstate-frontend-fsm.md`
+- `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

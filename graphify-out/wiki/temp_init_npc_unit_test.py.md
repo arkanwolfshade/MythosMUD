@@ -1,10 +1,10 @@
 # temp_init_npc_unit_test.py
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **temp_init_npc_unit_test.py** (0 connections) — `scripts/temp_init_npc_unit_test.py`
+- **MythosMUD Test Writing Skill** (0 connections) — `.cursor/skills/mythosmud-test-writing/SKILL.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/temp_init_npc_unit_test.py`
+- `.cursor/skills/mythosmud-test-writing/SKILL.md`
 
 ## Audit Trail
 

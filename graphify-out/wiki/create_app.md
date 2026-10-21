@@ -1,46 +1,48 @@
 # create_app
 
-> 15 nodes
+> 67 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **create_app()** (17 connections) — `server/app/factory.py`
-- **test_openapi_tags.py** (6 connections) — `server/tests/unit/app/test_openapi_tags.py`
-- **_create_get_app()** (4 connections) — `server/main.py`
-- **main()** (4 connections) — `server/main.py`
-- **_openapi_spec()** (4 connections) — `server/tests/unit/app/test_openapi_tags.py`
-- **_route_declared_tags()** (4 connections) — `server/tests/unit/app/test_openapi_tags.py`
-- **FastAPI** (3 connections)
-- **test_openapi_tags_matches_route_declared_tags()** (2 connections) — `server/tests/unit/app/test_openapi_tags.py`
-- **test_create_app_auth_rate_limit_paths_match()** (2 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **Create and configure the FastAPI application. This function sets up the FastAPI…** (1 connections) — `server/app/factory.py`
-- **Main entry point for the MythosMUD server.** (1 connections) — `server/main.py`
-- **Factory function that creates the get_app function with encapsulated cache.…** (1 connections) — `server/main.py`
-- **Unit tests guarding OPENAPI_TAGS against drift from route-declared tags. route-…** (1 connections) — `server/tests/unit/app/test_openapi_tags.py`
-- **FastAPI's .openapi() is typed dict[str, Any]; erase that at the boundary.** (1 connections) — `server/tests/unit/app/test_openapi_tags.py`
-- **Every tag any mounted route actually declares.** (1 connections) — `server/tests/unit/app/test_openapi_tags.py`
+- **test_npc_startup_service.py** (37 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **asyncio** (26 connections)
+- **_errors_len()** (7 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_npcs_on_startup_critical_exception()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_npcs_on_startup_exception_in_session()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_optional_npcs_exception()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_required_npcs_exception()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_required_npcs_no_spawn_room()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_exception()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_fallback()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_fallback_not_found()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_no_container()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_no_persistence()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_room_id_not_found()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_sub_zone_room_not_found()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_with_room_id()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_with_sub_zone()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_arena_npcs_no_prior_spawns_returns_empty()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_arena_npcs_skips_unknown_definition_id()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_arena_npcs_spawns_each_spawned_definition()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_npcs_on_startup()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_npcs_on_startup_with_optional_npcs()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_npcs_on_startup_with_required_npcs()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_optional_npcs_no_probability_attribute()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_optional_npcs_no_spawn_room()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- *... and 42 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (8 shared connections)
-- [generate_openapi_spec.py](generate_openapi_spec.py.md) (2 shared connections)
-- [test_auth_rate_limit.py](test_auth_rate_limit.py.md) (2 shared connections)
-- [CORSConfigDict](CORSConfigDict.md) (1 shared connections)
-- [test_error_handling_middleware.py](test_error_handling_middleware.py.md) (1 shared connections)
-- [auth_rate_limit.py](auth_rate_limit.py.md) (1 shared connections)
-- [lifespan.py](lifespan.py.md) (1 shared connections)
+- [test_combat_persistence_handler_persistence.py](test_combat_persistence_handler_persistence.py.md) (34 shared connections)
 
 ## Source Files
 
-- `server/app/factory.py`
-- `server/main.py`
-- `server/tests/unit/app/test_openapi_tags.py`
-- `server/tests/unit/middleware/test_auth_rate_limit.py`
+- `server/tests/unit/services/test_npc_startup_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 100 (77%)
+- INFERRED: 30 (23%)
 - AMBIGUOUS: 0 (0%)
 
 ---

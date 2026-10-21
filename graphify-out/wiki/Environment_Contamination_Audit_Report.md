@@ -1,30 +1,28 @@
 # Environment Contamination Audit Report
 
-> 21 nodes
+> 19 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **Environment Contamination Audit Report** (9 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **2. **ACCEPTABLE PATTERNS: Environment Variable Usage**** (5 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **Remediation Plan** (4 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **Analysis** (3 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **Critical Violations Found** (3 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **ENVIRONMENT_CONTAMINATION_AUDIT.md** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **1. **CRITICAL VIOLATION: `server/logging_config.py`**** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **Compliance Status** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **Conclusion** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **Executive Summary** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **Phase 1: Critical Fix (Immediate)** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **Phase 2: Configuration Standardization** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **Phase 3: Testing Strategy Update** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **Recommendations** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **Security Implications** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **`server/alias_storage.py` (Line 29)** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **`server/auth/users.py` (Line 42)** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **`server/config_loader.py` (Lines 236, 242)** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **`server/persistence.py` (Line 68)** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **What Constitutes Environment Contamination** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **What Is Acceptable** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **static_data/package.json** (8 connections) — `scripts/static_data/package.json`
+- **dependencies** (4 connections) — `scripts/static_data/package.json`
+- **scripts** (4 connections) — `scripts/static_data/package.json`
+- **ajv** (2 connections) — `scripts/static_data/package.json`
+- **ajv-formats** (2 connections) — `scripts/static_data/package.json`
+- **uuid** (2 connections) — `scripts/static_data/package.json`
+- **overrides** (2 connections) — `scripts/static_data/package.json`
+- **ajv** (1 connections) — `scripts/static_data/package.json`
+- **ajv-formats** (1 connections) — `scripts/static_data/package.json`
+- **description** (1 connections) — `scripts/static_data/package.json`
+- **uuid** (1 connections) — `scripts/static_data/package.json`
+- **name** (1 connections) — `scripts/static_data/package.json`
+- **fast-uri** (1 connections) — `scripts/static_data/package.json`
+- **private** (1 connections) — `scripts/static_data/package.json`
+- **build** (1 connections) — `scripts/static_data/package.json`
+- **generate-sql** (1 connections) — `scripts/static_data/package.json`
+- **validate** (1 connections) — `scripts/static_data/package.json`
+- **type** (1 connections) — `scripts/static_data/package.json`
+- **version** (1 connections) — `scripts/static_data/package.json`
 
 ## Relationships
 
@@ -32,11 +30,11 @@
 
 ## Source Files
 
-- `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- `scripts/static_data/package.json`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

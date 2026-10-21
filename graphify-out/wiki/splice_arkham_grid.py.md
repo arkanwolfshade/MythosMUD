@@ -1,34 +1,41 @@
 # splice_arkham_grid.py
 
-> 13 nodes
+> 17 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **splice_arkham_grid.py** (11 connections) — `scripts/splice_arkham_grid.py`
-- **splice()** (8 connections) — `scripts/splice_arkham_grid.py`
-- **block_bounds()** (4 connections) — `scripts/splice_arkham_grid.py`
-- **body()** (3 connections) — `scripts/splice_arkham_grid.py`
-- **is_replaced_street_room()** (3 connections) — `scripts/splice_arkham_grid.py`
-- **load_generated()** (3 connections) — `scripts/splice_arkham_grid.py`
-- **main()** (3 connections) — `scripts/splice_arkham_grid.py`
-- **replace_body()** (3 connections) — `scripts/splice_arkham_grid.py`
-- **_uuid_of()** (3 connections) — `scripts/splice_arkham_grid.py`
-- **Path** (3 connections)
-- **Splice the generated Arkham street grid into the three DML seed files (#829).…** (1 connections) — `scripts/splice_arkham_grid.py`
-- **True for the Arkham rooms #829 replaces: streets only, never interiors.** (1 connections) — `scripts/splice_arkham_grid.py`
-- **Character offsets of a COPY block's body (between the header and the `\\.`).** (1 connections) — `scripts/splice_arkham_grid.py`
+- **usePanelContext.ts** (12 connections) — `client/src/contexts/hooks/usePanelContext.ts`
+- **PanelContext.tsx** (12 connections) — `client/src/contexts/PanelContext.tsx`
+- **usePanelContext.test.tsx** (6 connections) — `client/src/contexts/hooks/__tests__/usePanelContext.test.tsx`
+- **PanelContext.test.tsx** (6 connections) — `client/src/contexts/__tests__/PanelContext.test.tsx`
+- **usePanelContext()** (5 connections) — `client/src/contexts/hooks/usePanelContext.ts`
+- **usePanel()** (3 connections) — `client/src/contexts/hooks/usePanelContext.ts`
+- **usePanelActions()** (3 connections) — `client/src/contexts/hooks/usePanelContext.ts`
+- **usePanelLayout()** (3 connections) — `client/src/contexts/hooks/usePanelContext.ts`
+- **PanelPosition** (3 connections) — `client/src/contexts/PanelContext.tsx`
+- **PanelProvider()** (3 connections) — `client/src/contexts/PanelContext.tsx`
+- **PanelSize** (3 connections) — `client/src/contexts/PanelContext.tsx`
+- **PanelContext** (2 connections) — `client/src/contexts/PanelContext.tsx`
+- **PanelContextType** (2 connections) — `client/src/contexts/PanelContext.tsx`
+- **PanelState** (2 connections) — `client/src/contexts/PanelContext.tsx`
+- **defaultPanels** (1 connections) — `client/src/contexts/PanelContext.tsx`
+- **PanelLayout** (1 connections) — `client/src/contexts/PanelContext.tsx`
+- **PanelProviderProps** (1 connections) — `client/src/contexts/PanelContext.tsx`
 
 ## Relationships
 
-- [generate_arkham_grid.py](generate_arkham_grid.py.md) (3 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `scripts/splice_arkham_grid.py`
+- `client/src/contexts/PanelContext.tsx`
+- `client/src/contexts/__tests__/PanelContext.test.tsx`
+- `client/src/contexts/hooks/__tests__/usePanelContext.test.tsx`
+- `client/src/contexts/hooks/usePanelContext.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 34 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

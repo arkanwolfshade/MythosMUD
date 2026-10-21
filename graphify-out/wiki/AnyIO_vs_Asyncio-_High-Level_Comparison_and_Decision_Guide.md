@@ -1,36 +1,29 @@
 # AnyIO vs Asyncio: High-Level Comparison and Decision Guide
 
-> 10 nodes
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **AnyIO vs Asyncio: High-Level Comparison and Decision Guide** (10 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **Pros and Cons** (5 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **My Academic Opinion (Mythos Persona)** (2 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **Adjusts spectacles and peers at the codebase** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **anyio Cons ❌** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **anyio Pros ✅** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **asyncio Cons ❌** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **asyncio Pros ✅** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **Decision Matrix** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **Next Steps** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **P3 · config-api** (7 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
+- **P3-Cluster-ConfigAPI.md** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
+- **CONFORMS worth recording** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
+- **H11 · Config fail-fast is defeated at app construction, degrading to dev CORS** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
+- **H12 · The `/v1` prefix exists in no design document, and every ADR endpoint path is wrong** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
+- **H13 · The API specification document specifies no API** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
+- **Medium / Low** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
+- **Prior finding resolved** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
 
 ## Relationships
 
-- [AnyIO Code Review - Anti-Patterns and Issues](AnyIO_Code_Review_-_Anti-Patterns_and_Issues.md) (1 shared connections)
-- [Real-World Impact for MythosMUD](Real-World_Impact_for_MythosMUD.md) (1 shared connections)
-- [Recommendation for MythosMUD](Recommendation_for_MythosMUD.md) (1 shared connections)
-- [Core Architectural Differences](Core_Architectural_Differences.md) (1 shared connections)
-- [What Are They?](What_Are_They_.md) (1 shared connections)
-- [Detailed Feature Comparison](Detailed_Feature_Comparison.md) (1 shared connections)
+- [SpellMaterialsService](SpellMaterialsService.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/anyio_vs_asyncio_comparison.md`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

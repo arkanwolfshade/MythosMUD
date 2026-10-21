@@ -1,49 +1,54 @@
 # test_quest_service_collect.py
 
-> 28 nodes
+> 26 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **test_quest_service_collect.py** (15 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **_make_collect_quest_row()** (9 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **_quest_service_with_persistence()** (8 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **_make_inventory_player()** (7 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **asyncio** (7 connections)
-- **test_collect_n_auto_complete_keeps_items()** (6 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **test_start_quest_collect_n_seeds_progress_from_holdings()** (6 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **test_sync_collect_progress_nested_container()** (6 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **test_sync_collect_progress_updates_on_inventory_change()** (6 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **test_turn_in_collect_n_consumes_items()** (6 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **test_start_quest_rejects_auto_complete_with_turn_in()** (5 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **test_start_quest_rejects_turn_in_without_entities()** (5 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **mock_def_repo()** (3 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **mock_instance_repo()** (3 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **fixture** (2 connections)
-- **Unit tests for QuestService collect_n sync, auto-complete, and turn-in…** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **sync_collect_progress reflects increased and decreased holdings.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **Nested inner_container items count toward collect_n progress.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **Auto-complete collect_n quest does not consume inventory.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **Mock QuestDefinitionRepository.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **Turn-in consumes required collect_n items before completion.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **Validation rejects auto_complete true combined with turn_in_entities.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **Validation rejects non-auto-complete quest without turn_in_entities.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **Mock QuestInstanceRepository.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **Definition with collect_n goal.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- *... and 3 more nodes in this community*
+- **test_connection_event_helpers.py** (13 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **connection_event_helpers.py** (10 connections) — `server/realtime/connection_event_helpers.py`
+- **subscribe_to_room_events_impl()** (10 connections) — `server/realtime/connection_event_helpers.py`
+- **unsubscribe_from_room_events_impl()** (10 connections) — `server/realtime/connection_event_helpers.py`
+- **asyncio** (8 connections)
+- **test_subscribe_to_room_events_impl_attribute_error()** (5 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_database_error()** (5 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_attribute_error()** (5 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_database_error()** (5 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_no_event_bus()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_success()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_no_event_bus()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_success()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Any** (2 connections)
+- **Event subscription helpers for connection manager. This module provides helper…** (1 connections) — `server/realtime/connection_event_helpers.py`
+- **Subscribe to room movement events for occupant broadcasting.** (1 connections) — `server/realtime/connection_event_helpers.py`
+- **Unsubscribe from room movement events.** (1 connections) — `server/realtime/connection_event_helpers.py`
+- **Unit tests for connection event helpers. Tests the connection_event_helpers…** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() handles AttributeError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() successfully subscribes to events.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() handles missing event bus.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() handles AttributeError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() successfully unsubscribes from events.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() handles missing event bus.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [QuestService](QuestService.md) (4 shared connections)
-- [quest_service.py](quest_service.py.md) (1 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (4 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (4 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [BaseEvent](BaseEvent.md) (2 shared connections)
+- [security.ts](security.ts.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_quest_service_collect.py`
+- `server/realtime/connection_event_helpers.py`
+- `server/tests/unit/realtime/test_connection_event_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 56 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 54 (93%)
+- INFERRED: 4 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

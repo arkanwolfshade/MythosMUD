@@ -1,12 +1,11 @@
 # eslint.config.js
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **eslint.config.js** (2 connections) — `client/eslint.config.js`
-- **jsxA11yRecommendedWarnRules** (1 connections) — `client/eslint.config.js`
-- **jsxA11yRulesOff** (1 connections) — `client/eslint.config.js`
+- **Mute Command Server Error (Bug #1)** (1 connections) — `e2e-tests/BUGS_FOUND.md`
+- **Teleport Command Server Error (Bug #3)** (1 connections) — `e2e-tests/BUGS_FOUND.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `client/eslint.config.js`
+- `e2e-tests/BUGS_FOUND.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

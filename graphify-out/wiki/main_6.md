@@ -1,17 +1,15 @@
 # main
 
-> 8 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **main()** (4 connections) — `scripts/apply_quest_migrations_to_dev.py`
-- **_run_quest_ddl()** (4 connections) — `scripts/apply_quest_migrations_to_dev.py`
-- **_seed_leave_the_tutorial()** (4 connections) — `scripts/apply_quest_migrations_to_dev.py`
-- **apply_quest_migrations_to_dev.py** (3 connections) — `scripts/apply_quest_migrations_to_dev.py`
-- **cursor** (2 connections)
-- **Connect to DB from DATABASE_URL, run quest DDL and seed (leave_the_tutorial),…** (1 connections) — `scripts/apply_quest_migrations_to_dev.py`
-- **Create quest_definitions, quest_instances, quest_offers tables and indexes.** (1 connections) — `scripts/apply_quest_migrations_to_dev.py`
-- **Insert leave_the_tutorial quest definition and room offer (idempotent).** (1 connections) — `scripts/apply_quest_migrations_to_dev.py`
+- **NPC Combat Start Race Condition** (2 connections) — `investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md`
+- **NPCs Incorrectly Marked is_alive False** (2 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
+- **December 3 Final Investigation Summary** (2 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
+- **Room Occupants Duplicates and Missing Player** (2 connections) — `investigations/sessions/2025-12-03_session-002_room-occupants-display.md`
+- **Redundant NPC Instance Lookup Failure** (1 connections) — `investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md`
+- **Character Info Panel Missing Stats Field** (1 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
 
 ## Relationships
 
@@ -19,12 +17,16 @@
 
 ## Source Files
 
-- `scripts/apply_quest_migrations_to_dev.py`
+- `investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md`
+- `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
+- `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
+- `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
+- `investigations/sessions/2025-12-03_session-002_room-occupants-display.md`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (60%)
+- INFERRED: 2 (40%)
 - AMBIGUOUS: 0 (0%)
 
 ---

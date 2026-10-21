@@ -1,27 +1,25 @@
 # Test Modernization Checklist
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Test Modernization Checklist** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Phase 0: Foundation** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Phase 1: Fix Failures** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Phase 2: Modernize Units** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Phase 3: Pattern Updates** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Phase 4: New Coverage** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 6: Monitoring and Observability** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **6.1 Metrics Collection** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **6.2 Health Check Endpoints** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **6.3 Logging Integration** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- [MythosMUD Test Suite Modernization Plan](MythosMUD_Test_Suite_Modernization_Plan.md) (1 shared connections)
+- [TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md](TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

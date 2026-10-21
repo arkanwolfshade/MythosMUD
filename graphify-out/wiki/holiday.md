@@ -1,27 +1,26 @@
 # holiday
 
-> 4 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **holiday** (5 connections) — `schemas/calendar/holiday.schema.json`
-- **$defs** (2 connections) — `schemas/calendar/holiday.schema.json`
-- **additionalProperties** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **Implementation Plan** (5 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Step 1: Update `.pylintrc` ✅** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Step 2: Refactor Ruff C901 Violations** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Step 3: Document the Strategy** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Step 4: Verify Alignment** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
 
 ## Relationships
 
-- [holiday.schema.json](holiday.schema.json.md) (1 shared connections)
-- [required](required.md) (1 shared connections)
-- [properties](properties.md) (1 shared connections)
+- [safe_close_websocket_impl](safe_close_websocket_impl.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/holiday.schema.json`
+- `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,64 +1,78 @@
 # BaseEvent
 
-> 151 nodes
+> 278 nodes · cohesion 0.01
 
 ## Key Concepts
 
-- **BaseEvent** (99 connections) — `server/events/event_types.py`
-- **test_event_bus.py** (59 connections) — `server/tests/unit/events/test_event_bus.py`
-- **asyncio** (28 connections)
-- **MockEventClass** (19 connections) — `server/tests/unit/events/test_event_bus.py`
-- **EventBusProcessingMixin** (18 connections) — `server/events/event_bus_processing.py`
-- **._handle_event_async()** (8 connections) — `server/events/event_bus_processing.py`
-- **_ExperienceEventBus** (6 connections) — `server/persistence/repositories/experience_repository.py`
-- **test_handle_event_async_async_subscriber_error()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_handle_event_async_sync_subscriber_error()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_handle_task_result_async_no_error()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_handle_task_result_async_with_error()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_inject_queue_full_and_invalid()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_queue_depth_grows_when_consumer_blocked()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Any** (6 connections)
-- **._create_async_subscriber_tasks()** (5 connections) — `server/events/event_bus_processing.py`
-- **.publish()** (5 connections) — `server/events/event_bus_processing.py`
-- **._publish_in_test_mode()** (5 connections) — `server/events/event_bus_processing.py`
-- **test_async_subscriber_error_isolation()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_inject_dispatches_to_subscribers()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_publish()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_publish_multiple_subscribers()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_publish_no_subscribers()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_handle_event_async_no_subscribers()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_multiple_services_subscribe_same_events_integration()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_service_shutdown_removes_subscribers()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
-- *... and 126 more nodes in this community*
+- **event_types.py** (102 connections) — `server/events/event_types.py`
+- **PlayerEnteredRoom** (91 connections) — `server/events/event_types.py`
+- **NPCBase** (79 connections) — `server/npc/npc_base.py`
+- **models/room.py** (58 connections) — `server/models/room.py`
+- **PlayerLeftRoom** (56 connections) — `server/events/event_types.py`
+- **NPCEventReactionSystem** (47 connections) — `server/npc/event_reaction_system.py`
+- **npc_base.py** (46 connections) — `server/npc/npc_base.py`
+- **event_reaction_system.py** (36 connections) — `server/npc/event_reaction_system.py`
+- **spawning_instance_factory.py** (27 connections) — `server/npc/spawning_instance_factory.py`
+- **server/events/__init__.py** (26 connections) — `server/events/__init__.py`
+- **NPCEventReaction** (23 connections) — `server/npc/event_reaction_system.py`
+- **ShopkeeperNPC** (22 connections) — `server/npc/shopkeeper_npc.py`
+- **test_event_reaction_speech.py** (22 connections) — `server/tests/unit/npc/test_event_reaction_speech.py`
+- **aggressive_mob_npc.py** (20 connections) — `server/npc/aggressive_mob_npc.py`
+- **register_default_reactions_for_npc()** (20 connections) — `server/npc/npc_default_reactions.py`
+- **server/npc/__init__.py** (19 connections) — `server/npc/__init__.py`
+- **passive_mob_npc.py** (19 connections) — `server/npc/passive_mob_npc.py`
+- **behaviors.py** (17 connections) — `server/npc/behaviors.py`
+- **test_reaction_revival_integration.py** (17 connections) — `server/tests/unit/npc/test_reaction_revival_integration.py`
+- **NPCSpoke** (14 connections) — `server/events/event_types.py`
+- **NPCEventReactionTemplates** (14 connections) — `server/npc/event_reaction_system.py`
+- **shopkeeper_npc.py** (14 connections) — `server/npc/shopkeeper_npc.py`
+- **communication_integration.py** (13 connections) — `server/npc/communication_integration.py`
+- **npc_default_reactions.py** (13 connections) — `server/npc/npc_default_reactions.py`
+- **NPCListened** (12 connections) — `server/events/event_types.py`
+- *... and 253 more nodes in this community*
 
 ## Relationships
 
-- [EventBus](EventBus.md) (75 shared connections)
-- [event_serialization.py](event_serialization.py.md) (13 shared connections)
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (10 shared connections)
-- [get_logger](get_logger.md) (8 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (5 shared connections)
-- [DistributedEventBus](DistributedEventBus.md) (4 shared connections)
-- [test_room_sync_service.py](test_room_sync_service.py.md) (3 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
-- [PlayerDPUpdated](PlayerDPUpdated.md) (2 shared connections)
-- [ValueError](ValueError.md) (2 shared connections)
-- [_PlayerCombatClearing](_PlayerCombatClearing.md) (1 shared connections)
-- [MythosTimeEventConsumer](MythosTimeEventConsumer.md) (1 shared connections)
+- [Room](Room.md) (47 shared connections)
+- [RoomLoader](RoomLoader.md) (44 shared connections)
+- [get_username_from_user](get_username_from_user.md) (36 shared connections)
+- [CombatInstance](CombatInstance.md) (31 shared connections)
+- [SpellLearningService](SpellLearningService.md) (27 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (16 shared connections)
+- [look_container.py](look_container.py.md) (15 shared connections)
+- [ZoneConfiguration](ZoneConfiguration.md) (12 shared connections)
+- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (11 shared connections)
+- [test_database_helpers.py](test_database_helpers.py.md) (10 shared connections)
+- [Async Remediation Summary - December 3, 2025](Async_Remediation_Summary_-_December_3,_2025.md) (9 shared connections)
+- [combat_assist.py](combat_assist.py.md) (8 shared connections)
 
 ## Source Files
 
-- `server/events/event_bus.py`
-- `server/events/event_bus_processing.py`
+- `server/events/__init__.py`
 - `server/events/event_types.py`
+- `server/models/room.py`
+- `server/npc/__init__.py`
+- `server/npc/aggressive_mob_npc.py`
+- `server/npc/behaviors.py`
+- `server/npc/communication_integration.py`
 - `server/npc/event_reaction_system.py`
-- `server/persistence/repositories/experience_repository.py`
-- `server/tests/unit/events/test_event_bus.py`
+- `server/npc/npc_base.py`
+- `server/npc/npc_combat_schedule.py`
+- `server/npc/npc_config_parsing.py`
+- `server/npc/npc_default_reactions.py`
+- `server/npc/npc_protocols.py`
+- `server/npc/passive_mob_npc.py`
+- `server/npc/shopkeeper_npc.py`
+- `server/npc/spawning_instance_factory.py`
+- `server/realtime/player_event_handlers_room.py`
+- `server/tests/unit/npc/test_event_reaction_speech.py`
+- `server/tests/unit/npc/test_npc_combat_schedule.py`
+- `server/tests/unit/npc/test_npc_default_reactions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 283 (77%)
-- INFERRED: 84 (23%)
+- EXTRACTED: 901 (92%)
+- INFERRED: 80 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

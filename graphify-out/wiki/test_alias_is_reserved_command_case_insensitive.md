@@ -1,23 +1,22 @@
 # test_alias_is_reserved_command_case_insensitive
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_alias_is_reserved_command_case_insensitive()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **Test is_reserved_command is case insensitive.** (1 connections) — `server/tests/unit/models/test_alias.py`
+- **ADR-008: React 18+ with TypeScript for Client** (0 connections) — `docs/architecture/decisions/ADR-008-react-typescript-client.md`
 
 ## Relationships
 
-- [Alias](Alias.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/models/test_alias.py`
+- `docs/architecture/decisions/ADR-008-react-typescript-client.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

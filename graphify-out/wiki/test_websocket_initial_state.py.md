@@ -1,55 +1,53 @@
 # test_websocket_initial_state.py
 
-> 74 nodes
+> 30 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **test_websocket_initial_state.py** (52 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **asyncio** (26 connections)
-- **add_npc_occupants_to_list()** (8 connections) — `server/realtime/websocket_initial_state.py`
-- **test_check_and_send_death_notification_location_display()** (7 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **prepare_initial_room_data()** (5 connections) — `server/realtime/websocket_initial_state.py`
-- **mock_connection_manager()** (5 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **test_check_and_send_death_notification_in_limbo()** (5 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **test_check_and_send_death_notification_player_alive()** (5 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **test_check_and_send_death_notification_player_dead()** (5 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **test_send_initial_game_state_handles_exception()** (5 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **test_send_initial_game_state_includes_lucidity_tier()** (5 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **test_send_initial_game_state_no_lucidity_row()** (5 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **test_send_initial_game_state_success()** (5 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **test_add_npc_occupants_to_list_filters_dead_npcs()** (4 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **test_add_npc_occupants_to_list_no_app()** (4 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **test_add_npc_occupants_to_list_success()** (4 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **test_check_and_send_delirium_notification_sends_when_in_delirium()** (4 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **test_check_and_send_delirium_notification_skips_when_not_delirious()** (4 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **test_prepare_initial_room_data()** (4 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **test_prepare_room_data_with_occupants()** (4 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **test_send_game_state_event_safely_close_message_sent()** (4 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **test_send_game_state_event_safely_disconnected()** (4 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **test_send_game_state_event_safely_success()** (4 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **test_send_initial_game_state_player_not_found()** (4 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **test_send_initial_room_state_handles_exception()** (4 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- *... and 49 more nodes in this community*
+- **test_look_item.py** (55 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_check_equipped_item_no_get_equipped_items_method()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_check_equipped_item_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_check_equipped_item_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_check_item_in_location_fallback_name()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_check_item_in_location_no_prototype()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_check_item_in_location_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_check_item_in_location_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_check_item_in_location_with_location_name()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_by_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_with_name_field()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Unit tests for item look functionality. Tests the helper functions for looking…** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in inventory by name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in inventory when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test checking item in location successfully.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test checking item in location with location name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test checking item in location when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test checking item in location when prototype not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test checking equipped item successfully.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [websocket_initial_state.py](websocket_initial_state.py.md) (37 shared connections)
-- [Player](Player.md) (8 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [Room](Room.md) (3 shared connections)
-- [ConnectionManager](ConnectionManager.md) (2 shared connections)
-- [test_websocket_helpers.py](test_websocket_helpers.py.md) (2 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
+- [Actionable Recommendations](Actionable_Recommendations.md) (18 shared connections)
+- [compilerOptions](compilerOptions.md) (12 shared connections)
+- [lucidity.py](lucidity.py.md) (8 shared connections)
+- [Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Malleus Monstrorum - Cthulhu Mythos Bestiary  (2026-08-12)](Graph_Report_-_C-_Users_arkan_Proton_Drive_arkanwolfshade_My_files_Chaosium_Malleus_Monstrorum_-_Cthulhu_Mythos_Bestiary__2026-08-12.md) (8 shared connections)
+- [resolve_npc_attack_damage](resolve_npc_attack_damage.md) (4 shared connections)
+- [description](description.md) (4 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_initial_state.py`
-- `server/tests/unit/realtime/test_websocket_initial_state.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 150 (93%)
-- INFERRED: 12 (7%)
+- EXTRACTED: 85 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

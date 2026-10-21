@@ -1,34 +1,32 @@
 # SQLAlchemyAsyncLinter
 
-> 25 nodes
+> 23 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **SQLAlchemyAsyncLinter** (9 connections) — `scripts/lint_sqlalchemy_async.py`
-- **lint_file()** (6 connections) — `scripts/lint_sqlalchemy_async.py`
-- **lint_directory()** (5 connections) — `scripts/lint_sqlalchemy_async.py`
-- **main()** (5 connections) — `scripts/lint_sqlalchemy_async.py`
-- **._check_execute_call()** (5 connections) — `scripts/lint_sqlalchemy_async.py`
-- **._is_wrapped_in_text()** (4 connections) — `scripts/lint_sqlalchemy_async.py`
-- **.visit_Await()** (4 connections) — `scripts/lint_sqlalchemy_async.py`
-- **lint_sqlalchemy_async.py** (4 connections) — `scripts/lint_sqlalchemy_async.py`
-- **.visit_Import()** (3 connections) — `scripts/lint_sqlalchemy_async.py`
-- **.visit_ImportFrom()** (3 connections) — `scripts/lint_sqlalchemy_async.py`
-- **Path** (3 connections)
-- **Call** (2 connections)
-- **.__init__()** (1 connections) — `scripts/lint_sqlalchemy_async.py`
-- **Await** (1 connections)
-- **Import** (1 connections)
-- **ImportFrom** (1 connections)
-- **Lint a single Python file for SQLAlchemy async issues. Returns: List of…** (1 connections) — `scripts/lint_sqlalchemy_async.py`
-- **Lint all Python files in a directory recursively. Returns: List of (filename,…** (1 connections) — `scripts/lint_sqlalchemy_async.py`
-- **Main entry point for the linter.** (1 connections) — `scripts/lint_sqlalchemy_async.py`
-- **AST visitor to detect problematic SQLAlchemy async patterns. Detects patterns…** (1 connections) — `scripts/lint_sqlalchemy_async.py`
-- **Check for SQLAlchemy imports.** (1 connections) — `scripts/lint_sqlalchemy_async.py`
-- **Check for SQLAlchemy text import.** (1 connections) — `scripts/lint_sqlalchemy_async.py`
-- **Check for problematic await patterns.** (1 connections) — `scripts/lint_sqlalchemy_async.py`
-- **Check if this is a problematic execute() call.** (1 connections) — `scripts/lint_sqlalchemy_async.py`
-- **Check if the argument is wrapped in text().** (1 connections) — `scripts/lint_sqlalchemy_async.py`
+- **test_check_coverage_thresholds.py** (14 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
+- **_load_script()** (11 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
+- **_fully_covered()** (7 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
+- **_CheckCoverageThresholdsModule** (6 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
+- **test_known_coverage_debt_lowers_a_critical_files_floor()** (4 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
+- **test_known_coverage_debt_lowers_a_normal_files_floor()** (4 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
+- **test_known_coverage_debt_is_empty()** (3 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
+- **test_missing_file_is_treated_as_zero_coverage()** (3 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
+- **test_normal_file_at_blanket_threshold_passes()** (3 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
+- **test_test_files_are_never_checked()** (3 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
+- **test_critical_file_at_its_own_threshold_passes()** (2 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
+- **test_critical_file_below_its_own_threshold_fails()** (2 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
+- **test_normal_file_below_blanket_threshold_fails()** (2 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
+- **.check_thresholds()** (1 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
+- **Protocol** (1 connections)
+- **Unit tests for scripts/check_coverage_thresholds.py. Covers `check_thresholds`'…** (1 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
+- **A KNOWN_COVERAGE_DEBT entry lowers the blanket 70% normal-file floor (#677).** (1 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
+- **A file present in CRITICAL_FILES but absent from the coverage.xml data (e.g.…** (1 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
+- **Typed surface of the loaded script, for the parts these tests exercise.** (1 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
+- **check_thresholds evaluates every CRITICAL_FILES entry regardless of what's…** (1 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
+- **#677 paid down every entry that was in KNOWN_COVERAGE_DEBT -- it should stay…** (1 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
+- **A KNOWN_COVERAGE_DEBT entry lowers a CRITICAL_FILES floor, not just replaces it…** (1 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
+- **test_script_exists()** (1 connections) — `server/tests/unit/scripts/test_check_coverage_thresholds.py`
 
 ## Relationships
 
@@ -36,11 +34,11 @@
 
 ## Source Files
 
-- `scripts/lint_sqlalchemy_async.py`
+- `server/tests/unit/scripts/test_check_coverage_thresholds.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 37 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

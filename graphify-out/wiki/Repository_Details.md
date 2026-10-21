@@ -1,31 +1,29 @@
 # Repository Details
 
-> 10 nodes
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **Repository Details** (8 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **What Was Created** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **1. PlayerRepository (439 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **2. RoomRepository (42 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **3. ProfessionRepository (74 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **4. HealthRepository (165 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **5. ExperienceRepository (203 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **6. ContainerRepository (80 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **7. ItemRepository (84 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Async Repository Structure** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **1. Enhanced ChatPanel (New Chat Input Panel)** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Proposed Changes** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **2. Renamed Game Log Panel (Formerly ChatPanel)** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **ChatPanel Layout Structure** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Enhanced ChatPanel Interface** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Game Log Panel Layout Structure** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **New Features to Add** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Purpose and Functionality** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Relationships
 
-- [Persistence Layer Refactoring Summary](Persistence_Layer_Refactoring_Summary.md) (1 shared connections)
+- [exits](exits.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

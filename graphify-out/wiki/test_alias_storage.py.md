@@ -1,47 +1,49 @@
 # test_alias_storage.py
 
-> 22 nodes
+> 46 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **test_alias_storage.py** (19 connections) — `server/tests/unit/test_alias_storage.py`
-- **_Session** (13 connections) — `server/tests/unit/test_alias_storage.py`
-- **_use_session()** (8 connections) — `server/tests/unit/test_alias_storage.py`
-- **MonkeyPatch** (8 connections)
-- **test_create_alias_refused_at_limit()** (7 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_create_alias_upserts_and_commits()** (7 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_get_alias_calls_procedure_and_maps_row()** (7 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_remove_alias_returns_procedure_result()** (7 connections) — `server/tests/unit/test_alias_storage.py`
-- **asyncio** (7 connections)
-- **test_delete_player_aliases_by_id_binds_player_id()** (6 connections) — `server/tests/unit/test_alias_storage.py`
-- **_alias_row()** (5 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_create_alias_rejects_invalid_input_without_touching_db()** (5 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_database_errors_degrade_to_no_alias()** (5 connections) — `server/tests/unit/test_alias_storage.py`
-- **_broken_session_maker()** (3 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_validate_alias_command()** (3 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_validate_alias_name()** (3 connections) — `server/tests/unit/test_alias_storage.py`
-- **parametrize** (3 connections)
-- **.__aenter__()** (1 connections) — `server/tests/unit/test_alias_storage.py`
-- **.__aexit__()** (1 connections) — `server/tests/unit/test_alias_storage.py`
-- **.commit()** (1 connections) — `server/tests/unit/test_alias_storage.py`
-- **Unit tests for AliasStorage (#680): validation, row mapping, and DB-failure…** (1 connections) — `server/tests/unit/test_alias_storage.py`
-- **Just enough AsyncSession for AliasStorage: execute, commit, async context…** (1 connections) — `server/tests/unit/test_alias_storage.py`
+- **Test Value Distribution Chart** (17 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Projected Optimization Impact** (7 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Measurement and Validation** (6 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Risk Assessment and Mitigation** (5 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Detailed Category Value Breakdown** (4 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Time Distribution Analysis** (4 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Appendix: Quick Reference Commands** (3 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Visual Test Value Distribution** (3 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Success Celebration Criteria** (2 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Test Execution Time Efficiency** (2 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Test Removal Workflow** (2 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Test Value Heat Map** (2 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Value Score Distribution** (2 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **After Each Phase** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **After Phase 1-3: Pruning (Month 1)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **After Phase 4: Consolidation (Month 2)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **After Phase 5: Gap Filling (Month 2)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Automatic Rollback If** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Before Starting Optimization** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Capture Baseline** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Coverage vs Value Analysis** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **🔴 CRITICAL VALUE TESTS (1,272 tests = 25.6%)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Current State (Baseline)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Current Time Allocation** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Declare Success When** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (10 shared connections)
-- [_Result](_Result.md) (3 shared connections)
-- [._fetch](_fetch.md) (3 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
+- [extract_player_name](extract_player_name.md) (1 shared connections)
+- [fixture](fixture.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/test_alias_storage.py`
+- `docs/archive/TEST_VALUE_DISTRIBUTION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 58 (84%)
-- INFERRED: 11 (16%)
+- EXTRACTED: 47 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

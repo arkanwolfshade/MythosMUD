@@ -1,61 +1,49 @@
 # server/persistence/__init__.py
 
-> 27 nodes
+> 46 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **server/persistence/__init__.py** (32 connections) — `server/persistence/__init__.py`
-- **test_item_instance_persistence.py** (16 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **create_item_instance()** (12 connections) — `server/persistence/item_instance_persistence.py`
-- **ensure_item_instance()** (12 connections) — `server/persistence/item_instance_persistence.py`
-- **get_item_instance()** (7 connections) — `server/persistence/item_instance_persistence.py`
-- **item_instance_exists()** (7 connections) — `server/persistence/item_instance_persistence.py`
-- **Any** (7 connections)
-- **_execute_item_instance_upsert()** (6 connections) — `server/persistence/item_instance_persistence.py`
-- **_handle_item_instance_db_error()** (5 connections) — `server/persistence/item_instance_persistence.py`
-- **_item_instance_row_values()** (4 connections) — `server/persistence/item_instance_persistence.py`
-- **test_create_item_instance_db_error()** (3 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_create_item_instance_missing_id()** (3 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_create_item_instance_success()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_ensure_item_instance_calls_create()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_get_item_instance_found()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_get_item_instance_not_found()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_item_instance_exists_false()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_item_instance_exists_true()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **Exception** (1 connections)
-- **Persistence package for MythosMUD. This package contains persistence utilities…** (1 connections) — `server/persistence/__init__.py`
-- **# NOTE: PersistenceLayer and get_persistence removed - all code now uses…** (1 connections) — `server/persistence/__init__.py`
-- **# NOTE: Removed PersistenceLayer, get_persistence, and reset_persistence from…** (1 connections) — `server/persistence/__init__.py`
-- **Create a new item instance in the database.** (1 connections) — `server/persistence/item_instance_persistence.py`
-- **Retrieve an item instance by ID.** (1 connections) — `server/persistence/item_instance_persistence.py`
-- **Check if an item instance exists in the database.** (1 connections) — `server/persistence/item_instance_persistence.py`
-- *... and 2 more nodes in this community*
+- **Test Suite Optimization Roadmap** (15 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Phase 1: Quick Wins (Week 1)** (5 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Phase 2: Infrastructure Test Reduction (Week 2)** (5 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Phase 4: Test Consolidation (Week 4)** (5 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Phase 6: Long-Term Optimizations (Ongoing)** (5 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Implementation Timeline** (4 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Net Impact Projection** (4 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Phase 3: Coverage Test Optimization (Week 3)** (4 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Monitoring and Validation** (3 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Optimization Strategy Overview** (3 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Success Criteria** (3 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Risk Mitigation Strategy** (2 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **After Month 1 (Pruning Phase)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **After Month 2 (Consolidation + Additions)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **After Month 3+ (Continuous Improvement)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Guiding Principles** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Month 1: Pruning and Quick Wins** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Month 2: Consolidation and Additions** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Month 3+: Continuous Improvement** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Monthly Review Questions** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Qualitative Goals** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Quantitative Goals** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Recommended Execution Order** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Rollback Plan** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Safety Measures** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (17 shared connections)
-- [test_container_persistence_extended_row_helpers.py](test_container_persistence_extended_row_helpers.py.md) (6 shared connections)
-- [session](session.md) (5 shared connections)
-- [ContainerData](ContainerData.md) (5 shared connections)
-- [container_query_helpers.py](container_query_helpers.py.md) (4 shared connections)
-- [ValidationError](ValidationError.md) (2 shared connections)
-- [ContainerCreateParams](ContainerCreateParams.md) (2 shared connections)
-- [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) (2 shared connections)
-- [ContainerRepository](ContainerRepository.md) (1 shared connections)
-- [ExperienceRepository](ExperienceRepository.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [RoomRepository](RoomRepository.md) (1 shared connections)
+- [extract_player_name](extract_player_name.md) (1 shared connections)
+- [Top Time Consumers (>10 seconds)](Top_Time_Consumers__10_seconds.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/__init__.py`
-- `server/persistence/item_instance_persistence.py`
-- `server/tests/unit/persistence/test_item_instance_persistence.py`
+- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Audit Trail
 
-- EXTRACTED: 89 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 47 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,61 +1,67 @@
 # DatabaseManager
 
-> 127 nodes
+> 323 nodes · cohesion 0.01
 
 ## Key Concepts
 
-- **DatabaseManager** (113 connections) — `server/database.py`
-- **.get_instance()** (88 connections) — `server/database.py`
-- **.reset_instance()** (87 connections) — `server/database.py`
-- **test_database_error_handling.py** (41 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_database_init.py** (36 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **test_close_handles_attribute_error_during_dispose()** (7 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_value_error()** (7 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **CombatParticipant** (295 connections) — `server/models/combat.py`
+- **CombatTurnProcessor** (75 connections) — `server/services/combat_turn_processor.py`
+- **test_combat.py** (63 connections) — `server/tests/unit/models/test_combat.py`
+- **test_combat_turn_processor.py** (49 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
+- **CombatAttackHandler** (43 connections) — `server/services/combat_attack_handler.py`
+- **test_combat_attack_handler.py** (39 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **asyncio** (27 connections)
+- **test_combat_tracked_target.py** (11 connections) — `server/tests/unit/models/test_combat_tracked_target.py`
+- **.validate_and_get_combat_participants()** (9 connections) — `server/services/combat_attack_handler.py`
+- **_fight()** (8 connections) — `server/tests/unit/models/test_combat_tracked_target.py`
+- **_bind_get_combat_by_participant()** (8 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **._apply_damage()** (7 connections) — `server/services/combat_attack_handler.py`
+- **._execute_default_action()** (7 connections) — `server/services/combat_turn_processor.py`
+- **._execute_participant_action()** (7 connections) — `server/services/combat_turn_processor.py`
+- **._execute_round()** (7 connections) — `server/services/combat_turn_processor.py`
 - **asyncio** (7 connections)
-- **test_close_handles_closed_event_loop()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_close_handles_dispose_timeout()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_close_handles_generic_exception_during_dispose()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_close_handles_no_running_loop()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_close_handles_none_engine()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_close_handles_runtime_error_during_dispose()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_get_database_path_none_url_raises()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_get_database_path_unsupported_raises()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_config_runtime_error()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_config_validation_error()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_connection_error()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_generic_exception()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_none_url()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_os_error()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_type_error()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_unsupported_url()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_reset_database_resets_singleton()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- *... and 102 more nodes in this community*
+- **test_apply_attack_damage()** (7 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_validate_and_get_combat_participants_attacker_not_found()** (7 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_validate_and_get_combat_participants_success()** (7 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_validate_and_get_combat_participants_target_dead()** (7 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_validate_and_get_combat_participants_target_not_found()** (7 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_process_player_turn_fallback_to_basic_unarmed_damage_when_no_player_from_persistence()** (7 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
+- **_get_default_damage()** (6 connections) — `server/models/combat.py`
+- **._cap_damage_for_no_death_room()** (6 connections) — `server/services/combat_attack_handler.py`
+- **._find_combat_target()** (6 connections) — `server/services/combat_attack_handler.py`
+- *... and 298 more nodes in this community*
 
 ## Relationships
 
-- [test_database_extended.py](test_database_extended.py.md) (53 shared connections)
-- [test_database_helpers.py](test_database_helpers.py.md) (24 shared connections)
-- [get_logger](get_logger.md) (18 shared connections)
-- [test_database.py](test_database.py.md) (12 shared connections)
-- [reset_database](reset_database.md) (12 shared connections)
-- [ValidationError](ValidationError.md) (10 shared connections)
-- [get_engine](get_engine.md) (5 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [RoomService](RoomService.md) (2 shared connections)
-- [.initialize](initialize.md) (2 shared connections)
-- [ValueError](ValueError.md) (2 shared connections)
+- [test_player_combat_service.py](test_player_combat_service.py.md) (96 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (95 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (25 shared connections)
+- [test_npc_combat_integration_join.py](test_npc_combat_integration_join.py.md) (23 shared connections)
+- [Reporter](Reporter.md) (13 shared connections)
+- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (10 shared connections)
+- [CorruptionRepository](CorruptionRepository.md) (10 shared connections)
+- [PlayerPositionService](PlayerPositionService.md) (9 shared connections)
+- [useThemeContext.ts](useThemeContext.ts.md) (5 shared connections)
+- [stateUpdateUtils.ts](stateUpdateUtils.ts.md) (5 shared connections)
+- [TestNPCCombatLifecycle](TestNPCCombatLifecycle.md) (4 shared connections)
+- [Prometheus Configuration](Prometheus_Configuration.md) (4 shared connections)
 
 ## Source Files
 
-- `server/database.py`
-- `server/tests/unit/infrastructure/test_database_error_handling.py`
-- `server/tests/unit/infrastructure/test_database_init.py`
+- `server/models/combat.py`
+- `server/services/combat_attack_handler.py`
+- `server/services/combat_turn_processor.py`
+- `server/tests/unit/models/test_combat.py`
+- `server/tests/unit/models/test_combat_tracked_target.py`
+- `server/tests/unit/services/test_combat_attack_handler.py`
+- `server/tests/unit/services/test_combat_turn_participant_actions.py`
+- `server/tests/unit/services/test_combat_turn_processor.py`
+- `server/tests/unit/services/test_damage_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 337 (76%)
-- INFERRED: 109 (24%)
+- EXTRACTED: 823 (92%)
+- INFERRED: 68 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,35 +1,37 @@
 # Mypy Remediation
 
-> 13 nodes
+> 12 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **Mypy Remediation** (8 connections) — `.cursor/commands/mypy-remediation.md`
-- **Fix patterns by tier** (5 connections) — `.cursor/commands/mypy-remediation.md`
-- **mypy-remediation.md** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **🔴 Critical — import and name errors** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Debugging when a fix doesn't take** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Entry point** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Error code table** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Fix-verify loop** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **🟡 High — type errors** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **🔵 Low — type precision** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **🟢 Medium — type refinement** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Never** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Priority** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **TestValidatorComponents** (11 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **.test_full_validation_pipeline()** (6 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **.test_path_validator_integration()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **.test_reporter_integration()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **.test_room_loader_integration()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **.test_schema_validator_integration()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **Test path validator integration.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **Test reporter integration.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **Test the full validation pipeline.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **Test individual validator components.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **Test room loader integration.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **Test schema validator integration.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [asyncio](asyncio.md) (4 shared connections)
+- [ScheduleEntry](ScheduleEntry.md) (4 shared connections)
+- [catatonia_check.py](catatonia_check.py.md) (3 shared connections)
+- [logger.ts](logger.ts.md) (3 shared connections)
 
 ## Source Files
 
-- `.cursor/commands/mypy-remediation.md`
+- `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 21 (84%)
+- INFERRED: 4 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

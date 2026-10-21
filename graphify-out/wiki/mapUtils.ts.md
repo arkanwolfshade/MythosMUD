@@ -1,71 +1,56 @@
 # mapUtils.ts
 
-> 36 nodes
+> 71 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **mapUtils.ts** (32 connections) — `client/src/components/map/utils/mapUtils.ts`
-- **RoomMapViewer.tsx** (31 connections) — `client/src/components/map/RoomMapViewer.tsx`
-- **useMapLayout.ts** (23 connections) — `client/src/components/map/hooks/useMapLayout.ts`
-- **createEdgesFromRooms()** (16 connections) — `client/src/components/map/utils/mapUtils.ts`
-- **RoomMapViewer.map-controls.test.tsx** (16 connections) — `client/src/components/map/__tests__/RoomMapViewer.map-controls.test.tsx`
-- **RoomMapViewer.test-utils.tsx** (16 connections) — `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
-- **useMapLayout()** (15 connections) — `client/src/components/map/hooks/useMapLayout.ts`
-- **roomsToNodes()** (15 connections) — `client/src/components/map/utils/mapUtils.ts`
-- **RoomMapViewer.rendering.test.tsx** (14 connections) — `client/src/components/map/__tests__/RoomMapViewer.rendering.test.tsx`
-- **useRoomMapData()** (13 connections) — `client/src/components/map/hooks/useRoomMapData.ts`
-- **RoomMapViewer.interactions.test.tsx** (12 connections) — `client/src/components/map/__tests__/RoomMapViewer.interactions.test.tsx`
-- **RoomMapViewer()** (11 connections) — `client/src/components/map/RoomMapViewer.tsx`
-- **MapControls.tsx** (10 connections) — `client/src/components/map/MapControls.tsx`
-- **RoomMapViewer.data-loading.test.tsx** (10 connections) — `client/src/components/map/__tests__/RoomMapViewer.data-loading.test.tsx`
-- **setupDefaultMocks()** (9 connections) — `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
-- **mapUtils.test.ts** (9 connections) — `client/src/components/map/utils/__tests__/mapUtils.test.ts`
-- **useRoomMapEditorData()** (8 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **applyGridLayout()** (8 connections) — `client/src/components/map/utils/layout.ts`
-- **MapControls()** (6 connections) — `client/src/components/map/MapControls.tsx`
-- **roomToNode()** (4 connections) — `client/src/components/map/utils/mapUtils.ts`
-- **transformRoomsToMapData()** (4 connections) — `client/src/components/map/utils/mapUtils.ts`
-- **MapControlsProps** (3 connections) — `client/src/components/map/MapControls.tsx`
-- **createMockNodes()** (3 connections) — `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
-- **extractExitTarget()** (3 connections) — `client/src/components/map/utils/mapUtils.ts`
-- **findDepartures()** (3 connections) — `client/src/components/map/utils/mapUtils.ts`
-- *... and 11 more nodes in this community*
+- **command_guards.py** (24 connections) — `server/command_handler/command_guards.py`
+- **check_grace_period_block()** (18 connections) — `server/command_handler/command_guards.py`
+- **check_casting_state()** (12 connections) — `server/command_handler/command_guards.py`
+- **test_grace_period_blocking.py** (11 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **TestCheckGracePeriodBlock** (8 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **_get_casting_block_result()** (7 connections) — `server/command_handler/command_guards.py`
+- **_get_grace_check_context()** (7 connections) — `server/command_handler/command_guards.py`
+- **_as_command_request()** (7 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **TestCheckCastingState** (7 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **_request_state()** (6 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **test_check_grace_period_block_allows_commands_when_not_in_grace_period()** (6 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **test_check_grace_period_block_blocks_commands()** (6 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **test_check_grace_period_block_handles_missing_services()** (6 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **test_check_grace_period_block_handles_player_not_found()** (6 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **_CastingStateManagerView** (5 connections) — `server/command_handler/command_guards.py`
+- **_coerce_player_uuid()** (5 connections) — `server/command_handler/command_guards.py`
+- **Protocol** (5 connections)
+- **_raw_player_id()** (5 connections) — `server/command_handler/command_guards.py`
+- **_CastingStateView** (4 connections) — `server/command_handler/command_guards.py`
+- **_MagicServiceView** (4 connections) — `server/command_handler/command_guards.py`
+- **_PlayerLookup** (4 connections) — `server/command_handler/command_guards.py`
+- **CommandExecutionRequest** (4 connections)
+- **UUID** (4 connections)
+- **asyncio** (4 connections)
+- **.testcheck_casting_state_allowed_command()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- *... and 46 more nodes in this community*
 
 ## Relationships
 
-- [map/types.ts](map-types.ts.md) (24 shared connections)
-- [utils/layout.ts](utils-layout.ts.md) (14 shared connections)
-- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (12 shared connections)
-- [saveMapChanges.ts](saveMapChanges.ts.md) (8 shared connections)
-- [RoomNodeData](RoomNodeData.md) (7 shared connections)
-- [directionHallucination.ts](directionHallucination.ts.md) (5 shared connections)
-- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (5 shared connections)
-- [MapPerformanceMonitor](MapPerformanceMonitor.md) (3 shared connections)
-- [ExitEdge.tsx](ExitEdge.tsx.md) (3 shared connections)
-- [useAsciiMapState.ts](useAsciiMapState.ts.md) (2 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (1 shared connections)
+- [go_command.py](go_command.py.md) (16 shared connections)
+- [test_logging_file_categories.py](test_logging_file_categories.py.md) (6 shared connections)
+- [look_container.py](look_container.py.md) (4 shared connections)
+- [QuestService](QuestService.md) (3 shared connections)
+- [test_look_npc_helpers.py](test_look_npc_helpers.py.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [player_connection_setup.py](player_connection_setup.py.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/MapControls.tsx`
-- `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- `client/src/components/map/RoomMapViewer.tsx`
-- `client/src/components/map/__tests__/MapControls.test.tsx`
-- `client/src/components/map/__tests__/RoomMapViewer.data-loading.test.tsx`
-- `client/src/components/map/__tests__/RoomMapViewer.interactions.test.tsx`
-- `client/src/components/map/__tests__/RoomMapViewer.map-controls.test.tsx`
-- `client/src/components/map/__tests__/RoomMapViewer.rendering.test.tsx`
-- `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
-- `client/src/components/map/hooks/useMapLayout.ts`
-- `client/src/components/map/hooks/useRoomMapData.ts`
-- `client/src/components/map/utils/__tests__/mapUtils.test.ts`
-- `client/src/components/map/utils/layout.ts`
-- `client/src/components/map/utils/mapUtils.ts`
+- `server/command_handler/command_guards.py`
+- `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- `server/tests/unit/commands/test_command_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 193 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 142 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

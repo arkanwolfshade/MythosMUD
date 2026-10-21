@@ -1,31 +1,28 @@
 # MythosMUD Message of the Day
 
-> 8 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **MythosMUD Message of the Day** (5 connections) — `data/local/motd.html`
-- **Arkham City (MOTD Zone)** (2 connections) — `data/local/motd.html`
-- **Welcome to the Dreamlands** (2 connections) — `data/local/motd.html`
-- **The Yellow Sign** (2 connections) — `data/local/motd.html`
-- **Arkham Sanitarium Room DAG** (2 connections) — `data/local/sanitarium_dag.html`
-- **Innsmouth (MOTD Zone)** (1 connections) — `data/local/motd.html`
-- **Katmandu** (1 connections) — `data/local/motd.html`
-- **Sanitarium Eastern Hallway Branch** (1 connections) — `data/local/sanitarium_dag.html`
+- **Core Logging Principles** (6 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **1. **Structured Logging**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **2. **Context is Everything**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **3. **Security First**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **4. **Performance Aware**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **5. **Actionable Information**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [system_commands.py](system_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `data/local/motd.html`
-- `data/local/sanitarium_dag.html`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (88%)
-- INFERRED: 1 (12%)
+- EXTRACTED: 6 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

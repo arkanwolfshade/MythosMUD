@@ -1,53 +1,51 @@
 # DistributedEventBus
 
-> 33 nodes
+> 55 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **DistributedEventBus** (21 connections) — `server/events/distributed_event_bus.py`
-- **test_distributed_event_bus.py** (15 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **asyncio** (6 connections)
-- **SampleEvent** (5 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **test_publish_with_nats_bridge_publishes_to_nats()** (5 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **test_publish_without_nats_delegates_to_parent()** (5 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **.set_nats_service()** (4 connections) — `server/events/distributed_event_bus.py`
-- **distributed_bus()** (4 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **test_set_nats_service_starts_bridge_when_loop_running()** (4 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **test_shutdown_bridge_stop_error_is_swallowed()** (4 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **test_shutdown_stops_bridge()** (4 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **.__init__()** (3 connections) — `server/events/distributed_event_bus.py`
-- **.publish()** (3 connections) — `server/events/distributed_event_bus.py`
-- **test_distributed_event_bus_init_without_nats()** (3 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **test_set_nats_service_same_reference_noop()** (3 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **.shutdown()** (2 connections) — `server/events/distributed_event_bus.py`
-- **Any** (2 connections)
-- **fixture** (1 connections)
-- **EventBus that distributes domain events via NATS for horizontal scaling. When…** (1 connections) — `server/events/distributed_event_bus.py`
-- **Initialize distributed EventBus. Args: nats_service: NATS service for…** (1 connections) — `server/events/distributed_event_bus.py`
-- **Set NATS service and start the bridge (call after NATS connects).** (1 connections) — `server/events/distributed_event_bus.py`
-- **Publish event locally and to NATS when bridge is active.** (1 connections) — `server/events/distributed_event_bus.py`
-- **Shutdown EventBus and stop NATS bridge.** (1 connections) — `server/events/distributed_event_bus.py`
-- **Unit tests for DistributedEventBus.** (1 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **Minimal event for distributed bus tests.** (1 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- *... and 8 more nodes in this community*
+- **test_nats_messages.py** (23 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **ChatMessageSchema** (13 connections) — `server/schemas/realtime/nats_messages.py`
+- **validate_message()** (13 connections) — `server/schemas/realtime/nats_messages.py`
+- **BaseMessageSchema** (11 connections) — `server/schemas/realtime/nats_messages.py`
+- **EventMessageSchema** (11 connections) — `server/schemas/realtime/nats_messages.py`
+- **nats_messages.py** (9 connections) — `server/schemas/realtime/nats_messages.py`
+- **validate_chat_message()** (7 connections) — `server/schemas/realtime/nats_messages.py`
+- **validate_event_message()** (7 connections) — `server/schemas/realtime/nats_messages.py`
+- **.validate_timestamp()** (4 connections) — `server/schemas/realtime/nats_messages.py`
+- **.validate_channel()** (4 connections) — `server/schemas/realtime/nats_messages.py`
+- **.validate_event_type()** (4 connections) — `server/schemas/realtime/nats_messages.py`
+- **test_validate_chat_message()** (4 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **test_validate_event_message()** (4 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **test_validate_message_chat()** (4 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **test_validate_message_event()** (4 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **Any** (3 connections)
+- **field_validator** (3 connections)
+- **test_base_message_schema()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **test_base_message_schema_invalid_timestamp()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **test_base_message_schema_validate_timestamp()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **test_chat_message_schema()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **test_chat_message_schema_accepts_speaker_kind_and_party_id()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **test_chat_message_schema_content_validation()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **test_chat_message_schema_invalid_channel()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **test_chat_message_schema_validate_channel()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [EventBus](EventBus.md) (4 shared connections)
-- [BaseEvent](BaseEvent.md) (4 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [event_serialization.py](event_serialization.py.md) (2 shared connections)
-- [.initialize](initialize.md) (1 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (4 shared connections)
+- [NATSService](NATSService.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
 
 ## Source Files
 
-- `server/events/distributed_event_bus.py`
-- `server/tests/unit/events/test_distributed_event_bus.py`
+- `server/schemas/realtime/nats_messages.py`
+- `server/tests/unit/schemas/test_nats_messages.py`
 
 ## Audit Trail
 
-- EXTRACTED: 53 (87%)
-- INFERRED: 8 (13%)
+- EXTRACTED: 90 (92%)
+- INFERRED: 8 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,23 +1,23 @@
 # API OpenAPI Specification
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **OpenAPI/Swagger specification** (1 connections) — `docs/architecture/API_OPENAPI_SPECIFICATION.md`
-- **API OpenAPI Specification** (1 connections) — `docs/architecture/API_OPENAPI_SPECIFICATION.md`
+- **test_process_exits_for_room_with_direction()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _process_exits_for_room processes exits with direction.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [PanelContextRuntime.tsx](PanelContextRuntime.tsx.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/architecture/API_OPENAPI_SPECIFICATION.md`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

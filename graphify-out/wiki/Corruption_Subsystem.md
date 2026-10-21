@@ -1,10 +1,10 @@
 # Corruption Subsystem
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Corruption Subsystem** (0 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
+- **cursor-cli-review.ps1** (0 connections) — `scripts/cursor-cli-review.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
+- `scripts/cursor-cli-review.ps1`
 
 ## Audit Trail
 

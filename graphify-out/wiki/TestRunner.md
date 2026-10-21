@@ -1,48 +1,46 @@
 # TestRunner
 
-> 27 nodes
+> 25 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **TestRunner** (13 connections) — `scripts/test_runner.py`
-- **.run_tests()** (11 connections) — `scripts/test_runner.py`
-- **test_runner.py** (7 connections) — `scripts/test_runner.py`
-- **main()** (4 connections) — `scripts/test_runner.py`
-- **_Args** (3 connections) — `scripts/test_runner.py`
-- **.clean_test_databases()** (3 connections) — `scripts/test_runner.py`
-- **.get_pytest_command()** (3 connections) — `scripts/test_runner.py`
-- **.__init__()** (3 connections) — `scripts/test_runner.py`
-- **.run_all_tests()** (3 connections) — `scripts/test_runner.py`
-- **.run_coverage_report()** (3 connections) — `scripts/test_runner.py`
-- **.run_integration_tests()** (3 connections) — `scripts/test_runner.py`
-- **.setup_test_environment()** (3 connections) — `scripts/test_runner.py`
-- **.run_e2e_tests()** (2 connections) — `scripts/test_runner.py`
-- **.run_unit_tests()** (2 connections) — `scripts/test_runner.py`
-- **Path** (1 connections)
-- **Verify test database configuration. Note: For PostgreSQL databases, schema is…** (1 connections) — `scripts/test_runner.py`
-- **Build the pytest command with proper configuration. Args: test_paths: List of…** (1 connections) — `scripts/test_runner.py`
-- **# NOTE: Test runner uses minimal structlog configuration for console output** (1 connections) — `scripts/test_runner.py`
-- **Run the test suite with proper configuration. Args: test_paths: List of test…** (1 connections) — `scripts/test_runner.py`
-- **Run integration tests only.** (1 connections) — `scripts/test_runner.py`
-- **Run all tests (unit, integration, but not E2E by default).** (1 connections) — `scripts/test_runner.py`
-- **Generate coverage report only.** (1 connections) — `scripts/test_runner.py`
-- **Typed view of the CLI options, so attribute reads don't go through untyped…** (1 connections) — `scripts/test_runner.py`
-- **Main entry point for the test runner.** (1 connections) — `scripts/test_runner.py`
-- **Clean test runner for MythosMUD server tests. This class provides a modern,…** (1 connections) — `scripts/test_runner.py`
-- *... and 2 more nodes in this community*
+- **Migration 019: Complete Implementation Summary** (10 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **What Was Done** (5 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Files Summary** (4 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Risk Assessment** (4 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Tables Affected** (4 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Next Steps** (3 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **1. Database Schema Updates ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **2. Python Model Updates ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **3. Migration Script Created ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **4. Testing Infrastructure ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Before Production** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Conclusion** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Created Files (5)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Documentation Files (4)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Executive Summary** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Foreign Key Type Updates (integer → bigint)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Immediate (Testing Phase)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Low Risk ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Medium Risk ⚠️** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Mitigation ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Modified Files (10)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Primary Key Conversions (serial → bigint identity)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Success Metrics** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Text Column Conversions (varchar → text)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Verification Status** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
 
 ## Relationships
 
-- [safe_run_static](safe_run_static.md) (3 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [Path](Path.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/test_runner.py`
+- `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (100%)
+- EXTRACTED: 25 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

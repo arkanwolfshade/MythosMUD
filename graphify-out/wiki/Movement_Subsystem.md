@@ -1,10 +1,10 @@
 # Movement Subsystem
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Movement Subsystem** (0 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- **finalize_build_touch Rebuild Trigger** (0 connections) — `scripts/finalize_build_touch.txt`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- `scripts/finalize_build_touch.txt`
 
 ## Audit Trail
 

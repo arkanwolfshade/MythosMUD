@@ -1,38 +1,34 @@
 # test_profession_service.py
 
-> 14 nodes
+> 12 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **test_profession_service.py** (15 connections) — `server/tests/unit/game/test_profession_service.py`
-- **asyncio** (6 connections)
-- **_profession()** (5 connections) — `server/tests/unit/game/test_profession_service.py`
-- **service()** (3 connections) — `server/tests/unit/game/test_profession_service.py`
-- **test_get_all_professions_dict()** (3 connections) — `server/tests/unit/game/test_profession_service.py`
-- **test_get_profession_by_id_dict_found()** (3 connections) — `server/tests/unit/game/test_profession_service.py`
-- **test_validate_and_get_profession_none_raises()** (3 connections) — `server/tests/unit/game/test_profession_service.py`
-- **test_validate_and_get_profession_not_found_raises()** (3 connections) — `server/tests/unit/game/test_profession_service.py`
-- **test_validate_and_get_profession_success()** (3 connections) — `server/tests/unit/game/test_profession_service.py`
-- **persistence()** (2 connections) — `server/tests/unit/game/test_profession_service.py`
-- **test_get_profession_by_id_dict_missing()** (2 connections) — `server/tests/unit/game/test_profession_service.py`
-- **test_profession_to_dict_list_formats()** (2 connections) — `server/tests/unit/game/test_profession_service.py`
-- **fixture** (2 connections)
-- **Unit tests for ProfessionService.** (1 connections) — `server/tests/unit/game/test_profession_service.py`
+- **Migration Roadmap** (6 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Phase 5: Game & NPC Systems (Priority 4) 🎮** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Phase 2: API Endpoints (Priority 1) 🎯** (2 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Phase 3: Real-Time Handlers (Priority 2) 🚀** (2 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Phase 4: High-Impact Services (Priority 3) ⚡** (2 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Phase 6: Test Migration (Priority 5) 🧪** (2 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Files to Migrate (11 total)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Files to Migrate (2 total)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Files to Migrate (6 total)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Game Systems (3 files)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **NPC Systems (7 files)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Test Files (17 total)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (3 shared connections)
-- [ValidationError](ValidationError.md) (3 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_profession_service.py`
+- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (90%)
-- INFERRED: 3 (10%)
+- EXTRACTED: 12 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

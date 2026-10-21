@@ -1,25 +1,23 @@
 # 🚀 How to Run Remaining Tests
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **🚀 How to Run Remaining Tests** (4 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
-- **Docker-Based Testing (Zero bcrypt Issues)** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
-- **Individual Module Testing (For Debugging)** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
-- **Quick Start (All Tests in One Fresh Session)** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **Command Tests Relocated** (1 connections) — `server/commands/__tests__/README.md`
+- **server/tests/unit/commands/** (1 connections) — `server/commands/__tests__/README.md`
 
 ## Relationships
 
-- [Coverage Improvement Summary - Plan 2 Execution](Coverage_Improvement_Summary_-_Plan_2_Execution.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- `server/commands/__tests__/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

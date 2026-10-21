@@ -1,17 +1,15 @@
 # pyrightconfig.json
 
-> 8 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **pyrightconfig.json** (6 connections) — `pyrightconfig.json`
-- **extraPaths** (2 connections) — `pyrightconfig.json`
-- **extends** (1 connections) — `pyrightconfig.json`
-- **pythonVersion** (1 connections) — `pyrightconfig.json`
-- **venv** (1 connections) — `pyrightconfig.json`
-- **venvPath** (1 connections) — `pyrightconfig.json`
-- **.** (1 connections) — `pyrightconfig.json`
-- **./pyproject.toml** (1 connections) — `pyrightconfig.json`
+- **NPC Occupants Verification Summary** (3 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
+- **NPC Display Final Fixes** (2 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
+- **asyncpg UUID replace AttributeError** (2 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
+- **room_update Overwriting NPC Data** (1 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
+- **Legacy Occupants Snapshot Format** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
+- **Rooms API User Object AttributeError** (1 connections) — `investigations/sessions/2025-01-XX_session-rooms-api-user-object-attribute-error.md`
 
 ## Relationships
 
@@ -19,12 +17,14 @@
 
 ## Source Files
 
-- `pyrightconfig.json`
+- `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
+- `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
+- `investigations/sessions/2025-01-XX_session-rooms-api-user-object-attribute-error.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (60%)
+- INFERRED: 2 (40%)
 - AMBIGUOUS: 0 (0%)
 
 ---

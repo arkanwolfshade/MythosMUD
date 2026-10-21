@@ -1,14 +1,12 @@
 # HADS tooling (MythosMUD)
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **HADS tooling (MythosMUD)** (4 connections) — `scripts/hads/README.md`
-- **hads/README.md** (1 connections) — `scripts/hads/README.md`
-- **Policy** (1 connections) — `scripts/hads/README.md`
-- **Source pin** (1 connections) — `scripts/hads/README.md`
-- **Usage** (1 connections) — `scripts/hads/README.md`
+- **Chaosium graphify snapshot - Nameless Horrors - 2nd Edition** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/nameless-horrors-2nd-edition/MANIFEST.md`
+- **nameless-horrors-2nd-edition/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/nameless-horrors-2nd-edition/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/nameless-horrors-2nd-edition/MANIFEST.md`
 
 ## Relationships
 
@@ -16,11 +14,11 @@
 
 ## Source Files
 
-- `scripts/hads/README.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/nameless-horrors-2nd-edition/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

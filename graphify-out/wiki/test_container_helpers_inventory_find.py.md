@@ -1,58 +1,56 @@
 # test_container_helpers_inventory_find.py
 
-> 97 nodes
+> 103 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **test_container_helpers_inventory_find.py** (56 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **container_helpers_inventory_find.py** (33 connections) — `server/commands/container_helpers_inventory_find.py`
-- **asyncio** (25 connections)
-- **find_wearable_container()** (17 connections) — `server/commands/container_helpers_inventory_find.py`
-- **UUID** (16 connections)
-- **find_container_in_room()** (15 connections) — `server/commands/container_helpers_inventory_find.py`
-- **try_wearable_container_service()** (14 connections) — `server/commands/container_helpers_inventory_find.py`
-- **try_wearable_container_service_by_instance_id()** (13 connections) — `server/commands/container_helpers_inventory_find.py`
-- **create_wearable_container()** (12 connections) — `server/commands/container_helpers_inventory_find.py`
-- **find_item_in_inventory()** (12 connections) — `server/commands/container_helpers_inventory_find.py`
-- **try_inner_container()** (12 connections) — `server/commands/container_helpers_inventory_find.py`
-- **_player_for_wearable()** (12 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **try_inner_container_by_id()** (11 connections) — `server/commands/container_helpers_inventory_find.py`
-- **try_wearable_container_service_by_name()** (11 connections) — `server/commands/container_helpers_inventory_find.py`
-- **find_wearable_container_for_put()** (10 connections) — `server/commands/container_helpers_inventory_find.py`
-- **_get_container_pair()** (10 connections) — `server/commands/container_helpers_inventory_find.py`
-- **find_matching_equipped_containers()** (9 connections) — `server/commands/container_helpers_inventory_find.py`
-- **_try_put_container_for_equipped_item()** (9 connections) — `server/commands/container_helpers_inventory_find.py`
-- **patch** (8 connections)
-- **check_item_matches_target()** (7 connections) — `server/commands/container_helpers_inventory_find.py`
-- **container_id()** (6 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- **_container_uuid()** (5 connections) — `server/commands/container_helpers_inventory_find.py`
-- **test_create_wearable_container_fallback_when_equip_returns_non_dict()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_create_wearable_container_uses_equip_dict_branch()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_wearable_container_falls_back_to_name_slot_match()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- *... and 72 more nodes in this community*
+- **test_game_state_provider.py** (51 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **GameStateProvider** (45 connections) — `server/realtime/integration/game_state_provider.py`
+- **asyncio** (28 connections)
+- **server/realtime/integration/__init__.py** (5 connections) — `server/realtime/integration/__init__.py`
+- **fixture** (5 connections)
+- **._resolve_raw_player_name()** (4 connections) — `server/realtime/integration/game_state_provider.py`
+- **game_state_provider()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_convert_room_uuids_with_npcs()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_lucidity_for_client_found()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_lucidity_for_client_no_row()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_player_data_for_client_app_state_fallback()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_player_data_for_client_dict_fallback()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_process_occupants_with_grace_periods()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_send_initial_game_state_includes_lucidity_tier()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **._resolve_user_fallback_name()** (3 connections) — `server/realtime/integration/game_state_provider.py`
+- **mock_get_app()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **mock_get_async_persistence()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **mock_room_manager()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **mock_send_personal_message()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_convert_room_uuids_to_names()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_convert_room_uuids_to_names_empty_room_data()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_convert_room_uuids_to_names_invalid_uuid()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_convert_room_uuids_to_names_no_player_ids()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_convert_room_uuids_to_names_player_not_found()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_following_for_client()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- *... and 78 more nodes in this community*
 
 ## Relationships
 
-- [container_helpers_inventory_ops.py](container_helpers_inventory_ops.py.md) (15 shared connections)
-- [alias_storage.py](alias_storage.py.md) (7 shared connections)
-- [ContainerComponent](ContainerComponent.md) (3 shared connections)
-- [command_result_text](command_result_text.md) (2 shared connections)
-- [look_container.py](look_container.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [asyncio](asyncio.md) (22 shared connections)
+- [ChatLogger](ChatLogger.md) (6 shared connections)
+- [Async Persistence Migration Tracker](Async_Persistence_Migration_Tracker.md) (4 shared connections)
+- [look_container.py](look_container.py.md) (4 shared connections)
+- [NATSError](NATSError.md) (2 shared connections)
+- [_find_item_in_inventory](_find_item_in_inventory.md) (1 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/container_helpers_inventory_find.py`
-- `server/commands/look_container.py`
-- `server/tests/unit/api/test_container_exception_handlers.py`
-- `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- `server/realtime/integration/__init__.py`
+- `server/realtime/integration/game_state_provider.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 
-- EXTRACTED: 263 (96%)
-- INFERRED: 10 (4%)
+- EXTRACTED: 171 (93%)
+- INFERRED: 13 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

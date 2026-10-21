@@ -1,54 +1,54 @@
 # PeriodicOrphanAuditor
 
-> 31 nodes
+> 55 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **PeriodicOrphanAuditor** (23 connections) — `server/app/memory_lifespan_coordinator.py`
-- **test_memory_lifespan_coordinator.py** (18 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **asyncio** (11 connections)
-- **create_lifespan_memory_service()** (5 connections) — `server/app/memory_lifespan_coordinator.py`
-- **test_background_audit_cycle_cancelled()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **test_create_lifespan_memory_service()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **test_do_full_cleanup_audit_handles_errors()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **test_do_full_cleanup_audit_no_cleanup()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **test_do_full_cleanup_audit_with_cleanup()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **test_force_single_audit_cycle_no_orphans()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **test_force_single_audit_cycle_with_cleanup()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **test_schedule_periodic_auditing_already_running()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **test_schedule_periodic_auditing_init_failure()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **test_schedule_periodic_auditing_success()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **test_stop_audit_scheduler_cancels_task()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **test_stop_audit_scheduler_not_running()** (3 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **Create a centralized memory operations coordinator instance targeted for…** (1 connections) — `server/app/memory_lifespan_coordinator.py`
-- **Periodic background auditor that investigates orphanage patterns and memory…** (1 connections) — `server/app/memory_lifespan_coordinator.py`
-- **Unit tests for periodic orphan auditing and lifespan memory coordination.** (1 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **No orphans and no threshold breach skips cleanup.** (1 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **Audit cycle errors are logged without propagating.** (1 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **Manual audit returns summary and cleans detected orphans.** (1 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **Manual audit skips cleanup when no orphans are found.** (1 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **Stopping when idle is a no-op.** (1 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **Running scheduler cancels its coordinator task.** (1 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- *... and 6 more nodes in this community*
+- **PlayerGuidFormatter** (33 connections) — `server/structured_logging/player_guid_formatter.py`
+- **test_player_guid_formatter.py** (24 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **_player_service_mock()** (11 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **formatter()** (5 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **player_guid_formatter.py** (4 connections) — `server/structured_logging/player_guid_formatter.py`
+- **test_format_guid_at_end()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_guid_at_start()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_guid_in_middle()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_guid_with_hyphens()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_multiple_guids()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_player_service_error()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_with_different_log_levels()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_with_guid_player_found()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **mock_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_empty_message()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_invalid_guid_format()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_message_with_special_characters()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_no_guids()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_with_guid_no_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_player_guid_formatter_init()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_player_guid_formatter_init_with_format()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_uuid_pattern_case_insensitive()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_uuid_pattern_matching()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_uuid_pattern_not_matching_partial()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **._get_player_name()** (2 connections) — `server/structured_logging/player_guid_formatter.py`
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
-- [._background_audit_cycle](_background_audit_cycle.md) (3 shared connections)
-- [auditor](auditor.md) (2 shared connections)
-- [.force_single_audit_cycle](force_single_audit_cycle.md) (1 shared connections)
-- [.stop_audit_scheduler](stop_audit_scheduler.md) (1 shared connections)
-- [.__init__](__init__.md) (1 shared connections)
+- [test_status_commands.py](test_status_commands.py.md) (2 shared connections)
+- [Dead Light and Other Dark Turns (source summary)](Dead_Light_and_Other_Dark_Turns_source_summary.md) (2 shared connections)
+- [CatalogPage.tsx](CatalogPage.tsx.md) (2 shared connections)
+- [NPCSpawnRule](NPCSpawnRule.md) (1 shared connections)
+- [GameClientV2.tsx](GameClientV2.tsx.md) (1 shared connections)
+- [look_container.py](look_container.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/memory_lifespan_coordinator.py`
-- `server/tests/unit/app/test_memory_lifespan_coordinator.py`
+- `server/structured_logging/player_guid_formatter.py`
+- `server/tests/unit/structured_logging/test_player_guid_formatter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 53 (82%)
-- INFERRED: 12 (18%)
+- EXTRACTED: 72 (77%)
+- INFERRED: 21 (23%)
 - AMBIGUOUS: 0 (0%)
 
 ---

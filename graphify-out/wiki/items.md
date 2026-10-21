@@ -1,26 +1,27 @@
 # items
 
-> 6 nodes
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **items** (5 connections) — `db/static/schemas/holidays.schema.json`
-- **holidays** (4 connections) — `db/static/schemas/holidays.schema.json`
-- **properties** (2 connections) — `db/static/schemas/holidays.schema.json`
-- **minItems** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **additionalProperties** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **skills.sql** (9 connections) — `db/procedures/skills.sql`
+- **schema_name.delete_player_skills_for_player()** (1 connections) — `db/procedures/skills.sql`
+- **schema_name.get_all_skills()** (1 connections) — `db/procedures/skills.sql`
+- **schema_name.get_player_skills_with_skill()** (1 connections) — `db/procedures/skills.sql`
+- **schema_name.get_skill_by_id()** (1 connections) — `db/procedures/skills.sql`
+- **schema_name.get_skill_by_key()** (1 connections) — `db/procedures/skills.sql`
+- **schema_name.get_skill_ids_used_at_level()** (1 connections) — `db/procedures/skills.sql`
+- **schema_name.insert_player_skills_many()** (1 connections) — `db/procedures/skills.sql`
+- **schema_name.record_skill_use()** (1 connections) — `db/procedures/skills.sql`
+- **schema_name.update_player_skill_value()** (1 connections) — `db/procedures/skills.sql`
 
 ## Relationships
 
-- [bonus_tags](bonus_tags.md) (1 shared connections)
-- [required](required.md) (1 shared connections)
-- [properties](properties.md) (1 shared connections)
-- [holidays.schema.json](holidays.schema.json.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `db/static/schemas/holidays.schema.json`
+- `db/procedures/skills.sql`
 
 ## Audit Trail
 

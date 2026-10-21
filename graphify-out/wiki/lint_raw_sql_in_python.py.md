@@ -1,23 +1,21 @@
 # lint_raw_sql_in_python.py
 
-> 14 nodes
+> 12 nodes · cohesion 0.21
 
 ## Key Concepts
 
-- **lint_raw_sql_in_python.py** (7 connections) — `scripts/lint_raw_sql_in_python.py`
-- **scan()** (5 connections) — `scripts/lint_raw_sql_in_python.py`
-- **_find_raw_sql_lines()** (4 connections) — `scripts/lint_raw_sql_in_python.py`
-- **_strip_comments()** (4 connections) — `scripts/lint_raw_sql_in_python.py`
-- **_collect_python_files()** (3 connections) — `scripts/lint_raw_sql_in_python.py`
-- **main()** (3 connections) — `scripts/lint_raw_sql_in_python.py`
-- **_strip_line_comment()** (3 connections) — `scripts/lint_raw_sql_in_python.py`
-- **Path** (1 connections)
-- **Guard against raw table CRUD SQL string literals inside Python source. Replaces…** (1 connections) — `scripts/lint_raw_sql_in_python.py`
-- **Scan server/ for raw SQL. Returns a list of violation messages.** (1 connections) — `scripts/lint_raw_sql_in_python.py`
-- **Run the raw-SQL guard and return 1 if any raw-SQL site is found.** (1 connections) — `scripts/lint_raw_sql_in_python.py`
-- **Return line with a trailing '# ...' comment removed, so prose mentioning SQL…** (1 connections) — `scripts/lint_raw_sql_in_python.py`
-- **Return content with every '# ...' line comment blanked out, preserving line…** (1 connections) — `scripts/lint_raw_sql_in_python.py`
-- **Return 1-based line numbers containing a raw-SQL violation. Matches against the…** (1 connections) — `scripts/lint_raw_sql_in_python.py`
+- **PanelContextRuntime.tsx** (10 connections) — `client/src/contexts/PanelContextRuntime.tsx`
+- **PanelContextRuntime.test.tsx** (5 connections) — `client/src/contexts/__tests__/PanelContextRuntime.test.tsx`
+- **PanelContext** (2 connections) — `client/src/contexts/PanelContextRuntime.tsx`
+- **PanelProvider()** (2 connections) — `client/src/contexts/PanelContextRuntime.tsx`
+- **PanelState** (2 connections) — `client/src/contexts/PanelContextRuntime.tsx`
+- **defaultPanels** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
+- **PanelContextType** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
+- **PanelLayout** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
+- **PanelPosition** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
+- **PanelProviderProps** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
+- **PanelSize** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
+- **useRuntimePanelContext()** (1 connections) — `client/src/contexts/__tests__/PanelContextRuntime.test.tsx`
 
 ## Relationships
 
@@ -25,11 +23,12 @@
 
 ## Source Files
 
-- `scripts/lint_raw_sql_in_python.py`
+- `client/src/contexts/PanelContextRuntime.tsx`
+- `client/src/contexts/__tests__/PanelContextRuntime.test.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

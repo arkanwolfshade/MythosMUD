@@ -1,10 +1,10 @@
 # PostgreSQL Safety Rules
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **PostgreSQL Safety Rules** (0 connections) — `.claude/rules/database.md`
+- **ADR-006: PostgreSQL as Primary Datastore** (0 connections) — `docs/architecture/decisions/ADR-006-postgresql-primary-datastore.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.claude/rules/database.md`
+- `docs/architecture/decisions/ADR-006-postgresql-primary-datastore.md`
 
 ## Audit Trail
 

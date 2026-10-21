@@ -1,26 +1,27 @@
 # Gateways to Terror (source summary)
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Gateways to Terror (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
-- **Gateways to Terror.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
+- **Playwright DI Migration Validation** (2 connections) — `.cursor/plans/playwright_test_plan_for_di_migration_validation_30b56bf7.plan.md`
+- **Playwright Best-Practices Remediation** (1 connections) — `.cursor/plans/playwright_best-practices_remediation.plan.md`
+- **E2E Harness Overhaul** (1 connections) — `.cursor/plans/refactor-e2e-harness_e2e-harness.plan.md`
 
 ## Relationships
 
-- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
+- `.cursor/plans/playwright_best-practices_remediation.plan.md`
+- `.cursor/plans/playwright_test_plan_for_di_migration_validation_30b56bf7.plan.md`
+- `.cursor/plans/refactor-e2e-harness_e2e-harness.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

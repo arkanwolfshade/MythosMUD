@@ -1,32 +1,30 @@
 # Models Package Design
 
-> 11 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **Models Package Design** (11 connections) — `docs/packages/PACKAGE_MODELS_DESIGN.md`
-- **1. Overview** (1 connections) — `docs/packages/PACKAGE_MODELS_DESIGN.md`
-- **2. Members** (1 connections) — `docs/packages/PACKAGE_MODELS_DESIGN.md`
-- **3. Boundary contract** (1 connections) — `docs/packages/PACKAGE_MODELS_DESIGN.md`
-- **4. Key design decisions** (1 connections) — `docs/packages/PACKAGE_MODELS_DESIGN.md`
-- **5. Constraints** (1 connections) — `docs/packages/PACKAGE_MODELS_DESIGN.md`
-- **6. Developer guide** (1 connections) — `docs/packages/PACKAGE_MODELS_DESIGN.md`
-- **7. Troubleshooting** (1 connections) — `docs/packages/PACKAGE_MODELS_DESIGN.md`
-- **8. Related docs** (1 connections) — `docs/packages/PACKAGE_MODELS_DESIGN.md`
-- **9. Changelog** (1 connections) — `docs/packages/PACKAGE_MODELS_DESIGN.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/packages/PACKAGE_MODELS_DESIGN.md`
+- **quests.sql** (8 connections) — `db/procedures/quests.sql`
+- **schema_name.create_quest_instance()** (1 connections) — `db/procedures/quests.sql`
+- **schema_name.get_quest_definition_by_id()** (1 connections) — `db/procedures/quests.sql`
+- **schema_name.get_quest_definition_by_name()** (1 connections) — `db/procedures/quests.sql`
+- **schema_name.get_quest_instance_by_player_and_quest()** (1 connections) — `db/procedures/quests.sql`
+- **schema_name.list_active_quest_instances_by_player()** (1 connections) — `db/procedures/quests.sql`
+- **schema_name.list_completed_quest_instances_by_player()** (1 connections) — `db/procedures/quests.sql`
+- **schema_name.list_quest_ids_offered_by()** (1 connections) — `db/procedures/quests.sql`
+- **schema_name.update_quest_instance_state_and_progress()** (1 connections) — `db/procedures/quests.sql`
 
 ## Relationships
 
-- [packages/README.md](packages-README.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/packages/PACKAGE_MODELS_DESIGN.md`
+- `db/procedures/quests.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

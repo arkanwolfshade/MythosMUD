@@ -1,48 +1,48 @@
 # .apply_corruption_adjustment
 
-> 17 nodes
+> 27 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **.apply_corruption_adjustment()** (13 connections) — `server/services/corruption_service.py`
-- **.perform_recovery_action()** (10 connections) — `server/services/corruption_service.py`
-- **.get_cooldown_expiry()** (7 connections) — `server/services/corruption_service.py`
-- **UUID** (7 connections)
-- **._notify_tier_crossing()** (6 connections) — `server/services/corruption_service.py`
-- **CorruptionActionError** (5 connections) — `server/services/corruption_service.py`
-- **._send_corruption_update_event()** (5 connections) — `server/services/corruption_service.py`
-- **.get_player_by_id()** (3 connections) — `server/services/corruption_service.py`
-- **datetime** (2 connections)
-- **CorruptionTier** (1 connections)
-- **RuntimeError** (1 connections)
-- **Apply a corruption delta, clamp it, log it, update the tier cache, notify on…** (1 connections) — `server/services/corruption_service.py`
-- **Push the new corruption value to the client. Client reads it via the existing…** (1 connections) — `server/services/corruption_service.py`
-- **Deliver a personal system message exactly once per tier crossing.** (1 connections) — `server/services/corruption_service.py`
-- **Fetch the cooldown expiry for a recovery action, or None if not on cooldown.** (1 connections) — `server/services/corruption_service.py`
-- **Perform a corruption recovery rite (e.g. `/cleanse`) and enforce its cooldown.** (1 connections) — `server/services/corruption_service.py`
-- **Base error for corruption action operations.** (1 connections) — `server/services/corruption_service.py`
+- **debugLogger** (21 connections) — `client/src/utils/debugLogger.ts`
+- **.log()** (9 connections) — `client/src/utils/debugLogger.ts`
+- **.logToConsole()** (6 connections) — `client/src/utils/debugLogger.ts`
+- **debugLogger.ts** (5 connections) — `client/src/utils/debugLogger.ts`
+- **.downloadLogs()** (5 connections) — `client/src/utils/debugLogger.ts`
+- **.error()** (4 connections) — `client/src/utils/debugLogger.ts`
+- **.warn()** (4 connections) — `client/src/utils/debugLogger.ts`
+- **debugLogger.test.ts** (4 connections) — `client/src/utils/__tests__/debugLogger.test.ts`
+- **.debug()** (3 connections) — `client/src/utils/debugLogger.ts`
+- **.info()** (3 connections) — `client/src/utils/debugLogger.ts`
+- **.initializeConfig()** (3 connections) — `client/src/utils/debugLogger.ts`
+- **.addToBuffer()** (2 connections) — `client/src/utils/debugLogger.ts`
+- **.constructor()** (2 connections) — `client/src/utils/debugLogger.ts`
+- **.createLogEntry()** (2 connections) — `client/src/utils/debugLogger.ts`
+- **.formatMessage()** (2 connections) — `client/src/utils/debugLogger.ts`
+- **.getDefaultLogLevel()** (2 connections) — `client/src/utils/debugLogger.ts`
+- **.getLogsAsString()** (2 connections) — `client/src/utils/debugLogger.ts`
+- **.shouldLog()** (2 connections) — `client/src/utils/debugLogger.ts`
+- **.clearLogs()** (1 connections) — `client/src/utils/debugLogger.ts`
+- **.getLogBuffer()** (1 connections) — `client/src/utils/debugLogger.ts`
+- **.getLogLevel()** (1 connections) — `client/src/utils/debugLogger.ts`
+- **.setLogLevel()** (1 connections) — `client/src/utils/debugLogger.ts`
+- **LogConfig** (1 connections) — `client/src/utils/debugLogger.ts`
+- **LogEntry** (1 connections) — `client/src/utils/debugLogger.ts`
+- **LogLevel** (1 connections) — `client/src/utils/debugLogger.ts`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
-- [CorruptionService](CorruptionService.md) (5 shared connections)
-- [CorruptionRepository](CorruptionRepository.md) (3 shared connections)
-- [handle_cleanse_command](handle_cleanse_command.md) (2 shared connections)
-- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (2 shared connections)
-- [cleanse_command.py](cleanse_command.py.md) (1 shared connections)
-- [log_and_raise_enhanced](log_and_raise_enhanced.md) (1 shared connections)
-- [coerce_int](coerce_int.md) (1 shared connections)
-- [LucidityService](LucidityService.md) (1 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (1 shared connections)
-- [magic_service.py](magic_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/corruption_service.py`
+- `client/src/utils/__tests__/debugLogger.test.ts`
+- `client/src/utils/debugLogger.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (100%)
+- EXTRACTED: 45 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,21 +1,22 @@
 # month
 
-> 4 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **month** (4 connections) — `db/static/schemas/holidays.schema.json`
-- **maximum** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **minimum** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **MythosMUD COPPA Checklist** (4 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
+- **COPPA Checklist Skill** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
+- **Checklist** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
+- **Implementation** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
+- **Reference** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `db/static/schemas/holidays.schema.json`
+- `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
 
 ## Audit Trail
 

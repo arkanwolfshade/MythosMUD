@@ -1,62 +1,61 @@
 # ZoneConfiguration
 
-> 188 nodes
+> 135 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **ZoneConfiguration** (54 connections) — `server/npc/zone_configuration.py`
-- **test_zone_config_loader.py** (35 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **should_spawn_npc()** (24 connections) — `server/npc/spawn_validator.py`
-- **test_spawn_validator.py** (24 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_zone_configuration.py** (23 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **zone_config_loader.py** (22 connections) — `server/npc/zone_config_loader.py`
-- **async_load_zone_configurations()** (14 connections) — `server/npc/zone_config_loader.py`
-- **process_zone_rows()** (14 connections) — `server/npc/zone_config_loader.py`
-- **spawn_validator.py** (14 connections) — `server/npc/spawn_validator.py`
-- **_empty_zone_load_result()** (13 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **parse_json_field()** (11 connections) — `server/npc/zone_config_loader.py`
-- **zone_configuration.py** (11 connections) — `server/npc/zone_configuration.py`
-- **asyncio** (11 connections)
-- **_store_subzone_row()** (10 connections) — `server/npc/zone_config_loader.py`
-- **ZoneLoadResult** (9 connections) — `server/npc/zone_config_loader.py`
-- **extract_zone_name()** (9 connections) — `server/npc/zone_config_loader.py`
-- **load_zone_configurations()** (9 connections) — `server/npc/zone_config_loader.py`
-- **process_subzone_rows()** (9 connections) — `server/npc/zone_config_loader.py`
-- **._should_spawn_npc()** (8 connections) — `server/npc/population_control.py`
-- **_try_spawn_rules()** (8 connections) — `server/npc/spawn_validator.py`
-- **ZoneConfigurationData** (7 connections) — `server/npc/zone_configuration.py`
-- **_spawn_rule_passes()** (6 connections) — `server/npc/spawn_validator.py`
-- **parse_zone_special_rules()** (6 connections) — `server/npc/zone_config_loader.py`
-- **test_async_load_zone_configurations_converts_url()** (6 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_async_load_zone_configurations_passes_search_path_for_mythos_e2e()** (6 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- *... and 163 more nodes in this community*
+- **player_event_handlers.py** (41 connections) — `server/realtime/player_event_handlers.py`
+- **PlayerRoomEventHandler** (34 connections) — `server/realtime/player_event_handlers_room.py`
+- **PlayerEventHandler** (32 connections) — `server/realtime/player_event_handlers.py`
+- **player_event_handlers_room.py** (31 connections) — `server/realtime/player_event_handlers_room.py`
+- **realtime/conftest.py** (23 connections) — `server/tests/unit/realtime/conftest.py`
+- **UUID** (17 connections)
+- **fixture** (15 connections)
+- **PlayerRoomEventHandlerDeps** (12 connections) — `server/realtime/player_event_handlers_room.py`
+- **.__init__()** (10 connections) — `server/realtime/player_event_handlers.py`
+- **_as_map()** (10 connections) — `server/realtime/player_event_handlers_room.py`
+- **.handle_player_entered()** (10 connections) — `server/realtime/player_event_handlers_room.py`
+- **JsonMap** (10 connections)
+- **RoomConnectionManager** (10 connections) — `server/realtime/player_event_handlers_room.py`
+- **_snapshot_payload()** (10 connections) — `server/realtime/player_event_handlers_room.py`
+- **OccupantsUpdateFn** (9 connections) — `server/realtime/player_event_handlers_room.py`
+- **._initialize_handlers()** (8 connections) — `server/realtime/player_event_handlers.py`
+- **._build_room_update_data()** (8 connections) — `server/realtime/player_event_handlers_room.py`
+- **.handle_player_left()** (8 connections) — `server/realtime/player_event_handlers_room.py`
+- **._prepare_room_data()** (8 connections) — `server/realtime/player_event_handlers_room.py`
+- **.send_occupants_snapshot_to_player()** (8 connections) — `server/realtime/player_event_handlers_room.py`
+- **.send_room_update_to_player()** (8 connections) — `server/realtime/player_event_handlers_room.py`
+- **_NamedRoom** (7 connections) — `server/realtime/player_event_handlers_room.py`
+- **.get_room_state_event()** (7 connections) — `server/realtime/player_event_handlers_room.py`
+- **.send_room_state_to_player()** (7 connections) — `server/realtime/player_event_handlers_room.py`
+- **.send_room_updates_to_entering_player()** (7 connections) — `server/realtime/player_event_handlers_room.py`
+- *... and 110 more nodes in this community*
 
 ## Relationships
 
-- [EventBus](EventBus.md) (18 shared connections)
-- [get_logger](get_logger.md) (8 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (6 shared connections)
-- [NPCPopulationController](NPCPopulationController.md) (5 shared connections)
-- [NPCSpawnRule](NPCSpawnRule.md) (5 shared connections)
-- [PopulationStats](PopulationStats.md) (2 shared connections)
-- [test_npc_utils.py](test_npc_utils.py.md) (1 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (22 shared connections)
+- [look_container.py](look_container.py.md) (14 shared connections)
+- [BaseEvent](BaseEvent.md) (12 shared connections)
+- [Room](Room.md) (8 shared connections)
+- [Communities (355 total, 223 thin omitted)](Communities_355_total,_223_thin_omitted.md) (8 shared connections)
+- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (8 shared connections)
+- [deque](deque.md) (5 shared connections)
+- [asyncio](asyncio.md) (3 shared connections)
+- [test_rate_limiter_utils.py](test_rate_limiter_utils.py.md) (3 shared connections)
+- [.publish_with_pool](publish_with_pool.md) (3 shared connections)
+- [test_npc_combat_integration_join.py](test_npc_combat_integration_join.py.md) (2 shared connections)
+- [test_command_admin.py](test_command_admin.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/npc/population_control.py`
-- `server/npc/spawn_validator.py`
-- `server/npc/zone_config_loader.py`
-- `server/npc/zone_configuration.py`
-- `server/tests/unit/npc/test_population_control.py`
-- `server/tests/unit/npc/test_spawn_validator.py`
-- `server/tests/unit/npc/test_zone_config_loader.py`
-- `server/tests/unit/npc/test_zone_configuration.py`
+- `server/realtime/player_event_handlers.py`
+- `server/realtime/player_event_handlers_room.py`
+- `server/tests/unit/realtime/conftest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 354 (96%)
-- INFERRED: 15 (4%)
+- EXTRACTED: 313 (92%)
+- INFERRED: 29 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

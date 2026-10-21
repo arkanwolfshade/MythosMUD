@@ -1,61 +1,52 @@
 # lifespan.py
 
-> 50 nodes
+> 57 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **lifespan.py** (51 connections) — `server/app/lifespan.py`
-- **test_lifespan_helpers.py** (28 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
-- **_startup_application()** (18 connections) — `server/app/lifespan.py`
-- **lifespan()** (16 connections) — `server/app/lifespan.py`
-- **_shutdown_with_error_handling()** (12 connections) — `server/app/lifespan.py`
-- **_initialize_enhanced_systems()** (10 connections) — `server/app/lifespan.py`
-- **asyncio** (10 connections)
-- **_cleanup_container_on_error()** (8 connections) — `server/app/lifespan.py`
-- **update_logging_with_player_service()** (8 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **_calculate_metrics_delta()** (7 connections) — `server/app/lifespan.py`
-- **_cleanup_dead_letter_queue_periodically()** (7 connections) — `server/app/lifespan.py`
-- **_persist_mythos_state_on_error()** (7 connections) — `server/app/lifespan.py`
-- **_persist_metrics_to_file()** (6 connections) — `server/app/lifespan.py`
-- **_log_memory_metrics_periodically()** (4 connections) — `server/app/lifespan.py`
-- **_mock_task_registry()** (4 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
-- **test_cleanup_dead_letter_queue_periodically_runs_cleanup()** (4 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
-- **test_cleanup_dead_letter_queue_periodically_swallows_cleanup_errors()** (4 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
-- **test_persist_metrics_to_file_writes_json()** (4 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
-- **test_startup_application_minimal()** (4 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
-- **test_startup_application_registers_dlq_cleanup_when_nats_available()** (4 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
-- **FastAPI** (4 connections)
-- **_close_registered_coro()** (3 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
-- **test_cleanup_container_on_error_none()** (3 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
-- **test_cleanup_container_on_error_with_container()** (3 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
-- **test_initialize_enhanced_systems()** (3 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
-- *... and 25 more nodes in this community*
+- **MemoryThresholdMonitor** (25 connections) — `server/app/memory_cleanup_service.py`
+- **test_memory_cleanup_service.py** (21 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **memory_cleanup_service.py** (13 connections) — `server/app/memory_cleanup_service.py`
+- **asyncio** (9 connections)
+- **create_memory_cleanup_monitor()** (8 connections) — `server/app/memory_cleanup_service.py`
+- **get_managed_task_cleanup_implementation_for_task_four_spec_compliance()** (6 connections) — `server/app/memory_cleanup_service.py`
+- **.get_memory_status_report()** (6 connections) — `server/app/memory_cleanup_service.py`
+- **test_task_four_spec_factory()** (5 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **MemoryStatusReport** (4 connections) — `server/app/memory_cleanup_service.py`
+- **._get_current_memory_usage()** (4 connections) — `server/app/memory_cleanup_service.py`
+- **.managed_task_cleanup()** (4 connections) — `server/app/memory_cleanup_service.py`
+- **monitor()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_create_memory_cleanup_monitor()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_get_active_task_count_with_loop()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_get_memory_status_report()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_managed_task_cleanup_execution_failure()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_managed_task_cleanup_skips_on_cooldown()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_managed_task_cleanup_skips_when_below_threshold()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_managed_task_cleanup_success()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_managed_task_cleanup_timeout()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **._get_active_task_count()** (3 connections) — `server/app/memory_cleanup_service.py`
+- **_rss_bytes_from_memory_info()** (3 connections) — `server/app/memory_cleanup_service.py`
+- **test_flush_memory_indexes_cache_error()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_get_active_task_count_no_loop()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_get_current_memory_usage_failure()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (9 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (7 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (6 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (5 shared connections)
-- [test_lifespan_shutdown.py](test_lifespan_shutdown.py.md) (5 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (3 shared connections)
-- [PerformanceMonitor](PerformanceMonitor.md) (3 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (3 shared connections)
-- [LogAggregator](LogAggregator.md) (3 shared connections)
-- [TestMonitoringEndpoints](TestMonitoringEndpoints.md) (3 shared connections)
-- [endpoints.py](endpoints.py.md) (3 shared connections)
-- [Room](Room.md) (3 shared connections)
+- [TrackedTaskManager](TrackedTaskManager.md) (3 shared connections)
+- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (3 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
 
 ## Source Files
 
-- `server/app/lifespan.py`
-- `server/structured_logging/enhanced_logging_config.py`
-- `server/tests/unit/app/test_lifespan_helpers.py`
+- `server/app/memory_cleanup_service.py`
+- `server/tests/unit/app/test_memory_cleanup_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 164 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 89 (88%)
+- INFERRED: 12 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

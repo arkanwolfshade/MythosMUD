@@ -1,26 +1,28 @@
 # ._handle_patrol_territory
 
-> 4 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **._handle_patrol_territory()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **.patrol_territory()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **Patrol the NPC's territory.** (1 connections) — `server/npc/aggressive_mob_npc.py`
-- **Handle patrolling territory action.** (1 connections) — `server/npc/aggressive_mob_npc.py`
+- **Vite Best-Practices Remediation** (2 connections) — `.cursor/plans/vite_best-practices_remediation_abfe0fbe.plan.md`
+- **Vitest Best-Practices Remediation** (2 connections) — `.cursor/plans/vitest_best-practices_remediation_f589ee02.plan.md`
+- **Test Suite Improvement** (1 connections) — `.cursor/plans/test_suite_improvement_f5a4acf1.plan.md`
+- **import.meta.env (Vite)** (1 connections) — `.cursor/plans/vite_best-practices_remediation_abfe0fbe.plan.md`
 
 ## Relationships
 
-- [AggressiveMobNPC](AggressiveMobNPC.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/npc/aggressive_mob_npc.py`
+- `.cursor/plans/test_suite_improvement_f5a4acf1.plan.md`
+- `.cursor/plans/vite_best-practices_remediation_abfe0fbe.plan.md`
+- `.cursor/plans/vitest_best-practices_remediation_f589ee02.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1 (33%)
+- INFERRED: 2 (67%)
 - AMBIGUOUS: 0 (0%)
 
 ---

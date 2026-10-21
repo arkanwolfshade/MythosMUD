@@ -1,26 +1,28 @@
 # description
 
-> 5 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **description** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **maxLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **Git Workflow** (6 connections) — `.claude/skills/git-workflow/SKILL.md`
+- **git-workflow/SKILL.md** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
+- **Branching** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
+- **Commit messages** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
+- **History hygiene** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
+- **Never** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
+- **Repository hygiene** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- `.claude/skills/git-workflow/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

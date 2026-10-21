@@ -1,64 +1,47 @@
 # test_who_commands.py
 
-> 132 nodes
+> 14 nodes · cohesion 0.16
 
 ## Key Concepts
 
-- **test_who_commands.py** (47 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **utility_commands.py** (20 connections) — `server/commands/utility_commands.py`
-- **who_commands.py** (18 connections) — `server/commands/who_commands.py`
-- **handle_who_command()** (15 connections) — `server/commands/who_commands.py`
-- **handle_time_command()** (14 connections) — `server/commands/time_commands.py`
-- **filter_players_by_name()** (14 connections) — `server/commands/who_commands.py`
-- **parse_last_active_datetime()** (14 connections) — `server/commands/who_commands.py`
-- **format_player_entry()** (13 connections) — `server/commands/who_commands.py`
-- **format_player_location()** (13 connections) — `server/commands/who_commands.py`
-- **test_who_commands_helpers.py** (12 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **filter_online_players()** (10 connections) — `server/commands/who_commands.py`
-- **format_who_result()** (10 connections) — `server/commands/who_commands.py`
-- **time_commands.py** (10 connections) — `server/commands/time_commands.py`
-- **asyncio** (9 connections)
-- **get_players_for_who()** (8 connections) — `server/commands/who_commands.py`
-- **test_time_commands.py** (8 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Any** (6 connections)
-- **test_handle_who_command_error_handling()** (5 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **asyncio** (5 connections)
-- **test_handle_time_command_holiday_service_error()** (4 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_no_holiday_service()** (4 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_no_holidays()** (4 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_success()** (4 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_with_holidays()** (4 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_filter_online_players_all_online()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- *... and 107 more nodes in this community*
+- **test_command_factories.py** (64 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_add_admin_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_admin_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_alias_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_cast_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_quit_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_unmute_global_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_whoami_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Unit tests for command factories. Tests the CommandFactory class.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_unmute_global_command delegates to moderation factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_add_admin_command delegates to moderation factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_whoami_command delegates to player_state factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_quit_command delegates to player_state factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_alias_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
-- [test_status_commands.py](test_status_commands.py.md) (4 shared connections)
-- [command_service.py](command_service.py.md) (3 shared connections)
-- [.state](state.md) (3 shared connections)
-- [test_logout_commands.py](test_logout_commands.py.md) (3 shared connections)
-- [test_lifespan_shutdown.py](test_lifespan_shutdown.py.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [command_error](command_error.md) (2 shared connections)
-- [alias_storage.py](alias_storage.py.md) (2 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
-- [test_alias_commands.py](test_alias_commands.py.md) (1 shared connections)
+- [NPCCombatIntegration](NPCCombatIntegration.md) (1 shared connections)
+- [SecureBaseModel](SecureBaseModel.md) (1 shared connections)
+- [test_overflow_spills_into_a_real_players_json_backed_inventory](test_overflow_spills_into_a_real_players_json_backed_inventory.md) (1 shared connections)
+- [test_handle_container_overflow](test_handle_container_overflow.md) (1 shared connections)
+- [test_get_enum_value_with_string](test_get_enum_value_with_string.md) (1 shared connections)
+- [test_handle_container_overflow_empty_overflow](test_handle_container_overflow_empty_overflow.md) (1 shared connections)
+- [test_create_reply_command](test_create_reply_command.md) (1 shared connections)
+- [test_create_channel_command](test_create_channel_command.md) (1 shared connections)
+- [test_create_go_command](test_create_go_command.md) (1 shared connections)
+- [test_create_sit_command](test_create_sit_command.md) (1 shared connections)
+- [test_create_stand_command](test_create_stand_command.md) (1 shared connections)
+- [test_create_lie_command](test_create_lie_command.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/time_commands.py`
-- `server/commands/utility_commands.py`
-- `server/commands/who_commands.py`
-- `server/tests/unit/commands/test_time_commands.py`
-- `server/tests/unit/commands/test_who_commands.py`
-- `server/tests/unit/commands/test_who_commands_helpers.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 248 (98%)
-- INFERRED: 5 (2%)
+- EXTRACTED: 71 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

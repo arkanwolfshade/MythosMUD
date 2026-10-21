@@ -1,10 +1,10 @@
 # Analysis Options
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Analysis Options** (0 connections) — `.codacy/tools-configs/analysis_options.yaml`
+- **4. Alternatives Considered** (0 connections) — `docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.codacy/tools-configs/analysis_options.yaml`
+- `docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md`
 
 ## Audit Trail
 

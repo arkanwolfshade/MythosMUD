@@ -1,24 +1,22 @@
 # test_get_dead_players_excludes_alive
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_get_dead_players_excludes_alive()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test get_dead_players() excludes alive players.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **Server Authority** (0 connections) — `.claude/rules/server-management.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_player_death_service.py](test_player_death_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_death_service.py`
+- `.claude/rules/server-management.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

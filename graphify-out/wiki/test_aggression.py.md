@@ -1,45 +1,60 @@
 # test_aggression.py
 
-> 16 nodes
+> 51 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **test_aggression.py** (15 connections) — `server/tests/unit/schemas/test_aggression.py`
-- **parse_aggression_level()** (8 connections) — `server/schemas/combat/aggression.py`
-- **aggression.py** (8 connections) — `server/schemas/combat/aggression.py`
-- **parametrize** (5 connections)
-- **test_admin_model_normalises_to_an_int()** (4 connections) — `server/tests/unit/schemas/test_aggression.py`
-- **test_catalog_names_land_on_the_ends_of_the_threat_scale()** (4 connections) — `server/tests/unit/schemas/test_aggression.py`
-- **test_parse_aggression_level()** (4 connections) — `server/tests/unit/schemas/test_aggression.py`
-- **test_admin_model_still_rejects_bad_levels()** (3 connections) — `server/tests/unit/schemas/test_aggression.py`
-- **test_combat_schema_accepts_both_spellings()** (3 connections) — `server/tests/unit/schemas/test_aggression.py`
-- **test_combat_schema_rejects_everything_else()** (3 connections) — `server/tests/unit/schemas/test_aggression.py`
-- **NPC ``behavior_config["aggression_level"]``: one contract, two spellings…** (1 connections) — `server/schemas/combat/aggression.py`
-- **Resolve a stored ``aggression_level`` to an int 0-10, or None when unset or…** (1 connections) — `server/schemas/combat/aggression.py`
-- **#999: NPC aggression_level is one contract (int 0-10, or the catalog names…** (1 connections) — `server/tests/unit/schemas/test_aggression.py`
-- **Names map to the ends of the 0-10 scale, numbers are clamped, anything…** (1 connections) — `server/tests/unit/schemas/test_aggression.py`
-- **aggressive is full threat (same as unset); passive is the damped end.** (1 connections) — `server/tests/unit/schemas/test_aggression.py`
-- **A catalog NPC (string level) loads through the admin model and is reported as…** (1 connections) — `server/tests/unit/schemas/test_aggression.py`
+- **PlayerMute** (26 connections) — `server/persistence/repositories/player_mute_repository.py`
+- **player_mute_repository.py** (21 connections) — `server/persistence/repositories/player_mute_repository.py`
+- **PlayerMuteRepository** (19 connections) — `server/persistence/repositories/player_mute_repository.py`
+- **test_game_bundle_mute_load.py** (14 connections) — `server/tests/unit/container/test_game_bundle_mute_load.py`
+- **test_player_mute_repository.py** (14 connections) — `server/tests/unit/persistence/repositories/test_player_mute_repository.py`
+- **_Session** (11 connections) — `server/tests/unit/persistence/repositories/test_player_mute_repository.py`
+- **_Repo** (8 connections) — `server/tests/unit/container/test_game_bundle_mute_load.py`
+- **.delete()** (7 connections) — `server/persistence/repositories/player_mute_repository.py`
+- **test_database_errors_raise_database_error()** (7 connections) — `server/tests/unit/persistence/repositories/test_player_mute_repository.py`
+- **test_delete_reports_whether_a_row_was_removed()** (7 connections) — `server/tests/unit/persistence/repositories/test_player_mute_repository.py`
+- **test_load_active_maps_rows()** (7 connections) — `server/tests/unit/persistence/repositories/test_player_mute_repository.py`
+- **test_upsert_binds_stringified_ids_and_commits()** (7 connections) — `server/tests/unit/persistence/repositories/test_player_mute_repository.py`
+- **test_load_player_mutes_fills_user_manager_index()** (6 connections) — `server/tests/unit/container/test_game_bundle_mute_load.py`
+- **_Result** (6 connections) — `server/tests/unit/persistence/repositories/test_player_mute_repository.py`
+- **_use_session()** (6 connections) — `server/tests/unit/persistence/repositories/test_player_mute_repository.py`
+- **test_load_player_mutes_database_error_starts_with_no_mutes()** (5 connections) — `server/tests/unit/container/test_game_bundle_mute_load.py`
+- **MonkeyPatch** (5 connections)
+- **_opt_str()** (4 connections) — `server/persistence/repositories/player_mute_repository.py`
+- **UUID** (4 connections)
+- **_row_to_mute()** (4 connections) — `server/persistence/repositories/player_mute_repository.py`
+- **asyncio** (4 connections)
+- **_as_uuid()** (3 connections) — `server/persistence/repositories/player_mute_repository.py`
+- **_MuteRow** (3 connections) — `server/persistence/repositories/player_mute_repository.py`
+- **asyncio** (3 connections)
+- **.load_active()** (3 connections) — `server/tests/unit/container/test_game_bundle_mute_load.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [SecureBaseModel](SecureBaseModel.md) (5 shared connections)
-- [migrate_combat_data.py](migrate_combat_data.py.md) (4 shared connections)
-- [coerce_int](coerce_int.md) (3 shared connections)
-- [aggro_threat.py](aggro_threat.py.md) (3 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
-- [NPCCombatDataProvider](NPCCombatDataProvider.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [endpoints.py](endpoints.py.md) (10 shared connections)
+- [asyncio](asyncio.md) (10 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (8 shared connections)
+- [Room](Room.md) (6 shared connections)
+- [MythosMUD Database Placement](MythosMUD_Database_Placement.md) (5 shared connections)
+- [ItemPrototypeModel](ItemPrototypeModel.md) (5 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (5 shared connections)
+- [AttributeError](AttributeError.md) (4 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (1 shared connections)
+- [test_party_service.py](test_party_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/combat/aggression.py`
-- `server/tests/unit/schemas/test_aggression.py`
+- `server/persistence/repositories/player_mute_repository.py`
+- `server/tests/unit/container/test_game_bundle_mute_load.py`
+- `server/tests/unit/persistence/repositories/test_player_mute_repository.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 131 (89%)
+- INFERRED: 17 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

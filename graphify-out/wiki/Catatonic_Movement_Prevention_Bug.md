@@ -1,13 +1,11 @@
 # Catatonic Movement Prevention Bug
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **current_room_id VARCHAR(50) Truncation** (2 connections) — `investigations/sessions/2025-11-19_session-001_catatonic-movement-and-exit-bugs.md`
-- **Catatonic Movement Prevention Bug** (2 connections) — `investigations/sessions/2025-11-19_session-001_catatonic-movement-and-exit-bugs.md`
-- **WebSocket Go Command Unified Handler Bypass** (1 connections) — `investigations/sessions/2025-11-19_session-001_catatonic-movement-and-exit-bugs.md`
-- **Movement Valid Exits Rejection Bug** (1 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
+- **Paired YAML and Env Config Tuples** (1 connections) — `docs/archive/CONFIGURATION_ARCHITECTURE_FINAL.md`
+- **Conftest Pydantic Config Migration** (1 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
 
 ## Relationships
 
@@ -15,13 +13,13 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-11-19_session-001_catatonic-movement-and-exit-bugs.md`
-- `investigations/sessions/2025-11-20_movement-bug-investigation.md`
+- `docs/archive/CONFIGURATION_ARCHITECTURE_FINAL.md`
+- `docs/archive/CONFTEST_MIGRATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (67%)
-- INFERRED: 1 (33%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

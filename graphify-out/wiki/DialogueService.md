@@ -1,45 +1,55 @@
 # DialogueService
 
-> 21 nodes
+> 35 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **DialogueService** (18 connections) — `server/game/dialogue/dialogue_service.py`
-- **._present_node()** (10 connections) — `server/game/dialogue/dialogue_service.py`
-- **.choose_option()** (9 connections) — `server/game/dialogue/dialogue_service.py`
-- **UUID** (8 connections)
-- **.clear_cursor()** (7 connections) — `server/game/dialogue/dialogue_service.py`
-- **.get_cursor()** (6 connections) — `server/game/dialogue/dialogue_service.py`
-- **._load_tree_or_fade()** (6 connections) — `server/game/dialogue/dialogue_service.py`
-- **._player_key()** (5 connections) — `server/game/dialogue/dialogue_service.py`
-- **.start_with_npc()** (5 connections) — `server/game/dialogue/dialogue_service.py`
-- **DialogueCursor** (4 connections) — `server/game/dialogue/dialogue_service.py`
-- **._invalid_option_message()** (4 connections) — `server/game/dialogue/dialogue_service.py`
-- **.__init__()** (2 connections) — `server/game/dialogue/dialogue_service.py`
-- **Load and validate a dialogue tree, or clear cursor and return fade text.** (1 connections) — `server/game/dialogue/dialogue_service.py`
-- **Return an error string if option_index is out of range for node.** (1 connections) — `server/game/dialogue/dialogue_service.py`
-- **Advance from the current cursor by 1-based option index. Returns…** (1 connections) — `server/game/dialogue/dialogue_service.py`
-- **Set cursor and build prompt for node_id.** (1 connections) — `server/game/dialogue/dialogue_service.py`
-- **Active conversation position for one player.** (1 connections) — `server/game/dialogue/dialogue_service.py`
-- **Load dialogue trees and track per-player session cursors.** (1 connections) — `server/game/dialogue/dialogue_service.py`
-- **Drop the player's dialogue cursor if any.** (1 connections) — `server/game/dialogue/dialogue_service.py`
-- **Return active cursor or None.** (1 connections) — `server/game/dialogue/dialogue_service.py`
-- **Begin (or restart) dialogue with an NPC. Returns DialoguePrompt on success, or…** (1 connections) — `server/game/dialogue/dialogue_service.py`
+- **_prepare_command_for_processing()** (20 connections) — `server/command_handler_unified.py`
+- **_check_rate_limit()** (9 connections) — `server/command_handler_unified.py`
+- **TestPrepareCommandForProcessing** (7 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **test_command_preparation.py** (4 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **TestCheckRateLimit** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_rate_limit_allowed()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_rate_limit_blocked()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_prepare_command_for_processing_empty_after_cleaning()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_prepare_command_for_processing_rate_limited()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_prepare_command_for_processing_success()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_prepare_command_for_processing_validation_failed()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_prepare_command_empty_after_cleaning()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_empty_after_normalization()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_rate_limited()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_success()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_validation_failed()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_check_rate_limit_allowed()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_rate_limit_blocked()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Check if player is rate limited. Returns result dict if blocked, None if…** (1 connections) — `server/command_handler_unified.py`
+- **Prepare command for processing. Returns (command_line, cmd, args,…** (1 connections) — `server/command_handler_unified.py`
+- **Test _prepare_command_for_processing returns rate limit result.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **Test _prepare_command_for_processing returns validation result.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **Test _prepare_command_for_processing successfully prepares command.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **Test _check_rate_limit returns None when allowed.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **Test _check_rate_limit returns result when blocked.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [talk_command.py](talk_command.py.md) (12 shared connections)
-- [SecureBaseModel](SecureBaseModel.md) (3 shared connections)
-- [DialogueDefinitionRepository](DialogueDefinitionRepository.md) (2 shared connections)
+- [test_movement_service.py](test_movement_service.py.md) (9 shared connections)
+- [QuestService](QuestService.md) (5 shared connections)
+- [go_command.py](go_command.py.md) (2 shared connections)
+- [MemoryMonitor](MemoryMonitor.md) (2 shared connections)
+- [command_parser.py](command_parser.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/dialogue/dialogue_service.py`
+- `server/command_handler_unified.py`
+- `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- `server/tests/unit/commands/test_command_preparation.py`
+- `server/tests/unit/commands/test_command_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (95%)
-- INFERRED: 3 (5%)
+- EXTRACTED: 59 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

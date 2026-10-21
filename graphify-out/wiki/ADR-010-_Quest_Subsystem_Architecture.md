@@ -1,10 +1,10 @@
 # ADR-010: Quest Subsystem Architecture
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **ADR-010: Quest Subsystem Architecture** (0 connections) — `docs/architecture/decisions/ADR-010-quest-subsystem.md`
+- **NPC Catalog Pipeline README** (0 connections) — `data/npc_catalog/README.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/architecture/decisions/ADR-010-quest-subsystem.md`
+- `data/npc_catalog/README.md`
 
 ## Audit Trail
 

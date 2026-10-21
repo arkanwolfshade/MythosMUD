@@ -1,24 +1,23 @@
 # What Are They?
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **What Are They?** (3 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **`anyio` (Third-Party Library)** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **`asyncio` (Python Standard Library)** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **apply_container_migrations.py** (1 connections) — `scripts/apply_container_migrations.py`
+- **Apply container schema normalization migrations to mythos_dev database. This…** (1 connections) — `scripts/apply_container_migrations.py`
 
 ## Relationships
 
-- [AnyIO vs Asyncio: High-Level Comparison and Decision Guide](AnyIO_vs_Asyncio-_High-Level_Comparison_and_Decision_Guide.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/anyio_vs_asyncio_comparison.md`
+- `scripts/apply_container_migrations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

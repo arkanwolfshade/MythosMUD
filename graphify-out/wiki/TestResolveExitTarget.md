@@ -1,33 +1,31 @@
 # TestResolveExitTarget
 
-> 10 nodes
+> 8 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **TestResolveExitTarget** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_returns_coords_and_bidirectional_when_target_has_reverse_exit()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_returns_coords_and_not_bidirectional_when_no_reverse()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_returns_none_when_target_room_has_no_coords()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_returns_none_when_target_room_missing()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **Room without a reverse exit is not considered bidirectional.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **If the target room ID does not exist, the helper returns None.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **If the target room lacks map coordinates, the helper returns None.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **Tests for _resolve_exit_target.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **Room with a reverse exit is treated as bidirectional and returns its…** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **test_db_connectivity_create_and_read_user()** (7 connections) — `server/tests/integration/test_db_connectivity.py`
+- **cleanup_test_user()** (6 connections) — `server/tests/integration/test_db_connectivity.py`
+- **async_sessionmaker** (2 connections)
+- **AsyncSession** (2 connections)
+- **asyncio** (1 connections)
+- **fixture** (1 connections)
+- **Yield a fresh user id and guarantee its row is deleted after the test, pass or…** (1 connections) — `server/tests/integration/test_db_connectivity.py`
+- **Test that we can create and read a User from the database.** (1 connections) — `server/tests/integration/test_db_connectivity.py`
 
 ## Relationships
 
-- [AsciiMapRenderer](AsciiMapRenderer.md) (5 shared connections)
-- [test_ascii_map_renderer_exits.py](test_ascii_map_renderer_exits.py.md) (1 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (3 shared connections)
+- [CombatBroadcastMixin](CombatBroadcastMixin.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- `server/tests/integration/test_db_connectivity.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 10 (77%)
+- INFERRED: 3 (23%)
 - AMBIGUOUS: 0 (0%)
 
 ---

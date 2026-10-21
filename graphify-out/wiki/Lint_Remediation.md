@@ -1,33 +1,35 @@
 # Lint Remediation
 
-> 12 nodes
+> 13 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **Lint Remediation** (8 connections) — `.cursor/commands/lint-remediation.md`
-- **Fix patterns by tier** (4 connections) — `.cursor/commands/lint-remediation.md`
-- **lint-remediation.md** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **🔴 Critical — compilation errors** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **Debugging when a fix doesn't take** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **Entry point** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **Error code table** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **Fix-verify loop** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **🟡 High — code quality** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **🟢 Medium — style** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **Never** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **Priority** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **$ref** (4 connections) — `server/help/help_schema.json`
+- **aliases** (4 connections) — `server/help/help_schema.json`
+- **properties** (3 connections) — `server/help/help_schema.json`
+- **commands** (3 connections) — `server/help/help_schema.json`
+- **guides** (3 connections) — `server/help/help_schema.json`
+- **items** (2 connections) — `server/help/help_schema.json`
+- **items** (2 connections) — `server/help/help_schema.json`
+- **items** (2 connections) — `server/help/help_schema.json`
+- **items** (2 connections) — `server/help/help_schema.json`
+- **type** (1 connections) — `server/help/help_schema.json`
+- **uniqueItems** (1 connections) — `server/help/help_schema.json`
+- **type** (1 connections) — `server/help/help_schema.json`
+- **type** (1 connections) — `server/help/help_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Bug Investigator Subagent](Bug_Investigator_Subagent.md) (2 shared connections)
+- [Introduce Color Strategically](Introduce_Color_Strategically.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/commands/lint-remediation.md`
+- `server/help/help_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

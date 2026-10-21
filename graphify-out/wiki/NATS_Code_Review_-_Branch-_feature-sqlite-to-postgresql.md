@@ -1,47 +1,50 @@
 # NATS Code Review - Branch: feature/sqlite-to-postgresql
 
-> 30 nodes
+> 29 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **NATS Code Review - Branch: feature/sqlite-to-postgresql** (10 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **Positive Findings ✅** (5 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **Critical Issues 🔴** (4 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **High Priority Issues 🟡** (4 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **Medium Priority Issues 🟢** (4 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **Recommendations Summary** (4 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **Code Quality Issues** (3 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **NATS Code Review** (2 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **10. **Inconsistent Error Handling**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **11. **Missing Input Validation**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **1. **Blocking Operations in Message Handlers** (Anti-pattern violation)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **1. **Excellent Error Boundary Implementation**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **2. **Good Connection State Management**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **2. **Missing Message Acknowledgment** (Anti-pattern violation)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **3. **Connection Pool Not Used by Default** (Inefficiency)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **3. **Proper Async/Await Usage**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **4. **Subject Manager Pattern**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **4. **Subject Naming Inconsistency** (Anti-pattern risk)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **5. **No TLS Configuration** (Security concern)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **6. **Error Handler May Block** (Anti-pattern risk)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **7. **Batch Flush Uses Deprecated Event Loop Method**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **8. **No Connection Health Monitoring**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **9. **Memory Leak Risk in Metrics**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **Conclusion** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **Executive Summary** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- *... and 5 more nodes in this community*
+- **Async Remediation Final Report** (13 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **📁 Files Modified (16 Total)** (4 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **💰 ROI Summary** (4 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **🎭 Final Status** (3 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **🚀 Production Readiness** (3 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **✅ Verification Results** (3 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **📊 What Was Accomplished** (3 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **48 Sync Persistence Call Instances** (2 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
+- **✅ COMPLETE - ALL 48 INSTANCES MIGRATED** (2 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **Status**: ✅**REMEDIATION 100% COMPLETE** (2 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **🎯 Success Criteria - Final Status** (2 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **All async anti-patterns have been exorcised from the codebase** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **All Targets Met** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **API/Commands (2 files)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **Checklist** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **Core Infrastructure (2 files)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **📚 Documentation Delivered** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **🎯 Final Metrics** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **Investment** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **Linting** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **Phase 1: Critical Fixes (4 hours)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **Phase 2: Complete Migration (5 hours)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **Recommended Next Steps** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **Return** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- **Service Layer (12 files)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
+- [subzone_schema.json](subzone_schema.json.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/NATS_CODE_REVIEW.md`
+- `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
+- `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
+- EXTRACTED: 31 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

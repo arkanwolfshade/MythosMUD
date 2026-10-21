@@ -1,29 +1,34 @@
 # lock_state
 
-> 8 nodes
+> 13 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **lock_state** (5 connections) — `schemas/unified_room_schema.json`
-- **enum** (4 connections) — `schemas/unified_room_schema.json`
-- **default** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
-- **locked** (1 connections) — `schemas/unified_room_schema.json`
-- **sealed** (1 connections) — `schemas/unified_room_schema.json`
-- **unlocked** (1 connections) — `schemas/unified_room_schema.json`
+- **Claims by cluster** (8 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **P2 · Structural & Architecture Doc Claim Register** (5 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **P2-Structural-Claims.md** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **config-api — API_OPENAPI_SPECIFICATION** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **container-di — BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **container-di — CONTAINER_SYSTEM_ARCHITECTURE** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **Corpus correction** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **Design↔design contradictions (findings without needing code)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **domain — aggro-threat-system** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **events-nats — EVENT_OWNERSHIP_MATRIX, DISTRIBUTED_EVENTBUS_NATS, NATS_SUBJECT_PATTERNS** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **persistence-db — PERSISTENCE_REPOSITORY_ARCHITECTURE, DATABASE_ACCESS_PATTERNS** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **realtime-connection — REAL_TIME_ARCHITECTURE, CONNECTION_MANAGER_ARCHITECTURE** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **Verified during extraction** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [SpellMaterialsService](SpellMaterialsService.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

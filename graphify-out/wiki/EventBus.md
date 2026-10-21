@@ -1,78 +1,70 @@
 # EventBus
 
-> 300 nodes
+> 256 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **EventBus** (225 connections) — `server/events/event_bus.py`
-- **NPCDefinition** (110 connections) — `server/models/npc.py`
-- **event_types.py** (102 connections) — `server/events/event_types.py`
-- **NPCBase** (79 connections) — `server/npc/npc_base.py`
-- **NPCSpawningService** (69 connections) — `server/npc/spawning_service.py`
-- **NPCEnteredRoom** (53 connections) — `server/events/event_types.py`
-- **NPCEventReactionSystem** (47 connections) — `server/npc/event_reaction_system.py`
-- **test_spawning_modules.py** (47 connections) — `server/tests/unit/npc/test_spawning_modules.py`
-- **NPCLeftRoom** (46 connections) — `server/events/event_types.py`
-- **npc_base.py** (46 connections) — `server/npc/npc_base.py`
-- **population_control.py** (42 connections) — `server/npc/population_control.py`
-- **event_bus.py** (40 connections) — `server/events/event_bus.py`
-- **spawning_service.py** (40 connections) — `server/npc/spawning_service.py`
-- **models/npc.py** (39 connections) — `server/models/npc.py`
-- **event_reaction_system.py** (36 connections) — `server/npc/event_reaction_system.py`
-- **npc_instance_service.py** (32 connections) — `server/services/npc_instance_service.py`
-- **combat_integration.py** (27 connections) — `server/npc/combat_integration.py`
-- **spawning_instance_factory.py** (27 connections) — `server/npc/spawning_instance_factory.py`
-- **server/events/__init__.py** (26 connections) — `server/events/__init__.py`
-- **spawning_request_execution.py** (21 connections) — `server/npc/spawning_request_execution.py`
-- **bundles/npc.py** (20 connections) — `server/container/bundles/npc.py`
-- **aggressive_mob_npc.py** (20 connections) — `server/npc/aggressive_mob_npc.py`
-- **NPCSpawnRequest** (19 connections) — `server/npc/spawning_models.py`
-- **SimpleNPCDefinition** (19 connections) — `server/npc/spawning_models.py`
-- **create_npc_instance()** (19 connections) — `server/npc/spawning_instance_factory.py`
-- *... and 275 more nodes in this community*
+- **ErrorType** (52 connections) — `server/error_types.py`
+- **StandardizedErrorResponse** (46 connections) — `server/error_handlers/standardized_responses.py`
+- **error_types.py** (36 connections) — `server/error_types.py`
+- **test_websocket_handler_helpers_extended.py** (34 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
+- **ErrorMessages** (33 connections) — `server/error_types.py`
+- **standardized_responses.py** (32 connections) — `server/error_handlers/standardized_responses.py`
+- **create_websocket_error_response()** (30 connections) — `server/error_types.py`
+- **test_standardized_responses.py** (29 connections) — `server/tests/unit/error_handlers/test_standardized_responses.py`
+- **pydantic_error_handler.py** (24 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **PydanticErrorHandler** (22 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **create_standard_error_response()** (22 connections) — `server/error_types.py`
+- **asyncio** (21 connections)
+- **test_error_types.py** (18 connections) — `server/tests/unit/test_error_types.py`
+- **JSONResponse** (15 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.handle_validation_error()** (12 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **.handle_exception()** (10 connections) — `server/error_handlers/standardized_responses.py`
+- **._handle_generic_exception()** (10 connections) — `server/error_handlers/standardized_responses.py`
+- **._handle_logged_http_exception()** (10 connections) — `server/error_handlers/standardized_responses.py`
+- **._handle_mythos_error()** (10 connections) — `server/error_handlers/standardized_responses.py`
+- **ErrorSeverity** (10 connections) — `server/error_types.py`
+- **test_standardized_responses_security.py** (10 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
+- **TestStandardizedResponsesSecurity** (10 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
+- **error_handlers/__init__.py** (9 connections) — `server/error_handlers/__init__.py`
+- **handle_api_error()** (9 connections) — `server/error_handlers/standardized_responses.py`
+- **test_websocket_handler_error_handling.py** (9 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- *... and 231 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (105 shared connections)
-- [BaseEvent](BaseEvent.md) (75 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (75 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (68 shared connections)
-- [NPCPopulationController](NPCPopulationController.md) (39 shared connections)
-- [NPCSpawnRule](NPCSpawnRule.md) (30 shared connections)
-- [test_event_bus_lifecycle.py](test_event_bus_lifecycle.py.md) (22 shared connections)
-- [event_handler.py](event_handler.py.md) (18 shared connections)
-- [ZoneConfiguration](ZoneConfiguration.md) (18 shared connections)
-- [FollowService](FollowService.md) (17 shared connections)
-- [migrate_combat_data.py](migrate_combat_data.py.md) (17 shared connections)
-- [NPCCombatIntegration](NPCCombatIntegration.md) (16 shared connections)
+- [AttributeError](AttributeError.md) (26 shared connections)
+- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (12 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (10 shared connections)
+- [NATSService](NATSService.md) (10 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (9 shared connections)
+- [useAsciiMapState.ts](useAsciiMapState.ts.md) (9 shared connections)
+- [Alias](Alias.md) (8 shared connections)
+- [Room](Room.md) (5 shared connections)
+- [apiTypeGuards.ts](apiTypeGuards.ts.md) (5 shared connections)
+- [test_look_player.py](test_look_player.py.md) (5 shared connections)
+- [test_npc_startup_service.py](test_npc_startup_service.py.md) (5 shared connections)
+- [look_container.py](look_container.py.md) (5 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/npc.py`
-- `server/events/__init__.py`
-- `server/events/distributed_event_bus.py`
-- `server/events/event_bus.py`
-- `server/events/event_types.py`
-- `server/models/npc.py`
-- `server/npc/__init__.py`
-- `server/npc/aggressive_mob_npc.py`
-- `server/npc/behavior_engine.py`
-- `server/npc/behaviors.py`
-- `server/npc/combat_integration.py`
-- `server/npc/communication_integration.py`
-- `server/npc/corruption_reactions.py`
-- `server/npc/event_reaction_system.py`
-- `server/npc/movement_integration.py`
-- `server/npc/npc_base.py`
-- `server/npc/npc_default_reactions.py`
-- `server/npc/passive_mob_npc.py`
-- `server/npc/population_control.py`
-- `server/npc/population_stats.py`
+- `docs/examples/logging/fastapi_integration.py`
+- `monitoring/webhook-receiver.py`
+- `server/error_handlers/__init__.py`
+- `server/error_handlers/pydantic_error_handler.py`
+- `server/error_handlers/standardized_responses.py`
+- `server/error_types.py`
+- `server/exceptions.py`
+- `server/tests/unit/error_handlers/test_standardized_responses.py`
+- `server/tests/unit/error_handlers/test_standardized_responses_security.py`
+- `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
+- `server/tests/unit/test_error_types.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1290 (87%)
-- INFERRED: 186 (13%)
+- EXTRACTED: 573 (91%)
+- INFERRED: 55 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

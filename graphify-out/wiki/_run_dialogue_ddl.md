@@ -1,15 +1,13 @@
 # _run_dialogue_ddl
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **_run_dialogue_ddl()** (4 connections) — `scripts/apply_dialogue_migrations_to_dev.py`
-- **main()** (3 connections) — `scripts/apply_dialogue_migrations_to_dev.py`
-- **apply_dialogue_migrations_to_dev.py** (2 connections) — `scripts/apply_dialogue_migrations_to_dev.py`
-- **cursor** (1 connections)
-- **Create dialogue_definitions table if missing in the given schema.** (1 connections) — `scripts/apply_dialogue_migrations_to_dev.py`
-- **Connect via DATABASE_URL and ensure dialogue_definitions exists.** (1 connections) — `scripts/apply_dialogue_migrations_to_dev.py`
+- **Cursor Subagents Documentation** (2 connections) — `docs/CURSOR_SUBAGENTS.md`
+- **Cursor Workflows Documentation** (2 connections) — `docs/CURSOR_WORKFLOWS.md`
+- **Cursor CLI Documentation** (1 connections) — `docs/CURSOR_CLI.md`
+- **Cursor IDE Setup Guide** (1 connections) — `docs/CURSOR_SETUP_GUIDE.md`
 
 ## Relationships
 
@@ -17,11 +15,14 @@
 
 ## Source Files
 
-- `scripts/apply_dialogue_migrations_to_dev.py`
+- `docs/CURSOR_CLI.md`
+- `docs/CURSOR_SETUP_GUIDE.md`
+- `docs/CURSOR_SUBAGENTS.md`
+- `docs/CURSOR_WORKFLOWS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

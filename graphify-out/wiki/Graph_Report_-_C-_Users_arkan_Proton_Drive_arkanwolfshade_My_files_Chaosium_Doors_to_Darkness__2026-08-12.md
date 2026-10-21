@@ -1,34 +1,33 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Doors to Darkness  (2026-08-12)
 
-> 13 nodes
+> 11 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Doors to Darkness  (2026-08-12)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **Communities (17 total, 16 thin omitted)** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **doors-to-darkness/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **Community 0 - "Scenario Handouts"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **Import Cycles** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **MapPerformanceMonitor** (8 connections) — `client/src/components/map/utils/performance.ts`
+- **performance.ts** (5 connections) — `client/src/components/map/utils/performance.ts`
+- **performance.test.ts** (4 connections) — `client/src/components/map/__tests__/performance.test.ts`
+- **debounce()** (4 connections) — `client/src/components/map/utils/performance.ts`
+- **.getAverageRenderTime()** (2 connections) — `client/src/components/map/utils/performance.ts`
+- **.getStats()** (2 connections) — `client/src/components/map/utils/performance.ts`
+- **throttle()** (2 connections) — `client/src/components/map/utils/performance.ts`
+- **.endRender()** (1 connections) — `client/src/components/map/utils/performance.ts`
+- **.getFps()** (1 connections) — `client/src/components/map/utils/performance.ts`
+- **.reset()** (1 connections) — `client/src/components/map/utils/performance.ts`
+- **.startRender()** (1 connections) — `client/src/components/map/utils/performance.ts`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [.set_player_skills](set_player_skills.md) (3 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- `client/src/components/map/__tests__/performance.test.ts`
+- `client/src/components/map/utils/performance.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

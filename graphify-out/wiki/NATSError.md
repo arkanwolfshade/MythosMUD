@@ -1,62 +1,54 @@
 # NATSError
 
-> 186 nodes
+> 42 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **NATSError** (70 connections) — `server/services/nats_exceptions.py`
-- **test_nats_service.py** (62 connections) — `server/tests/unit/services/test_nats_service.py`
-- **NATSPublishError** (41 connections) — `server/services/nats_exceptions.py`
-- **nats_exceptions.py** (39 connections) — `server/services/nats_exceptions.py`
-- **NATSSubscribeError** (23 connections) — `server/services/nats_exceptions.py`
-- **asyncio** (23 connections)
-- **test_message_formatters.py** (16 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **NATSConnectionError** (14 connections) — `server/services/nats_exceptions.py`
-- **NATSHealthCheckError** (13 connections) — `server/services/nats_exceptions.py`
-- **test_nats_exceptions.py** (13 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **NATSRequestError** (11 connections) — `server/services/nats_exceptions.py`
-- **TestExceptionHierarchy** (11 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **TestNATSConnectionError** (8 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **TestNATSHealthCheckError** (8 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **TestNATSPublishError** (8 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **TestNATSSubscribeError** (8 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **.__init__()** (7 connections) — `server/services/nats_exceptions.py`
-- **.test_all_errors_inherit_from_exception()** (6 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **.test_all_errors_inherit_from_nats_error()** (6 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **Exception** (6 connections)
-- **TestNATSError** (5 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **test_publish_no_available_connections()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_publish_not_initialized()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_request_error()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_request_not_connected()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- *... and 161 more nodes in this community*
+- **RoomEventHandler** (27 connections) — `server/realtime/integration/room_event_handler.py`
+- **test_room_event_handler.py** (15 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **room_event_handler.py** (13 connections) — `server/realtime/integration/room_event_handler.py`
+- **asyncio** (11 connections)
+- **._broadcast_room_occupants_update()** (8 connections) — `server/realtime/integration/room_event_handler.py`
+- **Any** (4 connections)
+- **._extract_valid_occupant_names()** (4 connections) — `server/realtime/integration/room_event_handler.py`
+- **.handle_player_entered_room()** (4 connections) — `server/realtime/integration/room_event_handler.py`
+- **.handle_player_left_room()** (4 connections) — `server/realtime/integration/room_event_handler.py`
+- **.__init__()** (4 connections) — `server/realtime/integration/room_event_handler.py`
+- **test_handle_player_entered_room_occupant_lookup_error_is_caught()** (4 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_handle_player_left_room_missing_room_id()** (4 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **._looks_like_uuid()** (3 connections) — `server/realtime/integration/room_event_handler.py`
+- **._publish_room_movement_nats_event()** (3 connections) — `server/realtime/integration/room_event_handler.py`
+- **room_handler()** (3 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_handle_player_entered_nats_publish_failure()** (3 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_handle_player_entered_room_broadcasts()** (3 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_handle_player_entered_room_missing_room_id()** (3 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_handle_player_entered_skips_uuid_player_names()** (3 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_handle_player_left_room_broadcasts()** (3 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_subscribe_handles_exception()** (3 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_subscribe_to_events()** (3 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_subscribe_to_events_no_bus()** (3 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_unsubscribe_from_events()** (3 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **UUID** (2 connections)
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [NATSService](NATSService.md) (72 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (21 shared connections)
-- [test_nats_message_handler.py](test_nats_message_handler.py.md) (13 shared connections)
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (12 shared connections)
-- [CombatService](CombatService.md) (11 shared connections)
-- [test_nats_message_handler_subzone_events.py](test_nats_message_handler_subzone_events.py.md) (8 shared connections)
-- [test_nats_service_pool.py](test_nats_service_pool.py.md) (8 shared connections)
-- [test_combat_service_modules.py](test_combat_service_modules.py.md) (7 shared connections)
-- [NpcDisposition](NpcDisposition.md) (5 shared connections)
-- [test_message_filtering.py](test_message_filtering.py.md) (4 shared connections)
-- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (4 shared connections)
-- [CombatPersistenceHandler](CombatPersistenceHandler.md) (3 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (4 shared connections)
+- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (2 shared connections)
+- [.publish_with_pool](publish_with_pool.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [BaseEvent](BaseEvent.md) (2 shared connections)
+- [_find_item_in_inventory](_find_item_in_inventory.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/nats_exceptions.py`
-- `server/tests/unit/realtime/test_message_formatters.py`
-- `server/tests/unit/services/test_nats_exceptions.py`
-- `server/tests/unit/services/test_nats_service.py`
+- `server/realtime/integration/room_event_handler.py`
+- `server/tests/unit/realtime/integration/test_room_event_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 374 (80%)
-- INFERRED: 94 (20%)
+- EXTRACTED: 77 (90%)
+- INFERRED: 9 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

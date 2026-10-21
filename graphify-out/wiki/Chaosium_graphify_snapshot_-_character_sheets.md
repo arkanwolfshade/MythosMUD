@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - character_sheets
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - character_sheets** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/MANIFEST.md`
-- **character-sheets/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/MANIFEST.md`
+- **Missing Delirium Respawn Feature** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
+- **Lucidity -10 Delirium Threshold** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/MANIFEST.md`
+- `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

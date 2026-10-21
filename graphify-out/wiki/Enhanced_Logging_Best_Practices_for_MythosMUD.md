@@ -1,47 +1,38 @@
 # Enhanced Logging Best Practices for MythosMUD
 
-> 19 nodes
+> 17 nodes · cohesion 0.19
 
 ## Key Concepts
 
-- **Enhanced Logging Best Practices for MythosMUD** (16 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **🚨 CRITICAL ANTI-PATTERNS - DO NOT USE** (4 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Common Anti-Patterns** (3 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Log Analysis and Monitoring** (3 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Log Rotation and Management** (3 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Testing Logging** (3 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Conclusion** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Configuration** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Custom Log Analysis** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **✅ Do This Instead** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **❌ Don't Do This** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **❌ FORBIDDEN IMPORT PATTERNS** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **❌ FORBIDDEN LOGGING PATTERNS** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Integration Tests** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Log Cleanup** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **✅ MANDATORY CORRECT PATTERNS** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Overview** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Unit Tests for Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Using Our Log Analysis Tools** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **RoomFilenameMigrator** (9 connections) — `scripts/migrate_room_filenames.py`
+- **.plan_migrations()** (6 connections) — `scripts/migrate_room_filenames.py`
+- **.discover_room_files()** (5 connections) — `scripts/migrate_room_filenames.py`
+- **.parse_old_filename()** (5 connections) — `scripts/migrate_room_filenames.py`
+- **.update_room_id()** (5 connections) — `scripts/migrate_room_filenames.py`
+- **Path** (4 connections)
+- **.migrate()** (4 connections) — `scripts/migrate_room_filenames.py`
+- **.__init__()** (3 connections) — `scripts/migrate_room_filenames.py`
+- **migrate_room_filenames.py** (2 connections) — `scripts/migrate_room_filenames.py`
+- **main()** (2 connections) — `scripts/migrate_room_filenames.py`
+- **Update the room ID in the JSON file to match new naming schema.** (1 connections) — `scripts/migrate_room_filenames.py`
+- **Execute the migration.** (1 connections) — `scripts/migrate_room_filenames.py`
+- **Handles migration of room filenames from old to new schema.** (1 connections) — `scripts/migrate_room_filenames.py`
+- **Initialize the migrator.** (1 connections) — `scripts/migrate_room_filenames.py`
+- **Parse old filename format to extract components.** (1 connections) — `scripts/migrate_room_filenames.py`
+- **Discover all room files that need migration.** (1 connections) — `scripts/migrate_room_filenames.py`
+- **Plan all file migrations without executing them.** (1 connections) — `scripts/migrate_room_filenames.py`
 
 ## Relationships
 
-- [Performance Logging](Performance_Logging.md) (2 shared connections)
-- [LOGGING_BEST_PRACTICES.md](LOGGING_BEST_PRACTICES.md.md) (1 shared connections)
-- [Log Levels and Usage](Log_Levels_and_Usage.md) (1 shared connections)
-- [Context Management](Context_Management.md) (1 shared connections)
-- [Enhanced Logging Features](Enhanced_Logging_Features.md) (1 shared connections)
-- [Security Considerations](Security_Considerations.md) (1 shared connections)
-- [Migration Guide: From Default Logging to Enhanced Logging](Migration_Guide-_From_Default_Logging_to_Enhanced_Logging.md) (1 shared connections)
-- [Core Logging Principles](Core_Logging_Principles.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/LOGGING_BEST_PRACTICES.md`
+- `scripts/migrate_room_filenames.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
+- EXTRACTED: 26 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,56 +1,48 @@
 # CommandService
 
-> 30 nodes
+> 30 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **CommandService** (20 connections) — `server/commands/command_service.py`
-- **._extract_parsed_fields()** (7 connections) — `server/commands/command_service.py`
-- **.process_command()** (7 connections) — `server/commands/command_service.py`
-- **._execute_command_handler()** (6 connections) — `server/commands/command_service.py`
-- **._parse_command_string()** (6 connections) — `server/commands/command_service.py`
-- **._prepare_command_data()** (5 connections) — `server/commands/command_service.py`
-- **.process_validated_command()** (5 connections) — `server/commands/command_service.py`
-- **Command** (5 connections)
-- **._fallback_parsed_fields()** (4 connections) — `server/commands/command_service.py`
-- **._log_parsed_command_inspection()** (4 connections) — `server/commands/command_service.py`
-- **._log_model_dump_result()** (3 connections) — `server/commands/command_service.py`
-- **.register_command_handler()** (3 connections) — `server/commands/command_service.py`
-- **.get_available_commands()** (2 connections) — `server/commands/command_service.py`
-- **.__init__()** (2 connections) — `server/commands/command_service.py`
-- **.unregister_command_handler()** (2 connections) — `server/commands/command_service.py`
-- **CommandHandler** (2 connections)
-- **Main command processing service for MythosMUD. This service handles command…** (1 connections) — `server/commands/command_service.py`
-- **Initialize the command service.** (1 connections) — `server/commands/command_service.py`
-- **Process a validated command with routing. Args: command_data: The validated…** (1 connections) — `server/commands/command_service.py`
-- **Parse and validate command string. Returns: tuple of (parsed_command, cmd,…** (1 connections) — `server/commands/command_service.py`
-- **Prepare command_data dictionary by merging parsed command fields. Returns:…** (1 connections) — `server/commands/command_service.py`
-- **Extract non-private, non-callable attributes from parsed_command, excluding…** (1 connections) — `server/commands/command_service.py`
-- **Extract fields from parsed_command using model_dump or fallback method.…** (1 connections) — `server/commands/command_service.py`
-- **Log parsed command object inspection details.** (1 connections) — `server/commands/command_service.py`
-- **Log model_dump result details.** (1 connections) — `server/commands/command_service.py`
+- **test_lint_container_get_instance.py** (18 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- **_load_script()** (16 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- **_LintContainerGetInstanceModule** (6 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- **test_baseline_allowlist_matches_current_codebase()** (3 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- **test_count_exceeding_allowlist_is_reported()** (3 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- **test_count_under_allowlist_is_reported()** (3 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- **test_does_not_flag_docstring_prose_mentioning_the_pattern()** (3 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- **test_does_not_flag_unrelated_get_instance_call()** (3 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- **test_drift_immune_to_unrelated_line_shift()** (3 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- **test_stale_entry_for_fully_migrated_file_is_reported()** (3 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- **test_allowlist_entries_are_suppressed_and_counted()** (2 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- **test_does_not_flag_comment_mentioning_the_pattern()** (2 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- **test_flags_call_inside_a_method()** (2 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- **test_flags_multiple_calls_on_separate_lines()** (2 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- **test_flags_real_get_instance_call()** (2 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- **test_new_unallowlisted_site_is_reported()** (2 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- **test_unparsable_file_returns_no_hits_rather_than_raising()** (2 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- **._find_get_instance_lines()** (1 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- **.scan()** (1 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- **Protocol** (1 connections)
+- **Unit tests for scripts/lint_container_get_instance.py. Verifies the detection…** (1 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- **A file with more get_instance() calls than its allowlist entry expects fails --…** (1 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- **A file with fewer get_instance() calls than its allowlist entry expects fails…** (1 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- **An allowlist entry for a file with zero remaining hits (fully migrated) must…** (1 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- **A blank line inserted above the allowlisted site must not trip a violation --…** (1 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
 - *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [command_error](command_error.md) (4 shared connections)
-- [AliasStorage](AliasStorage.md) (3 shared connections)
-- [MessageCategory](MessageCategory.md) (2 shared connections)
-- [processing.py](processing.py.md) (1 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [test_alias_commands.py](test_alias_commands.py.md) (1 shared connections)
-- [command_service.py](command_service.py.md) (1 shared connections)
-- [command_parser.py](command_parser.py.md) (1 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/commands/command_service.py`
+- `server/tests/unit/scripts/test_lint_container_get_instance.py`
 
 ## Audit Trail
 
-- EXTRACTED: 55 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 44 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

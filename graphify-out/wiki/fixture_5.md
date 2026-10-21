@@ -1,39 +1,33 @@
 # fixture
 
-> 15 nodes
+> 11 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **fixture** (7 connections)
-- **mock_player()** (4 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **player_death_service()** (4 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **player_death_service_no_dependencies()** (4 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **mock_event_bus()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **mock_player_combat_service()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **mock_session()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **sample_player_id()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Create a mock event bus.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Create a mock player combat service.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Create a PlayerDeathService instance.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Create a PlayerDeathService instance without dependencies.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Create a mock async session.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Create a sample player ID.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Create a mock player.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **analyze_file()** (5 connections) — `scripts/analyze_comments.py`
+- **analyze_comments.py** (4 connections) — `scripts/analyze_comments.py`
+- **extract_function_and_class_names()** (3 connections) — `scripts/analyze_comments.py`
+- **main()** (3 connections) — `scripts/analyze_comments.py`
+- **check_comment_references_nonexistent_code()** (2 connections) — `scripts/analyze_comments.py`
+- **Path** (2 connections)
+- **Any** (1 connections)
+- **Analyze a single file for comment issues. Args: file_path: Path to file to…** (1 connections) — `scripts/analyze_comments.py`
+- **Main entry point for comment analysis.** (1 connections) — `scripts/analyze_comments.py`
+- **Extract function and class names from a Python file. Args: file_path: Path to…** (1 connections) — `scripts/analyze_comments.py`
+- **Check if a comment references a function or class that doesn't exist. Args:…** (1 connections) — `scripts/analyze_comments.py`
 
 ## Relationships
 
-- [test_player_death_service.py](test_player_death_service.py.md) (7 shared connections)
-- [PlayerDeathService](PlayerDeathService.md) (2 shared connections)
-- [Player](Player.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_death_service.py`
+- `scripts/analyze_comments.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (88%)
-- INFERRED: 3 (12%)
+- EXTRACTED: 12 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

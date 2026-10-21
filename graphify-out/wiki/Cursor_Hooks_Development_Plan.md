@@ -1,23 +1,24 @@
 # Cursor Hooks Development Plan
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Cursor hooks.json** (1 connections) — `.cursor/plans/cursor_hooks_development_plan_23b08582.plan.md`
-- **Cursor Hooks Development Plan** (1 connections) — `.cursor/plans/cursor_hooks_development_plan_23b08582.plan.md`
+- **test_remove_rule_success()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test remove_rule() successfully removes rule.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [TestValidatorIntegration](TestValidatorIntegration.md) (1 shared connections)
+- [.cursor/hooks/record_edited_file.py](cursor-hooks-record_edited_file.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/cursor_hooks_development_plan_23b08582.plan.md`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

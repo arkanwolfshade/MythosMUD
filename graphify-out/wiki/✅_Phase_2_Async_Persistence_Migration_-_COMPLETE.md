@@ -1,48 +1,62 @@
 # ✅ Phase 2 Async Persistence Migration - COMPLETE
 
-> 53 nodes
+> 58 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **✅ Phase 2 Async Persistence Migration - COMPLETE** (18 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **💡 Key Improvements** (6 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **📚 Changes by Category** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **🚀 Deployment Readiness** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **🎓 Lessons Learned** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **🚦 Next Steps** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **✅ Verification Results** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **🎯 Async Compliance Score** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **🔧 Changes Summary** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **🎭 Closing Remarks** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **📊 Final Results** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **📈 Performance Impact** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Status**: ✅**PHASE 2 COMPLETE - READY FOR TESTING** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **🧪 Testing Status** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **🏆 Achievement Summary** (2 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **1. Eliminated Event Loop Blocking** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **2. Consistent Async Patterns** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **3. Proper Error Handling** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **4. Resource Management** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **5. Performance Optimization** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Additional Files Updated** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Adjusts spectacles with profound satisfaction** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **After Migration** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Async Compliance** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Automated Tests** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- *... and 28 more nodes in this community*
+- **test_bank_service.py** (24 connections) — `server/tests/unit/services/test_bank_service.py`
+- **test_bank_box_persistence.py** (21 connections) — `server/tests/integration/test_bank_box_persistence.py`
+- **bank_service.py** (19 connections) — `server/services/bank_service.py`
+- **get_or_create_bank_box()** (18 connections) — `server/services/bank_service.py`
+- **FakeBankPersistence** (15 connections) — `server/tests/unit/services/test_bank_service.py`
+- **container_create_params.py** (14 connections) — `server/persistence/container_create_params.py`
+- **forward_to_bank_box()** (13 connections) — `server/services/bank_service.py`
+- **BankBoxPersistence** (12 connections) — `server/services/bank_service.py`
+- **test_deleting_the_owner_leaves_an_orphaned_box_nobody_can_look_up()** (12 connections) — `server/tests/integration/test_bank_box_persistence.py`
+- **test_box_is_created_once_and_stacks_persist_in_order_without_trimming()** (11 connections) — `server/tests/integration/test_bank_box_persistence.py`
+- **test_each_owner_has_their_own_box_and_the_database_allows_only_one_each()** (11 connections) — `server/tests/integration/test_bank_box_persistence.py`
+- **_create_player()** (10 connections) — `server/tests/integration/test_bank_box_persistence.py`
+- **is_bank_room()** (8 connections) — `server/services/bank_service.py`
+- **_cleanup()** (8 connections) — `server/tests/integration/test_bank_box_persistence.py`
+- **asyncio** (7 connections)
+- **test_a_create_failure_with_no_box_to_fall_back_on_is_raised()** (6 connections) — `server/tests/unit/services/test_bank_service.py`
+- **test_forward_over_fills_a_full_box_rather_than_evicting()** (6 connections) — `server/tests/unit/services/test_bank_service.py`
+- **UUID** (5 connections)
+- **async_sessionmaker** (5 connections)
+- **AsyncSession** (5 connections)
+- **test_forward_creates_the_box_when_the_player_has_none()** (5 connections) — `server/tests/unit/services/test_bank_service.py`
+- **test_losing_a_create_race_uses_the_winners_box()** (5 connections) — `server/tests/unit/services/test_bank_service.py`
+- **.create_container()** (4 connections) — `server/tests/unit/services/test_bank_service.py`
+- **test_each_player_gets_their_own_box()** (4 connections) — `server/tests/unit/services/test_bank_service.py`
+- **test_first_use_creates_a_bank_box_owned_by_the_player()** (4 connections) — `server/tests/unit/services/test_bank_service.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [Phase 2 Async Persistence Migration - Status Update](Phase_2_Async_Persistence_Migration_-_Status_Update.md) (1 shared connections)
+- [.profession_to_dict](profession_to_dict.md) (12 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (7 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (5 shared connections)
+- [Room](Room.md) (4 shared connections)
+- [container_helpers_inventory_ops.py](container_helpers_inventory_ops.py.md) (4 shared connections)
+- [test_party_service.py](test_party_service.py.md) (4 shared connections)
+- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (3 shared connections)
+- [AttributeError](AttributeError.md) (3 shared connections)
+- [test_container_persistence_extended_row_helpers.py](test_container_persistence_extended_row_helpers.py.md) (3 shared connections)
+- [CombatBroadcastMixin](CombatBroadcastMixin.md) (3 shared connections)
+- [useGameClientV2ContainerNetworkPhase.ts](useGameClientV2ContainerNetworkPhase.ts.md) (2 shared connections)
+- [BaseEvent](BaseEvent.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- `server/persistence/container_create_params.py`
+- `server/services/bank_service.py`
+- `server/tests/integration/test_bank_box_persistence.py`
+- `server/tests/unit/services/test_bank_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 53 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 175 (93%)
+- INFERRED: 13 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

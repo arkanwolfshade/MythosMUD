@@ -1,25 +1,25 @@
 # Development Environment Setup
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Development Environment Setup** (1 connections) — `docs/DEVELOPMENT.md`
-- **TESTING.md** (1 connections) — `TESTING.md`
+- **test_profession_set_stat_requirements()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test set_stat_requirements stores dict as JSON string.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
+- [required](required.md) (1 shared connections)
 
 ## Source Files
 
-- `TESTING.md`
-- `docs/DEVELOPMENT.md`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

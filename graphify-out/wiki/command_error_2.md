@@ -2,7 +2,7 @@
 
 > God node · 227 connections · `server/commands/command_results.py`
 
-**Community:** [command_error](command_error.md)
+**Community:** [command_parser.py](command_parser.py.md)
 
 ## Connections by Relation
 

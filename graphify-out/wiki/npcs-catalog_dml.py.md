@@ -1,53 +1,59 @@
 # npcs/catalog_dml.py
 
-> 53 nodes
+> 70 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **npcs/catalog_dml.py** (21 connections) — `server/game/npcs/catalog_dml.py`
-- **prepare_npc_definition()** (13 connections) — `server/game/npcs/catalog_dml.py`
-- **NpcBaseStats** (8 connections) — `server/game/npcs/base_stats_models.py`
-- **render_migration()** (8 connections) — `server/game/npcs/catalog_dml.py`
-- **test_base_stats_models.py** (8 connections) — `server/tests/unit/game/npcs/test_base_stats_models.py`
-- **base_stats_models.py** (7 connections) — `server/game/npcs/base_stats_models.py`
-- **npcs/test_catalog_dml.py** (7 connections) — `server/tests/unit/game/npcs/test_catalog_dml.py`
-- **npc_catalog/generate_dml.py** (6 connections) — `data/npc_catalog/generate_dml.py`
-- **_load_catalog()** (5 connections) — `data/npc_catalog/generate_dml.py`
-- **_dual_write_one_attack()** (5 connections) — `server/game/npcs/catalog_dml.py`
-- **_load_json_object()** (5 connections) — `server/tests/unit/game/npcs/test_base_stats_models.py`
-- **apply_attack_dual_write()** (4 connections) — `server/game/npcs/catalog_dml.py`
-- **_ensure_behavior_config()** (4 connections) — `server/game/npcs/catalog_dml.py`
-- **render_npc_insert()** (4 connections) — `server/game/npcs/catalog_dml.py`
-- **BaseModel** (4 connections)
-- **NpcArmorMetadata** (3 connections) — `server/game/npcs/base_stats_models.py`
-- **NpcAttackMetadata** (3 connections) — `server/game/npcs/base_stats_models.py`
-- **NpcCatalogMetadata** (3 connections) — `server/game/npcs/base_stats_models.py`
-- **_load_json()** (3 connections) — `data/npc_catalog/generate_dml.py`
-- **main()** (3 connections) — `data/npc_catalog/generate_dml.py`
-- **_as_str_object_dict()** (3 connections) — `server/game/npcs/catalog_dml.py`
-- **_normalize_damage_expr()** (3 connections) — `server/game/npcs/catalog_dml.py`
-- **_optional_description()** (3 connections) — `server/game/npcs/catalog_dml.py`
-- **_require_name()** (3 connections) — `server/game/npcs/catalog_dml.py`
-- **sql_escape()** (3 connections) — `server/game/npcs/catalog_dml.py`
-- *... and 28 more nodes in this community*
+- **test_combat_flee_helpers.py** (27 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
+- **combat_flee.py** (24 connections) — `server/commands/combat_flee.py`
+- **_FleeCommandHandlerLike** (16 connections) — `server/commands/combat_flee.py`
+- **_resolve_flee_preconditions()** (16 connections) — `server/commands/combat_flee.py`
+- **_validate_flee_combat_and_room()** (12 connections) — `server/commands/combat_flee.py`
+- **FleePreconditionError** (10 connections) — `server/commands/combat_helpers.py`
+- **_ensure_flee_standing()** (8 connections) — `server/commands/combat_flee.py`
+- **_get_flee_player_uuid()** (8 connections) — `server/commands/combat_flee.py`
+- **_get_flee_room_id()** (8 connections) — `server/commands/combat_flee.py`
+- **_PlayerForFlee** (8 connections) — `server/commands/combat_flee.py`
+- **run_handle_flee_command()** (7 connections) — `server/commands/combat_flee.py`
+- **combat_helpers.py** (7 connections) — `server/commands/combat_helpers.py`
+- **asyncio** (6 connections)
+- **test_validate_flee_combat_and_room_success()** (6 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
+- **test_resolve_flee_preconditions_player_error()** (5 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
+- **test_validate_flee_combat_and_room_no_movement_service()** (5 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
+- **_PlayerPositionServiceLike** (4 connections) — `server/commands/combat_flee.py`
+- **UUID** (4 connections)
+- **_participant()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
+- **test_ensure_flee_standing_when_already_standing()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
+- **test_ensure_flee_standing_when_sitting()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
+- **test_validate_flee_combat_and_room_no_combat_service()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
+- **.check_and_interrupt_rest()** (3 connections) — `server/commands/combat_flee.py`
+- **.combat_service()** (3 connections) — `server/commands/combat_flee.py`
+- **.get_player_and_room()** (3 connections) — `server/commands/combat_flee.py`
+- *... and 45 more nodes in this community*
 
 ## Relationships
 
-- [damage_expr_to_min_max](damage_expr_to_min_max.md) (3 shared connections)
-- [ValueError](ValueError.md) (3 shared connections)
+- [PlayerPositionService](PlayerPositionService.md) (6 shared connections)
+- [test_player_combat_service.py](test_player_combat_service.py.md) (6 shared connections)
+- [command_parser.py](command_parser.py.md) (6 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (3 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (3 shared connections)
+- [CorruptionRepository](CorruptionRepository.md) (2 shared connections)
+- [apply_communication_dampening](apply_communication_dampening.md) (2 shared connections)
+- [DatabaseManager](DatabaseManager.md) (2 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (2 shared connections)
+- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (1 shared connections)
 
 ## Source Files
 
-- `data/npc_catalog/generate_dml.py`
-- `server/game/npcs/base_stats_models.py`
-- `server/game/npcs/catalog_dml.py`
-- `server/tests/unit/game/npcs/test_base_stats_models.py`
-- `server/tests/unit/game/npcs/test_catalog_dml.py`
+- `server/commands/combat_flee.py`
+- `server/commands/combat_helpers.py`
+- `server/tests/unit/commands/test_combat_flee_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 89 (94%)
-- INFERRED: 6 (6%)
+- EXTRACTED: 145 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

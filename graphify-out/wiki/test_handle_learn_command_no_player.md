@@ -1,25 +1,26 @@
 # test_handle_learn_command_no_player
 
-> 2 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **test_handle_learn_command_no_player()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test learn command when player is not found.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **factory()** (4 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **fixture** (1 connections)
+- **Create a CommandFactory instance.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_magic_commands.py](test_magic_commands.py.md) (1 shared connections)
+- [test_who_commands.py](test_who_commands.py.md) (1 shared connections)
+- [NPCCombatIntegration](NPCCombatIntegration.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

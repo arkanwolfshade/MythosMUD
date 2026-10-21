@@ -1,45 +1,42 @@
 # Persistence Layer Refactoring Summary
 
-> 23 nodes
+> 21 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **Persistence Layer Refactoring Summary** (11 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Files Created/Modified** (4 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Backward Compatibility** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Benefits Achieved** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Metrics** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Migration Strategy** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Validation** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Code Organization** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Conclusion** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Conservative Approach** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Created** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Existing Code (Unchanged)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Future Benefits (Post-Migration)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Immediate Benefits (Phase 1)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Linting Status** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Migration Path (Optional)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Migration Status** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Modified** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **New Async Code (Opt-In)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Next Steps (Entirely Optional)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Summary** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Tests Status** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Unchanged (By Design)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **dependencies** (11 connections) — `client/package.json`
+- **dompurify** (2 connections) — `client/package.json`
+- **lucide-react** (2 connections) — `client/package.json`
+- **react** (2 connections) — `client/package.json`
+- **react-dom** (2 connections) — `client/package.json`
+- **react-grid-layout** (2 connections) — `client/package.json`
+- **react-rnd** (2 connections) — `client/package.json`
+- **react-router-dom** (2 connections) — `client/package.json`
+- **reactflow** (2 connections) — `client/package.json`
+- **xstate** (2 connections) — `client/package.json`
+- **@xstate/react** (2 connections) — `client/package.json`
+- **dompurify** (1 connections) — `client/package.json`
+- **lucide-react** (1 connections) — `client/package.json`
+- **react** (1 connections) — `client/package.json`
+- **react-dom** (1 connections) — `client/package.json`
+- **react-grid-layout** (1 connections) — `client/package.json`
+- **react-rnd** (1 connections) — `client/package.json`
+- **react-router-dom** (1 connections) — `client/package.json`
+- **reactflow** (1 connections) — `client/package.json`
+- **xstate** (1 connections) — `client/package.json`
+- **@xstate/react** (1 connections) — `client/package.json`
 
 ## Relationships
 
-- [PERSISTENCE_REFACTORING_COMPLETE.md](PERSISTENCE_REFACTORING_COMPLETE.md.md) (1 shared connections)
-- [Repository Details](Repository_Details.md) (1 shared connections)
+- [bonus_tags](bonus_tags.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- `client/package.json`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

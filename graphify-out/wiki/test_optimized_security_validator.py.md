@@ -1,50 +1,48 @@
 # test_optimized_security_validator.py
 
-> 166 nodes
+> 30 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **test_optimized_security_validator.py** (81 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **optimized_security_validator.py** (21 connections) — `server/validators/optimized_security_validator.py`
-- **optimized_validate_message_content()** (20 connections) — `server/validators/optimized_security_validator.py`
-- **optimized_comprehensive_sanitize_input()** (14 connections) — `server/validators/optimized_security_validator.py`
-- **optimized_validate_player_name()** (14 connections) — `server/validators/optimized_security_validator.py`
-- **optimized_validate_action_content()** (9 connections) — `server/validators/optimized_security_validator.py`
-- **optimized_validate_security_comprehensive()** (9 connections) — `server/validators/optimized_security_validator.py`
-- **optimized_sanitize_unicode_input()** (8 connections) — `server/validators/optimized_security_validator.py`
-- **optimized_strip_ansi_codes()** (8 connections) — `server/validators/optimized_security_validator.py`
-- **optimized_validate_alias_name()** (8 connections) — `server/validators/optimized_security_validator.py`
-- **optimized_validate_command_content()** (8 connections) — `server/validators/optimized_security_validator.py`
-- **optimized_validate_pose_content()** (8 connections) — `server/validators/optimized_security_validator.py`
-- **optimized_validate_reason_content()** (8 connections) — `server/validators/optimized_security_validator.py`
-- **optimized_validate_filter_name()** (7 connections) — `server/validators/optimized_security_validator.py`
-- **optimized_validate_help_topic()** (7 connections) — `server/validators/optimized_security_validator.py`
-- **optimized_validate_target_player()** (7 connections) — `server/validators/optimized_security_validator.py`
-- **benchmark_validation_performance()** (5 connections) — `server/validators/optimized_security_validator.py`
-- **test_benchmark_validation_performance()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_comprehensive_sanitize_input_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_comprehensive_sanitize_input_normal()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_comprehensive_sanitize_input_normalizes_newlines()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_sanitize_unicode_input_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_sanitize_unicode_input_normal_text()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_sanitize_unicode_input_unicode()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_strip_ansi_codes_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- *... and 141 more nodes in this community*
+- **_CoordsModule** (13 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
+- **test_author_sanitarium_coords.py** (8 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
+- **Path** (6 connections)
+- **_rows()** (5 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
+- **.test_rewriting_the_last_column_does_not_mix_endings()** (5 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
+- **TestDmlPath** (4 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
+- **TestLayoutInvariants** (4 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
+- **TestLineEndingRoundTrip** (4 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
+- **.test_crlf_file_survives_read_and_write()** (4 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
+- **.test_lf_file_survives_read_and_write()** (4 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
+- **coords()** (3 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
+- **TestCheckFlag** (3 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
+- **.test_seed_path_is_the_single_schema_agnostic_seed()** (3 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
+- **.test_the_seed_file_actually_exists()** (3 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
+- **.test_rooms_are_one_cell_apart()** (3 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
+- **.test_vertical_moves_clear_the_side_room_row()** (3 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
+- **._read_dml()** (2 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
+- **._write_dml()** (2 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
+- **.test_cardinal_moves_are_single_steps()** (2 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
+- **fixture** (1 connections)
+- **Protocol** (1 connections)
+- **Line-ending safety for `scripts/author_sanitarium_coords.py` (#829). The DML…** (1 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
+- **Catches a rename of the seed file, which would otherwise surface as the script…** (1 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
+- **`--check` is the only thing standing between a dry run and rewriting the seed…** (1 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
+- **STEP must stay 1: the minimap viewport counts CELLS, so any extra spacing…** (1 connections) — `server/tests/unit/scripts/test_author_sanitarium_coords.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [ValueError](ValueError.md) (11 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/validators/test_optimized_security_validator.py`
-- `server/validators/optimized_security_validator.py`
+- `server/tests/unit/scripts/test_author_sanitarium_coords.py`
 
 ## Audit Trail
 
-- EXTRACTED: 257 (96%)
-- INFERRED: 11 (4%)
+- EXTRACTED: 46 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

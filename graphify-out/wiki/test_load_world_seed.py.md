@@ -1,35 +1,35 @@
 # test_load_world_seed.py
 
-> 43 nodes
+> 44 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **test_load_world_seed.py** (18 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
-- **LoadWorldSeedTestApi** (17 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
-- **regression** (10 connections)
-- **test_validate_environment_errors_when_baseline_files_are_missing()** (7 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
-- **test_validate_environment_resolves_to_the_single_schema_agnostic_baseline()** (7 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
-- **test_validate_environment_rejects_non_allowlist_database_name()** (6 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
-- **test_asyncpg_server_settings_defaults_to_db_name()** (5 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
-- **test_asyncpg_server_settings_respects_postgres_search_path()** (5 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
-- **test_reset_migration_ledger_swallows_undefined_table()** (5 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
-- **test_reset_migration_ledger_truncates_the_ledger_table()** (5 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
-- **world_seed_api_module_scope()** (5 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
-- **MonkeyPatch** (5 connections)
-- **test_replay_migrations_passes_url_via_env_not_argv()** (4 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
-- **test_replay_migrations_raises_on_nonzero_exit()** (4 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
-- **test_replay_migrations_raises_when_npx_missing()** (4 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
-- **_LoadWorldSeedScriptInternals** (3 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
-- **_load_script_module()** (3 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
-- **test_database_url_for_cli_replaces_asyncpg_prefix()** (3 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
-- **test_parse_pg_url_for_psql_decodes_user_password()** (3 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
-- **test_parse_pg_url_for_psql_rejects_missing_host()** (3 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
-- **asyncio** (2 connections)
-- **CaptureFixture** (2 connections)
-- **Path** (2 connections)
-- **fixture** (1 connections)
-- **parametrize** (1 connections)
-- *... and 18 more nodes in this community*
+- **FastAPI Code Review - Anti-Patterns and Best Practices** (9 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Medium Priority Issues** (9 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Work Completed** (8 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Final Summary** (7 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Low Priority Issues** (5 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **FastAPI Code Review** (4 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Critical Issues** (4 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Summary of Recommendations** (4 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **10. ℹ️ **Dependency Injection Pattern**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **11. ℹ️ **API Versioning** (OPTIONAL - NOT REQUIRED FOR WEBAPP)** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **1. ✅ **Inconsistent Response Models** - **RESOLVED**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **1. Response Models (Critical Issue #1) ✅** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **2. Dependency Injection (Critical Issue #3) ✅** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **2. 🟡 **Fat Endpoints with Business Logic** - **IN PROGRESS**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **3. ✅ **Direct app.state Access Instead of Dependency Injection** - **RESOLVED**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **3. Error Handling (Medium Issue #7) ✅** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **4. ⚠️ **Inconsistent Router Prefix Patterns**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **4. Type Hints (Medium Issue #6) ✅** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **5. ✅ **Monitoring Endpoints in main.py Instead of Router** - **RESOLVED**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **5. Monitoring Endpoints (Medium Issue #5) ✅** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **6. ✅ **Missing Type Hints in Some Endpoints** - **RESOLVED**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **6. Router Prefix Documentation (Medium Issue #4) ✅** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **7. Fat Endpoints Refactoring (Critical Issue #2) ✅** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **7. ✅ **Inconsistent Error Handling** - **RESOLVED**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **8. ℹ️ **Service Layer Organization**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
@@ -37,11 +37,11 @@
 
 ## Source Files
 
-- `server/tests/unit/scripts/test_load_world_seed.py`
+- `docs/archive/FASTAPI_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 74 (100%)
+- EXTRACTED: 43 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

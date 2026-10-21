@@ -1,25 +1,24 @@
 # Malleus Monstrorum - Cthulhu Mythos Bestiary (source summary)
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Malleus Monstrorum - Cthulhu Mythos Bestiary (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Malleus Monstrorum - Cthulhu Mythos Bestiary.md`
-- **Malleus Monstrorum - Cthulhu Mythos Bestiary.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Malleus Monstrorum - Cthulhu Mythos Bestiary.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Malleus Monstrorum - Cthulhu Mythos Bestiary.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Malleus Monstrorum - Cthulhu Mythos Bestiary.md`
+- **Server Authority Remediation** (2 connections) — `.cursor/plans/server_authority_remediation_de891aa1.plan.md`
+- **game_state Room Replace (not Merge)** (1 connections) — `.cursor/plans/server_authority_remediation_de891aa1.plan.md`
+- **Server Authority Rule** (1 connections) — `.cursor/plans/server_authority_remediation_de891aa1.plan.md`
 
 ## Relationships
 
-- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Malleus Monstrorum - Cthulhu Mythos Bestiary.md`
+- `.cursor/plans/server_authority_remediation_de891aa1.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

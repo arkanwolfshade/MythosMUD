@@ -1,49 +1,43 @@
 # properties
 
-> 32 nodes
+> 22 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **properties** (12 connections) — `schemas/items/item_prototype.schema.json`
-- **damage_expr** (5 connections) — `schemas/items/item_prototype.schema.json`
-- **range** (5 connections) — `schemas/items/item_prototype.schema.json`
-- **ammo** (4 connections) — `schemas/items/item_prototype.schema.json`
-- **attacks** (4 connections) — `schemas/items/item_prototype.schema.json`
-- **max_damage** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **min_damage** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **skill_bonus** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **magical** (2 connections) — `schemas/items/item_prototype.schema.json`
-- **modifier** (2 connections) — `schemas/items/item_prototype.schema.json`
-- **description** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **description** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **description** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- *... and 7 more nodes in this community*
+- **Complexity Refactoring Test Plan** (8 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **🎯 Test Categories** (8 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **🔍 Specific Edge Cases to Test** (7 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **1. Application Startup & CORS (create_app)** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **2. WebSocket Connections** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **3. Room Operations** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **4. Container Operations** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **5. Player Respawn** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **6. Game Tick Processing** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **7. Integration Tests** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **Container Operations** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **CORS Configuration** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **create_app CORS Configuration** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **Game Tick Processing** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **📝 Notes** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **📊 Performance Checks** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **🚨 Red Flags to Watch For** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **Respawn Operations** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **Room Operations** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **✅ Success Criteria** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **WebSocket Connection Routes** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **WebSocket Token Parsing** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
 
 ## Relationships
 
-- [item_prototype.schema.json](item_prototype.schema.json.md) (1 shared connections)
-- [type](type.md) (1 shared connections)
-- [skill](skill.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/items/item_prototype.schema.json`
+- `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

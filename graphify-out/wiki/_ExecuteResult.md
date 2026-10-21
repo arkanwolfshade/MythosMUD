@@ -1,29 +1,29 @@
 # _ExecuteResult
 
-> 8 nodes
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **_ExecuteResult** (5 connections) — `server/tests/unit/api/test_item_catalog.py`
-- **_MappingsProxy** (5 connections) — `server/tests/unit/api/test_item_catalog.py`
-- **.mappings()** (2 connections) — `server/tests/unit/api/test_item_catalog.py`
-- **.__init__()** (1 connections) — `server/tests/unit/api/test_item_catalog.py`
-- **.all()** (1 connections) — `server/tests/unit/api/test_item_catalog.py`
-- **.__init__()** (1 connections) — `server/tests/unit/api/test_item_catalog.py`
-- **Typed stand-in for Result.mappings() so .all() is not MagicMock Any.** (1 connections) — `server/tests/unit/api/test_item_catalog.py`
-- **Typed stand-in for sqlalchemy Result when only .mappings().all() is used.** (1 connections) — `server/tests/unit/api/test_item_catalog.py`
+- **2. Files Requiring Updates** (6 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **Required Changes** (3 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **1. Import BigInteger** (1 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **`server/models/lucidity.py`** (1 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **`server/models/npc.py`** (1 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **`server/models/player.py`** (1 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **`server/models/player_spells.py`** (1 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **`server/models/profession.py`** (1 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
 
 ## Relationships
 
-- [test_item_catalog.py](test_item_catalog.py.md) (3 shared connections)
+- [Design Critique](Design_Critique.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/api/test_item_catalog.py`
+- `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

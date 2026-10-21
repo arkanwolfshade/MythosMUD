@@ -1,55 +1,62 @@
 # EventHandler
 
-> 55 nodes
+> 91 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **EventHandler** (37 connections) — `server/realtime/event_handlers.py`
-- **test_event_handlers_combat.py** (22 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
-- **asyncio** (11 connections)
-- **_send_combat_participant_updates()** (10 connections) — `server/realtime/event_handlers.py`
-- **_as_event_data_dict()** (8 connections) — `server/realtime/event_handlers.py`
-- **.handle_event_message()** (6 connections) — `server/realtime/event_handlers.py`
-- **_npc_died_ids_or_warn()** (5 connections) — `server/realtime/event_handlers.py`
-- **_participant_key_strings()** (5 connections) — `server/realtime/event_handlers.py`
-- **test_handle_npc_took_damage_flattens_event_data_for_websocket()** (4 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
-- **.get_event_handler_map()** (3 connections) — `server/realtime/event_handlers.py`
-- **.handle_combat_ended_event()** (3 connections) — `server/realtime/event_handlers.py`
-- **.handle_combat_started_event()** (3 connections) — `server/realtime/event_handlers.py`
-- **.handle_npc_attacked_event()** (3 connections) — `server/realtime/event_handlers.py`
-- **.handle_npc_died_event()** (3 connections) — `server/realtime/event_handlers.py`
-- **.handle_npc_took_damage_event()** (3 connections) — `server/realtime/event_handlers.py`
-- **.handle_player_attacked_event()** (3 connections) — `server/realtime/event_handlers.py`
-- **.__init__()** (3 connections) — `server/realtime/event_handlers.py`
-- **.validate_event_message()** (3 connections) — `server/realtime/event_handlers.py`
-- **test_handle_combat_ended_event()** (3 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
-- **test_handle_combat_started_event()** (3 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
-- **test_handle_event_message_dispatches_handler()** (3 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
-- **test_handle_event_message_invalid_skips()** (3 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
-- **test_handle_game_tick_event()** (3 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
-- **test_handle_npc_attacked_event()** (3 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
-- **test_handle_npc_died_event()** (3 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
-- *... and 30 more nodes in this community*
+- **MythosTickScheduler** (32 connections) — `server/time/tick_scheduler.py`
+- **MythosChronicle** (30 connections) — `server/time/time_service.py`
+- **test_tick_scheduler.py** (18 connections) — `server/tests/unit/time/test_tick_scheduler.py`
+- **tick_scheduler.py** (16 connections) — `server/time/tick_scheduler.py`
+- **datetime** (15 connections)
+- **_ensure_utc()** (13 connections) — `server/time/time_service.py`
+- **.get_calendar_components()** (10 connections) — `server/time/time_service.py`
+- **asyncio** (9 connections)
+- **ChronicleState** (9 connections) — `server/time/time_service.py`
+- **.get_current_mythos_datetime()** (9 connections) — `server/time/time_service.py`
+- **time/__init__.py** (8 connections) — `server/time/__init__.py`
+- **.get_daypart()** (8 connections) — `server/time/time_service.py`
+- **.__init__()** (7 connections) — `server/time/tick_scheduler.py`
+- **.is_daytime()** (7 connections) — `server/time/time_service.py`
+- **.is_witching_hour()** (7 connections) — `server/time/time_service.py`
+- **._load_state()** (7 connections) — `server/time/time_service.py`
+- **._persist_state()** (7 connections) — `server/time/time_service.py`
+- **.to_mythos_datetime()** (7 connections) — `server/time/time_service.py`
+- **._migrate_old_state_file()** (6 connections) — `server/time/time_service.py`
+- **._emit_pending_ticks()** (5 connections) — `server/time/tick_scheduler.py`
+- **._publish_tick()** (5 connections) — `server/time/tick_scheduler.py`
+- **._run()** (5 connections) — `server/time/tick_scheduler.py`
+- **._truncate_to_hour()** (5 connections) — `server/time/tick_scheduler.py`
+- **.advance_mythos()** (5 connections) — `server/time/time_service.py`
+- **.freeze()** (5 connections) — `server/time/time_service.py`
+- *... and 66 more nodes in this community*
 
 ## Relationships
 
-- [NpcDisposition](NpcDisposition.md) (10 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (5 shared connections)
-- [test_message_category_invariants.py](test_message_category_invariants.py.md) (2 shared connections)
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (2 shared connections)
-- [ConnectionManager](ConnectionManager.md) (2 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
+- [Room](Room.md) (12 shared connections)
+- [MUD Disconnect Grace Period & Rest Command: Industry Comparison](MUD_Disconnect_Grace_Period_&_Rest_Command-_Industry_Comparison.md) (7 shared connections)
+- [OccupantFormatter](OccupantFormatter.md) (3 shared connections)
+- [command_parser.py](command_parser.py.md) (3 shared connections)
+- [command_error](command_error.md) (3 shared connections)
+- [get_username_from_user](get_username_from_user.md) (3 shared connections)
+- [Communities (11 total, 0 thin omitted)](Communities_11_total,_0_thin_omitted.md) (3 shared connections)
+- [NPCThreadManager](NPCThreadManager.md) (3 shared connections)
+- [CombatInstance](CombatInstance.md) (1 shared connections)
+- [BaseEvent](BaseEvent.md) (1 shared connections)
+- [start_grace_period](start_grace_period.md) (1 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/event_handlers.py`
-- `server/tests/unit/realtime/test_event_handlers_combat.py`
+- `server/tests/unit/time/test_tick_scheduler.py`
+- `server/time/__init__.py`
+- `server/time/tick_scheduler.py`
+- `server/time/time_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 95 (86%)
-- INFERRED: 16 (14%)
+- EXTRACTED: 193 (91%)
+- INFERRED: 19 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

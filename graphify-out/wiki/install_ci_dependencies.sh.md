@@ -1,23 +1,24 @@
 # install_ci_dependencies.sh
 
-> 2 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **install_ci_dependencies.sh** (1 connections) — `scripts/install_ci_dependencies.sh`
-- **install_ci_dependencies.sh script** (1 connections) — `scripts/install_ci_dependencies.sh`
+- **test_is_player_disconnecting_false()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_is_player_disconnecting_true()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test is_player_disconnecting() returns True when player is disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [TaskRegistry](TaskRegistry.md) (2 shared connections)
 
 ## Source Files
 
-- `scripts/install_ci_dependencies.sh`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

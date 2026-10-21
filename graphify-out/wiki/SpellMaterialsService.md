@@ -1,45 +1,56 @@
 # SpellMaterialsService
 
-> 18 nodes
+> 14 nodes · cohesion 0.23
 
 ## Key Concepts
 
-- **SpellMaterialsService** (16 connections) — `server/game/magic/spell_materials.py`
-- **spell_materials.py** (11 connections) — `server/game/magic/spell_materials.py`
-- **.consume_materials()** (8 connections) — `server/game/magic/spell_materials.py`
-- **._build_final_inventory()** (4 connections) — `server/game/magic/spell_materials.py`
-- **.check_materials()** (4 connections) — `server/game/magic/spell_materials.py`
-- **._consume_material_item()** (4 connections) — `server/game/magic/spell_materials.py`
-- **._process_material_requirement()** (4 connections) — `server/game/magic/spell_materials.py`
-- **Any** (4 connections)
-- **.__init__()** (3 connections) — `server/game/magic/spell_materials.py`
-- **UUID** (3 connections)
-- **Spell material handling service. This module handles checking and consuming…** (1 connections) — `server/game/magic/spell_materials.py`
-- **Build final inventory with consumed materials removed. Args: inventory:…** (1 connections) — `server/game/magic/spell_materials.py`
-- **Consume spell materials from player inventory. Args: player_id: Player ID…** (1 connections) — `server/game/magic/spell_materials.py`
-- **Service for handling spell material requirements. Handles checking if players…** (1 connections) — `server/game/magic/spell_materials.py`
-- **Initialize the spell materials service. Args: player_service: Player service…** (1 connections) — `server/game/magic/spell_materials.py`
-- **Check if player has all required materials. Args: player_id: Player ID spell:…** (1 connections) — `server/game/magic/spell_materials.py`
-- **Process a single material requirement. Args: material: Material requirement…** (1 connections) — `server/game/magic/spell_materials.py`
-- **Consume a material item. Args: item: Inventory item material_id: Material ID…** (1 connections) — `server/game/magic/spell_materials.py`
+- **INDEX.md** (17 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
+- **P6-Review-Queue.md** (9 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
+- **CORRECTIONS-Corpus-Gap.md** (5 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
+- **P7-Rulings.md** (5 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
+- **P0-Known-Deviations.md** (4 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
+- **P3-Verified-Direct.md** (4 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
+- **Design Audit Index** (4 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
+- **CRITICAL-WebSocket-Auth.md** (3 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CRITICAL-WebSocket-Auth.md`
+- **P2-ADR-Claims.md** (3 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-ADR-Claims.md`
+- **SUMMARY.md** (3 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
+- **P6-Review-Clusters.md** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **P6 · Review Queue (rebuilt)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
+- **TRACK A · Code defects — not review material** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
+- **TRACK B · Bulk confirmation** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (5 shared connections)
-- [SpellEffectType](SpellEffectType.md) (4 shared connections)
-- [magic_service.py](magic_service.py.md) (3 shared connections)
-- [PlayerService](PlayerService.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [SpellEffects](SpellEffects.md) (1 shared connections)
+- [Implementation Notes](Implementation_Notes.md) (1 shared connections)
+- [Ruff C901 McCabe Complexity](Ruff_C901_McCabe_Complexity.md) (1 shared connections)
+- [Positive Findings ✅](Positive_Findings_✅.md) (1 shared connections)
+- [lock_state](lock_state.md) (1 shared connections)
+- [AnyIO vs Asyncio: High-Level Comparison and Decision Guide](AnyIO_vs_Asyncio-_High-Level_Comparison_and_Decision_Guide.md) (1 shared connections)
+- [Unique Pylint Findings Analysis](Unique_Pylint_Findings_Analysis.md) (1 shared connections)
+- [Asynchronous Code Audit - December 3, 2025](Asynchronous_Code_Audit_-_December_3,_2025.md) (1 shared connections)
+- [Migration Roadmap](Migration_Roadmap.md) (1 shared connections)
+- [CacheManager](CacheManager.md) (1 shared connections)
+- [CommunicationIntegrationProtocol](CommunicationIntegrationProtocol.md) (1 shared connections)
+- [Critical Insights](Critical_Insights.md) (1 shared connections)
+- [Phase 1: Critical Fixes (Week 1) - BLOCKING ISSUES](Phase_1-_Critical_Fixes_Week_1_-_BLOCKING_ISSUES.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_materials.py`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CRITICAL-WebSocket-Auth.md`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-ADR-Claims.md`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (89%)
-- INFERRED: 5 (11%)
+- EXTRACTED: 41 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

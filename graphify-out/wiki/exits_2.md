@@ -1,25 +1,24 @@
 # exits
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **exits** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **Chaosium graphify snapshot - Doors to Darkness** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/MANIFEST.md`
+- **doors-to-darkness/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/MANIFEST.md`
 
 ## Relationships
 
-- [properties](properties.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

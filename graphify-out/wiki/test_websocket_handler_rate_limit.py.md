@@ -1,36 +1,42 @@
 # test_websocket_handler_rate_limit.py
 
-> 14 nodes
+> 12 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **test_websocket_handler_rate_limit.py** (7 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **mock_websocket()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **test_check_rate_limit_exceeded()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **test_check_rate_limit_no_connection_id()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **test_check_rate_limit_passed()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **asyncio** (3 connections)
-- **fixture** (2 connections)
-- **Unit tests for websocket handler rate limiting. Tests the rate limiting…** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **Test _check_rate_limit() returns True when no connection_id.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **Test _check_rate_limit() returns True when rate limit check passes.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **Test _check_rate_limit() returns False when rate limit exceeded.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **Multi-Character Support System** (5 connections) — `e2e-tests/scenarios/scenario-27-character-selection.md`
+- **Scenario 30 Case-Insensitive Name Uniqueness** (3 connections) — `e2e-tests/scenarios/scenario-30-character-name-uniqueness.md`
+- **Scenario 38 Revised Character Creation** (3 connections) — `e2e-tests/scenarios/scenario-38-revised-character-creation.md`
+- **Skills Subsystem** (3 connections) — `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
+- **Scenario 28 Multi-Character Creation** (2 connections) — `e2e-tests/scenarios/scenario-28-multi-character-creation.md`
+- **Scenario 29 Character Soft Deletion** (2 connections) — `e2e-tests/scenarios/scenario-29-character-deletion.md`
+- **Stats-Profession-Skills-Name Creation Flow** (2 connections) — `e2e-tests/scenarios/scenario-38-revised-character-creation.md`
+- **Scenario 41 Skills After Creation** (2 connections) — `e2e-tests/scenarios/scenario-41-skills-after-creation.md`
+- **Scenario 27 Character Selection** (1 connections) — `e2e-tests/scenarios/scenario-27-character-selection.md`
+- **Scenario 31 Administrative Set Stat** (1 connections) — `e2e-tests/scenarios/scenario-31-admin-set-stat-command.md`
+- **Scenario 39 Skills New Tab** (1 connections) — `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
+- **Scenario 40 Skills Slash Command** (1 connections) — `e2e-tests/scenarios/scenario-40-skills-command.md`
 
 ## Relationships
 
-- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- `e2e-tests/scenarios/scenario-27-character-selection.md`
+- `e2e-tests/scenarios/scenario-28-multi-character-creation.md`
+- `e2e-tests/scenarios/scenario-29-character-deletion.md`
+- `e2e-tests/scenarios/scenario-30-character-name-uniqueness.md`
+- `e2e-tests/scenarios/scenario-31-admin-set-stat-command.md`
+- `e2e-tests/scenarios/scenario-38-revised-character-creation.md`
+- `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
+- `e2e-tests/scenarios/scenario-40-skills-command.md`
+- `e2e-tests/scenarios/scenario-41-skills-after-creation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 10 (77%)
+- INFERRED: 3 (23%)
 - AMBIGUOUS: 0 (0%)
 
 ---

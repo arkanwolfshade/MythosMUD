@@ -1,33 +1,36 @@
 # properties
 
-> 11 nodes
+> 15 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **properties** (5 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **lucidity_drain_rate** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **combat_modifier** (3 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **exploration_bonus** (3 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **minimum** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **Spatial Design** (7 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **Visual Hierarchy** (4 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **spatial-design.md** (3 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **Spacing Systems** (3 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **Grid Systems** (2 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **Optical Adjustments** (2 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **Cards Are Not Required** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **Container Queries** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **Depth & Elevation** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **Hierarchy Through Multiple Dimensions** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **Name Tokens Semantically** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **The Self-Adjusting Grid** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **The Squint Test** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **Touch Targets vs Visual Size** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **Use 4pt Base, Not 8pt** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
 
 ## Relationships
 
-- [special_rules](special_rules.md) (1 shared connections)
-- [npc_spawn_modifier](npc_spawn_modifier.md) (1 shared connections)
+- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (2 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- `.claude/skills/frontend-design/reference/spatial-design.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

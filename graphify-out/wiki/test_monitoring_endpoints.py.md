@@ -1,58 +1,65 @@
 # test_monitoring_endpoints.py
 
-> 81 nodes
+> 123 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **test_monitoring_endpoints.py** (55 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
-- **HealthStatus** (48 connections) — `server/models/health.py`
-- **test_health.py** (27 connections) — `server/tests/unit/models/test_health.py`
-- **DatabaseComponent** (24 connections) — `server/models/health.py`
-- **ServerComponent** (23 connections) — `server/models/health.py`
-- **ConnectionsComponent** (22 connections) — `server/models/health.py`
-- **HealthComponents** (21 connections) — `server/models/health.py`
-- **HealthResponse** (17 connections) — `server/models/health.py`
-- **health_service.py** (16 connections) — `server/services/health_service.py`
-- **health.py** (14 connections) — `server/models/health.py`
-- **_request_with_container()** (13 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
-- **test_get_health_status_healthy_returns_model()** (9 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
-- **test_health_response_creation()** (8 connections) — `server/tests/unit/models/test_health.py`
-- **test_health_response_default_alerts()** (8 connections) — `server/tests/unit/models/test_health.py`
-- **test_health_response_with_alerts()** (8 connections) — `server/tests/unit/models/test_health.py`
-- **test_dual_connection_and_performance_and_health_stats()** (7 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
-- **test_health_components_creation()** (7 connections) — `server/tests/unit/models/test_health.py`
-- **test_health_components_rejects_extra_fields()** (7 connections) — `server/tests/unit/models/test_health.py`
-- **test_determine_overall_status_degraded()** (7 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_determine_overall_status_healthy()** (7 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_determine_overall_status_unhealthy()** (7 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_generate_alerts_no_alerts()** (7 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_generate_alerts_with_alerts()** (7 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_health_status_version_fallback()** (7 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_memory_alerts_and_force_cleanup()** (6 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
-- *... and 56 more nodes in this community*
+- **chat_service.py** (60 connections) — `server/game/chat_service.py`
+- **chat_channel_message_senders.py** (40 connections) — `server/game/chat_channel_message_senders.py`
+- **chat_message_senders.py** (37 connections) — `server/game/chat_message_senders.py`
+- **ChatSendServices** (26 connections) — `server/game/chat_channel_message_senders.py`
+- **chat_message.py** (23 connections) — `server/game/chat_message.py`
+- **send_local_message()** (16 connections) — `server/game/chat_message_senders.py`
+- **send_predefined_emote()** (16 connections) — `server/game/chat_message_senders.py`
+- **send_global_message()** (14 connections) — `server/game/chat_channel_message_senders.py`
+- **create_and_log_chat_message()** (14 connections) — `server/game/chat_message_helpers.py`
+- **send_party_message()** (14 connections) — `server/game/chat_message_senders.py`
+- **ChatPlayerView** (13 connections) — `server/game/chat_channel_message_senders.py`
+- **chat_message_helpers.py** (13 connections) — `server/game/chat_message_helpers.py`
+- **ChatLogger** (12 connections) — `server/game/chat_channel_message_senders.py`
+- **chat_validation_helpers.py** (12 connections) — `server/game/chat_validation_helpers.py`
+- **test_chat_message_helpers.py** (12 connections) — `server/tests/unit/game/test_chat_message_helpers.py`
+- **ChatUserManager** (11 connections) — `server/game/chat_channel_message_senders.py`
+- **store_message_in_room_history()** (11 connections) — `server/game/chat_message_helpers.py`
+- **.send_say_message()** (11 connections) — `server/game/chat_service.py`
+- **ChatEmoteService** (10 connections) — `server/game/chat_channel_message_senders.py`
+- **ChatRateLimiter** (10 connections) — `server/game/chat_channel_message_senders.py`
+- **check_channel_permissions()** (10 connections) — `server/game/chat_validation_helpers.py`
+- **ChatPlayerService** (9 connections) — `server/game/chat_channel_message_senders.py`
+- **_build_and_log_emote_message()** (9 connections) — `server/game/chat_message_senders.py`
+- **_publish_chat_or_unavailable()** (9 connections) — `server/game/chat_message_senders.py`
+- **_log_and_store_whisper_message()** (8 connections) — `server/game/chat_channel_message_senders.py`
+- *... and 98 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (47 shared connections)
-- [test_health_service.py](test_health_service.py.md) (29 shared connections)
-- [MovementMonitor](MovementMonitor.md) (16 shared connections)
-- [get_logger](get_logger.md) (10 shared connections)
-- [HealthService](HealthService.md) (9 shared connections)
-- [HealthErrorResponse](HealthErrorResponse.md) (6 shared connections)
-- [MemoryProfiler](MemoryProfiler.md) (4 shared connections)
+- [test_skill_service_graded.py](test_skill_service_graded.py.md) (72 shared connections)
+- [ContainerData](ContainerData.md) (21 shared connections)
+- [Room](Room.md) (17 shared connections)
+- [connection_cleanup_methods.py](connection_cleanup_methods.py.md) (11 shared connections)
+- [test_database_helpers.py](test_database_helpers.py.md) (10 shared connections)
+- [test_lint_raw_sql_in_python.py](test_lint_raw_sql_in_python.py.md) (6 shared connections)
+- [UUID](UUID.md) (3 shared connections)
+- [look_container.py](look_container.py.md) (2 shared connections)
+- [magic_service.py](magic_service.py.md) (2 shared connections)
+- [deque](deque.md) (2 shared connections)
+- [Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Berlin - The Wicked City  (2026-08-11)](Graph_Report_-_C-_Users_arkan_Proton_Drive_arkanwolfshade_My_files_Chaosium_Berlin_-_The_Wicked_City__2026-08-11.md) (2 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/health.py`
-- `server/services/health_service.py`
-- `server/tests/unit/api/test_monitoring_endpoints.py`
-- `server/tests/unit/models/test_health.py`
-- `server/tests/unit/services/test_health_service.py`
+- `server/game/chat_channel_message_senders.py`
+- `server/game/chat_message.py`
+- `server/game/chat_message_helpers.py`
+- `server/game/chat_message_senders.py`
+- `server/game/chat_service.py`
+- `server/game/chat_validation_helpers.py`
+- `server/tests/unit/game/test_chat_message_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 266 (85%)
-- INFERRED: 46 (15%)
+- EXTRACTED: 378 (93%)
+- INFERRED: 30 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

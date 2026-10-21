@@ -1,23 +1,23 @@
 # run_extended_idle_memory_monitor.ps1
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **run_extended_idle_memory_monitor.ps1** (1 connections) — `scripts/run_extended_idle_memory_monitor.ps1`
-- **Write-MonitorLog()** (1 connections) — `scripts/run_extended_idle_memory_monitor.ps1`
+- **test_list_room_drops_with_drops()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test list_room_drops() returns room drops.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Teach Impeccable Skill](Teach_Impeccable_Skill.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/run_extended_idle_memory_monitor.ps1`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

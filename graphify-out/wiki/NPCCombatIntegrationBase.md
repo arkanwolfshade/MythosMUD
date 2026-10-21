@@ -1,57 +1,53 @@
 # NPCCombatIntegrationBase
 
-> 42 nodes
+> 53 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **NPCCombatIntegrationBase** (25 connections) — `server/npc/combat_integration_base.py`
-- **._perform_direct_npc_attack()** (10 connections) — `server/npc/combat_integration_base.py`
-- **.apply_combat_effects()** (8 connections) — `server/npc/combat_integration_base.py`
-- **._apply_player_combat_effects()** (8 connections) — `server/npc/combat_integration_base.py`
-- **._is_target_in_login_grace_period()** (7 connections) — `server/npc/combat_integration_base.py`
-- **._convert_target_id_to_uuid()** (6 connections) — `server/npc/combat_integration_base.py`
-- **._handle_npc_attack_core()** (6 connections) — `server/npc/combat_integration_base.py`
-- **._try_delegate_npc_attack_to_combat_service()** (5 connections) — `server/npc/combat_integration_base.py`
-- **._handle_attribute_error()** (4 connections) — `server/npc/combat_integration_base.py`
-- **._handle_unexpected_error()** (4 connections) — `server/npc/combat_integration_base.py`
-- **._handle_validation_error()** (4 connections) — `server/npc/combat_integration_base.py`
-- **._apply_mental_effects()** (3 connections) — `server/npc/combat_integration_base.py`
-- **.calculate_damage()** (3 connections) — `server/npc/combat_integration_base.py`
-- **._get_npc_stats()** (3 connections) — `server/npc/combat_integration_base.py`
-- **._get_target_stats()** (3 connections) — `server/npc/combat_integration_base.py`
-- **.handle_npc_attack()** (3 connections) — `server/npc/combat_integration_base.py`
-- **._publish_attack_event()** (3 connections) — `server/npc/combat_integration_base.py`
-- **._publish_npc_attack_to_nats()** (3 connections) — `server/npc/combat_integration_base.py`
-- **._publish_player_dp_updated_after_npc_damage()** (3 connections) — `server/npc/combat_integration_base.py`
-- **ABC** (2 connections)
-- **UUID** (2 connections)
-- **Exception** (1 connections)
-- **ValidationError** (1 connections)
-- **Apply combat effects to a target (player or NPC). Args: target_id: ID of the…** (1 connections) — `server/npc/combat_integration_base.py`
-- **Convert target_id to UUID, accepting either string or UUID input.** (1 connections) — `server/npc/combat_integration_base.py`
-- *... and 17 more nodes in this community*
+- **MythosMUD Test Suite Modernization Plan** (18 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Appendices** (10 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Backward Compatibility Strategy** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Implementation Approach Decision** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Testing Requirements** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Decision Framework: Uplift vs Greenfield Rewrite** (4 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Next Steps** (4 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **References** (4 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Executive Summary** (3 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Risk Mitigation** (3 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Success Metrics** (3 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Quick Start: Minimal Viable Uplift** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Alternative: **GREENFIELD REWRITE**** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Appendix A: Test File Inventory** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Appendix B: Direct app.state Access Locations** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Appendix C: Fixture Audit** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Cons** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Consolidation Opportunities** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Current Fixture Categories** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Current State** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Goal** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Greenfield Only If** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **High Priority (Integration Tests)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Immediate (This Session)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Key Files** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
-- [CombatService](CombatService.md) (3 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (2 shared connections)
-- [.state](state.md) (2 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
-- [NPCCombatIntegration](NPCCombatIntegration.md) (1 shared connections)
-- [GameMechanicsService](GameMechanicsService.md) (1 shared connections)
-- [CombatEventPublisherProtocol](CombatEventPublisherProtocol.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
-- [test_combat_integration_base.py](test_combat_integration_base.py.md) (1 shared connections)
+- [extract_player_name](extract_player_name.md) (1 shared connections)
+- [API Endpoints (Phase 2)](API_Endpoints_Phase_2.md) (1 shared connections)
+- [ContainerRepository](ContainerRepository.md) (1 shared connections)
+- [NumPy Code Review - MythosMUD Codebase](NumPy_Code_Review_-_MythosMUD_Codebase.md) (1 shared connections)
+- [TestSymbolTables](TestSymbolTables.md) (1 shared connections)
+- [Multiplayer Architecture Planning](Multiplayer_Architecture_Planning.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/combat_integration_base.py`
+- `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 73 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 58 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,25 +1,23 @@
 # Context Management
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Context Management** (4 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Request Context** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **System Context** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **User Context** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **CoC Spells Proposal** (1 connections) — `.cursor/plans/coc_spells_proposal_d3705253.plan.md`
+- **Spell Pydantic model** (1 connections) — `.cursor/plans/coc_spells_proposal_d3705253.plan.md`
 
 ## Relationships
 
-- [Enhanced Logging Best Practices for MythosMUD](Enhanced_Logging_Best_Practices_for_MythosMUD.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/LOGGING_BEST_PRACTICES.md`
+- `.cursor/plans/coc_spells_proposal_d3705253.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,48 +1,63 @@
 # verify_enhanced_logging_compliance.py
 
-> 48 nodes
+> 82 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **verify_enhanced_logging_compliance.py** (14 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **LoggingComplianceChecker** (12 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **Path** (10 connections)
-- **check_file()** (8 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **main()** (7 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **.visit_Call()** (6 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **_print_violations_report()** (6 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **_check_all_files()** (5 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **_print_violations_for_file()** (5 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **_read_and_parse()** (5 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **_run_regex_checks()** (5 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **_find_python_files()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **._check_deprecated_context_param()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **._check_fstring_logging()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **._check_getlogger_call()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **_should_skip_file()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **Call** (4 connections)
-- **_group_violations_by_type()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **.visit_Assign()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **.visit_Import()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **.visit_ImportFrom()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **_print_compliance_success()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **_print_fix_instructions()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **.__init__()** (2 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **AST** (2 connections)
-- *... and 23 more nodes in this community*
+- **fastapi_integration.py** (27 connections) — `docs/examples/logging/fastapi_integration.py`
+- **bind_request_context()** (21 connections) — `server/structured_logging/logging_context.py`
+- **clear_request_context()** (16 connections) — `server/structured_logging/logging_context.py`
+- **test_logging_context.py** (12 connections) — `server/tests/unit/structured_logging/test_logging_context.py`
+- **logging_context.py** (10 connections) — `server/structured_logging/logging_context.py`
+- **get_current_context()** (10 connections) — `server/structured_logging/logging_context.py`
+- **http_exception_handler()** (7 connections) — `docs/examples/logging/fastapi_integration.py`
+- **player_service()** (7 connections) — `docs/examples/logging/fastapi_integration.py`
+- **update_player_background_task()** (7 connections) — `docs/examples/logging/fastapi_integration.py`
+- **WebSocketManager** (7 connections) — `docs/examples/logging/websocket_integration.py`
+- **add_request_context()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
+- **general_exception_handler()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
+- **HTTPException** (6 connections)
+- **upload_avatar()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
+- **websocket_endpoint()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
+- **create_player()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **list_players()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **update_player_background()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **WebSocket** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.disconnect()** (5 connections) — `docs/examples/logging/websocket_integration.py`
+- **correct_request_context()** (4 connections) — `docs/examples/logging/correct_patterns.py`
+- **get_player()** (4 connections) — `docs/examples/logging/fastapi_integration.py`
+- **auth_service()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
+- **BackgroundTasks** (3 connections) — `docs/examples/logging/fastapi_integration.py`
+- **process_websocket_message()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (11 shared connections)
+- [_prepare_command_for_processing](_prepare_command_for_processing.md) (7 shared connections)
+- [Room](Room.md) (5 shared connections)
+- [AttributeError](AttributeError.md) (5 shared connections)
+- [test_chat_validator.py](test_chat_validator.py.md) (3 shared connections)
+- [EventBus](EventBus.md) (3 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (3 shared connections)
+- [manual_dependency_analysis.py](manual_dependency_analysis.py.md) (2 shared connections)
+- [test_look_player.py](test_look_player.py.md) (2 shared connections)
+- [test_player_repository_room.py](test_player_repository_room.py.md) (2 shared connections)
+- [test_corpse_lifecycle_decay.py](test_corpse_lifecycle_decay.py.md) (2 shared connections)
+- [PlayerMute](PlayerMute.md) (2 shared connections)
 
 ## Source Files
 
-- `scripts/verify_enhanced_logging_compliance.py`
+- `docs/examples/logging/correct_patterns.py`
+- `docs/examples/logging/fastapi_integration.py`
+- `docs/examples/logging/websocket_integration.py`
+- `server/structured_logging/logging_context.py`
+- `server/tests/unit/structured_logging/test_logging_context.py`
 
 ## Audit Trail
 
-- EXTRACTED: 76 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 145 (87%)
+- INFERRED: 21 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

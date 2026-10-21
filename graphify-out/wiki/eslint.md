@@ -1,24 +1,25 @@
 # eslint
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **eslint** (2 connections) — `client/package.json`
-- **eslint** (1 connections) — `client/package.json`
+- **Development Environment Setup** (1 connections) — `docs/DEVELOPMENT.md`
+- **TESTING.md** (1 connections) — `TESTING.md`
 
 ## Relationships
 
-- [devDependencies](devDependencies.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/package.json`
+- `TESTING.md`
+- `docs/DEVELOPMENT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,51 +1,54 @@
 # test_combat_handler.py
 
-> 57 nodes
+> 63 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **test_combat_handler.py** (39 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **_handler_with_persistence()** (22 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **asyncio** (14 connections)
-- **_as_app_with_state()** (9 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_get_player_and_room_no_current_room()** (7 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_get_player_and_room_success()** (7 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_get_player_and_room_unknown_player()** (7 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_get_player_and_room_unknown_room()** (7 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_resolve_combat_target_accepts_live_phantom()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_resolve_combat_target_rejects_dead_npc()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_resolve_combat_target_rejects_dissipated_phantom()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_resolve_combat_target_rejects_non_npc()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **_AppStatePersistence** (5 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **_AppWithPersistence** (5 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_get_player_and_room_no_persistence_on_app()** (5 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_resolve_combat_target_failure_message()** (5 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_handle_flee_command_delegates()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_handle_taunt_command_delegates()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_validate_combat_action()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_validate_combat_action_empty_name()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **_CmdType** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_combat_command_handler_requires_async_persistence()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_extract_combat_command_data_enum_value()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_extract_combat_command_data_string_type()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- *... and 32 more nodes in this community*
+- **test_command_service.py** (38 connections) — `server/tests/unit/commands/test_command_service.py`
+- **asyncio** (12 connections)
+- **test_process_validated_command_validation_error()** (5 connections) — `server/tests/unit/commands/test_command_service.py`
+- **command_service()** (4 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_execute_command_handler_error()** (4 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_handler_error()** (4 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_logging_error()** (4 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_no_command_type()** (4 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_unknown_command()** (4 connections) — `server/tests/unit/commands/test_command_service.py`
+- **mock_request()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **mock_user()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **fixture** (3 connections)
+- **test_execute_command_handler_returns_non_dict()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_execute_command_handler_success()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_extract_parsed_fields_handles_missing_attributes()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_command_no_handler()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_command_parse_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_command_success()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_success()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_extract_parsed_fields_basic()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_extract_parsed_fields_with_pipe_target()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_get_available_commands()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_log_model_dump_result()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_log_parsed_command_inspection()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_parse_command_string_success()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [TargetType](TargetType.md) (8 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (6 shared connections)
-- [TargetMatch](TargetMatch.md) (5 shared connections)
-- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (3 shared connections)
+- [look_container.py](look_container.py.md) (4 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (4 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (3 shared connections)
+- [Dream Messaging Subsystem Design](Dream_Messaging_Subsystem_Design.md) (2 shared connections)
+- [command_parser.py](command_parser.py.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
+- [security.ts](security.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_combat_handler.py`
+- `server/tests/unit/commands/test_command_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 115 (92%)
-- INFERRED: 10 (8%)
+- EXTRACTED: 83 (90%)
+- INFERRED: 9 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

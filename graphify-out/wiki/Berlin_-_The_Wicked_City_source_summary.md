@@ -1,25 +1,25 @@
 # Berlin - The Wicked City (source summary)
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Berlin - The Wicked City (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Berlin - The Wicked City.md`
-- **Berlin - The Wicked City.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Berlin - The Wicked City.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Berlin - The Wicked City.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Berlin - The Wicked City.md`
+- **Whisper NATS Subject Bug Fix** (2 connections) — `e2e-tests/WHISPER_FIX_PHASE_1_COMPLETE.md`
+- **chat.whisper.player Subject Segment** (1 connections) — `e2e-tests/WHISPER_FIX_PHASE_1_COMPLETE.md`
+- **Whisper Work Completed and Remaining** (1 connections) — `e2e-tests/WORK_COMPLETED_AND_REMAINING.md`
 
 ## Relationships
 
-- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Berlin - The Wicked City.md`
+- `e2e-tests/WHISPER_FIX_PHASE_1_COMPLETE.md`
+- `e2e-tests/WORK_COMPLETED_AND_REMAINING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

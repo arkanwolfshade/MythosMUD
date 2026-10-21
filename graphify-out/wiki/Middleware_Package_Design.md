@@ -1,33 +1,37 @@
 # Middleware Package Design
 
-> 11 nodes
+> 9 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **Middleware Package Design** (11 connections) — `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
-- **1. Overview** (1 connections) — `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
-- **2. Members** (1 connections) — `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
-- **3. Boundary contract** (1 connections) — `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
-- **4. Key design decisions** (1 connections) — `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
-- **5. Constraints** (1 connections) — `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
-- **6. Developer guide** (1 connections) — `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
-- **7. Troubleshooting** (1 connections) — `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
-- **8. Related docs** (1 connections) — `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
-- **9. Changelog** (1 connections) — `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
+- **mythos_e2e Database** (6 connections) — `client/tests/e2e/README.md`
+- **QUICK_START_E2E_TESTS.md** (4 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **pytest Markers unit integration e2e slow serial** (3 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **Playwright Runtime E2E Suite** (2 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **seed_e2e_users.py** (2 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **start_e2e_test.ps1** (2 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **ArkanWolfshade E2E Account** (1 connections) — `client/tests/e2e/README.md`
+- **Ithaqua E2E Account** (1 connections) — `client/tests/e2e/README.md`
+- **Post-Scenario Cleanup** (1 connections) — `e2e-tests/CLEANUP.md`
 
 ## Relationships
 
-- [packages/README.md](packages-README.md.md) (1 shared connections)
+- [name](name.md) (1 shared connections)
+- [Execution Steps](Execution_Steps.md) (1 shared connections)
+- [Dreamlands.md](Dreamlands.md.md) (1 shared connections)
+- [load_motd](load_motd.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
+- `client/tests/e2e/README.md`
+- `docs/archive/QUICK_START_E2E_TESTS.md`
+- `docs/archive/TESTING_GREENFIELD.md`
+- `e2e-tests/CLEANUP.md`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 12 (92%)
+- INFERRED: 1 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

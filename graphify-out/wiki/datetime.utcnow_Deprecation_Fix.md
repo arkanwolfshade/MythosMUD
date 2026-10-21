@@ -1,10 +1,10 @@
 # datetime.utcnow Deprecation Fix
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **datetime.utcnow Deprecation Fix** (0 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
+- **Map Regression Tests Proposal** (0 connections) — `docs/testing/map-regression-tests.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/DATETIME_FIX_SUMMARY.md`
+- `docs/testing/map-regression-tests.md`
 
 ## Audit Trail
 

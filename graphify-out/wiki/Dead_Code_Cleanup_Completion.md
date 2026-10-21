@@ -1,12 +1,11 @@
 # Dead Code Cleanup Completion
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Dead Code Cleanup Completion** (2 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- **Legacy Files Cleanup Summary** (1 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **Dead Code Cleanup Planning** (1 connections) — `docs/archive/DEAD_CODE_CLEANUP_PLANNING.md`
+- **Incremental Upgrade Strategy (Report)** (1 connections) — `scripts/dependency_upgrade_report.md`
+- **Upgrade Rollback Plan** (1 connections) — `scripts/dependency_upgrade_report.md`
 
 ## Relationships
 
@@ -14,14 +13,12 @@
 
 ## Source Files
 
-- `docs/archive/CLEANUP_SUMMARY.md`
-- `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- `docs/archive/DEAD_CODE_CLEANUP_PLANNING.md`
+- `scripts/dependency_upgrade_report.md`
 
 ## Audit Trail
 
 - EXTRACTED: 0 (0%)
-- INFERRED: 2 (100%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

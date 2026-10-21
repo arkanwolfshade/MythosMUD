@@ -1,58 +1,53 @@
 # CorruptionTier
 
-> 22 nodes
+> 31 nodes · cohesion 0.14
 
 ## Key Concepts
 
-- **CorruptionTier** (42 connections) — `server/models/corruption.py`
-- **test_corruption_reactions.py** (22 connections) — `server/tests/unit/npc/test_corruption_reactions.py`
-- **corruption_tier_cache.py** (12 connections) — `server/services/corruption_tier_cache.py`
-- **corruption_hostility_scale()** (9 connections) — `server/npc/corruption_reactions.py`
-- **_pick_greeting()** (7 connections) — `server/npc/corruption_reactions.py`
-- **_reset_cache()** (7 connections) — `server/tests/unit/npc/test_corruption_reactions.py`
-- **test_build_corruption_aware_greeting_fires_on_entry_to_the_npcs_room()** (5 connections) — `server/tests/unit/npc/test_corruption_reactions.py`
-- **test_pick_greeting_uses_normal_greeting_for_touched_player()** (5 connections) — `server/tests/unit/npc/test_corruption_reactions.py`
-- **test_pick_greeting_boundary_at_npc_tainted_threshold()** (4 connections) — `server/tests/unit/npc/test_corruption_reactions.py`
-- **test_pick_greeting_recoils_from_marked_player_when_npc_is_untainted()** (4 connections) — `server/tests/unit/npc/test_corruption_reactions.py`
-- **test_pick_greeting_uses_normal_greeting_for_pure_player()** (4 connections) — `server/tests/unit/npc/test_corruption_reactions.py`
-- **test_pick_greeting_welcomes_marked_player_from_tainted_npc()** (4 connections) — `server/tests/unit/npc/test_corruption_reactions.py`
-- **test_corruption_hostility_scale_intermediate_gap()** (2 connections) — `server/tests/unit/npc/test_corruption_reactions.py`
-- **test_corruption_hostility_scale_neutral_when_either_side_missing()** (2 connections) — `server/tests/unit/npc/test_corruption_reactions.py`
-- **test_corruption_hostility_scale_sharpens_with_gap()** (2 connections) — `server/tests/unit/npc/test_corruption_reactions.py`
-- **test_corruption_hostility_scale_softens_when_identical()** (2 connections) — `server/tests/unit/npc/test_corruption_reactions.py`
-- **StrEnum** (1 connections)
-- **Corruption bands over 0..100. `PURE` is reserved for exactly 0 (#815) --…** (1 connections) — `server/models/corruption.py`
-- **Threat multiplier from the corruption gap between an NPC and a player,…** (1 connections) — `server/npc/corruption_reactions.py`
-- **In-memory cache of each player's previous corruption tier (#804). Unlike…** (1 connections) — `server/services/corruption_tier_cache.py`
-- **Unit tests for NPC <-> player corruption relationship (#815 PR-4). Covers both…** (1 connections) — `server/tests/unit/npc/test_corruption_reactions.py`
-- **#815: the permanent scar (touched) stays private -- no special greeting for it.** (1 connections) — `server/tests/unit/npc/test_corruption_reactions.py`
+- **test_passive_corruption_flux_service.py** (37 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
+- **_make_service()** (22 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
+- **_room()** (14 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
+- **test_innsmouth_pier_converges_upward_and_clamps_at_its_own_ceiling()** (9 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
+- **test_process_tick_for_player_applies_bounded_rising_delta()** (8 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
+- **CorruptionUpdateResult** (7 connections) — `server/services/corruption_service.py`
+- **asyncio** (5 connections)
+- **test_lookup_db_override_wins_over_static_config()** (5 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
+- **test_process_tick_for_player_zero_delta_skips_write()** (5 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
+- **test_room_attribute_rate_wins_over_db_override()** (5 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
+- **test_room_attribute_target_wins_over_db_override()** (5 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
+- **_player()** (4 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
+- **test_room_authoring_only_rate_still_inherits_db_target()** (4 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
+- **test_lookup_rate_and_target_environment_defaults()** (3 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
+- **test_lookup_rate_night_profile_differs_from_day()** (3 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
+- **test_lookup_target_room_attribute_takes_precedence()** (3 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
+- **test_process_tick_for_player_no_persistence_is_noop()** (3 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
+- **test_process_tick_for_player_skipped_off_cadence()** (3 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
+- **test_room_attribute_rate_wins_over_environment_default()** (3 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
+- **test_apply_residual_accumulates_then_emits_delta()** (2 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
+- **test_bound_delta_caps_rise_at_room_target()** (2 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
+- **test_bound_delta_floors_fall_at_current_tier_bottom()** (2 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
+- **test_should_process_tick()** (2 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
+- **FluxRoom** (1 connections)
+- **Normalized response describing the outcome of a corruption adjustment.** (1 connections) — `server/services/corruption_service.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (11 shared connections)
-- [format_occupant_display_name](format_occupant_display_name.md) (10 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (6 shared connections)
-- [EventBus](EventBus.md) (5 shared connections)
-- [CorruptionService](CorruptionService.md) (5 shared connections)
-- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (3 shared connections)
-- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (3 shared connections)
-- [test_look_player.py](test_look_player.py.md) (2 shared connections)
-- [player_presence_tracker.py](player_presence_tracker.py.md) (2 shared connections)
-- [aggro_threat.py](aggro_threat.py.md) (2 shared connections)
-- [CorruptionTierCache](CorruptionTierCache.md) (2 shared connections)
-- [look_helpers.py](look_helpers.py.md) (1 shared connections)
+- [cleanse_command.py](cleanse_command.py.md) (12 shared connections)
+- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (8 shared connections)
+- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (6 shared connections)
+- [reset_database](reset_database.md) (2 shared connections)
+- [test_player_combat_service.py](test_player_combat_service.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/corruption.py`
-- `server/npc/corruption_reactions.py`
-- `server/services/corruption_tier_cache.py`
-- `server/tests/unit/npc/test_corruption_reactions.py`
+- `server/services/corruption_service.py`
+- `server/tests/unit/services/test_passive_corruption_flux_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 72 (75%)
-- INFERRED: 24 (25%)
+- EXTRACTED: 91 (94%)
+- INFERRED: 6 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

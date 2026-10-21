@@ -1,11 +1,11 @@
 # 10-Second Login Grace Period
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **10-Second Login Grace Period** (1 connections) — `.cursor/plans/login_grace_period_implementation_32b067c4.plan.md`
-- **Login Grace Period Implementation** (1 connections) — `.cursor/plans/login_grace_period_implementation_32b067c4.plan.md`
+- **unit/persistence/__init__.py** (1 connections) — `server/tests/unit/persistence/__init__.py`
+- **Persistence unit tests.** (1 connections) — `server/tests/unit/persistence/__init__.py`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `.cursor/plans/login_grace_period_implementation_32b067c4.plan.md`
+- `server/tests/unit/persistence/__init__.py`
 
 ## Audit Trail
 

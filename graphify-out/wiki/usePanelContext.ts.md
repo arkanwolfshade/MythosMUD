@@ -1,41 +1,41 @@
 # usePanelContext.ts
 
-> 17 nodes
+> 16 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **usePanelContext.ts** (12 connections) — `client/src/contexts/hooks/usePanelContext.ts`
-- **PanelContext.tsx** (12 connections) — `client/src/contexts/PanelContext.tsx`
-- **usePanelContext.test.tsx** (6 connections) — `client/src/contexts/hooks/__tests__/usePanelContext.test.tsx`
-- **PanelContext.test.tsx** (6 connections) — `client/src/contexts/__tests__/PanelContext.test.tsx`
-- **usePanelContext()** (5 connections) — `client/src/contexts/hooks/usePanelContext.ts`
-- **PanelPosition** (3 connections) — `client/src/contexts/PanelContext.tsx`
-- **PanelSize** (3 connections) — `client/src/contexts/PanelContext.tsx`
-- **usePanel()** (3 connections) — `client/src/contexts/hooks/usePanelContext.ts`
-- **usePanelActions()** (3 connections) — `client/src/contexts/hooks/usePanelContext.ts`
-- **usePanelLayout()** (3 connections) — `client/src/contexts/hooks/usePanelContext.ts`
-- **PanelProvider()** (3 connections) — `client/src/contexts/PanelContext.tsx`
-- **PanelContextType** (2 connections) — `client/src/contexts/PanelContext.tsx`
-- **PanelState** (2 connections) — `client/src/contexts/PanelContext.tsx`
-- **PanelContext** (2 connections) — `client/src/contexts/PanelContext.tsx`
-- **PanelLayout** (1 connections) — `client/src/contexts/PanelContext.tsx`
-- **PanelProviderProps** (1 connections) — `client/src/contexts/PanelContext.tsx`
-- **defaultPanels** (1 connections) — `client/src/contexts/PanelContext.tsx`
+- **UUID** (8 connections)
+- **Any** (7 connections)
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast party message to party members only, with dampening and mute checks.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Send whisper message to specific player with communication dampening.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast system/admin message; personal when target_player_id is set.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Handle unknown channel type.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast message according to channel strategy. Args: chat_event: WebSocket…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast room-based message with server-side filtering.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast global message to all connected players.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Test Server Remediation Prompt - Cursor Executable Version](Test_Server_Remediation_Prompt_-_Cursor_Executable_Version.md) (4 shared connections)
+- [fix_markdown_line_length.py](fix_markdown_line_length.py.md) (1 shared connections)
+- [TestCheckCastingState](TestCheckCastingState.md) (1 shared connections)
+- [zone_and_subzone](zone_and_subzone.md) (1 shared connections)
+- [test_db_connectivity_create_and_read_user](test_db_connectivity_create_and_read_user.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/contexts/PanelContext.tsx`
-- `client/src/contexts/__tests__/PanelContext.test.tsx`
-- `client/src/contexts/hooks/__tests__/usePanelContext.test.tsx`
-- `client/src/contexts/hooks/usePanelContext.ts`
+- `server/realtime/channel_broadcasting_strategies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

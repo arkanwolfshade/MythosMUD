@@ -1,56 +1,51 @@
 # SchemaValidator
 
-> 49 nodes
+> 44 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **SchemaValidator** (29 connections) — `schemas/validator.py`
-- **test_schemas_validator.py** (16 connections) — `server/tests/unit/test_schemas_validator.py`
-- **create_validator()** (12 connections) — `schemas/validator.py`
-- **SchemaValidator** (10 connections)
-- **schema_validator.py** (8 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **schemas/validator.py** (7 connections) — `schemas/validator.py`
-- **.validate_room()** (6 connections) — `schemas/validator.py`
-- **Any** (6 connections)
-- **.validate_data()** (5 connections) — `schemas/validator.py`
-- **validator()** (5 connections) — `server/tests/unit/test_schemas_validator.py`
-- **.__init__()** (4 connections) — `schemas/validator.py`
-- **._load_schema()** (4 connections) — `schemas/validator.py`
-- **.validate_emote_file()** (4 connections) — `schemas/validator.py`
-- **.validate_room_database()** (4 connections) — `schemas/validator.py`
-- **.validate_room_file()** (4 connections) — `schemas/validator.py`
-- **test_invalid_schema_file_raises()** (4 connections) — `server/tests/unit/test_schemas_validator.py`
-- **test_is_room_id_valid()** (4 connections) — `server/tests/unit/test_schemas_validator.py`
-- **test_missing_schema_file_raises()** (4 connections) — `server/tests/unit/test_schemas_validator.py`
-- **test_validate_room_file_handles_bad_json()** (4 connections) — `server/tests/unit/test_schemas_validator.py`
-- **Path** (4 connections)
-- **.get_exit_flags()** (3 connections) — `schemas/validator.py`
-- **.get_exit_target()** (3 connections) — `schemas/validator.py`
-- **test_create_validator_alias_schema_removed()** (3 connections) — `server/tests/unit/test_schemas_validator.py`
-- **test_create_validator_known_schemas_load()** (3 connections) — `server/tests/unit/test_schemas_validator.py`
-- **test_exit_helpers_accept_both_exit_formats()** (3 connections) — `server/tests/unit/test_schemas_validator.py`
-- *... and 24 more nodes in this community*
+- **test_player_service.py** (26 connections) — `server/tests/unit/game/test_player_service.py`
+- **asyncio** (19 connections)
+- **test_create_player_with_stats_character_limit()** (5 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_create_player_with_stats_name_exists()** (5 connections) — `server/tests/unit/game/test_player_service.py`
+- **player_service()** (4 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_create_player_name_exists()** (4 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_create_player_with_stats_success()** (4 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_player_service_init()** (4 connections) — `server/tests/unit/game/test_player_service.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_create_player_success()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_get_online_players()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_get_player_by_id_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_get_player_by_id_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_get_player_by_name_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_get_player_by_name_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_list_players()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_resolve_player_name_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_resolve_player_name_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_search_players_by_name()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_validate_player_name_exists()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_validate_player_name_too_long()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_validate_player_name_too_short()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_validate_player_name_valid()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **fixture** (2 connections)
+- **Unit tests for player service CRUD and lookup. Delete, location, mythos status,…** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
-- [SchemaValidator](SchemaValidator.md) (3 shared connections)
-- [validate_room_data](validate_room_data.md) (2 shared connections)
-- [ValueError](ValueError.md) (2 shared connections)
-- [RoomLoader](RoomLoader.md) (2 shared connections)
-- [EmoteService](EmoteService.md) (1 shared connections)
-- [TestHierarchicalSchema](TestHierarchicalSchema.md) (1 shared connections)
+- [testing_examples.py](testing_examples.py.md) (4 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (4 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (3 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/validator.py`
-- `server/tests/unit/test_schemas_validator.py`
-- `tools/room_toolkit/room_validator/core/schema_validator.py`
+- `server/tests/unit/game/test_player_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 94 (89%)
-- INFERRED: 12 (11%)
+- EXTRACTED: 71 (93%)
+- INFERRED: 5 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

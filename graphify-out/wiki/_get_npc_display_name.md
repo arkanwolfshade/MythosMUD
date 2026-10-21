@@ -1,33 +1,46 @@
 # ._get_npc_display_name
 
-> 8 nodes
+> 12 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **._get_npc_display_name()** (5 connections) — `server/npc/combat_integration.py`
-- **._get_npc_lifecycle_manager()** (5 connections) — `server/npc/combat_integration.py`
-- **._get_npc_name_from_lifecycle()** (4 connections) — `server/npc/combat_integration.py`
-- **._derive_npc_name_from_id()** (3 connections) — `server/npc/combat_integration.py`
-- **Resolve NPC instance display name from lifecycle manager, or derive from npc_id.** (1 connections) — `server/npc/combat_integration.py`
-- **Best-effort lookup of NPC name from the lifecycle manager.** (1 connections) — `server/npc/combat_integration.py`
-- **Resolve the NPC lifecycle manager from the app state, if available.** (1 connections) — `server/npc/combat_integration.py`
-- **Fallback name derivation: first segment of npc_id (e.g. nightgaunt_limbo_... ->…** (1 connections) — `server/npc/combat_integration.py`
+- **api/item_catalog.py** (23 connections) — `server/api/item_catalog.py`
+- **get_item_catalog()** (22 connections) — `server/api/item_catalog.py`
+- **get_item_catalog_service()** (6 connections) — `server/dependencies.py`
+- **ge** (1 connections)
+- **le** (1 connections)
+- **Query** (1 connections)
+- **alias** (1 connections)
+- **Depends** (1 connections)
+- **get** (1 connections)
+- **Item catalog API: GET /v1/api/item-catalog** (1 connections) — `server/api/item_catalog.py`
+- **Return a paginated item prototype catalog with role-based columns.** (1 connections) — `server/api/item_catalog.py`
+- **Get ItemCatalogService for /catalog and GET /api/item-catalog.** (1 connections) — `server/dependencies.py`
 
 ## Relationships
 
-- [NPCCombatIntegration](NPCCombatIntegration.md) (4 shared connections)
-- [._build_player_attacked_event](_build_player_attacked_event.md) (1 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
-- [.state](state.md) (1 shared connections)
+- [NPCDefinitionCRUDMixin](NPCDefinitionCRUDMixin.md) (9 shared connections)
+- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (4 shared connections)
+- [properties](properties.md) (3 shared connections)
+- [send_system_message](send_system_message.md) (3 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (3 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (3 shared connections)
+- [EventBus](EventBus.md) (2 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (2 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
+- [test_game_state_provider_hallucination.py](test_game_state_provider_hallucination.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/combat_integration.py`
+- `server/api/item_catalog.py`
+- `server/dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 48 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

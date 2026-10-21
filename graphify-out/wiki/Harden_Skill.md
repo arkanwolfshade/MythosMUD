@@ -1,11 +1,10 @@
 # Harden Skill
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Harden Skill** (1 connections) — `.cursor/skills/harden/SKILL.md`
-- **Normalize Skill** (1 connections) — `.cursor/skills/normalize/SKILL.md`
+- **Things and Notes to Expand On** (0 connections) — `data/MythosMUD-Obsidian/wiki/sources/Things and notes to expand on.md`
 
 ## Relationships
 
@@ -13,13 +12,12 @@
 
 ## Source Files
 
-- `.cursor/skills/harden/SKILL.md`
-- `.cursor/skills/normalize/SKILL.md`
+- `data/MythosMUD-Obsidian/wiki/sources/Things and notes to expand on.md`
 
 ## Audit Trail
 
 - EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

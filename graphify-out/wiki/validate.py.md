@@ -1,35 +1,35 @@
 # validate.py
 
-> 35 nodes
+> 34 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **validate.py** (17 connections) — `scripts/hads/validate.py`
-- **validate()** (10 connections) — `scripts/hads/validate.py`
-- **_check_required_structure()** (7 connections) — `scripts/hads/validate.py`
-- **check_relative_links()** (6 connections) — `scripts/hads/validate.py`
-- **_check_bugs()** (5 connections) — `scripts/hads/validate.py`
-- **Path** (5 connections)
-- **BugBlock** (4 connections) — `scripts/hads/validate.py`
-- **check_bug_content()** (4 connections) — `scripts/hads/validate.py`
-- **find_bug_blocks()** (4 connections) — `scripts/hads/validate.py`
-- **parse_manifest()** (4 connections) — `scripts/hads/validate.py`
-- **validate_manifest()** (4 connections) — `scripts/hads/validate.py`
-- **check_loose_tags()** (3 connections) — `scripts/hads/validate.py`
-- **_exit_code_for_errors()** (3 connections) — `scripts/hads/validate.py`
-- **find_first_content_section()** (3 connections) — `scripts/hads/validate.py`
-- **find_h1()** (3 connections) — `scripts/hads/validate.py`
-- **find_manifest()** (3 connections) — `scripts/hads/validate.py`
-- **find_version()** (3 connections) — `scripts/hads/validate.py`
-- **load()** (3 connections) — `scripts/hads/validate.py`
-- **_print_validation_report()** (3 connections) — `scripts/hads/validate.py`
-- **demo()** (2 connections) — `scripts/hads/test_validate.py`
-- **test_validate.py** (2 connections) — `scripts/hads/test_validate.py`
-- **TypedDict** (1 connections)
-- **Return list of BUG blocks with their content.** (1 connections) — `scripts/hads/validate.py`
-- **Find tag-like patterns that are not properly formatted.** (1 connections) — `scripts/hads/validate.py`
-- **Find markdown links whose relative target does not resolve to a file on disk.…** (1 connections) — `scripts/hads/validate.py`
-- *... and 10 more nodes in this community*
+- **Stop-MythosMudProjectProcessTree()** (13 connections) — `scripts/MythosMudProcessScope.ps1`
+- **Test-MythosMudProjectProcess()** (10 connections) — `scripts/MythosMudProcessScope.ps1`
+- **nats_manager.ps1** (10 connections) — `scripts/nats_manager.ps1`
+- **Start-NatsServer()** (7 connections) — `scripts/nats_manager.ps1`
+- **start_server.ps1** (7 connections) — `scripts/start_server.ps1`
+- **stop_server.ps1** (7 connections) — `scripts/stop_server.ps1`
+- **MythosMudProcessScope.ps1** (6 connections) — `scripts/MythosMudProcessScope.ps1`
+- **Stop-NatsServer()** (6 connections) — `scripts/nats_manager.ps1`
+- **Test-MythosMudProtectedDevToolProcess()** (5 connections) — `scripts/MythosMudProcessScope.ps1`
+- **Get-NatsServerStatus()** (5 connections) — `scripts/nats_manager.ps1`
+- **Test-NatsServerRunning()** (5 connections) — `scripts/nats_manager.ps1`
+- **Get-NatsServerPath()** (4 connections) — `scripts/nats_manager.ps1`
+- **Test-NatsServerInstalled()** (4 connections) — `scripts/nats_manager.ps1`
+- **Stop-NatsServerForMythosMUD()** (4 connections) — `scripts/stop_server.ps1`
+- **Get-MythosMudRepoRoot()** (3 connections) — `scripts/MythosMudProcessScope.ps1`
+- **Stop-MythosMudProjectProcessTreeInternal()** (3 connections) — `scripts/MythosMudProcessScope.ps1`
+- **Initialize-NatsLogDirectory()** (3 connections) — `scripts/nats_manager.ps1`
+- **Restart-NatsServer()** (3 connections) — `scripts/nats_manager.ps1`
+- **Start-NatsServerForMythosMUD()** (3 connections) — `scripts/start_server.ps1`
+- **Stop-ServerProcess()** (3 connections) — `scripts/start_server.ps1`
+- **Close-OrphanedTerminalWindows()** (3 connections) — `scripts/stop_server.ps1`
+- **Stop-PowerShellServerProcess()** (3 connections) — `scripts/stop_server.ps1`
+- **Stop-ProcessesByCommandLine()** (3 connections) — `scripts/stop_server.ps1`
+- **Get-MythosMudProtectedDevToolPattern()** (2 connections) — `scripts/MythosMudProcessScope.ps1`
+- **Find-NatsServerInstallation()** (2 connections) — `scripts/nats_manager.ps1`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
@@ -37,13 +37,15 @@
 
 ## Source Files
 
-- `scripts/hads/test_validate.py`
-- `scripts/hads/validate.py`
+- `scripts/MythosMudProcessScope.ps1`
+- `scripts/nats_manager.ps1`
+- `scripts/start_server.ps1`
+- `scripts/stop_server.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 56 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 51 (75%)
+- INFERRED: 17 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

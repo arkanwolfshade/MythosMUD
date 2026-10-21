@@ -1,61 +1,52 @@
 # MemoryLeakMetricsCollector
 
-> 80 nodes
+> 50 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **MemoryLeakMetricsCollector** (28 connections) — `server/monitoring/memory_leak_metrics.py`
-- **test_memory_leak_metrics.py** (25 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **.initialize()** (11 connections) — `server/container/bundles/monitoring.py`
-- **Any** (11 connections)
-- **.check_alerts()** (9 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_all_metrics()** (9 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_event_metrics()** (6 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_cache_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_connection_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_nats_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_task_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.calculate_growth_rates()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._calculate_single_growth_rate()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._check_cache_alerts()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._check_connection_alerts()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.__init__()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **collector()** (4 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **._check_subscriber_alerts()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._check_task_alerts()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
-- **test_collect_event_metrics_uses_injected_event_bus()** (3 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_collect_nats_metrics_uses_injected_nats_service()** (3 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_calculate_growth_rates()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_calculate_growth_rates_insufficient_history()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_check_alerts_cache_capacity()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_check_alerts_closed_websockets_threshold()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- *... and 55 more nodes in this community*
+- **test_pattern_matcher.py** (20 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **PatternMatcher** (13 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
+- **.__init__()** (5 connections) — `server/services/nats_subject_manager/manager.py`
+- **pattern_matcher.py** (4 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
+- **.matches_any_pattern()** (4 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
+- **pattern_matcher()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **strict_pattern_matcher()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **._components_match_pattern()** (3 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
+- **test_pattern_matcher_init()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_pattern_matcher_init_strict()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **.__init__()** (2 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
+- **fixture** (2 connections)
+- **test_components_match_pattern_exact()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_components_match_pattern_invalid_placeholder_value()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_components_match_pattern_mismatch()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_components_match_pattern_multiple_placeholders()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_components_match_pattern_numbers()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_components_match_pattern_placeholder()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_components_match_pattern_strict_allows_hyphens()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_components_match_pattern_strict_no_underscores()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_matches_any_pattern_different_length()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_matches_any_pattern_exact_match()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_matches_any_pattern_multiple_patterns()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_matches_any_pattern_no_match()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- **test_matches_any_pattern_strict_validation()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [test_container_bundles.py](test_container_bundles.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
-- [LogAggregator](LogAggregator.md) (2 shared connections)
-- [lifespan.py](lifespan.py.md) (2 shared connections)
-- [MonitoringDashboard](MonitoringDashboard.md) (2 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (2 shared connections)
-- [PerformanceMonitor](PerformanceMonitor.md) (1 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (1 shared connections)
-- [HealthService](HealthService.md) (1 shared connections)
-- [fixture](fixture.md) (1 shared connections)
-- [RoomCacheService](RoomCacheService.md) (1 shared connections)
+- [test_websocket_handler_app_state_connection.py](test_websocket_handler_app_state_connection.py.md) (3 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (2 shared connections)
+- [communication_commands_flows.py](communication_commands_flows.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/monitoring.py`
-- `server/monitoring/memory_leak_metrics.py`
-- `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- `server/services/nats_subject_manager/manager.py`
+- `server/services/nats_subject_manager/pattern_matcher.py`
+- `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
 
 ## Audit Trail
 
-- EXTRACTED: 122 (95%)
-- INFERRED: 7 (5%)
+- EXTRACTED: 59 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

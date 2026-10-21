@@ -1,53 +1,69 @@
 # test_nats_message_handler.py
 
-> 129 nodes
+> 149 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **test_nats_message_handler.py** (72 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **asyncio** (55 connections)
-- **test_handle_nats_message_attribute_error_handled()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_handle_nats_message_circuit_breaker_open()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_handle_nats_message_connection_manager_resolution_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_handle_nats_message_dlq_on_final_failure()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_handle_nats_message_unknown_message_id_defaults()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_handle_nats_message_validation_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_process_message_with_retry_exhaustion()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_process_single_message_uuid_conversion_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_start_failure()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_stop_failure()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_subscribe_to_event_subjects_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_subscribe_to_standardized_chat_subjects_nats_error_handled()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_subscribe_to_standardized_chat_subjects_nats_subscribe_error_handled()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_subscribe_to_standardized_chat_subjects_partial_failure()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_subscribe_to_subject_failure()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_subscribe_to_subject_nats_error_returns_false()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_unsubscribe_from_subject_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_unsubscribe_from_subject_not_found()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_connection_manager_property_injected_returns_none()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_connection_manager_setter_updates_helpers()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_handle_nats_message_event_data_detection()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_handle_nats_message_event_type_detection()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_handle_nats_message_retry_on_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- *... and 104 more nodes in this community*
+- **Spell** (141 connections) — `server/models/spell.py`
+- **SpellEffectType** (47 connections) — `server/models/spell.py`
+- **SpellSchool** (37 connections) — `server/models/spell.py`
+- **SpellTargetType** (34 connections) — `server/models/spell.py`
+- **SpellRangeType** (32 connections) — `server/models/spell.py`
+- **test_spell.py** (30 connections) — `server/tests/unit/models/test_spell.py`
+- **spell.py** (29 connections) — `server/models/spell.py`
+- **test_spell_targeting.py** (28 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
+- **test_magic_healing_events.py** (20 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **test_spell_costs.py** (20 connections) — `server/tests/unit/game/magic/test_spell_costs.py`
+- **test_spell_registry.py** (18 connections) — `server/tests/unit/game/magic/test_spell_registry.py`
+- **spell_costs.py** (16 connections) — `server/game/magic/spell_costs.py`
+- **spell_registry.py** (16 connections) — `server/game/magic/spell_registry.py`
+- **magic_healing_events.py** (15 connections) — `server/game/magic/magic_healing_events.py`
+- **MagicServiceHealingMixin** (14 connections) — `server/game/magic/magic_healing_events.py`
+- **_HealingService** (12 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **spell_materials.py** (11 connections) — `server/game/magic/spell_materials.py`
+- **_spell()** (10 connections) — `server/tests/unit/game/magic/test_spell_costs.py`
+- **test_get_combat_target_auto_selects_opponent()** (10 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
+- **_spell()** (9 connections) — `server/tests/unit/game/magic/test_spell_registry.py`
+- **_spell()** (8 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **self_spell()** (8 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
+- **test_spell_with_materials()** (8 connections) — `server/tests/unit/models/test_spell.py`
+- **._publish_dp_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
+- **._send_healing_update_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
+- *... and 124 more nodes in this community*
 
 ## Relationships
 
-- [NATSError](NATSError.md) (13 shared connections)
-- [CircuitBreaker](CircuitBreaker.md) (4 shared connections)
-- [ValueError](ValueError.md) (3 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (3 shared connections)
-- [AttributeError](AttributeError.md) (2 shared connections)
-- [NATSService](NATSService.md) (2 shared connections)
+- [RoomService](RoomService.md) (38 shared connections)
+- [test_item.py](test_item.py.md) (27 shared connections)
+- [test_e2e_reset_players.py](test_e2e_reset_players.py.md) (26 shared connections)
+- [test_event_bus_lifecycle.py](test_event_bus_lifecycle.py.md) (19 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (17 shared connections)
+- [handle_whisper_command](handle_whisper_command.md) (16 shared connections)
+- [fastapi_integration.py](fastapi_integration.py.md) (14 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (12 shared connections)
+- [_str_id](_str_id.md) (10 shared connections)
+- [Room](Room.md) (8 shared connections)
+- [AsciiMapRenderer](AsciiMapRenderer.md) (8 shared connections)
+- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (7 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/game/magic/magic_healing_events.py`
+- `server/game/magic/spell_costs.py`
+- `server/game/magic/spell_materials.py`
+- `server/game/magic/spell_registry.py`
+- `server/models/spell.py`
+- `server/tests/unit/game/magic/test_magic_healing_events.py`
+- `server/tests/unit/game/magic/test_magic_service.py`
+- `server/tests/unit/game/magic/test_spell_costs.py`
+- `server/tests/unit/game/magic/test_spell_registry.py`
+- `server/tests/unit/game/magic/test_spell_targeting.py`
+- `server/tests/unit/models/test_spell.py`
 
 ## Audit Trail
 
-- EXTRACTED: 190 (91%)
-- INFERRED: 19 (9%)
+- EXTRACTED: 423 (72%)
+- INFERRED: 161 (28%)
 - AMBIGUOUS: 0 (0%)
 
 ---

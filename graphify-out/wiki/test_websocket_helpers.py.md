@@ -1,60 +1,77 @@
 # test_websocket_helpers.py
 
-> 72 nodes
+> 199 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **test_websocket_helpers.py** (38 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **check_shutdown_and_reject()** (12 connections) — `server/realtime/websocket_helpers.py`
-- **convert_uuids_to_strings()** (11 connections) — `server/realtime/websocket_helpers.py`
-- **get_occupant_names()** (11 connections) — `server/realtime/websocket_helpers.py`
-- **is_websocket_disconnect_message()** (11 connections) — `server/realtime/websocket_helpers.py`
-- **is_client_disconnected_exception()** (9 connections) — `server/realtime/websocket_helpers.py`
-- **prepare_room_data_with_occupants()** (9 connections) — `server/realtime/websocket_initial_state.py`
-- **handle_websocket_runtime_error()** (8 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **asyncio** (7 connections)
-- **_accumulate_valid_occupant_name()** (4 connections) — `server/realtime/websocket_helpers.py`
-- **test_check_shutdown_and_reject_not_shutting_down()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_check_shutdown_and_reject_shutting_down()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_check_shutdown_and_reject_websocket_disconnect()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_occupant_names_empty()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_occupant_names_filters_uuid()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_occupant_names_none()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_occupant_names_success()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_convert_schema_to_dict_with_dict()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_convert_schema_to_dict_with_model_dump()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_convert_uuids_to_strings_dict()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_convert_uuids_to_strings_list()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_convert_uuids_to_strings_nested()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_convert_uuids_to_strings_no_uuid()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_npc_name_from_instance_import_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_npc_name_from_instance_no_name_attribute()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- *... and 47 more nodes in this community*
+- **models/player.py** (122 connections) — `server/models/player.py`
+- **inventory_command_helpers.py** (54 connections) — `server/commands/inventory_command_helpers.py`
+- **inventory_pickup_command.py** (39 connections) — `server/commands/inventory_pickup_command.py`
+- **inventory_unequip_command.py** (37 connections) — `server/commands/inventory_unequip_command.py`
+- **persist_player()** (34 connections) — `server/commands/inventory_command_helpers.py`
+- **container_service_transfer_to.py** (34 connections) — `server/services/container_service_transfer_to.py`
+- **inventory_service.py** (34 connections) — `server/services/inventory_service.py`
+- **bank_commands.py** (33 connections) — `server/commands/bank_commands.py`
+- **inventory_use_command.py** (33 connections) — `server/commands/inventory_use_command.py`
+- **inventory_commands.py** (32 connections) — `server/commands/inventory_commands.py`
+- **inventory_drop_command.py** (29 connections) — `server/commands/inventory_drop_command.py`
+- **container_service_transfer_from.py** (28 connections) — `server/services/container_service_transfer_from.py`
+- **test_inventory_helpers_extended.py** (26 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **resolve_state_and_player()** (23 connections) — `server/commands/inventory_command_helpers.py`
+- **test_inventory_commands_more_helpers.py** (23 connections) — `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
+- **clone_inventory()** (20 connections) — `server/commands/inventory_command_helpers.py`
+- **InventoryCapacityError** (20 connections) — `server/services/inventory_service.py`
+- **broadcast_room_event()** (18 connections) — `server/commands/inventory_command_helpers.py`
+- **resolve_player()** (18 connections) — `server/commands/inventory_command_helpers.py`
+- **resolve_state()** (18 connections) — `server/commands/inventory_command_helpers.py`
+- **inventory_websocket_events.py** (18 connections) — `server/services/inventory_websocket_events.py`
+- **handle_drop_command()** (17 connections) — `server/commands/inventory_drop_command.py`
+- **RoomDropManager** (16 connections) — `server/commands/inventory_command_contracts.py`
+- **asyncio** (15 connections)
+- **inventory_command_contracts.py** (14 connections) — `server/commands/inventory_command_contracts.py`
+- *... and 174 more nodes in this community*
 
 ## Relationships
 
-- [websocket_initial_state.py](websocket_initial_state.py.md) (12 shared connections)
-- [websocket_helpers.py](websocket_helpers.py.md) (11 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (9 shared connections)
-- [AttributeError](AttributeError.md) (8 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
-- [test_websocket_handler_commands.py](test_websocket_handler_commands.py.md) (2 shared connections)
-- [PersonalMessageSender](PersonalMessageSender.md) (2 shared connections)
-- [player_event_handlers_respawn_room.py](player_event_handlers_respawn_room.py.md) (2 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (2 shared connections)
-- [test_websocket_handler_app_state_connection.py](test_websocket_handler_app_state_connection.py.md) (1 shared connections)
+- [command_parser.py](command_parser.py.md) (40 shared connections)
+- [TargetMatch](TargetMatch.md) (37 shared connections)
+- [test_command_factories.py](test_command_factories.py.md) (29 shared connections)
+- [Room](Room.md) (28 shared connections)
+- [ExplorationCommandFactory](ExplorationCommandFactory.md) (26 shared connections)
+- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (23 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (17 shared connections)
+- [RoomEventHandler](RoomEventHandler.md) (13 shared connections)
+- [deprecated_patterns.py](deprecated_patterns.py.md) (13 shared connections)
+- [FollowService](FollowService.md) (13 shared connections)
+- [test_nats_message_handler_subzone_events.py](test_nats_message_handler_subzone_events.py.md) (13 shared connections)
+- [Protocol](Protocol.md) (10 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_handler_message_loop.py`
-- `server/realtime/websocket_helpers.py`
-- `server/realtime/websocket_initial_state.py`
-- `server/tests/unit/realtime/test_websocket_helpers.py`
+- `server/commands/bank_commands.py`
+- `server/commands/inventory_command_coercion.py`
+- `server/commands/inventory_command_contracts.py`
+- `server/commands/inventory_command_helpers.py`
+- `server/commands/inventory_commands.py`
+- `server/commands/inventory_drop_command.py`
+- `server/commands/inventory_pickup_command.py`
+- `server/commands/inventory_unequip_command.py`
+- `server/commands/inventory_use_command.py`
+- `server/models/player.py`
+- `server/services/container_service_helpers.py`
+- `server/services/container_service_transfer_from.py`
+- `server/services/container_service_transfer_to.py`
+- `server/services/inventory_service.py`
+- `server/services/inventory_websocket_events.py`
+- `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
+- `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- `server/tests/unit/commands/test_inventory_commands_state_helpers.py`
+- `server/tests/unit/commands/test_inventory_helpers_extended.py`
 
 ## Audit Trail
 
-- EXTRACTED: 142 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 843 (96%)
+- INFERRED: 32 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

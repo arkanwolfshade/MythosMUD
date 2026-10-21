@@ -1,19 +1,19 @@
 # test_process_exit_rows_missing_zone
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_process_exit_rows_missing_zone()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _process_exit_rows handles missing zone data.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_validate_combat_state_edge_case_return_true()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_combat_state fallback return (edge case coverage).** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [test_async_persistence_room_cache.py](test_async_persistence_room_cache.py.md) (1 shared connections)
+- [🔍 Specific File Reviews](🔍_Specific_File_Reviews.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 

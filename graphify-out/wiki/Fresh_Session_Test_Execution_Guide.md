@@ -1,10 +1,10 @@
 # Fresh Session Test Execution Guide
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Fresh Session Test Execution Guide** (0 connections) — `docs/FRESH_SESSION_TESTS.md`
+- **Pytest Best-Practices Remediation** (0 connections) — `.cursor/plans/pytest_best-practices_remediation_9fb67c68.plan.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/FRESH_SESSION_TESTS.md`
+- `.cursor/plans/pytest_best-practices_remediation_9fb67c68.plan.md`
 
 ## Audit Trail
 

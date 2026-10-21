@@ -1,25 +1,24 @@
 # Alone Against the Frost (source summary)
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Alone Against the Frost (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Frost.md`
-- **Alone Against the Frost.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Frost.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Frost.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Frost.md`
+- **E2E Session Report 2025-12-02** (2 connections) — `e2e-tests/SESSION_REPORT_2025-12-02.md`
+- **Admin Teleportation Display Bug** (1 connections) — `e2e-tests/SESSION_REPORT_2025-12-02.md`
+- **Whisper Messages Not Received Bug** (1 connections) — `e2e-tests/SESSION_REPORT_2025-12-02.md`
 
 ## Relationships
 
-- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Frost.md`
+- `e2e-tests/SESSION_REPORT_2025-12-02.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

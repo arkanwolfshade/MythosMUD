@@ -1,34 +1,32 @@
 # Claims by cluster
 
-> 13 nodes
+> 11 nodes · cohesion 0.27
 
 ## Key Concepts
 
-- **Claims by cluster** (8 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **P2 · Structural & Architecture Doc Claim Register** (5 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **P2-Structural-Claims.md** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **config-api — API_OPENAPI_SPECIFICATION** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **container-di — BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **container-di — CONTAINER_SYSTEM_ARCHITECTURE** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **Corpus correction** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **Design↔design contradictions (findings without needing code)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **domain — aggro-threat-system** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **events-nats — EVENT_OWNERSHIP_MATRIX, DISTRIBUTED_EVENTBUS_NATS, NATS_SUBJECT_PATTERNS** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **persistence-db — PERSISTENCE_REPOSITORY_ARCHITECTURE, DATABASE_ACCESS_PATTERNS** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **realtime-connection — REAL_TIME_ARCHITECTURE, CONNECTION_MANAGER_ARCHITECTURE** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **Verified during extraction** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **main()** (6 connections) — `.claude/hooks/trigger_test_agent.py`
+- **.claude/hooks/trigger_test_agent.py** (4 connections) — `.claude/hooks/trigger_test_agent.py`
+- **_exit_empty()** (4 connections) — `.claude/hooks/trigger_test_agent.py`
+- **_load_state()** (4 connections) — `.claude/hooks/trigger_test_agent.py`
+- **_write_state_atomic()** (4 connections) — `.claude/hooks/trigger_test_agent.py`
+- **Path** (3 connections)
+- **NoReturn** (1 connections)
+- **Exit successfully with no decision (allow the stop).** (1 connections) — `.claude/hooks/trigger_test_agent.py`
+- **Load and validate edited-files state. Returns None if missing or invalid.** (1 connections) — `.claude/hooks/trigger_test_agent.py`
+- **Write state via a same-directory temp file + os.replace. See…** (1 connections) — `.claude/hooks/trigger_test_agent.py`
+- **Entry point: read hook payload from stdin, check edited-files state, and…** (1 connections) — `.claude/hooks/trigger_test_agent.py`
 
 ## Relationships
 
-- [INDEX.md](INDEX.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- `.claude/hooks/trigger_test_agent.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

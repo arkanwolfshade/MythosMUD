@@ -1,55 +1,57 @@
 # apiTypeGuards.ts
 
-> 47 nodes
+> 63 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **apiTypeGuards.ts** (69 connections) — `client/src/utils/apiTypeGuards.ts`
-- **apiTypeGuards.test.ts** (15 connections) — `client/src/utils/__tests__/apiTypeGuards.test.ts`
-- **isObject()** (13 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isString()** (13 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isNumber()** (9 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isServerCharacterResponse()** (8 connections) — `client/src/utils/apiTypeGuards.ts`
-- **assertServerCharacterResponseArray()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isArray()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isCharacterInfo()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isLoginResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isServerCharacterResponseArray()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isStatsRollResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isProfession()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isRefreshTokenResponse()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
-- **assertProfessionArray()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
-- **assertStatsRollResponse()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
-- **hasSharedCharacterRecordCoreFields()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isCharacterInfoArray()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isMechanicalEffect()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isProfessionArray()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isProfessionCoreFields()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isStatRequirement()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
-- **hasServerCharacterCoreFields()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
-- **hasServerCharacterIdentifierFields()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
-- **hasValidOptionalRollFields()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
-- *... and 22 more nodes in this community*
+- **test_error_handling_middleware.py** (28 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
+- **error_handling_middleware.py** (19 connections) — `server/middleware/error_handling_middleware.py`
+- **ErrorHandlingMiddleware** (17 connections) — `server/middleware/error_handling_middleware.py`
+- **._handle_exception()** (10 connections) — `server/middleware/error_handling_middleware.py`
+- **register_error_handlers()** (10 connections) — `server/middleware/error_handling_middleware.py`
+- **setup_error_handling()** (10 connections) — `server/middleware/error_handling_middleware.py`
+- **_http_scope()** (8 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
+- **add_error_handling_middleware()** (7 connections) — `server/middleware/error_handling_middleware.py`
+- **.log_exception()** (7 connections) — `server/middleware/error_handling_middleware.py`
+- **request_id_from_scope()** (7 connections) — `server/middleware/error_handling_middleware.py`
+- **.__call__()** (6 connections) — `server/middleware/error_handling_middleware.py`
+- **.dispatch()** (6 connections) — `server/middleware/error_handling_middleware.py`
+- **server/middleware/__init__.py** (6 connections) — `server/middleware/__init__.py`
+- **asyncio** (6 connections)
+- **test_log_exception_levels_and_session()** (6 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
+- **test_registered_exception_handlers_return_json()** (6 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
+- **extract_user_id_from_non_mapping()** (5 connections) — `server/middleware/error_handling_middleware.py`
+- **test_handle_exception_fallback_when_handler_fails()** (5 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
+- **FastAPI** (4 connections)
+- **_error_log_kwargs()** (4 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
+- **test_add_register_setup_error_handling()** (4 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
+- **test_call_handles_exception()** (4 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
+- **test_call_sets_request_id_and_success()** (4 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
+- **test_dispatch_success_and_exception()** (4 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
+- **test_log_exception_adds_user_id_for_mapping_user()** (4 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (12 shared connections)
-- [Profession](Profession.md) (8 shared connections)
-- [useAsciiMapState.ts](useAsciiMapState.ts.md) (6 shared connections)
-- [submitAuth.ts](submitAuth.ts.md) (4 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (4 shared connections)
-- [stateUpdateUtils.ts](stateUpdateUtils.ts.md) (3 shared connections)
-- [map/types.ts](map-types.ts.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (6 shared connections)
+- [EventBus](EventBus.md) (5 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (4 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (3 shared connections)
+- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (2 shared connections)
+- [verify_enhanced_logging_compliance.py](verify_enhanced_logging_compliance.py.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/utils/__tests__/apiTypeGuards.test.ts`
-- `client/src/utils/apiTypeGuards.ts`
+- `server/middleware/__init__.py`
+- `server/middleware/error_handling_middleware.py`
+- `server/tests/unit/middleware/test_error_handling_middleware.py`
 
 ## Audit Trail
 
-- EXTRACTED: 163 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 132 (92%)
+- INFERRED: 12 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

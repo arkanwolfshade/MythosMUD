@@ -1,10 +1,10 @@
 # Bug Investigator Agent
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Bug Investigator Agent** (0 connections) — `.claude/agents/bug-investigator.md`
+- **Database Schema Management** (0 connections) — `db/README.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.claude/agents/bug-investigator.md`
+- `db/README.md`
 
 ## Audit Trail
 

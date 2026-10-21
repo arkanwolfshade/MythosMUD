@@ -1,51 +1,54 @@
 # AdminActionsLogger
 
-> 49 nodes
+> 24 nodes · cohesion 0.14
 
 ## Key Concepts
 
-- **AdminActionsLogger** (31 connections) — `server/structured_logging/admin_actions_logger.py`
-- **test_admin_actions_logger.py** (21 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
-- **._log_entry()** (8 connections) — `server/structured_logging/admin_actions_logger.py`
-- **Any** (8 connections)
-- **_read_log_entries()** (7 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
-- **._read_actions_from_file()** (6 connections) — `server/structured_logging/admin_actions_logger.py`
-- **Path** (6 connections)
-- **._get_log_file_path()** (5 connections) — `server/structured_logging/admin_actions_logger.py`
-- **.get_recent_actions()** (5 connections) — `server/structured_logging/admin_actions_logger.py`
-- **.__init__()** (5 connections) — `server/structured_logging/admin_actions_logger.py`
-- **.log_teleport_action()** (5 connections) — `server/structured_logging/admin_actions_logger.py`
-- **TeleportActionInput** (4 connections) — `server/structured_logging/admin_actions_logger.py`
-- **._action_entry_matches_filters()** (4 connections) — `server/structured_logging/admin_actions_logger.py`
-- **.get_teleport_statistics()** (4 connections) — `server/structured_logging/admin_actions_logger.py`
-- **.log_admin_command()** (4 connections) — `server/structured_logging/admin_actions_logger.py`
-- **.log_permission_check()** (4 connections) — `server/structured_logging/admin_actions_logger.py`
-- **admin_logger()** (4 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
-- **test_get_admin_actions_logger_singleton()** (4 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
-- **test_log_teleport_action_success()** (4 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
-- **._ensure_log_file_exists()** (3 connections) — `server/structured_logging/admin_actions_logger.py`
-- **log_dir()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
-- **test_admin_logger_init_from_config()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
-- **test_log_admin_command()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
-- **test_log_admin_command_failure()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
-- **test_log_permission_check_denied()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
-- *... and 24 more nodes in this community*
+- **skills_commands.py** (18 connections) — `server/commands/skills_commands.py`
+- **handle_skills_command()** (13 connections) — `server/commands/skills_commands.py`
+- **test_skills_commands.py** (11 connections) — `server/tests/unit/commands/test_skills_commands.py`
+- **_get_container_services()** (9 connections) — `server/commands/skills_commands.py`
+- **_resolve_player_id()** (6 connections) — `server/commands/skills_commands.py`
+- **_format_skills_output()** (5 connections) — `server/commands/skills_commands.py`
+- **Any** (5 connections)
+- **_resolve_user_id()** (5 connections) — `server/commands/skills_commands.py`
+- **test_get_container_services_ok()** (3 connections) — `server/tests/unit/commands/test_skills_commands.py`
+- **test_handle_skills_command_no_services()** (3 connections) — `server/tests/unit/commands/test_skills_commands.py`
+- **test_handle_skills_command_success()** (3 connections) — `server/tests/unit/commands/test_skills_commands.py`
+- **UUID** (2 connections)
+- **asyncio** (2 connections)
+- **test_format_skills_output()** (2 connections) — `server/tests/unit/commands/test_skills_commands.py`
+- **test_get_container_services_missing()** (2 connections) — `server/tests/unit/commands/test_skills_commands.py`
+- **test_resolve_player_id_from_string()** (2 connections) — `server/tests/unit/commands/test_skills_commands.py`
+- **test_resolve_user_id_from_dict()** (2 connections) — `server/tests/unit/commands/test_skills_commands.py`
+- **Skills command handler (plan 10.7 V4). Returns the active character's skills as…** (1 connections) — `server/commands/skills_commands.py`
+- **Get container, persistence, and skill_service from request, or None if…** (1 connections) — `server/commands/skills_commands.py`
+- **Extract and validate player_id from player object, returning UUID or None.** (1 connections) — `server/commands/skills_commands.py`
+- **Resolve user_id from current_user (auth user) or fallback to player.user_id.** (1 connections) — `server/commands/skills_commands.py`
+- **Format skills list as text output lines.** (1 connections) — `server/commands/skills_commands.py`
+- **Handle the /skills command: return the active character's skills as text.…** (1 connections) — `server/commands/skills_commands.py`
+- **Unit tests for skills command helpers.** (1 connections) — `server/tests/unit/commands/test_skills_commands.py`
 
 ## Relationships
 
-- [command_error](command_error.md) (7 shared connections)
-- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (1 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
+- [command_parser.py](command_parser.py.md) (8 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (4 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [Reporter](Reporter.md) (2 shared connections)
+- [CommandFactory](CommandFactory.md) (1 shared connections)
+- [NPCCombatLucidity](NPCCombatLucidity.md) (1 shared connections)
+- [CoordinateGenerator](CoordinateGenerator.md) (1 shared connections)
+- [.load_room_data](load_room_data.md) (1 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/admin_actions_logger.py`
-- `server/tests/unit/structured_logging/test_admin_actions_logger.py`
+- `server/commands/skills_commands.py`
+- `server/tests/unit/commands/test_skills_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (88%)
-- INFERRED: 12 (12%)
+- EXTRACTED: 55 (92%)
+- INFERRED: 5 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

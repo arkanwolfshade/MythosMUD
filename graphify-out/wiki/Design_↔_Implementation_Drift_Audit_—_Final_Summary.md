@@ -1,31 +1,29 @@
 # Design ↔ Implementation Drift Audit — Final Summary
 
-> 10 nodes
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **Design ↔ Implementation Drift Audit — Final Summary** (7 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
-- **Working the backlog** (4 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
-- **Decisions made — do not re-litigate** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
-- **Do first — small, high value** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
-- **Loose ends outside the tracker** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
-- **Sequencing that matters** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
-- **User-visible defects** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
-- **Weight the evidence correctly** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
-- **What the audit concluded** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
-- **What was not examined — see #639** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
+- **run-vitest.js** (7 connections) — `client/scripts/run-vitest.js`
+- **args** (1 connections) — `client/scripts/run-vitest.js`
+- **clientRoot** (1 connections) — `client/scripts/run-vitest.js`
+- **__dirname** (1 connections) — `client/scripts/run-vitest.js`
+- **env** (1 connections) — `client/scripts/run-vitest.js`
+- **__filename** (1 connections) — `client/scripts/run-vitest.js`
+- **vitest** (1 connections) — `client/scripts/run-vitest.js`
+- **vitestBin** (1 connections) — `client/scripts/run-vitest.js`
 
 ## Relationships
 
-- [INDEX.md](INDEX.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
+- `client/scripts/run-vitest.js`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

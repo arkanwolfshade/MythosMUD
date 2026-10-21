@@ -1,52 +1,50 @@
 # asyncio
 
-> 38 nodes
+> 66 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **asyncio** (29 connections)
-- **_container_data()** (27 connections) — `server/tests/unit/services/test_container_service.py`
-- **_stack()** (21 connections) — `server/tests/unit/services/test_container_service.py`
-- **_open_from_fixture()** (11 connections) — `server/tests/unit/services/test_container_service.py`
-- **_allow_all_mutations()** (8 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_transfer_from_container_capacity_exceeded()** (8 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_transfer_from_container_item_not_found()** (7 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_transfer_from_container_mutation_guard_suppressed()** (7 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_transfer_from_container_reraises_unexpected_error()** (7 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_transfer_from_container_success()** (7 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_loot_all_stops_on_capacity_error()** (6 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_transfer_to_container_player_not_found()** (6 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_transfer_to_container_success()** (6 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_lock_container_updates_state()** (5 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_loot_all_continues_past_other_errors()** (5 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_loot_all_player_not_found()** (5 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_loot_all_success()** (5 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_open_container_already_open_is_idempotent()** (5 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_open_container_player_not_found()** (5 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_open_container_rejects_second_player_naming_holder()** (5 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_release_player_sessions_frees_containers_for_other_players()** (5 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_transfer_to_container_capacity_exceeded()** (5 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_transfer_to_container_non_dict_container_data()** (5 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_close_container_logs_audit_when_data_available()** (4 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_open_container_audit_failure_still_succeeds()** (4 connections) — `server/tests/unit/services/test_container_service.py`
-- *... and 13 more nodes in this community*
+- **test_alias_commands.py** (36 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **handle_alias_command()** (26 connections) — `server/commands/alias_commands.py`
+- **asyncio** (25 connections)
+- **handle_unalias_command()** (14 connections) — `server/commands/alias_commands.py`
+- **handle_aliases_command()** (12 connections) — `server/commands/alias_commands.py`
+- **test_handle_unalias_command_remove_failure()** (6 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_create_rejected_reports_failure()** (5 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **_extract_alias_params()** (4 connections) — `server/commands/alias_commands.py`
+- **Any** (4 connections)
+- **mock_alias_storage()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_circular_reference()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_create_error()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_create_from_args()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_create_from_structured_data()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_invalid_command_empty()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_invalid_command_too_long()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_invalid_name_empty()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_invalid_name_too_long()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_no_args()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_no_storage()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_update_existing()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_view_existing()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_view_from_structured_data()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_view_nonexistent()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_aliases_command_error()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- *... and 41 more nodes in this community*
 
 ## Relationships
 
-- [ContainerService](ContainerService.md) (63 shared connections)
-- [MutationDecision](MutationDecision.md) (7 shared connections)
-- [ContainerComponent](ContainerComponent.md) (4 shared connections)
-- [ValidationError](ValidationError.md) (2 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
+- [command_parser.py](command_parser.py.md) (24 shared connections)
+- [CombatConfiguration](CombatConfiguration.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_container_service.py`
+- `server/commands/alias_commands.py`
+- `server/tests/unit/commands/test_alias_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 120 (76%)
-- INFERRED: 37 (24%)
+- EXTRACTED: 139 (95%)
+- INFERRED: 7 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

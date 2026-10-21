@@ -1,65 +1,61 @@
 # _handle_admin_hallucinate_command
 
-> 78 nodes
+> 57 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **_handle_admin_hallucinate_command()** (22 connections) — `server/commands/admin_hallucinate_command.py`
-- **hallucinations.py** (21 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
-- **test_admin_hallucinate_command.py** (19 connections) — `server/tests/unit/commands/test_admin_hallucinate_command.py`
-- **FakeHallucinationService** (15 connections) — `server/services/fake_hallucination_service.py`
-- **asyncio** (14 connections)
-- **deliver_forced_hallucination()** (12 connections) — `server/commands/admin_hallucinate_command.py`
-- **handle_hallucination_triggers()** (12 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
-- **handle_phantom_hostile_hallucination()** (11 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
-- **handle_fake_hallucination()** (10 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
-- **handle_room_text_overlay_hallucination()** (10 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
-- **send_hallucination_event()** (9 connections) — `server/services/lucidity_event_dispatcher.py`
-- **test_passive_lucidity_hallucinations.py** (9 connections) — `server/tests/unit/services/test_passive_lucidity_hallucinations.py`
-- **handle_uneasy_room_entry_hallucination()** (7 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
-- **asyncio** (7 connections)
-- **UUID** (6 connections)
-- **extract_args()** (5 connections) — `server/commands/admin_hallucinate_command.py`
-- **FakeNpcTellData** (4 connections) — `server/services/fake_hallucination_service.py`
-- **RoomTextOverlayData** (4 connections) — `server/services/fake_hallucination_service.py`
-- **.generate_fake_npc_tell()** (4 connections) — `server/services/fake_hallucination_service.py`
-- **.generate_room_text_overlay()** (4 connections) — `server/services/fake_hallucination_service.py`
-- **test_get_current_lcd_or_error_raises_when_session_unavailable()** (4 connections) — `server/tests/unit/commands/test_admin_hallucinate_command.py`
-- **test_handle_admin_hallucinate_delivers_phantom()** (4 connections) — `server/tests/unit/commands/test_admin_hallucinate_command.py`
-- **test_handle_admin_hallucinate_delivery_error()** (4 connections) — `server/tests/unit/commands/test_admin_hallucinate_command.py`
-- **test_resolve_hallucinate_target_raises_when_current_player_not_found()** (4 connections) — `server/tests/unit/commands/test_admin_hallucinate_command.py`
-- **test_handle_fake_hallucination_npc_tell()** (4 connections) — `server/tests/unit/services/test_passive_lucidity_hallucinations.py`
-- *... and 53 more nodes in this community*
+- **EventHandler** (37 connections) — `server/realtime/event_handlers.py`
+- **test_event_handlers_combat.py** (22 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- **asyncio** (11 connections)
+- **_send_combat_participant_updates()** (10 connections) — `server/realtime/event_handlers.py`
+- **_as_event_data_dict()** (8 connections) — `server/realtime/event_handlers.py`
+- **.__init__()** (7 connections) — `server/realtime/nats_message_handler.py`
+- **.handle_event_message()** (6 connections) — `server/realtime/event_handlers.py`
+- **_npc_died_ids_or_warn()** (5 connections) — `server/realtime/event_handlers.py`
+- **_participant_key_strings()** (5 connections) — `server/realtime/event_handlers.py`
+- **test_handle_npc_took_damage_flattens_event_data_for_websocket()** (4 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- **.get_event_handler_map()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_combat_ended_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_combat_started_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_npc_attacked_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_npc_died_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_npc_took_damage_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_player_attacked_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.__init__()** (3 connections) — `server/realtime/event_handlers.py`
+- **.validate_event_message()** (3 connections) — `server/realtime/event_handlers.py`
+- **test_handle_combat_ended_event()** (3 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- **test_handle_combat_started_event()** (3 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- **test_handle_event_message_dispatches_handler()** (3 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- **test_handle_event_message_invalid_skips()** (3 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- **test_handle_game_tick_event()** (3 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- **test_handle_npc_attacked_event()** (3 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [command_error](command_error.md) (15 shared connections)
-- [get_logger](get_logger.md) (7 shared connections)
-- [NpcDisposition](NpcDisposition.md) (7 shared connections)
-- [test_hallucination_services.py](test_hallucination_services.py.md) (6 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (6 shared connections)
-- [command_service.py](command_service.py.md) (2 shared connections)
-- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (2 shared connections)
-- [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (2 shared connections)
-- [passive_lucidity_flux/service.py](passive_lucidity_flux-service.py.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [LucidityService](LucidityService.md) (1 shared connections)
+- [look_container.py](look_container.py.md) (11 shared connections)
+- [Room](Room.md) (3 shared connections)
+- [PlayerCombatService](PlayerCombatService.md) (2 shared connections)
+- [ChatService](ChatService.md) (2 shared connections)
+- [deque](deque.md) (2 shared connections)
+- [test_command_admin.py](test_command_admin.py.md) (1 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
+- [.publish_with_pool](publish_with_pool.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
+- [test_magic_service.py](test_magic_service.py.md) (1 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (1 shared connections)
+- [WebSocketManager](WebSocketManager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_hallucinate_command.py`
-- `server/services/fake_hallucination_service.py`
-- `server/services/lucidity_event_dispatcher.py`
-- `server/services/passive_lucidity_flux/hallucinations.py`
-- `server/tests/unit/commands/test_admin_hallucinate_command.py`
-- `server/tests/unit/services/test_hallucination_services.py`
-- `server/tests/unit/services/test_passive_lucidity_hallucinations.py`
+- `server/realtime/event_handlers.py`
+- `server/realtime/nats_message_handler.py`
+- `server/tests/unit/realtime/test_event_handlers_combat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 189 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 101 (86%)
+- INFERRED: 16 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

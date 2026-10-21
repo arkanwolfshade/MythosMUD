@@ -1,10 +1,10 @@
 # quick_metrics_check.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **quick_metrics_check.ps1** (0 connections) — `scripts/quick_metrics_check.ps1`
+- **unit/utils/__init__.py** (0 connections) — `server/tests/unit/utils/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/quick_metrics_check.ps1`
+- `server/tests/unit/utils/__init__.py`
 
 ## Audit Trail
 

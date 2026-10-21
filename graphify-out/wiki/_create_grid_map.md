@@ -1,45 +1,60 @@
 # ._create_grid_map
 
-> 23 nodes
+> 131 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **._create_grid_map()** (6 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **._assign_coordinates()** (5 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **.render_ascii_map()** (5 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **._generate_color_legend()** (4 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **.get_street_color()** (4 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **.get_street_name()** (4 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **._draw_connection()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **._get_next_coordinates()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **.render_connectivity_stats()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **.render_json_summary()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **._reverse_direction()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Any** (3 connections)
-- **Extract street name from room ID. Args: room_id: Full room ID Returns: Street…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Get color code for a street. Args: room_id: Full room ID Returns: ANSI color…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Render the mini-map as ASCII art with grid-based visualization. Args:…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Create a grid-based map visualization. Args: nodes: List of room nodes edges:…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Assign grid coordinates to rooms based on connectivity. Args: nodes: List of…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Get coordinates for the next room based on direction. Args: x: Current x…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Reverse a direction. Args: direction: Original direction Returns: Reversed…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Draw a connection line between two rooms. Args: grid: The grid to draw on x1,…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Generate a color-coded legend for the streets and special symbols. Args: nodes:…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Render a JSON summary of the mini-map data. Args: minimap_data: Mini-map graph…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Render connectivity statistics for the mini-map. Args: minimap_data: Mini-map…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **test_users.py** (53 connections) — `server/tests/unit/auth/test_users.py`
+- **UserManager** (41 connections) — `server/auth/users.py`
+- **RestartInvalidatingJWTStrategy** (13 connections) — `server/auth/jwt_strategy.py`
+- **get_user_manager()** (13 connections) — `server/auth/users.py`
+- **get_auth_backend()** (12 connections) — `server/auth/users.py`
+- **get_user_db()** (11 connections) — `server/auth/users.py`
+- **asyncio** (11 connections)
+- **get_username_auth_backend()** (9 connections) — `server/auth/users.py`
+- **test_jwt_strategy.py** (9 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
+- **UsernameAuthenticationBackend** (8 connections) — `server/auth/users.py`
+- **jwt_strategy.py** (7 connections) — `server/auth/jwt_strategy.py`
+- **.read_token()** (7 connections) — `server/auth/jwt_strategy.py`
+- **UUID** (7 connections)
+- **.__init__()** (6 connections) — `server/auth/users.py`
+- **.login()** (6 connections) — `server/auth/users.py`
+- **test_read_token_accepts_matching_epoch()** (6 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
+- **test_username_authentication_backend_login()** (6 connections) — `server/tests/unit/auth/test_users.py`
+- **test_read_token_rejects_missing_epoch()** (5 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
+- **test_read_token_rejects_wrong_epoch()** (5 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
+- **test_get_user_manager()** (5 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_forgot_password()** (5 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_forgot_password_with_request()** (5 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_register_bogus_email()** (5 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_register_no_email()** (5 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_register_non_bogus_email()** (5 connections) — `server/tests/unit/auth/test_users.py`
+- *... and 106 more nodes in this community*
 
 ## Relationships
 
-- [RoomLoader](RoomLoader.md) (11 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (29 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (11 shared connections)
+- [NPCSpawnRule](NPCSpawnRule.md) (6 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (2 shared connections)
+- [test_connection_session_management.py](test_connection_session_management.py.md) (2 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (2 shared connections)
+- [test_db_connectivity_create_and_read_user](test_db_connectivity_create_and_read_user.md) (2 shared connections)
+- [properties](properties.md) (1 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- `server/auth/jwt_strategy.py`
+- `server/auth/users.py`
+- `server/tests/unit/auth/test_jwt_strategy.py`
+- `server/tests/unit/auth/test_users.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 230 (88%)
+- INFERRED: 31 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

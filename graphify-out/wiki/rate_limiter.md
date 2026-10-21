@@ -1,28 +1,29 @@
 # rate_limiter
 
-> 5 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **rate_limiter()** (5 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **mock_config()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **fixture** (2 connections)
-- **Create a mock config with chat rate limits.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Create a RateLimiter instance with mocked config.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test Coverage Requirements** (4 connections) — `.claude/rules/test-coverage.md`
+- **Test Quality Standards** (3 connections) — `.claude/rules/test-coverage.md`
+- **test-coverage.md** (1 connections) — `.claude/rules/test-coverage.md`
+- **Coverage Measurement** (1 connections) — `.claude/rules/test-coverage.md`
+- **Forbidden Test Patterns** (1 connections) — `.claude/rules/test-coverage.md`
+- **Minimum Coverage Standard** (1 connections) — `.claude/rules/test-coverage.md`
+- **Required Test Patterns** (1 connections) — `.claude/rules/test-coverage.md`
 
 ## Relationships
 
-- [test_rate_limiter.py](test_rate_limiter.py.md) (2 shared connections)
-- [RateLimiter](RateLimiter.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_rate_limiter.py`
+- `.claude/rules/test-coverage.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (88%)
-- INFERRED: 1 (12%)
+- EXTRACTED: 6 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

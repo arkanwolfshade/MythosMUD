@@ -1,36 +1,28 @@
 # 🟢 MEDIUM PRIORITY IMPROVEMENTS
 
-> 15 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **🟢 MEDIUM PRIORITY IMPROVEMENTS** (15 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **15. Hardcoded Connection Pool Sizes** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **16. Deprecated asyncio.get_event_loop() Usage** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **17. Inconsistent Error Handling Patterns** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **18. Memory Leak Risk in Metrics Collection** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **19. Missing Message Acknowledgment in NATS** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **20. Subject Naming Inconsistency** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **21. No Connection Health Monitoring** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Priority**: 🟢**MEDIUM** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Priority**: 🟢**MEDIUM** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Priority**: 🟢**MEDIUM** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Priority**: 🟢**MEDIUM** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Priority**: 🟢**MEDIUM** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Priority**: 🟢**MEDIUM** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Priority**: 🟢**MEDIUM** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **room-editor.spec.ts** (8 connections) — `client/tests/e2e/runtime/admin/room-editor.spec.ts`
+- **adminApiHeaders()** (1 connections) — `client/tests/e2e/runtime/admin/room-editor.spec.ts`
+- **flippedEnvironment()** (1 connections) — `client/tests/e2e/runtime/admin/room-editor.spec.ts`
+- **listSubzoneRooms()** (1 connections) — `client/tests/e2e/runtime/admin/room-editor.spec.ts`
+- **requireDefined()** (1 connections) — `client/tests/e2e/runtime/admin/room-editor.spec.ts`
+- **RoomSummary** (1 connections) — `client/tests/e2e/runtime/admin/room-editor.spec.ts`
+- **STANDARD_DIRECTIONS** (1 connections) — `client/tests/e2e/runtime/admin/room-editor.spec.ts`
 
 ## Relationships
 
-- [Asynchronous Code Audit - December 3, 2025](Asynchronous_Code_Audit_-_December_3,_2025.md) (1 shared connections)
+- [look_command.py](look_command.py.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- `client/tests/e2e/runtime/admin/room-editor.spec.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

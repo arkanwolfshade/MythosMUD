@@ -1,10 +1,10 @@
 # Code Practice Rules Reference Doc
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Code Practice Rules Reference Doc** (0 connections) — `.cursor/plans/code_practice_rules_reference_doc.plan.md`
+- **temp_generate_unit_test_invites.py** (0 connections) — `scripts/temp_generate_unit_test_invites.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.cursor/plans/code_practice_rules_reference_doc.plan.md`
+- `scripts/temp_generate_unit_test_invites.py`
 
 ## Audit Trail
 

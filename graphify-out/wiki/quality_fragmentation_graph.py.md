@@ -1,31 +1,28 @@
 # quality_fragmentation_graph.py
 
-> 9 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **compute_python_cross_file_depth()** (7 connections) — `scripts/ci/quality_fragmentation_graph.py`
-- **quality_fragmentation_graph.py** (7 connections) — `scripts/ci/quality_fragmentation_graph.py`
-- **collect_python_defs_and_calls()** (5 connections) — `scripts/ci/quality_fragmentation_graph.py`
-- **_named_calls()** (3 connections) — `scripts/ci/quality_fragmentation_graph.py`
-- **_top_level_definitions()** (3 connections) — `scripts/ci/quality_fragmentation_graph.py`
-- **build_call_graph()** (2 connections) — `scripts/ci/quality_fragmentation_graph.py`
-- **max_path_length()** (2 connections) — `scripts/ci/quality_fragmentation_graph.py`
-- **Module** (2 connections)
-- **Path** (2 connections)
+- **✅ POSITIVE FINDINGS** (7 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **1. Excellent Error Boundary Implementation** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **2. Proper Use of asyncio.gather with return_exceptions=True** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **3. Task Tracking and Lifecycle Management** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **4. Good Connection State Management** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **5. Proper Async Context Managers** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **6. Enhanced Structured Logging** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (2 shared connections)
-- [quality_fragmentation_lizard.py](quality_fragmentation_lizard.py.md) (1 shared connections)
+- [Common Patterns](Common_Patterns.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/ci/quality_fragmentation_graph.py`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

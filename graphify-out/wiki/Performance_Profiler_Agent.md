@@ -1,10 +1,10 @@
 # Performance Profiler Agent
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Performance Profiler Agent** (0 connections) — `.claude/agents/performance-profiler.md`
+- **roles.sql** (0 connections) — `db/roles/roles.sql`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.claude/agents/performance-profiler.md`
+- `db/roles/roles.sql`
 
 ## Audit Trail
 

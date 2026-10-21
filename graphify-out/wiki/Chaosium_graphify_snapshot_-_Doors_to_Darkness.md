@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - Doors to Darkness
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Doors to Darkness** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/MANIFEST.md`
-- **doors-to-darkness/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/MANIFEST.md`
+- **Deprecated get_async_persistence Global** (1 connections) — `.cursor/plans/architecture_review_remediation_9704434e.plan.md`
+- **Architecture Review Remediation** (1 connections) — `.cursor/plans/architecture_review_remediation_9704434e.plan.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/MANIFEST.md`
+- `.cursor/plans/architecture_review_remediation_9704434e.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

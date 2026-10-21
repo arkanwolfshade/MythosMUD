@@ -1,54 +1,43 @@
 # handle_teach_command
 
-> 24 nodes
+> 20 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **handle_teach_command()** (20 connections) — `server/commands/teach_command.py`
-- **teach_command.py** (17 connections) — `server/commands/teach_command.py`
-- **test_teach_command.py** (13 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **asyncio** (9 connections)
-- **_get_teach_services()** (4 connections) — `server/commands/teach_command.py`
-- **_resolve_npc_teacher()** (4 connections) — `server/commands/teach_command.py`
-- **test_handle_teach_command()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_handle_teach_command_learn_failure()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_handle_teach_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_handle_teach_command_no_target()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_handle_teach_command_not_npc_target()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_handle_teach_command_success_with_corruption()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_handle_teach_command_target_resolution_failure()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **Any** (4 connections)
-- **patch** (4 connections)
-- **_format_teach_result()** (3 connections) — `server/commands/teach_command.py`
-- **test_handle_teach_command_no_spell_learning_service()** (3 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_handle_teach_command_player_not_found()** (3 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **Teach command handler for learning spells from NPC teachers. This module…** (1 connections) — `server/commands/teach_command.py`
-- **Handle /teach command for learning spells from NPCs. Usage: /teach <npc_name>…** (1 connections) — `server/commands/teach_command.py`
-- **Unit tests for teach command handlers. Tests the teach command functionality.** (1 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **Test handle_teach_command() teaches spell to player.** (1 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **Test handle_teach_command() handles missing target.** (1 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **Test handle_teach_command() handles missing persistence.** (1 connections) — `server/tests/unit/commands/test_teach_command.py`
+- **Actionable Recommendations** (13 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- ****~25-30% provide CRITICAL coverage**** (4 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Next Steps** (4 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Immediate (This Week)** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Specifically** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Add Missing Integration Tests (70 tests, 0% risk, 10 hours effort)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Command** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Critical Gap Action (Month 2)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Files** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **High-Priority Action (Next 2 Weeks)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Medium-Term (Next Month)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Parametrize Repetitive Tests (170 → 50, 0% risk, 8 hours effort)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Priorities** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Prune Infrastructure Tests (60 tests, 5% risk, 4 hours effort)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Quick Reference** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Remove Placeholder Tests (40 tests, 0% risk, 30 min effort)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Short-Term (This Month)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Strategic Action (Next Month)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Targets** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **The other 70-75%** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
 
 ## Relationships
 
-- [TargetType](TargetType.md) (5 shared connections)
-- [command_error](command_error.md) (3 shared connections)
-- [command_service.py](command_service.py.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [alias_storage.py](alias_storage.py.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
-- [command_parser.py](command_parser.py.md) (1 shared connections)
+- [extract_player_name](extract_player_name.md) (1 shared connections)
+- [UUID](UUID.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/teach_command.py`
-- `server/tests/unit/commands/test_teach_command.py`
+- `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 21 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

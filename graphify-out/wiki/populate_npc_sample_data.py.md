@@ -1,43 +1,44 @@
 # populate_npc_sample_data.py
 
-> 21 nodes
+> 17 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **populate_npc_sample_data.py** (10 connections) — `scripts/populate_npc_sample_data.py`
-- **populate_database()** (9 connections) — `scripts/populate_npc_sample_data.py`
-- **main()** (4 connections) — `scripts/populate_npc_sample_data.py`
-- **_process_select_statement()** (4 connections) — `scripts/populate_npc_sample_data.py`
-- **_get_column_names()** (3 connections) — `scripts/populate_npc_sample_data.py`
-- **get_npc_database_url()** (3 connections) — `scripts/populate_npc_sample_data.py`
-- **_process_other_statement()** (3 connections) — `scripts/populate_npc_sample_data.py`
-- **_read_sql_file()** (3 connections) — `scripts/populate_npc_sample_data.py`
-- **_split_sql_statements()** (3 connections) — `scripts/populate_npc_sample_data.py`
-- **_validate_database_url()** (3 connections) — `scripts/populate_npc_sample_data.py`
-- **_verify_foreign_keys()** (3 connections) — `scripts/populate_npc_sample_data.py`
-- **Verify foreign key constraints.** (1 connections) — `scripts/populate_npc_sample_data.py`
-- **Populate a PostgreSQL database with sample NPC data. Args: database_url: The…** (1 connections) — `scripts/populate_npc_sample_data.py`
-- **Main function to populate NPC sample data.** (1 connections) — `scripts/populate_npc_sample_data.py`
-- **Get NPC database URL for the specified environment. Args: environment:…** (1 connections) — `scripts/populate_npc_sample_data.py`
-- **Validate database URL.** (1 connections) — `scripts/populate_npc_sample_data.py`
-- **Read SQL file content.** (1 connections) — `scripts/populate_npc_sample_data.py`
-- **Split SQL content into individual statements.** (1 connections) — `scripts/populate_npc_sample_data.py`
-- **Get column names from result metadata.** (1 connections) — `scripts/populate_npc_sample_data.py`
-- **Process SELECT statement for verification.** (1 connections) — `scripts/populate_npc_sample_data.py`
-- **Process non-SELECT statements.** (1 connections) — `scripts/populate_npc_sample_data.py`
+- **_holiday_entry_from_row()** (8 connections) — `server/services/holiday_service.py`
+- **._async_load_from_database()** (8 connections) — `server/services/holiday_service.py`
+- **_string_list_from_row()** (5 connections) — `server/services/holiday_service.py`
+- **.test_async_load_from_database()** (5 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **_HolidayLoadResult** (3 connections) — `server/services/holiday_service.py`
+- **.test_holiday_entry_from_row()** (3 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_string_list_from_row()** (3 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **Record** (1 connections)
+- **TypedDict** (1 connections)
+- **Async helper to load holidays from PostgreSQL database.** (1 connections) — `server/services/holiday_service.py`
+- **Normalize nullable PostgreSQL array columns to string values.** (1 connections) — `server/services/holiday_service.py`
+- **Build a HolidayEntry from a calendar_holidays row.** (1 connections) — `server/services/holiday_service.py`
+- **asyncio** (1 connections)
+- **MonkeyPatch** (1 connections)
+- **Helper normalizes nullable PostgreSQL array columns.** (1 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **Row dict maps to HolidayEntry.** (1 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **Regression: asyncpg load builds HolidayCollection from rows.** (1 connections) — `server/tests/unit/services/test_holiday_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [OccupantFormatter](OccupantFormatter.md) (7 shared connections)
+- [start_grace_period](start_grace_period.md) (3 shared connections)
+- [NPCCombatDataProvider](NPCCombatDataProvider.md) (1 shared connections)
+- [test_character_creation_service.py](test_character_creation_service.py.md) (1 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/populate_npc_sample_data.py`
+- `server/services/holiday_service.py`
+- `server/tests/unit/services/test_holiday_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 28 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

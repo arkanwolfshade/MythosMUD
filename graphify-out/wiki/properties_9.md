@@ -1,48 +1,53 @@
 # properties
 
-> 19 nodes
+> 33 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **properties** (14 connections) — `schemas/unified_room_schema.json`
-- **name** (5 connections) — `schemas/unified_room_schema.json`
-- **rest_location** (4 connections) — `schemas/unified_room_schema.json`
-- **id** (3 connections) — `schemas/unified_room_schema.json`
-- **field1** (2 connections) — `schemas/unified_room_schema.json`
-- **field2** (2 connections) — `schemas/unified_room_schema.json`
-- **field3** (2 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **maxLength** (1 connections) — `schemas/unified_room_schema.json`
-- **minLength** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
-- **default** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **Async Audit Executive Summary** (20 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Asyncio Code Review** (7 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **Critical Findings** (5 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Alternative Approaches Considered** (4 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Cost-Benefit Analysis** (4 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Recommendations** (4 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Next Steps** (3 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Success Metrics** (3 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **asyncpg Connection Pool Leak** (2 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **Benefit** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Break-Even** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Contact** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Cost** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Decision Matrix** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Effort Breakdown** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **If Approved** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **If Deferred** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Immediate (This Week)** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **🔴 Issue #1: Event Loop Blocking (CONFIRMED PERFORMANCE KILLER)** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **🔴 Issue #2: F-String Logging (WIDESPREAD)** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **🔴 Issue #3: Connection Pool Resource Leaks** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **🔴 Issues #4-6: Additional Critical Items** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Long-Term (Month 2)** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Option A: Do Nothing** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Option B: Quick Hack (asyncio.to_thread everywhere)** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [schemas/unified_room_schema.json](schemas-unified_room_schema.json.md) (1 shared connections)
-- [description](description.md) (1 shared connections)
-- [container](container.md) (1 shared connections)
-- [plane](plane.md) (1 shared connections)
-- [zone](zone.md) (1 shared connections)
-- [sub_zone](sub_zone.md) (1 shared connections)
-- [enum](enum_2.md) (1 shared connections)
-- [properties](properties.md) (1 shared connections)
+- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (6 shared connections)
+- [subzone_schema.json](subzone_schema.json.md) (1 shared connections)
+- [NATS Code Review - Branch: feature/sqlite-to-postgresql](NATS_Code_Review_-_Branch-_feature-sqlite-to-postgresql.md) (1 shared connections)
+- [submitAuth.ts](submitAuth.ts.md) (1 shared connections)
+- [enum](enum.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 42 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---
