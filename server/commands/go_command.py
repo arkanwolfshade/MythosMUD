@@ -340,7 +340,7 @@ async def handle_go_command(  # pylint: disable=too-many-arguments  # Reason: St
         return {"result": "You can't go that way"}
 
     # The movement service enforces this too; checking here lets the room explain itself.
-    refusal = exit_refusal(player, room, direction)
+    refusal = await exit_refusal(player, room, direction)
     if refusal is not None:
         return {"result": refusal}
 

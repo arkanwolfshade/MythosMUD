@@ -565,12 +565,12 @@ class MovementService(RoomOccupancyMixin):
         if not await self._validate_movement_rooms(player_id, from_room_id, to_room_id):
             return False
         # The fresh persisted player decides: the in-memory one may lag a just-granted item.
-        return self._exit_open_to_player(cast("Player", posture_player), from_room_id, to_room_id)
+        return await self._exit_open_to_player(cast("Player", posture_player), from_room_id, to_room_id)
 
-    def _exit_open_to_player(self, player: "Player", from_room_id: str, to_room_id: str) -> bool:
-        """False, with the refusal logged, if the exit to to_room_id needs an item the player does not hold."""
+    async def _exit_open_to_player(self, player: "Player", from_room_id: str, to_room_id: str) -> bool:
+        """False, with the refusal logged, if the exit to to_room_id needs an item or quest progress the player lacks."""
         from_room = self._persistence.get_room_by_id(from_room_id)
-        refusal = room_exit_refusal(player, from_room, to_room_id) if from_room else None
+        refusal = await room_exit_refusal(player, from_room, to_room_id) if from_room else None
         if refusal is None:
             return True
         self._logger.info(

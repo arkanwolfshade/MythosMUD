@@ -17,6 +17,7 @@ from server.commands.go_command import (
     _validate_player_posture,
     handle_go_command,
 )
+from server.game.movement_helpers import set_quest_activity_reader
 from server.models.room import Room
 
 
@@ -443,8 +444,8 @@ async def test_handle_go_command_success():
     assert result["room_id"] == "north_room"
 
 
-def _gated_go_request(*, holding: bool) -> tuple[MagicMock, AsyncMock]:
-    """A go request from a room whose `down` exit needs the jade amulet; returns (request, move_player mock)."""
+def _gated_go_request(*, holding: bool, requirements: dict[str, object] | None = None) -> tuple[MagicMock, AsyncMock]:
+    """A go request from a room whose `down` exit is gated (by default on the jade amulet); returns (request, move_player)."""
     player: MagicMock = MagicMock()
     player.current_room_id = "test_room"
     player.player_id = uuid.uuid4()
@@ -455,7 +456,10 @@ def _gated_go_request(*, holding: bool) -> tuple[MagicMock, AsyncMock]:
         {
             "id": "test_room",
             "exits": {"down": "tunnel"},
-            "attributes": {"exit_requirements": {"down": {"item": "jade_amulet", "refusal": "Not with empty hands."}}},
+            "attributes": {
+                "exit_requirements": requirements
+                or {"down": {"item": "jade_amulet", "refusal": "Not with empty hands."}}
+            },
         }
     )
     tunnel: MagicMock = MagicMock()
@@ -594,3 +598,27 @@ async def test_handle_go_command_sitting_while_resting_still_cancels_and_moves()
     assert "stand up" not in result_text
     assert result["room_changed"] is True
     assert "rest is interrupted" in result_text
+
+
+@pytest.mark.asyncio
+async def test_handle_go_command_refuses_a_quest_gated_exit_until_the_activity_is_done():
+    """#1111: an exit a quest unlocks stays shut with the room's own refusal, then opens once the step is done."""
+    gate: dict[str, object] = {"down": {"quest_activity": "cmd_look", "refusal": "Look around first."}}
+    request, move_player = _gated_go_request(holding=False, requirements=gate)
+    done: set[str] = set()
+
+    async def reader(player_id: uuid.UUID, target: str) -> bool:
+        _ = player_id
+        return target in done
+
+    set_quest_activity_reader(reader)
+    try:
+        refused = await handle_go_command({"direction": "down"}, {"username": "testuser"}, request, None, "testplayer")
+        move_player.assert_not_awaited()
+        done.add("cmd_look")
+        _ = await handle_go_command({"direction": "down"}, {"username": "testuser"}, request, None, "testplayer")
+    finally:
+        set_quest_activity_reader(None)
+
+    assert refused == {"result": "Look around first."}
+    move_player.assert_awaited_once()

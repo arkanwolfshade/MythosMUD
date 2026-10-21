@@ -13,6 +13,8 @@ import uuid
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, cast
 
+from pydantic import BaseModel, TypeAdapter
+
 from server.game.quest.collect_inventory import (
     collect_player_stacks,
     consume_prototype_from_player,
@@ -34,6 +36,19 @@ if TYPE_CHECKING:
     from server.events.event_bus import EventBus
 
 logger = get_logger(__name__)
+
+
+class _GoalState(BaseModel):
+    goal_type: str
+    target: str | None = None
+    done: bool = False
+
+
+class _EntryGoals(BaseModel):
+    goals_with_progress: list[_GoalState]
+
+
+_QUEST_LOG_GOALS = TypeAdapter(list[_EntryGoals])
 
 
 def _parse_definition(definition: dict[str, Any]) -> QuestDefinitionSchema:
@@ -321,6 +336,18 @@ class QuestService(QuestRewardsMixin):
                 player_id, instance, definition, activity_target, "complete_activity"
             ):
                 break
+
+    async def has_completed_activity(self, player_id: uuid.UUID, activity_target: str) -> bool:
+        """Whether any quest of the player's, active or completed, has this complete_activity goal done.
+
+        What a quest-gated exit asks (``exit_requirements`` ``quest_activity``).
+        """
+        log = _QUEST_LOG_GOALS.validate_python(await self.get_quest_log(player_id, include_completed=True))
+        return any(
+            goal.goal_type == "complete_activity" and goal.target == activity_target and goal.done
+            for entry in log
+            for goal in entry.goals_with_progress
+        )
 
     async def record_kill(self, player_id: uuid.UUID, npc_definition_id: str) -> None:
         """Record a kill for kill_n goals; update matching active instances and complete if auto_complete."""

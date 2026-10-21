@@ -826,3 +826,62 @@ async def test_get_quest_log_carries_the_goals_authored_description(
     goals = cast(list[dict[str, object]], result[0]["goals_with_progress"])
     assert [g["description"] for g in goals] == ["Look around (`look`)", None]
     assert [g["target"] for g in goals] == ["cmd_look", "cmd_talk"]
+
+
+# ---- has_completed_activity (exits a quest unlocks, #1111) ----
+def _activity_row(*goals: dict[str, object], quest_id: str = "walk") -> _DefinitionRow:
+    row = _make_definition_row(quest_id=quest_id, name=quest_id)
+    row.definition["goals"] = list(goals)
+    return row
+
+
+@pytest.mark.asyncio
+async def test_has_completed_activity_is_true_when_a_goal_with_that_target_is_done(
+    quest_service: QuestService, mock_def_repo: _MockDefRepo, mock_instance_repo: _MockInstanceRepo
+):
+    mock_def_repo.get_by_id = AsyncMock(
+        return_value=_activity_row(
+            {"type": "complete_activity", "target": "cmd_look"},
+            {"type": "complete_activity", "target": "cmd_read"},
+        )
+    )
+    mock_instance_repo.list_active_by_player = AsyncMock(
+        return_value=[_InstanceStub(quest_id="walk", state="active", progress={"0": 1})]
+    )
+    mock_instance_repo.list_completed_by_player = AsyncMock(return_value=[])
+
+    assert await quest_service.has_completed_activity(uuid.uuid4(), "cmd_look") is True
+    assert await quest_service.has_completed_activity(uuid.uuid4(), "cmd_read") is False  # that goal is not done yet
+    assert await quest_service.has_completed_activity(uuid.uuid4(), "cmd_elsewhere") is False  # no such goal
+
+
+@pytest.mark.asyncio
+async def test_has_completed_activity_counts_a_completed_quest(
+    quest_service: QuestService, mock_def_repo: _MockDefRepo, mock_instance_repo: _MockInstanceRepo
+):
+    """The path stays open behind the player: finishing Act I must not re-lock the lane they already walked."""
+    mock_def_repo.get_by_id = AsyncMock(return_value=_activity_row({"type": "complete_activity", "target": "cmd_look"}))
+    mock_instance_repo.list_active_by_player = AsyncMock(return_value=[])
+    mock_instance_repo.list_completed_by_player = AsyncMock(
+        return_value=[_InstanceStub(quest_id="walk", state="completed", progress={"0": 1})]
+    )
+
+    assert await quest_service.has_completed_activity(uuid.uuid4(), "cmd_look") is True
+
+
+@pytest.mark.asyncio
+async def test_has_completed_activity_ignores_other_goal_types_and_missing_definitions(
+    quest_service: QuestService, mock_def_repo: _MockDefRepo, mock_instance_repo: _MockInstanceRepo
+):
+    mock_def_repo.get_by_id = AsyncMock(
+        side_effect=[None, _activity_row({"type": "kill_n", "target": "cmd_look", "config": {"count": 1}})]
+    )
+    mock_instance_repo.list_active_by_player = AsyncMock(
+        return_value=[
+            _InstanceStub(quest_id="gone", state="active", progress={"0": 1}),
+            _InstanceStub(quest_id="walk", state="active", progress={"0": 1}),
+        ]
+    )
+    mock_instance_repo.list_completed_by_player = AsyncMock(return_value=[])
+
+    assert await quest_service.has_completed_activity(uuid.uuid4(), "cmd_look") is False

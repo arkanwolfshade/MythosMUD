@@ -87,6 +87,14 @@ def subscribe_quest_events(container: ApplicationContainer) -> None:
 
     _subscribe_room_quest_events(container)
 
+    # Exits a quest unlocks (exit_requirements "quest_activity") read the player's progress through the quest service.
+    from server.game.movement_helpers import set_quest_activity_reader
+    from server.game.quest.quest_service import QuestService
+
+    activity_service: QuestService | None = getattr(container, "quest_service", None)
+    if activity_service is not None:
+        set_quest_activity_reader(activity_service.has_completed_activity)
+
     # Push the updated quest log whenever it changes (start, progress, completion, abandon) so the Journal
     # panel refreshes without the player typing `journal`.
     event_bus = getattr(container, "event_bus", None)
