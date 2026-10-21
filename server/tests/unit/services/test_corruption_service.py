@@ -207,7 +207,7 @@ async def test_apply_corruption_adjustment_notifies_on_first_taint(
             "server.services.corruption_service.get_async_session",
             side_effect=lambda: _async_session_gen(AsyncMock()),
         ),
-        patch("server.services.corruption_service.deliver_personal_system", new_callable=AsyncMock) as notify,
+        patch("server.game.chat_npc_system.deliver_personal_system", new_callable=AsyncMock) as notify,
     ):
         result = await CorruptionService(persistence).apply_corruption_adjustment(player_id, 3, reason_code="test")
 
@@ -249,7 +249,7 @@ async def test_apply_corruption_adjustment_notifies_on_tier_crossing(
             "server.services.corruption_service.get_async_session",
             side_effect=lambda: _async_session_gen(AsyncMock()),
         ),
-        patch("server.services.corruption_service.deliver_personal_system", new_callable=AsyncMock) as notify,
+        patch("server.game.chat_npc_system.deliver_personal_system", new_callable=AsyncMock) as notify,
     ):
         result = await CorruptionService(persistence).apply_corruption_adjustment(player_id, 5, reason_code="test")
 
@@ -274,7 +274,7 @@ async def test_apply_corruption_adjustment_no_notification_within_a_tier(
             "server.services.corruption_service.get_async_session",
             side_effect=lambda: _async_session_gen(AsyncMock()),
         ),
-        patch("server.services.corruption_service.deliver_personal_system", new_callable=AsyncMock) as notify,
+        patch("server.game.chat_npc_system.deliver_personal_system", new_callable=AsyncMock) as notify,
     ):
         _ = await CorruptionService(persistence).apply_corruption_adjustment(player_id, 5, reason_code="test")
 
