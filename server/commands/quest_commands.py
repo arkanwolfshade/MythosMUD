@@ -112,11 +112,11 @@ async def _resolve_quest_command_context(
 
 
 def _format_goal_line(goal: dict[str, Any]) -> str:
-    """Return a single goal progress line for the quest log."""
-    target = goal.get("target") or "?"
+    """Return a single goal progress line for the quest log (the authored description, else the target)."""
+    label = goal.get("description") or goal.get("target") or "?"
     if goal.get("done", False):
-        return f"      - {target}: done"
-    return f"      - {target}: {goal.get('current', 0)}/{goal.get('required', 1)}"
+        return f"      - {label}: done"
+    return f"      - {label}: {goal.get('current', 0)}/{goal.get('required', 1)}"
 
 
 def _format_one_quest_entry(e: dict[str, Any]) -> list[str]:

@@ -72,6 +72,8 @@ export interface QuestLogEntry {
   goals_with_progress: Array<{
     goal_type?: string;
     target?: string;
+    /** Authored journal text; shown instead of the raw target. */
+    description?: string | null;
     current?: number;
     required?: number;
     done?: boolean;

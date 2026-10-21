@@ -396,3 +396,15 @@ async def test_quest_turnin_npc_not_in_room(current_user, mock_request):
         )
 
     assert "do not see" in result["result"].lower()
+
+
+def test_the_journal_shows_a_goals_description_instead_of_its_target() -> None:
+    """#1102: `cmd_talk: 0/1` told the player nothing; the authored text does."""
+    from server.commands.quest_commands import (
+        _format_goal_line,  # pyright: ignore[reportPrivateUsage] -- the goal line format is the unit under test
+    )
+
+    described = {"target": "cmd_talk", "description": "Speak with the lamplighter", "current": 0, "required": 1}
+    assert _format_goal_line(described) == "      - Speak with the lamplighter: 0/1"
+    assert _format_goal_line({**described, "done": True}) == "      - Speak with the lamplighter: done"
+    assert _format_goal_line({"target": "cmd_talk", "current": 0, "required": 1}) == "      - cmd_talk: 0/1"

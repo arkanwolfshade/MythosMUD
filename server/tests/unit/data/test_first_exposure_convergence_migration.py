@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import cast
 
 import pytest
-from pydantic import TypeAdapter
+from pydantic import BaseModel, TypeAdapter
 
 from server.commands.inventory_item_matching import match_room_drop_by_name
 from server.utils.project_paths import get_project_root
@@ -138,3 +138,34 @@ def test_the_ghoul_mend_node_keeps_one_answer_that_continues_the_scene_and_down_
     assert kept[0]["next"] in nodes
     assert restored == nodes["mend"]["options"]
     assert "jsonb_set" in up and "first_exposure_pale_ghoul" in up
+
+
+GOAL_DESCRIPTIONS = ROOT / "data" / "db" / "migrations" / "20261021100000_first_exposure_goal_descriptions.sql"
+
+
+class _Quest(BaseModel):
+    name: str
+    goals: list[dict[str, object]]
+
+
+def _statement_for(sql: str, quest_id: str) -> str:
+    return next(statement for statement in sql.split(";") if f"id = '{quest_id}'" in statement)
+
+
+def _goal_indexes(statement: str) -> set[int]:
+    return {int(part.split(",")[0]) for part in statement.split("{goals,")[1:] if ",description}" in part}
+
+
+@pytest.mark.skipif(not GOAL_DESCRIPTIONS.is_file(), reason="the private data/ submodule is not checked out")
+def test_every_first_exposure_goal_gets_a_player_facing_description_and_down_removes_them() -> None:
+    """#1102: the journal showed `cmd_talk: 0/1`; every goal of every tutorial quest now has authored text."""
+    quests = [_Quest.model_validate_json(block) for block in _tagged("quest", _up(CONVERGENCE))]
+    up, _, down = GOAL_DESCRIPTIONS.read_text(encoding="utf-8").partition("-- migrate:down")
+
+    assert len(quests) == 4
+    for quest in quests:
+        every_goal = set(range(len(quest.goals)))
+        written = _statement_for(up, quest.name)
+        assert _goal_indexes(written) == every_goal, f"{quest.name}: every goal needs a description"
+        assert len(re.findall(r"'\"[^\"]+\"'::jsonb", written)) == len(every_goal), f"{quest.name}: empty text"
+        assert _goal_indexes(_statement_for(down, quest.name)) == every_goal, f"{quest.name}: down must remove them"

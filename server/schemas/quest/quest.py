@@ -24,6 +24,10 @@ class QuestGoalSchema(BaseModel):
         default_factory=dict,
         description="Type-specific config (e.g. count for kill_n / collect_n)",
     )
+    description: str | None = Field(
+        default=None,
+        description="Player-facing text for the journal (e.g. 'Speak with the lamplighter'); shown instead of target",
+    )
 
     model_config = ConfigDict(extra="allow")
 
