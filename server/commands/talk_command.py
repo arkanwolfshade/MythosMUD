@@ -57,17 +57,26 @@ def _room_of(player: object | None) -> str | None:
     return room if isinstance(room, str) and room else None
 
 
-async def _send_prompt(player_id: uuid.UUID, npc_id: str, npc_name: str, room_id: str, prompt: DialoguePrompt) -> None:
-    """The NPC's line as speech only this player hears, then the numbered options as a system prompt (#1107)."""
+def _delivered(sent: dict[str, object]) -> bool:
+    return sent.get("success") is True
+
+
+async def _send_prompt(player_id: uuid.UUID, npc_id: str, npc_name: str, room_id: str, prompt: DialoguePrompt) -> bool:
+    """The NPC's line as speech only this player hears, then the numbered options as a system prompt (#1107).
+
+    Whether the player was sent the line.
+    """
     spoke = await deliver_npc_room_speech(
         npc_id=npc_id, room_id=room_id, message=prompt.text, npc_name=npc_name, target_player_id=player_id
     )
-    if spoke.get("success") is not True:
+    if not _delivered(spoke):
         # Without the speech channel the line would be lost; fall back to the plain system prompt.
-        _ = await deliver_personal_system(player_id, format_dialogue_prompt(npc_name, prompt.text, prompt.options))
-        return
+        return _delivered(
+            await deliver_personal_system(player_id, format_dialogue_prompt(npc_name, prompt.text, prompt.options))
+        )
     if prompt.options:
         _ = await deliver_personal_system(player_id, format_dialogue_options(prompt.options))
+    return True
 
 
 async def _emit_prompt(
@@ -78,21 +87,24 @@ async def _emit_prompt(
     npc_id: str | None = None,
     room_id: str | None = None,
 ) -> str:
-    """Send a node to the player; return the short command result.
+    """Send a node to the player; return what the command itself should show.
 
     The NPC's line is that NPC speaking, private to this player; the options stay a system prompt. Without the NPC and
     the room to speak in, the whole node is a system prompt. Awaited, so the line and its options are published before
     the caller runs the node's actions, and a failure reaches the command instead of vanishing in a background task.
+
+    The command result is empty once the node was delivered: the chat channels already showed it, and echoing it as
+    command output made the dialogue appear twice in the Game Info panel. It is the node's text only when nothing could
+    be delivered, so the player is never left with nothing.
     """
     if prompt.ended:
-        _ = await deliver_personal_system(player_id, prompt.text)
-        return prompt.text
+        return "" if _delivered(await deliver_personal_system(player_id, prompt.text)) else prompt.text
     body = format_dialogue_prompt(npc_name, prompt.text, prompt.options)
     if npc_id and room_id:
-        await _send_prompt(player_id, npc_id, npc_name, room_id, prompt)
+        delivered = await _send_prompt(player_id, npc_id, npc_name, room_id, prompt)
     else:
-        _ = await deliver_personal_system(player_id, body)
-    return body
+        delivered = _delivered(await deliver_personal_system(player_id, body))
+    return "" if delivered else body
 
 
 async def _run_prompt_actions(prompt: DialoguePrompt, ctx: ScriptedActionContext | None) -> None:
@@ -114,7 +126,8 @@ async def open_dialogue(
     Start the NPC's dialogue for a player: send its first line and run that node's actions.
 
     Shared by `talk <npc>` (the player speaks first) and NPCs that open the conversation themselves.
-    Returns the text shown, or the reason there was nothing to say.
+    Returns the command result: empty once the first line was delivered, else its text or the reason there was
+    nothing to say.
     """
     result = await get_dialogue_service().start_with_npc(
         player_id, npc_id=npc_id, npc_name=npc_name, npc_definition_id=definition_id
