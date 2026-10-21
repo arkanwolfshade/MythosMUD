@@ -10,6 +10,7 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 
 from server.realtime.channel_broadcasting_strategies import (
+    PRIVATE_EMOTE_STRATEGY,
     ChannelBroadcastingStrategyFactory,
     GlobalChannelStrategy,
     PartyChannelStrategy,
@@ -304,3 +305,20 @@ def test_channel_broadcasting_strategy_factory_register_strategy():
 def test_global_channel_strategy_factory_instance():
     """Test global channel_strategy_factory instance exists."""
     assert isinstance(channel_strategy_factory, ChannelBroadcastingStrategyFactory)
+
+
+@pytest.mark.asyncio
+async def test_private_emote_strategy_delivers_to_the_target_alone_as_an_emote():
+    """A private NPC emote (#1103) reaches one player, dampened as the emote it is, and is never room-broadcast."""
+    send = AsyncMock()
+    room_broadcast = AsyncMock()
+    handler = MagicMock(_apply_dampening_and_send_message=send, _broadcast_to_room_with_filtering=room_broadcast)
+    chat_event = {"type": "chat", "message": "Lamplighter goes still."}
+    target_player_id = uuid.uuid4()
+    sender_id = uuid.uuid4()
+
+    strategy = ChannelBroadcastingStrategyFactory().get_strategy(PRIVATE_EMOTE_STRATEGY)
+    await strategy.broadcast(chat_event, "room_123", "", target_player_id, sender_id, handler)
+
+    send.assert_awaited_once_with(chat_event, str(sender_id), str(target_player_id), "emote")
+    room_broadcast.assert_not_called()

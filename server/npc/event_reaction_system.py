@@ -10,7 +10,7 @@ the delicate balance of our reality.
 """
 
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from typing import Any, TypeVar
 
 from ..events import EventBus
@@ -320,55 +320,56 @@ class NPCEventReactionSystem:
         }
 
 
+def _schedule_room_line(npc_id: str, npc_context: Mapping[str, object], message: str, *, as_emote: bool) -> bool:
+    """Send an NPC's line to its room as speech, or as an emote ("<NPC> <message>") for gestures (#1103).
+
+    False when the NPC has no known room.
+    """
+    room_id = npc_context.get("current_room")
+    if not isinstance(room_id, str) or not room_id or room_id == "unknown":
+        return False
+    # Circular import: chat_npc_system -> npc package -> this module
+    from ..game.chat_npc_system import schedule_npc_room_emote, schedule_npc_room_speech
+
+    raw_name = npc_context.get("name")
+    send = schedule_npc_room_emote if as_emote else schedule_npc_room_speech
+    send(npc_id=npc_id, room_id=room_id, message=message, npc_name=raw_name if isinstance(raw_name, str) else None)
+    return True
+
+
 # Predefined reaction templates for common NPC behaviors
 class NPCEventReactionTemplates:
     """Templates for common NPC event reactions."""
 
     @staticmethod
-    def player_entered_room_greeting(npc_id: str, greeting_message: str = "Hello there!") -> NPCEventReaction:
+    def player_entered_room_greeting(
+        npc_id: str, greeting_message: str = "Hello there!", *, as_emote: bool = False
+    ) -> NPCEventReaction:
         """Create a reaction that greets players when they enter the room."""
 
         def condition(event: PlayerEnteredRoom, npc_context: dict[str, Any]) -> bool:
             return event.room_id == npc_context.get("current_room")
 
         def action(event: PlayerEnteredRoom, npc_context: dict[str, Any]) -> bool:
-            room_id = npc_context.get("current_room")
-            if not room_id or room_id == "unknown":
+            if not _schedule_room_line(npc_id, npc_context, greeting_message, as_emote=as_emote):
                 return False
-            # Circular import: chat_npc_system -> npc package -> this module
-            from ..game.chat_npc_system import schedule_npc_room_speech
-
-            schedule_npc_room_speech(
-                npc_id=npc_id,
-                room_id=str(room_id),
-                message=greeting_message,
-                npc_name=npc_context.get("name") if isinstance(npc_context.get("name"), str) else None,
-            )
             logger.info("NPC greet scheduled", npc_id=npc_id, player_id=event.player_id, message=greeting_message)
             return True
 
         return NPCEventReaction(event_type=PlayerEnteredRoom, condition=condition, action=action, priority=1)
 
     @staticmethod
-    def player_left_room_farewell(npc_id: str, farewell_message: str = "Goodbye!") -> NPCEventReaction:
+    def player_left_room_farewell(
+        npc_id: str, farewell_message: str = "Goodbye!", *, as_emote: bool = False
+    ) -> NPCEventReaction:
         """Create a reaction that says farewell when players leave the room."""
 
         def condition(event: PlayerLeftRoom, npc_context: dict[str, Any]) -> bool:
             return event.room_id == npc_context.get("current_room")
 
         def action(event: PlayerLeftRoom, npc_context: dict[str, Any]) -> bool:
-            room_id = npc_context.get("current_room")
-            if not room_id or room_id == "unknown":
+            if not _schedule_room_line(npc_id, npc_context, farewell_message, as_emote=as_emote):
                 return False
-            # Circular import: chat_npc_system -> npc package -> this module
-            from ..game.chat_npc_system import schedule_npc_room_speech
-
-            schedule_npc_room_speech(
-                npc_id=npc_id,
-                room_id=str(room_id),
-                message=farewell_message,
-                npc_name=npc_context.get("name") if isinstance(npc_context.get("name"), str) else None,
-            )
             logger.info("NPC farewell scheduled", npc_id=npc_id, player_id=event.player_id, message=farewell_message)
             return True
 
@@ -393,25 +394,17 @@ class NPCEventReactionTemplates:
         )
 
     @staticmethod
-    def player_spoke_response(npc_id: str, response_message: str = "I heard you!") -> NPCEventReaction:
+    def player_spoke_response(
+        npc_id: str, response_message: str = "I heard you!", *, as_emote: bool = False
+    ) -> NPCEventReaction:
         """Create a reaction that responds when players speak in the room."""
 
         def condition(event: NPCListened, npc_context: dict[str, Any]) -> bool:
             return event.npc_id == npc_id and event.room_id == npc_context.get("current_room")
 
         def action(event: NPCListened, npc_context: dict[str, Any]) -> bool:
-            room_id = npc_context.get("current_room")
-            if not room_id or room_id == "unknown":
+            if not _schedule_room_line(npc_id, npc_context, response_message, as_emote=as_emote):
                 return False
-            # Circular import: chat_npc_system -> npc package -> this module
-            from ..game.chat_npc_system import schedule_npc_room_speech
-
-            schedule_npc_room_speech(
-                npc_id=npc_id,
-                room_id=str(room_id),
-                message=response_message,
-                npc_name=npc_context.get("name") if isinstance(npc_context.get("name"), str) else None,
-            )
             logger.info("NPC response scheduled", npc_id=npc_id, speaker_id=event.speaker_id, message=response_message)
             return True
 

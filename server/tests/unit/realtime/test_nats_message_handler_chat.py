@@ -9,6 +9,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from server.realtime.nats_message_handler import NATSMessageHandler
 from server.services.nats_exceptions import NATSError
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice
@@ -472,3 +473,57 @@ async def test_get_player_lucidity_tier_exception_in_processing(nats_message_han
             mock_service.return_value.get_player_lucidity = AsyncMock(side_effect=Exception("Error"))
             result = await nats_message_handler._get_player_lucidity_tier("player_001")
             assert result == "lucid"
+
+
+def test_extract_chat_message_fields_private_emote_target_id(nats_message_handler: NATSMessageHandler) -> None:
+    """A private NPC emote (#1103) maps target_id to target_player_id like whisper and system do."""
+    target = str(uuid.uuid4())
+    message_data: dict[str, object] = {
+        "channel": "emote",
+        "room_id": "room_001",
+        "target_id": target,
+        "sender_id": str(uuid.uuid4()),
+        "sender_name": "Lamplighter",
+        "content": "goes still as you approach.",
+        "message_id": "msg_emote_001",
+        "speaker_kind": "npc",
+    }
+    result = nats_message_handler._extract_chat_message_fields(message_data)  # pyright: ignore[reportPrivateUsage] -- the field normalization is the unit under test
+    assert result.get("target_player_id") == target
+
+
+def test_extract_chat_message_fields_public_emote_has_no_target(nats_message_handler: NATSMessageHandler) -> None:
+    message_data: dict[str, object] = {
+        "channel": "emote",
+        "room_id": "room_001",
+        "sender_id": str(uuid.uuid4()),
+        "sender_name": "Player1",
+        "content": "waves.",
+        "message_id": "msg_emote_002",
+    }
+    result = nats_message_handler._extract_chat_message_fields(message_data)  # pyright: ignore[reportPrivateUsage] -- the field normalization is the unit under test
+    assert result.get("target_player_id") is None
+
+
+@pytest.mark.asyncio
+async def test_a_targeted_emote_is_delivered_to_its_target_not_the_room(
+    nats_message_handler: NATSMessageHandler,
+) -> None:
+    """#1103: an emote with a target takes the personal path; one without still goes to the whole room."""
+    target, sender = uuid.uuid4(), uuid.uuid4()
+    chat_event: dict[str, object] = {"type": "chat", "data": {}}
+    with (
+        patch.object(nats_message_handler, "_apply_dampening_and_send_message", new_callable=AsyncMock) as personal,
+        patch.object(nats_message_handler, "_broadcast_to_room_with_filtering", new_callable=AsyncMock) as room,
+    ):
+        await nats_message_handler._broadcast_by_channel_type(  # pyright: ignore[reportPrivateUsage] -- the strategy dispatch is the unit under test
+            "emote", chat_event, "room_001", "", target, sender
+        )
+        personal.assert_awaited_once_with(chat_event, str(sender), str(target), "emote")
+        room.assert_not_called()
+
+        await nats_message_handler._broadcast_by_channel_type(  # pyright: ignore[reportPrivateUsage] -- the strategy dispatch is the unit under test
+            "emote", chat_event, "room_001", "", None, sender
+        )
+        room.assert_awaited_once_with("room_001", chat_event, str(sender), "emote")
+        personal.assert_awaited_once()

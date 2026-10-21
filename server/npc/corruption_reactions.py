@@ -27,11 +27,15 @@ from .event_reaction_system import NPCEventReaction
 # tainted player, same threshold the ambient room badge uses to go public.
 NPC_TAINTED_THRESHOLD = 25
 
-WELCOME_LINE = "Something in their bearing recognizes something in yours. They incline their head, unhurried."
-RECOIL_LINE = "They go still as you approach, then step back half a pace, as if from a bad smell."
+# #1103: private emotes, delivered only to the entering player ("<NPC> inclines their head...") -- the NPC's
+# reaction to what only that player carries, so the rest of the room never sees it.
+WELCOME_LINE = "inclines their head, unhurried; something in their bearing recognizes something in yours."
+RECOIL_LINE = "goes still as you approach, then steps back half a pace, as if from a bad smell."
 
 
-def build_corruption_aware_greeting(npc_id: str, npc_corruption: int, normal_greeting: str) -> NPCEventReaction:
+def build_corruption_aware_greeting(
+    npc_id: str, npc_corruption: int, normal_greeting: str, *, as_emote: bool = False
+) -> NPCEventReaction:
     """
     A greeting reaction whose message depends on the entering player's corruption tier.
 
@@ -39,6 +43,9 @@ def build_corruption_aware_greeting(npc_id: str, npc_corruption: int, normal_gre
       greeting, unchanged.
     - Player `marked`+ and this NPC is itself tainted (>= NPC_TAINTED_THRESHOLD): WELCOME_LINE.
     - Player `marked`+ and this NPC is not: RECOIL_LINE.
+
+    WELCOME_LINE / RECOIL_LINE go out as an emote private to that player (#1103); the normal greeting goes to the
+    room, as an emote when `as_emote` (a default gesture) and as speech otherwise (authored words).
 
     Replaces `NPCEventReactionTemplates.player_entered_room_greeting` for shopkeeper/passive_mob
     NPCs -- it is a variant of that reaction, not an addition alongside it.
@@ -53,16 +60,22 @@ def build_corruption_aware_greeting(npc_id: str, npc_corruption: int, normal_gre
             return False
         # Circular import: chat_npc_system -> npc package -> this module (same pattern as the
         # plain templates in event_reaction_system.py).
-        from ..game.chat_npc_system import schedule_npc_room_speech
+        from ..game.chat_npc_system import schedule_npc_room_emote, schedule_npc_room_speech
 
         message = _pick_greeting(npc_corruption, normal_greeting, event.player_id)
         raw_name = npc_context.get("name")
-        schedule_npc_room_speech(
-            npc_id=npc_id,
-            room_id=str(room_id),
-            message=message,
-            npc_name=raw_name if isinstance(raw_name, str) else None,
-        )
+        npc_name = raw_name if isinstance(raw_name, str) else None
+        if message in (WELCOME_LINE, RECOIL_LINE):
+            schedule_npc_room_emote(
+                npc_id=npc_id,
+                room_id=str(room_id),
+                message=message,
+                npc_name=npc_name,
+                target_player_id=event.player_id,
+            )
+        else:
+            send = schedule_npc_room_emote if as_emote else schedule_npc_room_speech
+            send(npc_id=npc_id, room_id=str(room_id), message=message, npc_name=npc_name)
         return True
 
     return NPCEventReaction(event_type=PlayerEnteredRoom, condition=condition, action=action, priority=1)

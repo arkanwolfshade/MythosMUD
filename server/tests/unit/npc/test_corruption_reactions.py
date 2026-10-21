@@ -78,11 +78,61 @@ def test_build_corruption_aware_greeting_fires_on_entry_to_the_npcs_room():
     context = {"npc_id": "npc-1", "current_room": "room-1", "name": "Ezekiel"}
     assert reaction.should_trigger(event, context) is True
 
-    with patch("server.game.chat_npc_system.schedule_npc_room_speech") as schedule:
+    with patch("server.game.chat_npc_system.schedule_npc_room_emote") as schedule:
         assert reaction.execute(event, context) is True
     schedule.assert_called_once()
     assert schedule.call_args.kwargs["message"] == WELCOME_LINE
     assert schedule.call_args.kwargs["npc_id"] == "npc-1"
+    # #1103: the reaction to what only this player carries is private to this player.
+    assert schedule.call_args.kwargs["target_player_id"] == player_id
+
+
+def test_a_marked_players_greeting_never_reaches_the_room():
+    _reset_cache()
+    player_id = str(uuid.uuid4())
+    corruption_tier_cache.set_tier(player_id, CorruptionTier.CORRUPTED)
+    reaction = build_corruption_aware_greeting("npc-1", 0, "Hello!")
+
+    from server.events.event_types import PlayerEnteredRoom
+
+    event = PlayerEnteredRoom(player_id=player_id, room_id="room-1")
+    with (
+        patch("server.game.chat_npc_system.schedule_npc_room_emote") as emote,
+        patch("server.game.chat_npc_system.schedule_npc_room_speech") as speech,
+    ):
+        assert reaction.execute(event, {"current_room": "room-1"}) is True
+    speech.assert_not_called()
+    assert emote.call_args.kwargs["message"] == RECOIL_LINE
+    assert emote.call_args.kwargs["target_player_id"] == player_id
+
+
+def test_an_authored_greeting_stays_speech_and_a_default_gesture_is_a_room_emote():
+    """#1103: words an author wrote are the NPC's speech; the generic fallback is a gesture for the whole room."""
+    _reset_cache()
+    player_id = str(uuid.uuid4())
+    corruption_tier_cache.set_tier(player_id, CorruptionTier.PURE)
+
+    from server.events.event_types import PlayerEnteredRoom
+
+    event = PlayerEnteredRoom(player_id=player_id, room_id="room-1")
+    context = {"current_room": "room-1"}
+
+    with (
+        patch("server.game.chat_npc_system.schedule_npc_room_emote") as emote,
+        patch("server.game.chat_npc_system.schedule_npc_room_speech") as speech,
+    ):
+        assert build_corruption_aware_greeting("npc-1", 0, "Well met.").execute(event, context) is True
+    emote.assert_not_called()
+    assert speech.call_args.kwargs["message"] == "Well met."
+
+    with (
+        patch("server.game.chat_npc_system.schedule_npc_room_emote") as emote,
+        patch("server.game.chat_npc_system.schedule_npc_room_speech") as speech,
+    ):
+        assert build_corruption_aware_greeting("npc-1", 0, "nods.", as_emote=True).execute(event, context) is True
+    speech.assert_not_called()
+    assert emote.call_args.kwargs["message"] == "nods."
+    assert "target_player_id" not in emote.call_args.kwargs
 
 
 def test_build_corruption_aware_greeting_does_not_trigger_for_a_different_room():
