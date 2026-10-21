@@ -8,13 +8,21 @@ if TYPE_CHECKING:
     from .chat_message import ChatMessage
 
 
-def create_and_log_chat_message(
-    player_id: str, player_name: str, message: str, room_id: str | None, channel: str
+def create_and_log_chat_message(  # pylint: disable=too-many-arguments  # Reason: the message fields plus the optional private target
+    player_id: str,
+    player_name: str,
+    message: str,
+    room_id: str | None,
+    channel: str,
+    *,
+    target_id: str | None = None,
 ) -> "ChatMessage":
-    """Create chat message and log it."""
+    """Create chat message and log it; a ``target_id`` line is private and is logged as private (#1107)."""
     from .chat_message import ChatMessage
 
-    chat_message = ChatMessage(sender_id=player_id, sender_name=player_name, channel=channel, content=message.strip())
+    chat_message = ChatMessage(
+        sender_id=player_id, sender_name=player_name, channel=channel, content=message.strip(), target_id=target_id
+    )
     chat_logger.log_chat_message(
         {
             "message_id": chat_message.id,
@@ -23,6 +31,7 @@ def create_and_log_chat_message(
             "sender_name": chat_message.sender_name,
             "content": chat_message.content,
             "room_id": room_id,
+            "target_player_id": target_id,
             "filtered": False,
             "moderation_notes": None,
         }
