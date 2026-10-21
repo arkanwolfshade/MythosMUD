@@ -12,6 +12,11 @@ if TYPE_CHECKING:
 
 logger: BoundLogger = get_logger(__name__)
 
+# Gestures for an NPC with no authored lines; rendered as "<NPC name> <text>" (#1103).
+DEFAULT_GREETING_EMOTE = "offers a wary nod in greeting."
+DEFAULT_FAREWELL_EMOTE = "gives a wary nod, and nothing more, as someone leaves."
+DEFAULT_SILENCE_EMOTE = "gives no answer, only silence."
+
 
 def register_default_reactions_for_npc(
     npc_id: str,
@@ -31,26 +36,45 @@ def register_default_reactions_for_npc(
         # #815: fallbacks for an NPC with no authored greeting/farewell of its own -- every one of
         # the ten seeded NPCs (data/db/seed.sql) sets its own greeting_message/
         # farewell_message, so these are rarely reached in practice. Kept in-tone regardless.
+        # #1103: the fallbacks are gestures, so they go out as emotes ("<NPC> offers a wary nod..."); an authored
+        # greeting/farewell/response is the NPC's own words and stays speech.
         if npc_type in ["shopkeeper", "passive_mob"]:
             if behavior_config.get("initiates_dialogue") is True:
                 # An NPC that speaks first: opening the conversation IS its greeting (a variant, not an addition).
                 reactions.append(build_dialogue_opening(npc_id, event_reaction_system.event_bus))
             else:
-                greeting = str(behavior_config.get("greeting_message", "A wary nod is offered in greeting."))
+                authored_greeting = behavior_config.get("greeting_message")
+                greeting = str(authored_greeting) if authored_greeting is not None else DEFAULT_GREETING_EMOTE
                 # #815 PR-4: the greeting reaction is corruption-aware -- a variant, not an addition.
                 npc_corruption = coerce_int((stats or {}).get("corruption", 0), default=0)
-                reactions.append(build_corruption_aware_greeting(npc_id, npc_corruption, greeting))
+                reactions.append(
+                    build_corruption_aware_greeting(
+                        npc_id, npc_corruption, greeting, as_emote=authored_greeting is None
+                    )
+                )
 
         if npc_type in ["shopkeeper", "passive_mob"]:
-            farewell = str(behavior_config.get("farewell_message", "A wary nod, and nothing more, marks your leaving."))
-            reactions.append(NPCEventReactionTemplates.player_left_room_farewell(npc_id, farewell))
+            authored_farewell = behavior_config.get("farewell_message")
+            reactions.append(
+                NPCEventReactionTemplates.player_left_room_farewell(
+                    npc_id,
+                    str(authored_farewell) if authored_farewell is not None else DEFAULT_FAREWELL_EMOTE,
+                    as_emote=authored_farewell is None,
+                )
+            )
 
         if npc_type == "aggressive_mob":
             reactions.append(NPCEventReactionTemplates.npc_attacked_retaliation(npc_id))
 
         if npc_type in ["shopkeeper", "passive_mob"]:
-            response = str(behavior_config.get("response_message", "There is no answer, only silence."))
-            reactions.append(NPCEventReactionTemplates.player_spoke_response(npc_id, response))
+            authored_response = behavior_config.get("response_message")
+            reactions.append(
+                NPCEventReactionTemplates.player_spoke_response(
+                    npc_id,
+                    str(authored_response) if authored_response is not None else DEFAULT_SILENCE_EMOTE,
+                    as_emote=authored_response is None,
+                )
+            )
 
         if reactions:
             event_reaction_system.register_npc_reactions(npc_id, reactions)

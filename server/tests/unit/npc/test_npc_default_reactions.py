@@ -2,7 +2,12 @@
 
 from unittest.mock import MagicMock, patch
 
-from server.npc.npc_default_reactions import register_default_reactions_for_npc
+from server.npc.npc_default_reactions import (
+    DEFAULT_FAREWELL_EMOTE,
+    DEFAULT_GREETING_EMOTE,
+    DEFAULT_SILENCE_EMOTE,
+    register_default_reactions_for_npc,
+)
 
 
 def test_register_shopkeeper_greeting_reads_corruption_from_stats():
@@ -17,7 +22,7 @@ def test_register_shopkeeper_greeting_reads_corruption_from_stats():
             system,
             stats={"corruption": 75},
         )
-    build_greeting.assert_called_once_with("npc-6", 75, "Welcome")
+    build_greeting.assert_called_once_with("npc-6", 75, "Welcome", as_emote=False)
 
 
 def test_register_shopkeeper_greeting_defaults_corruption_to_zero_without_stats():
@@ -25,7 +30,7 @@ def test_register_shopkeeper_greeting_defaults_corruption_to_zero_without_stats(
     system = MagicMock()
     with patch("server.npc.corruption_reactions.build_corruption_aware_greeting") as build_greeting:
         register_default_reactions_for_npc("npc-7", "shopkeeper", {"greeting_message": "Welcome"}, system)
-    build_greeting.assert_called_once_with("npc-7", 0, "Welcome")
+    build_greeting.assert_called_once_with("npc-7", 0, "Welcome", as_emote=False)
 
 
 def test_register_passive_mob_reactions():
@@ -89,3 +94,37 @@ def test_register_handles_import_error(mock_logger):
     ):
         register_default_reactions_for_npc("npc-4", "shopkeeper", {}, system)
     mock_logger.error.assert_called_once()
+
+
+def test_an_npc_with_no_authored_lines_gets_gesture_emotes():
+    """#1103: the generic fallbacks are gestures ("<NPC> offers a wary nod..."), not words put in its mouth."""
+    system = MagicMock()
+    with (
+        patch("server.npc.corruption_reactions.build_corruption_aware_greeting") as greeting,
+        patch("server.npc.event_reaction_system.NPCEventReactionTemplates.player_left_room_farewell") as farewell,
+        patch("server.npc.event_reaction_system.NPCEventReactionTemplates.player_spoke_response") as response,
+    ):
+        register_default_reactions_for_npc("npc-8", "passive_mob", {}, system)
+
+    greeting.assert_called_once_with("npc-8", 0, DEFAULT_GREETING_EMOTE, as_emote=True)
+    farewell.assert_called_once_with("npc-8", DEFAULT_FAREWELL_EMOTE, as_emote=True)
+    response.assert_called_once_with("npc-8", DEFAULT_SILENCE_EMOTE, as_emote=True)
+
+
+def test_authored_lines_stay_speech():
+    system = MagicMock()
+    with (
+        patch("server.npc.corruption_reactions.build_corruption_aware_greeting") as greeting,
+        patch("server.npc.event_reaction_system.NPCEventReactionTemplates.player_left_room_farewell") as farewell,
+        patch("server.npc.event_reaction_system.NPCEventReactionTemplates.player_spoke_response") as response,
+    ):
+        register_default_reactions_for_npc(
+            "npc-9",
+            "passive_mob",
+            {"greeting_message": "Hi", "farewell_message": "Bye", "response_message": "Ok"},
+            system,
+        )
+
+    greeting.assert_called_once_with("npc-9", 0, "Hi", as_emote=False)
+    farewell.assert_called_once_with("npc-9", "Bye", as_emote=False)
+    response.assert_called_once_with("npc-9", "Ok", as_emote=False)

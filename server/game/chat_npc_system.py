@@ -60,6 +60,47 @@ def schedule_coro(coro: Coroutine[object, object, object]) -> None:
     _ = loop.create_task(coro)
 
 
+async def _send_npc_room_message(  # pylint: disable=too-many-arguments  # Reason: one keyword-only sender behind the say/emote entry points
+    chat_service: _ChatDeliveryService,
+    *,
+    npc_id: str,
+    npc_name: str,
+    room_id: str,
+    message: str,
+    channel: str,
+    target_player_id: uuid.UUID | str | None = None,
+) -> dict[str, object]:
+    """Publish a room-channel message from an NPC; with ``target_player_id`` only that player sees it (#1103)."""
+    if not message or not message.strip():
+        return {"success": False, "error": "Message cannot be empty"}
+    if not room_id:
+        return {"success": False, "error": "Room required"}
+
+    sender_id = npc_sender_id(npc_id)
+    chat_message = create_and_log_chat_message(sender_id, npc_name, message, room_id, channel)
+    chat_message.speaker_kind = "npc"
+    chat_message.speaker_disposition = get_npc_disposition_from_instance(npc_id).value
+    if target_player_id is None:
+        # pylint: disable=protected-access  # Reason: reuse ChatService room history store
+        store_message_in_room_history(
+            chat_service._room_messages,  # pyright: ignore[reportPrivateUsage]  # Reason: Protocol mirrors ChatService history store
+            chat_message,
+            room_id,
+            chat_service._max_messages_per_room,  # pyright: ignore[reportPrivateUsage]  # Reason: Protocol mirrors ChatService history store
+        )
+    else:
+        # A private line must not be replayed to the rest of the room from room history.
+        chat_message.target_id = str(target_player_id)
+    success = await publish_chat_message_to_nats(
+        chat_message, room_id, chat_service.nats_service, chat_service.subject_manager
+    )
+    if not success:
+        logger.error("NPC room message NATS publish failed", npc_id=npc_id, room_id=room_id, channel=channel)
+        return {"success": False, "error": "Chat system temporarily unavailable."}
+    message_dict = cast(dict[str, object], chat_message.to_dict())
+    return {"success": True, "message": message_dict, "room_id": room_id}
+
+
 async def send_npc_say_to_room(
     chat_service: _ChatDeliveryService,
     *,
@@ -69,30 +110,30 @@ async def send_npc_say_to_room(
     message: str,
 ) -> dict[str, object]:
     """Publish a say-shaped room message from an NPC via ChatService/NATS."""
-    if not message or not message.strip():
-        return {"success": False, "error": "Message cannot be empty"}
-    if not room_id:
-        return {"success": False, "error": "Room required"}
+    return await _send_npc_room_message(
+        chat_service, npc_id=npc_id, npc_name=npc_name, room_id=room_id, message=message, channel="say"
+    )
 
-    sender_id = npc_sender_id(npc_id)
-    chat_message = create_and_log_chat_message(sender_id, npc_name, message, room_id, "say")
-    chat_message.speaker_kind = "npc"
-    chat_message.speaker_disposition = get_npc_disposition_from_instance(npc_id).value
-    # pylint: disable=protected-access  # Reason: reuse ChatService room history store
-    store_message_in_room_history(
-        chat_service._room_messages,  # pyright: ignore[reportPrivateUsage]  # Reason: Protocol mirrors ChatService history store
-        chat_message,
-        room_id,
-        chat_service._max_messages_per_room,  # pyright: ignore[reportPrivateUsage]  # Reason: Protocol mirrors ChatService history store
+
+async def send_npc_emote_to_room(  # pylint: disable=too-many-arguments  # Reason: keyword-only mirror of send_npc_say_to_room plus the optional private target
+    chat_service: _ChatDeliveryService,
+    *,
+    npc_id: str,
+    npc_name: str,
+    room_id: str,
+    message: str,
+    target_player_id: uuid.UUID | str | None = None,
+) -> dict[str, object]:
+    """Publish an emote from an NPC: the room sees "<NPC> <message>", or only ``target_player_id`` when given (#1103)."""
+    return await _send_npc_room_message(
+        chat_service,
+        npc_id=npc_id,
+        npc_name=npc_name,
+        room_id=room_id,
+        message=message,
+        channel="emote",
+        target_player_id=target_player_id,
     )
-    success = await publish_chat_message_to_nats(
-        chat_message, room_id, chat_service.nats_service, chat_service.subject_manager
-    )
-    if not success:
-        logger.error("NPC say NATS publish failed", npc_id=npc_id, room_id=room_id)
-        return {"success": False, "error": "Chat system temporarily unavailable."}
-    message_dict = cast(dict[str, object], chat_message.to_dict())
-    return {"success": True, "message": message_dict, "room_id": room_id}
 
 
 async def send_personal_system_message(
@@ -184,6 +225,31 @@ async def deliver_npc_room_speech(
     return await send_npc_say_to_room(_chat_service, npc_id=npc_id, npc_name=name, room_id=room_id, message=message)
 
 
+async def deliver_npc_room_emote(
+    *,
+    npc_id: str,
+    room_id: str,
+    message: str,
+    npc_name: str | None = None,
+    target_player_id: uuid.UUID | str | None = None,
+) -> dict[str, object]:
+    """Deliver an NPC emote using the wired ChatService, if any (#1103)."""
+    from ..npc.npc_display_names import resolve_npc_display_name
+
+    if _chat_service is None:
+        logger.debug("ChatService not wired; NPC emote skipped", npc_id=npc_id)
+        return {"success": False, "error": "ChatService unavailable"}
+    name = resolve_npc_display_name(npc_id, npc_name)
+    return await send_npc_emote_to_room(
+        _chat_service,
+        npc_id=npc_id,
+        npc_name=name,
+        room_id=room_id,
+        message=message,
+        target_player_id=target_player_id,
+    )
+
+
 async def deliver_personal_system(
     player_id: uuid.UUID | str, message: str, content_segments: list[MessageSegment] | None = None
 ) -> dict[str, object]:
@@ -203,6 +269,22 @@ def schedule_npc_room_speech(
 ) -> None:
     """Schedule NPC room speech from sync code (reactions, integration)."""
     schedule_coro(deliver_npc_room_speech(npc_id=npc_id, room_id=room_id, message=message, npc_name=npc_name))
+
+
+def schedule_npc_room_emote(
+    *,
+    npc_id: str,
+    room_id: str,
+    message: str,
+    npc_name: str | None = None,
+    target_player_id: uuid.UUID | str | None = None,
+) -> None:
+    """Schedule an NPC emote from sync code (reactions); private to ``target_player_id`` when given (#1103)."""
+    schedule_coro(
+        deliver_npc_room_emote(
+            npc_id=npc_id, room_id=room_id, message=message, npc_name=npc_name, target_player_id=target_player_id
+        )
+    )
 
 
 def schedule_personal_system(player_id: uuid.UUID | str, message: str) -> None:
