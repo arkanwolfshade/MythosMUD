@@ -329,11 +329,14 @@ def _schedule_room_line(npc_id: str, npc_context: Mapping[str, object], message:
     if not isinstance(room_id, str) or not room_id or room_id == "unknown":
         return False
     # Circular import: chat_npc_system -> npc package -> this module
-    from ..game.chat_npc_system import schedule_npc_room_emote, schedule_npc_room_speech
+    from ..game.chat_npc_system import schedule_npc_room_message, schedule_npc_room_speech
 
     raw_name = npc_context.get("name")
-    send = schedule_npc_room_emote if as_emote else schedule_npc_room_speech
-    send(npc_id=npc_id, room_id=room_id, message=message, npc_name=raw_name if isinstance(raw_name, str) else None)
+    npc_name = raw_name if isinstance(raw_name, str) else None
+    if as_emote:
+        schedule_npc_room_message(channel="emote", npc_id=npc_id, room_id=room_id, message=message, npc_name=npc_name)
+    else:
+        schedule_npc_room_speech(npc_id=npc_id, room_id=room_id, message=message, npc_name=npc_name)
     return True
 
 

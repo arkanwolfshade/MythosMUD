@@ -60,7 +60,7 @@ def schedule_coro(coro: Coroutine[object, object, object]) -> None:
     _ = loop.create_task(coro)
 
 
-async def _send_npc_room_message(  # pylint: disable=too-many-arguments  # Reason: one keyword-only sender behind the say/emote entry points
+async def send_npc_room_message(  # pylint: disable=too-many-arguments  # Reason: keyword-only sender shared by say and emote
     chat_service: _ChatDeliveryService,
     *,
     npc_id: str,
@@ -116,34 +116,13 @@ async def send_npc_say_to_room(  # pylint: disable=too-many-arguments  # Reason:
     target_player_id: uuid.UUID | str | None = None,
 ) -> dict[str, object]:
     """Publish a say-shaped room message from an NPC; only ``target_player_id`` hears it when given."""
-    return await _send_npc_room_message(
+    return await send_npc_room_message(
         chat_service,
         npc_id=npc_id,
         npc_name=npc_name,
         room_id=room_id,
         message=message,
         channel="say",
-        target_player_id=target_player_id,
-    )
-
-
-async def send_npc_emote_to_room(  # pylint: disable=too-many-arguments  # Reason: keyword-only mirror of send_npc_say_to_room plus the optional private target
-    chat_service: _ChatDeliveryService,
-    *,
-    npc_id: str,
-    npc_name: str,
-    room_id: str,
-    message: str,
-    target_player_id: uuid.UUID | str | None = None,
-) -> dict[str, object]:
-    """Publish an emote from an NPC: the room sees "<NPC> <message>", or only ``target_player_id`` when given (#1103)."""
-    return await _send_npc_room_message(
-        chat_service,
-        npc_id=npc_id,
-        npc_name=npc_name,
-        room_id=room_id,
-        message=message,
-        channel="emote",
         target_player_id=target_player_id,
     )
 
@@ -219,6 +198,37 @@ async def deliver_fake_npc_whisper(player_id: uuid.UUID | str, npc_name: str, me
     return await send_fake_npc_whisper(_chat_service, player_id, npc_name, message)
 
 
+async def deliver_npc_room_message(  # pylint: disable=too-many-arguments  # Reason: keyword-only, channel plus the NPC line and optional private target
+    *,
+    channel: str,
+    npc_id: str,
+    room_id: str,
+    message: str,
+    npc_name: str | None = None,
+    target_player_id: uuid.UUID | str | None = None,
+) -> dict[str, object]:
+    """Deliver an NPC's room line (``channel`` "say" or "emote") using the wired ChatService, if any.
+
+    Private to ``target_player_id`` when given (#1103, #1107).
+    """
+    # Lazy import avoids chat_npc_system <-> npc package cycles at import time.
+    from ..npc.npc_display_names import resolve_npc_display_name
+
+    if _chat_service is None:
+        logger.debug("ChatService not wired; NPC room message skipped", npc_id=npc_id, channel=channel)
+        return {"success": False, "error": "ChatService unavailable"}
+    name = resolve_npc_display_name(npc_id, npc_name)
+    return await send_npc_room_message(
+        _chat_service,
+        npc_id=npc_id,
+        npc_name=name,
+        room_id=room_id,
+        message=message,
+        channel=channel,
+        target_player_id=target_player_id,
+    )
+
+
 async def deliver_npc_room_speech(
     *,
     npc_id: str,
@@ -228,44 +238,12 @@ async def deliver_npc_room_speech(
     target_player_id: uuid.UUID | str | None = None,
 ) -> dict[str, object]:
     """Deliver NPC room speech using the wired ChatService, if any; private to ``target_player_id`` when given."""
-    # Lazy import avoids chat_npc_system <-> npc package cycles at import time.
-    from ..npc.npc_display_names import resolve_npc_display_name
-
-    if _chat_service is None:
-        logger.debug("ChatService not wired; NPC speech skipped", npc_id=npc_id)
-        return {"success": False, "error": "ChatService unavailable"}
-    name = resolve_npc_display_name(npc_id, npc_name)
-    return await send_npc_say_to_room(
-        _chat_service,
+    return await deliver_npc_room_message(
+        channel="say",
         npc_id=npc_id,
-        npc_name=name,
         room_id=room_id,
         message=message,
-        target_player_id=target_player_id,
-    )
-
-
-async def deliver_npc_room_emote(
-    *,
-    npc_id: str,
-    room_id: str,
-    message: str,
-    npc_name: str | None = None,
-    target_player_id: uuid.UUID | str | None = None,
-) -> dict[str, object]:
-    """Deliver an NPC emote using the wired ChatService, if any (#1103)."""
-    from ..npc.npc_display_names import resolve_npc_display_name
-
-    if _chat_service is None:
-        logger.debug("ChatService not wired; NPC emote skipped", npc_id=npc_id)
-        return {"success": False, "error": "ChatService unavailable"}
-    name = resolve_npc_display_name(npc_id, npc_name)
-    return await send_npc_emote_to_room(
-        _chat_service,
-        npc_id=npc_id,
-        npc_name=name,
-        room_id=room_id,
-        message=message,
+        npc_name=npc_name,
         target_player_id=target_player_id,
     )
 
@@ -291,18 +269,24 @@ def schedule_npc_room_speech(
     schedule_coro(deliver_npc_room_speech(npc_id=npc_id, room_id=room_id, message=message, npc_name=npc_name))
 
 
-def schedule_npc_room_emote(
+def schedule_npc_room_message(  # pylint: disable=too-many-arguments  # Reason: keyword-only, channel plus the NPC line and optional private target
     *,
+    channel: str,
     npc_id: str,
     room_id: str,
     message: str,
     npc_name: str | None = None,
     target_player_id: uuid.UUID | str | None = None,
 ) -> None:
-    """Schedule an NPC emote from sync code (reactions); private to ``target_player_id`` when given (#1103)."""
+    """Schedule an NPC's room line (say or emote) from sync code; private to ``target_player_id`` when given."""
     schedule_coro(
-        deliver_npc_room_emote(
-            npc_id=npc_id, room_id=room_id, message=message, npc_name=npc_name, target_player_id=target_player_id
+        deliver_npc_room_message(
+            channel=channel,
+            npc_id=npc_id,
+            room_id=room_id,
+            message=message,
+            npc_name=npc_name,
+            target_player_id=target_player_id,
         )
     )
 

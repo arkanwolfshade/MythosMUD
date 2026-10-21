@@ -193,9 +193,11 @@ def test_gesture_reactions_go_out_as_emotes_not_speech():
 
     for reaction, event in cases:
         with (
-            patch("server.game.chat_npc_system.schedule_npc_room_emote") as emote,
+            patch("server.game.chat_npc_system.schedule_npc_room_message") as emote,
             patch("server.game.chat_npc_system.schedule_npc_room_speech") as speech,
         ):
             assert reaction.execute(event, context) is True
         speech.assert_not_called()
-        emote.assert_called_once_with(npc_id="npc-1", room_id="room-a", message="nods.", npc_name="Morgan")
+        emote.assert_called_once_with(
+            channel="emote", npc_id="npc-1", room_id="room-a", message="nods.", npc_name="Morgan"
+        )
