@@ -68,6 +68,8 @@ test.describe.serial('First Exposure: the whole tutorial', () => {
       });
 
       await walk(tutorial, 'east', tutorialRoomPattern('gravel_walk'));
+      // The lamplighter has no authored greeting, so entering greets with the default gesture, an emote (#1103).
+      await waitForMessage(tutorial.page, /Lamplighter offers a wary nod in greeting/i, 20000);
       // The path is one way, and onward only once the lamplighter has been heard out (#1111).
       await say(tutorial, 'go west', /can't go that way/i);
       await say(tutorial, 'go east', /A word first/i);

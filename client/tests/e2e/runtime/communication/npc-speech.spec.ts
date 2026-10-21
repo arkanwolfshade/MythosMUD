@@ -11,10 +11,11 @@ import { executeCommand, loginPlayer, waitForMessage } from '../fixtures/auth';
 import { ensureStanding, goEastFromFoyer } from '../fixtures/player';
 import { TEST_TIMEOUTS } from '../fixtures/test-data';
 
-// Seed NPC definition 56 (passive_mob). Its behavior_config has no greeting_message, so the default greets:
-// a gesture, delivered as an emote ("<NPC> offers a wary nod in greeting.", #1103), not words in its mouth.
+// Seed NPC definition 56 (the Sanitarium patient, passive_mob). Its behavior_config authors a `greeting`, which is
+// the NPC's own words and so goes out as speech (#1110); an NPC with no authored line gets a gesture emote instead
+// ("<NPC> offers a wary nod in greeting.", #1103), which first-exposure.spec.ts covers with the lamplighter.
 const PATIENT_DEFINITION_ID = 56;
-const PATIENT_GREETING = /offers a wary nod in greeting/i;
+const PATIENT_GREETING = /They\.\.\. they told me I was cured/i;
 
 test.describe('NPC speech (#1053)', () => {
   test('a passive NPC greets a player entering its room', async ({ page }) => {
