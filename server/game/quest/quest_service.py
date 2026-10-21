@@ -560,6 +560,7 @@ class QuestService(QuestRewardsMixin):
                     {
                         "goal_type": goal.type,
                         "target": goal.target,
+                        "description": goal.description,
                         "current": current,
                         "required": required,
                         "done": (current >= required if goal.type in ("kill_n", "collect_n") else (current == 1)),

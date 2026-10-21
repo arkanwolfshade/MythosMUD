@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, cast
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -804,3 +804,25 @@ async def test_respawn_room_reward_without_room_id_changes_nothing():
 
     assert player.respawn_room_id == bedroom
     assert persistence.saved == []
+
+
+@pytest.mark.asyncio
+async def test_get_quest_log_carries_the_goals_authored_description(
+    quest_service: QuestService, mock_def_repo: _MockDefRepo, mock_instance_repo: _MockInstanceRepo
+):
+    """#1102: the journal shows the authored text instead of the raw target; a goal without one reports None."""
+    row = _make_definition_row()
+    row.definition["goals"] = [
+        {"type": "complete_activity", "target": "cmd_look", "description": "Look around (`look`)"},
+        {"type": "complete_activity", "target": "cmd_talk"},
+    ]
+    instance = _InstanceStub(quest_id="leave_the_tutorial", state="active", progress={"0": 1})
+    mock_def_repo.get_by_id = AsyncMock(return_value=row)
+    mock_instance_repo.list_active_by_player = AsyncMock(return_value=[instance])
+    mock_instance_repo.list_completed_by_player = AsyncMock(return_value=[])
+
+    result = await quest_service.get_quest_log(uuid.uuid4(), include_completed=False)
+
+    goals = cast(list[dict[str, object]], result[0]["goals_with_progress"])
+    assert [g["description"] for g in goals] == ["Look around (`look`)", None]
+    assert [g["target"] for g in goals] == ["cmd_look", "cmd_talk"]

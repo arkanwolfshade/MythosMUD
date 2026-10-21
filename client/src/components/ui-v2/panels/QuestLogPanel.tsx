@@ -14,13 +14,14 @@ function getStateBadgeClassName(state: string): string {
 
 interface GoalWithProgress {
   target?: string;
+  description?: string | null;
   current?: number;
   required?: number;
   done?: boolean;
 }
 
 function GoalLine({ goal }: { goal: GoalWithProgress }) {
-  const label = goal.target ?? 'Goal';
+  const label = goal.description || goal.target || 'Goal';
   if (goal.done) {
     return <span className="text-green-600">{label}: done</span>;
   }
