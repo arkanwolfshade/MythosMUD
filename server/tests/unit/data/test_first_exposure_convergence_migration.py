@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import cast
 
 import pytest
+from pydantic import TypeAdapter
 
 from server.commands.inventory_item_matching import match_room_drop_by_name
 from server.utils.project_paths import get_project_root
@@ -116,3 +117,24 @@ def test_every_command_the_quest_text_suggests_finds_its_target(verb: str, targe
     stacks = _npc_stacks() if verb == "talk" else _catalog_stacks()
 
     assert match_room_drop_by_name(stacks, target) is not None, f"'{verb} {target}' finds nothing"
+
+
+GHOUL_MEND = ROOT / "data" / "db" / "migrations" / "20261020110000_pale_ghoul_mend_single_option.sql"
+
+
+@pytest.mark.skipif(not GHOUL_MEND.is_file(), reason="the private data/ submodule is not checked out")
+def test_the_ghoul_mend_node_keeps_one_answer_that_continues_the_scene_and_down_restores_the_original() -> None:
+    """#1107: "Thank you." ended the talk before the quest hand-off; the migration is targeted and reversible."""
+    original = [json.loads(block) for block in _tagged("dialogue", _up(ORIGINAL)) if '"mend"' in block]
+    assert len(original) == 1
+    nodes = cast(dict[str, dict[str, object]], original[0]["nodes"])
+    up, _, down = GHOUL_MEND.read_text(encoding="utf-8").partition("-- migrate:down")
+
+    options = TypeAdapter(list[dict[str, str | None]])
+    kept = options.validate_json("[" + _between(up, "'[", "]'::jsonb") + "]")
+    restored = options.validate_json("[" + _between(down, "'[", "]'::jsonb") + "]")
+
+    assert kept == [{"label": "What do you want from me?", "next": "amulet"}]
+    assert kept[0]["next"] in nodes
+    assert restored == nodes["mend"]["options"]
+    assert "jsonb_set" in up and "first_exposure_pale_ghoul" in up

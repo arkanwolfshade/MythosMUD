@@ -41,16 +41,18 @@ class DialoguePrompt:
     actions: list[ScriptedAction] = field(default_factory=list)
 
 
+def format_dialogue_options(option_labels: list[str]) -> str:
+    """The numbered answers and the usage hint: the part of a node that is not the NPC speaking (#1107)."""
+    lines = [f"{i}. {label}" for i, label in enumerate(option_labels, start=1)]
+    return "\n".join([*lines, "", "Use: talk <number> (or reply <number>)"])
+
+
 def format_dialogue_prompt(npc_name: str, node_text: str, option_labels: list[str]) -> str:
     """Build personal-system message body for a dialogue node."""
-    lines = [f'{npc_name} says: "{node_text}"']
-    if option_labels:
-        lines.append("")
-        for i, label in enumerate(option_labels, start=1):
-            lines.append(f"{i}. {label}")
-        lines.append("")
-        lines.append("Use: talk <number> (or reply <number>)")
-    return "\n".join(lines)
+    line = f'{npc_name} says: "{node_text}"'
+    if not option_labels:
+        return line
+    return f"{line}\n\n{format_dialogue_options(option_labels)}"
 
 
 class DialogueService:

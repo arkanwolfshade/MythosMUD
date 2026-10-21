@@ -101,17 +101,24 @@ async def _send_npc_room_message(  # pylint: disable=too-many-arguments  # Reaso
     return {"success": True, "message": message_dict, "room_id": room_id}
 
 
-async def send_npc_say_to_room(
+async def send_npc_say_to_room(  # pylint: disable=too-many-arguments  # Reason: keyword-only sender plus the optional private target
     chat_service: _ChatDeliveryService,
     *,
     npc_id: str,
     npc_name: str,
     room_id: str,
     message: str,
+    target_player_id: uuid.UUID | str | None = None,
 ) -> dict[str, object]:
-    """Publish a say-shaped room message from an NPC via ChatService/NATS."""
+    """Publish a say-shaped room message from an NPC; only ``target_player_id`` hears it when given."""
     return await _send_npc_room_message(
-        chat_service, npc_id=npc_id, npc_name=npc_name, room_id=room_id, message=message, channel="say"
+        chat_service,
+        npc_id=npc_id,
+        npc_name=npc_name,
+        room_id=room_id,
+        message=message,
+        channel="say",
+        target_player_id=target_player_id,
     )
 
 
@@ -213,8 +220,9 @@ async def deliver_npc_room_speech(
     room_id: str,
     message: str,
     npc_name: str | None = None,
+    target_player_id: uuid.UUID | str | None = None,
 ) -> dict[str, object]:
-    """Deliver NPC room speech using the wired ChatService, if any."""
+    """Deliver NPC room speech using the wired ChatService, if any; private to ``target_player_id`` when given."""
     # Lazy import avoids chat_npc_system <-> npc package cycles at import time.
     from ..npc.npc_display_names import resolve_npc_display_name
 
@@ -222,7 +230,14 @@ async def deliver_npc_room_speech(
         logger.debug("ChatService not wired; NPC speech skipped", npc_id=npc_id)
         return {"success": False, "error": "ChatService unavailable"}
     name = resolve_npc_display_name(npc_id, npc_name)
-    return await send_npc_say_to_room(_chat_service, npc_id=npc_id, npc_name=name, room_id=room_id, message=message)
+    return await send_npc_say_to_room(
+        _chat_service,
+        npc_id=npc_id,
+        npc_name=name,
+        room_id=room_id,
+        message=message,
+        target_player_id=target_player_id,
+    )
 
 
 async def deliver_npc_room_emote(

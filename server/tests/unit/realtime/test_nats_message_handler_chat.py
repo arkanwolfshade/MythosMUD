@@ -527,3 +527,37 @@ async def test_a_targeted_emote_is_delivered_to_its_target_not_the_room(
         )
         room.assert_awaited_once_with("room_001", chat_event, str(sender), "emote")
         personal.assert_awaited_once()
+
+
+def test_extract_chat_message_fields_private_npc_say_target_id(nats_message_handler: NATSMessageHandler) -> None:
+    """A private NPC say (#1107) maps target_id to target_player_id like a private emote does."""
+    target = str(uuid.uuid4())
+    message_data: dict[str, object] = {
+        "channel": "say",
+        "room_id": "room_001",
+        "target_id": target,
+        "sender_id": str(uuid.uuid4()),
+        "sender_name": "Pale Ghoul",
+        "content": "Sit. I can mend that.",
+        "message_id": "msg_say_001",
+        "speaker_kind": "npc",
+    }
+    result = nats_message_handler._extract_chat_message_fields(message_data)  # pyright: ignore[reportPrivateUsage] -- the field normalization is the unit under test
+    assert result.get("target_player_id") == target
+
+
+@pytest.mark.asyncio
+async def test_a_targeted_say_is_delivered_to_its_target_not_the_room(
+    nats_message_handler: NATSMessageHandler,
+) -> None:
+    target, sender = uuid.uuid4(), uuid.uuid4()
+    chat_event: dict[str, object] = {"type": "chat", "data": {}}
+    with (
+        patch.object(nats_message_handler, "_apply_dampening_and_send_message", new_callable=AsyncMock) as personal,
+        patch.object(nats_message_handler, "_broadcast_to_room_with_filtering", new_callable=AsyncMock) as room,
+    ):
+        await nats_message_handler._broadcast_by_channel_type(  # pyright: ignore[reportPrivateUsage] -- the strategy dispatch is the unit under test
+            "say", chat_event, "room_001", "", target, sender
+        )
+        personal.assert_awaited_once_with(chat_event, str(sender), str(target), "say")
+        room.assert_not_called()
