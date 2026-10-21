@@ -60,13 +60,14 @@ def build_corruption_aware_greeting(
             return False
         # Circular import: chat_npc_system -> npc package -> this module (same pattern as the
         # plain templates in event_reaction_system.py).
-        from ..game.chat_npc_system import schedule_npc_room_emote, schedule_npc_room_speech
+        from ..game.chat_npc_system import schedule_npc_room_message, schedule_npc_room_speech
 
         message = _pick_greeting(npc_corruption, normal_greeting, event.player_id)
         raw_name = npc_context.get("name")
         npc_name = raw_name if isinstance(raw_name, str) else None
         if message in (WELCOME_LINE, RECOIL_LINE):
-            schedule_npc_room_emote(
+            schedule_npc_room_message(
+                channel="emote",
                 npc_id=npc_id,
                 room_id=str(room_id),
                 message=message,
@@ -74,8 +75,12 @@ def build_corruption_aware_greeting(
                 target_player_id=event.player_id,
             )
         else:
-            send = schedule_npc_room_emote if as_emote else schedule_npc_room_speech
-            send(npc_id=npc_id, room_id=str(room_id), message=message, npc_name=npc_name)
+            if as_emote:
+                schedule_npc_room_message(
+                    channel="emote", npc_id=npc_id, room_id=str(room_id), message=message, npc_name=npc_name
+                )
+            else:
+                schedule_npc_room_speech(npc_id=npc_id, room_id=str(room_id), message=message, npc_name=npc_name)
         return True
 
     return NPCEventReaction(event_type=PlayerEnteredRoom, condition=condition, action=action, priority=1)

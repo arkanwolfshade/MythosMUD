@@ -78,7 +78,7 @@ def test_build_corruption_aware_greeting_fires_on_entry_to_the_npcs_room():
     context = {"npc_id": "npc-1", "current_room": "room-1", "name": "Ezekiel"}
     assert reaction.should_trigger(event, context) is True
 
-    with patch("server.game.chat_npc_system.schedule_npc_room_emote") as schedule:
+    with patch("server.game.chat_npc_system.schedule_npc_room_message") as schedule:
         assert reaction.execute(event, context) is True
     schedule.assert_called_once()
     assert schedule.call_args.kwargs["message"] == WELCOME_LINE
@@ -97,7 +97,7 @@ def test_a_marked_players_greeting_never_reaches_the_room():
 
     event = PlayerEnteredRoom(player_id=player_id, room_id="room-1")
     with (
-        patch("server.game.chat_npc_system.schedule_npc_room_emote") as emote,
+        patch("server.game.chat_npc_system.schedule_npc_room_message") as emote,
         patch("server.game.chat_npc_system.schedule_npc_room_speech") as speech,
     ):
         assert reaction.execute(event, {"current_room": "room-1"}) is True
@@ -118,7 +118,7 @@ def test_an_authored_greeting_stays_speech_and_a_default_gesture_is_a_room_emote
     context = {"current_room": "room-1"}
 
     with (
-        patch("server.game.chat_npc_system.schedule_npc_room_emote") as emote,
+        patch("server.game.chat_npc_system.schedule_npc_room_message") as emote,
         patch("server.game.chat_npc_system.schedule_npc_room_speech") as speech,
     ):
         assert build_corruption_aware_greeting("npc-1", 0, "Well met.").execute(event, context) is True
@@ -126,7 +126,7 @@ def test_an_authored_greeting_stays_speech_and_a_default_gesture_is_a_room_emote
     assert speech.call_args.kwargs["message"] == "Well met."
 
     with (
-        patch("server.game.chat_npc_system.schedule_npc_room_emote") as emote,
+        patch("server.game.chat_npc_system.schedule_npc_room_message") as emote,
         patch("server.game.chat_npc_system.schedule_npc_room_speech") as speech,
     ):
         assert build_corruption_aware_greeting("npc-1", 0, "nods.", as_emote=True).execute(event, context) is True
