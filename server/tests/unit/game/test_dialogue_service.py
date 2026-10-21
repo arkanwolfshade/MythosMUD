@@ -10,6 +10,7 @@ from pydantic import ValidationError
 
 from server.game.dialogue.dialogue_service import (
     DialogueService,
+    format_dialogue_options,
     format_dialogue_prompt,
     reset_dialogue_service_for_tests,
 )
@@ -173,3 +174,11 @@ async def test_dialogue_service_choose_without_cursor():
     result = await service.choose_option(uuid.uuid4(), 1)
     assert isinstance(result, str)
     assert "talk <npc>" in result
+
+
+def test_format_dialogue_options_is_the_numbered_answers_and_the_hint_only():
+    """#1107: the NPC's line is delivered as speech, so the options block carries no NPC line."""
+    text = format_dialogue_options(["Ask", "Bye"])
+    assert text.splitlines()[:2] == ["1. Ask", "2. Bye"]
+    assert "talk <number>" in text
+    assert "says" not in text

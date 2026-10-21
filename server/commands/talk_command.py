@@ -8,8 +8,18 @@ from typing import cast
 
 from ..alias_storage import AliasStorage
 from ..exceptions import DatabaseError
-from ..game.chat_npc_system import schedule_personal_system
-from ..game.dialogue import DialoguePrompt, format_dialogue_prompt, get_dialogue_service
+from ..game.chat_npc_system import (
+    deliver_npc_room_speech,
+    deliver_personal_system,
+    schedule_coro,
+    schedule_personal_system,
+)
+from ..game.dialogue import (
+    DialoguePrompt,
+    format_dialogue_options,
+    format_dialogue_prompt,
+    get_dialogue_service,
+)
 from ..game.scripted_actions import ScriptedActionContext, run_scripted_actions
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
@@ -46,13 +56,46 @@ def _remainder_from_command_data(command_data: Mapping[str, object]) -> str:
     return ""
 
 
-def _emit_prompt(player_id: uuid.UUID, npc_name: str, prompt: DialoguePrompt) -> str:
-    """Send personal system message for a node; return short command result."""
+def _room_of(player: object | None) -> str | None:
+    """The room the player stands in, if the model says."""
+    room = cast(object | None, getattr(player, "current_room_id", None))
+    return room if isinstance(room, str) and room else None
+
+
+async def _send_prompt(player_id: uuid.UUID, npc_id: str, npc_name: str, room_id: str, prompt: DialoguePrompt) -> None:
+    """The NPC's line as speech only this player hears, then the numbered options as a system prompt (#1107)."""
+    spoke = await deliver_npc_room_speech(
+        npc_id=npc_id, room_id=room_id, message=prompt.text, npc_name=npc_name, target_player_id=player_id
+    )
+    if spoke.get("success") is not True:
+        # Without the speech channel the line would be lost; fall back to the plain system prompt.
+        _ = await deliver_personal_system(player_id, format_dialogue_prompt(npc_name, prompt.text, prompt.options))
+        return
+    if prompt.options:
+        _ = await deliver_personal_system(player_id, format_dialogue_options(prompt.options))
+
+
+def _emit_prompt(
+    player_id: uuid.UUID,
+    npc_name: str,
+    prompt: DialoguePrompt,
+    *,
+    npc_id: str | None = None,
+    room_id: str | None = None,
+) -> str:
+    """Send a node to the player; return the short command result.
+
+    The NPC's line is that NPC speaking, private to this player; the options stay a system prompt. Without the NPC and
+    the room to speak in, the whole node is a system prompt.
+    """
     if prompt.ended:
         schedule_personal_system(player_id, prompt.text)
         return prompt.text
     body = format_dialogue_prompt(npc_name, prompt.text, prompt.options)
-    schedule_personal_system(player_id, body)
+    if npc_id and room_id:
+        schedule_coro(_send_prompt(player_id, npc_id, npc_name, room_id, prompt))
+    else:
+        schedule_personal_system(player_id, body)
     return body
 
 
@@ -68,6 +111,7 @@ async def open_dialogue(
     npc_id: str,
     npc_name: str,
     definition_id: int,
+    room_id: str | None,
     ctx: ScriptedActionContext | None,
 ) -> str:
     """
@@ -81,7 +125,7 @@ async def open_dialogue(
     )
     if isinstance(result, str):
         return result
-    text = _emit_prompt(player_id, npc_name, result)
+    text = _emit_prompt(player_id, npc_name, result, npc_id=npc_id, room_id=room_id)
     await _run_prompt_actions(result, ctx)
     return text
 
@@ -98,7 +142,7 @@ async def _talk_by_option_index(
     npc_name = cursor.npc_name if cursor else "Someone"
     if result.ended:
         service.clear_cursor(player_id)
-    text = _emit_prompt(player_id, npc_name, result)
+    text = _emit_prompt(player_id, npc_name, result, npc_id=cursor.npc_id if cursor else None, room_id=_room_of(player))
     ctx = action_context(app, player, get_pose_persistence(app)) if player is not None else None
     await _run_prompt_actions(result, ctx)
     return {"result": text}
@@ -153,7 +197,14 @@ async def _talk_with_npc(
     npc_id = str(npc_id_raw or definition_id)
     npc_name = str(npc_name_raw or "Someone")
     ctx = action_context(app, player, get_pose_persistence(app))
-    text = await open_dialogue(player_id, npc_id=npc_id, npc_name=npc_name, definition_id=definition_id, ctx=ctx)
+    text = await open_dialogue(
+        player_id,
+        npc_id=npc_id,
+        npc_name=npc_name,
+        definition_id=definition_id,
+        room_id=_room_of(player),
+        ctx=ctx,
+    )
     return {"result": text}
 
 

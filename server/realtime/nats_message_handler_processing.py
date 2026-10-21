@@ -271,9 +271,9 @@ class NATSMessageProcessingMixin(  # pylint: disable=too-few-public-methods  # R
         target_player_id = _optional_str(message_data.get("target_player_id"))
         target_id = _optional_str(message_data.get("target_id"))
 
-        # Whisper / personal system / quest / private NPC emote publish "target_id"; broadcasting expects
+        # Whisper / personal system / quest / private NPC say or emote publish "target_id"; broadcasting expects
         # "target_player_id".
-        if channel in ("whisper", "system", "quest", "emote") and target_id and not target_player_id:
+        if channel in ("whisper", "system", "quest", "say", "emote") and target_id and not target_player_id:
             target_player_id = target_id
 
         return {
@@ -438,11 +438,11 @@ class NATSMessageProcessingMixin(  # pylint: disable=too-few-public-methods  # R
         """
         try:
             # Import here to avoid circular imports
-            from .channel_broadcasting_strategies import PRIVATE_EMOTE_STRATEGY, channel_strategy_factory
+            from .channel_broadcasting_strategies import PRIVATE_ROOM_STRATEGIES, channel_strategy_factory
 
             # Get strategy for channel type and execute broadcast
-            # A private NPC emote (#1103) goes to its target alone, like a personal system line.
-            strategy_key = PRIVATE_EMOTE_STRATEGY if channel == "emote" and target_player_id else channel
+            # A private NPC say or emote (#1103, #1107) goes to its target alone, like a personal system line.
+            strategy_key = PRIVATE_ROOM_STRATEGIES.get(channel, channel) if target_player_id else channel
             strategy = channel_strategy_factory.get_strategy(strategy_key)
             await strategy.broadcast(chat_event, room_id, party_id, target_player_id, sender_id, self)
 

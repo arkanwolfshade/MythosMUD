@@ -12,7 +12,7 @@ import pytest
 
 from server.commands import talk_command as cmd
 from server.exceptions import DatabaseError
-from server.game.dialogue.dialogue_service import DialoguePrompt
+from server.game.dialogue.dialogue_service import DialoguePrompt, format_dialogue_options, format_dialogue_prompt
 from server.game.scripted_actions import ScriptedActionContext
 from server.models.player import Player
 from server.schemas.scripted_actions import NarrateAction, ScriptedAction
@@ -137,8 +137,8 @@ class ActionRig:
 def _rig(monkeypatch: pytest.MonkeyPatch) -> ActionRig:
     rig = ActionRig()
 
-    def fake_emit(player_id: uuid.UUID, npc_name: str, prompt: DialoguePrompt) -> str:
-        _ = player_id, npc_name, prompt
+    def fake_emit(player_id: uuid.UUID, npc_name: str, prompt: DialoguePrompt, **where: object) -> str:
+        _ = player_id, npc_name, prompt, where
         rig.order.append("line")
         return "text"
 
@@ -304,3 +304,83 @@ async def test_reply_without_persistence_or_when_it_fails_is_left_for_the_whispe
 
     assert result is None
     option.assert_not_awaited()
+
+
+# --- the NPC's line is NPC speech, private to the player (#1107) -----------------------------------------------
+
+
+def test_room_of_reads_the_players_room_and_ignores_a_missing_one() -> None:
+    assert cmd._room_of(MagicMock(current_room_id="room-1")) == "room-1"
+    assert cmd._room_of(MagicMock(current_room_id=None)) is None
+    assert cmd._room_of(None) is None
+
+
+def test_emit_prompt_speaks_the_line_as_the_npc_when_it_knows_who_and_where() -> None:
+    player_id = uuid.uuid4()
+    prompt = DialoguePrompt(text="Sit.", options=["Yes"], ended=False)
+    with (
+        patch.object(cmd, "_send_prompt") as send,
+        patch.object(cmd, "schedule_coro") as schedule,
+        patch.object(cmd, "schedule_personal_system") as system,
+    ):
+        result = cmd._emit_prompt(player_id, "Ghoul", prompt, npc_id="npc-1", room_id="room-1")
+
+    send.assert_called_once_with(player_id, "npc-1", "Ghoul", "room-1", prompt)
+    schedule.assert_called_once()
+    system.assert_not_called()
+    assert "Sit." in result
+
+
+def test_emit_prompt_falls_back_to_a_system_prompt_without_an_npc_or_room() -> None:
+    player_id = uuid.uuid4()
+    prompt = DialoguePrompt(text="Sit.", options=["Yes"], ended=False)
+    with (
+        patch.object(cmd, "schedule_coro") as schedule,
+        patch.object(cmd, "schedule_personal_system") as system,
+    ):
+        _ = cmd._emit_prompt(player_id, "Ghoul", prompt, npc_id="npc-1", room_id=None)
+
+    schedule.assert_not_called()
+    system.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_send_prompt_speaks_privately_then_sends_the_options() -> None:
+    player_id = uuid.uuid4()
+    prompt = DialoguePrompt(text="Sit.", options=["Yes", "No"], ended=False)
+    with (
+        patch.object(cmd, "deliver_npc_room_speech", new_callable=AsyncMock, return_value={"success": True}) as speech,
+        patch.object(cmd, "deliver_personal_system", new_callable=AsyncMock) as system,
+    ):
+        await cmd._send_prompt(player_id, "npc-1", "Ghoul", "room-1", prompt)
+
+    speech.assert_awaited_once_with(
+        npc_id="npc-1", room_id="room-1", message="Sit.", npc_name="Ghoul", target_player_id=player_id
+    )
+    system.assert_awaited_once_with(player_id, format_dialogue_options(["Yes", "No"]))
+
+
+@pytest.mark.asyncio
+async def test_send_prompt_sends_no_options_block_for_a_node_without_options() -> None:
+    prompt = DialoguePrompt(text="Hm.", options=[], ended=False)
+    with (
+        patch.object(cmd, "deliver_npc_room_speech", new_callable=AsyncMock, return_value={"success": True}),
+        patch.object(cmd, "deliver_personal_system", new_callable=AsyncMock) as system,
+    ):
+        await cmd._send_prompt(uuid.uuid4(), "npc-1", "Ghoul", "room-1", prompt)
+
+    system.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_send_prompt_falls_back_to_the_whole_node_as_a_system_prompt_when_speech_fails() -> None:
+    """A line that cannot be spoken must not vanish and strand the player mid-conversation."""
+    player_id = uuid.uuid4()
+    prompt = DialoguePrompt(text="Sit.", options=["Yes"], ended=False)
+    with (
+        patch.object(cmd, "deliver_npc_room_speech", new_callable=AsyncMock, return_value={"success": False}),
+        patch.object(cmd, "deliver_personal_system", new_callable=AsyncMock) as system,
+    ):
+        await cmd._send_prompt(player_id, "npc-1", "Ghoul", "room-1", prompt)
+
+    system.assert_awaited_once_with(player_id, format_dialogue_prompt("Ghoul", "Sit.", ["Yes"]))

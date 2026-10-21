@@ -72,6 +72,7 @@ def subscribe_npc_dialogue_events(container: ApplicationContainer) -> None:
                 npc_id=event.npc_id,
                 npc_name=event.npc_name,
                 definition_id=int(definition_id),
+                room_id=event.room_id,
                 ctx=container_context(container, player, persistence),
             )
         except (ValueError, TypeError, AttributeError) as e:
