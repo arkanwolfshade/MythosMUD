@@ -77,9 +77,17 @@ async def _send_npc_room_message(  # pylint: disable=too-many-arguments  # Reaso
         return {"success": False, "error": "Room required"}
 
     sender_id = npc_sender_id(npc_id)
-    chat_message = create_and_log_chat_message(sender_id, npc_name, message, room_id, channel)
+    chat_message = create_and_log_chat_message(
+        sender_id,
+        npc_name,
+        message,
+        room_id,
+        channel,
+        target_id=None if target_player_id is None else str(target_player_id),
+    )
     chat_message.speaker_kind = "npc"
     chat_message.speaker_disposition = get_npc_disposition_from_instance(npc_id).value
+    # A private line must not be replayed to the rest of the room from room history.
     if target_player_id is None:
         # pylint: disable=protected-access  # Reason: reuse ChatService room history store
         store_message_in_room_history(
@@ -88,9 +96,6 @@ async def _send_npc_room_message(  # pylint: disable=too-many-arguments  # Reaso
             room_id,
             chat_service._max_messages_per_room,  # pyright: ignore[reportPrivateUsage]  # Reason: Protocol mirrors ChatService history store
         )
-    else:
-        # A private line must not be replayed to the rest of the room from room history.
-        chat_message.target_id = str(target_player_id)
     success = await publish_chat_message_to_nats(
         chat_message, room_id, chat_service.nats_service, chat_service.subject_manager
     )

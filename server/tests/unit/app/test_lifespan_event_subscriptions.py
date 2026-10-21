@@ -7,7 +7,7 @@
 import asyncio
 import uuid
 from collections.abc import Awaitable, Callable
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import ANY, AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -159,12 +159,10 @@ async def test_an_npc_that_speaks_first_opens_its_dialogue_with_the_entering_pla
         service.return_value.get_cursor.return_value = None
         await handler(_opens(player_id))
 
-    open_dialogue.assert_awaited_once()
-    call = open_dialogue.await_args
-    assert call is not None
-    assert call.args == (player_id,)
-    assert call.kwargs["definition_id"] == 7
-    assert call.kwargs["npc_name"] == "Pale Ghoul"
+    # The NPC and the room are what let the line be spoken as the NPC (#1107); without them it falls back.
+    open_dialogue.assert_awaited_once_with(
+        player_id, npc_id="ghoul-1", npc_name="Pale Ghoul", definition_id=7, room_id="yew", ctx=ANY
+    )
 
 
 @pytest.mark.asyncio

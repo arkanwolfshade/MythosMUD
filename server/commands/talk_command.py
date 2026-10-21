@@ -8,12 +8,7 @@ from typing import cast
 
 from ..alias_storage import AliasStorage
 from ..exceptions import DatabaseError
-from ..game.chat_npc_system import (
-    deliver_npc_room_speech,
-    deliver_personal_system,
-    schedule_coro,
-    schedule_personal_system,
-)
+from ..game.chat_npc_system import deliver_npc_room_speech, deliver_personal_system
 from ..game.dialogue import (
     DialoguePrompt,
     format_dialogue_options,
@@ -75,7 +70,7 @@ async def _send_prompt(player_id: uuid.UUID, npc_id: str, npc_name: str, room_id
         _ = await deliver_personal_system(player_id, format_dialogue_options(prompt.options))
 
 
-def _emit_prompt(
+async def _emit_prompt(
     player_id: uuid.UUID,
     npc_name: str,
     prompt: DialoguePrompt,
@@ -86,16 +81,17 @@ def _emit_prompt(
     """Send a node to the player; return the short command result.
 
     The NPC's line is that NPC speaking, private to this player; the options stay a system prompt. Without the NPC and
-    the room to speak in, the whole node is a system prompt.
+    the room to speak in, the whole node is a system prompt. Awaited, so the line and its options are published before
+    the caller runs the node's actions, and a failure reaches the command instead of vanishing in a background task.
     """
     if prompt.ended:
-        schedule_personal_system(player_id, prompt.text)
+        _ = await deliver_personal_system(player_id, prompt.text)
         return prompt.text
     body = format_dialogue_prompt(npc_name, prompt.text, prompt.options)
     if npc_id and room_id:
-        schedule_coro(_send_prompt(player_id, npc_id, npc_name, room_id, prompt))
+        await _send_prompt(player_id, npc_id, npc_name, room_id, prompt)
     else:
-        schedule_personal_system(player_id, body)
+        _ = await deliver_personal_system(player_id, body)
     return body
 
 
@@ -125,7 +121,7 @@ async def open_dialogue(
     )
     if isinstance(result, str):
         return result
-    text = _emit_prompt(player_id, npc_name, result, npc_id=npc_id, room_id=room_id)
+    text = await _emit_prompt(player_id, npc_name, result, npc_id=npc_id, room_id=room_id)
     await _run_prompt_actions(result, ctx)
     return text
 
@@ -142,7 +138,9 @@ async def _talk_by_option_index(
     npc_name = cursor.npc_name if cursor else "Someone"
     if result.ended:
         service.clear_cursor(player_id)
-    text = _emit_prompt(player_id, npc_name, result, npc_id=cursor.npc_id if cursor else None, room_id=_room_of(player))
+    text = await _emit_prompt(
+        player_id, npc_name, result, npc_id=cursor.npc_id if cursor else None, room_id=_room_of(player)
+    )
     ctx = action_context(app, player, get_pose_persistence(app)) if player is not None else None
     await _run_prompt_actions(result, ctx)
     return {"result": text}

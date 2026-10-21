@@ -2,7 +2,7 @@
 
 import uuid
 from typing import cast
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import ANY, AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -465,3 +465,37 @@ async def test_deliver_npc_room_speech_passes_the_target():
     assert result["success"] is True
     assert send.await_args is not None
     assert send.await_args.kwargs["target_player_id"] == player_id
+
+
+@pytest.mark.asyncio
+async def test_a_private_npc_line_is_logged_as_private_not_as_public_room_chat():
+    """#1107: the chat log is read by moderators; a line only one player heard must not look like room chat."""
+    chat_service = _mock_chat_service()
+    player_id = uuid.uuid4()
+
+    with (
+        patch("server.game.chat_npc_system.publish_chat_message_to_nats", new_callable=AsyncMock, return_value=True),
+        patch("server.game.chat_message_helpers.chat_logger.log_chat_message") as logged,
+    ):
+        _ = await send_npc_say_to_room(
+            chat_service,
+            npc_id="ghoul",
+            npc_name="Pale Ghoul",
+            room_id="r1",
+            message="Sit.",
+            target_player_id=player_id,
+        )
+
+    logged.assert_called_once_with(
+        {
+            "message_id": ANY,
+            "channel": "say",
+            "sender_id": npc_sender_id("ghoul"),
+            "sender_name": "Pale Ghoul",
+            "content": "Sit.",
+            "room_id": "r1",
+            "target_player_id": str(player_id),
+            "filtered": False,
+            "moderation_notes": None,
+        }
+    )
