@@ -200,3 +200,31 @@ async def test_a_player_who_already_moved_on_is_not_spoken_to() -> None:
         await handler(_opens(uuid.uuid4()))
 
     open_dialogue.assert_not_awaited()
+
+
+def test_quest_gated_exits_read_progress_through_the_quest_service() -> None:
+    """#1111: without this wiring a quest-gated exit would have no way to learn the player's progress."""
+    from server.game import movement_helpers
+
+    container = MagicMock()
+    container.event_bus = None  # nothing else to subscribe in this test
+
+    try:
+        with patch("server.game.quest.quest_events.subscribe_quest_events"):
+            subscribe_quest_events(container)
+        assert movement_helpers._quest_activity_reader == container.quest_service.has_completed_activity  # pyright: ignore[reportPrivateUsage] -- the wired hook is the unit under test
+    finally:
+        movement_helpers.set_quest_activity_reader(None)
+
+
+def test_no_quest_service_leaves_no_reader_wired() -> None:
+    from server.game import movement_helpers
+
+    container = MagicMock()
+    container.event_bus = None
+    container.quest_service = None
+
+    with patch("server.game.quest.quest_events.subscribe_quest_events"):
+        subscribe_quest_events(container)
+
+    assert movement_helpers._quest_activity_reader is None  # pyright: ignore[reportPrivateUsage] -- the wired hook is the unit under test

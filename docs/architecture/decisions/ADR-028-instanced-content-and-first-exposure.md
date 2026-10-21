@@ -48,7 +48,7 @@ tutorial-only special cases in Python.
 | `instance_npcs` room attribute | room attributes | NPCs owned by the instance; spawned on create, despawned on flush, never respawned. |
 | Instance containers and items | furniture / item seeds | Template-room containers and floor items are cloned into instances and destroyed on flush. |
 | `instance_bound` item flag | item prototype | Stacks dropped in an instance are destroyed on flush, never forwarded to the bank. |
-| `exit_requirements` room attribute | room attributes | `{dir: {item, refusal}}`; enforced in `MovementService`, message in `go`. |
+| `exit_requirements` room attribute | room attributes | `{dir: {item?, quest_activity?, refusal}}`; every named condition must hold. `item` is a prototype held anywhere on the player; `quest_activity` is a `complete_activity` target done in any of the player's quests (`cmd_look`, or `dialogue_complete_<npc>` fired by a dialogue node's `quest_activity` action). Enforced in `MovementService` (flee and follow too), message in `go`; malformed data, or no quest reader wired, leaves the exit open. |
 | Dialogue node `actions` | dialogue tree JSON | Run scripted actions (heal, corruption floor, quest, effect, narrate, debrief). |
 | Container `on_put` | furniture metadata | Run scripted actions when a matching item is put in a container. |
 | `lucidity_drain_over_time` effect | status-effect dict | Per-second escalating drain, tier narration, scripted hallucination beats, self-removes at -10. |

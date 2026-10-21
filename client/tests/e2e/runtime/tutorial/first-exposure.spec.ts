@@ -63,15 +63,21 @@ test.describe.serial('First Exposure: the whole tutorial', () => {
       // Quest notices arrive on the quest channel, not the system channel.
       await waitForMessage(tutorial.page, /\[QUEST\] Quest started: An Evening Walk/, 20000);
       // The Journal refreshes on progress without the player typing `journal`: the opening `look` met cmd_look.
-      await expect(tutorial.page.getByTestId('game-panel-questLog')).toContainText('cmd_look: done', {
+      await expect(tutorial.page.getByTestId('game-panel-questLog')).toContainText('Look around (`look`): done', {
         timeout: 15000,
       });
 
       await walk(tutorial, 'east', tutorialRoomPattern('gravel_walk'));
+      // The path is one way, and onward only once the lamplighter has been heard out (#1111).
+      await say(tutorial, 'go west', /can't go that way/i);
+      await say(tutorial, 'go east', /A word first/i);
+      expect(state().current_room_id).toMatch(tutorialRoomPattern('gravel_walk'));
       await say(tutorial, 'talk lamplighter', /Mind the gravel/i);
       await say(tutorial, 'reply 1', /Strays, the constable says/i);
+      await waitForMessage(tutorial.page, /steps aside from the gravel/i, 20000);
 
       await walk(tutorial, 'east', tutorialRoomPattern('beneath_the_limes'));
+      await say(tutorial, 'go east', /keeps pulling at the corner of your eye/i); // not before the newspaper is read
       await executeCommand(tutorial.page, 'get newspaper');
       await expect.poll(() => state().inventory_items, { timeout: 15000 }).toContain('Arkham Advertiser');
       await say(tutorial, 'read newspaper', /GRAVES OPENED AGAIN/i);
@@ -96,14 +102,18 @@ test.describe.serial('First Exposure: the whole tutorial', () => {
       await walk(tutorial, 'east', tutorialRoomPattern('old_yew'));
       // The Pale Ghoul speaks first (behavior_config.initiates_dialogue): no `talk ghoul` needed.
       await waitForMessage(tutorial.page, /lifts one hand, slowly/i, 20000);
+      await say(tutorial, 'go east', /Hear me first/i); // not before the conversation is through
       await say(tutorial, 'talk 1', /Its long fingers close over your wrist/i);
       await expect.poll(() => state().corruption, { timeout: 15000 }).toBe(1);
       await expect
         .poll(() => state().current_dp, { timeout: 40000, message: 'the heal-over-time effect restores DP' })
         .toBeGreaterThan(hurt.current_dp ?? 0);
       await say(tutorial, 'talk 1', /Bring it down the stair/i);
+      await waitForMessage(tutorial.page, /lets you pass/i, 20000);
 
       await walk(tutorial, 'east', tutorialRoomPattern('robbed_grave'));
+      // The amulet gate sits here now, not on the stair: with no way back, the stair must not be a trap.
+      await say(tutorial, 'go south', /Not with empty hands/i);
       await executeCommand(tutorial.page, 'get amulet');
       await expect.poll(() => state().inventory_items, { timeout: 15000 }).toContain('Jade Amulet');
       await waitForMessage(tutorial.page, /Quest completed: What the Robbers Stole/i, 20000);

@@ -8,12 +8,14 @@ movement_service.py under file NLOC limits.
 from __future__ import annotations
 
 import uuid
-from typing import TYPE_CHECKING, Any, cast
+from collections.abc import Awaitable, Callable
+from typing import TYPE_CHECKING, Any, NamedTuple, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
 from ..exceptions import DatabaseError
 from ..models.room import Room
+from ..structured_logging.enhanced_logging_config import get_logger
 from .quest.collect_inventory import collect_player_stacks, count_prototype_in_stacks
 
 if TYPE_CHECKING:
@@ -21,8 +23,21 @@ if TYPE_CHECKING:
     from ..models.player import Player
     from ..services.player_combat_service import PlayerCombatService
 
+_logger = get_logger(__name__)  # the helpers below that take a `logger` parameter log through it
+
 # Shown when a gated exit names no refusal text of its own.
 DEFAULT_EXIT_REFUSAL = "Something bars the way."
+
+# Answers "has this player completed the quest activity <target>?" (see ExitRequirement.quest_activity).
+QuestActivityReader = Callable[[uuid.UUID, str], Awaitable[bool]]
+
+_quest_activity_reader: QuestActivityReader | None = None  # pylint: disable=invalid-name  # Reason: process-wide hook wired once at startup
+
+
+def set_quest_activity_reader(reader: QuestActivityReader | None) -> None:
+    """Wire how exits learn a player's quest progress (startup; tests)."""
+    global _quest_activity_reader  # pylint: disable=global-statement  # Reason: process-wide hook wired once at startup
+    _quest_activity_reader = reader
 
 
 def extract_player_id(logger: Any, player_obj: Any, from_room_id: str, to_room_id: str) -> uuid.UUID | None:
@@ -200,11 +215,25 @@ def validate_exit(logger: Any, persistence: AsyncPersistenceLayer, from_room: Ro
     return False
 
 
-def _exit_requirement(room: Room, direction: str) -> tuple[str, str] | None:
-    """(required prototype id, refusal text) for a gated exit; None if it is open or its data is malformed.
+class ExitRequirement(NamedTuple):
+    """What a gated exit asks of the player; every condition it names must hold."""
 
-    Rooms declare ``attributes["exit_requirements"] = {"down": {"item": "<prototype id>", "refusal": "<text>"}}``.
-    Anything that is not that shape is ignored: bad world data must not trap a player behind an exit.
+    item: str | None  # a prototype id the player must hold
+    quest_activity: str | None  # a complete_activity target the player must have completed (any quest, any state)
+    refusal: str
+
+
+def _text(value: object) -> str | None:
+    return value if isinstance(value, str) and value else None
+
+
+def _exit_requirement(room: Room, direction: str) -> ExitRequirement | None:
+    """The requirement on a gated exit; None if it is open or its data is malformed.
+
+    Rooms declare ``attributes["exit_requirements"] = {"down": {"item": "<prototype id>", "refusal": "<text>"}}``,
+    and/or ``"quest_activity": "<complete_activity target>"`` for an exit a quest unlocks (e.g. ``cmd_look`` or
+    ``dialogue_complete_lamplighter``). Anything that is not that shape is ignored: bad world data must not trap a
+    player behind an exit.
     """
     raw = cast(object, room.attributes.get("exit_requirements"))
     if not isinstance(raw, dict):
@@ -213,34 +242,48 @@ def _exit_requirement(room: Room, direction: str) -> tuple[str, str] | None:
     if not isinstance(entry, dict):
         return None
     spec = cast(dict[str, object], entry)
-    item = spec.get("item")
-    if not isinstance(item, str) or not item:
+    item, activity = _text(spec.get("item")), _text(spec.get("quest_activity"))
+    if item is None and activity is None:
         return None
-    refusal = spec.get("refusal")
-    return item, refusal if isinstance(refusal, str) and refusal else DEFAULT_EXIT_REFUSAL
+    return ExitRequirement(item, activity, _text(spec.get("refusal")) or DEFAULT_EXIT_REFUSAL)
 
 
-def exit_refusal(player: Player, room: Room, direction: str) -> str | None:
+async def _quest_activity_done(player: Player, target: str) -> bool:
+    """Whether the player has completed the activity; open (with a warning) when progress cannot be read."""
+    if _quest_activity_reader is None:
+        _logger.warning("Exit needs quest progress but no reader is wired; leaving it open", target=target)
+        return True
+    try:
+        player_id = uuid.UUID(str(player.player_id))
+    except ValueError:
+        return True
+    return await _quest_activity_reader(player_id, target)
+
+
+async def exit_refusal(player: Player, room: Room, direction: str) -> str | None:
     """Why the player may not leave ``room`` by ``direction`` (the refusal text), or None if they may.
 
-    An exit is gated when the room's exit_requirements name an item for that direction. The item counts
-    wherever the player holds it: inventory, equipped, or inside a carried container.
+    An exit is gated when the room's exit_requirements name an item and/or a quest activity for that direction.
+    The item counts wherever the player holds it: inventory, equipped, or inside a carried container.
     """
     requirement = _exit_requirement(room, direction)
     if requirement is None:
         return None
-    item, refusal = requirement
-    return None if count_prototype_in_stacks(collect_player_stacks(player), item) > 0 else refusal
+    if requirement.item and not count_prototype_in_stacks(collect_player_stacks(player), requirement.item):
+        return requirement.refusal
+    if requirement.quest_activity and not await _quest_activity_done(player, requirement.quest_activity):
+        return requirement.refusal
+    return None
 
 
-def room_exit_refusal(player: Player, room: Room, to_room_id: str) -> str | None:
+async def room_exit_refusal(player: Player, room: Room, to_room_id: str) -> str | None:
     """Why the player may not move from ``room`` to ``to_room_id``, or None if they may.
 
     Used where only the destination is known (flee, follow). Several exits can lead to the same room;
     the move is allowed if any one of them is open to the player.
     """
     exits = cast(dict[str, str], room.exits)
-    refusals = [exit_refusal(player, room, direction) for direction, target in exits.items() if target == to_room_id]
+    refusals = [await exit_refusal(player, room, d) for d, target in exits.items() if target == to_room_id]
     if not refusals or None in refusals:
         return None
     return refusals[0]
